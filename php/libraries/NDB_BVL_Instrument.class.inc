@@ -1,0 +1,1110 @@
+<?
+require_once "PEAR.php";
+require_once "HTML/QuickForm.php";
+include_once ('HTML/QuickForm/Renderer/Default.php');
+
+/**
+ * Base class for all NeuroDB behavioural instruments
+ *
+ * Throws PEAR errors. Also requires PEAR HTML_Quickform.
+ *
+ * @package behavioural 
+ * @access public
+ */
+class NDB_BVL_Instrument extends PEAR
+{
+    // {{{ properties
+
+    /**
+    * HTML_Quickform object
+    *
+    * @access private
+    */
+    var $form;
+
+    /**
+    * test name (short name), equivalent to test_names.Test_name
+    *
+    * @access private
+    */
+    var $testName;
+
+    /**
+    * instrument instance CommentID
+    *
+    * @access private
+    */
+    var $commentID;
+
+    /**
+    * database table containing data referenced by $this->commentID
+    *
+    * @access private
+    */
+    var $table;
+
+    /**
+    * cache location for the date of administration
+    *
+    * @access private
+    */
+    var $dateOfAdministration;
+
+    /**
+    * additional form defaults - should only be used for quickform
+    * static elements!
+    *
+    * @access private
+    */
+    var $localDefaults = array('emptyCell'=>'&nbsp;');
+
+    /**
+    * string to separate the group elements
+    * @access private
+    */
+    var $_GUIDelimiter = "</td>\n<td>";
+
+    /**
+    * commonly used level of indentation
+    * @access private
+    */
+	var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+
+	/**
+    * array of required fields to check
+    * @access private
+    */
+    var $_requiredElements = array();
+
+    /**
+    * array of date fields to be processed into QuickForm dates
+    * NOTE: When abstracting the _saveValues() method in the child <instrument> class, add only the dates from the current page to the array using the instruments switch($page) otherwise you'll end up overwriting (NULLing) all other dates in the table that appear on other pages (if they are listed in the array of date fields) - note by Dario
+    */
+    var $dateTimeFields = array();
+
+    // }}}
+    // {{{ factory()
+
+    /**
+    * factory generates a new instrument instance of type
+    * $instrument, and runs the setup() method on that new
+    * instrument.
+    *
+    * @param string $instrument  the name of the instrument to use
+    * @param string $commentID   the CommentID identifying the data to
+    * load
+    * @param string $page        if a multipage form, the page to show
+    * @return object             the new object of $instrument type
+    * @throws PEAR:error
+    * @access public
+    */
+    function factory($instrument, $commentID, $page)
+    {
+        $class = "NDB_BVL_Instrument_$instrument";
+        $obj = new $class;
+        $success = $obj->setup($commentID, $page);
+        if (PEAR::isError($success)) {
+            return PEAR::raiseError($success->getMessage());
+        }
+        
+        $access = $obj->_hasAccess();
+        if (PEAR::isError($access)) {
+            return PEAR::raiseError("NDB_Instrument::factory(): ".$access->getMessage());
+        }
+
+        // check that user has access
+        if ($access == false) {
+            return PEAR::raiseError("You do not have access to this page.");
+        }
+
+        return $obj;
+    }
+
+    
+    /**
+     * Checks if the user has permissions to view the instrument.
+     * 
+     * Relies on <instrumentPermissions> settings in the config.xml file.
+     *
+     * This follows a permissive scheme.
+     * If the instrument is not listed in the instrumentPermissions section, access is granted.
+     * If the user has ANY of the permissions listed in the config.xml file for the instrument, access is granted.
+     * 
+     * Future improvement: call this function from display() rather than from factory()?
+     *
+     * @return bool
+     * @access private
+     */
+    function _hasAccess()
+    {
+        //get config
+        $config =& NDB_Config::singleton();
+        $instrumentPermissions = $config->getSetting("instrumentPermissions");
+
+        //check if instrumentPermissions are being used.
+        if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+            //instrument permissions not used...
+            return true; //default
+        }
+        else { //check if user has instrument's permissions
+            $user =& User::singleton();
+            if(PEAR::isError($user)) {
+              return PEAR::raiseError("User Error: ".$user->getMessage());
+            }
+
+            //is the instrument listed at all in instrumentPermissions?
+            $instrumentListed = false;
+            foreach($instrumentPermissions["instrument"] as $instrument) {
+                if ($instrument["Test_name"] == $this->testName) {
+                    $instrumentListed = true;
+                    $instrumentPerms = Utility::asArray($instrument["permission"]);
+                }
+            }
+            
+            //no permissions defined
+            if (!$instrumentListed) {
+                return true;
+            }
+
+            //check if user possesses ANY of the required permissions
+            foreach ($instrumentPerms as $instrumentPerm) {
+                if($user->hasPermission($instrumentPerm))
+                    return true;
+            }
+            
+            //no user permissions match required instrument permissions
+            return PEAR::raiseError("You do not have access to this page.");
+        }
+    }
+    
+    // }}}
+    // abstract methods (to be redefined by child classes)
+    // {{{ setup()
+
+    /**
+    * sets up basic data, such as the HTML_Quickform object, and so on.
+    *
+    * @param string $commentID  the CommentID identifying the data to load
+    * @param string $page       if a multipage form, the page to show
+    * @return void
+    * @access public
+    * @abstract
+    */
+    function setup($commentID, $page)
+    {
+        $this->form = new HTML_Quickform('test_form');
+        $this->page = $page;            // page label (number or
+        // string - used by
+        // user-defined child classes)
+
+        // set the object properties
+        $this->testName = "";           // test_names.Test_name
+        $this->table = '';              // name of table containing
+        // data keyed by commentID
+        $this->commentID = $commentID;
+
+        // required fields for data entry completion status
+        $this->_requiredElements = array();
+    }
+
+    // }}}
+    // {{{ score()
+
+    /**
+    * method to compute scores - by default a null method, but any
+    * instrument with a scoring algorithm to implement can override
+    * it.
+    *
+    * @return void
+    * @access public
+    * @abstract
+    */
+    function score() {}
+
+    // }}}
+    // {{{ display()
+
+    /**
+    * method to display the form - usually not overridden as it
+    * includes all the base code that any instrument will require.
+    *
+    * @return void
+    * @access public
+    */
+    function display()
+    {
+        // ALWAYS INCLUDE THESE!
+        $this->form->addElement('hidden', 'candID', $_REQUEST["candID"]);
+        $this->form->addElement('hidden', 'sessionID', $_REQUEST["sessionID"]);
+        $this->form->addElement('hidden', 'commentID', $this->getCommentID());
+        $this->form->addElement('hidden', 'test_name', $this->testName);
+        $this->form->addElement('hidden', 'page', $this->page);
+        $this->form->addElement('hidden', 'subtest', $this->page);
+
+        if(!$this->form->isFrozen()) {
+            $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
+            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+            $this->form->addGroup($buttons, null, null, "&nbsp;");
+        }
+
+        // if double data is in play, only show data after the second save
+        $config =& NDB_Config::singleton();
+        $doubleDataEntry = $config->getSetting('doubleDataEntry');
+        if($doubleDataEntry) {
+            // check for first save in session
+            $stateProperty = 'savedData'.$this->getCommentID().$this->page;
+            $showData = $_SESSION['State']->getProperty($stateProperty."_showData");
+        } else {
+            $showData = true;
+        }
+
+        // get saved data to pre-populate form
+        $db =& Database::singleton();
+        $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
+        if($this->isError($defaults)) {
+            return $this->raiseError('Could not get default values for form');
+        }
+        // set the defaults (call private method _setDefaultsArray
+        // which could be overridden if necessary)
+        $defaults = $this->_setDefaultsArray($defaults[0]);
+
+        // merge in the localDefaults property so that simple
+        // additions to the defaults array no longer requires
+        // overriding the _setDefaultsArray method
+        $defaults = array_merge($defaults, $this->localDefaults);
+
+        // actually set the quickform object defaults
+        $this->form->setDefaults($defaults);
+        
+        // clear all if double data is in play and this is the second display
+        if(!$showData) {
+            $submittedData = $this->form->getSubmitValues();
+            unset($submittedData['commentID'], $submittedData['candID'], $submittedData['sessionID'], $submittedData['test_name'], $submittedData['page'], $submittedData['subtest'], $submittedData['fire_away']);
+            foreach(array_keys($submittedData) AS $elname) {
+                $constants[$elname] = null;
+                //$element = $this->form->getElement($elname);
+            }
+            //$this->form->setConstants($constants);
+            $this->form->_submitValues = $constants;
+            $this->form->setConstants($constants);
+            print "<!--\nSETTING CONSTANTS\n"; print_r($constants); print_r($this->form); print "\n-->\n";
+        }
+        
+        // display the HTML_Quickform object
+        // return $this->form->toHTML();
+
+        $renderer =& new HTML_QuickForm_Renderer_Default();
+        $renderer->setElementTemplate("\n\t<tr>\n\t\t<td align=\"left\" valign=\"top\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td>\n\t\t<td valign=\"top\" align=\"left\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->\t{element}</td>\n\t</tr>");
+        $renderer->setElementTemplate("\n\t<tr>\n\t\t<td align=\"left\" valign=\"top\"><i>{label}</i></td>\n\t\t<td valign=\"top\" align=\"left\">\t<i>{element}</i></td>\n\t</tr>", "static");
+        $renderer->setHeaderTemplate("\n\t<tr>\n\t\t<td style=\"white-space: nowrap; background-color: #CCCCCC;\" align=\"left\" valign=\"top\" colspan=\"2\"><br><b>{header}</b></td>\n\t</tr>");
+        $this->form->accept($renderer);
+        return $renderer->toHtml();
+    }
+    
+    // }}}
+    // {{{ _setDefaultsArray()
+
+    /**
+    * accepts an array usable as input to HTML_Quickform::setDefaults()
+    * and does any necessary preprocessing on that array.
+    *
+    * @param array $defaults    the array to be passed on to
+    * HTML_Quickform::setDefaults()
+    * @return array             the processed array ready for setDefaults()
+    * @access private
+    */
+    function _setDefaultsArray($defaults)
+    {
+        //Convert date/time fields into quickform date/timestamps
+        if(empty($this->dateTimeFields)){
+            $this->dateTimeFields=array("Date_taken");
+        }
+        foreach($this->dateTimeFields as $field){
+            $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
+        }
+        
+        //Convert select multiple elements into a quickform array
+        if(!empty($this->_selectMultipleElements)){
+            foreach($this->_selectMultipleElements AS $elname){
+                if(stristr($defaults[$elname], "{@}")){
+                   $defaults[$elname]=explode("{@}",$defaults[$elname]);
+                }
+            }
+        }
+        
+        // return the defaults array ready for $form->setDefaults
+        return $defaults;
+    }
+
+    // }}}
+    // {{{ save()
+    
+    /**
+    * attempts to validate the form (using the defined rules) and
+    * saves the validated data into the database
+    *
+    * @return void
+    * @access public
+    */
+    function save()
+    {
+        if($this->form->validate()) {
+            $this->form->process(array(&$this, '_saveValues'), true);
+            $scoreResult = $this->score();
+
+            // determine the data entry completion status, and store that in the database
+            $dataEntryCompletionStatus = $this->_determineDataEntryCompletionStatus();
+            if(PEAR::isError($dataEntryCompletionStatus)) print "Could not determine DECS: ".$dataEntryCompletionStatus->getMessage()."<br>\n";
+            $success = $this->_setDataEntryCompletionStatus($dataEntryCompletionStatus);
+            if(PEAR::isError($success)) print "Could not set DECS: ".$success->getMessage()."<br>\n";
+
+        } else {
+            $submittedData = $this->form->getSubmitValues();
+
+            $config =& NDB_Config::singleton();
+            $doubleDataEntry = $config->getSetting('doubleDataEntry');
+            if($doubleDataEntry) {
+                // check for first save in session
+                $stateProperty = 'savedData'.$this->getCommentID().$this->page;
+                $showData = $_SESSION['State']->getProperty($stateProperty."_showData");
+            } else {
+                $showData = true;
+            }
+
+            if(count($submittedData) && $showData) {
+                
+                // the form WAS submitted but validate() failed...
+                // main error message
+                print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                // print all the field error messages in one block
+                foreach(array_keys($submittedData) AS $key) {
+                    $error = $this->form->getElementError($key);
+                    if(!empty($error)) {
+                        $element = $this->form->getElement($key);
+                        if(method_exists($element, "getLabel")){
+                            print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                        }
+                    }
+                }
+            }
+        }
+
+        if($this->isError($scoreResult)) {
+            // since this error is not capture in main.php - temp display
+            print "<font color='red'>Encountered error while scoring the instrument:" . $scoreResult->getMessage() . "</font><br>\n";
+            print "This error will not prevent data from being saved, unless the data entry error is also displayed.<BR>Please inform DCC of this error<br>\n";
+            return PEAR::raiseError($scoreResult->getMessage());
+        }
+    }
+    
+    // }}}
+    // {{{ _saveValues()
+
+    /**
+    * preprocesses the array of values to be saved into the database
+    * (such as to rearrange date fields)
+    *
+    * @param array $values      the array of values ready to be passed to
+    * an Database::update call as the set array
+    * @return void
+    * @access private
+    */
+    function _saveValues($values)
+    {
+        //Convet date/timestamps into database format
+        if(empty($this->dateTimeFields)){
+            $this->dateTimeFields=array("Date_taken");
+        }
+        
+        //Convert date/time fields into database dates/times
+        if (is_array($this->dateTimeFields) && count($this->dateTimeFields) > 0) {
+            foreach($this->dateTimeFields as $field){
+                    if(isset($values[$field])) {  //Stops it from wiping dates already saved on other pages.
+                    $values[$field]=$this->_getDatabaseDate($values[$field]);
+                }
+            }
+        }
+        
+        //Convert select multiple elements into database storable values
+        if(!empty($this->_selectMultipleElements)){
+            foreach($this->_selectMultipleElements AS $elname){
+                if(isset($values[$elname]) && is_array($values[$elname])){
+                    $values[$elname]=implode("{@}",$values[$elname]);
+                }
+            }
+        }
+
+        //XIN specific functionality
+        if($this->formType=="XIN"){
+            //Remove the values of all fields who have had statuses assigned
+            foreach(array_keys($values) AS $field){
+                if(substr($field, -7)=="_status"){
+                    if(!empty($values[$field])){
+                        $baseField=substr($field,0,(strlen($field)-7));
+                        $values[$baseField]="";
+                    }
+                }
+            }
+        }
+
+        // do not alter this when overwriting the method
+        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
+        $this->_save($values);
+    }
+    
+    // }}}
+    // {{{ _save()
+
+    /**
+    * uses the array generated by _saveValues() and runs the
+    * Database::update() call.
+    *
+    * @param array $values       the array generated by _saveValues()
+    * @return void
+    * @access private
+    */
+    function _save($values)
+    {
+        // clear any fields starting with __
+        foreach(array_keys($values) AS $key) {
+            if(strpos($key, '__') === 0) {
+                unset($values[$key]);
+            }
+        }
+        $db =& Database::singleton();
+        $result = $db->update($this->table, $values, array('CommentID'=>$this->getCommentID()));
+        if($this->isError($result)) {
+            print "Error saving data: ".$result->getMessage()."<br>\n";
+            return $this->raiseError('Could not save to database' . $result->getMessage());
+        }
+    }
+
+    // }}}
+    // {{{ _addMetadataFields()
+    
+    /**
+    * adds metadata fields (such as Examiner and Date_taken) to the
+    * current form
+    *
+    * @return void
+    * @access private
+    */
+    function _addMetadataFields()
+    {
+        $config =& NDB_Config::singleton();
+        $dateOptions = array(
+        'language' => 'en',
+        'format'   => 'YMd',
+        'minYear'  => $config->getSetting('startYear'),
+        'maxYear'  => $config->getSetting('endYear'),
+        'addEmptyOption' => true,
+        'emptyOptionValue' => null
+        );
+
+        $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
+
+        $examiners = $this->_getExaminerNames();
+        $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
+
+        //$this->form->addElement('text', 'Examiner', 'Examiner');
+
+        $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
+
+        $this->form->registerRule('checkdate', 'callback', '_checkDate');
+        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+
+        $this->form->addRule('Examiner', 'Examiner is required', 'required');
+    }
+
+    // }}}
+    // {{{
+
+    /**
+     * gets the list of examiners for the current instrument site
+     *
+     * @return array
+     * @access private
+     */
+    function _getExaminerNames()
+    {
+        $db =& Database::singleton();
+        $centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->getCommentID()."'");
+
+        $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
+        if($db->isError($results)) {
+            return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+        }
+
+        $examiners = array(''=>'');
+        if(is_array($results) && !empty($results)) {
+            foreach($results AS $row) {
+                $examiners[$row['examinerID']] = $row['full_name'];
+            }
+        }
+        return $examiners;
+    }
+    // }}}
+    // {{{ getFullName()
+    
+    /**
+    * looks up the full name for the current instrument
+    *
+    * @return string        the full name of the instrument
+    * @access public
+    */
+    function getFullName()
+    {
+        $db =& Database::singleton();
+
+        $success = $db->selectOne("SELECT Full_name FROM test_names WHERE Test_name='$this->testName'");
+        return $success;
+    }
+
+    // }}}
+    // {{{ getCommentID()
+    
+    /**
+    * gets the current object instance CommentID
+    *
+    * @return string          the CommentID
+    * @access public
+    */
+    function getCommentID()
+    {
+        return $this->commentID;
+    }
+    
+    // }}}
+    // {{{ freeze()
+
+    /**
+    * freezes the current form
+    *
+    * @return void
+    * @access public
+    */
+    function freeze()
+    {
+        $this->form->freeze();
+    }
+
+    // }}}
+    // {{{ getDateOfAdministration()
+    
+    /**
+    * gets the date of administration of an instrument instance - caches to reduce DB hits
+    *
+    * @return mixed    $dateOfAdministration the date of administration from the DB, in the format "YYYY-MM-DD"
+    * @access private
+    */
+    function getDateOfAdministration()
+    {
+        $db =& Database::singleton();
+        $doa = $db->selectOne("SELECT Date_taken FROM $this->table WHERE CommentID='".$this->getCommentID()."'");
+        if($this->isError($doa)) {
+            return $this->raiseError("Could not get date of administration from $this->table");
+        } else {
+            $this->dateOfAdministration = $doa;
+        }
+        
+        return $this->dateOfAdministration;
+    }
+    
+    // }}}
+    // {{{ getSubtestList()
+
+    /**
+    * gets a list of subtests of the current instrument
+    *
+    * @return array
+    * @throws PEAR::Error
+    */
+    function getSubtestList()
+    {
+        // get a database connection
+        $db =& Database::singleton();
+        if(PEAR::isError($db)) return $db;
+
+        $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name='$this->testName' ORDER BY Order_number";
+        $db->select($query, $results);
+        if(PEAR::isError($results)) return $results;
+
+        return $results;
+    }
+
+    // }}}
+    // {{{ setRequired()
+
+    /**
+    * marks an element in the quickform object as being required (for
+    * use with the requiredIf rule)
+    *
+    * @params string   $elementName     the element to add to the required list
+    * @return void
+    */
+    function setRequired($elementName)
+    {
+        if(!in_array($elementName, $this->form->_required)) {
+            $this->form->_required[] = $elementName;
+        }
+    }
+
+    // }}}
+    // {{{ _getDatabaseDate()
+
+    /**
+    * Convert a quickform date or timestamp into a database acceptable (and storable) date or time
+    *
+    * @param array    $formDateValue  the quickform date/timestamp array
+    * @return  string  $databaseValue   the date or timestamp from the database
+    * @access private
+    */
+    function _getDatabaseDate($formDateValue){
+        if(!empty($formDateValue)){
+            if(count($formDateValue)==2){
+                $databaseValue = "$formDateValue[H]:$formDateValue[i]";  //handle time (HH:MM:SS)
+            } else {
+                $databaseValue = "$formDateValue[Y]-$formDateValue[M]-$formDateValue[d]";  //handle date (YYYY/MM/DD)
+            }
+        }
+        return $databaseValue;
+    }
+    
+    // }}}
+    // {{{ _getQuickformDate()
+
+    /**
+    * Convert a database date or timestamp into a QuickForm acceptable date or time
+    *
+    * @param string  $databaseValue        the date or timestamp from the database
+    * @return array   $formDateValue       the quickform date/timestamp array
+    * @access private
+    */
+    function _getQuickformDate($databaseValue){
+        if(!empty($databaseValue)){
+            if(strstr($databaseValue,":")){
+                $formDateValue=explode(":",$databaseValue);
+                $formDateValue=array("H"=>$formDateValue[0],"i"=>$formDateValue[1]);  //handle time
+            } else {
+                // split mysql Date_taken field into array
+                $formDateValue = explode('-', $databaseValue);
+                $formDateValue = array('Y'=>$formDateValue[0], 'M'=>$formDateValue[1], 'd'=>$formDateValue[2]);  //handle date
+            }
+        }
+        return $formDateValue;
+    }
+    
+    // }}}
+    // {{{ XINValidate()
+
+    function XINValidate($elements){
+        $this->XINDebug=false;  //Turn this on to see rules debuggin output
+        $errors=array();
+        foreach($elements AS $elname=>$elvalue) {
+            //If the element is a group (and thus elvalue is an array) trigger the Null Value default rule if ANY of the values in the group are empty.
+            $flag=true;
+            if(is_array($elvalue)){
+                foreach($elvalue AS $val){
+                    if ($val==""){
+                        $flag=false;
+                    }
+                }
+            }
+
+            //If the answer is empty (or its a group and one of answers in the group is empty) then run the rules
+            if($elvalue=="" || $flag==false){
+                if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
+                if(!empty($this->XINRules[$elname])){
+                    $result=$this->XINRunElementRules($elname, $elements, $this->XINRules[$elname]);
+                    if(is_array($result)){
+                        $errors+=$result;
+                    }
+                } else if(substr($elname,-7)!="_status" && !in_array($elname,array("page","subtest"))){
+                    $errors[$elname]="Required.";
+                    if($this->XINDebug){echo "Required by default";}
+                } else {
+                    if($this->XINDebug){echo "Status' not required by default";}
+                }
+            }
+        }
+        if(!empty($errors)){
+            return $errors;
+        }
+            /*
+        } else {
+            // run double-data entry test if appropriate
+            $config =& NDB_Config::singleton();
+            $doubleDataEntry = $config->getSetting('doubleDataEntry');
+            if($doubleDataEntry) {
+                // check for first save in session
+                $stateProperty = 'savedData'.$this->getCommentID().$this->page;
+                $oldData = $_SESSION['State']->getProperty($stateProperty);
+                if(!empty($oldData)) {
+                    // compare new data to old data
+                    $diff = array_diff_assoc($oldData, $elements);
+print "<!--\n DIFF \n"; print_r($diff); print "\n-->";
+                    
+                    if(empty($diff)) {
+                        $_SESSION['State']->setProperty($stateProperty, null);
+                        $_SESSION['State']->setProperty($stateProperty."_showData", true);
+                        return true;
+                    } else {
+                        $_SESSION['State']->setProperty($stateProperty, $elements);
+                        foreach($diff AS $elname=>$elvalue) {
+                            $errors[$elname] = "Doesn't match previous entry ($elvalue)";
+                        }
+                        return $errors;
+                    }
+                } else {
+                    // set old data in state
+                    $_SESSION['State']->setProperty($stateProperty, $elements);
+                    $_SESSION['State']->setProperty($stateProperty."_showData", false);
+
+print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); print "\n-->";
+                    // mark data for reentry
+                    foreach($elements AS $elname=>$elvalue) {
+                        $errors[$elname] = "Please re-enter data";
+                    }
+                    return $errors;
+                }
+            } else {
+                // no double data entry required
+                
+                }
+                
+                }
+                */
+           
+            
+        return true;
+    }
+    
+    // }}}
+    // {{{ XINRegisterRule()
+
+    /**
+    * Attaches a user defined rule (conditions) to a form element (grouped or not).
+    *
+    * @param string $elname Name of element registering the rule
+    * @param array  $rules  Array of rules to apply in an AND fashion.  Rules are written in rose ({@}) format (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').  ORs may be written within the same array value.
+    * @param string $message    Message to print upon rule violation
+    * @param string $group  Empty if a non-grouped element is registering the rule.  Otherwise, name of the group registering the rule.    
+    */
+    function XINRegisterRule($elname, $rules, $message="", $group=""){
+        if(!is_array($rules)){
+            $rules_array[]=$rules;
+        } else {
+            $rules_array=$rules;
+        }
+        $this->XINRules[$elname]['message']=$message;
+        $this->XINRules[$elname]['group']=$group;
+
+        foreach($rules_array AS $rule){
+            $this->XINRules[$elname]['rules'][]=$rule;
+        }
+        return true;
+    }
+
+    // }}}
+    // {{{ XINRunElementRules()
+    
+    //Run the rules and see if the required flag need be raised.  
+    //Assumes all conditions are met and then checks each of them, any condition not met will invalidate the rule, 
+    //meaning the answer is valid.
+    //DONT TOUCH THIS, EVER.
+    function XINRunElementRules($elname, $elements, $rules){
+        $is_required=true; //Conditions for the rule to be true, and thus the element to be required.
+        foreach($rules['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
+            //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
+            if(stristr(substr($rule, strpos($rule,"|")),"{@}")){
+                $rules_array=explode("|",$rule);
+            } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
+                $rules_array[]=$rule;
+            }
+            
+            //Loop through the rules (will only be one rule if this is not an OR)
+            $or_conditions=array();
+            for($i=0;$i<count($rules_array);$i++){ 
+                $rule=explode("{@}",$rules_array[$i]);
+                //Some rules compare against multiple values, handle this here.
+                if(stristr($rule[2],"|")){  //ex: q_1{@}=={@}yes|no
+                    $values=explode("|",$rule[2]);
+                } else {  //ex: q_1{@}=={@}yes
+                    $values=array($rule[2]);
+                }
+                //Test the condition
+                if($this->XINDebug){echo "$rule[0] ";} //debugging code
+                
+                //Handle select multiples who's controllre values are arrays.
+                
+                //explicitly cast the controller value as an array
+                if(!is_array($elements[$rule[0]])){ 
+                    $elements[$rule[0]]=array($elements[$rule[0]]);
+                }
+                //Foreach controller value run the rule.
+                $or_conditions=false;
+                foreach($elements[$rule[0]] as $controller_value){
+                    if($this->XINRunRuleFunction($controller_value, $values, $rule[1])){
+                        $or_conditions=true; //If any of the OR rules is true
+                    }
+                }
+            }
+            //If NONE of the or_conditions were true the field is NOT required.
+            if($or_conditions==false){
+                $is_required=false;
+            }
+        }
+        //If all of the conditions were true then print the error message
+        if($is_required==true){
+            $el=$rules['group']!="" ? $rules['group'] : $elname;
+            $errors[$el]=$rules['message'];
+        }
+        return $errors;
+    }
+    
+    function XINRunRuleFunction($controller, $values, $operator){
+        $is_required=true;
+        //Loop through the conditions to test against (for most rules it will only be one value)
+        //If all of the conditions are true (ie: all conditions are met to pop a required rule)
+        $valFlag=array();
+        foreach($values AS $value){
+            $compareFunction = create_function('$a, $b', "return (\$a $operator \$b);");
+            if($this->XINDebug){echo "'$controller' $operator '$value'<br>";} //debugging code
+            if(!$compareFunction($controller, $value)) {
+                $valFlag[]=false;  //IF one of the conditions is not met then this rule does not need to be run.
+            }
+        }
+        //For conditions
+        if(count($valFlag)==count($values)){
+            $is_required=false;
+        }
+        return $is_required;
+    }
+
+    // }}}
+    // {{{ getFieldValue()
+  
+     //Get a the value of $field from the instrument table.  Used specifically by electronic instruments to check if file is already uploaded.
+    function getFieldValue($field)
+    {
+        $DB =& Database::singleton();
+        if(PEAR::isError($DB)) return PEAR::raiseError("Could not connect to database: ".$DB->getMessage()."<br>\n");
+
+        $query = "SELECT $field FROM $this->table WHERE CommentID = '".$this->getCommentID()."'";
+        $fieldValue = $DB->selectOne($query);
+
+        if (!empty($fieldValue)) return $fieldValue;
+        else return false;
+    }
+
+    // }}}
+    // {{{ getSessionID()
+
+    /**
+     * gets the sessionID for the timepoint to which this instrument pertains
+     * @return int  the sessionID
+     * @access public
+     */
+    function getSessionID()
+    {
+        $db =& Database::singleton();
+        $query = "SELECT SessionID FROM flag WHERE CommentID = '".$this->getCommentID()."'";
+        $fieldValue = $db->selectOne($query);
+        
+        if (!empty($fieldValue) && !$db->isError($fieldValue)) return $fieldValue;
+        else return false;
+    }
+
+    // }}}
+    // {{{ _determineDataEntryCompletionStatus()
+
+    /**
+    * determines what the data entry status flag should be set to
+    * @return string   either 'Complete' or 'Incomplete'
+    * @access private
+    */
+    function _determineDataEntryCompletionStatus()
+    {
+        // don't bother checking anything if the required elements array is empty
+        if(empty($this->_requiredElements)) return 'Complete';
+
+        $db =& Database::singleton();
+        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+
+        $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
+        $success = $db->selectRow($query, $dataFields);
+        if(PEAR::isError($success)) return PEAR::raiseError("Could not select required elements from database: ".$success->getMessage()."<br>\n");
+        foreach($dataFields as $field) {
+            // this shouldn't be just empty() b/c 0 is a valid value for some required fields
+            if(is_null($field) || $field === "") return 'Incomplete';
+        }
+        return 'Complete';
+    }
+
+    // }}}
+    // {{{ getDataEntryCompletionStatus()
+
+    /**
+    * gets the data entry completion status
+    * @return string   either 'Complete' or 'Incomplete'
+    * @access public
+    */
+    function getDataEntryCompletionStatus()
+    {
+        $db =& Database::singleton();
+        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+
+        $query = "SELECT Data_entry_completion_status FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
+        return $db->selectOne($query);
+    }
+
+    // }}}
+    // {{{ _setDataEntryCompletionStatus()
+
+    /**
+    * sets the data entry completion status
+    * @params string   $status     the status - either 'Complete' or 'Incomplete'
+    * @access private
+    * @return void
+    */
+    function _setDataEntryCompletionStatus($status)
+    {
+        if(!in_array($status, array('Complete', 'Incomplete'))) return PEAR::raiseError("Invalid status passed to _setDataEntryCompletionStatus - '$status' should have been either 'Complete' or 'Incomplete'<br>\n");
+
+        $db =& Database::singleton();
+        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+
+        $success = $db->update($this->table,
+        array('Data_entry_completion_status'=>$status),
+        array('CommentID'=>$this->getCommentID())
+        );
+
+        if(PEAR::isError($success)) return PEAR::raiseError("Could not update status: ".$success->getMessage()."<br>\n");
+    }
+    // }}}
+
+    /**
+    * Wrapper to auto-create a simple Yes, No, Null, Not Answered type of question
+    * @param    string    $field    The database field in which the response will be stored
+    * @param    string    $label    The question text to display
+    * @param    array    $rules    {@} delimited rules
+    * @param    string    $rule_message    rule message to display
+    */
+    function addYesNoElement($field, $label, $rules=array(), $rule_message='This field is required.'){
+        $this->form->addElement('select', $field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
+        if (!empty($rules)) {
+            $this->XINRegisterRule($field, $rules, $rule_message);        
+        }
+    }
+    
+    /**
+    * Wrapper to create a text field with an accompanying status field.
+    * @param    string    $field    The database field in which the response will be stored
+    * @param    string    $label    The question text to display
+    * @param    array    $rules    rules with values and comparisson operators {@} seperated.  Example: array('q_40{@}=={@}1_yes','q_40_b{@}=={@}1_yes')
+    * @param    string    $rule_message    rule message to display
+    * @param    array   $refusals   options in the refusal select (ie. Refusal, Unknown, Not Answered).
+    */
+    function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
+        $group[]=&$this->form->createElement("text", $field);
+        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
+        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        unset($group);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+    }
+    
+    /**
+    * Wrapper to create a text area field, with an accompanying status field.
+    * @param    string    $field    The database field in which the response will be stored
+    * @param    string    $label    The question text to display
+    * @param    array    $rules    {@} delimited rules
+    * @param    string    $rule_message    rule message to display upon rule violation
+    */
+    function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
+        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
+        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        unset($group);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+    }
+    
+    /**
+    * Wrapper to create an Hour/Minute field, with an accompanying status field.
+    * @param     string    $field    Name given to the HTML QuickForm Element being created
+    * @param     string    $label    The question text to display
+    * @param     array    $rules    Additional rules to apply to the element being added,{@} delimited
+    * @param     string    $rule_message    message to display upon rule violation.
+    */
+    function addHourMinElement($field, $label, $rules=array(), $rule_message="You are required to select a status if you want to leave this time blank.") {
+        $group[]=&$this->form->createElement("date", $field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
+        $group[]=&$this->form->createElement("select", $field . "_status", "", array(NULL=>'', "dnk"=>"DNK", "refusal"=>"Refusal", 'not_answered'=>'Not Answered'));
+        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        $this->XINRegisterRule($field, array_merge($rules, array($field . '_status{@}=={@}')), $rule_message, $field . '_group');
+        unset($group);
+    }
+
+    /**
+    * Adds a date group with a status box and appropriate rule
+    * Note: $this->dateOptions must be defined by the subclass calling this wrapper function
+    * @param $name   Name prepended to the HTMLQuickform element
+    * @param $label Element label
+    */
+    function addDateElement($name, $label){
+        $group [] = $this->form->createElement("date", $name . "_date", null, $this->dateOptions);
+        $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
+        $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        unset($group);
+        $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
+        
+    }
+
+    /**
+    * nulls all scores for the record identified by CommentID
+    * @param array list of scoring fields to null
+    * @see $this->getCommentID()
+    * @return mixed
+    * @throws PEAR::error
+    */
+    function _nullScores($scoreCols)
+    {
+        $db=& Database::singleton();
+        if (PEAR::isError($db)) {
+            return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."\n");
+        }
+        
+        // set the scoring cols to NULL
+        foreach ($scoreCols as $val) {
+            $scores[$val]=null; //null array
+        }
+        
+        // update the scores
+        $success = $db->update($this->table,$scores,array('CommentID'=>$this->getCommentID()));
+        if (PEAR::isError($success)) {
+            return PEAR::raiseError("DB Error, fail null the scores:\n".$success->getMessage()."\n");
+        }
+        return;
+    }
+
+} //end class NDB_BVL_Instrument
+
+// {{{ _checkDate()
+    function _checkDate($dateElement) {
+        // if all three elements are empty, return true b/c it'll save the NULL in date field
+        if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+        return true;
+        }
+        // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
+        elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
+            return false;
+        }
+        // else, check the date
+        else {
+            return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        }
+    }
+// }}}
+
+?>

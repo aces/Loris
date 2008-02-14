@@ -1,0 +1,211 @@
+/*
+ * suggested order of CSS properties
+ *
+ * display
+ * list-style
+ * position
+ * float
+ * clear
+ * width
+ * height
+ * margin
+ * padding
+ * border
+ * background
+ * color
+ * font
+ * text-decoration
+ * text-align
+ * vertical-align
+ * white-space
+ * other text
+ * content
+ */
+
+body {
+	margin: 5px 10px 10px 5px;
+	background-color: #f0f0f0;
+    font-family: verdana, sans-serif;
+    font-size: 9pt;
+    }
+
+th, td, input, textarea, select {
+    font-family: verdana, sans-serif;
+    font-size: 9pt;
+    }
+
+ul {
+	margin-left: 25px;
+    }
+
+em {
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+    }
+
+/* anchor tags */
+a:link, a:visited { 
+	color: #08245b;
+	text-decoration: none;
+    }
+a:active {
+	color: #f00;
+	text-decoration: none;
+    }
+a:hover {
+	color: #666;
+	text-decoration: underline;
+    }
+
+
+/* control panel */
+td.ControlPanelItem {
+    text-align: left;
+    vertical-align: middle;
+    text-indent: 5px;
+    }
+td.controlPanelSection {
+	text-decoration: underline;
+    }
+
+/* headers */
+h1, h2, h3 {
+	margin-bottom: 0;
+	font-weight: bold;
+    }
+h1 {
+	margin-top: 5px;
+	color: #08245b;
+	font-size: 16px;
+    }
+h2 {
+	margin-top: 15px;
+	color: #666;
+	font-size: 12px;
+    }
+h3 {
+	margin-top: 35px;
+	color: #08245b;
+	font-size: 12px;
+    }
+
+
+/* form elements */
+.button {
+    border-style: outset;
+    background-color: #a5cbf7;
+    }
+
+/* table headers */
+th {
+	font-weight: bold;
+    }
+
+th.banner {
+	background-color: #08245b;
+	color: #fff;
+    }
+th.banner a:link, th.banner a:visited {
+	color: #fff;
+	text-decoration: underline;
+    }
+th.banner a:hover {
+	color: #fff;
+	text-decoration: none;
+    }
+
+/* tables */
+table.std {
+	border: solid #08245b 2px;
+	background-color: #d6ebff;
+    }
+table.list, table.tbl {
+	background-color: #a5cbf7;
+    }
+table.listColorCoded {
+	background-color: #D1D1CD;
+    }
+
+table.list th, table.tbl th, table.std th, table.listColorCoded th {
+    border-width: 1px;
+    border-style: outset;
+	font-weight: normal;
+    }
+table.list th, table.tbl th, table.std th {
+    border-color: #D1D1CD;
+	background-color: #08245b;
+	color: #fff;
+    }
+table.listColorCoded th {
+	border-color: #08245b;
+	background-color: #d6ebff;
+	color: #08245b;
+    }
+table.exclusion th {
+    border: 1px solid #000;
+    }
+table.std th {
+    font-weight: bold;
+    }
+
+table.list td, table.tbl td, table.listColorCoded tr {
+	background-color: #fff;
+    }
+table.list td, table.listColorCoded td {
+    text-align: center;
+    }
+
+/* tabbed boxes */
+td.tabsp {
+	border-bottom: solid #ccc 1px;
+    }
+td.tabox {
+	border-left: solid #ccc 2px;
+	border-right: solid #ccc 2px;
+	border-bottom: solid #ccc 2px;
+	background-color: #D3DCE3;
+    }
+
+/* Message styles */
+.error {
+	color: #f00;
+    }
+
+/* context help
+.pagetitle h1 {
+    font-size: 16pt;
+    font-weight: bold;
+    }
+*/
+.pagetitle p {
+    line-height: 1.5em;
+    }
+.date {
+    font-style: italic;
+    }
+.snippet {
+    color: #666;
+    }
+
+/* exclusion registered types */
+.pending {
+    color: #CC9900;
+    }
+.exclusionary {
+    color: #CC0000;
+    }
+.MI {
+    color: #003399;
+    }
+/* exclusion, currently raised types */
+.pendingType {
+    background-color: #FFCC00;
+    }
+.exclusionaryType {
+    background-color: #CC0000;
+    }
+.MIType {
+    background-color: #003399;
+    color: #FFFF00;
+    }
