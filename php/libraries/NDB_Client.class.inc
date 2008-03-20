@@ -42,7 +42,6 @@ class NDB_Client
         require_once "TimePoint.class.inc";
         require_once "Utility.class.inc";
 
-        require_once "Smarty_hook.class.inc";
         require_once "NDB_BVL_Feedback.class.inc";
 
         $config =& NDB_Config::singleton($configFile);
@@ -50,6 +49,9 @@ class NDB_Client
 		// add extra include paths
 		$extLibs = $config->getSetting('extLibs');
 		if(!empty($extLibs)) set_include_path($extLibs.":".get_include_path());
+
+        // after the extra includes, as those include Smarty
+        require_once "Smarty_hook.class.inc";
 
         /*
         * new DB Object
