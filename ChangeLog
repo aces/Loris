@@ -1,0 +1,13 @@
+2008-03-20  Jonathan Harlap <jharlap@bic.mni.mcgill.ca>
+
+    * smarty: moved from php/smarty
+
+    * php/libraries/NDB_Client.class.inc: added set_include_path to include the
+    extLibs config setting
+
+    * php/libraries/Smarty_hook.class.inc: updated to match location change of
+    smarty templates.  also explicitly specified custom plugins dir to allow
+    arbirary smarty location.
+
+
+
