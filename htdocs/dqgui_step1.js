@@ -98,7 +98,7 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
     var oBody=document.createElement("TBODY");
     oTable.appendChild(oBody);
     var oRow=document.createElement("TR");
-    oRow.style.fontSize="90%";
+    oRow.style.fontSize="80%";
     oBody.appendChild(oRow);
     var oCell=document.createElement("TD");
     oCell.setAttribute("valign","top");
@@ -264,9 +264,9 @@ function addRow(id, columnData){
     oTbody=getFirstTagNodeByType(oTable.firstChild, "TBODY");
     newRow=document.createElement("TR");
     newRow.id=id;
-    newRow.style.fontSize="90%";
+    newRow.style.fontSize="80%";
     oTbody.appendChild(newRow);
-    var colsize=["20%","20%","60%"];
+    var colsize=["18%","22%","60%"];
     for(var i=0;i<3;i++){
         newCell=document.createElement("TD");
         newCell.width=colsize[i];

@@ -71,19 +71,19 @@ $studyTitle = $config->getSetting('title');
             </table>
         </form>
     </div>
-     <div style='height:315px;border:2px black solid;'>
+     <div style='height:480px;border:2px black groove;'>
         <table width=90% border=0 cellspacing=0 cellpadding=5>
         <tr>
                 <td colspan=3 style='border:0px;'><b>Selected Variables</b></td>
             </tr>
             <tr>
-                    <td width="20%"><i>Category</i></td>
-                    <td width="20%"><i>Variable Name</i></td>
-                    <td width="60%"><i>Description</i></td>
+                    <td width="19%"><i>Category</i></td>
+                    <td width="24%"><i>Variable Name</i></td>
+                    <td width="67%"><i>Description</i></td>
             </tr>
          </table>
-         <div style='border-top:1px black solid;height:250px;overflow:auto'>
-         <table class="fancytableleft" width="98%" border=0 id='selectedFieldsTable' cellspacing=0 cellpadding=5 valign=top>
+         <div style='border-top:1px black solid;height:430px;overflow:auto'>
+         <table class="fancytableleft" width="97%" border=0 id='selectedFieldsTable' cellspacing=0 cellpadding=0 valign=top>
                 <tbody style='font-size:small;'>
                     <tr id='noFieldsSelectedRow'>
                         <td colspan=3 style='border-bottom:1px black solid;' valign=top>No Variables Selected</td>
@@ -187,9 +187,9 @@ $studyTitle = $config->getSetting('title');
 <p>
 
 <div style='height:460px;border:2px black solid;'>
-        <table width=95% border=0 cellspacing=0 cellpadding=5>
+        <table width='100%' border=0 cellspacing=0 cellpadding=5>
         <tr>
-                <td colspan=3 style='border:0px;'><b>Saved Queries</b></td>
+                <td colspan=5 style='border:0px;'><b>Saved Queries</b></td>
             </tr>
             <tr>
                 <td width="40%" style='border-bottom:1px black solid'>Name</td>

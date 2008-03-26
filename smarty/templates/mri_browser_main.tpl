@@ -41,7 +41,7 @@
         <!-- Back Button - need to add code to control it -->
         {if $backURL!=""}
             <tr><td class="controlPanelItem"><br>
-                <a href="{$backURL}"><img src="images/left.gif" alt="Back" border="0" width="12" height="12">&nbsp;Back to list</a>
+                <a href="{$backURL}"><img src="images/left.gif" align="texttop" alt="Back" border="0" width="12" height="12">&nbsp;Back to list</a>
             </td></tr>
         {/if}
 
@@ -53,14 +53,14 @@
 
         <!-- Prev Button -->
         {if $prevTimepoint.URL!=""}
-                <a href="{$prevTimepoint.URL}"><img src="images/left.gif" alt="Back" border="0" width="12" height="12">&nbsp;Prev</a>
-        {/if}
+                <a href="{$prevTimepoint.URL}"><img src="images/left.gif" align="texttop" alt="Back" border="0" width="12" height="12">&nbsp;Prev</a>
+        {else}<br><br>{/if}
 
-        {if $prevTimepoint.URL!="" && $nextTimepoint.URL!=""}||{/if}
+        {if $prevTimepoint.URL!="" && $nextTimepoint.URL!=""}<br><br>{/if}
 
         <!-- Next Button -->
         {if $nextTimepoint.URL!=""}
-                <a href="{$nextTimepoint.URL}">Next&nbsp;<img src="images/right.gif" alt="Back" border="0" width="12" height="12"></a>
+                <a href="{$nextTimepoint.URL}">&nbsp;&nbsp;&nbsp;Next&nbsp;<img src="images/right.gif" alt="Back" align="texttop" border="0" width="12" height="12"></a>
         {/if}
 
         &nbsp;  
