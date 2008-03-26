@@ -192,7 +192,7 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
             $fileData[$fIdx]['fileID'] = $fileID['FileID'];
             $fileData[$fIdx]['acquisitionProtocol'] = $file->getAcquisitionProtocol();
             $fileData[$fIdx]['coordinateSpace'] = $file->getParameter('CoordinateSpace');
-            $fileData[$fIdx]['classifyAlgorithm'] = $file->getParameter('ClassifyAlgorithm');
+            $fileData[$fIdx]['Algorithm'] = $file->getParameter('Algorithm');
             $fileData[$fIdx]['outputType'] = $file->getParameter('OutputType');
             $fileData[$fIdx]['selected'] = $file->getParameter('Selected');
             $fileData[$fIdx]['qcStatus'] = $file->getParameter('QCStatus');
@@ -214,7 +214,7 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
             $fileData[$fIdx]['ystep'] = number_format($file->getParameter('ystep'), 2);
             $fileData[$fIdx]['zstep'] = number_format($file->getParameter('zstep'), 2);
             $fileData[$fIdx]['Pipeline'] = $file->getParameter('Pipeline');
-            
+            $fileData[$fIdx]['Comment'] = $file->getParameter('Comment');
             // this has been changed for more security
             $fileData[$fIdx]['checkpicFilename'] = "/mri/jiv/get_file.php?file=" .'pic/'. $file->getParameter('check_pic_filename');
             // the jivs
@@ -315,7 +315,7 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
     }
     $_SESSION['State']->setProperty('mriSessionsListed', $filtered_sessionIDs);
     // This is a fixme. Make this a config option. Site users might have permsission to view non native files should be ($user->hasPermission('view_non_native')) 
-    if($user->getCenterID() == 1) {
+    if($user->getCenterID() > 0) {
         $query = "SELECT DISTINCT OutputType AS outputType FROM files WHERE FileType='mnc' AND OutputType!='native'";
         $DB->select($query, $visit_tpl_data['outputTypes']);
         $visit_tpl_data['outputTypes'] = array_merge(array(array('outputType'=>'native'),array('outputType'=>'selected')), $visit_tpl_data['outputTypes']);
