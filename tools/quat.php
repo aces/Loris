@@ -75,7 +75,7 @@ if(is_array($dataQueryTables) && count($dataQueryTables)) {
 }
 
 // get a list of all parameter types
-$query = "SELECT ParameterTypeID, Name, Type, SourceField, SourceFrom, CurrentGUITable FROM parameter_type WHERE Queryable=1";
+$query = "SELECT ParameterTypeID, Name, Type, SourceField, SourceFrom, SourceCondition, CurrentGUITable FROM parameter_type WHERE Queryable=1";
 $parameterTypes = array();
 $db->select($query, $parameterTypes);
 
@@ -145,6 +145,18 @@ foreach($parameterTypes AS $parameterType) {
         $query = "SELECT f.SessionID, p.Value FROM session AS s, files AS f, parameter_file AS p WHERE s.ID=f.SessionID AND f.FileID=p.FileID AND (f.QCStatus<>'Fail' OR f.QCStatus IS NULL) AND ParameterTypeID=$parameterType[ParameterTypeID]";
         break;
 
+    case 'files_where_parameter':
+        // SourceCondition can refer to acquisition protocol as
+        // Scan_type and limiter_type.Name=X and limiter_value.Value=Y
+        $query = "SELECT files.SessionID, $parameterType[SourceField] AS Value FROM session AS s INNER JOIN files ON (s.ID=files.SessionID) INNER JOIN mri_scan_type ON (files.AcquisitionProtocolID=mri_scan_type.ID) NATURAL JOIN parameter_file AS limiter_value INNER JOIN parameter_type AS limiter_type ON (limiter_value.ParameterTypeID=limiter_type.ParameterTypeID) WHERE $parameterType[SourceCondition]";
+        break;
+
+    case 'parameter_file_where_parameter':
+        // SourceCondition can refer to acquisition protocol as
+        // Scan_type and limiter_type.Name=X and limiter_value.Value=Y
+        $query = "SELECT files.SessionID, $parameterType[SourceField] FROM session AS s INNER JOIN files ON (s.ID=files.SessionID) INNER JOIN mri_scan_type ON (files.AcquisitionProtocolID=mri_scan_type.ID) INNER JOIN parameter_file AS limiter_value ON (limiter_value.FileID=files.FileID) INNER JOIN parameter_type AS limiter_type ON (limiter_value.ParameterTypeID=limiter_type.ParameterTypeID) INNER JOIN parameter_file ON (files.FileID=parameter_file.FileID) INNER JOIN parameter_type ON (parameter_file.ParameterTypeID=parameter_type.ParameterTypeID) WHERE $parameterType[SourceCondition]";
+        break;
+
     case 'parameter_session':
         $query = "SELECT SessionID, Value FROM parameter_session WHERE ParameterTypeID=$parameterType[ParameterTypeID]";
         break;
@@ -164,8 +176,7 @@ foreach($parameterTypes AS $parameterType) {
 
     case 'mri_acquisition_dates':
         $query = "SELECT session.ID AS SessionID, $parameterType[SourceField] AS Value FROM session LEFT JOIN candidate USING (CandID) LEFT JOIN mri_acquisition_dates ON (session.ID=mri_acquisition_dates.SessionID)";
-        break;
-
+	 break;
 
     //for behavioural instrument data
     default:
