@@ -1,3 +1,8 @@
+2008-03-28  Jonathan Harlap <jharlap@bic.mni.mcgill.ca>
+
+    * tools/quat_diff.php: Fixed bug that prevented columns with unchanged
+    names from being diffed properly.
+
 2008-03-20  Jonathan Harlap <jharlap@bic.mni.mcgill.ca>
 
     * smarty: moved from php/smarty
