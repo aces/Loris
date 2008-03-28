@@ -12,7 +12,7 @@
  * @package main
  * @subpackage query_gui
  */
-require_once "NDB_Client.class.inc";
+require_once "../php/libraries/NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
@@ -53,7 +53,8 @@ foreach($paramDiffs AS $paramDiff) {
 }
 
 // determine which variables changed excluding parameter_session or parameter_candidate vars
-$query = "select old.Name as OldName, new.Name AS NewName, old.Queryable AS OldQueryable, new.Queryable AS NewQueryable FROM $newDB.parameter_type AS new LEFT JOIN $oldDB.parameter_type AS old USING (SourceField) WHERE old.Name is not null and (old.Queryable=1 OR new.Queryable=1) AND new.SourceFrom <> 'parameter_session' AND new.SourceFrom <> 'parameter_candidate' and (old.Queryable <> new.Queryable OR old.Name <> new.Name)";
+$query = "select old.Name as OldName, new.Name AS NewName, old.Queryable AS OldQueryable, new.Queryable AS NewQueryable FROM NIH_PD_PUBLIC_RELEASE.parameter_type AS new, NIH_PD_PUBLIC_RELEASE_OLD.parameter_type AS old WHERE new.SourceField=old.SourceField AND (old.Queryable=1 OR new.Queryable=1) AND new.SourceFrom <> 'parameter_session' AND new.SourceFrom <> 'parameter_candidate' and (old.Queryable <> new.Queryable OR old.Name <> new.Name)";
+//$query = "select old.Name as OldName, new.Name AS NewName, old.Queryable AS OldQueryable, new.Queryable AS NewQueryable FROM $newDB.parameter_type AS new LEFT JOIN $oldDB.parameter_type AS old USING (SourceField) WHERE old.Name is not null and (old.Queryable=1 OR new.Queryable=1) AND new.SourceFrom <> 'parameter_session' AND new.SourceFrom <> 'parameter_candidate' and (old.Queryable <> new.Queryable OR old.Name <> new.Name)";
 $paramsDiffs = array();
 $db->select($query, $paramDiffs);
 
@@ -92,6 +93,16 @@ foreach($paramDiffs AS $paramDiff) {
         // queryability changed
         print "QUERYABILITY ($paramDiff[OldName] | $paramDiff[NewName]) $paramDiff[OldQueryable] -> $paramDiff[NewQueryable]\n";
     }
+}
+
+
+// now add the vars that didn't change to the varmap so their data gets checked
+$query = "select old.Name as OldName, new.Name AS NewName FROM NIH_PD_PUBLIC_RELEASE.parameter_type AS new, NIH_PD_PUBLIC_RELEASE_OLD.parameter_type AS old WHERE new.SourceField=old.SourceField AND new.Queryable=1 AND new.SourceFrom <> 'parameter_session' AND new.SourceFrom <> 'parameter_candidate' and old.Name = new.Name and old.Queryable=new.Queryable";
+$paramsDiffs = array();
+$db->select($query, $paramDiffs);
+
+foreach($paramDiffs AS $paramDiff) {
+    $varMap[$paramDiff['OldName']] = $paramDiff['NewName'];
 }
 
 
@@ -151,7 +162,7 @@ foreach($varMap AS $oldVar => $newVar) {
     }
 
     // get the list of different cells
-    $query = "SELECT new.SessionID, old.$oldVar AS oldCell, new.$newVar as newCell FROM $oldDB.$oldTable AS old, $newDB.$newTable AS new WHERE old.SessionID=new.SessionID and old.$oldVar<>new.$newVar";
+    $query = "SELECT new.SessionID, old.`$oldVar` AS oldCell, new.`$newVar` as newCell FROM $oldDB.$oldTable AS old, $newDB.$newTable AS new WHERE old.SessionID=new.SessionID and old.`$oldVar`<>new.`$newVar`";
     $diff = array();
     $db->select($query, $diff);
 
