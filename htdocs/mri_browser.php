@@ -264,6 +264,7 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
     $timer->setMarker('filling volume list template');
     $tpl_data['backURL'] = urldecode($_REQUEST['backURL']);
     $tpl_data['showFloatJIV'] = True;
+
     // this happens in the main window. before you select a candidate and the corresponding volumes
 } else {
     if(!$user->hasPermission('access_all_profiles')) $extra_where_string .= " AND p.CenterID=".$user->getCenterID();
@@ -344,7 +345,7 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
 $smarty=new Smarty_neurodb;
 // this is a fixme. Same data get's assigned to volume_list
 $tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
-$tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
+$tpl_data['pending_options'] = array (''=>'&nbsp;','Y'=>'Yes', 'N'=>'No');
 $smarty->assign('subject', $subjectData);
 $smarty->assign('files', $fileData);
 if($user->hasPermission('mri_feedback')) $tpl_data['has_permission'] = true;
