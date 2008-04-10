@@ -1,4 +1,8 @@
 2008-04-10 J-Sebastian Muehlboeck <sebas@bic.mni.mcgill.ca>
+    * Enabled passfile.php for securely downloading automatically generated reports
+      mri-browser now offers site reports for download (you will need to generate them as a cronjob)
+
+2008-04-10 J-Sebastian Muehlboeck <sebas@bic.mni.mcgill.ca>
     * mri browser has been completely re-worked.
 	- added 3d and 3D combined views for the standard templates
 	- added floating navigation and controls

@@ -30,7 +30,6 @@
     <p>
     {$numTimepoints} subject timepoint(s) selected. &nbsp;
     {if $filter.site}<a href="passfile.php?file={$MRI_Alias[$filter.site]}-qc.xls">Download {$MRI_Alias[$filter.site]} QC-report</a>
-    ---- <a href="passfile.php?file={$MRI_Alias[$filter.site]}-timeline.xls">Download {$MRI_Alias[$filter.site]} timeline report</a>
     {else}<a href="passfile.php?file=all-qc.xls">Download combined QC-report</a>
     {/if}
     </p>
