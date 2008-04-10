@@ -26,7 +26,7 @@ style2.display = style2.display == "block" ? "none":"block";
 </script>
 {/literal}
 
-<table class="fancytableleft" width="90%">
+<table class="fancytableleft" width="100%" >
 	<tr><th width="11%">Acquisition ID</th><td width="89%">{$archive.DicomArchiveID}</td></tr>
 	<tr><th>Patient ID</th><td{if $archive.patientIDValid == 0} class="error"{/if}>{$archive.PatientID}</td></tr>
 	<tr><th>Patient Name</th><td{if $archive.patientNameValid == 0} class="error"{/if}>{$archive.PatientName}</td></tr>
@@ -44,38 +44,37 @@ style2.display = style2.display == "block" ? "none":"block";
 	<tr><th>md5sum of Archive</th><td><pre><br><b>{$archive.md5sumArchive}</pre></b></td></tr>
 	<tr><th>md5sum of Dicom unzipped</th><td><br><b><pre>{$archive.md5sumDicomOnly}</pre></b></td></tr>
     <tr><th valign="top">Series</th><td>
-    <table width="100%" border="1px" cellpadding="5px">
-    <tr>
-        <th>Series Number</th>
-        <th>Series Description</th>
-        <th>Sequence Name</th>
-        <th>Echo Time</th>
-        <th>Repetition Time</th>
-        <th>Inversion Time</th>
-        <th>Slice Thickness</th>
-        <th>Phase Encoding</th>
-        <th>Number of Files</th>
-        <th>SeriesUID</th>
-    </tr>
+        <table width="100%" border="1px" cellpadding="5px">
+        <tr>
+            <th>Series Number</th>
+            <th>Series Description</th>
+            <th>Sequence Name</th>
+            <th>Echo Time</th>
+            <th>Repetition Time</th>
+            <th>Inversion Time</th>
+            <th>Slice Thickness</th>
+            <th>Phase Encoding</th>
+            <th>Number of Files</th>
+            <th>SeriesUID</th>
+        </tr>
 {section name=record loop=$archive_series}
-    <tr>
-        <td>{$archive_series[record].SeriesNumber}</td>
-        <td>{$archive_series[record].SeriesDescription}</td>
-        <td>{$archive_series[record].SequenceName}</td>
-        <td>{$archive_series[record].EchoTime}</td>
-        <td>{$archive_series[record].RepetitionTime}</td>
-        <td>{$archive_series[record].InversionTime}</td>
-        <td>{$archive_series[record].SliceThickness}</td>
-        <td>{$archive_series[record].PhaseEncoding}</td>
-        <td>{$archive_series[record].NumberOfFiles}</td>
-        <td>{$archive_series[record].SeriesUID}</td>
-    </tr>
+        <tr>
+            <td>{$archive_series[record].SeriesNumber}</td>
+            <td>{$archive_series[record].SeriesDescription}</td>
+            <td>{$archive_series[record].SequenceName}</td>
+            <td>{$archive_series[record].EchoTime}</td>
+            <td>{$archive_series[record].RepetitionTime}</td>
+            <td>{$archive_series[record].InversionTime}</td>
+            <td>{$archive_series[record].SliceThickness}</td>
+            <td>{$archive_series[record].PhaseEncoding}</td>
+            <td>{$archive_series[record].NumberOfFiles}</td>
+            <td>{$archive_series[record].SeriesUID}</td>
+        </tr>
 {/section}
-    </table>
+        </table>
     </td></tr>
-
     <tr><th valign="top">Files</th><td><a href="javascript:toggleLayer('filesBlock');">Show/Hide files</a><br><div id="filesBlock" style="display: none;">
-    <table width="100%" border="1px" cellpadding="5px">
+    <table width="10%" border="1px" cellpadding="5px">    
     <tr>
         <th>SeriesNumber</th>
         <th>FileNumber</th>

@@ -29,7 +29,6 @@ if(PEAR::isError($user)) {
     die("Error creating user object: ".$user->getMessage());
 }
 
-
 // two levels of display are available: if nothing else, show a list
 // of candidates (with a filter tool).  if $ID_session (or $CandID
 // and $VisitNo) are specified, show the volumes available for that
@@ -49,7 +48,6 @@ $tpl_data['commentID'] = $_REQUEST['commentID'];
 $tpl_data['candID']    = $_REQUEST['candID'];
 
 /* VISIT LISTING
-
 */
 
 $timer->setMarker('setup');
@@ -57,11 +55,8 @@ $selectedTypeID = $DB->selectOne("SELECT ParameterTypeID FROM parameter_type WHE
 $acqDateParamTypeID = $DB->selectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name='acquisition_date' LIMIT 1");
 
 if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
-    
-        // save changes if "save" was clicked
+    // save changes if "save" was clicked
     if ($user->hasPermission('mri_feedback') && isset($_POST['save_changes'])) {
-        //print "<pre>"; print_r($_POST); print "</pre>";
-    
         // update statuses
         if (is_array($_POST['status'])) {
             foreach($_POST['status'] AS $curFileID => $curStatus) {
@@ -138,8 +133,6 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
         }
     } // done saving changes
 
-
-    
     $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
     if(PEAR::isError($timePoint)) print $timePoint->getMessage()."<br>";
     $subjectData['sessionID'] = $_REQUEST['sessionID'];
@@ -165,12 +158,14 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
     if(!empty($_REQUEST['selectedOnly'])) {
         $extra_where_string .= " AND sel.Value IS NOT NULL";
     }
-
+    // To better support QC for CIVET output a couple of additional conditions have been put in...
     if(!empty($_REQUEST['outputType'])) {
         $outputType = urldecode($_REQUEST['outputType']);
         if ($outputType=="processed") { $extra_where_string .= " AND OutputType != 'native' "; }
+        elseif ($outputType=="native") { $extra_where_string .= " AND OutputType='$outputType'"; }
+        elseif ($outputType=="skull_mask") { $extra_where_string .= " AND (OutputType='$outputType' OR  (OutputType='native' AND AcquisitionProtocolID='44') )"; } 
         else { 
-            $extra_where_string .= " AND OutputType='$outputType'"; 
+            $extra_where_string .= " AND (OutputType='$outputType' OR OutputType='linreg')"; 
        } 
     }
 
@@ -253,9 +248,10 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
 
     $file_tpl_data['outputType'] = $outputType;
     $file_tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
+    //$file_tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
+
     // fixme this should not be hard-coded. make it read the db for possible native types
     $file_tpl_data['selected_options'] = array (''=>'&nbsp;', 'T1'=>'T1', 'T2'=>'T2', 'PD'=>'PD',  'T1WF'=>'T1WF', 'T2WF'=>'T2WF', 'PDWF'=>'PDWF', 'T1reg'=>'T1reg');
-    $file_tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
     if($user->hasPermission('mri_feedback')) $file_tpl_data['has_permission'] = true;
 
     $smarty = new Smarty_neurodb;
@@ -267,7 +263,7 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
     $tpl_data['body']=$smarty->fetch("mri_browser_volume_list.tpl");
     $timer->setMarker('filling volume list template');
     $tpl_data['backURL'] = urldecode($_REQUEST['backURL']);
-
+    $tpl_data['showFloatJIV'] = True;
     // this happens in the main window. before you select a candidate and the corresponding volumes
 } else {
     if(!$user->hasPermission('access_all_profiles')) $extra_where_string .= " AND p.CenterID=".$user->getCenterID();
@@ -346,6 +342,12 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
 }
 
 $smarty=new Smarty_neurodb;
+// this is a fixme. Same data get's assigned to volume_list
+$tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
+$tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
+$smarty->assign('subject', $subjectData);
+$smarty->assign('files', $fileData);
+if($user->hasPermission('mri_feedback')) $tpl_data['has_permission'] = true;
 $smarty->assign($tpl_data);
 $smarty->display('mri_browser_main.tpl');
 $timer->setMarker('filling main template');

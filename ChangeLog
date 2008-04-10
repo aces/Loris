@@ -1,3 +1,15 @@
+2008-04-10 J-Sebastian Muehlboeck <sebas@bic.mni.mcgill.ca>
+    * mri browser has been completely re-worked.
+	- added 3d and 3D combined views for the standard templates
+	- added floating navigation and controls
+	- added civet output support for processed data QC
+	- added some smart views based on civet output types
+	- changed files display to vertical as a default
+	- changed files info display to display only pertinent information
+	- changed files info display by adding fields like pipelines and comments.
+    * dicom archive
+	- added floating navigation
+
 2008-03-28  Jonathan Harlap <jharlap@bic.mni.mcgill.ca>
 
     * tools/quat_diff.php: Fixed bug that prevented columns with unchanged
