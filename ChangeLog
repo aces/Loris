@@ -1,3 +1,8 @@
+2008-04-12  Jonathan Harlap <jharlap@bic.mni.mcgill.ca>
+
+    * tools/create_quickform_from_table.php: New tool to assist creating 
+    quickform code for an instrument based on an existing table in the database
+
 2008-04-10 J-Sebastian Muehlboeck <sebas@bic.mni.mcgill.ca>
     * Enabled passfile.php for securely downloading automatically generated reports
       mri-browser now offers site reports for download (you will need to generate them as a cronjob)
