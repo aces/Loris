@@ -28,20 +28,41 @@ for($i=2; $i<count($_SERVER['argv']); $i++) {
   
   if($res->numRows() > 0) {
     while($row = $res->fetchRow()) {
-      $creator = "print_field_".$row['data_type'];
-      if(function_exists($creator)) {
-        call_user_func($creator, $row);
-      } else {
-        print_field_default($row);
-      }
+      process_row($row);
     }
   }
 }
 print "\n";
 
+function process_row($row) {
+  switch($row['data_type']) {
+    case 'int':
+    case 'tinyint':
+    case 'smallint':
+    case 'mediumint':
+    case 'bigint':
+    case 'decimal':
+    case 'float':
+    case 'double':
+      print_field_int($row);
+      break;
+
+    case 'enum':
+      print_field_enum($row);
+      break;
+
+    default:
+      print_field_default($row);
+      break;
+  }
+}
 
 function print_field_default($row) {
   _print_field(array('type'=>'text', 'name'=>$row['column_name'], 'desc'=>$row['column_name'], 'rules'=>($row['is_nullable'] == 'NO' ? 'required' : null)));
+}
+
+function print_field_int($row) {
+  _print_field(array('type'=>'text', 'name'=>$row['column_name'], 'desc'=>$row['column_name'], 'rules'=>($row['is_nullable'] == 'NO' ? 'required,numeric' : 'numeric')));
 }
 
 function print_field_enum($row) {
