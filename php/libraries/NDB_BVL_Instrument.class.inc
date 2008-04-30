@@ -240,13 +240,13 @@ class NDB_BVL_Instrument extends PEAR
         $this->form->addElement('hidden', 'test_name', $this->testName);
         $this->form->addElement('hidden', 'page', $this->page);
         $this->form->addElement('hidden', 'subtest', $this->page);
-
+        
         if(!$this->form->isFrozen()) {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->form->addGroup($buttons, null, null, "&nbsp;");
         }
-
+        
         // if double data is in play, only show data after the second save
         $config =& NDB_Config::singleton();
         $doubleDataEntry = $config->getSetting('doubleDataEntry');
@@ -257,7 +257,7 @@ class NDB_BVL_Instrument extends PEAR
         } else {
             $showData = true;
         }
-
+        
         // get saved data to pre-populate form
         $db =& Database::singleton();
         $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
@@ -267,12 +267,12 @@ class NDB_BVL_Instrument extends PEAR
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
         $defaults = $this->_setDefaultsArray($defaults[0]);
-
+        
         // merge in the localDefaults property so that simple
         // additions to the defaults array no longer requires
         // overriding the _setDefaultsArray method
         $defaults = array_merge($defaults, $this->localDefaults);
-
+        
         // actually set the quickform object defaults
         $this->form->setDefaults($defaults);
         
@@ -292,27 +292,28 @@ class NDB_BVL_Instrument extends PEAR
         
         // display the HTML_Quickform object
         // return $this->form->toHTML();
-
+        
         $renderer =& new HTML_QuickForm_Renderer_Default();
-        $renderer->setElementTemplate("\n\t<tr>\n\t\t<td align=\"left\" valign=\"top\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td>\n\t\t<td valign=\"top\" align=\"left\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->\t{element}</td>\n\t</tr>");
-        $renderer->setElementTemplate("\n\t<tr>\n\t\t<td align=\"left\" valign=\"top\"><i>{label}</i></td>\n\t\t<td valign=\"top\" align=\"left\">\t<i>{element}</i></td>\n\t</tr>", "static");
-        $renderer->setHeaderTemplate("\n\t<tr>\n\t\t<td style=\"white-space: nowrap; background-color: #CCCCCC;\" align=\"left\" valign=\"top\" colspan=\"2\"><br><b>{header}</b></td>\n\t</tr>");
+        $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
+        $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
+        $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
+        $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
         $this->form->accept($renderer);
         return $renderer->toHtml();
     }
     
     // }}}
     // {{{ _setDefaultsArray()
-
+    
     /**
-    * accepts an array usable as input to HTML_Quickform::setDefaults()
-    * and does any necessary preprocessing on that array.
-    *
-    * @param array $defaults    the array to be passed on to
-    * HTML_Quickform::setDefaults()
-    * @return array             the processed array ready for setDefaults()
-    * @access private
-    */
+     * accepts an array usable as input to HTML_Quickform::setDefaults()
+     * and does any necessary preprocessing on that array.
+     *
+     * @param array $defaults    the array to be passed on to
+     * HTML_Quickform::setDefaults()
+     * @return array             the processed array ready for setDefaults()
+     * @access private
+     */
     function _setDefaultsArray($defaults)
     {
         //Convert date/time fields into quickform date/timestamps
@@ -327,7 +328,7 @@ class NDB_BVL_Instrument extends PEAR
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
                 if(stristr($defaults[$elname], "{@}")){
-                   $defaults[$elname]=explode("{@}",$defaults[$elname]);
+                    $defaults[$elname]=explode("{@}",$defaults[$elname]);
                 }
             }
         }
@@ -340,27 +341,27 @@ class NDB_BVL_Instrument extends PEAR
     // {{{ save()
     
     /**
-    * attempts to validate the form (using the defined rules) and
-    * saves the validated data into the database
-    *
-    * @return void
-    * @access public
-    */
+     * attempts to validate the form (using the defined rules) and
+     * saves the validated data into the database
+     *
+     * @return void
+     * @access public
+     */
     function save()
     {
         if($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
             $scoreResult = $this->score();
-
+            
             // determine the data entry completion status, and store that in the database
             $dataEntryCompletionStatus = $this->_determineDataEntryCompletionStatus();
             if(PEAR::isError($dataEntryCompletionStatus)) print "Could not determine DECS: ".$dataEntryCompletionStatus->getMessage()."<br>\n";
             $success = $this->_setDataEntryCompletionStatus($dataEntryCompletionStatus);
             if(PEAR::isError($success)) print "Could not set DECS: ".$success->getMessage()."<br>\n";
-
+            
         } else {
             $submittedData = $this->form->getSubmitValues();
-
+            
             $config =& NDB_Config::singleton();
             $doubleDataEntry = $config->getSetting('doubleDataEntry');
             if($doubleDataEntry) {
@@ -370,25 +371,25 @@ class NDB_BVL_Instrument extends PEAR
             } else {
                 $showData = true;
             }
-
+            
             if(count($submittedData) && $showData) {
                 
                 // the form WAS submitted but validate() failed...
                 // main error message
-                print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                //// print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
                 // print all the field error messages in one block
                 foreach(array_keys($submittedData) AS $key) {
                     $error = $this->form->getElementError($key);
                     if(!empty($error)) {
                         $element = $this->form->getElement($key);
                         if(method_exists($element, "getLabel")){
-                            print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                            //// print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
                         }
                     }
                 }
             }
         }
-
+        
         if($this->isError($scoreResult)) {
             // since this error is not capture in main.php - temp display
             print "<font color='red'>Encountered error while scoring the instrument:" . $scoreResult->getMessage() . "</font><br>\n";
@@ -399,16 +400,16 @@ class NDB_BVL_Instrument extends PEAR
     
     // }}}
     // {{{ _saveValues()
-
+    
     /**
-    * preprocesses the array of values to be saved into the database
-    * (such as to rearrange date fields)
-    *
-    * @param array $values      the array of values ready to be passed to
-    * an Database::update call as the set array
-    * @return void
-    * @access private
-    */
+     * preprocesses the array of values to be saved into the database
+     * (such as to rearrange date fields)
+     *
+     * @param array $values      the array of values ready to be passed to
+     * an Database::update call as the set array
+     * @return void
+     * @access private
+     */
     function _saveValues($values)
     {
         //Convet date/timestamps into database format
@@ -419,7 +420,7 @@ class NDB_BVL_Instrument extends PEAR
         //Convert date/time fields into database dates/times
         if (is_array($this->dateTimeFields) && count($this->dateTimeFields) > 0) {
             foreach($this->dateTimeFields as $field){
-                    if(isset($values[$field])) {  //Stops it from wiping dates already saved on other pages.
+                if(isset($values[$field])) {  //Stops it from wiping dates already saved on other pages.
                     $values[$field]=$this->_getDatabaseDate($values[$field]);
                 }
             }
@@ -433,7 +434,7 @@ class NDB_BVL_Instrument extends PEAR
                 }
             }
         }
-
+        
         //XIN specific functionality
         if($this->formType=="XIN"){
             //Remove the values of all fields who have had statuses assigned
@@ -446,7 +447,7 @@ class NDB_BVL_Instrument extends PEAR
                 }
             }
         }
-
+        
         // do not alter this when overwriting the method
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
         $this->_save($values);
@@ -454,15 +455,15 @@ class NDB_BVL_Instrument extends PEAR
     
     // }}}
     // {{{ _save()
-
+    
     /**
-    * uses the array generated by _saveValues() and runs the
-    * Database::update() call.
-    *
-    * @param array $values       the array generated by _saveValues()
-    * @return void
-    * @access private
-    */
+     * uses the array generated by _saveValues() and runs the
+     * Database::update() call.
+     *
+     * @param array $values       the array generated by _saveValues()
+     * @return void
+     * @access private
+     */
     function _save($values)
     {
         // clear any fields starting with __
@@ -478,44 +479,44 @@ class NDB_BVL_Instrument extends PEAR
             return $this->raiseError('Could not save to database' . $result->getMessage());
         }
     }
-
+    
     // }}}
     // {{{ _addMetadataFields()
     
     /**
-    * adds metadata fields (such as Examiner and Date_taken) to the
-    * current form
-    *
-    * @return void
-    * @access private
-    */
+     * adds metadata fields (such as Examiner and Date_taken) to the
+     * current form
+     *
+     * @return void
+     * @access private
+     */
     function _addMetadataFields()
     {
         $config =& NDB_Config::singleton();
         $dateOptions = array(
-        'language' => 'en',
-        'format'   => 'YMd',
-        'minYear'  => $config->getSetting('startYear'),
-        'maxYear'  => $config->getSetting('endYear'),
-        'addEmptyOption' => true,
-        'emptyOptionValue' => null
-        );
+                             'language' => 'en',
+                             'format'   => 'YMd',
+                             'minYear'  => $config->getSetting('startYear'),
+                             'maxYear'  => $config->getSetting('endYear'),
+                             'addEmptyOption' => true,
+                             'emptyOptionValue' => null
+                             );
 
         $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
-
+        
         $examiners = $this->_getExaminerNames();
         $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
-
+        
         //$this->form->addElement('text', 'Examiner', 'Examiner');
-
+        
         $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
-
+        
         $this->form->registerRule('checkdate', 'callback', '_checkDate');
         $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
-
+        
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
     }
-
+    
     // }}}
     // {{{
 
@@ -534,7 +535,7 @@ class NDB_BVL_Instrument extends PEAR
         if($db->isError($results)) {
             return $this->raiseError("Could not get examiner names: ".$results->getMessage());
         }
-
+        
         $examiners = array(''=>'');
         if(is_array($results) && !empty($results)) {
             foreach($results AS $row) {
@@ -547,11 +548,11 @@ class NDB_BVL_Instrument extends PEAR
     // {{{ getFullName()
     
     /**
-    * looks up the full name for the current instrument
-    *
-    * @return string        the full name of the instrument
-    * @access public
-    */
+     * looks up the full name for the current instrument
+     *
+     * @return string        the full name of the instrument
+     * @access public
+     */
     function getFullName()
     {
         $db =& Database::singleton();
@@ -564,11 +565,11 @@ class NDB_BVL_Instrument extends PEAR
     // {{{ getCommentID()
     
     /**
-    * gets the current object instance CommentID
-    *
-    * @return string          the CommentID
-    * @access public
-    */
+     * gets the current object instance CommentID
+     *
+     * @return string          the CommentID
+     * @access public
+     */
     function getCommentID()
     {
         return $this->commentID;
@@ -576,27 +577,27 @@ class NDB_BVL_Instrument extends PEAR
     
     // }}}
     // {{{ freeze()
-
+    
     /**
-    * freezes the current form
-    *
-    * @return void
-    * @access public
-    */
+     * freezes the current form
+     *
+     * @return void
+     * @access public
+     */
     function freeze()
     {
         $this->form->freeze();
     }
-
+    
     // }}}
     // {{{ getDateOfAdministration()
     
     /**
-    * gets the date of administration of an instrument instance - caches to reduce DB hits
-    *
-    * @return mixed    $dateOfAdministration the date of administration from the DB, in the format "YYYY-MM-DD"
-    * @access private
-    */
+     * gets the date of administration of an instrument instance - caches to reduce DB hits
+     *
+     * @return mixed    $dateOfAdministration the date of administration from the DB, in the format "YYYY-MM-DD"
+     * @access private
+     */
     function getDateOfAdministration()
     {
         $db =& Database::singleton();
@@ -614,51 +615,51 @@ class NDB_BVL_Instrument extends PEAR
     // {{{ getSubtestList()
 
     /**
-    * gets a list of subtests of the current instrument
-    *
-    * @return array
-    * @throws PEAR::Error
-    */
+     * gets a list of subtests of the current instrument
+     *
+     * @return array
+     * @throws PEAR::Error
+     */
     function getSubtestList()
     {
         // get a database connection
         $db =& Database::singleton();
         if(PEAR::isError($db)) return $db;
-
+        
         $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name='$this->testName' ORDER BY Order_number";
         $db->select($query, $results);
         if(PEAR::isError($results)) return $results;
-
+        
         return $results;
     }
-
+    
     // }}}
     // {{{ setRequired()
-
+    
     /**
-    * marks an element in the quickform object as being required (for
-    * use with the requiredIf rule)
-    *
-    * @params string   $elementName     the element to add to the required list
-    * @return void
-    */
+     * marks an element in the quickform object as being required (for
+     * use with the requiredIf rule)
+     *
+     * @params string   $elementName     the element to add to the required list
+     * @return void
+     */
     function setRequired($elementName)
     {
         if(!in_array($elementName, $this->form->_required)) {
             $this->form->_required[] = $elementName;
         }
     }
-
+    
     // }}}
     // {{{ _getDatabaseDate()
-
+    
     /**
-    * Convert a quickform date or timestamp into a database acceptable (and storable) date or time
-    *
-    * @param array    $formDateValue  the quickform date/timestamp array
-    * @return  string  $databaseValue   the date or timestamp from the database
-    * @access private
-    */
+     * Convert a quickform date or timestamp into a database acceptable (and storable) date or time
+     *
+     * @param array    $formDateValue  the quickform date/timestamp array
+     * @return  string  $databaseValue   the date or timestamp from the database
+     * @access private
+     */
     function _getDatabaseDate($formDateValue){
         if(!empty($formDateValue)){
             if(count($formDateValue)==2){
@@ -672,14 +673,14 @@ class NDB_BVL_Instrument extends PEAR
     
     // }}}
     // {{{ _getQuickformDate()
-
+    
     /**
-    * Convert a database date or timestamp into a QuickForm acceptable date or time
-    *
-    * @param string  $databaseValue        the date or timestamp from the database
-    * @return array   $formDateValue       the quickform date/timestamp array
-    * @access private
-    */
+     * Convert a database date or timestamp into a QuickForm acceptable date or time
+     *
+     * @param string  $databaseValue        the date or timestamp from the database
+     * @return array   $formDateValue       the quickform date/timestamp array
+     * @access private
+     */
     function _getQuickformDate($databaseValue){
         if(!empty($databaseValue)){
             if(strstr($databaseValue,":")){
@@ -696,7 +697,7 @@ class NDB_BVL_Instrument extends PEAR
     
     // }}}
     // {{{ XINValidate()
-
+    
     function XINValidate($elements){
         $this->XINDebug=false;  //Turn this on to see rules debuggin output
         $errors=array();
@@ -710,7 +711,7 @@ class NDB_BVL_Instrument extends PEAR
                     }
                 }
             }
-
+            
             //If the answer is empty (or its a group and one of answers in the group is empty) then run the rules
             if($elvalue=="" || $flag==false){
                 if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
