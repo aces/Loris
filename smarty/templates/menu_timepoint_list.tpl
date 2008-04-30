@@ -17,7 +17,6 @@
         <th nowrap="nowrap">BVL QC</th>
         <th nowrap="nowrap">BVL Exclusion</th>
         <th nowrap="nowrap">Registered By</th>
-        <th nowrap="nowrap">Status and Outcome Details</th>
     </tr>
 
 {section name=timepoint loop=$timePoints}
@@ -81,19 +80,9 @@
         <td nowrap="nowrap">
             {$timePoints[timepoint].Real_name}
         </td>
-
-        <td nowrap="nowrap">&nbsp;
-        {if $timePoints[timepoint].outcomeStage != "" && $timePoints[timepoint].outcomeStatus != ""}
-        	{$timePoints[timepoint].outcomeStage} {$timePoints[timepoint].outcomeStatus} as of {$timePoints[timepoint].outcomeDate}
-        {elseif $timePoints[timepoint].Current_stage == "Not Started"}
-            Not started
-        {else}
-            -
-        {/if}
-        </td>
     </tr>
 {sectionelse}
-    <tr><td colspan="11">No timepoints have been registered yet.</td></tr>
+    <tr><td colspan="10">No timepoints have been registered yet.</td></tr>
 {/section}
 </table>
 <br />

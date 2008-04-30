@@ -396,6 +396,7 @@ Class TimePoint
         // update session table
         $update_columns=array("Date_stage_change"=>$today, 
                               'Current_stage'=>$newCurrentStage);
+
         
         $dbErrors = $db->update('session', $update_columns, array('ID'=>$this->getSessionID()));
         if(PEAR::isError($dbErrors)) {
@@ -425,6 +426,8 @@ Class TimePoint
         if(in_array($stage, $this->_dynamicStageOptions) && $this->getData($stage) == NULL) {
             $setArray[$stage] = 'In Progress';
         }
+
+	if($setArray['Current_stage'] == 'Approval') $setArray['Date_approval'] = date('Y-m-d');
         
         $this->setData($setArray);
     }

@@ -1,3 +1,7 @@
+2008-04-30 J-Sebastian Muehlboeck <sebas@bic.mni.mcgill.ca>
+    * it now has a date for "start stage approval"
+
+
 2008-04-12  Jonathan Harlap <jharlap@bic.mni.mcgill.ca>
 
     * tools/create_quickform_from_table.php: New tool to assist creating 
