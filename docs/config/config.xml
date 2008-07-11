@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+
+  NB: because study and sites elements get merged in a recursive and
+  overwriting manner, any time when multiple elements of the same type
+  (such as <item/> <item/>) occurs in the study or sites tree, the
+  sites tree will overwrite the element entirely instead of simply
+  merging - i.e., if the multiple elements are branches, the sites
+  branch in its entirety will override the study branch.
+
+-->
+<config>
+
+<!-- file paths -->
+<paths>
+    <imagePath>/PATH/TO/MINC/DATA/ROOT/mri-data/minc/</imagePath>
+    <base>/PATH/TO/lorisdb/</base>
+    <data>SAME AS imagePath</data>
+</paths>
+
+<!-- database settings -->
+<database>
+    <host>HOSTNAME</host>
+    <username>USERNAME</username>
+    <password>PASSWORD</password>
+    <database>DATABASE</database>
+    <quatUser>USErNAME</quatUser>
+    <quatPassword>PASSWORD</quatPassword>
+    <name>Example database</name>
+</database>
+
+<dicom_archive>
+    <patientIDRegex>/./</patientIDRegex>
+    <patientNameRegex>/./i</patientNameRegex>
+    <showTransferStatus>false</showTransferStatus>
+</dicom_archive>
+
+<links>
+    <link url='dicom_archive.php?' args=''>DICOM Archive</link>
+    <link url='mri_browser.php?' args='MRIBrowser'>MRI Browser</link>
+    <link url='query_gui.php?' args=''>Data Query GUI</link>
+    <link url='mri_stats.php?' args=''>Database statistics</link>
+</links>
+
+<!-- mail settings -->
+    <mail>
+        <headers>
+            <From>nobody@example.com</From>
+            <Reply-to>nobody@example.com</Reply-to>
+            <X-MimeOLE>Produced by LorisDB</X-MimeOLE>
+        </headers>
+    </mail>
+
+    <!-- www settings -->
+    <www>
+        <host>HOSTNAME</host>
+        <url>https://HOSTNAME/main.php</url>
+        <mantis_url></mantis_url>
+    </www>
+
+<!-- study variables -->
+    <study>
+        <!-- Descriptive study title, appears on top of the screen-->
+        <title>Example Study</title>
+        <!-- true/false - use EDC in addition to DoB? -->
+        <useEDC>false</useEDC>
+        <!-- minimum age in years (0+)-->
+        <ageMin>8</ageMin>
+        <!-- max subject age in years -->
+        <ageMax>11</ageMax>
+	<!-- true/false - more than one site in the project? -->
+        <multipleSites>true</multipleSites>
+        <!-- true/false - use family ID? -->
+        <useFamilyID>false</useFamilyID>
+	<!-- project's start year -->
+        <startYear>2004</startYear>
+	<!-- project's end year -->
+        <endYear>2007</endYear>
+
+        <PSCID>
+	  <!-- PSCID generation method: sequential|random -->
+          <generation>user</generation>
+          <structure>
+            <seq type="alphanumeric" minLength="4"/>
+          </structure>
+        </PSCID>
+
+	<!-- number of subprojects in the project - corresponds to the list of subpojects below -->
+	<objectives>1</objectives>
+	<!-- max number of timepoints per subject (integer)-->
+	<visits>1</visits>
+        <doubleDataEntry>0</doubleDataEntry>
+	<useScreening>false</useScreening>
+	<subprojects>
+	    <subproject>
+                <id>1</id>
+		<title>MRI session</title>
+		<options>
+		    <useEDC>false</useEDC>
+		</options>
+	    </subproject>
+	    <subproject>
+	        <id>2</id>
+		<title>Instrument Data</title>
+		<options>
+		    <useEDC>false</useEDC>
+		</options>
+	    </subproject>
+	</subprojects>
+
+    <!-- defines how visit labels are assigned -->
+    <visitLabel subprojectID="1">
+        <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
+        <generation>user</generation>
+        <regex>/^[A-Z0-9]{2}$/i</regex>
+        <length>2</length>
+        <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
+    </visitLabel>
+    <visitLabel subprojectID="2">
+        <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
+        <generation>user</generation>
+        <regex>/^[A-Z0-9]{2}$/i</regex>
+        <length>2</length>
+        <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
+    </visitLabel>
+    </study>
+<!-- end of study definition -->
+
+
+    <multiSiteEnabledCenters>
+        <a>1</a>
+        <b>200</b>
+    </multiSiteEnabledCenters>
+
+ 
+
+    <!-- GUI default settings -->
+    <gui>
+	<css>main.css</css>
+        <rowsPerPage>25</rowsPerPage>
+        <showTiming>0</showTiming>
+	<showPearErrors>0</showPearErrors>
+	<showDatabaseQueries>0</showDatabaseQueries>
+    </gui>
+
+    <mri>
+        <efax>
+            <backup_dir></backup_dir>
+            <new_dir></new_dir>
+            <assigned_dir></assigned_dir>
+            <unassigned_dir></unassigned_dir>
+        </efax>
+    </mri>
+
+
+    <main_menu_tabs>
+        <!-- tab name -->
+        <tab>
+            <link>new_profile</link>
+            <label>New Profile</label>
+            <access>site</access>
+            <permissions>
+                <perm>data_entry</perm>
+            </permissions>
+            <visible>1</visible>
+        </tab>
+        <tab>
+            <link>candidate_list</link>
+            <label>Access Profile</label>
+            <access>all</access>
+            <permissions></permissions>
+            <visible>1</visible>
+        </tab>
+        <tab>
+            <link>timepoint_flag</link>
+            <label>Exclusion</label>
+            <access>all</access>
+            <permissions>
+                <perm>timepoint_flag</perm>
+                <perm>timepoint_flag_evaluate</perm>
+            </permissions>
+            <visible>0</visible>
+        </tab>
+        <tab>
+            <link>mri_safety</link>
+            <label>MRI Safety Form</label>
+            <access>all</access>
+            <permissions>
+                <perm>data_entry</perm>
+                <perm>mri_safety</perm>
+            </permissions>
+            <visible>0</visible>
+        </tab>
+        <tab>
+            <link>user_accounts</link>
+            <label>User Accounts</label>
+            <access>all</access>
+            <permissions>
+                <perm>user_accounts</perm>
+            </permissions>
+            <visible>1</visible>
+        </tab>
+        <tab>
+            <link>tracking_logs</link>
+            <label>Tracking Logs</label>
+            <access>all</access>
+           <permissions>
+                <perm>tracking_logs</perm>
+            </permissions>
+            <visible>0</visible>
+        </tab>
+        <tab>
+            <link>certification</link>
+            <label>Certification</label>
+            <access>all</access>
+            <permissions>
+                <perm>certification</perm>
+                <perm>certification_multisite</perm>
+            </permissions>
+            <visible>0</visible>
+        </tab>
+    </main_menu_tabs>
+
+</config>
+
