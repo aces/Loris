@@ -1,0 +1,102 @@
+How to create an instrument from scratch.
+
+1. The instrument file
+	-Use the blank instrument template found at lorisdb/docs/instruments/NDB_BVL_Instrument_TEMPLATE.class.inc
+	-Name the file NDB_BVL_Instrument_<TEST_NAME>.class.inc where <TEST_NAME> is the name of the instrument, in lower case.
+	-Likewise, the class name should be NDB_BVL_Instrument_<TEST_NAME>.class.inc and should be placed in lorisdb/project/instruments/
+
+2. Add Questions to the Quickform.
+    -replace all instances of <TEST_NAME> in the template.
+    -replace <INSTRUMENT TITLE> with the full name of the instrument, mixed case, as it is to be displayed on the web form.
+    -in functions _page[1-9], place QuickForm elements, as needed.  See QuickForm documentation for allowable element types.
+    -There are some wrappers created, for convenience, in the NDB_BVL_Instrument.class.inc base class (such as addTextElement, addTextAreaElement and addYesNoElement).
+    -Modify the _requiredElements array containing <FIRST QUESTION OF EACH PAGE> to include 'Examiner' and the first question of each page (ie. $this->_requiredElements = array('Examiner', 'q_1', 'q_19', 'q_37', 'q_55');
+    -A few gotchas regarding particular cases...
+    	-add any date elements used to the dateTimeFields array (so that they will be converted between HTML_Quickform and MySQL formats automagically).
+	   -add any multiple select elements to the _selectMultipleElements array.  This way they will be tranfered between the database and the QuickForm smoothly.
+	   -Quickform element names should not end in "_status".  This word is reserved for the names of select boxes accompanying text fields and causes particular (peculiar?) functionality.
+    
+3. To view this instrument, insert the necessary records into database
+	-Insert a record into the table "test_names" where Test_name = <TEST_NAME> and Full_name is a full text title, LimitAge=0 (worthless field), Sub_group is = the appropriate id from the test_subgroups table.
+	-For example:
+	INSERT INTO test_names VALUES ('', 'saliva_36', 'Saliva 36 Months', '0', '1');
+
+	-If Paged...
+		-Insert one record per page into the table "instrument_subtests" where Subtest_name is the page name (case for $this->page in the instrument)
+		-Format of the instrument_subtests table:
+        +----+--------------+--------------------+-------------+--------------+
+        | ID | Test_name    | Subtest_name       | Description | Order_number |
+        +----+--------------+--------------------+-------------+--------------+
+        |  1 | bayley_behav | bayley_behav_page1 | Items 1-30  |            1 |
+        +----+--------------+--------------------+-------------+--------------+
+		-Example SQL statement:
+		INSERT INTO instrument_subtests(ID, Test_name, Subtest_name, Description, Order_number) VALUES('', 'saliva_36', 'saliva_36_page1', 'Page 1', 1);
+		INSERT INTO instrument_subtests(ID, Test_name, Subtest_name, Description, Order_number) VALUES('', 'saliva_36', 'saliva_36_page2', 'Page 2', 2);
+	-If not paged, remove the switch in the _setupForm method and add all elements directly in this method.	
+
+4. Assign the instrument to a test battery
+	-Insert a record into the table "test_battery" where AgeMinDays is the minimum age, in days, of the subject so as to be assigned this test and AgeMaxDays is the maximum age.  Active = Y, Stage (for MAVAN) = 'Visit', SubprojectID.
+    -Leeway of 45 days on either side of the timepoint is usually allowed as cushioning, but depends on the need of the project.
+	For example:
+	INSERT INTO test_battery VALUES ('', 'irle', '-140', '-70', 'Y', 'Visit', '1');
+
+5. Create the instrument database table
+	-from the /lorisdb/tools directory...
+	   run the command:  find ../project/instruments/NDB_BVL_Instrument_<TEST_NAME>.class.inc | php quickform_parser.php
+	   For example:
+	   find ../project/instruments/NDB_BVL_Instrument_irle.class.inc | php quickform_parser.php
+	-this will create the temporary file "ip_output.txt"
+	-run the command:   php generate_tables_sql.php
+	-This will create an sql CREATE TABLE file in the tools/tables_sql directory for each instrument in the ip_output.txt staging file.  It will be named <TEST_NAME>.sql.
+	-Run (source) this file in mysql (or copy paste it in).
+	
+6. Create the labelSet
+	-If the instrument is part of a brand new timepoint, place an entry in the config.xml configuration file.  For example:
+	<item value="prenatal_24-30">Prenatal 24-30 Weeks</item>
+	
+7. Assign instrumentPermissions.
+    (This applies only if useInstrumentPermissions is true in your config.xml file.)
+    By default, all instruments are viewable by anyone with data entry permissions.  To restrict access, place an entry in the <instrumentPermissions> section of the config.xml file.
+    For example...
+    <instrument>
+        <Test_name>ads</Test_name>
+        <permission>view_instruments_montreal</permission>
+        <permission>view_instruments_hamilton</permission>
+    </instrument>
+
+8. Assign a candidate the instrument
+	To test the instrument in the development environment, create the appropriate timepoint for a candidate.
+	-Start the visit stage, ensuring that the visit date falls within the range specified in the test_battery table.
+	-Play with the instrument to test it.
+	-It might be helpful to turn <showDatabaseQueries> on (set to 1) in the config.xml file, for debugging.
+	
+9. Reconstruct the data dictionary.
+	-To include the instruments in the DQG, it must be added to the parameter_type* tables.
+	tools/data_dictionary_builder.php accomplishes this, but relies on ip_output.txt including ALL the project instruments.
+    For example:
+    find ../project/instruments/NDB_BVL_Instrument_* | php quickform_parser.php
+    (followed by)
+    php data_dictionary_builder.php
+    Note:  this will result in a complete rewrite of parameter_type table for all entries of type Instrument.  New ParameterTypeIDs will be assigned.  Saved data query gui queries will no longer work.  Imaging data previously uploaded will all be dead.
+    ToDo: modify data_dictionary_builder.php so that only new entries get ParameterTypeIDs reassigned.
+
+10. Add a category to Mantis bug tracker for this instrument.
+
+    
+-- Example SQL inserts
+-- Monteral Prenatal FULL TEXT Instrument
+INSERT INTO test_names VALUES ('', 'montreal_prenatalFULLTEXT', 'Montreal Prenatal FULL TEXT', '0', '1');
+
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page1', 'Page 1', 1);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page2', 'Page 2', 2);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page3', 'Page 3', 3);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page4', 'Page 4', 4);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page5', 'Page 5', 5);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page6', 'Page 6', 6);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page7', 'Page 7', 7);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page8', 'Page 8', 8);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatal_page9', 'Page 9', 9);
+INSERT INTO instrument_subtests VALUES('', 'montreal_prenatalFULLTEXT', 'montreal_prenatalFULLTEXT_all', 'Whole questionnaire', 10);
+
+
+INSERT INTO test_battery VALUES ('', 'montreal_prenatalFULLTEXT', '1050', '1140', 'Y', 'Visit', '3');
