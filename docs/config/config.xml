@@ -16,6 +16,7 @@
     <imagePath>/PATH/TO/MINC/DATA/ROOT/mri-data/minc/</imagePath>
     <base>/PATH/TO/lorisdb/</base>
     <data>SAME AS imagePath</data>
+    <extLibs>/PATH/TO/SMARTY/libs</extLibs>
 </paths>
 
 <!-- database settings -->
