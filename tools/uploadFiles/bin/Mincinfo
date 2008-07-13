@@ -1,0 +1,322 @@
+#!/usr/bin/perl -w
+#---------------------------------------------------------------------------
+#@COPYRIGHT :
+#             Copyright 1998, Alex P. Zijdenbos
+#             McConnell Brain Imaging Centre,
+#             Montreal Neurological Institute, McGill University.
+#             Permission to use, copy, modify, and distribute this
+#             software and its documentation for any purpose and without
+#             fee is hereby granted, provided that the above copyright
+#             notice appear in all copies.  The author and McGill University
+#             make no representations about the suitability of this
+#             software for any purpose.  It is provided "as is" without
+#             express or implied warranty.
+#---------------------------------------------------------------------------- 
+#$RCSfile: Mincinfo,v $
+#$Revision: 1.1.1.1 $
+#$Author: moi $
+#$Date: 2006/05/31 11:33:39 $
+#$State: Exp $
+#---------------------------------------------------------------------------
+
+use MNI::Startup;
+use MNI::Spawn;
+use MNI::FileUtilities qw(check_output_dirs check_files);
+use Getopt::Tabular qw(GetOptions);
+
+use strict;
+
+# User-modifyable globals
+my($PrintFile)  = 0;
+my($Tab)        = 0;
+my($InsertLine) = 0;
+
+# Other globals
+my($Usage, $Help);
+my(@Files);
+my(@MincInfoOpt);
+my(@Variables);
+
+&Initialize;
+
+my($file);
+foreach $file (@Files) {
+    my(@miOpt) = @MincInfoOpt;
+
+    if (@Variables) {
+	if ($file =~ /\.(gz|z|Z)$/) {
+	    my $tempfile = &ReplaceDir($TmpDir, $`);
+	    &Spawn("mincexpand -header_only $file $tempfile");
+	    $file = $tempfile;
+	}
+	    
+	my($variable);
+	foreach $variable (@Variables) {
+	    my($status, $output) = &Spawn(['mincinfo', '-varatts', $variable, $file]);
+	    &Fatal() if $status;
+	    my(@attributes) = split(/\s/, $output);
+	    
+	    my($attribute);
+	    foreach $attribute (@attributes) {
+		push(@miOpt, ('-attvalue', "${variable}:${attribute}"));
+	    }	
+	}
+    }
+
+    my($output);
+    &Spawn(['mincinfo', @miOpt, $file], stdout => \$output);
+    chop($output);
+    $output = "$file\n$output" if ($PrintFile);
+
+    $output =~ s/\n/\t/g if ($Tab);
+
+    $output .= "\n";
+    $output .= "\n" if ($InsertLine);
+
+    print $output;
+}
+
+# ------------------------------ MNI Header ----------------------------------
+#@NAME       : &CreateInfoText
+#@INPUT      : none
+#@OUTPUT     : none
+#@RETURNS    : nothing
+#@DESCRIPTION: Sets the $Help, $Usage, $Version, and $LongVersion globals,
+#              and registers the first two with ParseArgs so that user gets
+#              useful error and help messages.
+#@METHOD     : 
+#@GLOBALS    : $Help, $Usage, $Version, $LongVersion
+#@CALLS      : 
+#@CREATED    : 95/08/25, Greg Ward (from code formerly in &ParseArgs)
+#@MODIFIED   : 
+#-----------------------------------------------------------------------------
+sub CreateInfoText
+{
+   $Usage = <<USAGE;
+Usage: $ProgramName [options] <mincfile> [<mincfile> ...]
+       $ProgramName -help
+
+USAGE
+
+   $Help = <<HELP;
+$ProgramName is a wrapper around mincinfo, providing additional functionality and allowing for multiple files. 
+HELP
+
+   &Getopt::Tabular::SetHelp ($Help, $Usage);
+}
+
+# ------------------------------ MNI Header ----------------------------------
+#@NAME       : &SetupArgTables
+#@INPUT      : none
+#@OUTPUT     : none
+#@RETURNS    : References to the four option tables:
+#                @site_args
+#                @pref_args
+#                @protocol_args
+#                @other_args
+#@DESCRIPTION: Defines the tables of command line (and config file) 
+#              options that we pass to ParseArgs.  There are four
+#              separate groups of options, because not all of them
+#              are valid in all places.  See comments in the routine
+#              for details.
+#@METHOD     : 
+#@GLOBALS    : makes references to many globals (almost all of 'em in fact)
+#              even though most of them won't have been defined when
+#              this is called
+#@CALLS      : 
+#@CREATED    : 95/08/23, Greg Ward
+#@MODIFIED   : 
+#-----------------------------------------------------------------------------
+sub SetupArgTables
+{
+   my (@args) = 
+       (
+	["Mincinfo options", "section"],
+	["-image_info", "call", undef, \&MincInfoOption,
+	 "Print out the default information about the images"],
+	["-dimnames", "call", undef, \&MincInfoOption,
+	 "Print the names of the dimensions in the file"],
+	["-varnames", "call", undef, \&MincInfoOption,
+	 "Print the names of the variables in the file."],
+	["-dimlength", "call", 1, \&OneArgMincInfoOption,
+	 "Print the length of the specified dimension."],
+	["-vartype", "call", 1, \&OneArgMincInfoOption,
+	 "Print the type of the specified variable."],
+	["-vardims", "call", 1, \&OneArgMincInfoOption,
+	 "Print the dimension names for the specified variable."],
+	["-varatts", "call", 1, \&OneArgMincInfoOption,
+	 "Print the attribute names for the specified variable."],
+	["-varvalues", "call", 1, \&OneArgMincInfoOption,
+	 "Print the values for the specified variable."],
+	["-atttype", "call", 1, \&OneArgMincInfoOption,
+	 "Print the type of the specified attribute (variable:attribute)."],
+	["-attvalue", "call", 1, \&OneArgMincInfoOption,
+	 "Print the value(s) of the specified attribute (variable:attribute)."],
+	["-error_string", "call", 1, \&OneArgMincInfoOption,
+	 "Error to print on stdout (default = exit with error status)."],
+
+	["Higher-level options", "section"],
+	["-file", "boolean", 1, \$PrintFile,
+	 "Print file name. This will always be printed first."],
+	["-date", "call", 1, \&HighLevelOption,
+	 "Print acquisition date and time."],
+	["-time", "call", 1, \&HighLevelOption,
+	 "Synonymous with -date."],
+	["-history", "call", 1, \&HighLevelOption,
+	 "Print history."],
+	["-trte", "call", 1, \&HighLevelOption,
+	 "Print TR and TE."],
+	["-fa", "call", 1, \&HighLevelOption,
+	 "Print flip angle."],
+	["-dimensions", "call", 1, \&HighLevelOption,
+	 "Print zyx dimensions."],
+	["-voxel_dimensions", "call", 1, \&HighLevelOption,
+	 "Print zyx voxel dimensions."],
+	["-starts", "call", 1, \&HighLevelOption,
+	 "Print zyx voxel start values."],
+	["-variable", "call", 1, \&HighLevelOption,
+	 "Print all attribute values of the specified variable.", "<variable>"],
+
+	["Formatting options", "section"],
+	["-tab", "boolean", 1, \$Tab,
+	 "Use tabs (\\t) rather than newlines (\\n) between option outputs."],
+	["-insert_line", "boolean", 1, \$InsertLine,
+	 "Print an empty line between each processed file."],
+	);
+	
+   (\@DefaultArgs, \@args);
+}
+
+# ------------------------------ MNI Header ----------------------------------
+#@NAME       : &Initialize
+#@INPUT      : 
+#@OUTPUT     : 
+#@RETURNS    : 
+#@DESCRIPTION: Sets global variables from configuration file, parses 
+#              command line, parses protocol file for more global variables,
+#              finds required programs, and sets their options.  Dies on
+#              any error.
+#@METHOD     : 
+#@GLOBALS    : site-specific: $ModelDir, $Model, $Protocol
+#              preferences: $Verbose, $Execute, $Clobber, $Debug, $KeepTmp
+#              protocol (data-specific preprocessing): @Subsample, @Crop,
+#                 $Objective, @Blurs, $Blur
+#              $ProtocolArgs
+#@CALLS      : &JobControl::SetOptions
+#              &JobControl::AddProgramOptions      
+#              &SetupArgTables
+#              &ReadConfigFile
+#              &GetOptions
+#              &ReadProtocol (indirectly through ParseArgs)
+#              
+#@CREATED    : 
+#@MODIFIED   : incessantly
+#-----------------------------------------------------------------------------
+sub Initialize
+{
+   my (@all_args);
+
+   $, = ' ';     # set output field separator
+
+   # Set defaults for the global variables.
+
+   $Verbose      = 1;
+   $Execute      = 1;
+   $Clobber      = 0;
+   $Debug        = 0;
+   $KeepTmp      = 0;
+
+   &CreateInfoText;
+
+   my($defargs, $args) = &SetupArgTables;
+   @all_args = (@$defargs, @$args);
+
+   &GetOptions (\@all_args, \@ARGV, \@Files) || die "\n";
+   if (@Files <= 0)
+   {
+      warn $Usage;
+      die "Please specify one or more input MINC volumes\n";
+   }
+
+   RegisterPrograms(['mincinfo', 'mincexpand']) || die;
+
+   MNI::Spawn::SetOptions (strict => 2);
+
+   check_files(@Files) || die;
+
+   check_output_dirs($TmpDir) if $Execute;
+
+   self_announce if $Verbose;
+}
+
+sub MincInfoOption {
+    my ($option) = @_;
+     
+    push(@MincInfoOpt, $option);
+
+    1;
+}
+   
+sub OneArgMincInfoOption {
+    my ($option, $rest) = @_;
+    my ($value) = shift @$rest;
+
+#    if (!defined($value) || ($value =~ /^-/)) {
+    if (!defined($value)) {
+	&Fatal("$option requires an argument");
+    }
+
+    push(@MincInfoOpt, ($option, $value));
+
+    1;
+}
+
+sub HighLevelOption {
+    my ($option, $rest) = @_;
+
+  SWITCH: {
+      if ($option =~ /^-date$/) {
+	  &OneArgMincInfoOption('-attvalue', ['study:start_time']);
+	  last SWITCH;
+      }
+      if ($option =~ /^-history$/) {
+	  &OneArgMincInfoOption('-attvalue', [':history']);
+	  last SWITCH;
+      }
+      if ($option =~ /^-trte$/) {
+	  &OneArgMincInfoOption('-attvalue', ['acquisition:repetition_time']);
+	  &OneArgMincInfoOption('-attvalue', ['acquisition:echo_time']);
+	  last SWITCH;
+      }
+      if ($option =~ /^-fa$/) {
+	  &OneArgMincInfoOption('-attvalue', ['acquisition:flip_angle']);
+	  last SWITCH;
+      }
+      if ($option =~ /^-dimensions$/) {
+	  &OneArgMincInfoOption('-dimlength', ['zspace']);
+	  &OneArgMincInfoOption('-dimlength', ['yspace']);
+	  &OneArgMincInfoOption('-dimlength', ['xspace']);
+	  last SWITCH;
+      }
+      if ($option =~ /^-voxel_dimensions$/) {
+	  &OneArgMincInfoOption('-attvalue', ['zspace:step']);
+	  &OneArgMincInfoOption('-attvalue', ['yspace:step']);
+	  &OneArgMincInfoOption('-attvalue', ['xspace:step']);
+	  last SWITCH;
+      }
+      if ($option =~ /^-starts$/) {
+	  &OneArgMincInfoOption('-attvalue', ['zspace:start']);
+	  &OneArgMincInfoOption('-attvalue', ['yspace:start']);
+	  &OneArgMincInfoOption('-attvalue', ['xspace:start']);
+	  last SWITCH;
+      }
+      if ($option =~ /^-variable$/) {
+	  push(@Variables, shift @$rest);
+	  last SWITCH;
+      }
+
+      return 0;
+  }
+
+    1;
+}
