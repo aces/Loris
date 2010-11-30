@@ -1063,6 +1063,21 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
     }
 
     /**
+    * Wrapper to create a field that only accepts a number, with an accompanying status field.
+    * @param    string    $field    The database field in which the response will be stored
+    * @param    string    $label    The question text to display
+    */
+    function addNumericElement($field, $label) {
+        $group [] = $this->form->createElement("text", $field, $label);
+        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        unset($group);
+        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+    }
+
+
+    /**
     * nulls all scores for the record identified by CommentID
     * @param array list of scoring fields to null
     * @see $this->getCommentID()
