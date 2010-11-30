@@ -331,7 +331,6 @@ class Candidate
         $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo FROM session WHERE CandID='$candID' AND (Active='Y' OR Active is null) AND (Cancelled='N' OR Cancelled IS NULL) GROUP BY CandID";
         $db->selectRow($query, $result);
         if(PEAR::isError($result)) {
-            print $result->getMessage();
             return PEAR::raiseError("Could not retrieve existing data for session");
         }
         
