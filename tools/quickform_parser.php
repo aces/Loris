@@ -26,7 +26,7 @@ require_once "Config.php";
 
 
 //allow instruments to find libraries
-set_include_path(get_include_path().":../php/libraries:");
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 // define which configuration file we're using for this installation
 $configFile = "../project/config.xml";
@@ -43,10 +43,10 @@ $config = $config['config'];
 unset($configObj, $root);
 
 // require all relevant OO class libraries
-require_once "../php/libraries/Database.class.inc";
-require_once "../php/libraries/NDB_Config.class.inc";
-require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
-require_once "../php/libraries/Candidate.class.inc";
+require_once "Database.class.inc";
+require_once "NDB_Config.class.inc";
+require_once "NDB_BVL_Instrument.class.inc";
+require_once "Candidate.class.inc";
 
 /*
  * new DB Object
