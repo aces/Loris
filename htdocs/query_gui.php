@@ -39,12 +39,12 @@ $studyTitle = $config->getSetting('title');
     <p>
     <table border=0 style='border:none;padding-left:0px;' width="100%" cellspacing="0" cellpadding="10">
     <tr>
-        <td width="19%" align='center' style='border:2px black solid;border-right:1px black solid;padding-left:0px;cursor:pointer;' id='step1Title' onclick='setStepDiv(1)'>Define Variables</td>
-        <td width="19%" align='center' style='border-top:2px black solid;border-bottom:2px black solid;cursor:pointer;display:none;' id='step2Title' onclick='setStepDiv(2)'>Define Population</td>
-        <td width="19%" align='center' style='border:2px black solid;border-left:1px black solid;cursor:pointer;' id='step3Title' onclick='setStepDiv(3)'>Download Spreadsheet</td>
+        <td width="19%" align='center' class="button" id='step1Title' onclick='setStepDiv(1)'>Define Variables</td>
+        <td width="19%" align='center' class="button" style="display: none"  id='step2Title' onclick='setStepDiv(2)'>Define Population</td>
+        <td width="19%" align='center' class="button" id='step3Title' onclick='setStepDiv(3)'>Download Spreadsheet</td>
         <td width="5%"  style='border-top:none;border-bottom:none;'>&nbsp;</td>
-        <td width="19%" align='center' style='border:2px black solid;border-right:1px black solid;cursor:pointer;font-weight:bold;' id='step4Title' onclick='setStepDiv(4)'>Save/Load Query</td>
-        <td width="19%" align='center' style='border:2px black solid;border-left:0px black solid;cursor:pointer;' id='toggleModeTitle' onclick='toggleMode()'>Go to <span id="toggleModeText">Advanced Mode</span></td>
+        <td width="19%" align='center' class="button" style='font-weight:bold;' id='step4Title' onclick='setStepDiv(4)'>Save/Load Query</td>
+        <td width="19%" align='center' class="button" id='toggleModeTitle' onclick='toggleMode()'>Go to <span id="toggleModeText">Advanced Mode</span></td>
      </tr>
     </table>
 </div>
@@ -182,7 +182,7 @@ $studyTitle = $config->getSetting('title');
 <td><input type='text' id='saveName'></td>
 <td><input type='checkbox' id='saveFields'></td>
 <td><input type='checkbox' id='saveConditionals'></td>
-<td align='left' width=70%><input type='button' value='Save' onclick='saveQuery();'></td>
+<td align='left' width=70%><input type='button' value='Save' class="button" onclick='saveQuery();'></td>
 </table>
 <p>
 

@@ -11,6 +11,8 @@
  * @package main
  * @subpackage query_gui
  */
+ob_start('ob_gzhandler');
+
 
 // load the client
 require_once 'NDB_Client.class.inc';
@@ -44,7 +46,8 @@ switch($_REQUEST['mode']) {
      $DB->select($query, $results);
 
      foreach($results AS $row) {
-         $script .= "remoteFieldData[".$row['ParameterTypeCategoryID']."]=\"$row[Name]\";\n";
+       $script .= "remoteFieldData.push({id:".$row['ParameterTypeCategoryID'].",name:\"".$row['Name']."\"});\n";
+       // $script .= "remoteFieldData[".$row['ParameterTypeCategoryID']."]=\"$row[Name]\";\n";
      }
      break;
 
@@ -172,6 +175,7 @@ switch($_REQUEST['mode']) {
      $userID=$currentUser->getData('ID');
      $query="select qid, name, selected_fields, conditionals, access FROM query_gui_stored_queries WHERE userID='$userID' OR access='public' ORDER by access DESC, name ASC";
      $DB->select($query,$results);
+     print_r($results);
      foreach($results AS $result){
          $fields=!empty($result['selected_fields']) ? "true" : "false";
          $conditionals=!empty($result['conditionals']) ? "true" : "false";
