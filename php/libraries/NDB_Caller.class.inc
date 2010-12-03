@@ -62,7 +62,7 @@ class NDB_Caller extends PEAR
             if (PEAR::isError($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
-
+  
             $this->type = 'menu';
             return $html;
         }
@@ -79,6 +79,19 @@ class NDB_Caller extends PEAR
             $this->type = 'form';
             return $html;
         }
+        
+        // it is a reliability form
+          if ($this->existsAndRequire($base."project/libraries/NDB_Reliability_$test_name.class.inc")
+              || $this->existsAndRequire($base."php/libraries/NDB_Reliability_$test_name.class.inc")) {
+
+              $html = $this->loadReliability($test_name, $subtest, $_REQUEST['identifier'], $_REQUEST['reliability_center_id']);
+              if (PEAR::isError($html)) {
+                  return PEAR::raiseError($html->getMessage());
+              }
+
+              $this->type = 'reliability';
+              return $html;
+          }
 
         // it is an intrument
         if ($this->existsAndRequire($base."project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
@@ -149,6 +162,34 @@ class NDB_Caller extends PEAR
 
         return $html;
     }
+    
+    /**
+     * Renders html for a Reliability Form
+     * @param string The Form to load
+     * @param string The page of the Form to load
+     * @param string The identifier of the Form
+     * @param string The id of the center at which the reliability test is being performed.
+     */
+     function loadReliability($class, $page, $identifier, $reliability_center_id)
+     {
+         // make an instance of the form's object
+         $form = NDB_Reliability::factory($class, $page, $identifier, $reliability_center_id);
+         if (PEAR::isError($form)) {
+             return PEAR::raiseError($form->getMessage());
+         }
+
+         $success = $form->save();
+         if (PEAR::isError($success)) {
+             return PEAR::raiseError("NDB_Caller::loadReliability() save: ".$success->getMessage());
+         }
+
+         $html = $form->display();
+         if (PEAR::isError($html)) {
+             return PEAR::raiseError("NDB_Caller::loadReliability() display: ".$html->getMessage());
+         }
+
+         return $html;
+     }
 
    /**
     * Renders html for a quickform Instrument
