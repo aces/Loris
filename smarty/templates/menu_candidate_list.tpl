@@ -1,5 +1,9 @@
 {literal}
-<script>
+
+<script language="javascript" type="text/javascript">
+
+//window.onload = function(){ alert("welcome"); }
+
 function checkAccessProfileForm(){
    var form = document.accessProfileForm;
    if(form.candID.value == ""){
@@ -13,6 +17,14 @@ function checkAccessProfileForm(){
    }
    return true;
 }
+
+$(function(){
+		$('input[name=dob]').datepicker({
+			dateFormat: 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true
+		});
+});
 </script>
 {/literal}
 
@@ -32,11 +44,15 @@ function checkAccessProfileForm(){
 <form method="post" action="main.php?test_name=candidate_list">
 <table border="0" valign="top" class="std">
     <tr>
-        <th nowrap="nowrap" colspan=6>Selection Filter</th>
+        <th nowrap="nowrap" colspan=4>Selection Filter</th>
     </tr>
     <tr>
         <td nowrap="nowrap">Site:</td>
         <td nowrap="nowrap">{$form.centerID.html}</td>
+        <td nowrap="nowrap">Subproject:</td>
+        <td nowrap="nowrap">{$form.SubprojectID.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">DCC-ID:</td>
         <td nowrap="nowrap">{$form.DCCID.html}</td>
         <td nowrap="nowrap">PSC-ID:</td>
@@ -45,21 +61,34 @@ function checkAccessProfileForm(){
     <tr>
         <td nowrap="nowrap">Gender:</td>
         <td nowrap="nowrap">{$form.gender.html}</td>
-        <td nowrap="nowrap">Subproject:</td>
-        <td nowrap="nowrap">{$form.SubprojectID.html}</td>
-    </tr>
-    <tr>
         <td nowrap="nowrap">Date of Birth:</td>
         <td nowrap="nowrap">{$form.dob.html}</td>
-        {if $useEDC=="true"}
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.Latest_Visit_Status.label}</td>
+        <td nowrap="nowrap">{$form.Latest_Visit_Status.html}</td>
+        <td nowrap="nowrap">{$form.Visit_Count.label}</td>
+        <td nowrap="nowrap">{$form.Visit_Count.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.Feedback.label}</td>
+        <td nowrap="nowrap" colspan="3">{$form.Feedback.html}<//td>
+    </tr>
+    {if $useEDC=="true"}
+    <tr>
 	        <td nowrap="nowrap">EDC:</td>
 	        <td nowrap="nowrap">{$form.edc.html}</td>
-        {/if}
+            <td nowrap="nowrap">&nbsp;</td>
+            <td nowrap="nowrap">&nbsp;</td>
+    </tr>
+    {/if}
+    <tr>
+        <td>Actions:</td>
+        <td>&nbsp;</td>
         <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" /></td>
     </tr>
 <table>
 </form>
-
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
@@ -71,7 +100,7 @@ function checkAccessProfileForm(){
 </table>
 
 <!-- start data table -->
-<table  class ="fancytable" border="0" width="100%" class="listColorCoded">
+<table  class ="fancytable" border="0" width="100%">
 <tr>
  <th nowrap="nowrap">No.</th>
     <!-- print out column headings - quick & dirty hack -->

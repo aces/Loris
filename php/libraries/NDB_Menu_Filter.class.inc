@@ -62,6 +62,17 @@ class NDB_Menu_Filter extends NDB_Menu
     var $validFilters = array();
 
     /**
+     * Items selected from the GUI to filter, where the underlying 
+     * SQL uses an an aggregate function. This is determined by checking
+     * if the filter is in the validHavingFilters array, and if so
+     * appending it to $having instead of $filter
+     */
+    var $having;
+    /**
+     * Filters that the 
+     */
+    var $validHavingFilters = array();
+    /**
      * Associates the form element to the appropriate filter
      * @var    array 
      * @access private
@@ -225,7 +236,13 @@ class NDB_Menu_Filter extends NDB_Menu
         foreach ($this->validFilters as $value) {
             // if no filter was defined (i.e. first hit) limit listing to the user's site
             if (is_array($filter) && count($filter) > 0) {
-                $this->filter[$value] = $filter[$value];
+                // If it's an aggregate, don't add it to the where clause filters. Add it to the
+                // having clause filters
+                if(in_array($value, $this->validHavingFilters)) {
+                    $this->having[$value] = $filter[$value];
+                } else {
+                    $this->filter[$value] = $filter[$value];
+                }
             } else {
                 if (strtolower(substr($value, -8)) == 'centerid') {
                     $this->filter[$value] = $user->getData('CenterID');
@@ -328,6 +345,27 @@ class NDB_Menu_Filter extends NDB_Menu
         // add GROUP BY if applicable
         if (!empty($this->group_by)) {
             $query .= " GROUP BY $this->group_by ";
+        }
+        // add HAVING clause (for restricting aggregates)
+        if(!empty($this->having)) {
+
+            // Can't use Database::_implodeWithKeys, because the function
+            // puts `` around the fieldname, causing it to treat the
+            // aggregate function as a fieldname instead of a function
+            $first = True;
+            foreach ($this->having as $key => $val) {
+                if($val !== '' and $val != null) {
+                    if($first == False) {
+                        $query .= ' AND ';
+                    }
+                    else { 
+                        $query .= ' HAVING ';
+                    }
+                    $first = False;
+
+                    $query .= "$key LIKE " . $DB->quote("$val%");
+                }
+            }
         }
 
         // apply ORDER BY filters
