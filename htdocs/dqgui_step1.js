@@ -157,6 +157,26 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
 
 }
 
+function loadCategoriesByRemote(categories){
+categoryNames = new Array();
+for (var i=0; i < categories.length; i++) {
+categoryNames[categories[i].id] = categories[i].name;
+};
+
+    var selects=["fieldCategorySelect","conditionalCategorySelect"];
+    for(var i in selects){
+        var oFieldCategorySelect=document.getElementById(selects[i]);
+for (var i=0; i < categories.length; i++) {
+oCategoryOption=document.createElement("OPTION");
+oCategoryOption.value=categories[i].id;
+oCategoryOption.appendChild(document.createTextNode(categories[i].name));
+oFieldCategorySelect.appendChild(oCategoryOption);
+};
+    }
+}
+
+/*
+
 //loadCategoriesByRemote populates the category select drop down via the remote loader page
 function loadCategoriesByRemote(categories){
     categoryNames=categories;
@@ -172,7 +192,7 @@ function loadCategoriesByRemote(categories){
     }
 }
 
-
+*/
 
 //FIELD SELECTING/UNSELECTING FUNCTIONS ------------------------------------------------
 
