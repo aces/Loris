@@ -79,8 +79,8 @@ class NDB_Form_new_profile extends NDB_Form
         $this->form->addElement('date', 'dob2', 'Confirm Date of Birth', $dateOptions);
     
         // date of birth rules
-        $this->form->addRule('dob1', 'Date of Birth is required', 'required');
-        $this->form->addRule(array('dob1', 'dob2'), 'Date of Birth fields must match', 'compare');
+        $this->form->addGroupRule('dob1', 'Date of Birth is required', 'required');
+        $this->form->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
 
         if($config->getSetting('useEDC') == "true"){
             // add expected date of confinement
@@ -92,7 +92,7 @@ class NDB_Form_new_profile extends NDB_Form
         }
 
         // add gender
-        $genderOptions = array('', 'Male' => 'Male', 'Female' => 'Female');
+        $genderOptions = array('' => '', 'Male' => 'Male', 'Female' => 'Female');
         $this->form->addElement('select', 'gender', 'Gender', $genderOptions);
     
         // gender rules
@@ -111,14 +111,13 @@ class NDB_Form_new_profile extends NDB_Form
         $errors = array();
 
         $config =& NDB_Config::singleton();
-        // check date pairs
-        if (empty($values['dob1']['M']) && empty($values['dob1']['d']) && empty($values['dob1']['Y'])) {
-            $errors['dob1'] .= "Date is required. \n";
+
+        if($values['dob1']['M'] != $values['dob2']['M'] ||
+                $values['dob1']['d'] != $values['dob2']['d'] ||
+                $values['dob1']['Y'] != $values['dob2']['Y'])
+        {
+            $errors['dob1'] = 'Date of Birth fields must match.';
         }
-        elseif (!_checkDate($values['dob1'])) {
-            $errors['dob1'] = 'Date of Birth is not a valid date';
-        }
-    
         if($config->getSetting('useEDC') == "true") {
             if (strlen(implode($values['edc1'])) > 2 && !_checkDate($values['edc1'])) {
                 $errors['edc1'] = 'EDC is not a valid date';
@@ -126,8 +125,8 @@ class NDB_Form_new_profile extends NDB_Form
         }
 
         if (empty($values['gender'])) {
-            $errors['gender'] = 'Gender is required';
-        }
+            $errors['gender'] = 'Gender is required.';
+        } 
     
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
