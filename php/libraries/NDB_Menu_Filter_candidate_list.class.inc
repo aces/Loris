@@ -40,6 +40,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         	$this->formToFilter['edc'] = 'candidate.EDC';
         	$this->validFilters[]='candidate.EDC';
         }
+
         $this->columns=array_merge($this->columns,array('max(session.VisitNo) as Visit_count', 'max(session.Current_stage) as Latest_visit_status', 'min(feedback_bvl_thread.Status+0) as Feedback'));
 
         
@@ -49,7 +50,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         
         $this->group_by = 'candidate.CandID';
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
-        $this->validFilters = array('candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.SubprojectID', 'candidate.DoB');
+        $this->validFilters = array('candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.SubprojectID', 'candidate.DoB', 'max(session.VisitNo)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
+        $this->validHavingFilters = array('max(session.VisitNo)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
 		
         $this->formToFilter = array(
                                     'centerID' => 'candidate.CenterID',
@@ -58,6 +60,10 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                     'gender' => 'candidate.Gender',
                                     'SubprojectID' => 'session.SubprojectID',
                                     'dob' => 'candidate.DoB',
+                                    'Visit_Count' => 'max(session.VisitNo)',
+                                    'Latest_Visit_Status' => 'max(session.Current_stage)',
+                                    'Feedback' => 'coalesce(min(feedback_bvl_thread.Status+1), 1)'
+
                                     );
         return true;
     }
@@ -95,7 +101,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $list_of_subprojects =& Utility::getSubprojectList();
 
         // list of feedback statuses
-        $feedback_status_options = array('opened'=>'opened','answered'=>'answered','closed'=>'closed','comment'=>'comment');
+        $feedback_status_options = array(null => 'Any','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
+        $latest_visit_status_options = array(null => 'Any', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
+                                            /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
         // add form elements
         $this->form->addElement('select', 'centerID', 'Site:', $list_of_sites);
@@ -104,6 +112,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->form->addElement('select', 'gender', 'Gender:', array('' => 'Any', 'Male' => 'Male', 'Female' => 'Female'));
         $this->form->addElement('select', 'SubprojectID', 'Sub Project:', array('' => 'Any') + $list_of_subprojects);
         $this->form->addElement('text', 'dob', 'Date of Birth:', 'maxlength=10');
+        $this->form->addElement('text', 'Visit_Count','Number of Visits:');
+        $this->form->addElement('select', 'Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
+        $this->form->addElement('select', 'Feedback','Feedback:', $feedback_status_options);
         
         $config=&NDB_Config::singleton();
         if($config->getSetting("useEDC")=="true"){
