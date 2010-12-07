@@ -16,6 +16,8 @@
 	    <th nowrap="nowrap">Data Entry</th>
 	    <th nowrap="nowrap">Administration</th>
 	    <th nowrap="nowrap">Feedback</th>
+	    <th nowrap="nowrap">Double Data Entry Form</th>
+	    <th nowrap="nowrap">Double Data Entry Status</th>
     </tr>	
 	{section name=instrument loop=$instruments[group]}
    	<tr>
@@ -27,6 +29,12 @@
     	<td nowrap="nowrap" bgcolor="{$instruments[group][instrument].feedbackColor}">
 	    	{$instruments[group][instrument].feedbackStatus}
         </td>
+<td nowrap="nowrap">
+	{if $instruments[group][instrument].isDdeEnabled }
+	    	<a href="main.php?test_name={$instruments[group][instrument].testName}&candID={$candID}&sessionID={$sessionID}&commentID={$instruments[group][instrument].ddeCommentID}">Double Data Entry</a>
+   {/if}&nbsp;
+</td>
+<td nowrap="nowrap">{if $instruments[group][instrument].isDdeEnabled }{$instruments[group][instrument].ddeDataEntryStatus}{/if}&nbsp;</td>
    	</tr>
 	{/section}
 {sectionelse}

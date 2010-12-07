@@ -183,6 +183,26 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to flag: $testName");
         }
+        
+        // generate the double data entry commentid
+        $ddeCommentID = 'DDE_'.$commentID;
+
+        // insert the dde into the test table
+         $success = $GLOBALS['DB']->insert($testName, array('CommentID'=>$ddeCommentID));
+        if($this->isError($success)) {
+            return $this->raiseError("Unable to add storage record to $ddeCommentID $testName");
+        }
+
+        // insert the dde into the flag table
+        $success = $GLOBALS['DB']->insert('flag', array('SessionID'=>$sessionData['SessionID'],
+                                                        'Test_name'=>$testName,
+                                                        'CommentID'=>$ddeCommentID,
+                                                        'UserID'=>$sessionData['UserID'],
+                                                        'Testdate'=>null));
+        if($this->isError($success)) {
+            return $this->raiseError("Unable to add storage record to flag: $testName");
+        }
+        
     } // end addInstrument()
     
     /**
@@ -227,7 +247,7 @@ class NDB_BVL_Battery extends PEAR
         // craft the select query
         $query = "SELECT f.Test_name FROM ";
         if(!is_null($stage)) $query .= "test_battery AS b, ";
-        $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID='$this->sessionID'";
+        $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID='$this->sessionID' AND LEFT(f.CommentID,3) != 'DDE'";
 
         if(!is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage='$stage'";
@@ -272,9 +292,9 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // craft the select query
-        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, ts.Subgroup_name as Sub_group FROM flag AS f, test_names as t, test_subgroups as ts ";
+        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group FROM flag AS f, test_names as t, test_subgroups as ts ";
         if(!is_null($stage)) $query .= ", test_battery AS b";
-        $query .= " WHERE ts.ID = t.Sub_group AND f.Test_name=t.Test_name AND f.SessionID='$this->sessionID'";
+        $query .= " WHERE ts.ID = t.Sub_group AND f.Test_name=t.Test_name AND f.SessionID='$this->sessionID' AND LEFT(f.CommentID, 3) != 'DDE'";
 
         if(!is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage='$stage'";
@@ -296,6 +316,24 @@ class NDB_BVL_Battery extends PEAR
         // return all the data selected
         return $rows;
     } // end getBatteryVerbose()
+
+    function isDoubleDataEntryEnabledForInstrument($instrumentName)
+    {
+        
+        $config =& NDB_Config::singleton();
+        $doubleDataEntryInstruments= $config->getSetting("DoubleDataEntryInstruments");
+
+        return in_array($instrumentName,$doubleDataEntryInstruments);
+
+
+    }
+
+    function getInstrumentNameForCommentId($commentId) {
+        $db =& Database::singleton();
+        $query = "SELECT Test_name FROM flag WHERE CommentID='$commentId'";
+        $instrumentName = $db->selectOne($query);
+        return $instrumentName;
+    }
 
     /**
      * looks up the appropriate battery for the current visit, based

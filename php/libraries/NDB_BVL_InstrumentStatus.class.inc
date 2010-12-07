@@ -1,4 +1,6 @@
 <?
+require_once('ConflictDetector.class.inc');
+
 /**
  * Behavioural instrument status class
  *
@@ -151,6 +153,15 @@ class NDB_BVL_InstrumentStatus
         $updateResult = $this->select($this->_commentID);
         if(PEAR::isError($updateResult)) {
             return PEAR::raiseError("Could not reload object data");
+        }
+
+        // Run the ConflictDetector if the new status is Complete
+        if($status == 'Complete') {
+            $principalCommentId = (strpos($this->_commentID, 'DDE') === FALSE ? $this->_commentID : substr($this->_commentID, 4));
+            $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId($principalCommentId);
+            ConflictDetector::clearConflictsForInstance($principalCommentId);
+            $diff=ConflictDetector::detectConflictsForCommentIds($instrumentName, $principalCommentId, 'DDE_'.$principalCommentId);
+            ConflictDetector::recordUnresolvedConflicts($diff);
         }
     }
 

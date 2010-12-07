@@ -82,6 +82,13 @@ class NDB_BVL_Instrument extends PEAR
     */
     var $dateTimeFields = array();
 
+
+    /**
+     * Array of column names to be ignored by the double data entry conflict detector.
+     */
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
+
+
     // }}}
     // {{{ factory()
 
@@ -101,6 +108,13 @@ class NDB_BVL_Instrument extends PEAR
     function factory($instrument, $commentID, $page)
     {
         $class = "NDB_BVL_Instrument_$instrument";
+        
+        // Make sure the instrument class has been included/required!
+        $config =& NDB_Config::singleton();
+        $base = $config->getSetting('base');
+        require_once($base."project/instruments/$class.class.inc");
+
+        // Now go ahead and instantiate it
         $obj = new $class;
         $success = $obj->setup($commentID, $page);
         if (PEAR::isError($success)) {
@@ -1063,21 +1077,6 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
     }
 
     /**
-    * Wrapper to create a field that only accepts a number, with an accompanying status field.
-    * @param    string    $field    The database field in which the response will be stored
-    * @param    string    $label    The question text to display
-    */
-    function addNumericElement($field, $label) {
-        $group [] = $this->form->createElement("text", $field, $label);
-        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
-        unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
-        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
-    }
-
-
-    /**
     * nulls all scores for the record identified by CommentID
     * @param array list of scoring fields to null
     * @see $this->getCommentID()
@@ -1104,23 +1103,59 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         return;
     }
 
+    // Computes the difference between two instances of an instrument
+    function diff($otherInstrument) {
+        // Load this instance data
+        $thisData = NDB_BVL_Instrument::loadInstanceData($this);
+        
+        // Load other instance data
+        $otherData = NDB_BVL_Instrument::loadInstanceData($otherInstrument);
+        
+        // Create the return object data structure
+        $diff = array();
+
+        // Loop over this instance data
+        foreach($thisData AS $key=>$value) {
+            if(!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
+                if($otherData[$key] != $value) {
+                    $diff[] = array('TableName'=>$this->table, 'ExtraKeyColumn'=>null, 'ExtraKey1'=>' ', 'ExtraKey2'=>' ', 'FieldName'=>$key, 'CommentId1'=>$this->getCommentID(), 'Value1'=>$value, 'CommentId2'=>$otherInstrument->getCommentID(), 'Value2'=>$otherData[$key]);
+                }
+            }
+        }
+        
+        // Return the diffs
+        return $diff;
+    }
+    
+    function loadInstanceData($instrumentInstance) {
+        $db =& Database::singleton();
+        $db->select("SELECT * FROM $instrumentInstance->table WHERE CommentID='".$instrumentInstance->getCommentID()."'", $defaults);
+        if($instrumentInstance->isError($defaults)) {
+            return $instrumentInstance->raiseError('Could not get default values for form');
+        }
+        
+        return $defaults[0];
+    }
+    
+
 } //end class NDB_BVL_Instrument
 
 // {{{ _checkDate()
-    function _checkDate($dateElement) {
-        // if all three elements are empty, return true b/c it'll save the NULL in date field
-        if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+function _checkDate($dateElement) {
+    // if all three elements are empty, return true b/c it'll save the NULL in date field
+    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
         return true;
-        }
-        // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
-        elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
-            return false;
-        }
-        // else, check the date
-        else {
-            return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
-        }
     }
+    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
+    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
+        return false;
+    }
+    // else, check the date
+    else {
+        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+    }
+}
+
 // }}}
 
 ?>

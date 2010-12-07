@@ -238,15 +238,33 @@ Class Instrument_List_ControlPanel extends TimePoint
             return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
         }
            
+        // Get the list of DDE instruments
+        $config =& NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+
         // loop the list and check the Data Entry status
         foreach ($batteryList as $instrument) {
-            $query = "SELECT Data_entry FROM flag WHERE CommentID = '".$instrument['CommentID']."'";
-            $dataEntry = $db->selectOne($query);
-            if (PEAR::isError($dataEntry)) {
-                return PEAR::raiseError ("DB Error: " .$dataEntry->getMessage());
-            }
+            $status = new NDB_BVL_InstrumentStatus();
+            $status->select($instrument['CommentID']);
+            $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
                 break;
+            }
+
+            // If the instrument requires double data entry, check that DDE is also done
+            if(in_array($instrument['Test_name'], $ddeInstruments)) {
+                $status = new NDB_BVL_InstrumentStatus();
+                $status->select($instrument['DDECommentID']);
+                $dataEntry = $status->getDataEntryStatus();
+                if ($dataEntry != 'Complete') {
+                    break;
+                }
+
+                // Pretend data entry is not complete if there are conflicts
+                if(ConflictDetector::isInstrumentInstanceInConflictState($instrument['CommentID'])) {
+                    $dataEntry = 'DDE Conflict';
+                    break;
+                }
             }
         }
 
