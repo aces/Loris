@@ -2,7 +2,7 @@
 require_once "PEAR.php";
 define("DEBUG", false);
 /**
- * Database abstracOAion layer presents a unified interface to database
+ * Database abstraction layer presents a unified interface to database
  * connectivity.  Instantiate one object instance per database
  * connection.  
  *
@@ -231,7 +231,6 @@ class Database extends PEAR
         }
         $this->_printQuery($query.$where);
 
-        print $query.$where;
         $prep = $this->_PDO->prepare($prepQ);
         $prep->execute($exec_params);
         $this->affected = $prep->rowCount(); 
