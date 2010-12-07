@@ -1,5 +1,6 @@
 <?
 require_once "NDB_Form.class.inc";
+require_once('RequiredIf.inc');
 
 /**
  * Base Form class
@@ -237,12 +238,19 @@ class NDB_Reliability extends NDB_Form
 
            //$this->form->addElement('text', 'Examiner', 'Examiner');
 
-           $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
+           //$this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
 
            $this->form->registerRule('checkdate', 'callback', '_checkDate');
+           //$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
+           
+           $this->form->addElement('select', 'invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
+           $this->form->addRule('invalid', 'Invalid flag is required.', 'required');
+           
            $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
 
-           $this->form->addRule('Examiner', 'Examiner is required', 'required');
+           //$this->form->addRule(array('invalid', 'Examiner'), 'Examiner is required,', 'requiredIf', array('operator'=>'==', 'value'=>'no'));
+           //$this->setRequired('invalid');
+           
        }
 
        function _getExaminerNames()
