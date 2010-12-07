@@ -495,6 +495,8 @@ class NDB_BVL_Instrument extends PEAR
                 }
             }
         }
+=======
+>>>>>>> 737f165... Added wrappers required for the EARLI Questionaire:php/libraries/NDB_BVL_Instrument.class.inc
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
@@ -573,13 +575,10 @@ class NDB_BVL_Instrument extends PEAR
 
         $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
         
-<<<<<<< HEAD:php/libraries/NDB_BVL_Instrument.class.inc
         if(strrpos($this->testName, '_proband') === FALSE) {
             $this->form->addElement('static', 'Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
             $this->form->addElement('static', 'Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
         }
-=======
->>>>>>> 552f46c... Added support for Candidate_Age and Window_Difference in non-proband instruments:php/libraries/NDB_BVL_Instrument.class.inc
         $examiners = $this->_getExaminerNames();
         $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
         
@@ -1233,7 +1232,6 @@ class NDB_BVL_Instrument extends PEAR
         return $defaults[0];
     }
 
-<<<<<<< HEAD:php/libraries/NDB_BVL_Instrument.class.inc
     // The Date_taken can be manually passed in. This is the case when
     // calculating the age while updating the Date_taken in _saveValues, 
     //since we want to use the new value, not the old value
@@ -1252,10 +1250,6 @@ class NDB_BVL_Instrument extends PEAR
         }
         return;
     }
-    
-
-=======
->>>>>>> 552f46c... Added support for Candidate_Age and Window_Difference in non-proband instruments:php/libraries/NDB_BVL_Instrument.class.inc
 } //end class NDB_BVL_Instrument
 
 // {{{ _checkDate()
