@@ -43,48 +43,51 @@ class File_Upload extends PEAR {
         foreach($this->fieldNames AS $field){
             $this->fieldName=$field;
             if(!$this->preProcessFile()){
-                //$this->setError($field,"Could not find a valid file to associate with $field.");  This has been commented out because its a warning and unnecessary and it confused the sites
+                $this->setError($field,"Could not find a valid file to associate with $field.");  //This has been commented out because its a warning and unnecessary and it confused the sites
                 continue;
             }
+
             //Determine appropriate file handler class
             if(empty($this->fileHandlers[$field])){ //If a field type is set use that.
                 $this->setError($field,"No file handler registered for field '$field'"); 
                 continue;
             }
             //Test the handler to ensure it exists and all methods are intact
-            if($this->isValidFileHandler($field)){  
+            if($this->isValidFileHandler($field)) {
                //Verify the file
-                if($this->fileVerify){
+                if($this->fileVerify) {
                     $fileVerified=$this->callFileHandler($field, 'verify'); //Validate the file using the isValid method of the handler class.
-                    if(is_array($fileVerified)){
-                        $this->setError($field, $fileVerified); 
+                    if(is_array($fileVerified)) {
+                        $this->setError($field, $fileVerified);
                         continue;
                     }
                 }
+
                 //If we are going to move the file, figure out what its new name will be before the import step, so we can save the new
                 //filename to the database.
-               if($this->fileMove){
+               if($this->fileMove) {
                    $newTargetDirectory=$this->callFileHandler($field, 'move');  //Get the target directory
-                   if(!$this->getNewDirectory($newTargetDirectory)){ //Get the new dir
+                   if(!$this->getNewDirectory($newTargetDirectory)) { //Get the new dir
                        continue;
                    }
                    if(!$this->getNewFilename()){ //Get the new filename
                        continue;
                    }
-                }   
+                }
+
                 //Import the file
                 if($this->fileImport){
                     $fileImported=$this->callFileHandler($field, 'import');  //Import the file using the importFile method of the handler class.
-                    if(is_array($fileImported)){
-                        $this->setError($field, $fileImported); 
+                    if(is_array($fileImported)) {
+                        $this->setError($field, $fileImported);
                         continue;
                     }
                 }
-                
+
                 //Move the file (comes before import so that import knows the name of the filename for storing int he database)
-                if($this->fileMove){
+                if($this->fileMove) {
                     $fileMoved=$this->moveFile();  //Move the file
-                    if(is_array($fileMoved)){
+                    if(is_array($fileMoved)) {
                         continue;
                     }
                 }
@@ -186,10 +189,11 @@ class File_Upload extends PEAR {
            $this->setError($this->fieldName, "A file named '$dest_dir' exists in your chosen upload root.  Could not create directory with same name.");
            return false;
         } else if(!file_exists($dest_dir) && $this->createDirectories){
-           mkdir($dest_dir,0777); //Change to 0755 for final
-           
-           chgrp($dest_dir,"nihpd");//COMMENT THIS for final
-           
+            mkdir($dest_dir,0775);
+            $grp = $config->getSetting('FileGroup')
+            if(!empty($grp)) {
+                chgrp($dest_dir,$grp);
+           }
         } else if (!file_exists($dest_dir) && $this->createDirectories) {
              $this->setError($this->fieldName, "Destination directory '$dest_dir' does not exist"); 
              return false;
@@ -574,6 +578,9 @@ class File_Upload extends PEAR {
     * @return   void
     */
     function setError($field, $msg){
+       if(!is_array($this->errorLog[$field])){
+          $this->errorLog[$field] = array();
+       }
         if(is_array($msg)){
             $this->errorLog[$field]=array_merge($this->errorLog[$field], $msg);
         } else {
