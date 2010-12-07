@@ -1248,8 +1248,6 @@ class NDB_BVL_Instrument extends PEAR
         }
         return;
     }
-    
-
 } //end class NDB_BVL_Instrument
 
 // {{{ _checkDate()
