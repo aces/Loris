@@ -105,14 +105,23 @@ class NDB_BVL_Instrument extends PEAR
     * @throws PEAR:error
     * @access public
     */
-    function factory($instrument, $commentID, $page)
+    function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
         $class = "NDB_BVL_Instrument_$instrument";
         
         // Make sure the instrument class has been included/required!
         $config =& NDB_Config::singleton();
         $base = $config->getSetting('base');
+
+        // The conflict resolver doesn't care if the instrument exists or not, it
+        // just tries to load, score, and save. If it doesn't exist, for instance
+        // in the case of figs_year3_relatives, we shouldn't require because it 
+        // isn't necessarily an error.
+        if(!file_exists($base."project/instruments/$class.class.inc") && $guarantee_exists==false) {
+            return;
+        }
         require_once($base."project/instruments/$class.class.inc");
+
 
         // Now go ahead and instantiate it
         $obj = new $class;
@@ -390,14 +399,14 @@ class NDB_BVL_Instrument extends PEAR
                 
                 // the form WAS submitted but validate() failed...
                 // main error message
-                //// print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
-                // print all the field error messages in one block
+                 print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 //print all the field error messages in one block
                 foreach(array_keys($submittedData) AS $key) {
                     $error = $this->form->getElementError($key);
                     if(!empty($error)) {
                         $element = $this->form->getElement($key);
                         if(method_exists($element, "getLabel")){
-                            //// print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                            print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
                         }
                     }
                 }
@@ -1107,8 +1116,16 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         }
         
         // set the scoring cols to NULL
-        foreach ($scoreCols as $val) {
-            $scores[$val]=null; //null array
+        foreach ($scoreCols as $key => $val) {
+            // Some Instruments use an associative array for
+            // $scoreCols of the form column => description, others 
+            // use a non-associative array. So if the key is numeric,
+            // and we need to make sure we use the column name
+            if(is_numeric($key))
+                $scores[$val]=null; //null array
+            else 
+                $scores[$key]=null;
+
         }
         
         // update the scores
