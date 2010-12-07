@@ -440,6 +440,7 @@ class NDB_BVL_Instrument extends PEAR
             $this->dateTimeFields=array("Date_taken");
         }
         
+
         //Convert date/time fields into database dates/times
         if (is_array($this->dateTimeFields) && count($this->dateTimeFields) > 0) {
             foreach($this->dateTimeFields as $field){
@@ -754,52 +755,6 @@ class NDB_BVL_Instrument extends PEAR
         if(!empty($errors)){
             return $errors;
         }
-            /*
-        } else {
-            // run double-data entry test if appropriate
-            $config =& NDB_Config::singleton();
-            $doubleDataEntry = $config->getSetting('doubleDataEntry');
-            if($doubleDataEntry) {
-                // check for first save in session
-                $stateProperty = 'savedData'.$this->getCommentID().$this->page;
-                $oldData = $_SESSION['State']->getProperty($stateProperty);
-                if(!empty($oldData)) {
-                    // compare new data to old data
-                    $diff = array_diff_assoc($oldData, $elements);
-print "<!--\n DIFF \n"; print_r($diff); print "\n-->";
-                    
-                    if(empty($diff)) {
-                        $_SESSION['State']->setProperty($stateProperty, null);
-                        $_SESSION['State']->setProperty($stateProperty."_showData", true);
-                        return true;
-                    } else {
-                        $_SESSION['State']->setProperty($stateProperty, $elements);
-                        foreach($diff AS $elname=>$elvalue) {
-                            $errors[$elname] = "Doesn't match previous entry ($elvalue)";
-                        }
-                        return $errors;
-                    }
-                } else {
-                    // set old data in state
-                    $_SESSION['State']->setProperty($stateProperty, $elements);
-                    $_SESSION['State']->setProperty($stateProperty."_showData", false);
-
-print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); print "\n-->";
-                    // mark data for reentry
-                    foreach($elements AS $elname=>$elvalue) {
-                        $errors[$elname] = "Please re-enter data";
-                    }
-                    return $errors;
-                }
-            } else {
-                // no double data entry required
-                
-                }
-                
-                }
-                */
-           
-            
         return true;
     }
     
@@ -1037,6 +992,31 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
     }
+    /**
+      * Wrapper to create a text field for questions that require Refused and Don't know options
+      */
+     
+    function addTextElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down', $refusals=array(''=>'', "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered')){
+        $group[]=&$this->form->createElement("text", $field);
+        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
+        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        unset($group);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+    }
+     
+    /**
+     * Wrapper to create a text area field for questions that require Refused and Don't know options
+     */
+     
+    function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
+        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
+        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
+        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        unset($group);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+    }
     
     /**
     * Wrapper to create a text area field, with an accompanying status field.
@@ -1045,6 +1025,8 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
     * @param    array    $rules    {@} delimited rules
     * @param    string    $rule_message    rule message to display upon rule violation
     */
+    
+
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
         $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
         $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
@@ -1085,6 +1067,21 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         
     }
 
+    /** 
+    * Wrapper with a user-created date group, a status box and appropriate rule
+    */
+    function addCustomDateElement($name, $label, $dateArray){
+        $group [] = $this->form->createElement("date", $name . "_date", null, $dateArray);
+        $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
+        $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
+        $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        unset($group);
+        $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
+        $this->XINRegisterRule($name . "_date_status", array($name . "_date{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
+
+    }
+
+
 
     /**
     * Wrapper to create a field that only accepts a number, with an accompanying status field.
@@ -1094,6 +1091,20 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
     function addNumericElement($field, $label) {
         $group [] = $this->form->createElement("text", $field, $label);
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        unset($group);
+        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+    }
+
+    /**
+    * Wrapper to create a field that only accepts a number, for questions that require refused and don't know options
+    *
+    */
+    
+    function addNumericElementRD($field, $label) {
+        $group [] = $this->form->createElement("text", $field, $label);
+        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
@@ -1169,7 +1180,6 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         
         return $defaults[0];
     }
-    
 
 } //end class NDB_BVL_Instrument
 
