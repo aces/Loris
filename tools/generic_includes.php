@@ -4,7 +4,7 @@
 require_once "Config.php";
 
 //allow instruments to find libraries
-//set_include_path(get_include_path().":../php/libraries:");
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 // define which configuration file we're using for this installation
 $configFile = "../project/config.xml";
