@@ -249,12 +249,14 @@ class NDB_BVL_Battery extends PEAR
         if(!is_null($stage)) $query .= "test_battery AS b, ";
         $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID='$this->sessionID' AND LEFT(f.CommentID,3) != 'DDE'";
 
-        if(!is_null($visit_label)) {
-            $query .= " AND b.Visit_label='$visit_label'";
-        } else {
-            $query .= " OR b.Visit_label IS NULL";
-        }
         if(!is_null($stage)) {
+            if(!is_null($visit_label)) {
+                $query .= " AND b.Visit_label='$visit_label'";
+            } else {
+                $query .= " OR b.Visit_label IS NULL";
+            }
+        }
+        if(!is_null($stage) && !is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage='$stage'";
 
             if(!is_null($SubprojectID)) {
