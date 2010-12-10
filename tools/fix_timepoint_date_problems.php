@@ -41,12 +41,12 @@
  * @package behavioural
  */
 
-set_include_path(get_include_path().":../php/libraries:");
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 // path to config file
 $configFile = "../project/config.xml";
 
-require_once "../php/libraries/NDB_Client.class.inc";
+require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
