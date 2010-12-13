@@ -495,8 +495,6 @@ class NDB_BVL_Instrument extends PEAR
                 }
             }
         }
-=======
->>>>>>> 737f165... Added wrappers required for the EARLI Questionaire:php/libraries/NDB_BVL_Instrument.class.inc
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
