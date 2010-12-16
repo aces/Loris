@@ -256,9 +256,13 @@ class NDB_Reliability extends NDB_Form
        function _getExaminerNames()
         {
             $db =& Database::singleton();
-            $centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->identifier."'");
+            $user =& User::singleton();
+            $centerID = $user->getCenterID();
+            //$centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->identifier."'");
 
-            $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
+            // UofA is a special case--they never enter their own data. So the available examiners are either the ones
+            // at the logged in user's site, or UofA
+            $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID IN ('$centerID', 6) ORDER BY full_name", $results);
             if($db->isError($results)) {
                 return $this->raiseError("Could not get examiner names: ".$results->getMessage());
             }
