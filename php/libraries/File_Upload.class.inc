@@ -146,7 +146,9 @@ class File_Upload extends PEAR {
         }
         
         //Call the method
-        $output=call_user_func_array(array($class,$method),array($this,$args));
+        $func = array($class, $method);
+        $args = array(&$this, $args);
+        $output=call_user_func_array(&$func,&$args);
         return $output;
     }
     
@@ -189,8 +191,9 @@ class File_Upload extends PEAR {
            $this->setError($this->fieldName, "A file named '$dest_dir' exists in your chosen upload root.  Could not create directory with same name.");
            return false;
         } else if(!file_exists($dest_dir) && $this->createDirectories){
+            $config = NDB_Config::singleton();
             mkdir($dest_dir,0775);
-            $grp = $config->getSetting('FileGroup')
+            $grp = $config->getSetting('FileGroup');
             if(!empty($grp)) {
                 chgrp($dest_dir,$grp);
            }
