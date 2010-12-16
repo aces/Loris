@@ -434,7 +434,7 @@ class Database extends PEAR
         if(!is_array($dataArray) || count($dataArray)==0) return '';
         $output = array();
         foreach( $dataArray as $key => $item ) {
-            $output[] = "`$key`=:$prefix$key";
+            $output[] = "`$key`=`:$prefix$key`";
             if($exec_vals !== NULL) {
                 $exec_vals[":$prefix$key"] = $item;
             }
