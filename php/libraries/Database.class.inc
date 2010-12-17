@@ -431,12 +431,14 @@ class Database extends PEAR
     }
 
     function _implodeAsPrepared($glue, $dataArray, &$exec_vals = NULL, $prefix='') {
+
         if(!is_array($dataArray) || count($dataArray)==0) return '';
         $output = array();
         foreach( $dataArray as $key => $item ) {
-            $output[] = "`$key`=`:$prefix$key`";
+            $varname= str_replace("%", "_percent_", $key);
+            $output[] = "`$key`=:$prefix$varname";
             if($exec_vals !== NULL) {
-                $exec_vals[":$prefix$key"] = $item;
+                $exec_vals["$prefix$varname"] = $item;
             }
 
         }
