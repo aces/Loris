@@ -88,6 +88,19 @@ class NDB_BVL_Instrument extends PEAR
      */
     var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
 
+    /**
+     * Whether the "Validity" field is shown as a flag for an instrument
+     * or not.
+     * @access private
+     */
+    var $ValidityEnabled = true;
+    /**
+     * Whether the "Validity" field is required before flagging an instrument
+     * as complete or not.
+     * @access private
+     */
+    var $ValidityRequired = true;
+
 
     // }}}
     // {{{ factory()

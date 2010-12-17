@@ -39,7 +39,7 @@ class NDB_BVL_InstrumentStatus
      * the set of valid options for the validity flag
      * @access private
      */
-    var $_validityOptions = array(null, 'Questionable', 'Invalid', 'Valid');
+    var $_validityOptions = array(null, 'Valid', 'Questionable', 'Invalid');
 
     /**
      * the set of valid options for the exclusion flag
@@ -206,7 +206,7 @@ class NDB_BVL_InstrumentStatus
             return PEAR::raiseError('Invalid administration status');
         }
 
-        $GLOBALS['DB']->update('flag', array('Administration'=>$status), array('CommentID'=>$this->_commentID));
+        $GLOBALS['DB']->update('flag', array('Validity'=>$status), array('CommentID'=>$this->_commentID));
         $updateResult = $this->select($this->_commentID);
         if(PEAR::isError($updateResult)) {
             return PEAR::raiseError("Could not reload object data");
