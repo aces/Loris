@@ -269,15 +269,7 @@ class Database extends PEAR
         }
     
         $this->_printQuery($query);
-        $this->affected = $this->_PDO->exec($query.$where);
-        /*
-        $qid = @mysql_query($query, $this->_databaseHandle);
-        if(!$qid) {
-            return $this->raiseError(mysql_error($this->_databaseHandle));
-        }
-
-        $this->affected = mysql_affected_rows($this->_databaseHandle);
-        */
+        $this->affected = $this->_PDO->exec($query);
     }
 
     /**
