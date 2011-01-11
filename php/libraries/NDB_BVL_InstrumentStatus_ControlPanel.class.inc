@@ -169,11 +169,15 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             elseif ($hasAccess && $this->getAdministrationStatus()) {
                 $showLink = true;
                 $Validity = $this->getValidityStatus();
-                if($Validity == NULL 
+                if($Validity == NULL
                     && $this->_instrument->ValidityRequired == true) {
                     $showLink = false;
                 }
-                if($option == 'Complete' && $this->getAdministrationStatus() == 'All') {
+
+                if($option == 'In Progress') {
+                    $showLink = true;
+                }
+                elseif($option == 'Complete' && $this->getAdministrationStatus() == 'All') {
                     // run the data entry logic test
                     $testName = Utility::getTestNameByCommentID($this->_commentID);
                     if(PEAR::isError($testName)) {
