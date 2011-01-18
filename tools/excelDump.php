@@ -94,7 +94,7 @@ writeExcel($Test_name, $instrument_table, $dataDir);
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and substring(c.PSCID, 1, 3) in ('PHI', 'STL', 'SEA', 'UNC') order by c.PSCID";
+$query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and substring(c.PSCID, 1, 3) in ('PHI', 'STL', 'SEA', 'UNC') and c.Active='Y' and c.Cancelled='N' order by c.PSCID";
 $DB->select($query, $results);
 if (PEAR::isError($results)) {
 	PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
