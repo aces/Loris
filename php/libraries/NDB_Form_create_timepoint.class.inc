@@ -69,15 +69,17 @@ class NDB_Form_create_timepoint extends NDB_Form
         $subprojectSettings= $config->getSetting('subprojects');
        
         //Loop through the subprojects to get an id out and to create the subproject drop down.
+        $sp_labelOptions = array(null => '');
         foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-            if($this->subprojectID==null){
-                $this->subprojectID=$subproject['id'];
-            }
+            // Leave default blank, don't take the first one
+            //if($this->subprojectID==null){
+            //    $this->subprojectID=$subproject['id'];
+            //}
             $sp_labelOptions[$subproject['id']] = $subproject['title'];
         }
         
         $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");
-        $this->form->addElement('select', 'subprojectID', 'Visit label', $sp_labelOptions, $attributes);
+        $this->form->addElement('select', 'subprojectID', 'Subproject', $sp_labelOptions, $attributes);
         $this->form->setDefaults(array("subprojectID"=>$this->subprojectID));
         
         

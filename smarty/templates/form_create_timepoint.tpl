@@ -22,7 +22,7 @@
 		<td nowrap="nowrap">{$candID}</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap">Sub Project</td>
+		<td nowrap="nowrap">Subproject</td>
 		<td nowrap="nowrap">{$form.subprojectID.html}</td>
 
 	</tr>
