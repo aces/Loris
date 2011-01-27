@@ -440,6 +440,43 @@ class NDB_BVL_Instrument extends PEAR
     // }}}
     // {{{ _saveValues()
     
+    function _saveCandidateAge(&$values) {
+        if(!empty($values['Date_taken'])) {
+            $DB = Database::singleton();
+            $age = $this->getCandidateAge($values['Date_taken']);
+            if(!PEAR::isError($age)) {
+                $agedays = $age['year']*365 + $age['mon']*30 + $age['day'];
+                $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
+                // 1 Decimal.
+                $agemonths = (round($agemonths*10) / 10.0);
+                if(!empty($age)) {
+                    $validage = $DB->selectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'");
+                    $values['Candidate_Age'] = $agemonths;
+                    $values['Window_Difference'] = 0;
+
+                    // Age isn't valid, so find out how far out it is
+
+                    if($validage == 0) {
+                        $DB->select("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'", $Windows);
+                        foreach ($Windows as $window) {
+                            if($agedays < $window['AgeMinDays']) {
+                                $delta = $window['AgeMinDays'] - $agedays;
+                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                    $values['Window_Difference'] = 0-abs($delta);
+                                }
+                            }
+                            if($agedays > $window['AgeMaxDays']) {
+                                $delta = $agedays - $window['AgeMaxDays'];
+                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                    $values['Window_Difference'] = abs($delta);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     /**
      * preprocesses the array of values to be saved into the database
      * (such as to rearrange date fields)
@@ -466,47 +503,8 @@ class NDB_BVL_Instrument extends PEAR
             }
         }
         
-        if( (!empty($values['Date_taken'])) && (strrpos($this->testName, "_proband") === FALSE) ) {
-            $DB = Database::singleton();
-            $age = $this->getCandidateAge($values['Date_taken']);
-            if(!PEAR::isError($age)) {
-                $agedays = $age['year']*365 + $age['mon']*30 + $age['day'];
-                $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
-                // 1 Decimal.
-                $agemonths = (round($agemonths*10) / 10.0);
-                if(!empty($age)) {
-                    $validage = $DB->selectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'");
-                    //$DB->selectRow("SELECT MIN(AgeMinDays) as Min, MAX(AgeMaxDays) as Max FROM test_battery WHERE Active='Y' and Test_name='" . $this->testName . "'", $minmax);
-                    /*
-                    $errorage = false;
-                    if(($agedays < $minmax['Min'] || $agedays > $minmax['Max'])) {
-                        $errorage = true;
-                    }
-                    */
-                    $values['Candidate_Age'] = $agemonths;
-                    $values['Window_Difference'] = 0;
-
-                    // Age isn't valid, so find out how far out it is
-
-                    if($validage == 0) {
-                        $DB->select("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'", $Windows);
-                        foreach ($Windows as $window) {
-                            if($agedays < $window['AgeMinDays']) {
-                                $delta = $window['AgeMinDays'] - $agedays;
-                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
-                                    $values['Window_Difference'] = 0-abs($delta);
-                                }
-                            }
-                            if($agedays > $window['AgeMaxDays']) {
-                                $delta = $agedays - $window['AgeMaxDays'];
-                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
-                                    $values['Window_Difference'] = abs($delta);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        if(strrpos($this->testName, "_proband") === FALSE) {
+            $this->_saveCandidateAge(&$values);
         }
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
