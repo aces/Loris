@@ -216,6 +216,19 @@ if (!empty($_REQUEST['sessionID'])) {
 $timer->setMarker('Drew the top workspace tables');
 
 //--------------------------------------------------
+// load the menu or instrument
+$caller =& NDB_Caller::singleton();
+function HandleError($error) {
+    switch($error->code) {
+        case 404: header("HTTP/1.1 404 Not Found"); break;
+        case 403: header("HTTP/1.1 403 Forbidden"); break;
+    }
+    if(empty($error->code)) {
+        //print $error->message;
+    }
+}
+$caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
+
 
 // load the menu or instrument
 $caller =& NDB_Caller::singleton();
