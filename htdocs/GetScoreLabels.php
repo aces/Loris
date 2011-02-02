@@ -14,7 +14,9 @@ $client->initialize();
 require_once "Utility.class.inc";
 
 $cols = Utility::getScoreColsForInstrument($_REQUEST['instrument']);
-print "Candidate_Age\n";
+if(strrpos($_REQUEST['instrument'], "_proband") === false) {
+    print "Candidate_Age\n";
+}
 foreach ($cols as $val) {
     print "$val\n";
 }
