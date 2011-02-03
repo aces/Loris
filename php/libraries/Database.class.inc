@@ -380,6 +380,7 @@ class Database extends PEAR
      *  and returns the rows.
      */
     function pselect($query, $params) {
+        $this->_printQuery($query, $params);
         $stmt = $this->prepare($query);
         return $this->execute($stmt, $params);
     }
@@ -546,8 +547,11 @@ class Database extends PEAR
         }
     } // end function _trackChanges
 
-    function _printQuery($query) {
+    function _printQuery($query, $params=null) {
         if(!$this->_showQueries) return;
+        if($params) {
+            $query = str_replace(array_keys($params), array_values($params), $query);
+        }
         print "$this->_databaseName: $query<br>\n";
     }
 
