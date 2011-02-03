@@ -65,13 +65,28 @@ Class TimePoint
         // store user data in object property
         if(is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $config=&NDB_Config::singleton();
             $subprojectSettings=$config->getSubprojectSettings($row['SubprojectID']);
             $this->_timePointInfo['SubprojectTitle']=$subprojectSettings['title'];
         } else {
             // return error when 0 rows to prevent creation of an empty object
             return PEAR::raiseError("Failed to retrieve data for timepoint ($sessionID)");
         }
+        // New feature, older databases might not have the table created,
+        // so require a config option to be set
+        if($config->getSetting("SupplementalSessionStatus") == true) {
+
+            $query = "SELECT ss.Name, ss.Value FROM session_status ss JOIN session s ON (s.ID=ss.SessionID) WHERE s.ID=:sessionID AND s.Active='Y' AND s.Cancelled='N'";
+
+            $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
+            foreach ($statuses as $row) {
+                if(!isset( $this->_timePointInfo['status'])) {
+                    $this->_timePointInfo['status'] = array();
+                }
+                $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
+            }
+
+        }
+
     }
 
     /**
