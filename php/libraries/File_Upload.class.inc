@@ -43,7 +43,7 @@ class File_Upload extends PEAR {
         foreach($this->fieldNames AS $field){
             $this->fieldName=$field;
             if(!$this->preProcessFile()){
-                $this->setError($field,"Could not find a valid file to associate with $field.");  //This has been commented out because its a warning and unnecessary and it confused the sites
+                $this->setError($field, "Could not upload file. Max file size is ". ini_get("upload_max_filesize") . ".");
                 continue;
             }
 

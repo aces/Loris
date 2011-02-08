@@ -23,7 +23,7 @@ if (version_compare(phpversion(),'4.3.0','<'))
 {
     define('STDIN',fopen("php://stdin","r"));
     register_shutdown_function( create_function( '' , 'fclose(STDIN);
-    fclose(STDOUT); fclose(STDERR); return true;' ) );
+                fclose(STDOUT); fclose(STDERR); fclose($logfp); return true;' ) );
 }
 
 /**
@@ -39,8 +39,8 @@ if (empty($argv[1]) || $argv[1] == 'help' || !in_array($argv[2], array('all','on
 }
 
 /**
-* get cmd-line arguments
-*/
+ * get cmd-line arguments
+ */
 // get $action argument
 $test_name = strtolower($argv[1]);
 // get $action argument
@@ -52,20 +52,33 @@ if (!empty($argv[4])) $sessionID = $argv[4];
 
 
 /**
-* inititalize
-*/
+ * inititalize
+ */
 set_include_path(get_include_path().":../php/libraries:");
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize("../project/config.xml");
 
-// include instrument class
-if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
-	fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
-	return false;
+$today= getdate();
+$date = sprintf("%04d-%02d-%02d", $today['year'], $today['mon'], $today['mday']);
+
+$logfp = fopen("logs/score_instrument.$date.log", 'a');
+function log_msg($message) {
+    global $logfp;
+    $now_array = getdate();
+    $now_string = sprintf("%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'], $now_array['mon'], $now_array['mday'], $now_array['hours'], $now_array['minutes'], $now_array['seconds']);
+    fwrite($logfp, "[$now_string] $message\n");
 }
-require_once "../project/instruments/NDB_BVL_Instrument_$test_name.class.inc";
+
+// include instrument class
+if($test_name != 'all') {
+    if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
+        fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
+        return false;
+    }
+    require_once "../project/instruments/NDB_BVL_Instrument_$test_name.class.inc";
+}
 
 $db =& Database::singleton();
 if(PEAR::isError($db)) {
@@ -75,8 +88,12 @@ if(PEAR::isError($db)) {
 
 
 // check that the $test_name is a valid instrument
-$query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y' AND Test_name ='$test_name'";
-$db->selectRow($query, $result);
+if($test_name== 'all') {
+    $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y'";
+} else {
+    $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y' AND Test_name ='$test_name'";
+}
+$db->select($query, $result);
 if (PEAR::isError($result)) {
     fwrite(STDERR, "DBError, failed to get the list of instruments: \n".$result->getMessage()."\n");
     return false;
@@ -89,57 +106,83 @@ if (!is_array($result) || count($result)==0) {
 
 
 // get the list of CommentIDs for valid timepoints
-$query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID
-          FROM candidate as c, session as s, flag as f, $test_name as t
-          WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
-          AND s.Active = 'Y' AND s.Cancelled = 'N' AND c.Active='Y' AND c.Cancelled='N'
-          AND f.Test_name = '$test_name' AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
-if ($action=='one') {
-    $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";
-}
-$db->select($query, $result);
-if (PEAR::isError($result)) {
-    fwrite(STDERR, "Dberror, failed to get the list of visits: \n".$result->getMessage()."\n");
-    return false;
-}
-// return error if no candidates/timepoint matched the args
-if (!is_array($result) || count($result)==0) {
-    fwrite(STDERR, "No records match the criteria returned for candidate ($candID), timepoint ($sessionID)!\n");
-    return false;
-}
+foreach($result as $test) {
+    $test_name = $test['test_name'];
+    fwrite(STDERR, "Running scoring for $test_name");
+    log_msg("");
+    log_msg("Running scoring for $test_name");
+    log_msg("------------------------------");
 
-fwrite(STDERR, "Start \n");
-
-// loop the list and derive scores for each record
-foreach ($result as $record) {
-    
-    // make an instance of the instrument's object
-    $instrument =& NDB_BVL_Instrument::factory($test_name, $record['CommentID'],null);
-    if (PEAR::isError($instrument)) {
-        fwrite(STDERR, $instrument->getMessage()."\n");
+    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID
+        FROM candidate as c, session as s, flag as f, $test_name as t
+        WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
+        AND s.Active = 'Y' AND s.Cancelled = 'N' AND c.Active='Y' AND c.Cancelled='N'
+        AND f.Test_name = '$test_name' AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
+    if ($action=='one') {
+        $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";
     }
-
-    // check if the instrument has a scoring method
-    if (!method_exists($instrument, "score")) {
-        fwrite(STDERR, "Error, the instrument ($test_name) does not have a scoring feature \n");
+    $db->select($query, $result);
+    if (PEAR::isError($result)) {
+        fwrite(STDERR, "Dberror, failed to get the list of visits: \n".$result->getMessage()."\n");
         return false;
     }
-    
-    // print out candidate/session info
-    fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: \n");
-    fwrite(STDERR, "Candidate: ".$instrument->_dob."/".$instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
-    
-    // call the score function
-    $success = $instrument->score();
-    if (PEAR::isError($success)) {
-        fwrite(STDERR, "Error, failed to score the instrument ($test_name) for CommentID (".$record['CommentID']."):\n".$success->getMessage()."\n");
+    // return error if no candidates/timepoint matched the args
+    if (!is_array($result) || count($result)==0) {
+        fwrite(STDERR, "No records match the criteria returned for candidate ($candID), timepoint ($sessionID)!\n");
         return false;
     }
-    
-    fwrite(STDERR, "-- OK! \n");
-    // unset
-    unset($instrument);
+
+    fwrite(STDERR, "Start \n");
+
+    // loop the list and derive scores for each record
+    foreach ($result as $record) {
+        // make an instance of the instrument's object
+        $instrument =& NDB_BVL_Instrument::factory($test_name, $record['CommentID'],null);
+        if (PEAR::isError($instrument)) {
+            fwrite(STDERR, $instrument->getMessage()."\n");
+        }
+
+        // check if the instrument has a scoring method
+        if (!method_exists($instrument, "score")) {
+            fwrite(STDERR, "Error, the instrument ($test_name) does not have a scoring feature \n");
+            return false;
+        }
+
+        // print out candidate/session info
+        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: \n");
+        fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
+
+        // call the score function
+        $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $oldRecord);
+        $success = $instrument->score();
+        if (PEAR::isError($success)) {
+            fwrite(STDERR, "Error, failed to score the instrument ($test_name) for CommentID (".$record['CommentID']."):\n".$success->getMessage()."\n");
+            return false;
+        }
+        $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $newRecord);
+        unset($oldRecord['Testdate']);
+        unset($newRecord['Testdate']);
+        $diff = array_diff_assoc($oldRecord, $newRecord);
+
+        if($diff != array()) {
+
+            log_msg("Updated $record[CommentID]:");
+            foreach ($diff as $key => $val) {
+                $old = $oldRecord[$key] == null ? 'null' : $oldRecord[$key];
+                $new = $newRecord[$key] == null ? 'null' : $newRecord[$key];
+                log_msg("\t$key: $old => $new");
+            }
+        }
+        else {
+            log_msg("No changes made to $record[CommentID]");
+        }
+
+        fwrite(STDERR, "-- OK! \n");
+        // unset
+        unset($instrument);
+    }
 }
 
-fwrite(STDERR, "End \n");
+fclose($logfp);
+fwrite(STDERR, "End \n")
 ?>

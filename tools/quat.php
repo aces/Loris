@@ -180,7 +180,7 @@ foreach($parameterTypes AS $parameterType) {
 
     //for behavioural instrument data
     default:
-        $query = "SELECT session.ID AS SessionID, $parameterType[SourceField] AS Value FROM session, flag LEFT JOIN feedback_bvl_thread USING (CommentID), $parameterType[SourceFrom] LEFT JOIN candidate ON (session.CandID = candidate.CandID) WHERE session.ID=flag.SessionID AND flag.Administration<>'None' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
+        $query = "SELECT session.ID AS SessionID, $parameterType[SourceField] AS Value FROM session JOIN flag ON (session.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID), $parameterType[SourceFrom] LEFT JOIN candidate ON (session.CandID = candidate.CandID) WHERE flag.Administration<>'None' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
         break;
     }
 
