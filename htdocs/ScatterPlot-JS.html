@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Loris Scatterplot</title>
+		
+        <!-- jQuery, for ajax retrieval and CSV parsing -->
+		<script type="text/javascript" src="JS/jquery-1.4.2.min.js"></script>
+        <!-- jQuery CSV parser plugin, which handles escaping/quotes -->
+		<script type="text/javascript" src="JS/jquery.csv.js"></script>
+        <!-- highcharts graphing library -->
+		<script type="text/javascript" src="JS/Highcharts/js/highcharts.src.js"></script>
+		
+		<script type="text/javascript">
+			var chart;
+            // Put RenderChart 
+            function RenderChart() {
+				ChartOptions = {
+					chart: {
+						renderTo: 'scatterplot', 
+						defaultSeriesType: 'scatter',
+						zoomType: 'xy'
+					},
+					title: {
+						text: 'Score Versus Age of Candidates'
+					},
+					xAxis: {
+						title: {
+							enabled: true,
+							text: 'Age (Months)'
+						},
+						startOnTick: true,
+						endOnTick: true,
+						showLastLabel: true
+					},
+					yAxis: {
+						title: {
+							text: 'Score'
+						},
+						startOnTick: true,
+						endOnTick: true,
+						showLastLabel: true
+					},
+					tooltip: {
+						formatter: function() {
+				                return ''+
+								this.x +' , '+ this.y +' ' + this.point.name;
+						}
+					},
+					legend: {
+						layout: 'vertical',
+						align: 'left',
+						verticalAlign: 'top',
+						x: 100,
+						y: 70,
+						floating: true,
+						backgroundColor: '#FFFFFF',
+						borderWidth: 1
+					},
+					plotOptions: {
+						scatter: {
+							marker: {
+								radius: 5,
+								states: {
+									hover: {
+										enabled: true,
+										lineColor: 'rgb(100,100,100)'
+									}
+								}
+							},
+							states: {
+								hover: {
+									marker: {
+										enabled: false
+									}
+								}
+							}
+						}
+					}
+				};
+                
+                var Field = document.getElementById('FieldX').value;
+
+                jQuery.get('GetCSV.php?Instrument=adi_r_proband&Field=' + Field + '&Administration=All', function(cdata) {
+                    var CSVData = jQuery.csv(',', '"', "\n")(cdata);
+                    var series = [{
+                            animation: false,
+                            name: 'Within Window',
+                            color: 'rgba(223, 83, 83, .5)',
+                            data: []
+                        }, {
+                            animation: false,
+                            name: 'Outside Window',
+                            color: 'rgba(119, 152, 191, .5)',
+                            data: []
+                        }
+                    ]; 
+
+                    jQuery.each(CSVData, function(lineNo, line) {
+                        if(line[3] < 0) {
+                            series[1].data.push({ x: line[1], y: line[2], name: line[0]});
+                        } else {
+                            //series[0].data.push([line[1], line[2]]);
+                            series[0].data.push({ 
+                                x: parseFloat(line[1]), 
+                                y: parseFloat(line[2]), 
+                                name: line[0]
+                            }); 
+                        }
+                    });
+                    ChartOptions.series = series;
+                    var chart = new Highcharts.Chart(ChartOptions);
+                });
+
+				
+				
+			};
+			jQuery(document).ready(function() {
+                RenderChart();
+                jQuery("#FieldX").change(function() {
+                    RenderChart()
+                });
+            });
+				
+		</script>
+		
+	</head>
+	<body>
+        <select id="FieldX" name="FieldX">
+            <option>Total_A1</option>
+            <option>A_Total</option>
+        </select>
+		
+		<div id="scatterplot" style="width: 800px; height: 600px; margin: 0 auto"></div>
+		
+				
+	</body>
+</html>
