@@ -187,7 +187,7 @@ switch($_REQUEST['mode']) {
      break;
 
  case "executeQuery":
-     $querySegments=explode("{-@-}",$_POST[queryData]);
+     $querySegments=explode("{-@-}",$_POST['queryData']);
 
      $querySegments=array("name"=>$querySegments[0],
                           "selected_fields"=>$querySegments[1],
