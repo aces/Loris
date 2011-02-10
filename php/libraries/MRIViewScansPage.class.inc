@@ -259,8 +259,8 @@ class MRINavigation {
     function MRINavigation($sessionID = null) {
         $this->SessionID = $sessionID;
         $this->FilteredSessionList = $_SESSION['State']->getProperty('mriSessionsListed');
-        if (!is_array($this->filteredSessionList)) {
-            $this->filteredSessionList = array(); 
+        if (!is_array($this->FilteredSessionList)) {
+            $this->FilteredSessionList = array(); 
         }
         $this->currentListIndex = array_search($this->SessionID, $this->FilteredSessionList);
         $this->urlParams = $this->_splitURL();
