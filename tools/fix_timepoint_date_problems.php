@@ -358,7 +358,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         return PEAR::raiseError("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
     if (PEAR::isError($user)) {
-        return ("Error, failed to create User object for (".getenv('USER'."):".$user->getMessage()." \n");
+        return ("Error, failed to create User object for (".getenv('USER')."):".$user->getMessage()." \n");
     }
 
     $db =& Database::singleton();
