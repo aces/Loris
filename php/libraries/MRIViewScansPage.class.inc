@@ -136,9 +136,9 @@ class MRIViewScansPage {
 
             }
             else {
-                $ID = "lower('" . $candidate->getPSCID() . "_" . $timePoint->getCandID() . "_" . $timePoint->getVisitLabel() ."')";
+                $ID = "lower('" . $candidate->getPSCID() . "_" . $timePoint->getCandID() . "_" . $timePoint->getVisitLabel() ."%')";
             }
-            $this->DB->select("SELECT TarchiveID FROM tarchive WHERE PatientName=$ID", $tarchiveIDs);
+            $this->DB->select("SELECT TarchiveID FROM tarchive WHERE PatientName LIKE $ID", $tarchiveIDs);
             $subjectData['ParameterFormCommentID'] = $this->DB->selectOne("SELECT CommentID FROM flag WHERE Test_name='mri_parameter_form' AND SessionID=" . $_REQUEST['sessionID']);
             $subjectData['tarchiveids'] = $tarchiveIDs;
         }
