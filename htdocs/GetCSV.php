@@ -64,8 +64,12 @@ if(isset($InstrumentX)) {
 }
 
 
-$FullQuery = "SELECT c.PSCID as ID, $FieldX as X, $Field as Y, COALESCE(i.Window_Difference, 0) as Category FROM $QueryTable WHERE $QueryCondition";
+$FullQuery = "SELECT c.PSCID as ID, $FieldX as X, $Field as Y, COALESCE(i.Window_Difference, 0) as Category, c.CandID, s.ID as SessionID, i.CommentID FROM $QueryTable WHERE $QueryCondition";
 $rows = $DB->pselect($FullQuery, $ConditionBindings);
 foreach($rows as $row) {
-    print "\"$row[ID]\",\"$row[X]\",\"$row[Y]\",\"$row[Category]\"\n";
+    foreach($row as $key => $val) {
+        print "\"$val\",";
+    }
+    print "\n";
+    //print "\"$row[ID]\",\"$row[X]\",\"$row[Y]\",\"$row[Category]\"\n";
 }
