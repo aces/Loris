@@ -153,18 +153,18 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             $extra_where .= AddWhere("TableName", 'Instrument');
             $extra_where .= AddWhere("FieldName", 'Question');
             $extra_where .= AddWhere("s.CandID", 'CandID');
-            $extra_where .= AddWhere("s.PSCID", 'PSCID');
+            $extra_where .= AddWhere("ca.PSCID", 'PSCID');
             $extra_where .= AddWhere("s.CenterID", 'site');
 
             // The 1=1 condition is just so that we can AND all the conditions together without worrying about whether or not
             // it's the first condition to be added.
-            $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, Visit_label, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) WHERE 1=1 $extra_where", $conflicts);
+            $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, Visit_label, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts);
             //If there are no conflicts print a message to that effect
             if(empty($conflicts)){
                 $this->form->addElement('static', "status", "No conflicts matching criteria found.");
                 return;
             } else {
-                $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) WHERE 1=1 $extra_where", $conflicts_num);
+                $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
                 $this->form->addElement('static', 'total', 'Total number of results:', $conflicts_num['total']);
             }
         } else {

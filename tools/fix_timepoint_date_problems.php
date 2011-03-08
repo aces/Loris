@@ -47,6 +47,7 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 $configFile = "../project/config.xml";
 
 require_once "NDB_Client.class.inc";
+require_once "NDB_BVL_Battery_Manual.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
@@ -253,9 +254,12 @@ switch ($action)
 function addInstrument($sessionID, $testName)
 {
     // check the user $_ENV['USER']
-    $user =& User::singleton($_ENV['USER']);
+    $user =& User::singleton(getenv('USER'));
+    if($user->getUsername() == null) {
+        return PEAR::raiseError("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
+    }
     if (PEAR::isError($user)) {
-    	return ("Error, failed to create User object for (".$_ENV['USER']."):".$user->getMessage()." \n");
+    	return ("Error, failed to create User object for (".$getenv('USER')."):".$user->getMessage()." \n");
     }
 
     // check the args
@@ -272,7 +276,7 @@ function addInstrument($sessionID, $testName)
     }
     
     // create battery object
-    $battery =& new NDB_BVL_Battery();
+    $battery =& new NDB_BVL_Battery_Manual();
     if(PEAR::isError($battery)) {
         return PEAR::raiseError("Failed to create battery object: ".$battery->getMessage());
     }
@@ -307,6 +311,7 @@ function addInstrument($sessionID, $testName)
      * add Feedback
      */
     // feedback object
+    print $user->getUsername();
     $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID, $commentID);
     if (PEAR::isError($feedback)) {
         return PEAR::raiseError("Failed to create feedback object: " . $feedback->getMessage());
@@ -348,9 +353,12 @@ function addInstrument($sessionID, $testName)
 function fixDate($candID, $dateType, $newDate, $sessionID=null)
 {
     // check the user $_ENV['USER']
-    $user =& User::singleton($_ENV['USER']);
+    $user =& User::singleton(getenv('USER'));
+    if($user->getUsername() == null) {
+        return PEAR::raiseError("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
+    }
     if (PEAR::isError($user)) {
-        return ("Error, failed to create User object for (".$_ENV['USER']."):".$user->getMessage()." \n");
+        return ("Error, failed to create User object for (".getenv('USER')."):".$user->getMessage()." \n");
     }
 
     $db =& Database::singleton();
@@ -549,7 +557,7 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
             fwrite(STDERR, "Age at $stage: $age [ $dateBirth $dateOfStage]\n");
 
             // create battery object
-            $battery =& new NDB_BVL_Battery();
+            $battery =& new NDB_BVL_Battery_Manual();
             if(PEAR::isError($battery)) {
                 return PEAR::raiseError("Failed to create battery object:\n".$battery->getMessage());
             }

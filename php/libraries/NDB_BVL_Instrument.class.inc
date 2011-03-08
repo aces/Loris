@@ -477,6 +477,17 @@ class NDB_BVL_Instrument extends PEAR
             }
         }
     }
+    function _nullStatus(&$values) {
+        //Remove the values of all fields who have had statuses assigned
+        foreach(array_keys($values) AS $field){
+            if(substr($field, -7)=="_status"){
+                if(!empty($values[$field])){
+                    $baseField=substr($field,0,(strlen($field)-7));
+                    $values[$baseField]="";
+                }
+            }
+        }
+    }
     /**
      * preprocesses the array of values to be saved into the database
      * (such as to rearrange date fields)
@@ -517,15 +528,7 @@ class NDB_BVL_Instrument extends PEAR
         
         //XIN specific functionality
         if($this->formType=="XIN"){
-            //Remove the values of all fields who have had statuses assigned
-            foreach(array_keys($values) AS $field){
-                if(substr($field, -7)=="_status"){
-                    if(!empty($values[$field])){
-                        $baseField=substr($field,0,(strlen($field)-7));
-                        $values[$baseField]="";
-                    }
-                }
-            }
+            $this->_nullStatus(&$values);
         }
         
         // do not alter this when overwriting the method
