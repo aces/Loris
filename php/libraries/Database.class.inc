@@ -163,7 +163,7 @@ class Database extends PEAR
         $prep = $this->_PDO->prepare($prepQ);
         $prep->execute($exec_params);
         $this->affected = $prep->rowCount(); 
-        $this->lastInsertId = $this->_PDO->lastInsertId;
+        $this->lastInsertID = $this->_PDO->lastInsertId();
     }
 
     /**
@@ -364,7 +364,7 @@ class Database extends PEAR
     {
         $this->_printQuery($query);
         $this->affected = $this->_PDO->exec($query);
-        $this->lastInsertId = $this->_PDO->lastInsertId;
+        $this->lastInsertID = $this->_PDO->lastInsertId();
     }
 
     function prepare($query) {
