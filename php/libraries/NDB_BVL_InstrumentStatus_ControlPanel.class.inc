@@ -170,7 +170,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $showLink = true;
                 $Validity = $this->getValidityStatus();
                 if($Validity == NULL
-                    && $this->_instrument->ValidityRequired == true) {
+                    && $this->_instrument->ValidityRequired == true && $this->getAdministrationStatus() != 'None') {
                     $showLink = false;
                 }
 
