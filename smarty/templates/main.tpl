@@ -145,6 +145,9 @@ function feedback_bvl_popup(features) {
                     <th nowrap="nowrap">Visit to Site</th>
                     <th nowrap="nowrap">Subproject</th>
                     <th nowrap="nowrap">MR Scan Done</th>
+                    {* <th nowrap="nowrap">Age During Visit</th> *}
+                    <th nowrap="nowrap">Within Optimal</th>
+                    <th nowrap="nowrap">Within Permitted</th>
                     {if $SupplementalSessionStatuses }
                         {foreach from=$timePoint.status item=status key=name}
                             <th nowrap="nowrap">{$name}</th>
@@ -165,6 +168,9 @@ function feedback_bvl_popup(features) {
                     <td nowrap="nowrap">{$timePoint.PSC}</td>
                     <td nowrap="nowrap">{$timePoint.SubprojectTitle}</td>
                     <td nowrap="nowrap">{$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"images/help2.gif\" width=\"12\" height=\"12\" />"}</td>
+                    {* <td nowrap="nowrap">{$timePoint.WindowInfo.AgeDays}</td> *}
+                    <td nowrap="nowrap">{if $timePoint.WindowInfo.Optimum}Yes{else}No{/if}</td>
+                    <td nowrap="nowrap" {if not $timePoint.WindowInfo.Optimum}class="error"{/if}>{if $timePoint.WindowInfo.Permitted}Yes{else}No{/if}</td>
                     {if $SupplementalSessionStatuses }
                         {foreach from=$timePoint.status item=status}
                             <td nowrap="nowrap">{$status}</td>

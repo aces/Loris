@@ -84,6 +84,9 @@ Class TimePoint
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
             }
+            $this->_timePointInfo['WindowInfo'] = $db->pSelectRow("
+           SELECT DATEDIFF(s.Date_visit, c.DoB) as AgeDays, DATEDIFF(s.Date_visit, c.DoB) BETWEEN w.OptimumMinDays AND w.OptimumMaxDays as Optimum, (DATEDIFF(s.Date_visit, c.DoB) BETWEEN w.WindowMinDays AND w.WindowMaxDays) as Permitted FROM session s JOIN candidate c USING (CandID) JOIN Visit_Windows w ON (lower(w.Visit_label)=lower(s.Visit_label)) WHERE s.ID=:sessionID",
+                array(":sessionID" => $sessionID));
 
         }
 
