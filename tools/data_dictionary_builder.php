@@ -113,7 +113,9 @@ $abbreviations=array(
 'ibq_temperament'=>'ibq',
 'montreal_prenatal'=>'montreal_prenatal',
 'parental_bonding_inventory'=>'pbi',
-'state_trait_anxiety_inventory'=>'stai'
+'state_trait_anxiety_inventory'=>'stai',
+'med_records_24' => 'med_rec_24',
+'med_records_recruit' => 'med_rec_recr'
 );
 
 
