@@ -43,6 +43,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 return PEAR::raiseError($instrument->getMessage());
             }
      
+            $this->ValidityEnabled = $instrument->ValidityEnabled;
+            $this->ValidityRequired = $instrument->ValidityRequired;
             // generate the subtest list
             $list = $instrument->getSubtestList();
             if (PEAR::isError($list)) {
@@ -77,13 +79,15 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 return PEAR::raiseError("InstrumentStatus_ControlPanel: ".$this->tpl_data['access']['data_entry']->getMessage());
             }
 
-            /*
             // generate the validity flag buttons
-            $this->tpl_data['access']['validity'] = $this->_displayValidity();
-            if (PEAR::isError($this->tpl_data['access']['validity'])) {
-                return PEAR::raiseError("InstrumentStatus_ControlPanel: ".$this->tpl_data['access']['validity']->getMessage());
+            if($this->ValidityEnabled == true) {
+                $this->tpl_data['access']['validity'] = $this->_displayValidity();
+                if (PEAR::isError($this->tpl_data['access']['validity'])) {
+                    return PEAR::raiseError("InstrumentStatus_ControlPanel: ".$this->tpl_data['access']['validity']->getMessage());
+                }
             }
 
+            /*
             // generate the exclusion flag buttons
             $this->tpl_data['access']['exclusion'] = $this->_displayExclusion();
             if (PEAR::isError($this->tpl_data['access']['exclusion'])) {
@@ -117,7 +121,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
         
         // get control panel selections from _REQUEST
-        $possibleFlags = array('setDataEntry', 'setAdministration');
+        $possibleFlags = array('setDataEntry', 'setAdministration', 'setValidity');
         $flagsToSave = array_intersect($possibleFlags, array_keys($_REQUEST));
 
         // make sure there are at least one flag to save
@@ -164,20 +168,26 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             // been set or the instrument is locked
             elseif ($hasAccess && $this->getAdministrationStatus()) {
                 $showLink = true;
-                if($option == 'Complete' && $this->getAdministrationStatus() == 'All') {
+                $Validity = $this->getValidityStatus();
+                if($Validity == NULL
+                    && $this->_instrument->ValidityRequired == true && $this->getAdministrationStatus() != 'None') {
+                    $showLink = false;
+                }
+
+                if($option == 'In Progress') {
+                    $showLink = true;
+                }
+                elseif($option == 'Complete' && $this->getAdministrationStatus() == 'All') {
                     // run the data entry logic test
                     $testName = Utility::getTestNameByCommentID($this->_commentID);
                     if(PEAR::isError($testName)) {
                         return PEAR::raiseError("Could not get test name: ".$testName->getMessage());
                     }
                     
-//                    $logicTest = NDB_BVL_LogicTest::singleton('data entry', $testName, $this->_commentID);
-//                    if(PEAR::isError($logicTest)) {
-//                        return PEAR::raiseError("Could not start DELT: ".$logicTest->getMessage());
-//                    }
-
                     if(isset($this->_instrument)) {
-                        $showLink = $this->_instrument->getDataEntryCompletionStatus() == 'Complete';
+                        if($showLink == true) {
+                            $showLink = $this->_instrument->getDataEntryCompletionStatus() == 'Complete';
+                        }
                     }
                 }
 
@@ -250,6 +260,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
 
         $validityStatus = $this->getValidityStatus();
+        $data_entry_status = $this->getDataEntryStatus();
 
         // loop through the options
         $i = 0;
@@ -262,6 +273,11 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             // highlight the current option if it's the current status
             if($validityStatus == $option) {
                $this->tpl_data['validity'][$i]['icon'] = 'selected';
+            }
+            if($data_entry_status == 'Complete') {
+               $this->tpl_data['validity'][$i]['showLink'] = false;
+            } else {
+               $this->tpl_data['validity'][$i]['showLink'] = true;
             }
             $i++;
         }

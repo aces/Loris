@@ -137,26 +137,96 @@ Class Instrument_List_ControlPanel extends TimePoint
             // move to next stage (approval or the bin)
             if($currentStatus == 'Pass') $nextStage = 'Approval';
             else $nextStage = 'Recycling Bin';
-
             $this->startStage($nextStage);
+            
+            if ($nextStage = 'Recycling Bin'){ 
+                
+                $battery =& new NDB_BVL_Battery();
+                if(PEAR::isError($battery)) {
+                    return PEAR::raiseError("Battery Error: ".$battery->getMessage());
+                }
+                
+                // set the SessionID for the battery
+                $success = $battery->selectBattery($this->getData('SessionID'));
+                if(PEAR::isError($success)) {
+                    return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
+                }
+
+                // get the list of instruments
+                $batteryList = $battery->getBatteryVerbose();
+                if (PEAR::isError($batteryList)) {
+                    return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
+                }
+                
+                // Get the list of DDE instruments
+                $config =& NDB_Config::singleton();
+                $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+                
+                // clear the unresolved conflicts for all the instruments
+                foreach ($batteryList as $instrument) {
+                    
+                    // If the instrument requires double data entry, check that DDE is also done
+                    if(in_array($instrument['Test_name'], $ddeInstruments)) {
+                        ConflictDetector::clearConflictsForInstance($instrument['CommentID']);
+                    }
+                }
+                
+            }
+            
             return;
         }
-
+        
         // un-submit to dcc
         if ($_REQUEST['setSubmitted'] == 'N'
             && $this->_hasAccess_SendToDCC()
             && !in_array($currentStage, array(null, 'Not Started', 'Visit', 'Screening')))
-        {
-            $this->setData('Submitted', $_REQUEST['setSubmitted']);
-            
-            // revert from approval (or the bin)
-            if($currentStage == 'Approval') {
-                $this->setData(array('Approval'=>NULL, 'Date_approval'=>NULL));
+            {
+                $this->setData('Submitted', $_REQUEST['setSubmitted']);
+                
+                // revert from approval (or the bin)
+                if($currentStage == 'Approval') {
+                    $this->setData(array('Approval'=>NULL, 'Date_approval'=>NULL));
+                }
+                $previousStage = $this->_determinePreviousStage();
+                $this->startStage($previousStage);
+                  
+                $battery =& new NDB_BVL_Battery();
+                if(PEAR::isError($battery)) {
+                    return PEAR::raiseError("Battery Error: ".$battery->getMessage());
+                }
+                
+                // set the SessionID for the battery
+                $success = $battery->selectBattery($this->getData('SessionID'));
+                if(PEAR::isError($success)) {
+                    return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
+                }
+                
+                // get the list of instruments
+                $batteryList = $battery->getBatteryVerbose();
+                if (PEAR::isError($batteryList)) {
+                    return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
+                }
+                
+                // Get the list of DDE instruments
+                $config =& NDB_Config::singleton();
+                $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+                
+                // detect conflicts for all the instruments
+  
+                foreach ($batteryList as $instrument) {
+                    
+                    // If the instrument requires double data entry, detect conflicts
+                    if(in_array($instrument['Test_name'], $ddeInstruments)) {
+                        // ConflictDetector::clearConflictsForInstance($instrument['CommentID']);
+                        ConflictDetector::clearConflictsForInstance($instrument['CommentID']);
+                        $diff=ConflictDetector::detectConflictsForCommentIds($instrument['Test_name'], $instrument['CommentID'], $instrument['DDECommentID']);
+                        ConflictDetector::recordUnresolvedConflicts($diff);
+
+                    }
+                }
+                
+                return;
             }
-            $previousStage = $this->_determinePreviousStage();
-            $this->startStage($previousStage);
-            return;
-        }
         
         // set the BVLQC flag
         $user =& User::singleton();
@@ -238,15 +308,34 @@ Class Instrument_List_ControlPanel extends TimePoint
             return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
         }
            
+        // Get the list of DDE instruments
+        $config =& NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+
         // loop the list and check the Data Entry status
+        $ddeConflictDetected=false;
         foreach ($batteryList as $instrument) {
-            $query = "SELECT Data_entry FROM flag WHERE CommentID = '".$instrument['CommentID']."'";
-            $dataEntry = $db->selectOne($query);
-            if (PEAR::isError($dataEntry)) {
-                return PEAR::raiseError ("DB Error: " .$dataEntry->getMessage());
-            }
+            $status = new NDB_BVL_InstrumentStatus();
+            $status->select($instrument['CommentID']);
+            $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
                 break;
+            }
+
+            // If the instrument requires double data entry, check that DDE is also done
+            if(in_array($instrument['Test_name'], $ddeInstruments)) {
+                $status = new NDB_BVL_InstrumentStatus();
+                $status->select($instrument['DDECommentID']);
+                $dataEntry = $status->getDataEntryStatus();
+                if ($dataEntry != 'Complete') {
+                    break;
+                }
+
+                // Pretend data entry is not complete if there are conflicts
+                if(ConflictDetector::isInstrumentInstanceInConflictState($instrument['CommentID'])) {
+                    $ddeConflictDetected=true;
+                    break;
+                }
             }
         }
 
@@ -267,14 +356,16 @@ Class Instrument_List_ControlPanel extends TimePoint
             elseif (in_array($currentStage, $this->_dynamicStageOptions)
                     && (!$this->isSubmitted() || ($this->isSubmitted() && $hasAccess))) {
                 
-                // if Scan Done is NULL or some of the instruments' data entry in incomplete
-                if ($option == 'In Progress' || $dataEntry == 'Complete') {
-                    // construct the URL
+                if ($option == 'In Progress') {
+                    $this->tpl_data['status'][$i]['showlink'] = true;
+                } elseif ($option == 'Pass' && $dataEntry == 'Complete' && !$ddeConflictDetected) {
+                    $this->tpl_data['status'][$i]['showlink'] = true;
+                } elseif (($option == 'Failure' || $option == 'Withdrawal') && $dataEntry == 'Complete') {
                     $this->tpl_data['status'][$i]['showlink'] = true;
                 } else {
-                    // block the button
                     $this->tpl_data['status'][$i]['icon'] = 'locked';
                 }
+                
             } else {
                 $this->tpl_data['status'][$i]['icon'] = 'locked';
             }
@@ -374,9 +465,54 @@ Class Instrument_List_ControlPanel extends TimePoint
             $this->tpl_data['send_to_dcc']['reverse'] = 'Reverse Send To DCC';
         }
 
-        return $hasAccess;
+        $battery =& new NDB_BVL_Battery();
+        if(PEAR::isError($battery)) {
+            return PEAR::raiseError("Battery Error: ".$battery->getMessage());
+        }
+        
+        // set the SessionID for the battery
+        $success = $battery->selectBattery($this->getData('SessionID'));
+        if(PEAR::isError($success)) {
+            return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
+        }
+        
+        // get the list of instruments
+        $batteryList = $battery->getBatteryVerbose();
+        if (PEAR::isError($batteryList)) {
+            return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
+        }
+        
+        // Get the list of DDE instruments
+        $config =& NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        
+        // clear the unresolved conflicts for all the instruments
+        $allDataEntryComplete=true;
+        foreach ($batteryList as $instrument) {
+            
+            $status = new NDB_BVL_InstrumentStatus();
+            $status->select($instrument['CommentID']);
+            $dataEntry = $status->getDataEntryStatus();
+            if ($dataEntry != 'Complete') {
+                $allDataEntryComplete=false;
+                break;
+            }
+            
+            // If the instrument requires double data entry, check that DDE is also done
+            if(in_array($instrument['Test_name'], $ddeInstruments)) {
+                $status = new NDB_BVL_InstrumentStatus();
+                $status->select($instrument['DDECommentID']);
+                $dataEntry = $status->getDataEntryStatus();
+                if ($dataEntry != 'Complete') {
+                    $allDataEntryComplete=false;
+                    break;
+                }
+            }
+        }
+        
+        return ($hasAccess && $allDataEntryComplete);
     }
-
+    
     /*
     * returns the reason why the user cannot send to dcc.
     */
@@ -406,9 +542,57 @@ Class Instrument_List_ControlPanel extends TimePoint
         if($config->getSetting("useScanDone")==="false" || ($this->getData('Current_stage') != 'Screening' && empty($scanDone))){
         	return "The Scan done field must be entered for the Visit stage";
         }
+        
+        $battery =& new NDB_BVL_Battery();
+        if(PEAR::isError($battery)) {
+            return PEAR::raiseError("Battery Error: ".$battery->getMessage());
+        }
+        
+        // set the SessionID for the battery
+        $success = $battery->selectBattery($this->getData('SessionID'));
+        if(PEAR::isError($success)) {
+            return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
+        }
+        
+        // get the list of instruments
+        $batteryList = $battery->getBatteryVerbose();
+        if (PEAR::isError($batteryList)) {
+            return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
+        }
+        
+        // Get the list of DDE instruments
+        $config =& NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        
+        // clear the unresolved conflicts for all the instruments
+        $allDataEntryComplete=true;
+        foreach ($batteryList as $instrument) {
+            
+            $status = new NDB_BVL_InstrumentStatus();
+            $status->select($instrument['CommentID']);
+            $dataEntry = $status->getDataEntryStatus();
+            if ($dataEntry != 'Complete') {
+                $allDataEntryComplete=false;
+                break;
+            }
+            
+            // If the instrument requires double data entry, check that DDE is also done
+            if(in_array($instrument['Test_name'], $ddeInstruments)) {
+                $status = new NDB_BVL_InstrumentStatus();
+                $status->select($instrument['DDECommentID']);
+                $dataEntry = $status->getDataEntryStatus();
+                if ($dataEntry != 'Complete') {
+                    $allDataEntryComplete=false;
+                    break;
+                }
+            }
+        }
+        if(!$allDataEntryComplete) {
+            return "All instruments must have data entry marked as complete.";
+                }
     }
     
-   
+    
     function _hasAccess_SendToDCC()
     {
         // create user object

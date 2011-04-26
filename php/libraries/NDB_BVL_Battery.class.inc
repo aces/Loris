@@ -100,14 +100,14 @@ class NDB_BVL_Battery extends PEAR
      * @return void
      * @access public
      */
-    function createBattery($SubprojectID, $stage=null)
+    function createBattery($SubprojectID, $stage=null,$visit_label=null)
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
         if($this->isError($error)) return $error;
         
         // get the current battery
-        $currentTests = $this->getBattery($stage, $SubprojectID);
+        $currentTests = $this->getBattery($stage, $SubprojectID,$visit_label);
         if($this->isError($currentTests)) {
             return $this->raiseError("Could not get the current list of instruments, thus unable to assert that the battery is empty");
         }
@@ -118,7 +118,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // determine the list of instruments to register
-        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage);
+        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage,$visit_label);
         if($this->isError($neededTests)) {
             return $this->raiseError("Could not lookup the battery for age $this->age and subprojectID ".$this->getSubprojectID());
         }
@@ -183,6 +183,26 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to flag: $testName");
         }
+        
+        // generate the double data entry commentid
+        $ddeCommentID = 'DDE_'.$commentID;
+
+        // insert the dde into the test table
+         $success = $GLOBALS['DB']->insert($testName, array('CommentID'=>$ddeCommentID));
+        if($this->isError($success)) {
+            return $this->raiseError("Unable to add storage record to $ddeCommentID $testName");
+        }
+
+        // insert the dde into the flag table
+        $success = $GLOBALS['DB']->insert('flag', array('SessionID'=>$sessionData['SessionID'],
+                                                        'Test_name'=>$testName,
+                                                        'CommentID'=>$ddeCommentID,
+                                                        'UserID'=>$sessionData['UserID'],
+                                                        'Testdate'=>null));
+        if($this->isError($success)) {
+            return $this->raiseError("Unable to add storage record to flag: $testName");
+        }
+        
     } // end addInstrument()
     
     /**
@@ -218,7 +238,7 @@ class NDB_BVL_Battery extends PEAR
      * @return array    an array of instrument names
      * @access public
      */
-    function getBattery($stage=null, $SubprojectID=null)
+    function getBattery($stage=null, $SubprojectID=null, $visit_label=null)
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
@@ -227,9 +247,16 @@ class NDB_BVL_Battery extends PEAR
         // craft the select query
         $query = "SELECT f.Test_name FROM ";
         if(!is_null($stage)) $query .= "test_battery AS b, ";
-        $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID='$this->sessionID'";
+        $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID='$this->sessionID' AND LEFT(f.CommentID,3) != 'DDE'";
 
         if(!is_null($stage)) {
+            if(!is_null($visit_label)) {
+                $query .= " AND b.Visit_label='$visit_label'";
+            } else {
+                $query .= " OR b.Visit_label IS NULL";
+            }
+        }
+        if(!is_null($stage) && !is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage='$stage'";
 
             if(!is_null($SubprojectID)) {
@@ -272,9 +299,11 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // craft the select query
-        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, ts.Subgroup_name as Sub_group FROM flag AS f, test_names as t, test_subgroups as ts ";
+        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group FROM flag AS f, test_names as t, test_subgroups as ts ";
+
+//        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group, CONCAT('<a href=\"mailto:', u.Email, '\">', u.Real_name, '</a>') as TestExpert FROM flag AS f cross join test_names as t cross join test_subgroups as ts left join users u ON(u.ID=t.TestExpert)";
         if(!is_null($stage)) $query .= ", test_battery AS b";
-        $query .= " WHERE ts.ID = t.Sub_group AND f.Test_name=t.Test_name AND f.SessionID='$this->sessionID'";
+        $query .= " WHERE ts.ID = t.Sub_group AND f.Test_name=t.Test_name AND f.SessionID='$this->sessionID' AND LEFT(f.CommentID, 3) != 'DDE'";
 
         if(!is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage='$stage'";
@@ -297,6 +326,24 @@ class NDB_BVL_Battery extends PEAR
         return $rows;
     } // end getBatteryVerbose()
 
+    function isDoubleDataEntryEnabledForInstrument($instrumentName)
+    {
+        
+        $config =& NDB_Config::singleton();
+        $doubleDataEntryInstruments= $config->getSetting("DoubleDataEntryInstruments");
+
+        return in_array($instrumentName,$doubleDataEntryInstruments);
+
+
+    }
+
+    function getInstrumentNameForCommentId($commentId) {
+        $db =& Database::singleton();
+        $query = "SELECT Test_name FROM flag WHERE CommentID='$commentId'";
+        $instrumentName = $db->selectOne($query);
+        return $instrumentName;
+    }
+
     /**
      * looks up the appropriate battery for the current visit, based
      * on age AND subproject
@@ -309,12 +356,20 @@ class NDB_BVL_Battery extends PEAR
      * @return array  an array of instrument names
      * @access public
      */
-    function lookupBattery($age, $SubprojectID, $stage=null)
+    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null)
     {
         if(empty($this->age)) $this->age = $age;
         // The query to lookup the battery uses the min/max age ranges if they are not 0 
         $query = "SELECT t.Test_name FROM test_battery AS b, test_names AS t WHERE t.Test_name=b.Test_name AND ((b.AgeMinDays=0 AND b.AgeMaxDays=0) OR (b.AgeMinDays<='$this->age' AND b.AgeMaxDays>='$this->age')) AND b.Active='Y' AND (SubprojectID='$SubprojectID' OR SubprojectID IS NULL)";
 
+        if(!is_null($visit_label)) {
+            $VisitBatteryExists = $GLOBALS['DB']->selectOne("SELECT count(*) FROM test_battery WHERE Visit_label = '$visit_label'");
+            if($VisitBatteryExists > 0) {
+                $query .= " AND b.Visit_label='$visit_label'";
+            } else {
+                $query .= " AND b.Visit_label IS NULL";
+            }
+        } 
         if(!is_null($stage)) {
             $query .= " AND b.Stage='$stage'";
         }

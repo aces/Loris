@@ -21,6 +21,7 @@
  *           the passed parameters
  * @link http://smarty.php.net/manual/en/language.function.html.options.php {html_image}
  *      (Smarty online manual)
+ * @author Monte Ohrt <monte at ohrt dot com>
  * @param array
  * @param Smarty
  * @return string
@@ -72,14 +73,14 @@ function smarty_function_html_options($params, &$smarty)
 
     $_html_result = '';
 
-    if (is_array($options)) {
+    if (isset($options)) {
         
         foreach ($options as $_key=>$_val)
             $_html_result .= smarty_function_html_options_optoutput($_key, $_val, $selected);
 
     } else {
         
-        foreach ((array)$values as $_i=>$_key) {
+        foreach ($values as $_i=>$_key) {
             $_val = isset($output[$_i]) ? $output[$_i] : '';
             $_html_result .= smarty_function_html_options_optoutput($_key, $_val, $selected);
         }

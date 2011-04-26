@@ -1,5 +1,6 @@
 <?
 require_once "NDB_Form.class.inc";
+require_once('RequiredIf.inc');
 
 /**
  * Base Form class
@@ -85,12 +86,16 @@ class NDB_Reliability extends NDB_Form
      */
     function display()
     {
+        if($_REQUEST['blind'] == '1') {
+            $this->form->addElement('hidden', 'blind', $_REQUEST['blind']);
+        }
         if(!$this->form->isFrozen()) {
             // hidden values
             $this->form->addElement('hidden', 'test_name', $this->name);
             $this->form->addElement('hidden', 'subtest', $this->page);
             $this->form->addElement('hidden', 'identifier', $this->identifier);
          }
+
 
         // get the defaults
         $localDefaults = $this->_getDefaults();
@@ -112,7 +117,6 @@ class NDB_Reliability extends NDB_Form
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_$this->template.tpl");
         return $html;
-        //return $this->form->toHTML();
     }
 
     /**
@@ -145,7 +149,7 @@ class NDB_Reliability extends NDB_Form
      */
     function _save($values)
     {
-        unset($values['test_name'], $values['subtest'], $values['identifier'], $values['fire_away']);
+        unset($values['test_name'], $values['subtest'], $values['identifier'], $values['fire_away'], $values['blind']);
 
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -237,20 +241,31 @@ class NDB_Reliability extends NDB_Form
 
            //$this->form->addElement('text', 'Examiner', 'Examiner');
 
-           $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
+           //$this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
 
            $this->form->registerRule('checkdate', 'callback', '_checkDate');
+           //$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
+           
+           $this->form->addElement('select', 'invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
+           $this->form->addRule('invalid', 'Invalid flag is required.', 'required');
+           
            $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
 
-           $this->form->addRule('Examiner', 'Examiner is required', 'required');
+           //$this->form->addRule(array('invalid', 'Examiner'), 'Examiner is required,', 'requiredIf', array('operator'=>'==', 'value'=>'no'));
+           //$this->setRequired('invalid');
+           
        }
 
        function _getExaminerNames()
         {
             $db =& Database::singleton();
-            $centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->identifier."'");
+            $user =& User::singleton();
+            $centerID = $user->getCenterID();
+            //$centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->identifier."'");
 
-            $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
+            // UofA is a special case--they never enter their own data. So the available examiners are either the ones
+            // at the logged in user's site, or UofA
+            $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID IN ('$centerID', 6) ORDER BY full_name", $results);
             if($db->isError($results)) {
                 return $this->raiseError("Could not get examiner names: ".$results->getMessage());
             }
