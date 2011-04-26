@@ -88,6 +88,19 @@ class NDB_BVL_Instrument extends PEAR
      */
     var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
 
+    /**
+     * Whether the "Validity" field is shown as a flag for an instrument
+     * or not.
+     * @access private
+     */
+    var $ValidityEnabled = true;
+    /**
+     * Whether the "Validity" field is required before flagging an instrument
+     * as complete or not.
+     * @access private
+     */
+    var $ValidityRequired = true;
+
 
     // }}}
     // {{{ factory()
@@ -347,6 +360,9 @@ class NDB_BVL_Instrument extends PEAR
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
         
+        if($defaults['Window_Difference'] != 0) {
+            $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>'; //if($defaults['Window_Difference'] != 0) {
+        }
         //Convert select multiple elements into a quickform array
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
@@ -424,6 +440,54 @@ class NDB_BVL_Instrument extends PEAR
     // }}}
     // {{{ _saveValues()
     
+    function _saveCandidateAge(&$values) {
+        if(!empty($values['Date_taken'])) {
+            $DB = Database::singleton();
+            $age = $this->getCandidateAge($values['Date_taken']);
+            if(!PEAR::isError($age)) {
+                $agedays = $age['year']*365 + $age['mon']*30 + $age['day'];
+                $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
+                // 1 Decimal.
+                $agemonths = (round($agemonths*10) / 10.0);
+                if(!empty($age)) {
+                    $validage = $DB->selectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'");
+                    $values['Candidate_Age'] = $agemonths;
+                    $values['Window_Difference'] = 0;
+
+                    // Age isn't valid, so find out how far out it is
+
+                    if($validage == 0) {
+                        $DB->select("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'", $Windows);
+                        foreach ($Windows as $window) {
+                            if($agedays < $window['AgeMinDays']) {
+                                $delta = $window['AgeMinDays'] - $agedays;
+                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                    $values['Window_Difference'] = 0-abs($delta);
+                                }
+                            }
+                            if($agedays > $window['AgeMaxDays']) {
+                                $delta = $agedays - $window['AgeMaxDays'];
+                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                    $values['Window_Difference'] = abs($delta);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    function _nullStatus(&$values) {
+        //Remove the values of all fields who have had statuses assigned
+        foreach(array_keys($values) AS $field){
+            if(substr($field, -7)=="_status"){
+                if(!empty($values[$field])){
+                    $baseField=substr($field,0,(strlen($field)-7));
+                    $values[$baseField]="";
+                }
+            }
+        }
+    }
     /**
      * preprocesses the array of values to be saved into the database
      * (such as to rearrange date fields)
@@ -440,6 +504,7 @@ class NDB_BVL_Instrument extends PEAR
             $this->dateTimeFields=array("Date_taken");
         }
         
+
         //Convert date/time fields into database dates/times
         if (is_array($this->dateTimeFields) && count($this->dateTimeFields) > 0) {
             foreach($this->dateTimeFields as $field){
@@ -449,6 +514,9 @@ class NDB_BVL_Instrument extends PEAR
             }
         }
         
+        if(strrpos($this->testName, "_proband") === FALSE) {
+            $this->_saveCandidateAge(&$values);
+        }
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
@@ -460,15 +528,7 @@ class NDB_BVL_Instrument extends PEAR
         
         //XIN specific functionality
         if($this->formType=="XIN"){
-            //Remove the values of all fields who have had statuses assigned
-            foreach(array_keys($values) AS $field){
-                if(substr($field, -7)=="_status"){
-                    if(!empty($values[$field])){
-                        $baseField=substr($field,0,(strlen($field)-7));
-                        $values[$baseField]="";
-                    }
-                }
-            }
+            $this->_nullStatus(&$values);
         }
         
         // do not alter this when overwriting the method
@@ -527,6 +587,10 @@ class NDB_BVL_Instrument extends PEAR
 
         $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
         
+        if(strrpos($this->testName, '_proband') === FALSE) {
+            $this->form->addElement('static', 'Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
+            $this->form->addElement('static', 'Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
+        }
         $examiners = $this->_getExaminerNames();
         $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
         
@@ -754,52 +818,6 @@ class NDB_BVL_Instrument extends PEAR
         if(!empty($errors)){
             return $errors;
         }
-            /*
-        } else {
-            // run double-data entry test if appropriate
-            $config =& NDB_Config::singleton();
-            $doubleDataEntry = $config->getSetting('doubleDataEntry');
-            if($doubleDataEntry) {
-                // check for first save in session
-                $stateProperty = 'savedData'.$this->getCommentID().$this->page;
-                $oldData = $_SESSION['State']->getProperty($stateProperty);
-                if(!empty($oldData)) {
-                    // compare new data to old data
-                    $diff = array_diff_assoc($oldData, $elements);
-print "<!--\n DIFF \n"; print_r($diff); print "\n-->";
-                    
-                    if(empty($diff)) {
-                        $_SESSION['State']->setProperty($stateProperty, null);
-                        $_SESSION['State']->setProperty($stateProperty."_showData", true);
-                        return true;
-                    } else {
-                        $_SESSION['State']->setProperty($stateProperty, $elements);
-                        foreach($diff AS $elname=>$elvalue) {
-                            $errors[$elname] = "Doesn't match previous entry ($elvalue)";
-                        }
-                        return $errors;
-                    }
-                } else {
-                    // set old data in state
-                    $_SESSION['State']->setProperty($stateProperty, $elements);
-                    $_SESSION['State']->setProperty($stateProperty."_showData", false);
-
-print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); print "\n-->";
-                    // mark data for reentry
-                    foreach($elements AS $elname=>$elvalue) {
-                        $errors[$elname] = "Please re-enter data";
-                    }
-                    return $errors;
-                }
-            } else {
-                // no double data entry required
-                
-                }
-                
-                }
-                */
-           
-            
         return true;
     }
     
@@ -1037,6 +1055,31 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
     }
+    /**
+      * Wrapper to create a text field for questions that require Refused and Don't know options
+      */
+     
+    function addTextElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down', $refusals=array(''=>'', "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered')){
+        $group[]=&$this->form->createElement("text", $field);
+        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
+        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        unset($group);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+    }
+     
+    /**
+     * Wrapper to create a text area field for questions that require Refused and Don't know options
+     */
+     
+    function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
+        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
+        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
+        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        unset($group);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+    }
     
     /**
     * Wrapper to create a text area field, with an accompanying status field.
@@ -1045,6 +1088,8 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
     * @param    array    $rules    {@} delimited rules
     * @param    string    $rule_message    rule message to display upon rule violation
     */
+    
+
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
         $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
         $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
@@ -1085,6 +1130,21 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         
     }
 
+    /** 
+    * Wrapper with a user-created date group, a status box and appropriate rule
+    */
+    function addCustomDateElement($name, $label, $dateArray){
+        $group [] = $this->form->createElement("date", $name . "_date", null, $dateArray);
+        $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
+        $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
+        $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        unset($group);
+        $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
+        $this->XINRegisterRule($name . "_date_status", array($name . "_date{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
+
+    }
+
+
 
     /**
     * Wrapper to create a field that only accepts a number, with an accompanying status field.
@@ -1094,6 +1154,20 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
     function addNumericElement($field, $label) {
         $group [] = $this->form->createElement("text", $field, $label);
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        unset($group);
+        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+    }
+
+    /**
+    * Wrapper to create a field that only accepts a number, for questions that require refused and don't know options
+    *
+    */
+    
+    function addNumericElementRD($field, $label) {
+        $group [] = $this->form->createElement("text", $field, $label);
+        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
@@ -1169,8 +1243,25 @@ print "<!-- \n"; print "DDE: $doubleDataEntry\n"; print_r($_SESSION['State']); p
         
         return $defaults[0];
     }
-    
 
+    // The Date_taken can be manually passed in. This is the case when
+    // calculating the age while updating the Date_taken in _saveValues, 
+    //since we want to use the new value, not the old value
+    function getCandidateAge($Date_taken=FALSE) {
+        $db =& Database::singleton();
+        $CommentID = $this->getCommentID();
+        $db->selectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID='$CommentID'", &$dates);
+
+        if($Date_taken==FALSE) {
+            $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
+        } else {
+            $age = Utility::calculateAge($dates['DoB'], $Date_taken);
+        }
+        if(!empty($age)) {
+            return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
+        }
+        return;
+    }
 } //end class NDB_BVL_Instrument
 
 // {{{ _checkDate()

@@ -6,13 +6,17 @@
 <title>{$study_title}</title>
 
 {literal}
-<script language="javascript" type="text/javascript">
+<link type="text/css" href="JS/JQeggplant/css/eggplant/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
+<script src="JS/JQeggplant/js/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="JS/JQeggplant/js/jquery-ui-1.8.2.custom.min.js"></script>
+
+<script language="javascript" type="text/javascript"> 
 <!--
 function feedback_bvl_popup(features) { 
-{/literal}    
-    var myUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
-{literal}
-    window.open(myUrl, "feedback_control", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+    {/literal}    
+        var myUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
+        {literal}
+            window.open(myUrl, "feedback_control", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
 }
 //-->
 </script>
@@ -24,8 +28,7 @@ function feedback_bvl_popup(features) {
     onload="feedback_bvl_popup();"
 {/if}
 >
-                               
-<table border="0" cellpadding="3" cellspacing="2" width="100%">
+<table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
     <tr>
         <th align="left" background="images/title_background.jpg" class="banner" colspan="2">
             {$study_title}
@@ -38,94 +41,58 @@ function feedback_bvl_popup(features) {
             User: {$user.Real_name}&nbsp; Site: {$user.Site}&nbsp; Date: {$smarty.now|date_format:"%B %e %Y"}
         </td>
     </tr>
-
     <tr>
         <!-- nav bar table -->
-        <td colspan="2">
-          <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
+        <td colspan="2" class="navigationRow">
+            <ul class="navigationBar">
                 <!-- the buttons -->
                 {foreach from=$tabs item=tab}
-  				    {if $test_name == $tab.link && $subtest != "my_preferences"}
-  				      {assign var=tab_selected value="Selected"}
-  				    {/if}
-                    <td valign="middle"><img src="images/tab{$tab_selected}Left.png" alt="" width="3" height="28"/></td>
-                    <td valign="middle" nowrap="nowrap" background="images/tab{$tab_selected}Bg.png">
-                        &nbsp; <a href="main.php?test_name={$tab.link}">{$tab.label}</a>&nbsp;
-                    </td>
-                    <td valign="middle"><img src="images/tab{$tab_selected}Right.png" alt="" width="3" height="28" /></td>
-                    <td width="3" class="tabsp"><img src="images/shim.gif" alt="" height="1" width="3" /></td>
-  				    {assign var=tab_selected value=null}
+                    <li class="navigationButtons {if ($tab.link == $test_name && $subtest != "my_preferences")}active{elseif $tab.link == $top_level && $subtest != "my_preferences"}active{/if}">
+                        <a href="main.php?test_name={$tab.link}">{$tab.label}</a>
+                    </li>
                 {/foreach}
                 
                 <!-- my preferences button-->
-			    {if $test_name == "user_accounts" && $subtest == "my_preferences"}
-			      {assign var=tab_selected2 value="Selected"}
-			    {/if}
-                <td valign="middle"><img src="images/tab{$tab_selected2}Left.png" alt="" width="3" height="28" /></td>
-                <td valign="middle" nowrap="nowrap" background="images/tab{$tab_selected2}Bg.png">
-                    &nbsp;<a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a>&nbsp;
-                </td>
-                <td valign="middle"><img src="images/tab{$tab_selected2}Right.png" alt="" width="3" height="28" /></td>
-                <td width="3" class="tabsp"><img src="images/shim.gif" alt="" height="1" width="3" /></td>
-
-                <!-- log out button-->
-                <td valign="middle"><img src="images/tabLeft.png" alt="" width="3" height="28" /></td>
-                <td valign="middle" nowrap="nowrap" background="images/tabBg.png">
-                    &nbsp; <a href="main.php?logout=true">Log Out</a>&nbsp;
-                </td>
-                <td valign="middle"><img src="images/tabRight.png" alt="" width="3" height="28" /></td>
-             </tr>
-          </table>
+                <li class="navigationButtons {if $test_name== "user_accounts" && $subtest == "my_preferences" }active{/if}">
+                    <a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a>
+                </li>
+                <li class="navigationButtons"> 
+                    <a href="main.php?logout=true">Log Out</a>
+                </li>
+                </ul>
         </td>
     </tr>
 
     <tr>
         <!-- left section -->
-        <td class="tabox" valign="top">
-            <table border="0" valign="top" cellpadding="1" cellspacing="1" width="150">
-{if $lastURL != ""}
-                <tr><td class="controlPanelSection">Navigation</td></tr>
-                <tr>
-                    <td class="controlPanelItem">
-                        <a href="{$lastURL}"><img src="images/left.gif" alt="" border="0" width="12" height="12" />&nbsp;Back</a>
-                    </td>
-                </tr>
+        <td class="tabox sidenav" valign="top">
+        {if $lastURL != ""}
+	        <h3 class="controlPanelSection">Navigation</h3>
+	        <ul class="controlPanel">
+		        <li id="backButton"><a href="{$lastURL}"><img src="images/left.gif" alt="" border="0" width="12" height="12" /> Back</a></li>
+	        </ul>
+        {/if}
 
-                <tr><td>&nbsp;</td></tr>
-{/if}
-
-                <!-- MISSING CODE HERE TO INCLUDE BUTTONS FOR INSTRUMENTS... -->
-
-{if $test_name != "" && $error_message == ""}
-    {if $commentID != ""}
+        {if $test_name != "" && $error_message == ""}
+            {if $commentID != ""}
                 <!-- instrument status flags -->
-{$control_panel}
-    {elseif $sessionID != ""}    
+                {$control_panel}
+            {elseif $sessionID != ""}
                 <!-- instrument list control panel -->
-{$control_panel}
-    {elseif $candID != ""}    
+                {$control_panel}
+            {elseif $candID != ""}
                 <!-- timepoint list control panel -->
-{$control_panel}
-    {/if}
-{/if}
+                {$control_panel}
+            {/if}
+        {/if}
 
-                <!-- links -->
-                <tr><td class="controlPanelSection">Links</a></td></tr>
-  				{foreach from=$links item=link}
-                <tr>
-                    <td class="controlPanelItem">
-                        <a href="{$link.url}" target="{$link.windowName}"><img src="images/transfer.gif" alt="" border="0" width="12" height="12" />&nbsp;{$link.label}</a>
-                    </td>
-                </tr>
-                {/foreach}
-<!--                <tr>
-                    <td class="controlPanelItem">
-                        <a href="context_help_popup.php?test_name={$test_name}&subtest={$subtest}" target="help"><img src="images/transfer.gif" alt="" border="0" width="12" height="12" />&nbsp;Help</a>
-                    </td>
-                </tr>
--->
-            </table>
+	<!--links-->
+                    <h3 class="controlPanelSection">Links</h3>
+                    <ul class="controlPanel">
+                                {foreach from=$links item=link}
+                        <li class="linkButton"><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a></li>
+                        {/foreach}
+            </ul>
         </td>
 
 
@@ -136,7 +103,7 @@ function feedback_bvl_popup(features) {
 
 {if $crumbs != ""}
             <!-- bread crumb -->
-            <table width="100%" border="0" cellpadding="2" cellspacing="2">
+            <table width="100%" border="0" cellpadding="3" cellspacing="4">
                 <tr>
                     <th class="banner" align="left">
 {section name=crumb loop=$crumbs}
@@ -159,7 +126,8 @@ function feedback_bvl_popup(features) {
             If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {elseif $test_name == ""}
-            <p>Welcome to the Database!</p>
+            <h1>Welcome to the Database!</h1>
+	    <p>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</p>
 {else}
 
     {if $candID != ""}
@@ -177,6 +145,14 @@ function feedback_bvl_popup(features) {
                     <th nowrap="nowrap">Visit to Site</th>
                     <th nowrap="nowrap">Subproject</th>
                     <th nowrap="nowrap">MR Scan Done</th>
+                    {* <th nowrap="nowrap">Age During Visit</th> *}
+                    <th nowrap="nowrap">Within Optimal</th>
+                    <th nowrap="nowrap">Within Permitted</th>
+                    {if $SupplementalSessionStatuses }
+                        {foreach from=$timePoint.status item=status key=name}
+                            <th nowrap="nowrap">{$name}</th>
+                        {/foreach}
+                    {/if}
         {/if}
                 </tr>
                 <tr>
@@ -192,6 +168,14 @@ function feedback_bvl_popup(features) {
                     <td nowrap="nowrap">{$timePoint.PSC}</td>
                     <td nowrap="nowrap">{$timePoint.SubprojectTitle}</td>
                     <td nowrap="nowrap">{$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"images/help2.gif\" width=\"12\" height=\"12\" />"}</td>
+                    {* <td nowrap="nowrap">{$timePoint.WindowInfo.AgeDays}</td> *}
+                    <td nowrap="nowrap">{if $timePoint.WindowInfo.Optimum}Yes{else}No{/if}</td>
+                    <td nowrap="nowrap" {if not $timePoint.WindowInfo.Optimum}class="error"{/if}>{if $timePoint.WindowInfo.Permitted}Yes{else}No{/if}</td>
+                    {if $SupplementalSessionStatuses }
+                        {foreach from=$timePoint.status item=status}
+                            <td nowrap="nowrap">{$status}</td>
+                        {/foreach}
+                    {/if}
         {/if}
                 </tr>
             </table>

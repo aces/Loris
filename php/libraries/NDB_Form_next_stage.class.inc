@@ -53,7 +53,7 @@ class NDB_Form_next_stage extends NDB_Form
         $battery->selectBattery($timePoint->getData('SessionID'));
 
         // add instruments to the time point (lower case stage)
-        $battery->createBattery($timePoint->getSubprojectID(), $newStage);
+        $battery->createBattery($timePoint->getSubprojectID(), $newStage, $timePoint->getVisitLabel());
         
         //------------------------------------------------------------
 

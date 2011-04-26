@@ -108,7 +108,7 @@ class NDB_Form extends PEAR
 
         // check that user has access
         if ($access == false) {
-            return PEAR::raiseError("You do not have access to this page.");
+            return PEAR::raiseError("You do not have access to this page.", 403);
         }
 
  	    if (method_exists($obj, $page)) {
