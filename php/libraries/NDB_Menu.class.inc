@@ -64,7 +64,7 @@ class NDB_Menu extends PEAR
 
         // check that user has access
         if ($access == false) {
-            return PEAR::raiseError("You do not have access to this page.");
+            return PEAR::raiseError("You do not have access to this page.", 403);
         }
 
         return $obj;

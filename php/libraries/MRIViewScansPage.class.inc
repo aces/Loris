@@ -136,9 +136,9 @@ class MRIViewScansPage {
 
             }
             else {
-                $ID = "lower('" . $candidate->getPSCID() . "_" . $timePoint->getCandID() . "_" . $timePoint->getVisitLabel() ."')";
+                $ID = "lower('" . $candidate->getPSCID() . "_" . $timePoint->getCandID() . "_" . $timePoint->getVisitLabel() ."%')";
             }
-            $this->DB->select("SELECT TarchiveID FROM tarchive WHERE PatientName=$ID", $tarchiveIDs);
+            $this->DB->select("SELECT TarchiveID FROM tarchive WHERE PatientName LIKE $ID", $tarchiveIDs);
             $subjectData['ParameterFormCommentID'] = $this->DB->selectOne("SELECT CommentID FROM flag WHERE Test_name='mri_parameter_form' AND SessionID=" . $_REQUEST['sessionID']);
             $subjectData['tarchiveids'] = $tarchiveIDs;
         }
@@ -259,8 +259,8 @@ class MRINavigation {
     function MRINavigation($sessionID = null) {
         $this->SessionID = $sessionID;
         $this->FilteredSessionList = $_SESSION['State']->getProperty('mriSessionsListed');
-        if (!is_array($this->filteredSessionList)) {
-            $this->filteredSessionList = array(); 
+        if (!is_array($this->FilteredSessionList)) {
+            $this->FilteredSessionList = array(); 
         }
         $this->currentListIndex = array_search($this->SessionID, $this->FilteredSessionList);
         $this->urlParams = $this->_splitURL();

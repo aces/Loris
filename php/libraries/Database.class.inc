@@ -10,8 +10,7 @@ define("DEBUG", false);
  * $array['column_name'] = 'value'.
  * @package main
  * @access public
- * @todo run _trackChanges() from insert and delete...
- * @version $Id: Database.class.inc,v 3.18 2006/04/18 17:14:12 jharlap Exp $
+ * @version $Id: Database.class.inc,v 1.1 2010-07-08 18:31:10 samir Exp $
  */
 class Database extends PEAR
 {
@@ -20,7 +19,8 @@ class Database extends PEAR
      *
      * @access private
      */
-    var $_databaseHandle = null;
+    var $_PDO = null;
+    //var $_databaseHandle = null;
 
     /**
      * integer number of rows affected by the last replace/update/delete/insert
@@ -40,6 +40,7 @@ class Database extends PEAR
 
     var $_trackChanges = true;
 
+    var $_preparedStoreHistory;
     /**
      * singleton design pattern implementation - creates the object
      * and also connects to the database if necessary
@@ -51,7 +52,7 @@ class Database extends PEAR
      * @return object
      * @access public
      */
-    function &singleton($database=null, $username=null, $password=null, $host=null)
+    function &singleton($database=null, $username=null, $password=null, $host=null, $trackChanges=true)
     {
         static $connections = array();
 
@@ -65,12 +66,12 @@ class Database extends PEAR
             }
         } else {
             // name the connection
-            $connection = md5($database.$host.$username.$password);
+            $connection = md5($database.$host.$username.$password.$trackChanges);
 
             // create the connection if none exists
             if(empty($connections[$connection])) {
                 $connections[$connection] = new Database;
-                $ok = $connections[$connection]->connect($database, $username, $password, $host);
+                $ok = $connections[$connection]->connect($database, $username, $password, $host,$trackChanges);
                 if($connections[$connection]->isError($ok)) {
                     unset($connections[$connection]);
                     return PEAR::raiseError('Could not connect to database: '.$ok->getMessage());
@@ -107,15 +108,8 @@ class Database extends PEAR
             $this->_showQueries = $config->getSetting('showDatabaseQueries');
         }
         
-        $this->_databaseHandle = @mysql_connect($host, $username, $password, true);
-        if(!$this->_databaseHandle) {
-            return $this->raiseError(mysql_error());
-        }
-
-        $success = mysql_select_db($database);
-        if(!$success) {
-            return $this->raiseError(mysql_error());
-        }
+        $this->_PDO = new PDO("mysql:host=$host;dbname=$database", $username, $password);
+        $this->_preparedStoreHistory = $this->_PDO->prepare("INSERT INTO history (tbl, col, new, old, primaryCols, primaryVals, userID, type) VALUES (:histtable, :histcolumn, :newval, :oldval, :primaryKeys, :primaryVals, :userID, :type)");
     }
 
     /**
@@ -126,12 +120,11 @@ class Database extends PEAR
      */
     function isConnected()
     {
-        // if we're using PHP 4.3.0 or greater, use mysql_ping,
-        // otherwise just make sure we set the handle
-        if(version_compare(phpversion(), "4.3.0", ">=")) {
-            return mysql_ping($this->_databaseHandle);
-        } else {
-            return !is_null($this->_databaseHandle);
+        try { 
+            $this->_PDO->query("SELECT 'x'");
+            return true;
+        } catch(Exception $e) {
+            return false;
         }
     }
 
@@ -150,25 +143,27 @@ class Database extends PEAR
         $query = "INSERT INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
 
+        $prepQ = "INSERT INTO $table SET ";
+        $exec_params = array();
+        $prepQ .= $this->_implodeAsPrepared(",", $set, &$exec_params);
+
         if(DEBUG) {
             fwrite(STDERR, $query."\n");
             return;
         }
 
+        // There is no where clause for an insert, so add a fake
+        // one.
+        $err = $this->_trackChanges($table, $set, '2=1', 'I');
+        if($this->isError($err)) {
+            return $err;
+        }
+
         $this->_printQuery($query);
-        $qid = @mysql_query($query, $this->_databaseHandle);
-        if(!$qid) {
-            // query failed
-            return $this->raiseError(mysql_error($this->_databaseHandle));
-        }
-
-        // query succeeded: set affected and success
-        $this->affected = mysql_affected_rows($this->_databaseHandle);
-
-        // set last insert id
-        if($this->affected > 0) {
-            $this->lastInsertID = mysql_insert_id($this->_databaseHandle);
-        }
+        $prep = $this->_PDO->prepare($prepQ);
+        $prep->execute($exec_params);
+        $this->affected = $prep->rowCount(); 
+        $this->lastInsertID = $this->_PDO->lastInsertId();
     }
 
     /**
@@ -193,12 +188,7 @@ class Database extends PEAR
         }
 
         $this->_printQuery($query);
-        $qid = @mysql_query($query, $this->_databaseHandle);
-        if(!$qid) {
-            return $this->raiseError(mysql_error($this->_databaseHandle));
-        }
-
-        $this->affected = mysql_affected_rows($this->_databaseHandle);
+        $this->affected = $this->_PDO->exec($query);
     }
 
     /**
@@ -212,13 +202,20 @@ class Database extends PEAR
      * @return none
      * @access public
      */
-    function update($table, $set, $where)
+    function update($table, $set, $i_where)
     {
+        /* This is still here to print the easily readable version on the top of the page when showDatabaseQueries is on */
         $query = "UPDATE $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
         $query .= " WHERE ";
-        $where = $this->_implodeWithKeys(' AND ', $where);
+        $where = $this->_implodeWithKeys(' AND ', $i_where);
 
+        $exec_params = array();
+        $prepQ = "UPDATE $table SET ";
+        $prepQ .= $this->_implodeAsPrepared(",", $set, &$exec_params, 'set_');
+        $prepQ .= " WHERE ";
+        $prepQ .= $this->_implodeAsPrepared(" AND ", $i_where, &$exec_params, 'where_');
+        
         if(DEBUG) {
             fwrite(STDERR, $query.$where."\n");
             return;
@@ -233,12 +230,10 @@ class Database extends PEAR
             return $err;
         }
         $this->_printQuery($query.$where);
-        $qid = @mysql_query($query.$where, $this->_databaseHandle);
-        if(!$qid) {
-            return $this->raiseError(mysql_error($this->_databaseHandle));
-        }
 
-        $this->affected = mysql_affected_rows($this->_databaseHandle);
+        $prep = $this->_PDO->prepare($prepQ);
+        $prep->execute($exec_params);
+        $this->affected = $prep->rowCount(); 
     }
 
     /**
@@ -254,7 +249,8 @@ class Database extends PEAR
     function delete($table, $where)
     {
         $query = "DELETE FROM $table WHERE ";
-        $query .= $this->_implodeWithKeys(' AND ', $where);
+        $where = $this->_implodeWithKeys(' AND ', $where);
+        $query .= $where;
 
         if(DEBUG) {
             fwrite(STDERR, $query."\n");
@@ -265,13 +261,15 @@ class Database extends PEAR
             return $this->raiseError("NULL values not allowed in a WHERE structure.");
         }
 
-        $this->_printQuery($query);
-        $qid = @mysql_query($query, $this->_databaseHandle);
-        if(!$qid) {
-            return $this->raiseError(mysql_error($this->_databaseHandle));
+        // There is no set clause for a delete, so add a fake
+        // one.
+        $err = $this->_trackChanges($table, array(), $where, 'D');
+        if($this->isError($err)) {
+            return $err;
         }
-
-        $this->affected = mysql_affected_rows($this->_databaseHandle);
+    
+        $this->_printQuery($query);
+        $this->affected = $this->_PDO->exec($query);
     }
 
     /**
@@ -289,28 +287,29 @@ class Database extends PEAR
      */
     function select($query, &$result)
     {
+        //trigger_error('$DB->select is going to be deprecated in favour of pselect instead', E_USER_DEPRECATED);
         $result = array();
 
         if(strpos(strtoupper($query), 'SELECT') !== 0 && strpos(strtoupper($query), 'SHOW') !== 0 && strpos(strtoupper($query), 'DESCRIBE') !== 0) {
             $result = $this->raiseError("Only SELECT statements can be run with Database::select().  Query was '$query'");
             return;
         }
+        
 
-        $this->_printQuery($query);
-        $qid = @mysql_query($query, $this->_databaseHandle);
-
-        // invalid query, throw an error
-        if(!$qid) {
-            $result = $this->raiseError(mysql_error($this->_databaseHandle));
-            return;
-        }
-
-        if(mysql_num_rows($qid) > 0) {
-            while($row = mysql_fetch_array($qid, MYSQL_ASSOC)) {
-                $result[] = $row;
+        try {
+            $this->_printQuery($query);
+            $stmt = $this->_PDO->query($query);
+            if($stmt) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                // This will be caught directly below
+                throw new Exception("Error");
             }
+            return $result;
+        } catch(Exception $e) {
+            $result = $this->raiseError("Invalid SELECT statement, $query");
+            return $result;
         }
-        mysql_free_result($qid);
     }
 
     /**
@@ -364,13 +363,40 @@ class Database extends PEAR
     function run($query)
     {
         $this->_printQuery($query);
-        $result = @mysql_query($query, $this->_databaseHandle);
-        $this->affected = mysql_affected_rows($this->_databaseHandle);
-        if($result === FALSE) {
-            return $this->raiseError(mysql_error($this->_databaseHandle));
-        }
+        $this->affected = $this->_PDO->exec($query);
+        $this->lastInsertID = $this->_PDO->lastInsertId();
     }
 
+    function prepare($query) {
+        return $this->_PDO->prepare($query);
+    }
+    function execute($prepared, $params) {
+        $execRun = $prepared->execute($params);
+        $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
+    /** Prepared select.
+     *  prepares the statement query, then executes it with the parameters
+     *  and returns the rows.
+     */
+    function pselect($query, $params) {
+        $this->_printQuery($query, $params);
+        $stmt = $this->prepare($query);
+        return $this->execute($stmt, $params);
+    }
+
+    function pselectRow($query, $params) {
+        $rows = $this->pselect($query . " LIMIT 1", $params);
+        return $rows[0];
+    }
+    function pselectOne($query, $params) {
+        $result = $this->pselectRow($query, $params);
+        if(!$this->isError($result) && is_array($result) && count($result)) {
+
+            list(,$result) = each($result);
+        }
+        return $result;
+    }
     /**
      * implodes a hash including the keys (unlike php's implode)
      *
@@ -397,22 +423,28 @@ class Database extends PEAR
         return implode($glue, $output);
     }
 
+    function _implodeAsPrepared($glue, $dataArray, &$exec_vals = NULL, $prefix='') {
+
+        if(!is_array($dataArray) || count($dataArray)==0) return '';
+        $output = array();
+        foreach( $dataArray as $key => $item ) {
+            $varname= str_replace("%", "_percent_", $key);
+            $output[] = "`$key`=:$prefix$varname";
+            if($exec_vals !== NULL) {
+                $exec_vals["$prefix$varname"] = $item;
+            }
+
+        }
+        return implode($glue, $output);
+
+
+    }
     /**
      * Quote a variable to make it safe
      */
     function quote($value)
     {
-        // Stripslashes if we need to
-        if (get_magic_quotes_gpc()) {
-            $value = stripslashes($value);
-        }
-        
-        // Quote it if it's not an integer
-        if (!is_int($value)) {
-            $value = "'" . mysql_real_escape_string($value) . "'";
-        }
-        
-        return $value;
+        return $this->_PDO->quote($value);
     }
 
     /**
@@ -427,20 +459,12 @@ class Database extends PEAR
      * @return none
      * @access private
      */
-    function _trackChanges($table, $set, $where) {
+    function _trackChanges($table, $set, $where, $type='U') {
+        // Tracking changes on the history table would result in an
+        // infinite loop
+        if(!$this->_trackChanges || $table == 'history') return;
 
-        if(!$this->_trackChanges) return;
-
-        // construct the select query
-        $query = "SELECT * FROM $table WHERE $where";
-        
-        // select the database data
-        $this->select($query, $oldRows);
-        if($this->isError($oldRows)) {
-            return $oldRows;
-        }
-
-        // get the table description
+            // get the table description
         $this->select("SHOW INDEX FROM $table", $description);
         if($this->isError($description)) {
             return $description;
@@ -461,50 +485,73 @@ class Database extends PEAR
         if(empty($userID)) {
             $userID = $_ENV['USER'];
         }
-
-	if(empty($userID)) {
-	  $userID = 'unknown';
-	}
-
-        // track history for all affected rows
-        foreach($oldRows AS $oldRow) {
-        
-            // compute the difference between the two arrays
-            $delta = array_diff($set, $oldRow);
-            
-
-            // find the primary key values
-            $primaryValues = array();
-            foreach($primaryKeys AS $key) {
-                $primaryValues[] = $oldRow[$key];
-            }
-            
-            // for every changed column
-            foreach(array_keys($delta) AS $column) {
-                // insert a change record into the history table
-                $err = $this->insert('history', 
-                                     array('tbl'=>$table,
-                                           'col'=>$column,
-                                           'old'=>$oldRow[$column],
-                                           'new'=>$set[$column],
-                                           'primaryCols'=>join(',', $primaryKeys),
-                                           'primaryVals'=>join(',', $primaryValues),
-                                           'changeDate'=>null,
-                                           'userID'=>$userID
-                                           )
-                                     );
-                
-                // make sure the insert was successful
-                if($this->isError($err)) {
-                    return $err;
+	    if(empty($userID)) {
+	        $userID = 'unknown';
+	    }
+        $this->_preparedStoreHistory->bindParam(":primaryKeys", join(",", $primaryKeys));
+        $this->_preparedStoreHistory->bindParam(":histtable", $table);
+        $this->_preparedStoreHistory->bindParam(":userID", $userID);
+        $this->_preparedStoreHistory->bindParam(":type", $type);
+        if($type == 'I') 
+        {
+            $this->_preparedStoreHistory->bindValue(":oldval", NULL);
+            // Don't need to compare against anything, just insert into the history if it's an insert
+            foreach(array_keys($set) AS $column) {
+                $this->_preparedStoreHistory->bindParam(":histcolumn", $column);
+                // find the primary key values
+                $primaryValues = array();
+                foreach($primaryKeys AS $key) {
+                    $primaryValues[] = $set[$key];
                 }
-            } // end foreach delta column
-        } // end foreach oldRows
+
+                $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
+                $this->_preparedStoreHistory->bindParam(":primaryVals", join(",", $primaryValues));
+                $this->_preparedStoreHistory->execute();
+            }
+        }
+        else if($type == 'U' || $type == 'D')
+        {
+            // construct the select query
+            $query = "SELECT * FROM $table WHERE $where";
+        
+            // select the database data
+            $this->select($query, $oldRows);
+            if($this->isError($oldRows)) {
+                return $oldRows;
+            }
+
+            // track history for all affected rows
+            foreach($oldRows AS $oldRow) {
+                // compute the difference between the two arrays
+                if($type == 'D') {
+                    $delta = $oldRow;
+                    $set = array();
+                } else  {
+                    $delta = array_diff_assoc($set, $oldRow);
+                }
+            
+                // find the primary key values
+                $primaryValues = array();
+                foreach($primaryKeys AS $key) {
+                    $primaryValues[] = $oldRow[$key];
+                }
+                $this->_preparedStoreHistory->bindParam(":primaryVals", join(",", $primaryValues));
+                // for every changed column
+                 foreach(array_keys($delta) AS $column) {
+                    $this->_preparedStoreHistory->bindParam(":histcolumn", $column);
+                    $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
+                    $this->_preparedStoreHistory->bindParam(":oldval", $oldRow[$column]);
+                    $this->_preparedStoreHistory->execute();
+                } // end foreach delta column
+            } // end foreach oldRows
+        }
     } // end function _trackChanges
 
-    function _printQuery($query) {
+    function _printQuery($query, $params=null) {
         if(!$this->_showQueries) return;
-
+        if($params) {
+            $query = str_replace(array_keys($params), array_values($params), $query);
+        }
         print "$this->_databaseName: $query<br>\n";
     }
 

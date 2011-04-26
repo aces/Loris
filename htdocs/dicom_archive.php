@@ -130,19 +130,44 @@ else {
     // filtering options
     if(isset($_REQUEST['filter'])) {
         $filter = $_REQUEST['filter'];
+
+        $oldFilter = $_SESSION['State']->getProperty('filter');
+        if(is_array($oldFilter)) {
+            $pending = $filter['pending'];
+            $filter = array_merge($oldFilter, $filter);
+        }
+        $_SESSION['State']->setProperty('filter', $filter);
+        $visit_tpl_data['filter'] = $filter;
+
+        function AddWhere($filtername, $column) {
+            global $filter;
+            if(!empty($filter[$filtername])) {
+                return " AND $column LIKE '" . $filter[$filtername] . "%'";
+            }
+            return;
+        }
+        $extra_where_string .= AddWhere('patientID', 'PatientID');
+        $extra_where_string .= AddWhere('PatientName', 'PatientName');
+        $extra_where_string .= AddWhere('PatientGender', "CASE PatientGender WHEN 'M' THEN PatientGender WHEN 'F' THEN PatientGender ELSE 'N/A' END" );
+        $extra_where_string .= AddWhere('DoB', 'PatientDoB');
+        $extra_where_string .= AddWhere('DateAcquired', 'DateAcquired');
+        $extra_where_string .= AddWhere('ArchiveLocation', 'ArchiveLocation');
         if(!empty($filter['patientID'])) $extra_where_string .= " AND PatientID LIKE '%$filter[patientID]%'";
         if(!empty($filter['site'])) {
-            $sitelimit = $_REQUEST['filter']['site'];
+            $sitelimit = $filter['site'];
             $extra_where_string .= " AND neurodbCenterName = '{$visit_tpl_data['site_options'][$sitelimit]}'";
         }
         if($dicom_archive_settings['showTransferStatus'] == 'true') {
            $extra_transfer_system_fields = ", DateSent, PendingTransfer";
         }
-        $query = "SELECT TarchiveID,DicomArchiveID,PatientID,PatientName,PatientGender,PatientDoB,DateAcquired,LastUpdate,SessionID,CenterName,neurodbCenterName
+        if(!empty($filter['orderby'])) {
+            $extra_order=$filter['orderby'] . ',';
+        }
+        $query = "SELECT TarchiveID,DicomArchiveID,PatientID,PatientName,PatientGender,PatientDoB,DateAcquired,LastUpdate,SessionID,CenterName,neurodbCenterName,ArchiveLocation
                   $extra_transfer_system_fields
                   FROM tarchive
                   WHERE DicomArchiveID IS NOT NULL 
-                  $extra_where_string ORDER BY DateAcquired";
+                  $extra_where_string ORDER BY $extra_order DateAcquired";
 
 /*  This can be activated to do a retrospective linking of dicom archives to the MRI browser. 
     NOTE: this is useless if you are using tarchiveLoader
@@ -195,7 +220,18 @@ else {
                 $visit_tpl_data['archives'][$i]['patientNameValid']=0;
                 $visit_tpl_data['archives'][$i]['PatientName']="INVALID - HIDDEN";
             }
-            
+
+            if($visit_tpl_data['archives'][$i]['patientNameValid'] == 1 && !empty($visit_tpl_data['archives'][$i]['PatientName'])) {
+                $PatientName = $visit_tpl_data['archives'][$i]['PatientName'];
+                $sp = explode("_", $PatientName);
+                $DB->selectRow("SELECT ID FROM session WHERE CandID=$sp[1] AND Visit_label='$sp[2]'", &$SessionID);
+                $visit_tpl_data['archives'][$i]['PSCID'] = $sp[0];
+                $visit_tpl_data['archives'][$i]['DCCID'] = $sp[1];
+                $visit_tpl_data['archives'][$i]['Visit_Label'] = $sp[2];
+                if(!empty($SessionID['ID'])) {
+                    $visit_tpl_data['archives'][$i]['SessionID'] = $SessionID['ID'];
+                }
+            }
             // determine if the patient id is valid
             if(preg_match($dicom_archive_settings['patientIDRegex'], $visit_tpl_data['archives'][$i]['PatientID']))
                 $visit_tpl_data['archives'][$i]['patientIDValid']=1;

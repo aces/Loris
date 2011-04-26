@@ -106,7 +106,7 @@ class NDB_Caller extends PEAR
         }
 
         // it is nothing!
-        return PEAR::raiseError("This page ($test_name) is under construction.");
+        return PEAR::raiseError("This page ($test_name) is under construction.", 404);
     }
 
    /**
