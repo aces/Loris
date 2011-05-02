@@ -213,11 +213,15 @@ class NDB_Caller extends PEAR
         // make an instance of the instrument's object
         $instrument =& NDB_BVL_Instrument::factory($instrument, $commentID, $page);
         if (PEAR::isError($instrument)) {
-            return PEAR::raiseError("NDB_BVL_Caller::loadInstrument instrument factory: " . $instrument->getMessage());
+            if (Error::getUserDefinedMessage()){
+                return PEAR::raiseError(Error::getErrorMessage());
+            } else {
+                return PEAR::raiseError("NDB_BVL_Caller::loadInstrument instrument factory: " . $instrument->getMessage());
+            }
         }
 
         // save instrument form data
-        $success = $instrument->save();
+	$success = $instrument->save();
         if (PEAR::isError($success)) {
             return PEAR::raiseError("NDB_Caller::loadInstrument() save: ".$success->getMessage());
         }

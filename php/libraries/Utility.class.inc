@@ -477,5 +477,44 @@ class Utility extends PEAR
         return $instruments;
 
    }
+
+   function isUserInConflict($commentid,$entry_staff,$test_name){
+       //dde
+       $error = null;
+       $db =& Database::singleton();
+       $user_in_conflict = false;
+
+       //DDE
+       if (preg_match("/^DDE/",$commentid)){
+           list($useless,$single_commentid) = split('_',$commentid);
+           $query = "SELECT entry_staff from $test_name where CommentID = '$single_commentid'";
+           $single_entry_user_id = $db->selectOne($query);
+           $status = $db->selectOne("SELECT Data_entry from flag  where CommentID = '$single_commentid'");
+           //if single_entry is the same as the DDE
+           if (($single_entry_user_id == $entry_staff) && ($status=='Complete')){
+               $user_in_conflict =  true;
+               $error = "<p><font color = 'red'>The single entry staff cannot access the DDE data entry</p></font>";
+           }
+           elseif($status!='Complete'){
+               $error = "<p><font color = 'red'>The single data entry status of the instrument has not been set to 'Complete'</p></font>";
+           }
+           else{}
+       }
+
+       //single data entry
+       else{
+
+           //extract the double-data-entry
+           $query = "SELECT entry_staff from $test_name where CommentID = 'DDE_$commentid'";
+           $dde_entry_user_id = $db->selectOne($query);
+           //if single_entry is the same as the DDE
+           if ($dde_entry_user_id == $entry_staff){
+               $user_in_conflict =  true;
+               $error = "<p> <font color = 'red'>A DDE entry staff cannot access the Single data entry</font></p>";
+           }
+       }
+       return $error;
+   }
+
 }
 ?>

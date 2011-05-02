@@ -2,6 +2,7 @@
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 include_once ('HTML/QuickForm/Renderer/Default.php');
+include_once ('Error.class.inc');
 
 /**
  * Base class for all NeuroDB behavioural instruments
@@ -150,7 +151,12 @@ class NDB_BVL_Instrument extends PEAR
 
         // check that user has access
         if ($access == false) {
-            return PEAR::raiseError("You do not have access to this page.");
+            //print getUseSpecifiedMessage()
+            if (Error::getUserDefinedMessage()){
+                return PEAR::raiseError(Error::getErrorMessage());
+            } else {
+                return PEAR::raiseError("You do not have access to this page.");
+            }
         }
 
         return $obj;
@@ -178,6 +184,9 @@ class NDB_BVL_Instrument extends PEAR
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
 
         //check if instrumentPermissions are being used.
+
+		/**check to see if the user logged in for DDE or single entry, is not the same as the person who filled 
+                */
         if ($instrumentPermissions['useInstrumentPermissions'] == false) {
             //instrument permissions not used...
             return true; //default
@@ -197,6 +206,9 @@ class NDB_BVL_Instrument extends PEAR
                 }
             }
             
+		if($user->hasPermission($title) || $user->hasPermission($visit_label))
+		return true;
+
             //no permissions defined
             if (!$instrumentListed) {
                 return true;
@@ -209,8 +221,7 @@ class NDB_BVL_Instrument extends PEAR
             }
             
             //no user permissions match required instrument permissions
-            return PEAR::raiseError("You do not have access to this page.");
-        }
+		return PEAR::raiseError("You do not have access to this instrument belonging to ". $title);
     }
     
     // }}}
