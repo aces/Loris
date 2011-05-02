@@ -3,13 +3,16 @@
  * @package main
  */
 ob_start('ob_gzhandler');
+
 // start benchmarking
 require_once 'Benchmark/Timer.php';
 $timer = new Benchmark_Timer;
 $timer->start();
 
 // load the client
+//require_once '/home/gustodatabaseuser/loris/php/libraries/NDB_Client.class.inc';
 require_once 'NDB_Client.class.inc';
+
 $client = new NDB_Client;
 $client->initialize();
 
@@ -125,28 +128,35 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
  * Control Panel
  */
 $paths = $config->getSetting('paths');
-
 if (!empty($_REQUEST['test_name'])) {
+
     if (!empty($_REQUEST['commentID'])) {
+
         // make the control panel object for the current instrument
         $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
         $success = $controlPanel->select($_REQUEST['commentID']);
+
         if (PEAR::isError($success)) {
+    
               $tpl_data['error_message'][] = $success->getMessage();
         } else {
             if (empty($_REQUEST['subtest'])) {
                 // check if the file/class exists
                 if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc")) {
                     // save possible changes from the control panel...
+
                     $success = $controlPanel->save();
                     if (PEAR::isError($success)) {
+                                            
                         $tpl_data['error_message'][] = $success->getMessage();
                     }
+
                 }
             }                
 
             // display the control panel
             $html = $controlPanel->display();
+            
             if (PEAR::isError($html)) {
                 $tpl_data['error_message'][] = $html->getMessage();
             } else {
@@ -203,10 +213,6 @@ if (!empty($_REQUEST['candID'])) {
 // get time point data
 if (!empty($_REQUEST['sessionID'])) {
     $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-    if($config->getSetting("SupplementalSessionStatus")) {
-        $tpl_data['SupplementalSessionStatuses'] = true;
-    }
-    
     if (PEAR::isError($timePoint)) {
         $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
     } else {
@@ -220,16 +226,6 @@ $timer->setMarker('Drew the top workspace tables');
 
 // load the menu or instrument
 $caller =& NDB_Caller::singleton();
-function HandleError($error) {
-    switch($error->code) {
-        case 404: header("HTTP/1.1 404 Not Found"); break;
-        case 403: header("HTTP/1.1 403 Forbidden"); break;
-    }
-    if(empty($error->code)) {
-        //print $error->message;
-    }
-}
-$caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
 $workspace = $caller->load($_REQUEST['test_name'], $_REQUEST['subtest']);
 if (PEAR::isError($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
@@ -248,8 +244,6 @@ if (PEAR::isError($crumbs)) {
     $tpl_data['error_message'][] = $crumbs->getMessage();
 } else {
     $tpl_data['crumbs'] = $crumbs;
-    parse_str($crumbs[0]['query'], $parsed);
-    $tpl_data['top_level'] = $parsed['test_name'];
 }
 
 $timer->setMarker('Drew breadcrumbs');
@@ -291,4 +285,3 @@ if ($config->getSetting('showTiming')) {
 
 //print '<pre>'; print_r($tpl_data); print '</pre>';
 ?>
-
