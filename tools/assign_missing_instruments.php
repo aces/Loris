@@ -35,7 +35,8 @@ $client->initialize();
 $DB =& Database::singleton();
 $query="SELECT ID, subprojectID from session";
 if(!empty($argv[1]) && $argv[1]!="confirm"){
-	$query.=" WHERE visit_label='$argv[1]'";
+	$query.=" WHERE visit_label='$argv[1]' AND Active='Y' AND Cancelled='N'";
+    $visit_label = $argv[1];
 }
 $DB->select($query, $results);
 foreach($results AS $result){
@@ -47,8 +48,8 @@ foreach($results AS $result){
         $timePoint =& TimePoint::singleton($result['ID']);
         
         //To assign missing instruments to all sessions, sent to DCC or not.
-        $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], $timePoint->getCurrentStage());
-        $actual_battery=$battery->getBattery($timePoint->getCurrentStage());
+        $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], $timePoint->getCurrentStage(), $visit_label );
+        $actual_battery=$battery->getBattery($timePoint->getCurrentStage(), $result['subprojectID'], $visit_label);
         
       //To assign missing instruments only for sessions in the Visit stage...
 //        $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], 'Visit');
