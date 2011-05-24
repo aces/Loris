@@ -254,7 +254,12 @@ class NDB_BVL_Battery extends PEAR
 
         if(!is_null($stage)) {
             if(!is_null($visit_label)) {
-                $query .= " AND (b.Visit_label IS NULL OR b.Visit_label='$visit_label')";
+                $VisitBatteryExists = $GLOBALS['DB']->selectOne("SELECT count(*) FROM test_battery WHERE Visit_label = '$visit_label'");
+                if($VisitBatteryExists > 0) {
+                    $query .= " AND (b.Visit_label='$visit_label')";
+                } else {
+                    $query .= " AND b.Visit_label IS NULL";
+                }
             } else {
                 $query .= " AND b.Visit_label IS NULL";
             }
