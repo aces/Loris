@@ -107,11 +107,16 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
 
         // run the create table statement
         $createSQL = "CREATE TABLE $nextTableName (SessionID int not null primary key, $createSQL)";
+        $insertSQL = "INSERT INTO $nextTableName (SessionID) SELECT DISTINCT SessionID FROM flag f JOIN parameter_type pt ON (f.Test_name=pt.SourceFrom) WHERE pt.CurrentGUITable='$nextTableName'";
         $quatTableCounter++;
         $nextTableName = $quatTableBasename . $quatTableCounter;
         $result = $db->run($createSQL);
         if($db->isError($result)) {
             die( "Failed to create table $nextTableName: ".$result->getMessage()."\n" );
+        }
+        $result = $db->run($insertSQL);
+        if($db->isError($result)) {
+            die( "Failed to populate table $nextTableName: ".$result->getMessage()."\n" );
         }
 
         // reset the column counter and create table statement
@@ -144,20 +149,6 @@ $db->select($query, $sessions);
 
 unset($config);
 print "At make the data table: " . memory_get_usage() . "\n";
-// make the data table, insert a row for each session
-$queryableSessions = array();
-foreach($sessions AS $session) {
-    foreach($parameterTypes AS $parameterType) {
-        if($parameterType['CurrentGUITable'] == NULL || $session['ID'] == NULL) {
-            //print_r($parameterType);
-            //print_r($session);
-            continue;
-        }
-        if($db->selectOne("SELECT COUNT(*) FROM $parameterType[CurrentGUITable] WHERE SessionID=$session[ID]") == 0) {
-            $db->run("INSERT INTO $parameterType[CurrentGUITable] (SessionID) VALUES ($session[ID])");
-        }
-    }
-}
 
 function GetSelectStatement($parameterType, $field=NULL) {
     // construct query string dependant on parameter source
