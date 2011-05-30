@@ -2148,7 +2148,7 @@ SVGRenderer.prototype = {
 						);
 					}
 					if (hrefRegex.test(span)) {
-						attr(tspan, 'onclick', 'location.href=\"'+ span.match(hrefRegex)[1] +'\"');
+						attr(tspan, 'onclick', 'window.open(\"'+ span.match(hrefRegex)[1] +'\", \'newwindow\');');
 						css(tspan, { cursor: 'pointer' });
 					}
 					
