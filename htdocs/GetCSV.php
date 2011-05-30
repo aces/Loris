@@ -64,7 +64,7 @@ if(isset($InstrumentX)) {
 }
 
 
-$FullQuery = "SELECT c.PSCID as ID, $FieldX as X, $Field as Y, COALESCE(i.Window_Difference, 0) as Category, c.CandID, s.ID as SessionID, i.CommentID FROM $QueryTable WHERE $QueryCondition";
+$FullQuery = "SELECT c.PSCID as ID, $FieldX as X, $Field as Y, s.SubprojectID as Category, c.CandID, s.ID as SessionID, i.CommentID FROM $QueryTable WHERE $QueryCondition";
 $rows = $DB->pselect($FullQuery, $ConditionBindings);
 foreach($rows as $row) {
     foreach($row as $key => $val) {

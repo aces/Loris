@@ -81,12 +81,12 @@ var ACES_Scatterplot = function() {
     };
     var series = [{
             animation: false,
-            name: 'Within Window',
+            name: 'High Risk',
             color: 'rgba(223, 83, 83, .5)',
             data: []
         }, {
             animation: false,
-            name: 'Outside Window',
+            name: 'Control',
             color: 'rgba(119, 152, 191, .5)',
             data: []
         }
@@ -112,7 +112,7 @@ var ACES_Scatterplot = function() {
                         dataPoint[that.CSVExtraFields[i-4]] = line[i];
                     }
                 }
-                if(line[3] < 0) {
+                if(line[3] == '3') {
                     series[1].data.push(dataPoint);
                 } else {
                     //series[0].data.push([line[1], line[2]]);
