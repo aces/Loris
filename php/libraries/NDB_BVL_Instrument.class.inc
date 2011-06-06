@@ -1262,6 +1262,25 @@ class NDB_BVL_Instrument extends PEAR
         }
         return;
     }
+
+    function clearInstrument() {
+        $config = NDB_Config::singleton();
+        $dbconfig = $config->getSetting('database');
+        $db = Database::singleton();
+        $columns = $db->pselect("select COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db", array('table' => $this->table, 'db' => $dbconfig['database'] ));
+        $values = array();
+        foreach ($columns as $row) {
+            if($row['COLUMN_NAME'] == 'CommentID' || $row['COLUMN_NAME'] == 'UserID') {
+                continue;
+            }
+            $values[$row['COLUMN_NAME']] = NULL;
+        }
+        print "Wipe out:";
+        $db->update($this->table, $values, array('CommentID' => $this->commentID));
+        print_r($values);
+        print "-----";
+        print "For comment ID: " . $this->commentID;
+    }
 } //end class NDB_BVL_Instrument
 
 // {{{ _checkDate()
