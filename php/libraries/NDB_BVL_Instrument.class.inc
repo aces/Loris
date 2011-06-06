@@ -1521,6 +1521,26 @@ class NDB_BVL_Instrument extends NDB_Page
         return;
     }
 
+    function clearInstrument() {
+        $config = NDB_Config::singleton();
+        $dbconfig = $config->getSetting('database');
+        $db = Database::singleton();
+        $columns = $db->pselect("select COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db", array('table' => $this->table, 'db' => $dbconfig['database'] ));
+        $values = array();
+        foreach ($columns as $row) {
+            if($row['COLUMN_NAME'] == 'CommentID' || $row['COLUMN_NAME'] == 'UserID') {
+                continue;
+            }
+            $values[$row['COLUMN_NAME']] = NULL;
+        }
+        print "Wipe out:";
+        $db->update($this->table, $values, array('CommentID' => $this->commentID));
+        print_r($values);
+        print "-----";
+        print "For comment ID: " . $this->commentID;
+    }
+} //end class NDB_BVL_Instrument
+
     function loadInstrumentFile($filename, $base64 = false) {
         if(file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
@@ -1755,7 +1775,6 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 } //end class NDB_BVL_Instrument
-// {{{ _checkDateTaken()
 function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
     if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
