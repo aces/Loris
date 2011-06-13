@@ -33,19 +33,16 @@ class MRIViewScansPage {
 
                 $QCExists = $this->DB->selectOne("SELECT 'x' FROM files_qcstatus WHERE FileID=$curFileID");
                 if(!empty($QCExists)) {
-                    print "Empty";
                     $updateWhere['FileID'] = $curFileID;
                     $success = $this->DB->update('files_qcstatus', $updateSet, $updateWhere);
                     if(PEAR::isError($success)) {
                         die("DB Error: ".$success->getMessage());
                     }
                 } else {
-                    print "Insert";
                     $file = new MRIFile($curFileID);
                     $updateSet['SeriesUID'] = $file->getParameter('series_instance_uid');
                     $updateSet['FileID'] = $curFileID;
                     $this->DB->insert("files_qcstatus", $updateSet);
-                    print_r($updateSet);
                 }
             }
         }

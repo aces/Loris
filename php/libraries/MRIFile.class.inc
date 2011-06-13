@@ -20,7 +20,6 @@ class MRIFile
         
         $query = "SELECT * FROM files_qcstatus WHERE FileID=$fileID";
         $db->selectRow($query, $qcData);
-        print $query;
         if(!empty($qcData)) {
             foreach($qcData AS $key=>$value) {
                 $this->QCData[$key] = $value;
