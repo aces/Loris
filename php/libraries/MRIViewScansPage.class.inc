@@ -28,13 +28,24 @@ class MRIViewScansPage {
                 $updateSet = array('QCStatus'=>$curStatus, 'QCLastChangeTime'=>time());
 
                 // set first change time, if it's null only
-                $firstChangeTime = $this->DB->selectOne("SELECT QCFirstChangeTime FROM files WHERE FileID=$curFileID");
+                $firstChangeTime = $this->DB->selectOne("SELECT QCFirstChangeTime FROM files_qcstatus WHERE FileID=$curFileID");
                 if(empty($firstChangeTime)) $updateSet['QCFirstChangeTime'] = time();
 
-                $updateWhere['FileID'] = $curFileID;
-                $success = $this->DB->update('files', $updateSet, $updateWhere);
-                if(PEAR::isError($success)) {
-                    die("DB Error: ".$success->getMessage());
+                $QCExists = $this->DB->selectOne("SELECT 'x' FROM files_qcstatus WHERE FileID=$curFileID");
+                if(!empty($QCExists)) {
+                    print "Empty";
+                    $updateWhere['FileID'] = $curFileID;
+                    $success = $this->DB->update('files_qcstatus', $updateSet, $updateWhere);
+                    if(PEAR::isError($success)) {
+                        die("DB Error: ".$success->getMessage());
+                    }
+                } else {
+                    print "Insert";
+                    $file = new MRIFile($curFileID);
+                    $updateSet['SeriesUID'] = $file->getParameter('series_instance_uid');
+                    $updateSet['FileID'] = $curFileID;
+                    $this->DB->insert("files_qcstatus", $updateSet);
+                    print_r($updateSet);
                 }
             }
         }
