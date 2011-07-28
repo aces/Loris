@@ -86,7 +86,7 @@ class NDB_BVL_Instrument extends PEAR
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
