@@ -94,6 +94,7 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
     //Create the table that will hold all the field checkboxes
     var oTable=document.createElement("TABLE");
     oTable.border=0;
+    oTable.style.width="100%";
     oFieldsContainerDiv.appendChild(oTable);
     var oBody=document.createElement("TBODY");
     oTable.appendChild(oBody);
@@ -109,22 +110,14 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
     var cellWidth=0;
     var totalWidth=0;
     for(var i in remoteFieldData){
-        //Calculate the cell sizing information so that fields don't wrap.
-        if(loopcounter%8==0 && loopcounter!=0){
-            cellWidth=(currentLongestString*8+30);
-            totalWidth+=cellWidth+10;
-            oCell.style.width=cellWidth+'px';
-            oRow.appendChild(oCell);
-            oCell=document.createElement("TD");
-            oCell.setAttribute("valign","top");
-            currentLongestString=0;
+        if(loopcounter%3==0 && loopcounter!=0) {
+            oBody.appendChild(oRow);
+            oRow = document.createElement("TR");
+            oRow.style.fontSize="80%";
+            oRow.style.width="100%";
         }
-
-        //Create the field row
-        if(loopcounter%8!=0){
-           var oBR=document.createElement("BR");
-           oCell.appendChild(oBR);
-        }
+        oCell=document.createElement("TD");
+        oCell.setAttribute("valign","top");
 
         //create the checkbox and assign the event handler
         var oCheckbox=addNewElement("INPUT", type+"SelectCheckbox", "checkbox");
@@ -133,27 +126,27 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
         if(stepNumber==1){
             oCheckbox.onclick=addFieldToSelected;
         }
+
         //Check the box off if it is already selected
         if(stepNumber==1 && selectedFields[i]){
             oCheckbox.checked=true;
         }
-        oCell.appendChild(oCheckbox);
 
         //create the text node
         var tText=document.createTextNode(remoteFieldData[i][1]);
+
+        oCell.appendChild(oCheckbox);
         oCell.appendChild(tText);
-        if(remoteFieldData[i][1].length > currentLongestString){
-            currentLongestString=remoteFieldData[i][1].length;
-        }
+
+        oRow.appendChild(oCell);
+
+
+
         loopcounter++;
     }
 
     //Finalize cell and table sizing.
-    cellWidth=(currentLongestString*8+30);
-    totalWidth+=cellWidth+10;
-    oCell.style.width=cellWidth+'px';
-    oRow.appendChild(oCell);
-    oTable.width=totalWidth;
+    oTable.width="100%";
 
 }
 
