@@ -107,6 +107,7 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
 
         // run the create table statement
         $createSQL = "CREATE TABLE $nextTableName (SessionID int not null primary key, $createSQL)";
+        $insertSQL = "INSERT INTO $nextTableName (SessionID) SELECT DISTINCT SessionID FROM flag f JOIN parameter_type pt ON (f.Test_name=pt.SourceFrom) WHERE pt.CurrentGUITable='$nextTableName' UNION select DISTINCT SessionID FROM parameter_session ps JOIN parameter_type pt ON (pt.ParameterTypeID=ps.ParameterTypeID) WHERE pt.CurrentGUITable='$nextTableName'";
         $quatTableCounter++;
         $nextTableName = $quatTableBasename . $quatTableCounter;
         $result = $db->run($createSQL);
@@ -164,9 +165,9 @@ function GetSelectStatement($parameterType, $field=NULL) {
     switch($parameterType['SourceFrom']) {
     case 'files':
         if($field == null) {
-            $field = "FileID";
+            $field = "File";
         }
-        $query = "SELECT $field AS Value FROM files JOIN session as S ON (s.ID=files.SessionID) WHERE OutputType='$parameterType[SourceField]'";
+        $query = "SELECT $field AS Value FROM files JOIN session as S ON (s.ID=files.SessionID) WHERE OutputType='$parameterType[SourceCondition]'";
         break;
 
     case 'parameter_file':
@@ -245,7 +246,27 @@ function GetSelectStatement($parameterType, $field=NULL) {
 foreach($parameterTypes AS $parameterType) {
     if($parameterType['CurrentGUITable'] != null) {
     print "Updating $parameterType[Name], memory: " . memory_get_usage() . " bytes\n";
-    $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=quat_table_2.SessionID)");
+    if(strpos($parameterType['Name'], "vineland") !== FALSE ||
+        strpos($parameterType['Name'], "EARLI") !== FALSE ||
+        strpos($parameterType['Name'], "adi") !== FALSE ||
+        strpos($parameterType['Name'], "csbs") !== FALSE ||
+        strpos($parameterType['Name'], "aosi") !== FALSE
+        ) {
+        continue;
+    }
+    switch($parameterType['SourceFrom']) {
+        case 'session':
+        case 'candidate':
+        case 'parameter_session':
+            print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)";
+            $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)");
+            //exit(-1);
+            break;
+        default:
+            print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)";
+            $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)");
+            break;
+    }
     //$db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " WHERE $parameterType[CurrentGUITable].SessionID=s.ID)");
     }
 }
