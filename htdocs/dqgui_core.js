@@ -51,6 +51,10 @@ function initialize(){
     sendRemoteDataQuery("query_gui_data_loader.php?mode=categories");
 
     sendRemoteDataQuery("query_gui_data_loader.php?mode=listQueries");
+    // Make sure the front end active div matches the backend.
+    // If it's uninitialized explicitly, for some reason the front end seems to default
+    // to 3, while the backend defaults to 1.
+	setStepDiv(stepNumber);
 }
 
 

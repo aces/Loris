@@ -54,7 +54,7 @@ switch($_REQUEST['mode']) {
  case 'fields':
      // field list loading
      $remoteLoaderFunction = 'loadFieldsByRemote';
-     $remoteLoaderArgs = "\"$_GET[type]\", \"$_GET[cat_id]\", remoteFieldData, $caching_enabled";
+     $remoteLoaderArgs = "\"$_GET[type]\", \"$_GET[cat_id]\", remoteFieldData, $caching_enabled, false, fieldOrderList";
      $query = "SELECT parameter_type.ParameterTypeID, Name, Description, parameter_type.Type, ParameterTypeCategoryID FROM parameter_type, parameter_type_category_rel WHERE parameter_type.ParameterTypeID=parameter_type_category_rel.ParameterTypeID AND parameter_type.Queryable=1 AND parameter_type_category_rel.ParameterTypeCategoryID='$_GET[cat_id]'";
      $DB->select($query, $results);
      
@@ -94,6 +94,9 @@ switch($_REQUEST['mode']) {
              $script.= ", [".$result['Values']."]";
          }
          $script.= "];\n";
+     }
+     foreach($sortable as $id => $name) {
+         $script .= "fieldOrderList.push($id);\n";
      }
      break;
      
@@ -419,6 +422,7 @@ qrConditionalsGroups = new Array;
 qrGroupsNesting = new Array;
 qrSelectedFields = new Array;
 qrUsedCategories = new Array;
+fieldOrderList = []; // new Array;
 <?=$script?>
 </script>
 
