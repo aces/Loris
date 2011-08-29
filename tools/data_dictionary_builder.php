@@ -140,9 +140,9 @@ foreach($instruments AS $instrument){
         $paramId="";
         $bits=explode("{@}",trim($item));
         //exclude Examiners, since their answer options do not exist in ip_output.txt
-        if(ereg("^Examiner", $bits[1])){
-            continue;
-        }
+        //if(ereg("^Examiner", $bits[1])){
+        //    continue;
+        //
         switch($bits[0]){
             case "table":
                 $table=$bits[1];
@@ -162,7 +162,13 @@ foreach($instruments AS $instrument){
 
             //for HTML_QuickForm versions of standard HTML Form Elements...
             default:
-continue; // jump straight to validity for debugging
+//continue; // jump straight to validity for debugging
+                if(ereg("^Examiner", $bits[1])) {
+                    // Treat examiner specially, since it's a select box but we need
+                    // to treat it as a varchar. derive_timepoint_variables will derive
+                    // the name from the examiner id
+                    $bits[0] = "varchar(255)";
+} else continue;
                 if($bits[0]=="select"){
                     $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
                 } else if($bits[0]=="textarea"){
