@@ -108,12 +108,25 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrder
     var currentLongestString=0;
     var cellWidth=0;
     var totalWidth=0;
-    //for(var i in remoteFieldData){
-    for(var x = 0;x < fieldOrderList.length; x++) {
+
+    if(cache) {
+        iterator = remoteFieldData;
+    } else {
+        iterator = fieldOrderList;
+    }
+    for(var x = 0;x < iterator.length; x++) {
         // HACK: using x, and then assigning i = fieldOrderList[x] is easier than rewriting
         // the code to use fieldOrderList[i] everywhere, since this was changed from remoteFieldData
-        // to fieldOrderList
-        i = fieldOrderList[x];
+        // to fieldOrderList.
+        // If working with cached data, use the old way.
+        if(cache) {
+            if(remoteFieldData[x] === undefined) continue;
+            i = x;
+        } else {
+            i = fieldOrderList[x];
+        }
+
+
         if(loopcounter%3==0 && loopcounter!=0) {
             oBody.appendChild(oRow);
             oRow = document.createElement("TR");
