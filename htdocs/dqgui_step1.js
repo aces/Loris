@@ -94,6 +94,7 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrder
     //Create the table that will hold all the field checkboxes
     var oTable=document.createElement("TABLE");
     oTable.border=0;
+    oTable.style.width="100%";
     oFieldsContainerDiv.appendChild(oTable);
     var oBody=document.createElement("TBODY");
     oTable.appendChild(oBody);
@@ -108,18 +109,33 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrder
     var currentLongestString=0;
     var cellWidth=0;
     var totalWidth=0;
-    //for(var i in remoteFieldData){
-    for(var x = 0;x < fieldOrderList.length; x++) {
+
+    if(cache) {
+        iterator = remoteFieldData;
+    } else {
+        iterator = fieldOrderList;
+    }
+    for(var x = 0;x < iterator.length; x++) {
         // HACK: using x, and then assigning i = fieldOrderList[x] is easier than rewriting
         // the code to use fieldOrderList[i] everywhere, since this was changed from remoteFieldData
-        // to fieldOrderList
-        i = fieldOrderList[x];
+        // to fieldOrderList.
+        // If working with cached data, use the old way.
+        if(cache) {
+            if(remoteFieldData[x] === undefined) continue;
+            i = x;
+        } else {
+            i = fieldOrderList[x];
+        }
+
+
         if(loopcounter%3==0 && loopcounter!=0) {
             oBody.appendChild(oRow);
             oRow = document.createElement("TR");
             oRow.style.fontSize="80%";
             oRow.style.width="100%";
         }
+        oCell=document.createElement("TD");
+        oCell.setAttribute("valign","top");
 
         //create the checkbox and assign the event handler
         var oCheckbox=addNewElement("INPUT", type+"SelectCheckbox", "checkbox");
@@ -128,28 +144,28 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrder
         if(stepNumber==1){
             oCheckbox.onclick=addFieldToSelected;
         }
+
         //Check the box off if it is already selected
         if(stepNumber==1 && selectedFields[i]){
             oCheckbox.checked=true;
         }
-        oCell.appendChild(oCheckbox);
 
         //create the text node
         var tText=document.createTextNode(remoteFieldData[i][1]);
+
+        oCell.appendChild(oCheckbox);
         oCell.appendChild(tText);
-        if(remoteFieldData[i][1].length > currentLongestString){
-            currentLongestString=remoteFieldData[i][1].length;
-        }
+
+        oRow.appendChild(oCell);
+
+
+
         loopcounter++;
     }
     oBody.appendChild(oRow);
 
     //Finalize cell and table sizing.
-    cellWidth=(currentLongestString*8+30);
-    totalWidth+=cellWidth+10;
-    oCell.style.width=cellWidth+'px';
-    oRow.appendChild(oCell);
-    oTable.width=totalWidth;
+    oTable.width="100%";
 
 }
 

@@ -114,6 +114,10 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
         if($db->isError($result)) {
             die( "Failed to create table $nextTableName: ".$result->getMessage()."\n" );
         }
+        $result = $db->run($insertSQL);
+        if($db->isError($result)) {
+            die( "Failed to populate table $nextTableName: ".$result->getMessage()."\n" );
+        }
 
         // reset the column counter and create table statement
         $createSQL = "";
@@ -146,20 +150,6 @@ $db->select($query, $sessions);
 
 unset($config);
 print "At make the data table: " . memory_get_usage() . "\n";
-// make the data table, insert a row for each session
-$queryableSessions = array();
-foreach($sessions AS $session) {
-    foreach($parameterTypes AS $parameterType) {
-        if($parameterType['CurrentGUITable'] == NULL || $session['ID'] == NULL) {
-            //print_r($parameterType);
-            //print_r($session);
-            continue;
-        }
-        if($db->selectOne("SELECT COUNT(*) FROM $parameterType[CurrentGUITable] WHERE SessionID=$session[ID]") == 0) {
-            $db->run("INSERT INTO $parameterType[CurrentGUITable] (SessionID) VALUES ($session[ID])");
-        }
-    }
-}
 
 function GetSelectStatement($parameterType, $field=NULL) {
     // construct query string dependant on parameter source
@@ -212,10 +202,13 @@ function GetSelectStatement($parameterType, $field=NULL) {
 
     case 'session':
     case 'candidate':
-        if($field == null) {
-            $field = "s.$parameterType[SourceField] Value";
+        if($field == null && $parameterType['SourceFrom']=='session') {
+            $field = "s.$parameterType[SourceField] ";
+        } else if($field == null && $parameterType['SourceFrom']=='candidate') {
+            $field = "c.$parameterType[SourceField] ";
         }
-        $query = "SELECT $field AS Value FROM session s LEFT JOIN candidate USING (CandID)";
+
+        $query = "SELECT $field AS Value FROM session s LEFT JOIN candidate c USING (CandID) WHERE 1=1 ";
         break;
 
     case 'psc':

@@ -86,7 +86,7 @@ class NDB_BVL_Instrument extends PEAR
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
@@ -1261,6 +1261,25 @@ class NDB_BVL_Instrument extends PEAR
             return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
         }
         return;
+    }
+
+    function clearInstrument() {
+        $config = NDB_Config::singleton();
+        $dbconfig = $config->getSetting('database');
+        $db = Database::singleton();
+        $columns = $db->pselect("select COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db", array('table' => $this->table, 'db' => $dbconfig['database'] ));
+        $values = array();
+        foreach ($columns as $row) {
+            if($row['COLUMN_NAME'] == 'CommentID' || $row['COLUMN_NAME'] == 'UserID') {
+                continue;
+            }
+            $values[$row['COLUMN_NAME']] = NULL;
+        }
+        print "Wipe out:";
+        $db->update($this->table, $values, array('CommentID' => $this->commentID));
+        print_r($values);
+        print "-----";
+        print "For comment ID: " . $this->commentID;
     }
 } //end class NDB_BVL_Instrument
 

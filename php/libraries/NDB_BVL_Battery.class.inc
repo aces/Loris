@@ -246,14 +246,22 @@ class NDB_BVL_Battery extends PEAR
         
         // craft the select query
         $query = "SELECT f.Test_name FROM ";
-        if(!is_null($stage)) $query .= "test_battery AS b, ";
-        $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID='$this->sessionID' AND LEFT(f.CommentID,3) != 'DDE'";
+        if(!is_null($stage))  {
+            $query .= "test_battery b JOIN flag f ON (b.Test_name=f.Test_name) JOIN test_names t ON (t.Test_name=f.Test_name) WHERE f.SessionID='$this->sessionID' AND LEFT(f.CommentID,3) != 'DDE'";
+        } else {
+        $query .= " flag f JOIN test_names t ON (t.Test_name=f.Test_name) WHERE f.SessionID='$this->sessionID' AND LEFT(f.CommentID,3) != 'DDE'";
+        }
 
         if(!is_null($stage)) {
             if(!is_null($visit_label)) {
-                $query .= " AND b.Visit_label='$visit_label'";
+                $VisitBatteryExists = $GLOBALS['DB']->selectOne("SELECT count(*) FROM test_battery WHERE Visit_label = '$visit_label'");
+                if($VisitBatteryExists > 0) {
+                    $query .= " AND (b.Visit_label='$visit_label')";
+                } else {
+                    $query .= " AND b.Visit_label IS NULL";
+                }
             } else {
-                $query .= " OR b.Visit_label IS NULL";
+                $query .= " AND b.Visit_label IS NULL";
             }
         }
         if(!is_null($stage) && !is_null($stage)) {
