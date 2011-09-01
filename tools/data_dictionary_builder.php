@@ -115,8 +115,9 @@ $abbreviations=array(
 'montreal_prenatal'=>'montreal_prenatal',
 'parental_bonding_inventory'=>'pbi',
 'state_trait_anxiety_inventory'=>'stai',
-'med_records_24' => 'med_rec_24',
-'med_records_recruit' => 'med_rec_recr'
+'med_records_24' => 'mr24',
+'med_records_proband' => 'mrp',
+'med_records_recruit' => 'mrr'
 );
 
 
