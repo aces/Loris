@@ -46,8 +46,9 @@ switch($_REQUEST['mode']) {
      $DB->select($query, $results);
 
      foreach($results AS $row) {
-       $script .= "remoteFieldData.push({id:".$row['ParameterTypeCategoryID'].",name:\"".$row['Name']."\"});\n";
-       // $script .= "remoteFieldData[".$row['ParameterTypeCategoryID']."]=\"$row[Name]\";\n";
+         if ((!is_null($row['Name']))&&(!preg_match('/Array/',$row['Name']))) {
+            $script .= "remoteFieldData.push({id:".$row['ParameterTypeCategoryID'].",name:\"".$row['Name']."\"});\n";
+        }
      }
      break;
 
@@ -262,7 +263,8 @@ switch($_REQUEST['mode']) {
 
      // add the selected tables
      $query .= join(', ', $selectedTables);
-     $query .= " WHERE ";
+     //$query .= " WHERE ";
+     $query .= " WHERE COALESCE(" . join(', ', $selectedFields) . ") IS NOT NULL AND ";
        
      // if there are more than one table involved, join them
      if(count($selectedTables) > 1) {
