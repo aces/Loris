@@ -127,11 +127,12 @@ function DeriveCohort() {
     $sessions = $db->pselect("SELECT ID, SubprojectID FROM session WHERE Active='Y' and Cancelled='N'", array());
     $PTID = $db->pselectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name=:parametertype", 
             array('parametertype' => 'Cohort'));
+    if(!is_numeric($PTID)) {
+        print "Error finding ParameterTypeID for cohort\n";
+        return -1;
+    }
+    $db->delete('parameter_session', array('ParameterTypeID'=>$PTID));
     foreach($sessions as $row) {
-        if(!is_numeric($PTID)) {
-            print "Error finding ParameterTypeID for cohort\n";
-            return -1;
-        }
         $val['SessionID'] = $row['ID'];
         switch($row['SubprojectID']) {
             case 1:
