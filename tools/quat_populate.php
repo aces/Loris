@@ -54,10 +54,32 @@ if(PEAR::isError($result)) {
 $query = "SELECT p.ParameterTypeID, p.Name, p.Type, p.SourceField, p.SourceFrom, p.SourceCondition, p.CurrentGUITable FROM parameter_type p JOIN parameter_type_category_rel USING (ParameterTypeID) JOIN parameter_type_category USING (ParameterTypeCategoryID) WHERE Queryable=1";
 $parameterTypes = array();
 
-$options = getopt("m", array("metavars"));
+// Parse command line options
+$options = getopt("m", array("metavars","sourcefrom:", "fields:", "help"));
+if(isset($options['help'])) {
+    print "Usage: $argv[0] [options]\n\n";
+    //print "\tValid options are:\n";
+    print "   -m, --metavars\t\tOnly populate metavar categories\n";
+    print "   --sourcefrom=table\t\tOnly populate fields from table\n";
+    print "   --fields=field1,field2,...\tOnly populate (comma separated) list of fields \n";
+    print "   --help\t\t\tShow this page\n";
+    exit(1);
+}
 if(isset($options['m']) || isset($options['metavars'])) {
     $query .= " AND parameter_type_category.type='Metavars'";
 }
+if(isset($options['fields'])) {
+    $fields = explode(",", $options['fields']);
+    $q_fields = array();
+    foreach($fields as $field) {
+        $q_fields[] = $db->quote($field);
+    }
+   
+    $query .= " AND p.SourceField IN (";
+    $query .= implode(",", $q_fields);
+    $query .= ")";
+}
+print "$query\n";
 $db->select($query, $parameterTypes);
 
 function GetSelectStatement($parameterType, $field=NULL) {
