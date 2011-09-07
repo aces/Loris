@@ -477,5 +477,22 @@ class Utility extends PEAR
         return $instruments;
 
    }
+    // {{{ getFullName()
+
+    /**
+     * looks up the full name for the current instrument
+     *
+     * @return string        the full name of the instrument
+     * @access public
+     */
+    function getFullName($testName)
+    {
+        $db =& Database::singleton();
+
+        $success = $db->selectOne("SELECT Full_name FROM test_names WHERE Test_name='$testName'");
+        return $success;
+    }
+
+
 }
 ?>

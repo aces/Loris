@@ -49,6 +49,7 @@ if (version_compare(phpversion(),'4.3.0','<'))
 
 // PEAR::Config
 require_once "Config.php";
+require_once "Utility.class.inc";
 
 // define which configuration file we're using for this installation
 $configFile = "../project/config.xml";
@@ -142,14 +143,17 @@ foreach($instruments AS $instrument){
         }
         switch($bits[0]){
             case "table":
+                print "At $table\n";
                 $table=$bits[1];
+                $title = trim(Utility::getFullName($table));
+                $error=$DB->insert("parameter_type_category", array('Name'=>$title, 'Type'=>'Instrument'));
+                $catId=$DB->lastInsertID;
+                $tblCount++;
             break;
 
             case "title":
-                $title=$bits[1];
-                 $error=$DB->insert("parameter_type_category", array('Name'=>$title, 'Type'=>'Instrument'));
-                 $catId=$DB->lastInsertID;
-                 $tblCount++;
+                continue;
+
             break;
 
             case "header":
@@ -170,8 +174,16 @@ foreach($instruments AS $instrument){
                     $bits[0]="varchar(255)";
                 } else if($bits[0]=="static"){
                     $bits[0]="varchar(255)";
+                } else if ($bits[0]=="text_customsize"){
+                    $bits[0]="varchar(" . $bits[3]. ")";
+                } else if ($bits[0]=="checkbox_customsize"){
+                    $bits[0]="varchar(" . $bits[3]. ")";
+                } else if ($bits[0]=="radio") {
+                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
                 }
 
+
+                print "Inserting $table $bits[1]\n";
                 $parameterCount++;
                 $bits[2]=htmlspecialchars($bits[2]);
                 //find values to insert
