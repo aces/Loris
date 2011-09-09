@@ -136,13 +136,19 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrder
         }
         oCell=document.createElement("TD");
         oCell.setAttribute("valign","top");
+        oCell.setAttribute("class",type+"SelectCell fieldsSelect");
+        oCell.setAttribute("id",type+"SelectCell_" + remoteFieldData[i][0]);
+        oCell.setAttribute("title",remoteFieldData[i][2]);
 
         //create the checkbox and assign the event handler
         var oCheckbox=addNewElement("INPUT", type+"SelectCheckbox", "checkbox");
         oCheckbox.id=type+"Select_"+remoteFieldData[i][0];
         oCheckbox.setAttribute("title",remoteFieldData[i][2]);
+        oCheckbox.setAttribute("class",type+"SelectCheckbox fieldsSelect");
         if(stepNumber==1){
-            oCheckbox.onclick=addFieldToSelected;
+            // handled by jQuery on fieldSelectCell
+
+            //oCheckbox.onclick=addFieldToSelected;
         }
 
         //Check the box off if it is already selected
@@ -166,45 +172,27 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrder
 
     //Finalize cell and table sizing.
     oTable.width="100%";
+    setJQueryClickHandlers();
 
 }
 
 function loadCategoriesByRemote(categories){
-categoryNames = new Array();
-for (var i=0; i < categories.length; i++) {
-categoryNames[categories[i].id] = categories[i].name;
-};
+    categoryNames = new Array();
+    for (var i=0; i < categories.length; i++) {
+    categoryNames[categories[i].id] = categories[i].name;
+    };
 
     var selects=["fieldCategorySelect","conditionalCategorySelect"];
     for(var i in selects){
         var oFieldCategorySelect=document.getElementById(selects[i]);
-for (var i=0; i < categories.length; i++) {
-oCategoryOption=document.createElement("OPTION");
-oCategoryOption.value=categories[i].id;
-oCategoryOption.appendChild(document.createTextNode(categories[i].name));
-oFieldCategorySelect.appendChild(oCategoryOption);
-};
+        for (var i=0; i < categories.length; i++) {
+            oCategoryOption=document.createElement("OPTION");
+            oCategoryOption.value=categories[i].id;
+            oCategoryOption.appendChild(document.createTextNode(categories[i].name));
+            oFieldCategorySelect.appendChild(oCategoryOption);
+        };
     }
 }
-
-/*
-
-//loadCategoriesByRemote populates the category select drop down via the remote loader page
-function loadCategoriesByRemote(categories){
-    categoryNames=categories;
-    var selects=["fieldCategorySelect","conditionalCategorySelect"];
-    for(var i in selects){
-        var oFieldCategorySelect=document.getElementById(selects[i]);
-        for(var cat_id in categories){
-           oCategoryOption=document.createElement("OPTION");
-           oCategoryOption.value=cat_id;
-           oCategoryOption.appendChild(document.createTextNode(categories[cat_id]));
-           oFieldCategorySelect.appendChild(oCategoryOption);
-        }
-    }
-}
-
-*/
 
 //FIELD SELECTING/UNSELECTING FUNCTIONS ------------------------------------------------
 
@@ -238,6 +226,7 @@ function addFieldToSelected(fieldId, status, checkall){
     }
     //If the box is checked then add the field
     if(status==true){
+        $("#fieldsSelectCell_" + fieldId).addClass("selected");
 	    var coll=document.getElementsByTagName("INPUT");
 	    for(var i=0; i<coll.length; i++) {
 		    if(coll[i].id == prefix+"_"+fieldId) {
@@ -258,6 +247,7 @@ function addFieldToSelected(fieldId, status, checkall){
 //            oNewRow.scrollIntoView();
         }
     } else {  //otherwise remove the field
+        $("#fieldsSelectCell_" + fieldId).removeClass("selected");
 	    var coll=document.getElementsByTagName("INPUT");
 	    for(var i=0; i<coll.length; i++) {
 		    if(coll[i].id == prefix+"_"+fieldId) {

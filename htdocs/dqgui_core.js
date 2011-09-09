@@ -265,3 +265,26 @@ function getEventTarget(mozTarget, ieTarget){
         return ieTarget;
     }
 }
+
+function setJQueryClickHandlers() {
+    $('.fieldsSelectCell').unbind('click').click(function(e) {
+        e.stopPropagation();
+        cellId = $(this).attr('id');
+        
+        if(cellId.indexOf("Cell") >= 0) {
+            // Clicked on table cell
+            //alert('Clicked on table cell');
+            if($(this).hasClass("selected")) {
+                addFieldToSelected(cellId.replace("Cell", ""), false)
+            } else {
+                addFieldToSelected(cellId.replace("Cell", ""), true)
+            }
+        } /* else if (cellId.indexOf("fieldsSelect_") >= 0) {
+            // Clicked on checkbox
+            alert('Clicked on checkbox');
+        } */
+    });
+}
+$(document).ready(function() {
+    setJQueryClickHandlers();
+});
