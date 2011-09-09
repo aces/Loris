@@ -46,15 +46,16 @@ switch($_REQUEST['mode']) {
      $DB->select($query, $results);
 
      foreach($results AS $row) {
-       $script .= "remoteFieldData.push({id:".$row['ParameterTypeCategoryID'].",name:\"".$row['Name']."\"});\n";
-       // $script .= "remoteFieldData[".$row['ParameterTypeCategoryID']."]=\"$row[Name]\";\n";
+         if ((!is_null($row['Name']))&&(!preg_match('/Array/',$row['Name']))) {
+            $script .= "remoteFieldData.push({id:".$row['ParameterTypeCategoryID'].",name:\"".$row['Name']."\"});\n";
+        }
      }
      break;
 
  case 'fields':
      // field list loading
      $remoteLoaderFunction = 'loadFieldsByRemote';
-     $remoteLoaderArgs = "\"$_GET[type]\", \"$_GET[cat_id]\", remoteFieldData, $caching_enabled";
+     $remoteLoaderArgs = "\"$_GET[type]\", \"$_GET[cat_id]\", remoteFieldData, $caching_enabled, false, fieldOrderList";
      $query = "SELECT parameter_type.ParameterTypeID, Name, Description, parameter_type.Type, ParameterTypeCategoryID FROM parameter_type, parameter_type_category_rel WHERE parameter_type.ParameterTypeID=parameter_type_category_rel.ParameterTypeID AND parameter_type.Queryable=1 AND parameter_type_category_rel.ParameterTypeCategoryID='$_GET[cat_id]'";
      $DB->select($query, $results);
      
@@ -94,6 +95,9 @@ switch($_REQUEST['mode']) {
              $script.= ", [".$result['Values']."]";
          }
          $script.= "];\n";
+     }
+     foreach($sortable as $id => $name) {
+         $script .= "fieldOrderList.push($id);\n";
      }
      break;
      
@@ -259,7 +263,8 @@ switch($_REQUEST['mode']) {
 
      // add the selected tables
      $query .= join(', ', $selectedTables);
-     $query .= " WHERE ";
+     //$query .= " WHERE ";
+     $query .= " WHERE COALESCE(" . join(', ', $selectedFields) . ") IS NOT NULL AND ";
        
      // if there are more than one table involved, join them
      if(count($selectedTables) > 1) {
@@ -419,6 +424,7 @@ qrConditionalsGroups = new Array;
 qrGroupsNesting = new Array;
 qrSelectedFields = new Array;
 qrUsedCategories = new Array;
+fieldOrderList = []; // new Array;
 <?=$script?>
 </script>
 

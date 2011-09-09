@@ -107,6 +107,7 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
 
         // run the create table statement
         $createSQL = "CREATE TABLE $nextTableName (SessionID int not null primary key, $createSQL)";
+        $insertSQL = "INSERT INTO $nextTableName (SessionID) SELECT DISTINCT SessionID FROM flag f JOIN parameter_type pt ON (f.Test_name=pt.SourceFrom) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE pt.CurrentGUITable='$nextTableName' AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin' UNION select DISTINCT SessionID FROM parameter_session ps JOIN parameter_type pt ON (pt.ParameterTypeID=ps.ParameterTypeID) JOIN session s ON (ps.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID) WHERE pt.CurrentGUITable='$nextTableName' AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin'";
         $quatTableCounter++;
         $nextTableName = $quatTableBasename . $quatTableCounter;
         $result = $db->run($createSQL);
@@ -118,6 +119,7 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
         $createSQL = "";
         $columnCount = 0;
         print "Finished creating $nextTableName: " . memory_get_usage() . "\n";
+if($quatTableCounter > 2) break;
     }
 }
 
@@ -164,9 +166,9 @@ function GetSelectStatement($parameterType, $field=NULL) {
     switch($parameterType['SourceFrom']) {
     case 'files':
         if($field == null) {
-            $field = "FileID";
+            $field = "File";
         }
-        $query = "SELECT $field AS Value FROM files JOIN session as S ON (s.ID=files.SessionID) WHERE OutputType='$parameterType[SourceField]'";
+        $query = "SELECT $field AS Value FROM files JOIN session as S ON (s.ID=files.SessionID) WHERE OutputType='$parameterType[SourceCondition]'";
         break;
 
     case 'parameter_file':
@@ -220,7 +222,7 @@ function GetSelectStatement($parameterType, $field=NULL) {
         if($field == null) {
             $field = "s.$parameterType[SourceField] Value";
         }
-        $query = "SELECT $field AS Value FROM session s LEFT JOIN psc USING (CenterID)";
+        $query = "SELECT $field AS Value FROM session s LEFT JOIN psc USING (CenterID) WHERE 1=1";
         break;
 
     case 'mri_acquisition_dates':
@@ -233,9 +235,21 @@ function GetSelectStatement($parameterType, $field=NULL) {
     //for behavioural instrument data
     default:
         if($field == null) {
-            $field = "`$parameterType[SourceFrom]`.`$parameterType[SourceField]`";
+            if($parameterType['SourceField'] == 'Administration' ||
+                $parameterType['SourceField'] == 'Validity' ||
+                $parameterType['SourceField'] == 'Data_entry') {
+                $field = "`flag`.`$parameterType[SourceField]`";
+            } else if($parameterType['SourceField'] == 'Examiner') 
+                $field = "e.`full_name`";
+            else {
+                $field = "`$parameterType[SourceFrom]`.`$parameterType[SourceField]`";
+            }
         }
-        $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) WHERE flag.Administration<>'None' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
+        if($parameterType['SourceField'] == 'Examiner') 
+            $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) LEFT JOIN examiners e ON (e.examinerID=$parameterType[SourceFrom].Examiner) WHERE flag.Administration IN ('All', 'Partial') AND flag.Data_entry='Complete' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
+        else {
+            $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) WHERE flag.Administration IN ('All', 'Partial') AND flag.Data_entry='Complete' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
+        }
         break;
     }
     return $query;
@@ -245,7 +259,35 @@ function GetSelectStatement($parameterType, $field=NULL) {
 foreach($parameterTypes AS $parameterType) {
     if($parameterType['CurrentGUITable'] != null) {
     print "Updating $parameterType[Name], memory: " . memory_get_usage() . " bytes\n";
-    $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=quat_table_2.SessionID)");
+    if(strpos($parameterType['Name'], "vineland") !== FALSE ||
+        strpos($parameterType['Name'], "EARLI") !== FALSE ||
+        strpos($parameterType['Name'], "adi") !== FALSE ||
+        strpos($parameterType['Name'], "csbs") !== FALSE ||
+        strpos($parameterType['Name'], "fyi") !== FALSE ||
+        strpos($parameterType['Name'], "head_measurements_subject") !== FALSE ||
+        strpos($parameterType['Name'], "i3") !== FALSE ||
+        strpos($parameterType['Name'], "ibq_r") !== FALSE ||
+        strpos($parameterType['Name'], "m_chat_proband") !== FALSE ||
+        strpos($parameterType['Name'], "med_psych_hist") !== FALSE ||
+        strpos($parameterType['Name'], "aosi") !== FALSE
+        ) {
+        continue;
+    }
+    switch($parameterType['SourceFrom']) {
+        case 'session':
+        case 'candidate':
+        case 'psc':
+        case 'parameter_candidate';
+        case 'parameter_session':
+            print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)";
+            $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)");
+            //exit(-1);
+            break;
+        default:
+            print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)";
+            $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)");
+            break;
+    }
     //$db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " WHERE $parameterType[CurrentGUITable].SessionID=s.ID)");
     }
 }

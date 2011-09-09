@@ -99,6 +99,7 @@ $DB->run("delete from parameter_type_category where ParameterTypeCategoryID in (
 //delete all 'Instrument' entries from parameter_type
 $DB->run("delete from parameter_type where ParameterTypeID in ($instrumentParameterTypeIDString)");
 
+print "Cleared data from BVL instruments\n";
 
 //Instruments with excessively wordy names.  Entries are OPTIONAL
 //It would be really nice to have a table_names.Abbreviation field, but messy to change the names *everywhere*.
@@ -121,11 +122,13 @@ $abbreviations=array(
 
 
 
+print "Reading instruments\n";
 //Read the ip_output.txt staging file.
 $fp=fopen("ip_output.txt","r");
 $data=fread($fp, filesize("ip_output.txt"));
 fclose($fp);
 
+print "Parsing instruments\n";
 $instruments=explode("{-@-}",trim($data));
 
 //process all HTML_QuickForm Elements found in ip_output.txt
@@ -137,10 +140,6 @@ foreach($instruments AS $instrument){
     foreach($items AS $item){
         $paramId="";
         $bits=explode("{@}",trim($item));
-        //exclude Examiners, since their answer options do not exist in ip_output.txt
-        if(ereg("^Examiner", $bits[1])){
-            continue;
-        }
         switch($bits[0]){
             case "table":
                 print "At $table\n";
@@ -149,6 +148,7 @@ foreach($instruments AS $instrument){
                 $error=$DB->insert("parameter_type_category", array('Name'=>$title, 'Type'=>'Instrument'));
                 $catId=$DB->lastInsertID;
                 $tblCount++;
+                print "At $table\n";
             break;
 
             case "title":
@@ -162,7 +162,13 @@ foreach($instruments AS $instrument){
 
             //for HTML_QuickForm versions of standard HTML Form Elements...
             default:
-                if($bits[0]=="select"){
+//continue; // jump straight to validity for debugging
+                if(ereg("^Examiner", $bits[1])) {
+                    // Treat examiner specially, since it's a select box but we need
+                    // to treat it as a varchar. derive_timepoint_variables will derive
+                    // the name from the examiner id
+                    $bits[0] = "varchar(255)";
+                } else if($bits[0]=="select"){
                     $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
                 } else if($bits[0]=="textarea"){
                     $bits[0]="text";
@@ -182,7 +188,6 @@ foreach($instruments AS $instrument){
                     $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
                 }
 
-
                 print "Inserting $table $bits[1]\n";
                 $parameterCount++;
                 $bits[2]=htmlspecialchars($bits[2]);
@@ -200,6 +205,41 @@ foreach($instruments AS $instrument){
                 $error=$DB->insert("parameter_type_category_rel",array("ParameterTypeID"=>$paramId, "ParameterTypeCategoryID"=>$catId));
         }   
     }
+
+    if(empty($table)) continue;
+print "Inserting validity for $table\n";
+    // Insert validity
+    $Name = (array_key_exists($table, $abbreviations) ? $abbreviations[$table] : $table ) . "_Validity";
+    $ParameterTypeID = array_key_exists($Name, $parameter_types) ? $parameter_types[$Name] : '';
+    $error=$DB->insert("parameter_type", 
+        array('ParameterTypeID'=>$ParameterTypeID,
+              'Name'=>$Name, 
+              'Type'=>'enum(\'Questionable\', \'Invalid\', \'Valid\')', 
+              'Description'=>"Validity of $table", 
+              'SourceField'=>'Validity', 'SourceFrom'=>$table, 'CurrentGUITable'=>'quat_table_' . ceil(($parameterCount  - 0.5) / 150), 'Queryable'=>'1'));
+    if($ParameterTypeID === '') {
+        $paramId= $DB->lastInsertID;
+    } else {
+        $paramId = $ParameterTypeID;
+    }
+    $error=$DB->insert("parameter_type_category_rel",array("ParameterTypeID"=>$paramId, "ParameterTypeCategoryID"=>$catId));
+    // Insert administration
+print "Inserting administration for $table\n";
+    $Name = (array_key_exists($table, $abbreviations) ? $abbreviations[$table] : $table ) . "_Administration";
+    $ParameterTypeID = array_key_exists($Name, $parameter_types) ? $parameter_types[$Name] : '';
+    $error=$DB->insert("parameter_type", 
+        array('ParameterTypeID'=>$ParameterTypeID,
+              'Name'=>$Name, 
+              'Type'=>'enum(\'None\', \'Partial\', \'All\')', 
+              'Description'=>"Administration for $table", 
+              'SourceField'=>'Administration', 'SourceFrom'=>$table, 'CurrentGUITable'=>'quat_table_' . ceil(($parameterCount  - 0.5) / 150), 'Queryable'=>'1'));
+    if($ParameterTypeID === '') {
+        $paramId= $DB->lastInsertID;
+    } else {
+        $paramId = $ParameterTypeID;
+    }
+    $error=$DB->insert("parameter_type_category_rel",array("ParameterTypeID"=>$paramId, "ParameterTypeCategoryID"=>$catId));
+    // Insert examiner
 }
 
 //Print completion info message
