@@ -148,6 +148,7 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
         $createSQL = "";
         $columnCount = 0;
         print "Finished creating $nextTableName: " . memory_get_usage() . "\n";
+if($quatTableCounter > 2) break;
     }
 }
 
