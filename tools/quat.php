@@ -122,7 +122,6 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
         // run the create table statement
         $createSQL = "CREATE TABLE $nextTableName (SessionID int not null primary key, $createSQL)";
         $updateQuatSQL = "UPDATE parameter_type SET CurrentGUITable=" . $db->quote($nextTableName) . " WHERE ParameterTypeID IN (" . join(',', $parameterTypesForQuat) . ')';
-        //$insertSQL = "INSERT INTO $nextTableName (SessionID) SELECT DISTINCT SessionID FROM flag f JOIN parameter_type pt ON (f.Test_name=pt.SourceFrom) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE pt.CurrentGUITable='$nextTableName' AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin' UNION select DISTINCT SessionID FROM parameter_session ps JOIN parameter_type pt ON (pt.ParameterTypeID=ps.ParameterTypeID) JOIN session s ON (ps.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID) WHERE pt.CurrentGUITable='$nextTableName' AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin'";
         // be more aggressive -- insert every candidate who isn't cancelled
         $insertSQL = "INSERT INTO $nextTableName (SessionID) SELECT s.ID from session s JOIN candidate c USING (CandID) WHERE c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin' AND c.PSCID <> 'scanner'";
         $quatTableCounter++;
@@ -148,7 +147,6 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
         $createSQL = "";
         $columnCount = 0;
         print "Finished creating $nextTableName: " . memory_get_usage() . "\n";
-if($quatTableCounter > 2) break;
     }
 }
 
@@ -165,134 +163,4 @@ unset($parameterType);
 unset($countParameterTypes);
 print "Finished creating tables: " . memory_get_usage() . "\n";
 
-// define the list of sessions to use, according to NIHPD criteria, or not.
-$query = "SELECT ID, CandID, Screening, Visit FROM session";
-$isNIHPD = $config->getSetting('isNIHPD');
-if ($isNIHPD == "true") {
-    $query .= " WHERE Approval='Pass'";
-}
-$sessions = array();
-$db->select($query, $sessions);
-
-unset($config);
-print "At make the data table: " . memory_get_usage() . "\n";
-
-function GetSelectStatement($parameterType, $field=NULL) {
-    // construct query string dependant on parameter source
-    switch($parameterType['SourceFrom']) {
-    case 'files':
-        if($field == null) {
-            $field = "File";
-        }
-        $query = "SELECT $field AS Value FROM files JOIN session as S ON (s.ID=files.SessionID) WHERE OutputType='$parameterType[SourceCondition]'";
-        break;
-
-    case 'parameter_file':
-        if($field == null) {
-            $field = "p.Value";
-        }
-        $query = "SELECT $field FROM session AS s, files AS f, parameter_file AS p WHERE s.ID=f.SessionID AND f.FileID=p.FileID AND (f.QCStatus<>'Fail' OR f.QCStatus IS NULL) AND ParameterTypeID=$parameterType[ParameterTypeID]";
-        break;
-
-    case 'files_where_parameter':
-        if($field == null) {
-            $field = "$parameterType[SourceField]";
-        }
-        // SourceCondition can refer to acquisition protocol as
-        // Scan_type and limiter_type.Name=X and limiter_value.Value=Y
-        $query = "SELECT $field AS Value FROM session AS s INNER JOIN files ON (s.ID=files.SessionID) INNER JOIN mri_scan_type ON (files.AcquisitionProtocolID=mri_scan_type.ID) NATURAL JOIN parameter_file AS limiter_value INNER JOIN parameter_type AS limiter_type ON (limiter_value.ParameterTypeID=limiter_type.ParameterTypeID) WHERE $parameterType[SourceCondition]";
-        break;
-
-    case 'parameter_file_where_parameter':
-        if($field == null) {
-            $field = "$parameterType[SourceField]";
-        }
-        // SourceCondition can refer to acquisition protocol as
-        // Scan_type and limiter_type.Name=X and limiter_value.Value=Y
-        $query = "SELECT $field FROM session AS s INNER JOIN files ON (s.ID=files.SessionID) INNER JOIN mri_scan_type ON (files.AcquisitionProtocolID=mri_scan_type.ID) INNER JOIN parameter_file AS limiter_value ON (limiter_value.FileID=files.FileID) INNER JOIN parameter_type AS limiter_type ON (limiter_value.ParameterTypeID=limiter_type.ParameterTypeID) INNER JOIN parameter_file ON (files.FileID=parameter_file.FileID) INNER JOIN parameter_type ON (parameter_file.ParameterTypeID=parameter_type.ParameterTypeID) WHERE $parameterType[SourceCondition]";
-        break;
-
-    case 'parameter_session':
-        if($field == null) {
-            $field = "Value";
-        }
-        $query = "SELECT $field FROM parameter_session JOIN session s ON (s.ID=parameter_session.SessionID) WHERE ParameterTypeID=$parameterType[ParameterTypeID]";
-        break;
-
-    case 'parameter_candidate':
-        if($field == null) {
-            $field = "Value";
-        }
-        $query = "SELECT $field FROM session s LEFT JOIN parameter_candidate USING (CandID) WHERE ParameterTypeID=$parameterType[ParameterTypeID]";
-        break;
-
-    case 'session':
-    case 'candidate':
-        if($field == null && $parameterType['SourceFrom']=='session') {
-            $field = "s.$parameterType[SourceField] ";
-        } else if($field == null && $parameterType['SourceFrom']=='candidate') {
-            $field = "c.$parameterType[SourceField] ";
-        }
-
-        $query = "SELECT $field AS Value FROM session s LEFT JOIN candidate c USING (CandID) WHERE 1=1 ";
-        break;
-
-    case 'psc':
-        if($field == null) {
-            $field = "s.$parameterType[SourceField] Value";
-        }
-        $query = "SELECT $field AS Value FROM session s LEFT JOIN psc USING (CenterID) WHERE 1=1";
-        break;
-
-    case 'mri_acquisition_dates':
-        if($field == null) {
-            $field = "$parameterType[SourceField] Value";
-        }
-        $query = "SELECT $field AS Value FROM session s LEFT JOIN candidate USING (CandID) LEFT JOIN mri_acquisition_dates ON (session.ID=mri_acquisition_dates.SessionID)";
-	 break;
-
-    //for behavioural instrument data
-    default:
-        if($field == null) {
-            if($parameterType['SourceField'] == 'Administration' ||
-                $parameterType['SourceField'] == 'Validity' ||
-                $parameterType['SourceField'] == 'Data_entry') {
-                $field = "`flag`.`$parameterType[SourceField]`";
-            } else if($parameterType['SourceField'] == 'Examiner') 
-                $field = "e.`full_name`";
-            else {
-                $field = "`$parameterType[SourceFrom]`.`$parameterType[SourceField]`";
-            }
-        }
-        if($parameterType['SourceField'] == 'Examiner') 
-            $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) LEFT JOIN examiners e ON (e.examinerID=$parameterType[SourceFrom].Examiner) WHERE flag.Administration IN ('All', 'Partial') AND flag.Data_entry='Complete' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
-        else {
-            $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) WHERE flag.Administration IN ('All', 'Partial') AND flag.Data_entry='Complete' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
-        }
-        break;
-    }
-    return $query;
-}
-
-// Update data
-foreach($parameterTypes AS $parameterType) {
-    if($parameterType['CurrentGUITable'] != null) {
-        print "Updating $parameterType[Name], memory: " . memory_get_usage() . " bytes\n";
-        switch($parameterType['SourceFrom']) {
-            case 'session':
-            case 'candidate':
-            case 'psc':
-            case 'parameter_candidate';
-            case 'parameter_session':
-                print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)";
-                $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)");
-                //exit(-1);
-                break;
-            default:
-                print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)";
-                $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)");
-                break;
-        }
-    }
-}
 ?>
