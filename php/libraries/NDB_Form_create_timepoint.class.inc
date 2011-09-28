@@ -82,10 +82,10 @@ class NDB_Form_create_timepoint extends NDB_Form
             $sp_labelOptions[$subproject['id']] = $subproject['title'];
         }
         
-        if($config->getSetting("WarnMultipleSubprojects")) {
+        if($config->getSetting("WarnMultipleSubprojects") && !empty($this->subprojectID)) {
             $attributes=array("onchange"=>"if(confirm(\"Are you sure you want to change the subprojectID? It should match the previously entered subprojectIDs.\")) { location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;} else { location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+" . $this->subprojectID . ";}");
         } else {
-            $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");
+            $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value");
         }
 
         $this->form->addElement('select', 'subprojectID', 'Subproject', $sp_labelOptions, $attributes);
