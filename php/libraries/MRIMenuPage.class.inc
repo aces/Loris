@@ -124,11 +124,11 @@ class MRIMenuPage {
 
 
     function _PopulateQCBreakdown($ProtocolID, $SessionID) {
-        $Passes = $this->DB->selectOne("SELECT count(File) FROM files where SessionID=".$SessionID." AND AcquisitionProtocolID=$ProtocolID AND QCStatus='Pass'");
+        $Passes = $this->DB->selectOne("SELECT count(File) FROM files join files_qcstatus qc USING (FileID) where SessionID=".$SessionID." AND AcquisitionProtocolID=$ProtocolID AND qc.QCStatus='Pass'");
         if($Passes > 0) {
             return 'Pass';
         }
-        $Fails = $this->DB->selectOne("SELECT count(File) FROM files where SessionID=".$SessionID." AND AcquisitionProtocolID=$ProtocolID AND QCStatus='Fail'");
+        $Fails = $this->DB->selectOne("SELECT count(File) FROM files JOIN files_qcstatus qc USING (FileID) where SessionID=".$SessionID." AND AcquisitionProtocolID=$ProtocolID AND qc.QCStatus='Fail'");
         if($Fails > 0) {
             return 'Fail';
         }
