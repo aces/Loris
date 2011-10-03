@@ -42,7 +42,7 @@ var fieldData=new Array();  //The field information, loaded by remote.  [id]=[id
 
 var selectedFields = new Array();  //The array of fields the user has selected.  [id]=true/false;
 
-var currentMode = "Basic"; // either Basic or Advanced
+var currentMode = "Advanced"; // either Basic or Advanced
 
 //INITIALIZATION  ---------------------------------------------------------
 //Initialize function for the page run on body load.
@@ -267,22 +267,24 @@ function getEventTarget(mozTarget, ieTarget){
 }
 
 function setJQueryClickHandlers() {
-    $('.fieldsSelectCell').unbind('click').click(function(e) {
+    $('.fieldsSelectCell,.conditionalsSelectCell').unbind('click').click(function(e) {
         e.stopPropagation();
         cellId = $(this).attr('id');
         
         if(cellId.indexOf("Cell") >= 0) {
             // Clicked on table cell
             //alert('Clicked on table cell');
-            if($(this).hasClass("selected")) {
-                addFieldToSelected(cellId.replace("Cell", ""), false)
+            if(cellId.indexOf("conditional") >= 0) {
+                addToSelected = checkConditionalField;
             } else {
-                addFieldToSelected(cellId.replace("Cell", ""), true)
+                addToSelected = addFieldToSelected;
             }
-        } /* else if (cellId.indexOf("fieldsSelect_") >= 0) {
-            // Clicked on checkbox
-            alert('Clicked on checkbox');
-        } */
+            if($(this).hasClass("selected")) {
+                addToSelected(cellId.replace("Cell", ""), false)
+            } else {
+                addToSelected(cellId.replace("Cell", ""), true)
+            }
+        } 
     });
 }
 $(document).ready(function() {
