@@ -266,6 +266,15 @@ function getEventTarget(mozTarget, ieTarget){
     }
 }
 
+function decodeHTMLEntities(s) {
+    // Return javascript string with HTML entities decoded into their 
+    // real characters by creating a textarea, setting the innerHTML,
+    // then returning the parsed value.
+    var t = document.createElement('textarea');
+    t.innerHTML = s;
+    return t.value;
+}
+
 function setJQueryClickHandlers() {
     $('.fieldsSelectCell,.conditionalsSelectCell').unbind('click').click(function(e) {
         e.stopPropagation();

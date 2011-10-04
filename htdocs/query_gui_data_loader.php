@@ -90,7 +90,7 @@ switch($_REQUEST['mode']) {
          $data[] = $rawdata[$id];
      }
      foreach($data AS $result){
-         $script.= "remoteFieldData[".$result['ParameterTypeID']."]=[".$result['ParameterTypeID'].", \"".$result['Name']."\", \"".htmlentities($result['Description'])."\", ".$result['ParameterTypeCategoryID'].", \"".$result['Type']."\"";
+         $script.= "remoteFieldData[".$result['ParameterTypeID']."]=[".$result['ParameterTypeID'].", \"".$result['Name']."\", \"".htmlentities($result['Description'], ENT_COMPAT | ENT_HTML401, 'UTF-8')."\", ".$result['ParameterTypeCategoryID'].", \"".$result['Type']."\"";
          if(!empty($result['Values'])){
              $script.= ", [".$result['Values']."]";
          }
