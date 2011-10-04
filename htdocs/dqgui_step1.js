@@ -138,12 +138,14 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrder
         oCell.setAttribute("valign","top");
         oCell.setAttribute("class",type+"SelectCell fieldsSelect");
         oCell.setAttribute("id",type+"SelectCell_" + remoteFieldData[i][0]);
-        oCell.setAttribute("title",remoteFieldData[i][2]);
+        oCell.setAttribute("title", decodeHTMLEntities(remoteFieldData[i][2]));
+
+        //oCell.setAttribute("title",remoteFieldData[i][2]);
 
         //create the checkbox and assign the event handler
         var oCheckbox=addNewElement("INPUT", type+"SelectCheckbox", "checkbox");
         oCheckbox.id=type+"Select_"+remoteFieldData[i][0];
-        oCheckbox.setAttribute("title",remoteFieldData[i][2]);
+        oCheckbox.setAttribute("title",decodeHTMLEntities(remoteFieldData[i][2]));
         oCheckbox.setAttribute("class",type+"SelectCheckbox fieldsSelect");
         if(stepNumber==1){
             // handled by jQuery on fieldSelectCell
@@ -295,10 +297,11 @@ function addRow(id, columnData){
         if(i==0){
             newCell.appendChild(document.createTextNode(categoryNames[columnData[3]]));
         } else {
-            newCell.appendChild(document.createTextNode(columnData[i]));
+            newCell.appendChild(document.createTextNode(decodeHTMLEntities(columnData[i])));
         }
         newCell.style.borderBottom="1px black solid";
         newRow.appendChild(newCell);
+
     }
     return newRow;
 }
