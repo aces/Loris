@@ -55,7 +55,7 @@ function MRI_Find_And_Insert_Selected() {
             JOIN parameter_file pf USING(FileID)
             JOIN parameter_type pt USING(ParameterTypeID)
                     WHERE File like '%$type%'
-                        AND pt.Name='Selected' AND COALESCE(pf.Value, '') <> '' AND File NOT LIKE '%phantom%' AND (f.QCStatus = 'Pass' OR f.QCStatus IS NULL)", array());
+                        AND pt.Name='Selected' AND COALESCE(pf.Value, '') <> '' AND File NOT LIKE '%phantom%'", array());
 
         foreach($sessions as $row) {
             $val = array();
