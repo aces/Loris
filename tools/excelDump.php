@@ -75,10 +75,20 @@ foreach ($instruments as $instrument) {
         if (is_file("../project/instruments/NDB_BVL_Instrument_$Test_name.class.inc")) {
             $instrument =& NDB_BVL_Instrument::factory($Test_name, '', false);
             if($instrument->ValidityEnabled == true) {
-	            $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' and c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
-            } else {
-	            $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' and c.CenterID IN (2, 3, 4, 5 )order by s.Visit_label, c.PSCID";
+                $extra_fields = 'f.Validity, ';
+            } 
+            $NDB_Config = NDB_Config::singleton();
+            $ddeInstruments = $NDB_Config->getSetting("DoubleDataEntryInstruments");
+            print_r($ddeInstruments);
+            if(in_array($i, $ddeInstruments)) {
+                $extra_fields = "CASE ddef.Data_entry='Complete' WHEN 1 then 'Y' 
+                                                                 WHEN  NULL then 'Y' 
+                                                                 ELSE 'N' 
+                                    END AS DDE_Complete, 
+                                 CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE i.CommentID=cu.CommentId1 OR i.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS conflicts_exist, ";
             }
+	        $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, $extra_fields i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID left join flag ddef ON (ddef.CommentID=CONCAT('DDE_', i.CommentID)) WHERE c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' and c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
+
         } else {
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' and c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
         }
