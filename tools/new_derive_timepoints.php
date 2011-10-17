@@ -52,6 +52,7 @@ function MRI_Find_And_Insert_Selected() {
         // Get the files, but only the selected ones. This (theoretically)
         // ensures only 1 per SessionID
         $sessions = $db->pselect("SELECT SessionID, File, QCStatus FROM files f
+            LEFT JOIN files_qcstatus USINg(FileID)
             JOIN parameter_file pf USING(FileID)
             JOIN parameter_type pt USING(ParameterTypeID)
                     WHERE File like '%$type%'
