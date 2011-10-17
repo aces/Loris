@@ -52,6 +52,7 @@ function MRI_Find_And_Insert_Selected() {
         // Get the files, but only the selected ones. This (theoretically)
         // ensures only 1 per SessionID
         $sessions = $db->pselect("SELECT SessionID, File, QCStatus FROM files f
+            LEFT JOIN files_qcstatus USINg(FileID)
             JOIN parameter_file pf USING(FileID)
             JOIN parameter_type pt USING(ParameterTypeID)
                     WHERE File like '%$type%'
@@ -93,6 +94,7 @@ function DeriveRadiologicalReviewStatus() {
             print "Error finding ParameterTypeID for $PTID\n";
             return -1;
         }
+        $db->delete('parameter_session', array('ParameterTypeID'=>$PTID));
         foreach($sessions as $row) {
             $val['SessionID'] = $row['SessionID'];
             switch($row[$type]) {
@@ -119,6 +121,13 @@ function DeriveRadiologicalReviewStatus() {
             $val['InsertTime'] = time();
             print "Inserting $val[SessionID], $val[Value]\n";
             $db->insert("parameter_session", $val);
+        }
+        $duplisessions = $db->pselect("select SessionID, Value, count(*) from parameter_session WHERE ParameterTypeID=" . $PTID . " GROUP BY SessionID, ParameterTypeID HAVING COUNT(*) > 1", array());
+        print "Deleting duplicate $PTID\n";
+        print_r($duplisessions);
+        foreach ($duplisessions as $row) {
+            print "Deleting $row[SessionID]\n";
+            $db->delete('parameter_session', array('SessionID' => $row['SessionID']));
         }
     }
 }
@@ -152,6 +161,11 @@ function DeriveCohort() {
         $val['InsertTime'] = time();
         print "Inserting $val[SessionID], $val[Value]\n";
         $db->insert("parameter_session", $val);
+    }
+    $duplisessions = $db->pselect("select SessionID, Value, count(*) from parameter_session WHERE ParameterTypeID=" . $PTID . " GROUP BY SessionID, ParameterTypeID HAVING COUNT(*) > 1", array());
+    foreach ($duplisessions as $row) {
+        print "Deleting $row[SessionID]\n";
+        $db->delete('parameter_session', array('SessionID' => $row['SessionID']));
     }
 }
 

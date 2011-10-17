@@ -34,7 +34,7 @@ class MRIMenuPage {
                 'visitLabel' => 's.Visit_label',
                 'qcStatus' => 's.MRIQCStatus',
                 'SubprojectID' => 's.SubprojectID',
-                'pending' => "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(f.QCFirstChangeTime,0)=0)"
+                'pending' => "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"
                 );
         $this->headers = array(
                 'No.' => '',
@@ -94,7 +94,7 @@ class MRIMenuPage {
                 UNIX_TIMESTAMP(md.AcquisitionDate) AS firstAcqDate,
                 UNIX_TIMESTAMP(s.MRIQCFirstChangeTime) AS firstQCDate,
                 UNIX_TIMESTAMP(s.MRIQCLastChangeTime) AS lastQCDate
-                    FROM psc AS p, candidate AS c, session AS s, files AS f, mri_acquisition_dates AS md
+                    FROM psc AS p JOIN session s ON (s.CenterID=p.CenterID) JOIN candidate c ON (c.CandID=s.CandID) JOIN files f ON (f.SessionID=s.ID) LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
                     WHERE s.CenterID=p.CenterID AND s.CandID=c.CandID AND f.SessionID=s.ID AND md.SessionID=s.ID
                     $extra_where_string
                     AND f.PendingStaging=0 AND f.FileType='mnc' AND f.OutputType='native' AND f.AcquisitionProtocolID not in (1, 2, 3, 52) 
@@ -143,7 +143,7 @@ class MRIMenuPage {
 
         // Go through each 
         for($i=0; $i<$visit_tpl_data['numTimepoints']; $i++) {
-            $minQCDate = $this->DB->selectOne("select min(QCLastChangeTime) from files where SessionID=".$visit_tpl_data['timepoints'][$i]['sessionID']." AND OutputType='native' AND AcquisitionProtocolID not in (1, 2, 3, 52) group by QCLastChangeTime order by QCLastChangeTime limit 1");
+            $minQCDate = $this->DB->selectOne("select min(QCLastChangeTime) from files left join files_qcstatus USING(FileID) where SessionID=".$visit_tpl_data['timepoints'][$i]['sessionID']." AND OutputType='native' AND AcquisitionProtocolID not in (1, 2, 3, 52) group by QCLastChangeTime order by QCLastChangeTime limit 1");
             // New data if not QCed
             $visit_tpl_data['timepoints'][$i]['newData'] = empty($minQCDate);
             $visit_tpl_data['timepoints'][$i]['rownum'] = ($i+1);
