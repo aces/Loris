@@ -749,6 +749,10 @@ class NDB_BVL_Instrument extends PEAR
      */
     function _getDatabaseDate($formDateValue){
         if(!empty($formDateValue)){
+            // check if it's already formatted correctly
+            if(is_string($formDateValue) && preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $formDateValue)) {
+                return $formDateValue;
+            }
             if(count($formDateValue)==2){
                 $databaseValue = "$formDateValue[H]:$formDateValue[i]";  //handle time (HH:MM:SS)
             } else {

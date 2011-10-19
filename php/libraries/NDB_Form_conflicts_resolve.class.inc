@@ -92,16 +92,13 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId1'], '', false);
                     if($Instrument != null) {
                         $Instrument->score();
-                        // Score runs the update statements to update the scored columns. There's no need to save,
-                        // (and save() doesn't work) because it calles $this->form->getSubmittedValues(), and at
-                        // this point we're submitting the conflict resolver, not the instrument
-                        //$Instrument->save();
+                        $Instrument->_saveValues($setArray);
                     }
 
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId2'], '', false);
                     if($Instrument != null) {
                         $Instrument->score();
-                        //$Instrument->save();
+                        $Instrument->_saveValues($setArray);
                     }
                 }
             }
