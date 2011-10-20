@@ -48,11 +48,11 @@ function PopulateVisitLabel($result, $visit_label) {
     // select a specific time point (sessionID) for the battery
     $battery->selectBattery($result['ID']);
     $timePoint =& TimePoint::singleton($result['ID']);
-    
+
     //To assign missing instruments to all sessions, sent to DCC or not.
-    $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], $timePoint->getCurrentStage(), $visit_label);
+    $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], $timePoint->getCurrentStage(), $visit_label, $timePoint->getCenterID());
     $actual_battery=$battery->getBattery($timePoint->getCurrentStage(), $result['subprojectID']);
-    
+
     $diff=array_diff($defined_battery, $actual_battery);
     if(!empty($diff)){
         echo "\n CandID: ".$timePoint->getCandID()."  Visit Label:  ".$timePoint->getVisitLabel()."\nMissing Instruments:\n";
@@ -63,9 +63,10 @@ function PopulateVisitLabel($result, $visit_label) {
             $battery->addInstrument($test_name);
         }
     }
-    
+
     unset($battery);
     unset($timePoint);
+
 }
 
 if(isset($visit_label)) {
@@ -77,10 +78,11 @@ if(isset($visit_label)) {
 } else if (isset($visit_labels)) {
     $query="SELECT s.ID, s.subprojectID, s.Visit_label from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND s.Cancelled='N' AND c.Active='Y' AND s.Cancelled='N' AND s.Visit_label NOT LIKE 'Vsup%'";
     $DB->select($query, $results);
-    foreach($results AS $result){
+    foreach($results AS $result) {
         PopulateVisitLabel($result, $result['Visit_label']);
     }
 }
+
 if($argv[1]!="confirm" && $argv[2]!="confirm"){
 	echo "\n\nRun this tool again with the argument 'confirm' to perform the changes\n\n";
 }
