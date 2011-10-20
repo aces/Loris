@@ -100,14 +100,14 @@ class NDB_BVL_Battery extends PEAR
      * @return void
      * @access public
      */
-    function createBattery($SubprojectID, $stage=null,$visit_label=null)
+    function createBattery($SubprojectID, $stage=null, $visit_label=null, $center_ID=null)
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
         if($this->isError($error)) return $error;
         
-        // get the current battery
-        $currentTests = $this->getBattery($stage, $SubprojectID,$visit_label);
+        // get the current battery (center id is irrelevant here, as is stage probably)
+        $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
         if($this->isError($currentTests)) {
             return $this->raiseError("Could not get the current list of instruments, thus unable to assert that the battery is empty");
         }
@@ -118,7 +118,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // determine the list of instruments to register
-        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage,$visit_label);
+        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage, $visit_label, $center_ID);
         if($this->isError($neededTests)) {
             return $this->raiseError("Could not lookup the battery for age $this->age and subprojectID ".$this->getSubprojectID());
         }
@@ -356,7 +356,7 @@ class NDB_BVL_Battery extends PEAR
      * @return array  an array of instrument names
      * @access public
      */
-    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null)
+    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null)
     {
         if(empty($this->age)) $this->age = $age;
         // The query to lookup the battery uses the min/max age ranges if they are not 0 
@@ -374,6 +374,11 @@ class NDB_BVL_Battery extends PEAR
             $query .= " AND b.Stage='$stage'";
         }
 
+	if(!is_null($center_ID)) {  // return all instruments that match this center or all centers (null)
+            $query .= " AND (b.CenterID='$center_ID' OR b.CenterID IS NULL)";
+    } else {
+            $query .= " AND b.CenterID IS NULL"; // Unless the center is specified & matched, don't return site-restricted instruments
+        }
 
         // get the list of instruments
         $rows = array();
