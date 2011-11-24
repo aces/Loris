@@ -129,8 +129,9 @@ BrowserDetect.init();
 
 
 
-<table align="center" bgcolor="#D3DCE3" border="0" cellpadding="2" cellspacing="0">
-    <tr>
+<table align="center" bgcolor="#EEF" border="0" cellpadding="2" cellspacing="0">
+    <tr>&nbsp;</tr>
+	<tr>
     	<th align="left" class="banner" colspan="2" background="images/title_background.jpg">
     	    Montreal Neurological Hospital and Institute
 	    </th>
@@ -138,7 +139,7 @@ BrowserDetect.init();
     <tr>
     	<td><img src="images/mni_logo_transparent.gif" alt="Montreal Neurological Institute" border="0" width="128" height="106" /></td>
 	    <td>
-	        <table border="0" cellpadding="2" cellspacing="2">
+	        <table border="0" cellpadding="5" cellspacing="2">
         		<tr>
 		            <td align="center" colspan="2">{$error_message}&nbsp;</td>
     		    </tr>

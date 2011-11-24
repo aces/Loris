@@ -79,7 +79,7 @@
 
         <td nowrap="nowrap">
             {$timePoints[timepoint].Real_name}
-        </td>
+	</td>
     </tr>
 {sectionelse}
     <tr><td colspan="10">No timepoints have been registered yet.</td></tr>

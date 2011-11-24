@@ -7,8 +7,8 @@
 
 {literal}
 <link type="text/css" href="JS/JQeggplant/css/eggplant/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
-<script src="JS/JQeggplant/js/jquery-1.4.2.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="JS/JQeggplant/js/jquery-ui-1.8.2.custom.min.js"></script>
+<script src="JS/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="JS/jquery-ui-1.8.2.custom.min.js"></script>
 
 <script language="javascript" type="text/javascript"> 
 <!--
@@ -105,12 +105,12 @@ function feedback_bvl_popup(features) {
             <!-- bread crumb -->
             <table width="100%" border="0" cellpadding="3" cellspacing="4">
                 <tr>
-                    <th class="banner" align="left">
+     <!--               <th class="crumbBanner" align="left">
 {section name=crumb loop=$crumbs}
                         <a href="main.php?{$crumbs[crumb].query}">{$crumbs[crumb].text}</a> {if not $smarty.section.crumb.last}&gt; {/if}
 {/section}
                     </th>
-                </tr>
+                </tr>i-->
             </table>
 {/if}
 
@@ -126,8 +126,8 @@ function feedback_bvl_popup(features) {
             If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {elseif $test_name == ""}
-            <h1>Welcome to the Database!</h1>
-	    <p>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</p>
+            <h1>Welcome to the Database for the Prevent-AD project!</h1>
+	    <p>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us. We strive to make data collection almost fun.</p>
 {else}
 
     {if $candID != ""}
