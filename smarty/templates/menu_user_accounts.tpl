@@ -2,7 +2,7 @@
 <!-- start the selection table -->
 <table border="0" valign="top" class="std">
     <tr>
-        <th nowrap="nowrap" colspan="6">Selection Filter</th>
+        <th nowrap="nowrap" colspan="8">Selection Filter</th>
     </tr>
     <tr>
         <td nowrap="nowrap">Site:</td>
