@@ -1059,27 +1059,11 @@ class NDB_BVL_Instrument extends PEAR
       * Wrapper to create a text field for questions that require Refused and Don't know options
       */
      
-    function addTextElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down', $refusals=array(''=>'', "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered')){
-        $group[]=&$this->form->createElement("text", $field);
-        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
-        unset($group);
-        $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
-    }
      
     /**
      * Wrapper to create a text area field for questions that require Refused and Don't know options
      */
      
-    function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
-        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
-        unset($group);
-        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
-    }
     
     /**
     * Wrapper to create a text area field, with an accompanying status field.
@@ -1151,13 +1135,15 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $field    The database field in which the response will be stored
     * @param    string    $label    The question text to display
     */
-    function addNumericElement($field, $label) {
+    function addNumericElement($field, $label, $rules=array(), $rule_message='This field is required.'){
         $group [] = $this->form->createElement("text", $field, $label);
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
-        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+  //      $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
     /**
@@ -1165,15 +1151,6 @@ class NDB_BVL_Instrument extends PEAR
     *
     */
     
-    function addNumericElementRD($field, $label) {
-        $group [] = $this->form->createElement("text", $field, $label);
-        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
-        unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
-        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
-    }
-
 
     /**
     * nulls all scores for the record identified by CommentID
