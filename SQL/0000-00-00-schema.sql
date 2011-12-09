@@ -1016,7 +1016,7 @@ CREATE TABLE `psc` (
 
 LOCK TABLES `psc` WRITE;
 /*!40000 ALTER TABLE `psc` DISABLE KEYS */;
-INSERT INTO `psc` VALUES (1,'Data Coordinating Center','','','',0,'','','','','','DCC','','','N');
+INSERT INTO `psc` VALUES (1,'Data Coordinating Center','','','',0,'','','','','','DCC','','','Y');
 /*!40000 ALTER TABLE `psc` ENABLE KEYS */;
 UNLOCK TABLES;
 
