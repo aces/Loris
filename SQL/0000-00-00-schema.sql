@@ -1250,6 +1250,7 @@ CREATE TABLE `test_battery` (
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Stage` varchar(255) default NULL,
   `SubprojectID` int(11) default NULL,
+  `Visit_label` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1297,7 +1298,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `test_subgroups`;
 CREATE TABLE `test_subgroups` (
-  `ID` int(11) unsigned NOT NULL default '0',
+  `ID` int(11) unsigned NOT NULL auto_increment,
   `Subgroup_name` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1308,6 +1309,7 @@ CREATE TABLE `test_subgroups` (
 
 LOCK TABLES `test_subgroups` WRITE;
 /*!40000 ALTER TABLE `test_subgroups` DISABLE KEYS */;
+INSERT INTO test_subgroups VALUES (1, 'Instruments');
 /*!40000 ALTER TABLE `test_subgroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
