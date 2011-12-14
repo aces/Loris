@@ -34,6 +34,10 @@ if [ $MySQLError -eq 0 ]; then
     echo "Creating config file"
     sed -e "s/%HOSTNAME%/$mysqlhost/g" -e "s/%USERNAME%/$mysqluser/g" -e "s/%PASSWORD%/$mysqlpass/g" -e "s/%DATABASE%/$mysqldb/g" -e "s#%LORISROOT%#$RootDir/#g" ../docs/config/config.xml > ../project/config.xml
 
+    if [ ! -d $RootDir/php/smarty/templates_c ]; then
+        echo "Creating templates_c"
+        mkdir $RootDir/php/smarty/templates_c
+    fi
     echo "Fixing permissions on template_c"
     chmod 777 $RootDir/php/smarty/templates_c/
 
@@ -73,9 +77,31 @@ if [ $MySQLError -eq 0 ]; then
             * ) echo "Please enter y or n"
        esac
     done;
+    while true; do
+        read -p "Would you like to automatically create/install apache config files? [yn] " yn
+        case $yn in
+            [Yy]* )
+                read -p "Enter project name (no spaces): " projectname
+                if [ -f /etc/apache2/sites-available/$projectname ]; then
+                    echo "Apache appears to already be configured for $projectname. Aborting\n"
+                    exit 1
+                fi;
+
+                # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
+                sed -e "s#%LORISROOT%#$RootDir/#g"  -e "s#%PROJECTNAME%#$projectname#g" ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname > /dev/null
+                a2dissite default
+                a2ensite $projectname
+                break;;
+            [Nn]* )
+                echo "Not configuring apache"
+                break;;
+             * ) echo "Please enter y or n"
+        esac
+    done;
+
 
     echo "Installation complete."
-    echo "Must updated php.ini and apache config"
+    echo "Must updated cli/php.ini if any command line scripts are to be used."
 else
     echo "Could not connect to database with user provided";
     exit 1;
