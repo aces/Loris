@@ -89,8 +89,8 @@ if [ $MySQLError -eq 0 ]; then
 
                 # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
                 sed -e "s#%LORISROOT%#$RootDir/#g"  -e "s#%PROJECTNAME%#$projectname#g" ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname > /dev/null
-                a2dissite default
-                a2ensite $projectname
+                #sudo a2dissite default
+                #sudo a2ensite $projectname
                 break;;
             [Nn]* )
                 echo "Not configuring apache"
