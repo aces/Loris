@@ -103,6 +103,14 @@ class NDB_Caller extends PEAR
 
             $this->type = 'instrument';
             return $html;
+        } else if(file_exists($base."project/instruments/$test_name.linst")) {
+            print "Heeeelp";
+            $html = $this->loadInstrument($test_name, $subtest, $_REQUEST['commentID']);
+            if (PEAR::isError($html)) {
+                return PEAR::raiseError($html->getMessage());
+            }
+            $this->type = 'instrument';
+            return $html;
         }
 
         // it is nothing!

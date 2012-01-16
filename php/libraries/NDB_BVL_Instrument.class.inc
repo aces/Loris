@@ -126,6 +126,7 @@ class NDB_BVL_Instrument extends PEAR
         $config =& NDB_Config::singleton();
         $base = $config->getSetting('base');
 
+print "1";
         // The conflict resolver doesn't care if the instrument exists or not, it
         // just tries to load, score, and save. If it doesn't exist, for instance
         // in the case of figs_year3_relatives, we shouldn't require because it 
@@ -133,14 +134,22 @@ class NDB_BVL_Instrument extends PEAR
         if(!file_exists($base."project/instruments/$class.class.inc") && $guarantee_exists==false) {
             return;
         }
-        require_once($base."project/instruments/$class.class.inc");
+        if(file_exists($base."project/instruments/$instrument.linst")) {
+            print "Using Loris Instrument Format\n";
+            $obj = new NDB_BVL_Instrument();
+            $obj->loadInstrumentFile($base . "project/instruments/$instrument.linst");
+            $obj->commentID = $commentID;
+            $obj->page= $page;
+        } else {
+            require_once($base."project/instruments/$class.class.inc");
 
 
-        // Now go ahead and instantiate it
-        $obj = new $class;
-        $success = $obj->setup($commentID, $page);
-        if (PEAR::isError($success)) {
-            return PEAR::raiseError($success->getMessage());
+            // Now go ahead and instantiate it
+            $obj = new $class;
+            $success = $obj->setup($commentID, $page);
+            if (PEAR::isError($success)) {
+                return PEAR::raiseError($success->getMessage());
+            }
         }
         
         $access = $obj->_hasAccess();
@@ -1260,6 +1269,58 @@ class NDB_BVL_Instrument extends PEAR
             return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
         }
         return;
+    }
+
+    function loadInstrumentFile($filename) {
+        if(file_exists($filename)) {
+            $this->form = new HTML_Quickform('test_form');
+            $fp = fopen($filename, "r");
+            while(($line = fgets($fp, 4096)) !== false) {
+                $pieces = split("{@}", $line);
+
+                $type = $pieces[0];
+                switch($type) {
+                    case 'table':
+                        $this->testName = $pieces[1];
+                        $this->table = $pieces[1];
+                        break;
+                    case 'title':
+                        $this->form->addElement('header', 'instrument_title', $pieces[1]);
+                        $this->_addMetadataFields();
+                        break;
+                    case 'text':
+                        $this->addTextElement($pieces[1], $pieces[2]);
+                        break;
+                    case 'select':
+                        $options = split("{-}", trim($pieces[3]));
+                        $opt = array();
+                        foreach($options as $o) {
+                            $arr = explode("=>", $o);
+                            $key = $arr[0];
+                            $val = $arr[1];
+                            if($key[0] == "'" && $key[strlen($key)-1] == "'") {
+                                $key = substr($key, 1, -1);
+                            } else if($key == 'NULL') {
+                                $key ='';
+                            }
+                            if($val[0] == "'" && $val[strlen($val)-1] == "'") {
+                                $val= substr($val, 1, -1);
+                            } 
+                            $opt[$key] = $val;
+                        }
+                        $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+                        break;
+                    case 'header':
+                        $this->form->addElement('static', null, null, $pieces[2]);
+                        break;
+                    default: 
+                        print $line . "<br />";
+                        break;
+                }
+            }
+            fclose($fp);
+        }
+
     }
 } //end class NDB_BVL_Instrument
 // {{{ _checkDateTaken()
