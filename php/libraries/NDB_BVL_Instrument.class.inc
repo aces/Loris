@@ -1124,14 +1124,16 @@ class NDB_BVL_Instrument extends PEAR
     * @param $name   Name prepended to the HTMLQuickform element
     * @param $label Element label
     */
-    function addDateElement($name, $label){
-        $group [] = $this->form->createElement("date", $name . "_date", null, $this->dateOptions);
+    function addDateElement($name, $label, $dateOptions = null) {
+        if($dateOptions == null) {
+            $dateOptions = $this->dateOptions;
+        }
+        $group [] = $this->form->createElement("date", $name . "_date", null, $dateOptions);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
         $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
-        
     }
 
     /** 

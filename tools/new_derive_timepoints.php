@@ -35,7 +35,6 @@ function MRI_Find_And_Insert_Selected() {
         print "Error: missing parameterTypeID for MRI_QC_Comment\n";
         exit(-1);
     }
-    $db->delete('parameter_session', array('ParameterTypeID'=>$CommentTypeID));
 
     // Delete old values, and populate array of ParameterTypeIDs 
     foreach($FileTypes as $type => $parameter_type) {
@@ -74,11 +73,9 @@ function MRI_Find_And_Insert_Selected() {
             $val['Value'] = $row['QCStatus'];
             $val['ParameterTypeID'] = $ParameterTypeIDs[$type . '_QC'];
             $db->insert("parameter_session", $val);
-            $prepCount->execute(array('CommentID' => $CommentTypeID, 'SID' => $row['SessionID']));
-            $NumComments = $prepCount->fetchColumn();
-            
-            print "NumComments: $NumComments\n";
-            if($NumComments == 0 && !empty($row['Comment'])) {
+            $NumComments = $prepCount->execute(array('CommentID' => $CommentTypeID, 'SID' => $row['SessionID']));
+            print "NumComments: $NumComments[NumComments]\n";
+            if($NumComments['NumComments'] == 0 && !empty($row['Comment'])) {
                 $val['ParameterTypeID'] = $CommentTypeID;
                 $val['Value'] = $row['Comment'];
                 $db->insert("parameter_session", $val);
@@ -98,12 +95,11 @@ function MRI_Find_And_Insert_Selected() {
     // add scanner id
     // Delete old values
     $scanner_ptid = $db->pselectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name=:parametertype", array('parametertype' => 'study:serial_no'));
-    $scanner_ptid_derive = $db->pselectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name=:parametertype", array('parametertype' => 'MRI_Scanner'));
-    if(empty($scanner_ptid) || empty($scanner_ptid_derive)) {
-        print "Error: missing parameterTypeID for study:serial_no or MRI_Scanner\n";
+    if(empty($scanner_ptid)) {
+        print "Error: missing parameterTypeID for study:serial_no\n";
         exit(-1);
     }
-    $db->delete('parameter_session', array('ParameterTypeID'=>$scanner_ptid_derive));
+    $db->delete('parameter_session', array('ParameterTypeID'=>$scanner_ptid));
     $scanners = $db->pselect("select SessionID, Value from parameter_file join files USING(FileID) WHERE ParameterTypeID=:scanner group by SessionID", array('scanner' => $scanner_ptid));
     foreach($scanners as $row) {
         switch($row['Value']) {
@@ -117,7 +113,7 @@ function MRI_Find_And_Insert_Selected() {
         }
         $val['SessionID']=$row['SessionID'];
         $val['Value'] = $scanner;
-        $val['ParameterTypeID'] = $scanner_ptid_derive;
+        $val['ParameterTypeID'] = $scanner_ptid;
         $val['InsertTime'] = time();
         $db->insert("parameter_session", $val);
     }
@@ -229,7 +225,6 @@ function DeriveCohort() {
         $db->delete('parameter_session', array('SessionID' => $row['SessionID']));
     }
 }
-
 
 MRI_Find_And_Insert_Selected();
 DeriveRadiologicalReviewStatus();
