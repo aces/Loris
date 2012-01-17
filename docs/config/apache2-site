@@ -2,32 +2,33 @@
 <VirtualHost *:80>  # change from 80 to 443 if you enable SSL
 	ServerAdmin webmaster@localhost
 	
-	DocumentRoot /path/to/project/base/www/lorisdb/htdocs/
+	DocumentRoot %LORISROOT%htdocs/
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory /path/to/project/base/www/lorisdb/htdocs/>
+	<Directory %LORISROOT%htdocs/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride None
 		Order allow,deny
 		allow from all
 	</Directory>
 
-	php_value include_path .:/usr/share/php:/usr/share/pear:/path/to/lorisdb/php/libraries:/path/to/jpgraph/src
+	php_value include_path .:/usr/share/php:/usr/share/pear:%LORISROOT%project/libraries:%LORISROOT%php/libraries
 
-	ErrorLog /var/log/apache2/PROJECTNAME-error.log
+	ErrorLog /var/log/apache2/%PROJECTNAME%-error.log
 
 	# Possible values include: debug, info, notice, warn, error, crit,
 	# alert, emerg.
 	LogLevel warn
 
-	CustomLog /var/log/apache2/PROJECTNAME-access.log combined
+	CustomLog /var/log/apache2/%PROJECTNAME%-access.log combined
 	ServerSignature Off
 
-SSLEngine Off  # change to On to enable, after updating cert paths below
-SSLCertificateFile /etc/apache2/ssl/PROJECT-cert.pem
-SSLCertificateKeyFile /etc/apache2/ssl/PROJECT-key.pem
-SSLCACertificateFile /etc/apache2/ssl/CA-cacert.pem
+    #SSLEngine Off  # change to On to enable, after updating cert paths below
+
+    #SSLCertificateFile /etc/apache2/ssl/%PROJECTNAME%-cert.pem
+    #SSLCertificateKeyFile /etc/apache2/ssl/%PROJECTNAME%-key.pem
+    #SSLCACertificateFile /etc/apache2/ssl/CA-cacert.pem
 
 </VirtualHost>
