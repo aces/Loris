@@ -27,7 +27,7 @@ style2.display = style2.display == "block" ? "none":"block";
 {/literal}
 
 <table class="fancytableleft" width="100%" >
-	<tr><th width="11%">Acquisition ID</th><td width="89%">{$archive.DicomArchiveID}</td></tr>
+	<tr><th width="11%">Acquisition ID</th><td width="89%"><a href="main.php?test_name=mri_violations&TarchiveID={$archive.TarchiveID}&filter=true">{$archive.DicomArchiveID}</a></td></tr>
 	<tr><th>Patient ID</th><td{if $archive.patientIDValid == 0} class="error"{/if}>{$archive.PatientID}</td></tr>
 	<tr><th>Patient Name</th><td{if $archive.patientNameValid == 0} class="error"{/if}>{$archive.PatientName}</td></tr>
 	<tr><th>Patient Birthdate</th><td>{$archive.PatientDoB}</td></tr>
@@ -68,7 +68,7 @@ style2.display = style2.display == "block" ? "none":"block";
             <td>{$archive_series[record].SliceThickness}</td>
             <td>{$archive_series[record].PhaseEncoding}</td>
             <td>{$archive_series[record].NumberOfFiles}</td>
-            <td>{$archive_series[record].SeriesUID}</td>
+	        <td><a href="main.php?test_name=mri_violations&TarchiveID={$archive.TarchiveID}&SeriesUID={$archive_series[record].SeriesUID}&filter=true">{$archive_series[record].SeriesUID}</a></td>
         </tr>
 {/section}
         </table>
