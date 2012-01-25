@@ -7,8 +7,8 @@
 
 {literal}
 <link type="text/css" href="JS/JQeggplant/css/eggplant/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
-<script src="JS/JQeggplant/js/jquery-1.4.2.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="JS/JQeggplant/js/jquery-ui-1.8.2.custom.min.js"></script>
+<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
 
 <script language="javascript" type="text/javascript"> 
 <!--
