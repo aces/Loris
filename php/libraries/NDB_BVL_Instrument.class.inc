@@ -126,7 +126,6 @@ class NDB_BVL_Instrument extends PEAR
         $config =& NDB_Config::singleton();
         $base = $config->getSetting('base');
 
-print "1";
         // The conflict resolver doesn't care if the instrument exists or not, it
         // just tries to load, score, and save. If it doesn't exist, for instance
         // in the case of figs_year3_relatives, we shouldn't require because it 
@@ -135,7 +134,7 @@ print "1";
             return;
         }
         if(file_exists($base."project/instruments/$instrument.linst")) {
-            print "Using Loris Instrument Format\n";
+            //print "Using Loris Instrument Format\n";
             $obj = new NDB_BVL_Instrument();
             $obj->commentID = $commentID;
             $obj->page= $page;
@@ -561,6 +560,7 @@ print "1";
                              'addEmptyOption' => true,
                              'emptyOptionValue' => null
                              );
+        $this->dateOptions = $dateOptions;
 
         $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
         
@@ -1273,12 +1273,26 @@ print "1";
 
     function loadInstrumentFile($filename) {
         if(file_exists($filename)) {
+            $this->dateTimeFields = array("Date_taken");
             $this->form = new HTML_Quickform('test_form');
+            $this->formType='XIN';
+            $this->form->addFormRule(array(&$this,'XINValidate'));
             $fp = fopen($filename, "r");
+
             while(($line = fgets($fp, 4096)) !== false) {
                 $pieces = split("{@}", $line);
 
                 $type = $pieces[0];
+                if(strpos($pieces[1], "_status") !== FALSE) {
+                    continue;
+                }
+                if($pieces[1] == 'Date_taken' 
+                    || $pieces[1] == "Candidate_Age"
+                    || $pieces[1] == "Window_Difference"
+                    || $pieces[1] == "Examiner"
+                    ) {
+                    continue;
+                }
                 switch($type) {
                     case 'table':
                         $this->testName = trim($pieces[1]);
@@ -1295,6 +1309,9 @@ print "1";
                         $this->addTextAreaElement($pieces[1], $pieces[2]);
                         break;
                     case 'date':
+                        if(strpos($pieces[1], "_date") !== FALSE) {
+                            $pieces[1] = substr($pieces[1], 0, strpos($pieces[1], "_date"));
+                        }
                         $this->addDateElement($pieces[1], $pieces[2]);
                         break;
 
@@ -1325,7 +1342,7 @@ print "1";
                         $this->form->addElement('static', $pieces[1], $pieces[2]);
                         break;
                     default: 
-                        print $line . "<br />";
+                        //print $line . "<br />";
                         break;
                 }
             }
