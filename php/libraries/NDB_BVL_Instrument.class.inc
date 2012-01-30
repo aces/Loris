@@ -137,9 +137,9 @@ print "1";
         if(file_exists($base."project/instruments/$instrument.linst")) {
             print "Using Loris Instrument Format\n";
             $obj = new NDB_BVL_Instrument();
-            $obj->loadInstrumentFile($base . "project/instruments/$instrument.linst");
             $obj->commentID = $commentID;
             $obj->page= $page;
+            $obj->loadInstrumentFile($base . "project/instruments/$instrument.linst");
         } else {
             require_once($base."project/instruments/$class.class.inc");
 
@@ -1281,8 +1281,8 @@ print "1";
                 $type = $pieces[0];
                 switch($type) {
                     case 'table':
-                        $this->testName = $pieces[1];
-                        $this->table = $pieces[1];
+                        $this->testName = trim($pieces[1]);
+                        $this->table = trim($pieces[1]);
                         break;
                     case 'title':
                         $this->form->addElement('header', 'instrument_title', $pieces[1]);
@@ -1291,7 +1291,15 @@ print "1";
                     case 'text':
                         $this->addTextElement($pieces[1], $pieces[2]);
                         break;
+                    case 'textarea':
+                        $this->addTextAreaElement($pieces[1], $pieces[2]);
+                        break;
+                    case 'date':
+                        $this->addDateElement($pieces[1], $pieces[2]);
+                        break;
+
                     case 'select':
+
                         $options = split("{-}", trim($pieces[3]));
                         $opt = array();
                         foreach($options as $o) {
@@ -1311,7 +1319,10 @@ print "1";
                         $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
                         break;
                     case 'header':
-                        $this->form->addElement('static', null, null, $pieces[2]);
+                        $this->form->addElement('static', null, "<b>$pieces[2]</b>");
+                        break;
+                    case 'static':
+                        $this->form->addElement('static', $pieces[1], $pieces[2]);
                         break;
                     default: 
                         print $line . "<br />";
