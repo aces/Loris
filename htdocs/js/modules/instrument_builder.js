@@ -384,7 +384,7 @@ function ParseInstrument() {
     lines = this.result.split("\n");
     for(var i = 0; i < lines.length; i++) {
         pieces = lines[i].split("{@}");
-        if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference") {
+        if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference" || pieces[1].indexOf("_status") >= 0) {
             continue;
         }
 
@@ -441,4 +441,5 @@ function LoadInstrument() {
     var reader = new FileReader();
     reader.onload = ParseInstrument;
     var data = reader.readAsText(file);
+    alert("Instrument Loaded");
 }
