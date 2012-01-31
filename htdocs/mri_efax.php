@@ -239,9 +239,9 @@ switch ($_REQUEST['mri_efax_screen']) {
                 
                 // get the list of candidates for the form
                 if ($_REQUEST['scanType'] == 'subject') {
-                    $query = "SELECT CandID, CONCAT(CandID,'/',PSCID) AS Label FROM candidate as c WHERE Active = 'Y' AND Cancelled = 'N' AND CenterID = '".$_REQUEST['centerID']."' AND Entity_type = 'Human' ORDER BY CandID";
+                    $query = "SELECT CandID, CONCAT(CandID,'/',PSCID) AS Label FROM candidate as c WHERE Active = 'Y' AND CenterID = '".$_REQUEST['centerID']."' AND Entity_type = 'Human' ORDER BY CandID";
                 } else {
-                    $query = "SELECT c.CandID, CONCAT('Scanner(',c.CandID,'): ',m.Model,'-',m.Software) AS Label FROM candidate as c, mri_scanner as m, session as s WHERE c.CandID=s.CandID AND c.CandID=m.CandID AND c.Active = 'Y' AND c.Cancelled = 'N' AND c.Entity_type = 'Scanner' AND s.CenterID = '".$_REQUEST['centerID']."' GROUP BY c.CandID ORDER BY c.CandID";
+                    $query = "SELECT c.CandID, CONCAT('Scanner(',c.CandID,'): ',m.Model,'-',m.Software) AS Label FROM candidate as c, mri_scanner as m, session as s WHERE c.CandID=s.CandID AND c.CandID=m.CandID AND c.Active = 'Y' AND c.Entity_type = 'Scanner' AND s.CenterID = '".$_REQUEST['centerID']."' GROUP BY c.CandID ORDER BY c.CandID";
                 }
                     
                     
@@ -315,7 +315,7 @@ switch ($_REQUEST['mri_efax_screen']) {
                                             $query = "SELECT DATE_FORMAT(t.Value, '%Y-%m-%d') as Study_date
                                                   FROM session as s, files as f, parameter_file as t 
                                                   WHERE f.FileID = t.FileID AND t.ParameterTypeID=27 AND s.ID = f.SessionID AND s.Active = 'Y' 
-                                                        AND s.Cancelled = 'N' AND t.Value <> '0000-00-00' AND s.ID = '".$_REQUEST['sessionID']."' GROUP BY Study_date";
+                                                        AND t.Value <> '0000-00-00' AND s.ID = '".$_REQUEST['sessionID']."' GROUP BY Study_date";
                                             $DB->select($query, $result);
                                             if (PEAR::isError($result)) {
                                                 $tpl_data['error_message'][] = "Error, failed to select date of MRI studies for the timepoint (".$_REQUEST['sessionID']."):\n" . $timePoint->getMessage();

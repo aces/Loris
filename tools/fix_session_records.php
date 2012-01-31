@@ -45,7 +45,7 @@ $db =& $DB;
 
 // get list of sessionIDs w/ problems
 // apply the fix only where candidate.Entity_type = 'Human'
-$query = "Select s.ID FROM candidate as c, session as s WHERE c.CandID = s.CandID AND c.Entity_type = 'Human' AND c.Active = 'Y' AND c.Cancelled = 'N' AND s.Active = 'Y' AND s.Cancelled = 'N' AND (s.Current_stage is NULL OR s.PSCID = '' OR s.Objective = 0) ORDER BY s.ID";
+$query = "Select s.ID FROM candidate as c, session as s WHERE c.CandID = s.CandID AND c.Entity_type = 'Human' AND c.Active = 'Y' AND s.Active = 'Y' AND (s.Current_stage is NULL OR s.Objective = 0) ORDER BY s.ID";
 
 $db->select($query,$result);
 if (PEAR::isError($db)) {

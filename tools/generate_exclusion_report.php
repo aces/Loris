@@ -67,7 +67,7 @@ require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
 /**
 * get list of sessionIDs
 */
-$query = "Select Submitted, MRIQCStatus, MRIQCPending, Scan_done,  Approval, BVLQCStatus, BVLQCType, ID as SessionID FROM session WHERE Active = 'Y' AND Cancelled = 'N' AND Screening = 'Pass' AND VisitNo=1";
+$query = "Select Submitted, MRIQCStatus, MRIQCPending, Scan_done,  Approval, BVLQCStatus, BVLQCType, ID as SessionID FROM session WHERE Active = 'Y' AND Screening = 'Pass' AND VisitNo=1";
 // temporary constraint
 $query .= " AND Objective = 1";
 // order by

@@ -46,7 +46,7 @@ if(PEAR::isError($db)) {
 }
 
 // get the list of timepoints - submitted to DCC, Pass or In Progress
-$query = "SELECT * FROM session as s WHERE s.Active = 'Y' AND s.Cancelled = 'N' AND s.Submitted = 'Y' AND s.Current_stage='Approval' AND s.Approval IN('In progress', 'Pass')";
+$query = "SELECT * FROM session as s WHERE s.Active = 'Y' AND s.Submitted = 'Y' AND s.Current_stage='Approval' AND s.Approval IN('In progress', 'Pass')";
 // subproject
 if (!empty($subProjectID)) $query .= " AND s.SubprojectID = '$subProjectID'";
 // sessionid
