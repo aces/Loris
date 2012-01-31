@@ -237,8 +237,8 @@ class SinglePointLogin extends PEAR
         }
 
         // check users table to see if we have a valid user
-        $query = "SELECT COUNT(*) AS User_count, Password_md5, Password_expiry, Active FROM users WHERE UserID = '".$_POST['username']."' GROUP BY UserID";
-        $DB->selectRow($query, $row);
+        $query = "SELECT COUNT(*) AS User_count, Password_md5, Password_expiry, Active FROM users WHERE UserID = :username GROUP BY UserID";
+        $row = $DB->pselectRow($query, array('username' => $_POST['username']));
         if (PEAR::isError($row)) {
             return PEAR::raiseError("DB Error: ".$row->getMessage());
         }
