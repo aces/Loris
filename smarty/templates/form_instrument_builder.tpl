@@ -13,49 +13,86 @@
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
 </head>
 <body>
+<div id="message" class="error">&nbsp;</div>
 <div id="elements">
-    <input type="file" id="instfile" /><input type="button" id="load" value="Load Instrument" />
-    <ul>
-        <li id="textbox" class="option">Textbox</li>
-        <li id="dropdown" class="option">Dropdown</li>
-        <li id="scored" class="option">Scored Column</li>
-        <li id="header" class="option">Header</li>
-        <li id="label" class="option">Label</li>
-        <li id="line" class="option">Blank Line</li>
-        <li id="textarea" class="option">Textarea</li>
-        <li id="date" class="option">Date</li>
-        <li>Not implemented in back end below this line
-        <li id="page" class="option">Page Break</li>
-    </ul>
-    Question Name: <input type="text" id="questionName" />
-    Question Text: <input type="text" id="questionText" />
-    <div id="dropdownoptions" class="options">
-        Enum Name: <input type="text" id="newSelectOption">
-            <input type="button" value="Add option" onClick="addDropdownOption();" />
-            <input type="button" value="Reset" onClick="clearDropdownOption()" />
-        Preview:
-        <select id="selectOptions">
-        </select>
-    </div>
-
+    <h2>Load Instrument (optional)</h2>
     <div>
+        <input type="file" id="instfile" /><input type="button" id="load" value="Load Instrument" />
     </div>
-    <input type="button" value="Add Row" onClick="addQuestion();" />
-    <div id="message">&nbsp;</div>
+    <h2>Create Instrument</h2>
+    <div>
+        Question Type:
+        <dl style="margin-left: 25px">
+            <dt>Data entry</dt>
+            <dd>
+            <button id="textbox" class="option">Textbox</button>
+            <button id="dropdown" class="option">Dropdown</button>
+            <button id="date" class="option">Date</button>
+            <button id="textarea" class="option">Textarea</button>
+            </dd>
+            <dt>Information</dt>
+            <dd>
+            <button id="header" class="option">Header</button>
+            <button id="label" class="option">Label</button>
+            <button id="scored" class="option">Scored Column</button>
+            <dt>Formatting</dt>
+            <dd>
+            <button id="line" class="option">Blank Line</button>
+            <button id="page" class="option">Page Break (Not Implemented)</button>
+            </dd>
+        </dl>
+        {*
+
+        <select id="elementType">
+            <option id="textbox" value="textbox" class="option">Textbox</option>
+            <option id="dropdown" class="option">Dropdown</option>
+            <option id="scored" class="option">Scored Column</option>
+            <option id="header" class="option">Header</option>
+            <option id="label" class="option">Label</option>
+            <option id="optionne" class="option">Blank Line</option>
+            <option id="textarea" class="option">Textarea</option>
+            <option id="date" class="option">Date</option>
+            <option id="page" class="option">Page Break</option>
+        </select>
+        *}
+        <div>
+
+            <div>
+        Question Name: <input type="text" id="questionName" />
+            </div>
+            <div>
+        Question Text: <input type="text" id="questionText" />
+            </div>
+            <div id="dropdownoptions" class="options">
+                Enum Name: <input type="text" id="newSelectOption">
+                    <input type="button" value="Add option" onClick="addDropdownOption();" />
+                    <input type="button" value="Reset" onClick="clearDropdownOption()" />
+                Preview:
+                <select id="selectOptions">
+                </select>
+            </div>
+        </div>
+
+        <input type="button" value="Add Row" onClick="addQuestion();" />
+        <table id="workspace" border="1">
+        <tr>
+            <th>Database Name (DB)</th>
+            <th>Type</th>
+            <th>Question Display (Front End)</th>
+            <th>Options</th>
+        </tr>
+        </table>
+    </div>
+    <h2>Save Instrument</h2>
+    <div>
+
+        <form name="saveform" id="saveform">
+        Filename: <input type="text" id="filename" value="" />
+        Instrument Name: <input type="text" id="longname" value="" />
+        <input type="button" onclick="validate()" value="Validate" />
+        <input type="submit" value="Save" />
+        </form>
+    </div>
 </div>
-<table id="workspace" border="1">
-<tr>
-    <th>Database Name (DB)</th>
-    <th>Type</th>
-    <th>Question Display (Front End)</th>
-    <th>Options</th>
-</tr>
-</table>
-<form name="saveform" id="saveform">
-Filename: <input type="text" id="filename" value="" />
-Instrument Name: <input type="text" id="longname" value="" />
-<input type="button" onclick="validate()" value="Validate" />
-<input type="submit" value="Save" />
-</form>
 </body>
 </html>

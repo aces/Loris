@@ -21,6 +21,12 @@ $(document).ready(function() {
         ev.preventDefault();
         save();
     }, false);
+    $("#elements").accordion({
+        clearStyle: true,
+        active: 1,
+        autoHeight: false
+    }
+    );
 });
 
 
