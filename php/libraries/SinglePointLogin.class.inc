@@ -262,22 +262,6 @@ class SinglePointLogin extends PEAR
                 $this->_username = $_POST['username'];
                 return true;
             }
-            // !!! DELETE ONCE ALL PASSWORDS HAVE BEEN SET TO MD5 SALTS
-            else {
-                // check users table to see if we have a valid user
-                $query = "SELECT COUNT(*) AS User_count FROM users WHERE UserID = '".$_POST['username']."' AND Password = PASSWORD('".$_POST['password']."')";
-                $DB->selectRow($query, $row2);
-                if (PEAR::isError($row2)) {
-                    return PEAR::raiseError("DB Error: ".$row2->getMessage());
-                }
-
-                // user is logged in
-                if ($row2['User_count'] == 1) {
-                    // force password expiry screen
-                    $this->showPasswordExpiryScreen();
-                }
-            }
-            // !!! END DELETE
             // bad usename or password
         }
 
