@@ -309,7 +309,8 @@ function save() {
             case 'dropdown':
                 content.append('select');
                 selectOptions = questionCell.firstChild.nextSibling;
-                addStatus = true;
+                // Dropdowns have not answered as an option, not as a separate dropdown
+                addStatus = false;
                 break;
             case 'page':
                 content.append('page'); break;
@@ -340,6 +341,7 @@ function save() {
                 content.append("{-}'" + enum_option + "'=>'" + option + "'");
                 
             }
+            content.append("{-}'not_answered'=>'Not Answered'");
         }
 
         content.append("\n");
@@ -367,8 +369,11 @@ function ParseSelectOptions(opt) {
         if(keyval[0] != 'NULL' && keyval[1]) {
             // hack off the ' at the start and end
             val = keyval[1].substr(1, keyval[1].length-2);
-            document.getElementById("newSelectOption").value = val;
-            addDropdownOption();
+            // Don't add "not_answered", because save automagically adds it.
+            if(val != 'Not Answered') {
+                document.getElementById("newSelectOption").value = val;
+                addDropdownOption();
+            }
         }
     }
 
