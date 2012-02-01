@@ -41,20 +41,6 @@
             <button id="page" class="option">Page Break (Not Implemented)</button>
             </dd>
         </dl>
-        {*
-
-        <select id="elementType">
-            <option id="textbox" value="textbox" class="option">Textbox</option>
-            <option id="dropdown" class="option">Dropdown</option>
-            <option id="scored" class="option">Scored Column</option>
-            <option id="header" class="option">Header</option>
-            <option id="label" class="option">Label</option>
-            <option id="optionne" class="option">Blank Line</option>
-            <option id="textarea" class="option">Textarea</option>
-            <option id="date" class="option">Date</option>
-            <option id="page" class="option">Page Break</option>
-        </select>
-        *}
         <div>
 
             <div>
@@ -64,7 +50,7 @@
         Question Text: <input type="text" id="questionText" />
             </div>
             <div id="dropdownoptions" class="options">
-                Enum Name: <input type="text" id="newSelectOption">
+                Dropdown Option: <input type="text" id="newSelectOption">
                     <input type="button" value="Add option" onClick="addDropdownOption();" />
                     <input type="button" value="Reset" onClick="clearDropdownOption()" />
                 Preview:
