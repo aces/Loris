@@ -1,9 +1,4 @@
 $(document).ready(function() {
-    /*
-    if(!window.BlobBuilder && window.WebKitBlobBuilder) {
-
-        window.BlobBuilder = window.WebKitBlobBuilder;
-    }*/
     $(".option").click(function() {
         $(".options").hide();
         $(".option").removeClass("selected");
@@ -27,6 +22,13 @@ $(document).ready(function() {
         autoHeight: false
     }
     );
+    $("#questionText").keyup(function(event) {
+        if(event.keyCode == 13) {
+            addQuestion();
+            this.value = '';
+        }
+
+    });
 });
 
 
