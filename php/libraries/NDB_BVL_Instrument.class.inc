@@ -139,6 +139,9 @@ class NDB_BVL_Instrument extends PEAR
             $obj->commentID = $commentID;
             $obj->page= $page;
             $obj->loadInstrumentFile($base . "project/instruments/$instrument.linst");
+            if(file_exists($base."project/instruments/$instrument.rules")) {
+                $obj->loadInstrumentRules($base . "project/instruments/$instrument.rules");
+            }
         } else {
             require_once($base."project/instruments/$class.class.inc");
 
@@ -1404,6 +1407,20 @@ class NDB_BVL_Instrument extends PEAR
             fclose($fp);
         }
 
+    }
+    function loadInstrumentRules($filename) {
+        if(file_exists($filename)) {
+            $fp = fopen($filename, "r");
+            while(($line = fgets($fp, 4096)) !== false) {
+                // Rules Uses {-} as delimiter, unlike linst files, because {@} is part of the rules themselves
+                $pieces = split("{-}", trim($line));
+                $question = $pieces[0];
+                $message = $pieces[1];
+                $rules = array_slice($pieces, 2);
+                $this->XINRegisterRule($question, $rules, $message);
+            }
+            fclose($fp);
+        }
     }
 } //end class NDB_BVL_Instrument
 // {{{ _checkDateTaken()
