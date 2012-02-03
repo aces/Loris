@@ -1282,11 +1282,26 @@ class NDB_BVL_Instrument extends PEAR
 
     function loadInstrumentFile($filename) {
         if(file_exists($filename)) {
+            $db = Database::singleton();
             $this->dateTimeFields = array("Date_taken");
             $this->form = new HTML_Quickform('test_form');
             $this->formType='XIN';
             $this->form->addFormRule(array(&$this,'XINValidate'));
             $fp = fopen($filename, "r");
+            // Add elements is only true if we're parsing the current page, otherwise
+            // we don't.. but even on other pages, we need to parse the whole file for
+            // table{@} and other meta elements
+            $addElements = true;
+            if($_REQUEST['subtest']) {
+                $currentPage = $_REQUEST['subtest'];
+                $addElements = false;
+            } else {
+                $currentPage = 'top';
+                $addElements = true;
+            }
+
+            $parsingPage = 'top';
+
 
             while(($line = fgets($fp, 4096)) !== false) {
                 $pieces = split("{@}", $line);
@@ -1303,27 +1318,47 @@ class NDB_BVL_Instrument extends PEAR
                     continue;
                 }
                 switch($type) {
+                    case 'page':
+                        $parsingPage = trim($pieces[2]);
+                        $pageName = $db->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:testinst AND Description=:parsing", array("testinst" => $this->testName, "parsing" => $parsingPage));
+                        if($currentPage == $pageName) {
+                            $addElements = true;
+                        } else {
+                            $addElements = false;
+                        }
+                        break;
                     case 'table':
                         $this->testName = trim($pieces[1]);
                         $this->table = trim($pieces[1]);
                         break;
                     case 'title':
-                        $this->form->addElement('header', 'instrument_title', $pieces[1]);
-                        $this->_addMetadataFields();
+                        if($addElements) {
+                            $this->form->addElement('header', 'instrument_title', $pieces[1]);
+                            $this->_addMetadataFields();
+                        }
                         break;
                     case 'text':
-                        $this->addTextElement($pieces[1], $pieces[2]);
+                        if($addElements) {
+                            $this->addTextElement($pieces[1], $pieces[2]);
+                        }
                         break;
                     case 'textarea':
-                        $this->addTextAreaElement($pieces[1], $pieces[2]);
+                        if($addElements) {
+                            $this->addTextAreaElement($pieces[1], $pieces[2]);
+                        }
                         break;
                     case 'date':
                         if(strpos($pieces[1], "_date") !== FALSE) {
                             $pieces[1] = substr($pieces[1], 0, strpos($pieces[1], "_date"));
                         }
-                        $this->addDateElement($pieces[1], $pieces[2]);
+                        if($addElements) {
+                            $this->addDateElement($pieces[1], $pieces[2]);
+                        }
                         break;
 
+                    case 'selectmultiple':
+                        $type = 'multiple';
+                        // fall through and also execute select code below
                     case 'select':
 
                         $options = split("{-}", trim($pieces[3]));
@@ -1342,13 +1377,24 @@ class NDB_BVL_Instrument extends PEAR
                             } 
                             $opt[$key] = $val;
                         }
-                        $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+
+                        if($addElements) {
+                            if($type == 'multiple') {
+                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
+                            } else {
+                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+                            }
+                        }
                         break;
                     case 'header':
-                        $this->form->addElement('static', null, "<b>$pieces[2]</b>");
+                        if($addElements) {
+                            $this->form->addElement('header', null, "$pieces[2]");
+                        }
                         break;
                     case 'static':
-                        $this->form->addElement('static', $pieces[1], $pieces[2]);
+                        if($addElements) {
+                            $this->form->addElement('static', $pieces[1], $pieces[2]);
+                        }
                         break;
                     default: 
                         //print $line . "<br />";

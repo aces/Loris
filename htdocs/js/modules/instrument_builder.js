@@ -68,6 +68,8 @@ function addQuestion() {
         q = addTextQuestion(question);
     } else if(selected == "dropdown") {
         q  = addDropdownQuestion(question);
+    } else if(selected == 'multiselect') {
+        q  = addDropdownQuestion(question, 'multi');
     } else if(selected == "scored" || selected == "header" || selected == "label" || selected == "page") {
         q = addStaticQuestion(selected, question);
     } else if (selected == "date") {
@@ -102,10 +104,16 @@ function addQuestion() {
     document.getElementById("workspace").appendChild(row);
 }
 
-function addDropdownQuestion(question) {
+function addDropdownQuestion(question, type) {
+    if(!type) {
+        type = '';
+    }
 
-    optionList = document.getElementById("selectOptions");
+    optionList = document.getElementById(type + "selectOptions");
     options= document.createElement("select")
+    if(type == 'multi') {
+        options.setAttribute("multiple", true);
+    }
     options.setAttribute("contenteditable", "true");
     for(i=0; i < optionList.options.length; i++) {
         opt = document.createElement("option");
@@ -175,15 +183,21 @@ function addTextQuestion(question) {
     return [question, options];
 }
 
-function addDropdownOption() {
-    n = document.getElementById("newSelectOption");
-    list = document.getElementById("selectOptions");
+function addDropdownOption(type) {
+    if(!type) {
+        type = '';
+    }
+    n = document.getElementById("new" + type + "SelectOption");
+    list = document.getElementById(type + "selectOptions");
     option = document.createElement("option");
     option.innerHTML = n.value;
     list.appendChild(option);
 }
-function clearDropdownOption() {
-    n = document.getElementById("selectOptions");
+function clearDropdownOption(type) {
+    if(!type) {
+        type = '';
+    }
+    n = document.getElementById(type + "selectOptions");
     n.options.length = 0;
 }
 
@@ -216,7 +230,7 @@ function validate() {
     names = []
     table = document.getElementById("workspace");
     for( i in table.rows) {
-        if(i == 0) continue;
+        if(i == 0) continue; // Skip header row
         alert("Checking row" + i);
         row = table.rows[i];
         nameCell = row.firstChild;
@@ -230,7 +244,7 @@ function validate() {
 
         nameVal = $.trim(nameCell.innerText);
         rowType = typeCell.innerText;
-        if(rowType == "textbox" || rowType == "dropdown" || rowType == "scored" || rowType == "textarea" || rowType == "date") {
+        if(rowType == "textbox" || rowType == "dropdown" || rowType == "scored" || rowType == "textarea" || rowType == "date" || rowType == 'multiselect') {
             if(nameVal == '') {
                 alert("Must supply database name for " + rowType);
                 return false;
@@ -245,6 +259,7 @@ function validate() {
     alert("Instrument appears valid");
     return true;
 }
+
 function save() {
     valid = validate();
     if(!valid) {
@@ -314,6 +329,11 @@ function save() {
                 // Dropdowns have not answered as an option, not as a separate dropdown
                 addStatus = false;
                 break;
+            case 'multiselect':
+                content.append('selectmultiple');
+                selectOptions = questionCell.firstChild.nextSibling;
+                addStatus = false;
+                break;
             case 'page':
                 content.append('page'); break;
             case 'scored':
@@ -331,7 +351,7 @@ function save() {
             content.append('<br />');
         }
 
-        if(rowType == 'dropdown') {
+        if(rowType == 'dropdown' || rowType == 'multiselect') {
             content.append('{@}');
             content.append("NULL=>''");
             options = selectOptions.children;
@@ -363,7 +383,10 @@ function save() {
 
 }
 
-function ParseSelectOptions(opt) {
+function ParseSelectOptions(opt, type) {
+    if(!type) {
+        type = ''
+    }
     var options = opt.split("{-}");
     for(var i = 0; i < options.length; i++) {
         var option = options[i]
@@ -373,8 +396,8 @@ function ParseSelectOptions(opt) {
             val = keyval[1].substr(1, keyval[1].length-2);
             // Don't add "not_answered", because save automagically adds it.
             if(val != 'Not Answered') {
-                document.getElementById("newSelectOption").value = val;
-                addDropdownOption();
+                document.getElementById("new" + type + "SelectOption").value = val;
+                addDropdownOption("multi");
             }
         }
     }
@@ -408,6 +431,10 @@ function ParseInstrument() {
                 document.getElementById("longname").value = pieces[1]; continue;
             case "text":
                 $("#textbox").click(); break;
+            case "selectmultiple":
+                $("#multiselect").click();
+                ParseSelectOptions(pieces[3], "multi");
+                break;
             case "select":
                 $("#dropdown").click();
                 ParseSelectOptions(pieces[3]);

@@ -26,9 +26,10 @@
             <dt>Data entry</dt>
             <dd>
             <button id="textbox" class="option">Textbox</button>
-            <button id="dropdown" class="option">Dropdown</button>
-            <button id="date" class="option">Date</button>
             <button id="textarea" class="option">Textarea</button>
+            <button id="dropdown" class="option">Dropdown</button>
+            <button id="multiselect" class="option">Multiselect</button>
+            <button id="date" class="option">Date</button>
             </dd>
             <dt>Information</dt>
             <dd>
@@ -38,7 +39,7 @@
             <dt>Formatting</dt>
             <dd>
             <button id="line" class="option">Blank Line</button>
-            <button id="page" class="option">Page Break (Not Implemented)</button>
+            <button id="page" class="option">Page Break</button>
             </dd>
         </dl>
         <div>
@@ -55,6 +56,14 @@
                     <input type="button" value="Reset" onClick="clearDropdownOption()" />
                 Preview:
                 <select id="selectOptions">
+                </select>
+            </div>
+            <div id="multiselectoptions" class="options">
+                Option: <input type="text" id="newmultiSelectOption">
+                    <input type="button" value="Add option" onClick="addDropdownOption('multi');" />
+                    <input type="button" value="Reset" onClick="clearDropdownOption('multi')" />
+                Preview:
+                <select id="multiselectOptions" multiple>
                 </select>
             </div>
         </div>
