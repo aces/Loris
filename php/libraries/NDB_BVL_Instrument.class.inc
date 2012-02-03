@@ -263,7 +263,17 @@ class NDB_BVL_Instrument extends PEAR
     * @access public
     * @abstract
     */
-    function score() {}
+    function score() {
+        $config = NDB_Config::singleton();
+        $base = $config->getSetting('base');
+        $scorer = $base . "project/instruments/" . $this->testName . ".score";
+        if(file_exists($scorer)) {
+            exec($scorer . " " . escapeshellarg($this->getCommentID()), $output, $retVal);
+            if($retVal != 0) {
+                print "Error running scoring algorithm";
+            }
+        }
+    }
 
     // }}}
     // {{{ display()
@@ -287,7 +297,6 @@ class NDB_BVL_Instrument extends PEAR
         
         if(!$this->form->isFrozen()) {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
-            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->form->addGroup($buttons, null, null, "&nbsp;");
         }
         
