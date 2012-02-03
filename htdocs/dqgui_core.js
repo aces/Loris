@@ -42,7 +42,7 @@ var fieldData=new Array();  //The field information, loaded by remote.  [id]=[id
 
 var selectedFields = new Array();  //The array of fields the user has selected.  [id]=true/false;
 
-var currentMode = "Basic"; // either Basic or Advanced
+var currentMode = "Advanced"; // either Basic or Advanced
 
 //INITIALIZATION  ---------------------------------------------------------
 //Initialize function for the page run on body load.
@@ -51,6 +51,10 @@ function initialize(){
     sendRemoteDataQuery("query_gui_data_loader.php?mode=categories");
 
     sendRemoteDataQuery("query_gui_data_loader.php?mode=listQueries");
+    // Make sure the front end active div matches the backend.
+    // If it's uninitialized explicitly, for some reason the front end seems to default
+    // to 3, while the backend defaults to 1.
+	setStepDiv(stepNumber);
 }
 
 
@@ -261,3 +265,37 @@ function getEventTarget(mozTarget, ieTarget){
         return ieTarget;
     }
 }
+
+function decodeHTMLEntities(s) {
+    // Return javascript string with HTML entities decoded into their 
+    // real characters by creating a textarea, setting the innerHTML,
+    // then returning the parsed value.
+    var t = document.createElement('textarea');
+    t.innerHTML = s;
+    return t.value;
+}
+
+function setJQueryClickHandlers() {
+    $('.fieldsSelectCell,.conditionalsSelectCell').unbind('click').click(function(e) {
+        e.stopPropagation();
+        cellId = $(this).attr('id');
+        
+        if(cellId.indexOf("Cell") >= 0) {
+            // Clicked on table cell
+            //alert('Clicked on table cell');
+            if(cellId.indexOf("conditional") >= 0) {
+                addToSelected = checkConditionalField;
+            } else {
+                addToSelected = addFieldToSelected;
+            }
+            if($(this).hasClass("selected")) {
+                addToSelected(cellId.replace("Cell", ""), false)
+            } else {
+                addToSelected(cellId.replace("Cell", ""), true)
+            }
+        } 
+    });
+}
+$(document).ready(function() {
+    setJQueryClickHandlers();
+});
