@@ -29,10 +29,28 @@ $blessPass = blessPassThrough($_GET['file']);
 if ($blessPass) {
     $imagePath  = $config->getSetting('imagePath');
     $imageFile = $imagePath."/".$_GET['file'];
-    if(!file_exists($imageFile)) exit;
-    $pf = fopen($imageFile, 'r');
-    fpassthru($pf);
-    fclose($pf);
+    if(file_exists($imageFile)) {
+        $pf = fopen($imageFile, 'r');
+        fpassthru($pf);
+        fclose($pf);
+    }
+} else {
+    // If the file isn't blessed because it's the wrong type or starts with a /,
+    // it's still available if it's under DownloadPath. We just check to make sure it doesn't
+    // have ".." in it  so that the user can't escape DownloadPath.
+    $downloadPath = $config->getSetting('DownloadPath');
+    $downloadFile = $downloadPath.$_GET['file'];
+    if(file_exists($downloadFile) && strrpos($_GET['file'], '..') === FALSE) {
+        header("Content-type: application/x-minc");
+        header("Content-Disposition: attachment; filename=\"".basename($_GET['file'])."\"");
+
+        $pf = fopen($downloadFile, 'r');
+        fpassthru($pf);
+        fclose($pf);
+        exit;
+    } else {
+        print "File not found\n";
+    }
 }
 
 function blessPassThrough($toBless) {
@@ -42,7 +60,7 @@ function blessPassThrough($toBless) {
         return false;    
     }
 
-    if (strrpos($toBless, '.jpg') || strrpos($toBless, '.raw_byte.gz') || strrpos($toBless, '.header')) {
+    if (strrpos($toBless, '.jpg') || strrpos($toBless, '.raw_byte.gz') || strrpos($toBless, '.header') || strrpos($toBless, '.mnc')) {
         return true;
     } 
     
