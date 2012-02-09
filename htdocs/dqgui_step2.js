@@ -15,12 +15,31 @@ function addCheckedConditionals(){
    for(var fieldId in categoryFields[conditionalsActiveCategoryId]){
         var oCheckbox=document.getElementById("conditionalsSelect_"+fieldId);
         if(oCheckbox.checked){
+            $('#conditionalsSelectCell_' + fieldId).removeClass("selected");
             addConditionalToSelected(fieldId);
             oCheckbox.checked=false;
         }
     }
 }
 
+function checkConditionalField(fieldId, status) {
+    if(!fieldId || fieldId.type == "click") {
+        var fieldId = this.id;
+    }
+
+    var prefix = fieldId.split("_", 1);
+    fieldId = fieldId.substr(prefix[0].length+1);
+    if(status == null) {
+        var status = this.checked;
+    }
+    if(status == true) {
+        $('#conditionalsSelectCell_' + fieldId).addClass("selected");
+        $('#conditionalsSelect_' + fieldId).attr('checked', 'checked');
+    } else {
+        $('#conditionalsSelect_' + fieldId).removeAttr('checked');
+        $('#conditionalsSelectCell_' + fieldId).removeClass("selected");
+    }
+}
 function addConditionalToSelected(fieldId){
     var id=selectedConditionals.length;
      //Get the target group id

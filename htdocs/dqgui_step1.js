@@ -55,7 +55,7 @@ function purgeCategory(type, categoryId){
 //REMOTING FUNCTIONS -------------------------------------------------------------
 
 //loadFieldsByRemote is called by the iframe page to load fields
-function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
+function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake,fieldOrderList){
     var oFieldsCell=document.getElementById(type+"SelectCell");
 
     //Set the cacheability flag
@@ -94,6 +94,7 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
     //Create the table that will hold all the field checkboxes
     var oTable=document.createElement("TABLE");
     oTable.border=0;
+    oTable.style.width="100%";
     oFieldsContainerDiv.appendChild(oTable);
     var oBody=document.createElement("TBODY");
     oTable.appendChild(oBody);
@@ -108,91 +109,92 @@ function loadFieldsByRemote(type, catId, remoteFieldData, cache, fake){
     var currentLongestString=0;
     var cellWidth=0;
     var totalWidth=0;
-    for(var i in remoteFieldData){
-        //Calculate the cell sizing information so that fields don't wrap.
-        if(loopcounter%8==0 && loopcounter!=0){
-            cellWidth=(currentLongestString*8+30);
-            totalWidth+=cellWidth+10;
-            oCell.style.width=cellWidth+'px';
-            oRow.appendChild(oCell);
-            oCell=document.createElement("TD");
-            oCell.setAttribute("valign","top");
-            currentLongestString=0;
+
+    if(cache) {
+        iterator = remoteFieldData;
+    } else {
+        iterator = fieldOrderList;
+    }
+    for(var x = 0;x < iterator.length; x++) {
+        // HACK: using x, and then assigning i = fieldOrderList[x] is easier than rewriting
+        // the code to use fieldOrderList[i] everywhere, since this was changed from remoteFieldData
+        // to fieldOrderList.
+        // If working with cached data, use the old way.
+        if(cache) {
+            if(remoteFieldData[x] === undefined) continue;
+            i = x;
+        } else {
+            i = fieldOrderList[x];
         }
 
-        //Create the field row
-        if(loopcounter%8!=0){
-           var oBR=document.createElement("BR");
-           oCell.appendChild(oBR);
+
+        if(loopcounter%3==0 && loopcounter!=0) {
+            oBody.appendChild(oRow);
+            oRow = document.createElement("TR");
+            oRow.style.fontSize="80%";
+            oRow.style.width="100%";
         }
+        oCell=document.createElement("TD");
+        oCell.setAttribute("valign","top");
+        oCell.setAttribute("class",type+"SelectCell fieldsSelect");
+        oCell.setAttribute("id",type+"SelectCell_" + remoteFieldData[i][0]);
+        oCell.setAttribute("title", decodeHTMLEntities(remoteFieldData[i][2]));
+
+        //oCell.setAttribute("title",remoteFieldData[i][2]);
 
         //create the checkbox and assign the event handler
         var oCheckbox=addNewElement("INPUT", type+"SelectCheckbox", "checkbox");
         oCheckbox.id=type+"Select_"+remoteFieldData[i][0];
-        oCheckbox.setAttribute("title",remoteFieldData[i][2]);
+        oCheckbox.setAttribute("title",decodeHTMLEntities(remoteFieldData[i][2]));
+        oCheckbox.setAttribute("class",type+"SelectCheckbox fieldsSelect");
         if(stepNumber==1){
-            oCheckbox.onclick=addFieldToSelected;
+            // handled by jQuery on fieldSelectCell
+
+            //oCheckbox.onclick=addFieldToSelected;
         }
+
         //Check the box off if it is already selected
         if(stepNumber==1 && selectedFields[i]){
             oCheckbox.checked=true;
         }
-        oCell.appendChild(oCheckbox);
 
         //create the text node
         var tText=document.createTextNode(remoteFieldData[i][1]);
+
+        oCell.appendChild(oCheckbox);
         oCell.appendChild(tText);
-        if(remoteFieldData[i][1].length > currentLongestString){
-            currentLongestString=remoteFieldData[i][1].length;
-        }
+
+        oRow.appendChild(oCell);
+
+
+
         loopcounter++;
     }
+    oBody.appendChild(oRow);
 
     //Finalize cell and table sizing.
-    cellWidth=(currentLongestString*8+30);
-    totalWidth+=cellWidth+10;
-    oCell.style.width=cellWidth+'px';
-    oRow.appendChild(oCell);
-    oTable.width=totalWidth;
+    oTable.width="100%";
+    setJQueryClickHandlers();
 
 }
 
 function loadCategoriesByRemote(categories){
-categoryNames = new Array();
-for (var i=0; i < categories.length; i++) {
-categoryNames[categories[i].id] = categories[i].name;
-};
+    categoryNames = new Array();
+    for (var i=0; i < categories.length; i++) {
+    categoryNames[categories[i].id] = categories[i].name;
+    };
 
     var selects=["fieldCategorySelect","conditionalCategorySelect"];
     for(var i in selects){
         var oFieldCategorySelect=document.getElementById(selects[i]);
-for (var i=0; i < categories.length; i++) {
-oCategoryOption=document.createElement("OPTION");
-oCategoryOption.value=categories[i].id;
-oCategoryOption.appendChild(document.createTextNode(categories[i].name));
-oFieldCategorySelect.appendChild(oCategoryOption);
-};
+        for (var i=0; i < categories.length; i++) {
+            oCategoryOption=document.createElement("OPTION");
+            oCategoryOption.value=categories[i].id;
+            oCategoryOption.appendChild(document.createTextNode(categories[i].name));
+            oFieldCategorySelect.appendChild(oCategoryOption);
+        };
     }
 }
-
-/*
-
-//loadCategoriesByRemote populates the category select drop down via the remote loader page
-function loadCategoriesByRemote(categories){
-    categoryNames=categories;
-    var selects=["fieldCategorySelect","conditionalCategorySelect"];
-    for(var i in selects){
-        var oFieldCategorySelect=document.getElementById(selects[i]);
-        for(var cat_id in categories){
-           oCategoryOption=document.createElement("OPTION");
-           oCategoryOption.value=cat_id;
-           oCategoryOption.appendChild(document.createTextNode(categories[cat_id]));
-           oFieldCategorySelect.appendChild(oCategoryOption);
-        }
-    }
-}
-
-*/
 
 //FIELD SELECTING/UNSELECTING FUNCTIONS ------------------------------------------------
 
@@ -226,6 +228,7 @@ function addFieldToSelected(fieldId, status, checkall){
     }
     //If the box is checked then add the field
     if(status==true){
+        $("#fieldsSelectCell_" + fieldId).addClass("selected");
 	    var coll=document.getElementsByTagName("INPUT");
 	    for(var i=0; i<coll.length; i++) {
 		    if(coll[i].id == prefix+"_"+fieldId) {
@@ -246,6 +249,7 @@ function addFieldToSelected(fieldId, status, checkall){
 //            oNewRow.scrollIntoView();
         }
     } else {  //otherwise remove the field
+        $("#fieldsSelectCell_" + fieldId).removeClass("selected");
 	    var coll=document.getElementsByTagName("INPUT");
 	    for(var i=0; i<coll.length; i++) {
 		    if(coll[i].id == prefix+"_"+fieldId) {
@@ -293,10 +297,11 @@ function addRow(id, columnData){
         if(i==0){
             newCell.appendChild(document.createTextNode(categoryNames[columnData[3]]));
         } else {
-            newCell.appendChild(document.createTextNode(columnData[i]));
+            newCell.appendChild(document.createTextNode(decodeHTMLEntities(columnData[i])));
         }
         newCell.style.borderBottom="1px black solid";
         newRow.appendChild(newCell);
+
     }
     return newRow;
 }
