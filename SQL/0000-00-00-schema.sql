@@ -1098,6 +1098,28 @@ LOCK TABLES `query_gui_stored_queries` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `query_gui_user_files`
+--
+DROP TABLE IF EXISTS `query_gui_user_files`;
+CREATE TABLE query_gui_user_files (
+    UserFileID integer auto_increment primary key,
+    UserID integer REFERENCES users(ID),
+    filename varchar(255),
+    downloadDate timestamp DEFAULT CURRENT_TIMESTAMP,
+    md5sum varchar(32),
+    status enum('ready', 'packaging', 'expired')
+);
+
+--
+-- Dumping data for table `query_gui_user_files`
+--
+
+LOCK TABLES `query_gui_user_files` WRITE;
+/*!40000 ALTER TABLE `query_gui_user_files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `query_gui_user_files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `session`
 --
 

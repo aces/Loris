@@ -1,5 +1,12 @@
 
-function executeQuery(){
+function executeQuery(sendTo){
+    if(sendTo == 'download') {
+        var oCbrainField=IFrameDoc.getElementById("download");
+        oCbrainField.value="execute";
+        var m = document.getElementById("message");
+        m.innerHTML = "Packaging your files. They'll be ready to download <a href=\"main.php?test_name=download_files\">here</a> in a few minutes."; 
+    }
+
     var oQueryField=IFrameDoc.getElementById("queryData");
     var oModeField=IFrameDoc.getElementById("mode");
     oModeField.value="executeQuery";
