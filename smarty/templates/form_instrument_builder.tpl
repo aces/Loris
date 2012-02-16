@@ -84,9 +84,36 @@
         <form name="saveform" id="saveform">
         Filename: <input type="text" id="filename" value="" />
         Instrument Name: <input type="text" id="longname" value="" />
-        <input type="button" onclick="validate()" value="Validate" />
+        <input type="button" onclick="Instrument.validate()" value="Validate" />
         <input type="submit" value="Save" />
         </form>
+    </div>
+    <h2>Rules (Optional)</h2>
+    <div>
+        <dl>
+            <dt>Question</dt>
+            <dd><select id="rule_q"></select></dd>
+            <dt>Required if</dt>
+            <dd><select id="rule_depends"></select></dd>
+            <dt>Equals any of</dt>
+            <dd><select id="rule_values" multiple></select></dd>
+            <dt>Error message</dt>
+            <dd><input type="text" value="Required" id="rule_message" /></dd>
+        </dl>
+        <input type="button" onclick="Rules.addNew()" value="Add Rule" />
+        <table id="rules_workspace">
+            <tr>
+                <th>Question</th>
+                <th>Required if</th>
+                <th>Equals</th>
+                <th>Message</th>
+            </tr>
+        </table>
+        <input type="button" onclick="Rules.save()" value="Save Rules" />
+
+    </div>
+    <h2>Save Rules</h2>
+    <div>
     </div>
 </div>
 </body>
