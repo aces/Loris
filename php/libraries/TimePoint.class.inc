@@ -55,7 +55,7 @@ Class TimePoint
         }
 
         // get user data from database
-        $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID, s.VisitNo,s.Visit_label,s.SubprojectID,s.Submitted,s.Current_stage,s.Screening,s.Date_screening,s.Visit,s.Date_visit,s.Approval,s.Date_approval,s.Active,s.Cancelled, s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request, s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done FROM session as s left join psc as p using (CenterID) left join users as u on (s.registeredBy=u.UserID) WHERE s.ID ='$sessionID' AND s.Active = 'Y' AND s.Cancelled = 'N'";
+        $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID, s.VisitNo,s.Visit_label,s.SubprojectID,s.Submitted,s.Current_stage,s.Screening,s.Date_screening,s.Visit,s.Date_visit,s.Approval,s.Date_approval,s.Active, s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request, s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done FROM session as s left join psc as p using (CenterID) left join users as u on (s.registeredBy=u.UserID) WHERE s.ID ='$sessionID' AND s.Active = 'Y'";
         $db->selectRow($query, $row);
         
         if(PEAR::isError($row)) {
@@ -75,7 +75,7 @@ Class TimePoint
         // so require a config option to be set
         if($config->getSetting("SupplementalSessionStatus") == true) {
 
-            $query = "SELECT ss.Name, ss.Value FROM session_status ss JOIN session s ON (s.ID=ss.SessionID) WHERE s.ID=:sessionID AND s.Active='Y' AND s.Cancelled='N'";
+            $query = "SELECT ss.Name, ss.Value FROM session_status ss JOIN session s ON (s.ID=ss.SessionID) WHERE s.ID=:sessionID AND s.Active='Y'";
 
             $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
             foreach ($statuses as $row) {
@@ -105,7 +105,7 @@ Class TimePoint
         $db =& Database::singleton();
 
         // select the candidate data
-        $query = "SELECT c.PSCID, c.CenterID, IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo FROM candidate AS c LEFT OUTER JOIN session AS s USING (CandID) WHERE c.CandID=$candID AND (s.Active='Y' OR s.Active is null) AND (s.Cancelled='N' OR s.Cancelled IS NULL) GROUP BY c.CandID";
+        $query = "SELECT c.PSCID, c.CenterID, IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo FROM candidate AS c LEFT OUTER JOIN session AS s USING (CandID) WHERE c.CandID=$candID AND (s.Active='Y' OR s.Active is null) GROUP BY c.CandID";
         $db->selectRow($query, $row);
         if(PEAR::isError($row)) {
             return PEAR::raiseError("Could not retrieve existing data for candidate".$row->getMessage());
@@ -245,10 +245,7 @@ Class TimePoint
         return $this->_timePointInfo["Active"] == 'Y';
     }
 
-    function isCancelled()
-    {
-        return $this->_timePointInfo["Cancelled"] == 'Y';
-    }
+    
 
     function getScanDone()
     {
