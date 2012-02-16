@@ -118,7 +118,7 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
         // set the class variables
         $this->columns = array_merge($columns, array('session.SubprojectID', 'parameter_timepoint_flag_session.Flag_status AS status', 'parameter_timepoint_flag_session.Comment AS comment_text', "IF(parameter_timepoint_flag_session.Last_change IS NULL, '', CONCAT(parameter_timepoint_flag_session.Last_change, ' by ', IF(users.Real_name IS NULL, '', users.Real_name))) AS last_change", 'parameter_timepoint_flag_session.Pending_issue as pending_issue', 'parameter_timepoint_flag_session.Comment_pending as comment_pending_text'));
 
-        $this->query = " FROM session, psc, candidate, parameter_timepoint_flag_type as ft, parameter_timepoint_flag_category as fc, parameter_timepoint_flag, parameter_timepoint_flag_session LEFT JOIN users USING(UserID) WHERE session.CandID = candidate.CandID AND candidate.Entity_type = 'Human' AND candidate.Cancelled = 'N' AND candidate.Active = 'Y' AND session.CenterID = psc.CenterID AND session.ID = parameter_timepoint_flag_session.SessionID AND parameter_timepoint_flag_session.Flag_name = parameter_timepoint_flag.Flag_name AND parameter_timepoint_flag_session.TypeID = ft.TypeID AND parameter_timepoint_flag.CategoryID = fc.CategoryID";
+        $this->query = " FROM session, psc, candidate, parameter_timepoint_flag_type as ft, parameter_timepoint_flag_category as fc, parameter_timepoint_flag, parameter_timepoint_flag_session LEFT JOIN users USING(UserID) WHERE session.CandID = candidate.CandID AND candidate.Entity_type = 'Human' AND candidate.Active = 'Y' AND session.CenterID = psc.CenterID AND session.ID = parameter_timepoint_flag_session.SessionID AND parameter_timepoint_flag_session.Flag_name = parameter_timepoint_flag.Flag_name AND parameter_timepoint_flag_session.TypeID = ft.TypeID AND parameter_timepoint_flag.CategoryID = fc.CategoryID";
 
         $this->formToFilter = array(
         'centerID' => 'session.CenterID',
@@ -168,7 +168,7 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
             // this query includes only the subject w/ existing flags
             $query = "SELECT c.CandID, s.Visit_label, s.ID
             FROM candidate AS c, session AS s, parameter_timepoint_flag_session as p
-            WHERE c.CandID = s.CandID AND p.SessionID = s.ID AND c.Entity_type = 'Human' AND c.Cancelled = 'N' AND c.Active = 'Y'";
+            WHERE c.CandID = s.CandID AND p.SessionID = s.ID AND c.Entity_type = 'Human' AND c.Active = 'Y'";
             if (!empty($_REQUEST['centerID'])) $query .= " AND s.CenterID = '".$this->filter['session.CenterID']."'";
             if (!empty($_REQUEST['subprojectID'])) $query .= " AND s.SubprojectID like '".$_REQUEST['subprojectID']."'";
             if ($_REQUEST['last_change'] == 'evaluated') {
