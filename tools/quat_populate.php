@@ -51,7 +51,7 @@ if(PEAR::isError($result)) {
 }
 
 // get a list of all parameter types that we're populating
-$query = "SELECT p.ParameterTypeID, p.Name, p.Type, p.SourceField, p.SourceFrom, p.SourceCondition, p.CurrentGUITable FROM parameter_type p JOIN parameter_type_category_rel USING (ParameterTypeID) JOIN parameter_type_category USING (ParameterTypeCategoryID) WHERE Queryable=1";
+$query = "SELECT p.ParameterTypeID, p.Name, p.Type, p.SourceField, p.SourceFrom, p.SourceCondition, p.CurrentGUITable FROM parameter_type_running p JOIN parameter_type_category_rel USING (ParameterTypeID) JOIN parameter_type_category USING (ParameterTypeCategoryID) WHERE Queryable=1";
 $parameterTypes = array();
 
 // Parse command line options
@@ -196,7 +196,7 @@ foreach($parameterTypes AS $parameterType) {
     if($parameterType['CurrentGUITable'] != null) {
         print "Updating $parameterType[Name], memory: " . memory_get_usage() . " bytes\n";
         if(($lastGUITable !== $parameterType['CurrentGUITable'] || $lastSourceFrom !== $parameterType['SourceFrom']) && (isset($lastGUITable) && isset($lastSourceFrom))) {
-            $updateStmt = "UPDATE $lastGUITable SET " . join(", ", $setVals);
+            $updateStmt = "UPDATE $lastGUITable" . "_running SET " . join(", ", $setVals);
             $setVals = array();
             log_msg($updateStmt);
             //print "$updateStmt\n";
@@ -210,18 +210,10 @@ foreach($parameterTypes AS $parameterType) {
             case 'psc':
             case 'parameter_candidate';
             case 'parameter_session':
-                $setVals[] = "`$parameterType[Name]`=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)";
-                //print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)";
-                //print "\n";
-                //$db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID)  WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND s.ID=$parameterType[CurrentGUITable].SessionID)");
-                //exit(-1);
+                $setVals[] = "`$parameterType[Name]`=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable]_running.SessionID=s.ID)";
                 break;
             default:
-                $setVals[] = "`$parameterType[Name]`=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%')";
-                //$whereVal = "";
-                //print "UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)";
-                //print "\n";
-                //$db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=$parameterType[CurrentGUITable].SessionID)");
+                $setVals[] = "`$parameterType[Name]`=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable]_running.SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%')";
                 break;
         }
         $lastGUITable= $parameterType['CurrentGUITable'];
@@ -230,9 +222,17 @@ foreach($parameterTypes AS $parameterType) {
 }
 // Once more, for good measure. (and because the if statement above wouldn't be executed
 // after the last parameterTypeId)
-$updateStmt = "UPDATE $lastGUITable SET " . join(", ", $setVals);
+$updateStmt = "UPDATE $lastGUITable" . "_running SET " . join(", ", $setVals);
 log_msg($updateStmt);
 fclose($logfp);
 
 $db->run($updateStmt);
+// Get _running tables from information_schema
+// $origTbl = cut off _running
+// drop $origTbl if exists;
+// rename _running to $origTbl
+// Update parameter_type SET CurrentGUITable = null
+// Update parameter_type SET CurrentGUITable = SELECT CurrentGUITable from parameter_type_running
+// Drop parameter_type_running
+
 ?>

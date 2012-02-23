@@ -64,13 +64,17 @@ if(is_array($dataQueryTables) && count($dataQueryTables)) {
     foreach($dataQueryTables AS $table) {
         if(empty($table['CurrentGUITable'])) continue;
 
+        /*
         $query = "DROP TABLE $table[CurrentGUITable]";
-        $result = $db->run($query);
+        */
+        //$result = $db->run($query);
+        /*
         if($db->isError($result)) {
             die( "Failed to drop table $table: ".$result->getMessage()."\n" );
         }
+        */
 
-        $db->update('parameter_type', array('CurrentGUITable'=>null), array('CurrentGUITable'=>$table['CurrentGUITable']));
+        //$db->update('parameter_type', array('CurrentGUITable'=>null), array('CurrentGUITable'=>$table['CurrentGUITable']));
         print "At: $query, memory: " . memory_get_usage() . "\n";
     }
     unset($table);
@@ -89,6 +93,7 @@ $db->select($query, $parameterTypes);
 $createSQL = "";
 $columnCount = 0;
 $nextTableName = $quatTableBasename . $quatTableCounter;
+$nextTableName_running = $nextTableName . "_running";
 $countParameterTypes = count($parameterTypes);
 
 
@@ -105,6 +110,19 @@ function log_msg($message) {
 
 
 
+$createSQL = "CREATE TABLE parameter_type_running AS SELECT * FROM parameter_type WHERE Queryable=1";
+log_msg($createSQL);
+$db->run($createSQL);
+if($db->isError($result)) {
+    die("Failed to create temporary parameter_type table");
+}
+$updateSQL = "UPDATE parameter_type_running SET CurrentGUITable=null";
+$db->run($createSQL);
+if($db->isError($result)) {
+    die("Failed to update parameter_type_running table");
+}
+
+$createSQL = '';
 for($idx=0; $idx<$countParameterTypes; $idx++) {
     $parameterType =& $parameterTypes[$idx];
 
@@ -120,12 +138,13 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
     if($columnCount >= $columnThreshhold or $idx+1 == $countParameterTypes) {
 
         // run the create table statement
-        $createSQL = "CREATE TABLE $nextTableName (SessionID int not null primary key, $createSQL)";
-        $updateQuatSQL = "UPDATE parameter_type SET CurrentGUITable=" . $db->quote($nextTableName) . " WHERE ParameterTypeID IN (" . join(',', $parameterTypesForQuat) . ')';
+        $createSQL = "CREATE TABLE $nextTableName_running (SessionID int not null primary key, $createSQL)";
+        $updateQuatSQL = "UPDATE parameter_type_running SET CurrentGUITable=" . $db->quote($nextTableName) . " WHERE ParameterTypeID IN (" . join(',', $parameterTypesForQuat) . ')';
         // be more aggressive -- insert every candidate who isn't cancelled
-        $insertSQL = "INSERT INTO $nextTableName (SessionID) SELECT s.ID from session s JOIN candidate c USING (CandID) WHERE c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin' AND c.PSCID <> 'scanner'";
+        $insertSQL = "INSERT INTO $nextTableName_running (SessionID) SELECT s.ID from session s JOIN candidate c USING (CandID) WHERE c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin' AND c.PSCID <> 'scanner'";
         $quatTableCounter++;
         $nextTableName = $quatTableBasename . $quatTableCounter;
+        $nextTableName_running = $nextTableName . "_running";
         unset($parameterTypesForQuat);
         log_msg($createSQL);
         log_msg($updateQuatSQL);
