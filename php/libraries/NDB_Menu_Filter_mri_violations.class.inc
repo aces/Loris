@@ -15,12 +15,13 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
     function _setupVariables()
     {
         $this->query = " FROM mri_violations_log l WHERE 1=1 ";
-        $this->columns = array('l.PatientName','l.CandID','l.Visit_label','l.Severity', 'l.Value', 'l.ValidRange', 'l.ValidRegex', 'l.SeriesUID', 'l.TarchiveID');
+        $this->columns = array('l.PatientName','l.CandID','l.Visit_label','l.Severity', 'l.Header', 'l.Value', 'l.ValidRange', 'l.ValidRegex', 'l.SeriesUID', 'l.TarchiveID');
         $this->order_by = 'PatientName';
         $this->headers = array('PatientName',
                                'CandID',
                                'Visit_label',
                                'Severity',
+                               'Header',
                                'Value',
                                'ValidRange',
                                'ValidRegex',
