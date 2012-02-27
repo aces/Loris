@@ -1,5 +1,6 @@
 <?php
 require_once "Database.class.inc";
+//require_once "Utility.class.inc";
 // This class is the old mri_browser.php portion of the code that 
 // deals with showing the menu list of candidates/filtering, refactored
 // into a different class to make the mri browser code easier to read
@@ -93,7 +94,7 @@ class MRIMenuPage {
                 min(f.InsertTime) AS firstInsertDate,
                 UNIX_TIMESTAMP(md.AcquisitionDate) AS firstAcqDate,
                 UNIX_TIMESTAMP(s.MRIQCFirstChangeTime) AS firstQCDate,
-                UNIX_TIMESTAMP(s.MRIQCLastChangeTime) AS lastQCDate
+		UNIX_TIMESTAMP(s.MRIQCLastChangeTime) AS lastQCDate
                     FROM psc AS p, candidate AS c, session AS s, files AS f, mri_acquisition_dates AS md
                     WHERE s.CenterID=p.CenterID AND s.CandID=c.CandID AND f.SessionID=s.ID AND md.SessionID=s.ID
                     $extra_where_string
@@ -101,6 +102,7 @@ class MRIMenuPage {
                     GROUP BY f.SessionID
                     ORDER BY $extra_orderby p.Name, firstAcqDate, c.CandID, s.Visit_label;";
 
+                //took this out of query as column is missing from table: UNIX_TIMESTAMP(s.MRIQCLastChangeTime) AS lastQCDate
             $DB->select($query, $this->visit_tpl_data['timepoints']);
             if(PEAR::isError($this->visit_tpl_data['timepoints']))  {
                 print $this->visit_tpl_data['timepoints']->getMessage()."<br>\n";
@@ -110,7 +112,7 @@ class MRIMenuPage {
         $this->PopulateQCData();
         $this->PopulateOutputTypes();
 
-        $query = "SELECT CenterID, Name, MRI_Alias FROM psc WHERE MRI_Alias<>'' ".(!$user->hasPermission('access_all_profiles') ? "AND CenterID=".$user->getCenterID() : '')." ORDER BY Name";
+        $query = "SELECT CenterID, Name, MRI_Alias FROM psc WHERE Name NOT LIKE '%DCC%' AND MRI_Alias<>'' ".(!$user->hasPermission('access_all_profiles') ? "AND CenterID=".$user->getCenterID() : '')." ORDER BY Name";
         $DB->select($query, $sites);
         $this->visit_tpl_data['site_options']['']='&nbsp;';
         foreach($sites AS $site) {
@@ -118,6 +120,7 @@ class MRIMenuPage {
             $this->visit_tpl_data['MRI_Alias'][$site['CenterID']] = $site['MRI_Alias'];
         }
 
+        $this->visit_tpl_data['visit_options'] = array_merge(array(null=>"") + Utility::getVisitList()); 
         $this->visit_tpl_data['qcStatus_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
         $this->visit_tpl_data['SubprojectID_options'] = array (''=>'&nbsp;', '1'=>'1', '2'=>'2');
     }
@@ -143,7 +146,7 @@ class MRIMenuPage {
 
         // Go through each 
         for($i=0; $i<$visit_tpl_data['numTimepoints']; $i++) {
-            $minQCDate = $this->DB->selectOne("select min(QCLastChangeTime) from files where SessionID=".$visit_tpl_data['timepoints'][$i]['sessionID']." AND OutputType='native' AND AcquisitionProtocolID not in (1, 2, 3, 52) group by QCLastChangeTime order by QCLastChangeTime limit 1");
+//            $minQCDate = $this->DB->selectOne("select min(QCLastChangeTime) from files where SessionID=".$visit_tpl_data['timepoints'][$i]['sessionID']." AND OutputType='native' AND AcquisitionProtocolID not in (1, 2, 3, 52) group by QCLastChangeTime order by QCLastChangeTime limit 1");
             // New data if not QCed
             $visit_tpl_data['timepoints'][$i]['newData'] = empty($minQCDate);
             $visit_tpl_data['timepoints'][$i]['rownum'] = ($i+1);
