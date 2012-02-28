@@ -294,17 +294,7 @@ class NDB_BVL_Instrument extends PEAR
             $this->form->addGroup($buttons, null, null, "&nbsp;");
         }
         
-        // if double data is in play, only show data after the second save
-        $config =& NDB_Config::singleton();
-        $doubleDataEntry = $config->getSetting('doubleDataEntry');
-        if($doubleDataEntry) {
-            // check for first save in session
-            $stateProperty = 'savedData'.$this->getCommentID().$this->page;
-            $showData = $_SESSION['State']->getProperty($stateProperty."_showData");
-        } else {
-            $showData = true;
-        }
-        
+ 
         // get saved data to pre-populate form
         $db =& Database::singleton();
         $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
@@ -322,20 +312,7 @@ class NDB_BVL_Instrument extends PEAR
         
         // actually set the quickform object defaults
         $this->form->setDefaults($defaults);
-        
-        // clear all if double data is in play and this is the second display
-        if(!$showData) {
-            $submittedData = $this->form->getSubmitValues();
-            unset($submittedData['commentID'], $submittedData['candID'], $submittedData['sessionID'], $submittedData['test_name'], $submittedData['page'], $submittedData['subtest'], $submittedData['fire_away']);
-            foreach(array_keys($submittedData) AS $elname) {
-                $constants[$elname] = null;
-                //$element = $this->form->getElement($elname);
-            }
-            //$this->form->setConstants($constants);
-            $this->form->_submitValues = $constants;
-            $this->form->setConstants($constants);
-            print "<!--\nSETTING CONSTANTS\n"; print_r($constants); print_r($this->form); print "\n-->\n";
-        }
+
         
         // display the HTML_Quickform object
         // return $this->form->toHTML();
@@ -412,17 +389,8 @@ class NDB_BVL_Instrument extends PEAR
         } else {
             $submittedData = $this->form->getSubmitValues();
             
-            $config =& NDB_Config::singleton();
-            $doubleDataEntry = $config->getSetting('doubleDataEntry');
-            if($doubleDataEntry) {
-                // check for first save in session
-                $stateProperty = 'savedData'.$this->getCommentID().$this->page;
-                $showData = $_SESSION['State']->getProperty($stateProperty."_showData");
-            } else {
-                $showData = true;
-            }
-            
-            if(count($submittedData) && $showData) {
+           
+            if(count($submittedData)) {
                 
                 // the form WAS submitted but validate() failed...
                 // main error message

@@ -239,7 +239,7 @@ class UserPermissions
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        $query = "SELECT permissions.permID, code, description, type FROM permissions, user_perm_rel WHERE permissions.permID = user_perm_rel.permID AND userID = '$this->userID' ORDER BY type, description";
+        $query = "SELECT p.permID, p.code, p.description, pc.Description as type FROM permissions p JOIN user_perm_rel up ON (p.permID=up.PermID) LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID) WHERE up.userID = '$this->userID' ORDER BY p.categoryID, p.description";
         $DB->select($query, $results);
         if (PEAR::isError($results)) {
             return PEAR::raiseError("DB Error: ".$results->getMessage());

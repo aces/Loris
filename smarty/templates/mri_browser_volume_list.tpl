@@ -179,6 +179,15 @@ return true;
                     {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
                     </td>
             </tr>
+
+            <tr>
+                        
+                        
+                        {if $files[fIdx].fileID}
+                        
+                        <td> <a href='minc.html?minc_id={$files[fIdx].fileID}' target="_blank"> Link to Brain Browser </a><br>
+                         </td>
+            </tr>
             </table>
         </td>
 
