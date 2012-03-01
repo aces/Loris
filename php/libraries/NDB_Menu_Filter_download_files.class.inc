@@ -14,8 +14,10 @@ class NDB_Menu_Filter_download_files extends NDB_Menu_Filter
 
     function _setupVariables()
     {
+        $user =& User::singleton();
 
-        $this->query = " FROM query_gui_user_files f WHERE 1=1";
+        $this->query = " FROM query_gui_user_files f WHERE UserID=" . $user->getData("ID");
+
         $this->columns = array('f.filename as File', 'f.downloadDate as QueryTime', 'f.md5sum as MD5', 'f.status as Status');
         $this->order_by = 'downloadDate DESC';
         $this->headers = array('Filename',
