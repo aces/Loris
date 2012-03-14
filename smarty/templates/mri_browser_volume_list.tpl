@@ -187,6 +187,7 @@ return true;
                         
                         <td> <a href='minc.html?minc_id={$files[fIdx].fileID}' target="_blank"> Link to Brain Browser </a><br>
                          </td>
+                        {/if} 
             </tr>
             </table>
         </td>
