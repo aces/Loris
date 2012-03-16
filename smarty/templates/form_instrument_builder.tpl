@@ -23,6 +23,12 @@
     <div>
         Question Type:
         <dl style="margin-left: 25px">
+            <dt>Information</dt>
+            <dd>
+            <button id="header" class="option">Header</button>
+            <button id="label" class="option">Label</button>
+            <button id="scored" class="option">Scored Column</button>
+            </dd>
             <dt>Data entry</dt>
             <dd>
             <button id="textbox" class="option">Textbox</button>
@@ -31,11 +37,6 @@
             <button id="multiselect" class="option">Multiselect</button>
             <button id="date" class="option">Date</button>
             </dd>
-            <dt>Information</dt>
-            <dd>
-            <button id="header" class="option">Header</button>
-            <button id="label" class="option">Label</button>
-            <button id="scored" class="option">Scored Column</button>
             <dt>Formatting</dt>
             <dd>
             <button id="line" class="option">Blank Line</button>
