@@ -33,9 +33,7 @@ $(document).ready(function() {
     });
     $("#rule_depends").change(function() {
         table = document.getElementById("workspace")
-        for( i in table.rows) {
-            if(i == 0) continue; // Skip header row
-            alert("Checking row" + i)
+        for(i = 1; i < table.rows.length; i++) {
             row = table.rows[i]
             questionName = row.firstChild.innerText
             questionType = row.firstChild.nextSibling.innerText
@@ -113,6 +111,7 @@ function addQuestion() {
     if(selected != "header" && selected != "label" && selected != "line" && selected != "page") {
         dbname.innerHTML = questionName.value;
         dbname.setAttribute("contenteditable", "true");
+        $(dbname).bind("change", function() { Rules.rebuildMenu("rule_q", "workspace"); Rules.rebuildMenu("rule_depends", "workspace", { dropdownOnly: true }); });
     }
     dbtype = document.createElement("td");
     dbtype.innerHTML = selected;
@@ -134,6 +133,8 @@ function addQuestion() {
         document.getElementById("rule_q").appendChild(select);
         document.getElementById("rule_depends").appendChild(select.cloneNode(true));
     }
+    Rules.rebuildMenu("rule_q", "workspace");
+    Rules.rebuildMenu("rule_depends", "workspace", { dropdownOnly: true });
 }
 
 function addDropdownQuestion(question, type) {
@@ -199,7 +200,6 @@ function addDateQuestion(question) {
 }
 
 function addTextQuestion(question) {
-
     textbox = document.createElement("input");
     textbox.setAttribute("type", "text");
 
@@ -265,3 +265,17 @@ function Enumize(option) {
     enum_option = enum_option.toLowerCase();
     return enum_option
 }
+
+// from http://stackoverflow.com/questions/1391278/contenteditable-change-events
+$('[contenteditable]').live('focus', function() {
+    var $this = $(this);
+    $this.data('before', $this.html());
+    return $this;
+}).live('blur paste', function() {
+    var $this = $(this);
+    if ($this.data('before') !== $this.html()) {
+        $this.data('before', $this.html());
+        $this.trigger('change');
+    }
+    return $this;
+});

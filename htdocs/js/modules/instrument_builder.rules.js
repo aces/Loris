@@ -43,5 +43,36 @@ var Rules = {
         row.appendChild(r_message);
 
         document.getElementById("rules_workspace").appendChild(row);
+    },
+    rebuildMenu: function(selectId, tableId, options) {
+        var names = [];
+        var table = document.getElementById(tableId);
+        var select = document.getElementById(selectId);
+        var i = 0;
+        var el;
+        if(!options) {
+            options = {};
+        }
+
+        // Start at 1 to skip header row in table when getting question names
+        for(i = 1;i < table.rows.length; i++) {
+            if(table.rows[i].children[1].innerText) {
+                if(options.dropdownOnly !== true || table.rows[i].children[1].innerText == "dropdown") {
+                    names.push(table.rows[i].children[0].innerText);
+                }
+            }
+        }
+
+        // Clear select options
+        $(select).children().remove();
+
+        // Then recreate them
+        for(i = 0; i < names.length; i++) {
+            el = document.createElement("option");
+            el.setAttribute("value", names[i]);
+            el.innerText = names[i];
+            select.appendChild(el);
+        }
+        $(select).change();
     }
 }

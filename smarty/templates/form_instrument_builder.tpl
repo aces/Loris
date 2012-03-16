@@ -113,9 +113,6 @@
         <input type="button" onclick="Rules.save()" value="Save Rules" />
 
     </div>
-    <h2>Save Rules</h2>
-    <div>
-    </div>
 </div>
 </body>
 </html>
