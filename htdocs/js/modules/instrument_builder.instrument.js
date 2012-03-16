@@ -2,30 +2,24 @@ var Instrument = {
     validate: function() {
         var names = []
         var table = document.getElementById("workspace");
+        var name, type, question;
         for(var i=1; i < table.rows.length; i++) {
-            alert("Checking row" + i);
+            //alert("Checking row" + i);
             row = table.rows[i];
-            nameCell = row.firstChild;
+            name = $.trim(row.children[0].textContent);
+            type = $.trim(row.children[1].textContent);
+            question = $.trim(row.children[2].textContent);
 
-            if(nameCell) {
-                typeCell = nameCell.nextSibling;
-            } else { continue; }
-            if(typeCell) {
-                questionCell = typeCell.nextSibling;
-            } else { continue; } 
-
-            nameVal = $.trim(nameCell.innerText);
-            rowType = typeCell.innerText;
-            if(rowType == "textbox" || rowType == "dropdown" || rowType == "scored" || rowType == "textarea" || rowType == "date" || rowType == 'multiselect') {
-                if(nameVal == '') {
-                    alert("Must supply database name for " + rowType);
+            if(type == "textbox" || type == "dropdown" || type == "scored" || type == "textarea" || type == "date" || type == 'multiselect') {
+                if(name == '') {
+                    alert("Must supply database name for " + type);
                     return false;
-                } else if(names.indexOf(nameVal) >= 0) {
-                    alert("Duplicate question name: " + nameVal);
+                } else if(names.indexOf(name) >= 0) {
+                    alert("Duplicate question name: " + name);
                     return false;
                 }
             }
-            names.push(nameCell.innerText);
+            names.push(name);
 
         }
         alert("Instrument appears valid");
@@ -59,27 +53,23 @@ var Instrument = {
         }
 
         table = document.getElementById("workspace");
-        for( i in table.rows) {
-            if(i == 0) continue; // skip header
+        for(var i=1; i < table.rows.length; i++) {
             row = table.rows[i];
-            nameCell = row.firstChild;
+            if(row.children.length < 3) {
+                continue;
+            }
+            name = $.trim(row.children[0].textContent);
+            type = $.trim(row.children[1].textContent);
+            questionCell = row.children[2];
 
-            if(nameCell) {
-                typeCell = nameCell.nextSibling;
-            } else { continue; }
-            if(typeCell) {
-                questionCell = typeCell.nextSibling;
-                if(questionCell.firstChild) {
-                    qVal = $.trim(questionCell.firstChild.innerText);
-                } else { 
-                    qVal = '';
-                }
-            } else { continue; } 
+            if(questionCell.firstChild) {
+                qVal = $.trim(questionCell.firstChild.textContent);
+            } else { 
+                qVal = '';
+            }
 
-            nameVal = $.trim(nameCell.innerText);
-            rowType = $.trim(typeCell.innerText);
             addStatus = false;
-            switch(rowType) {
+            switch(type) {
                 case 'header':
                     content.append('header'); break;
                 case 'textbox':
@@ -92,7 +82,7 @@ var Instrument = {
                     break;
                 case 'date':
                     content.append('date'); 
-                    nameVal = nameVal + "_date";
+                    name = name + "_date";
                     addStatus = true;
                     break;
                 case 'dropdown':
@@ -116,14 +106,14 @@ var Instrument = {
             }
 
             content.append("{@}");
-            content.append(nameVal);
+            content.append(name);
             content.append("{@}");
             content.append(qVal);
-            if(rowType == 'line') {
+            if(type == 'line') {
                 content.append('<br />');
             }
 
-            if(rowType == 'dropdown' || rowType == 'multiselect') {
+            if(type == 'dropdown' || type == 'multiselect') {
                 content.append('{@}');
                 content.append("NULL=>''");
                 options = selectOptions.children;
@@ -138,7 +128,7 @@ var Instrument = {
 
             content.append("\n");
             if(addStatus) {
-                content.append("select{@}" + nameVal + "_status" +
+                content.append("select{@}" + name + "_status" +
                     "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n");
             }
         }
