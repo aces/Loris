@@ -1275,11 +1275,9 @@ class NDB_BVL_Instrument extends PEAR
             }
             $values[$row['COLUMN_NAME']] = NULL;
         }
-        print "Wipe out:";
         $db->update($this->table, $values, array('CommentID' => $this->commentID));
-        print_r($values);
-        print "-----";
-        print "For comment ID: " . $this->commentID;
+        $prepQ = $db->prepare("DELETE FROM conflicts_unresolved WHERE (CommentId1=:CID OR CommentId2=:CID)");
+        $db->execute($prepQ, array('CID' => $this->commentID));
     }
 } //end class NDB_BVL_Instrument
 
