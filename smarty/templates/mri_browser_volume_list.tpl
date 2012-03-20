@@ -82,6 +82,7 @@ return true;
 
 <!-- listing of files -->
 <!-- table with candidate profile info -->
+<a href="display.html">&nbsp;3D Viewer</a>
 <table><tr>
     <td>
     <table class="fancytableleft" cellpadding="2">
@@ -170,8 +171,9 @@ return true;
             
 {* IMG *}
             <tr><td colspan="2">
-            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">
-            <img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
+            <a href="#{$smarty.section.fIdx.index}" onClick="window.open('mincbrowser.html?minc_id={$files[fIdx].fileID}', '2D Minc Viewer', 'location = 0, width = 900, height = 500')">
+<!--            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">-->
+               <img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
             </a>
             </td></tr>
             <tr><th>Voxel size</th>
@@ -179,6 +181,14 @@ return true;
                     {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
                     </td>
             </tr>
+	    <tr>
+                        {if $files[fIdx].fileID}
+                        
+            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">Click here to view this acquisition in the JIV viewer</a>
+<!--                        <td> <a href='mincbrowser.html?minc_id={$files[fIdx].fileID}' target="_blank"> Link to Minc Browser </a><br>-->
+                        </td>
+			{/if}
+	    </tr>
             </table>
         </td>
 
