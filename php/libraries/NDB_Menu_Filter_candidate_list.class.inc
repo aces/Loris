@@ -44,9 +44,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->columns=array_merge($this->columns,array('max(session.VisitNo) as Visit_count', 'max(session.Current_stage) as Latest_visit_status', 'min(feedback_bvl_thread.Status+0) as Feedback'));
 
         
-        $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Cancelled = 'N' AND session.Active = 'Y'
+        $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Active = 'Y'
          LEFT JOIN feedback_bvl_thread ON (candidate.CandID=feedback_bvl_thread.CandID)
-        WHERE candidate.CenterID = psc.CenterID AND candidate.Entity_type = 'Human' AND candidate.Cancelled = 'N' AND candidate.Active = 'Y' ";
+        WHERE candidate.CenterID = psc.CenterID AND candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND candidate.CenterID=" . $user->getCenterID();

@@ -28,7 +28,7 @@ foreach($instruments AS $test_name) {
 
     // get a list of instrument instances
     $instances = array();
-    $query = "SELECT flag.CommentID, flag.SessionID, session.Visit_label, session.CandID, t.Examiner, t.Date_taken FROM $test_name AS t, flag, session WHERE flag.CommentID=t.CommentID AND flag.Test_name='$test_name' AND flag.SessionID=session.ID AND session.Submitted = 'Y' AND session.Cancelled='N' AND session.Active='Y' AND flag.Data_entry='Complete' AND flag.Administration IN ('All', 'Partial')";
+    $query = "SELECT flag.CommentID, flag.SessionID, session.Visit_label, session.CandID, t.Examiner, t.Date_taken FROM $test_name AS t, flag, session WHERE flag.CommentID=t.CommentID AND flag.Test_name='$test_name' AND flag.SessionID=session.ID AND session.Submitted = 'Y' AND session.Active='Y' AND flag.Data_entry='Complete' AND flag.Administration IN ('All', 'Partial')";
     $db->select($query, $instances);
     
 
