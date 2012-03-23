@@ -2,7 +2,10 @@ var Rules = {
     save: function () {
         var content = new BlobBuilder();
         var rules = document.getElementById("rules_workspace")
+        var Rule;
+        var row;
         var name = document.getElementById("filename").value || "instrument";
+        var fs;
 
         for(var i=1; i < rules.rows.length; i++) {
             row = rules.rows[i]
