@@ -1,6 +1,6 @@
 <?php
 require_once 'PEAR.php';
-
+require_once "NDB_Config.class.inc";
 /**
  * A set of (static) utility functions
  *
@@ -477,5 +477,15 @@ class Utility extends PEAR
         return $instruments;
 
    }
+
+
+
+    function getColumnThresholdCount()
+    {
+        $config =& NDB_Config::singleton();
+        // get the list of Subprojects
+        $column_threshold= $config->getSetting('columnThreshold');
+        return $column_threshold;
+    }
 }
 ?>
