@@ -23,7 +23,7 @@ $studyTitle = $config->getSetting('title');
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <link rel="stylesheet" href="<?php if(!$css){ print main.css; } else { print  $css; }?>" type="text/css" />
-    <script src="JS/jquery-1.4.2.min.js"></script>
+    <script src="js/jquery/jquery-1.4.2.min.js"></script>
     <script src='dqgui_core.js'></script>
     <script src='dqgui_step1.js'></script>
     <script src='dqgui_step2.js'></script>
@@ -41,11 +41,11 @@ $studyTitle = $config->getSetting('title');
     <table border=0 style='border:none;padding-left:0px;' width="100%" cellspacing="0" cellpadding="10">
     <tr>
         <td width="19%" align='center' class="button" id='step1Title' onclick='setStepDiv(1)'>Define Variables</td>
-        <td width="19%" align='center' class="button" style="display: none"  id='step2Title' onclick='setStepDiv(2)'>Define Population</td>
+        <td width="19%" align='center' class="button" id='step2Title' onclick='setStepDiv(2)'>Define Population</td>
         <td width="19%" align='center' class="button" id='step3Title' onclick='setStepDiv(3)'>Download Spreadsheet</td>
         <td width="5%"  style='border-top:none;border-bottom:none;'>&nbsp;</td>
         <td width="19%" align='center' class="button" style='font-weight:bold;' id='step4Title' onclick='setStepDiv(4)'>Save/Load Query</td>
-        <td width="19%" align='center' class="button" id='toggleModeTitle' onclick='toggleMode()'>Go to <span id="toggleModeText">Advanced Mode</span></td>
+        <!--td width="19%" align='center' class="button" id='toggleModeTitle' onclick='toggleMode()'>Go to <span id="toggleModeText">Advanced Mode</span></td-->
      </tr>
     </table>
 </div>
@@ -131,9 +131,9 @@ $studyTitle = $config->getSetting('title');
             <tbody style='font-size:small;'>
                 <tr>
                 <td id='conditionalsGroup_0' valign='top'>
-                <input type='radio' name='groupSelectRadio' id='groupSelectRadio' value='0' checked style='margin-right:10px;'>
-                <input type='text' value='Main Group'>
-                <select onchange='changeGroupOperator(this)'><option>AND</option><option>OR</option></select>
+                <input type='hidden' name='groupSelectRadio' id='groupSelectRadio' value='0' checked style='margin-right:10px;'>
+                <input type='hidden' value='Main Group'>
+                <!--select onchange='changeGroupOperator(this)'><option>AND</option><option>OR</option></select-->
                 <hr style='margin-left:-5px;margin-right:-5px;' noshade size=1 color="black">
                 </td>
                 </tr>

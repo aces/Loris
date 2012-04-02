@@ -14,19 +14,19 @@
 <!-- file paths -->
 <paths>
     <imagePath>/PATH/TO/MINC/DATA/ROOT/mri-data/minc/</imagePath>
-    <base>/PATH/TO/lorisdb/</base>
+    <base>%LORISROOT%</base>
     <data>SAME AS imagePath</data>
     <extLibs>/PATH/TO/SMARTY/libs</extLibs>
 </paths>
 
 <!-- database settings -->
 <database>
-    <host>HOSTNAME</host>
-    <username>USERNAME</username>
-    <password>PASSWORD</password>
-    <database>DATABASE</database>
-    <quatUser>USErNAME</quatUser>
-    <quatPassword>PASSWORD</quatPassword>
+    <host>%HOSTNAME%</host>
+    <username>%USERNAME%</username>
+    <password>%PASSWORD%</password>
+    <database>%DATABASE%</database>
+    <quatUser>%USERNAME%</quatUser>
+    <quatPassword>%PASSWORD%</quatPassword>
     <name>Example database</name>
 </database>
 
@@ -40,7 +40,6 @@
     <link url='dicom_archive.php?' args=''>DICOM Archive</link>
     <link url='mri_browser.php?' args='MRIBrowser'>MRI Browser</link>
     <link url='query_gui.php?' args=''>Data Query GUI</link>
-    <link url='mri_stats.php?' args=''>Database statistics</link>
 </links>
 
 <!-- mail settings -->
@@ -127,31 +126,14 @@
 <!-- end of study definition -->
 
 
-    <multiSiteEnabledCenters>
-        <a>1</a>
-        <b>200</b>
-    </multiSiteEnabledCenters>
-
- 
-
     <!-- GUI default settings -->
     <gui>
-	<css>main.css</css>
+        <css>main.css</css>
         <rowsPerPage>25</rowsPerPage>
         <showTiming>0</showTiming>
-	<showPearErrors>0</showPearErrors>
-	<showDatabaseQueries>0</showDatabaseQueries>
+        <showPearErrors>0</showPearErrors>
+        <showDatabaseQueries>0</showDatabaseQueries>
     </gui>
-
-    <mri>
-        <efax>
-            <backup_dir></backup_dir>
-            <new_dir></new_dir>
-            <assigned_dir></assigned_dir>
-            <unassigned_dir></unassigned_dir>
-        </efax>
-    </mri>
-
 
     <main_menu_tabs>
         <!-- tab name -->
@@ -172,26 +154,6 @@
             <visible>1</visible>
         </tab>
         <tab>
-            <link>timepoint_flag</link>
-            <label>Exclusion</label>
-            <access>all</access>
-            <permissions>
-                <perm>timepoint_flag</perm>
-                <perm>timepoint_flag_evaluate</perm>
-            </permissions>
-            <visible>0</visible>
-        </tab>
-        <tab>
-            <link>mri_safety</link>
-            <label>MRI Safety Form</label>
-            <access>all</access>
-            <permissions>
-                <perm>data_entry</perm>
-                <perm>mri_safety</perm>
-            </permissions>
-            <visible>0</visible>
-        </tab>
-        <tab>
             <link>user_accounts</link>
             <label>User Accounts</label>
             <access>all</access>
@@ -199,25 +161,6 @@
                 <perm>user_accounts</perm>
             </permissions>
             <visible>1</visible>
-        </tab>
-        <tab>
-            <link>tracking_logs</link>
-            <label>Tracking Logs</label>
-            <access>all</access>
-           <permissions>
-                <perm>tracking_logs</perm>
-            </permissions>
-            <visible>0</visible>
-        </tab>
-        <tab>
-            <link>certification</link>
-            <label>Certification</label>
-            <access>all</access>
-            <permissions>
-                <perm>certification</perm>
-                <perm>certification_multisite</perm>
-            </permissions>
-            <visible>0</visible>
         </tab>
     </main_menu_tabs>
 
