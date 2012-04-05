@@ -240,7 +240,8 @@ function checkNewEfaxForm(){
             <table border="0" valign="top" class="std">
             <tr>
             <!-- table title -->
-            <th nowrap="nowrap" colspan="7">Selection Filter</th>
+<!--
+            <th nowrap="nowrap" colspan="7">Selection Filter</th>-->
             </tr>
             <tr>
             <!-- psc.Name -->

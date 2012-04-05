@@ -1,8 +1,8 @@
 <form method="post" name="parameterTimepointFilterForm" action="main.php?test_name=timepoint_flag&mode={$mode}&pageID={$pageID}">
 <table border="0" valign="top" class="std">
-    <tr>
+<!--    <tr>
         <th nowrap="nowrap" colspan="2">Selection Filter</th>
-    </tr>
+    </tr>-->
     <tr>
         <td nowrap="nowrap">Mode:</td>
         <td nowrap="nowrap">{$form.mode.html}</td>

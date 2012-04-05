@@ -43,9 +43,9 @@ $(function(){
 
 <form method="post" action="main.php?test_name=candidate_list">
 <table border="0" valign="top" class="std">
-    <tr>
+  <!--  <tr>
         <th nowrap="nowrap" colspan=4>Selection Filter</th>
-    </tr>
+    </tr>-->
     <tr>
         <td nowrap="nowrap">Site:</td>
         <td nowrap="nowrap">{$form.centerID.html}</td>
@@ -83,9 +83,10 @@ $(function(){
     </tr>
     {/if}
     <tr>
-        <td>Actions:</td>
+        <td></td>
+        <td></td>
         <td>&nbsp;</td>
-        <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" /></td>
+        <td colspan="3" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" /></td>
     </tr>
 <table>
 </form>

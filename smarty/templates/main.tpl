@@ -6,9 +6,10 @@
 <title>{$study_title}</title>
 
 {literal}
-<link type="text/css" href="JS/JQeggplant/css/eggplant/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
-<script src="JS/jquery-1.4.2.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="JS/jquery-ui-1.8.2.custom.min.js"></script>
+<link href="JS/jquery-ui/css/eggplant/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="JS/jquery-ui/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
 
 <script language="javascript" type="text/javascript"> 
 <!--

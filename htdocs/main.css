@@ -124,7 +124,7 @@ table.std {
         border-radius: 4px;
         -webkit-border-radius: 4px;
         -moz-border-radius: 4px;
-	background-color: #efefef;
+	background-color: #f5f5fd; /*#efefef;*/
 	margin: 20px 0px 20px 0px;
 }
 table.list, table.tbl {
@@ -255,6 +255,15 @@ table.fancytable, table.listColorCoded {
   border-collapse: collapse;
   text-align: center;
 }
+table.docRepository {
+  text-align: left;
+
+}
+table.docRepository th {
+text-align: left;
+
+}
+
 table.fancytable tr:hover, table.listColorCoded tr:hover {
    /*color: #efefef;*/
    background: #C8D5FD; /*#99c;/*#bbb; /*lightgrey;*/
@@ -338,8 +347,8 @@ table.fancytableleft caption {
 }
 
 .button:hover {
-  /* opacity: 0.7;*/
-     background-color: #B6ABBF; /*#99c; /*#9a5; /*#989;*/
+   opacity: 0.6;
+ /*    background-color: #B6ABBF; /*#99c; /*#9a5; /*#989;*/
     border: 1px solid #B6ABBF;;
 }
 

@@ -82,7 +82,7 @@ return true;
 
 <!-- listing of files -->
 <!-- table with candidate profile info -->
-<a href="display.html">&nbsp;3D Viewer</a>
+<a href="display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>
 <table><tr>
     <td>
     <table class="fancytableleft" cellpadding="2">
