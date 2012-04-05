@@ -52,8 +52,11 @@ function initialize($minc_file){
 		$headers['time']['start']        = exec("mincinfo -attval time:start $minc_file");
 		$headers['time']['space_length'] = exec("mincinfo -dimlength time $minc_file");
 		$headers['time']['step']         = exec("mincinfo -attval time:step $minc_file");
-	}
-	$headers['order'] = $order;
+	} else {
+        $order = split(" ",exec("mincinfo -dimnames $minc_file"));
+    }
+    
+    $headers['order'] = $order;
 	return($header_json = json_encode($headers));
 }
 
