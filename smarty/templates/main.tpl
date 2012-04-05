@@ -5,12 +5,15 @@
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 
+<link type="text/css" href="JS/JQeggplant/css/eggplant/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
+<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+
+{if $test_name_js}
+<script type="text/javascript" src="{$test_name_js}"></script>
+{/if}
+
 {literal}
-<link href="JS/jquery-ui/css/eggplant/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css" />
-
-<script type="text/javascript" src="JS/jquery-ui/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
-
 <script language="javascript" type="text/javascript"> 
 <!--
 function feedback_bvl_popup(features) { 

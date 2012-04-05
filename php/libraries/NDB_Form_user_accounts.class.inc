@@ -347,9 +347,11 @@ class NDB_Form_user_accounts extends NDB_Form
         foreach ($perms as $row) {
             if($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
-                $group[] = $this->form->createElement('static', null, null, '<b>'.ucwords($row['type']).'</b>');
+                $group[] = $this->form->createElement('static', null, null, '</div>' . 
+                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>' 
+                        . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">");
             }
-            $group[] = $this->form->createElement('advcheckbox', 'permID['.$row['permID'].']', null, $row['description']);
+            $group[] = $this->form->createElement('advcheckbox', 'permID['.$row['permID'].']', null, $row['description'], "class=\"perm_$lastRole\"");
         }
         $this->form->addGroup($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
         unset($group);

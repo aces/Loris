@@ -523,3 +523,15 @@ h2.statsH2 {
     background: inherit !important;
     color: inherit !important;
 }
+
+/* DQG jQuery things */
+.selected {
+   /* background-color:#08245b; */
+   background-color:#5874Ab; */
+   color:white;
+   cursor: pointer;
+}
+
+.fieldsSelect{
+   cursor: pointer;
+}

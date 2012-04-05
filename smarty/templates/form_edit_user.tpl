@@ -1,4 +1,32 @@
 <br />
+{literal}
+<script>
+$(document).ready(function() {
+    function toggleGroup(group) {
+        if(group) {
+            // id is the header that was clicked
+            id = group.target.id;
+
+            // chop off header_ to get section name
+            section = id.substring(7);
+            
+            // hide (or show) the appropriate div for that section
+            section_el = $("#perms_" + section);
+            section_el.toggle();
+        }
+    }
+    // define event handler for all the header sections
+    $(".perm_header").click(toggleGroup);
+    // Get rid of the extra <br /> tag that Quickform element adds at the top of each <div>
+    $(".perm_header").each(function(idx, el) {
+        id = el.id;
+        section = id.substring(7);
+        section_el = $("#perms_" + section + " br:nth-child(1)").hide();
+    });
+    
+});
+</script>
+{/literal}
 <form method="post" name="edit_user" id="edit_user">
 <table class="std">
     <!-- table title -->
@@ -121,7 +149,7 @@
 
 	<tr>
 		<td nowrap="nowrap" valign="top">Permissions</td>
-		<td nowrap="nowrap">{$form.PermID_Group.html}</td>
+		<td nowrap="nowrap"><div>{$form.PermID_Group.html}</div></td>
     </tr>
 
 	<tr>

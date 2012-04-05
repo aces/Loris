@@ -36,8 +36,6 @@ CREATE TABLE `candidate` (
   `Sibling3` int(6) default NULL,
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Date_active` date default NULL,
-  `Cancelled` enum('N','Y') NOT NULL default 'N',
-  `Date_cancelled` date default NULL,
   `RegisteredBy` varchar(255) default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Date_registered` date default NULL,
@@ -971,7 +969,7 @@ CREATE TABLE `permissions` (
   `permID` int(10) unsigned NOT NULL auto_increment,
   `code` varchar(255) NOT NULL default '',
   `description` varchar(255) NOT NULL default '',
-  `type` enum('role','permission') NOT NULL default 'permission',
+  `categoryID` int(10) DEFAULT NULL,
   PRIMARY KEY  (`permID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
@@ -981,8 +979,32 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','role'),(2,'user_accounts','User management','permission'),(3,'user_accounts_multisite','Across all sites create and edit users','permission'),(4,'context_help','Edit help documentation','permission'),(5,'bvl_feedback','Behavioural QC','role'),(6,'mri_feedback','Edit MRI feedback threads','permission'),(7,'mri_efax','Edit MRI Efax files','permission'),(8,'send_to_dcc','Send to DCC','permission'),(9,'unsend_to_dcc','Reverse Send from DCC','permission'),(10,'access_all_profiles','Across all sites access candidate profiles','permission'),(11,'data_entry','Data entry','role'),(12,'certification','Certify examiners','permission'),(13,'certification_multisite','Across all sites certify examiners','permission'),(14,'timepoint_flag','Edit exclusion flags','permission'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','permission'),(16,'mri_safety','Review MRI safety form for accidental findings','permission');
+INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `permissions_category`
+--
+
+DROP TABLE IF EXISTS `permissions_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `permissions_category` (
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
+  `Description` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `permissions_category`
+--
+
+LOCK TABLES `permissions_category` WRITE;
+/*!40000 ALTER TABLE `permissions_category` DISABLE KEYS */;
+INSERT INTO `permissions_category` VALUES (1,'Roles'),(2,'Permission');
+/*!40000 ALTER TABLE `permissions_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1016,7 +1038,7 @@ CREATE TABLE `psc` (
 
 LOCK TABLES `psc` WRITE;
 /*!40000 ALTER TABLE `psc` DISABLE KEYS */;
-INSERT INTO `psc` VALUES (1,'Data Coordinating Center','','','',0,'','','','','','DCC','','','N');
+INSERT INTO `psc` VALUES (1,'Data Coordinating Center','','','',0,'','','','','','DCC','','','Y');
 /*!40000 ALTER TABLE `psc` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1097,8 +1119,6 @@ CREATE TABLE `session` (
   `Date_approval` date default NULL,
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Date_active` date default NULL,
-  `Cancelled` enum('N','Y') NOT NULL default 'N',
-  `Date_cancelled` date default NULL,
   `RegisteredBy` varchar(255) default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Date_registered` date default NULL,
@@ -1250,6 +1270,7 @@ CREATE TABLE `test_battery` (
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Stage` varchar(255) default NULL,
   `SubprojectID` int(11) default NULL,
+  `Visit_label` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1297,7 +1318,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `test_subgroups`;
 CREATE TABLE `test_subgroups` (
-  `ID` int(11) unsigned NOT NULL default '0',
+  `ID` int(11) unsigned NOT NULL auto_increment,
   `Subgroup_name` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1308,6 +1329,7 @@ CREATE TABLE `test_subgroups` (
 
 LOCK TABLES `test_subgroups` WRITE;
 /*!40000 ALTER TABLE `test_subgroups` DISABLE KEYS */;
+INSERT INTO test_subgroups VALUES (1, 'Instruments');
 /*!40000 ALTER TABLE `test_subgroups` ENABLE KEYS */;
 UNLOCK TABLES;
 

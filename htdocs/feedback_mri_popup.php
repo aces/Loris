@@ -65,11 +65,11 @@ $saved_comments = $comments->getComments();
 
 // show identifier of subject/volume
 if($comments->objectType == 'volume') {
-    $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label, s.SubprojectID, f.File AS File_name, st.Scan_type FROM files AS f, session AS s, candidate AS c, mri_scan_type AS st WHERE f.FileID='$comments->fileID' AND f.SessionID=s.ID AND s.CandID=c.CandID and f.AcquisitionProtocolID=st.ID AND s.Active='Y' AND s.Cancelled='N'";
+    $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label, s.SubprojectID, f.File AS File_name, st.Scan_type FROM files AS f, session AS s, candidate AS c, mri_scan_type AS st WHERE f.FileID='$comments->fileID' AND f.SessionID=s.ID AND s.CandID=c.CandID and f.AcquisitionProtocolID=st.ID AND s.Active='Y'";
 } elseif ($comments->objectType == 'visit') {
-    $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID FROM session AS s, candidate AS c WHERE s.ID='$comments->sessionID' AND s.CandID=c.CandID AND s.Active='Y' AND s.Cancelled='N'"; //AND VisitNo='$comments->visitNo'
+    $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID FROM session AS s, candidate AS c WHERE s.ID='$comments->sessionID' AND s.CandID=c.CandID AND s.Active='Y'"; //AND VisitNo='$comments->visitNo'
 } else {
-    $query = "SELECT c.CandID FROM session AS s, candidate AS c WHERE s.ID='$comments->sessionID' AND s.CandID=c.CandID AND s.Active='Y' AND s.Cancelled='N'";
+    $query = "SELECT c.CandID FROM session AS s, candidate AS c WHERE s.ID='$comments->sessionID' AND s.CandID=c.CandID AND s.Active='Y'";
 }
 
 $DB->select($query, $result);

@@ -41,17 +41,21 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         	$this->validFilters[]='candidate.EDC';
         }
 
-        $this->columns=array_merge($this->columns,array('max(session.VisitNo) as Visit_count', 'max(session.Current_stage) as Latest_visit_status', 'min(feedback_bvl_thread.Status+0) as Feedback'));
+        $this->columns=array_merge($this->columns,array('count(DISTINCT session.Visit_label) as Visit_count', 'max(session.Current_stage) as Latest_visit_status', 'min(feedback_bvl_thread.Status+0) as Feedback'));
 
         
-        $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Cancelled = 'N' AND session.Active = 'Y'
+        $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Active = 'Y'
          LEFT JOIN feedback_bvl_thread ON (candidate.CandID=feedback_bvl_thread.CandID)
-        WHERE candidate.CenterID = psc.CenterID AND candidate.Entity_type = 'Human' AND candidate.Cancelled = 'N' AND candidate.Active = 'Y' ";
+        WHERE candidate.CenterID = psc.CenterID AND candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
+        $user =& User::singleton();
+        if (!$user->hasPermission('access_all_profiles')) {
+            $this->query .= " AND candidate.CenterID=" . $user->getCenterID();
+        }
         
         $this->group_by = 'candidate.CandID';
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
-        $this->validFilters = array('candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.SubprojectID', 'candidate.DoB', 'max(session.VisitNo)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
-        $this->validHavingFilters = array('max(session.VisitNo)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
+        $this->validFilters = array('candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
+        $this->validHavingFilters = array('count(DISTINCT session.Visit_label)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
 		
         $this->formToFilter = array(
                                     'centerID' => 'candidate.CenterID',
@@ -60,7 +64,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                     'gender' => 'candidate.Gender',
                                     'SubprojectID' => 'session.SubprojectID',
                                     'dob' => 'candidate.DoB',
-                                    'Visit_Count' => 'max(session.VisitNo)',
+                                    'Visit_Count' => 'count(DISTINCT session.Visit_label)', // Need distinct because of joining with feedback_bvl_thread
                                     'Latest_Visit_Status' => 'max(session.Current_stage)',
                                     'Feedback' => 'coalesce(min(feedback_bvl_thread.Status+1), 1)'
 

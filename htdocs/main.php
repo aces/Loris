@@ -127,6 +127,9 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
 $paths = $config->getSetting('paths');
 
 if (!empty($_REQUEST['test_name'])) {
+    if(file_exists($paths['base'] . "htdocs/js/modules/" . $_REQUEST['test_name'] . ".js")) {
+        $tpl_data['test_name_js'] = "js/modules/" . $_REQUEST['test_name'] . ".js";
+    }
     if (!empty($_REQUEST['commentID'])) {
         // make the control panel object for the current instrument
         $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;

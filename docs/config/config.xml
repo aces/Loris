@@ -89,7 +89,6 @@
 	<objectives>1</objectives>
 	<!-- max number of timepoints per subject (integer)-->
 	<visits>1</visits>
-        <doubleDataEntry>0</doubleDataEntry>
 	<useScreening>false</useScreening>
 	<subprojects>
 	    <subproject>
