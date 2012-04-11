@@ -47,16 +47,20 @@ function initialize($minc_file){
 
 	//minc2.0, if there's a time component
 	$order = split(",",exec("mincinfo -attval image:dimorder  $minc_file"));
+
+	//minc 1.0
+	if (!((count($order) == 4) || (count($order) == 3))){
+		$order = split(",",exec("mincinfo -dimnames $minc_file"));
+	}
+	
+	//for 4D (BOLD or DTI)
 	if (count($order) == 4){
 		$headers['time'] = array();
 		$headers['time']['start']        = exec("mincinfo -attval time:start $minc_file");
 		$headers['time']['space_length'] = exec("mincinfo -dimlength time $minc_file");
 		$headers['time']['step']         = exec("mincinfo -attval time:step $minc_file");
-	} else {
-        $order = split(" ",exec("mincinfo -dimnames $minc_file"));
-    }
-    
-    $headers['order'] = $order;
+	}
+	$headers['order'] = $order;
 	return($header_json = json_encode($headers));
 }
 
