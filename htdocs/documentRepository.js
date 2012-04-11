@@ -27,6 +27,9 @@ $('.thedeletelink').click(function(){
                         });
   $(".sure").dialog({
       buttons : {
+        "Cancel" : function() {
+          $(this).dialog("close");
+        },
         "Yes" : function() {
    //   $.get("documentDelete.php?", {record_id: id});
 //      $.get("documentDelete.php?id=" + id);
@@ -44,16 +47,11 @@ $('.thedeletelink').click(function(){
                 
         });
         
-    // window.location = "documentDelete.php";
         $(this).dialog("close");
         //location.reload(true);
         return false;
-//     return false;
  //     window.location.href = "main.php?test_name=document_repository";
 //$(this).parent().get(0).submit()
-        },
-        "Cancel" : function() {
-          $(this).dialog("close");
         }
       }
     });
@@ -107,9 +105,9 @@ var name = $( "#name" ),
 
                 $( ".dialog-form" ).dialog({
                         autoOpen: false,
-                        height: 300,
+                        height: 500,
                         width: 400,
-                        modal: true,//,
+                      //  modal: true,//,
                 //      buttons: {
                 //              "Upload": function() {
                         //              var bValid = true;
@@ -211,42 +209,62 @@ var name = $( "#name" ),
                         modal: true,
                         close: function() {
                                 allFields.val( "" ).removeClass( "ui-state-error" );
-                        }
+                        },
+			
         });
                 $("#cancelEditButton").click(function() {
                                 $( ".dialog-form-edit"  ).dialog( "close" );
                 });
 
+//document.getElementById("categoryEdit").selectedIndex="paper";//setAttribute('value', "paper");
                 $("#editForm").submit(function() {
                   var data = {
-                  categoryP:$(category).val(),
-                //  instrumentP:$(instrument).val(),
-                  pscidP:$(pscid).val(),
-                  commentsP:$(comments).val(),
-                  versionP:$(version).val(),
-                  siteP:$(site).val(), 
-                  submit: 'yeah!'
+		  idEdit:id,
+                  categoryEdit:$(categoryEdit).val(),
+                  siteEdit:$(siteEdit).val(), 
+                  instrumentEdit:$(nameEdit).val(),
+                  pscidEdit:$(pscidEdit).val(),
+		  visitEdit:$(visitEdit).val(),
+                  commentsEdit:$(commentsEdit).val(),
+                  versionEdit:$(versionEdit).val(),
+		  action:$(actionEdit).val(),
+		  submit: 'yeah!!!!'
                 };
+		
                   $.ajax({
                         type: "POST",
-                        url: "documentEdit.php",
-                        data: data
+                        url: "documentUpload.php",
+                        data: data 
                         });
                 $( ".dialog-form-edit" ).dialog( "close" );
-                location.reload(true);
-                return false;
+             //   location.reload(true);
+            //    return false;
                 });
         });
 
                 $( ".theeditlink" )
                         .click(function() {
                                 $( ".dialog-form-edit" ).dialog( "open" );
+        			id = this.id;
                                 return false;
                         });
 
         });
 
+function SelectElement(element, valueToSelect)
+{    
+//    var element = document.getElementById('categoryEdit');
+    $("#" + element + "").val(valueToSelect);
+}
+
 $(document).ready(function() {
+
+SelectElement("categoryEdit", "paper");
+SelectElement("commentsEdit", "test");
+SelectElement("versionEdit", "1.0");
+//			$("#categoryEdit").val("paper");
+//  document.getElementById("category").setAttribute('value', "paper");
+//document.getElementById("categoryEdit").selectedIndex="paper";//setAttribute('value', "paper");
 
     $(".categories").hide();
     function toggleGroup(group) {

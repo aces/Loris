@@ -18,16 +18,23 @@ if (!$con)
   }
 mysql_select_db("preventAD", $con);
 
+$action = $_POST['action'];
+
+
+if ($action == 'upload')
+{
 $user = $_POST['user'];
 $category = $_POST['category'];
-//$instrument = $_POST['instrumentP'];
 $site = $_POST['site'];
-//$pscid = $_POST['pscidP'];
-//$visit = $_POST['visitP'];
+$instrument = $_POST['instrument'];
+$pscid = $_POST['pscid'];
+$visit = $_POST['visit'];
 $comments = $_POST['comments'];
 $version = $_POST['version'];
 
 //echo "USER: " . $user;
+echo "category: " . $category; 
+
 
 $fileName = $_FILES["file"]["name"];
 $base_path = "document_repository";
@@ -55,6 +62,7 @@ $target_path = $target_path . "/" . $user ."/{$_FILES["file"]["name"]}";
 	}
 }
 */
+
 if ($_FILES["file"]["error"] > 0)
   {
   echo "Error: " . $_FILES["file"]["error"] . "<br />";
@@ -89,5 +97,30 @@ VALUES ('$category', '$site', '$comments', '$version', '$fileName', '$target_pat
 //}
 
 //header("Location: http://132.216.67.69:7080/main.php?test_name=document_repository");
+}
+
+
+elseif ($action == 'edit')
+{
+$id = $_POST['idEdit'];
+$category = $_POST['categoryEdit'];
+$instrument = $_POST['nameEdit'];
+$site = $_POST['siteEdit'];
+$pscid = $_POST['pscidEdit'];
+$visit = $_POST['visitEdit'];
+$comments = $_POST['commentsEdit'];
+$version = $_POST['versionEdit'];
+
+
+mysql_query("UPDATE document_repository SET File_category = '$category', Instrument = '$instrument', For_site = '$site', PSCID = '$pscid', visitLabel = '$visit', comments = '$comments', version = '$version'  where record_id = '$id'");
+
+
+//$editFile = array('File_category'=>$category, 'version'=>$version);
+//$whereArray = array('record_id'=>'519');
+//$db->update("document_repository", $editFile, $whereArray);
+//if($this->isError($success)) {
+//return $this->raiseError('Could not save to database');
+//}
+}
 
 ?>
