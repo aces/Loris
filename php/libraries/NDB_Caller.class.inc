@@ -94,7 +94,8 @@ class NDB_Caller extends PEAR
           }
 
         // it is an intrument
-        if ($this->existsAndRequire($base."project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
+          if ($this->existsAndRequire($base."project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
+                || $test_name=='instrument_preview') {
     
             $html = $this->loadInstrument($test_name, $subtest, $_REQUEST['commentID']);
             if (PEAR::isError($html)) {
@@ -212,9 +213,11 @@ class NDB_Caller extends PEAR
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
-        $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (PEAR::isError($timepoint)) {
-        	return PEAR::raiseError("NDB_Caller::loadInstrument, Timepoint Error: ".$timepoint->getMessage());
+        if($_REQUEST['sessionID']) {
+            $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
+            if (PEAR::isError($timepoint)) {
+                return PEAR::raiseError("NDB_Caller::loadInstrument, Timepoint Error: ".$timepoint->getMessage());
+            }
         }
 
         // make an instance of the instrument's object
@@ -238,7 +241,9 @@ class NDB_Caller extends PEAR
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress' || !$user->hasPermission('data_entry') || $user->getData("CenterID") != $timepoint->getData("CenterID")) {
-            $instrument->freeze();
+            if($instrument->preview !== true ) {
+                $instrument->freeze();
+            }
         }
 
         $html = $instrument->display();

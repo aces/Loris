@@ -31,7 +31,18 @@ var Instrument = {
         if(!valid) {
             return;
         }
+        var content = this.render();
 
+        fs = saveAs(content.getBlob("text/plain;charset=utf-8"), name + ".linst");
+        fs.onwriteend = function() {
+            alert("Saved file");
+        }
+        fs.onwritestart = function() {
+            alert("Saving " + name + ".linst");
+        }
+    },
+    render: function() {
+        var content = new BlobBuilder();
         //name = prompt("Enter filename of instrument")
         var name = document.getElementById("filename").value || "instrument";
         if(!name) {
@@ -53,8 +64,9 @@ var Instrument = {
         }
 
         table = document.getElementById("workspace");
-        for(var i=1; i < table.rows.length; i++) {
-            row = table.rows[i];
+        var rows = table.rows;
+        for(var i=1; i < rows.length; i++) {
+            row = rows[i];
             if(row.children.length < 3) {
                 continue;
             }
@@ -117,9 +129,9 @@ var Instrument = {
                 content.append('{@}');
                 content.append("NULL=>''");
                 options = selectOptions.children;
-                for(i = 0; i < options.length; i++) {
-                    option = options[i].innerText
-                    enum_option = Enumize(options[i].innerText);
+                for(var j = 0; j < options.length; j++) {
+                    option = options[j].innerText
+                    enum_option = Enumize(options[j].innerText);
                     content.append("{-}'" + enum_option + "'=>'" + option + "'");
                     
                 }
@@ -132,15 +144,7 @@ var Instrument = {
                     "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n");
             }
         }
-        //alert(name + ".linst: " + content.getBlob());
-        fs = saveAs(content.getBlob("text/plain;charset=utf-8"), name + ".linst");
-        fs.onwriteend = function() {
-            alert("Saved file");
-        }
-        fs.onwritestart = function() {
-            alert("Saving " + name + ".linst");
-        }
-
+        return content;
    },
    load: function () {
         var ParseSelectOptions = function (opt, type) {

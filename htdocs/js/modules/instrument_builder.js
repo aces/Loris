@@ -49,6 +49,18 @@ $(document).ready(function() {
             }
         }
     });
+    $("#preview").click(function() {
+        var content = Instrument.render();
+        var reader = new FileReader();
+        var that = this;
+        reader.onload = function() {
+            document.getElementById("instrumentdata").value = this.result;
+            document.getElementById("preview").form.submit();
+        }
+        reader.readAsText(content.getBlob());
+        return false;
+
+    });
 });
 
 

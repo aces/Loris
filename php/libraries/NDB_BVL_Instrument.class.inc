@@ -133,9 +133,16 @@ class NDB_BVL_Instrument extends PEAR
         if(!file_exists($base."project/instruments/$class.class.inc") && $guarantee_exists==false) {
             return;
         }
-        if(file_exists($base."project/instruments/$instrument.linst")) {
+        if(file_exists($base."project/instruments/$instrument.linst") || $instrument=='instrument_preview') {
             //print "Using Loris Instrument Format\n";
-            $obj = new NDB_BVL_Instrument();
+            if($instrument == 'instrument_preview') {
+                require_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
+                $obj = new NDB_BVL_Instrument_instrument_preview();
+                $obj->preview = true;
+            } else {
+                $obj = new NDB_BVL_Instrument();
+            }
+            //$obj->form = new HTML_Quickform('test_form');
             $obj->commentID = $commentID;
             $obj->page= $page;
             $obj->loadInstrumentFile($base . "project/instruments/$instrument.linst");
@@ -305,21 +312,24 @@ class NDB_BVL_Instrument extends PEAR
         
  
         // get saved data to pre-populate form
+
         $db =& Database::singleton();
-        $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
-        if($this->isError($defaults)) {
-            return $this->raiseError('Could not get default values for form');
+        if($this->preview !== true) {
+            $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
+            if($this->isError($defaults)) {
+                return $this->raiseError('Could not get default values for form');
+            }
+            // set the defaults (call private method _setDefaultsArray
+            // which could be overridden if necessary)
+            $defaults = $this->_setDefaultsArray($defaults[0]);
+
+            // merge in the localDefaults property so that simple
+            // additions to the defaults array no longer requires
+            // overriding the _setDefaultsArray method
+            $defaults = array_merge($defaults, $this->localDefaults);
+        } else {
+            $defaults = $this->localDefaults;
         }
-        // set the defaults (call private method _setDefaultsArray
-        // which could be overridden if necessary)
-        $defaults = $this->_setDefaultsArray($defaults[0]);
-        
-        // merge in the localDefaults property so that simple
-        // additions to the defaults array no longer requires
-        // overriding the _setDefaultsArray method
-        $defaults = array_merge($defaults, $this->localDefaults);
-        
-        // actually set the quickform object defaults
         $this->form->setDefaults($defaults);
 
         
@@ -1283,8 +1293,8 @@ class NDB_BVL_Instrument extends PEAR
         return;
     }
 
-    function loadInstrumentFile($filename) {
-        if(file_exists($filename)) {
+    function loadInstrumentFile($filename, $base64 = false) {
+        if(file_exists($filename) || $base64 === true) {
             $db = Database::singleton();
             $this->dateTimeFields = array("Date_taken");
             $this->form = new HTML_Quickform('test_form');
@@ -1304,7 +1314,6 @@ class NDB_BVL_Instrument extends PEAR
             }
 
             $parsingPage = 'top';
-
 
             while(($line = fgets($fp, 4096)) !== false) {
                 $pieces = split("{@}", $line);

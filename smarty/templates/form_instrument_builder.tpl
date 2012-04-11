@@ -78,6 +78,10 @@
             <th>Options</th>
         </tr>
         </table>
+        <form target="_blank" method="post" action="main.php?test_name=instrument_preview" id="previewform">
+            <input type="hidden" name="instrumentdata" id="instrumentdata">
+            <input type="button" id="preview" value="Preview">
+        </form>
     </div>
     <h2>Save Instrument</h2>
     <div>
