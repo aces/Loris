@@ -6,13 +6,24 @@ var Rules = {
         var row;
         var name = document.getElementById("filename").value || "instrument";
         var fs;
+        var operator;
+        var value;
 
         for(var i=1; i < rules.rows.length; i++) {
             row = rules.rows[i]
             Rule = new Array();
             Rule.push(row.firstChild.innerText); // Question
             Rule.push(row.firstChild.nextSibling.nextSibling.nextSibling.innerText)
-            Rule.push(row.firstChild.nextSibling.innerText + "{@}=={@}" + row.firstChild.nextSibling.nextSibling.innerText)
+
+            value = row.firstChild.nextSibling.nextSibling.innerText;
+            operator = "{@}=={@}";
+
+            // Check if it's a regex
+            if(value.substring(0, 3) === '=~ ') {
+                value = value.substring(3);
+                operator = '{@}=~{@}';
+            }
+            Rule.push(row.firstChild.nextSibling.innerText + operator + value);
             content.append(Rule.join("{-}"))
             content.append("\n");
         }
@@ -31,15 +42,20 @@ var Rules = {
         r_values.innerText = document.getElementById("rule_values").value
         r_message.innerText = document.getElementById("rule_message").value
 
-        chosen = document.getElementById("rule_values");
-        var selected = new Array()
-        for(var i=0; i < chosen.length; i++) {
-            if(chosen[i].selected) {
-                selected.push(Enumize(chosen[i].value))
+        var r_regex = document.getElementById("rule_regex");
+        if(r_regex.value != '') {
+            r_values.innerText = "=~ " + r_regex.value
+        } else {
+            chosen = document.getElementById("rule_values");
+            var selected = new Array()
+            for(var i=0; i < chosen.length; i++) {
+                if(chosen[i].selected) {
+                    selected.push(Enumize(chosen[i].value))
+                }
             }
-        }
 
-        r_values.innerText = selected.join("|")
+            r_values.innerText = selected.join("|")
+        }
         row.appendChild(r_name);
         row.appendChild(r_dependency);
         row.appendChild(r_values);

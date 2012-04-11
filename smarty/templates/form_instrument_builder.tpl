@@ -100,9 +100,14 @@
             <dd><select id="rule_q"></select></dd>
             <dt>Required if</dt>
             <dd><select id="rule_depends"></select></dd>
-            <dt>Equals any of</dt>
-            <dd><select id="rule_values" multiple></select></dd>
-            <dt>Error message</dt>
+            <dl>
+                <dt>EITHER Equals any of</dt>
+                <dd><select id="rule_values" multiple></select></dd>
+                <dt>OR Matches regex</dt>
+                <dd><input type="text" id="rule_regex" /></select></dd>
+            </dl>
+
+            <dt><br />Error message</dt>
             <dd><input type="text" value="Required" id="rule_message" /></dd>
         </dl>
         <input type="button" onclick="Rules.addNew()" value="Add Rule" />
@@ -110,7 +115,7 @@
             <tr>
                 <th>Question</th>
                 <th>Required if</th>
-                <th>Equals</th>
+                <th>Matches</th>
                 <th>Message</th>
             </tr>
         </table>
