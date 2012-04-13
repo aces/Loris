@@ -107,9 +107,9 @@ var name = $( "#name" ),
                         autoOpen: false,
                         height: 500,
                         width: 400,
-                      //  modal: true,//,
-                //      buttons: {
-                //              "Upload": function() {
+                        modal: true,//,
+          //            buttons: {
+            //                  "Upload": function() {
                         //              var bValid = true;
                         //              allFields.removeClass( "ui-state-error" );
                         //              bValid = bValid && checkLength( name, "username", 3, 16 );
@@ -207,17 +207,49 @@ var name = $( "#name" ),
                         height: 300,
                         width: 400,
                         modal: true,
+			cache: false,
                         close: function() {
                                 allFields.val( "" ).removeClass( "ui-state-error" );
                         },
-			
+			buttons:{
+                              "Cancel": function() { 
+				$(this).dialog("close");					
+				},
+				"Edit": function() {
+    var data = {
+                  idEdit:id,
+                  categoryEdit:$(categoryEdit).val(),
+                  siteEdit:$(siteEdit).val(),
+                  instrumentEdit:$(nameEdit).val(),
+                  pscidEdit:$(pscidEdit).val(),
+                  visitEdit:$(visitEdit).val(),
+                  commentsEdit:$(commentsEdit).val(),
+                  versionEdit:$(versionEdit).val(),
+                  action:$(actionEdit).val(),
+                  submit: 'yeah!!!!'
+                };
+
+                  $.ajax({
+                        type: "POST",
+                        url: "documentUpload.php",
+                        data: data,
+ 			success: function(){    
+				alert("File successfully edited!");
+                        	location.reload(true);      
+                    	}
+                        });
+                $( ".dialog-form-edit" ).dialog( "close" );
+
+				}	
+		}
+
         });
                 $("#cancelEditButton").click(function() {
                                 $( ".dialog-form-edit"  ).dialog( "close" );
                 });
 
 //document.getElementById("categoryEdit").selectedIndex="paper";//setAttribute('value', "paper");
-                $("#editForm").submit(function() {
+            /*    $("#editForm").submit(function() {
                   var data = {
 		  idEdit:id,
                   categoryEdit:$(categoryEdit).val(),
@@ -239,7 +271,7 @@ var name = $( "#name" ),
                 $( ".dialog-form-edit" ).dialog( "close" );
              //   location.reload(true);
             //    return false;
-                });
+                });*/
         });
 
                 $( ".theeditlink" )
