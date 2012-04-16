@@ -50,7 +50,7 @@ function initialize($minc_file){
 
 	//minc 1.0
 	if (!((count($order) == 4) || (count($order) == 3))){
-		$order = split(",",exec("mincinfo -dimnames $minc_file"));
+		$order = split(" ",exec("mincinfo -dimnames $minc_file"));
 	}
 	
 	//for 4D (BOLD or DTI)
