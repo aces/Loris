@@ -118,8 +118,6 @@ return true;
 </tr>
 </table>
 
-
-
 {* show the files *}
 <table border="0" cellspacing="0" cellpadding="0" width="80%">
     {section loop=$files name=fIdx}
@@ -169,16 +167,28 @@ return true;
             </tr>
             
 {* IMG *}
-            <tr><td colspan="2">
-            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">
-            <img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
-            </a>
-            </td></tr>
-            <tr><th>Voxel size</th>
-                    <td>{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
-                    {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
-                    </td>
+
+
+            <tr>
+            	<td colspan="2">
+            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', '2D Minc Viewer', 'location = 0,width = 1300, height = 600')">
+               	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
+            	</a>
+            	</td>
             </tr>
+            <tr>
+            	<th>Voxel size</th>
+                <td>{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
+                    {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
+                </td>
+            </tr>
+	   		<tr>
+            {if $files[fIdx].fileID}
+                        
+            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">Click here to view this acquisition in the JIV viewer</a>
+       	  </td>
+			{/if}
+	    </tr>
             </table>
         </td>
 
