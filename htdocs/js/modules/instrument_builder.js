@@ -106,7 +106,13 @@ function addQuestion() {
     } else if(selected == "scored" || selected == "header" || selected == "label" || selected == "page") {
         q = addStaticQuestion(selected, question);
     } else if (selected == "date") {
-        q = addDateQuestion(question)
+        min = parseInt(document.getElementById('datemin').value, 10);
+        max = parseInt(document.getElementById('datemax').value, 10);
+        q = addDateQuestion(question, min, max)
+    } else if (selected == 'numeric') {
+        min = parseInt(document.getElementById('numericmin').value, 10);
+        max = document.getElementById('numericmax').value;
+        q = addNumericQuestion(question, min, max);
     } else {
         q = [];
     }
@@ -149,6 +155,24 @@ function addQuestion() {
     Rules.rebuildMenu("rule_depends", "workspace", { dropdownOnly: true });
 }
 
+function addNumericQuestion(question, min, max) {
+    var options = document.createElement('select'),
+        option;
+
+    if(min === undefined || min === '') {
+        min = 0;
+    };
+    if(max === undefined || max === '') {
+        max = 20;
+    }
+    for(i = min; i <= max; i++) {
+        option = document.createElement("option");
+        option.textContent = i;
+        options.appendChild(option);
+    }
+
+    return [question, options];
+}
 function addDropdownQuestion(question, type) {
     if(!type) {
         type = '';
@@ -187,7 +211,7 @@ function addStaticQuestion(type) {
     return [question];
 }
 
-function addDateQuestion(question) {
+function addDateQuestion(question, minyear, maxyear) {
     var days = document.createElement('select');
     var months = document.createElement('select');
     var years = document.createElement('select');
@@ -203,7 +227,13 @@ function addDateQuestion(question) {
         month_el.innerHTML = months_ar[mo];
         months.appendChild(month_el);
     }
-    for(var year = 2010; year < 2020; year++) {
+    if(minyear === undefined || minyear === '') {
+        minyear = 2000;
+    }
+    if(maxyear === undefined || maxyear === '') {
+        maxyear = 2020;
+    }
+    for(var year = minyear; year <=maxyear; year++) {
         year_el = document.createElement("option");
         year_el.innerHTML = year;
         years.appendChild(year_el);

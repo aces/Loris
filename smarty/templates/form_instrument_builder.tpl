@@ -36,6 +36,7 @@
             <button id="dropdown" class="option">Dropdown</button>
             <button id="multiselect" class="option">Multiselect</button>
             <button id="date" class="option">Date</button>
+            <button id="numeric" class="option">Numeric</button>
             </dd>
             <dt>Formatting</dt>
             <dd>
@@ -66,6 +67,22 @@
                 Preview:
                 <select id="multiselectOptions" multiple>
                 </select>
+            </div>
+            <div id="dateoptions" class="options">
+                Start year: <input type="number" id="datemin" min="1900" max="2100">
+                            <!--select id="startyear">
+                                <option>Project default</option>
+                                <option>2000</option>
+                                <option>2001</option>
+                                <option>2002</option>
+                                <option>2003</option>
+                            </select-->
+
+                End year: <input type="number" id="datemax" min="1900" max="2100">
+            </div>
+            <div id="numericoptions" class="options">
+                Min: <input id="numericmin" type="number">
+                Max: <input id="numericmax" type="number">
             </div>
         </div>
 
