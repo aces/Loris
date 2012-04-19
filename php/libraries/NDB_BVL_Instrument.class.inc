@@ -1175,8 +1175,11 @@ class NDB_BVL_Instrument extends PEAR
     * @param $name   Name prepended to the HTMLQuickform element
     * @param $label Element label
     */
-    function addDateElement($name, $label){
-        $group [] = $this->form->createElement("date", $name . "_date", null, $this->dateOptions);
+    function addDateElement($name, $label, $options = null){
+        if($options === null) {
+            $options = $this->dateOptions;
+        }
+        $group [] = $this->form->createElement("date", $name . "_date", null, $options);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
         $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
@@ -1206,13 +1209,23 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $field    The database field in which the response will be stored
     * @param    string    $label    The question text to display
     */
-    function addNumericElement($field, $label) {
+    function addNumericElement($field, $label, $options = null) {
         $group [] = $this->form->createElement("text", $field, $label);
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+        $status_rule = $field . '_status{@}=={@}';
+        if(is_array($options)) {
+            if($options['min']) {
+                $this->XINRegisterRule($field, array($field . '{@}<{@}' . $options['min']), "Must be greater than $options[min]", $field . '_group');
+            }
+            if($options['max']) {
+                $this->XINRegisterRule($field, array($field . '{@}>{@}' . $options['max']), "Must be less than $options[max]", $field . '_group');
+            }
+
+        }
     }
 
     /**
@@ -1420,7 +1433,25 @@ class NDB_BVL_Instrument extends PEAR
                             $pieces[1] = substr($pieces[1], 0, strpos($pieces[1], "_date"));
                         }
                         if($addElements) {
-                            $this->addDateElement($pieces[1], $pieces[2]);
+                            if($pieces[3] == 1900 && $pieces[4] == 2100) {
+                                $dateOptions = null;
+                            } else {
+                                $dateOptions = array(
+                                     'language' => 'en',
+                                     'format'   => 'YMd',
+                                     'minYear'  => $pieces[3],
+                                     'maxYear'  => $pieces[4],
+                                     'addEmptyOption' => true,
+                                     'emptyOptionValue' => null
+                                );
+                            }
+
+                            $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
+                        }
+                        break;
+                    case 'numeric':
+                        if($addElements) {
+                            $this->addNumericElement($pieces[1], $pieces[2]);
                         }
                         break;
 
