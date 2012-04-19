@@ -786,6 +786,7 @@ class NDB_BVL_Instrument extends PEAR
     
     function XINValidate($elements){
         $this->XINDebug=false;  //Turn this on to see rules debuggin output
+
         $errors=array();
         foreach($elements AS $elname=>$elvalue) {
             //If the element is a group (and thus elvalue is an array) trigger the Null Value default rule if ANY of the values in the group are empty.
@@ -797,14 +798,54 @@ class NDB_BVL_Instrument extends PEAR
                     }
                 }
             }
+
+            // Run any rules that are dependent on the value of the current question, ie if XINRegister was called as
+            // $this->XINRegisterRule("q1", "q1{@}<={@}3", "Must be less than or equal to 3")
+            // These differ from 'required' rules in that they're run even if the value isn't empty
+            // Currently, this only supports simple, one value comparisons (though XINRegister can be called multiple
+            // times and each needs to be enforced independently), because the logic in XINRunElementRules is confusing
+            // and modifying it could potentially break existing XINRules.
+            // DINRunElementRules only runs a single rule, and returns false if it's violated. It's much simpler than 
+            // XINRules but should be expanded later to support more complex logic.
+            // - Dave
+            if(!empty($this->XINRules[$elname])) {
+                $registered_rules = $this->XINRules[$elname];
+                if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
+                foreach($registered_rules as $registered) {
+
+                    $rules = $registered['rules'];
+
+                    foreach($rules as $rule) {
+                    //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
+                        if(stristr(substr($rule, strpos($rule,"|")),"{@}")){
+                            $rules_array=explode("|",$rule);
+                        } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
+                            $rules_array[]=$rule;
+                        }
+                        foreach($rules_array as $rule) {
+                            $rule_array = explode("{@}", $rule);
+                            if($rule_array[0] == $elname) {
+                                $result=$this->DINRunElementRules($elname, $elements, $registered);
+                                if($result == false){
+                                    $el=$registered['group']!="" ? $registered['group'] : $elname;
+                                    $errors[$el]=$registered['message'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             
             //If the answer is empty (or its a group and one of answers in the group is empty) then run the rules
             if($elvalue=="" || $flag==false){
                 if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
                 if(!empty($this->XINRules[$elname])){
-                    $result=$this->XINRunElementRules($elname, $elements, $this->XINRules[$elname]);
-                    if(is_array($result)){
-                        $errors+=$result;
+                    $registered_rules = $this->XINRules[$elname];
+                    foreach($registered_rules as $registered_rule) {
+                        $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
+                        if(is_array($result)) {
+                            $errors+=$result;
+                        }
                     }
                 } else if(substr($elname,-7)!="_status" && !in_array($elname,array("page","subtest"))){
                     $errors[$elname]="Required.";
@@ -820,6 +861,21 @@ class NDB_BVL_Instrument extends PEAR
         return true;
     }
     
+    function DINRunElementRules($elname, $elements, $registered) {
+        foreach($registered['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
+            $split = explode('{@}', $rule);
+            $userval = $elements[$elname];
+            $operator = $split[1];
+            $comparevalue = $split[2];
+            $compareFunction = create_function('$a, $b', "return \$a $operator \$b;"); //(\$a $operator \$b);");
+
+            if(!($compareFunction($comparevalue, $userval)) ) {
+                return false;
+            }
+        }
+        // Nothing that was compared failed
+        return true;
+    }
     // }}}
     // {{{ XINRegisterRule()
 
@@ -837,12 +893,12 @@ class NDB_BVL_Instrument extends PEAR
         } else {
             $rules_array=$rules;
         }
-        $this->XINRules[$elname]['message']=$message;
-        $this->XINRules[$elname]['group']=$group;
+        $rule = array ('message' => $message, 'group' => $group, 'rules' => array());
 
-        foreach($rules_array AS $rule){
-            $this->XINRules[$elname]['rules'][]=$rule;
+        foreach($rules_array AS $rule_cmd){
+            $rule['rules'][]=$rule_cmd;
         }
+        $this->XINRules[$elname][] = $rule;
         return true;
     }
 
