@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $.getScript("js/modules/instrument_builder.instrument.js");
     $.getScript("js/modules/instrument_builder.rules.js");
+    $(".options").hide();
     $(".option").click(function() {
         $(".options").hide();
         $(".option").removeClass("selected");
