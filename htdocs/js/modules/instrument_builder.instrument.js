@@ -95,6 +95,16 @@ var Instrument = {
                 case 'date':
                     content.append('date'); 
                     name = name + "_date";
+                    // questionCell.lastChild is the year's select box.
+                    // the first option in that is the start year, the last one is the end year.
+                    min = questionCell.lastChild.firstChild.textContent;
+                    max = questionCell.lastChild.lastChild.textContent;
+                    addStatus = true;
+                    break;
+                case 'numeric':
+                    content.append('numeric');
+                    min = questionCell.lastChild.firstChild.textContent;
+                    max = questionCell.lastChild.lastChild.textContent;
                     addStatus = true;
                     break;
                 case 'dropdown':
@@ -121,8 +131,11 @@ var Instrument = {
             content.append(name);
             content.append("{@}");
             content.append(qVal);
-            if(type == 'line') {
+            if(type === 'line') {
                 content.append('<br />');
+            }
+            if(type === 'date' || type === 'numeric') {
+                content.append("{@}" + min + "{@}" + max);
             }
 
             if(type == 'dropdown' || type == 'multiselect') {
@@ -130,8 +143,8 @@ var Instrument = {
                 content.append("NULL=>''");
                 options = selectOptions.children;
                 for(var j = 0; j < options.length; j++) {
-                    option = options[j].innerText
-                    enum_option = Enumize(options[j].innerText);
+                    option = options[j].textContent
+                    enum_option = Enumize(options[j].textContent);
                     content.append("{-}'" + enum_option + "'=>'" + option + "'");
                     
                 }

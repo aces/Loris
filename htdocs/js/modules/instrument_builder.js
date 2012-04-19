@@ -35,8 +35,8 @@ $(document).ready(function() {
         table = document.getElementById("workspace")
         for(i = 1; i < table.rows.length; i++) {
             row = table.rows[i]
-            questionName = row.firstChild.innerText
-            questionType = row.firstChild.nextSibling.innerText
+            questionName = row.firstChild.textContent
+            questionType = row.firstChild.nextSibling.textContent
             questionDisplayCell = row.firstChild.nextSibling.nextSibling
 
             if(row.firstChild.innerHTML == this.value) {
@@ -170,7 +170,6 @@ function addNumericQuestion(question, min, max) {
         option.textContent = i;
         options.appendChild(option);
     }
-
     return [question, options];
 }
 function addDropdownQuestion(question, type) {
