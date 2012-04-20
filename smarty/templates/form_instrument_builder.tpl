@@ -25,23 +25,23 @@
         <dl style="margin-left: 25px">
             <dt>Information</dt>
             <dd>
-            <button id="header" class="option">Header</button>
-            <button id="label" class="option">Label</button>
-            <button id="scored" class="option">Scored Column</button>
+            <button id="header" class="option" title="Centered, header information">Header</button>
+            <button id="label" class="option" title="Unemphasized display text">Label</button>
+            <button id="scored" class="option" title="Column which stores calculated data">Scored Field</button>
             </dd>
             <dt>Data entry</dt>
             <dd>
-            <button id="textbox" class="option">Textbox</button>
-            <button id="textarea" class="option">Textarea</button>
-            <button id="dropdown" class="option">Dropdown</button>
-            <button id="multiselect" class="option">Multiselect</button>
-            <button id="date" class="option">Date</button>
-            <button id="numeric" class="option">Numeric</button>
+            <button id="textbox" class="option" title="Text box for user data entry">Textbox</button>
+            <button id="textarea" class="option" title="Larger text area for data entry">Textarea</button>
+            <button id="dropdown" class="option" title="Dropdown menu for users to select data from">Dropdown</button>
+            <button id="multiselect" class="option" title="Data entry where multiple options may be selected">Multiselect</button>
+            <button id="date" class="option" title="User data entry of a date">Date</button>
+            <button id="numeric" class="option" title="User data entry of a number">Numeric</button>
             </dd>
             <dt>Formatting</dt>
             <dd>
-            <button id="line" class="option">Blank Line</button>
-            <button id="page" class="option">Page Break</button>
+            <button id="line" class="option" title="Empty line">Blank Line</button>
+            <button id="page" class="option" title="Start a new page">Page Break</button>
             </dd>
         </dl>
         <div>
@@ -50,7 +50,7 @@
         Question Name: <input type="text" id="questionName" />
             </div>
             <div>
-        Question Text: <input type="text" id="questionText" />
+        Question Text: <input type="text" id="questionText" size="75"/>
             </div>
             <div id="dropdownoptions" class="options">
                 Dropdown Option: <input type="text" id="newSelectOption">
