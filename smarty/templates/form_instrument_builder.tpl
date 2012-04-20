@@ -97,6 +97,7 @@
         </table>
         <form target="_blank" method="post" action="main.php?test_name=instrument_preview" id="previewform">
             <input type="hidden" name="instrumentdata" id="instrumentdata">
+            <input type="hidden" name="instrumentrules" id="instrumentrules">
             <input type="button" id="preview" value="Preview">
         </form>
     </div>

@@ -51,16 +51,31 @@ $(document).ready(function() {
         }
     });
     $("#preview").click(function() {
-        var content = Instrument.render();
-        var reader = new FileReader();
+        var instrument = Instrument.render();
+        var rules = Rules.render();
+        var instrument_reader = new FileReader();
+        var rules_reader = new FileReader();
+        var instloaded = false;
+        var rulesloaded = false;
         var that = this;
-        reader.onload = function() {
+        instrument_reader.onload = function() {
+            instloaded = true;
             document.getElementById("instrumentdata").value = this.result;
-            document.getElementById("preview").form.submit();
+            if(instloaded && rulesloaded) {
+                document.getElementById("preview").form.submit();
+            }
         }
-        reader.readAsText(content.getBlob());
-        return false;
+        instrument_reader.readAsText(instrument.getBlob());
 
+        rules_reader.onload = function() {
+            rulesloaded = true;
+            document.getElementById("instrumentrules").value = this.result;
+            if(instloaded && rulesloaded) {
+                document.getElementById("preview").form.submit();
+            }
+        }
+        rules_reader.readAsText(rules.getBlob());
+        return false;
     });
 });
 

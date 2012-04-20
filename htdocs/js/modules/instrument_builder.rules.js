@@ -1,15 +1,13 @@
 var Rules = {
-    save: function () {
+    render: function() {
         var content = new BlobBuilder();
         var rules = document.getElementById("rules_workspace")
         var Rule;
         var row;
-        var name = document.getElementById("filename").value || "instrument";
         var fs;
         var operator;
         var value;
-
-        for(var i=1; i < rules.rows.length; i++) {
+         for(var i=1; i < rules.rows.length; i++) {
             row = rules.rows[i]
             Rule = new Array();
             Rule.push(row.firstChild.innerText); // Question
@@ -27,6 +25,11 @@ var Rules = {
             content.append(Rule.join("{-}"))
             content.append("\n");
         }
+         return content;
+    },
+    save: function () {
+        var name = document.getElementById("filename").value || "instrument";
+
         fs = saveAs(content.getBlob("text/plain;charset=utf-8"), name + ".rules");
     },
 

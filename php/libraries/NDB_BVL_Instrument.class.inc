@@ -1504,8 +1504,8 @@ class NDB_BVL_Instrument extends PEAR
         }
 
     }
-    function loadInstrumentRules($filename) {
-        if(file_exists($filename)) {
+    function loadInstrumentRules($filename, $base64 = false) {
+        if(file_exists($filename) || $base64 === true) {
             $fp = fopen($filename, "r");
             while(($line = fgets($fp, 4096)) !== false) {
                 // Rules Uses {-} as delimiter, unlike linst files, because {@} is part of the rules themselves
