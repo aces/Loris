@@ -18,6 +18,10 @@ SITE.fileInputs = function() {
 
 $(document).ready(function() {
 
+
+$('.delete-success').hide();
+$('.edit-success').hide();
+
 //For the Delete dialog
 var id;
 $('.sure').dialog({ autoOpen: false })
@@ -38,8 +42,9 @@ $('.thedeletelink').click(function(){
                 type: "POST",
                 data: {id:id}, 
                 success: function(){
-                        alert("Delete successful");
                         $("#"+id).parent().parent().remove();
+			$('.delete-success').show();
+			setTimeout( "$('.delete-success').hide();", 5000 );
                 },
                 error:function(jqXHR, textStatus, errorThrown){
                         console.log("Error: " + textStatus + " " +errorThrown);
@@ -108,7 +113,7 @@ var name = $( "#name" ),
                         height: 500,
                         width: 400,
                         modal: true,//,
-          //            buttons: {
+        //                buttons: {
             //                  "Upload": function() {
                         //              var bValid = true;
                         //              allFields.removeClass( "ui-state-error" );
@@ -124,21 +129,18 @@ var name = $( "#name" ),
                 /*                              $( "#users tbody" ).append( "<tr>" +
                                                         "<td>" + category.val() + "</td>" + 
                                                         "<td>" + site.val() + "</td>" + 
-                                                "</tr>" ); */
+                                                "</tr>" ); 
                                                 //var 'bin/doLogin.php'
 
-//                                              $.get("documentUpload.php", {categoryP:category.val(), versionP:version.val(), submit:'yeahhh'}); // siteP:site, pscidP:pscid, visitP:visit, commentsP:comments, /*file:file,*/ version:version});
-                        //                      return false;
-/*                                              $( this ).dialog( "close" );
-        //                                      return false;
-                                                location.reload(true);
-                
+                                              $.get("documentUpload.php", {categoryP:category.val(), versionP:version.val(), submit:'yeahhh'}); // siteP:site, pscidP:pscid, visitP:visit, commentsP:comments,  version:version});
+                                              return false;
 
                                         },
                                 "Cancel": function() {
                                         $( this ).dialog( "close" );
                                 }
-                        },*/
+                        },
+*/
                         close: function() {
                                 allFields.val( "" ).removeClass( "ui-state-error" );
                         }
@@ -149,30 +151,6 @@ var name = $( "#name" ),
                                 $( ".dialog-form"  ).dialog( "close" );
                 });
 
-//              $("#uploadButton").click(function() {
-             //   $("#uploadButton").click(function() {
-              /*  var data = {
-                  categoryP:$(category).val(),
-                //  instrumentP:$(instrument).val(),
-                  pscidP:$(pscid).val(),
-                  commentsP:$(comments).val(),
-                  versionP:$(version).val(),
-                  siteP:$(site).val(), 
-	          dataType: 'json',
-                  submit: 'yeah!'
-                };
-                console.log(data);
-                $.ajax({
-                    type: "POST",
-                    url: "documentUpload.php",
-                  data : data
-//                  categoryP:$(category).val(),
-      //            submit: 'yeah!', 
-        //        success: function () {
-        //              console.log("IT WORKS!");
-        //      }
-              });*/
-             //   $( ".dialog-form" ).dialog( "close" );
              //   location.reload(true);
             //  return false;
            //  });
@@ -234,8 +212,9 @@ var name = $( "#name" ),
                         url: "documentUpload.php",
                         data: data,
  			success: function(){    
-				alert("File successfully edited!");
                         	location.reload(true);      
+                        	$('.edit-success').show();
+                        	setTimeout( "$('.edit-success').hide();", 5000 );
                     	}
                         });
                 $( ".dialog-form-edit" ).dialog( "close" );
@@ -283,13 +262,43 @@ var name = $( "#name" ),
 
         });
 
+/*
+function isEmpty(element) {
+if (element.value.length == 0) {
+	element.focus();
+	alert("EMPTY");
+	return false;
+	}
+else
+	alert("NOT EMPTY");
+}
+
+
+//$(".uploadForm").submit(function() {
+$(".uploadButton").click(function() {
+
+alert("YELLO");
+//if (this.elements("category").value.length == 0) //"" || this.elements("ca†egory") == NULL)
+
+isEmpty(this.elements("category"));
+isEmpty(this.elements("site"));
+
+
+
+});
+*/
+
+
+
 function SelectElement(element, valueToSelect)
 {    
 //    var element = document.getElementById('categoryEdit');
     $("#" + element + "").val(valueToSelect);
 }
 
+
 $(document).ready(function() {
+
 
 SelectElement("categoryEdit", "paper");
 SelectElement("commentsEdit", "test");
@@ -297,6 +306,8 @@ SelectElement("versionEdit", "1.0");
 //			$("#categoryEdit").val("paper");
 //  document.getElementById("category").setAttribute('value', "paper");
 //document.getElementById("categoryEdit").selectedIndex="paper";//setAttribute('value', "paper");
+
+
 
     $(".categories").hide();
     function toggleGroup(group) {
@@ -323,4 +334,5 @@ SelectElement("versionEdit", "1.0");
     });
     
 });
+
 

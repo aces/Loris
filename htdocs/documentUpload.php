@@ -8,7 +8,6 @@
 // make local instances of objects
 
 
-
 //$db =& Database::singleton();
 
 $con = mysql_connect("localhost","root","abc123!");
@@ -23,6 +22,7 @@ $action = $_POST['action'];
 
 if ($action == 'upload')
 {
+
 $user = $_POST['user'];
 $category = $_POST['category'];
 $site = $_POST['site'];
@@ -32,9 +32,6 @@ $visit = $_POST['visit'];
 $comments = $_POST['comments'];
 $version = $_POST['version'];
 
-//echo "USER: " . $user;
-echo "category: " . $category; 
-
 
 $fileName = $_FILES["file"]["name"];
 $base_path = "document_repository";
@@ -43,7 +40,7 @@ $target_path = $base_path; //. basename($_FILES["file"]["name"]);
 if (!file_exists($base_path . $user))
 	mkdir("document_repository/" . $user, 0777);
 
-$target_path = $target_path . "/" . $user ."/{$_FILES["file"]["name"]}"; 
+$target_path = $target_path . "/" . $user ."/" . $fileName;  //{$_POST["fileselect"]["name"]}"; 
 
 /*
   if($dh = opendir($base_path)) {
@@ -75,7 +72,7 @@ else
   echo "Stored in: " . $_FILES["file"]["tmp_name"];
   }
 
-echo "target path " . $target_path . "\n";
+//echo "target path " . $target_path . "\n";
   if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path))
 {
       echo "The file " . basename($_FILES["file"]["name"]) . " has been uploaded";
@@ -85,9 +82,14 @@ else
 	echo "There was an error uploading the file";
 }
 chmod($target_path, 0777);
+//}
+//}
 //shell_exec("sudo chgrp lorisdev $target_path");
 mysql_query("INSERT INTO document_repository (File_category, For_site, comments, version, File_name, Data_dir, uploaded_by)
 VALUES ('$category', '$site', '$comments', '$version', '$fileName', '$target_path', '$user')");
+
+header("Location: http://132.216.67.69:7080/main.php?test_name=document_repository");
+
 //$newFile = array('File_category'=>$category, 'version'=>$version);
 //print_r($newFile);
 //$db->insert("document_repository", $newFile);
