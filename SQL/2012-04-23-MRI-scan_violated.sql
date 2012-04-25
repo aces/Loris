@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
 CREATE TABLE `mri_protocol_violated_scans` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6),
