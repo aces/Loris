@@ -1293,6 +1293,7 @@ CREATE TABLE `test_battery` (
   `Stage` varchar(255) default NULL,
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
+  `CenterID` int(11) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
