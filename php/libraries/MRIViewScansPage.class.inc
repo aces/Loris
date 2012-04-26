@@ -28,13 +28,21 @@ class MRIViewScansPage {
                 $updateSet = array('QCStatus'=>$curStatus, 'QCLastChangeTime'=>time());
 
                 // set first change time, if it's null only
-                $firstChangeTime = $this->DB->selectOne("SELECT QCFirstChangeTime FROM files WHERE FileID=$curFileID");
+                $firstChangeTime = $this->DB->selectOne("SELECT QCFirstChangeTime FROM files_qcstatus WHERE FileID=$curFileID");
                 if(empty($firstChangeTime)) $updateSet['QCFirstChangeTime'] = time();
 
-                $updateWhere['FileID'] = $curFileID;
-                $success = $this->DB->update('files', $updateSet, $updateWhere);
-                if(PEAR::isError($success)) {
-                    die("DB Error: ".$success->getMessage());
+                $QCExists = $this->DB->selectOne("SELECT 'x' FROM files_qcstatus WHERE FileID=$curFileID");
+                if(!empty($QCExists)) {
+                    $updateWhere['FileID'] = $curFileID;
+                    $success = $this->DB->update('files_qcstatus', $updateSet, $updateWhere);
+                    if(PEAR::isError($success)) {
+                        die("DB Error: ".$success->getMessage());
+                    }
+                } else {
+                    $file = new MRIFile($curFileID);
+                    $updateSet['SeriesUID'] = $file->getParameter('series_instance_uid');
+                    $updateSet['FileID'] = $curFileID;
+                    $this->DB->insert("files_qcstatus", $updateSet);
                 }
             }
         }
@@ -99,11 +107,12 @@ class MRIViewScansPage {
     }
 
     function GetSubjectData() {
-        // Cache the data, since it's called twice. Once in display,
-        // and once for the header
-        //if(isset($this->_subjectData)) {
-        //    return $this->_subjectData;
-        //}
+        // subjectData['Scanner'] may already be set, so if 
+        // $this->_subjectData is set, use that as the starting
+        // point
+        if(isset($this->_subjectData)) {
+            $subjectData = $this->_subjectData;
+        }
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
         if(PEAR::isError($timePoint)) {
             print $timePoint->getMessage()."<br>";
@@ -145,7 +154,7 @@ class MRIViewScansPage {
 
         // Cache the data
         $this->_subjectData = $subjectData;
-        return $subjectData;
+        return $this->_subjectData;
     }
 
     function _getOutputType() {
@@ -189,7 +198,7 @@ class MRIViewScansPage {
                 $scannerID = $file->getParameter('ScannerID');
                 if(!empty($scannerID)) {
                     $query = "SELECT CONCAT_WS(' ', Manufacturer, Model, Serial_number) FROM mri_scanner WHERE ID=$scannerID";
-                    $subjectData['scanner'] = $this->DB->selectOne($query);
+                    $this->_subjectData['scanner'] = $this->DB->selectOne($query);
                 }
             }
             $fileData[$fIdx]['fileID'] = $fileID['FileID'];
