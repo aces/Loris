@@ -1462,6 +1462,28 @@ INSERT INTO `users` VALUES (1,'SiteMin',NULL,'Admin account',NULL,NULL,NULL,NULL
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
+CREATE TABLE `mri_protocol_violated_scans` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandID` int(6),
+  `PSCID` varchar(255),
+  `Last_inserted` date,
+  `series_description` varchar(255) DEFAULT NULL,
+   minc_location varchar(255),
+   PatientName varchar(255) DEFAULT NULL,
+  `TR_range` varchar(255) DEFAULT NULL,
+  `TE_range` varchar(255) DEFAULT NULL,
+  `TI_range` varchar(255) DEFAULT NULL,
+  `slice_thickness_range` varchar(255) DEFAULT NULL,
+  `xspace_range` varchar(255) DEFAULT NULL,
+  `yspace_range` varchar(255) DEFAULT NULL,
+  `zspace_range` varchar(255) DEFAULT NULL,
+  `xstep_range` varchar(255) DEFAULT NULL,
+  `ystep_range` varchar(255) DEFAULT NULL,
+  `zstep_range` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`));
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
