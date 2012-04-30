@@ -38,7 +38,7 @@
 	$.ajax({
 		type: 'POST',
     		url: 'findObjFiles.php',
- 		//   dataType: 'json',
+ 	//	   dataType: 'json',
 		data: iddata,
     		async: false,
     		success: function(data) {
@@ -48,7 +48,6 @@
 
         //	alert('page content: ' + d);
 	var objFiles = d.split("\n");
-        //alert('page content: ' + objFiles);
 
 	for(i = 0; i < objFiles.length; i++){
 		if (objFiles[i] != "")

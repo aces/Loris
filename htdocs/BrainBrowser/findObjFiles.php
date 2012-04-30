@@ -32,7 +32,7 @@ $dccid = $_POST['dccidP'];
 //$dccid = '201198';
 //echo "DCCID 1: " . $dccid . "\n";
 
-$dir = 'mri/surfaces';
+$dir = '../mri/surfaces';
 function ListFiles($dir, $dccid) {
    if($dh = opendir($dir)) {
 

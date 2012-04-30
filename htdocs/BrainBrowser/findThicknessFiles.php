@@ -31,7 +31,7 @@ $dccid = $_POST['dccidP'];
 
 
 //$dir = '/data/preventAD/data/assembly';
-$dir = 'mri/thickness';
+$dir = '../mri/thickness';
 function ListFiles($dir) {
    if($dh = opendir($dir)) {
 
