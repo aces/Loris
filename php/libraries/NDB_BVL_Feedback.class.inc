@@ -272,7 +272,13 @@ Class NDB_BVL_Feedback
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= " AND CandID = '".$this->_feedbackObjectInfo['CandID']."'";
             $queryBy = " CandID";
-        } else {
+        } 
+        elseif (!empty($this->_feedbackObjectInfo['FieldName'])) {
+            $query .= " AND FieldName = '".$this->_feedbackObjectInfo['FieldName']."'";
+            $queryBy = " FieldName";
+        }
+        
+        else {
             return PEAR::raiseError("no CandID, SessionID, CommentID provided");
         }
         $query .= " GROUP BY $queryBy";
@@ -361,7 +367,7 @@ Class NDB_BVL_Feedback
         if (!empty($this->_feedbackObjectInfo['SessionID']) || !empty($this->_feedbackObjectInfo['CommentID']))  {
             $query .= ", s.VisitNo as Visit, s.SubprojectID, s.ID as SessionID";
         }
-        $query .= ", ft.FeedbackID, ft.Feedback_level as QC_class, ftp.Description as Type, ftp.Feedback_type as TypeID, ft.Status as QC_status, ft.Active as Active, ft.Public as Public, ft.UserID as User, ft.Date_taken as Date, DATE_FORMAT(ft.Testdate, '%Y-%m-%d') as Modified";
+        $query .= ", ft.FeedbackID, ft.Feedback_level as QC_class, ftp.Description as Type, ftp.Feedback_type as TypeID, ft.Status as QC_status, ft.Active as Active, ft.Public as Public,ft.FieldName, ft.UserID as User, ft.Date_taken as Date, DATE_FORMAT(ft.Testdate, '%Y-%m-%d') as Modified";
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query .= ", f.Test_name as Instrument, f.CommentID";
         }
@@ -434,7 +440,7 @@ Class NDB_BVL_Feedback
     * @throws PEAR::Error
     */
     
-    function createThread($level, $type, $comment, $public=null)
+    function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
         $db =& Database::singleton();
@@ -467,12 +473,23 @@ Class NDB_BVL_Feedback
         $active = 'Y';
         
         // create SET array for the INSERT into the feedback_bvl_thread table
+        
+        
         $setArray = array('FeedbackID'=>NULL, 'Feedback_type'=>$type, 'Public'=>$public, 'Status'=>$status, 'Active'=>$active, 'Date_taken'=>$today, 'UserID'=>$this->_username);
         if ($this->_feedbackLevel=='instrument')  {
+        	$commentid = $this->_feedbackObjectInfo['CommentID'];
+        	if ($db->selectOne("Select count(*) from feedback_bvl_thread bt where bt.FieldName = '$fieldname' and bt.CommentID = '$commentid' and bt.Status !='closed' >0")){
+        		return PEAR::raiseError("The fieldName already exist");
+        	}
+        	
             $setArray = array_merge($setArray, array("CommentID" => $this->_feedbackObjectInfo['CommentID']));
             $setArray = array_merge($setArray, array("SessionID" => $this->_feedbackCandidateProfileInfo['SessionID']));
             $setArray = array_merge($setArray, array("CandID" => $this->_feedbackCandidateProfileInfo['CandID']));
             $setArray = array_merge($setArray, array("Feedback_level" => "instrument"));
+            $setArray = array_merge($setArray, array("FieldName" => $fieldname));
+          
+            
+            
         } elseif ($this->_feedbackLevel=='visit')  {
             $setArray = array_merge($setArray, array("SessionID" => $this->_feedbackObjectInfo['SessionID']));
             $setArray = array_merge($setArray, array("CandID" => $this->_feedbackCandidateProfileInfo['CandID']));
@@ -506,18 +523,18 @@ Class NDB_BVL_Feedback
     */
     function createEntry($feedbackID, $comment)
     {
-        // new DB Object
-        $db =& Database::singleton();
-        if(PEAR::isError($db)) {
-            return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
-        }
-        
-        // create SET array for the INSERT
-        $setArray = array('FeedbackID'=>$feedbackID, 'Comment'=>$comment, 'UserID'=>$this->_username);
-        
-        $success = $db->insert('feedback_bvl_entry', $setArray);
-        
-        if (PEAR::isError($success)) {
+    	// new DB Object
+    	$db =& Database::singleton();
+    	if(PEAR::isError($db)) {
+    		return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
+    	}
+
+    	// create SET array for the INSERT
+    	$setArray = array('FeedbackID'=>$feedbackID, 'Comment'=>$comment, 'UserID'=>$this->_username);
+
+    	$success = $db->insert('feedback_bvl_entry', $setArray);
+
+    	if (PEAR::isError($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
@@ -533,7 +550,7 @@ Class NDB_BVL_Feedback
     * @param $public
     * @param $status - status of the thread (field feedback_bvl_thread.Status)
     */
-    function updateThread($feedbackID, $comment, $type='', $public='', $status='')
+    function updateThread($feedbackID, $comment, $type='', $public='', $status='',$fieldname ='')
     {
         // new DB Object
         $db =& Database::singleton();
@@ -566,6 +583,7 @@ Class NDB_BVL_Feedback
         if (!empty($status)) $setArray = array_merge($setArray, array("Status"=>$status));
         if (!empty($type))   $setArray = array_merge($setArray, array("Feedback_type"=>$type));
         if (!empty($public)) $setArray = array_merge($setArray, array("Public"=>$public));
+        if (!empty($fieldname)) $setArray = array_merge($setArray, array("FieldName"=>$fieldname));
         
         // needed to avoid php complaints
         $whereArray = array();       

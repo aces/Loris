@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xm	lns="http://www.w3.org/1999/xhtml">
 <head>
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
@@ -8,7 +8,6 @@
 <title>{$study_title}</title>
 </head>
 <body>
-
 <!-- start main table -->
 <table valign="top" width="100%" border="0" cellpadding="3" cellspacing="2">
 <tr>
@@ -18,6 +17,8 @@
 </tr>
 <tr>
 <td colspan="2">
+
+
 
 {if $error_message}
     <!-- table with error messages -->
@@ -33,6 +34,8 @@
     </table>
     <!-- end table -->
 {else}
+
+
     {if $candID!=""}
         <!-- table with candidate profile information -->
         <table border="0" valign="top" width="100%" >
@@ -69,37 +72,59 @@
     {if $candID!=""}
     <!-- create feedback form- shown only to authorized users-->
     <table border="0" valign="top" width="100%" class="std">
-    <tr>
-    <th colspan="4">Add new {$feedbackLevel} level feedback</TH>
-    </tr>
-    {if $form_error_message.new!=""}
-        <TH colspan="4">{$form_error_message.new}</TH>
-    {/if}
-    <form name="newThreadForm" method="post" action="{$formAction}">
-      <tr>
-      <th>Type</th>
-      <th>Comment</th>
-      <th>Action Required?</th>
-      <td align="center" rowspan="6"><input type="submit" name="add_new_thread_form_submit" value="Save Data" class="button"></td>
-        {section name="typeCounter" loop=$threadTypes}
-        {assign var=newTypeCounter value=$threadTypes[typeCounter].Type}
-        <tr>
-          <td align="center">
-          {$threadTypes[typeCounter].Label}
-          <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Type]" value="{$newTypeCounter}">
-          <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Level]" value="{$feedbackLevel}">
-          </td>
-          <td align="center"><input type="text" size="30" maxlength="255" name="newFormThreadData[{$newTypeCounter}][Comment]" value="{$new_thread_data[$newTypeCounter].CommentValue}"></td>
-          <td align="center">
-    {if $has_permission}
-          {html_options name="newFormThreadData[$newTypeCounter][Public]" values=$YNArray selected=$new_thread_data[$newTypeCounter].PublicValue options=$YNLabelArray}
-    {else}
-          <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Public]" value="N">
-    {/if}
-          </td>
-        </tr>
-        {/section}
-    </table>
+    	<tr>
+   		 <th colspan="4">Add new {$feedbackLevel} level feedback</TH>
+    	</tr>
+  		 {if $form_error_message.new!=""}
+   		     <TH class="error" bcolor="#FF0000" colspan="4" >{$form_error_message.new}</TH>
+    	 {/if}
+    	<form name="newThreadForm" method="post" action="{$formAction}">
+      		<tr>
+      			<th>Type</th>
+      			<th>Comment</th>
+      			 {if $commentID!=""}
+					<th>FieldNames</th>
+				{/if}
+      			<th>Action Required?</th>
+      			
+      			<!--save data--->
+      			<td align="center" rowspan="6"><input type="submit" name="add_new_thread_form_submit" value="Save Data" class="button">
+      			</td>
+        		{section name="typeCounter" loop=$threadTypes}
+       			{assign var=newTypeCounter value=$threadTypes[typeCounter].Type}
+	       			 <tr>
+	       			 
+	       			    <!--input type--->
+		          		<td align="center">
+			         		 {$threadTypes[typeCounter].Label}
+					          <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Type]" value="{$newTypeCounter}">
+					          <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Level]" value="{$feedbackLevel}">
+					    </td>
+					    <!--Comment text box-->
+					    <td align="center"><input type="text" size="30" maxlength="255" name="newFormThreadData[{$newTypeCounter}][Comment]" value="{$new_thread_data[$newTypeCounter].CommentValue}">
+					    </td>
+					    
+					    <!---field names--->
+			 			<!--{if $commentID!=""}-->
+					    <td align="center">
+					
+					     {html_options name="newFormThreadData[$newTypeCounter][FieldName]" selected=$new_thread_data[$newTypeCounter].FieldNameValue values=$FieldNames options=$FieldNames}
+		     	 	    </td>
+		     	 	   <!-- {/if}-->
+		     	 	    
+		     	 	    <!--Action required drop down--->
+					    <td align="center">
+					    {if $has_permission}
+					   		 {html_options name="newFormThreadData[$newTypeCounter][Public]" values=$YNArray selected=$new_thread_data[$newTypeCounter].PublicValue options=$YNLabelArray}
+		     	 	     {else}
+					         <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Public]" value="N">
+					     {/if}
+					   </td>
+		     	 	    
+					    
+	        		</tr>
+       		 {/section}
+    	</table>
     {/if}
     
     <!-- table with threads summary -->
@@ -137,31 +162,46 @@
     
     <!-- table with threads details - data -->   
     <table valign="top" width="100%" class="std">
+
     {section name=thread loop=$thread_list_data}
+
     {assign var=threadCount value=$smarty.section.thread.index}
+    
+        <th nowrap="nowrap">FieldName</th>    	
         <th nowrap="nowrap">FeedbackID</th>
         <th nowrap="nowrap">Type</th>
         <th nowrap="nowrap">QC Status</th>
         <th nowrap="nowrap">Date</th>
         <th nowrap="nowrap">Modified</th>
-        <th nowrap="nowrap">Active</th>
+        <!--th nowrap="nowrap">Active</th-->
+
         </tr>
-        <tr>
+        <tr id= "{$thread_list_data[thread].FeedbackID}">
+        <td align="center">{$thread_list_data[thread].FieldName}</td>
         <td align="center">{$thread_list_data[thread].FeedbackID}</td>
         <td align="center">{$thread_list_data[thread].Type}</td>
         <td align="center" bgcolor="{$thread_list_data[thread].QC_color}">{$thread_list_data[thread].QC_status}</td>
         <td align="center">{$thread_list_data[thread].Date}</td>
         <td align="center">{$thread_list_data[thread].Modified}</td>
-        <td align="center">{$thread_list_data[thread].Active}</td>
+        <!--td align="center">{$thread_list_data[thread].Active}</td-->
+        
         </tr>
+    
         {section name=entry loop=$thread_entry[thread]}
+        
             <tr>
-            <td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp;
-            [{$thread_entry[thread][entry].Date}] &nbsp;
-            <B>{$thread_entry[thread][entry].Comment}</B>
-            </td>
+           	 <!--td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp</td-->
+           	  <td>{$thread_entry[thread][entry].UserID} &nbsp</td>
+           	  
+            	<td>[{$thread_entry[thread][entry].Date}] &nbsp</td>
+            	
+            	<td>{$thread_entry[thread][entry].FieldName}</td>
+           		 <td><B>{$thread_entry[thread][entry].Comment}</B></td>
+          	  </td>
             </tr>
+          </div>
         {/section}
+        <td></td>
         <!-- error message row -->
         {if $thread_list_data[thread].error_message != ""}
             <tr>
@@ -177,26 +217,39 @@
                         {if $existing_thread_data[thread].doNotShowStatusField}
                           <th>QC Status</th>
                         {/if}
-                    <th>Action Required?</th>
+                        <{if $existing_thread_data[thread].Status <> 'closed'}>
+                    <th id="action">Action Required?</th>
+                    <{/if}>
                 {/if}
                 <td align="center" rowspan="2"><input type="submit" name="existing_thread_form_submit" value="Save Data" class="button"></td>
                 </tr>
                 <tr>
                 <td align="center"><input TYPE=TEXT SIZE=30 NAME="formThreadData[{$threadCount}][Comment]" VALUE="{$existing_thread_data[thread].CommentValue}"></td>
+
                 <input type="hidden" name="formThreadData[{$threadCount}][FeedbackID]" VALUE="{$thread_list_data[thread].FeedbackID}">
                 
                 {if $has_permission}
                     <td align="center">
+                    
+                    <!--change type-->
                         {html_options name="formThreadData[$threadCount][Type]" values=$threadTypeIDArray selected=$existing_thread_data[thread].Type output=$threadTypeLabelArray}
                     </td>
                     {if $existing_thread_data[thread].doNotShowStatusField}
-                      <td align="center">
+                     
+                     <!--QC status-->
+                      <td align="center" id="qc_status">
                       {html_options name="formThreadData[$threadCount][Status]" values=$existing_thread_data[thread].threadStatusArray selected=$existing_thread_data[thread].Status output=$existing_thread_data[thread].threadStatusLabelArray}
                       </td>
                     {/if}
-                    <td align="center">
+                    
+                    <!--Action required-->
+                     {if $existing_thread_data[thread].Status <> 'closed'}
+                  	  <td align="center" id="action_required">
+                   		
                         {html_options name="formThreadData[$threadCount][Public]" values=$threadYNArray selected=$existing_thread_data[thread].Public output=$threadYNLabelArray}
+                    	
                     </td>
+                    {/if}
                 {else}
                     <input type="hidden" name="formThreadData[{$threadCount}][Status]" VALUE="{$existing_thread_data[thread].threadStatusArray}">
                 {/if}
@@ -214,5 +267,18 @@
 </td>
 </tr>
 </table>
+<script type="text/javascript" src="js/jquery/jquery-1.4.2.min.js"></script>
+<script language="javascript" type="text/javascript">
+{literal}
+
+//Action required hides when qc_status is changed to 'close', and re-appears when set to 'open'
+$("#qc_status").change(
+function(){
+	$("#action_required").toggle();
+	$("#action").toggle();
+});
+
+{/literal}
+</script>
 </body>
 </html>
