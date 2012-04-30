@@ -21,6 +21,8 @@ $(document).ready(function() {
 
 $('.delete-success').hide();
 $('.edit-success').hide();
+$('.upload-error').hide();
+$('.file-error').hide();
 
 //For the Delete dialog
 var id;
@@ -257,38 +259,35 @@ var name = $( "#name" ),
                         .click(function() {
                                 $( ".dialog-form-edit" ).dialog( "open" );
         			id = this.id;
+   				var myClass = $(this).attr("data-id");
+   			//	alert($(".$(this).attr('data-id')").text());
                                 return false;
                         });
 
         });
 
-/*
+
 function isEmpty(element) {
-if (element.value.length == 0) {
+  if (element.val() === "") {
 	element.focus();
-	alert("EMPTY");
-	return false;
+	element.addClass('missing');
+	$(".upload-error").show();
+	return true;
 	}
+
 else
-	alert("NOT EMPTY");
+	return false;
 }
 
-
-//$(".uploadForm").submit(function() {
-$(".uploadButton").click(function() {
-
-alert("YELLO");
-//if (this.elements("category").value.length == 0) //"" || this.elements("ca†egory") == NULL)
-
-isEmpty(this.elements("category"));
-isEmpty(this.elements("site"));
-
-
-
-});
-*/
-
-
+function isFileEmpty(element) {
+   if (element.length == 0) {
+	$(".file-error").show();	
+	return true;
+	}
+	
+else
+	return false;
+}
 
 function SelectElement(element, valueToSelect)
 {    
@@ -298,6 +297,14 @@ function SelectElement(element, valueToSelect)
 
 
 $(document).ready(function() {
+
+$("#uploadForm").submit(function() {
+  var elements = $(this).get(0).elements;
+  if(isEmpty($(elements).children("[name=category]"))) { return false; };
+  if(isEmpty($(elements).children("[name=site]"))) { return false; } ;
+ // if($("[name=file]").get(0).files.length == 0) { $(".upload-error").show(); return false; } ;
+  if(isFileEmpty($("[name=file]").get(0).files)) { return false; };
+});
 
 
 SelectElement("categoryEdit", "paper");
@@ -312,6 +319,7 @@ SelectElement("versionEdit", "1.0");
     $(".categories").hide();
     function toggleGroup(group) {
         if(group) {
+
             // id is the header that was clicked
             id = group.target.id;
 
@@ -321,11 +329,16 @@ SelectElement("versionEdit", "1.0");
             // hide (or show) the appropriate div for that section
             section_el = $(".categories_" + section);
             section_el.toggle();
+            if ($(this).hasClass('selected'))
+	    	$(this).removeClass('selected');
+	    else
+	   	 $(this).addClass('selected');
         }
     }
 
     // define event handler for all the header sections
     $(".categories_header").click(toggleGroup);
+
     // Get rid of the extra <br /> tag that Quickform element adds at the top of each <div>
     $(".categories_header").each(function(idx, el) {
         id = el.id;

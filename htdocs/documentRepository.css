@@ -45,6 +45,16 @@ TD.tip:hover SPAN {
 	height: 500px !important;
 }
 
+.selected {
+background: #5f5964 !important;
+color: #fff;
+border: 1px solid #7e7783 !important;
+}
+
+.missing {
+background: #f63;
+}
+
 label em {
   position: absolute;
   left: 35em;
