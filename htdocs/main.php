@@ -129,13 +129,10 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
  */
 $paths = $config->getSetting('paths');
 if (!empty($_REQUEST['test_name'])) {
-<<<<<<< HEAD
 
-=======
     if(file_exists($paths['base'] . "htdocs/js/modules/" . $_REQUEST['test_name'] . ".js")) {
         $tpl_data['test_name_js'] = "js/modules/" . $_REQUEST['test_name'] . ".js";
     }
->>>>>>> d8652109a70e913f02db8bec5d2ed47b1ad06824
     if (!empty($_REQUEST['commentID'])) {
 
         // make the control panel object for the current instrument
