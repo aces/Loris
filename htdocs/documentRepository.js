@@ -260,6 +260,10 @@ var name = $( "#name" ),
                                 $( ".dialog-form-edit" ).dialog( "open" );
         			id = this.id;
    				var myClass = $(this).attr("data-id");
+				myArray = $("input[data-id=" + myClass + "]");
+//				myArray = $('.$(this).attr("data-id")');
+//   				alert(myArray.length);
+  // 				alert(myClass);
    			//	alert($(".$(this).attr('data-id')").text());
                                 return false;
                         });
