@@ -1451,7 +1451,7 @@ CREATE TABLE `data_integrity_flag` (
                 `percent_completed` int(11) unsigned DEFAULT NULL,
                 `Visit_label` varchar(255) DEFAULT '',
                 `initial_check_date` date DEFAULT null,
-                 UNIQUE KEY `Visit_lable_Name` (`Name`,`Visit_label)
+                 UNIQUE KEY `Visit_lable_Name` (`Name`,`Visit_label`),
                  PRIMARY KEY (`ID`));
 
 LOCK TABLES `data_integrity_flag_logs` WRITE;
