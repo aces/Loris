@@ -85,10 +85,11 @@ chmod($target_path, 0777);
 //}
 //}
 //shell_exec("sudo chgrp lorisdev $target_path");
-mysql_query("INSERT INTO document_repository (File_category, For_site, comments, version, File_name, Data_dir, uploaded_by)
-VALUES ('$category', '$site', '$comments', '$version', '$fileName', '$target_path', '$user')");
+	mysql_query("INSERT INTO document_repository (File_category, For_site, comments, version, File_name, Data_dir, uploaded_by)
+	VALUES ('$category', '$site', '$comments', '$version', '$fileName', '$target_path', '$user')");
 
 header("Location: http://132.216.67.69:7080/main.php?test_name=document_repository");
+
 
 //$newFile = array('File_category'=>$category, 'version'=>$version);
 //print_r($newFile);
