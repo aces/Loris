@@ -224,11 +224,13 @@ CREATE TABLE `feedback_bvl_thread` (
   `Date_taken` date default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `FieldName` text NOT NULL default '',
   PRIMARY KEY  (`FeedbackID`),
   KEY `FK_feedback_bvl_thread_1` (`Feedback_type`),
   CONSTRAINT `FK_feedback_bvl_thread_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO feedback_bvl_thread (FieldName) values("Across All Fields");
 --
 -- Dumping data for table `feedback_bvl_thread`
 --
@@ -248,9 +250,7 @@ CREATE TABLE `feedback_bvl_type` (
   `Name` varchar(100) NOT NULL default '',
   `Description` text,
   PRIMARY KEY  (`Feedback_type`),
-  UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
 --
 -- Dumping data for table `feedback_bvl_type`
 --
@@ -1483,6 +1483,24 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ystep_range` varchar(255) DEFAULT NULL,
   `zstep_range` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`));
+
+DROP TABLE IF EXISTS `data_integrity_flag`;
+CREATE TABLE `data_integrity_flag` (
+                `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                `Name` varchar(255) DEFAULT '',
+                `initial_check` enum('','1','2','3') DEFAULT null,
+                `Comment` text  DEFAULT Null,
+                `Last_access` DATETIME DEFAULT null,
+                `percent_completed` int(11) unsigned DEFAULT NULL,
+                `Visit_label` varchar(255) DEFAULT '',
+                `initial_check_date` date DEFAULT null,
+                 UNIQUE KEY `Visit_lable_Name` (`Name`,`Visit_label`),
+                 PRIMARY KEY (`ID`));
+
+LOCK TABLES `data_integrity_flag_logs` WRITE;
+UNLOCK TABLES;
+
+
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
