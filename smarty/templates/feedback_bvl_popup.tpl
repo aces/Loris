@@ -73,23 +73,36 @@
     <th colspan="4">Add new {$feedbackLevel} level feedback</TH>
     </tr>
     {if $form_error_message.new!=""}
-        <TH colspan="4">{$form_error_message.new}</TH>
+        <th class="error" bcolor="#FF0000" colspan="4" >{$form_error_message.new}</th>
     {/if}
     <form name="newThreadForm" method="post" action="{$formAction}">
       <tr>
       <th>Type</th>
       <th>Comment</th>
+      {if $commentID!=""}
+	      <th>FieldNames</th>
+	  {/if}
       <th>Action Required?</th>
       <td align="center" rowspan="6"><input type="submit" name="add_new_thread_form_submit" value="Save Data" class="button"></td>
         {section name="typeCounter" loop=$threadTypes}
         {assign var=newTypeCounter value=$threadTypes[typeCounter].Type}
         <tr>
+         <!--input type--->
           <td align="center">
           {$threadTypes[typeCounter].Label}
           <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Type]" value="{$newTypeCounter}">
           <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Level]" value="{$feedbackLevel}">
           </td>
+          
+          <!--Comment text box-->
           <td align="center"><input type="text" size="30" maxlength="255" name="newFormThreadData[{$newTypeCounter}][Comment]" value="{$new_thread_data[$newTypeCounter].CommentValue}"></td>
+
+          <!---field names--->
+		  <td align="center">
+    	      {html_options name="newFormThreadData[$newTypeCounter][FieldName]" selected=$new_thread_data[$newTypeCounter].FieldNameValue values=$FieldNames options=$FieldNames}
+		  </td>
+		  
+		  <!--Action required drop down--->
           <td align="center">
     {if $has_permission}
           {html_options name="newFormThreadData[$newTypeCounter][Public]" values=$YNArray selected=$new_thread_data[$newTypeCounter].PublicValue options=$YNLabelArray}
@@ -139,6 +152,7 @@
     <table valign="top" width="100%" class="std">
     {section name=thread loop=$thread_list_data}
     {assign var=threadCount value=$smarty.section.thread.index}
+        <th nowrap="nowrap">FieldName</th>   
         <th nowrap="nowrap">FeedbackID</th>
         <th nowrap="nowrap">Type</th>
         <th nowrap="nowrap">QC Status</th>
@@ -146,7 +160,8 @@
         <th nowrap="nowrap">Modified</th>
         <th nowrap="nowrap">Active</th>
         </tr>
-        <tr>
+        <tr id= "{$thread_list_data[thread].FeedbackID}" >
+        <td align="center">{$thread_list_data[thread].FieldName}</td>
         <td align="center">{$thread_list_data[thread].FeedbackID}</td>
         <td align="center">{$thread_list_data[thread].Type}</td>
         <td align="center" bgcolor="{$thread_list_data[thread].QC_color}">{$thread_list_data[thread].QC_status}</td>
@@ -155,12 +170,12 @@
         <td align="center">{$thread_list_data[thread].Active}</td>
         </tr>
         {section name=entry loop=$thread_entry[thread]}
-            <tr>
+        <tr>
             <td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp;
             [{$thread_entry[thread][entry].Date}] &nbsp;
             <B>{$thread_entry[thread][entry].Comment}</B>
-            </td>
-            </tr>
+          	</td>
+        </tr>
         {/section}
         <!-- error message row -->
         {if $thread_list_data[thread].error_message != ""}
