@@ -250,8 +250,8 @@ if (PEAR::isError($feedback)) {
                $tpl_data['existing_thread_data'][$z]['Public'] = $thread['Public'];
            }
            if (empty($tpl_data['existing_thread_data'][$z]['FieldName'])) {
-				$tpl_data['existing_thread_data'][$z]['FieldName'] = $thread['FieldName'];
-			}
+               $tpl_data['existing_thread_data'][$z]['FieldName'] = $thread['FieldName'];
+           }
            if (empty($tpl_data['existing_thread_data'][$z]['Type'])) {
                $tpl_data['existing_thread_data'][$z]['Type'] = $thread['TypeID'];
            }
