@@ -70,7 +70,7 @@
     <!-- create feedback form- shown only to authorized users-->
     <table border="0" valign="top" width="100%" class="std">
     <tr>
-    <th colspan="4">Add new {$feedbackLevel} level feedback</TH>
+    <th colspan="4">Add new {$feedbackLevel} level feedback</th>
     </tr>
     {if $form_error_message.new!=""}
         <th class="error" bcolor="#FF0000" colspan="4" >{$form_error_message.new}</th>
@@ -80,14 +80,14 @@
       <th>Type</th>
       <th>Comment</th>
       {if $commentID!=""}
-	      <th>FieldNames</th>
-	  {/if}
+          <th>FieldNames</th>
+      {/if}
       <th>Action Required?</th>
       <td align="center" rowspan="6"><input type="submit" name="add_new_thread_form_submit" value="Save Data" class="button"></td>
         {section name="typeCounter" loop=$threadTypes}
         {assign var=newTypeCounter value=$threadTypes[typeCounter].Type}
         <tr>
-         <!--input type--->
+          <!--input type--->
           <td align="center">
           {$threadTypes[typeCounter].Label}
           <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Type]" value="{$newTypeCounter}">
@@ -98,17 +98,17 @@
           <td align="center"><input type="text" size="30" maxlength="255" name="newFormThreadData[{$newTypeCounter}][Comment]" value="{$new_thread_data[$newTypeCounter].CommentValue}"></td>
 
           <!---field names--->
-		  <td align="center">
-    	      {html_options name="newFormThreadData[$newTypeCounter][FieldName]" selected=$new_thread_data[$newTypeCounter].FieldNameValue values=$FieldNames options=$FieldNames}
-		  </td>
-		  
-		  <!--Action required drop down--->
           <td align="center">
-    {if $has_permission}
-          {html_options name="newFormThreadData[$newTypeCounter][Public]" values=$YNArray selected=$new_thread_data[$newTypeCounter].PublicValue options=$YNLabelArray}
-    {else}
-          <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Public]" value="N">
-    {/if}
+              {html_options name="newFormThreadData[$newTypeCounter][FieldName]" selected=$new_thread_data[$newTypeCounter].FieldNameValue values=$FieldNames options=$FieldNames}
+          </td>
+		  
+          <!--Action required drop down--->
+          <td align="center">
+              {if $has_permission}
+                  {html_options name="newFormThreadData[$newTypeCounter][Public]" values=$YNArray selected=$new_thread_data[$newTypeCounter].PublicValue options=$YNLabelArray}
+              {else}
+                  <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Public]" value="N">
+              {/if}
           </td>
         </tr>
         {/section}
@@ -159,15 +159,15 @@
         <th nowrap="nowrap">Date</th>
         <th nowrap="nowrap">Modified</th>
         <th nowrap="nowrap">Active</th>
-        </tr>
+        
         <tr id= "{$thread_list_data[thread].FeedbackID}" >
-        <td align="center">{$thread_list_data[thread].FieldName}</td>
-        <td align="center">{$thread_list_data[thread].FeedbackID}</td>
-        <td align="center">{$thread_list_data[thread].Type}</td>
-        <td align="center" bgcolor="{$thread_list_data[thread].QC_color}">{$thread_list_data[thread].QC_status}</td>
-        <td align="center">{$thread_list_data[thread].Date}</td>
-        <td align="center">{$thread_list_data[thread].Modified}</td>
-        <td align="center">{$thread_list_data[thread].Active}</td>
+            <td align="center">{$thread_list_data[thread].FieldName}</td>
+            <td align="center">{$thread_list_data[thread].FeedbackID}</td>
+            <td align="center">{$thread_list_data[thread].Type}</td>
+            <td align="center" bgcolor="{$thread_list_data[thread].QC_color}">{$thread_list_data[thread].QC_status}</td>
+            <td align="center">{$thread_list_data[thread].Date}</td>
+            <td align="center">{$thread_list_data[thread].Modified}</td>
+            <td align="center">{$thread_list_data[thread].Active}</td>
         </tr>
         {section name=entry loop=$thread_entry[thread]}
         <tr>
