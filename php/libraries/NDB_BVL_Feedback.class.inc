@@ -474,9 +474,9 @@ Class NDB_BVL_Feedback
         $setArray = array('FeedbackID'=>NULL, 'Feedback_type'=>$type, 'Public'=>$public, 'Status'=>$status, 'Active'=>$active, 'Date_taken'=>$today, 'UserID'=>$this->_username);
         if ($this->_feedbackLevel=='instrument')  {
             $commentid = $this->_feedbackObjectInfo['CommentID'];
-        	if ($db->selectOne("Select count(*) from feedback_bvl_thread bt where bt.FieldName = '$fieldname' and bt.CommentID = '$commentid' and bt.Status !='closed' >0")){
-        		return PEAR::raiseError("The fieldName already exist");
-        	}
+            if ($db->selectOne("Select count(*) from feedback_bvl_thread bt where bt.FieldName = '$fieldname' and bt.CommentID = '$commentid' and bt.Status !='closed' >0")){
+                return PEAR::raiseError("The fieldName already exist");
+            }
             $setArray = array_merge($setArray, array("CommentID" => $this->_feedbackObjectInfo['CommentID']));
             $setArray = array_merge($setArray, array("SessionID" => $this->_feedbackCandidateProfileInfo['SessionID']));
             $setArray = array_merge($setArray, array("CandID" => $this->_feedbackCandidateProfileInfo['CandID']));
