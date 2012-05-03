@@ -12,6 +12,6 @@ CREATE TABLE `data_integrity_flag` (
 
 
 /**Changes to feedback_bvl_thread table***/
-INSERT INTO feedback_bvl_thread (fieldname) values("Across All Fields");
 ALTER table feedback_bvl_thread add column FieldName text; 
+INSERT INTO feedback_bvl_thread (fieldname) values("Across All Fields");
 
