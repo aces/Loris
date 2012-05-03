@@ -190,7 +190,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 		//Percentage completed for the given instrument
 		if ($instrument !=null){
 			$percet_completed = $this->_getPercentCompleted($instrument,$_REQUEST['visit_label']);
-			print "percent completed is $percet_completed" ;
 			$this->tpl_data['percent_completed'] = $percet_completed;
 		}
 
