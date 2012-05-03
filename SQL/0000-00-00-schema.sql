@@ -250,6 +250,7 @@ CREATE TABLE `feedback_bvl_type` (
   `Name` varchar(100) NOT NULL default '',
   `Description` text,
   PRIMARY KEY  (`Feedback_type`),
+  UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 --
 -- Dumping data for table `feedback_bvl_type`
