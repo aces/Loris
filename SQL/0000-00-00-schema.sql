@@ -1390,6 +1390,14 @@ INSERT INTO `user_perm_rel` VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,
 /*!40000 ALTER TABLE `user_perm_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
+CREATE TABLE `Visit_Windows` (
+  `Visit_label` varchar(255) DEFAULT NULL,
+  `WindowMinDays` int(11) DEFAULT NULL,
+  `WindowMaxDays` int(11) DEFAULT NULL,
+  `OptimumMinDays` int(11) DEFAULT NULL,
+  `OptimumMaxDays` int(11) DEFAULT NULL,
+  `WindowMidpointDays` int(11) DEFAULT NULL
+);
 --
 -- Table structure for table `users`
 --
