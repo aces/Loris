@@ -12,6 +12,9 @@ CREATE TABLE `data_integrity_flag` (
 
 
 /**Changes to feedback_bvl_thread table***/
-ALTER table feedback_bvl_thread add column FieldName text; 
-INSERT INTO feedback_bvl_thread (fieldname) values("Across All Fields");
+ALTER TABLE feedback_bvl_thread ADD COLUMN FieldName text; 
+INSERT INTO feedback_bvl_thread (fieldname) VALUES("Across All Fields");
+INSERT INTO permissions (code,description,categoryID) VALUES ('fieldname_integrity',' Fieldname Integrity','2');
+/**add the appropriate permission**/
+
 
