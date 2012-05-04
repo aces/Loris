@@ -222,6 +222,7 @@ class MRIViewScansPage {
             $fileData[$fIdx]['echoTime'] = number_format($file->getParameter('echo_time')*1000, 2);
             $fileData[$fIdx]['repetitionTime'] = number_format($file->getParameter('repetition_time')*1000, 2);
             $fileData[$fIdx]['sliceThickness'] = number_format($file->getParameter('slice_thickness'), 2);
+            $fileData[$fIdx]['time'] = number_format($file->getParameter('time'), 2);
             $fileData[$fIdx]['xstep'] = number_format($file->getParameter('xstep'), 2);
             $fileData[$fIdx]['ystep'] = number_format($file->getParameter('ystep'), 2);
             $fileData[$fIdx]['zstep'] = number_format($file->getParameter('zstep'), 2);
