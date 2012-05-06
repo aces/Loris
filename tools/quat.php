@@ -36,7 +36,7 @@ mysql> describe parameter_type;
 
 
 // settings
-$columnThreshhold = 150;
+$columnThreshhold = Utility::getColumnThresholdCount();
 $quatTableBasename = 'quat_table_';
 $quatTableCounter = 1;
 
