@@ -1,21 +1,21 @@
 <?php
 
-// TEMPORARY: disabling authentication simply to make testing easier
-// and faster...  should be reenabled later for prod use (to protect
-// data)
+require_once "NDB_Client.class.inc";
+$client =& new NDB_Client();
+$client->initialize("../project/config.xml");
 
+// create Database object
+$DB =& Database::singleton();
+if(PEAR::isError($DB)) { print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die(); }
 
-// make local instances of objects
-
-
-//$db =& Database::singleton();
-
+/*
 $con = mysql_connect("localhost","root","abc123!");
 if (!$con)
   {
   die('Could not connect: ' . mysql_error());
   }
 mysql_select_db("preventAD", $con);
+*/
 
 $action = $_POST['action'];
 
@@ -85,8 +85,11 @@ chmod($target_path, 0777);
 //}
 //}
 //shell_exec("sudo chgrp lorisdev $target_path");
-	mysql_query("INSERT INTO document_repository (File_category, For_site, comments, version, File_name, Data_dir, uploaded_by)
-	VALUES ('$category', '$site', '$comments', '$version', '$fileName', '$target_path', '$user')");
+
+$success = $DB->insert('document_repository', array('File_category'=>$category, 'For_site'=>$site, 'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName, 'Data_dir'=>$target_path, 'uploaded_by'=>$user)); 
+
+//	mysql_query("INSERT INTO document_repository (File_category, For_site, comments, version, File_name, Data_dir, uploaded_by)
+//	VALUES ('$category', '$site', '$comments', '$version', '$fileName', '$target_path', '$user')");
 
 header("Location: http://132.216.67.69:7080/main.php?test_name=document_repository");
 
@@ -114,8 +117,10 @@ $visit = $_POST['visitEdit'];
 $comments = $_POST['commentsEdit'];
 $version = $_POST['versionEdit'];
 
+$values = array('File_category' => $category, 'Instrument' => $instrument, 'For_site' => $site, 'PSCID' => $pscid, 'visitLabel' => $visit, 'comments' => $comments, 'version' => $version); 
+$DB->update('document_repository', $values, array('record_id'=>$id));
 
-mysql_query("UPDATE document_repository SET File_category = '$category', Instrument = '$instrument', For_site = '$site', PSCID = '$pscid', visitLabel = '$visit', comments = '$comments', version = '$version'  where record_id = '$id'");
+//mysql_query("UPDATE document_repository SET File_category = '$category', Instrument = '$instrument', For_site = '$site', PSCID = '$pscid', visitLabel = '$visit', comments = '$comments', version = '$version'  where record_id = '$id'");
 
 
 //$editFile = array('File_category'=>$category, 'version'=>$version);

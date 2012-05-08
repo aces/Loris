@@ -1,5 +1,4 @@
 
-
 TD.tip {
     TEXT-DECORATION: none
 }
@@ -24,112 +23,99 @@ TD.tip:hover SPAN {
 }
 
 .ui-dialog, .ui-dialog-buttonpane {
-	background: #d4dcd2 !important;
-/*	background: #b2aabd !important;*/
+    background: #d4dcd2 !important;
 }
 .ui-dialog-titlebar {
-	background: #a6bca3 !important;
-/*	background: #7c6f8e !important;*/
+    background: #a6bca3 !important;
 }
 
 .form-fields {
-	float:right;
-	size:40;
+    float:right;
+    size:40;
 }
 .fieldset {
-	outline-style: none !important;
+    outline-style: none !important;
 
 }
 .ui-dialog .ui-dialog-content .ui-widget .ui-widget-content {
-	width: 350px !important;
-	height: 500px !important;
+    width: 350px !important;
+    height: 500px !important;
 }
 
 .selected {
-background: #5f5964 !important;
-color: #fff;
-border: 1px solid #7e7783 !important;
+    background: #5f5964 !important;
+    color: #fff;
+    border: 1px solid #7e7783 !important;
 }
 
 .missing {
-background: #f63;
+    background: #f63;
 }
 
 label em {
-  position: absolute;
-  left: 35em;
+    position: absolute;
+    left: 35em;
 }
 
 .file-wrapper {
-  cursor: pointer;
-  display: inline-block;
-  overflow: hidden;
-  position: relative;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
 }
 
 .file-wrapper .button-file {
- /* background: #a6bca3;*/
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: inline-block;
-  padding: .5em 1em;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    padding: .5em 1em;
 }
-/*
-.button-file:hover {
-background: #EAE6EA !important;
-color: #734D99 !important;
-border: 1px solid #D1C5D8 !important;
-    /* background-color: #B6ABBF; /*#99c; /*#9a5; /*#989;*/
-/*}
-*/
+
 .file-wrapper input {
-  cursor: pointer;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  filter: alpha(opacity=1);
-  -moz-opacity: 0.05;
-  opacity: 0.01;
-  font-size: 100px;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    filter: alpha(opacity=1);
+    -moz-opacity: 0.05;
+    opacity: 0.01;
+    font-size: 100px;
 }
 
-
-/*
-.dialog-form {
-	background: #d4dcd2 !important;
-}*/
-/*
-span.eggplant-button:hover {
-background: #EAE6EA !important;
-color: #734D99 !important;
-border: 1px solid #D1C5D8 !important;
+.eggplant-button {
+    padding: .2em .5em;
 }
-*/
 
 .eggplant-button:hover {
-background: #EAE6EA !important;
-border: 1px solid #D1C5D8 !important;
-color: #734D99 !important;
+    background: #EAE6EA !important;
+    border: 1px solid #D1C5D8 !important;
+    color: #734D99 !important;
 }
 
 .eggplant-button:active {
-background: #5f5964 !important;
-border: 1px solid #7e7783 !important; 
-color: #ffffff !important; 
-font-weight: bold !important; 
+    background: #5f5964 !important;
+    border: 1px solid #7e7783 !important; 
+    color: #ffffff !important; 
+    font-weight: bold !important; 
 }
 
-.edit-success  p {
-font-weight: bold;
-size: 1.1em;
-color: #696;
+.edit-success .delete-success {
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
 }
 
 .delete-success  p {
-font-weight: bold;
-size: 1.1em;
-color: #696;
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
+}
+
+.no-files {
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
 }
