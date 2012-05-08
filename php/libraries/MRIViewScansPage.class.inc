@@ -250,8 +250,17 @@ class MRIViewScansPage {
         $file_tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
         //$file_tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
 
-        // fixme this should not be hard-coded. make it read the db for possible native types
-        $file_tpl_data['selected_options'] = array (''=>'&nbsp;', 'T1'=>'T1', 'T2'=>'T2', 'PD'=>'PD',  'T1WF'=>'T1WF', 'T2WF'=>'T2WF', 'PDWF'=>'PDWF', 'T1reg'=>'T1reg');
+        $file_tpl_data['selected_options'] = array(''=>'&nbsp;');
+        $tmp_types = array();
+        $query = "SELECT mri_scan_type.Scan_type FROM mri_scan_type";
+        $this->DB->select($query, $scanTypes);
+        
+        foreach($scanTypes AS $row) {  
+            $scanType = $row['Scan_type'];
+            $tmp_types[$scanType] = $scanType;
+        }
+        $file_tpl_data['selected_options'] = array_merge($file_tpl_data['selected_options'], $tmp_types);
+
         if($user->hasPermission('mri_feedback')) $file_tpl_data['has_permission'] = true;
 
         $smarty = new Smarty_neurodb;
