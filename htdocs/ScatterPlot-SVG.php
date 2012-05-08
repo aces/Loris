@@ -21,7 +21,7 @@ if(isset($_REQUEST['FieldY']) && !empty($_REQUEST['FieldY'])) {
 } else {
     $Field = "Candidate_Age";
 }
-$QueryCondition = "$Field IS NOT NULL AND c.Active='Y' and c.Cancelled='N' and s.Active='Y' and s.Cancelled='N'";
+$QueryCondition = "$Field IS NOT NULL AND c.Active='Y' and s.Active='Y'";
 if(isset($_REQUEST['site']) && !empty($_REQUEST['site'])) {
     $QueryCondition .= " AND c.CenterID=$_REQUEST[site]";
 
