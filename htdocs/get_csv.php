@@ -4,28 +4,39 @@ require_once "../tools/generic_includes.php";
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename=data.csv');
 $output = fopen('php://output', 'w');
-
 $instrument = $_REQUEST['instrument'];
 $sourcefield =  $_REQUEST['sourcefield'];
 $completion_status = $_REQUEST['completion_status'];
 $sent_to_dcc_status =  $_REQUEST['sent_to_dcc_status'];
+$visit_label = $_REQUEST['visit_label'];
 /*
-$instrument = '3week_infancy';
-$sourcefield = 'data_entry_date';
-*/
+   $instrument = '3week_infancy';
+   $sourcefield = 'data_entry_date';
+ */
 
-$query = "Select c.PSCID, s.Visit_label, $sourcefield as Field,f.data_entry from $instrument i , flag f,session s,candidate c
-where i.commentid = f.commentid and f.sessionid = s.ID and s.Candid = c.Candid";
-if (($completion_status!='any') && (!empty($completion_status))) {
-	$query .= " And f.data_entry = '$completion_status'";
+
+$params = array();
+    $query = "SELECT c.PSCID, s.Visit_label, $sourcefield AS Field,f.data_entry FROM $instrument i 
+    JOIN flag f ON (i.commentid = f.commentid)
+    JOIN session s (f.sessionid = s.ID)
+JOIN candidate c (s.Candid = c.Candid)
+    where s.Visit_label = :'vl'";
+    $params['vl']=$visit_label;
+
+    if (($completion_status!='any') && (!empty($completion_status))) {
+        $query .= " AND f.data_entry = :cs";
+        $params['cs'] = $completion_status;
+    }
+
+if (($sent_to_dcc_status!='any') && (!empty($sent_to_dcc_status))) {
+    $query .= " AND s.current_stage = :sts";
+    $params['sts'] = $sent_to_dcc_status;
 }
-if (($sent_to_dcc_status!='any') && (!empty($sent_to_dcc_status))){
-	$query .= " And s.current_stage = '$sent_to_dcc_status'";
-}
-$header = array("PSCID","Visit_lable",$sourcefield,"data_entry");
+$header = array("PSCID","Visit_label",$sourcefield,"data_entry");
 fputcsv($output,$header);
-$DB->select($query,$results);
-foreach($results as $result){
-	fputcsv($output,$result);
+
+$results =  $DB->pselect($query,$params);
+foreach($results as $result) {
+    fputcsv($output,$result);
 }
 ?>
