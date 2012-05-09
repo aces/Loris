@@ -13,11 +13,11 @@ In emacs:
 ? (C-x C-c, vi filename?)
 
 PHP: 
-- opening bracket should be on the same line as statement, closing bracket should be aligned with opening of statement. 
+- for control structures, opening curly bracket should be on the same line as statement with a space before the curly bracket, closing bracket should be aligned with opening of statement. 
     if (x) {
         things go here;
     }
-- An exception to this is class definitions, which may have the bracket on the proceeding line:
+- An exception to this is class definitions and class function definitions, which may have the bracket on the proceeding line:
 
 class NDB_BVL_Foo extends NDB_Bar 
 {
