@@ -19,14 +19,10 @@ function getQueryVariable(variable) {
     }
 }
 
-
-
-
 function changefieldOptions() {
     changeFieldNames();
     changeVisitLabels();
 }
-
 
 function changeFieldNames() {
     //get the value for the visit selected
@@ -50,7 +46,6 @@ function changeFieldNames() {
         }
     });
 }
-
 
 function changeVisitLabels() {
     //get the value for the visit selected
@@ -162,7 +157,7 @@ $(function(){
         <td>{$form.sent_to_dcc_status.label}</td>
         <td>{$form.sent_to_dcc_status.html}</td>
     </tr>
-    
+
     <tr>
         <td>Actions</td>
         <td colspan="3">
@@ -225,7 +220,7 @@ $(function(){
             
             {***********************field name************}
             {assign var="source_field" value=$elements_array[$element][$visit_label].sourcefield}
-            <td nowrap="nowrap" valign="top"> <a href="get_csv.php?instrument={$elements_array[$element][$visit_label].sourcefrom}&sourcefield={$elements_array[$element][$visit_label].sourcefield}&completion_status={$completion_status}&sent_to_dcc_status={$sent_to_dcc_status}" target="_blank"> <span title = '{$elements_array[$element][$visit_label].Description}'> {$element}</span></a></td>
+            <td nowrap="nowrap" valign="top"> <a href="get_csv.php?instrument={$elements_array[$element][$visit_label].sourcefrom}&sourcefield={$elements_array[$element][$visit_label].sourcefield}&completion_status={$completion_status}&sent_to_dcc_status={$sent_to_dcc_status}&visit_label={$visit_label}" target="_blank"> <span title = '{$elements_array[$element][$visit_label].Description}'> {$element}</span></a></td>
             
             {***********************initial_check************}
             {assign var="initial_check" value=$elements_array[$element][$visit_label].initial_check}
