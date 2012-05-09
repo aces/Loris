@@ -47,7 +47,7 @@ if(!empty($_REQUEST['sessionID'])) {
 }
 
 if (!empty($_REQUEST['commentID'])) {
-    
+
     $tpl_data['commentID'] = $_REQUEST["commentID"];
 
     if (!empty($_REQUEST['test_name'])) {
@@ -64,17 +64,17 @@ if (!empty($_REQUEST['commentID'])) {
         } else {
             $tpl_data['instrument_name'] = $_REQUEST['test_name'];
         }
-        
-        ///get the fields names....
-		// "Add Feedback" Form" - option array for select boxes - 2 arrays; one is for labels
-		$field_names=Utility::getSourcefields($_REQUEST['test_name']);
-		$Fields['Across All Fields'] = 'Across All Fields';
-		foreach($field_names as $field_name){
-			$Fields[$field_name['SourceField']] = $field_name['SourceField'];
-		}
 
-		$tpl_data['FieldNames'] = $Fields;
-	}
+        ///get the fields names....
+        // "Add Feedback" Form" - option array for select boxes - 2 arrays; one is for labels
+        $field_names=Utility::getSourcefields($_REQUEST['test_name']);
+        $Fields['Across All Fields'] = 'Across All Fields';
+        foreach($field_names as $field_name){
+            $Fields[$field_name['SourceField']] = $field_name['SourceField'];
+        }
+
+        $tpl_data['FieldNames'] = $Fields;
+    }
 
 
 }
@@ -132,7 +132,7 @@ if (PEAR::isError($feedback)) {
     if ($_REQUEST['add_new_thread_form_submit'] == 'Save Data') {
         foreach($_REQUEST['newFormThreadData'] as $type => $threadData) {
             if (!empty($threadData['Comment'])) {
-                
+
                 if (empty($threadData['Public'])) {
                     $tpl_data['form_error_message']['new'] = "Please select a 'Required Action?' value for every new type of feedback you want to create";
                     $tpl_data['new_thread_data'][$type]['CommentValue'] = $threadData['Comment'];
@@ -159,7 +159,7 @@ if (PEAR::isError($feedback)) {
         // unset Submit arg
         unset($_REQUEST['add_new_thread_form_submit']);
     }
-    
+
     // activate threads
     if ($_REQUEST['activate_thread_form_submit'] == 'Post New Feedback') {
         $success = $feedback->activateThread();
@@ -169,7 +169,7 @@ if (PEAR::isError($feedback)) {
         // unset Submit arg
         unset($_REQUEST['activate_thread_form_submit']);
     }
-    
+
     // close threads
     if ($_REQUEST['close_thread_form_submit'] == 'Close All Threads') {
         $success = $feedback->closeThread();
@@ -184,9 +184,9 @@ if (PEAR::isError($feedback)) {
     if ($_REQUEST['existing_thread_form_submit'] == 'Save Data') {
         // if anything is passed by the thread form
         if (is_array($_REQUEST['formThreadData'])) {
-            
+
             foreach ($_REQUEST['formThreadData'] as $threadIndex => $threadData) {
-                
+
                 // comment is required for any action
                 if (!empty($threadData['Comment'])) {
                     $success = $feedback->updateThread($threadData['FeedbackID'], $threadData['Comment'], $threadData['Type'], $threadData['Public'], $threadData['Status'],$threadData['FieldName']);
@@ -211,17 +211,17 @@ if (PEAR::isError($feedback)) {
         // unset Submit arg
         unset($_REQUEST['formThreadData']);
     }
-    
+
     // get the summary of threads
     $success = $feedback->getSummaryOfThreads();
     if(PEAR::isError($success)) {
         $tpl_data['error_message'][] = $success->getMessage();
     } else {
         if (count($success) > 0) {
-//            $tpl_data['PSCID'] = $success[0]["PSCID"];
-//            $tpl_data['ethnicity'] = $success[0]["Ethnicity"];
-//            $tpl_data['gender'] = $success[0]["Gender"];
-            
+            //            $tpl_data['PSCID'] = $success[0]["PSCID"];
+            //            $tpl_data['ethnicity'] = $success[0]["Ethnicity"];
+            //            $tpl_data['gender'] = $success[0]["Gender"];
+
             $tpl_data['thread_summary_headers'] = array_keys($success[0]);
             for($i=0;$i<count($success);$i++){
                 $tpl_data['thread_summary_data'][$i]['QC_Class'] = $success[$i]['QC_Class'];
@@ -240,73 +240,73 @@ if (PEAR::isError($feedback)) {
         $tpl_data['error_message'][] = $success->getMessage();
     } else {
 
-       // assign thread data from the getThreadList()
-       $tpl_data['thread_list_data'] = $success;
-       
-       $z = 0;
-       foreach ($success as $thread) {
+        // assign thread data from the getThreadList()
+        $tpl_data['thread_list_data'] = $success;
 
-           if (empty($tpl_data['existing_thread_data'][$z]['Public'])) {
-               $tpl_data['existing_thread_data'][$z]['Public'] = $thread['Public'];
-           }
-           if (empty($tpl_data['existing_thread_data'][$z]['FieldName'])) {
-               $tpl_data['existing_thread_data'][$z]['FieldName'] = $thread['FieldName'];
-           }
-           if (empty($tpl_data['existing_thread_data'][$z]['Type'])) {
-               $tpl_data['existing_thread_data'][$z]['Type'] = $thread['TypeID'];
-           }
-           if (empty($tpl_data['existing_thread_data'][$z]['Status'])) {
-               $tpl_data['existing_thread_data'][$z]['Status'] = $thread['QC_status'];
-           }
-           
-           // rules for managing thread status options
-           $tpl_data['existing_thread_data'][$z]['doNotShowStatusField'] = TRUE;
-           if ($user->hasPermission('bvl_feedback')) {
-               // applicable only for users who can change status
-               if ($thread['QC_status'] == 'opened') {
-                   $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = array('opened','closed');
-                   $tpl_data['existing_thread_data'][$z]['threadStatusLabelArray'] = array('opened','close');
-               } elseif ($thread['QC_status'] == 'answered') {
-                   $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = array('opened','closed');
-                   $tpl_data['existing_thread_data'][$z]['threadStatusLabelArray'] = array('reopen','close');
-               } elseif ($thread['QC_status'] == 'closed') {
-                   $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = array('opened','closed');
-                   $tpl_data['existing_thread_data'][$z]['threadStatusLabelArray'] = array('reopen','closed');
-               } else {
-                   $tpl_data['existing_thread_data'][$z]['doNotShowStatusField'] = FALSE;
-               }
-           } else {
-               // all other users
-               if ($thread['QC_status'] == 'opened') {
-                   $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = 'answered';
-               } else {
-                   $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = $thread['QC_status'];
-               }
-           }
+        $z = 0;
+        foreach ($success as $thread) {
 
-           $tpl_data['form_error_message'][$thread["FeedbackID"]] = "my message ".$thread["FeedbackID"];
-            
-           $success1 = $feedback->getThreadEntries($thread["FeedbackID"]);
-           if (PEAR::isError($success1)) {
+            if (empty($tpl_data['existing_thread_data'][$z]['Public'])) {
+                $tpl_data['existing_thread_data'][$z]['Public'] = $thread['Public'];
+            }
+            if (empty($tpl_data['existing_thread_data'][$z]['FieldName'])) {
+                $tpl_data['existing_thread_data'][$z]['FieldName'] = $thread['FieldName'];
+            }
+            if (empty($tpl_data['existing_thread_data'][$z]['Type'])) {
+                $tpl_data['existing_thread_data'][$z]['Type'] = $thread['TypeID'];
+            }
+            if (empty($tpl_data['existing_thread_data'][$z]['Status'])) {
+                $tpl_data['existing_thread_data'][$z]['Status'] = $thread['QC_status'];
+            }
 
-               $tpl_data['thread_list_data'][$z]['error_message'] = $success1->getMessage();
+            // rules for managing thread status options
+            $tpl_data['existing_thread_data'][$z]['doNotShowStatusField'] = TRUE;
+            if ($user->hasPermission('bvl_feedback')) {
+                // applicable only for users who can change status
+                if ($thread['QC_status'] == 'opened') {
+                    $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = array('opened','closed');
+                    $tpl_data['existing_thread_data'][$z]['threadStatusLabelArray'] = array('opened','close');
+                } elseif ($thread['QC_status'] == 'answered') {
+                    $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = array('opened','closed');
+                    $tpl_data['existing_thread_data'][$z]['threadStatusLabelArray'] = array('reopen','close');
+                } elseif ($thread['QC_status'] == 'closed') {
+                    $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = array('opened','closed');
+                    $tpl_data['existing_thread_data'][$z]['threadStatusLabelArray'] = array('reopen','closed');
+                } else {
+                    $tpl_data['existing_thread_data'][$z]['doNotShowStatusField'] = FALSE;
+                }
+            } else {
+                // all other users
+                if ($thread['QC_status'] == 'opened') {
+                    $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = 'answered';
+                } else {
+                    $tpl_data['existing_thread_data'][$z]['threadStatusArray'] = $thread['QC_status'];
+                }
+            }
 
-           } else {
-               $tpl_data['thread_entry'][] = $success1;
-               $tpl_data['thread_list_data'][$z]['QC_color'] = $feedback->getThreadColor($thread['QC_status']);
-           }
-           $z++;
-       }
+            $tpl_data['form_error_message'][$thread["FeedbackID"]] = "my message ".$thread["FeedbackID"];
+
+            $success1 = $feedback->getThreadEntries($thread["FeedbackID"]);
+            if (PEAR::isError($success1)) {
+
+                $tpl_data['thread_list_data'][$z]['error_message'] = $success1->getMessage();
+
+            } else {
+                $tpl_data['thread_entry'][] = $success1;
+                $tpl_data['thread_list_data'][$z]['QC_color'] = $feedback->getThreadColor($thread['QC_status']);
+            }
+            $z++;
+        }
     }
-        
+
     // option array for select boxes - 2 arrays; one is for labels
     $tpl_data['threadYNLabelArray'] = array('Y' => 'Yes', 'N' => 'No');
     $tpl_data['threadYNArray'] = array('Y' => 'Y', 'N' => 'N');
 }
 
 /**
-* prepare form data
-*/
+ * prepare form data
+ */
 //define action url for the feedback form in the template
 $tpl_data['formAction'] = $_SERVER['PHP_SELF']."?candID=".$_REQUEST['candID']."&";
 if (!empty($_REQUEST['sessionID'])) {
