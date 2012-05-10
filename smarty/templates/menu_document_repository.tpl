@@ -24,9 +24,9 @@
         <td>{$form.For_site.html}</td>
     </tr>
     <tr>
-    {if $Normal_Perm}
+<!--    {if $Normal_Perm}-->
 	    <td align="left"><button id = "upload" name = "upload" class = "button" style = "background-color: #696">Upload File</button></td>
-    {/if}
+<!--    {/if}-->
 
         <td nowrap="nowrap" width="10%"></td>
         <td colspan="14" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=document_repository&reset=true'" /></td>

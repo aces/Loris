@@ -110,19 +110,21 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
             $list_of_instruments[$instrument['Instrument']] = $instrument['Instrument'];
         }
 
-	    $fileNames = $DB->pselect("Select File_name from document_repository");
+	    $fileNames = $DB->pselect("Select File_name from document_repository", array());
     	$fileTypes = array();
 	    $fileT = array();
 	    foreach ($fileNames as $name) {
 		    $fileExt[$name['File_name']] = $name['File_name'];
         }
 
-	    foreach ($fileExt as $field=>$value) {
-		    $parts = pathinfo($value);
-		    $extension = $parts['extension'];
-		    $DB->update("document_repository", array("File_type"=>$extension), array('File_name'=>$value));
-		    $fileT = $DB->pselect("SELECT DISTINCT File_type FROM document_repository order by File_type", array());
-	    }
+        if (is_array($fileExt)) {
+	        foreach ($fileExt as $field=>$value) {
+		        $parts = pathinfo($value);
+		        $extension = $parts['extension'];
+		        $DB->update("document_repository", array("File_type"=>$extension), array('File_name'=>$value));
+		        $fileT = $DB->pselect("SELECT DISTINCT File_type FROM document_repository order by File_type", array());
+	        }
+        }
 
 
 	    foreach($fileT as $fileType) {
