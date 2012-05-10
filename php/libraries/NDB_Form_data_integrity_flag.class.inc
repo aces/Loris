@@ -291,9 +291,9 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         global $DB;
         $is_error_set = false;
         $test_name = Utility::getTestNameUsingFullName($_REQUEST['instrument']);
-        $incomplete_candidates = $this->getIncompleteCandidates($test_name);
-        foreach ($fields as $field=>$value) {
-            if (preg_match('/initial_check/',$field,$matches)) {
+        $incomplete_candidates = $this->getIncompleteCandidates($test_name,$_REQUEST['visit_label']);
+        foreach ($fields as $field=>$value){
+            if (preg_match('/initial_check/',$field,$matches)){
                 $element_chopped = substr($field, 0, -14);//with visit_label bdi_qn1_pregnancy
                 list($name,$visit_label) = split(":", $element_chopped);
                 $flag_info = $DB->pselectRow("SELECT * FROM data_integrity_flag WHERE Name = :fn AND Visit_label = :vl",array('fn' =>$name,'vl'=>$visit_label)); //get the current data for the given NAME from the data_integrity_flag table
