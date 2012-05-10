@@ -1,0 +1,127 @@
+
+TD.tip {
+    TEXT-DECORATION: none
+}
+TD.tip:hover {
+    POSITION: relative
+}
+TD.tip SPAN {
+    DISPLAY: none
+}
+TD.tip:hover SPAN {
+    POSITION: absolute;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    padding: 4px;
+    DISPLAY: block;
+    Z-INDEX: 100;
+    BACKGROUND-color: #816e91;
+    TEXT-DECORATION: none
+    font-size: 10pt;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+}
+
+.ui-dialog, .ui-dialog-buttonpane {
+    background: #d4dcd2 !important;
+}
+.ui-dialog-titlebar {
+    background: #a6bca3 !important;
+}
+
+.form-fields {
+    float:right;
+    size:40;
+}
+.fieldset {
+    outline-style: none !important;
+
+}
+.ui-dialog .ui-dialog-content .ui-widget .ui-widget-content {
+    width: 350px !important;
+    height: 500px !important;
+}
+
+.selected {
+    background: #5f5964 !important;
+    color: #fff;
+    border: 1px solid #7e7783 !important;
+}
+
+.missing {
+    background: #f63;
+}
+
+label em {
+    position: absolute;
+    left: 35em;
+}
+
+.file-wrapper {
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+}
+
+.file-wrapper .button-file {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    padding: .5em 1em;
+}
+
+.file-wrapper input {
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    filter: alpha(opacity=1);
+    -moz-opacity: 0.05;
+    opacity: 0.01;
+    font-size: 100px;
+}
+
+.eggplant-button {
+    padding: .2em .5em;
+}
+
+.eggplant-button:hover {
+    background: #EAE6EA !important;
+    border: 1px solid #D1C5D8 !important;
+    color: #734D99 !important;
+}
+
+.eggplant-button:active {
+    background: #5f5964 !important;
+    border: 1px solid #7e7783 !important; 
+    color: #ffffff !important; 
+    font-weight: bold !important; 
+}
+
+.upload-success {
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
+}
+
+.edit-success {
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
+}
+
+.delete-success {
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
+}
+
+.no-files {
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
+}
