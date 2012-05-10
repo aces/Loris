@@ -12,8 +12,8 @@ if(PEAR::isError($DB)) {
 
 $rid = $_POST['id'];
 
-$fileName = $DB->selectOne("Select File_name from document_repository where record_id = '$rid'"); 
-$userName = $DB->selectOne("Select uploaded_by from document_repository where record_id = '$rid'"); 
+$fileName = $DB->pselectOne("Select File_name from document_repository where record_id =:identifier", array(':identifier' => $rid)); 
+$userName = $DB->pselectOne("Select uploaded_by from document_repository where record_id =:identifier", array(':identifier'=> $rid)); 
 $DB->delete("document_repository", array("record_id" => $rid));
 
 

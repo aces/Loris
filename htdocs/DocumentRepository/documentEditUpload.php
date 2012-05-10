@@ -28,8 +28,9 @@ if ($action == 'upload')
     $base_path = "document_repository";
     $target_path = $base_path; 
 
-    if (!file_exists($base_path . $user))
+    if (!file_exists($base_path . $user)) {
         mkdir("document_repository/" . $user, 0777);
+    }
 
     $target_path = $target_path . "/" . $user ."/" . $fileName;  
     chmod($target_path, 0777);
