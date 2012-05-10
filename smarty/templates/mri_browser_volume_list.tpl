@@ -209,6 +209,7 @@ return true;
             {if $files[fIdx].echoTime != "" && $files[fIdx].echoTime != "0.00" }<tr><th width="100px">Echo Time</th><td>{$files[fIdx].echoTime} ms{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].repetitionTime != "" && $files[fIdx].repetitionTime != "0.00"}<tr><th width="100px">Rep Time</th><td>{$files[fIdx].repetitionTime} ms{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].sliceThickness != ""&& $files[fIdx].sliceThickness != "0.00"}<tr><th width="100px">Slice Thick</th><td>{$files[fIdx].sliceThickness} mm{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].time != ""&& $files[fIdx].time != "0.00"}<tr><th width="100px">Nb of vol.</th><td>{$files[fIdx].time} volumes{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].Comment != ""}<tr><th width="100px">Comment</th><td>{$files[fIdx].Comment}{else}&nbsp;</td></tr>{/if}  
             </table>
         </td>        
