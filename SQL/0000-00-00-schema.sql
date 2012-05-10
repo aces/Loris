@@ -641,6 +641,7 @@ CREATE TABLE `mri_protocol` (
   `xstep_range` varchar(255) default NULL,
   `ystep_range` varchar(255) default NULL,
   `zstep_range` varchar(255) default NULL,
+  `time_range` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
