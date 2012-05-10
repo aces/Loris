@@ -1,11 +1,13 @@
 <?php
 require_once "NDB_Client.class.inc";
 $client =& new NDB_Client();
-$client->initialize("../project/config.xml");
+$client->initialize("../../project/config.xml");
 
 // create Database object
 $DB =& Database::singleton();
-if(PEAR::isError($DB)) { print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die(); }
+if(PEAR::isError($DB)) { 
+    print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die(); 
+}
 
 
 $action = $_POST['action'];
@@ -27,14 +29,14 @@ if ($action == 'upload')
     $target_path = $base_path; 
 
     if (!file_exists($base_path . $user))
-	mkdir("document_repository/" . $user, 0777);
+        mkdir("document_repository/" . $user, 0777);
 
     $target_path = $target_path . "/" . $user ."/" . $fileName;  
     chmod($target_path, 0777);
 
     $success = $DB->insert('document_repository', array('File_category'=>$category, 'For_site'=>$site, 'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName, 'Data_dir'=>$target_path, 'uploaded_by'=>$user)); 
 
-    header("Location: http://132.216.67.69:7080/main.php?test_name=document_repository");
+    header("Location: http://132.216.67.69:7080/main.php?test_name=document_repository&uploadSuccess=true");
 
 }
 

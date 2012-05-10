@@ -102,13 +102,19 @@ label em {
     font-weight: bold !important; 
 }
 
-.edit-success .delete-success {
+.upload-success {
     font-weight: bold;
     size: 1.1em;
     color: #696;
 }
 
-.delete-success  p {
+.edit-success {
+    font-weight: bold;
+    size: 1.1em;
+    color: #696;
+}
+
+.delete-success {
     font-weight: bold;
     size: 1.1em;
     color: #696;

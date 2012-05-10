@@ -2,11 +2,13 @@
 
 require_once "NDB_Client.class.inc";
 $client =& new NDB_Client();
-$client->initialize("../project/config.xml");
+$client->initialize("../../project/config.xml");
 
 // create Database object
 $DB =& Database::singleton();
-if(PEAR::isError($DB)) { print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die(); }
+if(PEAR::isError($DB)) { 
+    print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die(); 
+}
 
 $rid = $_POST['id'];
 
@@ -18,6 +20,6 @@ $DB->delete("document_repository", array("record_id" => $rid));
 $path = "document_repository/" . $userName . "/" . $fileName;
 
 if (file_exists($path))
-        unlink($path);
+    unlink($path);
 
 ?>
