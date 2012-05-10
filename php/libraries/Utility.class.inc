@@ -89,8 +89,8 @@ class Utility extends PEAR
         if($testdate['mon'] < $dob['mon']) { $testdate['mon']+= 12; $testdate['year']--; }
 
         $age = array('year'=>$testdate['year'] - $dob['year'],
-                     'mon' =>$testdate['mon'] - $dob['mon'],
-                     'day' =>$testdate['day'] - $dob['day']);
+                'mon' =>$testdate['mon'] - $dob['mon'],
+                'day' =>$testdate['day'] - $dob['day']);
 
         return $age;
     }
@@ -124,7 +124,7 @@ class Utility extends PEAR
         return $list;
     }
 
-     /**
+    /**
      * Returns a list of existing ethnicities of all candidates
      *
      * @return array       an associative array("ethnicity" => "ethnicity")
@@ -202,11 +202,11 @@ class Utility extends PEAR
         // get the list of Subprojects
         $subprojectSettings= $config->getSetting('subprojects');
         foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-    		$list[$subproject['id']]=$subproject['title'];
-    	}
+            $list[$subproject['id']]=$subproject['title'];
+        }
         return $list;
     }
-    
+
     /**
      * Returns the test name associated with a given commentID
      * @throws PEAR_Error
@@ -217,17 +217,17 @@ class Utility extends PEAR
     function getTestNameByCommentID($commentID)
     {
         $db =& Database::singleton();
-        
+
         $query = "SELECT Test_name FROM flag WHERE CommentID='$commentID'";
         $testName = $db->selectOne($query);
-        
+
         if(PEAR::isError($testName)) {
             return PEAR::raiseError("Could not get test name: ".$testName->getMessage());
         }
-        
+
         return $testName;
     }
-    
+
     /**
      * Cleans a string to make it safe for variables and such
      * @param  string  the string to clean
@@ -260,42 +260,42 @@ class Utility extends PEAR
     function structureToPCRE($structure, $siteAbbrev=null)
     {
         $seqs = $structure['seq'];
-	// handle the situation where there exists only one seq
+        // handle the situation where there exists only one seq
         if(isset($seqs['#'])) $seqs = array($seqs);
         $regex = "";
         foreach($seqs AS $seq) {
             $unit = "";
 
             switch($seq['@']['type']) {
-            case 'alpha':
-                $unit .= '[a-z]';
-                break;
+                case 'alpha':
+                    $unit .= '[a-z]';
+                    break;
 
-            case 'alphanumeric':
-                $unit .= '[0-9a-z]';
-                break;
+                case 'alphanumeric':
+                    $unit .= '[0-9a-z]';
+                    break;
 
-            case 'numeric':
-                $unit .= '[0-9]';
-                break;
+                case 'numeric':
+                    $unit .= '[0-9]';
+                    break;
 
-            case 'static':
-                $unit .= '('.$seq['#'].')';
-                break;
-
-            case 'set':
-                if(strpos($seq['#'], '|') !== false) {
+                case 'static':
                     $unit .= '('.$seq['#'].')';
-                } else {
-                    $unit .= '['.$seq['#'].']';
-                }
-                break;
+                    break;
 
-            case 'siteAbbrev':
-                $unit .= $siteAbbrev;
-                break;
+                case 'set':
+                    if(strpos($seq['#'], '|') !== false) {
+                        $unit .= '('.$seq['#'].')';
+                    } else {
+                        $unit .= '['.$seq['#'].']';
+                    }
+                    break;
+
+                case 'siteAbbrev':
+                    $unit .= $siteAbbrev;
+                    break;
             } // end switch
-            
+
             $length = "";
             if(isset($seq['@']['length'])) {
                 $length .= $seq['@']['length'];
@@ -339,7 +339,7 @@ class Utility extends PEAR
         if (empty($merged_array)) $merged_array = $array1;
         foreach ($array2 AS $key=>$value) {
             if (is_array($array1[$key]) && isset($array1[$key][0])) {
-                $merged_array[$key] = $value; 
+                $merged_array[$key] = $value;
             } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
                 Utility::array_merge_recursive_overwriting($array1[$key], $array2[$key], &$merged_array[$key]);
             } else {
@@ -348,17 +348,17 @@ class Utility extends PEAR
         }
         return $merged_array;
     }
-    
+
     /**
-    * returns a list of bvl instruments
-    * returns a list of instruments for a timepoint's stage ($stage). If no stage arg is passed, return the full list for all stages
-    * @param int age in days
-    * @param string study stage (screening or visit)
-    * @return array list of instruments
-    * @throws PEAR::error
-    * @static
-    * @access public
-    */
+     * returns a list of bvl instruments
+     * returns a list of instruments for a timepoint's stage ($stage). If no stage arg is passed, return the full list for all stages
+     * @param int age in days
+     * @param string study stage (screening or visit)
+     * @return array list of instruments
+     * @throws PEAR::error
+     * @static
+     * @access public
+     */
     function lookupBattery($age, $stage=null)
     {
         $DB =& Database::singleton();
@@ -389,7 +389,7 @@ class Utility extends PEAR
         // return an array of test names
         return $tests;
     }
-    
+
     //toArray ensures that $var is a collection of $var elements, not just a single element
     //If this makes no sense to you, examine the way the xml parser deals with multiple elements of the same name.
     //Note: This does not change a string into an array with one string element
@@ -399,7 +399,7 @@ class Utility extends PEAR
         }
         return $var;
     }
-    
+
     //asArray ensures that $var is a collection elements, not just a single element
     //Not the same as toArray, apparently.
     function asArray($var){
@@ -408,62 +408,62 @@ class Utility extends PEAR
         }
         return $var;
     }
-    
+
     //Explodes an encapsulted, delimited string like 'hello','my name is \'bob\'', 'etc'
     function explodeEncapsulated($seperator, $delimiter, $string){
-		$state=0;
-		$output=$string;
-		$output_index=0;
-	
-		for($i=0;$i<strlen($string);$i++){
-			switch($string[$i]){
-				case $delimiter:
-					if($string[$i-1]!="\\"){
-    					$output=substr_replace($output,"",$output_index, 1);
-    					$output_index--;
-    				}
-    			break;
-    			
-    			case $seperator:
-    				if($state%2==0){
-    					$output=substr_replace($output,"{@}",$output_index, 1);
-    					$output_index+=2;
-    				}
-    			break;
-			}
-			$output_index++;
-		}
-		$output=str_replace("\\".$delimiter, $delimiter, $output);
-		return explode("{@}",$output);
-    }
-    
-    
-	//From php.net    
-	function arrayMergeKeepKeys() {
-	     $arg_list = func_get_args();
-	     foreach((array)$arg_list as $arg){
-	         foreach((array)$arg as $K => $V){
-	             $Zoo[$K]=$V;
-	         }
-	     }
-	   return $Zoo;
-	}
+        $state=0;
+        $output=$string;
+        $output_index=0;
 
-	// from php.net comments
-	function in_array_insensitive($item, $array) {
-	    $item = &strtoupper($item);
-	    foreach($array as $element) {
-	        if ($item == strtoupper($element)) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-   
+        for($i=0;$i<strlen($string);$i++){
+            switch($string[$i]){
+                case $delimiter:
+                    if($string[$i-1]!="\\"){
+                        $output=substr_replace($output,"",$output_index, 1);
+                        $output_index--;
+                    }
+                    break;
+
+                case $seperator:
+                    if($state%2==0){
+                        $output=substr_replace($output,"{@}",$output_index, 1);
+                        $output_index+=2;
+                    }
+                    break;
+            }
+            $output_index++;
+        }
+        $output=str_replace("\\".$delimiter, $delimiter, $output);
+        return explode("{@}",$output);
+    }
+
+
+    //From php.net
+    function arrayMergeKeepKeys() {
+        $arg_list = func_get_args();
+        foreach((array)$arg_list as $arg){
+            foreach((array)$arg as $K => $V){
+                $Zoo[$K]=$V;
+            }
+        }
+        return $Zoo;
+    }
+
+    // from php.net comments
+    function in_array_insensitive($item, $array) {
+        $item = &strtoupper($item);
+        foreach($array as $element) {
+            if ($item == strtoupper($element)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function getAllInstruments() {
         $DB =& Database::singleton();
         $DB->select("SELECT Test_name FROM test_names", &$instruments_q);
-        
+
         // This array_map call turns the result of the above query to
         // a non-associative array, so that we can use the array_combine
         // trick to get an array of the form array( 'test_name' => 'test_name')
@@ -476,6 +476,113 @@ class Utility extends PEAR
         $instruments = array_combine($in, $in);
         return $instruments;
 
-   }
+    }
+
+    /**
+     * Checks to see if the given table exists
+     *
+     * @param unknown_type $options
+     * @param unknown_type $table
+     * @param unknown_type $name
+     * @return unknown
+     */
+    function ColumnExists($test_name,$column)
+    {
+        $config =& NDB_Config::singleton();
+        $database = $config->getSetting('database');
+        $query = "SELECT DISTINCT table_name FROM information_schema.columns WHERE table_name = :tn and COLUMN_NAME = :cn and TABLE_SCHEMA = :db";
+        $DB =& Database::singleton();
+        $effected = $DB->pselectOne($query,array('tn'=>$test_name,'cn'=>$column, 'db'=>$database));
+        if ($effected) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the Visit Label for a given commentID
+     * @throws PEAR_Error
+     * @return string  visitlabel
+     * @access public
+     * @static
+     */
+    function getVisitLabelUsingTestName($test_name)
+    {
+        $db =& Database::singleton();
+        $query = "SELECT DISTINCT s.visit_label FROM session s
+            JOIN flag f ON (s.ID = f.SessionID)
+            JOIN candidate c ON (c.Candid = s.Candid)
+            JOIN psc ON (s.CenterID = psc.CenterID)
+            WHERE s.Active = 'Y' AND c.Active= 'Y' AND f.Test_name = :tn AND psc.Centerid!= '1'";
+
+        $visitlabels = $db->pselect($query,array('tn'=>$test_name));
+        if(PEAR::isError($visitlabels)) {
+            return PEAR::raiseError("Could not get visit label: ".$visitlabels->getMessage());
+        }
+        return $visitlabels;
+    }
+    /**
+     * looks up the test_name for the current full name
+     *
+     * @return string        test_name of the instrument
+     * @access public
+     */
+
+    function getTestNameUsingFullName($fullname)
+    {
+        $db =& Database::singleton();
+        //print_r($instument);
+        $instrument = $db->pselect("SELECT Test_name FROM test_names WHERE Full_name =:fname",array('fname'=>$fullname));
+        if(is_array($instrument) && count($instrument)) {
+            //$full_name = $names[0]
+            list(,$test_name) = each($instrument[0]);
+        }
+        return $test_name;
+    }
+
+    /**
+     * Returns all the sourcefrom instruments from parameter_type (which exist in the data_integrity flag table) using the test_names
+     * full_name
+     *
+     * @return unknown
+     */
+    function getSourcefrom()
+    {
+        $DB =& Database::singleton();
+
+        $sourcefrom = $DB->pselect("SELECT DISTINCT t.Full_name FROM parameter_type pt
+                JOIN data_integrity_flag di ON (pt.Name = di.Name)
+                JOIN test_names t ON (t.test_name = pt.sourcefrom)
+                WHERE pt.sourcefrom IS NOT NULL
+                ORDER BY t.Full_name",array());
+
+        foreach ($sourcefrom as $table) {
+            if (!is_null($table)) {
+                $result[$table['Full_name']] = $table['Full_name'];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Returns all the sourcefrom instruments from parameter_type
+     *
+     * @return unknown
+     */
+    function getSourcefields($instrument=null,$commentID=null,$name=null)
+    {
+        $DB =& Database::singleton();
+        //get sourcefield using instrument
+        if (!is_null($instrument)) {
+            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :sf ORDER BY Name ", array('sf'=>$sourcefields));
+        } elseif (!is_null($commentID)) { //get sourcefield using commentid
+            $instrument = $DB->pselectOne("SELECT Test_name FROM flag WHERE CommentID = :cid" , array('cid'=>$commentID));
+            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :instrument ORDER BY Name ", array('instrument'=>$instrument));
+        } elseif (!is_null($name)) { //get all source fields
+            $sourcefields = $DB->pselectRow("SELECT * FROM parameter_type WHERE Name = :pn", array('pn'=>$name));
+        } else {
+        }
+        return $sourcefields;
+    }
 }
 ?>

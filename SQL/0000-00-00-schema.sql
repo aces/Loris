@@ -224,11 +224,13 @@ CREATE TABLE `feedback_bvl_thread` (
   `Date_taken` date default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `FieldName` text NOT NULL default '',
   PRIMARY KEY  (`FeedbackID`),
   KEY `FK_feedback_bvl_thread_1` (`Feedback_type`),
   CONSTRAINT `FK_feedback_bvl_thread_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO feedback_bvl_thread (FieldName) values("Across All Fields");
 --
 -- Dumping data for table `feedback_bvl_thread`
 --
@@ -250,7 +252,6 @@ CREATE TABLE `feedback_bvl_type` (
   PRIMARY KEY  (`Feedback_type`),
   UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
 --
 -- Dumping data for table `feedback_bvl_type`
 --
@@ -989,7 +990,7 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2');
+INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'fieldname_integrity',' Fieldname Integrity','2');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1501,6 +1502,24 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ystep_range` varchar(255) DEFAULT NULL,
   `zstep_range` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`));
+
+DROP TABLE IF EXISTS `data_integrity_flag`;
+CREATE TABLE `data_integrity_flag` (
+                `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                `Name` varchar(255) DEFAULT '',
+                `initial_check` enum('','1','2','3') DEFAULT null,
+                `Comment` text  DEFAULT Null,
+                `Last_access` DATETIME DEFAULT null,
+                `percent_completed` int(11) unsigned DEFAULT NULL,
+                `Visit_label` varchar(255) DEFAULT '',
+                `initial_check_date` date DEFAULT null,
+                 UNIQUE KEY `Visit_lable_Name` (`Name`,`Visit_label`),
+                 PRIMARY KEY (`ID`));
+
+LOCK TABLES `data_integrity_flag_logs` WRITE;
+UNLOCK TABLES;
+
+
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
