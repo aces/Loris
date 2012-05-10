@@ -19,6 +19,19 @@ SITE.fileInputs = function() {
   }
 };
 
+
+function getParameterByName(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.search);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 var filtered;
 
 $(document).ready(function() {
@@ -30,6 +43,13 @@ $(document).ready(function() {
     $('.upload-error').hide();
     $('.file-error').hide();
     $('.no-files').hide();
+
+    var uploadSuccess = getParameterByName('uploadSuccess');
+    if (uploadSuccess)
+    {
+	$('.upload-success').show();
+	setTimeout( "$('.upload-success').hide();", 5000 );
+    }
 
     //Open confirmation dialog on Delete click
     var id;
@@ -47,7 +67,7 @@ $(document).ready(function() {
              },
              "Yes" : function() {
                  $.ajax({
-                    url: "documentDelete.php", 
+                    url: "DocumentRepository/documentDelete.php", 
                     type: "POST",
                     data: {id:id}, 
                     success: function(){
@@ -94,9 +114,9 @@ $(document).ready(function() {
         width: 400,
         modal: true,
         cache: false,
-        close: function() {
-            allFields.val( "" ).removeClass( "ui-state-error" );
-        },
+       // close: function() {
+         //   allFields.val( "" ).removeClass( "ui-state-error" );
+       // },
 	buttons:{
             "Cancel": function() { 
 	        $(this).dialog("close");					
@@ -117,7 +137,7 @@ $(document).ready(function() {
 
                   $.ajax({
                      type: "POST",
-                     url: "documentUpload.php",
+                     url: "DocumentRepository/documentEditUpload.php",
                      data: data,
  	             success: function(){    
                      $('.edit-success').show();
@@ -141,7 +161,7 @@ $(document).ready(function() {
 
 	$.ajax({
      	    type: "GET",
-  	    url: "getFileData.php",
+  	    url: "DocumentRepository/getFileData.php",
             data: {id:id}, 
             async: false,
 	    dataType: "json",
@@ -182,43 +202,48 @@ $(document).ready(function() {
         section = id.substring(7);
         section_el = $(".categories_" + section);
 
-	if (section_el.is(':visible')) {
+	    if (section_el.is(':visible')) {
             return true;
-	}
-	else {
-	    return false;
-	}
+	    }
+	    else {
+	        return false;
+	    }
     }
+
 
     //If using the search filter, open divs with appropriate results
     if ($("#filterTable").attr('data-filter') == "true") {
-	$(".accordionHeaders").show();
-        $(".categories").show();
 
-	$(".categories_header").each(function(idx, el) { 
-	    isOpen = openSection(idx, el);
-	    if (isOpen) {
-		$(this).addClass('selected');
-	    }    
-	    else {
+        $(".categories").show();
+        var count = 0;
+
+	    $(".categories_header").each(function(idx, el) { 
+	        isOpen = openSection(idx, el);
+	        if (isOpen) {
+	            $(".accordionHeaders").show();
+		        $(this).addClass('selected');
+                count++;
+	        }    
+	    });
+
+	    if(count<1) { 
 	        $(".accordionHeaders").hide();
-		$('.no-files').show();
-		setTimeout( "$('.no-files').hide();", 5000 );
+		    $('.no-files').show();
+		    setTimeout( "$('.no-files').hide();", 5000 );
 	    }
-	});
     }
 
     //If using table header filters, open divs with appropriate results
     if ($('#accordionTable').attr('data-open') == "true") {
-	$(".accordionHeaders").show();
+	    $(".accordionHeaders").show();
         $(".categories").show();
 
-	$(".categories_header").each(function(idx, el) { 
-	    isOpen = openSection(idx, el);
-	    if (isOpen) {
-		$(this).addClass('selected');
-	    }    
-	});
+	    $(".categories_header").each(function(idx, el) { 
+	        isOpen = openSection(idx, el);
+	        if (isOpen) {
+		        $(this).addClass('selected');
+	        }    
+	    });
     }
 
 
@@ -235,26 +260,25 @@ $(document).ready(function() {
             section_el = $(".categories_" + section);
             section_el.toggle();
 	
-	    var count = 0;
-	    if(section_el.is(':visible')) {
+	        var count = 0;
+	        if(section_el.is(':visible')) {
     	        $(".accordionHeaders").show();
-	        $(this).addClass('selected');
-	    }
-	    else {
-	    	$(this).removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	        else {
+	    	    $(this).removeClass('selected');
 
-		$(".categories_header").each(function(idx, el) {
-	    	    isOpen = openSection(idx, el);
-	    	    if (isOpen) {
-		        count++;
-		    }
-		});
-		if (count<1) {
+		        $(".categories_header").each(function(idx, el) {
+	    	        isOpen = openSection(idx, el);
+	    	        if (isOpen) {
+		                count++;
+		            }
+		        });
+		        if (count<1) {
     	            $(".accordionHeaders").hide();
-		}
-	    }	
-			
-	}
+		        }
+	        }		
+	    }
     }
 	
 
