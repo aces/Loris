@@ -477,5 +477,13 @@ class Utility extends PEAR
         return $instruments;
 
    }
+   
+   	function getColumnThresholdCount(){
+   	    $config =& NDB_Config::singleton();
+		// get the list of Subprojects
+		$column_threshold= $config->getSetting('columnThreshold');
+		return $column_threshold;
+	}
+
 }
 ?>
