@@ -296,7 +296,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             if (preg_match('/initial_check/',$field,$matches)) {
                 $element_chopped = substr($field, 0, -14);//with visit_label bdi_qn1_pregnancy
                 list($name,$visit_label) = split(":", $element_chopped);
-                $flag_info = $DB->pselectRow("SELECT * FROM data_integrity_flag WHERE Name = :'fn' AND Visit_label = :vl",array('fn' =>$name,'vl'=>$visit_label)); //get the current data for the given NAME from the data_integrity_flag table
+                $flag_info = $DB->pselectRow("SELECT * FROM data_integrity_flag WHERE Name = :fn AND Visit_label = :vl",array('fn' =>$name,'vl'=>$visit_label)); //get the current data for the given NAME from the data_integrity_flag table
                 $parameter_type_info =Utility::getSourcefields(null,null,$name);
                 $field_name = $parameter_type_info['SourceField'];
                 if ($value !=null) {
@@ -326,8 +326,10 @@ class NDB_Form_data_integrity_flag extends NDB_Form
                         if ($this->FieldInConflict($test_name,$field_name,$visit_label)) {
                             $errors[$field] .= "$field_name(VISIT: $visit_label ): There are unresolved conflicts (refer to column Conflcit)<BR>";
                         }
-
-                        if ($DB->pselectOne("SELECT count(*) FROM feedback_bvl_thread WHERE FieldNAme = :'fn' AND Status!='Closed'", array('fn'=>$field_name))>0) {
+                        $query = "SELECT count(*) FROM feedback_bvl_thread bvl
+                            JOIN session s ON (s.ID=bvl.SessionID) 
+                            WHERE FieldNAme = :fn AND s.Visit_label = :vl AND Status!='Closed'";
+                        if ($DB->pselectOne($query, array('fn'=>$field_name, 'vl'=>$visit_label))>0) {
                             $errors[$field] .= "There are currently feedbacks not yet closed (refer to Link to BVL feedback)<BR>";
                         }
                     }
