@@ -113,10 +113,10 @@ foreach($result as $test) {
     log_msg("Running scoring for $test_name");
     log_msg("------------------------------");
 
-    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID
+    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID, c.PSCID
         FROM candidate as c, session as s, flag as f, $test_name as t
         WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
-        AND s.Active = 'Y' AND s.Cancelled = 'N' AND c.Active='Y' AND c.Cancelled='N'
+        AND s.Active = 'Y' AND c.Active='Y' AND c.PSCID NOT LIKE 'dcc%'
         AND f.Test_name = '$test_name' AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
     if ($action=='one') {
         $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";
@@ -149,7 +149,7 @@ foreach($result as $test) {
         }
 
         // print out candidate/session info
-        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: \n");
+        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: ($record[PSCID])\n");
         fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
 
         // call the score function
