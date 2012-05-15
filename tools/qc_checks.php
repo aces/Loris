@@ -15,7 +15,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 
-$tests = $DB->pselect("SELECT Test_name FROM test_names WHERE Test_name NOT LIKE '%_proband' AND Test_name NOT LIKE 'EARLI%'", array()) ;
+$tests = $DB->pselect("SELECT Test_name FROM test_names WHERE Test_name NOT LIKE '%_proband' AND Test_name NOT LIKE 'EARLI%' AND Test_name NOT LIKE 'figs%'", array()) ;
 /* ************************************************************************* */
 // Determine instruments where administration < DoB, or sessions where Visit < DoB
 /* ************************************************************************* */
