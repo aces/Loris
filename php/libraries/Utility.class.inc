@@ -574,7 +574,7 @@ class Utility extends PEAR
         $DB =& Database::singleton();
         //get sourcefield using instrument
         if (!is_null($instrument)) {
-            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :sf ORDER BY Name ", array('sf'=>$sourcefields));
+            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :sf ORDER BY Name ", array('sf'=>$instrument));
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument = $DB->pselectOne("SELECT Test_name FROM flag WHERE CommentID = :cid" , array('cid'=>$commentID));
             $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :instrument ORDER BY Name ", array('instrument'=>$instrument));
