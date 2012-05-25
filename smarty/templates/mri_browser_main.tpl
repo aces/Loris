@@ -132,13 +132,6 @@ JSFX_FloatDiv("divBottomLeft",    10, 350).flt();
         <!-- Start Section on the left -->
         <table border="0" valign="top" cellpadding="1" cellspacing="1" width="100px"><tr>
         
-        {if $efax.assigned_dir!=""}
-        <tr>
-            <td class="controlPanelItem">
-                <a href="mri_efax.php?mri_efax_screen=assigned" target="MRI_EFAX"><img src="images/transfer.gif" alt="MRI Parameter Forms" border="0" width="12" height="12">&nbsp;MRI Parameter Forms</a>
-            </td>
-        </tr>
-        {/if}        
         <tr>
             <td class="controlPanelItem">
                 <a href="{$mantis}" target="mantis"><img src="images/transfer.gif" alt="Mantis" border="0" width="12" height="12">&nbsp;Mantis</a>
