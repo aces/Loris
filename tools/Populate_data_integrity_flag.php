@@ -7,7 +7,7 @@
  */
 include_once("../tools/generic_includes.php");
 include_once("Utility.class.inc");
-$query = "SELECT Name, sourcefrom, ParameterTypeID, Description FROM parameter_type WHERE queryable = '1' AND SourceFrom NOT IN ('candidate','session');";
+$query = "SELECT Name, Sourcefrom, ParameterTypeID, Description FROM parameter_type WHERE Queryable = '1' AND SourceFrom NOT IN ('candidate','session');";
 $parameter_types = $DB->pselect($query,array());
 foreach($parameter_types as $parameter_type) {
     $visit_labels = Utility::getVisitLabelUsingTestName($parameter_type['sourcefrom']);

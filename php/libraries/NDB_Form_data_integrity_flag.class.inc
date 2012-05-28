@@ -29,14 +29,14 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $defaults = array();
         $DB =& Database::singleton();
         $params = array();
-        $extra_where .= $this->AddWhere("p.sourcefrom", 'instrument');
+        $extra_where .= $this->AddWhere("p.SourceFrom", 'instrument');
         $params ['tn'] =
             $extra_where .= $this->AddWhere("p.Name", 'FieldName');
-        $orderby = " ORDER BY p.sourceFrom,p.sourceField";
+        $orderby = " ORDER BY p.SourceFrom,p.SourceField";
 
         //construct the query
         if (($extra_where) !=null) {
-            $query = "SELECT DISTINCT d.Visit_label,d.initial_check_date,p.sourceFrom,p.sourceField,d.Name, d.initial_check, p.description,d.Comment,d.percent_completed,d.Last_access FROM data_integrity_flag d
+            $query = "SELECT DISTINCT d.Visit_label,d.initial_check_date,p.SourceFrom,p.SourceField,d.Name, d.initial_check, p.description,d.Comment,d.percent_completed,d.Last_access FROM data_integrity_flag d
                 JOIN parameter_type p ON (d.Name = p.Name) WHERE 1=1 $extra_where";
             $DB->select($query,  $info);
             foreach ($info as $data) {
@@ -193,24 +193,24 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             $this->tpl_data['percent_completed'] = $percet_completed;
         }
         //Constructs the where clause...
-        $extra_where .= $this->AddWhere("p.sourcefrom", 'instrument');
+        $extra_where .= $this->AddWhere("p.SourceFrom", 'instrument');
         $extra_where .= $this->AddWhere("p.Name", 'FieldName');
         $extra_where .= $this->AddWhere("d.initial_check", 'initial_check');
-        $extra_where .= $this->AddWhere("f.data_entry", 'completion_status');
+        $extra_where .= $this->AddWhere("f.Data_entry", 'completion_status');
         $extra_where .= $this->AddWhere("s.Current_stage", 'sent_to_dcc_status');
         $extra_where .= $this->AddWhere("d.Visit_label", 'visit_label');
         $extra_where .= $this->AddWhere("psc.CenterID", 'center_id');
 
-        $orderby = " ORDER BY p.sourceFrom,p.sourceField";
+        $orderby = " ORDER BY p.SourceFrom,p.SourceField";
         //construct the query
         if (($extra_where) !=null) {
-            $query = "SELECT DISTINCT psc.Name as center_name, p.sourceFrom,p.sourceField,d.Visit_label,d.Name,d.Last_access, d.initial_check,d.initial_check_date,percent_completed, p.description,d.Comment FROM session s
+            $query = "SELECT DISTINCT psc.Name as center_name, p.SourceFrom,p.SourceField,d.Visit_label,d.Name,d.Last_access, d.initial_check,d.initial_check_date,percent_completed, p.description,d.Comment FROM session s
                 JOIN flag f ON (f.sessionid = s.id)
-                JOIN parameter_type p on (p.sourceFrom=f.test_name)
+                JOIN parameter_type p on (p.SourceFrom=f.Test_name)
                 JOIN data_integrity_flag d on (d.Name = p.Name) 
                 JOIN candidate c on (c.CandID = s.CandID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE s.candid = c.candid AND s.Active = 'Y' AND c.Active = 'Y' AND psc.Centerid!= '1' $extra_where $orderby";
+                WHERE s.CandID = c.CandID AND s.Active = 'Y' AND c.Active = 'Y' AND psc.Centerid!= '1' $extra_where $orderby";
             $DB->select($query,  $info);
         }
         ///////////////////////////////////////////////////////////////
@@ -229,7 +229,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         //Loop through the conflicts and add a row per
         foreach($info AS $data) {
             $name = $data['Name'];
-            $List_of_feedbacks = $this->getFeedbacks($data['sourceField'],$data['sourceFrom'],$data['Visit_label']);
+            $List_of_feedbacks = $this->getFeedbacks($data['SourceField'],$data['SourceFrom'],$data['Visit_label']);
             $initial_check = $data['Name'] . ":" . $data['Visit_label'] . ':initial_check'; //create a unique variable name..
             $comment = $data['Name'] . ":" .  $data['Visit_label'] . ':Comment'; //create a unique variable name..
             $date = $data['Name'] . ":" . $data['Visit_label'] . ':date_flag';
@@ -239,7 +239,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             ///create the quickform elements
             $this->form->addElement("select", $initial_check, 'initial check', array(''=>'',"1"=>'1- Validation/Completion',"2"=>'2- Statistical Verification', "3"=>'3- Finalization'));
             $this->form->addElement("textarea", $comment, 'Comment',array('rows' => 2, 'cols' => 20));//comment box
-            $this->form->addElement("static", "instrument", $data['sourceFrom']);//comment box
+            $this->form->addElement("static", "instrument", $data['SourceFrom']);//comment box
             $this->form->addElement('date', $date, "Date of initial check", $dateOptions); //date drop down
             $this->form->addElement('hidden',$data['Name'], $data['Name']); //date drop down
             $this->form->addElement('static', $Last_access, 'DAte of Flag Change'); //Date of flag Change
@@ -248,8 +248,8 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             //template data...
             $this->tpl_data['elements_list_names'][] = $data['Name'];//contains the list of data field names...
             $this->tpl_data['Visit_label_list'][] = $data['Visit_label'];//contains the visit_label for each element...
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['sourcefield'] = $data['sourceField'];
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['sourcefrom'] = $data['sourceFrom'];
+            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['sourcefield'] = $data['SourceField'];
+            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['sourcefrom'] = $data['SourceFrom'];
             $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['visit_label'] = $data['Name'] . "_" . $data['Visit_label'];
             $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['Description'] =$data['description'];
             $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['initial_check'] = $initial_check;
@@ -272,7 +272,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
                     $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['visit_label'] = $feedback['visit_label'];
                     $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['Status'] = $feedback['Status'];
                     $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['QC_color'] = $fb->getThreadColor($feedback['Status']);
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['test_name'] =$data['sourceFrom'];
+                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['test_name'] =$data['SourceFrom'];
                     $counter++;
                 }
             }
@@ -326,7 +326,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
                         if ($this->FieldInConflict($test_name,$field_name,$visit_label)) {
                             $errors[$field] .= "$field_name(VISIT: $visit_label ): There are unresolved conflicts (refer to column Conflcit)<BR>";
                         }
-                        $query = "SELECT count(*) FROM feedback_bvl_thread bvl
+                        $query = "SELECT COUNT(*) FROM feedback_bvl_thread bvl
                             JOIN session s ON (s.ID=bvl.SessionID) 
                             WHERE FieldNAme = :fn AND s.Visit_label = :vl AND Status!='Closed'";
                         if ($DB->pselectOne($query, array('fn'=>$field_name, 'vl'=>$visit_label))>0) {
@@ -384,7 +384,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             $query = "SELECT f.test_name,s.visit_label,f.commentid,c.CandID,c.PSCID,s.id,bt.feedbackid,bt.Status FROM session s
                 JOIN flag f ON (s.ID = f.SessionID)
                 JOIN feedback_bvl_thread bt ON (bt.commentid = f.commentid)
-                JOIN candidate c ON (c.Candid = s.Candid)
+                JOIN candidate c ON (c.CandID = s.CandID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 WHERE c.PSCID NOT LIKE '%999-99999%' AND c.Active = 'Y' AND s.Active = 'Y' AND bt.FieldName= :fn AND f.test_name = :tn AND psc.Centerid!= '1'";
 
@@ -519,9 +519,9 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         {
             global $DB;
             $params = array();
-            $query = "SELECT DISTINCT s.ID,s.visit_label, c.PSCID,s.candid, f.test_name,f.data_entry,f.commentid FROM session s
+            $query = "SELECT DISTINCT s.ID,s.visit_label, c.PSCID,s.CandID, f.test_name,f.data_entry,f.commentid FROM session s
                 JOIN flag f ON (f.sessionid = s.id) 
-                JOIN candidate c ON (c.candid = s.candid)
+                JOIN candidate c ON (c.CandID = s.CandID)
                 JOIN psc ON (s.CenterID = psc.CenterID)	";
 
             $where = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND f.test_name LIKE CONCAT('%', :table, '%') and COALESCE (f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' ";

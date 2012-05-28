@@ -509,7 +509,7 @@ class Utility extends PEAR
     function getVisitLabelUsingTestName($test_name)
     {
         $db =& Database::singleton();
-        $query = "SELECT DISTINCT s.visit_label FROM session s
+        $query = "SELECT DISTINCT s.Visit_label FROM session s
             JOIN flag f ON (s.ID = f.SessionID)
             JOIN candidate c ON (c.Candid = s.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
@@ -552,8 +552,8 @@ class Utility extends PEAR
 
         $sourcefrom = $DB->pselect("SELECT DISTINCT t.Full_name FROM parameter_type pt
                 JOIN data_integrity_flag di ON (pt.Name = di.Name)
-                JOIN test_names t ON (t.test_name = pt.sourcefrom)
-                WHERE pt.sourcefrom IS NOT NULL
+                JOIN test_names t ON (t.Test_name = pt.SourceFrom)
+                WHERE pt.SourceFrom IS NOT NULL
                 ORDER BY t.Full_name",array());
 
         foreach ($sourcefrom as $table) {
@@ -574,10 +574,10 @@ class Utility extends PEAR
         $DB =& Database::singleton();
         //get sourcefield using instrument
         if (!is_null($instrument)) {
-            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :sf ORDER BY Name ", array('sf'=>$instrument));
+            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE Queryable = '1' AND SourceFrom = :sf ORDER BY Name ", array('sf'=>$instrument));
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument = $DB->pselectOne("SELECT Test_name FROM flag WHERE CommentID = :cid" , array('cid'=>$commentID));
-            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :instrument ORDER BY Name ", array('instrument'=>$instrument));
+            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE Queryable = '1' AND SourceFrom = :instrument ORDER BY Name ", array('instrument'=>$instrument));
         } elseif (!is_null($name)) { //get all source fields
             $sourcefields = $DB->pselectRow("SELECT * FROM parameter_type WHERE Name = :pn", array('pn'=>$name));
         } else {
