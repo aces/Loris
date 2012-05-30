@@ -89,8 +89,8 @@ class Utility extends PEAR
         if($testdate['mon'] < $dob['mon']) { $testdate['mon']+= 12; $testdate['year']--; }
 
         $age = array('year'=>$testdate['year'] - $dob['year'],
-                'mon' =>$testdate['mon'] - $dob['mon'],
-                'day' =>$testdate['day'] - $dob['day']);
+                     'mon' =>$testdate['mon'] - $dob['mon'],
+                     'day' =>$testdate['day'] - $dob['day']);
 
         return $age;
     }
@@ -124,7 +124,7 @@ class Utility extends PEAR
         return $list;
     }
 
-    /**
+     /**
      * Returns a list of existing ethnicities of all candidates
      *
      * @return array       an associative array("ethnicity" => "ethnicity")
@@ -202,11 +202,11 @@ class Utility extends PEAR
         // get the list of Subprojects
         $subprojectSettings= $config->getSetting('subprojects');
         foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-            $list[$subproject['id']]=$subproject['title'];
-        }
+    		$list[$subproject['id']]=$subproject['title'];
+    	}
         return $list;
     }
-
+    
     /**
      * Returns the test name associated with a given commentID
      * @throws PEAR_Error
@@ -217,17 +217,17 @@ class Utility extends PEAR
     function getTestNameByCommentID($commentID)
     {
         $db =& Database::singleton();
-
+        
         $query = "SELECT Test_name FROM flag WHERE CommentID='$commentID'";
         $testName = $db->selectOne($query);
-
+        
         if(PEAR::isError($testName)) {
             return PEAR::raiseError("Could not get test name: ".$testName->getMessage());
         }
-
+        
         return $testName;
     }
-
+    
     /**
      * Cleans a string to make it safe for variables and such
      * @param  string  the string to clean
@@ -260,42 +260,42 @@ class Utility extends PEAR
     function structureToPCRE($structure, $siteAbbrev=null)
     {
         $seqs = $structure['seq'];
-        // handle the situation where there exists only one seq
+	// handle the situation where there exists only one seq
         if(isset($seqs['#'])) $seqs = array($seqs);
         $regex = "";
         foreach($seqs AS $seq) {
             $unit = "";
 
             switch($seq['@']['type']) {
-                case 'alpha':
-                    $unit .= '[a-z]';
-                    break;
+            case 'alpha':
+                $unit .= '[a-z]';
+                break;
 
-                case 'alphanumeric':
-                    $unit .= '[0-9a-z]';
-                    break;
+            case 'alphanumeric':
+                $unit .= '[0-9a-z]';
+                break;
 
-                case 'numeric':
-                    $unit .= '[0-9]';
-                    break;
+            case 'numeric':
+                $unit .= '[0-9]';
+                break;
 
-                case 'static':
+            case 'static':
+                $unit .= '('.$seq['#'].')';
+                break;
+
+            case 'set':
+                if(strpos($seq['#'], '|') !== false) {
                     $unit .= '('.$seq['#'].')';
-                    break;
+                } else {
+                    $unit .= '['.$seq['#'].']';
+                }
+                break;
 
-                case 'set':
-                    if(strpos($seq['#'], '|') !== false) {
-                        $unit .= '('.$seq['#'].')';
-                    } else {
-                        $unit .= '['.$seq['#'].']';
-                    }
-                    break;
-
-                case 'siteAbbrev':
-                    $unit .= $siteAbbrev;
-                    break;
+            case 'siteAbbrev':
+                $unit .= $siteAbbrev;
+                break;
             } // end switch
-
+            
             $length = "";
             if(isset($seq['@']['length'])) {
                 $length .= $seq['@']['length'];
@@ -339,7 +339,7 @@ class Utility extends PEAR
         if (empty($merged_array)) $merged_array = $array1;
         foreach ($array2 AS $key=>$value) {
             if (is_array($array1[$key]) && isset($array1[$key][0])) {
-                $merged_array[$key] = $value;
+                $merged_array[$key] = $value; 
             } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
                 Utility::array_merge_recursive_overwriting($array1[$key], $array2[$key], &$merged_array[$key]);
             } else {
@@ -348,17 +348,17 @@ class Utility extends PEAR
         }
         return $merged_array;
     }
-
+    
     /**
-     * returns a list of bvl instruments
-     * returns a list of instruments for a timepoint's stage ($stage). If no stage arg is passed, return the full list for all stages
-     * @param int age in days
-     * @param string study stage (screening or visit)
-     * @return array list of instruments
-     * @throws PEAR::error
-     * @static
-     * @access public
-     */
+    * returns a list of bvl instruments
+    * returns a list of instruments for a timepoint's stage ($stage). If no stage arg is passed, return the full list for all stages
+    * @param int age in days
+    * @param string study stage (screening or visit)
+    * @return array list of instruments
+    * @throws PEAR::error
+    * @static
+    * @access public
+    */
     function lookupBattery($age, $stage=null)
     {
         $DB =& Database::singleton();
@@ -389,7 +389,7 @@ class Utility extends PEAR
         // return an array of test names
         return $tests;
     }
-
+    
     //toArray ensures that $var is a collection of $var elements, not just a single element
     //If this makes no sense to you, examine the way the xml parser deals with multiple elements of the same name.
     //Note: This does not change a string into an array with one string element
@@ -399,7 +399,7 @@ class Utility extends PEAR
         }
         return $var;
     }
-
+    
     //asArray ensures that $var is a collection elements, not just a single element
     //Not the same as toArray, apparently.
     function asArray($var){
@@ -408,62 +408,62 @@ class Utility extends PEAR
         }
         return $var;
     }
-
+    
     //Explodes an encapsulted, delimited string like 'hello','my name is \'bob\'', 'etc'
     function explodeEncapsulated($seperator, $delimiter, $string){
-        $state=0;
-        $output=$string;
-        $output_index=0;
-
-        for($i=0;$i<strlen($string);$i++){
-            switch($string[$i]){
-                case $delimiter:
-                    if($string[$i-1]!="\\"){
-                        $output=substr_replace($output,"",$output_index, 1);
-                        $output_index--;
-                    }
-                    break;
-
-                case $seperator:
-                    if($state%2==0){
-                        $output=substr_replace($output,"{@}",$output_index, 1);
-                        $output_index+=2;
-                    }
-                    break;
-            }
-            $output_index++;
-        }
-        $output=str_replace("\\".$delimiter, $delimiter, $output);
-        return explode("{@}",$output);
+		$state=0;
+		$output=$string;
+		$output_index=0;
+	
+		for($i=0;$i<strlen($string);$i++){
+			switch($string[$i]){
+				case $delimiter:
+					if($string[$i-1]!="\\"){
+    					$output=substr_replace($output,"",$output_index, 1);
+    					$output_index--;
+    				}
+    			break;
+    			
+    			case $seperator:
+    				if($state%2==0){
+    					$output=substr_replace($output,"{@}",$output_index, 1);
+    					$output_index+=2;
+    				}
+    			break;
+			}
+			$output_index++;
+		}
+		$output=str_replace("\\".$delimiter, $delimiter, $output);
+		return explode("{@}",$output);
     }
+    
+    
+	//From php.net    
+	function arrayMergeKeepKeys() {
+	     $arg_list = func_get_args();
+	     foreach((array)$arg_list as $arg){
+	         foreach((array)$arg as $K => $V){
+	             $Zoo[$K]=$V;
+	         }
+	     }
+	   return $Zoo;
+	}
 
-
-    //From php.net
-    function arrayMergeKeepKeys() {
-        $arg_list = func_get_args();
-        foreach((array)$arg_list as $arg){
-            foreach((array)$arg as $K => $V){
-                $Zoo[$K]=$V;
-            }
-        }
-        return $Zoo;
-    }
-
-    // from php.net comments
-    function in_array_insensitive($item, $array) {
-        $item = &strtoupper($item);
-        foreach($array as $element) {
-            if ($item == strtoupper($element)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+	// from php.net comments
+	function in_array_insensitive($item, $array) {
+	    $item = &strtoupper($item);
+	    foreach($array as $element) {
+	        if ($item == strtoupper($element)) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+   
     function getAllInstruments() {
         $DB =& Database::singleton();
         $DB->select("SELECT Test_name FROM test_names", &$instruments_q);
-
+        
         // This array_map call turns the result of the above query to
         // a non-associative array, so that we can use the array_combine
         // trick to get an array of the form array( 'test_name' => 'test_name')
@@ -476,8 +476,16 @@ class Utility extends PEAR
         $instruments = array_combine($in, $in);
         return $instruments;
 
-    }
+   }
+   
+   	function getColumnThresholdCount(){
+   	    $config =& NDB_Config::singleton();
+		// get the list of Subprojects
+		$column_threshold= $config->getSetting('columnThreshold');
+		return $column_threshold;
+	}
 
+	
     /**
      * Checks to see if the given table exists
      *
@@ -584,5 +592,6 @@ class Utility extends PEAR
         }
         return $sourcefields;
     }
+	
 }
 ?>
