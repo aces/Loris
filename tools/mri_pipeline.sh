@@ -53,21 +53,21 @@ export TMPDIR=/tmp
 ##must be done manually
 
 ##Create directories
-mkdir /data/$PROJ/bin/ 
-mkdir /data/$PROJ/data/
-mkdir /data/YourProjectName/data/trashbin   ##holds mincs that didn't match protocol
-mkdir /data/YourProjectName/data/tarchive   ##holds tared dicom-folder
-mkdir /data/YourProjectName/data/pic           ##holds jpegs generated for the MRI-browser
-mkdir /data/YourProjectName/data/logs         ## holds logs from pipeline script
-mkdir /data/YourProjectName/data/jiv            ## holds JIVs used for JIV viewer
-mkdir /data/YourProjectName/data/assembly ## holds the MINC files
-mkdir /data/YourProjectName/data/batch_output  ##contains the result of the SGE (queue
-		mkdir /home/$USER/.neurodb
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/bin/ 
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/trashbin   ##holds mincs that didn't match protocol
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/tarchive   ##holds tared dicom-folder
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/pic           ##holds jpegs generated for the MRI-browser
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/logs         ## holds logs from pipeline script
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/jiv            ## holds JIVs used for JIV viewer
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/assembly ## holds the MINC files
+  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/batch_output  ##contains the result of the SGE (queue
+  echo $rootpass | sudo -S mkdir -p /home/$USER/.neurodb
 
 ##incoming directory
 #based on the sites...
-		mkdir /data/incoming/TOR/incoming
-		mkdir /data/incoming/MTL/incoming
+##mkdir /data/incoming/TOR/incoming
+##mkdir /data/incoming/MTL/incoming
 
 ###Get the code
 		cd /data/$PROJ/bin/  
