@@ -3,6 +3,10 @@ require_once "NDB_Client.class.inc";
 $client =& new NDB_Client();
 $client->initialize("../../project/config.xml");
 
+$config =& NDB_Config::singleton();
+$imgPath = $config->getSetting('imagePath');
+symlink($imgPath, 'files'); 
+
 
 $db =& Database::singleton();
 if(PEAR::isError($db)) {
@@ -26,8 +30,6 @@ elseif ($_POST['option'] == 'thickness'){
 }
 
 //Replace image path as specified in config file with sym link folder for file visibility
-$config =& NDB_Config::singleton();
-$imgPath = $config->getSetting('imagePath');
 $regexPath = preg_replace("/\//", "\/", $imgPath);
 
 foreach ($files as $key=>$value){
