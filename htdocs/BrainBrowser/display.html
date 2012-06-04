@@ -18,8 +18,8 @@
                 <label for ="surface">Object File:</label>
                 <select id="objfile" name = "objfile">
                     <option value =""></option>
-                    <script type="text/javascript" src="/BrainBrowser/JS/jquery.js"></script>
-                    <script type="text/javascript" src="/BrainBrowser/JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
+                    <script type="text/javascript" src="JS/jquery.js"></script>
+                    <script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
                     <script language = "JavaScript"> 
 
                     var id = self.location.search; //window.parent.dccid.val();
@@ -59,8 +59,8 @@
             <label for ="thickness">Data:</label>
             <select id="datafile" name = "datafile">
                 <option value =""></option>
-                <script type="text/javascript" src="/BrainBrowser/JS/jquery.js"></script>
-                <script type="text/javascript" src="/BrainBrowser/JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
+                <script type="text/javascript" src="JS/jquery.js"></script>
+                <script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
                 <script language = "JavaScript"> 
 
 
@@ -194,12 +194,12 @@
         <!-- all the scripts and css -->
         <link type="text/css" href="/css/ui-darkness/jquery-ui-1.8.10.custom.css" rel="Stylesheet" />
         <link type="text/css" href="/css/brainbrowser.css" rel="Stylesheet" />
-        <script type="text/javascript" src="/BrainBrowser/JS/jquery.js"></script>
-        <script type="text/javascript" src="/BrainBrowser/JS/o3d-webgl/base.js"></script>
-        <script type="text/javascript" src="/BrainBrowser/JS/o3djs/base.js"></script> 
-        <script type="text/javascript" src="/BrainBrowser/JS/surfview-combined.min.js"></script>
+        <script type="text/javascript" src="JS/jquery.js"></script>
+        <script type="text/javascript" src="JS/o3d-webgl/base.js"></script>
+        <script type="text/javascript" src="JS/o3djs/base.js"></script> 
+        <script type="text/javascript" src="JS/surfview-combined.min.js"></script>
 
-        <script type="text/javascript" src="/BrainBrowser/JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
+        <script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
         <!--    <script type="text/javascript" src="/JS/jquery-ui.js"></script>-->
         <script type="text/javascript">
 
@@ -214,7 +214,8 @@
 
             jQuery(".button").button();
             $(".buttonset").buttonset();
-            var surfview = new SurfView(/*'/models/surf_reg_model_both.obj'*/);
+           // var surfview = new SurfView(/*'/models/surf_reg_model_both.obj'*/);
+            var surfview = new SurfView('/models/surf_reg_model_both.obj');
 
             jQuery("#objfile").change(function() {
                 surfview.brainbrowser.clearScreen();
