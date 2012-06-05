@@ -23,6 +23,7 @@ if ($action == 'upload')
     $comments = $_POST['comments'];
     $version = $_POST['version'];
 
+    $fileSize = $_FILES["file"]["size"];
     $fileName = $_FILES["file"]["name"];
     $base_path = "../document_repository/";
 
@@ -34,7 +35,7 @@ if ($action == 'upload')
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path))
     {
-        $success = $DB->insert('document_repository', array('File_category'=>$category, 'For_site'=>$site, 'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName, 'Data_dir'=>$target_path, 'uploaded_by'=>$user)); 
+        $success = $DB->insert('document_repository', array('File_category'=>$category, 'For_site'=>$site, 'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName, 'File_size'=>$fileSize, 'Data_dir'=>$target_path, 'uploaded_by'=>$user)); 
 
         header("Location: ../main.php?test_name=document_repository&uploadSuccess=true");
     }

@@ -336,7 +336,7 @@ class NDB_Menu_Filter extends NDB_Menu
                         $query .= " AND $key = '$val' ";
                     }
                     else {
-                        $query .= " AND $key LIKE '$val%' ";
+                        $query .= " AND $key LIKE '%$val%' ";
                     }
                 }
             }

@@ -7,7 +7,7 @@
 <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
 <table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
     <tr>
-        <th nowrap="nowrap" colspan="6">Selection Filter</th>
+        <th nowrap="nowrap" colspan="7">Selection Filter</th>
     </tr>
     <tr>
         <td>{$form.File_name.label}</td>
@@ -24,10 +24,9 @@
         <td>{$form.For_site.html}</td>
     </tr>
     <tr>
-	    <td align="left"><button id = "upload" name = "upload" class = "button" style = "background-color: #696">Upload File</button></td>
 
-        <td nowrap="nowrap" width="10%"></td>
-        <td colspan="14" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=document_repository&reset=true'" /></td>
+        <td colspan="6" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=document_repository&reset=true'" /></td>
+	    <td align="right"><button id = "upload" name = "upload" class = "button" style = "background-color: #696">Upload File</button></td>
     </tr>
 </table>
 </form>
@@ -113,7 +112,7 @@
 <fieldset style = "border: none;">
 	<label for="category">Category<font color="red"><sup> *</sup></font></label>
 	<select name="category" id = "category" class = "form-fields">
-	<option value=""> </option>
+	<option value=" "> </option>
 	    {foreach from = $File_categories item=val key=k}
 	        {if $val != "Any"}
  		        <option value={$k}>{$val}</option>
@@ -123,7 +122,7 @@
 	</br></br>
 	<label for="site">Site<font color="red"><sup> *</sup></font></label>
 	<select name="site" id = "site" class = "form-fields">
-	<option value=""> </option>
+	<option value=" "> </option>
 	    {foreach from = $Sites item=val key=k}
 	        <option value={$k}>{$val}</option>
 	    {/foreach}
@@ -200,21 +199,21 @@
 <div class = "upload-success">
     <p>
 	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully uploaded.
+	    The file was successfully uploaded. Loading changes...
     </p>
 </div>
 
 <div class = "edit-success">
     <p>
 	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully modified.
+	    The file was successfully modified. Loading changes...
     </p>
 </div>
 
 <div class = "delete-success">
     <p>
 	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully deleted.
+	    The file was successfully deleted. Loading changes...
     </p>
 </div>
 

@@ -54,7 +54,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
         $this->query = $query;
         $this->group_by = '';
         $this->order_by = 'v.File_name';
-        $this->headers = array('File_name', 'version', 'Type', 'Instrument', 'uploaded_by', 'For_site', 'comments', 'Date_uploaded', '', '');
+        $this->headers = array('File_name', 'version', 'File_type', 'Instrument', 'uploaded_by', 'For_site', 'comments', 'Date_uploaded', '', '');
         $this->validFilters = array('v.For_site', 'v.File_name', 'v.File_category', 'v.File_type', 'v.version', 'v.uploaded_by');
 
         $this->formToFilter = array(
@@ -86,7 +86,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
             if(PEAR::isError($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
-            if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
+            if(is_array($list_of_sites)) $list_of_sites = array(null => 'Any') + $list_of_sites;
         }
         else {
             // allow only to view own site data

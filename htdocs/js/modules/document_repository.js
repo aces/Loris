@@ -22,14 +22,14 @@ SITE.fileInputs = function() {
 
 function getParameterByName(name)
 {
-  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-  var regexS = "[\\?&]" + name + "=([^&#]*)";
-  var regex = new RegExp(regexS);
-  var results = regex.exec(window.location.search);
-  if(results == null)
-    return "";
-  else
-    return decodeURIComponent(results[1].replace(/\+/g, " "));
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS);
+    var results = regex.exec(window.location.search);
+    if(results == null)
+        return "";
+    else
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
 var filtered;
@@ -45,11 +45,11 @@ $(document).ready(function() {
     $('.no-files').hide();
 
     var uploadSuccess = getParameterByName('uploadSuccess');
-    if (uploadSuccess)
-    {
-	$('.upload-success').show();
-	setTimeout( "$('.upload-success').hide();", 5000 );
+    if (uploadSuccess){
+	    $('.upload-success').show();
+	    setTimeout( "$('.upload-success').hide();", 5000 );
     }
+
 
     //Open confirmation dialog on Delete click
     var id;
@@ -72,8 +72,8 @@ $(document).ready(function() {
                     data: {id:id}, 
                     success: function(){
                         $("#"+id).parent().parent().remove();
-			$('.delete-success').show();
-			setTimeout( "$('.delete-success').hide();", 5000 );
+			            $('.delete-success').show();
+			            setTimeout( "$('.delete-success').hide();", 5000 );
                     },
                     error:function(jqXHR, textStatus, errorThrown){
                         console.log("Error: " + textStatus + " " +errorThrown);
@@ -81,7 +81,7 @@ $(document).ready(function() {
         	});
         
                 $(this).dialog("close");
-        	return false;
+        	        return false;
         	}	 	
          }  
     });
@@ -117,35 +117,35 @@ $(document).ready(function() {
        // close: function() {
          //   allFields.val( "" ).removeClass( "ui-state-error" );
        // },
-	buttons:{
+	    buttons:{
             "Cancel": function() { 
 	        $(this).dialog("close");					
         },
 	    "Edit": function() {
-                 var data = {
-                     idEdit:id,
-                     categoryEdit:$(categoryEdit).val(),
-                     siteEdit:$(siteEdit).val(),
-              	     instrumentEdit:$(nameEdit).val(),
-                     pscidEdit:$(pscidEdit).val(),
-                     visitEdit:$(visitEdit).val(),
-                     commentsEdit:$(commentsEdit).val(),
-                     versionEdit:$(versionEdit).val(),
-                     action:$(actionEdit).val(),
-                     submit: 'yeah!!!!'
-                  };
+            var data = {
+                idEdit:id,
+                categoryEdit:$(categoryEdit).val(),
+                siteEdit:$(siteEdit).val(),
+              	instrumentEdit:$(nameEdit).val(),
+                pscidEdit:$(pscidEdit).val(),
+                visitEdit:$(visitEdit).val(),
+                commentsEdit:$(commentsEdit).val(),
+                versionEdit:$(versionEdit).val(),
+                action:$(actionEdit).val(),
+                submit: 'yeah!!!!'
+             };
 
-                  $.ajax({
-                     type: "POST",
-                     url: "DocumentRepository/documentEditUpload.php",
-                     data: data,
- 	             success: function(){    
-                     $('.edit-success').show();
-		        setTimeout(function() { location.reload() }, 5000);
-                     }
-                  });
+             $.ajax({
+                type: "POST",
+                url: "DocumentRepository/documentEditUpload.php",
+                data: data,
+ 	            success: function(){    
+                    $('.edit-success').show();
+                    setTimeout(function() { location.reload() }, 5000);
+                }
+             });
 
-                  $( ".dialog-form-edit" ).dialog( "close" );
+             $( ".dialog-form-edit" ).dialog( "close" );
 	    }	
 	}
     });
@@ -159,24 +159,24 @@ $(document).ready(function() {
         $( ".dialog-form-edit" ).dialog( "open" );
         id = this.id;
 
-	$.ajax({
+	    $.ajax({
      	    type: "GET",
-  	    url: "DocumentRepository/getFileData.php",
+  	        url: "DocumentRepository/getFileData.php",
             data: {id:id}, 
             async: false,
-	    dataType: "json",
-	    success: function(data){
+	        dataType: "json",
+	        success: function(data){
 		
-		//Pre-populate the form with the existing values		 
-	        SelectElement("categoryEdit", data.File_category);
-		SelectElement("siteEdit", data.For_site);
-		SelectElement("nameEdit", data.File_name);
-		SelectElement("pscidEdit", data.PSCID);
-		SelectElement("visitEdit", data.visitLabel);
-	        SelectElement("commentsEdit", data.comments);
-		SelectElement("versionEdit", data.version);
+	        //Pre-populate the form with the existing values		 
+                SelectElement("categoryEdit", data.File_category);
+	            SelectElement("siteEdit", data.For_site);
+                SelectElement("nameEdit", data.File_name);
+		        SelectElement("pscidEdit", data.PSCID);
+	            SelectElement("visitEdit", data.visitLabel);
+	            SelectElement("commentsEdit", data.comments);
+	            SelectElement("versionEdit", data.version);
 
-	    }
+	        }   
 	});
 
         return false;
@@ -189,7 +189,7 @@ $(document).ready(function() {
         if(isEmpty($(elements).children("[name=category]"))) { return false; };
         if(isEmpty($(elements).children("[name=site]"))) { return false; } ;
         if(isFileEmpty($("[name=file]").get(0).files)) { return false; };
-	 
+    //    if ($("[name=file]").get(0).files.size > 100000000) { return false; }; 
     });
 
     //Accordion effect
@@ -299,26 +299,26 @@ $(document).ready(function() {
 
 //Checks that all fields required for file upload are entered 
 function isEmpty(element) {
-    if (element.val() === "") {
-	element.focus();
-	element.addClass('missing');
-	$(".upload-error").show();
-	return true;
+    if (element.val() === " ") {
+	    element.focus();
+	    element.addClass('missing');
+	    $(".upload-error").show();
+	    return true;
     }
 
     else
-	return false;
+	    return false;
 }
 
 //Checks that file has been selected for upload
 function isFileEmpty(element) {
     if (element.length == 0) {
-	$(".file-error").show();	
-	return true;
+	    $(".file-error").show();	
+	    return true;
     }
 	
     else
-	return false;
+	    return false;
 }
 
 //Pre-populates the Edit form with fields already associated with that file
