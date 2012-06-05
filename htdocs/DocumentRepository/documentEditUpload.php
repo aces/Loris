@@ -9,7 +9,6 @@ if(PEAR::isError($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die(); 
 }
 
-
 $action = $_POST['action'];
 
 if ($action == 'upload')
@@ -25,22 +24,27 @@ if ($action == 'upload')
     $version = $_POST['version'];
 
     $fileName = $_FILES["file"]["name"];
-    $base_path = "document_repository";
-    $target_path = $base_path; 
+    $base_path = "../document_repository/";
 
     if (!file_exists($base_path . $user)) {
-        mkdir("document_repository/" . $user, 0777);
+        mkdir($base_path . $user, 0777);
     }
 
-    $target_path = $target_path . "/" . $user ."/" . $fileName;  
-    chmod($target_path, 0777);
+    $target_path = $base_path  . $user . "/" . $fileName;  
 
-    $success = $DB->insert('document_repository', array('File_category'=>$category, 'For_site'=>$site, 'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName, 'Data_dir'=>$target_path, 'uploaded_by'=>$user)); 
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path))
+    {
+        $success = $DB->insert('document_repository', array('File_category'=>$category, 'For_site'=>$site, 'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName, 'Data_dir'=>$target_path, 'uploaded_by'=>$user)); 
 
-    header("Location: http://132.216.67.69:7080/main.php?test_name=document_repository&uploadSuccess=true");
+        header("Location: ../main.php?test_name=document_repository&uploadSuccess=true");
+    }
+
+    else
+    {
+        echo "There was an error uploading the file";
+    }
 
 }
-
 
 elseif ($action == 'edit')
 {
