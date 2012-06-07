@@ -15,7 +15,7 @@ if(PEAR::isError($db)) {
 
 //If selecting obj file, grab those from the database
 if ($_POST['option'] == 'surface'){
-    $files = $db->pselectRow("SELECT file FROM files WHERE SessionID =:s AND FileType =:f", array(':s'=> $_POST['sessionID'], ':f'=> 'obj')); 
+    $files = $db->pselect("SELECT file FROM files WHERE SessionID =:s AND FileType =:f", array(':s'=> $_POST['sessionID'], ':f'=> 'obj')); 
     if (PEAR::isError($files)){
         return PEAR::raiseError("Could not retrieve files: " . $files->getMessage());
     }
@@ -23,7 +23,7 @@ if ($_POST['option'] == 'surface'){
 
 //If selecting thickness file, grab those from the database
 elseif ($_POST['option'] == 'thickness'){
-    $files = $db->pselectRow("Select file from files where SessionID =:s and file like '%txt'", array(':s'=> $_POST['sessionID']));
+    $files = $db->pselect("Select file from files where SessionID =:s and file like '%txt'", array(':s'=> $_POST['sessionID']));
     if (PEAR::isError($files)){
         return PEAR::raiseError("Could not retrieve files: " . $files->getMessage());
     }
@@ -33,8 +33,10 @@ elseif ($_POST['option'] == 'thickness'){
 $regexPath = preg_replace("/\//", "\/", $imgPath);
 
 foreach ($files as $key=>$value){
-    $v = preg_replace("/" . $regexPath . "/", "BrainBrowser/files", $value);
-    echo $v . "\n";
+    foreach ($value as $i=>$j) {
+        $v = preg_replace("/" . $regexPath . "/", "BrainBrowser/files", $j);
+        echo $v . "\n";
+    }
 }
 
 ?>
