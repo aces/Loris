@@ -164,6 +164,31 @@ class Utility extends PEAR
      * @access public
      * @static
      */
+    function getSiteList($study_site = true)
+    {
+        $DB =& Database::singleton();
+
+        // get the list of study sites - to be replaced by the Site object
+        $query = "SELECT CenterID, Name FROM psc ";
+        if ($study_site) {
+                $query .= "WHERE Study_site='Y'";
+        }
+
+
+        $DB->select($query, $result);
+        if(PEAR::isError($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
+        }
+
+       // fix the array
+       $list = array();
+       foreach ($result as $row) {
+           $list[$row["CenterID"]] = $row["Name"];
+       }
+       return $list;
+    }
+
+
   function getSiteList($study_site = true, $DCC = true)
     {
         $DB =& Database::singleton();
@@ -498,6 +523,26 @@ class Utility extends PEAR
         function FlattenFull($Arr) {
             return $Arr['Full_name'];
         }
+
+    function getAllInstruments() {
+        $DB =& Database::singleton();
+        $DB->select("SELECT Test_name FROM test_names", &$instruments_q);
+                                
+        // This array_map call turns the result of the above query to
+        // a non-associative array, so that we can use the array_combine
+        // trick to get an array of the form array( 'test_name' => 'test_name')
+        // which can be used by quickforms for the dropdown. The array_merge
+        // call after that just adds an Any/All Instruments option.
+        function Flatten($Arr) {
+            return $Arr['Test_name'];
+        }
+        $in = array_map('Flatten', $instruments_q);
+        $instruments = array_combine($in, $in);
+        return $instruments;
+
+    }
+
+
 
     function getAllInstruments($test_name = true) {
         $DB =& Database::singleton();
