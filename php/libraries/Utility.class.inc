@@ -189,36 +189,6 @@ class Utility extends PEAR
     }
 
 
-  function getSiteList($study_site = true, $DCC = true)
-    {
-        $DB =& Database::singleton();
-
-        // get the list of study sites - to be replaced by the Site object
-        $query = "SELECT CenterID, Name FROM psc ";
-        if ($study_site) {
-                if (!$DCC)
-                $query .= "WHERE Study_site='Y' AND Name != 'DCC'";
-        }
-        else {
-                if (!DCC)
-                $query .= "WHERE Name != 'DCC'";
-
-        }
-
-        $DB->select($query, $result);
-        if(PEAR::isError($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
-
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
-        }
-        return $list;
-    }
-
-
 	function getAssociativeSiteList($study_site = true, $DCC = true)
 	{
 	 $DB =& Database::singleton();
@@ -542,38 +512,6 @@ class Utility extends PEAR
 
     }
 
-
-
-    function getAllInstruments($test_name = true) {
-        $DB =& Database::singleton();
-
-        if ($test_name)
-        {
-                $DB->select("SELECT Test_name FROM test_names ORDER BY Test_name", &$instruments_q);
-
-                $in = array_map(array('Utility', 'Flatten'), $instruments_q);
-                $instruments = array_combine($in, $in);
-        }
-
-        else
-        {
-                $DB->select("SELECT Test_name FROM test_names ORDER BY Test_name", &$instruments_q);
-                $DB->select("SELECT Full_name FROM test_names ORDER BY Full_name", &$instruments_r);
-
-                // This array_map call turns the result of the above query to
-                // a non-associative array, so that we can use the array_combine
-                // trick to get an array of the form array( 'Test_name' => 'Full_name')
-                // which can be used by quickforms for the dropdown. The array_merge
-                // call after that just adds an Any/All Instruments option.
-
-                $in = array_map(array('Utility', 'Flatten'), $instruments_q);
-                $in1 = array_map(array('Utility','FlattenFull'), $instruments_r);
-                $instruments = array_combine($in, $in1);
-        }
-
-        return $instruments;
-
-   }
 
 }
 ?>
