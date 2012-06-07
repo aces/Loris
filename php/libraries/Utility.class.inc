@@ -214,6 +214,25 @@ class Utility extends PEAR
         	return $list;
 	}
 
+    function getVisitList()
+    {
+        $DB =& Database::singleton();
+
+         $query = "SELECT Visit_label from Visit_Windows";
+
+         $DB->select($query, $result);
+         if(PEAR::isError($result)) {
+             return PEAR::raiseError("DB Error: ".$result->getMessage());
+         }
+
+         $list = array();
+         foreach ($result as $row) {
+             $list[$row["Visit_label"]] = $row["Visit_label"];
+         }
+         return $list;
+     }
+
+
     /**
      * Returns a list of study Subprojects
      * @throws PEAR_Error
