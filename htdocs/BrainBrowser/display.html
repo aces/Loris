@@ -5,6 +5,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">  
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
+
 <title>BrainBrowser:Surface Viewer</title>  
 </head>  
     <body>  
@@ -22,11 +23,24 @@
                     <script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
                     <script language = "JavaScript"> 
 
-                    var id = self.location.search; //window.parent.dccid.val();
-                    var sessionID = id.substr(-4,4);
+                    function getParameterByName(name)
+                    {
+                        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+                        var regexS = "[\\?&]" + name + "=([^&#]*)";
+                        var regex = new RegExp(regexS);
+                        var results = regex.exec(window.location.search);
+                        if(results == null)
+                            return "";
+                        else
+                            return decodeURIComponent(results[1].replace(/\+/g, " "));
+                    }       
+
+
+                   // var id = window.location.search; //window.parent.dccid.val();
+                    var sessionID = getParameterByName('sessionID'); //id.substr(-4,4);
                     var option = 'surface';
 
-                    var d;
+                    var objs;
 
                     var iddata = {
                         sessionID:sessionID,
@@ -40,17 +54,28 @@
                         data: iddata, 
                         async: false,
                         success: function(data) {
-                            d = data;
+                            objs = data;
                         }
                     });
 
-                    alert('page content: ' + d);
-                    var objFiles = d.split("\n");
+                    var home;
+
+                    $.ajax({
+                        type: 'GET',
+                        url: 'findURL.php',
+                        async: false,
+                        success: function(data) {
+                            home = data;
+                        }
+
+                    });
+                    alert('home: ' + home);
+                    alert('page content: ' + objs);
+                    var objFiles = objs.split("\n");
 
                     for(i = 0; i < objFiles.length; i++){
                         if (objFiles[i] != ""){
-                        //	document.write("<br /> Element " + i + " = " + objFiles[i]); 
-                            document.write("<option value=\"" + "http:\/\/132.216.67.69:7080/" + objFiles[i] + "\">" + /*"http:\/\/132.216.67.69:7080/" +*/ objFiles[i] + "</option>");
+                            document.write("<option value=\"" + home + "/" +  objFiles[i] + "\">" + objFiles[i] + "</option>");
                         } 
                     }
 
@@ -65,7 +90,7 @@
 
 
                 option = 'thickness';
-                var t;
+                var txts;
                 var iddata2 = {
                     sessionID:sessionID,
                     option:option,
@@ -75,20 +100,20 @@
                 $.ajax({
                     type: 'POST', 
                     url: 'findFiles.php',
-                    //dataType: 'json',
                     data: iddata2,
                     async: false,
                     success: function(data) {
-                        t = data;
+                        txts = data;
                     }
                 });
 
-                var thicknessFiles = t.split("\n");
+                var thicknessFiles = txts.split("\n");
 
                 for(i = 0; i < thicknessFiles.length; i++){
                     if (thicknessFiles[i] != "") {
                         //      document.write("<br /> Element " + i + " = " + objFiles[i]); 
-                        document.write("<option value=\"" + "http:\/\/132.216.67.69:7080/" + thicknessFiles[i] + "\">" + /*"http:\/\/132.216.67.69:7080/" +*/ thicknessFiles[i] + "</option>");
+//                        document.write("<option value=\"" + "http:\/\/132.216.67.69:7080/" + thicknessFiles[i] + "\">" + /*"http:\/\/132.216.67.69:7080/" +*/ thicknessFiles[i] + "</option>");
+                        document.write("<option value=\"" + home + "/" + thicknessFiles[i] + "\">" + /*"http:\/\/132.216.67.69:7080/" +*/ thicknessFiles[i] + "</option>");
                     }
                 }
 
