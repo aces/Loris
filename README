@@ -1,0 +1,3 @@
+set your imagePath in the config file as the scripts use it
+
+insert .obj and .txt files in the 'files' table for an existing session
