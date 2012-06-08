@@ -10,10 +10,10 @@ include_once("Utility.class.inc");
 $query = "SELECT Name, Sourcefrom, ParameterTypeID, Description FROM parameter_type WHERE Queryable = '1' AND SourceFrom NOT IN ('candidate','session');";
 $parameter_types = $DB->pselect($query,array());
 foreach($parameter_types as $parameter_type) {
-    $visit_labels = Utility::getVisitLabelUsingTestName($parameter_type['sourcefrom']);
+    $visit_labels = Utility::getVisitLabelUsingTestName($parameter_type['Sourcefrom']);
     foreach ($visit_labels as $visit_label) {
         if ($visit_label!=null) {
-            $visit =  $visit_label['visit_label'];
+            $visit =  $visit_label['Visit_label'];
             $name = $parameter_type['Name'];
             $type_id = $parameter_type['ParameterTypeID'];
             $description = $parameter_type['description'];

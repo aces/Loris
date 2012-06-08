@@ -15,10 +15,9 @@ $client->initialize();
 //extract the test_name from the test_names table
 $visits = Utility::getVisitLabelUsingTestName(Utility::getTestNameUsingFullName($_REQUEST['instrument']));
 if (count($visits) > 1) print "All Visits\n";
-
 if ($visits!=null) {
     foreach($visits as $visit) {
-        print $visit['visit_label'] . "\n";
+        print $visit['Visit_label'] . "\n";
     }
 }
 ?>
