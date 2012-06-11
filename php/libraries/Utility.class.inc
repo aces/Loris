@@ -171,7 +171,7 @@ class Utility extends PEAR
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
         if ($study_site) {
-            $query .= "WHERE Study_site='Y'";
+                $query .= "WHERE Study_site='Y'";
         }
 
 
@@ -180,13 +180,58 @@ class Utility extends PEAR
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
-        }
-        return $list;
+       // fix the array
+       $list = array();
+       foreach ($result as $row) {
+           $list[$row["CenterID"]] = $row["Name"];
+       }
+       return $list;
     }
+
+
+	function getAssociativeSiteList($study_site = true, $DCC = true)
+	{
+	 $DB =& Database::singleton();
+
+        // get the list of study sites - to be replaced by the Site object
+	        $query = "SELECT CenterID, Name FROM psc ";
+        	if ($study_site) {
+            	$query .= "WHERE Study_site='Y'";
+        	}	
+		if (!$DCC)
+		$query .= "AND Name != 'DCC'";
+
+        	$DB->select($query, $result);
+        	if(PEAR::isError($result)) {
+            		return PEAR::raiseError("DB Error: ".$result->getMessage());
+        	}
+
+        	// fix the array
+        	$list = array();
+        	foreach ($result as $row) {
+         	   	$list[$row["CenterID"]] = $row["Name"];
+       	 	}
+        	return $list;
+	}
+
+    function getVisitList()
+    {
+        $DB =& Database::singleton();
+
+         $query = "SELECT Visit_label from Visit_Windows";
+
+         $DB->select($query, $result);
+         if(PEAR::isError($result)) {
+             return PEAR::raiseError("DB Error: ".$result->getMessage());
+         }
+
+         $list = array();
+         foreach ($result as $row) {
+             $list[$row["Visit_label"]] = $row["Visit_label"];
+         }
+         return $list;
+     }
+
 
     /**
      * Returns a list of study Subprojects
@@ -460,10 +505,18 @@ class Utility extends PEAR
 	    return false;
 	}
    
+        function Flatten($Arr) {
+            return $Arr['Test_name'];
+        }
+
+        function FlattenFull($Arr) {
+            return $Arr['Full_name'];
+        }
+
     function getAllInstruments() {
         $DB =& Database::singleton();
         $DB->select("SELECT Test_name FROM test_names", &$instruments_q);
-        
+                                
         // This array_map call turns the result of the above query to
         // a non-associative array, so that we can use the array_combine
         // trick to get an array of the form array( 'test_name' => 'test_name')
