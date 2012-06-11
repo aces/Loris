@@ -8,3 +8,6 @@ max_execution_time     10800
 upload_max_filesize    1024M
 post_max_size          1024M
 
+Set your 'imagePath' and 'url' in the config file as the scripts use it
+
+Insert .obj and .txt files in the 'files' table for an existing session

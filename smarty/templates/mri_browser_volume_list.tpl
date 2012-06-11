@@ -1,6 +1,21 @@
 {literal}
 <script language="javascript" type="text/javascript">
 <!--
+
+function getParameterByName(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.search);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+sID = getParameterByName('sessionID');
+
 var jivNames = new Array();
 var jivData = new Array();
 
@@ -83,6 +98,8 @@ return true;
 <!-- listing of files -->
 <!-- table with candidate profile info -->
 <table><tr>
+{literal}<script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script>{/literal}
+<!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
     <td>
     <table class="fancytableleft" cellpadding="2">
         <tr>
