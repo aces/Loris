@@ -21,110 +21,15 @@
                     <option value =""></option>
                     <script type="text/javascript" src="JS/jquery.js"></script>
                     <script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
-                    <script language = "JavaScript"> 
-
-                    function getParameterByName(name)
-                    {
-                        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-                        var regexS = "[\\?&]" + name + "=([^&#]*)";
-                        var regex = new RegExp(regexS);
-                        var results = regex.exec(window.location.search);
-                        if(results == null)
-                            return "";
-                        else
-                            return decodeURIComponent(results[1].replace(/\+/g, " "));
-                    }       
-
-
-                   // var id = window.location.search; //window.parent.dccid.val();
-                    var sessionID = getParameterByName('sessionID'); //id.substr(-4,4);
-                    var option = 'surface';
-
-                    var objs;
-
-                    var iddata = {
-                        sessionID:sessionID,
-                        option:option,
-                        submit: 'yeah!'
-                    };
-
-                    $.ajax({
-                        type: 'POST',
-                        url: 'findFiles.php',
-                        data: iddata, 
-                        async: false,
-                        success: function(data) {
-                            objs = data;
-                        }
-                    });
-
-                    var home;
-
-                    $.ajax({
-                        type: 'GET',
-                        url: 'findURL.php',
-                        async: false,
-                        success: function(data) {
-                            home = data;
-                        }
-
-                    });
-                    alert('home: ' + home);
-                    alert('page content: ' + objs);
-                    var objFiles = objs.split("\n");
-
-                    for(i = 0; i < objFiles.length; i++){
-                        if (objFiles[i] != ""){
-                            document.write("<option value=\"" + home + "/" +  objFiles[i] + "\">" + objFiles[i] + "</option>");
-                        } 
-                    }
-
-                </script>
+                    <script type = "text/javascript" src="JS/getObjFiles.js"></script>
             </select><br>
             <label for ="thickness">Data:</label>
             <select id="datafile" name = "datafile">
                 <option value =""></option>
                 <script type="text/javascript" src="JS/jquery.js"></script>
                 <script type="text/javascript" src="JS/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
-                <script language = "JavaScript"> 
-
-
-                option = 'thickness';
-                var txts;
-                var iddata2 = {
-                    sessionID:sessionID,
-                    option:option,
-                    submit: 'yeah!'
-                };
-
-                $.ajax({
-                    type: 'POST', 
-                    url: 'findFiles.php',
-                    data: iddata2,
-                    async: false,
-                    success: function(data) {
-                        txts = data;
-                    }
-                });
-
-                var thicknessFiles = txts.split("\n");
-
-                for(i = 0; i < thicknessFiles.length; i++){
-                    if (thicknessFiles[i] != "") {
-                        //      document.write("<br /> Element " + i + " = " + objFiles[i]); 
-//                        document.write("<option value=\"" + "http:\/\/132.216.67.69:7080/" + thicknessFiles[i] + "\">" + /*"http:\/\/132.216.67.69:7080/" +*/ thicknessFiles[i] + "</option>");
-                        document.write("<option value=\"" + home + "/" + thicknessFiles[i] + "\">" + /*"http:\/\/132.216.67.69:7080/" +*/ thicknessFiles[i] + "</option>");
-                    }
-                }
-
-                </script>
+                <script type = "text/javascript" src="JS/getThickFiles.js"></script>
             </select></br>
-
-            <!--Object File: <input type="file" name="objfile" id="objfile"><br />
-            Data: <input type="file" name="datafile" id="datafile"><br />-->
-            <!--	Data Series(Multiple): <input type="file" name="dataseriesfile" id="dataseriesfile" multiple=true> <br />
-            Data Blend(Multiple): <input type="file" name="datablendfile" id="datablendfile" multiple=true> <br />
-            Color Bar: <input type="file" name="spectrum" id="spectrum"><br />-->
             
         </form>
     </div>
@@ -239,7 +144,6 @@
 
             jQuery(".button").button();
             $(".buttonset").buttonset();
-           // var surfview = new SurfView(/*'/models/surf_reg_model_both.obj'*/);
             var surfview = new SurfView('/models/surf_reg_model_both.obj');
 
             jQuery("#objfile").change(function() {

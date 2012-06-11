@@ -5,7 +5,6 @@ $client->initialize("../../project/config.xml");
 
 $config =& NDB_Config::singleton();
 $imgPath = $config->getSetting('imagePath');
-symlink($imgPath, 'files'); 
 
 
 $db =& Database::singleton();
@@ -15,7 +14,7 @@ if(PEAR::isError($db)) {
 
 //If selecting obj file, grab those from the database
 if ($_POST['option'] == 'surface'){
-    $files = $db->pselect("SELECT file FROM files WHERE SessionID =:s AND FileType =:f", array(':s'=> $_POST['sessionID'], ':f'=> 'obj')); 
+    $files = $db->pselect("SELECT File FROM files WHERE SessionID =:s AND FileType =:f", array(':s'=> $_POST['sessionID'], ':f'=> 'obj')); 
     if (PEAR::isError($files)){
         return PEAR::raiseError("Could not retrieve files: " . $files->getMessage());
     }
@@ -23,20 +22,19 @@ if ($_POST['option'] == 'surface'){
 
 //If selecting thickness file, grab those from the database
 elseif ($_POST['option'] == 'thickness'){
-    $files = $db->pselect("Select file from files where SessionID =:s and file like '%txt'", array(':s'=> $_POST['sessionID']));
+    $files = $db->pselect("Select File from files where SessionID =:s and file like '%txt'", array(':s'=> $_POST['sessionID']));
     if (PEAR::isError($files)){
         return PEAR::raiseError("Could not retrieve files: " . $files->getMessage());
     }
 }
 
 //Replace image path as specified in config file with sym link folder for file visibility
-$regexPath = preg_replace("/\//", "\/", $imgPath);
+$escapedPath = preg_replace("/\//", "\/", $imgPath);
 
-foreach ($files as $key=>$value){
-    foreach ($value as $i=>$j) {
-        $v = preg_replace("/" . $regexPath . "/", "BrainBrowser/files", $j);
-        echo $v . "\n";
-    }
+foreach ($files as $row) {
+      $filename = preg_replace("/$escapedPath/", "", $row['File']);
+      echo "BrainBrowser/files/";
+      echo $filename . "\n"; 
 }
 
 ?>
