@@ -1540,6 +1540,34 @@ CREATE TABLE `tarchive_find_new_uploads` (
       `LastRan` datetime DEFAULT NULL,
       PRIMARY KEY (`CenterName`)
 );
+--
+-- Table structure for table `session_status`
+--
+
+DROP TABLE IF EXISTS `session_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `session_status` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `SessionID` int(11) NOT NULL,
+  `Name` varchar(64) NOT NULL,
+  `Value` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `session_status_index` (`SessionID`,`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `session_status`
+--
+
+LOCK TABLES `session_status` WRITE;
+/*!40000 ALTER TABLE `session_status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `session_status` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
