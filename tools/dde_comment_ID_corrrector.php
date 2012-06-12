@@ -24,17 +24,16 @@ foreach ($instruments as $instrument) {
 		$dde_commentid = "DDE_" . $comment_id;
 
 		//Doesn't exist
-		
 		if (($DB->pselectOne("SELECT COUNT(*) from flag where CommentID =:cf",array('cf'=>$dde_commentid)))==0){
 			print "hello";
-			$success=$DB->insert('flag',array("CommentID" => $record['CommentID'])); //create the dde for instrument
+			$success=$DB->insert('flag',array("CommentID" => $dde_commentid)); //create the dde for instrument
 			if (PEAR::isError($success)) {
 				print "DB Error: ".$success->getMessage();
 			}
 		}
 
 		if (($DB->pselectOne("SELECT COUNT(*) from $instrument where CommentID =:ci",array('ci'=>$dde_commentid)))==0){
-			$success=$DB->insert($instrument,array("CommentID" => $record['CommentID'])); //create the dde for instrument
+			$success=$DB->insert($instrument,array("CommentID" => $dde_commentid)); //create the dde for instrument
 			if (PEAR::isError($success)) {
 				print "DB Error: ".$success->getMessage();
 			}
