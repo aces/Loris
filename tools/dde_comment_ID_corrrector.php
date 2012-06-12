@@ -9,7 +9,7 @@ $result = array();
 
 foreach ($instruments as $instrument) {
 
-	$query = "SELECT f.CommentID FROM flag f JOIN $instrument t on (t.CommentID = f.CommentID) WHERE f.commentid not like '%DDE%'";
+	$query = "SELECT f.CommentID FROM flag f JOIN $instrument t on (t.CommentID = f.CommentID) WHERE f.commentid NOT LIKE '%DDE%'";
 	$result = $DB->pselect($query, array());
 
 	if(PEAR::isError($result)) {
@@ -24,7 +24,7 @@ foreach ($instruments as $instrument) {
 		$dde_commentid = "DDE_" . $comment_id;
 
 		//Doesn't exist
-		if (($DB->pselectOne("SELECT COUNT(*) from flag where CommentID =:cf",array('cf'=>$dde_commentid)))==0){
+		if (($DB->pselectOne("SELECT COUNT(*) FROM flag WHERE CommentID =:cf",array('cf'=>$dde_commentid)))==0){
 			print "hello";
 			$success=$DB->insert('flag',array("CommentID" => $dde_commentid)); //create the dde for instrument
 			if (PEAR::isError($success)) {
@@ -32,7 +32,7 @@ foreach ($instruments as $instrument) {
 			}
 		}
 
-		if (($DB->pselectOne("SELECT COUNT(*) from $instrument where CommentID =:ci",array('ci'=>$dde_commentid)))==0){
+		if (($DB->pselectOne("SELECT COUNT(*) FROM $instrument WHERE CommentID =:ci",array('ci'=>$dde_commentid)))==0){
 			$success=$DB->insert($instrument,array("CommentID" => $dde_commentid)); //create the dde for instrument
 			if (PEAR::isError($success)) {
 				print "DB Error: ".$success->getMessage();
