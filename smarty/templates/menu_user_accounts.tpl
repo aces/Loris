@@ -34,7 +34,7 @@
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
-    <td class="controlPanelSection">List of Users</td>
+    <td class="controlPanelSection"></td>
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>
