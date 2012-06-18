@@ -51,7 +51,7 @@
     {/if}
 
 	<tr>
-		<td nowrap="nowrap" colspan="2"><input class="button" name="fire_away" value="Create" type="submit" /></td>
+		<td nowrap="nowrap" colspan="2" align="right"><input class="button" name="fire_away" value="Create" type="submit" /></td>
 	</tr>
 </table>
 {$form.hidden}
