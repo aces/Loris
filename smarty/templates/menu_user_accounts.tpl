@@ -2,7 +2,7 @@
 <!-- start the selection table -->
 <table border="0" valign="top" class="std">
     <tr>
-        <th nowrap="nowrap" colspan="6">Selection Filter</th>
+        <th nowrap="nowrap" colspan="8">Selection Filter</th>
    <!-- <tr>
         <th nowrap="nowrap" colspan="8">Selection Filter</th>
     </tr>-->
@@ -39,6 +39,7 @@
 <tr>
     <!-- title -->
     <td class="controlPanelSection">List of Users</td>
+ <!--   <td class="controlPanelSection">List of Users</td>-->
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>

@@ -109,12 +109,13 @@ function feedback_bvl_popup(features) {
             <!-- bread crumb -->
             <table width="100%" border="0" cellpadding="3" cellspacing="4">
                 <tr>
-     <!--               <th class="crumbBanner" align="left">
+                    <!--   <th class="crumbBanner" align="left">-->
+                        <th align="left">
 {section name=crumb loop=$crumbs}
                         <a href="main.php?{$crumbs[crumb].query}">{$crumbs[crumb].text}</a> {if not $smarty.section.crumb.last}&gt; {/if}
 {/section}
                     </th>
-                </tr>i-->
+                </tr>
             </table>
 {/if}
 

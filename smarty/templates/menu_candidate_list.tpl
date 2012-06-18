@@ -43,9 +43,9 @@ $(function(){
 
 <form method="post" action="main.php?test_name=candidate_list">
 <table border="0" valign="top" class="std">
-  <!--  <tr>
+    <tr>
         <th nowrap="nowrap" colspan=4>Selection Filter</th>
-    </tr>-->
+    </tr>
     <tr>
         <td nowrap="nowrap">Site:</td>
         <td nowrap="nowrap">{$form.centerID.html}</td>
@@ -94,7 +94,8 @@ $(function(){
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
-    <td class="controlPanelSection">List of Profiles</td>
+    <td class="controlPanelSection"></td>
+<!--    <td class="controlPanelSection">List of Profiles</td>-->
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>
