@@ -133,8 +133,11 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
         
+        $sites = Utility::getSiteList();
+        $sites = array_merge(array(''=>'All'), $sites);
+
         // Filter selection elements
-        $this->form->addElement('select', 'site', 'Site:', array ('all' => 'All', '2' => 'SEA', '3' => 'PHI', '4' => 'STL', '5' => 'UNC'));
+        $this->form->addElement('select', 'site', 'Site:', $sites);
         $this->form->addElement('select', 'Instrument', 'Instrument:', $instruments);
         $this->form->addElement('text', 'Question', 'Question:', '');
         $this->form->addElement('text', 'CandID', 'DCCID:', '');
