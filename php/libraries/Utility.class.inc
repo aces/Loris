@@ -185,12 +185,12 @@ class Utility extends PEAR
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
-        }
-        return $list;
+       // fix the array
+       $list = array();
+       foreach ($result as $row) {
+           $list[$row["CenterID"]] = $row["Name"];
+       }
+       return $list;
     }
 
 
@@ -218,6 +218,25 @@ class Utility extends PEAR
        	 	}
         	return $list;
 	}
+
+    function getVisitList()
+    {
+        $DB =& Database::singleton();
+
+         $query = "SELECT Visit_label from Visit_Windows";
+
+         $DB->select($query, $result);
+         if(PEAR::isError($result)) {
+             return PEAR::raiseError("DB Error: ".$result->getMessage());
+         }
+
+         $list = array();
+         foreach ($result as $row) {
+             $list[$row["Visit_label"]] = $row["Visit_label"];
+         }
+         return $list;
+     }
+
 
     /**
      * Returns a list of study Subprojects
@@ -499,6 +518,23 @@ class Utility extends PEAR
             return $Arr['Full_name'];
         }
 
+    function getAllInstruments() {
+        $DB =& Database::singleton();
+        $DB->select("SELECT Test_name FROM test_names", &$instruments_q);
+                                
+        // This array_map call turns the result of the above query to
+        // a non-associative array, so that we can use the array_combine
+        // trick to get an array of the form array( 'test_name' => 'test_name')
+        // which can be used by quickforms for the dropdown. The array_merge
+        // call after that just adds an Any/All Instruments option.
+        function Flatten($Arr) {
+            return $Arr['Test_name'];
+        }
+
+        function FlattenFull($Arr) {
+            return $Arr['Full_name'];
+        }
+
     function getAllInstruments($test_name = true) {
         $DB =& Database::singleton();
 
@@ -529,6 +565,120 @@ class Utility extends PEAR
         return $instruments;
 
    }
+   
+   	function getColumnThresholdCount(){
+   	    $config =& NDB_Config::singleton();
+		// get the list of Subprojects
+		$column_threshold= $config->getSetting('columnThreshold');
+		return $column_threshold;
+	}
 
+
+    /**
+     * Checks to see if the given table exists
+     *
+     * @param unknown_type $options
+     * @param unknown_type $table
+     * @param unknown_type $name
+     * @return unknown
+     */
+    function ColumnExists($test_name,$column)
+    {
+        $config =& NDB_Config::singleton();
+        $database = $config->getSetting('database');
+        $query = "SELECT DISTINCT table_name FROM information_schema.columns WHERE table_name = :tn and COLUMN_NAME = :cn and TABLE_SCHEMA = :db";
+        $DB =& Database::singleton();
+        $effected = $DB->pselectOne($query,array('tn'=>$test_name,'cn'=>$column, 'db'=>$database));
+        if ($effected) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the Visit Label for a given commentID
+     * @throws PEAR_Error
+     * @return string  visitlabel
+     * @access public
+     * @static
+     */
+    function getVisitLabelUsingTestName($test_name)
+    {
+        $db =& Database::singleton();
+        $query = "SELECT DISTINCT s.visit_label FROM session s
+            JOIN flag f ON (s.ID = f.SessionID)
+            JOIN candidate c ON (c.Candid = s.Candid)
+            JOIN psc ON (s.CenterID = psc.CenterID)
+            WHERE s.Active = 'Y' AND c.Active= 'Y' AND f.Test_name = :tn AND psc.Centerid!= '1'";
+
+        $visitlabels = $db->pselect($query,array('tn'=>$test_name));
+        if(PEAR::isError($visitlabels)) {
+            return PEAR::raiseError("Could not get visit label: ".$visitlabels->getMessage());
+        }
+        return $visitlabels;
+    }
+    /**
+     * looks up the test_name for the current full name
+     *
+     * @return string        test_name of the instrument
+     * @access public
+     */
+
+    function getTestNameUsingFullName($fullname)
+    {
+        $db =& Database::singleton();
+        //print_r($instument);
+        $instrument = $db->pselect("SELECT Test_name FROM test_names WHERE Full_name =:fname",array('fname'=>$fullname));
+        if(is_array($instrument) && count($instrument)) {
+            //$full_name = $names[0]
+            list(,$test_name) = each($instrument[0]);
+        }
+        return $test_name;
+    }
+
+    /**
+     * Returns all the sourcefrom instruments from parameter_type (which exist in the data_integrity flag table) using the test_names
+     * full_name
+     *
+     * @return unknown
+     */
+    function getSourcefrom()
+    {
+        $DB =& Database::singleton();
+
+        $sourcefrom = $DB->pselect("SELECT DISTINCT t.Full_name FROM parameter_type pt
+                JOIN data_integrity_flag di ON (pt.Name = di.Name)
+                JOIN test_names t ON (t.test_name = pt.sourcefrom)
+                WHERE pt.sourcefrom IS NOT NULL
+                ORDER BY t.Full_name",array());
+
+        foreach ($sourcefrom as $table) {
+            if (!is_null($table)) {
+                $result[$table['Full_name']] = $table['Full_name'];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Returns all the sourcefrom instruments from parameter_type
+     *
+     * @return unknown
+     */
+    function getSourcefields($instrument=null,$commentID=null,$name=null)
+    {
+        $DB =& Database::singleton();
+        //get sourcefield using instrument
+        if (!is_null($instrument)) {
+            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :sf ORDER BY Name ", array('sf'=>$instrument));
+        } elseif (!is_null($commentID)) { //get sourcefield using commentid
+            $instrument = $DB->pselectOne("SELECT Test_name FROM flag WHERE CommentID = :cid" , array('cid'=>$commentID));
+            $sourcefields = $DB->pselect("SELECT SourceField, Name FROM parameter_type WHERE queryable = '1' AND sourcefrom = :instrument ORDER BY Name ", array('instrument'=>$instrument));
+        } elseif (!is_null($name)) { //get all source fields
+            $sourcefields = $DB->pselectRow("SELECT * FROM parameter_type WHERE Name = :pn", array('pn'=>$name));
+        } else {
+        }
+        return $sourcefields;
+    }
 }
 ?>

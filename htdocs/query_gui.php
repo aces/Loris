@@ -165,7 +165,18 @@ $studyTitle = $config->getSetting('title');
                         </select>
 </td></tr>
 <tr>
-<td><input type='button' value='Click here for your results' onclick='executeQuery()'></td></tr>
+<td>
+<input type='button' value='Click here for your results' onclick='executeQuery()'>
+<?
+$user = User::singleton();
+if($user->hasPermission('download_files')) {
+?>
+<input type='button' value='Click here to download files' onclick="executeQuery('download')"><span id="message">&nbsp;</span>
+<?
+}
+?>
+</td>
+</tr>
 </table>
 <p>
 <div id='thang'></div>

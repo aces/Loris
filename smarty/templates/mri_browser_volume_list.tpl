@@ -1,6 +1,21 @@
 {literal}
 <script language="javascript" type="text/javascript">
 <!--
+
+function getParameterByName(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.search);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+sID = getParameterByName('sessionID');
+
 var jivNames = new Array();
 var jivData = new Array();
 
@@ -82,8 +97,9 @@ return true;
 
 <!-- listing of files -->
 <!-- table with candidate profile info -->
-<a href="display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>
 <table><tr>
+{literal}<script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script>{/literal}
+<!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
     <td>
     <table class="fancytableleft" cellpadding="2">
         <tr>
@@ -118,8 +134,6 @@ return true;
 </td>
 </tr>
 </table>
-
-
 
 {* show the files *}
 <table border="0" cellspacing="0" cellpadding="0" width="80%">
@@ -170,23 +184,26 @@ return true;
             </tr>
             
 {* IMG *}
-            <tr><td colspan="2">
-            <a href="#{$smarty.section.fIdx.index}" onClick="window.open('mincbrowser.html?minc_id={$files[fIdx].fileID}', '2D Minc Viewer', 'location = 0, width = 900, height = 500')">
-<!--            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">-->
-               <img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
-            </a>
-            </td></tr>
-            <tr><th>Voxel size</th>
-                    <td>{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
-                    {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
-                    </td>
+
+
+            <tr>
+            	<td colspan="2">
+            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', '2D Minc Viewer', 'location = 0,width = 1300, height = 600')">
+               	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
+            	</a>
+            	</td>
             </tr>
-	    <tr>
-                        {if $files[fIdx].fileID}
+            <tr>
+            	<th>Voxel size</th>
+                <td>{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
+                    {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
+                </td>
+            </tr>
+	   		<tr>
+            {if $files[fIdx].fileID}
                         
             <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">Click here to view this acquisition in the JIV viewer</a>
-<!--                        <td> <a href='mincbrowser.html?minc_id={$files[fIdx].fileID}' target="_blank"> Link to Minc Browser </a><br>-->
-                        </td>
+       	  </td>
 			{/if}
 	    </tr>
             </table>
@@ -209,6 +226,7 @@ return true;
             {if $files[fIdx].echoTime != "" && $files[fIdx].echoTime != "0.00" }<tr><th width="100px">Echo Time</th><td>{$files[fIdx].echoTime} ms{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].repetitionTime != "" && $files[fIdx].repetitionTime != "0.00"}<tr><th width="100px">Rep Time</th><td>{$files[fIdx].repetitionTime} ms{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].sliceThickness != ""&& $files[fIdx].sliceThickness != "0.00"}<tr><th width="100px">Slice Thick</th><td>{$files[fIdx].sliceThickness} mm{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].time != ""&& $files[fIdx].time != "0.00"}<tr><th width="100px">Nb of vol.</th><td>{$files[fIdx].time} volumes{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].Comment != ""}<tr><th width="100px">Comment</th><td>{$files[fIdx].Comment}{else}&nbsp;</td></tr>{/if}  
             </table>
         </td>        

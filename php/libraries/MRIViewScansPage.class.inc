@@ -28,13 +28,21 @@ class MRIViewScansPage {
                 $updateSet = array('QCStatus'=>$curStatus, 'QCLastChangeTime'=>time());
 
                 // set first change time, if it's null only
-                $firstChangeTime = $this->DB->selectOne("SELECT QCFirstChangeTime FROM files WHERE FileID=$curFileID");
+                $firstChangeTime = $this->DB->selectOne("SELECT QCFirstChangeTime FROM files_qcstatus WHERE FileID=$curFileID");
                 if(empty($firstChangeTime)) $updateSet['QCFirstChangeTime'] = time();
 
-                $updateWhere['FileID'] = $curFileID;
-                $success = $this->DB->update('files', $updateSet, $updateWhere);
-                if(PEAR::isError($success)) {
-                    die("DB Error: ".$success->getMessage());
+                $QCExists = $this->DB->selectOne("SELECT 'x' FROM files_qcstatus WHERE FileID=$curFileID");
+                if(!empty($QCExists)) {
+                    $updateWhere['FileID'] = $curFileID;
+                    $success = $this->DB->update('files_qcstatus', $updateSet, $updateWhere);
+                    if(PEAR::isError($success)) {
+                        die("DB Error: ".$success->getMessage());
+                    }
+                } else {
+                    $file = new MRIFile($curFileID);
+                    $updateSet['SeriesUID'] = $file->getParameter('series_instance_uid');
+                    $updateSet['FileID'] = $curFileID;
+                    $this->DB->insert("files_qcstatus", $updateSet);
                 }
             }
         }
@@ -99,11 +107,12 @@ class MRIViewScansPage {
     }
 
     function GetSubjectData() {
-        // Cache the data, since it's called twice. Once in display,
-        // and once for the header
-        //if(isset($this->_subjectData)) {
-        //    return $this->_subjectData;
-        //}
+        // subjectData['Scanner'] may already be set, so if 
+        // $this->_subjectData is set, use that as the starting
+        // point
+        if(isset($this->_subjectData)) {
+            $subjectData = $this->_subjectData;
+        }
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
         if(PEAR::isError($timePoint)) {
             print $timePoint->getMessage()."<br>";
@@ -145,7 +154,7 @@ class MRIViewScansPage {
 
         // Cache the data
         $this->_subjectData = $subjectData;
-        return $subjectData;
+        return $this->_subjectData;
     }
 
     function _getOutputType() {
@@ -189,7 +198,7 @@ class MRIViewScansPage {
                 $scannerID = $file->getParameter('ScannerID');
                 if(!empty($scannerID)) {
                     $query = "SELECT CONCAT_WS(' ', Manufacturer, Model, Serial_number) FROM mri_scanner WHERE ID=$scannerID";
-                    $subjectData['scanner'] = $this->DB->selectOne($query);
+                    $this->_subjectData['scanner'] = $this->DB->selectOne($query);
                 }
             }
             $fileData[$fIdx]['fileID'] = $fileID['FileID'];
@@ -213,6 +222,7 @@ class MRIViewScansPage {
             $fileData[$fIdx]['echoTime'] = number_format($file->getParameter('echo_time')*1000, 2);
             $fileData[$fIdx]['repetitionTime'] = number_format($file->getParameter('repetition_time')*1000, 2);
             $fileData[$fIdx]['sliceThickness'] = number_format($file->getParameter('slice_thickness'), 2);
+            $fileData[$fIdx]['time'] = number_format($file->getParameter('time'), 2);
             $fileData[$fIdx]['xstep'] = number_format($file->getParameter('xstep'), 2);
             $fileData[$fIdx]['ystep'] = number_format($file->getParameter('ystep'), 2);
             $fileData[$fIdx]['zstep'] = number_format($file->getParameter('zstep'), 2);
@@ -241,8 +251,17 @@ class MRIViewScansPage {
         $file_tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
         //$file_tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
 
-        // fixme this should not be hard-coded. make it read the db for possible native types
-        $file_tpl_data['selected_options'] = array (''=>'&nbsp;', 'T1'=>'T1', 'T2'=>'T2', 'PD'=>'PD',  'T1WF'=>'T1WF', 'T2WF'=>'T2WF', 'PDWF'=>'PDWF', 'T1reg'=>'T1reg');
+        $file_tpl_data['selected_options'] = array(''=>'&nbsp;');
+        $tmp_types = array();
+        $query = "SELECT mri_scan_type.Scan_type FROM mri_scan_type";
+        $this->DB->select($query, $scanTypes);
+        
+        foreach($scanTypes AS $row) {  
+            $scanType = $row['Scan_type'];
+            $tmp_types[$scanType] = $scanType;
+        }
+        $file_tpl_data['selected_options'] = array_merge($file_tpl_data['selected_options'], $tmp_types);
+
         if($user->hasPermission('mri_feedback')) $file_tpl_data['has_permission'] = true;
 
         $smarty = new Smarty_neurodb;

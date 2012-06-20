@@ -130,9 +130,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         // which can be used by quickforms for the dropdown. The array_merge
         // call after that just adds an Any/All Instruments option.
 
-    //    $in = array_map(array('Utility','Flatten'), $instruments_q); 
-      //  $in1 = array_map(array('Utility','FlattenFull'), $instruments_r); 
-        //$instruments = array_combine($in, $in1);
+        $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
 
 	$sites =& Utility::getSiteList(true, false); 
