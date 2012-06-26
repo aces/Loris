@@ -1163,7 +1163,6 @@ DROP TABLE IF EXISTS `session`;
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `CandID` int(6) NOT NULL default '0',
-  `PSCID` varchar(255) NOT NULL default '',
   `CenterID` tinyint(2) unsigned default NULL,
   `VisitNo` smallint(5) unsigned default NULL,
   `Visit_label` varchar(255) default NULL,
