@@ -290,6 +290,10 @@ switch($_REQUEST['mode']) {
      // reference id, and send that to a popup
      $DB->insert("query_gui_downloadable_queries", array('query'=>$query));
      $queryID = $DB->lastInsertID;
+     $download = $_POST['download'];
+     if($download === 'execute') {
+         SendFilesToPackage($querySegments['selected_fields'], $query);
+     }
 
      $script .= "window.open('query_gui_data_download.php?queryID=$queryID&format=$_REQUEST[outputFormat]', 'query_download_window');";
      
@@ -298,6 +302,50 @@ switch($_REQUEST['mode']) {
        
 }
 
+function getFiles($cols, $query, $timestamp, $prefix="cbrain") {
+    $DB = Database::singleton();
+    $fileCols= array();
+    $lines=explode("\n",trim($cols));
+    foreach($lines as $field) {
+        $fileCol = $DB->pselectRow("SELECT IsFile, Name FROM parameter_type WHERE ParameterTypeID=:ptid", array("ptid" => $field));
+        if($fileCol['IsFile'] == true) {
+            $fileCols[] = ParameterTypeIDToFieldName($field);
+        }
+    }
+
+    // Strip off everything before from from the query that was generated above, then just re-add the file fields
+    // as determined above
+    $new_query = "SELECT " . join(',', $fileCols) . " " . substr($query, strpos($query, "FROM"));
+    $DB->select($new_query, $results);
+    $input = "";
+    $fp = fopen("/tmp/$prefix.$timestamp.txt", 'w');
+    foreach ($results as $row) {
+        foreach ($row as $key => $val) {
+            if(!empty($val)) {
+                fwrite($fp, $val . "\n");
+                $input .= $val . "\n";
+            }
+       }
+    }
+    fclose($fp);
+    return "/tmp/$prefix.$timestamp.txt";
+}
+
+function SendFilesToPackage($cols, $query) {
+    $DB = Database::singleton();
+    $user = User::singleton();
+    $timestamp = time();
+    $filelist = getFiles($cols,$query,$timestamp, "download");
+    $user = User::singleton();
+    chdir("../tools");
+    $cmd = sprintf("cat $filelist | ./%s %s.$timestamp > %s 2>&1 & echo $! >> %s", "package_files.sh", $user->getUsername(), "../logs/download.$timestamp", $filelist);
+    exec($cmd);
+    $cmd = "rm -f $filelist";
+    exec($cmd);
+    $DB->insert("query_gui_user_files", array("UserID" => $user->getData("ID"),
+        "filename" => $user->getUsername() . ".$timestamp.tar.gz"
+    ));
+}
 function printArray($array, $indent=""){
     while(list($key,$val)=each($array)){
         if(is_array($val)){
@@ -433,6 +481,7 @@ fieldOrderList = []; // new Array;
 <form id='saveQueryForm' method='POST' action='query_gui_data_loader.php'>
 <textarea id='queryData' name='queryData'><?=$_POST['queryData']?></textarea>
 <input type='text' id='mode' name='mode'>
+<input type='text' id='download' name='download' />
 <input type='text' id='outputFormat' name='outputFormat'>
 <input type='submit'>
 </form>

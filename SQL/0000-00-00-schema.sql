@@ -402,6 +402,16 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `files_qcstatus`;
+CREATE TABLE `files_qcstatus` (
+    FileQCID int(11) PRIMARY KEY auto_increment,
+    FileID int(11) UNIQUE NULL,
+    SeriesUID varchar(64) UNIQUE NULL,
+    QCStatus enum('Pass', 'Fail'),
+    QCFirstChangeTime int(10) unsigned,
+    QCLastChangeTime int(10) unsigned
+);
+
 --
 -- Dumping data for table `files`
 --
@@ -631,6 +641,7 @@ CREATE TABLE `mri_protocol` (
   `xstep_range` varchar(255) default NULL,
   `ystep_range` varchar(255) default NULL,
   `zstep_range` varchar(255) default NULL,
+  `time_range` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
@@ -1096,6 +1107,28 @@ LOCK TABLES `query_gui_stored_queries` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `query_gui_user_files`
+--
+DROP TABLE IF EXISTS `query_gui_user_files`;
+CREATE TABLE query_gui_user_files (
+    UserFileID integer auto_increment primary key,
+    UserID integer REFERENCES users(ID),
+    filename varchar(255),
+    downloadDate timestamp DEFAULT CURRENT_TIMESTAMP,
+    md5sum varchar(32),
+    status enum('ready', 'packaging', 'expired')
+);
+
+--
+-- Dumping data for table `query_gui_user_files`
+--
+
+LOCK TABLES `query_gui_user_files` WRITE;
+/*!40000 ALTER TABLE `query_gui_user_files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `query_gui_user_files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `session`
 --
 
@@ -1271,6 +1304,7 @@ CREATE TABLE `test_battery` (
   `Stage` varchar(255) default NULL,
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
+  `CenterID` int(11) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1390,6 +1424,14 @@ INSERT INTO `user_perm_rel` VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,
 /*!40000 ALTER TABLE `user_perm_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
+CREATE TABLE `Visit_Windows` (
+  `Visit_label` varchar(255) DEFAULT NULL,
+  `WindowMinDays` int(11) DEFAULT NULL,
+  `WindowMaxDays` int(11) DEFAULT NULL,
+  `OptimumMinDays` int(11) DEFAULT NULL,
+  `OptimumMaxDays` int(11) DEFAULT NULL,
+  `WindowMidpointDays` int(11) DEFAULT NULL
+);
 --
 -- Table structure for table `users`
 --
@@ -1439,6 +1481,28 @@ INSERT INTO `users` VALUES (1,'SiteMin',NULL,'Admin account',NULL,NULL,NULL,NULL
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
+CREATE TABLE `mri_protocol_violated_scans` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandID` int(6),
+  `PSCID` varchar(255),
+  `Last_inserted` date,
+  `series_description` varchar(255) DEFAULT NULL,
+   minc_location varchar(255),
+   PatientName varchar(255) DEFAULT NULL,
+  `TR_range` varchar(255) DEFAULT NULL,
+  `TE_range` varchar(255) DEFAULT NULL,
+  `TI_range` varchar(255) DEFAULT NULL,
+  `slice_thickness_range` varchar(255) DEFAULT NULL,
+  `xspace_range` varchar(255) DEFAULT NULL,
+  `yspace_range` varchar(255) DEFAULT NULL,
+  `zspace_range` varchar(255) DEFAULT NULL,
+  `xstep_range` varchar(255) DEFAULT NULL,
+  `ystep_range` varchar(255) DEFAULT NULL,
+  `zstep_range` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`));
+
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

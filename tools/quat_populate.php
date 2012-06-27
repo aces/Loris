@@ -34,6 +34,11 @@ mysql> describe parameter_type;
 +-----------------+-----------------------------------------------+------+-----+---------+----------------+
 */
 
+require_once "Utility.class.inc";
+// settings
+$columnThreshhold = Utility::getColumnThresholdCount();
+$quatTableBasename = 'quat_table_';
+$quatTableCounter = 1;
 
 // create an NDB client 
 require_once "../php/libraries/NDB_Client.class.inc";

@@ -24,13 +24,15 @@ $client->initialize();
 $config =& NDB_Config::singleton();
 $css = $config->getSetting('css');
 $studyTitle = $config->getSetting('title');
+$downloadPath= $config->getSetting('DownloadPath');
+print "Download Path: $downloadPath";
 
 $query = "";
 
 if(!empty($_GET['queryID'])) {
-
     // get the query
     $query = $DB->selectOne("SELECT query FROM query_gui_downloadable_queries WHERE queryID='$_GET[queryID]'");
+    $format = $_GET['format'];
   
     // run the query
     $results = array();
@@ -40,11 +42,29 @@ if(!empty($_GET['queryID'])) {
         exit;
     }
 	// add the description as the second row
-	foreach(array_keys($results[0]) AS $key) {
-	   $desc[$key] = $DB->selectOne("SELECT Description FROM parameter_type WHERE Name='$key'");
+    $files_cols = array();
+	foreach(array_keys($results[0]) AS $i => $key) {
+        $parameter_type = $DB->pselectRow("SELECT Description, IsFile FROM parameter_type WHERE Name=:key", array('key' => $key));
+	    $desc[$key] = $parameter_type['Description'];
+        if($parameter_type['IsFile']) {
+            $files_cols[] = $key;
+        }
 	}
 
 	$newResults[0] = $desc;
+    $files = array();
+	for($row=0; $row < count($results); $row++) {
+        foreach($files_cols as $col) {
+            if(!empty($results[$row][$col]) && ($format=='html' || $format=='download_files')) {
+                $file = $results[$row][$col];
+                if($format == 'html') {
+                    $results[$row][$col] = "<a href=\"mri/jiv/get_file.php?file=$file\">$file</a>";
+                } else if($format == 'download_files') {
+                    $files[] = $file;
+                }
+            }
+        }
+    }
 	for($i=0; $i < count($results); $i++) {
 	   $newResults[$i+1] = $results[$i];
 	}
@@ -62,7 +82,13 @@ if(!empty($_GET['queryID'])) {
     }
 
     // build the file buffer
-    list($buffer, $format) = buildFileBuffer($results, $_GET['format'], $css, $studyTitle);
+    
+    $buffer = "Format: $format";
+    if($format == 'download_files') {
+        list($buffer, $format) = buildFileBuffer($files, $_GET['format'], $css, $studyTitle);
+    } else {
+        list($buffer, $format) = buildFileBuffer($results, $_GET['format'], $css, $studyTitle);
+    }
     $filename = "requested_data.".time().".$format";
 
     // set the headers
@@ -99,6 +125,21 @@ function buildCSVBuffer($data, $delimiter) {
 }
 function buildFileBuffer($data, $format, $css, $studyTitle) {
     switch($format) {
+    case 'download_files':
+        $buffer = '';
+        foreach($data as $file) {
+            global $downloadPath;
+            print "downloadPath: $downloadPath";
+            chdir($downloadPath);
+            $file = "./$file";
+            //print $file;
+            if(file_exists($file)) {
+                `tar rvf /var/www/neurodb/htdocs/foo.tar $file`;
+            }
+            $buffer .= "$file\n";
+        }
+        $format = 'txt';
+        break;
     case 'xls':
         $format = 'xls';
         require_once 'Spreadsheet/Excel/Writer.php';
