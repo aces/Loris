@@ -1245,6 +1245,8 @@ CREATE TABLE `tarchive` (
   `CreateInfo` text,
   `AcquisitionMetadata` longtext NOT NULL,
   `TarchiveID` int(11) NOT NULL auto_increment,
+  `DateSent` datetime DEFAULT NULL,
+  `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
