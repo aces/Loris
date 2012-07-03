@@ -107,7 +107,7 @@ foreach ($instruments as $instrument) {
 * Special figs_year3_relatives query
 */
 $Test_name = "figs_year3_relatives";
-$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' and c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N'  and c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
+$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
 $DB->select($query, $instrument_table);
 if(PEAR::isError($instrument_table)) {
 	print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";

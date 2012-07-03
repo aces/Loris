@@ -121,7 +121,7 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
             LEFT JOIN parameter_type USING (ParameterTypeID) 
             LEFT JOIN mri_safety ON (session.ID = mri_safety.SessionID AND DATE_FORMAT(parameter_file.Value, '%Y-%m-%d')=mri_safety.Acquisition_date) 
             WHERE 
-            psc.CenterID = session.CenterID AND candidate.Active='Y' AND session.Active='Y' AND session.Cancelled='N' AND candidate.Entity_type='Human' 
+            psc.CenterID = session.CenterID AND candidate.Active='Y' AND session.Active='Y' AND candidate.Entity_type='Human' 
             AND parameter_file.ParameterTypeID = 29 AND DATE_FORMAT(parameter_file.Value, '%Y-%m-%d')<> '0000-00-00' AND parameter_file.Value IS NOT NULL
             AND candidate.CandID = '".$_REQUEST['candID']."' ";
 
@@ -146,7 +146,7 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
             LEFT JOIN mri_safety ON (session.ID = mri_safety.SessionID) 
             WHERE
             psc.CenterID = session.CenterID 
-            AND candidate.Active='Y' AND session.Active='Y' AND session.Cancelled='N' AND candidate.Entity_type='Human'
+            AND candidate.Active='Y' AND session.Active='Y' AND candidate.Entity_type='Human'
             AND mri_safety.ID IS NOT NULL
             ";
         }

@@ -210,6 +210,18 @@ function DeriveCohort() {
             case 3:
                 $val['Value'] = 'Control';
                 break;
+            case 4:
+                $val['Value'] = 'Fragile X 6 month recruit';
+                break;
+            case 5:
+                $val['Value'] = 'Fragile X 12 month recruit';
+                break;
+            case 6:
+                $val['Value'] = 'EARLI Sib';
+                break;
+            case 7:
+                $val['Value'] = 'Relative';
+                break;
             default:
                 $val['Value'] = 'Unknown';
                 break;

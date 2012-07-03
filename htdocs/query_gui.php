@@ -23,7 +23,7 @@ $studyTitle = $config->getSetting('title');
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <link rel="stylesheet" href="<?php if(!$css){ print main.css; } else { print  $css; }?>" type="text/css" />
-    <script src="JS/jquery-1.4.2.min.js"></script>
+    <script src="js/jquery/jquery-1.4.2.min.js"></script>
     <script src='dqgui_core.js'></script>
     <script src='dqgui_step1.js'></script>
     <script src='dqgui_step2.js'></script>
@@ -165,7 +165,18 @@ $studyTitle = $config->getSetting('title');
                         </select>
 </td></tr>
 <tr>
-<td><input type='button' value='Click here for your results' onclick='executeQuery()'></td></tr>
+<td>
+<input type='button' value='Click here for your results' onclick='executeQuery()'>
+<?
+$user = User::singleton();
+if($user->hasPermission('download_files')) {
+?>
+<input type='button' value='Click here to download files' onclick="executeQuery('download')"><span id="message">&nbsp;</span>
+<?
+}
+?>
+</td>
+</tr>
 </table>
 <p>
 <div id='thang'></div>

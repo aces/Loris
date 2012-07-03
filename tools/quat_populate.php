@@ -34,6 +34,11 @@ mysql> describe parameter_type;
 +-----------------+-----------------------------------------------+------+-----+---------+----------------+
 */
 
+require_once "Utility.class.inc";
+// settings
+$columnThreshhold = Utility::getColumnThresholdCount();
+$quatTableBasename = 'quat_table_';
+$quatTableCounter = 1;
 
 // create an NDB client 
 require_once "../php/libraries/NDB_Client.class.inc";
@@ -88,9 +93,9 @@ function GetSelectStatement($parameterType, $field=NULL) {
     switch($parameterType['SourceFrom']) {
     case 'files':
         if($field == null) {
-            $field = "File";
+            $field = "FileID";
         }
-        $query = "SELECT $field AS Value FROM files JOIN session as S ON (s.ID=files.SessionID) WHERE OutputType='$parameterType[SourceCondition]'";
+        $query = "SELECT $field AS Value FROM files JOIN session as S ON (s.ID=files.SessionID) WHERE OutputType='$parameterType[SourceField]'";
         break;
 
     case 'parameter_file':
@@ -147,7 +152,7 @@ function GetSelectStatement($parameterType, $field=NULL) {
         if($field == null) {
             $field = "psc.$parameterType[SourceField]";
         }
-        $query = "SELECT $field AS Value FROM session s LEFT JOIN psc USING (CenterID) WHERE 1=1";
+        $query = "SELECT $field AS Value FROM session s LEFT JOIN psc USING (CenterID)";
         break;
 
     case 'mri_acquisition_dates':
@@ -160,21 +165,9 @@ function GetSelectStatement($parameterType, $field=NULL) {
     //for behavioural instrument data
     default:
         if($field == null) {
-            if($parameterType['SourceField'] == 'Administration' ||
-                $parameterType['SourceField'] == 'Validity' ||
-                $parameterType['SourceField'] == 'Data_entry') {
-                $field = "`flag`.`$parameterType[SourceField]`";
-            } else if($parameterType['SourceField'] == 'Examiner') 
-                $field = "e.`full_name`";
-            else {
-                $field = "`$parameterType[SourceFrom]`.`$parameterType[SourceField]`";
-            }
+            $field = "`$parameterType[SourceFrom]`.`$parameterType[SourceField]`";
         }
-        if($parameterType['SourceField'] == 'Examiner') 
-            $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) LEFT JOIN examiners e ON (e.examinerID=$parameterType[SourceFrom].Examiner) WHERE flag.Administration IN ('All', 'Partial') AND flag.Data_entry='Complete' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
-        else {
-            $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) WHERE flag.Administration IN ('All', 'Partial') AND flag.Data_entry='Complete' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
-        }
+        $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) WHERE flag.Administration<>'None' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
         break;
     }
     return $query;
