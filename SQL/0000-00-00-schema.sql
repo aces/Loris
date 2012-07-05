@@ -1535,6 +1535,11 @@ CREATE TABLE `conflicts_resolved` (
       `NewValue` varchar(255) DEFAULT NULL,
       PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
 );
+CREATE TABLE `tarchive_find_new_uploads` (
+      `CenterName` varchar(255) NOT NULL,
+      `LastRan` datetime DEFAULT NULL,
+      PRIMARY KEY (`CenterName`)
+);
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
