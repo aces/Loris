@@ -500,6 +500,7 @@ CREATE TABLE `history` (
   `primaryVals` text,
   `changeDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `userID` varchar(255) NOT NULL default '',
+  `type` char(1),
   PRIMARY KEY  (`id`),
   KEY `FK_history_1` (`userID`),
   CONSTRAINT `FK_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
