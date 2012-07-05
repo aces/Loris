@@ -101,10 +101,6 @@ LOCK TABLES `cert_events` WRITE;
 /*!40000 ALTER TABLE `cert_events` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `examiners`
---
-
 DROP TABLE IF EXISTS `document_repository`;
 CREATE TABLE `document_repository` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -127,28 +123,6 @@ CREATE TABLE `document_repository` (
   `File_category` enum('abstract','audio_visual','image','instrument','manual','minutes','paper','presentation','protocol','spreadsheet_table','other') DEFAULT NULL,
   PRIMARY KEY (`record_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=687 DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `ethnic`
---
-
-DROP TABLE IF EXISTS `ethnic`;
-CREATE TABLE `ethnic` (
-  `EthnicID` tinyint(1) unsigned NOT NULL auto_increment,
-  `Hispanic` varchar(100) NOT NULL default '',
-  `Alias` varchar(100) NOT NULL default '',
-  `Race` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`EthnicID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ethnic`
---
-
-LOCK TABLES `ethnic` WRITE;
-/*!40000 ALTER TABLE `ethnic` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ethnic` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `examiners`
