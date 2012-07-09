@@ -977,7 +977,7 @@ UNLOCK TABLES;
 
 INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null);
 INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null);
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES  ('','candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
 
 INSERT INTO parameter_type_category (Name, type) VALUES('Identifiers', 'Metavars');
 
