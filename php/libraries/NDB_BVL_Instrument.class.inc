@@ -566,7 +566,7 @@ class NDB_BVL_Instrument extends PEAR
         
         $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
-        $this->form->registerRule('checkdate', 'callback', '_checkDate');
+        $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
         $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
         
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
@@ -1232,8 +1232,8 @@ class NDB_BVL_Instrument extends PEAR
     }
 } //end class NDB_BVL_Instrument
 
-// {{{ _checkDate()
-function _checkDate($dateElement) {
+// {{{ _checkDateTaken()
+function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
     if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
         return true;
@@ -1244,7 +1244,15 @@ function _checkDate($dateElement) {
     }
     // else, check the date
     else {
-        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        if($checked === false) {
+            return false;
+        }
+        $formatted = date_create();
+        $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
+        $now = date_create(); #getdate(); #date("Y-m-d", getdate());
+        $diff = date_diff($formatted, $now);
+        return ($diff->format("%r") === '');
     }
 }
 
