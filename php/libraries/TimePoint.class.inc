@@ -125,7 +125,6 @@ Class TimePoint
 
         // setup the insert data array
         $insertData = array('CandID'=>$candID,
-                            'PSCID'=>$row['PSCID'],
                             'SubprojectID'=>$SubprojectID,
                             'VisitNo'=> $row['nextVisitNo'],
                             'Visit_label'=> $nextVisitLabel == null ? 'V'.$row['nextVisitNo'] : $nextVisitLabel,

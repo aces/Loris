@@ -101,27 +101,28 @@ LOCK TABLES `cert_events` WRITE;
 /*!40000 ALTER TABLE `cert_events` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `ethnic`
---
-
-DROP TABLE IF EXISTS `ethnic`;
-CREATE TABLE `ethnic` (
-  `EthnicID` tinyint(1) unsigned NOT NULL auto_increment,
-  `Hispanic` varchar(100) NOT NULL default '',
-  `Alias` varchar(100) NOT NULL default '',
-  `Race` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`EthnicID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ethnic`
---
-
-LOCK TABLES `ethnic` WRITE;
-/*!40000 ALTER TABLE `ethnic` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ethnic` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `document_repository`;
+CREATE TABLE `document_repository` (
+  `record_id` int(11) NOT NULL AUTO_INCREMENT,
+  `PSCID` varchar(255) DEFAULT NULL,
+  `Instrument` varchar(255) DEFAULT NULL,
+  `visitLabel` varchar(255) DEFAULT NULL,
+  `Date_taken` date DEFAULT NULL,
+  `Date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `Data_dir` varchar(255) DEFAULT NULL,
+  `File_name` varchar(255) DEFAULT NULL,
+  `File_type` varchar(20) DEFAULT NULL,
+  `version` varchar(20) DEFAULT NULL,
+  `File_size` bigint(20) unsigned DEFAULT NULL,
+  `uploaded_by` varchar(255) DEFAULT NULL,
+  `For_site` int(2) DEFAULT NULL,
+  `comments` text,
+  `multipart` enum('Yes','No') DEFAULT NULL,
+  `EARLI` tinyint(1) DEFAULT '0',
+  `hide_video` tinyint(1) DEFAULT '0',
+  `File_category` enum('abstract','audio_visual','image','instrument','manual','minutes','paper','presentation','protocol','spreadsheet_table','other') DEFAULT NULL,
+  PRIMARY KEY (`record_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=687 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `examiners`
@@ -499,6 +500,7 @@ CREATE TABLE `history` (
   `primaryVals` text,
   `changeDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `userID` varchar(255) NOT NULL default '',
+  `type` char(1),
   PRIMARY KEY  (`id`),
   KEY `FK_history_1` (`userID`),
   CONSTRAINT `FK_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
@@ -654,7 +656,6 @@ CREATE TABLE `mri_protocol` (
 
 LOCK TABLES `mri_protocol` WRITE;
 /*!40000 ALTER TABLE `mri_protocol` DISABLE KEYS */;
-INSERT INTO `mri_protocol` VALUES (124,'ZZZZ',0,0,44,'1-50','1-15','','','','','','11-10000','11-10000','11-10000','','','',NULL),(125,'ZZZZ',0,0,44,'350-650','1-40','','','','','','11-10000','11-10000','11-10000','','','',NULL),(126,'ZZZZ',0,0,45,'2000-4000','100-180','','','','','','11-10000','11-10000','11-10000','','','',NULL),(127,'ZZZZ',0,0,46,'2000-4000','12-30','','','','','','11-10000','11-10000','11-10000','','','',NULL),(128,'ZZZZ',0,0,47,'1400-1600','100-150','','','','','','','','','','','',NULL),(129,'ZZZZ',0,0,48,'3000-9999','60-100','','','','','','11-10000','11-10000','11-10000','2.5-3.5','2.5-3.5','2.5-3.5',NULL),(130,'ZZZZ',0,0,49,'0,9000-100000','34-60','0-10000','','','','','11-10000','11-10000','11-10000','','','',NULL),(131,'ZZZZ',0,0,50,'2000-4000','80-90','','','','','','11-10000','11-10000','11-10000','','','',NULL),(132,'ZZZZ',0,0,51,'2000-4000','151-180','','','','','','11-10000','11-10000','11-10000','','','',NULL),(133,'ZZZZ',0,0,52,'','','','','','','','0-10','','','','','',NULL),(134,'ZZZZ',0,0,52,'','','','','','','','','0-10','','','','',NULL),(135,'ZZZZ',0,0,52,'','','','','','','','','','0-10','','',NULL,NULL),(136,'AAAA',0,0,47,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'mrs'),(137,'AAAA',0,0,48,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'dti'),(138,'AAAA',0,0,49,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'relax'),(139,'AAAA',0,0,52,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'scout|localizer'),(999,'',0,0,999,'','','','','','','','','','','','','','');
 /*!40000 ALTER TABLE `mri_protocol` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1136,7 +1137,6 @@ DROP TABLE IF EXISTS `session`;
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `CandID` int(6) NOT NULL default '0',
-  `PSCID` varchar(255) NOT NULL default '',
   `CenterID` tinyint(2) unsigned default NULL,
   `VisitNo` smallint(5) unsigned default NULL,
   `Visit_label` varchar(255) default NULL,
@@ -1218,6 +1218,8 @@ CREATE TABLE `tarchive` (
   `CreateInfo` text,
   `AcquisitionMetadata` longtext NOT NULL,
   `TarchiveID` int(11) NOT NULL auto_increment,
+  `DateSent` datetime DEFAULT NULL,
+  `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -1503,7 +1505,41 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `zstep_range` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`));
 
+CREATE TABLE `conflicts_unresolved` (
+      `TableName` varchar(255) NOT NULL,
+      `ExtraKeyColumn` varchar(255) DEFAULT NULL,
+      `ExtraKey1` varchar(255) NOT NULL,
+      `ExtraKey2` varchar(255) NOT NULL,
+      `FieldName` varchar(255) NOT NULL,
+      `CommentId1` varchar(255) NOT NULL,
+      `Value1` varchar(255) DEFAULT NULL,
+      `CommentId2` varchar(255) NOT NULL,
+      `Value2` varchar(255) DEFAULT NULL,
+      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+);
 
+CREATE TABLE `conflicts_resolved` (
+      `UserID` varchar(255) NOT NULL,
+      `ResolutionTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      `User1` varchar(255) DEFAULT NULL,
+      `User2` varchar(255) DEFAULT NULL,
+      `TableName` varchar(255) NOT NULL,
+      `ExtraKeyColumn` varchar(255) DEFAULT NULL,
+      `ExtraKey1` varchar(255) NOT NULL DEFAULT '',
+      `ExtraKey2` varchar(255) NOT NULL DEFAULT '',
+      `FieldName` varchar(255) NOT NULL,
+      `CommentId1` varchar(255) NOT NULL,
+      `CommentId2` varchar(255) NOT NULL,
+      `OldValue1` varchar(255) DEFAULT NULL,
+      `OldValue2` varchar(255) DEFAULT NULL,
+      `NewValue` varchar(255) DEFAULT NULL,
+      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+);
+CREATE TABLE `tarchive_find_new_uploads` (
+      `CenterName` varchar(255) NOT NULL,
+      `LastRan` datetime DEFAULT NULL,
+      PRIMARY KEY (`CenterName`)
+);
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
