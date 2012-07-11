@@ -9,6 +9,9 @@ set expandtab
 set autoindent
 set smartindent
 
+while working in vi, this command will automatically indent: 
+gg=G
+
 In emacs:
 ? (C-x C-c, vi filename?)
 
