@@ -1270,14 +1270,18 @@ function _checkDateTaken($dateElement) {
     // else, check the date
     else {
         $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
-        if($checked === false) {
-            return false;
+        if(version_compare(phpversion(), '5.3.0', '>=')) {
+            if($checked === false) {
+                return false;
+            }
+            $formatted = date_create();
+            $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
+            $now = date_create(); #getdate(); #date("Y-m-d", getdate());
+            $diff = date_diff($formatted, $now);
+            return ($diff->format("%r") === '');
+        } else {
+            return $checked;
         }
-        $formatted = date_create();
-        $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
-        $now = date_create(); #getdate(); #date("Y-m-d", getdate());
-        $diff = date_diff($formatted, $now);
-        return ($diff->format("%r") === '');
     }
 }
 
