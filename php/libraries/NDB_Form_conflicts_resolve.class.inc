@@ -11,7 +11,14 @@ class NDB_Form_conflicts_resolve extends NDB_Form
     
     function _hasAccess()
     {
-        return true;
+        
+        // create user object
+        $user =& User::singleton();
+        if(PEAR::isError($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+
+        return ($user->hasPermission('conflict_resolver'));
     }
 
     function _getDefaults()
