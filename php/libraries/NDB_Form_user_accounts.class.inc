@@ -443,7 +443,7 @@ class NDB_Form_user_accounts extends NDB_Form
         $errors = array();
 
         // if username is user-defined, and it is a new user
-        if (empty($values['NA_UserID']) && empty($values['UserID'])) {
+	if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
             // check username's uniqueness
             $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE UserID = '" . $values['UserID'] . "'");
             if (PEAR::isError($result)) {
