@@ -972,6 +972,22 @@ LOCK TABLES `parameter_type_category_rel` WRITE;
 /*!40000 ALTER TABLE `parameter_type_category_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+----
+-----ADDing Meta-data Visit_label , candidate_label and candidate_dob
+
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
+
+INSERT INTO parameter_type_category (Name, type) VALUES('Identifiers', 'Metavars');
+
+INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID) 
+SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID 
+FROM parameter_type pt,parameter_type_category ptc 
+WHERE ptc.Name='Identifiers' AND pt.Name IN ('candidate_label', 'Visit_label','candidate_dob');
+
+
 --
 -- Table structure for table `permissions`
 --
