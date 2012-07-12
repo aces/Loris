@@ -13,6 +13,7 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ]; then
 fi
 if [ ! -d ../project ]; then
     mkdir ../project
+    mkdir ../project/tables_sql
 fi
 if [ -f ../project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
