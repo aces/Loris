@@ -25,7 +25,14 @@ read -p "Database host? " mysqlhost
 read -p "What MySQL user will Loris connect as? " mysqluser
 read -p "What MySQL is $mysqluser's password? " mysqlpass
 
-echo "exit" | mysql $mysqldb -h$mysqlhost -u$mysqluser -p$mysqlpass -A > /dev/null 2>&1
+echo
+echo "The install script needs a root MySQL user to install the"
+echo "default schema. This will only be used to create and populate"
+echo "the default tables, and will not be saved."
+read -p "Root MySQL user: " mysqlrootuser
+read -p "Root MySQL password: " mysqlrootpass
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost -u$mysqlrootuser -p$mysqlrootpass -A > /dev/null 2>&1
+echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost -u$mysqlrootuser -p$mysqlrootpass -A > /dev/null 2>&1
 
 MySQLError=$?;
 
@@ -42,9 +49,9 @@ if [ $MySQLError -eq 0 ]; then
     chmod 777 $RootDir/php/smarty/templates_c/
 
     echo "Creating database tables"
-    mysql $mysqldb -h$mysqlhost -u$mysqluser -p$mysqlpass -A >> logs/install-`date +%Y-%m-%d`.log 2>&1 < ../SQL/0000-00-00-schema.sql
-    read -p "Enter SiteMin user's password (will be echoed to screen, and prompted to reset on login): " lorispass
-    echo "Updating SiteMin password "
+    mysql $mysqldb -h$mysqlhost -u$mysqlrootuser -p$mysqlrootpass -A >> logs/install-`date +%Y-%m-%d`.log 2>&1 < ../SQL/0000-00-00-schema.sql
+    read -p "Enter admin user's password (will be echoed to screen, and prompted to reset on login to Loris): " lorispass
+    echo "Updating admin password "
     mysql $mysqldb -h$mysqlhost -u$mysqluser -p$mysqlpass -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')) WHERE ID=1"
 
     while true; do
@@ -89,8 +96,8 @@ if [ $MySQLError -eq 0 ]; then
 
                 # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
                 sed -e "s#%LORISROOT%#$RootDir/#g"  -e "s#%PROJECTNAME%#$projectname#g" ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname > /dev/null
-                #sudo a2dissite default
-                #sudo a2ensite $projectname
+                sudo a2dissite default
+                sudo a2ensite $projectname
                 break;;
             [Nn]* )
                 echo "Not configuring apache"
@@ -101,7 +108,7 @@ if [ $MySQLError -eq 0 ]; then
 
 
     echo "Installation complete."
-    echo "Must updated cli/php.ini if any command line scripts are to be used."
+    echo "Must update cli/php.ini if any command line scripts are to be used."
 else
     echo "Could not connect to database with user provided";
     exit 1;
