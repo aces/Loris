@@ -47,7 +47,7 @@ class NDB_Form_next_stage extends NDB_Form
         }
         
         // create a new battery object && new battery
-        $battery =& new NDB_BVL_Battery;
+        $battery = new NDB_BVL_Battery;
 
         // select a specific time point (sessionID) for the battery
         $battery->selectBattery($timePoint->getData('SessionID'));
