@@ -145,7 +145,7 @@ class Database extends PEAR
 
         $prepQ = "INSERT INTO $table SET ";
         $exec_params = array();
-        $prepQ .= $this->_implodeAsPrepared(",", $set, &$exec_params);
+        $prepQ .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
         if(DEBUG) {
             fwrite(STDERR, $query."\n");
@@ -216,9 +216,9 @@ class Database extends PEAR
 
         $exec_params = array();
         $prepQ = "UPDATE $table SET ";
-        $prepQ .= $this->_implodeAsPrepared(",", $set, &$exec_params, 'set_');
+        $prepQ .= $this->_implodeAsPrepared(",", $set, $exec_params, 'set_');
         $prepQ .= " WHERE ";
-        $prepQ .= $this->_implodeAsPrepared(" AND ", $i_where, &$exec_params, 'where_');
+        $prepQ .= $this->_implodeAsPrepared(" AND ", $i_where, $exec_params, 'where_');
         
         if(DEBUG) {
             fwrite(STDERR, $query.$where."\n");
