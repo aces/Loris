@@ -74,7 +74,7 @@ foreach($instruments AS $instrument){
         switch($bits[0]){
             //generate the CREATE TABLE syntax
             case "table":
-                $filename="tables_sql/".$bits[1].".sql";
+                $filename="../project/tables_sql/".$bits[1].".sql";
                 $output="CREATE TABLE `$bits[1]` (\n";
                 $output.="`CommentID` varchar(255) NOT NULL default '',\n
                           `UserID` varchar(255) default NULL,\n
