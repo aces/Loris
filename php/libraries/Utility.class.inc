@@ -680,5 +680,6 @@ class Utility extends PEAR
         }
         return $sourcefields;
     }
+    }
 }
 ?>
