@@ -79,7 +79,7 @@ foreach($instruments AS $instrument){
                 $output.="`CommentID` varchar(255) NOT NULL default '',\n
                           `UserID` varchar(255) default NULL,\n
                           `Examiner` varchar(255) default NULL,\n
-                          `Testdate` timestamp(14) NOT NULL,\n
+                          `Testdate` timestamp NOT NULL,\n
                           `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',\n";
             break;
 
@@ -111,7 +111,7 @@ foreach($instruments AS $instrument){
 
     }
     $output.="PRIMARY KEY  (`CommentID`)\n
-              ) TYPE=MyISAM;\n";
+              );\n";
     $fp=fopen($filename, "w");
     fwrite($fp, $output);
     fclose($fp);
