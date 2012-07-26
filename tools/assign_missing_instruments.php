@@ -37,7 +37,7 @@ $query="SELECT ID, subprojectID from session";
 if(!empty($argv[1]) && $argv[1]!="confirm"){
 	$query.=" WHERE visit_label='$argv[1]'";
 } else {
-    $visit_labels = $DB->pselect("SELECT DISTINCT Visit_label FROM session WHERE Active='Y' AND Cancelled='N' AND Visit_label NOT LIKE '%phantom%' AND Visit_label NOT LIKE 'Vsup%'", array());
+    $visit_labels = $DB->pselect("SELECT DISTINCT Visit_label FROM session WHERE Active='Y' AND Visit_label NOT LIKE '%phantom%' AND Visit_label NOT LIKE 'Vsup%'", array());
 }
 
 function PopulateVisitLabel($result, $visit_label) {
@@ -70,13 +70,13 @@ function PopulateVisitLabel($result, $visit_label) {
 }
 
 if(isset($visit_label)) {
-    $query="SELECT s.ID, s.subprojectID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND s.Cancelled='N' AND c.Active='Y' AND s.Cancelled='N' AND s.visit_label='$argv[1]'";
+    $query="SELECT s.ID, s.subprojectID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.visit_label='$argv[1]'";
     $DB->select($query, $results);
     foreach($results AS $result){
         PopulateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query="SELECT s.ID, s.subprojectID, s.Visit_label from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND s.Cancelled='N' AND c.Active='Y' AND s.Cancelled='N' AND s.Visit_label NOT LIKE 'Vsup%'";
+    $query="SELECT s.ID, s.subprojectID, s.Visit_label from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
     $DB->select($query, $results);
     foreach($results AS $result) {
         PopulateVisitLabel($result, $result['Visit_label']);
