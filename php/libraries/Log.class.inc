@@ -20,10 +20,10 @@ class Log extends PEAR
 
 		if ($log_location[0] != '/'){
 			if ($base_location[strlen($base_location)-1]!= '/'){
-				$log_location = $base_location . "/" . $log_location; ///var/www/git_gusto
+				$log_location = $base_location . "/" . $log_location; 
 			}
 			else{
-				$log_location = $base_location . $log_location; ///var/www/git_gusto/
+				$log_location = $base_location . $log_location; 
 			}
 		}
 
