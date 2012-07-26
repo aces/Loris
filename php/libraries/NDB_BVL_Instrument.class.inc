@@ -1231,7 +1231,6 @@ class NDB_BVL_Instrument extends PEAR
         return;
     }
 } //end class NDB_BVL_Instrument
-
 // {{{ _checkDateTaken()
 function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
@@ -1259,7 +1258,18 @@ function _checkDateTaken($dateElement) {
         }
     }
 }
-
-// }}}
+/// _checkDate. This is used by create timepoint and start timepoint pages, 
+// so it probably shouldn't be in the instrument class.
+function _checkDate($dateElement) {
+    // if all three elements are empty, return true b/c it'll save the NULL in date field
+    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+        return true;
+    }
+    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
+    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
+        return false;
+    }
+    return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+}
 
 ?>
