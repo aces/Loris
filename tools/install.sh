@@ -11,6 +11,9 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ]; then
     echo "Could not find schema file";
     exit 1;
 fi
+
+mkdir -p logs
+
 if [ ! -d ../project ]; then
     mkdir ../project
     mkdir ../project/tables_sql
@@ -32,8 +35,8 @@ echo "default schema. This will only be used to create and populate"
 echo "the default tables, and will not be saved."
 read -p "Root MySQL user: " mysqlrootuser
 read -p "Root MySQL password: " mysqlrootpass
-echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost -u$mysqlrootuser -p$mysqlrootpass -A > /dev/null 2>&1
-echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost -u$mysqlrootuser -p$mysqlrootpass -A > /dev/null 2>&1
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A > /dev/null 2>&1
+echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A > /dev/null 2>&1
 
 MySQLError=$?;
 
@@ -50,10 +53,10 @@ if [ $MySQLError -eq 0 ]; then
     chmod 777 $RootDir/php/smarty/templates_c/
 
     echo "Creating database tables"
-    mysql $mysqldb -h$mysqlhost -u$mysqlrootuser -p$mysqlrootpass -A >> logs/install-`date +%Y-%m-%d`.log 2>&1 < ../SQL/0000-00-00-schema.sql
+    mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A >> logs/install-`date +%Y-%m-%d`.log 2>&1 < ../SQL/0000-00-00-schema.sql
     read -p "Enter admin user's password (will be echoed to screen, and prompted to reset on login to Loris): " lorispass
     echo "Updating admin password "
-    mysql $mysqldb -h$mysqlhost -u$mysqluser -p$mysqlpass -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')) WHERE ID=1"
+    mysql $mysqldb -h$mysqlhost --user=$mysqluser --password=$mysqlpass -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')) WHERE ID=1"
 
     while true; do
         read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
