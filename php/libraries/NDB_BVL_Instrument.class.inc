@@ -1,4 +1,5 @@
 <?
+require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 include_once ('HTML/QuickForm/Renderer/Default.php');
@@ -11,7 +12,7 @@ include_once ('HTML/QuickForm/Renderer/Default.php');
  * @package behavioural 
  * @access public
  */
-class NDB_BVL_Instrument extends PEAR
+class NDB_BVL_Instrument extends NDB_Page
 {
     // {{{ properties
 
@@ -227,9 +228,11 @@ class NDB_BVL_Instrument extends PEAR
     * @abstract
     */
     function setup($commentID, $page)
-    {
-        $this->form = new HTML_Quickform('test_form');
-        $this->page = $page;            // page label (number or
+    { 
+       $this->_setupPage(null, $page, null, $commentID, 'test_form'); 
+    /**       
+     //   $this->form = new HTML_Quickform('test_form');
+       // $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
@@ -237,10 +240,10 @@ class NDB_BVL_Instrument extends PEAR
         $this->testName = "";           // test_names.Test_name
         $this->table = '';              // name of table containing
         // data keyed by commentID
-        $this->commentID = $commentID;
+       // $this->commentID = $commentID;
 
         // required fields for data entry completion status
-        $this->_requiredElements = array();
+        $this->_requiredElements = array();    */ 
     }
 
     // }}}

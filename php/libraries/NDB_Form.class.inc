@@ -1,4 +1,5 @@
 <?
+require_once "NDB_Page.class.inc";
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -7,7 +8,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  * Base Form class
  * @package main
  */
-class NDB_Form extends PEAR
+class NDB_Form extends NDB_Page
 {
     /**
      * Class name
@@ -96,11 +97,13 @@ class NDB_Form extends PEAR
         $obj = new $class;
 
         // set the local variables
-        $obj->form = new HTML_QuickForm('test_form');
+        $obj->_setupPage($name, $page, $identifier, null, 'test_form'); 
+
+       /** $obj->form = new HTML_QuickForm('test_form');
         $obj->name = $name;
         $obj->page = $page;
-        $obj->identifier = $identifier;
-        
+        $obj->identifier = $identifier;   */
+       
         $access = $obj->_hasAccess();
         if (PEAR::isError($access)) {
             return PEAR::raiseError("NDB_Form::factory() access: ".$access->getMessage());
@@ -280,7 +283,8 @@ class NDB_Form extends PEAR
      */
     function _resetForm()
     {
-        $this->form = new HTML_QuickForm('test_form');
+       $this->_setupPage(null, null, null, null, 'test_form');
+       // $this->form = new HTML_QuickForm('test_form');
     }
 }
 ?>
