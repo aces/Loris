@@ -1145,6 +1145,37 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
+    /**
+    * Wrapper to create a header
+    */
+
+    function addHeader($header) {
+        $this->form->addElement('header', null, $header); 
+    }
+
+    /**
+    * Wrapper to create a select drop-down list
+    */
+    
+    function addSelect($name, $label, $options=array()) {
+        $this->form->addElement('select', $name, $label, $options);
+    }
+
+    /**
+    * Wrapper to create a static label
+    */
+    
+    function addLabel($label) {
+        $this->form->addElement('static', null, $label);
+    }
+
+    /**
+    * Wrapper to create a static score column
+    */
+   
+    function addScoreColumn($name, $label) {
+        $this->form->addElement('static', $name, $label);
+     }
 
     /**
     * nulls all scores for the record identified by CommentID
@@ -1274,5 +1305,4 @@ function _checkDate($dateElement) {
     }
     return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }
-
 ?>
