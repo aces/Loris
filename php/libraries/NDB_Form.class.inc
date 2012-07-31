@@ -171,9 +171,13 @@ class NDB_Form extends NDB_Page
     {
         if(!$this->form->isFrozen()) {
             // hidden values
-            $this->form->addElement('hidden', 'test_name', $this->name);
-            $this->form->addElement('hidden', 'subtest', $this->page);
-            $this->form->addElement('hidden', 'identifier', $this->identifier);
+              $this->addHidden('test_name', $this->name);
+              $this->addHidden('subtest', $this->page);
+              $this->addHidden('identifier', $this->identifier);
+
+           // $this->form->addElement('hidden', 'test_name', $this->name);
+           // $this->form->addElement('hidden', 'subtest', $this->page);
+           // $this->form->addElement('hidden', 'identifier', $this->identifier);
          }
 
         // get the defaults
