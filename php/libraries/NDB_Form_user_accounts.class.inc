@@ -257,7 +257,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // it is an existing user
         else {
             // user name
-            $this->form->addElement('text', 'UserID', 'User name');
+            $this->addBasicText('UserID', 'User name');
             $username =& $this->form->getElement('UserID');
             $username->freeze();
         }
@@ -278,9 +278,9 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         // full name
-        //$this->form->addElement('text', 'Real_name', 'Full name');
-        $this->form->addElement('text', 'First_name', 'First name');
-        $this->form->addElement('text', 'Last_name', 'Last name');
+        //$this->addBasicText('Real_name', 'Full name');
+        $this->addBasicText('First_name', 'First name');
+        $this->addBasicText('Last_name', 'Last name');
 
         // full name rules
         //$this->form->addRule('Real_name', 'Full name is required', 'required');
@@ -292,16 +292,16 @@ class NDB_Form_user_accounts extends NDB_Form
 		$this->form->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        $this->form->addElement('text', 'Degree', 'Degree');
-        $this->form->addElement('text', 'Position_title', 'Academic Position');
-        $this->form->addElement('text', 'Institution', 'Institution');
-        $this->form->addElement('text', 'Department', 'Department');
-        $this->form->addElement('text', 'Address', 'Street Address');
-        $this->form->addElement('text', 'City', 'City');
-        $this->form->addElement('text', 'State', 'Sta te/Province');
-        $this->form->addElement('text', 'Zip_code', 'Zip/Postal Code');
-        $this->form->addElement('text', 'Country', 'Country');
-        $this->form->addElement('text', 'Fax', 'FAX');
+        $this->addBasicText('Degree', 'Degree');
+        $this->addBasicText('Position_title', 'Academic Position');
+        $this->addBasicText('Institution', 'Institution');
+        $this->addBasicText('Department', 'Department');
+        $this->addBasicText('Address', 'Street Address');
+        $this->addBasicText('City', 'City');
+        $this->addBasicText('State', 'Sta te/Province');
+        $this->addBasicText('Zip_code', 'Zip/Postal Code');
+        $this->addBasicText('Country', 'Country');
+        $this->addBasicText('Fax', 'FAX');
 
         
         // email address
@@ -332,12 +332,12 @@ class NDB_Form_user_accounts extends NDB_Form
             // allow only to add to their own site
             $siteOptions = array($editor->getData('CenterID') => $editor->getData('Site'));
         }
-        $this->form->addElement('select', 'CenterID', 'Site', $siteOptions);
+        $this->addSelect('CenterID', 'Site', $siteOptions);
 
         // active and examiner
-    	$this->form->addElement('select', 'Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-	    $this->form->addElement('select', 'Pending_approval', 'Pending approval', array('1' => 'Yes', '0' => 'No'));
-	    $this->form->addElement('select', 'Examiner', 'Examiner', array('N' => 'No', 'Y' => 'Yes'));
+    	$this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
+	    $this->addSelect('Pending_approval', 'Pending approval', array('1' => 'Yes', '0' => 'No'));
+	    $this->addSelect('Examiner', 'Examiner', array('N' => 'No', 'Y' => 'Yes'));
 
         //------------------------------------------------------------
 
@@ -365,7 +365,7 @@ class NDB_Form_user_accounts extends NDB_Form
             // add hidden permissions if editor has less permissions than user being edited
             $perms = array_diff($user->getPermissionIDs(), $editor->getPermissionIDs());
             foreach ($perms as $value) {
-                $this->form->addElement('hidden', "permID[$value]", 1);
+                $this->addHidden("permID[$value]", 1);
             }
         }
 
@@ -383,14 +383,14 @@ class NDB_Form_user_accounts extends NDB_Form
         //------------------------------------------------------------
 
         // user name
-        $this->form->addElement('text', 'UserID', 'User name');
+        $this->addBasicText('UserID', 'User name');
         $username =& $this->form->getElement('UserID');
         $username->freeze();
 
         // full name
-        //$this->form->addElement('text', 'Real_name', 'Full name');
-        $this->form->addElement('text', 'First_name', 'First name');
-        $this->form->addElement('text', 'Last_name', 'Last name');
+        //$this->addBasicText('Real_name', 'Full name');
+        $this->addBasicText('First_name', 'First name');
+        $this->addBasicText('Last_name', 'Last name');
 
         // full name rules
         //$this->form->addRule('Real_name', 'Full name is required', 'required');
@@ -402,19 +402,19 @@ class NDB_Form_user_accounts extends NDB_Form
 		$this->form->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        $this->form->addElement('text', 'Degree', 'Degree');
-        $this->form->addElement('text', 'Position_title', 'Academic Position');
-        $this->form->addElement('text', 'Institution', 'Institution');
-        $this->form->addElement('text', 'Department', 'Department');
-        $this->form->addElement('text', 'Address', 'Street Address');
-        $this->form->addElement('text', 'City', 'City');
-        $this->form->addElement('text', 'State', 'Sta te/Province');
-        $this->form->addElement('text', 'Zip_code', 'Zip/Postal Code');
-        $this->form->addElement('text', 'Country', 'Country');
-        $this->form->addElement('text', 'Fax', 'FAX');
+        $this->addBasicText('Degree', 'Degree');
+        $this->addBasicText('Position_title', 'Academic Position');
+        $this->addBasicText('Institution', 'Institution');
+        $this->addBasicText('Department', 'Department');
+        $this->addBasicText('Address', 'Street Address');
+        $this->addBasicText('City', 'City');
+        $this->addBasicText('State', 'Sta te/Province');
+        $this->addBasicText('Zip_code', 'Zip/Postal Code');
+        $this->addBasicText('Country', 'Country');
+        $this->addBasicText('Fax', 'FAX');
 
         // email address
-        $this->form->addElement('text', 'Email', 'Email address');
+        $this->addBasicText('Email', 'Email address');
 
         // email address rules
         $this->form->addRule('Email', 'Email address is required', 'required');
