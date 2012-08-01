@@ -39,11 +39,13 @@ class NDB_Reliability extends NDB_Form
         $obj = new $class;
 
         // set the local variables
-        $obj->form = new HTML_QuickForm('test_form');
+        $obj->_setupPage($name, $page, $identifier, null, 'test_form'); 
+
+   /**  $obj->form = new HTML_QuickForm('test_form');
         $obj->name = $name;
         $obj->page = $page;
-        $obj->identifier = $identifier;
-        $obj->reliability_center_id = $reliability_center_id;
+        $obj->identifier = $identifier; */
+        $obj->reliability_center_id = $reliability_center_id; 
         
         $access = $obj->_hasAccess();
         if (PEAR::isError($access)) {
@@ -87,13 +89,13 @@ class NDB_Reliability extends NDB_Form
     function display()
     {
         if($_REQUEST['blind'] == '1') {
-            $this->form->addElement('hidden', 'blind', $_REQUEST['blind']);
+            $this->addHidden('blind', $_REQUEST['blind']);
         }
         if(!$this->form->isFrozen()) {
             // hidden values
-            $this->form->addElement('hidden', 'test_name', $this->name);
-            $this->form->addElement('hidden', 'subtest', $this->page);
-            $this->form->addElement('hidden', 'identifier', $this->identifier);
+            $this->addHidden('test_name', $this->name);
+            $this->addHidden('subtest', $this->page);
+            $this->addHidden('identifier', $this->identifier);
          }
 
 
@@ -234,10 +236,10 @@ class NDB_Reliability extends NDB_Form
                                 'emptyOptionValue' => null
                                 );
 
-           $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
+           $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
            $examiners = $this->_getExaminerNames();
-           $this->form->addElement('select', 'Examiner', 'Reliability Coder', $examiners);
+           $this->addSelect('Examiner', 'Reliability Coder', $examiners);
 
            //$this->form->addElement('text', 'Examiner', 'Examiner');
 
@@ -246,7 +248,7 @@ class NDB_Reliability extends NDB_Form
            $this->form->registerRule('checkdate', 'callback', '_checkDate');
            //$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
            
-           $this->form->addElement('select', 'invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
+           $this->addSelect('invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
            $this->form->addRule('invalid', 'Invalid flag is required.', 'required');
            
            $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
