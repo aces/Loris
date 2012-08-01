@@ -162,62 +162,6 @@ class NDB_Form extends NDB_Page
 
 
     /**
-     * Displays the form
-     *
-     * @return void
-     * @access public
-     */
-    function display()
-    {
-        if(!$this->form->isFrozen()) {
-            // hidden values
-              $this->addHidden('test_name', $this->name);
-              $this->addHidden('subtest', $this->page);
-              $this->addHidden('identifier', $this->identifier);
-
-           // $this->form->addElement('hidden', 'test_name', $this->name);
-           // $this->form->addElement('hidden', 'subtest', $this->page);
-           // $this->form->addElement('hidden', 'identifier', $this->identifier);
-         }
-
-        // get the defaults
-        $localDefaults = $this->_getDefaults();
-        if (PEAR::isError($localDefaults)) {
-            return PEAR::raiseError("NDB_Form::display(): ".$localDefaults->getMessage());
-        }
-        if(!is_array($localDefaults)) { $localDefaults = array(); }
-        // set the quickform object defaults
-        $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
-
-	    // trim all values
-    	$this->form->applyFilter('__ALL__', 'trim');
-
-        // display the HTML_Quickform object
-        $smarty = new Smarty_neurodb;
-        $renderer =& new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
-        $smarty->assign('form', $renderer->toArray());
-        $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
-        return $html;
-        //return $this->form->toHTML();
-    }
-
-
-    /**
-     * Returns the form-specific defaults
-     *
-     * @note   overloaded function
-     * @return array
-     * @access private
-     */
-    function _getDefaults()
-    {
-        return array();
-    }
-
-
-    /**
      * Saves the form
      *
      * Attempts to validate the form (using the defined rules) and
@@ -287,7 +231,7 @@ class NDB_Form extends NDB_Page
      */
     function _resetForm()
     {
-       $this->_setupPage(null, null, null, null, 'test_form');
+       $this->_setupPage($name, $page, $identifier, null, 'test_form');
        // $this->form = new HTML_QuickForm('test_form');
     }
 }
