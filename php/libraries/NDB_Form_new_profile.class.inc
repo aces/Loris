@@ -77,7 +77,8 @@ class NDB_Form_new_profile extends NDB_Form
         // add date of birth
         $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
         $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
-    
+   
+
         // date of birth rules
         $this->form->addGroupRule('dob1', 'Date of Birth is required', 'required');
         $this->form->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
