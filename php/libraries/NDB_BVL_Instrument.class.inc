@@ -273,12 +273,12 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->form->addElement('hidden', 'candID', $_REQUEST["candID"]);
-        $this->form->addElement('hidden', 'sessionID', $_REQUEST["sessionID"]);
-        $this->form->addElement('hidden', 'commentID', $this->getCommentID());
-        $this->form->addElement('hidden', 'test_name', $this->testName);
-        $this->form->addElement('hidden', 'page', $this->page);
-        $this->form->addElement('hidden', 'subtest', $this->page);
+        $this->addHidden('candID', $_REQUEST["candID"]);
+        $this->addHidden('sessionID', $_REQUEST["sessionID"]);
+        $this->addHidden('commentID', $this->getCommentID());
+        $this->addHidden('test_name', $this->testName);
+        $this->addHidden('page', $this->page);
+        $this->addHidden('subtest', $this->page);
         
         if(!$this->form->isFrozen()) {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
@@ -556,14 +556,14 @@ class NDB_BVL_Instrument extends NDB_Page
                              'emptyOptionValue' => null
                              );
 
-        $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
         
         if(strrpos($this->testName, '_proband') === FALSE) {
-            $this->form->addElement('static', 'Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
-            $this->form->addElement('static', 'Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
+            $this->addScoreColumn('Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
+            $this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
         }
         $examiners = $this->_getExaminerNames();
-        $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
+        $this->addSelect('Examiner', 'Examiner', $examiners);
         
         //$this->form->addElement('text', 'Examiner', 'Examiner');
         
@@ -1004,7 +1004,7 @@ class NDB_BVL_Instrument extends NDB_Page
     * @param    string    $rule_message    rule message to display
     */
     function addYesNoElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $this->form->addElement('select', $field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
+        $this->addSelect($field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
         if (!empty($rules)) {
             $this->XINRegisterRule($field, $rules, $rule_message);        
         }
