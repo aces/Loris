@@ -26,8 +26,8 @@ class NDB_Page extends PEAR
     * Wrapper to create a select drop-down list
     */
 
-    function addSelect($name, $label, $options=array()) {
-        $this->form->addElement('select', $name, $label, $options);
+    function addSelect($name, $label, $options, $optional=null) {
+        $this->form->addElement('select', $name, $label, $options, $optional);
     }
 
     /**

@@ -33,7 +33,7 @@ class NDB_Menu_Filter_download_files extends NDB_Menu_Filter
 
     function _setFilterForm()
     {
-        $this->form->addElement('text', 'Filename', 'Filename:', array("size"=>9, "maxlength"=>11));
+        $this->addBasicText('Filename', 'Filename:', array("size"=>9, "maxlength"=>11));
     }
 
     function _setDataTableRows($count)
