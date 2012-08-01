@@ -47,12 +47,16 @@ class NDB_Page extends PEAR
     }
 
 
-    function addBasicText($field, $label, $optional=array()) {
-        $this->form->addElement('text', $field, $label, $optional);
+    function addBasicText($field, $label, $options=array()) {
+        $this->form->addElement('text', $field, $label, $options);
     }
 
     function addBasicTextArea($field, $label, $specifications=array()) {
         $this->form->addElement('textarea', $field, $label, $specifications);
+    }
+
+    function addBasicDate($field, $label, $options=array()) {
+        $this->form->addElement('date', $field, $label, $options);
     }
  
     function addHidden($label, $attributes) {
