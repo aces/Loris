@@ -175,7 +175,8 @@ class NDB_Form_certification extends NDB_Form
         }
 
         // examiner
-        $this->form->addElement('select', 'examinerID', 'Examiner', $examinerOptions);
+        $this->addSelect('examinerID', 'Examiner', $examinerOptions); 
+ // $this->addSelect('examinerID', 'Examiner', $examinerOptions);
         $this->form->addRule('examinerID', 'Examiner is required', 'required');
 
         // date of certification
@@ -183,8 +184,8 @@ class NDB_Form_certification extends NDB_Form
         $this->form->addRule('date_cert', 'Date of testing is required', 'required');
 
         // candid
-        $this->form->addElement('text', 'cert_candID', 'DCCID');
-        $this->form->addElement('text', 'cert_visit_label', 'Visit label');
+        $this->addBasicText('cert_candID', 'DCCID');
+        $this->addBasicText('cert_visit_label', 'Visit label');
 
 
         $DB->select("SELECT ID, Full_name FROM test_names ORDER BY Full_name", $result);
@@ -200,9 +201,9 @@ class NDB_Form_certification extends NDB_Form
                                'No QC'=>'No QC');
         
         foreach ($result as $row) {
-            $this->form->addElement('select', 'pass['.$row['ID'].']', $row['Full_name'], $statusOptions);
+            $this->addSelect('pass['.$row['ID'].']', $row['Full_name'], $statusOptions);
             //$this->form->addGroup($options, 'test_Group['.$row['ID'].']', $row['Full_name'], $this->_GUIDelimiter, FALSE);
-            $this->form->addElement('text', 'comment['.$row['ID'].']', 'Comment');
+            $this->addBasicText('comment['.$row['ID'].']', 'Comment');
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));

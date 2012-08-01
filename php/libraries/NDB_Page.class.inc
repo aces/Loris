@@ -14,8 +14,45 @@ class NDB_Page extends PEAR
         $this->commentID = $commentID;
     }
 
-    function addBasicText($field, $label) {
-        $this->form->addElement('text', $field, $label);
+     /**
+    * Wrapper to create a header
+    */
+
+    function addHeader($header) {
+        $this->form->addElement('header', null, $header);
+    }
+
+    /**
+    * Wrapper to create a select drop-down list
+    */
+
+    function addSelect($name, $label, $options=array()) {
+        $this->form->addElement('select', $name, $label, $options);
+    }
+
+    /**
+    * Wrapper to create a static label
+    */
+
+    function addLabel($label) {
+        $this->form->addElement('static', null, $label);
+    }
+
+    /**
+    * Wrapper to create a static score column
+    */
+
+    function addScoreColumn($name, $label) {
+        $this->form->addElement('static', $name, $label);
+    }
+
+
+    function addBasicText($field, $label, $optional=array()) {
+        $this->form->addElement('text', $field, $label, $optional);
+    }
+
+    function addBasicTextArea($field, $label, $specifications=array()) {
+        $this->form->addElement('textarea', $field, $label, $specifications);
     }
  
     function addHidden($label, $attributes) {

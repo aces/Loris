@@ -93,7 +93,7 @@ class NDB_Form_new_profile extends NDB_Form
 
         // add gender
         $genderOptions = array('' => '', 'Male' => 'Male', 'Female' => 'Female');
-        $this->form->addElement('select', 'gender', 'Gender', $genderOptions);
+        $this->addSelect('gender', 'Gender', $genderOptions);
     
         // gender rules
         $this->form->addRule('gender', 'Gender is required', 'required');

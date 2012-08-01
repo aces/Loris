@@ -91,7 +91,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID AND ptc.Name='Candidate Parameters' ORDER BY pt.name ASC", &$field_results);
         //If there are no defined fields pritn a message to that effect
         if(empty($field_results)){
-        	$this->form->addElement('static', "static", "No candidate parameters have been defined for this study");
+             //  $this->form->addElement('static', "static", "No candidate parameters have been defined for this study");	
+                 $this->addScoreColumn("static", "No candidate parameters have been defined for this study");
         	return;
         }
         
@@ -103,7 +104,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         			$options=substr($fresult['Type'],4);
         			$options=trim($options,"()");
         			$options=Utility::explodeEncapsulated(",", "'", $options);
-        			$this->form->addElement('select', "PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $options);
+        			$this->addSelect("PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $options);
         		break;
         		
         		case "dat":
@@ -114,7 +115,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         		case "var":
         		case "tex":
             default:
-        			$this->form->addElement('text', "PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
+        			$this->addBasicText("PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
         		
         	}
         	$this->tpl_data['elements_list'][]="PTID_".$fresult['ParameterTypeID'];

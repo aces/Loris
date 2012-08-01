@@ -102,7 +102,7 @@ class NDB_Form extends NDB_Page
        /** $obj->form = new HTML_QuickForm('test_form');
         $obj->name = $name;
         $obj->page = $page;
-        $obj->identifier = $identifier;   */
+        $obj->identifier = $identifier; */  
        
         $access = $obj->_hasAccess();
         if (PEAR::isError($access)) {
