@@ -108,7 +108,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         		break;
         		
         		case "dat":
-        			$this->form->addElement('date', "PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $dateOptions);
+        			$this->addBasicDate("PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $dateOptions);
         		break;
         		
         		case "int":

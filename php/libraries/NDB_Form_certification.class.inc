@@ -180,7 +180,7 @@ class NDB_Form_certification extends NDB_Form
         $this->form->addRule('examinerID', 'Examiner is required', 'required');
 
         // date of certification
-        $this->form->addElement('date', 'date_cert', "Date of testing", $dateOptions);
+        $this->addBasicDate('date_cert', "Date of testing", $dateOptions);
         $this->form->addRule('date_cert', 'Date of testing is required', 'required');
 
         // candid
