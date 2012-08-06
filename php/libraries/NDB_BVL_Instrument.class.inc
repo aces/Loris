@@ -567,12 +567,12 @@ class NDB_BVL_Instrument extends NDB_Page
         
         //$this->form->addElement('text', 'Examiner', 'Examiner');
         
-        $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
+        $this->add_Group_Rule('Date_taken', 'Date of Administration is required', 'required');
         
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->add_Rule('Date_taken', 'Date of Administration is invalid', 'checkdate');
         
-        $this->form->addRule('Examiner', 'Examiner is required', 'required');
+        $this->add_Rule('Examiner', 'Examiner is required', 'required');
     }
     
     // }}}
@@ -1127,7 +1127,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->add_Group_Rule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
@@ -1141,41 +1141,10 @@ class NDB_BVL_Instrument extends NDB_Page
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->add_Group_Rule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
-    /**
-    * Wrapper to create a header
-    */
-
-    function addHeader($header) {
-        $this->form->addElement('header', null, $header); 
-    }
-
-    /**
-    * Wrapper to create a select drop-down list
-    */
-    
-    function addSelect($name, $label, $options=array()) {
-        $this->form->addElement('select', $name, $label, $options);
-    }
-
-    /**
-    * Wrapper to create a static label
-    */
-    
-    function addLabel($label) {
-        $this->form->addElement('static', null, $label);
-    }
-
-    /**
-    * Wrapper to create a static score column
-    */
-   
-    function addScoreColumn($name, $label) {
-        $this->form->addElement('static', $name, $label);
-     }
 
     /**
     * nulls all scores for the record identified by CommentID

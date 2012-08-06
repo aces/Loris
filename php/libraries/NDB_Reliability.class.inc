@@ -249,9 +249,9 @@ class NDB_Reliability extends NDB_Form
            //$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
            
            $this->addSelect('invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
-           $this->form->addRule('invalid', 'Invalid flag is required.', 'required');
+           $this->add_Rule('invalid', 'Invalid flag is required.', 'required');
            
-           $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+           $this->add_Rule('Date_taken', 'Date of Administration is invalid', 'checkdate');
 
            //$this->form->addRule(array('invalid', 'Examiner'), 'Examiner is required,', 'requiredIf', array('operator'=>'==', 'value'=>'no'));
            //$this->setRequired('invalid');

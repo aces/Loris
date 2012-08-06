@@ -88,7 +88,7 @@ class NDB_Form_next_stage extends NDB_Form
         // add form elements
         if ($stage == 'Visit' && $config->getSetting('useScanDone')!='false') {
             $this->addSelect('scan_done', 'Scan Done', array(null => null, 'Y' => 'Yes', 'N' => 'No'));
-            $this->form->addRule('scan_done', 'Scan done is required', 'required');
+            $this->add_Rule('scan_done', 'Scan done is required', 'required');
         }
 
         // add dates
@@ -99,12 +99,12 @@ class NDB_Form_next_stage extends NDB_Form
         if(!($timePoint->getSubprojectID() > 0)) {
             $list_of_objectives =& Utility::getSubprojectList();
             $this->addSelect('SubprojectID', 'Objective', array('' => '') + $list_of_objectives);
-            $this->form->addRule('SubprojectID', 'Required', 'required');
+            $this->add_Rule('SubprojectID', 'Required', 'required');
         }
 
         // add date rules
-        $this->form->addRule('date1', 'Date is required', 'required');
-        $this->form->addRule(array('date1', 'date2'), 'Date fields must match', 'compare');
+        $this->add_Rule('date1', 'Date is required', 'required');
+        $this->add_Rule(array('date1', 'date2'), 'Date fields must match', 'compare');
 
         $this->form->addFormRule(array(&$this, '_validate'));
     }

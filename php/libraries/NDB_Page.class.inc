@@ -63,6 +63,13 @@ class NDB_Page extends PEAR
         $this->form->addElement('hidden', $label, $attributes);
     }
 
+    function add_Rule($element, $message, $type, $format) {
+        $this->form->addRule($element, $message, $type, $format);
+    }
+
+    function add_Group_Rule($group, $arg1, $type, $format) {
+        $this->form->addGroupRule($group, $arg1, $type, $format);
+    }
 
     /**
      * Displays the form
