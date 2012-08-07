@@ -245,7 +245,7 @@ class NDB_Form_user_accounts extends NDB_Form
             // user name
             $group[] = $this->form->createElement('text', 'UserID', 'User name');
             $group[] = $this->form->createElement('advcheckbox', 'NA_UserID', null, 'Make user name match email address');
-            $this->form->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
+            $this->add_Group($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
 
             // user name rules - only required if user name is user-defined
@@ -265,7 +265,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // password
         $group[] = $this->form->createElement('password', 'Password_md5');
         $group[] = $this->form->createElement('advcheckbox', 'NA_Password', null, 'Generate new password');
-        $this->form->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
+        $this->add_Group($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
         unset($group);
 
@@ -307,7 +307,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // email address
         $group[] = $this->form->createElement('text', 'Email');
         $group[] = $this->form->createElement('checkbox', 'SendEmail', null, 'Send email to user');
-        $this->form->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
+        $this->add_Group($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
 
         // email address rules
@@ -353,7 +353,7 @@ class NDB_Form_user_accounts extends NDB_Form
             }
             $group[] = $this->form->createElement('advcheckbox', 'permID['.$row['permID'].']', null, $row['description'], "class=\"perm_$lastRole\"");
         }
-        $this->form->addGroup($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
+        $this->add_Group($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
         unset($group);
 
         if (!empty($this->identifier)) {

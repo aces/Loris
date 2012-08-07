@@ -71,6 +71,23 @@ class NDB_Page extends PEAR
         $this->form->addGroupRule($group, $arg1, $type, $format);
     }
 
+    function add_Group($elements, $name, $label, $separator, $appendName) {
+        $this->form->addGroup($elements, $name, $label, $separator, $appendName);
+    }
+
+    function createSelect($field, $label, $options=null) {
+	return $this->form->createElement("select", $field, $label, $options);
+    }
+
+    function createText($field, $label) {
+       return $this->form->createElement("text", $field, $label);
+    } 
+
+    function createDate($field, $label, $dateOptions=null) {
+        return $this->form->createElement("date", $field, $label, $dateOptions);
+    }
+  
+
     /**
      * Displays the form
      *

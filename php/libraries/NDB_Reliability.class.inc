@@ -170,7 +170,7 @@ class NDB_Reliability extends NDB_Form
          $group [] = $this->form->createElement("date", $name . "_date", null, $this->dateOptions);
          $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
          $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-         $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+         $this->add_Group($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
          unset($group);
          $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
 
@@ -192,7 +192,7 @@ class NDB_Reliability extends NDB_Form
      function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
          $group[]=&$this->form->createElement("text", $field);
          $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
-         $this->form->addGroup($group, $field.'_group', $label, null, false);
+         $this->add_Group($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
          $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -208,7 +208,7 @@ class NDB_Reliability extends NDB_Form
       function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
           $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
           $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-          $this->form->addGroup($group, $field.'_group', $label, null, false);
+          $this->add_Group($group, $field.'_group', $label, null, false);
           unset($group);
           $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
           $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -218,7 +218,7 @@ class NDB_Reliability extends NDB_Form
          return;  //removed all free form comment text boxes.
          $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>60, 'rows'=>6));
          $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-         $this->form->addGroup($group, $field.'_group', $label, null, false);
+         $this->add_Group($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
          $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
