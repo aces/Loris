@@ -167,9 +167,9 @@ class NDB_Reliability extends NDB_Form
     }
 
     function addDateElement($name, $label){
-         $group [] = $this->form->createElement("date", $name . "_date", null, $this->dateOptions);
+         $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
          $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
-         $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+         $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
          $this->add_Group($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
          unset($group);
          $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
@@ -190,8 +190,8 @@ class NDB_Reliability extends NDB_Form
          return true;
      }
      function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
-         $group[]=&$this->form->createElement("text", $field);
-         $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
+         $group[]=&$this->createText($field);
+         $group[]=&$this->createSelect($field."_status", "", $refusals);
          $this->add_Group($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
@@ -207,7 +207,7 @@ class NDB_Reliability extends NDB_Form
       */
       function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
           $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-          $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+          $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
           $this->add_Group($group, $field.'_group', $label, null, false);
           unset($group);
           $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
@@ -217,7 +217,7 @@ class NDB_Reliability extends NDB_Form
       function addLargeTextAreaElement($field, $label = "&nbsp;&nbsp;&nbsp;&nbsp;Describe:", $rules=array(), $rule_message='This field must be completed or marked as not answered.') {
          return;  //removed all free form comment text boxes.
          $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>60, 'rows'=>6));
-         $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+         $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
          $this->add_Group($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);

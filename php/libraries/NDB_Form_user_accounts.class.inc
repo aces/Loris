@@ -243,7 +243,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // it is a new user
         if (empty($this->identifier)) {
             // user name
-            $group[] = $this->form->createElement('text', 'UserID', 'User name');
+            $group[] = $this->createText('UserID', 'User name');
             $group[] = $this->form->createElement('advcheckbox', 'NA_UserID', null, 'Make user name match email address');
             $this->add_Group($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
@@ -305,7 +305,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         
         // email address
-        $group[] = $this->form->createElement('text', 'Email');
+        $group[] = $this->createText('Email');
         $group[] = $this->form->createElement('checkbox', 'SendEmail', null, 'Send email to user');
         $this->add_Group($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
