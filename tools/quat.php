@@ -35,6 +35,7 @@ mysql> describe parameter_type;
 */
 
 require_once "Utility.class.inc";
+require_once "Log.class.inc";
 // settings
 $columnThreshhold = Utility::getColumnThresholdCount();
 $quatTableBasename = 'quat_table_';
@@ -45,6 +46,9 @@ require_once "../php/libraries/NDB_Client.class.inc";
 $client = new NDB_Client;
 $client->makeCommandLine();
 $client->initialize();
+
+//initialize the log file
+$log = new Log("quat");
 
 // get a Database connection
 $config =& NDB_Config::singleton();
@@ -67,6 +71,7 @@ if(is_array($dataQueryTables) && count($dataQueryTables)) {
         $query = "DROP TABLE $table[CurrentGUITable]";
         $result = $db->run($query);
         if($db->isError($result)) {
+            $log->addLog("Failed to drop table $table: ".$result->getMessage()."\n");
             die( "Failed to drop table $table: ".$result->getMessage()."\n" );
         }
 
@@ -107,17 +112,19 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
 
         // run the create table statement
         $createSQL = "CREATE TABLE $nextTableName (SessionID int not null primary key, $createSQL)";
+        $log->addLog($createSQL);
         $quatTableCounter++;
         $nextTableName = $quatTableBasename . $quatTableCounter;
         $result = $db->run($createSQL);
         if($db->isError($result)) {
+            $log->addLog("Failed to create table $nextTableName: ".$result->getMessage()."\n");
             die( "Failed to create table $nextTableName: ".$result->getMessage()."\n" );
         }
-
         // reset the column counter and create table statement
         $createSQL = "";
         $columnCount = 0;
         print "Finished creating $nextTableName: " . memory_get_usage() . "\n";
+        $log->addLog("Finished creating $nextTableName: " . memory_get_usage() . "\n");
     }
 }
 
@@ -245,6 +252,7 @@ function GetSelectStatement($parameterType, $field=NULL) {
 foreach($parameterTypes AS $parameterType) {
     if($parameterType['CurrentGUITable'] != null) {
     print "Updating $parameterType[Name], memory: " . memory_get_usage() . " bytes\n";
+    $log->addLog("Updating $parameterType[Name], memory: " . memory_get_usage() . " bytes\n");
     $db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable].SessionID=s.ID AND flag.CommentID NOT LIKE 'DDE%') WHERE $parameterType[CurrentGUITable].SessionID=(" . GetSelectStatement($parameterType, "DISTINCT s.ID"). " AND flag.CommentID NOT LIKE 'DDE%' AND s.ID=quat_table_2.SessionID)");
     //$db->run("UPDATE $parameterType[CurrentGUITable] SET $parameterType[Name]=(" . GetSelectStatement($parameterType) . " WHERE $parameterType[CurrentGUITable].SessionID=s.ID)");
     }
