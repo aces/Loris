@@ -18,20 +18,19 @@ class Log extends PEAR
 		$log_location = $config->getSetting("log");
 		$base_location = $config->getSetting("base");
 
-		if ($log_location[0] != '/'){
-			if ($base_location[strlen($base_location)-1]!= '/'){
-				$log_location = $base_location . "/" . $log_location; 
+		if ($log_location[0] !== '/'){  // It's absolute path
+			if ($base_location[strlen($base_location)-1]== '/'){ //if /var/www/
+				$log_location = $base_location . $log_location;
 			}
-			else{
-				$log_location = $base_location . $log_location; 
+			else {          // if /var/www
+				$log_location = $base_location . "/" . $log_location;
 			}
 		}
-
 		if (($location == null) || ($location == '')){
 			$this->GENERAL_ERROR_DIR  = $log_location . "/" . $file_name . "." .  $date . ".log";
 		}
 		else{
-			$this->GENERAL_ERROR_DIR  = $location . $file_name . "." . $date . ".log";
+			$this->GENERAL_ERROR_DIR  = $location . "/" . $file_name . "." . $date . ".log";
 		}
 	}
 
