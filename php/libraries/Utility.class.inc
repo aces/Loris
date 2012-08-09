@@ -518,13 +518,13 @@ class Utility extends PEAR
 	    return false;
 	}
    
-        function Flatten($Arr) {
-            return $Arr['Test_name'];
-        }
+    function Flatten($Arr) {
+        return $Arr['Test_name'];
+    }
 
-        function FlattenFull($Arr) {
-            return $Arr['Full_name'];
-        }
+    function FlattenFull($Arr) {
+        return $Arr['Full_name'];
+    }
 
     function getAllInstruments() {
         $DB =& Database::singleton();
@@ -535,10 +535,7 @@ class Utility extends PEAR
         // trick to get an array of the form array( 'test_name' => 'test_name')
         // which can be used by quickforms for the dropdown. The array_merge
         // call after that just adds an Any/All Instruments option.
-        function Flatten($Arr) {
-            return $Arr['Test_name'];
-        }
-        $in = array_map('Flatten', $instruments_q);
+        $in = array_map(array('Utility', 'Flatten'), $instruments_q);
         $instruments = array_combine($in, $in);
         return $instruments;
 
