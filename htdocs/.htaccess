@@ -1,0 +1,21 @@
+RewriteEngine on
+
+# These shouldn't be required, they should be relative to
+# the root, which should be a config option. (Or possibly
+# detected by main.php, but for subpages we need to 
+# make sure css/images load correctly..)
+RewriteRule ^(.*)/([a-zA-Z0-9]+).css$ /$2.css
+RewriteRule ^(.*)/images/([a-zA-Z0-9]+) /images/$2
+RewriteRule ^(.*)/js/([a-zA-Z0-9]+) /js/$2
+
+# Redirect /CandID/ to visit label list
+RewriteRule ^([0-9]{6,6})/$ /main.php?test_name=timepoint_list&candID=$1
+# Want to redirect /CandID/Visit_label/ to instrument list, but
+# because of the main.php URL structure it needs to be the sessionID instead
+# of Visit_label
+RewriteRule ^([0-9]{6,6})/([0-9]+)/$ /main.php?test_name=instrument_list&candID=$1&sessionID=$2
+
+# Preferences is a special case for url rewriting
+RewriteRule ^preferences/$ /main.php?test_name=user_accounts&subtest=my_preferences
+# Rewrite /foo/ to appropriate test name
+RewriteRule ^([a-zA-Z_]+)/$ /main.php?test_name=$1
