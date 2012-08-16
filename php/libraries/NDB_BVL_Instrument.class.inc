@@ -283,7 +283,7 @@ class NDB_BVL_Instrument extends NDB_Page
         if(!$this->form->isFrozen()) {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->add_Group($buttons, null, null, "&nbsp;");
+            $this->addGroup($buttons, null, null, "&nbsp;");
         }
         
  
@@ -567,12 +567,12 @@ class NDB_BVL_Instrument extends NDB_Page
         
         //$this->form->addElement('text', 'Examiner', 'Examiner');
         
-        $this->add_Group_Rule('Date_taken', 'Date of Administration is required', 'required');
+        $this->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->add_Rule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
         
-        $this->add_Rule('Examiner', 'Examiner is required', 'required');
+        $this->addRule('Examiner', 'Examiner is required', 'required');
     }
     
     // }}}
@@ -1021,7 +1021,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
         $group[]=&$this->createText($field);
         $group[]=&$this->createSelect($field."_status", "", $refusals);
-        $this->add_Group($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1034,7 +1034,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
         $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
         $group[]=&$this->createSelect($field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
-        $this->add_Group($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1052,7 +1052,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
         $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
         $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-        $this->add_Group($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1068,7 +1068,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function addHourMinElement($field, $label, $rules=array(), $rule_message="You are required to select a status if you want to leave this time blank.") {
         $group[]=&$this->createDate($field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
         $group[]=&$this->createSelect($field . "_status", "", array(NULL=>'', "dnk"=>"DNK", "refusal"=>"Refusal", 'not_answered'=>'Not Answered'));
-        $this->add_Group($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, null, false);
         $this->XINRegisterRule($field, array_merge($rules, array($field . '_status{@}=={@}')), $rule_message, $field . '_group');
         unset($group);
     }
@@ -1083,7 +1083,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
         $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->add_Group($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
         
@@ -1096,7 +1096,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $group [] = $this->createDate($name . "_date", null, $dateArray);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
         $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
-        $this->add_Group($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
         $this->XINRegisterRule($name . "_date_status", array($name . "_date{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
@@ -1113,9 +1113,9 @@ class NDB_BVL_Instrument extends NDB_Page
     function addNumericElement($field, $label) {
         $group [] = $this->createText($field, $label);
         $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->add_Group($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->add_Group_Rule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
@@ -1127,9 +1127,9 @@ class NDB_BVL_Instrument extends NDB_Page
     function addNumericElementRD($field, $label) {
         $group [] = $this->createText($field, $label);
         $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
-        $this->add_Group($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->add_Group_Rule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 

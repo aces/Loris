@@ -245,13 +245,13 @@ class NDB_Form_user_accounts extends NDB_Form
             // user name
             $group[] = $this->createText('UserID', 'User name');
             $group[] = $this->form->createElement('advcheckbox', 'NA_UserID', null, 'Make user name match email address');
-            $this->add_Group($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
+            $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
 
             // user name rules - only required if user name is user-defined
-            $this->add_Group_Rule('UserID_Group', array('UserID' => array(array('The user name must be less than 255 characters long', 'maxlength', 255))));
+            $this->addGroupRule('UserID_Group', array('UserID' => array(array('The user name must be less than 255 characters long', 'maxlength', 255))));
             $reqIfSettings = array('controller' => 'NA_UserID', 'operator' => '!=', 'value' => 1);
-            $this->add_Rule('UserID_Group', 'User name is required', 'requiredIfGroup', 
+            $this->addRule('UserID_Group', 'User name is required', 'requiredIfGroup', 
                                  array_merge($reqIfSettings, array('element' => 'UserID')));
         }
         // it is an existing user
@@ -265,7 +265,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // password
         $group[] = $this->form->createElement('password', 'Password_md5');
         $group[] = $this->form->createElement('advcheckbox', 'NA_Password', null, 'Generate new password');
-        $this->add_Group($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
+        $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
         unset($group);
 
@@ -273,7 +273,7 @@ class NDB_Form_user_accounts extends NDB_Form
         if (empty($this->identifier)) {
             // password rules - only required if password is user-defined
             $reqIfSettings = array('controller' => 'NA_Password', 'operator' => '!=', 'value' => 1);
-            $this->add_Rule('Password_Group', 'Password is required', 'requiredIfGroup', 
+            $this->addRule('Password_Group', 'Password is required', 'requiredIfGroup', 
                                  array_merge($reqIfSettings, array('element' => 'Password_md5')));
         }
 
@@ -286,10 +286,10 @@ class NDB_Form_user_accounts extends NDB_Form
         //$this->form->addRule('Real_name', 'Full name is required', 'required');
         //$this->form->addRule('Real_name', 'Full name must be less than 50 characters long', 'maxlength', 50);
 
-        $this->add_Rule('First_name', 'First name is required', 'required');
-        $this->add_Rule('Last_name', 'Last name is required', 'required');
-        $this->add_Rule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
-		$this->add_Rule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
+        $this->addRule('First_name', 'First name is required', 'required');
+        $this->addRule('Last_name', 'Last name is required', 'required');
+        $this->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
+		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
         $this->addBasicText('Degree', 'Degree');
@@ -307,13 +307,13 @@ class NDB_Form_user_accounts extends NDB_Form
         // email address
         $group[] = $this->createText('Email');
         $group[] = $this->form->createElement('checkbox', 'SendEmail', null, 'Send email to user');
-        $this->add_Group($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
+        $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
 
         // email address rules
-        $this->add_Group_Rule('Email_Group', array('Email' => array(array('Email address is required', 'required'))));
-        $this->add_Group_Rule('Email_Group', array('Email' => array(array('The email address must be valid', 'email'))));
-        $this->add_Group_Rule('Email_Group', array('Email' => array(array('The email address must be less than 255 characters long', 'maxlength', 255))));
+        $this->addGroupRule('Email_Group', array('Email' => array(array('Email address is required', 'required'))));
+        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be valid', 'email'))));
+        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be less than 255 characters long', 'maxlength', 255))));
 
         //------------------------------------------------------------
 
@@ -353,7 +353,7 @@ class NDB_Form_user_accounts extends NDB_Form
             }
             $group[] = $this->form->createElement('advcheckbox', 'permID['.$row['permID'].']', null, $row['description'], "class=\"perm_$lastRole\"");
         }
-        $this->add_Group($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
         unset($group);
 
         if (!empty($this->identifier)) {
@@ -396,10 +396,10 @@ class NDB_Form_user_accounts extends NDB_Form
         //$this->form->addRule('Real_name', 'Full name is required', 'required');
         //$this->form->addRule('Real_name', 'Full name must be less than 50 characters long', 'maxlength', 50);
 
-        $this->add_Rule('First_name', 'First name is required', 'required');
-        $this->add_Rule('Last_name', 'Last name is required', 'required');
-        $this->add_Rule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
-		$this->add_Rule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
+        $this->addRule('First_name', 'First name is required', 'required');
+        $this->addRule('Last_name', 'Last name is required', 'required');
+        $this->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
+		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
         $this->addBasicText('Degree', 'Degree');
@@ -417,9 +417,9 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->addBasicText('Email', 'Email address');
 
         // email address rules
-        $this->add_Rule('Email', 'Email address is required', 'required');
-        $this->add_Rule('Email', 'Your email address must be valid', 'email');
-        $this->add_Rule('Email', 'Your email address must be less than 255 characters long', 'maxlength', 255);
+        $this->addRule('Email', 'Email address is required', 'required');
+        $this->addRule('Email', 'Your email address must be valid', 'email');
+        $this->addRule('Email', 'Your email address must be less than 255 characters long', 'maxlength', 255);
 
         // password
         $this->form->addElement('password', 'Password_md5', 'New Password');

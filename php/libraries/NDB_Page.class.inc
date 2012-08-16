@@ -59,19 +59,19 @@ class NDB_Page extends PEAR
         $this->form->addElement('date', $field, $label, $options);
     }
  
-    function addHidden($label, $attributes) {
+    function addHidden($label, $attributes=null) {
         $this->form->addElement('hidden', $label, $attributes);
     }
 
-    function add_Rule($element, $message, $type, $format) {
+    function addRule($element, $message, $type, $format=null) {
         $this->form->addRule($element, $message, $type, $format);
     }
 
-    function add_Group_Rule($group, $arg1, $type, $format) {
+    function addGroupRule($group, $arg1, $type, $format=null) {
         $this->form->addGroupRule($group, $arg1, $type, $format);
     }
 
-    function add_Group($elements, $name, $label, $separator, $appendName) {
+    function addGroup($elements, $name, $label, $separator, $appendName=null) {
         $this->form->addGroup($elements, $name, $label, $separator, $appendName);
     }
 
@@ -79,7 +79,7 @@ class NDB_Page extends PEAR
 	return $this->form->createElement("select", $field, $label, $options);
     }
 
-    function createText($field, $label) {
+    function createText($field, $label=null) {
        return $this->form->createElement("text", $field, $label);
     } 
 

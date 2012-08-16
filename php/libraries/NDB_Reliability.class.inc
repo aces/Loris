@@ -170,7 +170,7 @@ class NDB_Reliability extends NDB_Form
          $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
          $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
          $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-         $this->add_Group($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+         $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
          unset($group);
          $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
 
@@ -192,7 +192,7 @@ class NDB_Reliability extends NDB_Form
      function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
          $group[]=&$this->createText($field);
          $group[]=&$this->createSelect($field."_status", "", $refusals);
-         $this->add_Group($group, $field.'_group', $label, null, false);
+         $this->addGroup($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
          $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -249,9 +249,9 @@ class NDB_Reliability extends NDB_Form
            //$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
            
            $this->addSelect('invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
-           $this->add_Rule('invalid', 'Invalid flag is required.', 'required');
+           $this->addRule('invalid', 'Invalid flag is required.', 'required');
            
-           $this->add_Rule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+           $this->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
 
            //$this->form->addRule(array('invalid', 'Examiner'), 'Examiner is required,', 'requiredIf', array('operator'=>'==', 'value'=>'no'));
            //$this->setRequired('invalid');

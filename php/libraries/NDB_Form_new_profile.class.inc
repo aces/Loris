@@ -80,8 +80,8 @@ class NDB_Form_new_profile extends NDB_Form
    
 
         // date of birth rules
-        $this->add_Group_Rule('dob1', 'Date of Birth is required', 'required');
-        $this->add_Group_Rule('dob2', 'Date of Birth confirmation is required', 'required');
+        $this->addGroupRule('dob1', 'Date of Birth is required', 'required');
+        $this->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
 
         if($config->getSetting('useEDC') == "true"){
             // add expected date of confinement
@@ -89,7 +89,7 @@ class NDB_Form_new_profile extends NDB_Form
             $this->addBasicDate('edc2', 'Confirm EDC', $dateOptions);
 
             // expected date of confinement rules
-            $this->add_Rule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
+            $this->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
         }
 
         // add gender
@@ -97,7 +97,7 @@ class NDB_Form_new_profile extends NDB_Form
         $this->addSelect('gender', 'Gender', $genderOptions);
     
         // gender rules
-        $this->add_Rule('gender', 'Gender is required', 'required');
+        $this->addRule('gender', 'Gender is required', 'required');
 
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
