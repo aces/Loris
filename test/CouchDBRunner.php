@@ -11,4 +11,5 @@ if($argv[$argc-1] == '-xml') {
 }
 $test = &new TestSuite('CouchDB Database wrapper tests');
 $test->addFile('tests/CouchDBWrapper.php');
+$test->addFile('tests/CouchDBImport.php');
 exit ($test->run($Reporter) ? 0 : 1);
