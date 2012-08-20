@@ -1,11 +1,14 @@
 <?php
 require_once 'Database.class.inc';
 require_once 'CouchDB.class.inc';
+require_once '../tools/CouchDB_Import_Demographics.php';
 require_once '../tools/CouchDB_Import_MRI.php';
+require_once '../tools/CouchDB_Import_Instruments.php';
 
 Mock::generate('Database');
 Mock::generate('CouchDB');
 Mock::generatePartial('CouchDBMRIImporter', 'CouchDBMRIImporterPartial', array('UpdateDataDict', 'UpdateCandidateDocs'));
+Mock::generatePartial('CouchDBInstrumentImporter', 'CouchDBInstrumentImporterPartial', array('UpdateDataDicts', 'UpdateCandidateDocs'));
 
 class TestOfCouchDBImportDemographics extends UnitTestCase {
     function setUp() {
@@ -25,9 +28,10 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
     }
 
     function testImportDemographics() {
-        require_once '../tools/CouchDB_Import_Demographics.php';
         $Import = new CouchDBDemographicsImporter();
-        $Import->SQLDB = new MockDatabase();
+        $Factory = NDB_Factory::singleton();
+        $Factory->setTesting(true);
+        $Import->SQLDB = new MockDatabase(); //$Factory->Database();
         $Import->CouchDB = new MockCouchDB();
         $Import->CouchDB->returns('replaceDoc', 'new');
         $Import->SQLDB->expectOnce('pselect');
@@ -163,6 +167,140 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
             ),
         ));
 
+    }
+
+    function testImportInstruments() {
+        $Factory = NDB_Factory::singleton();
+        $Factory->setTesting(true);
+        $Import = new CouchDBInstrumentImporterPartial();
+        $Import->SQLDB = $Factory->Database();
+        $Import->CouchDB = new MockCouchDB();
+
+        $Import->SQLDB->returns('pselect', array( 0 => array('Test_name' => 'hello'), 1 => array('Test_name' => 'hello2')));
+        $tests = array('hello' => 'hello', 'hello2' => 'hello2');
+        $Import->expectOnce('UpdateDataDicts', array($tests));
+        $Import->expectOnce('UpdateCandidateDocs', array($tests));
+
+        $Import->run();
+        
+        $Import = new CouchDBInstrumentImporterPartial();
+        $Import->SQLDB = new MockDatabase();
+        $Import->CouchDB = new MockCouchDB();
+        $tests = $Import->GetInstruments();
+        //$Import->SQLDB->expectOnce("pselect", array("SELECT Test_name FROM test_names", array()) );
+        $this->assertEqual($tests, array('hello' => 'hello', 'hello2' => 'hello2'));
+    }
+
+    function testImportInstrumentUpdateDict() {
+        // The main run works, now test UpdateDataDict.. use the non-partial mock
+        $Factory = NDB_Factory::singleton();
+        $Factory->setTesting(true);
+        $Import = new CouchDBInstrumentImporter();
+        $Import->SQLDB = new MockDatabase(); //$Factory->Database();
+        $Import->CouchDB = new MockCouchDB();
+
+        $Import->SQLDB->returns('pselect', array(
+            0 => array('ParameterTypeID' => 3,
+                  'Name' => 'Hello',
+                  'Type' => 'varchar(255)',
+                  'Description' => 'I am a field!'),
+            1 => array('ParameterTypeID' => 34,
+                      'Name' => 'Another_field',
+                      'Type' => "enum('three', 'ten')",
+                      'Description' => 'Another field!'
+                  )
+              )
+          );
+        // Each data dictionary should have been updated, for a total of 2 calls to replaceDoc..
+        $Dictionary = array(
+            'Administration' => array(
+                'Type' => "enum('None', 'Partial', 'All')",
+                'Description' => 'Administration for hello' 
+            ),
+            'Data_entry' => array(
+                'Type' => "enum('In Progress', 'Complete')",
+                'Description' => 'Data entry status for hello' 
+            ),
+            'Validity' => array(
+                'Type' => "enum('Questionable', 'Invalid', 'Valid')",
+                'Description' => 'Validity of data for hello' 
+            ),
+            'Hello' => array(
+                'Type' => 'varchar(255)',
+                'Description' => 'I am a field!'),
+            'Another_field' => array(
+                'Type' => "enum('three', 'ten')",
+                'Description' => 'Another field!'
+            )
+        );
+            
+        $Import->CouchDB->expectAt(0, 'replaceDoc', array('DataDictionary:hello',
+            array('Meta' => array('DataDict' => true),
+                'DataDictionary' => array(
+                    'hello' => $Dictionary
+                )
+            )
+        ));
+        $Import->CouchDB->expectAt(1, 'replaceDoc', array('DataDictionary:hello2',
+            // Just make sure the first parameter is correct, since otherwise we need
+            // to change all the Admin/Data_entry/Validity descriptions for this assertion
+            '*' /*
+            array('Meta' => array('DataDict' => true),
+                'DataDictionary' => array(
+                    'hello2' => $Dictionary
+                )
+            )*/
+        ));
+        $Import->CouchDB->expectCallCount('replaceDoc', 2);
+        $Import->UpdateDataDicts(array('hello' => 'hello', 'hello2' => 'hello2'));
+    }
+
+    function testImportInstrumentUpdateCandidateDocs() {
+        $Factory = NDB_Factory::singleton();
+        $Factory->setTesting(true);
+        $Import = new CouchDBInstrumentImporter();
+        $Import->SQLDB = new MockDatabase(); //$Factory->Database();
+        $Import->CouchDB = new MockCouchDB();
+
+        $Instruments = array('hello' => 'hello', 'hello2' => 'hello2');
+        $Import->SQLDB->expectAt(0, 'pselect', array('*', array('inst' => 'hello')));
+        $Import->SQLDB->expectAt(1, 'pselect', array('*', array('inst' => 'hello2')));
+        $Import->SQLDB->returns('pselect', array(0 => 
+            array('PSCID' => 'STL333',
+                  'Visit_label' => 'V1',
+                  'Administration' => 'All',
+                  'Data_entry' => 'Complete',
+                  'Validity' => 'Valid',
+                  'Examiner' => 3,
+                  'CommentID' => '324fff',
+                  'Hello' => 'hi!',
+                  'Another_field' => 'ffff'
+            )
+        )
+        );
+        $Import->SQLDB->returns('pselectOne', 'John Smith the Third'); //, array('SELECT Full_name FROM examiners'));
+        $Import->SQLDB->expectCallCount('pselect', 2);
+        // Two instruments, one value for each one = 2 calls total
+        $Import->CouchDB->expectCallCount('replaceDoc', 2);
+        $Import->CouchDB->expectAt(0, 'replaceDoc', array('324fff', array(
+            'Meta' => array(
+                'DocType' => 'hello',
+                'identifier' => array('STL333', 'V1')
+            ),
+            'data' => array(
+                'Administration' => 'All',
+                'Data_entry' => 'Complete',
+                'Validity' => 'Valid',
+                'Examiner' => 'John Smith the Third',
+                'Hello' => 'hi!',
+                'Another_field' => 'ffff'
+            )
+        )
+        ));
+        $Import->UpdateCandidateDocs($Instruments);
+
+        $SQL = $Import->generateDocumentSQL('instrumentname');
+        $this->assertEqual($SQL, "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, i.* FROM instrumentname i join flag f USING (CommentID) join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID) WHERE CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'");
     }
 }
 ?>
