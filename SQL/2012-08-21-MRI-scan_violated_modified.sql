@@ -1,0 +1,1 @@
+ALTER TABLE mri_protocol_violated_scans CHANGE Last_inserted Last_inserted datetime;

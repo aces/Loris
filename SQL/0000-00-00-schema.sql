@@ -1503,7 +1503,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6),
   `PSCID` varchar(255),
-  `Last_inserted` date,
+  `Last_inserted` datetime,
   `series_description` varchar(255) DEFAULT NULL,
    minc_location varchar(255),
    PatientName varchar(255) DEFAULT NULL,
