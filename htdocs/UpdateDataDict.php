@@ -10,7 +10,6 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-require_once "Utility.class.inc";
 list($field, $test_name,$extra) =   split("___", $_REQUEST['fieldname']);
 
 $name = $test_name . "_" . $field;
