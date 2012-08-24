@@ -1503,7 +1503,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6),
   `PSCID` varchar(255),
-  `Last_inserted` date,
+  `time_run` datetime,
   `series_description` varchar(255) DEFAULT NULL,
    minc_location varchar(255),
    PatientName varchar(255) DEFAULT NULL,
@@ -1517,6 +1517,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `xstep_range` varchar(255) DEFAULT NULL,
   `ystep_range` varchar(255) DEFAULT NULL,
   `zstep_range` varchar(255) DEFAULT NULL,
+  `time_range` varchar(255)  DEFAULT NULL,
   PRIMARY KEY (`ID`));
 
 CREATE TABLE `conflicts_unresolved` (
