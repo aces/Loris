@@ -655,5 +655,25 @@ class Utility extends PEAR
         }
         return $sourcefields;
     }
+    
+
+	/**
+     * Returns a list of study Visit Labels
+     * @throws PEAR_Error
+     * @return array  an array("" => "visit_label")
+     * @access public
+     * @static
+     */
+	function getVisitLabels()
+	{
+		$db =& Database::singleton();
+		$query = "SELECT distinct Visit_label from session order by VisitNo";
+		$db->select($query,$visitlabels);
+		$visits = array();
+		for ($i =0 ;$i<count($visitlabels) ; $i++){
+			$visits[$visitlabels[$i]['Visit_label']] = ($visitlabels[$i]['Visit_label']);
+		}
+		return $visits;
+	}
 }
 ?>
