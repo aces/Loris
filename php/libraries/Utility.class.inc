@@ -494,6 +494,19 @@ class Utility extends PEAR
 	   return $Zoo;
 	}
 
+    // Replace the empty string with null in specified field
+    // in an array passed in as an argument. This undoes the
+    // damaged that Smarty causes by making nulls in a dropdown
+    // the empty string.
+    // This is needed before calling $db->insert() on any integer
+    // fields, because mysql considers '' to be 0, not null if
+    // the database column is of type integer.
+    function nullifyEmpty(&$arr, $field) {
+        if($arr[$field] === '') {
+            $arr[$field] = null;
+        }
+        return $arr;
+    }
 	// from php.net comments
 	function in_array_insensitive($item, $array) {
 	    $item = &strtoupper($item);

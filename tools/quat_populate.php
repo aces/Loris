@@ -35,6 +35,7 @@ mysql> describe parameter_type;
 */
 
 require_once "Utility.class.inc";
+require_once "Log.class.inc";
 // settings
 $columnThreshhold = Utility::getColumnThresholdCount();
 $quatTableBasename = 'quat_table_';
@@ -45,6 +46,9 @@ require_once "../php/libraries/NDB_Client.class.inc";
 $client = new NDB_Client;
 $client->makeCommandLine();
 $client->initialize();
+
+//initialize the log file
+$log = new Log("quat");
 
 // get a Database connection
 $config =& NDB_Config::singleton();

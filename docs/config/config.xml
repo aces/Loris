@@ -18,7 +18,7 @@
     <data>SAME AS imagePath</data>
     <extLibs>/PATH/TO/SMARTY/libs</extLibs>
     <mincPath></mincPath>
-
+    <log>tools/logs/</log>
 </paths>
 
 <!-- database settings -->
