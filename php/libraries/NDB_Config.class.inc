@@ -30,7 +30,7 @@ class NDB_Config
     * the singleton design pattern - autoloads config file
     * @return object   a NDB_Config object
     */
-    function &singleton($configFile = "../project/config.xml")
+    static function &singleton($configFile = "../project/config.xml")
     {
         static $config = null;
         if(is_null($config)) {
@@ -58,7 +58,7 @@ class NDB_Config
         if(PEAR::isError($root)) {
             die("Config error: ".$root->getMessage());
         }
-        $configObj =& $root->searchPath(array('config'));
+        $configObj = $root->searchPath(array('config'));
         $this->_settings =& $configObj->toArray();
         $this->_settings = $this->_settings['config'];
         unset($configObj, $root);
