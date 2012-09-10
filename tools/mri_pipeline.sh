@@ -11,38 +11,50 @@ read -p "What is the Mysql user?" mysqluser
 read -p "what is the linux user which the intallation will be based on?" LinuxUser
 read -p "what is the root password" rootpass
 read -p "what is the project Name" PROJ   ##this will be used to create all the corresponding directories...i.e /data/gusto/bin.....
+read -p "what is your email address" email
 
 ###unhard-code the paths in the mri-scripts
 ##Modify the config.xml
 
 #INSTALLATION
 
-##MINC TOOL
+#################################################################################################
+########################################MINC TOOL###############################################
+##################################################################################################
 echo "installing Minc toolkit"
 echo $rootpass | sudo -S apt-get install minc-tool
 
-#INSTALL THE PERL LIBRARIES
+
+#################################################################################################
+############################INSTALL THE PERL LIBRARIES############################################
+#################################################################################################
 while true; do
   read -p "Would you like ot install the PERL libraries" yn
   case $yn in
-  [Yy]*)
-  echo "Installing the perl libraries...THis will take a few minutes..."
-  ###echo $rootpass | apt-get install build-essential
-  ##will ask a series of questions and must answer yes to almost all....
-  ##echo $rootpass | sudo perl -MCPAN -e shell
-  echo $rootpass | sudo -S cpan install Math::Round
-  echo $rootpass | sudo -S cpan install Bundle::CPAN
-  echo $rootpass | sudo -S cpan install Getopt::Tabular
-  echo $rootpass | sudo -S cpan install Time::JulianDay
+      [Yy]*)
+          echo "Installing the perl libraries...THis will take a few minutes..."
+          ###echo $rootpass | apt-get install build-essential
+          ##will ask a series of questions and must answer yes to almost all....
+          ##echo $rootpass | sudo perl -MCPAN -e shell
+          echo $rootpass | sudo -S cpan install Math::Round
+          echo $rootpass | sudo -S cpan install Bundle::CPAN
+          echo $rootpass | sudo -S cpan install Getopt::Tabular
+          echo $rootpass | sudo -S cpan install Time::JulianDay
+          break;;
+      [Nn]*)
+          echo "Not installing Perl Libraries"
+          break;;
+       *) echo "please enter y or n"
+    esac
+done;
+
 
 
 ##Install the CIVET PACKAGEs
-
-###Modify the config.xml
-
-<data>/data/$PROJ/data/</data>
-<imagePath>/data/$PROJ/data/</imagePath>
-
+######################################################################
+###########Modify the config.xml########################################
+######################################################################
+sed -e "s#%/PATH/TO/MINC/DATA/ROOT/mri-data/minc/%#/data/$PROJ/data#g" -e "s#LORISROOT%#/data/$PROJ/data#g" ../project/config.xml
 
 ###set environment variables under .bashrc
 export $HOME=/home/lorisdev/
@@ -80,34 +92,27 @@ export TMPDIR=/tmp
 		git submodule sync
 		git submodule update
 
+######################################################################################
+##########################change the prod file#######################################
+#####################################################################################
+echo "Creating MRI config file"
 
-###############################################################################
-###copy the dicom-archive/profileTemplate  to /home/lorisdev/.neurodb/prod######
-################################################################################
-cp dicom-archive/profileTemplate /home/$USER/.neurodb/prod
+sed -e "s#project#$PROJ#g" -e "s#/your/inepuisable/diskspace/location#/data/$PROJ/data#g" -e "s#yourname\@gmail.com#$email#g" -e "s#\/wherever\/you\/put\/this\/get_dicom_info.pl#/data/$PROJ/bin/mri/dicom-archive/get_dicom_info.pl#g"  -e "s#DBNAME#$mysqldb#g" -e "s#DBUSER#$mysqluser#g" -e "s#DBPASS#$mysqlpass#g" -e "s#DBHOST#$mysqlhost#g" /data/$PROJ/bin/mri/dicom-archive/profileTemplate > /home/$USER/.neurodb/prod
 
-################################################################################
-####################change permissions ##########################################
+
+####################################################################################
+######################chyange permissions ##########################################
 ####################################################################################
 chown $USER:$USER /home/$USER/.neurodb/prod
 chmod 775 /home/$USER/.neurodb/prod
 chmod -r 775 /data/$PROJECT/; chmod -r 775 /data
 sudo chown lorisdev:lorisdev /tmp/
-
-
-######################################################################################
-##########################change the prod file#######################################
-#####################################################################################
-##@db = ('database name', 'lorisuser', 'lorisuser-password', 'localhost or IP/machine');
-$data_dir             = '/data/$PROJ/data'; 
-$prefix                 = "$PROJ"; 
-$get_dicom_info  = "/data/$PROJ/bin/mri/dicom-archive/get_dicom_info.pl";
-$tarchiveLibraryDir = '/data/$PROJ/data/tarchive';
+tarchiveLibraryDir = '/data/$PROJ/data/tarchive';
 ###variables $data_dir, $prefix, $mail_user, $get_dicom_info, $tarchiveLibraryDir 
 ###isFileToBeRegisteredGivenProtocol Can be easilly customized
 
 ##Customize the brain-browser in congfig.xml
-cd /var/www/$PROJ/project
-vi $config.xml <mincPath>path-to-minc-files</mincPath>
+##cd /var/www/$PROJ/project
+###vi $config.xml <mincPath>path-to-minc-files</mincPath>
 
 
