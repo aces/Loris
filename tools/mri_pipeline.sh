@@ -69,25 +69,35 @@ export TMPDIR=/tmp
 ##mkdir /data/incoming/TOR/incoming
 ##mkdir /data/incoming/MTL/incoming
 
-###Get the code
+
+###################################################
+##############Get the code######################
+#################################################
 		cd /data/$PROJ/bin/  
-		git clone git@github.com:aces/Loris-MRI.git  Loris-MRI
-		cd Loris-MRI
+		git clone git@github.com:aces/Loris-MRI.git  Loris-MRI-testing
+		cd Loris-MRI-testing
 		git submodule init
 		git submodule sync
 		git submodule update
 
-###copy the dicom-archive/profileTemplate  to /home/lorisdev/.neurodb/prod
 
-		cp dicom-archive/profileTemplate /home/$USER/.neurodb/prod
+###############################################################################
+###copy the dicom-archive/profileTemplate  to /home/lorisdev/.neurodb/prod######
+################################################################################
+cp dicom-archive/profileTemplate /home/$USER/.neurodb/prod
 
-##change permissions 
+################################################################################
+####################change permissions ##########################################
+####################################################################################
 chown $USER:$USER /home/$USER/.neurodb/prod
 chmod 775 /home/$USER/.neurodb/prod
 chmod -r 775 /data/$PROJECT/; chmod -r 775 /data
 sudo chown lorisdev:lorisdev /tmp/
 
-##change the prod file
+
+######################################################################################
+##########################change the prod file#######################################
+#####################################################################################
 ##@db = ('database name', 'lorisuser', 'lorisuser-password', 'localhost or IP/machine');
 $data_dir             = '/data/$PROJ/data'; 
 $prefix                 = "$PROJ"; 
