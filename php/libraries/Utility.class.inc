@@ -667,7 +667,8 @@ class Utility extends PEAR
 	function getVisitLabels()
 	{
 		$db =& Database::singleton();
-		$query = "SELECT distinct Visit_label from session order by VisitNo";
+		$query = "SELECT distinct Visit_label FROM session s 
+		 JOIN candidate c ON (s.CandID = c.Candid) WHERE c.Active = 'Y' AND s.Active = 'Y' and c.PSCID NOT LIKE '%scanner%' ORDER BY VisitNo";
 		$db->select($query,$visitlabels);
 		$visits = array();
 		for ($i =0 ;$i<count($visitlabels) ; $i++){
@@ -675,5 +676,34 @@ class Utility extends PEAR
 		}
 		return $visits;
 	}
+	
+	
+		
+	/**
+	 * *
+	 * get all the instruments for the given visit...
+	 * @param unknown_type $visit
+	 * @return unknown
+	 */
+	function getVisitInstruments($visit_label){
+		$DB =& Database::singleton();
+	
+		if (Utility::ColumnExists('test_battery', 'Test_name_display')){
+			$test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where Visit_label =:vl",array('vl'=>$visit_label));
+		}
+		else{
+			 $test_names= $DB->pselect("SELECT DISTINCT t.Full_name as Test_name_display FROM session s
+			JOIN candidate c ON (c.candid=s.candid)
+			JOIN flag f ON (f.sessionid=s.id)
+			JOIN test_names t ON (f.test_name=t.Test_name)
+			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND c.PSCID != '%scanner%'",array('vl'=>$visit_label));
+		}
+		
+		if (PEAR::isError($test_names)) {
+			return PEAR::raiseError("DB Error: ".$instruments->getMessage());
+		}
+		return $test_names;
+	}
+
 }
 ?>
