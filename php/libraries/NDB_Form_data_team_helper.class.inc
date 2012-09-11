@@ -1,6 +1,7 @@
 <?php
 require_once "NDB_Form.class.inc";
 
+
 /**
  * @package main
  */
@@ -68,8 +69,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 		$config =& NDB_Config::singleton();
 		$study = $config->getSetting('study');
 
-		$instrument = Utility::getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
-		$instrument = $instrument['Test_name'];
+		$instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
 
 		//construct the instrument drop down..
 		$this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
@@ -184,12 +184,12 @@ class NDB_Form_data_team_helper extends NDB_Form
 	function getFeedbacks($field_name,$test_name=null,$visit_label=null){
 		$DB =& Database::singleton();
 		$feedback_status = $_REQUEST['feedback_status'];
-		$query = "select f.test_name,s.visit_label,f.commentid,c.CandID,c.PSCID,s.id,bt.feedbackid,bt.Status from session s
-		join flag f on (s.ID = f.SessionID)
-		join feedback_bvl_thread bt on (bt.commentid = f.commentid)
-		join candidate c on (c.Candid = s.Candid)
-		join psc on (s.CenterID = psc.CenterID)
-		where c.PSCID not like '%999-99999%' AND c.Active = 'Y' and	s.Active = 'Y' and 	bt.FieldName ='$field_name' and f.test_name = '$test_name' AND psc.Centerid!= '1'";
+		$query = "SELECT f.test_name,s.visit_label,f.commentid,c.CandID,c.PSCID,s.id,bt.feedbackid,bt.Status FROM session s
+		JOIN flag f ON (s.ID = f.SessionID)
+		JOIN feedback_bvl_thread bt ON (bt.commentid = f.commentid)
+		JOIN candidate c ON (c.Candid = s.Candid)
+		JOIN psc ON (s.CenterID = psc.CenterID)
+		WHERE c.PSCID NOT LIKE '%999-99999%' AND c.Active = 'Y' AND	s.Active = 'Y' AND bt.FieldName ='$field_name' AND f.test_name = '$test_name' AND psc.Centerid!= '1'";
 
 		if (isset($feedback_status) && $feedback_status!= "all"){
 			$where .= " And bt.status = '$feedback_status'" ;
@@ -218,8 +218,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 			global $DB;
 
 			if ($Filter == 'instrument'){
-				$test_name = Utility::getTestNameusingMappedName($_REQUEST[$Filter]); //converts the full_name into the test_name
-				$test_name = $test_name['Test_name'];
+				$test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //converts the full_name into the test_name
 				return " AND $Column LIKE " . $DB->quote($test_name);
 			}
 			if ($_REQUEST[$Filter] == 'not_sent_to_dcc'){
@@ -392,6 +391,25 @@ class NDB_Form_data_team_helper extends NDB_Form
 		return $percent_completed;
 	}
 
+	/**
+	 * getTestNameusingMappedName
+	 * returns the Test_name and its corresponding visit_label.. using the full_name  and/or subprojectID ..
+	 */
 
+	function getTestNameusingMappedName ($full_name, $subprojectID = null){
+
+		$DB =& Database::singleton();
+		$values = array();
+		if ((!(is_null($full_name)))){
+
+			if (Utility::ColumnExists('test_battery' , 'Test_name_display')){
+			$test_name = $DB->pselectOne("SELECT Test_name FROM test_battery WHERE Test_name_display=:display",array('display'=>$full_name));
+			}
+			else{
+				$test_name = Utility::getTestNameUsingFullName($full_name);
+			}
+		}
+		return 	$test_name;
+	}
 }
 ?>
