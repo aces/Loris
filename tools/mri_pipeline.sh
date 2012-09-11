@@ -3,7 +3,7 @@
 ################################
 ####WHAT WILL NOT DO#############
 ###1)It doesn't set up the SGE
-###2)It doesn't fetch the CIVET stuff   TODO:the civet stuff will need to be added to github
+###2)It doesn't fetch the CIVET stuff   TODO:Get the CIVET stuff from somewhere and place it in h
 ###3)It doesn't modify the environment
 
 read -p "what is the database name? " mysqldb
@@ -86,6 +86,7 @@ sudo -S apt-get install dcmtk
 ###################################################################################
 ##export $HOME=/home/lorisdev/  Do it only if neccessary
 sed -i "s#ibis#$PROJ#g" /data/$PROJ/bin/$mridirname/environment
+##Manually make sure that CIVET stuff are placed in the right place
 ##source  /data/$PROJ/bin/$mridirname/environment
 export TMPDIR=/tmp
 
