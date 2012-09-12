@@ -1,7 +1,6 @@
 <?php
 require_once "NDB_Form.class.inc";
 
-
 /**
  * @package main
  */
@@ -27,11 +26,11 @@ class NDB_Form_data_team_helper extends NDB_Form
 		$DB =& Database::singleton();
 		$extra_where .= $this->AddWhere("p.sourceFrom", 'instrument');
 		$extra_where .= $this->AddWhere("p.Name", 'FieldName');
-		$orderby = " Order by p.sourceFrom,p.sourceField";
+		$orderby = " ORDER BY p.sourceFrom,p.sourceField";
 
 		//construct the query
 		if (($extra_where) !=null){
-			$query = "select distinct p.sourceFrom,p.sourceField FROM
+			$query = "SELECT DISTINCT p.sourceFrom,p.sourceField FROM
 			parameter_type p WHERE 1=1 $extra_where";
 			$DB->select($query,  $info);
 			foreach ($info as $data){
@@ -55,7 +54,6 @@ class NDB_Form_data_team_helper extends NDB_Form
 
 		$this->tpl_data['success'] = true;
 	}
-
 
 	function data_team_helper()
 	{
@@ -92,15 +90,15 @@ class NDB_Form_data_team_helper extends NDB_Form
 
 
 		//$extra_where .= $this->AddWhere("bt.status", 'feedback_status');
-		$orderby = " Order by p.sourceFrom,p.sourceField";
+		$orderby = " ORDER BY p.sourceFrom,p.sourceField";
 		//construct the query
 		if (($extra_where) !=null){
-			$query = "select distinct p.sourceFrom,p.Name, s.Visit_label, p.sourceField, p.description from session s
-			join flag f on (f.sessionid = s.id)
-			join parameter_type p on (p.sourceFrom=f.test_name)
-			join candidate c on (c.CandID = s.CandID)
-			join psc on (s.CenterID = psc.CenterID)
-			WHERE s.candid = c.candid and s.Active = 'Y' And  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' AND c.pscid NOT LIKE '%999-99999%' $extra_where $orderby";
+			$query = "SELECT DISTINCT p.sourceFrom,p.Name, s.Visit_label, p.sourceField, p.description FROM session s
+			JOIN flag f ON (f.sessionid = s.id)
+			JOIN parameter_type p ON (p.sourceFrom=f.test_name)
+			JOIN candidate c ON (c.CandID = s.CandID)
+			JOIN psc ON (s.CenterID = psc.CenterID)
+			WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' AND c.pscid NOT LIKE '%999-99999%' AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
 			$DB->select($query,  $info);
 		}
 
@@ -189,7 +187,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 		JOIN feedback_bvl_thread bt ON (bt.commentid = f.commentid)
 		JOIN candidate c ON (c.Candid = s.Candid)
 		JOIN psc ON (s.CenterID = psc.CenterID)
-		WHERE c.PSCID NOT LIKE '%999-99999%' AND c.Active = 'Y' AND	s.Active = 'Y' AND bt.FieldName ='$field_name' AND f.test_name = '$test_name' AND psc.Centerid!= '1'";
+		WHERE c.PSCID NOT LIKE '%999-99999%' AND c.Active = 'Y' AND	s.Active = 'Y' AND bt.FieldName ='$field_name' AND f.test_name = '$test_name' AND psc.Centerid!= '1' AND c.PSCID NOT LIKE '%scanner%'";
 
 		if (isset($feedback_status) && $feedback_status!= "all"){
 			$where .= " And bt.status = '$feedback_status'" ;
@@ -222,7 +220,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 				return " AND $Column LIKE " . $DB->quote($test_name);
 			}
 			if ($_REQUEST[$Filter] == 'not_sent_to_dcc'){
-				return " AND $Column Not LIKE '%Approval%'";
+				return " AND $Column NOT LIKE '%Approval%'";
 			}
 			return " AND $Column LIKE " . $DB->quote($_REQUEST[$Filter]);
 		}
@@ -240,23 +238,23 @@ class NDB_Form_data_team_helper extends NDB_Form
 
 		//if test_name display exists
 		if (Utility::ColumnExists($test_name , 'Test_name_display')){
-			$query = "SELECT distinct s.CandID,ca.PSCID, c.FieldName,c.TableName,t.test_name_display,s.visit_label FROM conflicts_unresolved c
+			$query = "SELECT DISTINCT s.CandID,ca.PSCID, c.FieldName,c.TableName,t.test_name_display, s.visit_label FROM conflicts_unresolved c
 		LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
 		LEFT JOIN session s ON (f.SessionID=s.ID)
 		LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
-		JOIN test_battery t on (t.test_name = f.test_name)
-		JOIN psc on (s.CenterID = psc.CenterID)
-		WHERE t.visit_label = s.Visit_label and TableName LIKE '$test_name%' and ca.PSCID not like '%999-99999%' AND ca.Active = 'Y' and s.Active = 'Y' AND psc.Centerid!= '1'";
+		JOIN test_battery t ON (t.test_name = f.test_name)
+		JOIN psc ON (s.CenterID = psc.CenterID)
+		WHERE t.visit_label = s.Visit_label AND TableName LIKE '$test_name%' AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
 
 		}
 		else{
-			$query = "SELECT distinct s.CandID,ca.PSCID, c.FieldName,c.TableName,t.full_name as test_name_display,s.visit_label FROM conflicts_unresolved c
+			$query = "SELECT distinct s.CandID,ca.PSCID, c.FieldName,c.TableName,t.full_name AS test_name_display, s.visit_label FROM conflicts_unresolved c
 		LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
 		LEFT JOIN session s ON (f.SessionID=s.ID)
 		LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
-		JOIN test_names t on (t.test_name = f.test_name)
-	    JOIN psc on (s.CenterID = psc.CenterID)
-		WHERE TableName LIKE '$test_name%' and ca.PSCID not like '%999-99999%' AND ca.Active = 'Y' and s.Active = 'Y' AND psc.Centerid!= '1'";
+		JOIN test_names t ON (t.test_name = f.test_name)
+	    JOIN psc ON (s.CenterID = psc.CenterID)
+		WHERE TableName LIKE '$test_name%' AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
 			$DB->select($query,$conflicts);
 			return $conflicts;
 		}
@@ -272,23 +270,23 @@ class NDB_Form_data_team_helper extends NDB_Form
 
 		if (Utility::ColumnExists($test_name , 'Test_name_display')){
 
-			$query = "SELECT distinct s.CandID, ca.PSCID, c.FieldName,c.TableName,t.test_name_display,s.visit_label FROM conflicts_unresolved c
+			$query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,c.TableName,t.test_name_display, s.visit_label FROM conflicts_unresolved c
 		LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
 		LEFT JOIN session s ON (f.SessionID=s.ID)
 		LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
-		JOIN test_battery t on (t.test_name = f.test_name)
-		JOIN psc on (s.CenterID = psc.CenterID)
-		WHERE t.visit_label = s.Visit_label and TableName LIKE '$test_name%' and c.FieldName = '$field_name' and ca.PSCID not like '%999-99999%' AND ca.Active = 'Y' and s.Active = 'Y' AND psc.Centerid!= '1'";
+		JOIN test_battery t ON (t.test_name = f.test_name)
+		JOIN psc ON (s.CenterID = psc.CenterID)
+		WHERE t.visit_label = s.Visit_label AND TableName LIKE '$test_name%' AND c.FieldName = '$field_name' AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
 		}
 
 		else{
-			$query = "SELECT distinct s.CandID, ca.PSCID, c.FieldName,c.TableName,t.full_name as test_name_display,s.visit_label FROM conflicts_unresolved c
+			$query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,c.TableName,t.full_name AS test_name_display, s.visit_label FROM conflicts_unresolved c
 		LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
 		LEFT JOIN session s ON (f.SessionID=s.ID)
 		LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
-		JOIN psc on (s.CenterID = psc.CenterID)
-		Join test_names t on (t.test_name = f.test_name)
-		WHERE TableName LIKE '$test_name%' and c.FieldName = '$field_name' and ca.PSCID not like '%999-99999%' AND ca.Active = 'Y' and s.Active = 'Y' AND psc.Centerid!= '1'";
+		JOIN psc ON (s.CenterID = psc.CenterID)
+		JOIN test_names t ON (t.test_name = f.test_name)
+		WHERE TableName LIKE '$test_name%' AND c.FieldName = '$field_name' AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
 		}
 
 		$DB->select($query,$conflicts);
@@ -299,18 +297,18 @@ class NDB_Form_data_team_helper extends NDB_Form
 	function getIncompleteCandidates($test_name,$visit_label=null){
 		global $DB;
 
-		$query = "select distinct s.ID,s.visit_label, c.PSCID,s.candid, f.test_name,f.data_entry,f.commentid from session s
-		join flag f on (f.sessionid = s.id) 
-		join candidate c on (c.candid = s.candid)
-		join psc on (s.CenterID = psc.CenterID)	";
+		$query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid, f.test_name,f.data_entry,f.commentid FROM session s
+		JOIN flag f ON (f.sessionid = s.id) 
+		JOIN candidate c ON (c.candid = s.candid)
+		JOIN psc ON (s.CenterID = psc.CenterID)	";
 
-		$where = " WHERE s.Active = 'Y' And c.Active = 'Y' AND f.test_name LIKE '$test_name' and coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.pscid NOT LIKE '%999-99999%' ";
+		$where = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND f.test_name LIKE '$test_name' AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.pscid NOT LIKE '%999-99999%' AND c.candid NOT LIKE '%scanner%'";
 
 		//filter for visit
 		if (($visit_label !=null)&&($visit_label!='All Visits')){
-			$where.= " And s.visit_label = '$visit_label'";
+			$where.= " AND s.visit_label = '$visit_label'";
 		}
-		$order_by = " order by f.commentid ";
+		$order_by = " ORDER BY f.commentid ";
 
 		$query = $query . $where . $order_by;
 		$DB->select($query,$results);
@@ -322,15 +320,15 @@ class NDB_Form_data_team_helper extends NDB_Form
 		global $DB;
 
 
-		$query = "SELECT count(*) FROM $test_name as i
-		join flag f on (f.CommentID=i.CommentID)
-		join session s on (s.ID = f.SessionID)
-		join candidate c on (c.CandID = s.CandID)
-		join psc on (s.CenterID = psc.CenterID)	";
+		$query = "SELECT COUNT(*) FROM $test_name AS i
+		JOIN flag f ON (f.CommentID=i.CommentID)
+		JOIN session s ON (s.ID = f.SessionID)
+		JOIN candidate c ON (c.CandID = s.CandID)
+		JOIN psc ON (s.CenterID = psc.CenterID)	";
 
 		$where =" WHERE s.Active='Y'
                 AND s.Current_stage <> 'Recycling Bin'
-                AND f.CommentID not like '%DDE%'
+                AND f.CommentID NOT LIKE '%DDE%'
                 AND psc.Centerid!= '1'";
 
 		if (($visit_label !=null)&&($visit_label!='All Visits')){
@@ -345,12 +343,12 @@ class NDB_Form_data_team_helper extends NDB_Form
 	function getCompleteInstrumentCount($test_name,$visit_label=null){
 		global $DB;
 
-		$query = "SELECT count(*) FROM $test_name as i
+		$query = "SELECT COUNT(*) FROM $test_name AS i
 		
-		join flag f on (f.CommentID=i.CommentID)
-		join session s on (s.ID = f.SessionID)
-		join candidate c on (c.CandID = s.CandID)
-		join psc on (s.CenterID = psc.CenterID)	";
+		JOIN flag f ON (f.CommentID=i.CommentID)
+		JOIN session s ON (s.ID = f.SessionID)
+		JOIN candidate c ON (c.CandID = s.CandID)
+		JOIN psc ON (s.CenterID = psc.CenterID)	";
 
 		$where =" WHERE s.Active='Y'
 		AND c.Active='Y'
@@ -359,10 +357,11 @@ class NDB_Form_data_team_helper extends NDB_Form
 		AND f.Administration <> 'None'
 		AND f.Data_entry = 'Complete'
 		AND psc.Centerid!= '1'
-		AND c.pscid NOT LIKE '%999-99999%'";
+		AND c.PSCID NOT LIKE '%999-99999%'
+		AND c.PSCID NOT LIKE '%scanner%'";
 
 		if (($visit_label !=null)&&($visit_label!='All Visits')){
-			$where.= " And s.Visit_label = '$visit_label'";
+			$where.= " AND s.Visit_label = '$visit_label'";
 		}
 		$query.= $where;
 
