@@ -49,7 +49,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		$instruments = Utility::getAllInstruments();
 		$instruments = array_merge(array('' => 'All Instruments'), $instruments);
 		$this->form->addElement('select','sourceFrom', 'instruments', $instruments);
-		$this->form->addElement('select','Description', 'Description', array('' => 'All', 'empty'=>'empty'));
+		$this->form->addElement('select','Description', 'Description', array('' => 'All', 'empty'=>'empty','modified'=>'modified','un_modified'=>'un_modified'));
 		
 		return true;
 	}
@@ -101,9 +101,18 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		} else {
 			$query .= "*";
 		}
-
+		
 		// add the base query
-		$query .= $this->query;
+		if ($_REQUEST['Description'] =='modified'){
+			$query .= " FROM parameter_type pt JOIN parameter_type_override pto USING (Name) WHERE pt.Queryable=1";
+		}
+		else{
+			$query .= $this->query;
+		}
+		
+		
+
+									
 
 		// add filters to query
 		if (is_array($this->filter) && count($this->filter) > 0) {
@@ -121,6 +130,12 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 					else {
 						if ($val == 'empty')	{
 							$query .= " AND COALESCE(pto.description,pt.description) = ''";
+						}
+						elseif ($val=='modified') {
+							//NO where clause added
+						}
+						elseif ($val=='un_modified'){
+							$query .= " AND pto.description IS NULL";
 						}
 						else{
 							$query .= " AND $key LIKE '$val%' ";
