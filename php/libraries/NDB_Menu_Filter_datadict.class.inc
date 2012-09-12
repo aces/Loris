@@ -84,7 +84,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
      * @throws PEAR_Error
      * @access private
      * 
-     * NOTE: This function is getting overriden because of the COALESCE(pto.description,pt.description)  condition when the value is empty
+     * NOTE: This function is getting overriden because of the All/empty , modified and un-modified description criteria
      
      */
 	function _getList()
