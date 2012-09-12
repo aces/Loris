@@ -1607,7 +1607,7 @@ CREATE TABLE `parameter_type_override` (
   `Name` varchar(255) NOT NULL,
   `Description` text,
   PRIMARY KEY (`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+)
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
