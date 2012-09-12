@@ -20,11 +20,6 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 			return PEAR::raiseError("User Error: ".$user->getMessage());
 		}
 
-		// allow only to view own site data
-		$site =& Site::singleton($user->getData('CenterID'));
-		if (PEAR::isError($site)) {
-			return PEAR::raiseError("DB Error: ".$site->getMessage());
-		}
 		return ($user->hasPermission('data_dict'));
 	}
 
@@ -49,11 +44,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 
 	function _setFilterForm()
 	{
-		// create user object
-		$user =& User::singleton();
-		if(PEAR::isError($user)) {
-			return PEAR::raiseError("User Error: ".$user->getMessage());
-		}
+		
 		// list of feedback statuses
 		$instruments = Utility::getAllInstruments();
 		$instruments = array_merge(array('' => 'All Instruments'), $instruments);
@@ -92,6 +83,9 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
      * @return array
      * @throws PEAR_Error
      * @access private
+     * 
+     * NOTE: This function is getting overriden because of the COALESCE(pto.description,pt.description)  condition when the value is empty
+     
      */
 	function _getList()
 	{
