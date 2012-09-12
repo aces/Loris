@@ -664,7 +664,7 @@ class Utility extends PEAR
      * @access public
      * @static
      */
-	function getVisitLabels()
+	function getExistingVisitLabels()
 	{
 		$db =& Database::singleton();
 		$query = "SELECT DISTINCT Visit_label FROM session s 
