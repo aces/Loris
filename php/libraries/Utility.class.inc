@@ -667,8 +667,10 @@ class Utility extends PEAR
 	function getVisitLabels()
 	{
 		$db =& Database::singleton();
-		$query = "SELECT distinct Visit_label FROM session s 
-		 JOIN candidate c ON (s.CandID = c.Candid) WHERE c.Active = 'Y' AND s.Active = 'Y' and c.PSCID NOT LIKE '%scanner%' ORDER BY VisitNo";
+		$query = "SELECT DISTINCT Visit_label FROM session s 
+		 JOIN candidate c ON (s.CandID = c.Candid) 
+		 JOIN psc ON (s.CenterID = psc.CenterID)
+		 WHERE c.Active = 'Y' AND s.Active = 'Y' AND c.PSCID NOT LIKE '%scanner%' AND psc.CenterID!= '1' ORDER BY VisitNo";
 		$db->select($query,$visitlabels);
 		$visits = array();
 		for ($i =0 ;$i<count($visitlabels) ; $i++){
@@ -694,9 +696,10 @@ class Utility extends PEAR
 		else{
 			 $test_names= $DB->pselect("SELECT DISTINCT t.Full_name as Test_name_display FROM session s
 			JOIN candidate c ON (c.candid=s.candid)
+			JOIN psc ON (s.CenterID = psc.CenterID)
 			JOIN flag f ON (f.sessionid=s.id)
 			JOIN test_names t ON (f.test_name=t.Test_name)
-			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND c.PSCID != '%scanner%'",array('vl'=>$visit_label));
+			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%'",array('vl'=>$visit_label));
 		}
 		
 		if (PEAR::isError($test_names)) {
