@@ -49,11 +49,6 @@ class NDB_Form_data_team_helper extends NDB_Form
 
 	}
 
-	function _process($values)
-	{
-
-		$this->tpl_data['success'] = true;
-	}
 
 	function data_team_helper()
 	{
