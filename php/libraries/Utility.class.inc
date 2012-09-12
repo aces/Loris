@@ -699,7 +699,7 @@ class Utility extends PEAR
 			JOIN psc ON (s.CenterID = psc.CenterID)
 			JOIN flag f ON (f.sessionid=s.id)
 			JOIN test_names t ON (f.test_name=t.Test_name)
-			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%'",array('vl'=>$visit_label));
+			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%' ORDER BY t.Full_name ",array('vl'=>$visit_label));
 		}
 		
 		if (PEAR::isError($test_names)) {
