@@ -225,6 +225,7 @@ CREATE TABLE `feedback_bvl_thread` (
   `Date_taken` date default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `FieldName` text default NULL,
   PRIMARY KEY  (`FeedbackID`),
   KEY `FK_feedback_bvl_thread_1` (`Feedback_type`),
   CONSTRAINT `FK_feedback_bvl_thread_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
