@@ -49,7 +49,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		$instruments = Utility::getAllInstruments();
 		$instruments = array_merge(array('' => 'All Instruments'), $instruments);
 		$this->form->addElement('select','sourceFrom', 'instruments', $instruments);
-		$this->form->addElement('select','Description', 'Description', array('' => 'All', 'empty'=>'empty','modified'=>'modified','un_modified'=>'un_modified'));
+		$this->form->addElement('select','Description', 'Description', array('' => 'All', 'empty'=>'Empty','modified'=>'Modified','unmodified'=>'Unmodified'));
 		
 		return true;
 	}
@@ -134,7 +134,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 						elseif ($val=='modified') {
 							//NO where clause added
 						}
-						elseif ($val=='un_modified'){
+						elseif ($val=='unmodified'){
 							$query .= " AND pto.description IS NULL";
 						}
 						else{
