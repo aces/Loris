@@ -1,1 +1,1 @@
-ALTER table feedback_bvl_thread add column FieldName text; 
+ALTER TABLE feedback_bvl_thread ADD COLUMN FieldName text; 
