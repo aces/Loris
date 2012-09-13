@@ -4,7 +4,6 @@
 ####WHAT WILL NOT DO#############
 ###1)It doesn't set up the SGE
 ###2)It doesn't fetch the CIVET stuff   TODO:Get the CIVET stuff from somewhere and place it in h
-###3)It doesn't modify the environment
 
 read -p "what is the database name? " mysqldb
 read -p "What is the databse host? " mysqlhost
@@ -30,28 +29,12 @@ sudo -S apt-get install dcmtk
 #################################################################################################
 ############################INSTALL THE PERL LIBRARIES############################################
 #################################################################################################
-##while true; do
-##  read -p "Would you like ot install the PERL libraries" yn
-##  case $yn in
-##      [Yy]*)
           echo "Installing the perl libraries...THis will take a few minutes..."
-          ###echo $rootpass | apt-get install build-essential
-          ##will ask a series of questions and must answer yes to almost all....
           ##echo $rootpass | sudo perl -MCPAN -e shell
           echo $rootpass | sudo -S cpan install Math::Round
           ##echo $rootpass | sudo -S cpan install Bundle::CPAN
           echo $rootpass | sudo -S cpan install Getopt::Tabular
           echo $rootpass | sudo -S cpan install Time::JulianDay
-##          break;;
-##      [Nn]*)
-##          echo "Not installing Perl Libraries"
-##          break;;
-##       *) echo "please enter y or n"
-##    esac
-##done;
-
-
-
 ##########################################################################################
 ###########################3##Create directories########################################
 #########################################################################################
@@ -86,10 +69,9 @@ sudo -S apt-get install dcmtk
 ###################################################################################
 ##export $HOME=/home/lorisdev/  Do it only if neccessary
 sed -i "s#ibis#$PROJ#g" /data/$PROJ/bin/$mridirname/environment
-##Manually make sure that CIVET stuff are placed in the right place
+##Make sure that CIVET stuff are placed in the right place
 ##source  /data/$PROJ/bin/$mridirname/environment
 export TMPDIR=/tmp
-
 
 
 ######################################################################################
@@ -108,7 +90,6 @@ sudo chmod 775 /home/$USER/.neurodb/prod
 sudo chmod -R 775 /data/$PROJECT/
 sudo chown zia:zia /tmp/
 ##tarchiveLibraryDir = '/data/$PROJ/data/tarchive';
-
 
 ######################################################################
 ###########Modify the config.xml########################################
