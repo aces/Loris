@@ -16,7 +16,7 @@ $name = $test_name . "_" . $field;
 $description = $_REQUEST['description'];
 
 
-if ($DB->pselectOne("SELECT * FROM parameter_type_override WHERE Name =:id",array('id'=>$name))==0){  //if it doesn't exist
+if ($DB->pselectOne("SELECT COUNT(*) FROM parameter_type_override WHERE Name =:id",array('id'=>$name))==0){  //if it doesn't exist
 	$DB->insert('parameter_type_override',array('Name'=>$name,'Description'=>$description)); //insert it
 }
 else{
