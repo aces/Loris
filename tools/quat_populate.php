@@ -35,6 +35,7 @@ mysql> describe parameter_type;
 */
 
 require_once "Utility.class.inc";
+require_once "Log.class.inc";
 // settings
 $columnThreshhold = Utility::getColumnThresholdCount();
 $quatTableBasename = 'quat_table_';
@@ -45,6 +46,7 @@ require_once "../php/libraries/NDB_Client.class.inc";
 $client = new NDB_Client;
 $client->makeCommandLine();
 $client->initialize();
+$log = new Log("quat_populate");
 
 // get a Database connection
 $config =& NDB_Config::singleton();
@@ -180,14 +182,6 @@ function GetSelectStatement($parameterType, $field=NULL) {
 $today= getdate();
 $date = sprintf("%04d-%02d-%02d", $today['year'], $today['mon'], $today['mday']);
 
-$logfp = fopen("logs/quat_populate.$date.log", 'a');
-function log_msg($message) {
-        global $logfp;
-            $now_array = getdate();
-                $now_string = sprintf("%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'], $now_array['mon'], $now_array['mday'], $now_array['hours'], $now_array['minutes'], $now_array['seconds']);
-                    fwrite($logfp, "[$now_string] $message\n");
-}
-
 // Update data
 foreach($parameterTypes AS $parameterType) {
     if($parameterType['CurrentGUITable'] != null) {
@@ -195,7 +189,7 @@ foreach($parameterTypes AS $parameterType) {
         if(($lastGUITable !== $parameterType['CurrentGUITable'] || $lastSourceFrom !== $parameterType['SourceFrom']) && (isset($lastGUITable) && isset($lastSourceFrom))) {
             $updateStmt = "UPDATE $lastGUITable" . "_running SET " . join(", ", $setVals);
             $setVals = array();
-            log_msg($updateStmt);
+            $log->addLog(($updateStmt);
             //print "$updateStmt\n";
 
             $db->run($updateStmt);
@@ -220,8 +214,7 @@ foreach($parameterTypes AS $parameterType) {
 // Once more, for good measure. (and because the if statement above wouldn't be executed
 // after the last parameterTypeId)
 $updateStmt = "UPDATE $lastGUITable" . "_running SET " . join(", ", $setVals);
-log_msg($updateStmt);
-fclose($logfp);
+$log->addLog($updateStmt);
 
 $db->run($updateStmt);
 // Get _running tables from information_schema
