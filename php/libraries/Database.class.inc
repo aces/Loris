@@ -491,7 +491,7 @@ class Database extends PEAR
         }
 
         if(empty($userID)) {
-            $userID = $_ENV['USER'];
+            $userID = getenv('USER');
         }
 	    if(empty($userID)) {
 	        $userID = 'unknown';
