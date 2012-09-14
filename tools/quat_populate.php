@@ -164,7 +164,11 @@ function GetSelectStatement($parameterType, $field=NULL) {
 
     //for behavioural instrument data
     default:
-        if($field == null) {
+        if($parameterType['SourceField'] == 'Administration' || $parameterType['SourceField'] == 'Data_entry' ||
+            $parameterType['SourceField'] == 'Validity') {
+            $field = "`flag`.`$parameterType[SourceField]`";
+
+        } else if($field == null) {
             $field = "`$parameterType[SourceFrom]`.`$parameterType[SourceField]`";
         }
         $query = "SELECT $field AS Value FROM session s JOIN flag ON (s.ID=flag.SessionID) LEFT JOIN feedback_bvl_thread USING (CommentID) CROSS JOIN $parameterType[SourceFrom] LEFT JOIN candidate ON (s.CandID = candidate.CandID) WHERE flag.Administration<>'None' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
