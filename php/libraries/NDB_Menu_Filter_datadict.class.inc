@@ -58,6 +58,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 	function _setDataTableRows($count)
 	{
 
+		$x = 0;
 		foreach ($this->list as $item) {
 			$this->tpl_data['items'][$x][0]['value'] = $x + $count;
 			$i = 1;
