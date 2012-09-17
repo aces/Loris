@@ -690,10 +690,9 @@ class Utility extends PEAR
 	function getVisitInstruments($visit_label){
 		$DB =& Database::singleton();
 	
-		if (Utility::ColumnExists('test_battery', 'Test_name_display')){
+		if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
 			$test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where Visit_label =:vl",array('vl'=>$visit_label));
-		}
-		else{
+		} else {
 			 $test_names= $DB->pselect("SELECT DISTINCT t.Full_name as Test_name_display FROM session s
 			JOIN candidate c ON (c.candid=s.candid)
 			JOIN psc ON (s.CenterID = psc.CenterID)
