@@ -9,7 +9,6 @@ read -p "what is the database name? " mysqldb
 read -p "What is the databse host? " mysqlhost
 read -p "What is the Mysql user? " mysqluser
 read -p "what is the linux user which the intallation will be based on? " USER
-read -p "what is the root password " rootpass
 read -p "what is the project Name " PROJ   ##this will be used to create all the corresponding directories...i.e /data/gusto/bin.....
 read -p "what is your email address " email
 read -p "Enter the Site number(if there is only one site) " site
@@ -31,26 +30,26 @@ sudo -S apt-get install dcmtk
 #################################################################################################
           echo "Installing the perl libraries...THis will take a few minutes..."
           ##echo $rootpass | sudo perl -MCPAN -e shell
-          echo $rootpass | sudo -S cpan install Math::Round
+          sudo -S cpan install Math::Round
           ##echo $rootpass | sudo -S cpan install Bundle::CPAN
-          echo $rootpass | sudo -S cpan install Getopt::Tabular
-          echo $rootpass | sudo -S cpan install Time::JulianDay
+          sudo -S cpan install Getopt::Tabular
+          sudo -S cpan install Time::JulianDay
 ##########################################################################################
 ###########################3##Create directories########################################
 #########################################################################################
 
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/bin/ 
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/trashbin   ##holds mincs that didn't match protocol
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/tarchive   ##holds tared dicom-folder
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/pic           ##holds jpegs generated for the MRI-browser
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/logs         ## holds logs from pipeline script
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/jiv            ## holds JIVs used for JIV viewer
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/assembly ## holds the MINC files
-  echo $rootpass | sudo -S mkdir -p /data/$PROJ/data/batch_output  ##contains the result of the SGE (queue
-  echo $rootpass | sudo -S mkdir -p /home/$USER/.neurodb
+  sudo -S mkdir -p /data/$PROJ/bin/ 
+  sudo -S mkdir -p /data/$PROJ/data/
+  sudo -S mkdir -p /data/$PROJ/data/trashbin   ##holds mincs that didn't match protocol
+  sudo -S mkdir -p /data/$PROJ/data/tarchive   ##holds tared dicom-folder
+  sudo -S mkdir -p /data/$PROJ/data/pic           ##holds jpegs generated for the MRI-browser
+  sudo -S mkdir -p /data/$PROJ/data/logs         ## holds logs from pipeline script
+  sudo -S mkdir -p /data/$PROJ/data/jiv            ## holds JIVs used for JIV viewer
+  sudo -S mkdir -p /data/$PROJ/data/assembly ## holds the MINC files
+  sudo -S mkdir -p /data/$PROJ/data/batch_output  ##contains the result of the SGE (queue
+  sudo -S mkdir -p /home/$USER/.neurodb
   ###############incoming directory
-  echo $rootpass | sudo -S mkdir -p /data/incoming/$site$PROJ/incoming
+  sudo -S mkdir -p /data/incoming/$site$PROJ/incoming
 
 
 ##################################################################
