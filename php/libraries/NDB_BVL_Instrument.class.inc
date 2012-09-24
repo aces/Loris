@@ -1285,4 +1285,17 @@ function _checkDateTaken($dateElement) {
 
 // }}}
 
+// {{{ _checkDate()
+function _checkDate($dateElement) {
+    // if all three elements are empty, return true b/c it'll save the NULL in date field
+    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+        return true;
+    }
+    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
+    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
+        return false;
+    }
+    return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+}
+// }}}
 ?>
