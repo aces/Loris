@@ -197,6 +197,5 @@ class TestOfCouchDBWrapper extends UnitTestCase {
                     )
         ));
     }
-
 }
 ?>
