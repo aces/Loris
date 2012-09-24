@@ -50,6 +50,13 @@
 	</tr>
     {/if}
 
+    {if $form.ProjectID.html != ""}
+    <tr>
+        <td nowrap="nowrap">Project</td>
+        <td nowrap="nowrap">{$form.ProjectID.html}</td>
+    </tr>
+    {/if}
+
 	<tr>
 		<td nowrap="nowrap" colspan="2" align="right"><input class="button" name="fire_away" value="Create" type="submit" /></td>
 	</tr>
