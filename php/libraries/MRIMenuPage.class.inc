@@ -32,7 +32,7 @@ class MRIMenuPage {
                 'site' => 'p.CenterID',
                 'candID' => 'c.CandID',
                 'pscID' => 'c.PSCID',
-                'visitLabel' => 's.Visit_label',
+                'visit' => 's.Visit_label',
                 'qcStatus' => 's.MRIQCStatus',
                 'SubprojectID' => 's.SubprojectID',
                 'pending' => "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"

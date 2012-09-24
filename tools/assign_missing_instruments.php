@@ -76,7 +76,7 @@ if(isset($visit_label)) {
         PopulateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query="SELECT s.ID, s.subprojectID, s.Visit_label from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
+    $query="SELECT s.ID, s.subprojectID, s.Visit_label from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
     $DB->select($query, $results);
     foreach($results AS $result) {
         PopulateVisitLabel($result, $result['Visit_label']);
