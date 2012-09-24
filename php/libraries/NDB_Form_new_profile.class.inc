@@ -48,6 +48,11 @@ class NDB_Form_new_profile extends NDB_Form
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
+
+        if($config->getSetting('useProjects') == "true") {
+            $candidate->setData('ProjectID', $values['ProjectID']);
+
+        }
         if (PEAR::isError($candidate)) {
             return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
         }
@@ -89,6 +94,19 @@ class NDB_Form_new_profile extends NDB_Form
 
             // expected date of confinement rules
             $this->form->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
+        }
+
+        if($config->getSetting("useProjects") == "true") {
+            $projects = Utility::toArray($config->getSetting("Projects"));
+            $projects = $projects[0]['project'];
+            $projList = array('' => '');
+            foreach($projects as $project) {
+                $id = $project['@']['id'];
+                if($id) {
+                    $projList[$id] = $project['label'];
+                }
+            }
+            $this->form->addElement("select", 'ProjectID', 'Project', $projList);
         }
 
         // add gender

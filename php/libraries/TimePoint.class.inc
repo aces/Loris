@@ -117,7 +117,7 @@ Class TimePoint
             $userID = $_SESSION['State']->getUsername();
         } else {
             // not a web hit, so use the unix username from the environment
-            $userID = $_ENV['USER'];
+            $userID = getenv('USER');
         }
 
         // generate today's date for the Date registered field

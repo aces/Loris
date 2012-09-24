@@ -1148,6 +1148,37 @@ class NDB_BVL_Instrument extends PEAR
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
+    /**
+    * Wrapper to create a header
+    */
+
+    function addHeader($header) {
+        $this->form->addElement('header', null, $header); 
+    }
+
+    /**
+    * Wrapper to create a select drop-down list
+    */
+    
+    function addSelect($name, $label, $options=array()) {
+        $this->form->addElement('select', $name, $label, $options);
+    }
+
+    /**
+    * Wrapper to create a static label
+    */
+    
+    function addLabel($label) {
+        $this->form->addElement('static', null, $label);
+    }
+
+    /**
+    * Wrapper to create a static score column
+    */
+   
+    function addScoreColumn($name, $label) {
+        $this->form->addElement('static', $name, $label);
+     }
 
     /**
     * nulls all scores for the record identified by CommentID
@@ -1254,7 +1285,6 @@ class NDB_BVL_Instrument extends PEAR
         $db->execute($prepQ, array('CID' => $this->commentID));
     }
 } //end class NDB_BVL_Instrument
-
 // {{{ _checkDateTaken()
 function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
@@ -1282,10 +1312,8 @@ function _checkDateTaken($dateElement) {
         }
     }
 }
-
-// }}}
-
-// {{{ _checkDate()
+/// _checkDate. This is used by create timepoint and start timepoint pages, 
+// so it probably shouldn't be in the instrument class.
 function _checkDate($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
     if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {

@@ -10,6 +10,15 @@
 
 -->
 <config>
+    <tests>
+        <!-- Whether or not tests are allowed to modify data.
+             should only ever be true on a sandbox, since even though the tests
+             try and revert everything, something could potentially go wrong -->
+        <testModify>false</testModify>
+        <!-- This isn't necessary, but if you want to use a specific candidate to
+             check if the instruments work, put the CandID here.. -->
+        <!--testCandidate>965327</testCandidate-->
+    </tests>
 
 <!-- file paths -->
 <paths>
@@ -18,7 +27,7 @@
     <data>SAME AS imagePath</data>
     <extLibs>/PATH/TO/SMARTY/libs</extLibs>
     <mincPath></mincPath>
-
+    <log>tools/logs/</log>
 </paths>
 
 <!-- database settings -->
@@ -88,6 +97,16 @@
             <seq type="alphanumeric" minLength="4"/>
           </structure>
         </PSCID>
+
+        <useProjects>false</useProjects>
+        <Projects>
+            <project id="1">
+                <label>Sample Project</label>
+            </project>
+            <project id="2">
+                <label>Another Sample Project</label>
+            </project>
+        </Projects>
 
 	<!-- number of subprojects in the project - corresponds to the list of subpojects below -->
 	<objectives>1</objectives>
