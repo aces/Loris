@@ -1,14 +1,17 @@
 <?php
+require_once 'NDB_Factory.class.inc';
 require_once 'Database.class.inc';
 require_once 'CouchDB.class.inc';
 require_once '../tools/CouchDB_Import_Demographics.php';
 require_once '../tools/CouchDB_Import_MRI.php';
 require_once '../tools/CouchDB_Import_Instruments.php';
+require_once '../tools/CouchDB_Deport_Sites.php';
 
 Mock::generate('Database');
 Mock::generate('CouchDB');
 Mock::generatePartial('CouchDBMRIImporter', 'CouchDBMRIImporterPartial', array('UpdateDataDict', 'UpdateCandidateDocs'));
 Mock::generatePartial('CouchDBInstrumentImporter', 'CouchDBInstrumentImporterPartial', array('UpdateDataDicts', 'UpdateCandidateDocs'));
+Mock::generatePartial('CouchDBSiteDeporter', 'CouchDBSiteDeporterPartial', array('_isSitePurged'));
 
 class TestOfCouchDBImportDemographics extends UnitTestCase {
     function setUp() {
@@ -16,6 +19,11 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $this->db = $this->config->getSetting('CouchDB');
         $subproj = $this->config->getSetting("subprojects");
         $this->subprojects = $subproj['subproject'];
+        $this->Factory = NDB_Factory::singleton();
+        $this->Factory->setTesting(true);
+    }
+    function tearDown() {
+        $this->Factory->reset();
     }
 
     function _getSubproject($id) {
@@ -29,9 +37,7 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
 
     function testImportDemographics() {
         $Import = new CouchDBDemographicsImporter();
-        $Factory = NDB_Factory::singleton();
-        $Factory->setTesting(true);
-        $Import->SQLDB = new MockDatabase(); //$Factory->Database();
+        $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
         $Import->CouchDB->returns('replaceDoc', 'new');
         $Import->SQLDB->expectOnce('pselect');
@@ -170,10 +176,8 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
     }
 
     function testImportInstruments() {
-        $Factory = NDB_Factory::singleton();
-        $Factory->setTesting(true);
         $Import = new CouchDBInstrumentImporterPartial();
-        $Import->SQLDB = $Factory->Database();
+        $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
 
         $Import->SQLDB->returns('pselect', array( 0 => array('Test_name' => 'hello'), 1 => array('Test_name' => 'hello2')));
@@ -183,20 +187,24 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
 
         $Import->run();
         
+        // If we don't reset the factory, the "pselect" count is two, because of the above being the
+        // same mock
+        $this->Factory->reset();
         $Import = new CouchDBInstrumentImporterPartial();
-        $Import->SQLDB = new MockDatabase();
+        $Import->SQLDB = $this->Factory->Database(); // new MockDatabase();
         $Import->CouchDB = new MockCouchDB();
+        $Import->SQLDB->returns('pselect', array( 0 => array('Test_name' => 'hello'), 1 => array('Test_name' => 'hello2')));
+
         $tests = $Import->GetInstruments();
-        //$Import->SQLDB->expectOnce("pselect", array("SELECT Test_name FROM test_names", array()) );
+
+        $Import->SQLDB->expectOnce("pselect", array("SELECT Test_name FROM test_names", array()) );
         $this->assertEqual($tests, array('hello' => 'hello', 'hello2' => 'hello2'));
     }
 
     function testImportInstrumentUpdateDict() {
         // The main run works, now test UpdateDataDict.. use the non-partial mock
-        $Factory = NDB_Factory::singleton();
-        $Factory->setTesting(true);
         $Import = new CouchDBInstrumentImporter();
-        $Import->SQLDB = new MockDatabase(); //$Factory->Database();
+        $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
 
         $Import->SQLDB->returns('pselect', array(
@@ -256,10 +264,8 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
     }
 
     function testImportInstrumentUpdateCandidateDocs() {
-        $Factory = NDB_Factory::singleton();
-        $Factory->setTesting(true);
         $Import = new CouchDBInstrumentImporter();
-        $Import->SQLDB = new MockDatabase(); //$Factory->Database();
+        $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
 
         $Instruments = array('hello' => 'hello', 'hello2' => 'hello2');
@@ -301,6 +307,73 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
 
         $SQL = $Import->generateDocumentSQL('instrumentname');
         $this->assertEqual($SQL, "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, i.* FROM instrumentname i join flag f USING (CommentID) join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID) WHERE CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'");
+    }
+
+    function testDeportSites() {
+        $Deport = new CouchDBSiteDeporterPartial();
+
+        $Deport->SQLDB = $this->Factory->Database();
+        $Deport->CouchDB = new MockCouchDB();
+
+        //$Import->CouchDB->expectAt(0, 'replaceDoc', array('DataDictionary:Demographics', $DataDict));
+        $Deport->CouchDB->expectAt(0, 'QueryView', array('DQG-2.0', 'search', 
+            array('startkey' => array('demographics', 'Site'),
+                  'endkey'   => array('demographics', 'Site', '香'),
+                  'reduce'   => "false"
+                 )
+            )
+        );
+
+        $Deport->CouchDB->returns('QueryView', array(
+                array("id" => "Demographics_Session_PHI0000_V06",
+                      "key" => array("demographics","Site","PHI"),
+                      "value" => array("PHI0000","V06")),
+                array("id" => "Demographics_Session_DCC0000_V12",
+                      "key" => array("demographics","Site","DCC"),
+                      "value" => array("DCC0000","DCC"), 
+                ),
+                array("id" =>"Demographics_Session_PHI0000_V36",
+                      "key" => array("demographics","Site","PHI"),
+                      "value" => array("PHI0000","V36")
+                )
+            )
+        );
+        $Deport->returns('_isSitePurged', false);
+        $Deport->returnsAt(1, '_isSitePurged', true);
+        $Deport->expectCallCount("_isSitePurged", 3);
+        $Deport->CouchDB->expectAt(1, 'QueryView', array(
+            'DQG-2.0', 'sessions', array('startkey' => array('DCC0000', 'DCC'),
+                        'endkey' => array('DCC0000', 'DCC'),
+                        'reduce' => 'false'
+                                     )
+            )
+        );
+
+        $Deport->CouchDB->returnsAt(1, 'QueryView', array(
+                array("id" => "Instrumento",
+                      "key" => array("demographics","Site","DCC"),
+                      "value" => array("DCC0000","DCC")),
+                array("id" => "Demographics_Session_DCC0000_V12",
+                      "key" => array("demographics","Site","DCC"),
+                      "value" => array("DCC0000","DCC"), 
+        )));
+        $Deport->CouchDB->expectCallCount('QueryView', 2);
+        // Only DCC should be deleted from the above list
+        $Deport->CouchDB->expectAt(0, 'deleteDoc', array('Instrumento'));
+        $Deport->CouchDB->expectCallCount("deleteDoc", 2);
+        $Deport->run();
+
+        // Now test the method that was stubbed out..
+        $Deport = new CouchDBSiteDeporter();
+        
+        $Deport->Config = new MockNDB_Config();
+
+        $Deport->Config->returns('getSetting', array('dcc', 'abc'));
+        $this->assertTrue($Deport->_isSitePurged('DCC'));
+        $this->assertTrue($Deport->_isSitePurged('dcc'));
+        $this->assertFalse($Deport->_isSitePurged('PHI'));
+        $this->assertTrue($Deport->_isSitePurged('abc'));
+
     }
 }
 ?>

@@ -123,5 +123,29 @@ class TestOfCouchDBWrapper extends UnitTestCase {
         $val = $ExistsMock->replaceDoc("abc", $data);
         $this->assertEqual($val, 'modified');
     }
+
+    function testQueryView() {
+        $Mock = new MockCouchDBWrap();
+        $Mock->returns("_getRelativeURL", '{"error":"not_found","reason":"missing"}');
+
+        $this->assertEqual($Mock->QueryView('test', 'test', array()), array());
+
+        $Mock = new MockCouchDBWrap();
+        $Mock->returns("_getRelativeURL", '{"total_rows":3,"offset":343,"rows":[ {"id":"Demographics_Session_PHI0000_V06","key":["demographics","Site","PHI"],"value":["PHI0000","V06"]}, {"id":"Demographics_Session_PHI0000_V12","key":["demographics","Site","PHI"],"value":["PHI0000","V12"]}, {"id":"Demographics_Session_PHI0000_V36","key":["demographics","Site","PHI"],"value":["PHI0000","V36"]}]}');
+        $this->assertEqual($Mock->QueryView('test','test', array('startkey' => 'hello', 'endkey' => 'goodbye')), array(
+            0 => array('id' => 'Demographics_Session_PHI0000_V06',
+                       'key' => array('demographics', 'Site', 'PHI'),
+                       'value' => array('PHI0000', 'V06')
+                    ),
+            1 => array('id' => 'Demographics_Session_PHI0000_V12',
+                       'key' => array('demographics', 'Site', 'PHI'),
+                       'value' => array('PHI0000', 'V12')
+                    ),
+            2 => array('id' => 'Demographics_Session_PHI0000_V36',
+                       'key' => array('demographics', 'Site', 'PHI'),
+                       'value' => array('PHI0000', 'V36')
+                    )
+        ));
+    }
 }
 ?>

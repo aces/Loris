@@ -131,5 +131,14 @@ class CouchDB {
         $this->putDoc($id, $doc);
         return 'modified';
     }
+
+    function QueryView($designdoc, $viewname, $params) {
+        $query = $this->_getRelativeURL("_design/" . $designdoc . "/_view/" . $viewname . "?" . http_build_query($params));
+        $data = json_decode($query, true);
+        if($data['error'] == 'not_found') {
+            return array();
+        }
+        return $data['rows'];
+    }
 }
 ?>
