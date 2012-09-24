@@ -157,6 +157,10 @@ class NDB_Form_new_profile extends NDB_Form
             elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) $errors['PSCID'] = 'PSCID does not match the required structure';
             elseif($db->selectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$values[PSCID]'") > 0) $errors['PSCID'] = 'PSCID has already been registered';
         }
+        $useProjects = $config->getSetting('useProjects');
+        if($useProjects === "true" && empty($values['ProjectID'])) {
+            $errors['ProjectID'] = "Project is required";
+        }
 
         return $errors;
     }
