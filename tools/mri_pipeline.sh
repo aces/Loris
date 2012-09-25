@@ -11,8 +11,9 @@ read -p "What is the Mysql user? " mysqluser
 read -p "what is the linux user which the intallation will be based on? " USER
 read -p "what is the project Name " PROJ   ##this will be used to create all the corresponding directories...i.e /data/gusto/bin.....
 read -p "what is your email address " email
-read -p "Enter the Site number(if there is only one site) " site
-read -p "MRI code directory name "   mridirname
+read -p "Enter the list of Site names (space separated) " site
+read -p "Enter Full MRI-code directory path "   mridir
+
 
 #################################################################################################
 ########################################MINC TOOL###############################################
@@ -22,18 +23,15 @@ sudo -S apt-get install minc-tools
 
 echo "installing dicom toolkit (May prompt for sudo password)"
 sudo -S apt-get install dcmtk
-
-
-
 #################################################################################################
 ############################INSTALL THE PERL LIBRARIES############################################
 #################################################################################################
-          echo "Installing the perl libraries...THis will take a few minutes..."
-          ##echo $rootpass | sudo perl -MCPAN -e shell
-          sudo -S cpan install Math::Round
-          ##echo $rootpass | sudo -S cpan install Bundle::CPAN
-          sudo -S cpan install Getopt::Tabular
-          sudo -S cpan install Time::JulianDay
+echo "Installing the perl libraries...THis will take a few minutes..."
+##echo $rootpass | sudo perl -MCPAN -e shell
+sudo -S cpan install Math::Round
+##echo $rootpass | sudo -S cpan install Bundle::CPAN
+sudo -S cpan install Getopt::Tabular
+sudo -S cpan install Time::JulianDay
 ##########################################################################################
 ###########################3##Create directories########################################
 #########################################################################################
@@ -48,26 +46,34 @@ sudo -S apt-get install dcmtk
   sudo -S mkdir -p /data/$PROJ/data/assembly ## holds the MINC files
   sudo -S mkdir -p /data/$PROJ/data/batch_output  ##contains the result of the SGE (queue
   sudo -S mkdir -p /home/$USER/.neurodb
-  ###############incoming directory
-  sudo -S mkdir -p /data/incoming/$site$PROJ/incoming
+
+
+ ###############incoming directory using sites###
+  for s in $site; do 
+   sudo -S mkdir -p /data/incoming/$s/incoming;
+  done;
+
 
 
 ##################################################################
 ################Get the code#######################################
 ##################################################################
 ###NOTE By default the code goes to /data/project/bin/
-		cd /data/$PROJ/bin/
-		git clone git@github.com:aces/Loris-MRI.git $mridirname
-		cd $mridirname
-		git submodule init
-		git submodule sync
-		git submodule update
+###Ask the user-name for github#####
+
+
+cd  $mri /data/$PROJ/bin/
+git clone git@github.com:aces/Loris-MRI.git $mridir
+cd $mridir
+git submodule init
+git submodule sync
+git submodule update
 
 ####################################################################################
 #######set environment variables under .bashrc#####################################
 ###################################################################################
 ##export $HOME=/home/lorisdev/  Do it only if neccessary
-sed -i "s#ibis#$PROJ#g" /data/$PROJ/bin/$mridirname/environment
+sed -i "s#ibis#$PROJ#g" $mridir/environment
 ##Make sure that CIVET stuff are placed in the right place
 ##source  /data/$PROJ/bin/$mridirname/environment
 export TMPDIR=/tmp
@@ -78,7 +84,7 @@ export TMPDIR=/tmp
 #####################################################################################
 echo "Creating MRI config file"
 
-sed -e "s#project#$PROJ#g" -e "s#/your/inepuisable/diskspace/location#/data/$PROJ/data#g" -e "s#yourname\@gmail.com#$email#g" -e "s#\/wherever\/you\/put\/this\/get_dicom_info.pl#/data/$PROJ/bin/$mridirname/dicom-archive/get_dicom_info.pl#g"  -e "s#DBNAME#$mysqldb#g" -e "s#DBUSER#$mysqluser#g" -e "s#DBPASS#$mysqlpass#g" -e "s#DBHOST#$mysqlhost#g" /data/$PROJ/bin/$mridirname/dicom-archive/profileTemplate > /home/$USER/.neurodb/prod
+sed -e "s#project#$PROJ#g" -e "s#/your/inepuisable/diskspace/location#/data/$PROJ/data#g" -e "s#yourname\@gmail.com#$email#g" -e "s#\/wherever\/you\/put\/this\/get_dicom_info.pl#$mridir/dicom-archive/get_dicom_info.pl#g"  -e "s#DBNAME#$mysqldb#g" -e "s#DBUSER#$mysqluser#g" -e "s#DBPASS#$mysqlpass#g" -e "s#DBHOST#$mysqlhost#g" $mridir/dicom-archive/profileTemplate > /home/$USER/.neurodb/prod
 
 
 ####################################################################################
@@ -86,8 +92,7 @@ sed -e "s#project#$PROJ#g" -e "s#/your/inepuisable/diskspace/location#/data/$PRO
 ####################################################################################
 sudo chown $USER:$USER /home/$USER/.neurodb/prod
 sudo chmod 775 /home/$USER/.neurodb/prod
-sudo chmod -R 775 /data/$PROJECT/
-sudo chown zia:zia /tmp/
+sudo chmod -R 775 /data/$PROJ/
 ##tarchiveLibraryDir = '/data/$PROJ/data/tarchive';
 
 ######################################################################
@@ -95,4 +100,3 @@ sudo chown zia:zia /tmp/
 ######################################################################
 ##sed -i "s#%/PATH/TO/MINC/DATA/ROOT/mri-data/minc/%#/data/$PROJ/data#g" -i "s#LORISROOT%#/data/$PROJ/data#g" ../project/config.xml
 ##mincpath
-
