@@ -65,7 +65,6 @@ class NDB_Form_data_team_helper extends NDB_Form
         $this->tpl_data['test_name'] = $instrument;
 
         //Percentage completed for the given instrument
-
         if ($instrument !=null) {
             $percent_completed = $this->_getPercentCompleted($instrument,$_REQUEST['visit_label']);
             $this->tpl_data['percent_completed'] = $percent_completed;
@@ -119,7 +118,6 @@ class NDB_Form_data_team_helper extends NDB_Form
 
             $this->tpl_data['Visit_label_list'][] = $data['Visit_label'];//contains the visit_label for each element...
             $name = $data['Name'];
-
             $List_of_feedbacks = $this->getFeedbacks($data['sourceField'],$data['sourceFrom'],$data['Visit_label']);
             $percent_completed = $data['Name'] . ":" . $data['Visit_label'] . ':percent_completed';
             $Last_access = $data['Name'] . ":" . $data['Visit_label'] . ':Last_access';
@@ -387,7 +385,6 @@ class NDB_Form_data_team_helper extends NDB_Form
         return 	$test_name;
     }
     
-		
 	/**
 	 * *
 	 * get all the instruments for the given visit...
