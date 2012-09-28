@@ -121,6 +121,12 @@ class NDB_Form_create_timepoint extends NDB_Form
         
         $errors = array();
         
+        // This can happen if the user quickly clicks "Create Time Point" before the page has loaded
+        // and the Visit Label dropdown hasn't been selected yet. The page will create "V1" when this
+        // is the case without this check.
+        if(empty($values['visitLabel'])) {
+            $errors['visitLabel'] = 'A visit label is required for creating a timepoint.';
+        }
         // make sure the user entered a valid visit label
         if ($visitLabelSettings['generation'] == 'user') {
             if (!preg_match($visitLabelSettings['regex'], $values['visitLabel'])) {
