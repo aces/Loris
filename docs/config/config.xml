@@ -196,6 +196,15 @@
             <visible>1</visible>
         </tab>
 
+          <link>data_team_helper</link>
+          <label>Data Team Helper</label>
+          <access>all</access>
+          <permissions>
+              <perm>
+              </perm>
+          </permissions>
+          <visible>1</visible>
+        </tab>
     </main_menu_tabs>
 
 </config>
