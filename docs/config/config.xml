@@ -185,6 +185,17 @@
             </permissions>
             <visible>1</visible>
         </tab>
+
+        <tab>
+            <link>datadict</link>
+            <label>Data Dictionary</label>
+            <access>all</access>
+            <permissions>
+            <perm>data_dict</perm>
+            </permissions>
+            <visible>1</visible>
+        </tab>
+
     </main_menu_tabs>
 
 </config>
