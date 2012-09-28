@@ -1006,7 +1006,8 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2');
+INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2');
+
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1593,3 +1594,41 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2008-04-16 21:15:00
+
+
+
+
+--
+-- Table structure for table `parameter_type_override`
+--
+
+DROP TABLE IF EXISTS `parameter_type_override`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `parameter_type_override` (
+  `Name` varchar(255) NOT NULL,
+  `Description` text,
+  PRIMARY KEY (`Name`)
+)
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `parameter_type_override`
+--
+
+LOCK TABLES `parameter_type_override` WRITE;
+/*!40000 ALTER TABLE `parameter_type_override` DISABLE KEYS */;
+/*!40000 ALTER TABLE `parameter_type_override` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-08-21 16:13:53
+
