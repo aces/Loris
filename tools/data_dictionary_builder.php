@@ -134,6 +134,7 @@ $instruments=explode("{-@-}",trim($data));
 //process all HTML_QuickForm Elements found in ip_output.txt
 $tblCount=0;
 $parameterCount=0;
+
 foreach($instruments AS $instrument){
     $catId="";
     $items=explode("\n",trim($instrument));
@@ -232,6 +233,17 @@ print "Inserting administration for $table\n";
     $error=$DB->insert("parameter_type_category_rel",array("ParameterTypeID"=>$paramId, "ParameterTypeCategoryID"=>$catId));
     // Insert examiner
 }
+
+//Copies the modified descriptions from the parameter_type_override to parameter_type
+$elements = $DB->pselect("SELECT * FROM parameter_type_override WHERE Description IS NOT NULL",array());
+foreach ($elements as $element){
+	
+	$description = $element['Description'];
+	$name = $element['Name'];
+	
+	$DB->update('parameter_type',array('Description'=>$description),array('Name'=>$name));
+}
+
 
 //Print completion info message
 echo "\n\nData Dictionary generation complete:  $tblCount new categories added and $parameterCount new parameters added\n\n";
