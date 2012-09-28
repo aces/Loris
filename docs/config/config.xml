@@ -98,6 +98,16 @@
           </structure>
         </PSCID>
 
+        <useProjects>false</useProjects>
+        <Projects>
+            <project id="1">
+                <label>Sample Project</label>
+            </project>
+            <project id="2">
+                <label>Another Sample Project</label>
+            </project>
+        </Projects>
+
 	<!-- number of subprojects in the project - corresponds to the list of subpojects below -->
 	<objectives>1</objectives>
 	<!-- max number of timepoints per subject (integer)-->

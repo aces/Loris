@@ -48,6 +48,11 @@ class NDB_Form_new_profile extends NDB_Form
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
+
+        if($config->getSetting('useProjects') == "true") {
+            $candidate->setData('ProjectID', $values['ProjectID']);
+
+        }
         if (PEAR::isError($candidate)) {
             return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
         }
@@ -89,6 +94,19 @@ class NDB_Form_new_profile extends NDB_Form
 
             // expected date of confinement rules
             $this->form->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
+        }
+
+        if($config->getSetting("useProjects") == "true") {
+            $projects = Utility::toArray($config->getSetting("Projects"));
+            $projects = $projects[0]['project'];
+            $projList = array('' => '');
+            foreach($projects as $project) {
+                $id = $project['@']['id'];
+                if($id) {
+                    $projList[$id] = $project['label'];
+                }
+            }
+            $this->form->addElement("select", 'ProjectID', 'Project', $projList);
         }
 
         // add gender
@@ -138,6 +156,10 @@ class NDB_Form_new_profile extends NDB_Form
             if(empty($values['PSCID'])) $errors['PSCID'] = 'PSCID must be specified';
             elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) $errors['PSCID'] = 'PSCID does not match the required structure';
             elseif($db->selectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$values[PSCID]'") > 0) $errors['PSCID'] = 'PSCID has already been registered';
+        }
+        $useProjects = $config->getSetting('useProjects');
+        if($useProjects === "true" && empty($values['ProjectID'])) {
+            $errors['ProjectID'] = "Project is required";
         }
 
         return $errors;
