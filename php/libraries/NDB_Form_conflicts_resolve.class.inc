@@ -141,7 +141,8 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
 
         $sites = Utility::getSiteList();
-        $sites = array_merge(array(''=>'All'), $sites);
+        $sites = array_merge(array('All'=>''), array_flip($sites));
+        $sites= array_flip($sites);
         
         // Filter selection elements
         $this->form->addElement('select', 'site', 'Site:', $sites);
