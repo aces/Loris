@@ -9,3 +9,5 @@ dataflag_dc_open_feedback INT NOT NULL,
 latest_entry TINYINT(1) NOT NULL DEFAULT 1,
 PRIMARY KEY (dataflag_id)
 );
+
+INSERT INTO permissions (code, description,type,categoryID) VALUES ('data_integrity_flag','Data Integrity Flag','permission','2');
