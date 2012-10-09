@@ -7,9 +7,9 @@ function change(){
 	
 	$('#hide').hide();
 	$('#tbl').hide();
-	$('td').filter('[id*=header]').css({
+	/*$('td').filter('[id*=header]').css({
 		backgroundColor: 'green'
-	});
+	});*/
 	
 	//to show
 	$('#show').bind('click',function(event){
