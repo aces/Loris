@@ -24,25 +24,25 @@
 </form>
 
 
-<!----Mri- protocol table------->
+<!-- Mri- protocol table  -->
 <BR>
 <BR>
-<div id='hide' style="font-weight: bold">
+<div id='hide' style="font-weight: bold" class="toggle_mri_tbl">
 	-Hide mri-protocol Table
 </div> 
 
-<div id='show' style="font-weight: bold">
+<div id='show' style="font-weight: bold" class="toggle_mri_tbl">
 	+Show mri-protocol Table
 </div> 
 
-<table id="tbl" border="1">
+<table class ="fancytable" id="tbl" border="0" width="100%" class="listColorCoded">
 	<tr>
 	{assign var=count value=0}
 	{foreach from=$mri_protocol_header item=mp}
 		{assign var=count value=$count+1}
-		    <td id="header_{$count}">
+		    <th id="header_{$count}">
 		       {$mp}
-		    </td>
+		    </th>
 	  
 	{/foreach}
 	
