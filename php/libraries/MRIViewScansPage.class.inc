@@ -130,7 +130,6 @@ class MRIViewScansPage {
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['candid'] = $timePoint->getCandID();
         $candidate =& Candidate::singleton($timePoint->getCandID());
-        $subjectData['mriCommentID'] = $this->DB->selectOne("SELECT CommentID from flag where CommentID like '".$subjectData['candid']."MTL%' and SessionID = ".$subjectData['sessionID']." and Test_name = 'mri_parameter_form'");
 
         if(PEAR::isError($candidate)) { 
             print $candidate->getMessage()."<br>";

@@ -101,7 +101,7 @@ return true;
 {literal}<script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script>{/literal}
 <!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
 </br>
-<a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.mriCommentID}" id = "MRIparam" name  = "MRIparam" value = "{$subject.dccid}">&nbsp;MRI Parameter Form</a>
+<a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}" id = "MRIparam" name  = "MRIparam">&nbsp;MRI Parameter Form</a>
 <!--{literal}<script>document.write('<a href="main.php?test_name=mri_parameter_form&candID='</script>{/literal}{$subject.candid}{literal}<script>document.write('&sessionID='+sID+'">MRI Parameter Form</a>');</script>{/literal}
 -->
     <td>
