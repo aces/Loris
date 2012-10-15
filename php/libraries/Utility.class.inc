@@ -252,6 +252,17 @@ class Utility extends PEAR
         return $list;
     }
     
+    function getProjectList() {
+        $config =& NDB_Config::singleton();
+
+        // get the list of Subprojects
+        $projectSettings= $config->getSetting('Projects');
+        foreach(Utility::toArray($projectSettings['project']) AS $project){
+            
+    		$list[$project['id']]=$project['title'];
+    	}
+        return $list;
+    }
     /**
      * Returns the test name associated with a given commentID
      * @throws PEAR_Error
