@@ -137,8 +137,10 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
 
-        $sites = Utility::getSiteList();
-        $sites = array_merge(array(''=>'All'), $sites);
+        
+        
+        
+        $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
         
         // Filter selection elements
         $this->form->addElement('select', 'site', 'Site:', $sites);
@@ -147,7 +149,8 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         $this->form->addElement('text', 'CandID', 'DCCID:', '');
         $this->form->addElement('text', 'PSCID', 'PSCID:', '');
 
-        if(!empty($_REQUEST['site'])) {
+        //This condition is commmented out because the $_REQUEST['site'] will always be empty (All) by default (which will show all the sites)
+        //if(!empty($_REQUEST['site'])) {
             $extra_where = '';
             function AddWhere($Column, $Filter) {
                 if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] != 'all') {
@@ -174,10 +177,11 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                 $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
                 $this->form->addElement('static', 'total', 'Total number of results:', $conflicts_num['total']);
             }
-        } else {
+       /* } else {
             $this->form->addElement('static', 'status', 'Please select a filter criteria first.');
                 return;
         }
+        */
 
 
         /*        $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved", $conflicts);
