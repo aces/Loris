@@ -18,9 +18,7 @@
 </tr>
 <tr>
     <td></td>
-    <td></td>
-    <td></td>
-    <td colspan="2">
+    <td colspan="3" align="right">
         <input type="submit" name="filter" value="Show Data" class="button"/>
         <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=conflicts_resolve'">
     </td>

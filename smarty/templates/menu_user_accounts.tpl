@@ -3,9 +3,6 @@
 <table border="0" valign="top" class="std">
     <tr>
         <th nowrap="nowrap" colspan="8">Selection Filter</th>
-   <!-- <tr>
-        <th nowrap="nowrap" colspan="8">Selection Filter</th>
-    </tr>-->
     </tr>
     <tr>
         <td nowrap="nowrap">Username:</td>
@@ -26,10 +23,9 @@
         <td nowrap="nowrap">{$form.examiner.html}</td>
     </tr>
     <tr>
-        <td nowrap="nowrap"><input type="button" name="button" value="Add User" class="button" style = "background-color: #696" onclick="location.href='main.php?test_name=user_accounts&subtest=edit_user'" /></td>
-	<td></td>
-	<td></td>
-        <td colspan="5" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=user_accounts&reset=true'" /></td>
+    <tr>
+        <td nowrap="nowrap"><input type="button" name="button" value="Add User" class="button" onclick="location.href='main.php?test_name=user_accounts&subtest=edit_user'" /></td>
+        <td colspan="7" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=user_accounts&reset=true'" /></td>
     </tr>
 <table>
 </form>
@@ -39,7 +35,6 @@
 <tr>
     <!-- title -->
     <td class="controlPanelSection"></td>
- <!--   <td class="controlPanelSection">List of Users</td>-->
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>

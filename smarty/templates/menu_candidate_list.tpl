@@ -84,9 +84,8 @@ $(function(){
     {/if}
     <tr>
         <td></td>
-        <td></td>
         <td>&nbsp;</td>
-        <td colspan="3" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" /></td>
+        <td colspan="2" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" /></td>
     </tr>
 <table>
 </form>
@@ -95,7 +94,6 @@ $(function(){
 <tr>
     <!-- title -->
     <td class="controlPanelSection"></td>
-<!--    <td class="controlPanelSection">List of Profiles</td>-->
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>

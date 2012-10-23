@@ -499,6 +499,19 @@ class Utility extends PEAR
 	   return $Zoo;
 	}
 
+    // Replace the empty string with null in specified field
+    // in an array passed in as an argument. This undoes the
+    // damaged that Smarty causes by making nulls in a dropdown
+    // the empty string.
+    // This is needed before calling $db->insert() on any integer
+    // fields, because mysql considers '' to be 0, not null if
+    // the database column is of type integer.
+    function nullifyEmpty(&$arr, $field) {
+        if($arr[$field] === '') {
+            $arr[$field] = null;
+        }
+        return $arr;
+    }
 	// from php.net comments
 	function in_array_insensitive($item, $array) {
 	    $item = &strtoupper($item);
@@ -510,13 +523,13 @@ class Utility extends PEAR
 	    return false;
 	}
    
-        function Flatten($Arr) {
-            return $Arr['Test_name'];
-        }
+    function Flatten($Arr) {
+        return $Arr['Test_name'];
+    }
 
-        function FlattenFull($Arr) {
-            return $Arr['Full_name'];
-        }
+    function FlattenFull($Arr) {
+        return $Arr['Full_name'];
+    }
 
     function getAllInstruments() {
         $DB =& Database::singleton();
@@ -527,41 +540,8 @@ class Utility extends PEAR
         // trick to get an array of the form array( 'test_name' => 'test_name')
         // which can be used by quickforms for the dropdown. The array_merge
         // call after that just adds an Any/All Instruments option.
-        function Flatten($Arr) {
-            return $Arr['Test_name'];
-        }
-
-        function FlattenFull($Arr) {
-            return $Arr['Full_name'];
-        }
-
-    function getAllInstruments($test_name = true) {
-        $DB =& Database::singleton();
-
-        if ($test_name)
-        {
-                $DB->select("SELECT Test_name FROM test_names ORDER BY Test_name", &$instruments_q);
-
-                $in = array_map(array('Utility', 'Flatten'), $instruments_q);
-                $instruments = array_combine($in, $in);
-        }
-
-        else
-        {
-                $DB->select("SELECT Test_name FROM test_names ORDER BY Test_name", &$instruments_q);
-                $DB->select("SELECT Full_name FROM test_names ORDER BY Full_name", &$instruments_r);
-
-                // This array_map call turns the result of the above query to
-                // a non-associative array, so that we can use the array_combine
-                // trick to get an array of the form array( 'Test_name' => 'Full_name')
-                // which can be used by quickforms for the dropdown. The array_merge
-                // call after that just adds an Any/All Instruments option.
-
-                $in = array_map(array('Utility', 'Flatten'), $instruments_q);
-                $in1 = array_map(array('Utility','FlattenFull'), $instruments_r);
-                $instruments = array_combine($in, $in1);
-        }
-
+        $in = array_map(array('Utility', 'Flatten'), $instruments_q);
+        $instruments = array_combine($in, $in);
         return $instruments;
 
    }
@@ -680,6 +660,61 @@ class Utility extends PEAR
         }
         return $sourcefields;
     }
+<<<<<<< HEAD
     }
+=======
+    
+
+	/**
+     * Returns a list of study Visit Labels
+     * @throws PEAR_Error
+     * @return array  an array("" => "visit_label")
+     * @access public
+     * @static
+     */
+	function getExistingVisitLabels()
+	{
+		$db =& Database::singleton();
+		$query = "SELECT DISTINCT Visit_label FROM session s 
+		 JOIN candidate c ON (s.CandID = c.Candid) 
+		 JOIN psc ON (s.CenterID = psc.CenterID)
+		 WHERE c.Active = 'Y' AND s.Active = 'Y' AND c.PSCID NOT LIKE '%scanner%' AND psc.CenterID!= '1' ORDER BY VisitNo";
+		$db->select($query,$visitlabels);
+		$visits = array();
+		for ($i =0 ;$i<count($visitlabels) ; $i++){
+			$visits[$visitlabels[$i]['Visit_label']] = ($visitlabels[$i]['Visit_label']);
+		}
+		return $visits;
+	}
+	
+	
+		
+	/**
+	 * *
+	 * get all the instruments for the given visit...
+	 * @param unknown_type $visit
+	 * @return unknown
+	 */
+	function getVisitInstruments($visit_label){
+		$DB =& Database::singleton();
+	
+		if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
+			$test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where Visit_label =:vl",array('vl'=>$visit_label));
+		} else {
+			 $test_names= $DB->pselect("SELECT DISTINCT t.Full_name as Test_name_display FROM session s
+			JOIN candidate c ON (c.candid=s.candid)
+			JOIN psc ON (s.CenterID = psc.CenterID)
+			JOIN flag f ON (f.sessionid=s.id)
+			JOIN test_names t ON (f.test_name=t.Test_name)
+			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%' ORDER BY t.Full_name ",array('vl'=>$visit_label));
+		}
+		
+		if (PEAR::isError($test_names)) {
+			return PEAR::raiseError("DB Error: ".$instruments->getMessage());
+		}
+		return $test_names;
+	}
+
+>>>>>>> aces/master
 }
 ?>

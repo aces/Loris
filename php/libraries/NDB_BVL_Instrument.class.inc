@@ -566,7 +566,7 @@ class NDB_BVL_Instrument extends PEAR
         
         $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
-        $this->form->registerRule('checkdate', 'callback', '_checkDate');
+        $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
         $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
         
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
@@ -1119,6 +1119,49 @@ class NDB_BVL_Instrument extends PEAR
     *
     */
     
+<<<<<<< HEAD
+=======
+    function addNumericElementRD($field, $label) {
+        $group [] = $this->form->createElement("text", $field, $label);
+        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
+        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        unset($group);
+        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+    }
+
+    /**
+    * Wrapper to create a header
+    */
+
+    function addHeader($header) {
+        $this->form->addElement('header', null, $header); 
+    }
+
+    /**
+    * Wrapper to create a select drop-down list
+    */
+    
+    function addSelect($name, $label, $options=array()) {
+        $this->form->addElement('select', $name, $label, $options);
+    }
+
+    /**
+    * Wrapper to create a static label
+    */
+    
+    function addLabel($label) {
+        $this->form->addElement('static', null, $label);
+    }
+
+    /**
+    * Wrapper to create a static score column
+    */
+   
+    function addScoreColumn($name, $label) {
+        $this->form->addElement('static', $name, $label);
+     }
+>>>>>>> aces/master
 
     /**
     * nulls all scores for the record identified by CommentID
@@ -1208,9 +1251,8 @@ class NDB_BVL_Instrument extends PEAR
         return;
     }
 } //end class NDB_BVL_Instrument
-
-// {{{ _checkDate()
-function _checkDate($dateElement) {
+// {{{ _checkDateTaken()
+function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
     if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
         return true;
@@ -1221,10 +1263,32 @@ function _checkDate($dateElement) {
     }
     // else, check the date
     else {
-        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        if(version_compare(phpversion(), '5.3.0', '>=')) {
+            if($checked === false) {
+                return false;
+            }
+            $formatted = date_create();
+            $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
+            $now = date_create(); #getdate(); #date("Y-m-d", getdate());
+            $diff = date_diff($formatted, $now);
+            return ($diff->format("%r") === '');
+        } else {
+            return $checked;
+        }
     }
 }
-
-// }}}
-
+/// _checkDate. This is used by create timepoint and start timepoint pages, 
+// so it probably shouldn't be in the instrument class.
+function _checkDate($dateElement) {
+    // if all three elements are empty, return true b/c it'll save the NULL in date field
+    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+        return true;
+    }
+    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
+    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
+        return false;
+    }
+    return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+}
 ?>

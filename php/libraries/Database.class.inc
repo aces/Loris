@@ -161,9 +161,13 @@ class Database extends PEAR
 
         $this->_printQuery($query);
         $prep = $this->_PDO->prepare($prepQ);
-        $prep->execute($exec_params);
+        $result = $prep->execute($exec_params);
+        if($result === FALSE) {
+            return $this->raiseError("Insert statement did not execute successfully.");
+        }
         $this->affected = $prep->rowCount(); 
         $this->lastInsertID = $this->_PDO->lastInsertId();
+        return true;
     }
 
     /**
@@ -232,8 +236,12 @@ class Database extends PEAR
         $this->_printQuery($query.$where);
 
         $prep = $this->_PDO->prepare($prepQ);
-        $prep->execute($exec_params);
+        $result = $prep->execute($exec_params);
+        if($result === FALSE) {
+            return $this->raiseError("Update statement did not execute successfully.");
+        }
         $this->affected = $prep->rowCount(); 
+        return true;
     }
 
     /**
@@ -483,7 +491,7 @@ class Database extends PEAR
         }
 
         if(empty($userID)) {
-            $userID = $_ENV['USER'];
+            $userID = getenv('USER');
         }
 	    if(empty($userID)) {
 	        $userID = 'unknown';

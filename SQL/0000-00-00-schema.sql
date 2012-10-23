@@ -101,10 +101,6 @@ LOCK TABLES `cert_events` WRITE;
 /*!40000 ALTER TABLE `cert_events` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `examiners`
---
-
 DROP TABLE IF EXISTS `document_repository`;
 CREATE TABLE `document_repository` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -127,28 +123,6 @@ CREATE TABLE `document_repository` (
   `File_category` enum('abstract','audio_visual','image','instrument','manual','minutes','paper','presentation','protocol','spreadsheet_table','other') DEFAULT NULL,
   PRIMARY KEY (`record_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=687 DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `ethnic`
---
-
-DROP TABLE IF EXISTS `ethnic`;
-CREATE TABLE `ethnic` (
-  `EthnicID` tinyint(1) unsigned NOT NULL auto_increment,
-  `Hispanic` varchar(100) NOT NULL default '',
-  `Alias` varchar(100) NOT NULL default '',
-  `Race` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`EthnicID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ethnic`
---
-
-LOCK TABLES `ethnic` WRITE;
-/*!40000 ALTER TABLE `ethnic` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ethnic` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `examiners`
@@ -251,6 +225,7 @@ CREATE TABLE `feedback_bvl_thread` (
   `Date_taken` date default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `FieldName` text default NULL,
   PRIMARY KEY  (`FeedbackID`),
   KEY `FK_feedback_bvl_thread_1` (`Feedback_type`),
   CONSTRAINT `FK_feedback_bvl_thread_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
@@ -413,9 +388,6 @@ CREATE TABLE `files` (
   `AcquisitionProtocolID` int(10) unsigned default NULL,
   `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat') default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
-  `QCStatus` enum('Pass','Fail') default NULL,
-  `QCFirstChangeTime` int(10) unsigned default NULL,
-  `QCLastChangeTime` int(10) unsigned default NULL,
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`FileID`),
@@ -526,6 +498,7 @@ CREATE TABLE `history` (
   `primaryVals` text,
   `changeDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `userID` varchar(255) NOT NULL default '',
+  `type` char(1),
   PRIMARY KEY  (`id`),
   KEY `FK_history_1` (`userID`),
   CONSTRAINT `FK_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
@@ -681,7 +654,6 @@ CREATE TABLE `mri_protocol` (
 
 LOCK TABLES `mri_protocol` WRITE;
 /*!40000 ALTER TABLE `mri_protocol` DISABLE KEYS */;
-INSERT INTO `mri_protocol` VALUES (124,'ZZZZ',0,0,44,'1-50','1-15','','','','','','11-10000','11-10000','11-10000','','','',NULL),(125,'ZZZZ',0,0,44,'350-650','1-40','','','','','','11-10000','11-10000','11-10000','','','',NULL),(126,'ZZZZ',0,0,45,'2000-4000','100-180','','','','','','11-10000','11-10000','11-10000','','','',NULL),(127,'ZZZZ',0,0,46,'2000-4000','12-30','','','','','','11-10000','11-10000','11-10000','','','',NULL),(128,'ZZZZ',0,0,47,'1400-1600','100-150','','','','','','','','','','','',NULL),(129,'ZZZZ',0,0,48,'3000-9999','60-100','','','','','','11-10000','11-10000','11-10000','2.5-3.5','2.5-3.5','2.5-3.5',NULL),(130,'ZZZZ',0,0,49,'0,9000-100000','34-60','0-10000','','','','','11-10000','11-10000','11-10000','','','',NULL),(131,'ZZZZ',0,0,50,'2000-4000','80-90','','','','','','11-10000','11-10000','11-10000','','','',NULL),(132,'ZZZZ',0,0,51,'2000-4000','151-180','','','','','','11-10000','11-10000','11-10000','','','',NULL),(133,'ZZZZ',0,0,52,'','','','','','','','0-10','','','','','',NULL),(134,'ZZZZ',0,0,52,'','','','','','','','','0-10','','','','',NULL),(135,'ZZZZ',0,0,52,'','','','','','','','','','0-10','','',NULL,NULL),(136,'AAAA',0,0,47,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'mrs'),(137,'AAAA',0,0,48,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'dti'),(138,'AAAA',0,0,49,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'relax'),(139,'AAAA',0,0,52,'99999.12345',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'scout|localizer'),(999,'',0,0,999,'','','','','','','','','','','','','','');
 /*!40000 ALTER TABLE `mri_protocol` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -998,6 +970,23 @@ LOCK TABLES `parameter_type_category_rel` WRITE;
 /*!40000 ALTER TABLE `parameter_type_category_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+--
+-- ADDing Meta-data Visit_label , candidate_label and candidate_dob
+--
+
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
+
+INSERT INTO parameter_type_category (Name, type) VALUES('Identifiers', 'Metavars');
+
+INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID) 
+SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID 
+FROM parameter_type pt,parameter_type_category ptc 
+WHERE ptc.Name='Identifiers' AND pt.Name IN ('candidate_label', 'Visit_label','candidate_dob');
+
+
 --
 -- Table structure for table `permissions`
 --
@@ -1017,7 +1006,8 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2');
+INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2');
+
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1163,7 +1153,6 @@ DROP TABLE IF EXISTS `session`;
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `CandID` int(6) NOT NULL default '0',
-  `PSCID` varchar(255) NOT NULL default '',
   `CenterID` tinyint(2) unsigned default NULL,
   `VisitNo` smallint(5) unsigned default NULL,
   `Visit_label` varchar(255) default NULL,
@@ -1245,6 +1234,8 @@ CREATE TABLE `tarchive` (
   `CreateInfo` text,
   `AcquisitionMetadata` longtext NOT NULL,
   `TarchiveID` int(11) NOT NULL auto_increment,
+  `DateSent` datetime DEFAULT NULL,
+  `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -1504,7 +1495,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'SiteMin',NULL,'Admin account',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2006-11-27',NULL);
+INSERT INTO `users` VALUES (1,'admin',NULL,'Admin account',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2006-11-27',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1514,7 +1505,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6),
   `PSCID` varchar(255),
-  `Last_inserted` date,
+  `time_run` datetime,
   `series_description` varchar(255) DEFAULT NULL,
    minc_location varchar(255),
    PatientName varchar(255) DEFAULT NULL,
@@ -1528,7 +1519,70 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `xstep_range` varchar(255) DEFAULT NULL,
   `ystep_range` varchar(255) DEFAULT NULL,
   `zstep_range` varchar(255) DEFAULT NULL,
+  `time_range` varchar(255)  DEFAULT NULL,
   PRIMARY KEY (`ID`));
+
+CREATE TABLE `conflicts_unresolved` (
+      `TableName` varchar(255) NOT NULL,
+      `ExtraKeyColumn` varchar(255) DEFAULT NULL,
+      `ExtraKey1` varchar(255) NOT NULL,
+      `ExtraKey2` varchar(255) NOT NULL,
+      `FieldName` varchar(255) NOT NULL,
+      `CommentId1` varchar(255) NOT NULL,
+      `Value1` varchar(255) DEFAULT NULL,
+      `CommentId2` varchar(255) NOT NULL,
+      `Value2` varchar(255) DEFAULT NULL,
+      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+);
+
+CREATE TABLE `conflicts_resolved` (
+      `UserID` varchar(255) NOT NULL,
+      `ResolutionTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      `User1` varchar(255) DEFAULT NULL,
+      `User2` varchar(255) DEFAULT NULL,
+      `TableName` varchar(255) NOT NULL,
+      `ExtraKeyColumn` varchar(255) DEFAULT NULL,
+      `ExtraKey1` varchar(255) NOT NULL DEFAULT '',
+      `ExtraKey2` varchar(255) NOT NULL DEFAULT '',
+      `FieldName` varchar(255) NOT NULL,
+      `CommentId1` varchar(255) NOT NULL,
+      `CommentId2` varchar(255) NOT NULL,
+      `OldValue1` varchar(255) DEFAULT NULL,
+      `OldValue2` varchar(255) DEFAULT NULL,
+      `NewValue` varchar(255) DEFAULT NULL,
+      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+);
+CREATE TABLE `tarchive_find_new_uploads` (
+      `CenterName` varchar(255) NOT NULL,
+      `LastRan` datetime DEFAULT NULL,
+      PRIMARY KEY (`CenterName`)
+);
+--
+-- Table structure for table `session_status`
+--
+
+DROP TABLE IF EXISTS `session_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `session_status` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `SessionID` int(11) NOT NULL,
+  `Name` varchar(64) NOT NULL,
+  `Value` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `session_status_index` (`SessionID`,`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `session_status`
+--
+
+LOCK TABLES `session_status` WRITE;
+/*!40000 ALTER TABLE `session_status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `session_status` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1540,3 +1594,41 @@ CREATE TABLE `mri_protocol_violated_scans` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2008-04-16 21:15:00
+
+
+
+
+--
+-- Table structure for table `parameter_type_override`
+--
+
+DROP TABLE IF EXISTS `parameter_type_override`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `parameter_type_override` (
+  `Name` varchar(255) NOT NULL,
+  `Description` text,
+  PRIMARY KEY (`Name`)
+)
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `parameter_type_override`
+--
+
+LOCK TABLES `parameter_type_override` WRITE;
+/*!40000 ALTER TABLE `parameter_type_override` DISABLE KEYS */;
+/*!40000 ALTER TABLE `parameter_type_override` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-08-21 16:13:53
+
