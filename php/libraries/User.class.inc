@@ -297,5 +297,10 @@ class User extends UserPermissions
 
         return true;
     }
+
+    function updateCouchUser($password) {
+        print "Hello I am updating the user";
+
+    }
 }
 ?>
