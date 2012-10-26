@@ -394,5 +394,10 @@ class User extends UserPermissions
       return ($this->userInfo['CenterID']== 1);     
      }
 
+
+    function updateCouchUser($password) {
+        print "Hello I am updating the user";
+
+    }
 }
 ?>
