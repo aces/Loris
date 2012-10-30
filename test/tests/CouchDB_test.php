@@ -1,4 +1,5 @@
 <?php
+require_once 'simpletest/autorun.php';
 require_once 'CouchDB.class.inc';
 
 Mock::generatePartial('CouchDB', 'MockCouchDBWrap', array('_getRelativeURL', '_postRelativeURL'));
