@@ -196,6 +196,7 @@
             <visible>1</visible>
         </tab>
 
+        <tab>
           <link>data_team_helper</link>
           <label>Data Team Helper</label>
           <access>all</access>
