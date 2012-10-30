@@ -1,0 +1,40 @@
+-- Wait until after DDE merge
+NDB_BVL_Instrument.class.inc: 810
+-- Can do now
+File_Upload.class.inc: 381
+NDB_BVL_Feedback.class.inc: 325
+TimePoint.class.inc: 255
+File.class.inc: 271
+HelpFile.class.inc: 206
+NDB_BVL_Battery.class.inc: 158
+NDB_Caller.class.inc: 144
+NDB_BVL_InstrumentStatus_ControlPanel.class.inc: 124
+NDB_Menu_Filter.class.inc: 111
+FeedbackMRI.class.inc: 96
+NDB_BVL_LogicTest.class.inc: 95
+NDB_Config.class.inc: 92
+NDB_Client.class.inc: 79
+NDB_BVL_InstrumentStatus.class.inc: 75
+NDB_Page.class.inc: 74
+NDB_Form.class.inc: 67
+UserPermissions.class.inc: 61
+NDB_Breadcrumb.class.inc: 54
+SinglePointLogin.class.inc: 48
+Notify.class.inc: 46
+Site.class.inc: 39
+State.class.inc: 38
+Smarty_hook.class.inc: 37
+NDB_BVL_Instrument_instrument_preview.class.inc: 35
+NDB_BVL_Battery_Manual.class.inc: 30
+NDB_Menu.class.inc: 25
+User.class.inc: 18
+Utility.class.inc: 14
+CouchDB.class.inc: 11
+
+
+Candidate.class.inc: 0
+ConflictDetector.class.inc: 0
+Database.class.inc: 0
+Email.class.inc: 0
+Log.class.inc: 0
+NDB_Factory.class.inc: 0

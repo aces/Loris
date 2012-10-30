@@ -234,10 +234,11 @@ class CouchDB
      * @param string $url  The URL relative to the server to make a POST request to.
      * @param array  $data Associative array representing the JSON document to POST.
      * @param string $op   HTTP verb to use for the request
+     * @param array  $headers  The extra HTTP headers to send with the request
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $op = 'POST')
+    function _postURL($url, $data, $op = 'POST', $headers = array())
     {
         $config = NDB_Config::singleton();
         $response = '';
@@ -248,6 +249,9 @@ class CouchDB
         $handler->open();
 
         $handler->write("$op $url HTTP/1.0\r\n");
+        foreach($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
+        }
         $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
         $handler->write($data);
         while (!$handler->eof()) {
@@ -272,7 +276,7 @@ class CouchDB
      * @return string A string representation of the JSON response without
      *                the HTTP headers
      */
-    function _postRelativeURL($url, $data, $op = 'POST')
+    function _postRelativeURL($url, $data, $op = 'POST', $headers = array())
     {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
@@ -284,6 +288,11 @@ class CouchDB
         $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n");
         $handler->write("Content-type: application/json\r\n\r\n");
+        $handler->write($url . " HTTP/1.0\r\n");
+        foreach($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
+        }
+        $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
         $handler->write($data);
         $response = '';
         while (!$handler->eof()) {
@@ -292,6 +301,10 @@ class CouchDB
         $handler->close();
         $response_split = explode("\r\n\r\n", $response, 2);
         return trim($response_split[1]);
+    }
+
+    function _postRelativeURL($url, $data, $op = 'POST') {
+        return $this->_postURL($this->_constructURL($op, $url), $data);
     }
 
     /**
