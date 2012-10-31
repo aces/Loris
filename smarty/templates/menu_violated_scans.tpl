@@ -39,23 +39,24 @@
 	<tr>
 	{assign var=count value=0}
 	{foreach from=$mri_protocol_header item=mp}
-		{assign var=count value=$count+1}
+		
 		    <th id="header_{$count}">
 		       {$mp}
 		    </th>
-	  
+	  	   {assign var=count value=$count+1}
 	{/foreach}
 	
 	</tr>
-	{assign var=rcount value=0}
+	{assign var=rcount value=1}
 	{foreach from=$mri_protocol_data item=mp}
 		{assign var=ccount value=0}
 		  <tr>
 			  {foreach from=$mp key=k item=row}
-				  {assign var=ccount value=$ccount+1}
-				   <td id="row_{$rcount}_td_{$ccount}">
+				 
+				   <td id="row_{$rcount}_td_{$ccount}" class='description' contenteditable = "true">
 				    {$row}
 				   </td>
+				   {assign var=ccount value=$ccount+1}
 			  {/foreach}
 			  {assign var=rcount value=$rcount+1}
 		  </tr>
