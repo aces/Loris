@@ -133,7 +133,7 @@ BrowserDetect.init();
     <tr>&nbsp;</tr>
 	<tr>
     	<th align="left" class="banner" colspan="3" background="images/title_background.jpg">
-    	    Douglas Mental Health University Institute Prevent-AD Centre
+    	    Douglas Hospital Research Centre Prevent-AD Study
 	    </th>
     </tr>
     <tr>
