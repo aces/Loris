@@ -11,7 +11,6 @@ function change(){
 	/*$('td').filter('[id*=header]').css({
 	backgroundColor: 'green'
 	});*/
-
 	//to show
 	$('#show').bind('click',function(event){
 		$('#tbl').show('slow',function(){});
@@ -32,48 +31,48 @@ function change(){
 
 function save() {
 
-	$('.description').
-
-	bind('blur',function(event){
+	
+	
+	/**To get the default value**/
+	$('.description').click(function(event){
+		id = event.target.id;
+		default_value = $("#" + id) .text();
+	});
+	
+	
+	
+	$('.description').bind('blur',function(event){
+			
 		event.stopImmediatePropagation();
 		id = event.target.id;
 		value = $("#" + id) .text();
-		alert(id);
-		//id: row_1_td_8
-		//value:
-		// sendRemoteDataQuery("query_gui_data_loader.php?mode=loadQuery&action="+action+"&qid="+qid);
-
-		//var test = "UpdateDataDict.php?fieldname=" + id + "&description=" + value;
-		
-		
 		$('<div></div>').appendTo('body')
-                    .html('<div>Are you sure?</div>')
-                    
-                    .dialog({
-                        title: 'Modification', zIndex: 10000, autoOpen: true,
-                        width: 'auto', resizable: false,
-                        dialogClass:'transparent',	 
-                        buttons: {
-                            Yes: function () {
-                               $.get("UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value,  function(data) {});
-                                $(this).dialog("close");
-                            },
-                            No: function () {
-                                $(this).dialog("close");
-                            }
-                        },
-                        close: function (event, ui) {
-                            $(this).remove();
-                        }
-                    });
-                    
-		})
-	};
+		.html('<div>Are you sure?</div>')
+		.dialog({
+			title: 'Modification', zIndex: 10000, autoOpen: true,
+			width: 'auto', resizable: false,
+			dialogClass:'transparent',
+			position: [800,90], 
+			buttons: {
+				Yes: function () {
+					$.get("UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value,  function(data) {});
+					$(this).dialog("close");
+				},
+				No: function () {
+					$("#" + id).text(default_value);
+					$(this).dialog("close");
+				}
+			},
+			close: function (event, ui) {
+				$(this).remove();
+			}
+		});
+	})
+};
 
-
-	$(function(){
-		change();
-		save();
-	});
+$(function(){
+	change();
+	save();
+});
 
 
