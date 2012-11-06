@@ -129,6 +129,10 @@ class NDB_Form_next_stage extends NDB_Form
             $errors['date1'] .= "Date is not a valid date. \n";
         }
 
+        if ($values['date1']['M']!= ($values['date2']['M']) || 	$values['date1']['d']!=($values['date2']['d']||	$values['date1']['Y'])!=$values['date2']['Y']) {
+            $errors['date1'] .= "Both Date fields must match. \n";
+        }
+
         // get candidate's DOB or EDC according to SubprojectID
         $candidateBirthDate = $timePoint->getEffectiveDateOfBirth();
 
