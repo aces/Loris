@@ -189,7 +189,7 @@ foreach($parameterTypes AS $parameterType) {
         if(($lastGUITable !== $parameterType['CurrentGUITable'] || $lastSourceFrom !== $parameterType['SourceFrom']) && (isset($lastGUITable) && isset($lastSourceFrom))) {
             $updateStmt = "UPDATE $lastGUITable" . "_running SET " . join(", ", $setVals);
             $setVals = array();
-            $log->addLog(($updateStmt);
+            $log->addLog($updateStmt);
             //print "$updateStmt\n";
 
             $db->run($updateStmt);
