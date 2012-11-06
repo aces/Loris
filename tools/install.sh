@@ -27,14 +27,18 @@ fi
 read -p "What is the database name? " mysqldb
 read -p "Database host? " mysqlhost
 read -p "What MySQL user will Loris connect as? " mysqluser
-read -p "What MySQL is $mysqluser's password? " mysqlpass
+stty -echo
+read -p "What MySQL is $mysqluser's password (will not echo to screen)? " mysqlpass
+stty echo
 
 echo
 echo "The install script needs a root MySQL user to install the"
 echo "default schema. This will only be used to create and populate"
 echo "the default tables, and will not be saved."
 read -p "Root MySQL user: " mysqlrootuser
-read -p "Root MySQL password: " mysqlrootpass
+stty -echo
+read -p "Root MySQL password (will not echo to screen): " mysqlrootpass
+stty echo
 echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A > /dev/null 2>&1
 echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A > /dev/null 2>&1
 
@@ -54,7 +58,9 @@ if [ $MySQLError -eq 0 ]; then
 
     echo "Creating database tables"
     mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A >> logs/install-`date +%Y-%m-%d`.log 2>&1 < ../SQL/0000-00-00-schema.sql
-    read -p "Enter admin user's password (will be echoed to screen, and prompted to reset on login to Loris): " lorispass
+    stty -echo
+    read -p "Enter admin user's password (will not be echoed): " lorispass
+    stty echo
     echo "Updating admin password "
     mysql $mysqldb -h$mysqlhost --user=$mysqluser --password=$mysqlpass -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')) WHERE ID=1"
 
