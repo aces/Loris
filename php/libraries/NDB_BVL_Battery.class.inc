@@ -73,7 +73,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // compute subject age
-        if(!is_null($testDate)) {
+        if((!is_null($testDate)) && (!is_null($dob))) {
             $ageArray = Utility::calculateAge($dob, $testDate);
             $age = ($ageArray['year'] * 12 + $ageArray['mon']) * 30 + $ageArray['day'];
             //echo "age is:".$age."<BR>\n";
