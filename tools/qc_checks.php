@@ -25,11 +25,14 @@ $queries = array("SELECT c.PSCID, c.CandID, s.Visit_label, 'Date_visit' FROM can
 
 foreach($tests as $row) {
     $test = $row['Test_name'];
+    if($test == 'tsi') {
+        continue;
+    }
     $queries[] = "SELECT c.PSCID, c.CandID, s.Visit_label, '$test' FROM candidate c LEFT JOIN session s USING (CandID) LEFT JOIN flag f ON (f.SessionID=s.ID) LEFT JOIN $test t USING (CommentID) WHERE f.Test_name=" . $DB->quote($test)  . " AND t.Date_taken < c.DoB AND c.CenterID <> 1 AND f.Data_entry='Complete' AND COALESCE(s.Visit, 'NotFailure') <> 'Failure'";
 }
 $query = implode($queries, " UNION ");
 //print "$query\n";
-$bad_entries = $DB->pselect($query, array());
+$bad_entries = $DB->pselect($query . " ORDER BY PSCID", array());
 foreach($bad_entries as $row) {
     print implode($row, "\t");
     print "\n";
@@ -67,5 +70,25 @@ foreach($tests as $test_row) {
         $LastCommentID= $row['CommentID'];
         
     }
+}
+
+print "\n\nSESSIONS WITH DUPLICATE SCANS\n";
+print "-------------------------------------\n";
+$query = "SELECT c.PSCID, c.CandID, s.Visit_label, pf.Value, count(*) from parameter_file pf left join files f ON (f.SeriesUID=pf.Value) left join session s ON (s.ID=f.SessionID) left join candidate c USING (CandID) where ParameterTypeID=151 group by Value having count(*) > 1 ORDER BY c.PSCID";
+
+$results = $DB->pselect($query, array());
+
+foreach($results as $row) {
+    print "$row[PSCID]\t$row[CandID]\t$row[Visit_label]\t$row[Value]\n";
+}
+
+print "\n\nSITES WITH LAST LEGO SCAN MORE THAN 2 MONTHS AGO\n";
+print "---------------------------------------------------";
+$query = "SELECT psc.MRI_Alias, MAX(pf.Value) as LastLego from files f left join parameter_file pf on (pf.FileID=f.FileID AND pf.ParameterTypeID=67) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN psc ON (psc.CenterID=s.CenterID) WHERE File like '%lego%' GROUP BY s.CenterID HAVING MAX(pf.Value) < :cutoff";
+
+$results = $DB->pselect($query, array("cutoff" => date("Ymd", strtotime('-2 months'))));
+print "\nSite\tLast Lego\n";
+foreach($results as $row) {
+    print "$row[MRI_Alias]\t$row[LastLego]\n";
 }
 ?>
