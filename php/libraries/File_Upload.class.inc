@@ -75,6 +75,15 @@ class File_Upload extends PEAR {
                    }
                 }
 
+                
+                //Move the file (comes before import so that import knows the name of the filename for storing int he database)
+                if($this->fileMove) {
+                    $fileMoved=$this->moveFile();  //Move the file
+                    if(is_array($fileMoved)) {
+                        continue;
+                    }
+                }
+                
                 //Import the file
                 if($this->fileImport){
                     $fileImported=$this->callFileHandler($field, 'import');  //Import the file using the importFile method of the handler class.
@@ -84,13 +93,6 @@ class File_Upload extends PEAR {
                     }
                 }
 
-                //Move the file (comes before import so that import knows the name of the filename for storing int he database)
-                if($this->fileMove) {
-                    $fileMoved=$this->moveFile();  //Move the file
-                    if(is_array($fileMoved)) {
-                        continue;
-                    }
-                }
             }
         }
         return true;
