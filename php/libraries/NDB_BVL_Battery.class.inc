@@ -256,7 +256,7 @@ class NDB_BVL_Battery extends PEAR
                 $query .= " OR b.Visit_label IS NULL";
             }
         }
-        if(!is_null($stage) && !is_null($stage)) {
+        if(!is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage='$stage'";
 
             if(!is_null($SubprojectID)) {
