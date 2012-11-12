@@ -25,7 +25,6 @@ $config =& NDB_Config::singleton();
 $css = $config->getSetting('css');
 $studyTitle = $config->getSetting('title');
 $downloadPath= $config->getSetting('DownloadPath');
-// print "Download Path: $downloadPath";
 
 $query = "";
 
