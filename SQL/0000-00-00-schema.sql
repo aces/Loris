@@ -383,7 +383,7 @@ CREATE TABLE `files` (
   `SessionID` int(10) unsigned NOT NULL default '0',
   `File` varchar(255) NOT NULL default '',
   `CoordinateSpace` varchar(255) default NULL,
-  `Algorithm` varchar(255) default NULL,
+  `classifyAlgorithm` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
   `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat') default NULL,
