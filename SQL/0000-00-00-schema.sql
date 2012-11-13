@@ -45,7 +45,7 @@ CREATE TABLE `candidate` (
   UNIQUE KEY `ID` (`ID`),
   KEY `FK_candidate_1` (`CenterID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `candidate`
@@ -67,7 +67,7 @@ CREATE TABLE `cert_details` (
   `pass` enum('Invalid','Invalid scoring','Valid') default NULL,
   `comment` text,
   PRIMARY KEY  (`certID`,`testID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cert_details`
@@ -90,7 +90,7 @@ CREATE TABLE `cert_events` (
   `candID` int(10) unsigned default NULL,
   `visit_label` varchar(255) default NULL,
   PRIMARY KEY  (`certID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cert_events`
@@ -122,7 +122,7 @@ CREATE TABLE `document_repository` (
   `hide_video` tinyint(1) DEFAULT '0',
   `File_category` enum('abstract','audio_visual','image','instrument','manual','minutes','paper','presentation','protocol','spreadsheet_table','other') DEFAULT NULL,
   PRIMARY KEY (`record_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=687 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `examiners`
@@ -137,7 +137,7 @@ CREATE TABLE `examiners` (
   UNIQUE KEY `full_name` (`full_name`,`centerID`),
   KEY `FK_examiners_1` (`centerID`),
   CONSTRAINT `FK_examiners_1` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `examiners`
@@ -171,7 +171,7 @@ CREATE TABLE `example_instrument` (
   CONSTRAINT `FK_example_instrument_3` FOREIGN KEY (`Examiner`) REFERENCES `examiners` (`examinerID`),
   CONSTRAINT `FK_example_instrument_1` FOREIGN KEY (`CommentID`) REFERENCES `flag` (`CommentID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_example_instrument_2` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `example_instrument`
@@ -196,7 +196,7 @@ CREATE TABLE `feedback_bvl_entry` (
   PRIMARY KEY  (`ID`),
   KEY `FK_feedback_bvl_entry_1` (`FeedbackID`),
   CONSTRAINT `FK_feedback_bvl_entry_1` FOREIGN KEY (`FeedbackID`) REFERENCES `feedback_bvl_thread` (`FeedbackID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `feedback_bvl_entry`
@@ -229,7 +229,7 @@ CREATE TABLE `feedback_bvl_thread` (
   PRIMARY KEY  (`FeedbackID`),
   KEY `FK_feedback_bvl_thread_1` (`Feedback_type`),
   CONSTRAINT `FK_feedback_bvl_thread_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `feedback_bvl_thread`
@@ -251,7 +251,7 @@ CREATE TABLE `feedback_bvl_type` (
   `Description` text,
   PRIMARY KEY  (`Feedback_type`),
   UNIQUE KEY `Name` (`Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `feedback_bvl_type`
@@ -275,7 +275,7 @@ CREATE TABLE `feedback_bvl_types_site` (
   KEY `FK_feedback_bvl_types_site_2` (`CenterID`),
   CONSTRAINT `FK_feedback_bvl_types_site_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_feedback_bvl_types_site_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `feedback_bvl_types_site`
@@ -297,7 +297,7 @@ CREATE TABLE `feedback_mri_comment_types` (
   `CommentType` enum('volume','visit') NOT NULL default 'volume',
   `CommentStatusField` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`CommentTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `feedback_mri_comment_types`
@@ -338,7 +338,7 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `feedback_mri_comments`
@@ -361,7 +361,7 @@ CREATE TABLE `feedback_mri_predefined_comments` (
   PRIMARY KEY  (`PredefinedCommentID`),
   KEY `CommentType` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_predefined_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `feedback_mri_predefined_comments`
@@ -399,7 +399,7 @@ CREATE TABLE `files` (
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `files_qcstatus`;
 CREATE TABLE `files_qcstatus` (
@@ -409,7 +409,7 @@ CREATE TABLE `files_qcstatus` (
     QCStatus enum('Pass', 'Fail'),
     QCFirstChangeTime int(10) unsigned,
     QCLastChangeTime int(10) unsigned
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `files`
@@ -449,7 +449,7 @@ CREATE TABLE `flag` (
   KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_flag_2` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `flag`
@@ -472,7 +472,7 @@ CREATE TABLE `hardcopy_requests` (
   `Group_size` tinyint(2) unsigned NOT NULL default '0',
   PRIMARY KEY  (`CenterID`),
   CONSTRAINT `FK_hardcopy_requests_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `hardcopy_requests`
@@ -502,7 +502,7 @@ CREATE TABLE `history` (
   PRIMARY KEY  (`id`),
   KEY `FK_history_1` (`userID`),
   CONSTRAINT `FK_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table keeps track of ongoing changes in the database. ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table keeps track of ongoing changes in the database. ';
 
 --
 -- Dumping data for table `history`
@@ -527,7 +527,7 @@ CREATE TABLE `instrument_subtests` (
   PRIMARY KEY  (`ID`),
   KEY `FK_instrument_subtests_1` (`Test_name`),
   CONSTRAINT `FK_instrument_subtests_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `instrument_subtests`
@@ -548,7 +548,7 @@ CREATE TABLE `mri_acquisition_dates` (
   `AcquisitionDate` date default NULL,
   PRIMARY KEY  (`SessionID`),
   CONSTRAINT `FK_mri_acquisition_dates_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mri_acquisition_dates`
@@ -570,7 +570,7 @@ CREATE TABLE `mri_efax_deleted_pages` (
   `Date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`File_name`,`Date`),
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mri_efax_deleted_pages`
@@ -606,7 +606,7 @@ CREATE TABLE `mri_efax_parameter_form` (
   KEY `CenterID` (`CenterID`),
   KEY `Scan_category` (`Scan_category`),
   KEY `VisitNo` (`VisitNo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mri_efax_parameter_form`
@@ -646,7 +646,7 @@ CREATE TABLE `mri_protocol` (
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mri_protocol`
@@ -678,7 +678,7 @@ CREATE TABLE `mri_safety` (
   KEY `Date_review` (`Date_review`),
   KEY `Check_adverse` (`Check_adverse`),
   KEY `Check_incidental` (`Check_incidental`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mri_safety`
@@ -698,7 +698,7 @@ CREATE TABLE `mri_scan_type` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Scan_type` text NOT NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mri_scan_type`
@@ -725,7 +725,7 @@ CREATE TABLE `mri_scanner` (
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_scanner_1` (`CandID`),
   CONSTRAINT `FK_mri_scanner_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mri_scanner`
@@ -751,7 +751,7 @@ CREATE TABLE `mri_staging` (
   `ResolvedBy` varchar(255) default NULL,
   `ResolvedTime` int(10) unsigned default NULL,
   PRIMARY KEY  (`StagingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table will be used in the future';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table will be used in the future';
 
 --
 -- Dumping data for table `mri_staging`
@@ -779,7 +779,7 @@ CREATE TABLE `notification_spool` (
   KEY `FK_notification_spool_2` (`CenterID`),
   CONSTRAINT `FK_notification_spool_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_notification_spool_1` FOREIGN KEY (`NotificationTypeID`) REFERENCES `notification_types` (`NotificationTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `notification_spool`
@@ -801,7 +801,7 @@ CREATE TABLE `notification_types` (
   `private` tinyint(1) default '0',
   `Description` text,
   PRIMARY KEY  (`NotificationTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `notification_types`
@@ -829,7 +829,7 @@ CREATE TABLE `parameter_candidate` (
   KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
   CONSTRAINT `FK_parameter_candidate_2` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_parameter_candidate_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='per-candidate equivalent of parameter_session';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='per-candidate equivalent of parameter_session';
 
 --
 -- Dumping data for table `parameter_candidate`
@@ -856,7 +856,7 @@ CREATE TABLE `parameter_file` (
   KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
   CONSTRAINT `FK_parameter_file_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`),
   CONSTRAINT `FK_parameter_file_1` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `parameter_file`
@@ -883,7 +883,7 @@ CREATE TABLE `parameter_session` (
   KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
   CONSTRAINT `FK_parameter_session_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`),
   CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `parameter_session`
@@ -913,7 +913,7 @@ CREATE TABLE `parameter_type` (
   `Queryable` tinyint(1) default '1',
   PRIMARY KEY  (`ParameterTypeID`),
   KEY `name` (`Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COMMENT='dictionary of all the variables in the project';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
 
 --
 -- Dumping data for table `parameter_type`
@@ -935,7 +935,7 @@ CREATE TABLE `parameter_type_category` (
   `Name` varchar(255) default NULL,
   `Type` enum('Metavars','Instrument') default 'Metavars',
   PRIMARY KEY  (`ParameterTypeCategoryID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `parameter_type_category`
@@ -959,7 +959,7 @@ CREATE TABLE `parameter_type_category_rel` (
   KEY `FK_parameter_type_category_rel_1` (`ParameterTypeID`),
   CONSTRAINT `FK_parameter_type_category_rel_2` FOREIGN KEY (`ParameterTypeCategoryID`) REFERENCES `parameter_type_category` (`ParameterTypeCategoryID`),
   CONSTRAINT `FK_parameter_type_category_rel_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `parameter_type_category_rel`
@@ -998,7 +998,7 @@ CREATE TABLE `permissions` (
   `description` varchar(255) NOT NULL default '',
   `categoryID` int(10) DEFAULT NULL,
   PRIMARY KEY  (`permID`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `permissions`
@@ -1022,7 +1022,7 @@ CREATE TABLE `permissions_category` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Description` varchar(255) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1058,7 +1058,7 @@ CREATE TABLE `psc` (
   `Study_site` enum('N','Y') default NULL,
   PRIMARY KEY  (`CenterID`),
   UNIQUE KEY `Name` (`Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `psc`
@@ -1084,7 +1084,7 @@ CREATE TABLE `query_gui_downloadable_queries` (
   PRIMARY KEY  (`queryID`),
   KEY `FK_query_gui_downloadable_queries_1` (`userID`),
   CONSTRAINT `FK_query_gui_downloadable_queries_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `query_gui_downloadable_queries`
@@ -1112,7 +1112,7 @@ CREATE TABLE `query_gui_stored_queries` (
   KEY `name` (`name`),
   KEY `FK_query_gui_stored_queries_1` (`userID`),
   CONSTRAINT `FK_query_gui_stored_queries_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `query_gui_stored_queries`
@@ -1187,7 +1187,7 @@ CREATE TABLE `session` (
   KEY `FK_session_2` (`CenterID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table holding session information';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 --
 -- Dumping data for table `session`
@@ -1237,7 +1237,7 @@ CREATE TABLE `tarchive` (
   `DateSent` datetime DEFAULT NULL,
   `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`TarchiveID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tarchive`
@@ -1265,7 +1265,7 @@ CREATE TABLE `tarchive_files` (
   PRIMARY KEY  (`TarchiveFileID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tarchive_files`
@@ -1297,7 +1297,7 @@ CREATE TABLE `tarchive_series` (
   PRIMARY KEY  (`TarchiveSeriesID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tarchive_series`
@@ -1327,7 +1327,7 @@ CREATE TABLE `test_battery` (
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
   CONSTRAINT `FK_test_battery_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `test_battery`
@@ -1353,7 +1353,7 @@ CREATE TABLE `test_names` (
   UNIQUE KEY `Test_name` (`Test_name`),
   KEY `FK_test_names_1` (`Sub_group`),
   CONSTRAINT `FK_test_names_1` FOREIGN KEY (`Sub_group`) REFERENCES `test_subgroups` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `test_names`
@@ -1373,7 +1373,7 @@ CREATE TABLE `test_subgroups` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Subgroup_name` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `test_subgroups`
@@ -1407,7 +1407,7 @@ CREATE TABLE `tracking_logs` (
   `Lock_record` enum('','Locked','Unlocked') default NULL,
   `Comments` text,
   PRIMARY KEY  (`Tracking_log_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tracking_logs`
@@ -1430,7 +1430,7 @@ CREATE TABLE `user_perm_rel` (
   KEY `FK_user_perm_rel_2` (`permID`),
   CONSTRAINT `FK_user_perm_rel_2` FOREIGN KEY (`permID`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_user_perm_rel_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `user_perm_rel`
@@ -1487,7 +1487,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `UserID` (`UserID`),
   KEY `FK_users_1` (`CenterID`),
   CONSTRAINT `FK_users_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
@@ -1520,7 +1520,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ystep_range` varchar(255) DEFAULT NULL,
   `zstep_range` varchar(255) DEFAULT NULL,
   `time_range` varchar(255)  DEFAULT NULL,
-  PRIMARY KEY (`ID`));
+  PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_unresolved` (
       `TableName` varchar(255) NOT NULL,
@@ -1533,7 +1533,7 @@ CREATE TABLE `conflicts_unresolved` (
       `CommentId2` varchar(255) NOT NULL,
       `Value2` varchar(255) DEFAULT NULL,
       PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_resolved` (
       `UserID` varchar(255) NOT NULL,
@@ -1551,12 +1551,13 @@ CREATE TABLE `conflicts_resolved` (
       `OldValue2` varchar(255) DEFAULT NULL,
       `NewValue` varchar(255) DEFAULT NULL,
       PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `tarchive_find_new_uploads` (
       `CenterName` varchar(255) NOT NULL,
       `LastRan` datetime DEFAULT NULL,
       PRIMARY KEY (`CenterName`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
 -- Table structure for table `session_status`
 --
@@ -1571,7 +1572,7 @@ CREATE TABLE `session_status` (
   `Value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `session_status_index` (`SessionID`,`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1609,7 +1610,7 @@ CREATE TABLE `parameter_type_override` (
   `Name` varchar(255) NOT NULL,
   `Description` text,
   PRIMARY KEY (`Name`)
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
