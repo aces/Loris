@@ -1,7 +1,7 @@
 <?php 
 
 
-require_once '../php/libraries/NDB_BVL_Battery.class.inc';
+require_once 'NDB_BVL_Battery.class.inc';
 
 class NDB_BVL_Battery_Manual extends NDB_BVL_Battery
 {
