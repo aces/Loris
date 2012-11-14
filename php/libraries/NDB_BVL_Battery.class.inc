@@ -73,7 +73,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // compute subject age
-        if(!is_null($testDate)) {
+        if((!is_null($testDate)) && (!is_null($dob))) {
             $ageArray = Utility::calculateAge($dob, $testDate);
             $age = ($ageArray['year'] * 12 + $ageArray['mon']) * 30 + $ageArray['day'];
             //echo "age is:".$age."<BR>\n";
@@ -264,7 +264,7 @@ class NDB_BVL_Battery extends PEAR
                 $query .= " AND b.Visit_label IS NULL";
             }
         }
-        if(!is_null($stage) && !is_null($stage)) {
+        if(!is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage='$stage'";
 
             if(!is_null($SubprojectID)) {

@@ -1,5 +1,5 @@
 <!-- selection filter -->
-<!-- fixme this modified version does not display certain fields in the mri browser selection window-->
+<!-- qnts fixme this modified version does not display certain fields in the mri browser selection window-->
 <form>
 
 <!-- The colspan is only there to make quick changes possible -->
@@ -27,31 +27,22 @@
 </form>
 <!-- listing of visits -->
 {if $numTimepoints}
-    <p>
-    {$numTimepoints} subject timepoint(s) selected. &nbsp;
-    {if $filter.site}<a href="passfile.php?file={$MRI_Alias[$filter.site]}-qc.xls">Download {$MRI_Alias[$filter.site]} QC-report</a>
-    {else}<a href="passfile.php?file=all-qc.xls">Download combined QC-report</a>
-    {/if}
-    </p>
+  {$numTimepoints} subject timepoint(s) selected.<br>
 {/if}
 
 <table class="fancytable" width="100%" border="1">
     <tr>
-        <th>Site</th>
-        <th>DCCID</th>
-        <th>PSCID</th>
-        <th>Visit Label</th>
-        <th>QC Status</th>
-{*        <th>Subproject</th> *}
-        <th>First acq date</th>
-{*        <th>First added to DB</th> 	*}
-{*        <th>First QC</th>		*}
-        <th>Last QC</th>
-        <th>New data</th>
-        <th colspan="{$numOutputTypes+2}">Links</th>
+    {foreach from=$headers item=item key=key}
+        <th {if $key eq 'Links'}colspan="{$numOutputTypes+1}"{/if}>
+        {if $item neq ''}<a href="?filter[order][field]={$key}&filter[order][asc]={if $filter.order.field eq $key && $filter.order.asc eq 'ASC'}DESC{else}ASC{/if}">{/if}
+            {$key}
+        {if $item neq ''}</a>{/if}
+        </th>
+    {/foreach}
     </tr>
    {section name=timepointIdx loop=$timepoints}
     <tr>
+        <td>{$timepoints[timepointIdx].rownum}</td>
         <td>{$timepoints[timepointIdx].centerName}</td>
         <td>{$timepoints[timepointIdx].candID}</td>
         <td>{$timepoints[timepointIdx].PSCID}</td>
@@ -63,17 +54,18 @@
 {*        <td>{$timepoints[timepointIdx].firstQCDate|date_format}</td>	*}
         <td>{$timepoints[timepointIdx].lastQCDate|date_format}</td>
         <td>{if $timepoints[timepointIdx].newData}<font color="red">NEW</font>{else}&nbsp;{/if}</td>
+        <td>{$timepoints[timepointIdx].T1Pass}</td>
+        <td>{$timepoints[timepointIdx].T2Pass}</td>
         {section name=typeIdx loop=$outputTypes}
-            <td>
-                <a href="mri_browser.php?sessionID={$timepoints[timepointIdx].sessionID}&outputType={if $outputTypes[typeIdx].outputType == 'selected'}native&selectedOnly=1{else}{$outputTypes[typeIdx].outputType|escape:"url"}{/if}&backURL={$backURL|escape:"url"}">{$outputTypes[typeIdx].outputType}</a>
-            </td>
+        <td><a href="mri_browser.php?sessionID={$timepoints[timepointIdx].sessionID}&outputType={if $outputTypes[typeIdx].outputType == 'selected'}native&selectedOnly=1
+            {else}{$outputTypes[typeIdx].outputType|escape:"url"}{/if}&backURL={$backURL|escape:"url"}">{$outputTypes[typeIdx].outputType}</a>
+        </td>
         {/section}
-        <td><a href="mri_browser.php?sessionID={$timepoints[timepointIdx].sessionID}&outputType=processed&backURL={$backURL|escape:"url"}">processed</a></td>
         <td><a href="mri_browser.php?sessionID={$timepoints[timepointIdx].sessionID}&backURL={$backURL|escape:"url"}">all types</a></td>
     </tr>
     {sectionelse}
     <tr>
-        <td colspan="13">No data selected</td>
+        <td colspan="12">No data selected</td>
     </tr>
     {/section}
 </table>
