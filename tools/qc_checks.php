@@ -91,4 +91,11 @@ print "\nSite\tLast Lego\n";
 foreach($results as $row) {
     print "$row[MRI_Alias]\t$row[LastLego]\n";
 }
+print "\n\nSCANS THAT FAILED INSERTION IN LAST WEEK\n";
+print "-------------------------------------\n";
+$data = $DB->pselect("SELECT CandID, c.PSCID, time_run, series_description FROM mri_protocol_violated_scans LEFT JOIN candidate c USING (CandID) WHERE time_run > DATE_SUB(now(), INTERVAL 1 WEEK) ORDER BY time_run DESC" , array());
+foreach($data as $row) {
+    print implode("\t", $row);
+    print "\n";
+}
 ?>
