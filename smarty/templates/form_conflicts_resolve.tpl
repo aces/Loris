@@ -49,6 +49,7 @@
         <th>DCCID</th>
         <th>PSCID</th>
         <th>Visit Label</th>
+        <th>Extra Key Information</th>
         <th>Question</th>
         <th>Correct Answer</th>
     </tr>
@@ -60,6 +61,7 @@
         <td>{$elements_array[$element].dccid}</td>
         <td>{$elements_array[$element].pscid}</td>
         <td>{$elements_array[$element].visit_label}</td>
+        <td>{$elements_array[$element].extrakey1}</td>
         <td>{$elements_array[$element].field}</td>
 		<td nowrap="nowrap" align="right">{$form.$element.html}</td>
 	</tr>

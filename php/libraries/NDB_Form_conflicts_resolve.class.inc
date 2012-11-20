@@ -222,6 +222,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                 'instrument' => $conflict['TableName'],
                 'dccid' => $dccid,
                 'pscid' => $ssid,
+                'extrakey1' => $conflict['ExtraKey1'],
                 'field' => $conflict['FieldName'],
                 'visit_label' => $conflict['Visit_label']
 
