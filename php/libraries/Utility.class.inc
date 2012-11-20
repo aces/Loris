@@ -287,7 +287,7 @@ class Utility extends PEAR
         $string = str_replace(' ', '_', $string);
         $string = str_replace("'", '', $string);
         $string = str_replace('"', '', $string);
-        $string = preg_replace('/[^A-Za-z0-9_/-]*/', '', $string);
+        $string = preg_replace('#[^A-Za-z0-9_/-]*#', '', $string);
         $string = strtolower($string);
         return $string;
     }
