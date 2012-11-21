@@ -567,7 +567,9 @@ class NDB_BVL_Instrument extends PEAR
         $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
+        $this->form->registerRule('checkdatefuture', 'callback', '_checkDateTakenFuture');
         $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->form->addRule('Date_taken', 'Date of Administration is in the future', 'checkdatefuture');
         
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
     }
@@ -1285,6 +1287,17 @@ class NDB_BVL_Instrument extends PEAR
         $db->execute($prepQ, array('CID' => $this->commentID));
     }
 } //end class NDB_BVL_Instrument
+function _checkDateTakenFuture($dateElement) {
+    $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+    if($checked === false) {
+        return false;
+    }
+    $formatted = date_create();
+    $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
+    $now = date_create(); #getdate(); #date("Y-m-d", getdate());
+    $diff = date_diff($formatted, $now);
+    return ($diff->format("%r") === '');
+}
 // {{{ _checkDateTaken()
 function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
@@ -1298,18 +1311,14 @@ function _checkDateTaken($dateElement) {
     // else, check the date
     else {
         $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        return $checked;/*
         if(version_compare(phpversion(), '5.3.0', '>=')) {
             if($checked === false) {
                 return false;
             }
-            $formatted = date_create();
-            $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
-            $now = date_create(); #getdate(); #date("Y-m-d", getdate());
-            $diff = date_diff($formatted, $now);
-            return ($diff->format("%r") === '');
         } else {
             return $checked;
-        }
+        } */
     }
 }
 /// _checkDate. This is used by create timepoint and start timepoint pages, 
