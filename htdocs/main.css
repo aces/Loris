@@ -204,7 +204,7 @@ th.crumbBanner {
 }
 /* Message styles */
 .error {
-	color: #f00;  
+	color: #B31A17; /* #994E4A;*/  
     list-style: none;
     font-size: 1.4em;
     font-weight: bold;
