@@ -23,7 +23,7 @@ class NDB_BVL_LogicTest
     
     var $logicTestInfo;
     
-    function &singleton($type, $test_name, $commentID=null)
+    static function &singleton($type, $test_name, $commentID=null)
     {
         static $logicTestList = array();
 

@@ -26,7 +26,7 @@ class User extends UserPermissions
      * @throws PEAR_Error
      * @access public
      */
-    function &factory($username)
+    static function &factory($username)
     {
         $obj = new User;
 
@@ -69,7 +69,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function &singleton($username = null)
+    static function &singleton($username = null)
     {
         static $instance;
         if (is_null($instance)) {
