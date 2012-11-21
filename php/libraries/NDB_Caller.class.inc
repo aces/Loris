@@ -24,7 +24,7 @@ class NDB_Caller extends PEAR
      * @access public
      * @static
      */
-    function &singleton()
+    static function &singleton()
     {
         static $instance;
         if (is_null($instance)) {
