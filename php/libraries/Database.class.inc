@@ -52,7 +52,7 @@ class Database extends PEAR
      * @return object
      * @access public
      */
-    function &singleton($database=null, $username=null, $password=null, $host=null, $trackChanges=true)
+    static function &singleton($database=null, $username=null, $password=null, $host=null, $trackChanges=true)
     {
         static $connections = array();
 
