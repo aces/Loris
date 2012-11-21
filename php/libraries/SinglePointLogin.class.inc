@@ -103,7 +103,7 @@ class SinglePointLogin extends PEAR
     {
         // get saved data to pre-populate form
         $user =& User::factory($_POST['username']);
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error (".$_POST['username']."): ".$user->getMessage());
         }
         
@@ -134,7 +134,7 @@ class SinglePointLogin extends PEAR
         
         // update the user
         $success = $user->update($set);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
         }
         
@@ -148,14 +148,14 @@ class SinglePointLogin extends PEAR
             // connect to proftpd database
             $ftpdb = new Database();
 	    $success = $ftpdb->connect($ftpSettings['database'], $ftpSettings['username'], $ftpSettings['password'], $ftpSettings['host'], false);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("Could not connect to database: ".$success->getMessage());
             }
             
             // check users table to see if we have a valid user 
             $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = '".$_POST['username']."'";
             $ftpdb->selectRow($query, $row);
-            if (PEAR::isError($row)) {
+            if (Utility::isErrorX($row)) {
                 return PEAR::raiseError("DB Error: ".$row->getMessage());
             }
             
@@ -164,7 +164,7 @@ class SinglePointLogin extends PEAR
                 
                 $setArray['passwd'] = crypt($_POST['password']);
                 $success = $ftpdb->update('ftpusers', $setArray, array('userid' => $_POST['username']));
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
                 }
             } 
@@ -175,7 +175,7 @@ class SinglePointLogin extends PEAR
                 $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
                 
                 $maxUID = $ftpdb->selectOne($query);
-                if (PEAR::isError($maxUID)) {
+                if (Utility::isErrorX($maxUID)) {
                     return PEAR::raiseError("DB Error: ".$maxUID->getMessage());
                 }
                 
@@ -186,7 +186,7 @@ class SinglePointLogin extends PEAR
                 
                 // insert into proftpd
                 $success = $ftpdb->insert("ftpusers", $setArray);
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
                 }
             }
@@ -208,7 +208,7 @@ class SinglePointLogin extends PEAR
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
             $success = $this->save();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("SinglePointLogin::authenticate(): ".$success->getMessage());
             }
 
@@ -232,14 +232,14 @@ class SinglePointLogin extends PEAR
 
         // create DB object
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count, Password_md5, Password_expiry, Active FROM users WHERE UserID = :username GROUP BY UserID";
         $row = $DB->pselectRow($query, array('username' => $_POST['username']));
-        if (PEAR::isError($row)) {
+        if (Utility::isErrorX($row)) {
             return PEAR::raiseError("DB Error: ".$row->getMessage());
         }
 

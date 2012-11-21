@@ -12,14 +12,14 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         // create user object
         $editor =& User::singleton();
-        if (PEAR::isError($editor)) {
+        if (Utility::isErrorX($editor)) {
             return PEAR::raiseError("User Error: ".$editor->getMessage());
         }
 
         if ($this->page == 'edit_user') {
             if(!empty($this->identifier)) {
                 $user =& User::factory($this->identifier);
-                if(PEAR::isError($user)) {
+                if(Utility::isErrorX($user)) {
                     return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
                 }
             }
@@ -36,7 +36,7 @@ class NDB_Form_user_accounts extends NDB_Form
  
         if (!empty($this->identifier)) {
             $user =& User::factory($this->identifier);
-            if(PEAR::isError($user)) {
+            if(Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
             }
 
@@ -105,24 +105,24 @@ class NDB_Form_user_accounts extends NDB_Form
         if (empty($this->identifier)) {
             // insert a new user
             $success = User::insert($set);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() insert: ".$success->getMessage());
             }
 
             $user =& User::factory($set['UserID']);
-            if (PEAR::isError($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error (".$set['UserID'] ."): ".$user->getMessage());
             }
         }
         else {
             // update the user
             $user =& User::factory($this->identifier);
-            if (PEAR::isError($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
             }
 
             $success = $user->update($set);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() update: ".$success->getMessage());
             }
         }
@@ -138,7 +138,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // update the user permissions if applicable
         if (!empty($permIDs)) {
             $success = $user->removePermissions();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() remove permissions: ".$success->getMessage());
             }
 
@@ -149,7 +149,7 @@ class NDB_Form_user_accounts extends NDB_Form
             }
 
             $success = $user->addPermissions(array_keys($permIDs));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() add permissions: ".$success->getMessage());
             }
         }
@@ -164,14 +164,14 @@ class NDB_Form_user_accounts extends NDB_Form
             // connect to proftpd database
             $ftpdb = new Database();
 	    $success = $ftpdb->connect($ftpSettings['database'], $ftpSettings['username'], $ftpSettings['password'], $ftpSettings['host'], false);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("Could not connect to database: ".$success->getMessage());
             }
             
             // check users table to see if we have a valid user 
             $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = '".$values['UserID']."'"; 
             $ftpdb->selectRow($query, $row);
-            if (PEAR::isError($row)) {
+            if (Utility::isErrorX($row)) {
                 return PEAR::raiseError("DB Error: ".$row->getMessage());
             }
             
@@ -180,7 +180,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 
                 $setArray['passwd'] = crypt($values['Password_md5']);
                 $success = $ftpdb->update('ftpusers', $setArray, array('userid' => $values['UserID']));
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
                 }
             } 
@@ -191,7 +191,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
                 
                 $maxUID = $ftpdb->selectOne($query);
-                if (PEAR::isError($maxUID)) {
+                if (Utility::isErrorX($maxUID)) {
                     return PEAR::raiseError("DB Error: ".$maxUID->getMessage());
                 }
                 
@@ -202,7 +202,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 
                 // insert into proftpd
                 $success = $ftpdb->insert("ftpusers", $setArray);
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
                 }
             }
@@ -319,7 +319,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // get user permissions
         $editor =& User::singleton();
-        if(PEAR::isError($editor)) {
+        if(Utility::isErrorX($editor)) {
             return PEAR::raiseError("User Error: ".$editor->getMessage());
         }
 
@@ -358,7 +358,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         if (!empty($this->identifier)) {
             $user =& User::factory($this->identifier);
-            if(PEAR::isError($user)) {
+            if(Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
             }
 
@@ -436,7 +436,7 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         // create DB object
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -446,7 +446,7 @@ class NDB_Form_user_accounts extends NDB_Form
 	if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
             // check username's uniqueness
             $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE UserID = '" . $values['UserID'] . "'");
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
     
@@ -465,7 +465,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // check email address' uniqueness
         $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE Email = '" . $values['Email'] . "' AND UserID != '" . $values['UserID']  . "'");
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
     
@@ -481,7 +481,7 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         // create DB object
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -497,7 +497,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // check email address' uniqueness
         $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE Email = '" . $values['Email'] . "' AND UserID != '" . $values['identifier']  . "'");
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
     

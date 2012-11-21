@@ -35,7 +35,7 @@ class NDB_BVL_LogicTest
             
             $success = $logicTestList[$objectName]->setup($type, $test_name, $commentID);
             
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 unset($logicTestList[$objectName]);
                 return PEAR::raiseError($success->getMessage());
             }
@@ -84,7 +84,7 @@ class NDB_BVL_LogicTest
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -95,7 +95,7 @@ class NDB_BVL_LogicTest
         $result = array();
         $db->select($query, $result);
         
-        if(PEAR::isError($result)) {
+        if(Utility::isErrorX($result)) {
             return PEAR::raiseError("Delt construct DBError: " . $result->getMessage());
         }
 
@@ -157,7 +157,7 @@ class NDB_BVL_LogicTest
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -167,7 +167,7 @@ class NDB_BVL_LogicTest
         $result = array();
         $db->select($query, $result);
         
-        if(PEAR::isError($result)) {
+        if(Utility::isErrorX($result)) {
             return PEAR::raiseError("DELT FAILURE ON: $query -- DBError: " . $result->getMessage());
         }
         
@@ -185,7 +185,7 @@ class NDB_BVL_LogicTest
     {
         $logicTestProblemCommentIDs = $this->delt_check_test();
         
-        if (PEAR::isError($logicTestProblemCommentIDs)) {
+        if (Utility::isErrorX($logicTestProblemCommentIDs)) {
             return PEAR::raiseError($logicTestProblemCommentIDs->getMessage());
         }
         

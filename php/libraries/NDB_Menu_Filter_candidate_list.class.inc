@@ -17,13 +17,13 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));
-        if (PEAR::isError($site)) {
+        if (Utility::isErrorX($site)) {
             return PEAR::raiseError("DB Error: ".$site->getMessage());
         }
         
@@ -78,7 +78,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -86,7 +86,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites =& Utility::getSiteList();
-            if(PEAR::isError($list_of_sites)) {
+            if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
@@ -94,7 +94,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (PEAR::isError($site)) {
+            if (Utility::isErrorX($site)) {
                 return PEAR::raiseError("DB Error: ".$site->getMessage());
             }
             if ($site->isStudySite()) {
@@ -137,7 +137,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 		$subprojectlist=Utility::getSubprojectList();
