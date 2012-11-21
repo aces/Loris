@@ -218,7 +218,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function md5_unsalt($word, $hash)
+    static function md5_unsalt($word, $hash)
     {
         // get the first two characters of the hash
         $salt = substr($hash, 0, 2);
