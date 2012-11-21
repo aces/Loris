@@ -287,7 +287,7 @@ class Utility extends PEAR
         $string = str_replace(' ', '_', $string);
         $string = str_replace("'", '', $string);
         $string = str_replace('"', '', $string);
-        $string = ereg_replace('[^A-Za-z0-9_/-]*', '', $string);
+        $string = preg_replace('/[^A-Za-z0-9_\/-]*/', '', $string);
         $string = strtolower($string);
         return $string;
     }
@@ -379,14 +379,14 @@ class Utility extends PEAR
      * @static
      * @access public
      */
-    function array_merge_recursive_overwriting($array1, $array2, $merged_array=null)
+    function array_merge_recursive_overwriting($array1, $array2, &$merged_array=null)
     {
         if (empty($merged_array)) $merged_array = $array1;
         foreach ($array2 AS $key=>$value) {
             if (is_array($array1[$key]) && isset($array1[$key][0])) {
                 $merged_array[$key] = $value; 
             } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
-                Utility::array_merge_recursive_overwriting($array1[$key], $array2[$key], &$merged_array[$key]);
+                Utility::array_merge_recursive_overwriting($array1[$key], $array2[$key], $merged_array[$key]);
             } else {
                 $merged_array[$key] = $value;
             }
@@ -528,7 +528,7 @@ class Utility extends PEAR
 
     function getAllInstruments() {
         $DB =& Database::singleton();
-        $DB->select("SELECT Test_name FROM test_names", &$instruments_q);
+        $DB->select("SELECT Test_name FROM test_names", $instruments_q);
                                 
         // This array_map call turns the result of the above query to
         // a non-associative array, so that we can use the array_combine

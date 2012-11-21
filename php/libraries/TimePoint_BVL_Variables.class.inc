@@ -35,7 +35,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 {
     var $commentID;
     
-    function &singleton($sessionID)
+    static function &singleton($sessionID)
     {
         // instantiate new TimePoint_BVL object
         $BVLVarsList =& $GLOBALS['__timePointBVLVariablesObjects'];
