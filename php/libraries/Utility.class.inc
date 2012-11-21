@@ -12,6 +12,22 @@ require_once "NDB_Config.class.inc";
  */
 class Utility extends PEAR
 {
+    // This is identical to PEAR::isError, only the function
+    // has the static keyword
+    static function isErrorX($data, $code=null) {
+        if (!is_a($data, 'PEAR_Error')) {
+            return false;
+        }
+
+        if (is_null($code)) {
+            return true;
+        } elseif (is_string($code)) {
+            return $data->getMessage() == $code;
+        }
+
+        return $data->getCode() == $code;
+    }
+
     /**
      * Builds a query string
      *
