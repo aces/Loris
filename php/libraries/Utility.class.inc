@@ -1,5 +1,8 @@
 <?php
 require_once 'PEAR.php';
+require_once "NDB_Config.class.inc";
+
+
 
 /**
  * A set of (static) utility functions
