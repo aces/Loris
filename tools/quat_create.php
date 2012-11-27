@@ -35,17 +35,21 @@ mysql> describe parameter_type;
 */
 
 
+require_once "Utility.class.inc";
+
 // settings
-$columnThreshhold = 150;
+$columnThreshhold = Utility::getColumnThresholdCount();
 $quatTableBasename = 'quat_table_';
 $quatTableCounter = 1;
 
 // create an NDB client 
 require_once "../php/libraries/NDB_Client.class.inc";
+require_once "Log.class.inc";
 $client = new NDB_Client;
 $client->makeCommandLine();
 $client->initialize();
 
+$log = new Log("quat_create");
 // get a Database connection
 $config =& NDB_Config::singleton();
 $dbConfig = $config->getSetting('database');
@@ -97,21 +101,8 @@ $nextTableName_running = $nextTableName . "_running";
 $countParameterTypes = count($parameterTypes);
 
 
-$today= getdate();
-$date = sprintf("%04d-%02d-%02d", $today['year'], $today['mon'], $today['mday']);
-
-$logfp = fopen("logs/quat.$date.log", 'a');
-function log_msg($message) {
-    global $logfp;
-    $now_array = getdate();
-    $now_string = sprintf("%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'], $now_array['mon'], $now_array['mday'], $now_array['hours'], $now_array['minutes'], $now_array['seconds']);
-    fwrite($logfp, "[$now_string] $message\n");
-}
-
-
-
 $createSQL = "CREATE TABLE parameter_type_running AS SELECT * FROM parameter_type WHERE Queryable=1";
-log_msg($createSQL);
+$log->addLog($createSQL);
 $db->run($createSQL);
 if($db->isError($result)) {
     die("Failed to create temporary parameter_type table");
@@ -141,14 +132,14 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
         $createSQL = "CREATE TABLE $nextTableName_running (SessionID int not null primary key, $createSQL)";
         $updateQuatSQL = "UPDATE parameter_type_running SET CurrentGUITable=" . $db->quote($nextTableName) . " WHERE ParameterTypeID IN (" . join(',', $parameterTypesForQuat) . ')';
         // be more aggressive -- insert every candidate who isn't cancelled
-        $insertSQL = "INSERT INTO $nextTableName_running (SessionID) SELECT s.ID from session s JOIN candidate c USING (CandID) WHERE c.Active='Y' AND c.Cancelled='N' AND s.Active='Y' AND s.Cancelled='N' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin' AND c.PSCID <> 'scanner'";
+        $insertSQL = "INSERT INTO $nextTableName_running (SessionID) SELECT s.ID from session s JOIN candidate c USING (CandID) WHERE c.Active='Y' AND s.Active='Y' AND c.CenterID IN (2, 3, 4, 5) AND s.Current_stage <> 'Recycling Bin' AND c.PSCID <> 'scanner'";
         $quatTableCounter++;
         $nextTableName = $quatTableBasename . $quatTableCounter;
         $nextTableName_running = $nextTableName . "_running";
         unset($parameterTypesForQuat);
-        log_msg($createSQL);
-        log_msg($updateQuatSQL);
-        log_msg($insertSQL);
+        $log->addLog($createSQL);
+        $log->addLog($updateQuatSQL);
+        $log->addLog($insertSQL);
         $result = $db->run($createSQL);
         if($db->isError($result)) {
             die( "Failed to create table $nextTableName: ".$result->getMessage()."\n" );
@@ -165,11 +156,9 @@ for($idx=0; $idx<$countParameterTypes; $idx++) {
         // reset the column counter and create table statement
         $createSQL = "";
         $columnCount = 0;
-        print "Finished creating $nextTableName: " . memory_get_usage() . "\n";
+        print "Finished creating $nextTableName_running: " . memory_get_usage() . "\n";
     }
 }
-
-fclose($logfp);
 
 // These are no longer used below this point, so free up the memory
 unset($columnThreshhold);

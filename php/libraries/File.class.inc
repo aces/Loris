@@ -280,7 +280,7 @@ Class File
                 }
                 else
                 {
-                    if(eregi(".\.($fileExt)$",$file))
+                    if(preg_match("/.\.($fileExt)$/i",$file))
                     {
                         $fileList[$fileCount] = $file;
                         $fileCount++;

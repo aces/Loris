@@ -141,7 +141,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             
             if ($nextStage = 'Recycling Bin'){ 
                 
-                $battery =& new NDB_BVL_Battery();
+                $battery = new NDB_BVL_Battery();
                 if(PEAR::isError($battery)) {
                     return PEAR::raiseError("Battery Error: ".$battery->getMessage());
                 }
@@ -190,7 +190,7 @@ Class Instrument_List_ControlPanel extends TimePoint
                 $previousStage = $this->_determinePreviousStage();
                 $this->startStage($previousStage);
                   
-                $battery =& new NDB_BVL_Battery();
+                $battery = new NDB_BVL_Battery();
                 if(PEAR::isError($battery)) {
                     return PEAR::raiseError("Battery Error: ".$battery->getMessage());
                 }
@@ -291,7 +291,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
 
         // check that all the instruments' Data Entry is market Complete
-        $battery =& new NDB_BVL_Battery;
+        $battery = new NDB_BVL_Battery;
         if(PEAR::isError($battery)) {
             return PEAR::raiseError("Battery Error: ".$battery->getMessage());
         }
@@ -465,7 +465,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             $this->tpl_data['send_to_dcc']['reverse'] = 'Reverse Send To DCC';
         }
 
-        $battery =& new NDB_BVL_Battery();
+        $battery = new NDB_BVL_Battery();
         if(PEAR::isError($battery)) {
             return PEAR::raiseError("Battery Error: ".$battery->getMessage());
         }
@@ -543,7 +543,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         	return "The Scan done field must be entered for the Visit stage";
         }
         
-        $battery =& new NDB_BVL_Battery();
+        $battery = new NDB_BVL_Battery();
         if(PEAR::isError($battery)) {
             return PEAR::raiseError("Battery Error: ".$battery->getMessage());
         }

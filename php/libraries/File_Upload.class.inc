@@ -353,7 +353,7 @@ class File_Upload extends PEAR {
         $name = substr ($name, 0, $maxlen);
         $name = strtr ($name, $noalpha, $alpha);
         // not permitted chars are replaced with "_"
-        return ereg_replace ('[^a-zA-Z0-9,._\+\()\-]', '_', $name);
+        return preg_replace ('/[^a-zA-Z0-9,._\+\()\-]/', '_', $name);
     }
     
      /**

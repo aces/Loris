@@ -27,7 +27,7 @@ Class NDB_BVL_Feedback
     
     var $_feedbackLevel='';
     
-    function &singleton($username, $candID=null, $sessionID=null, $commentID=null)
+    static function &singleton($username, $candID=null, $sessionID=null, $commentID=null)
     {
         // at least one of the args have to be passed
         if (empty($candID) && empty($sessionID) && empty($commentID)) {

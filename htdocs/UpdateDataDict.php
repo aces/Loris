@@ -13,7 +13,14 @@ $client->initialize();
 list($field, $test_name,$extra) =   split("___", $_REQUEST['fieldname']);
 
 $name = $test_name . "_" . $field;
-$description = $_REQUEST['description'];
+if(get_magic_quotes_gpc()) {
+    // Magic quotes adds \ to description, get rid of it.
+    $description = stripslashes($_REQUEST['description']);
+} else {
+    // Magic quotes is off, so we can just directly use the description
+    // since insert() will use a prepared statement.
+    $description = $_REQUEST['description'];
+}
 
 
 if ($DB->pselectOne("SELECT COUNT(*) FROM parameter_type_override WHERE Name =:id",array('id'=>$name))==0){  //if it doesn't exist

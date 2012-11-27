@@ -24,7 +24,7 @@ class Candidate
     var $candidateInfo;
     var $listOfTimePoints;
 
-    function &singleton($candID)
+    static function &singleton($candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
         if(!isset($candidateList[$candID])) {
