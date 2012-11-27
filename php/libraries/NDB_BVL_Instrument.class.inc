@@ -306,7 +306,7 @@ class NDB_BVL_Instrument extends PEAR
         // display the HTML_Quickform object
         // return $this->form->toHTML();
         
-        $renderer =& new HTML_QuickForm_Renderer_Default();
+        $renderer = new HTML_QuickForm_Renderer_Default();
         $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
@@ -483,7 +483,7 @@ class NDB_BVL_Instrument extends PEAR
         }
         
         if(strrpos($this->testName, "_proband") === FALSE) {
-            $this->_saveCandidateAge(&$values);
+            $this->_saveCandidateAge($values);
         }
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
@@ -496,7 +496,7 @@ class NDB_BVL_Instrument extends PEAR
         
         //XIN specific functionality
         if($this->formType=="XIN"){
-            $this->_nullStatus(&$values);
+            $this->_nullStatus($values);
         }
         
         // do not alter this when overwriting the method
@@ -1257,7 +1257,7 @@ class NDB_BVL_Instrument extends PEAR
     function getCandidateAge($Date_taken=FALSE) {
         $db =& Database::singleton();
         $CommentID = $this->getCommentID();
-        $db->selectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID='$CommentID'", &$dates);
+        $db->selectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID='$CommentID'", $dates);
 
         if($Date_taken==FALSE) {
             $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);

@@ -16,7 +16,7 @@ class Site
     /**
      * @note must be called statically
      */
-    function singleton($centerID)
+    static function &singleton($centerID)
     {
         static $siteList = array();
         if(!isset($siteList[$centerID])) {

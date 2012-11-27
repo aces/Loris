@@ -25,7 +25,7 @@ class State
      * existed previously)
      * @access public
      */
-    function &singleton()
+    static function &singleton()
     {
         static $instance = null;
         if(is_null($instance)) {

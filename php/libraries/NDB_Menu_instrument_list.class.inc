@@ -37,7 +37,7 @@ class NDB_Menu_instrument_list extends NDB_Menu
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
 
         // get behavioral battery for this visit (time point)
-        $battery =& new NDB_BVL_Battery;
+        $battery = new NDB_BVL_Battery;
         if (PEAR::isError($battery)) {
             return PEAR::raiseError('Battery Error: '.$battery->getMessage());
         }
@@ -75,13 +75,13 @@ class NDB_Menu_instrument_list extends NDB_Menu
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status =& new NDB_BVL_InstrumentStatus;
+                $status = new NDB_BVL_InstrumentStatus;
                 $success = $status->select($instrument['CommentID']);
                 if(PEAR::isError($success)) {
                     return PEAR::raiseError("instrument_list::setup() instrument status: ".$success->getMessage());
                 }
 
-                $ddeStatus =& new NDB_BVL_InstrumentStatus;
+                $ddeStatus = new NDB_BVL_InstrumentStatus;
                 $success = $ddeStatus->select($instrument['DDECommentID']);
                 if(PEAR::isError($success)) {
                     return PEAR::raiseError("instrument_list::setup() instrument status: ".$success->getMessage());
