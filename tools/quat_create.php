@@ -35,6 +35,8 @@ mysql> describe parameter_type;
 */
 
 
+require_once "Utility.class.inc";
+
 // settings
 $columnThreshhold = Utility::getColumnThresholdCount();
 $quatTableBasename = 'quat_table_';
