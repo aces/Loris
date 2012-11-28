@@ -14,7 +14,7 @@ $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
 // clear the unresolved conflicts for all the instruments
 foreach ($ddeInstruments as $test) {
-    $instruments = $db->pselect("SELECT CommentID, Test_name, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag WHERE Test_name=:testname AND CommentID NOT LIKE 'DDE%' AND Data_entry='Complete'",
+    $instruments = $db->pselect("SELECT CommentID, Test_name, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag join session s ON (s.ID=flag.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE Test_name=:testname AND CommentID NOT LIKE 'DDE%' AND Data_entry='Complete' AND s.Active='Y' AND c.Active='Y'",
         array('testname' => $test)
     );
 
