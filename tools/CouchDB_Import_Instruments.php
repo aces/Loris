@@ -36,6 +36,10 @@ class CouchDBInstrumentImporter {
                 $Dict[$fname]['Type'] = $field['Type'];
                 $Dict[$fname]['Description'] = $field['Description'];
             }
+
+            unset($Dict['city_of_birth']);
+            unset($Dict['city_of_birth_status']);
+
             $this->CouchDB->replaceDoc("DataDictionary:$name", array(
                 'Meta' => array('DataDict' => true),
                 'DataDictionary' => array($name => $Dict)
@@ -55,6 +59,9 @@ class CouchDBInstrumentImporter {
                 unset($docdata['CommentID']);
                 unset($docdata['PSCID']);
                 unset($docdata['Visit_label']);
+
+                unset($docdata['city_of_birth']);
+                unset($docdata['city_of_birth_status']);
 
                 if(is_numeric($docdata['Examiner'])) {
                     $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $row['Examiner']));
