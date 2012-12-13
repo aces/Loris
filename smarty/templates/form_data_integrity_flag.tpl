@@ -1,8 +1,9 @@
 <form>
 <table border="0" valign="top" class="std">
     <tr>
-        <th colspan="4">Selection Filter</th>
+        <th colspan="5">Selection Filter</th>
     </tr>
+    
     
     <tr>    
       
@@ -51,18 +52,24 @@
 </form>
 <br>
 
-<tr>
-	<td class="error"><em>NOTE: Please click on 'show-data' or refresh the page, once the 'save' button is clicked"</em></td>
-</tr>
 
 <form method="post" name="data_integrity_flag" id="data_integrity_flag">
-	<table class="fancytable" border="0">
-	    {foreach from=$form.errors item=error}
-	        <tr>
-	            <td nowrap="nowrap" colspan="3" class="error">{$error}</td>
-	        </tr>
-	    {/foreach}
+
+		{**error table***}
+		<table border="0">
+				<tr>
+			      <td nowrap="nowrap" colspan="3" class="error">NOTE: Please click on 'show-data' or refresh the page, once the 'save' button is clicked"</td>
+					<!--td class="error"><em>NOTE: Please click on 'show-data' or refresh the page, once the 'save' button is clicked"</em></td-->
+				</tr>
+			    {foreach from=$form.errors item=error}
+			        <tr>
+			            <td nowrap="nowrap" colspan="3" class="error" border="0">{$error}</td>
+			        </tr>
+			    {/foreach}
+			    
+		</table>
 	    
+	    <table class="fancytable" border="0">
    	    <tr>
 	        <td>{$form.visit_label.label}</td>
 	        <td>{$form.visit_label.html}</td>
@@ -80,19 +87,27 @@
 	        <td>{$form.flag_status.label}</td>
 	        <td>{$form.flag_status.html}</td>
 	    </tr>
+
+	    
 	    
    	    <tr>
 	        <td>{$form.comment.label}</td>
 	        <td>{$form.comment.html}</td>
 	    </tr>
 	    
+	    
+
+	    
 		<tr>
 			<td nowrap="nowrap" colspan="3">
 				<input class="button" style="width: 100px" id="fire_away" name="fire_away" value="Save" type="submit"/>
 			</td>
 		</tr>
+		
+
 	</table>
 </form>
+
 
 
 <form>
@@ -120,8 +135,10 @@
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].comment}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].dc_open_feedback}</td>
 	        </tr>
+	    
 	        
 	    {/foreach}
 	    
 	</table>
 </form>
+
