@@ -1680,8 +1680,11 @@ CREATE TABLE `data_integrity_flag` (
   `dataflag_date` date NOT NULL,
   `dataflag_status` int(11) NOT NULL,
   `dataflag_comment` text,
-  `dataflag_dc_open_feedback` int(11) NOT NULL,
   `latest_entry` tinyint(1) NOT NULL DEFAULT '1',
+  `dataflag_fbcreated` int(11) NOT NULL DEFAULT '0',
+  `dataflag_fbclosed` int(11) NOT NULL DEFAULT '0',
+  `dataflag_fbcomment` int(11) NOT NULL DEFAULT '0',
+  `dataflag_fbdeleted` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`dataflag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
