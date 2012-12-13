@@ -46,7 +46,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 	{
 		$instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //get actual test_name
 		$instrument = $instrument['Test_name'];
-		$data_cleaning_fb_open = $this->getFeedbackcount($instrument,$_REQUEST['visit_label']);
+		//$data_cleaning_fb_open = $this->getFeedbackcount($instrument,$_REQUEST['visit_label']);
 		$visit_label = $_REQUEST['visit_label'];
 		//save the date, flag status and comment in the data_integrity_flag table
 		$DB =& Database::singleton();
@@ -117,7 +117,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 		);
 
 		$this->form->addElement('date', 'date', "Date:", $dateOptions); //date drop down
-		$this->form->addElement("select", 'flag_status', 'Flag Status:', array(''=>null,"1"=>'1- Validation/Completion',"2"=>'2- Statistical Verification', "3"=>'3- Finalization')); //flag status
+		$this->form->addElement("select", 'flag_status', 'Flag Status:', array(''=>null,"1"=>'1- Ready For Cleaning',"2"=>'2- Cleaning Completed', "3"=>'3- Feedbacks Closed', "4"=>'4. Finalization')); //flag status
 		$this->form->addElement("textarea", 'comment','Comment:',array('rows' => 2, 'cols' => 20));//comment box
 
 		//static or hiddent elements
@@ -144,7 +144,9 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 			$this->tpl_data['elements_array'][$data['dataflag_id']]['comment']= $data['dataflag_comment'];
 			$this->tpl_data['elements_array'][$data['dataflag_id']]['instrument']= $data['dataflag_instrument'];
 			$this->tpl_data['elements_array'][$data['dataflag_id']]['visit_label']= $data['dataflag_visitlabel'];
-			$this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback']= $data['dataflag_dc_open_feedback'];
+			//$this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback']= $data['dataflag_dc_open_feedback'];
+			$this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback']= $data['dataflag_fbcreated'] - $data['dataflag_fbclosed']-$data['dataflag_fbcomment'];
+
 		}
 	}
 
@@ -215,6 +217,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 				if (($value == '') || ($value==null)){
 					$errors[$field]= 'The validation flag is not set';
 				}
+
 			}
 		}
 		return count($errors) > 0 ? $errors:true;
