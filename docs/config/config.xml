@@ -261,7 +261,7 @@
           <access>all</access>
           <permissions>
             <perm>
-                fieldname_integrity
+                data_integrity_flag
             </perm>
           </permissions>
           <visible>1</visible>
