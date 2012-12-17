@@ -276,11 +276,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 		$DB =& Database::singleton();
 		$values = array();
 		if ((!(is_null($full_name)))) {
-			if (Utility::ColumnExists('test_battery' , 'Test_name_display')) {
-				$test_name = $DB->pselectOne("SELECT Test_name FROM test_battery WHERE Test_name_display=:display",array('display'=>$full_name));
-			} else {
 				$test_name = Utility::getTestNameUsingFullName($full_name);
-			}
 		}
 		return 	$test_name;
 	}
