@@ -1686,7 +1686,7 @@ CREATE TABLE `data_integrity_flag` (
   `dataflag_fbcomment` int(11) NOT NULL DEFAULT '0',
   `dataflag_fbdeleted` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`dataflag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
