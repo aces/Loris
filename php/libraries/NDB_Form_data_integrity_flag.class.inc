@@ -61,7 +61,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 		//$instrument=
 		$sucess = $DB->update('data_integrity_flag',array('latest_entry'=>0),array('dataflag_instrument' => $instrument, 'dataflag_visitlabel'=>$visit_label));
 
-		$success = $DB->insert("data_integrity_flag", array('dataflag_instrument'=>$instrument,'dataflag_visitlabel'=>$visit_label,'dataflag_comment'=>$comment,'dataflag_date'=>$date,'dataflag_status'=>$flag,'latest_entry'=>1);
+		$success = $DB->insert("data_integrity_flag", array('dataflag_instrument'=>$instrument,'dataflag_visitlabel'=>$visit_label,'dataflag_comment'=>$comment,'dataflag_date'=>$date,'dataflag_status'=>$flag,'latest_entry'=>1));
 
 		if(PEAR::isError($success)) {
 			return PEAR::raiseError("NDB_Form_data_integrity_flag::_process: ".$success->getMessage());
