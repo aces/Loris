@@ -160,7 +160,12 @@ class NDB_Form_data_integrity_flag extends NDB_Form
      */
 
     function AddWhere($Column, $Filter) {
-        global $DB;
+        // create Database object
+        $DB = Database::singleton();
+        if(PEAR::isError($DB)) {
+            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
+            die();
+        }
 
         if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments')  {
             if ($Filter =='instrument'){
@@ -185,7 +190,14 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             $errors['comment']= 'An instrument must be selected';
         }
 
-        global $DB;
+
+        // create Database object
+        $DB = Database::singleton();
+        if(PEAR::isError($DB)) {
+            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
+            die();
+        }
+
         $is_error_set = false;
 
         foreach ($fields as $field=>$value){
@@ -202,13 +214,11 @@ class NDB_Form_data_integrity_flag extends NDB_Form
                         } else if($value['d'] == ""){
                             $errors[$field] .= "$field_name: Please fill in the administration date for all 3 fields";
                         }
-                    }
-                    elseif ((($value['Y'] != "")&&($value['M'] != "")&&($value['d'] != ""))){
+
                         if(!(checkdate($value['M'], $value['d'], $value['Y']))){
                             $errors[$field]= 'Date is not a valid date';
                         }
                     }
-                    else{}
                 }
             }
 
