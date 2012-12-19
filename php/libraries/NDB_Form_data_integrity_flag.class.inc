@@ -269,9 +269,9 @@ function getFeedbackcount($test_name,$visit_label,$type='data_cleaning'){
         JOIN psc ON (s.CenterID = psc.CenterID)
         WHERE 
         c.PSCID NOT LIKE '%999-99999%' AND c.Active = 'Y' AND s.Active = 'Y' AND 
-        f.test_name =:tname AND psc.Centerid!= '1' AND ftp.Name =:feedback_type AND s.Visit_label =:vlable
+        f.test_name =:tname AND psc.Centerid!= '1' AND ftp.Name =:feedback_type AND s.Visit_label =:vlabel
         AND b.status = 'Opened'";
-    $count = $DB->pselectOne($query,array('tname'=>$test_name,'feedback_type'=>$type,'vlable'=>$visit_label));
+    $count = $DB->pselectOne($query,array('tname'=>$test_name,'feedback_type'=>$type,'vlabel'=>$visit_label));
     return $count;
 }
 
