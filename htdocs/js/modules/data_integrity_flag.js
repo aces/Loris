@@ -1,4 +1,4 @@
-/*global document: false, $: false, window: false, unescape: false */
+/*global document: false, $: false, window: false, unescape: false, Option: false*/
 function getQueryVariable(variable) {
     "use strict";
     var query = window.location.search.substring(1),
@@ -38,8 +38,7 @@ function changeVisitLabels() {
             for (i = 0; i < numInstruments; i += 1) {
                 val = instruments[i];
                 if (val !== '') {
-
-                    instrument_dropdown.options[i] = document.createElement(val, val);
+                    instrument_dropdown.options[i] = new Option(val, val);
                     if ((instrument_dropdown_value === val) && (instrument_dropdown_value !== '')) {
                         instrument_dropdown.options[i].selected = "selected";
                     }
