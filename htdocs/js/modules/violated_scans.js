@@ -31,13 +31,11 @@ function save() {
         event.stopImmediatePropagation();
         id = event.target.id;
         value = $("#" + id).text();
-        $('<div/>').appendTo('body').
-            css({background : 'black', opacity: '0.9'})
+        $('<div/>').appendTo('body')
+            //.css({background : 'black', opacity: '0.9'})
             .html("<div id ='asdfsaf'>Are you sure?</div>")
             .dialog({
                 title: 'Modification',
-                zIndex: 10000,
-                autoOpen: true,
                 width: 'auto',
                 resizable: false,
                 //dialogClass:'transparent',
