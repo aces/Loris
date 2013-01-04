@@ -45,12 +45,9 @@ function save() {
                         $.get("UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value, function () {});
                         $(this).dialog("close");
                     },
-                    No: function () {
-                        $("#" + id).text(default_value);
-                        $(this).dialog("close");
-                    },
                     close: function () {
                         $(this).remove();
+                        $("#" + id).text(default_value);
                     }
                 }
             });
