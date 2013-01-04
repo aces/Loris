@@ -25,8 +25,6 @@
 
 
 <!-- Mri- protocol table  -->
-<BR>
-<BR>
 <div id='hide' style="font-weight: bold" class="toggle_mri_tbl">
 	-Hide mri-protocol Table
 </div> 
@@ -39,29 +37,30 @@
 	<tr>
 	{assign var=count value=0}
 	{foreach from=$mri_protocol_header item=mp}
-		
 		    <th id="header_{$count}">
 		       {$mp}
 		    </th>
 	  	   {assign var=count value=$count+1}
 	{/foreach}
-	
 	</tr>
-	{assign var=rcount value=1}
+
 	{foreach from=$mri_protocol_data item=mp}
 		{assign var=ccount value=0}
+		
 		  <tr>
-			  {foreach from=$mp key=k item=row}
-				 
-				   <td id="row_{$rcount}_td_{$ccount}" class='description' contenteditable = "true">
-				    {$row}
-				   </td>
-				   {assign var=ccount value=$ccount+1}
+			  {foreach from=$mp item=row}
+				  {if $modification_permission}
+					   <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
+				  {else}
+					   <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
+				  {/if}  
+  			      		{$row}
+				  		{$k}
+	                   </td>
+				  {assign var=ccount value=$ccount+1}
 			  {/foreach}
-			  {assign var=rcount value=$rcount+1}
 		  </tr>
 	{/foreach}
-	
 </table>
 <br>
 <br>
@@ -76,8 +75,6 @@
 </tr>
 </table>
 
-
-
 <!-- start data table -->
 <table  class ="fancytable" border="0" width="100%" class="listColorCoded">
 <tr>
@@ -85,8 +82,6 @@
     {section name=header loop=$headers}
         <th nowrap="nowrap"><a href="main.php?test_name=violated_scans&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
     {/section}
-    
-
 </tr>
 {section name=item loop=$items}
     <tr>
@@ -106,4 +101,3 @@
                     
 <!-- end data table -->
 </table>
-
