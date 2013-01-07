@@ -4,7 +4,13 @@
         <th colspan="5">Selection Filter</th>
     </tr>
     
+    
     <tr>    
+      
+        {php}
+		$VisitLabelSelected = $_REQUEST['visit_label'];
+		$this->assign('visit_label_selected',$VisitLabelSelected);
+		{/php}
         <td>
             Visit_labels
         </td>
@@ -12,7 +18,7 @@
 	        <div>
             <select name="visit_label" onchange="changefieldOptions()" id="visit_label">
                 {foreach from=$visitLabels item=name key=val}
-			 	   {if $name eq $visit_label}
+			 	   {if $name eq $visit_label_selected}
 					   <option value="{$name}" selected="selected"> {$name}</option>
 				    {else}
 	       				<option value="{$name}"> {$name}</option>
@@ -68,12 +74,10 @@
 	        <td>{$form.visit_label.label}</td>
 	        <td>{$form.visit_label.html}</td>
 	    </tr>
-	    
 	    <tr>
 	        <td>{$form.instrument.label}</td>
 	        <td>{$form.instrument.html}</td>
 	    </tr>
-	    
 	    <tr>
 	        <td>{$form.date.label}</td>
 	        <td>{$form.date.html}</td>
@@ -85,11 +89,14 @@
 	    </tr>
 
 	    
+	    
    	    <tr>
 	        <td>{$form.comment.label}</td>
 	        <td>{$form.comment.html}</td>
 	    </tr>
 	    
+	    
+
 	    
 		<tr>
 			<td nowrap="nowrap" colspan="3">
@@ -98,6 +105,7 @@
 				<input class="button" style="width: 120px" id="show_all" name="show_all" value="Show all data"/>
 			</td>
 		</tr>
+		
 
 	</table>
 </form>
@@ -129,7 +137,10 @@
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].comment}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].dc_open_feedback}</td>
 	        </tr>
+	    
 	        
 	    {/foreach}
+	    
 	</table>
 </form>
+
