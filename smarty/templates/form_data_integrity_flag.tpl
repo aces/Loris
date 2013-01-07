@@ -94,6 +94,8 @@
 		<tr>
 			<td nowrap="nowrap" colspan="3">
 				<input class="button" style="width: 100px" id="fire_away" name="fire_away" value="Save" type="submit"/>
+				<input class="button" style="width: 120px" id="update_data" name="update_data" value="Show updated Data"/>
+				<input class="button" style="width: 120px" id="show_all" name="show_all" value="Show all data"/>
 			</td>
 		</tr>
 
