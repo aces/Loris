@@ -1,4 +1,5 @@
 /*global document: false, $: false, window: false, unescape: false, Option: false*/
+
 function getQueryVariable(variable) {
     "use strict";
     var query = window.location.search.substring(1),
@@ -21,6 +22,7 @@ function changeVisitLabels() {
         visit_label_value = visit_label_dropdown.value,
         request = getQueryVariable("visit_label"),
         instrument_dropdown_value,
+        temp_array = ["All Instruments"],
         instruments;
     if (request !== undefined) {
         request = request.replace(/\+/g, ' ');
@@ -33,6 +35,7 @@ function changeVisitLabels() {
     $.get("GetInstruments.php?visit_label=" + visit_label_value,
         function (data) {
             instruments = data.split("\n");
+            instruments = temp_array.concat(instruments); //adds 'All instruments to the array'
             instrument_dropdown.options.length = 0;
             var i, numInstruments = instruments.length, val;
             for (i = 0; i < numInstruments; i += 1) {
@@ -42,12 +45,10 @@ function changeVisitLabels() {
                     if ((instrument_dropdown_value === val) && (instrument_dropdown_value !== '')) {
                         instrument_dropdown.options[i].selected = "selected";
                     }
-
                 }
             }
             //jQuery('#visits').change();
         });
-    //alert(request);
 }
 
 
@@ -61,5 +62,7 @@ function changefieldOptions() {
 $(function () {
     "use strict";
     changefieldOptions();
-    $('#instrument').bind('change', function () {$("#filter").trigger('click'); }); //The form is automatically loaded when the dropdown is changed
+    $('#instrument').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the instrument dropdown is changed
+    $('#visit_label').bind('change', function () { $("#filter").trigger('click'); });//The form is automatically loaded when the instrument dropdown is changed
+    $('#update_data').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the dropdown is changed
 });
