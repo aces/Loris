@@ -44,8 +44,9 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 
     function _process($values)
     {
+
         $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //get actual test_name
-        $instrument = $instrument['Test_name'];
+
         //$data_cleaning_fb_open = $this->getFeedbackcount($instrument,$_REQUEST['visit_label']);
         $visit_label = $_REQUEST['visit_label'];
         //save the date, flag status and comment in the data_integrity_flag table
@@ -81,10 +82,11 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
         $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
-        $instrument = $instrument['Test_name'];
+
 
         $visit_array=Utility::getExistingVisitLabels();
         $visit_array = array_combine($visit_array,$visit_array);
+        $visit_array = array_merge(array('all_visits'=>"All Visits"),$visit_array);
         $this->tpl_data['visitLabels'] = $visit_array;
         $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
         $this->tpl_data['test_name'] = $instrument;
@@ -95,15 +97,18 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         /////////////////////////////////////////////////////
         ///////////////Constructs the where clause...
         ////////////////////////////////////////////////////////
+        $extra_where = null;
         $extra_where .= $this->AddWhere("dataflag_visitlabel", 'visit_label');
         $extra_where .= $this->AddWhere("dataflag_instrument", 'instrument');
 
         //construct the query
-        if (($extra_where) !=null){
-            $query = "SELECT * FROM data_integrity_flag
-                WHERE 1=1 $extra_where ORDER BY dataflag_date desc";
-            $DB->select($query,  $info);
-        }
+        //if (($extra_where) !=null){
+        $query = "SELECT * FROM data_integrity_flag
+            WHERE 1=1 $extra_where ORDER BY dataflag_date desc";
+        $DB->select($query,  $info);
+        //}
+
+
 
         ////////////////////////////////////////////////////////
         /////////create the quickform elements/////////////////
@@ -146,7 +151,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             $this->tpl_data['elements_array'][$data['dataflag_id']]['visit_label']= $data['dataflag_visitlabel'];
             //$this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback']= $data['dataflag_dc_open_feedback'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback']= $data['dataflag_fbcreated'] - $data['dataflag_fbclosed']-$data['dataflag_fbcomment'];
-
         }
     }
 
@@ -167,14 +171,16 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             die();
         }
 
-        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments')  {
+        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' &&  $_REQUEST[$Filter] !=='All Visits') {
+
             if ($Filter =='instrument'){
                 $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //get actual test_name
-                $test_name = $DB->quote($test_name['Test_name']);
-                return " AND $Column LIKE " . $test_name;
+                return " AND $Column LIKE " . $DB->quote($test_name);
             }
             return " AND $Column LIKE " . $DB->quote($_REQUEST[$Filter]);
         }
+
+
         return '';
     }
 
