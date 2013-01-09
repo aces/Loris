@@ -27,7 +27,7 @@ class NDB_Menu_violated_scans extends NDB_Menu_Filter
         if (PEAR::isError($site)) {
             return PEAR::raiseError("DB Error: ".$site->getMessage());
         }
-        $this->tpl_data['modification_permission']  = $user->hasPermission('mri_protocols_modifications');
+        $this->tpl_data['modification_permission']  = $user->hasPermission('violated_scans_modifications');
         return ($user->hasPermission('violated_scans'));
     }
 
