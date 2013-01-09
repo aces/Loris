@@ -10,7 +10,7 @@
         </td>
         <td>
 	        <div>
-            <select name="visit_label" onchange="changefieldOptions()" id="visit_label">
+            <select name="visit_label" onchange="changeVisitLabels()" id="visit_label">
                 {foreach from=$visitLabels item=name key=val}
 			 	   {if $name eq $visit_label}
 					   <option value="{$name}" selected="selected"> {$name}</option>
