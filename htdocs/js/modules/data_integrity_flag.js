@@ -31,7 +31,6 @@ function changeVisitLabels() {
     if (instrument_dropdown_value !== undefined) {
         instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g, ' ');
     }
-
     $.get("GetInstruments.php?visit_label=" + visit_label_value,
         function (data) {
             instruments = data.split("\n");
@@ -52,17 +51,12 @@ function changeVisitLabels() {
 }
 
 
-function changefieldOptions() {
-    "use strict";
-    changeVisitLabels();
-}
-
-
 //runs the function when the page is loaded..
 $(function () {
     "use strict";
-    changefieldOptions();
-    $('#instrument').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the instrument dropdown is changed
-    $('#visit_label').bind('change', function () { $("#filter").trigger('click'); });//The form is automatically loaded when the instrument dropdown is changed
+    changeVisitLabels();
+    var i = $('#instrument'),
+        v = $('#visit_label');
+    $(i, v).bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the instrument dropdown is changed
     $('#update_data').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the dropdown is changed
 });
