@@ -49,7 +49,7 @@
 		
 		  <tr>
 			  {foreach from=$mp item=row}
-				  {if $modification_permission}
+				  {if $violated_scans_modifications}
 					   <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
 				  {else}
 					   <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
