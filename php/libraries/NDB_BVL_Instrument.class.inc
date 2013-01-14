@@ -1119,8 +1119,6 @@ class NDB_BVL_Instrument extends PEAR
     *
     */
     
-<<<<<<< HEAD
-=======
     function addNumericElementRD($field, $label) {
         $group [] = $this->form->createElement("text", $field, $label);
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
@@ -1161,7 +1159,6 @@ class NDB_BVL_Instrument extends PEAR
     function addScoreColumn($name, $label) {
         $this->form->addElement('static', $name, $label);
      }
->>>>>>> aces/master
 
     /**
     * nulls all scores for the record identified by CommentID

@@ -660,9 +660,6 @@ class Utility extends PEAR
         }
         return $sourcefields;
     }
-<<<<<<< HEAD
-    }
-=======
     
 
 	/**
@@ -715,6 +712,5 @@ class Utility extends PEAR
 		return $test_names;
 	}
 
->>>>>>> aces/master
 }
 ?>
