@@ -1,4 +1,4 @@
-<?
+<?php
 require_once("PEAR.php");
 /**
  * provides an interface to the NeuroDB configuration
