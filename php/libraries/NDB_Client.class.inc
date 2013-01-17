@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * NeuroDB client - takes care of using the configuration, creating the first database connection, and including a lot of commonly used libraries.  by default does web-appropriate setup (session management and user auth).
  * @version $Id: NDB_Client.class.inc,v 1.7 2006/04/05 17:07:42 sebas Exp $

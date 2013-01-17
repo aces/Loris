@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * class for managing MRI comments
  * @package mri

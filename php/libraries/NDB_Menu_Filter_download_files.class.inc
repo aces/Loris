@@ -1,4 +1,4 @@
-<?
+<?php
 require_once 'NDB_Menu_Filter.class.inc';
 
 class NDB_Menu_Filter_download_files extends NDB_Menu_Filter
