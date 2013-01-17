@@ -32,9 +32,13 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         $base = $config->getSetting('base');
 
         // the instrument exists
-        if (file_exists($base."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc")) {
-            // include the instrument's class
-            require_once $base."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc";
+        if (file_exists($base."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc")
+                || file_exists($base."project/instruments/".$_REQUEST['test_name'].".linst")
+            ) {
+            // include the instrument's class, if it's an old school instrument.
+            if (file_exists($base."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc"))  {
+                require_once $base."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc";
+            }
 
             // create an instance of the instrument
             $instrument =& NDB_BVL_Instrument::factory($_REQUEST['test_name'], $_REQUEST['commentID'], $_REQUEST['subtest']);
