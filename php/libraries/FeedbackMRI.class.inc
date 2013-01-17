@@ -4,6 +4,8 @@
  * @package mri
  * @access public
  */
+require_once "MRIFile.class.inc";
+
 class FeedbackMRI {
     /**
      * FileID from files table
@@ -384,6 +386,9 @@ class FeedbackMRI {
         if ($this->objectType == 'volume') {
             // per-volume
             $set['FileID'] = $this->fileID;
+            $file = new MRIFile($this->fileID);
+            $set['SeriesUID'] = $file->getParameter('series_instance_uid');
+            $set['EchoTime'] = $file->getParameter('echo_time');
         } else {
             // per-visit
             $set['SessionID'] = $this->sessionID;
