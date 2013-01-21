@@ -1,5 +1,6 @@
 <?php
 require_once "Database.class.inc";
+require_once "Utility.class.inc";
 // This class is the old mri_browser.php portion of the code that 
 // deals with showing the menu list of candidates/filtering, refactored
 // into a different class to make the mri browser code easier to read
@@ -120,6 +121,17 @@ class MRIMenuPage {
 
         $this->visit_tpl_data['qcStatus_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
         $this->visit_tpl_data['SubprojectID_options'] = array (''=>'&nbsp;', '1'=>'1', '2'=>'2');
+        $mri_projs = array(' ' => 'All Projects');
+        $projects = $DB->select("SELECT DISTINCT (cad.ProjectID) from candidate cad 
+                                 JOIN session sn on cad.CandID = sn.CandID 
+                                 JOIN files f on sn.ID = f.SessionID ORDER BY cad.ProjectID");
+        $projectList = Utility::getProjectList();
+        foreach($projects as $row){
+            $projid = $row['ProjectID']; 
+            if(!is_null($projid))
+                $mri_projs[$projid] = $projectList[$projid]; 
+        }
+        $this->visit_tpl_data['projects'] = $mri_projs; 
     }
 
 
@@ -200,6 +212,7 @@ class MRIMenuPage {
         $smarty->assign('headers', $this->headers);
         $smarty->assign('backURL', $_SERVER['REQUEST_URI']);
         $smarty->assign($this->visit_tpl_data);
+//$smarty->assign('projects', array('' => 'All Projects', '1' =>'IBIS1','2'=>'IBIS2','3'=>'Fragile X','4'=>'EARLI Collaboration'));
         return $smarty->fetch("mri_browser_visit_list.tpl");
     }
 }
