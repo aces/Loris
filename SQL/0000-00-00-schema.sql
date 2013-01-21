@@ -318,6 +318,8 @@ CREATE TABLE `feedback_mri_comments` (
   `CommentID` int(11) unsigned NOT NULL auto_increment,
   `MRIID` int(11) unsigned default NULL,
   `FileID` int(10) unsigned default NULL,
+  `SeriesUID` varchar(64) default NULL,
+  `EchoTime` double default NULL,
   `SessionID` int(10) unsigned default NULL,
   `PatientName` varchar(255) default NULL,
   `CandID` varchar(6) default NULL,
@@ -382,6 +384,8 @@ CREATE TABLE `files` (
   `FileID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL default '0',
   `File` varchar(255) NOT NULL default '',
+  `SeriesUID` varchar(64) DEFAULT NULL,
+  `EchoTime` double DEFAULT NULL,
   `CoordinateSpace` varchar(255) default NULL,
   `Algorithm` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
@@ -405,7 +409,8 @@ DROP TABLE IF EXISTS `files_qcstatus`;
 CREATE TABLE `files_qcstatus` (
     FileQCID int(11) PRIMARY KEY auto_increment,
     FileID int(11) UNIQUE NULL,
-    SeriesUID varchar(64) UNIQUE NULL,
+    SeriesUID varchar(64) DEFAULT NULL,
+    EchoTime double DEFAULT NULL,
     QCStatus enum('Pass', 'Fail'),
     QCFirstChangeTime int(10) unsigned,
     QCLastChangeTime int(10) unsigned
