@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * stores simple state data during a browsing session
  * @package main

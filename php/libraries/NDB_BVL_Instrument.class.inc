@@ -1,4 +1,4 @@
-<?
+<?php
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 include_once ('HTML/QuickForm/Renderer/Default.php');

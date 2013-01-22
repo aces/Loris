@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * This class performs a logic test on a behavioral instrument
  *
