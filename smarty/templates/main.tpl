@@ -109,7 +109,8 @@ function feedback_bvl_popup(features) {
             <!-- bread crumb -->
             <table width="100%" border="0" cellpadding="3" cellspacing="4">
                 <tr>
-                    <th class="banner" align="left">
+                    <!--   <th class="crumbBanner" align="left">-->
+                        <th align="left">
 {section name=crumb loop=$crumbs}
                         <a href="main.php?{$crumbs[crumb].query}">{$crumbs[crumb].text}</a> {if not $smarty.section.crumb.last}&gt; {/if}
 {/section}
@@ -130,8 +131,8 @@ function feedback_bvl_popup(features) {
             If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {elseif $test_name == ""}
-            <h1>Welcome to the Database!</h1>
-	    <p>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</p>
+            <h1>Welcome to the Database for the Prevent-AD project!</h1>
+	    <p>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us. We strive to make data collection almost fun.</p>
 {else}
 
     {if $candID != ""}

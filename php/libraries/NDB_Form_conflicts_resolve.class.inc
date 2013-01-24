@@ -124,24 +124,21 @@ class NDB_Form_conflicts_resolve extends NDB_Form
     {
         $DB =& Database::singleton();
 
- 		//Extract the fields from the parameter_type table
+ 	//Extract the fields from the parameter_type table
         $conflicts = array();
 
+	$instruments = Utility::getAllInstruments(false);
 
-        $DB->select("SELECT Test_name FROM test_names", &$instruments_q);
-
+  //      $DB->select("SELECT Full_name FROM test_names ORDER BY Full_name", &$instruments_r);
+//        $DB->select("SELECT Test_name FROM test_names ORDER BY Test_name", &$instruments_q);
         // This array_map call turns the result of the above query to
         // a non-associative array, so that we can use the array_combine
         // trick to get an array of the form array( 'test_name' => 'test_name')
         // which can be used by quickforms for the dropdown. The array_merge
         // call after that just adds an Any/All Instruments option.
 
-        
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
-
-        
-        
         
         $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
         

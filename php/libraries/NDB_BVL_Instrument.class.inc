@@ -785,7 +785,7 @@ class NDB_BVL_Instrument extends PEAR
     // {{{ XINValidate()
     
     function XINValidate($elements){
-        $this->XINDebug=false;  //Turn this on to see rules debuggin output
+        $this->XINDebug=true;  //Turn this on to see rules debuggin output
 
         $errors=array();
         foreach($elements AS $elname=>$elvalue) {
@@ -828,6 +828,8 @@ class NDB_BVL_Instrument extends PEAR
                                 $result=$this->DINRunElementRules($elname, $elements, $registered);
                                 if($result == false){
                                     $el=$registered['group']!="" ? $registered['group'] : $elname;
+                                    print "Element $el";
+                                    print "Message $registered[message]";
                                     $errors[$el]=$registered['message'];
                                 }
                             }
@@ -841,12 +843,14 @@ class NDB_BVL_Instrument extends PEAR
                 if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
                 if(!empty($this->XINRules[$elname])){
                     $registered_rules = $this->XINRules[$elname];
-                    foreach($registered_rules as $registered_rule) {
+                    //foreach($registered_rules as $registered_rule) {
                         $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
                         if(is_array($result)) {
+                                    print "Element2 $elname";
+                                    //print "Message2 $registered[message]";
                             $errors+=$result;
                         }
-                    }
+                    //}
                 } else if(substr($elname,-7)!="_status" && !in_array($elname,array("page","subtest"))){
                     $errors[$elname]="Required.";
                     if($this->XINDebug){echo "Required by default";}
@@ -867,8 +871,11 @@ class NDB_BVL_Instrument extends PEAR
             $userval = $elements[$elname];
             $operator = $split[1];
             $comparevalue = $split[2];
-            $compareFunction = create_function('$a, $b', "return \$a $operator \$b;"); //(\$a $operator \$b);");
+            if($comparevalue == 'NEVER_REQUIRED') {
+                return true;
+            }
 
+            $compareFunction = create_function('$a, $b', "return \$a $operator \$b;"); //(\$a $operator \$b);");
             if(!($compareFunction($comparevalue, $userval)) ) {
                 return false;
             }
@@ -1114,27 +1121,11 @@ class NDB_BVL_Instrument extends PEAR
       * Wrapper to create a text field for questions that require Refused and Don't know options
       */
      
-    function addTextElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down', $refusals=array(''=>'', "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered')){
-        $group[]=&$this->form->createElement("text", $field);
-        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
-        unset($group);
-        $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
-    }
      
     /**
      * Wrapper to create a text area field for questions that require Refused and Don't know options
      */
      
-    function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
-        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
-        unset($group);
-        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
-    }
     
     /**
     * Wrapper to create a text area field, with an accompanying status field.
@@ -1163,7 +1154,7 @@ class NDB_BVL_Instrument extends PEAR
     */
     function addHourMinElement($field, $label, $rules=array(), $rule_message="You are required to select a status if you want to leave this time blank.") {
         $group[]=&$this->form->createElement("date", $field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
-        $group[]=&$this->form->createElement("select", $field . "_status", "", array(NULL=>'', "dnk"=>"DNK", "refusal"=>"Refusal", 'not_answered'=>'Not Answered'));
+        $group[]=&$this->form->createElement("select", $field . "_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         $this->XINRegisterRule($field, array_merge($rules, array($field . '_status{@}=={@}')), $rule_message, $field . '_group');
         unset($group);
@@ -1209,7 +1200,7 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $field    The database field in which the response will be stored
     * @param    string    $label    The question text to display
     */
-    function addNumericElement($field, $label, $options = null) {
+    function addNumericElement($field, $label, $rules=array(), $rule_message='This field is required.'){
         $group [] = $this->form->createElement("text", $field, $label);
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $field . "_group", $label, null, false);

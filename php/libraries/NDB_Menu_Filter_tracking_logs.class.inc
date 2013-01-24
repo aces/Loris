@@ -96,7 +96,7 @@ class NDB_Menu_Filter_tracking_logs extends NDB_Menu_Filter
         }
 
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
-        $list_of_visit_labels = array(null=>'','V1'=>'V1','V2'=>'V2','V3'=>'V3','V4'=>'V4','V5'=>'V5','V6'=>'V6','V7'=>'V7','V8'=>'V8','V9'=>'V9', 'V10'=>'V10');
+        $list_of_visit_labels = array_merge(array(null=>"Any") + Utility::getVisitList(); //array(null=>'','V1'=>'V1','V2'=>'V2','V3'=>'V3','V4'=>'V4','V5'=>'V5','V6'=>'V6','V7'=>'V7','V8'=>'V8','V9'=>'V9', 'V10'=>'V10');
         $scandone_options = array(null=>'', 'No'=>'No', 'Yes'=>'Yes','NA'=>'N/A');
         $subproject_options = Utility::getSubprojectList();
         $subproject_options = array(null=>'') + $subproject_options;

@@ -5,6 +5,14 @@
         <th nowrap="nowrap" colspan="8">Selection Filter</th>
     </tr>
     <tr>
+        <td nowrap="nowrap">Username:</td>
+        <td nowrap="nowrap">{$form.userID.html}</td>
+        <td nowrap="nowrap">Full name:</td>
+        <td nowrap="nowrap">{$form.real_name.html}</td>
+        <td nowrap="nowrap">Email:</td>
+        <td nowrap="nowrap">{$form.email.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">Site:</td>
         <td nowrap="nowrap">{$form.centerID.html}</td>
         <td nowrap="nowrap">Active:</td>
@@ -15,13 +23,6 @@
         <td nowrap="nowrap">{$form.examiner.html}</td>
     </tr>
     <tr>
-        <td nowrap="nowrap">Username:</td>
-        <td nowrap="nowrap">{$form.userID.html}</td>
-        <td nowrap="nowrap">Full name:</td>
-        <td nowrap="nowrap">{$form.real_name.html}</td>
-        <td nowrap="nowrap">Email:</td>
-        <td nowrap="nowrap">{$form.email.html}</td>
-    </tr>
     <tr>
         <td nowrap="nowrap"><input type="button" name="button" value="Add User" class="button" onclick="location.href='main.php?test_name=user_accounts&subtest=edit_user'" /></td>
         <td colspan="7" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=user_accounts&reset=true'" /></td>

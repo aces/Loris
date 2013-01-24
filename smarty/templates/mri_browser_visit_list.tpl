@@ -14,7 +14,8 @@
 
 <tr>
     <th>Site</th><td colspan="1">{html_options options=$site_options selected=$filter.site name=filter[site]}</td>
-    <th>Visit label</th><td><input type='text' name='filter[visitLabel]' value='{$filter.visitLabel}' size="4"></td></td><td>&nbsp;</td>
+<!--    <th>Visit label</th><td><input type='text' name='filter[visitLabel]' value='{$filter.visitLabel}' size="4"></td></td><td>&nbsp;</td>-->
+    <th>Visit label</th><td colspan="1">{html_options options=$visit_options selected=$filter.visit name=filter[visit]}</td>
     <!--th>Subproject</th><td colspan="2">{html_options options=$SubprojectID_options selected=$filter.SubprojectID name=filter[SubprojectID]}</td-->
 </tr>
 <tr>
