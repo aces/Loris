@@ -32,7 +32,7 @@ class CouchDBInstrumentImporter {
             $Fields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom=:inst AND Queryable=1",
                 array('inst' => $name));
             foreach($Fields as $field) {
-                $fname = $field['Name'];
+                $fname = $field['SourceField'];
                 $Dict[$fname]['Type'] = $field['Type'];
                 $Dict[$fname]['Description'] = $field['Description'];
             }
