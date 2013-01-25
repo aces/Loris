@@ -12,7 +12,7 @@
 require_once "generic_includes.php";
 require_once 'Spreadsheet/Excel/Writer.php';
 require_once "Archive/Tar.php";
-
+require_once "Utility.class.inc";
 //Configuration variables for this script, possibly installation dependent.
 //$dataDir = "dataDump" . date("dMy");
 $dumpName = "IBISdataDump" . date("dMy"); // label for dump
@@ -35,6 +35,14 @@ while($entry = $d->read()) {
 }
 $d->close();
 
+//Substites words for number in ProjectID data field
+function MapProjectID(&$results){
+    $projects = Utility::getProjectList();
+    for($i = 0; $i < count($results); $i++){
+        $results[$i]["ProjectID"] = $projects[$results[$i]["ProjectID"]];
+    }
+    return $results;
+}
 //Substitute words for numbers in Subproject data field
 function MapSubprojectID(&$results) {
     global $config;
@@ -61,7 +69,6 @@ $DB->select($query, $instruments);
 if (PEAR::isError($instruments)) {
 	PEAR::raiseError("Couldn't get instruments. " . $instruments->getMessage());
 }
-
 foreach ($instruments as $instrument) {
 	//Query to pull the data from the DB
 	$Test_name = $instrument['Test_name'];
@@ -121,13 +128,13 @@ writeExcel($Test_name, $instrument_table, $dataDir);
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, pc.Value as candidate_comment from candidate c join session s USING(CandID) join parameter_type pt ON (pt.Name='candidate_comment') left join parameter_candidate pc ON (pc.ParameterTypeID=pt.ParameterTypeID AND pc.CandID=c.CandID)where c.CandID = s.CandID and substring(c.PSCID, 1, 3) in ('PHI', 'STL', 'SEA', 'UNC') and c.Active='Y' order by c.PSCID";
+$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y' ORDER BY c.PSCID";
 $DB->select($query, $results);
 if (PEAR::isError($results)) {
 	PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
 }
 
-
+MapProjectID(&$results);
 MapSubprojectID(&$results);
 writeExcel($Test_name, $results, $dataDir);
 
