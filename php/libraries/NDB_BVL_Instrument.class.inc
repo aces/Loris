@@ -791,7 +791,7 @@ class NDB_BVL_Instrument extends PEAR
         foreach($elements AS $elname=>$elvalue) {
             //If the element is a group (and thus elvalue is an array) trigger the Null Value default rule if ANY of the values in the group are empty.
             $flag=true;
-            if(is_array($elvalue)){
+            if(is_array($elvalue)) {
                 foreach($elvalue AS $val){
                     if ($val==""){
                         $flag=false;
@@ -808,27 +808,29 @@ class NDB_BVL_Instrument extends PEAR
             // DINRunElementRules only runs a single rule, and returns false if it's violated. It's much simpler than 
             // XINRules but should be expanded later to support more complex logic.
             // - Dave
-            if(!empty($this->XINRules[$elname])) {
-                $registered_rules = $this->XINRules[$elname];
-                if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
-                foreach($registered_rules as $registered) {
+            if($this->InstrumentType === 'LINST') {
+                if(!empty($this->XINRules[$elname])) {
+                    $registered_rules = $this->XINRules[$elname];
+                    if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
+                    foreach($registered_rules as $registered) {
 
-                    $rules = $registered['rules'];
+                        $rules = $registered['rules'];
 
-                    foreach($rules as $rule) {
-                    //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-                        if(stristr(substr($rule, strpos($rule,"|")),"{@}")){
-                            $rules_array=explode("|",$rule);
-                        } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
-                            $rules_array[]=$rule;
-                        }
-                        foreach($rules_array as $rule) {
-                            $rule_array = explode("{@}", $rule);
-                            if($rule_array[0] == $elname) {
-                                $result=$this->DINRunElementRules($elname, $elements, $registered);
-                                if($result == false){
-                                    $el=$registered['group']!="" ? $registered['group'] : $elname;
-                                    $errors[$el]=$registered['message'];
+                        foreach($rules as $rule) {
+                            //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
+                            if(stristr(substr($rule, strpos($rule,"|")),"{@}")){
+                                $rules_array=explode("|",$rule);
+                            } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
+                                $rules_array[]=$rule;
+                            }
+                            foreach($rules_array as $rule) {
+                                $rule_array = explode("{@}", $rule);
+                                if($rule_array[0] == $elname) {
+                                    $result=$this->DINRunElementRules($elname, $elements, $registered);
+                                    if($result == false){
+                                        $el=$registered['group']!="" ? $registered['group'] : $elname;
+                                        $errors[$el]=$registered['message'];
+                                    }
                                 }
                             }
                         }
@@ -840,10 +842,17 @@ class NDB_BVL_Instrument extends PEAR
             if($elvalue=="" || $flag==false){
                 if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
                 if(!empty($this->XINRules[$elname])){
-                    $registered_rules = $this->XINRules[$elname];
-                    foreach($registered_rules as $registered_rule) {
-                        $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
-                        if(is_array($result)) {
+                    if($this->InstrumentType === 'LINST') {
+                        $registered_rules = $this->XINRules[$elname];
+                        foreach($registered_rules as $registered_rule) {
+                            $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
+                            if(is_array($result)) {
+                                $errors+=$result;
+                            }
+                        }
+                    } else {
+                        $result=$this->XINRunElementRules($elname, $elements, $this->XINRules[$elname]);
+                        if(is_array($result)){
                             $errors+=$result;
                         }
                     }
@@ -861,12 +870,18 @@ class NDB_BVL_Instrument extends PEAR
         return true;
     }
     
+    // Run registered rules for $elname
+    // Returns true if the element passes, false if the rule fails
     function DINRunElementRules($elname, $elements, $registered) {
         foreach($registered['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
             $split = explode('{@}', $rule);
             $userval = $elements[$elname];
             $operator = $split[1];
             $comparevalue = $split[2];
+            // Special case for if the rule was registered as "q{@}=={@}NEVER_REQUIRED"
+            if($comparevalue == 'NEVER_REQUIRED' && $operator == '==') {
+                return true;
+            }
             $compareFunction = create_function('$a, $b', "return \$a $operator \$b;"); //(\$a $operator \$b);");
 
             if(!($compareFunction($comparevalue, $userval)) ) {
@@ -888,18 +903,40 @@ class NDB_BVL_Instrument extends PEAR
     * @param string $group  Empty if a non-grouped element is registering the rule.  Otherwise, name of the group registering the rule.    
     */
     function XINRegisterRule($elname, $rules, $message="", $group=""){
-        if(!is_array($rules)){
-            $rules_array[]=$rules;
-        } else {
-            $rules_array=$rules;
-        }
-        $rule = array ('message' => $message, 'group' => $group, 'rules' => array());
+        // I'm not sure if these are logically the same. I think they should be, but
+        // there was a bug introduced by the LINST changes to XINRules to old instruments
+        // so I'm making sure that the old code is followed exactly with this if block.
+        // After everything's working, review this to see if we can get rid of one of
+        // the if statement and use the same logic for "old" instruments and "new"
+        // instruments
+        //  -- Dave
+        if($this->InstrumentType === 'LINST') {
+            if(!is_array($rules)){
+                $rules_array[]=$rules;
+            } else {
+                $rules_array=$rules;
+            }
+            $rule = array ('message' => $message, 'group' => $group, 'rules' => array());
 
-        foreach($rules_array AS $rule_cmd){
-            $rule['rules'][]=$rule_cmd;
+            foreach($rules_array AS $rule_cmd){
+                $rule['rules'][]=$rule_cmd;
+            }
+            $this->XINRules[$elname][] = $rule;
+            return true;
+        } else {
+            if(!is_array($rules)){
+                $rules_array[]=$rules;
+            } else {
+                $rules_array=$rules;
+            }
+            $this->XINRules[$elname]['message']=$message;
+            $this->XINRules[$elname]['group']=$group;
+
+            foreach($rules_array AS $rule){
+                $this->XINRules[$elname]['rules'][]=$rule;
+            }
+            return true;
         }
-        $this->XINRules[$elname][] = $rule;
-        return true;
     }
 
     // }}}
@@ -1364,6 +1401,7 @@ class NDB_BVL_Instrument extends PEAR
 
     function loadInstrumentFile($filename, $base64 = false) {
         if(file_exists($filename) || $base64 === true) {
+            $this->InstrumentType = 'LINST';
             $db = Database::singleton();
             $this->dateTimeFields = array("Date_taken");
             $this->form = new HTML_Quickform('test_form');
