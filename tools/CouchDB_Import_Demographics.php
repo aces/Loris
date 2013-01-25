@@ -38,10 +38,23 @@ class CouchDBDemographicsImporter {
             'Description' => 'Current stage of visit',
             'Type' => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')"
         ),  
-        'Failure' => array(
+        'Failure' =>  array(
             'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
             'Type' => "enum('Failure','Withdrawal','Neither')",
+        ),
+       'Project' => array(
+            'Description' => 'Project for which the candidate belongs',
+            'Type' => "enum('IBIS1','IBIS2','Fragile X', 'EARLI Collaboration')",
+        ),
+        'Plan' => array(
+            'Description' => 'Plan for IBIS2 candidate',
+            'Type' => "varchar(20)",
+        ),
+        'EDC' => array(
+            'Description' => 'Expected Date of Confinement (Due Date)',
+            'Type' => "varchar(255)",
         )
+
     );
     function __construct() {
         $this->SQLDB = Database::singleton();
@@ -58,18 +71,34 @@ class CouchDBDemographicsImporter {
             }
         }
     }
+
+    function _getProject($id) {
+        $config = NDB_Config::singleton();
+        $subprojsXML = $config->getSetting("Projects");
+        $subprojs = $subprojsXML['project'];
+        foreach($subprojs as $subproj) {
+            if($subproj['id'] == $id) {
+                return $subproj['title'];
+            }
+        }
+    }
+
     function run() {
+
         $this->CouchDB->replaceDoc('DataDictionary:Demographics',
             array('Meta' => array('DataDict' => true),
                   'DataDictionary' => array('demographics' => $this->Dictionary) 
             )
         );
 
-        $demographics = $this->SQLDB->pselect("SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID <> 'scanner'", array());
+        // Project, Plan, EDC
+        $demographics = $this->SQLDB->pselect("SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, pc_plan.Value as Plan, c.EDC as EDC FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) LEFT JOIN parameter_type pt_plan ON (pt_plan.Name='candidate_plan') LEFT JOIN parameter_candidate AS pc_plan ON (pc_plan.CandID=c.CandID AND pt_plan.ParameterTypeID=pc_plan.ParameterTypeID) WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID <> 'scanner'", array());
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
             unset($demographics['SubprojectID']);
+            $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
+            unset($demographics['ProjectID']);
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
                 'identifier' => array($demographics['PSCID'], $demographics['Visit_label'])
