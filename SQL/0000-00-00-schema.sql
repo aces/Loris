@@ -28,6 +28,7 @@ CREATE TABLE `candidate` (
   `EDC` date default NULL,
   `Gender` enum('Male','Female') default NULL,
   `CenterID` tinyint(2) unsigned NOT NULL default '0',
+  `ProjectID` int(11) default NULL,
   `Ethnicity` varchar(255) default NULL,
   `ZIP` varchar(12) default NULL,
   `FamilyID` int(6) default NULL,
