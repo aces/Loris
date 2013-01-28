@@ -72,7 +72,9 @@ $(function(){
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.Feedback.label}</td>
-        <td nowrap="nowrap" colspan="3">{$form.Feedback.html}<//td>
+        <td nowrap="nowrap">{$form.Feedback.html}</td>
+        <td nowrap="nowrap">{$form.ProjectID.label}</td>
+        <td nowrap="nowrap">{$form.ProjectID.html}</td>
     </tr>
     {if $useEDC=="true"}
     <tr>
