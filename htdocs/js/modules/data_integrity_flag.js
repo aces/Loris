@@ -24,6 +24,7 @@ function changeVisitLabels() {
         instrument_dropdown_value,
         temp_array = ["All Instruments"],
         instruments;
+    if ($.trim(visit_label_value) === 'All Visits') {visit_label_value = ''; }
     if (request !== undefined) {
         request = request.replace(/\+/g, ' ');
     }
@@ -55,8 +56,7 @@ function changeVisitLabels() {
 $(function () {
     "use strict";
     changeVisitLabels();
-    var i = $('#instrument'),
-        v = $('#visit_label');
-    $(i, v).bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the instrument dropdown is changed
+    $('#instrument,#visit_label,#users').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the instrument dropdown is changed
     $('#update_data').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the dropdown is changed
 });
+
