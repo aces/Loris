@@ -32,6 +32,11 @@
                 </select>
             </div>
 	   </td>  
+	    
+	    <tr>
+	        <td>{$form.users.label}</td>
+	        <td>{$form.users.html}</td>
+	    </tr>
     </tr>
  
     <tr>
@@ -52,7 +57,7 @@
 		{**error table***}
 		<table border="0">
 				<tr>
-			      <td nowrap="nowrap" colspan="3" class="error">NOTE: Please click on 'show-data' or refresh the page, once the 'save' button is clicked"</td>
+			      <td nowrap="nowrap" colspan="3" style="color:red">NOTE: Please click on 'show-data' or refresh the page, once the 'save' button is clicked"</td>
 					<!--td class="error"><em>NOTE: Please click on 'show-data' or refresh the page, once the 'save' button is clicked"</em></td-->
 				</tr>
 			    {foreach from=$form.errors item=error}
@@ -107,7 +112,7 @@
 	<table class="fancytable" border="0">
 	    {if $form.total.html}
 	        <tr class="nohover">
-	            <td colspan="7" align="right" style="border: none;" class="nohover">Showing <em>{$form.total.html}</em> results.</td>
+	            <td colspan=8" align="right" style="border: none;" class="nohover">Showing <em>{$form.total.html}</em> results.</td>
 	        </tr>
 	    {/if}
 	    <tr>
@@ -117,6 +122,7 @@
 	        <th>Flag Status</th>
 	        <th>Comment</th>
 	        <th>Data Cleaning open-feedbacks</th>
+	        <th>UserID</th>
 	    </tr>
 	    {foreach from=$elements_list_names item=element}
 	    
@@ -127,6 +133,7 @@
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].flag}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].comment}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].dc_open_feedback}</td>
+	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].userid}</td>
 	        </tr>
 	        
 	    {/foreach}
