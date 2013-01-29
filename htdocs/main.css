@@ -535,3 +535,9 @@ h2.statsH2 {
 .fieldsSelect{
    cursor: pointer;
 }
+.toggle_mri_tbl{
+  cursor: pointer;
+  width: 140px;
+  height: 10px;
+  padding-bottom: 5px;
+}
