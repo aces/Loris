@@ -97,14 +97,10 @@ class NDB_Form_new_profile extends NDB_Form
         }
 
         if($config->getSetting("useProjects") == "true") {
-            $projects = Utility::toArray($config->getSetting("Projects"));
-            $projects = $projects[0]['project'];
+            $projects = Utility::getProjectList();
             $projList = array('' => '');
-            foreach($projects as $project) {
-                $id = $project['@']['id'];
-                if($id) {
-                    $projList[$id] = $project['label'];
-                }
+            foreach($projects as $projectID => $projectName) {
+                $projList[$projectID] = $projectName;
             }
             $this->form->addElement("select", 'ProjectID', 'Project', $projList);
         }
