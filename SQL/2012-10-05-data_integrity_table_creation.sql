@@ -10,6 +10,7 @@ CREATE TABLE `data_integrity_flag` (
   `dataflag_fbclosed` int(11) NOT NULL DEFAULT '0',
   `dataflag_fbcomment` int(11) NOT NULL DEFAULT '0',
   `dataflag_fbdeleted` int(11) NOT NULL DEFAULT '0',
+  `dataflag_userid` varchar(255) NOT NULL,
   PRIMARY KEY (`dataflag_id`)
 );
 
