@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * NeuroDB client - takes care of using the configuration, creating the first database connection, and including a lot of commonly used libraries.  by default does web-appropriate setup (session management and user auth).
  * @version $Id: NDB_Client.class.inc,v 1.7 2006/04/05 17:07:42 sebas Exp $
@@ -83,7 +83,7 @@ class NDB_Client
         */
         if(!isset($_SESSION['State'])) {
             $_SESSION['State'] =& State::singleton();
-            $login =& new SinglePointLogin;
+            $login = new SinglePointLogin();
             $_SESSION['State']->setProperty('login', $login);
         } else {
             $login =& $_SESSION['State']->getProperty('login');

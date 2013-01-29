@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * This class performs a logic test on a behavioral instrument
  *
@@ -23,7 +23,7 @@ class NDB_BVL_LogicTest
     
     var $logicTestInfo;
     
-    function &singleton($type, $test_name, $commentID=null)
+    static function &singleton($type, $test_name, $commentID=null)
     {
         static $logicTestList = array();
 

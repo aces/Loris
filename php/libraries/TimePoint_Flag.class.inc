@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 *
 * This class provides methods to 'flag' any data records in the schema.
@@ -62,7 +62,7 @@ Class TimePoint_Flag extends TimePoint
     // list of all active bvl instruments for project
     var $projectBvlInstruments = array();
 
-    function &singleton($sessionID)
+    static function &singleton($sessionID)
     {
         // instantiate new TimePoint_Flag object
         static $flagList;

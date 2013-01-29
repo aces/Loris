@@ -20,7 +20,7 @@ Class TimePoint
     
     var $bvlQcExclusionStatuses = array(null,'Excluded','Not Excluded');
 
-    function &singleton($sessionID)
+    static function &singleton($sessionID)
     {
         // instantiate new TimePoint object
 

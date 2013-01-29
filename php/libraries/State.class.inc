@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * stores simple state data during a browsing session
  * @package main
@@ -25,7 +25,7 @@ class State
      * existed previously)
      * @access public
      */
-    function &singleton()
+    static function &singleton()
     {
         static $instance = null;
         if(is_null($instance)) {

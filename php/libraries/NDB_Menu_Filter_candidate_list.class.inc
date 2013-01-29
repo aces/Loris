@@ -33,7 +33,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID', 'candidate.PSCID', 'candidate.Gender', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
+        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
         $config=&NDB_Config::singleton();
         if($config->getSetting("useEDC")=="true"){
         	$this->columns[]='DATE_FORMAT((candidate.EDC),\'%Y-%m-%d\') AS EDC';
@@ -54,7 +54,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         
         $this->group_by = 'candidate.CandID';
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
-        $this->validFilters = array('candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
+        $this->validFilters = array('candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
         $this->validHavingFilters = array('count(DISTINCT session.Visit_label)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
 		
         $this->formToFilter = array(
@@ -63,12 +63,13 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                     'PSCID' => 'candidate.PSCID',
                                     'gender' => 'candidate.Gender',
                                     'SubprojectID' => 'session.SubprojectID',
+                                    'ProjectID' => 'candidate.ProjectID',
                                     'dob' => 'candidate.DoB',
                                     'Visit_Count' => 'count(DISTINCT session.Visit_label)', // Need distinct because of joining with feedback_bvl_thread
                                     'Latest_Visit_Status' => 'max(session.Current_stage)',
                                     'Feedback' => 'coalesce(min(feedback_bvl_thread.Status+1), 1)'
 
-                                    );
+                                );
         return true;
     }
 
@@ -103,6 +104,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
 
         // SubprojectID
         $list_of_subprojects =& Utility::getSubprojectList();
+        $list_of_projects =& Utility::getProjectList();
 
         // list of feedback statuses
         $feedback_status_options = array(null => 'Any','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
@@ -114,6 +116,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->form->addElement('text', 'DCCID', 'DCC-ID:');
         $this->form->addElement('text', 'PSCID', 'PSC-ID:');
         $this->form->addElement('select', 'gender', 'Gender:', array('' => 'Any', 'Male' => 'Male', 'Female' => 'Female'));
+        $this->form->addElement('select', 'ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
         $this->form->addElement('select', 'SubprojectID', 'Sub Project:', array('' => 'Any') + $list_of_subprojects);
         $this->form->addElement('text', 'dob', 'Date of Birth:', 'maxlength=10');
         $this->form->addElement('text', 'Visit_Count','Number of Visits:');
@@ -139,6 +142,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 		$subprojectlist=Utility::getSubprojectList();
+        $projectlist=Utility::getProjectList();
 		
         // print out
         $x = 0;
@@ -162,7 +166,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                     $this->tpl_data['items'][$x][$i]['bgcolor'] = NDB_BVL_Feedback::getThreadColor($this->tpl_data['items'][$x][$i]['value']);
                 } else if ($key=='Feedback' && empty($val)){
                 	$this->tpl_data['items'][$x][$i]['value'] = "None";
-                } else if ($key=='Subproject'){
+                } else if ($key=='Project') {
+                	$this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
+                } else if ($key=='Subproject') {
                 	$this->tpl_data['items'][$x][$i]['value'] = $subprojectlist[$val];
                 }
                 	

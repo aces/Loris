@@ -189,7 +189,7 @@ class MRIMenuPage {
         if(!empty($this->filter[$fname])) {
             // override to allow for comma separated list 
             // if input contains a comma.
-            if(!ereg(",", $this->filter[$fname])) {
+            if(!preg_match("/,/", $this->filter[$fname])) {
                 return ' AND ' . $this->formToFilter[$fname] . ' LIKE ' . $this->DB->quote($this->filter[$fname] . '%');
             }
             return ' AND '.  $this->formToFilter[$fname] . ' IN (' . $this->filter[$fname] .')';

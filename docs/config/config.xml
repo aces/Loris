@@ -196,6 +196,7 @@
             <visible>1</visible>
         </tab>
 
+        <tab>
           <link>data_team_helper</link>
           <label>Data Team Helper</label>
           <access>all</access>
@@ -205,7 +206,17 @@
           </permissions>
           <visible>1</visible>
         </tab>
-    </main_menu_tabs>
+        <tab>
+          <link>violated_scans</link>
+          <label>Violated Scans</label>
+          <access>all</access>
+          <permissions>
+          <perm>violated_scans</perm>
+          </permissions>
+          <visible>1</visible>
+        </tab>
+
+</main_menu_tabs>
 
 </config>
 

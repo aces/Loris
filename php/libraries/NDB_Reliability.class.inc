@@ -1,4 +1,4 @@
-<?
+<?php
 require_once "NDB_Form.class.inc";
 require_once('RequiredIf.inc');
 
@@ -111,7 +111,7 @@ class NDB_Reliability extends NDB_Form
 
         // display the HTML_Quickform object
         $smarty = new Smarty_neurodb;
-        $renderer =& new HTML_QuickForm_Renderer_ArraySmarty($smarty);
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
         $this->form->accept($renderer);
         $smarty->assign('form', $renderer->toArray());
         $smarty->assign($this->tpl_data);

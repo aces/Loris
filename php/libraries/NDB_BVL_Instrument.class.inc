@@ -133,14 +133,32 @@ class NDB_BVL_Instrument extends PEAR
         if(!file_exists($base."project/instruments/$class.class.inc") && $guarantee_exists==false) {
             return;
         }
-        require_once($base."project/instruments/$class.class.inc");
+        if(file_exists($base."project/instruments/$instrument.linst") || $instrument=='instrument_preview') {
+            //print "Using Loris Instrument Format\n";
+            if($instrument == 'instrument_preview') {
+                require_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
+                $obj = new NDB_BVL_Instrument_instrument_preview();
+                $obj->preview = true;
+            } else {
+                $obj = new NDB_BVL_Instrument();
+            }
+            //$obj->form = new HTML_Quickform('test_form');
+            $obj->commentID = $commentID;
+            $obj->page= $page;
+            $obj->loadInstrumentFile($base . "project/instruments/$instrument.linst");
+            if(file_exists($base."project/instruments/$instrument.rules")) {
+                $obj->loadInstrumentRules($base . "project/instruments/$instrument.rules");
+            }
+        } else {
+            require_once($base."project/instruments/$class.class.inc");
 
 
-        // Now go ahead and instantiate it
-        $obj = new $class;
-        $success = $obj->setup($commentID, $page);
-        if (PEAR::isError($success)) {
-            return PEAR::raiseError($success->getMessage());
+            // Now go ahead and instantiate it
+            $obj = new $class;
+            $success = $obj->setup($commentID, $page);
+            if (PEAR::isError($success)) {
+                return PEAR::raiseError($success->getMessage());
+            }
         }
         
         $access = $obj->_hasAccess();
@@ -255,7 +273,17 @@ class NDB_BVL_Instrument extends PEAR
     * @access public
     * @abstract
     */
-    function score() {}
+    function score() {
+        $config = NDB_Config::singleton();
+        $base = $config->getSetting('base');
+        $scorer = $base . "project/instruments/" . $this->testName . ".score";
+        if(file_exists($scorer)) {
+            exec($scorer . " " . escapeshellarg($this->getCommentID()), $output, $retVal);
+            if($retVal != 0) {
+                print "Error running scoring algorithm";
+            }
+        }
+    }
 
     // }}}
     // {{{ display()
@@ -279,34 +307,36 @@ class NDB_BVL_Instrument extends PEAR
         
         if(!$this->form->isFrozen()) {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
-            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->form->addGroup($buttons, null, null, "&nbsp;");
         }
         
  
         // get saved data to pre-populate form
+
         $db =& Database::singleton();
-        $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
-        if($this->isError($defaults)) {
-            return $this->raiseError('Could not get default values for form');
+        if($this->preview !== true) {
+            $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
+            if($this->isError($defaults)) {
+                return $this->raiseError('Could not get default values for form');
+            }
+            // set the defaults (call private method _setDefaultsArray
+            // which could be overridden if necessary)
+            $defaults = $this->_setDefaultsArray($defaults[0]);
+
+            // merge in the localDefaults property so that simple
+            // additions to the defaults array no longer requires
+            // overriding the _setDefaultsArray method
+            $defaults = array_merge($defaults, $this->localDefaults);
+        } else {
+            $defaults = $this->localDefaults;
         }
-        // set the defaults (call private method _setDefaultsArray
-        // which could be overridden if necessary)
-        $defaults = $this->_setDefaultsArray($defaults[0]);
-        
-        // merge in the localDefaults property so that simple
-        // additions to the defaults array no longer requires
-        // overriding the _setDefaultsArray method
-        $defaults = array_merge($defaults, $this->localDefaults);
-        
-        // actually set the quickform object defaults
         $this->form->setDefaults($defaults);
 
         
         // display the HTML_Quickform object
         // return $this->form->toHTML();
         
-        $renderer =& new HTML_QuickForm_Renderer_Default();
+        $renderer = new HTML_QuickForm_Renderer_Default();
         $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
@@ -483,7 +513,7 @@ class NDB_BVL_Instrument extends PEAR
         }
         
         if(strrpos($this->testName, "_proband") === FALSE) {
-            $this->_saveCandidateAge(&$values);
+            $this->_saveCandidateAge($values);
         }
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
@@ -496,7 +526,7 @@ class NDB_BVL_Instrument extends PEAR
         
         //XIN specific functionality
         if($this->formType=="XIN"){
-            $this->_nullStatus(&$values);
+            $this->_nullStatus($values);
         }
         
         // do not alter this when overwriting the method
@@ -552,6 +582,7 @@ class NDB_BVL_Instrument extends PEAR
                              'addEmptyOption' => true,
                              'emptyOptionValue' => null
                              );
+        $this->dateOptions = $dateOptions;
 
         $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
         
@@ -755,14 +786,54 @@ class NDB_BVL_Instrument extends PEAR
     
     function XINValidate($elements){
         $this->XINDebug=false;  //Turn this on to see rules debuggin output
+
         $errors=array();
         foreach($elements AS $elname=>$elvalue) {
             //If the element is a group (and thus elvalue is an array) trigger the Null Value default rule if ANY of the values in the group are empty.
             $flag=true;
-            if(is_array($elvalue)){
+            if(is_array($elvalue)) {
                 foreach($elvalue AS $val){
                     if ($val==""){
                         $flag=false;
+                    }
+                }
+            }
+
+            // Run any rules that are dependent on the value of the current question, ie if XINRegister was called as
+            // $this->XINRegisterRule("q1", "q1{@}<={@}3", "Must be less than or equal to 3")
+            // These differ from 'required' rules in that they're run even if the value isn't empty
+            // Currently, this only supports simple, one value comparisons (though XINRegister can be called multiple
+            // times and each needs to be enforced independently), because the logic in XINRunElementRules is confusing
+            // and modifying it could potentially break existing XINRules.
+            // DINRunElementRules only runs a single rule, and returns false if it's violated. It's much simpler than 
+            // XINRules but should be expanded later to support more complex logic.
+            // - Dave
+            if($this->InstrumentType === 'LINST') {
+                if(!empty($this->XINRules[$elname])) {
+                    $registered_rules = $this->XINRules[$elname];
+                    if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
+                    foreach($registered_rules as $registered) {
+
+                        $rules = $registered['rules'];
+
+                        foreach($rules as $rule) {
+                            //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
+                            if(stristr(substr($rule, strpos($rule,"|")),"{@}")){
+                                $rules_array=explode("|",$rule);
+                            } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
+                                $rules_array[]=$rule;
+                            }
+                            foreach($rules_array as $rule) {
+                                $rule_array = explode("{@}", $rule);
+                                if($rule_array[0] == $elname) {
+                                    $result=$this->DINRunElementRules($elname, $elements, $registered);
+                                    if($result == false){
+                                        $el=$registered['group']!="" ? $registered['group'] : $elname;
+                                        $errors[$el]=$registered['message'];
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -771,9 +842,19 @@ class NDB_BVL_Instrument extends PEAR
             if($elvalue=="" || $flag==false){
                 if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
                 if(!empty($this->XINRules[$elname])){
-                    $result=$this->XINRunElementRules($elname, $elements, $this->XINRules[$elname]);
-                    if(is_array($result)){
-                        $errors+=$result;
+                    if($this->InstrumentType === 'LINST') {
+                        $registered_rules = $this->XINRules[$elname];
+                        foreach($registered_rules as $registered_rule) {
+                            $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
+                            if(is_array($result)) {
+                                $errors+=$result;
+                            }
+                        }
+                    } else {
+                        $result=$this->XINRunElementRules($elname, $elements, $this->XINRules[$elname]);
+                        if(is_array($result)){
+                            $errors+=$result;
+                        }
                     }
                 } else if(substr($elname,-7)!="_status" && !in_array($elname,array("page","subtest"))){
                     $errors[$elname]="Required.";
@@ -789,6 +870,27 @@ class NDB_BVL_Instrument extends PEAR
         return true;
     }
     
+    // Run registered rules for $elname
+    // Returns true if the element passes, false if the rule fails
+    function DINRunElementRules($elname, $elements, $registered) {
+        foreach($registered['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
+            $split = explode('{@}', $rule);
+            $userval = $elements[$elname];
+            $operator = $split[1];
+            $comparevalue = $split[2];
+            // Special case for if the rule was registered as "q{@}=={@}NEVER_REQUIRED"
+            if($comparevalue == 'NEVER_REQUIRED' && $operator == '==') {
+                return true;
+            }
+            $compareFunction = create_function('$a, $b', "return \$a $operator \$b;"); //(\$a $operator \$b);");
+
+            if(!($compareFunction($comparevalue, $userval)) ) {
+                return false;
+            }
+        }
+        // Nothing that was compared failed
+        return true;
+    }
     // }}}
     // {{{ XINRegisterRule()
 
@@ -801,18 +903,40 @@ class NDB_BVL_Instrument extends PEAR
     * @param string $group  Empty if a non-grouped element is registering the rule.  Otherwise, name of the group registering the rule.    
     */
     function XINRegisterRule($elname, $rules, $message="", $group=""){
-        if(!is_array($rules)){
-            $rules_array[]=$rules;
-        } else {
-            $rules_array=$rules;
-        }
-        $this->XINRules[$elname]['message']=$message;
-        $this->XINRules[$elname]['group']=$group;
+        // I'm not sure if these are logically the same. I think they should be, but
+        // there was a bug introduced by the LINST changes to XINRules to old instruments
+        // so I'm making sure that the old code is followed exactly with this if block.
+        // After everything's working, review this to see if we can get rid of one of
+        // the if statement and use the same logic for "old" instruments and "new"
+        // instruments
+        //  -- Dave
+        if($this->InstrumentType === 'LINST') {
+            if(!is_array($rules)){
+                $rules_array[]=$rules;
+            } else {
+                $rules_array=$rules;
+            }
+            $rule = array ('message' => $message, 'group' => $group, 'rules' => array());
 
-        foreach($rules_array AS $rule){
-            $this->XINRules[$elname]['rules'][]=$rule;
+            foreach($rules_array AS $rule_cmd){
+                $rule['rules'][]=$rule_cmd;
+            }
+            $this->XINRules[$elname][] = $rule;
+            return true;
+        } else {
+            if(!is_array($rules)){
+                $rules_array[]=$rules;
+            } else {
+                $rules_array=$rules;
+            }
+            $this->XINRules[$elname]['message']=$message;
+            $this->XINRules[$elname]['group']=$group;
+
+            foreach($rules_array AS $rule){
+                $this->XINRules[$elname]['rules'][]=$rule;
+            }
+            return true;
         }
-        return true;
     }
 
     // }}}
@@ -1072,8 +1196,11 @@ class NDB_BVL_Instrument extends PEAR
     * @param $name   Name prepended to the HTMLQuickform element
     * @param $label Element label
     */
-    function addDateElement($name, $label){
-        $group [] = $this->form->createElement("date", $name . "_date", null, $this->dateOptions);
+    function addDateElement($name, $label, $options = null){
+        if($options === null) {
+            $options = $this->dateOptions;
+        }
+        $group [] = $this->form->createElement("date", $name . "_date", null, $options);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
         $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
@@ -1103,15 +1230,23 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $field    The database field in which the response will be stored
     * @param    string    $label    The question text to display
     */
-    function addNumericElement($field, $label, $rules=array(), $rule_message='This field is required.'){
+    function addNumericElement($field, $label, $options = null) {
         $group [] = $this->form->createElement("text", $field, $label);
         $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->form->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
-        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
-  //      $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+        $status_rule = $field . '_status{@}=={@}';
+        if(is_array($options)) {
+            if($options['min']) {
+                $this->XINRegisterRule($field, array($field . '{@}<{@}' . $options['min']), "Must be greater than $options[min]", $field . '_group');
+            }
+            if($options['max']) {
+                $this->XINRegisterRule($field, array($field . '{@}>{@}' . $options['max']), "Must be less than $options[max]", $field . '_group');
+            }
+
+        }
     }
 
     /**
@@ -1235,7 +1370,7 @@ class NDB_BVL_Instrument extends PEAR
     function getCandidateAge($Date_taken=FALSE) {
         $db =& Database::singleton();
         $CommentID = $this->getCommentID();
-        $db->selectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID='$CommentID'", &$dates);
+        $db->selectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID='$CommentID'", $dates);
 
         if($Date_taken==FALSE) {
             $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
@@ -1246,6 +1381,164 @@ class NDB_BVL_Instrument extends PEAR
             return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
         }
         return;
+    }
+
+    function loadInstrumentFile($filename, $base64 = false) {
+        if(file_exists($filename) || $base64 === true) {
+            $this->InstrumentType = 'LINST';
+            $db = Database::singleton();
+            $this->dateTimeFields = array("Date_taken");
+            $this->form = new HTML_Quickform('test_form');
+            $this->formType='XIN';
+            $this->form->addFormRule(array(&$this,'XINValidate'));
+            $fp = fopen($filename, "r");
+            // Add elements is only true if we're parsing the current page, otherwise
+            // we don't.. but even on other pages, we need to parse the whole file for
+            // table{@} and other meta elements
+            $addElements = true;
+            if($_REQUEST['subtest']) {
+                $currentPage = $_REQUEST['subtest'];
+                $addElements = false;
+            } else {
+                $currentPage = 'top';
+                $addElements = true;
+            }
+
+            $parsingPage = 'top';
+
+            while(($line = fgets($fp, 4096)) !== false) {
+                $pieces = split("{@}", $line);
+
+                $type = $pieces[0];
+                if(strpos($pieces[1], "_status") !== FALSE) {
+                    continue;
+                }
+                if($pieces[1] == 'Date_taken' 
+                    || $pieces[1] == "Candidate_Age"
+                    || $pieces[1] == "Window_Difference"
+                    || $pieces[1] == "Examiner"
+                    ) {
+                    continue;
+                }
+                switch($type) {
+                    case 'page':
+                        $parsingPage = trim($pieces[2]);
+                        $pageName = $db->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:testinst AND Description=:parsing", array("testinst" => $this->testName, "parsing" => $parsingPage));
+                        if($currentPage == $pageName) {
+                            $addElements = true;
+                        } else {
+                            $addElements = false;
+                        }
+                        break;
+                    case 'table':
+                        $this->testName = trim($pieces[1]);
+                        $this->table = trim($pieces[1]);
+                        break;
+                    case 'title':
+                        if($addElements) {
+                            $this->form->addElement('header', 'instrument_title', $pieces[1]);
+                            $this->_addMetadataFields();
+                        }
+                        break;
+                    case 'text':
+                        if($addElements) {
+                            $this->addTextElement($pieces[1], $pieces[2]);
+                        }
+                        break;
+                    case 'textarea':
+                        if($addElements) {
+                            $this->addTextAreaElement($pieces[1], $pieces[2]);
+                        }
+                        break;
+                    case 'date':
+                        if(strpos($pieces[1], "_date") !== FALSE) {
+                            $pieces[1] = substr($pieces[1], 0, strpos($pieces[1], "_date"));
+                        }
+                        if($addElements) {
+                            if($pieces[3] == 1900 && $pieces[4] == 2100) {
+                                $dateOptions = null;
+                            } else {
+                                $dateOptions = array(
+                                     'language' => 'en',
+                                     'format'   => 'YMd',
+                                     'minYear'  => $pieces[3],
+                                     'maxYear'  => $pieces[4],
+                                     'addEmptyOption' => true,
+                                     'emptyOptionValue' => null
+                                );
+                            }
+
+                            $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
+                        }
+                        break;
+                    case 'numeric':
+                        if($addElements) {
+                            $this->addNumericElement($pieces[1], $pieces[2]);
+                        }
+                        break;
+
+                    case 'selectmultiple':
+                        $type = 'multiple';
+                        // fall through and also execute select code below
+                    case 'select':
+
+                        $options = split("{-}", trim($pieces[3]));
+                        $opt = array();
+                        foreach($options as $o) {
+                            $arr = explode("=>", $o);
+                            $key = $arr[0];
+                            $val = $arr[1];
+                            if($key[0] == "'" && $key[strlen($key)-1] == "'") {
+                                $key = substr($key, 1, -1);
+                            } else if($key == 'NULL') {
+                                $key ='';
+                            }
+                            if($val[0] == "'" && $val[strlen($val)-1] == "'") {
+                                $val= substr($val, 1, -1);
+                            } 
+                            $opt[$key] = $val;
+                        }
+
+                        if($addElements) {
+                            if($type == 'multiple') {
+                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
+                            } else {
+                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+                            }
+                        }
+                        break;
+                    case 'header':
+                        if($addElements) {
+                            $this->form->addElement('header', null, "$pieces[2]");
+                        }
+                        break;
+                    case 'static':
+                        if($addElements) {
+                            $this->form->addElement('static', $pieces[1], $pieces[2]);
+                        }
+                        break;
+                    default: 
+                        //print $line . "<br />";
+                        break;
+                }
+            }
+            fclose($fp);
+        }
+
+    }
+    function loadInstrumentRules($filename, $base64 = false) {
+        if(file_exists($filename) || $base64 === true) {
+            $fp = fopen($filename, "r");
+            while(($line = fgets($fp, 4096)) !== false) {
+                // Rules Uses {-} as delimiter, unlike linst files, because {@} is part of the rules themselves
+                $pieces = split("{-}", trim($line));
+                $question = $pieces[0];
+                $message = $pieces[1];
+                $rules = array_slice($pieces, 2);
+                $this->XINRegisterRule($question, $rules, $message);
+            }
+            fclose($fp);
+        }
     }
 } //end class NDB_BVL_Instrument
 // {{{ _checkDateTaken()

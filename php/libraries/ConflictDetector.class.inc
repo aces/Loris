@@ -1,4 +1,4 @@
-<?
+<?php
 class ConflictDetector {
 
     function detectConflictsForCommentIds($instrumentName, $commentId1, $commentId2) {

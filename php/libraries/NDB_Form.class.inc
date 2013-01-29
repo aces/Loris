@@ -1,4 +1,4 @@
-<?
+<?php
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -187,7 +187,7 @@ class NDB_Form extends PEAR
 
         // display the HTML_Quickform object
         $smarty = new Smarty_neurodb;
-        $renderer =& new HTML_QuickForm_Renderer_ArraySmarty($smarty);
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
         $this->form->accept($renderer);
         $smarty->assign('form', $renderer->toArray());
         $smarty->assign($this->tpl_data);
