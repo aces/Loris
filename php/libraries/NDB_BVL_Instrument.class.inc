@@ -86,7 +86,7 @@ class NDB_BVL_Instrument extends PEAR
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
@@ -615,11 +615,70 @@ class NDB_BVL_Instrument extends PEAR
     function _getExaminerNames()
     {
         $db =& Database::singleton();
-        $centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->getCommentID()."'");
+        $config =& NDB_Config::singleton();
 
-        $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
-        if($db->isError($results)) {
-            return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
+
+        //get examiner certifications for profiles part of IBIS2
+        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$_REQUEST["candID"]));
+
+        if ($project == '2') {
+            $visit_label = $db->pselectOne("SELECT Visit_label from session WHERE ID =:ssn_id", array('ssn_id'=>$this->getSessionID()));
+            $visit_label = strtolower($visit_label);
+
+            $certifications = array();
+            $certificationInstruments = $config->getSetting("CertificationInstruments");
+            foreach(Utility::toArray($certificationInstruments) AS $certificationInstrument) {
+                foreach (Utility::toArray($certificationInstrument['test']) AS $test) {  
+                    $test_key = $test['@']['value'];
+                    if (preg_match('/mullen/', $test_key)) {
+                        $test_key = 'mullen';
+                    } 
+                    if (preg_match('/adi_r/', $test_key)) {
+                        array_push($certifications, 'adi_r_proband');
+                        array_push($certifications, 'adi_r_subject');
+                    } else {
+                        array_push($certifications, $test_key);
+                        }
+                    }
+                }
+
+            $test_id = $db->pselectOne("SELECT ID from test_names where Test_name =:tst_name", array('tst_name'=>$this->testName));
+            if (in_array($this->testName, $certifications)) {
+                if ($this->testName == 'mullen') {
+                    $test_like = $testID . "_%";
+                    $q = "SELECT certification.examinerID, full_name FROM certification JOIN examiners ON certification.examinerID = examiners.examinerID WHERE testID LIKE '$test_like' AND pass =:cert_id AND centerID =:cid AND visit_label LIKE ";
+                    $query_array = array('cert_id'=>'certified','cid'=>$centerID);
+                    $order = " ORDER BY full_name";
+                    if ($visit_label == 'v03' || $visit_label == 'v06' || $visit_label == 'v09') {
+                        $q .= "'3-9%'";
+                    }
+                    elseif ($visit_label == 'v12'|| $visit_label == 'v15') {
+                        $q .= "'12-15%'";
+                    }
+                    elseif ($visit_label == 'v24' || $visit_label == 'v36') {
+                        $q .= "'24-36%'";
+                    }
+
+                    $query = $q . $order;
+                    $results = $db->pselect($query, $query_array);
+                    if($db->isError($results)) {
+                        return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+                    }
+
+            } else {
+                $results = $db->pselect("SELECT certification.examinerID, full_name FROM certification JOIN examiners ON certification.examinerID = examiners.examinerID WHERE testID =:tid AND pass =:cert_id AND centerID =:cid ORDER BY full_name",array('tid'=>$test_id,'cert_id'=>'certified','cid'=>$centerID));
+                if($db->isError($results)) {
+                   return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+                }
+            }
+            }
+        }
+        else {
+            $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
+            if($db->isError($results)) {
+                return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+            }
         }
         
         $examiners = array(''=>'');
