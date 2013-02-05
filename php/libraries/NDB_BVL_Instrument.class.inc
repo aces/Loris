@@ -611,31 +611,18 @@ class NDB_BVL_Instrument extends NDB_Page
     }
     
     // }}}
-    // {{{
-
-    /**
-     * gets the list of examiners for the current instrument site
-     *
-     * @return array
-     * @access private
-     */
-    function _getExaminerNames()
-    {
-        $db =& Database::singleton();
+    //
+    // Process the Config file. This results in:
+    //     1. $CertificationEnabled being true or false,
+    //     2. $CertificationProjects being a list of projects which
+    //     use ceritification and,
+    //     3. $CertificationInstruments being a list of instruments
+    //     that use certification.
+    // This is put in a different function so that instruments that
+    // override getExaminerNames() can still easily get the config
+    // settings and don't need to parse the config file themselves.
+    function _getCertificationConfig() {
         $config =& NDB_Config::singleton();
-
-        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
-
-        //get examiner certifications for profiles part of IBIS2
-        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$_REQUEST["candID"]));
-
-        // Process the Config file. This results in:
-        //     1. $CertificationEnabled being true or false,
-        //     2. $CertificationProjects being a list of projects which
-        //     use ceritification and,
-        //     3. $CertificationInstruments being a list of instruments
-        //     that use certification.
-
         $CertificationConfig = $config->getSetting("Certification");
         $CertificationEnabled = $CertificationConfig['EnableCertification'];
         if($CertificationEnabled) {
@@ -650,7 +637,28 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         }
+        return array($CertificationEnabled, $CertificationProjects, $CertificationInstruments);
+    }
 
+
+    // 
+    // {{{
+    /**
+     * gets the list of examiners for the current instrument site
+     *
+     * @return array
+     * @access private
+     */
+    function _getExaminerNames()
+    {
+        $db =& Database::singleton();
+
+        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
+
+        //get examiner certifications for profiles part of IBIS2
+        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$_REQUEST["candID"]));
+
+        list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
         if ($CertificationEnabled && in_array($project, $CertificationProjects)
             && in_array($this->testName, $CertificationInstruments)) {
             $test_id = $db->pselectOne("SELECT ID from test_names where Test_name =:tst_name", array('tst_name'=>$this->testName));
@@ -673,6 +681,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         return $examiners;
     }
+
     // }}}
     // {{{ getFullName()
     
