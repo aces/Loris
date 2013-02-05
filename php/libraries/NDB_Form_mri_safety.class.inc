@@ -250,13 +250,13 @@ class NDB_Form_mri_safety extends NDB_Form
         }
         
         // existing record
-        $this->form->addElement('static', 'Acquisition_date', null);
-        $this->form->addElement('select', 'Check_adverse', null, $optionsArray);
+        $this->addScoreColumn('Acquisition_date', null);
+        $this->addSelect('Check_adverse', null, $optionsArray);
         $this->form->addElement('date', 'Date_review', null, $dateOptions);
-        $this->form->addElement('select', 'Check_incidental', null, $optionsArray);
-        $this->form->addElement('static', 'Comment');
-        $this->form->addElement('static', 'Findings_confirmed');
-        $this->form->addElement('static', 'Findings_comment');
+        $this->addSelect('Check_incidental', null, $optionsArray);
+        $this->addScoreColumn('Comment');
+        $this->addScoreColumn('Findings_confirmed');
+        $this->addScoreColumn('Findings_comment');
 
         $this->form->addRule('Date_review', 'Required', 'required');
         $this->form->addRule('Check_adverse', 'Adverse findings required', 'required');
@@ -292,13 +292,13 @@ class NDB_Form_mri_safety extends NDB_Form
         $this->tpl_data['Visit_label'] = $result['Visit_label'];
         
         // existing record
-        $this->form->addElement('static', 'Acquisition_date', null);
-        $this->form->addElement('static', 'Check_adverse', null);
-        $this->form->addElement('static', 'Date_review', null);
-        $this->form->addElement('static', 'Check_incidental', null);
-        $this->form->addElement('textarea', 'Comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
-        $this->form->addElement('select', 'Findings_confirmed', null, $findingsConfirmedOptions);
-        $this->form->addElement('textarea', 'Findings_comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
+        $this->addScoreColumn('Acquisition_date', null);
+        $this->addScoreColumn('Check_adverse', null);
+        $this->addScoreColumn('Date_review', null);
+        $this->addScoreColumn('Check_incidental', null);
+        $this->addBasicTextArea('Comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
+        $this->addSelect('Findings_confirmed', null, $findingsConfirmedOptions);
+        $this->addBasicTextArea('Findings_comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
 
         $this->form->addRule('Findings_confirmed', 'Findings Confirmation is required', 'required');
     }

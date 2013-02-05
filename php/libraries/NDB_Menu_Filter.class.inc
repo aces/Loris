@@ -120,7 +120,8 @@ class NDB_Menu_Filter extends NDB_Menu
         }
         
         // start the filter form
-        $this->form = new HTML_QuickForm('filter');
+          $this->_setupPage(null, null, null, null, 'filter');
+       // $this->form = new HTML_QuickForm('filter');
 
         // set the filters
         $this->_setupFilters();

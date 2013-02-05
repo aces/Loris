@@ -6,7 +6,7 @@ require_once 'PEAR.php';
  *
  * @package main
  */
-class NDB_Menu extends PEAR
+class NDB_Menu extends NDB_Page
 {
     /**
      * The menu's name
