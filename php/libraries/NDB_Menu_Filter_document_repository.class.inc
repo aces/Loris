@@ -135,20 +135,20 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
 
 
         // Form Elements
-        $this->form->addElement('text', 'File_name', 'File name:'); 
-        $this->form->addElement('text', 'version', 'Version:'); 
+        $this->addBasicText('File_name', 'File name:'); 
+        $this->addBasicText('version', 'Version:'); 
 	
 	    $fileCategories = array(null=>'Any', 'abstract'=>'Abstract', 'audio_visual'=>'Audio-visual', 'instrument'=>'Instrument', 'manual'=>'Manual', 'minutes'=>'Minutes', 'paper'=>"Paper", 'presentation'=>'Presentation', 'protocol'=>'Protocol', 'spreadsheet_table'=>'Spreadsheets-Table', 'other'=>'Other');
 
-        $this->form->addElement('select', 'File_type', 'File type:', $fileTypes); 
-        $this->form->addElement('select', 'File_category', 'File category:', $fileCategories); 
+        $this->addSelect('File_type', 'File type:', $fileTypes); 
+        $this->addSelect('File_category', 'File category:', $fileCategories); 
 	    $this->tpl_data['File_categories'] = $fileCategories;
 	    $this->tpl_data['Sites'] = $list_of_sites;
 	    $user =& User::singleton();
 	    $userID = $user->getData('UserID');
 	    $this->tpl_data['User'] = $userID; 
-        $this->form->addElement('select', 'For_site', 'For Site:', $list_of_sites);
-        $this->form->addElement('text', 'uploaded_by', 'Uploaded By:');
+        $this->addSelect('For_site', 'For Site:', $list_of_sites);
+        $this->addBasicText('uploaded_by', 'Uploaded By:');
        
         return true;
     }

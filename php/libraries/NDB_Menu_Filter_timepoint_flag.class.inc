@@ -68,7 +68,8 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
         }
 
         // start the filter form
-        $this->form = new HTML_QuickForm('filter');
+        $this->_setupPage(null, null, null, null, 'filter');
+       //  $this->form = new HTML_QuickForm('filter');
 
         // set the filters
         $this->_setupFilters();
@@ -144,24 +145,24 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
 
         // add the mode select
         $this->form->setDefaults(array('mode' => $this->mode));
-        $this->form->addElement('select', 'mode', 'Mode:', array('' => 'Select one', 'subject' => 'Subject', 'flag' => 'Flag'), array("onchange"=>"parameterTimepointFilterForm.submit()"));
+        $this->addSelect('mode', 'Mode:', array('' => 'Select one', 'subject' => 'Subject', 'flag' => 'Flag'), array("onchange"=>"parameterTimepointFilterForm.submit()"));
 
         // add the mode select
         $this->form->setDefaults(array('subprojectID' => $this->mode));
-        $this->form->addElement('select', 'subprojectID', null, array('%' => 'All', '1' => 'Objective 1', '2' => 'Objective 2'));
+        $this->addSelect('subprojectID', null, array('%' => 'All', '1' => 'Objective 1', '2' => 'Objective 2'));
 
         // get the list of study sites - to be replaced by the Site object
         $list_of_sites =& Utility::getSiteList();
         if (PEAR::isError($list_of_sites)) {
             return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
         }
-        $this->form->addElement('select', 'centerID', 'Site:', array(null=>'All')+$list_of_sites);
+        $this->addSelect('centerID', 'Site:', array(null=>'All')+$list_of_sites);
 
         switch ($this->mode) {
 
             case 'subject':
 
-            $this->form->addElement('select', 'last_change', 'Show Subjects:', array(''=>'All', 'evaluated'=>'With timepoint evaluated', 'reviewed'=>'With all flags reviewed', 'non_reviewed'=>'With non-reviewed flags'), array("onchange"=>"parameterTimepointFilterForm.submit()"));
+            $this->addSelect('last_change', 'Show Subjects:', array(''=>'All', 'evaluated'=>'With timepoint evaluated', 'reviewed'=>'With all flags reviewed', 'non_reviewed'=>'With non-reviewed flags'), array("onchange"=>"parameterTimepointFilterForm.submit()"));
 
 
             // DCCID / Visit
