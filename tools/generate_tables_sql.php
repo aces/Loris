@@ -91,6 +91,9 @@ foreach($instruments AS $instrument){
 
             //generate specific column definitions for specific types of HTML elements
             default:
+                if($bits[1] == "") {
+                    continue;
+                }
                 if($bits[0]=="select"){
                     $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
                 } else if($bits[0]=="selectmultiple"){

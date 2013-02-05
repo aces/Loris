@@ -101,7 +101,7 @@ class NDB_Form_timepoint_flag extends NDB_Form
         
             foreach ($val as $key1=>$flag) {
                 if ($key != 'MI') {
-                    $this->form->addElement('static',$key.$flag, "FLAG : ".$flag);
+                    $this->addScoreColumn($key.$flag, "FLAG : ".$flag);
                     $this->tpl_data["elements_list_$key"][]=$key.$flag;
                 }
             }
@@ -111,7 +111,7 @@ class NDB_Form_timepoint_flag extends NDB_Form
                 $flagPositiveTriggers = $timepointFlagObject->evaluateFlagTriggers($flag);
                 if (is_array($flagPositiveTriggers)) {
                     foreach ($flagPositiveTriggers as $triggerName=>$triggerStatus) {
-                        $this->form->addElement('static',$key.$flag.$triggerName,$triggerName);
+                        $this->addScoreColumn($key.$flag.$triggerName,$triggerName);
                         $this->tpl_data["elements_list_$key"][]=$key.$flag.$triggerName;
                     }
                 }

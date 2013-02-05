@@ -28,6 +28,7 @@ CREATE TABLE `candidate` (
   `EDC` date default NULL,
   `Gender` enum('Male','Female') default NULL,
   `CenterID` tinyint(2) unsigned NOT NULL default '0',
+  `ProjectID` int(11) default NULL,
   `Ethnicity` varchar(255) default NULL,
   `ZIP` varchar(12) default NULL,
   `FamilyID` int(6) default NULL,
@@ -318,6 +319,8 @@ CREATE TABLE `feedback_mri_comments` (
   `CommentID` int(11) unsigned NOT NULL auto_increment,
   `MRIID` int(11) unsigned default NULL,
   `FileID` int(10) unsigned default NULL,
+  `SeriesUID` varchar(64) default NULL,
+  `EchoTime` double default NULL,
   `SessionID` int(10) unsigned default NULL,
   `PatientName` varchar(255) default NULL,
   `CandID` varchar(6) default NULL,
@@ -382,6 +385,8 @@ CREATE TABLE `files` (
   `FileID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL default '0',
   `File` varchar(255) NOT NULL default '',
+  `SeriesUID` varchar(64) DEFAULT NULL,
+  `EchoTime` double DEFAULT NULL,
   `CoordinateSpace` varchar(255) default NULL,
   `Algorithm` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
@@ -405,7 +410,8 @@ DROP TABLE IF EXISTS `files_qcstatus`;
 CREATE TABLE `files_qcstatus` (
     FileQCID int(11) PRIMARY KEY auto_increment,
     FileID int(11) UNIQUE NULL,
-    SeriesUID varchar(64) UNIQUE NULL,
+    SeriesUID varchar(64) DEFAULT NULL,
+    EchoTime double DEFAULT NULL,
     QCStatus enum('Pass', 'Fail'),
     QCFirstChangeTime int(10) unsigned,
     QCLastChangeTime int(10) unsigned
@@ -1006,7 +1012,7 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2');
+INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2'),(19,'violated_scans','Violated Scans','2'),(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans moduleiolated Scans)','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1632,4 +1638,31 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2012-08-21 16:13:53
+
+--
+-- Table structure for table `parameter_type_override`
+--
+
+-- This table needs to be MyISAM because InnoDB doesn't
+-- support full text indexes
+CREATE TABLE `help` (
+    `helpID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+    `parentID` int(11) NOT NULL DEFAULT '-1',
+    `hash` varchar(32) DEFAULT NULL,
+    `topic` varchar(100) NOT NULL DEFAULT '',
+    `content` text NOT NULL,
+    `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `updated` datetime DEFAULT NULL, PRIMARY KEY (`helpID`), 
+    UNIQUE KEY `hash` (`hash`), 
+    FULLTEXT KEY `topic` (`topic`), 
+    FULLTEXT KEY `content` (`content`)
+) ENGINE=MYISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `help_related_links` (
+    `helpID` int(10) unsigned NOT NULL DEFAULT '0',
+    `relatedID` int(10) unsigned NOT NULL DEFAULT '0', 
+    PRIMARY KEY (`helpID`,`relatedID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO help (helpID, topic, content) VALUES ('1','LORIS HELP: Using the Database','Welcome to LORIS database. The help section provides you with guidelines for adding and updating information in the database'), ('2','HOW TO - Guide','Under Construction.Please visit us later'), ('3','Guidelines','Under Construction.Please visit us later'), ('5','Instruments - Guide','Under Construction.Please visit us later');
 

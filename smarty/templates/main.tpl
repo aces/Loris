@@ -5,7 +5,7 @@
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 
-<link type="text/css" href="js/jquery/JQeggplant/css/eggplant/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
+<link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
 <script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
 

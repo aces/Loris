@@ -79,32 +79,32 @@ class NDB_Form_next_stage extends NDB_Form
                              'maxYear'         => $study['endYear']
                              );
 
-        $this->form->addElement('hidden', 'candID', $timePoint->getData('CandID'));
-        $this->form->addElement('hidden', 'sessionID', $timePoint->getData('SessionID'));
+        $this->addHidden('candID', $timePoint->getData('CandID'));
+        $this->addHidden('sessionID', $timePoint->getData('SessionID'));
 
         $stage = $timePoint->getNextStage();
         $this->tpl_data['stage'] = $stage;
 
         // add form elements
         if ($stage == 'Visit' && $config->getSetting('useScanDone')!='false') {
-            $this->form->addElement('select', 'scan_done', 'Scan Done', array(null => null, 'Y' => 'Yes', 'N' => 'No'));
-            $this->form->addRule('scan_done', 'Scan done is required', 'required');
+            $this->addSelect('scan_done', 'Scan Done', array(null => null, 'Y' => 'Yes', 'N' => 'No'));
+            $this->addRule('scan_done', 'Scan done is required', 'required');
         }
 
         // add dates
-        $this->form->addElement('date', 'date1', "Date of $stage", $dateOptions);
-        $this->form->addElement('date', 'date2', "Retype Date of $stage", $dateOptions);
+        $this->addBasicDate('date1', "Date of $stage", $dateOptions);
+        $this->addBasicDate('date2', "Retype Date of $stage", $dateOptions);
 
         // let user select subproject *only* if subprojectid is not > 0
         if(!($timePoint->getSubprojectID() > 0)) {
             $list_of_objectives =& Utility::getSubprojectList();
-            $this->form->addElement('select', 'SubprojectID', 'Objective', array('' => '') + $list_of_objectives);
-            $this->form->addRule('SubprojectID', 'Required', 'required');
+            $this->addSelect('SubprojectID', 'Objective', array('' => '') + $list_of_objectives);
+            $this->addRule('SubprojectID', 'Required', 'required');
         }
 
         // add date rules
-        $this->form->addRule('date1', 'Date is required', 'required');
-        $this->form->addRule(array('date1', 'date2'), 'Date fields must match', 'compare');
+        $this->addRule('date1', 'Date is required', 'required');
+        $this->addRule(array('date1', 'date2'), 'Date fields must match', 'compare');
 
         $this->form->addFormRule(array(&$this, '_validate'));
     }
