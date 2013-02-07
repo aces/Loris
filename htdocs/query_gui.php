@@ -12,6 +12,7 @@ $timer->start();
 
 // load the client
 require_once 'NDB_Client.class.inc';
+require_once 'User.class.inc';
 $client = new NDB_Client;
 $client->initialize();
 $config =& NDB_Config::singleton();
@@ -171,8 +172,18 @@ $studyTitle = $config->getSetting('title');
 $user = User::singleton();
 if($user->hasPermission('download_files')) {
 ?>
-<input type='button' value='Click here to download files' onclick="executeQuery('download')"><span id="message">&nbsp;</span>
+<input type='button' value='Click here to download files' onclick="executeQuery('download')">
+<span id="message">&nbsp;</span>
 <?
+}
+?>
+<?
+$user = User::singleton();
+if($user->hasPermission('view_cbrain_status')) {
+    ?>
+<input type="button" value='Click here to launch CIVET on CBrain' onclick="executeQuery('cbrain');" /><span id="message">&nbsp;</span>
+<?
+// End if has_permission
 }
 ?>
 </td>
