@@ -246,15 +246,15 @@
           </permissions>
           <visible>1</visible>
         </tab>
-        
         <tab>
           <link>violated_scans</link>
           <label>Violated Scans</label>
           <access>all</access>
           <permissions>
           <perm>violated_scans</perm>
+          </permissions>
+          <visible>1</visible>
         </tab>
-
         <tab>
           <link>data_integrity_flag</link>
           <label>Data Integrity Flag</label>
