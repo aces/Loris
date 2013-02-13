@@ -7,7 +7,6 @@
  * @subpackage unused
  */
 ob_start('ob_gzhandler');
-
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->initialize();
@@ -35,8 +34,21 @@ define('GUIDELINES_ID', 3);
 define('INSTRUMENTS_ID', 5);
 
 // store some request information
-$helpID = $_REQUEST['helpID'];
+if(!empty($_REQUEST['helpID'])){
+	$helpID = $_REQUEST['helpID'];
+} else{
+	if (!empty($_REQUEST['test_name'])) {
+                $query = "SELECT helpID FROM help WHERE hash = :Test_Name";
+                $Where = array('Test_Name'=> $_REQUEST['test_name']); 
+		$helpID = $DB->pselectOne($query, $Where);
+		if (PEAR::isError($helpID)) {
+			return PEAR::raiseError("Could not get help id for ".$_REQUEST['test_name'].": ".$helpID->getMessage());
+            $helpID = 1;
+		}
 
+
+	}
+}
 /*
  * behave according to the requested display mode
  */
@@ -379,7 +391,7 @@ switch ($_REQUEST['mode']) {
 
  case 'Create':
      // make sure we have editing privileges
-     if ($user->hasPermission('context_help')) {
+    if ($user->hasPermission('context_help')) {
          // it is a subtopic
          if (intval($_REQUEST['parentID']) > 0) {
              $parentID = $_REQUEST['parentID'];
@@ -602,8 +614,9 @@ function makeTopic()
 
     // try to base the topic on the full names, otherwise settle for 
     if (!empty($_REQUEST['test_name'])) {
-        $topic[0] = $DB->selectOne("SELECT Full_name FROM test_names WHERE Test_name = '" . $_REQUEST['test_name'] . "'");
-        if (PEAR::isError($topic[0])) {
+      //  $topic[0] = $DB->selectOne("SELECT Full_name FROM test_names WHERE Test_name = '" . $_REQUEST['test_name'] . "'");
+     $topic[0] = $DB->selectOne("SELECT topic FROM help WHERE hash = '" . $_REQUEST['test_name'] . "'");
+      if (PEAR::isError($topic[0])) {
             return PEAR::raiseError("Could not get name of test ".$_REQUEST['test_name'].": ".$topic[0]->getMessage());
         }
         if (empty($topic[0])) {
