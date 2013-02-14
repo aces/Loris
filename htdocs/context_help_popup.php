@@ -38,11 +38,7 @@ if(!empty($_REQUEST['helpID'])){
 	$helpID = $_REQUEST['helpID'];
 } else{
 	if (!empty($_REQUEST['test_name'])) {
-                $query = "SELECT helpID FROM help WHERE hash = :Test_Name";
-                $Where = array('Test_Name'=> $_REQUEST['test_name']); 
 		$helpID = HelpFile::hashToID(md5($_REQUEST['test_name']));
-		
-
 
 	}
 }
