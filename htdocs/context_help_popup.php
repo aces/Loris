@@ -40,11 +40,8 @@ if(!empty($_REQUEST['helpID'])){
 	if (!empty($_REQUEST['test_name'])) {
                 $query = "SELECT helpID FROM help WHERE hash = :Test_Name";
                 $Where = array('Test_Name'=> $_REQUEST['test_name']); 
-		$helpID = $DB->pselectOne($query, $Where);
-		if (PEAR::isError($helpID)) {
-			return PEAR::raiseError("Could not get help id for ".$_REQUEST['test_name'].": ".$helpID->getMessage());
-            $helpID = 1;
-		}
+		$helpID = HelpFile::hashToID(md5($_REQUEST['test_name']));
+		
 
 
 	}
@@ -614,8 +611,9 @@ function makeTopic()
 
     // try to base the topic on the full names, otherwise settle for 
     if (!empty($_REQUEST['test_name'])) {
-      //  $topic[0] = $DB->selectOne("SELECT Full_name FROM test_names WHERE Test_name = '" . $_REQUEST['test_name'] . "'");
-     $topic[0] = $DB->selectOne("SELECT topic FROM help WHERE hash = '" . $_REQUEST['test_name'] . "'");
+      $query = "SELECT topic FROM help WHERE hash = :Test_Name";
+      $Where = array('Test_Name'=> md5($_REQUEST['test_name']));
+      $topic[0] = $DB->pselectOne($query,$Where);
       if (PEAR::isError($topic[0])) {
             return PEAR::raiseError("Could not get name of test ".$_REQUEST['test_name'].": ".$topic[0]->getMessage());
         }
@@ -624,7 +622,10 @@ function makeTopic()
         }
     }
     if (!empty($_REQUEST['subtest'])) {
-        $topic[1] = $DB->selectOne("SELECT Description FROM instrument_subtests WHERE Subtest_name = '" . $_REQUEST['subtest'] . "'");
+        $query = "SELECT Description FROM instrument_subtests WHERE Subtest_name = :Subtest_Name";
+        $Where = array('Subtest_Name'=> $_REQUEST['subtest']);
+
+        $topic[1] = $DB->pselectOne($query,$Where);
         if (PEAR::isError($topic[1])) {
             return PEAR::raiseError("Could not get name of subtest ".$_REQUEST['subtest'].": ".$topic[1]->getMessage());
         }
