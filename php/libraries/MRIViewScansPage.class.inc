@@ -41,6 +41,7 @@ class MRIViewScansPage {
                 } else {
                     $file = new MRIFile($curFileID);
                     $updateSet['SeriesUID'] = $file->getParameter('series_instance_uid');
+                    $updateSet['EchoTime'] = $file->getParameter('echo_time');
                     $updateSet['FileID'] = $curFileID;
                     $this->DB->insert("files_qcstatus", $updateSet);
                 }

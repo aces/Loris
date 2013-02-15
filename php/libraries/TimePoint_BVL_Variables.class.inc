@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Calculates/derives bvl vars from a timepoint's battery of instruments
 * each instrument has a method to calculate/derive a value

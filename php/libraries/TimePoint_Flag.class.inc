@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 *
 * This class provides methods to 'flag' any data records in the schema.

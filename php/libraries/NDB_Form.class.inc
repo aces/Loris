@@ -1,4 +1,4 @@
-<?
+<?php
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
