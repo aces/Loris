@@ -35,6 +35,7 @@ $studyTitle = $config->getSetting('title');
 </head>
 <body onload='initialize();' style='font-face:Arial;'>
 <div>
+<h2>Data Valid as of May 17, 2012</h2>
 <table width="100%" border="0" cellpadding="5" cellspacing="0"><tr><th background="images/title_background.jpg" class="banner" colspan="2" align="left"><strong>Query GUI - <?php print $studyTitle; ?></strong></th></tr></table>
     
     <p>

@@ -58,6 +58,14 @@ class NDB_Form_create_timepoint extends NDB_Form
               
         if(!empty($_GET['subprojectID']) && is_numeric($_GET['subprojectID'])){
             $this->subprojectID=$_GET['subprojectID'];
+        } else {
+            $candidate =& Candidate::singleton($this->identifier);
+            $db = Database::singleton();
+            $subp = $db->pselectOne("SELECT SubprojectID from session WHERE CandID=:Candidate",
+                array('Candidate' => $candidate->getCandID()));
+            if(is_numeric($subp)) {
+                $this->subprojectID = $subp;
+            }
         }
 
         // cand ID
@@ -71,15 +79,16 @@ class NDB_Form_create_timepoint extends NDB_Form
         //Loop through the subprojects to get an id out and to create the subproject drop down.
         $sp_labelOptions = array(null => '');
         foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-            // Leave default blank, don't take the first one
-            //if($this->subprojectID==null){
-            //    $this->subprojectID=$subproject['id'];
-            //}
             $sp_labelOptions[$subproject['id']] = $subproject['title'];
         }
         
-        $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");
-        $this->addSelect('subprojectID', 'Subproject', $sp_labelOptions, $attributes);
+        if($config->getSetting("WarnMultipleSubprojects") && !empty($this->subprojectID)) {
+            $attributes=array("onchange"=>"if(confirm(\"Are you sure you want to change the subprojectID? It should match the previously entered subprojectIDs.\")) { location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;} else { location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+" . $this->subprojectID . ";}");
+        } else {
+            $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value");
+        }
+
+        $this->form->addElement('select', 'subprojectID', 'Subproject', $sp_labelOptions, $attributes);
         $this->form->setDefaults(array("subprojectID"=>$this->subprojectID));
         
         
@@ -101,7 +110,9 @@ class NDB_Form_create_timepoint extends NDB_Form
         }
     
         // label rules
-        $this->addRule('visitLabel', 'Visit label is required', 'required');
+        if(!empty($_GET['subprojectID']) && is_numeric($_GET['subprojectID'])) {
+            $this->form->addRule('visitLabel', 'Visit label is required', 'required');
+        }
 
         $this->form->addFormRule(array(&$this, '_validate'));
     }

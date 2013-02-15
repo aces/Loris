@@ -598,6 +598,10 @@ Class TimePoint
     function getEffectiveDateOfBirth(){
     	$config=NDB_Config::singleton();
     	$candidate=Candidate::singleton($this->getCandID());
+        if(PEAR::isError($candidate)) {
+            return $candidate;
+        }
+
     	$settings=$config->getSubprojectSettings($this->getSubprojectID());
     	if($settings['options']['useEDC']=="true"){
     		return $candidate->getCandidateEDC();

@@ -70,7 +70,7 @@ class Candidate
         }
 
         // checK PSCID - only if it's passed by the open profile form
-        if (isset($_REQUEST['PSCID'])) {
+        if ((isset($_REQUEST['PSCID']) && isset($_REQUEST['test_name'] && $_REQUEST['test_name']=='timepoint_list')) {
             if (strtolower(trim($_REQUEST['PSCID'])) != strtolower($this->getPSCID())) {
                 return (PEAR::raiseError("IDs do not match"));
             }

@@ -87,7 +87,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
@@ -602,14 +602,46 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->form->registerRule('checkdatefuture', 'callback', '_checkDateTakenFuture');
+        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->form->addRule('Date_taken', 'Date of Administration is in the future', 'checkdatefuture');
         
         $this->addRule('Examiner', 'Examiner is required', 'required');
     }
     
     // }}}
-    // {{{
+    //
+    // Process the Config file. This results in:
+    //     1. $CertificationEnabled being true or false,
+    //     2. $CertificationProjects being a list of projects which
+    //     use ceritification and,
+    //     3. $CertificationInstruments being a list of instruments
+    //     that use certification.
+    // This is put in a different function so that instruments that
+    // override getExaminerNames() can still easily get the config
+    // settings and don't need to parse the config file themselves.
+    function _getCertificationConfig() {
+        $config =& NDB_Config::singleton();
+        $CertificationConfig = $config->getSetting("Certification");
+        $CertificationEnabled = $CertificationConfig['EnableCertification'];
+        if($CertificationEnabled) {
+            $CertificationProjects = array();
+            foreach($CertificationConfig['CertificationProjects'] as $key => $projID) {
+                $CertificationProjects[] = $projID;
+            }
+            $CertificationInstruments = array();
+            foreach(Utility::toArray($CertificationConfig['CertificationInstruments']) as $instrument) {
+                foreach(Utility::toArray($instrument['test']) as $test) {
+                    $CertificationInstruments[] = $test['@']['value'];
+                }
+            }
+        }
+        return array($CertificationEnabled, $CertificationProjects, $CertificationInstruments);
+    }
 
+
+    // 
+    // {{{
     /**
      * gets the list of examiners for the current instrument site
      *
@@ -619,11 +651,25 @@ class NDB_BVL_Instrument extends NDB_Page
     function _getExaminerNames()
     {
         $db =& Database::singleton();
-        $centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->getCommentID()."'");
 
-        $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
-        if($db->isError($results)) {
-            return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
+
+        //get examiner certifications for profiles part of IBIS2
+        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$_REQUEST["candID"]));
+
+        list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
+        if ($CertificationEnabled && in_array($project, $CertificationProjects)
+            && in_array($this->testName, $CertificationInstruments)) {
+            $test_id = $db->pselectOne("SELECT ID from test_names where Test_name =:tst_name", array('tst_name'=>$this->testName));
+            $results = $db->pselect("SELECT certification.examinerID, full_name FROM certification JOIN examiners ON certification.examinerID = examiners.examinerID WHERE testID =:tid AND pass =:cert_id AND centerID =:cid ORDER BY full_name",array('tid'=>$test_id,'cert_id'=>'certified','cid'=>$centerID));
+            if($db->isError($results)) {
+                return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+            }
+        } else {
+            $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:centID ORDER BY full_name", array('centID' => $centerID));
+            if($db->isError($results)) {
+                return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+            }
         }
         
         $examiners = array(''=>'');
@@ -634,6 +680,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         return $examiners;
     }
+
     // }}}
     // {{{ getFullName()
     
@@ -752,6 +799,10 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _getDatabaseDate($formDateValue){
         if(!empty($formDateValue)){
+            // check if it's already formatted correctly
+            if(is_string($formDateValue) && preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $formDateValue)) {
+                return $formDateValue;
+            }
             if(count($formDateValue)==2){
                 $databaseValue = "$formDateValue[H]:$formDateValue[i]";  //handle time (HH:MM:SS)
             } else {
@@ -1214,7 +1265,6 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
-        
     }
 
     /** 
@@ -1358,6 +1408,23 @@ class NDB_BVL_Instrument extends NDB_Page
             return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
         }
         return;
+    }
+
+    function clearInstrument() {
+        $config = NDB_Config::singleton();
+        $dbconfig = $config->getSetting('database');
+        $db = Database::singleton();
+        $columns = $db->pselect("select COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db", array('table' => $this->table, 'db' => $dbconfig['database'] ));
+        $values = array();
+        foreach ($columns as $row) {
+            if($row['COLUMN_NAME'] == 'CommentID' || $row['COLUMN_NAME'] == 'UserID') {
+                continue;
+            }
+            $values[$row['COLUMN_NAME']] = NULL;
+        }
+        $db->update($this->table, $values, array('CommentID' => $this->commentID));
+        $prepQ = $db->prepare("DELETE FROM conflicts_unresolved WHERE (CommentId1=:CID OR CommentId2=:CID)");
+        $db->execute($prepQ, array('CID' => $this->commentID));
     }
 
     function loadInstrumentFile($filename, $base64 = false) {
@@ -1518,6 +1585,17 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 } //end class NDB_BVL_Instrument
+function _checkDateTakenFuture($dateElement) {
+    $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+    if($checked === false) {
+        return false;
+    }
+    $formatted = date_create();
+    $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
+    $now = date_create(); #getdate(); #date("Y-m-d", getdate());
+    $diff = date_diff($formatted, $now);
+    return ($diff->format("%r") === '');
+}
 // {{{ _checkDateTaken()
 function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
@@ -1531,18 +1609,14 @@ function _checkDateTaken($dateElement) {
     // else, check the date
     else {
         $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        return $checked;/*
         if(version_compare(phpversion(), '5.3.0', '>=')) {
             if($checked === false) {
                 return false;
             }
-            $formatted = date_create();
-            $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
-            $now = date_create(); #getdate(); #date("Y-m-d", getdate());
-            $diff = date_diff($formatted, $now);
-            return ($diff->format("%r") === '');
         } else {
             return $checked;
-        }
+        } */
     }
 }
 /// _checkDate. This is used by create timepoint and start timepoint pages, 
@@ -1558,4 +1632,5 @@ function _checkDate($dateElement) {
     }
     return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }
+// }}}
 ?>

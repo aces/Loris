@@ -107,6 +107,21 @@ if(!empty($_GET['queryID'])) {
     print "Missing query ID";
 }
 
+function buildCSVBuffer($data, $delimiter) {
+    $HundredMBs = 100*1024*1024;
+    // Fake a file pointer somewhere in memory for fputcsv.
+    // if it's more than 100MB, it'll swap it to disk and keep
+    // going. maxmemory doesn't mean max file size, it means max before
+    // swapping
+    $fp = fopen("php://temp/maxmemory:$HundredMBs", "r+");
+    foreach($data AS $row) {
+        fputcsv($fp, $row, $delimiter, '"');
+    }
+    rewind($fp);
+    $buffer = stream_get_contents($fp);
+    fclose($fp);
+    return $buffer;
+}
 function buildFileBuffer($data, $format, $css, $studyTitle) {
     switch($format) {
     case 'download_files':
@@ -165,18 +180,12 @@ function buildFileBuffer($data, $format, $css, $studyTitle) {
         
     case 'tab':
         $format = 'tab';
-        $buffer = join("\t", array_keys($data[0]))."\n";
-        foreach($data AS $row) {
-            $buffer .= join("\t", $row)."\n";
-        }
+        $buffer = buildCSVBuffer($data, "\t");
         break;
 
     case 'csv':
         $format = 'csv';
-        $buffer = join(',', array_keys($data[0]))."\n";
-        foreach($data AS $row) {
-            $buffer .= join(',', $row)."\n";
-        }
+        $buffer = buildCSVBuffer($data, ',');
         break;
 
     default:
