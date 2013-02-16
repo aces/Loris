@@ -143,11 +143,11 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
         
         // Filter selection elements
-        $this->form->addElement('select', 'site', 'Site:', $sites);
-        $this->form->addElement('select', 'Instrument', 'Instrument:', $instruments);
-        $this->form->addElement('text', 'Question', 'Question:', '');
-        $this->form->addElement('text', 'CandID', 'DCCID:', '');
-        $this->form->addElement('text', 'PSCID', 'PSCID:', '');
+        $this->addSelect('site', 'Site:', $sites);
+        $this->addSelect('Instrument', 'Instrument:', $instruments);
+        $this->addBasicText('Question', 'Question:', '');
+        $this->addBasicText('CandID', 'DCCID:', '');
+        $this->addBasicText('PSCID', 'PSCID:', '');
 
         //This condition is commmented out because the $_REQUEST['site'] will always be empty (All) by default (which will show all the sites)
         //if(!empty($_REQUEST['site'])) {
@@ -171,15 +171,14 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, Visit_label, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where LIMIT 100", $conflicts);
             //If there are no conflicts print a message to that effect
             if(empty($conflicts)){
-                $this->form->addElement('static', "status", "No conflicts matching criteria found.");
+                $this->addScoreColumn("status", "No conflicts matching criteria found.");
                 return;
             } else {
                 $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
-                $this->form->addElement('static', 'total', 'Total number of results:', $conflicts_num['total']);
+                $this->addScoreColumn('total', 'Total number of results:', $conflicts_num['total']);
             }
        /* } else {
-            $this->form->addElement('static', 'status', 'Please select a filter criteria first.');
-                return;
+            $this->addScoreColumn('status', 'Please select a filter criteria first.');
         }
         */
 
@@ -227,7 +226,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                 'visit_label' => $conflict['Visit_label']
 
             );
-            $this->form->addElement('select', $hash, "$conflict[TableName] $indent $dccid $indent $ssid  $indent $conflict[FieldName]", $options);
+            $this->addSelect($hash, "$conflict[TableName] $indent $dccid $indent $ssid  $indent $conflict[FieldName]", $options);
             $this->tpl_data['elements_list_names'][]= $hash;
             $this->tpl_data['elements_array'][$hash] = $conflict_array;
         }

@@ -70,7 +70,7 @@ class NDB_Form_create_timepoint extends NDB_Form
 
         // cand ID
         $this->tpl_data['candID'] = $this->identifier;
-        $this->form->addElement('hidden', 'candID', $this->identifier);
+        $this->addHidden('candID', $this->identifier);
         
         
         // Sub Project
@@ -98,13 +98,13 @@ class NDB_Form_create_timepoint extends NDB_Form
         foreach(Utility::toArray($visitLabelSettings) AS $visitLabel){
             if($visitLabel['@']['subprojectID']==$this->subprojectID){
                 if ($visitLabel['generation'] == 'user') {
-                    $this->form->addElement('text', 'visitLabel', 'Visit label', array('size' => $visitLabel['length'] + 1, 'maxlength' => $visitLabel['length']));
+                    $this->addBasicText('visitLabel', 'Visit label', array('size' => $visitLabel['length'] + 1, 'maxlength' => $visitLabel['length']));
                 } elseif ($visitLabel['generation'] == 'sequence') {
                     $labelOptions[''] = null;
                     foreach (Utility::toArray($visitLabel['labelSet']['item']) AS $item) {
                         $labelOptions[$item['@']['value']] = $item['#'];
                     }
-                    $this->form->addElement('select', 'visitLabel', 'Visit label', $labelOptions);
+                    $this->addSelect('visitLabel', 'Visit label', $labelOptions);
                 }
             }
         }

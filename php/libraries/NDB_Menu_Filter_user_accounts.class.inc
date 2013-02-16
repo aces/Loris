@@ -77,13 +77,13 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         }
 
         // add form elements
-        $this->form->addElement('select', 'centerID', 'Site:', $list_of_sites);
-        $this->form->addElement('select', 'active', 'Active:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
-        $this->form->addElement('select', 'examiner', 'Examiner:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
-        $this->form->addElement('text', 'userID', 'Username:');
-        $this->form->addElement('text', 'real_name', 'Full name:');
-        $this->form->addElement('text', 'email', 'Email:');
-        $this->form->addElement('select', 'pending', 'Pending Approval:', array(''=>'Any', '0'=>'N', '1'=>'Y'));
+        $this->addSelect('centerID', 'Site:', $list_of_sites);
+        $this->addSelect('active', 'Active:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
+        $this->addSelect('examiner', 'Examiner:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
+        $this->addBasicText('userID', 'Username:');
+        $this->addBasicText('real_name', 'Full name:');
+        $this->addBasicText('email', 'Email:');
+        $this->addSelect('pending', 'Pending Approval:', array(''=>'Any', '0'=>'N', '1'=>'Y'));
 
         return true;
     }

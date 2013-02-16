@@ -1,4 +1,5 @@
 <?php
+require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 include_once ('HTML/QuickForm/Renderer/Default.php');
@@ -11,7 +12,7 @@ include_once ('HTML/QuickForm/Renderer/Default.php');
  * @package behavioural 
  * @access public
  */
-class NDB_BVL_Instrument extends PEAR
+class NDB_BVL_Instrument extends NDB_Page
 {
     // {{{ properties
 
@@ -245,9 +246,11 @@ class NDB_BVL_Instrument extends PEAR
     * @abstract
     */
     function setup($commentID, $page)
-    {
-        $this->form = new HTML_Quickform('test_form');
-        $this->page = $page;            // page label (number or
+    { 
+       $this->_setupPage(null, $page, null, $commentID, 'test_form'); 
+    /**       
+     //   $this->form = new HTML_Quickform('test_form');
+       // $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
@@ -255,10 +258,10 @@ class NDB_BVL_Instrument extends PEAR
         $this->testName = "";           // test_names.Test_name
         $this->table = '';              // name of table containing
         // data keyed by commentID
-        $this->commentID = $commentID;
+       // $this->commentID = $commentID;
 
         // required fields for data entry completion status
-        $this->_requiredElements = array();
+        $this->_requiredElements = array();    */ 
     }
 
     // }}}
@@ -298,16 +301,17 @@ class NDB_BVL_Instrument extends PEAR
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->form->addElement('hidden', 'candID', $_REQUEST["candID"]);
-        $this->form->addElement('hidden', 'sessionID', $_REQUEST["sessionID"]);
-        $this->form->addElement('hidden', 'commentID', $this->getCommentID());
-        $this->form->addElement('hidden', 'test_name', $this->testName);
-        $this->form->addElement('hidden', 'page', $this->page);
-        $this->form->addElement('hidden', 'subtest', $this->page);
+        $this->addHidden('candID', $_REQUEST["candID"]);
+        $this->addHidden('sessionID', $_REQUEST["sessionID"]);
+        $this->addHidden('commentID', $this->getCommentID());
+        $this->addHidden('test_name', $this->testName);
+        $this->addHidden('page', $this->page);
+        $this->addHidden('subtest', $this->page);
         
         if(!$this->form->isFrozen()) {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
-            $this->form->addGroup($buttons, null, null, "&nbsp;");
+            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+            $this->addGroup($buttons, null, null, "&nbsp;");
         }
         
  
@@ -584,25 +588,25 @@ class NDB_BVL_Instrument extends PEAR
                              );
         $this->dateOptions = $dateOptions;
 
-        $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
         
         if(strrpos($this->testName, '_proband') === FALSE) {
-            $this->form->addElement('static', 'Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
-            $this->form->addElement('static', 'Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
+            $this->addScoreColumn('Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
+            $this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
         }
         $examiners = $this->_getExaminerNames();
-        $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
+        $this->addSelect('Examiner', 'Examiner', $examiners);
         
         //$this->form->addElement('text', 'Examiner', 'Examiner');
         
-        $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
+        $this->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
         $this->form->registerRule('checkdatefuture', 'callback', '_checkDateTakenFuture');
         $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
         $this->form->addRule('Date_taken', 'Date of Administration is in the future', 'checkdatefuture');
         
-        $this->form->addRule('Examiner', 'Examiner is required', 'required');
+        $this->addRule('Examiner', 'Examiner is required', 'required');
     }
     
     // }}}
@@ -842,7 +846,7 @@ class NDB_BVL_Instrument extends PEAR
         foreach($elements AS $elname=>$elvalue) {
             //If the element is a group (and thus elvalue is an array) trigger the Null Value default rule if ANY of the values in the group are empty.
             $flag=true;
-            if(is_array($elvalue)){
+            if(is_array($elvalue)) {
                 foreach($elvalue AS $val){
                     if ($val==""){
                         $flag=false;
@@ -859,27 +863,29 @@ class NDB_BVL_Instrument extends PEAR
             // DINRunElementRules only runs a single rule, and returns false if it's violated. It's much simpler than 
             // XINRules but should be expanded later to support more complex logic.
             // - Dave
-            if(!empty($this->XINRules[$elname])) {
-                $registered_rules = $this->XINRules[$elname];
-                if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
-                foreach($registered_rules as $registered) {
+            if($this->InstrumentType === 'LINST') {
+                if(!empty($this->XINRules[$elname])) {
+                    $registered_rules = $this->XINRules[$elname];
+                    if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
+                    foreach($registered_rules as $registered) {
 
-                    $rules = $registered['rules'];
+                        $rules = $registered['rules'];
 
-                    foreach($rules as $rule) {
-                    //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-                        if(stristr(substr($rule, strpos($rule,"|")),"{@}")){
-                            $rules_array=explode("|",$rule);
-                        } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
-                            $rules_array[]=$rule;
-                        }
-                        foreach($rules_array as $rule) {
-                            $rule_array = explode("{@}", $rule);
-                            if($rule_array[0] == $elname) {
-                                $result=$this->DINRunElementRules($elname, $elements, $registered);
-                                if($result == false){
-                                    $el=$registered['group']!="" ? $registered['group'] : $elname;
-                                    $errors[$el]=$registered['message'];
+                        foreach($rules as $rule) {
+                            //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
+                            if(stristr(substr($rule, strpos($rule,"|")),"{@}")){
+                                $rules_array=explode("|",$rule);
+                            } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
+                                $rules_array[]=$rule;
+                            }
+                            foreach($rules_array as $rule) {
+                                $rule_array = explode("{@}", $rule);
+                                if($rule_array[0] == $elname) {
+                                    $result=$this->DINRunElementRules($elname, $elements, $registered);
+                                    if($result == false){
+                                        $el=$registered['group']!="" ? $registered['group'] : $elname;
+                                        $errors[$el]=$registered['message'];
+                                    }
                                 }
                             }
                         }
@@ -891,10 +897,17 @@ class NDB_BVL_Instrument extends PEAR
             if($elvalue=="" || $flag==false){
                 if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
                 if(!empty($this->XINRules[$elname])){
-                    $registered_rules = $this->XINRules[$elname];
-                    foreach($registered_rules as $registered_rule) {
-                        $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
-                        if(is_array($result)) {
+                    if($this->InstrumentType === 'LINST') {
+                        $registered_rules = $this->XINRules[$elname];
+                        foreach($registered_rules as $registered_rule) {
+                            $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
+                            if(is_array($result)) {
+                                $errors+=$result;
+                            }
+                        }
+                    } else {
+                        $result=$this->XINRunElementRules($elname, $elements, $this->XINRules[$elname]);
+                        if(is_array($result)){
                             $errors+=$result;
                         }
                     }
@@ -912,12 +925,18 @@ class NDB_BVL_Instrument extends PEAR
         return true;
     }
     
+    // Run registered rules for $elname
+    // Returns true if the element passes, false if the rule fails
     function DINRunElementRules($elname, $elements, $registered) {
         foreach($registered['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
             $split = explode('{@}', $rule);
             $userval = $elements[$elname];
             $operator = $split[1];
             $comparevalue = $split[2];
+            // Special case for if the rule was registered as "q{@}=={@}NEVER_REQUIRED"
+            if($comparevalue == 'NEVER_REQUIRED' && $operator == '==') {
+                return true;
+            }
             $compareFunction = create_function('$a, $b', "return \$a $operator \$b;"); //(\$a $operator \$b);");
 
             if(!($compareFunction($comparevalue, $userval)) ) {
@@ -939,18 +958,40 @@ class NDB_BVL_Instrument extends PEAR
     * @param string $group  Empty if a non-grouped element is registering the rule.  Otherwise, name of the group registering the rule.    
     */
     function XINRegisterRule($elname, $rules, $message="", $group=""){
-        if(!is_array($rules)){
-            $rules_array[]=$rules;
-        } else {
-            $rules_array=$rules;
-        }
-        $rule = array ('message' => $message, 'group' => $group, 'rules' => array());
+        // I'm not sure if these are logically the same. I think they should be, but
+        // there was a bug introduced by the LINST changes to XINRules to old instruments
+        // so I'm making sure that the old code is followed exactly with this if block.
+        // After everything's working, review this to see if we can get rid of one of
+        // the if statement and use the same logic for "old" instruments and "new"
+        // instruments
+        //  -- Dave
+        if($this->InstrumentType === 'LINST') {
+            if(!is_array($rules)){
+                $rules_array[]=$rules;
+            } else {
+                $rules_array=$rules;
+            }
+            $rule = array ('message' => $message, 'group' => $group, 'rules' => array());
 
-        foreach($rules_array AS $rule_cmd){
-            $rule['rules'][]=$rule_cmd;
+            foreach($rules_array AS $rule_cmd){
+                $rule['rules'][]=$rule_cmd;
+            }
+            $this->XINRules[$elname][] = $rule;
+            return true;
+        } else {
+            if(!is_array($rules)){
+                $rules_array[]=$rules;
+            } else {
+                $rules_array=$rules;
+            }
+            $this->XINRules[$elname]['message']=$message;
+            $this->XINRules[$elname]['group']=$group;
+
+            foreach($rules_array AS $rule){
+                $this->XINRules[$elname]['rules'][]=$rule;
+            }
+            return true;
         }
-        $this->XINRules[$elname][] = $rule;
-        return true;
     }
 
     // }}}
@@ -1139,7 +1180,7 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $rule_message    rule message to display
     */
     function addYesNoElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $this->form->addElement('select', $field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
+        $this->addSelect($field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
         if (!empty($rules)) {
             $this->XINRegisterRule($field, $rules, $rule_message);        
         }
@@ -1154,21 +1195,9 @@ class NDB_BVL_Instrument extends PEAR
     * @param    array   $refusals   options in the refusal select (ie. Refusal, Unknown, Not Answered).
     */
     function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
-        $group[]=&$this->form->createElement("text", $field);
-        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
-        unset($group);
-        $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
-    }
-    /**
-      * Wrapper to create a text field for questions that require Refused and Don't know options
-      */
-     
-    function addTextElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down', $refusals=array(''=>'', "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered')){
-        $group[]=&$this->form->createElement("text", $field);
-        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        $group[]=&$this->createText($field);
+        $group[]=&$this->createSelect($field."_status", "", $refusals);
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1180,8 +1209,8 @@ class NDB_BVL_Instrument extends PEAR
      
     function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
         $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1198,8 +1227,8 @@ class NDB_BVL_Instrument extends PEAR
 
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
         $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1213,9 +1242,9 @@ class NDB_BVL_Instrument extends PEAR
     * @param     string    $rule_message    message to display upon rule violation.
     */
     function addHourMinElement($field, $label, $rules=array(), $rule_message="You are required to select a status if you want to leave this time blank.") {
-        $group[]=&$this->form->createElement("date", $field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
-        $group[]=&$this->form->createElement("select", $field . "_status", "", array(NULL=>'', "dnk"=>"DNK", "refusal"=>"Refusal", 'not_answered'=>'Not Answered'));
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        $group[]=&$this->createDate($field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
+        $group[]=&$this->createSelect($field . "_status", "", array(NULL=>'', "dnk"=>"DNK", "refusal"=>"Refusal", 'not_answered'=>'Not Answered'));
+        $this->addGroup($group, $field . "_group", $label, null, false);
         $this->XINRegisterRule($field, array_merge($rules, array($field . '_status{@}=={@}')), $rule_message, $field . '_group');
         unset($group);
     }
@@ -1230,10 +1259,10 @@ class NDB_BVL_Instrument extends PEAR
         if($options === null) {
             $options = $this->dateOptions;
         }
-        $group [] = $this->form->createElement("date", $name . "_date", null, $options);
+        $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
-        $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
     }
@@ -1242,10 +1271,10 @@ class NDB_BVL_Instrument extends PEAR
     * Wrapper with a user-created date group, a status box and appropriate rule
     */
     function addCustomDateElement($name, $label, $dateArray){
-        $group [] = $this->form->createElement("date", $name . "_date", null, $dateArray);
+        $group [] = $this->createDate($name . "_date", null, $dateArray);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
-        $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
-        $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
+        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
         $this->XINRegisterRule($name . "_date_status", array($name . "_date{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
@@ -1260,11 +1289,11 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $label    The question text to display
     */
     function addNumericElement($field, $label, $options = null) {
-        $group [] = $this->form->createElement("text", $field, $label);
-        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        $group [] = $this->createText($field, $label);
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
         $status_rule = $field . '_status{@}=={@}';
         if(is_array($options)) {
@@ -1284,45 +1313,14 @@ class NDB_BVL_Instrument extends PEAR
     */
     
     function addNumericElementRD($field, $label) {
-        $group [] = $this->form->createElement("text", $field, $label);
-        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        $group [] = $this->createText($field, $label);
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
+        $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
-    /**
-    * Wrapper to create a header
-    */
-
-    function addHeader($header) {
-        $this->form->addElement('header', null, $header); 
-    }
-
-    /**
-    * Wrapper to create a select drop-down list
-    */
-    
-    function addSelect($name, $label, $options=array()) {
-        $this->form->addElement('select', $name, $label, $options);
-    }
-
-    /**
-    * Wrapper to create a static label
-    */
-    
-    function addLabel($label) {
-        $this->form->addElement('static', null, $label);
-    }
-
-    /**
-    * Wrapper to create a static score column
-    */
-   
-    function addScoreColumn($name, $label) {
-        $this->form->addElement('static', $name, $label);
-     }
 
     /**
     * nulls all scores for the record identified by CommentID
@@ -1431,6 +1429,7 @@ class NDB_BVL_Instrument extends PEAR
 
     function loadInstrumentFile($filename, $base64 = false) {
         if(file_exists($filename) || $base64 === true) {
+            $this->InstrumentType = 'LINST';
             $db = Database::singleton();
             $this->dateTimeFields = array("Date_taken");
             $this->form = new HTML_Quickform('test_form');

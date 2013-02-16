@@ -301,7 +301,7 @@ class Candidate
         }
 
         $query  = "SELECT ID, Visit_label FROM session WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
-        $result = $db->pselect($query, array('Candidate' => $candID);
+        $result = $db->pselect($query, array('Candidate' => $candID));
         if(PEAR::isError($result)) {
             return PEAR::raiseError("Could not retrieve existing data for session");
         }
