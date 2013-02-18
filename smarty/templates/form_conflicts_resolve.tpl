@@ -32,9 +32,9 @@
 <form method="post" name="conflicts_resolve" id="conflicts_resolve">
 <table class="fancytable" border="0">
 
-    {if $form.total.html}
+    {if $form.total}
         <tr class="nohover">
-            <td colspan="5" align="right" style="border: none;" class="nohover">Showing <em>{$form.total.html}</em> results.</td>
+            <td colspan="5" align="right" style="border: none;" class="nohover">{$form.total.label}</td>
         </tr>
     {/if}
 

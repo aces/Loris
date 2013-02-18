@@ -175,7 +175,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                 return;
             } else {
                 $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
-                $this->addScoreColumn('total', 'Total number of results:', $conflicts_num['total']);
+                $this->addScoreColumn('total', 'Showing ' . count($conflicts) . ' of ' . $conflicts_num['total'] . ' conflicts matching filter.');
             }
        /* } else {
             $this->addScoreColumn('status', 'Please select a filter criteria first.');
