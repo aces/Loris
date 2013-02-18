@@ -183,14 +183,14 @@ class NDB_Form_conflicts_resolve extends NDB_Form
 
             // The 1=1 condition is just so that we can AND all the conditions together without worrying about whether or not
             // it's the first condition to be added.
-            $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, Visit_label, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts);
+            $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, Visit_label, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where LIMIT 100", $conflicts);
             //If there are no conflicts print a message to that effect
             if(empty($conflicts)){
                 $this->addScoreColumn("status", "No conflicts matching criteria found.");
                 return;
             } else {
                 $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
-                $this->addScoreColumn('total', 'Total number of results:', $conflicts_num['total']);
+                $this->addScoreColumn('total', 'Showing ' . count($conflicts) . ' of ' . $conflicts_num['total'] . ' conflicts matching filter.');
             }
 
         //Loop through the conflicts and add a row per
