@@ -139,7 +139,7 @@ if (!empty($_REQUEST['test_name'])) {
         } else {
             if (empty($_REQUEST['subtest'])) {
                 // check if the file/class exists
-                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc")) {
+                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc") || file_exists($paths['base']."project/instruments/" . $_REQUEST['test_name'].".linst")) {
                     // save possible changes from the control panel...
                     $success = $controlPanel->save();
                     if (PEAR::isError($success)) {
