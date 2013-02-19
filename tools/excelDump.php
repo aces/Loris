@@ -128,7 +128,7 @@ writeExcel($Test_name, $instrument_table, $dataDir);
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y' ORDER BY c.PSCID";
+$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC, pc1.Value as candidate_comment from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) LEFT JOIN parameter_candidate pc1 ON (c.CandID = pc1.CandID and pc1.ParameterTypeID=7296) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y' ORDER BY c.PSCID";
 $DB->select($query, $results);
 if (PEAR::isError($results)) {
 	PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
