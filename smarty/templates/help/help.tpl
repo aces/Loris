@@ -40,8 +40,14 @@ function mailThisPage()
 	var link = window.location;
 	var emailSubject = "Review article: "+ document.title;
 	var emailAddress = prompt ("Please enter recipient email address","");
-	alert(emailAddress);
-	window.location ="mailto:"+emailAddress+"?Subject="+emailSubject+"&body="+link;
+	var atpos=emailAddress.indexOf("@");
+	var dotpos=emailAddress.lastIndexOf(".");
+	if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length)
+	{
+		alert("Not a valid e-mail address");
+		location.reload();
+	}
+        window.location ="mailto:"+emailAddress+"?Subject="+emailSubject+"&body="+link;
 
 }
 //-->
