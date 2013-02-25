@@ -363,7 +363,7 @@ class NDB_BVL_Battery extends PEAR
         $query = "SELECT t.Test_name FROM test_battery AS b, test_names AS t WHERE t.Test_name=b.Test_name AND ((b.AgeMinDays=0 AND b.AgeMaxDays=0) OR (b.AgeMinDays<='$this->age' AND b.AgeMaxDays>='$this->age')) AND b.Active='Y' AND (SubprojectID='$SubprojectID' OR SubprojectID IS NULL)";
 
         if(!is_null($visit_label)) {
-            $VisitBatteryExists = $GLOBALS['DB']->pselectOne("SELECT count(*) FROM test_battery WHERE Visit_label = '$visit_label' AND SubprojectID=:SubID", array('VL' => $visit_label, 'SubID' => $SubprojectID));
+            $VisitBatteryExists = $GLOBALS['DB']->pselectOne("SELECT count(*) FROM test_battery WHERE Visit_label =:VL AND SubprojectID=:SubID", array('VL' => $visit_label, 'SubID' => $SubprojectID));
             if($VisitBatteryExists > 0) {
                 $query .= " AND b.Visit_label='$visit_label'";
             } else {
