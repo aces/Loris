@@ -441,9 +441,6 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
     
-    // }}}
-    // {{{ _saveValues()
-    
     function _saveCandidateAge(&$values) {
         if(!empty($values['Date_taken'])) {
             $DB = Database::singleton();
@@ -453,29 +450,51 @@ class NDB_BVL_Instrument extends NDB_Page
                 $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
                 // 1 Decimal.
                 $agemonths = (round($agemonths*10) / 10.0);
+                $config = NDB_Config::singleton();
+
+                $timepoint = TimePoint::singleton($this->getSessionID());
+                $windowDifferenceType = $timepoint->getWindowDifferenceType();
+
                 if(!empty($age)) {
-                    $validage = $DB->selectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'");
                     $values['Candidate_Age'] = $agemonths;
                     $values['Window_Difference'] = 0;
+                    if($windowDifferenceType === 'battery') {
+                        $validage = $DB->selectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'");
 
-                    // Age isn't valid, so find out how far out it is
+                        // Age isn't valid, so find out how far out it is
 
-                    if($validage == 0) {
-                        $DB->select("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'", $Windows);
-                        foreach ($Windows as $window) {
-                            if($agedays < $window['AgeMinDays']) {
-                                $delta = $window['AgeMinDays'] - $agedays;
-                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
-                                    $values['Window_Difference'] = 0-abs($delta);
+                        if($validage == 0) {
+                            $DB->select("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'", $Windows);
+                            foreach ($Windows as $window) {
+                                if($agedays < $window['AgeMinDays']) {
+                                    $delta = $window['AgeMinDays'] - $agedays;
+                                    if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                        $values['Window_Difference'] = 0-abs($delta);
+                                    }
                                 }
-                            }
-                            if($agedays > $window['AgeMaxDays']) {
-                                $delta = $agedays - $window['AgeMaxDays'];
-                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
-                                    $values['Window_Difference'] = abs($delta);
+                                if($agedays > $window['AgeMaxDays']) {
+                                    $delta = $agedays - $window['AgeMaxDays'];
+                                    if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                        $values['Window_Difference'] = abs($delta);
+                                    }
                                 }
                             }
                         }
+                    } elseif($windowDifferenceType === 'permitted' || $windowDifferenceType === 'optimal') {
+                        if($windowDifferenceType === 'permitted') {
+                            $window = $DB->pselectRow('SELECT WindowMinDays as Min, WindowMaxDays as Max FROM Visit_Windows WHERE UPPER(Visit_label)=UPPER(:VL)', array('VL' => $timepoint->getVisitLabel()));
+                        } elseif($windowDifferenceType === 'optimal') {
+                            $window = $DB->pselectRow('SELECT OptimumMinDays as Min, OptimumMaxDays as Max FROM Visit_Windows WHERE UPPER(Visit_label)=UPPER(:VL)', array('VL' => $timepoint->getVisitLabel()));
+                        }
+
+                        if($agedays < $window['Min'] ) {
+                            $values['Window_Difference'] = $window['Min'] - $agedays;
+                        }
+                        if($agedays > $window['Max'] ) {
+                            $values['Window_Difference'] = $agedays - $window['Max'];
+                        }
+                    } else {
+                        // disabled, do nothing
                     }
                 }
             }
