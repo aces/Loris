@@ -371,7 +371,9 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
         
-        if($defaults['Window_Difference'] != 0) {
+        // Windows don't apply to probands, but otherwise if it's outside of the window highlight
+        // it as an error
+        if($defaults['Window_Difference'] != 0 && strrpos($this->testName, '_proband') === FALSE) {
             $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>'; //if($defaults['Window_Difference'] != 0) {
         }
         //Convert select multiple elements into a quickform array
@@ -516,9 +518,9 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         }
         
-        if(strrpos($this->testName, "_proband") === FALSE) {
+        //if(strrpos($this->testName, "_proband") === FALSE) {
             $this->_saveCandidateAge($values);
-        }
+        //}
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
@@ -593,6 +595,9 @@ class NDB_BVL_Instrument extends NDB_Page
         if(strrpos($this->testName, '_proband') === FALSE) {
             $this->addScoreColumn('Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
             $this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
+        } else {
+            $this->addScoreColumn('Candidate_Age', 'Proband Age (Months)', 'Please enter date of administration and press Save');
+            //$this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
         }
         $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
@@ -1397,7 +1402,11 @@ class NDB_BVL_Instrument extends NDB_Page
     function getCandidateAge($Date_taken=FALSE) {
         $db =& Database::singleton();
         $CommentID = $this->getCommentID();
-        $db->selectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID='$CommentID'", $dates);
+        if(strrpos($this->testName, "_proband") !== FALSE) {
+            $dates = $db->pselectRow("SELECT i.Date_taken, c.ProbandDoB as DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID=:CID", array('CID' => $CommentID));
+        } else {
+            $dates = $db->pselectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID=:CID", array('CID' => $CommentID));
+        }
 
         if($Date_taken==FALSE) {
             $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
@@ -1405,7 +1414,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $age = Utility::calculateAge($dates['DoB'], $Date_taken);
         }
         if(!empty($age)) {
-            return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
+            return $age;
         }
         return;
     }
