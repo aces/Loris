@@ -1548,6 +1548,7 @@ CREATE TABLE `conflicts_unresolved` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_resolved` (
+      `ResolvedID` int(10) NOT NULL AUTO_INCREMENT,
       `UserID` varchar(255) NOT NULL,
       `ResolutionTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       `User1` varchar(255) DEFAULT NULL,
@@ -1562,7 +1563,8 @@ CREATE TABLE `conflicts_resolved` (
       `OldValue1` varchar(255) DEFAULT NULL,
       `OldValue2` varchar(255) DEFAULT NULL,
       `NewValue` varchar(255) DEFAULT NULL,
-      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+      `ConflictID` int(10) DEFAULT NULL,
+      PRIMARY KEY (`ResolvedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tarchive_find_new_uploads` (
