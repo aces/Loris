@@ -1534,6 +1534,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_unresolved` (
+      `ConflictID` int(10) NOT NULL AUTO_INCREMENT,
       `TableName` varchar(255) NOT NULL,
       `ExtraKeyColumn` varchar(255) DEFAULT NULL,
       `ExtraKey1` varchar(255) NOT NULL,
@@ -1543,7 +1544,7 @@ CREATE TABLE `conflicts_unresolved` (
       `Value1` varchar(255) DEFAULT NULL,
       `CommentId2` varchar(255) NOT NULL,
       `Value2` varchar(255) DEFAULT NULL,
-      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+      PRIMARY KEY (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_resolved` (
