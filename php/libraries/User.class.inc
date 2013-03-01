@@ -1,5 +1,6 @@
 <?php
 require_once 'UserPermissions.class.inc';
+require_once 'CouchDB.class.inc';
 
 /**
  * User class
@@ -299,8 +300,14 @@ class User extends UserPermissions
     }
 
     function updateCouchUser($password) {
-        print "Hello I am updating the user";
+        $cdb = CouchDB::singleton();
 
+        $userjson = $cdb->_getURL("/_users/org.couchdb.user:" . $this->getUserName());
+        $userobj = json_decode($userjson, true);
+
+        //print_r($userobj);
+        $userobj['password'] = $password;
+        //print_r($userobj);
     }
 }
 ?>
