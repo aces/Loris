@@ -56,8 +56,27 @@ class TestOfCouchDBWrapper extends UnitTestCase {
         $couch->SocketHandler = $smock;
         $file = $couch->_postRelativeURL("hello.txt", "abc");
         $this->assertEqual($file, "I created it");
-    }
+   }
 
+    function testPostURL() {
+        $couch = CouchDB::singleton();
+        $smock = new MockSocketWrapper();
+        $smock->expectOnce('setHost', array($this->db['hostname']));
+        $smock->expectOnce('setPort', array($this->db['port']));
+        $smock->returns('eof', false);
+        $smock->returnsAt(0, 'gets', "HTTP/1.0 201 Created\r\n");
+        $smock->returnsAt(1, 'gets', "\r\n");
+        $smock->returnsAt(2, 'gets', "I created it\r\n");
+        $smock->returnsAt(3, 'eof', true);
+
+        $smock->expectAt(0, 'write', array("POST /users/abc HTTP/1.0\r\n")); // write the POST 
+        $smock->expectAt(1, 'write', array("Content-Length: 3\r\n\r\n")); // Write the length
+        $smock->expectAt(2, 'write', array("abc"));
+        $smock->expectCallCount('write', 3);
+        $couch->SocketHandler = $smock;
+        $file = $couch->_postURL("/users/abc", "abc");
+        $this->assertEqual($file, "I created it");
+   }
     function testConstructURL() {
         $CouchDB = $this->config->getSetting("CouchDB");
         $Couch = CouchDB::singleton();
@@ -147,5 +166,6 @@ class TestOfCouchDBWrapper extends UnitTestCase {
                     )
         ));
     }
+
 }
 ?>
