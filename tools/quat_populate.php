@@ -159,9 +159,9 @@ function GetSelectStatement($parameterType, $field=NULL) {
 
     case 'mri_acquisition_dates':
         if($field == null) {
-            $field = "$parameterType[SourceField] Value";
+            $field = "mad.$parameterType[SourceField]";
         }
-        $query = "SELECT $field AS Value FROM session s LEFT JOIN candidate USING (CandID) LEFT JOIN mri_acquisition_dates ON (session.ID=mri_acquisition_dates.SessionID)";
+        $query = "SELECT $field AS Value FROM session s LEFT JOIN candidate USING (CandID) LEFT JOIN mri_acquisition_dates AS mad ON (mad.SessionID=s.ID) WHERE 1=1 ";
 	 break;
 
     //for behavioural instrument data
@@ -201,6 +201,7 @@ foreach($parameterTypes AS $parameterType) {
             case 'psc':
             case 'parameter_candidate';
             case 'parameter_session':
+            case 'mri_acquisition_dates';
                 $setVals[] = "`$parameterType[Name]`=(" . GetSelectStatement($parameterType) . " AND $parameterType[CurrentGUITable]_running.SessionID=s.ID)";
                 break;
             default:
