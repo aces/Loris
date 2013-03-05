@@ -22,6 +22,13 @@ function feedback_bvl_popup(features) {
         {literal}
             window.open(myUrl, "feedback_control", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
 }
+function open_help_section(){
+{/literal}
+  var helpurl = "context_help_popup.php?test_name={$test_name}";
+  {literal}
+     window.open(helpurl);
+}
+
 //-->
 </script>
 {/literal}
@@ -104,7 +111,7 @@ function feedback_bvl_popup(features) {
         <td width="100%" class="tabox" valign="top">
 
             <!-- Start workspace area -->
-
+<h1 align="right"><a href="javascript:open_help_section()" ><u>Help</u></a>  </h1>
 {if $crumbs != ""}
             <!-- bread crumb -->
             <table width="100%" border="0" cellpadding="3" cellspacing="4">
