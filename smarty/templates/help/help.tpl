@@ -35,6 +35,21 @@ function doRefresh()
         window.location = 'context_help_popup.php' + URL.substr(strpos(URL, '?'), URL.length);
     }
 }
+function mailThisPage()
+{
+	var link = window.location;
+	var emailSubject = "Review article: "+ document.title;
+	var emailAddress = prompt ("Please enter recipient email address","");
+	var atpos=emailAddress.indexOf("@");
+	var dotpos=emailAddress.lastIndexOf(".");
+	if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length)
+	{
+		alert("Not a valid e-mail address");
+		location.reload();
+	}
+        window.location ="mailto:"+emailAddress+"?Subject="+emailSubject+"&body="+link;
+
+}
 //-->
 </script>
 {/literal}
@@ -54,7 +69,7 @@ function doRefresh()
         <td align="right">
 	    <p><a href="javascript:doRefresh()"><img src="images/new.gif" width="" height="" border="0" alt="" />&nbsp;Refresh page</a> |
 	    <a href="javascript:window.close()"><img src="images/delete.gif" width="" height="" border="0" alt="" />&nbsp;Close window</a><br />
-	    <!--a href=""--><img src="images/mail.gif" width="12" height="12" border="0" alt="" />&nbsp;E-mail this<!--/a--> |
+	    <a href="javascript:mailThisPage()"><img src="images/mail.gif" width="12" height="12" border="0" alt="" />&nbsp;E-mail this<!--/a--> |
 	    <a href="javascript:window.print()"><img src="images/print.gif" width="12" height="12" border="0" alt="" />&nbsp;Print this page</a></p>
         </td>
     </tr>

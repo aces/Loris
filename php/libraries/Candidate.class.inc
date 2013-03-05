@@ -52,7 +52,7 @@ class Candidate
         }
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender, p.Name AS PSC, c.Ethnicity, c.ZIP, c.Sibling1, c.Sibling2, c.Sibling3, c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID FROM candidate as c left join psc as p using (CenterID) left join users as u1 on (u1.UserID = c.RegisteredBy) WHERE c.CandID=:Candidate' AND c.Active = 'Y'";
+        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender, p.Name AS PSC, c.Ethnicity, c.ZIP, c.Sibling1, c.Sibling2, c.Sibling3, c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID FROM candidate as c left join psc as p using (CenterID) left join users as u1 on (u1.UserID = c.RegisteredBy) WHERE c.CandID=:Candidate AND c.Active = 'Y'";
         $row = array();
         $row = $db->pselectRow($query, $CandArray);
         
