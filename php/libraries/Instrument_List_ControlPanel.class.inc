@@ -510,6 +510,9 @@ Class Instrument_List_ControlPanel extends TimePoint
             }
         }
         
+        if ($this->getData('Submitted')=='Y') {
+            return $hasAccess;
+        }
         return ($hasAccess && $allDataEntryComplete);
     }
     
