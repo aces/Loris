@@ -427,6 +427,12 @@ table.data {
 }
 
 .data tr th {
+    border: #44c; /*#339 /*#08245b*/1px;
+    border-radius: 4px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 4px;
+    background-color: #44c; /*#efefef;*/
+    margin: 10px 0px 20px 0px;
     background: #44c; /*#08245B;
     /* color: #CCC; */
     color: white;
