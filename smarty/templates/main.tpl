@@ -151,6 +151,9 @@ function open_help_section(){
                     <th nowrap="nowrap">EDC</th>
         {/if}
                     <th nowrap="nowrap">Gender</th>
+        {if $candidate.ProjectTitle != ""}
+                    <th nowrap="nowrap">Project</th>
+        {/if}
         {if $sessionID != ""}
                     <th nowrap="nowrap">Visit Label</th>
                     <th nowrap="nowrap">Visit to Site</th>
@@ -173,6 +176,10 @@ function open_help_section(){
                     <td nowrap="nowrap">{$candidate.EDC}</td>
         {/if}
                     <td nowrap="nowrap">{$candidate.Gender}</td>
+        {if $candidate.ProjectTitle != ""}
+                    <td nowrap="nowrap">{$candidate.ProjectTitle}</td>
+        {/if}
+
         {if $sessionID != ""}
                     <!-- timepoint data -->
                     <td nowrap="nowrap">{$timePoint.Visit_label}</td>

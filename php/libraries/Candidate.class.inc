@@ -69,6 +69,9 @@ class Candidate
             $this->candidateInfo[$key] = $value;
         }
 
+        if($config->getSetting('useProjects') === 'true') {
+            $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
+        }
         // checK PSCID - only if it's passed by the open profile form
         if (isset($_REQUEST['PSCID'])) {
             if (strtolower(trim($_REQUEST['PSCID'])) != strtolower($this->getPSCID())) {
@@ -223,10 +226,16 @@ class Candidate
     {
         return $this->candidateInfo["ProjectID"];
     }
-    function getCandID()
+
+    function getProjectTitle() {
+        $ProjectList = Utility::getProjectList();
+        return $ProjectList[$this->getProjectID()];
+    }
+   function getCandID()
     {
         return $this->candidateInfo["CandID"];
     }
+
 
     function getPSCID()
     {
