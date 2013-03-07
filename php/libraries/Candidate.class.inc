@@ -41,6 +41,7 @@ class Candidate
     
     function select($candID)
     {
+        $config = NDB_Config::singleton();
         // right off, set the candID
         $candID = trim($candID);
         $CandArray = array('Candidate' => $candID);
@@ -72,6 +73,23 @@ class Candidate
         if($config->getSetting('useProjects') === 'true') {
             $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
         }
+
+        $headerSetting = $config->getSetting('HeaderTable');
+        if(!empty($headerSetting)) {
+            $params = array();
+            $parameterCandSettings = $headerSetting['parameter_candidate'];
+            if(!is_array($parameterCandSettings)) {
+                $parameterCandSettings= array($parameterCandSettings);
+            }
+            foreach($parameterCandSettings as $parameter_type) {
+                $row = $db->pselectRow("SELECT Value, pt.Description FROM candidate c JOIN parameter_candidate pc ON (pc.CandID=c.CandID) LEFT JOIN parameter_type pt ON (pc.ParameterTypeID=pt.ParameterTypeID) WHERE c.CandID=:Candidate AND pt.Name=:PTName", array('Candidate' => $candID, 'PTName' => $parameter_type));
+                if(!empty($row['Value'])) {
+                    $params[$row['Description']] = $row['Value'];
+                }
+            }
+            $this->candidateInfo['DisplayParameters'] = $params;
+        }
+
         // checK PSCID - only if it's passed by the open profile form
         if (isset($_REQUEST['PSCID'])) {
             if (strtolower(trim($_REQUEST['PSCID'])) != strtolower($this->getPSCID())) {
