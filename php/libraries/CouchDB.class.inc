@@ -83,6 +83,7 @@ class CouchDB {
 
         $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n\r\n");
 
+        $response = '';
         while(!$handler->eof()) {
             $response .= $handler->gets();
         }
@@ -121,6 +122,7 @@ class CouchDB {
         $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
         $handler->write($data);
+        $response = '';
         while(!$handler->eof()) {
             $response .= $handler->gets();
         }
@@ -133,7 +135,7 @@ class CouchDB {
         $json = $this->_getRelativeURL($id);
         $data = json_decode($json, true);
 
-        if($data['error'] === 'not_found') {
+        if(isset($data['error']) && $data['error'] === 'not_found') {
             return array();
         }
         
