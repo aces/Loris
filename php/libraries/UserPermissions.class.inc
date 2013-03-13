@@ -43,8 +43,9 @@ class UserPermissions
         }
 
         // get the proper ID from the database
-        $query = "SELECT ID FROM users WHERE UserID = '$username'";
-        $this->userID = $DB->selectOne($query);
+        $query = "SELECT ID FROM users WHERE UserID =:UName";
+        $params = array('UName' => $username);
+        $this->userID = $DB->pselectOne($query, $params);
         if (Utility::isErrorX($this->userID)) {
             return PEAR::raiseError("DB Error: ".$this->userID->getMessage());
         }
@@ -75,8 +76,8 @@ class UserPermissions
         }
 
         // get all the permissions for this user
-        $query = "SELECT code FROM permissions, user_perm_rel WHERE permissions.permID = user_perm_rel.permID AND userID = '$this->userID'";
-        $DB->select($query, $results);
+        $query = "SELECT code FROM permissions, user_perm_rel WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
+        $results = $DB->pselect($query, array('UID' => $this->userID);
         if (Utility::isErrorX($results)) {
             return PEAR::raiseError("DB Error: ".$results->getMessage());
         }
@@ -214,8 +215,8 @@ class UserPermissions
         }
 
         // get all the permissions for this user
-        $query = "SELECT permissions.permID FROM permissions, user_perm_rel WHERE permissions.permID = user_perm_rel.permID AND userID = '$this->userID'";
-        $DB->select($query, $results);
+        $query = "SELECT permissions.permID FROM permissions, user_perm_rel WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
+        $results = $DB->pselect($query, array('UID' => $this->userID);
         if (Utility::isErrorX($results)) {
             return PEAR::raiseError("DB Error: ".$results->getMessage());
         }
@@ -239,8 +240,8 @@ class UserPermissions
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        $query = "SELECT p.permID, p.code, p.description, pc.Description as type FROM permissions p JOIN user_perm_rel up ON (p.permID=up.PermID) LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID) WHERE up.userID = '$this->userID' ORDER BY p.categoryID, p.description";
-        $DB->select($query, $results);
+        $query = "SELECT p.permID, p.code, p.description, pc.Description as type FROM permissions p JOIN user_perm_rel up ON (p.permID=up.PermID) LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID) WHERE up.userID = :UID ORDER BY p.categoryID, p.description";
+        $results = $DB->pselect($query, array ('UID' => $this->userID));
         if (Utility::isErrorX($results)) {
             return PEAR::raiseError("DB Error: ".$results->getMessage());
         }
