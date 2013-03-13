@@ -46,9 +46,9 @@ class User extends UserPermissions
         }
 
         // get user data from database
-        $query = "SELECT users.*, psc.Name AS Site FROM users, psc WHERE users.CenterID = psc.CenterID AND users.UserID = '$username'";
+        $query = "SELECT users.*, psc.Name AS Site FROM users, psc WHERE users.CenterID = psc.CenterID AND users.UserID = :UID";
 
-        $DB->selectRow($query, $row);
+        $row = $DB->pselectRow($query, array('UID' => $username);
         if (Utility::isErrorX($row)) {
             return PEAR::raiseError("DB Error: ".$row->getMessage());
         }
