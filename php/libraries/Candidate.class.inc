@@ -144,7 +144,7 @@ class Candidate
            }
 
            // check pscid uniqueness
-           if($db->selectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$PSCID'") > 0) {
+           if($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:PID", array('PID' => $PSCID)) > 0) {
                return PEAR::raiseError("PSCID not unique", PSCID_NOT_UNIQUE);
            }
        } else {           
@@ -328,8 +328,8 @@ class Candidate
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
 
-        $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo FROM session WHERE CandID='$candID' AND (Active='Y' OR Active is null) GROUP BY CandID";
-        $db->selectRow($query, $result);
+        $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo FROM session WHERE CandID=:CaID AND (Active='Y' OR Active is null) GROUP BY CandID";
+        $result = $db->pselectRow($query, array('CaID' => $candID));
         if(Utility::isErrorX($result)) {
             return PEAR::raiseError("Could not retrieve existing data for session");
         }
@@ -358,8 +358,8 @@ class Candidate
 
         if($visitLabelSettings['generation'] == 'user' && !empty($visitLabelSettings['suggest'])) {
             $existingVisitLabels = $this->getListOfVisitLabels();
-            $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel FROM session WHERE CandID='$candID' AND (Active='Y' OR Active is null) GROUP BY CandID";
-            $db->selectRow($query, $result);
+            $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel FROM session WHERE CandID=:CaID AND (Active='Y' OR Active is null) GROUP BY CandID";
+            $result = $db->pselectRow($query, array('CaID' => $candID));
             if(Utility::isErrorX($result)) {
                 return PEAR::raiseError("Could not retrieve existing data for session");
             }
@@ -399,7 +399,7 @@ class Candidate
         $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         
         // make sure the cand id is not used
-        while($db->selectOne("SELECT count(CandID) FROM candidate WHERE CandID='$candID'") > 0) {
+        while($db->pselectOne("SELECT count(CandID) FROM candidate WHERE CandID=:CaID", array('CaID' => $candID) > 0) {
             // pick a new candidate id
             $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         }
@@ -440,7 +440,7 @@ class Candidate
             }
             
             // check if the pscid is used
-        } while($db->selectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$pscid'") > 0);
+        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:PID", array('PID' => $pscid)) > 0);
         
         return $pscid;
     }
