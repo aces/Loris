@@ -159,7 +159,7 @@ class Utility extends PEAR
         $query = "SELECT DISTINCT Ethnicity FROM candidate WHERE Ethnicity NOT IN (NULL, '') ORDER BY Ethnicity";
         // execute the query
 
-        $result $DB->pselect($query, array());
+        $result = $DB->pselect($query, array());
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -440,7 +440,7 @@ class Utility extends PEAR
 
         // craft the select query
         $query = "SELECT t.Test_name FROM test_battery AS b, test_names AS t WHERE t.Test_name=b.Test_name AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge AND b.Active='Y'";
-        $params = array('CandAge' => $age)
+        $params = array('CandAge' => $age);
 
         if(!is_null($stage)) {
             $query .= " AND b.Stage=:BatStage";
