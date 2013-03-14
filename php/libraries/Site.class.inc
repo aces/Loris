@@ -49,8 +49,8 @@ class Site
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
 
-        $query = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site FROM psc WHERE CenterID = '$centerID'";
-        $db->selectRow($query, $result);
+        $query = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site FROM psc WHERE CenterID = :CID";
+        $result = $db->pselectRow($query, array('CID' => $centerID));
 
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Could not retrieve site information form the Database");
