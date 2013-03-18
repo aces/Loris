@@ -221,7 +221,7 @@ class Utility extends PEAR
     {
         $DB =& Database::singleton();
 
-         $query = "SELECT Visit_label from Visit_Windows";
+         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
          $DB->select($query, $result);
          if(PEAR::isError($result)) {
