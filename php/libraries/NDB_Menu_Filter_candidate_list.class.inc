@@ -116,8 +116,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addBasicText('DCCID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
         $this->addSelect('gender', 'Gender:', array('' => 'Any', 'Male' => 'Male', 'Female' => 'Female'));
-        $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
         $this->addSelect('SubprojectID', 'Sub Project:', array('' => 'Any') + $list_of_subprojects);
+        $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
