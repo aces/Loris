@@ -16,7 +16,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 	{
 		// create user object
 		$user =& User::singleton();
-		if(PEAR::isError($user)) {
+		if(Utility::isErrorX($user)) {
 			return PEAR::raiseError("User Error: ".$user->getMessage());
 		}
 
@@ -92,7 +92,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 	{
 		// create DB object
 		$DB =& Database::singleton();
-		if(PEAR::isError($DB)) {
+		if(Utility::isErrorX($DB)) {
 			return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
 		}
 		// make the SELECT statement
@@ -178,7 +178,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		// get the list
 		//print($query);
 		$DB->select($query, $result);
-		if(PEAR::isError($result)) {
+		if(Utility::isErrorX($result)) {
 			return PEAR::raiseError("DB Error: ".$result->getMessage());
 		}
 

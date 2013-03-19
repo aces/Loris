@@ -11,17 +11,17 @@ class NDB_Form_certification extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $centerID = $DB->selectOne("SELECT centerID FROM examiners, cert_events WHERE examiners.examinerID = cert_events.examinerID AND cert_events.certID = '$this->identifier'");
-        if (PEAR::isError($centerID)) {
+        if (Utility::isErrorX($centerID)) {
             return PEAR::raiseError("DB Error: ".$centerID->getMessage());
         }
 
@@ -31,12 +31,12 @@ class NDB_Form_certification extends NDB_Form
     function _getDefaults()
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $DB->select("SELECT ID FROM test_names", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
@@ -51,7 +51,7 @@ class NDB_Form_certification extends NDB_Form
         if (!empty($this->identifier)) {
             // set the certificatione event details
             $DB->selectRow("SELECT examinerID, date_cert, candID, visit_label FROM cert_events WHERE certID = $this->identifier", $row);
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
 
@@ -68,7 +68,7 @@ class NDB_Form_certification extends NDB_Form
 
             // set the certification results
             $DB->select("SELECT testID, pass, comment FROM cert_details WHERE certID = $this->identifier", $result);
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
 
@@ -87,7 +87,7 @@ class NDB_Form_certification extends NDB_Form
     function _process($values)
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -102,7 +102,7 @@ class NDB_Form_certification extends NDB_Form
                                                               'candID'    => $values['cert_candID'],
                                                               'visit_label'    => $values['cert_visit_label'],
                                                               ));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("DB Error: ".$success->getMessage());
             }
             $this->identifier = $DB->lastInsertID;
@@ -114,14 +114,14 @@ class NDB_Form_certification extends NDB_Form
                                                               'candID'    => $values['cert_candID'],
                                                               'visit_label'    => $values['cert_visit_label'],
                                                               ), array('certID' => $this->identifier));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("DB Error: ".$success->getMessage());
             }
         }
 
         // delete the old event details
         $success = $DB->delete('cert_details', array('certID' => $this->identifier));
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("DB Error: ".$success->getMessage());
         }
 
@@ -135,7 +135,7 @@ class NDB_Form_certification extends NDB_Form
                                                               'pass' => $pass,
                                                               'comment' => $values['comment'][$testID]
                                                               ));
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("DB Error: ".$success->getMessage());
                 }
             }
@@ -161,12 +161,12 @@ class NDB_Form_certification extends NDB_Form
                              );
 
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $DB->select("SELECT examinerID, concat(psc.Alias, ' - ', examiners.full_name) AS full_name FROM examiners, psc WHERE examiners.centerID=psc.CenterID ORDER BY full_name", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
         $examinerOptions[0] = '';
@@ -189,7 +189,7 @@ class NDB_Form_certification extends NDB_Form
 
 
         $DB->select("SELECT ID, Full_name FROM test_names ORDER BY Full_name", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 

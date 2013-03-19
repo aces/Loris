@@ -15,7 +15,7 @@ class MRIViewScansPage {
     function MRIViewScansPage($sessionID) {
         $this->SessionID = $sessionID;
         $this->DB = Database::singleton();
-        if(PEAR::isError($this->DB)) {
+        if(Utility::isErrorX($this->DB)) {
             print "Could not connect to database: ".$DB->getMessage()."<br>\n";
             die();
         }
@@ -35,7 +35,7 @@ class MRIViewScansPage {
                 if(!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
                     $success = $this->DB->update('files_qcstatus', $updateSet, $updateWhere);
-                    if(PEAR::isError($success)) {
+                    if(Utility::isErrorX($success)) {
                         die("DB Error: ".$success->getMessage());
                     }
                 } else {
@@ -67,7 +67,7 @@ class MRIViewScansPage {
                         $success = $this->DB->insert('parameter_file', $insertSet);
                     }
                 }
-                if(PEAR::isError($success)) {
+                if(Utility::isErrorX($success)) {
                     die("DB Error: ".$success->getMessage());
                 }
             }
@@ -85,7 +85,7 @@ class MRIViewScansPage {
             if(empty($firstChangeTime)) $updateSet['MRIQCFirstChangeTime'] = $updateSet['MRIQCLastChangeTime'];
 
             $success = $this->DB->update('session', $updateSet, array('ID'=>$_REQUEST['sessionID']));
-            if(PEAR::isError($success)) {
+            if(Utility::isErrorX($success)) {
                 die("DB Error: ".$success->getMessage());
             }
 
@@ -115,7 +115,7 @@ class MRIViewScansPage {
             $subjectData = $this->_subjectData;
         }
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if(PEAR::isError($timePoint)) {
+        if(Utility::isErrorX($timePoint)) {
             print $timePoint->getMessage()."<br>";
         }
 
@@ -130,7 +130,7 @@ class MRIViewScansPage {
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['candid'] = $timePoint->getCandID();
         $candidate =& Candidate::singleton($timePoint->getCandID());
-        if(PEAR::isError($candidate)) { 
+        if(Utility::isErrorX($candidate)) { 
             print $candidate->getMessage()."<br>";
         } else {
             $subjectData['pscid'] = $candidate->getPSCID();

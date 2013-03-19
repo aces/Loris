@@ -118,12 +118,12 @@ Class NDB_MRI_Efax extends File
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -142,7 +142,7 @@ Class NDB_MRI_Efax extends File
         $query .= " ORDER BY c.CandID, s.Visit_label, Date, e.Page";
         $db->select($query, $result);
 
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
 
@@ -156,7 +156,7 @@ Class NDB_MRI_Efax extends File
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -165,7 +165,7 @@ Class NDB_MRI_Efax extends File
 
         // update the record
         $success = $db->update($setArray, $whereArray);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Error, failed to update record ($fileName), field($field) to value ($value):\n".$success->getMessage());
         }
     }
@@ -200,7 +200,7 @@ Class NDB_MRI_Efax extends File
 
         // site object
         $site =& Site::singleton($centerID);
-        if (PEAR::isError($site)) {
+        if (Utility::isErrorX($site)) {
             return PEAR::raiseError("Error, failed to create site object".$site->getMessage());
         }
 
@@ -246,11 +246,11 @@ Class NDB_MRI_Efax extends File
         $setArray = array('CenterID'=>$centerID,'CandID'=>$candID,'Scan_category'=>$scanCategory,'SessionID'=>$sessionID,'Acquisition_date'=>$studyDate,'File_name'=>$fileName, 'Page'=>$page, 'UserID'=>$userID, 'Date_taken'=>$today, 'Comment'=>$comment);
 
         $success = $db->insert('mri_efax_parameter_form', $setArray);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
 
             //remove the copied file from the system
             $success1 = $this->_deleteFile($fileTo);
-            if (PEAR::isError($success1)) {
+            if (Utility::isErrorX($success1)) {
                 // log the error, to be returned below
                 $errorPart = "Error, failed to delete copied file ($fileTo)";
             }
@@ -263,7 +263,7 @@ Class NDB_MRI_Efax extends File
         //remove the original file from the system
         $success = $this->_deleteFile($fileFrom);
 
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             // throw an error, inform the user to remove the original file manually.
             return PEAR::raiseError("Error, failed to delete the original file ($fileFrom) from the system:\n".$success->getMessage()."\n The efax page has been assigne, remove the original file manually!");
         }
@@ -281,7 +281,7 @@ Class NDB_MRI_Efax extends File
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -289,7 +289,7 @@ Class NDB_MRI_Efax extends File
         $query = "SELECT m.CandID, m.Scan_category, p.MRI_alias FROM mri_efax_parameter_form as m, psc as p WHERE p.CenterID = m.CenterID AND File_name = '$fileName'";
 
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DBError, failed to select Scan cat. for file ($fileName):".$result->getMessage()."\n");
         }
 
@@ -333,11 +333,11 @@ Class NDB_MRI_Efax extends File
         $success = $db->delete('mri_efax_parameter_form', array('File_name'=>$fileName));
 
         // if error, remove destination file
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
 
             // remove the copied file
             $success1 = $this->_deleteFile($fileTo);
-            if (PEAR::isError($success1)) {
+            if (Utility::isErrorX($success1)) {
                 // preserve error
                 $errorPart = "Error, failed to delete destination file ($fileTo):\n".$success1->getMessage();
             }
@@ -347,7 +347,7 @@ Class NDB_MRI_Efax extends File
 
         // remove the file from the original location
         $success = $this->_deleteFile($fileFrom);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Error, failed to delete original file ($fileFrom):\n".$success->getMessage()."\n Remove the file manually!");
         }
     }
@@ -362,7 +362,7 @@ Class NDB_MRI_Efax extends File
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -379,7 +379,7 @@ Class NDB_MRI_Efax extends File
 
         // remove the file from the original location
         $success = $this->_deleteFile($fileFrom);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Error, failed to delete original file ($fileFrom):\n".$success->getMessage());
         }
     }
@@ -395,7 +395,7 @@ Class NDB_MRI_Efax extends File
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -413,18 +413,18 @@ Class NDB_MRI_Efax extends File
         $setArray = array('ID'=>'NULL','File_name'=>$fileName,'Date'=>$today);
 
         $success = $db->insert('mri_efax_deleted_pages', $setArray);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Error, failed to insert a record into mri_efax_deleted_pages:\n".$success->getMessage());
         }
 
         //remove the file from the system
         $success = $this->_deleteFile($file);
 
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
 
             // if delete fails, remove the record from DB
             $success1 = $db->delete('mri_efax_deleted_pages', array('File_name'=>$fileName));
-            if (PEAR::isError($success1)) {
+            if (Utility::isErrorX($success1)) {
                 // log the error, to be returned below
                 $errorPart = "Error, Failed to remove the record from mri_efax_deleted_pages for File_name ($fileName)";
             }
@@ -472,7 +472,7 @@ Class NDB_MRI_Efax extends File
     function setTimepointLock($sessionID) {
         $db =& Database::singleton();
         $success = $db->run("UPDATE mri_efax_parameter_form SET TimepointLock=IF(TimepointLock=1,0,1) WHERE SessionID=$sessionID");
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_MRI_Efax::setTimepointLock(): failed to update records for sessionID ($sessionID):\n".$success->getMessage());
         }
         return true;

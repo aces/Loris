@@ -12,7 +12,7 @@ class NDB_Form_data_team_helper extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
         return true;
@@ -405,7 +405,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%' ORDER BY t.Full_name ",array('vl'=>$visit_label));
 		}
 		
-		if (PEAR::isError($test_names)) {
+		if (Utility::isErrorX($test_names)) {
 			return PEAR::raiseError("DB Error: ".$instruments->getMessage());
 		}
 		return $test_names;

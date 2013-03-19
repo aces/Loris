@@ -35,13 +35,13 @@ class User extends UserPermissions
 
         // get the user's permissions
         $success = $obj->select($username);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("User::factory(): ".$success->getMessage());
         }
 
         // create DB object
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -49,7 +49,7 @@ class User extends UserPermissions
         $query = "SELECT users.*, psc.Name AS Site FROM users, psc WHERE users.CenterID = psc.CenterID AND users.UserID = '$username'";
 
         $DB->selectRow($query, $row);
-        if (PEAR::isError($row)) {
+        if (Utility::isErrorX($row)) {
             return PEAR::raiseError("DB Error: ".$row->getMessage());
         }
         
@@ -74,7 +74,7 @@ class User extends UserPermissions
         static $instance;
         if (is_null($instance)) {
             $instance = User::factory($username);
-            if (PEAR::isError($instance)) {
+            if (Utility::isErrorX($instance)) {
                 return PEAR::raiseError("User Error ($username): ".$instance->getMessage());
             }
         }
@@ -96,12 +96,12 @@ class User extends UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $success = $DB->insert('users', $set);
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("DB Error: ".$success->getMessage());
         }
 
@@ -122,12 +122,12 @@ class User extends UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $success = $DB->update('users', $set, array('UserID' => $this->userInfo['UserID']));
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("DB Error: ".$success->getMessage());
         }
 

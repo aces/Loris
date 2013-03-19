@@ -14,7 +14,7 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
         // everyone has access to the menu
@@ -25,7 +25,7 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
         // only data entry personnel can access the form
@@ -36,7 +36,7 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
         // only users with this permission can access the review part of the form
@@ -55,7 +55,7 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
 
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -63,14 +63,14 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
         if ($user->hasPermission('mri_safety')) {
             // get the list of study sites
             $list_of_sites =& Utility::getSiteList();
-            if(PEAR::isError($list_of_sites)) {
+            if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
         } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (PEAR::isError($site)) {
+            if (Utility::isErrorX($site)) {
                 return PEAR::raiseError("DB Error: ".$site->getMessage());
             }
             if ($site->isStudySite()) {
@@ -94,7 +94,7 @@ class NDB_Menu_Filter_mri_safety extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 

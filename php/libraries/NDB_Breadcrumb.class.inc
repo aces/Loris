@@ -112,14 +112,14 @@ class NDB_Breadcrumb extends PEAR
 
         // create DB object
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         // set the 'instrument list' crumb text
         if (!empty($_REQUEST['sessionID'])) {
             $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-            if (PEAR::isError($timePoint)) {
+            if (Utility::isErrorX($timePoint)) {
                 return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
             }
             $this->_userFriendlyNames['instrument_list'] = 'TimePoint '.$timePoint->getVisitLabel().' Details';
@@ -128,7 +128,7 @@ class NDB_Breadcrumb extends PEAR
         // set the 'timepoint list' crumb text
         if (!empty($_REQUEST['candID'])) {
             $candidate =& Candidate::singleton($_REQUEST['candID']);
-            if (PEAR::isError($candidate)) {
+            if (Utility::isErrorX($candidate)) {
                 return PEAR::raiseError("Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage());
             }
             $this->_userFriendlyNames['timepoint_list'] = 'Candidate Profile '.$candidate->getData('CandID').' / '.$candidate->getData('PSCID');
@@ -137,7 +137,7 @@ class NDB_Breadcrumb extends PEAR
         // add a crumb for subtests
         if (!empty($this->_parameters['subtest'])) {
             $result = $DB->selectOne("SELECT Description FROM instrument_subtests WHERE Test_name = '" . $this->_parameters['test_name'] . "' AND Subtest_name = '" . $this->_parameters['subtest'] . "'");
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
 
@@ -151,7 +151,7 @@ class NDB_Breadcrumb extends PEAR
         // add a crumb for instruments
         if (!empty($this->_parameters['commentID'])) {
             $result = $DB->selectOne("SELECT Full_name FROM test_names WHERE Test_name = '" . $this->_parameters['test_name'] . "'");
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
 
