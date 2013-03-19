@@ -34,6 +34,8 @@ mysql> describe parameter_type;
 +-----------------+-----------------------------------------------+------+-----+---------+----------------+
 */
 
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+
 
 require_once "Utility.class.inc";
 

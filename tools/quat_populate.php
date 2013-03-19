@@ -1,5 +1,6 @@
 <?
 set_time_limit(0);
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**
  * QUAT uses the parameter_type table to determine the list of
  * parameters available for querying, nukes and reconstructs the query
