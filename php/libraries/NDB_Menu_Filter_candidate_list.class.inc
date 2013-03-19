@@ -121,9 +121,11 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
-        $this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
         
         $config=&NDB_Config::singleton();
+	if($config->getSetting("useProjects")=="true"){
+			$this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
+	}
         if($config->getSetting("useEDC")=="true"){
         	$this->addBasicText('edc', 'EDC:', 'maxlength=10');
         	$this->tpl_data['useEDC']="true";
