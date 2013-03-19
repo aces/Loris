@@ -58,7 +58,7 @@ class NDB_Client
         */
         $dbConfig = $config->getSetting('database');
         $DB =& Database::singleton($dbConfig['database'], $dbConfig['username'], $dbConfig['password'], $dbConfig['host']);
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             die("Could not connect to database: ".$DB->getMessage());
         }
         $GLOBALS['DB'] =& $DB;
@@ -90,7 +90,7 @@ class NDB_Client
         }
         if (!$login->isLoggedIn()) {
             $auth = $login->authenticate();
-            if(PEAR::isError($auth)) {
+            if(Utility::isErrorX($auth)) {
             } elseif($auth === true) {
                 $error = $login->setState();
             } elseif($auth === false) {
@@ -106,7 +106,7 @@ class NDB_Client
         }
         
         $user =& User::singleton($_SESSION['State']->getUsername());
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
              die("Could not validate user: ".$user->getMessage());
         }
 

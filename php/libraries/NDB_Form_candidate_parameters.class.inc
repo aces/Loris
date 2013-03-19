@@ -12,7 +12,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -22,7 +22,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         }
 
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 
@@ -74,14 +74,14 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $ethnicityList = array(null=>'');
         $success = Utility::getEthnicityList();
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
         	return PEAR::raiseError("Utility::getEthnicityList error: ".$success->getMessage());
         }
         $ethnicityList = array_merge($ethnicityList,$success);
         unset($success);
         
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 

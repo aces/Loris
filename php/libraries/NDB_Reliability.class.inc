@@ -48,7 +48,7 @@ class NDB_Reliability extends NDB_Form
         $obj->reliability_center_id = $reliability_center_id; 
         
         $access = $obj->_hasAccess();
-        if (PEAR::isError($access)) {
+        if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Form::factory() access: ".$access->getMessage());
         }
 
@@ -59,14 +59,14 @@ class NDB_Reliability extends NDB_Form
 
  	    if (method_exists($obj, $page)) {
 	        $success = $obj->$page();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() page: ".$success->getMessage());
             }
             $obj->template = $page;
 	    }
  	    elseif (method_exists($obj, $name)) {
 	        $success = $obj->$name();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() name: ".$success->getMessage());
             }
             $obj->template = $name;
@@ -101,7 +101,7 @@ class NDB_Reliability extends NDB_Form
 
         // get the defaults
         $localDefaults = $this->_getDefaults();
-        if (PEAR::isError($localDefaults)) {
+        if (Utility::isErrorX($localDefaults)) {
             return PEAR::raiseError("NDB_Form::display(): ".$localDefaults->getMessage());
         }
         if(!is_array($localDefaults)) { $localDefaults = array(); }
@@ -135,7 +135,7 @@ class NDB_Reliability extends NDB_Form
     {
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, "_save"), false);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::save(): ".$success->getMessage());
             }
         }
@@ -161,7 +161,7 @@ class NDB_Reliability extends NDB_Form
         }
 
         $success = $this->_process($values);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Form::_save(): ".$success->getMessage());
         }
     }

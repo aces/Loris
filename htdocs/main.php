@@ -40,7 +40,7 @@ $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['PopUpFeedbackBVL'] = $config->getSetting('PopUpFeedbackBVL');
 // draw the user information table
 $user =& User::singleton();
-if (PEAR::isError($user)) {
+if (Utility::isErrorX($user)) {
     $tpl_data['error_message'][] = "User Error: ".$user->getMessage();
 } else {
     $tpl_data['user'] = $user->getData();
@@ -48,7 +48,7 @@ if (PEAR::isError($user)) {
 }
 
 $site =& Site::singleton($user->getData('CenterID'));
-if (PEAR::isError($site)) {
+if (Utility::isErrorX($site)) {
     $tpl_data['error_message'][] = "Site Error: ".$site->getMessage();
     unset($site);
 } else {
@@ -110,7 +110,7 @@ if (!empty($_REQUEST['candID'])) {
 
 if (!empty($_REQUEST['sessionID'])) {
     $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-    if (PEAR::isError($timePoint)) {
+    if (Utility::isErrorX($timePoint)) {
         $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
     } else {
         $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
@@ -135,7 +135,7 @@ if (!empty($_REQUEST['test_name'])) {
         // make the control panel object for the current instrument
         $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
         $success = $controlPanel->select($_REQUEST['commentID']);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
               $tpl_data['error_message'][] = $success->getMessage();
         } else {
             if (empty($_REQUEST['subtest'])) {
@@ -143,7 +143,7 @@ if (!empty($_REQUEST['test_name'])) {
                 if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc") || file_exists($paths['base']."project/instruments/" . $_REQUEST['test_name'].".linst")) {
                     // save possible changes from the control panel...
                     $success = $controlPanel->save();
-                    if (PEAR::isError($success)) {
+                    if (Utility::isErrorX($success)) {
                         $tpl_data['error_message'][] = $success->getMessage();
                     }
                 }
@@ -151,7 +151,7 @@ if (!empty($_REQUEST['test_name'])) {
 
             // display the control panel
             $html = $controlPanel->display();
-            if (PEAR::isError($html)) {
+            if (Utility::isErrorX($html)) {
                 $tpl_data['error_message'][] = $html->getMessage();
             } else {
                 $tpl_data['control_panel'] = $html;
@@ -162,18 +162,18 @@ if (!empty($_REQUEST['test_name'])) {
         
         // make the control panel object for the current timepoint
         $controlPanel = new Instrument_List_ControlPanel($_REQUEST['sessionID']);
-        if (PEAR::isError($controlPanel)) {
+        if (Utility::isErrorX($controlPanel)) {
              $tpl_data['error_message'][] = $controlPanel->getMessage();
         } else {
             // save possible changes from the control panel...
             $success = $controlPanel->save();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 $tpl_data['error_message'][] = $success->getMessage();
             }
         
             // display the control panel
             $html = $controlPanel->display();
-            if (PEAR::isError($html)) {
+            if (Utility::isErrorX($html)) {
                 $tpl_data['error_message'][] = $html->getMessage();
             } else {
                 $tpl_data['control_panel'] = $html;
@@ -197,7 +197,7 @@ $timer->setMarker('Drew the control panel');
 // get candidate data
 if (!empty($_REQUEST['candID'])) {
     $candidate =& Candidate::singleton($_REQUEST['candID']);
-    if (PEAR::isError($candidate)) {
+    if (Utility::isErrorX($candidate)) {
         $tpl_data['error_message'][] = "Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage();
     } else {
         $tpl_data['candidate'] = $candidate->getData();
@@ -211,7 +211,7 @@ if (!empty($_REQUEST['sessionID'])) {
         $tpl_data['SupplementalSessionStatuses'] = true;
     }
     
-    if (PEAR::isError($timePoint)) {
+    if (Utility::isErrorX($timePoint)) {
         $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
     } else {
         $tpl_data['timePoint'] = $timePoint->getData();
@@ -235,7 +235,7 @@ function HandleError($error) {
 }
 $caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
 $workspace = $caller->load($_REQUEST['test_name'], $_REQUEST['subtest']);
-if (PEAR::isError($workspace)) {
+if (Utility::isErrorX($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
 } else {
     $tpl_data['workspace'] = $workspace;
@@ -248,7 +248,7 @@ $timer->setMarker('Drew main workspace');
 // make the breadcrumb
 $breadcrumb = new NDB_Breadcrumb;
 $crumbs = $breadcrumb->getBreadcrumb();
-if (PEAR::isError($crumbs)) {
+if (Utility::isErrorX($crumbs)) {
     $tpl_data['error_message'][] = $crumbs->getMessage();
 } else {
     $tpl_data['crumbs'] = $crumbs;

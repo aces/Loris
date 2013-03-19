@@ -11,12 +11,12 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $candidate =& Candidate::singleton($_REQUEST['candID']);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage());
         }
 
@@ -32,7 +32,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         foreach ($listOfTimePoints as $sessionID) {
             // create timepoint object
             $timePoint =& TimePoint::singleton($sessionID);
-            if(PEAR::isError($timePoint)) {
+            if(Utility::isErrorX($timePoint)) {
                 return PEAR::raiseError("TimePoint Error ($sessionID): ".$timePoint->getMessage());
             }
 
@@ -49,7 +49,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     {
         // create candidate object
         $candidate =& Candidate::singleton($_REQUEST['candID']);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage());
         }
 
@@ -59,7 +59,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     
         if (!empty($listOfTimePoints)) {
             $user =& User::singleton();
-            if (PEAR::isError($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error: ".$user->getMessage());
             }
             $username = $user->getData('UserID');
@@ -74,7 +74,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
             $x = 0;
             foreach ($listOfTimePoints as $currentTimePoint) {
                 $timePoint =& TimePoint::singleton($currentTimePoint);
-                if (PEAR::isError($timePoint)) {
+                if (Utility::isErrorX($timePoint)) {
                     return PEAR::raiseError("TimePoint Error ($currentTimePoint): ".$timePoint->getMessage());
                 }
             
@@ -97,17 +97,17 @@ class NDB_Menu_timepoint_list extends NDB_Menu
 
                 // create feedback object for the time point            
                 $feedback = NDB_BVL_Feedback::singleton($username, null, $timePoint->getData('SessionID'));
-                if (PEAR::isError($feedback)) {
+                if (Utility::isErrorX($feedback)) {
                     return PEAR::raiseError("Feedback Error (".$timePoint->getData('SessionID')."): ".$feedback->getMessage());
                 }
 
                 $feedback_status = $feedback->getMaxThreadStatus($feedback_select_inactive);
-                if (PEAR::isError($feedback_status)) {
+                if (Utility::isErrorX($feedback_status)) {
                     return PEAR::raiseError("timepoint_list::setup() feedback status: ".$feedback_status->getMessage());
                 }
 
                 $feedback_count = $feedback->getThreadCount();
-                if (PEAR::isError($feedback_count)) {
+                if (Utility::isErrorX($feedback_count)) {
                     return PEAR::raiseError("timepoint_list::setup() feedback count: ".$feedback_count->getMessage());
                 }
 
@@ -121,7 +121,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
 
                     // get the outcome data
                     $outcomeStage = $this->_determinePreviousStage($currentTimePoint);
-                    if (PEAR::isError($outcomeStage)) {
+                    if (Utility::isErrorX($outcomeStage)) {
                         return PEAR::raiseError("timepoint_list::setup() outcome stage: ".$outcomeStage->getMessage());
                     }
                     $getStatusMethod = 'get'.$outcomeStage.'Status';
@@ -144,7 +144,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
              */
             if (isset($firstDateOfVisit)) {
                 $timePoint = TimePoint::singleton($listOfTimePoints[0]);
-                if (PEAR::isError($timePoint)) {
+                if (Utility::isErrorX($timePoint)) {
                     return PEAR::raiseError("TimePoint Error ($listOfTimePoints[0]): ".$timePoint->getMessage());
                 }
 
@@ -184,7 +184,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     {
         // create timepoint object
         $timePoint =& TimePoint::singleton($sessionID);
-        if (PEAR::isError($timePoint)) {
+        if (Utility::isErrorX($timePoint)) {
             return PEAR::raiseError("TimePoint Error ($sessionID): ".$timePoint->getMessage());
         }
 

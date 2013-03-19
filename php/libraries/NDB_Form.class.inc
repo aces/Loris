@@ -105,7 +105,7 @@ class NDB_Form extends NDB_Page
         $obj->identifier = $identifier; */  
        
         $access = $obj->_hasAccess();
-        if (PEAR::isError($access)) {
+        if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Form::factory() access: ".$access->getMessage());
         }
 
@@ -116,14 +116,14 @@ class NDB_Form extends NDB_Page
 
  	    if (method_exists($obj, $page)) {
 	        $success = $obj->$page();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() page: ".$success->getMessage());
             }
             $obj->template = $page;
 	    }
  	    elseif (method_exists($obj, $name)) {
 	        $success = $obj->$name();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() name: ".$success->getMessage());
             }
             $obj->template = $name;
@@ -143,7 +143,7 @@ class NDB_Form extends NDB_Page
      *
      *     // create user object
      *     $user =& User::singleton();
-     *     if(PEAR::isError($user)) {
+     *     if(Utility::isErrorX($user)) {
      *         return PEAR::raiseError("User Error: ".$user->getMessage());
      *     }
      *
@@ -175,7 +175,7 @@ class NDB_Form extends NDB_Page
     {
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, "_save"), false);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::save(): ".$success->getMessage());
             }
         }
@@ -201,7 +201,7 @@ class NDB_Form extends NDB_Page
         }
 
         $success = $this->_process($values);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Form::_save(): ".$success->getMessage());
         }
     }

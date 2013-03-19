@@ -58,7 +58,7 @@ class NDB_Menu extends NDB_Page
         $obj->mode = $mode;        
 
         $access = $obj->_hasAccess();
-        if (PEAR::isError($access)) {
+        if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Menu::factory(): ".$access->getMessage());
         }
 
@@ -78,7 +78,7 @@ class NDB_Menu extends NDB_Page
      *
      *     // create user object
      *     $user =& User::singleton();
-     *     if(PEAR::isError($user)) {
+     *     if(Utility::isErrorX($user)) {
      *         return PEAR::raiseError("User Error: ".$user->getMessage());
      *     }
      *

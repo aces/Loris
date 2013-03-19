@@ -53,7 +53,7 @@ class NDB_BVL_Battery extends PEAR
     function selectBattery($sessionID)
     {
         $timepoint=TimePoint::singleton($sessionID);
-        if(PEAR::isError($timepoint)){
+        if(Utility::isErrorX($timepoint)){
         	return $this->raiseError("Invalid session ID");
         }
         
@@ -417,18 +417,18 @@ class NDB_BVL_Battery extends PEAR
 
         // create timepoint object
         $timepoint =& TimePoint::singleton($this->sessionID);
-        if(PEAR::isError($timepoint)) 
+        if(Utility::isErrorX($timepoint)) 
             return $this->raiseError("Could not create timepoint object: ".$timepoint->getMessage());
 
         // create candidate object
         $candidate =& Candidate::singleton($timepoint->getCandID());
-        if(PEAR::isError($candidate)) 
+        if(Utility::isErrorX($candidate)) 
             return $this->raiseError("Could not create candidate object: ".$candidate->getMessage());
 
         // get test_names.ID
         $query = "SELECT ID FROM test_names WHERE Test_name='$testName'";
         $GLOBALS['DB']->selectRow($query, $row);
-        if(PEAR::isError($row)) {
+        if(Utility::isErrorX($row)) {
             return $this->raiseError("DB Error: ".$row->getMessage());
         }
         $testID = $row['ID'];
@@ -471,7 +471,7 @@ class NDB_BVL_Battery extends PEAR
     {
         $query = "SELECT count(*) as counter FROM test_names WHERE Test_name='$testName'";
         $GLOBALS['DB']->selectRow($query, $row);
-        if(PEAR::isError($row)) {
+        if(Utility::isErrorX($row)) {
             return $this->raiseError("DB Error: ".$row->getMessage());
         }
 

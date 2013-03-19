@@ -11,18 +11,18 @@ class NDB_Menu_instrument_list extends NDB_Menu
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (PEAR::isError($timePoint)) {
+        if (Utility::isErrorX($timePoint)) {
             return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
         }
         $candID = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
         }
 
@@ -38,24 +38,24 @@ class NDB_Menu_instrument_list extends NDB_Menu
 
         // get behavioral battery for this visit (time point)
         $battery = new NDB_BVL_Battery;
-        if (PEAR::isError($battery)) {
+        if (Utility::isErrorX($battery)) {
             return PEAR::raiseError('Battery Error: '.$battery->getMessage());
         }
         $success = $battery->selectBattery($_REQUEST['sessionID']);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError('instrument_list::setup() battery: '.$success->getMessage());
         }
 
         // get the list of instruments
         $listOfInstruments = $battery->getBatteryVerbose();
-        if(PEAR::isError($listOfInstruments)) {
+        if(Utility::isErrorX($listOfInstruments)) {
             return PEAR::raiseError('instrument_list::setup() instruments: '.$listOfInstruments->getMessage());
         }
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user =& User::singleton();
-            if (PEAR::isError($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError ("User Error: ".$user->getMessage());
             }
             $username = $user->getData('UserID');
@@ -77,13 +77,13 @@ class NDB_Menu_instrument_list extends NDB_Menu
                 // make an instrument status object
                 $status = new NDB_BVL_InstrumentStatus;
                 $success = $status->select($instrument['CommentID']);
-                if(PEAR::isError($success)) {
+                if(Utility::isErrorX($success)) {
                     return PEAR::raiseError("instrument_list::setup() instrument status: ".$success->getMessage());
                 }
 
                 $ddeStatus = new NDB_BVL_InstrumentStatus;
                 $success = $ddeStatus->select($instrument['DDECommentID']);
-                if(PEAR::isError($success)) {
+                if(Utility::isErrorX($success)) {
                     return PEAR::raiseError("instrument_list::setup() instrument status: ".$success->getMessage());
                 }
 		
@@ -98,17 +98,17 @@ class NDB_Menu_instrument_list extends NDB_Menu
                 		
                 // create feedback object for the time point
                 $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);
-                if (PEAR::isError($feedback)) {
+                if (Utility::isErrorX($feedback)) {
                     return PEAR::raiseError("Feedback Error (".$instrument['CommentID']."): ".$feedback->getMessage());
                 }
 		
                 $feedback_status = $feedback->getMaxThreadStatus($feedback_select_inactive);
-                if (PEAR::isError($feedback_status)) {
+                if (Utility::isErrorX($feedback_status)) {
                     return PEAR::raiseError("instrument_list::setup() feedback status: ".$feedback_status->getMessage());
                 }
 
                 $feedback_count = $feedback->getThreadCount();
-                if (PEAR::isError($feedback_count)) {
+                if (Utility::isErrorX($feedback_count)) {
                     return PEAR::raiseError("instrument_list::setup() feedback count: ".$feedback_count->getMessage());
                 }
 
@@ -120,13 +120,13 @@ class NDB_Menu_instrument_list extends NDB_Menu
         }
 
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (PEAR::isError($timePoint)) {
+        if (Utility::isErrorX($timePoint)) {
             return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
         }
         $candID = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
         }
 
