@@ -12,12 +12,12 @@ class NDB_Form_tracking_logs extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
        
@@ -37,12 +37,12 @@ class NDB_Form_tracking_logs extends NDB_Form
     function _getDefaults()
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $DB->select("SELECT * FROM tracking_logs", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
                
@@ -50,7 +50,7 @@ class NDB_Form_tracking_logs extends NDB_Form
             
             // set the tracking log event details
             $DB->selectRow("SELECT Subproject_ID, CandID, PSCID, Visit_label, aMRI_date, aMRI_done, Relaxometry_done, DTI_done, Second_DC_done, MRS_done, MRSI_done, eDTI_done, Lock_record, Comments FROM tracking_logs WHERE Tracking_log_ID = $this->identifier", $row);
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
 
@@ -83,7 +83,7 @@ class NDB_Form_tracking_logs extends NDB_Form
     function _process($values)
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -118,7 +118,7 @@ class NDB_Form_tracking_logs extends NDB_Form
                                                           'Lock_record' => $values['Lock_record'],
                                                           'Comments' => $values['Comments']
                                                           ));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("DB Error: ".$success->getMessage());
             }
             $this->identifier = $DB->lastInsertID;
@@ -140,7 +140,7 @@ class NDB_Form_tracking_logs extends NDB_Form
                                                           'Lock_record' => $values['Lock_record'],
                                                           'Comments' => $values['Comments']
                                                           ), array('Tracking_log_ID' => $this->identifier));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("DB Error: ".$success->getMessage());
             }
         }
@@ -165,14 +165,14 @@ class NDB_Form_tracking_logs extends NDB_Form
                              );
 
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $user =& User::singleton();
 
         $DB->select("SELECT Name FROM psc", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
        

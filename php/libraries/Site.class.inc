@@ -22,7 +22,7 @@ class Site
         if(!isset($siteList[$centerID])) {
             $siteList[$centerID] = new Site();
             $error = $siteList[$centerID]->select($centerID);
-            if(PEAR::isError($error)) {
+            if(Utility::isErrorX($error)) {
                 $message = $error->getMessage();
                 unset($siteList[$centerID]);
                 return PEAR::raiseError("Could not select site: ($message)");
@@ -45,14 +45,14 @@ class Site
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if (PEAR::isError($db)) {
+        if (Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
 
         $query = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site FROM psc WHERE CenterID = '$centerID'";
         $db->selectRow($query, $result);
 
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Could not retrieve site information form the Database");
         }
 

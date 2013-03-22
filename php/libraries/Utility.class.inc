@@ -12,6 +12,22 @@ require_once "NDB_Config.class.inc";
  */
 class Utility extends PEAR
 {
+    // This is identical to Utility::isErrorX, only the function
+    // has the static keyword
+    static function isErrorX($data, $code=null) {
+        if (!is_a($data, 'PEAR_Error')) {
+            return false;
+        }
+
+        if (is_null($code)) {
+            return true;
+        } elseif (is_string($code)) {
+            return $data->getMessage() == $code;
+        }
+
+        return $data->getCode() == $code;
+    }
+
     /**
      * Builds a query string
      *
@@ -115,7 +131,7 @@ class Utility extends PEAR
 
         // execute the query
         $DB->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
@@ -144,7 +160,7 @@ class Utility extends PEAR
         // execute the query
 
         $DB->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
@@ -179,7 +195,7 @@ class Utility extends PEAR
 
 
         $DB->select($query, $result);
-        if(PEAR::isError($result)) {
+        if(Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
@@ -205,7 +221,7 @@ class Utility extends PEAR
 		$query .= "AND Name != 'DCC'";
 
         	$DB->select($query, $result);
-        	if(PEAR::isError($result)) {
+        	if(Utility::isErrorX($result)) {
             		return PEAR::raiseError("DB Error: ".$result->getMessage());
         	}
 
@@ -221,10 +237,10 @@ class Utility extends PEAR
     {
         $DB =& Database::singleton();
 
-         $query = "SELECT Visit_label from Visit_Windows";
+         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
          $DB->select($query, $result);
-         if(PEAR::isError($result)) {
+         if(Utility::isErrorX($result)) {
              return PEAR::raiseError("DB Error: ".$result->getMessage());
          }
 
@@ -280,7 +296,7 @@ class Utility extends PEAR
         $query = "SELECT Test_name FROM flag WHERE CommentID='$commentID'";
         $testName = $db->selectOne($query);
         
-        if(PEAR::isError($testName)) {
+        if(Utility::isErrorX($testName)) {
             return PEAR::raiseError("Could not get test name: ".$testName->getMessage());
         }
         
@@ -435,7 +451,7 @@ class Utility extends PEAR
         $rows = array();
         $tests = array();
         $DB->select($query, $rows);
-        if(PEAR::isError($rows)) {
+        if(Utility::isErrorX($rows)) {
             fwrite(STDERR, "Could not lookup battery from database: ".$rows->getMessage());
             return false;
         }
@@ -601,7 +617,7 @@ class Utility extends PEAR
             WHERE s.Active = 'Y' AND c.Active= 'Y' AND f.Test_name = :tn AND psc.Centerid!= '1'";
 
         $visitlabels = $db->pselect($query,array('tn'=>$test_name));
-        if(PEAR::isError($visitlabels)) {
+        if(Utility::isErrorX($visitlabels)) {
             return PEAR::raiseError("Could not get visit label: ".$visitlabels->getMessage());
         }
         return $visitlabels;
@@ -715,7 +731,7 @@ class Utility extends PEAR
 			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%' ORDER BY t.Full_name ",array('vl'=>$visit_label));
 		}
 		
-		if (PEAR::isError($test_names)) {
+		if (Utility::isErrorX($test_names)) {
 			return PEAR::raiseError("DB Error: ".$instruments->getMessage());
 		}
 		return $test_names;

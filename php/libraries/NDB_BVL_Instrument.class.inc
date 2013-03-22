@@ -152,18 +152,16 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         } else {
             require_once($base."project/instruments/$class.class.inc");
-
-
             // Now go ahead and instantiate it
             $obj = new $class;
             $success = $obj->setup($commentID, $page);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
             }
         }
         
         $access = $obj->_hasAccess();
-        if (PEAR::isError($access)) {
+        if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Instrument::factory(): ".$access->getMessage());
         }
 
@@ -203,7 +201,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         else { //check if user has instrument's permissions
             $user =& User::singleton();
-            if(PEAR::isError($user)) {
+            if(Utility::isErrorX($user)) {
               return PEAR::raiseError("User Error: ".$user->getMessage());
             }
 
@@ -407,9 +405,9 @@ class NDB_BVL_Instrument extends NDB_Page
             
             // determine the data entry completion status, and store that in the database
             $dataEntryCompletionStatus = $this->_determineDataEntryCompletionStatus();
-            if(PEAR::isError($dataEntryCompletionStatus)) print "Could not determine DECS: ".$dataEntryCompletionStatus->getMessage()."<br>\n";
+            if(Utility::isErrorX($dataEntryCompletionStatus)) print "Could not determine DECS: ".$dataEntryCompletionStatus->getMessage()."<br>\n";
             $success = $this->_setDataEntryCompletionStatus($dataEntryCompletionStatus);
-            if(PEAR::isError($success)) print "Could not set DECS: ".$success->getMessage()."<br>\n";
+            if(Utility::isErrorX($success)) print "Could not set DECS: ".$success->getMessage()."<br>\n";
             
         } else {
             $submittedData = $this->form->getSubmitValues();
@@ -445,7 +443,7 @@ class NDB_BVL_Instrument extends NDB_Page
         if(!empty($values['Date_taken'])) {
             $DB = Database::singleton();
             $age = $this->getCandidateAge($values['Date_taken']);
-            if(!PEAR::isError($age)) {
+            if(!Utility::isErrorX($age)) {
                 $agedays = $age['year']*365 + $age['mon']*30 + $age['day'];
                 $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
                 // 1 Decimal.
@@ -785,11 +783,11 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         // get a database connection
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return $db;
+        if(Utility::isErrorX($db)) return $db;
         
         $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name='$this->testName' ORDER BY Order_number";
         $db->select($query, $results);
-        if(PEAR::isError($results)) return $results;
+        if(Utility::isErrorX($results)) return $results;
         
         return $results;
     }
@@ -1101,7 +1099,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getFieldValue($field)
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) return PEAR::raiseError("Could not connect to database: ".$DB->getMessage()."<br>\n");
+        if(Utility::isErrorX($DB)) return PEAR::raiseError("Could not connect to database: ".$DB->getMessage()."<br>\n");
 
         $query = "SELECT $field FROM $this->table WHERE CommentID = '".$this->getCommentID()."'";
         $fieldValue = $DB->selectOne($query);
@@ -1142,11 +1140,11 @@ class NDB_BVL_Instrument extends NDB_Page
         if(empty($this->_requiredElements)) return 'Complete';
 
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
         $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
         $success = $db->selectRow($query, $dataFields);
-        if(PEAR::isError($success)) return PEAR::raiseError("Could not select required elements from database: ".$success->getMessage()."<br>\n");
+        if(Utility::isErrorX($success)) return PEAR::raiseError("Could not select required elements from database: ".$success->getMessage()."<br>\n");
         foreach($dataFields as $field) {
             // this shouldn't be just empty() b/c 0 is a valid value for some required fields
             if(is_null($field) || $field === "") return 'Incomplete';
@@ -1165,7 +1163,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getDataEntryCompletionStatus()
     {
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
         $query = "SELECT Data_entry_completion_status FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
         return $db->selectOne($query);
@@ -1185,14 +1183,14 @@ class NDB_BVL_Instrument extends NDB_Page
         if(!in_array($status, array('Complete', 'Incomplete'))) return PEAR::raiseError("Invalid status passed to _setDataEntryCompletionStatus - '$status' should have been either 'Complete' or 'Incomplete'<br>\n");
 
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
         $success = $db->update($this->table,
         array('Data_entry_completion_status'=>$status),
         array('CommentID'=>$this->getCommentID())
         );
 
-        if(PEAR::isError($success)) return PEAR::raiseError("Could not update status: ".$success->getMessage()."<br>\n");
+        if(Utility::isErrorX($success)) return PEAR::raiseError("Could not update status: ".$success->getMessage()."<br>\n");
     }
     // }}}
 
@@ -1356,7 +1354,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function _nullScores($scoreCols)
     {
         $db=& Database::singleton();
-        if (PEAR::isError($db)) {
+        if (Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."\n");
         }
         
@@ -1375,7 +1373,7 @@ class NDB_BVL_Instrument extends NDB_Page
         
         // update the scores
         $success = $db->update($this->table,$scores,array('CommentID'=>$this->getCommentID()));
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("DB Error, fail null the scores:\n".$success->getMessage()."\n");
         }
         return;

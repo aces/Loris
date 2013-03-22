@@ -74,7 +74,7 @@ Class TimePoint_Flag extends TimePoint
 
             // setup data in the TimePoint class
             $success = $flagList[$sessionID]->select($sessionID);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
             }
         }
@@ -120,7 +120,7 @@ Class TimePoint_Flag extends TimePoint
     {
         if (count($this->flagTypes) == 0) {
             $list = $this->setFlagTypes();
-            if (PEAR::isError($list)) {
+            if (Utility::isErrorX($list)) {
                 return PEAR::raiseError($list->getMessage());
             }
         }
@@ -137,7 +137,7 @@ Class TimePoint_Flag extends TimePoint
     {
         if (count($this->flagTypes) == 0) {
             $list = $this->setFlagTypes();
-            if (PEAR::isError($list)) {
+            if (Utility::isErrorX($list)) {
                 return PEAR::raiseError($list->getMessage());
             }
         }
@@ -183,7 +183,7 @@ Class TimePoint_Flag extends TimePoint
 
         $result = array();
         $db->select($query, $result);
-        if(PEAR::isError($result)) {
+        if(Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::setListOfFlags(): failed to set the list of flags:\n" . $result->getMessage());
         }
 
@@ -208,7 +208,7 @@ Class TimePoint_Flag extends TimePoint
     {
         if (count($this->flagList) == 0) {
             $success = $this->setListOfFlags();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
             }
         }
@@ -232,7 +232,7 @@ Class TimePoint_Flag extends TimePoint
 
         $db->selectRow($query, $result);
 
-        if(PEAR::isError($result)) {
+        if(Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getFlagMetadata(): failed to get flag metadata:\n" . $result->getMessage());
         }
 
@@ -258,7 +258,7 @@ Class TimePoint_Flag extends TimePoint
         $query = "SELECT ft.Name as Type FROM parameter_timepoint_flag as f, parameter_timepoint_flag_type as ft WHERE f.TypeID = ft.TypeID AND f.Flag_name = '$flagName'";
 
         $result = $db->selectOne($query);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getFlagType(): " . $result->getMessage());
         }
 
@@ -280,7 +280,7 @@ Class TimePoint_Flag extends TimePoint
         $query = "SELECT Description FROM parameter_timepoint_flag WHERE Flag_name = '$flagName'";
 
         $result = $db->selectOne($query);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getFlagDescription(): " . $result->getMessage());
         }
 
@@ -302,7 +302,7 @@ Class TimePoint_Flag extends TimePoint
         $query = "SELECT SubProjectID FROM parameter_timepoint_flag WHERE Flag_name = '$flagName'";
 
         $result = $db->selectOne($query);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getFlagSubproject(): " . $result->getMessage());
         }
 
@@ -326,7 +326,7 @@ Class TimePoint_Flag extends TimePoint
 
         $db->select($query, $result);
 
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::setFlagTriggers(): DBError, failed to get triggers for the flag ($flagName):\n" . $result->getMessage()."\n");
         }
 
@@ -347,7 +347,7 @@ Class TimePoint_Flag extends TimePoint
 
         if (count($this->listOfTriggers[$flagName]) == 0) {
             $success = $this->setFlagTriggers($flagName);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
             }
         }
@@ -368,7 +368,7 @@ Class TimePoint_Flag extends TimePoint
         $query = "SELECT DISTINCT Source FROM parameter_timepoint_flag_trigger WHERE Flag_name <> '0_missing_instruments'";
 
         $db->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::setListOfSourcesForFlag(): failed to get list of sources:\n".$result->getMessage());
         }
 
@@ -390,7 +390,7 @@ Class TimePoint_Flag extends TimePoint
     {
         if (count($this->listOfInstruments) == 0) {
             $listTests = $this->setListOfSources();
-            if (PEAR::isError($listTests)) {
+            if (Utility::isErrorX($listTests)) {
                 return PEAR::raiseError($listTests->getMessage());
             }
         }
@@ -424,7 +424,7 @@ Class TimePoint_Flag extends TimePoint
         // get the full list of bvl instruments in the project
         $query = "SELECT DISTINCT Test_name from test_battery WHERE Active='Y'";
         $db->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getListOfBvlInstrumentsForProject(): Failed to get the list of bvl instruments for the project\n".$result->getMessage());
         }
 
@@ -445,7 +445,7 @@ Class TimePoint_Flag extends TimePoint
     {
         if (count($this->projectBvlInstruments) == 0) {
             $listTests = $this->setProjectBvlInstruments();
-            if (PEAR::isError($listTests)) {
+            if (Utility::isErrorX($listTests)) {
                 return PEAR::raiseError($listTests->getMessage());
             }
         }
@@ -466,7 +466,7 @@ Class TimePoint_Flag extends TimePoint
         $query = "SELECT DISTINCT Test_name FROM flag WHERE SessionID = '".$this->getSessionID()."'";
 
         $db->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::setTimepointBattery(): failed to get list of instruments used for timepoint (".$this->getSessionID().":\n".$result->getMessage());
         }
 
@@ -488,7 +488,7 @@ Class TimePoint_Flag extends TimePoint
     {
         if (count($this->timepointBattery) == 0) {
             $listTests = $this->setTimepointBvlBattery();
-            if (PEAR::isError($listTests)) {
+            if (Utility::isErrorX($listTests)) {
                 return PEAR::raiseError($listTests->getMessage());
             }
         }
@@ -508,7 +508,7 @@ Class TimePoint_Flag extends TimePoint
         $query = "SELECT Test_name as Instrument FROM flag WHERE SessionID = '".$this->getSessionID()."' AND Data_entry = 'Complete' AND Administration = 'None'";
         $db->select($query, $result);
 
-        if(PEAR::isError($result)) {
+        if(Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::setListOfNonAdministeredInstrumentsForTimePoint(): failed to get the list of NA instruments:\n" . $result->getMessage());
         }
 
@@ -529,7 +529,7 @@ Class TimePoint_Flag extends TimePoint
     {
         if (count($this->listOfNonAdministeredInstrumentsForTimepoint) == 0) {
             $listTests = $this->setListOfNonAdministeredInstrumentsForTimePoint();
-            if (PEAR::isError($listTests)) {
+            if (Utility::isErrorX($listTests)) {
                 return PEAR::raiseError($listTests->getMessage());
             }
         }
@@ -547,7 +547,7 @@ Class TimePoint_Flag extends TimePoint
     {
         $listTests = $this->getListOfNonAdministeredInstrumentsForTimePoint();
         // pass the error
-        if (PEAR::isError($listTests)) {
+        if (Utility::isErrorX($listTests)) {
             return PEAR::raiseError($listTests->getMessage());
         }
 
@@ -572,7 +572,7 @@ Class TimePoint_Flag extends TimePoint
     {
         // get the list of flags
         $flagList = $this->getListOfFlags();
-        if (PEAR::isError($flagList)) {
+        if (Utility::isErrorX($flagList)) {
             PEAR::raiseError("Error, failed to get the list of flags:\n".$flagList->getMessage());
         }
 
@@ -580,7 +580,7 @@ Class TimePoint_Flag extends TimePoint
         foreach ($flagList as $currentFlag) {
 
             $status = $this->evaluateFlag($currentFlag);
-            if (PEAR::isError($status)) {
+            if (Utility::isErrorX($status)) {
                 return PEAR::raiseError("Timepoint_Flag::evaluateTimepointFlags(): failed to evaluate flag ($currentFlag):\n".$status->getMessage());
             }
 
@@ -603,7 +603,7 @@ Class TimePoint_Flag extends TimePoint
         */
         // get the list of triggers that tested positive
         $flagPositiveTriggers = $this->evaluateFlagTriggers($flagName);
-        if (PEAR::isError($flagPositiveTriggers)) {
+        if (Utility::isErrorX($flagPositiveTriggers)) {
             return PEAR::raiseError("Timepoint_Flag::evaluateFlag(): failed to get the list of positive triggers for flag ($flagName): \n".$flagPositiveTriggers->getMessage());
         }
 
@@ -651,24 +651,24 @@ Class TimePoint_Flag extends TimePoint
         
         // get the full list of bvl instruments in the project
         $bvlInstruments = $this->getProjectBvlInstruments();
-        if (PEAR::isError($bvlInstruments)) {
+        if (Utility::isErrorX($bvlInstruments)) {
         	return PEAR::raiseError("Timepoint_Flag::evaluateFlagTriggers(): ".$bvlInstruments->getMessage());
         }
                 
         // get the BVL battery and list of NA bvl tests as a string to be able to evaluate BVL flags
         $bvlBattery = $this->getTimepointBvlBattery();
-        if (PEAR::isError($bvlBattery)) {
+        if (Utility::isErrorX($bvlBattery)) {
             return PEAR::raiseError("Timepoint_Flag::evaluateFlagTriggers(): ".$bvlBattery->getMessage());
         }
         
         $listOfNAInstruments = $this->getListOfNonAdministeredInstrumentsForTimePoint();
-        if (PEAR::isError($listOfNAInstruments)) {
+        if (Utility::isErrorX($listOfNAInstruments)) {
             return PEAR::raiseError("Timepoint_Flag::evaluateFlagTriggers(): ".$listOfNAInstruments->getMessage());
         }
 
         // get the list of triggers for the flag and their records from the trigger table
         $flagTriggers = $this->getFlagTriggers($flagName);
-        if (PEAR::isError($flagTriggers)) {
+        if (Utility::isErrorX($flagTriggers)) {
             return PEAR::raiseError("Timepoint_Flag::evaluateFlagTriggers(): failed to evaluate triggers for flag ($flagName): \n".$flagTriggers->getMessage());
         }
 
@@ -702,7 +702,7 @@ Class TimePoint_Flag extends TimePoint
 
             // lookup field value for the current trigger
             $triggerValue = $this->getTriggerValue($flagName, $triggerName);
-            if (PEAR::isError($triggerValue)) {
+            if (Utility::isErrorX($triggerValue)) {
                 return PEAR::raiseError("Timepoint_Flag::evaluateFlagTriggers(): failed to get trigger value ($triggerName) for flag ($flagName) \n " . $triggerValue->getMessage());
             }
 
@@ -721,7 +721,7 @@ Class TimePoint_Flag extends TimePoint
             $query = "SELECT ($valueToTest $operator $value) as Test";
             $record =array();
             $db->selectRow($query, $record);
-            if (PEAR::isError($record)) {
+            if (Utility::isErrorX($record)) {
                 return PEAR::raiseError("Timepoint_Flag::evaluateFlagTriggers(): failed to get test the field [$field: ".$triggerValue."] vs. value [$value] using [$operator] for trigger ($triggerName) and flag ($flagName):\n" . $record->getMessage()."\n$query\n");
             }
             // assign the trigger is tested positive (1)
@@ -765,7 +765,7 @@ Class TimePoint_Flag extends TimePoint
 
         // get the list of triggers for the flag and their records from the trigger table
         $flagTriggers = $this->getFlagTriggers($flagName);
-        if (PEAR::isError($flagTriggers)) {
+        if (Utility::isErrorX($flagTriggers)) {
             return PEAR::raiseError("Timepoint_Flag::getFlagTriggersFieldValues(): failed to get trigger values for flag ($flagName): \n".$flagTriggers->getMessage());
         }
 
@@ -787,7 +787,7 @@ Class TimePoint_Flag extends TimePoint
             else $query .= " AND f.Administration <> 'None'";
             $db->selectRow($query, $fieldValue);
 
-            if (PEAR::isError($fieldValue)) {
+            if (Utility::isErrorX($fieldValue)) {
                 return PEAR::raiseError("Timepoint_Flag::getFlagTriggersFieldValues(): failed to get field value for trigger ($trigger) flag ($flagName):\n" . $fieldValue->getMessage()."\n$query\n");
             }
 
@@ -819,7 +819,7 @@ Class TimePoint_Flag extends TimePoint
         // get the the trigger's metadata
         $query = "SELECT Source, Table_name, Field_name FROM parameter_timepoint_flag_trigger WHERE Flag_name = '$flagName' AND Trigger_name  = '$triggerName'";
         $db->selectRow($query, $record);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getTriggerValue(): failed to get trigger data for flag ($flagName) trigger ($triggerName):\n" . $result->getMessage()."\n");
         }
 
@@ -831,7 +831,7 @@ Class TimePoint_Flag extends TimePoint
         // query the table: $table to see if there is at least one record satisfying the exclusion criteria
         $query = "SELECT $field as Value FROM flag as f LEFT JOIN $table as t USING (CommentID) WHERE f.Test_name = '$testName' AND f.SessionID = '$sessionID'";
         $db->selectRow($query, $fieldValue);
-        if (PEAR::isError($fieldValue)) {
+        if (Utility::isErrorX($fieldValue)) {
             return PEAR::raiseError("Timepoint_Flag::getTriggerValue(): failed to get field value for trigger ($triggerName) flag ($flagName):\n" . $fieldValue->getMessage()."\n$query\n");
         }
 
@@ -860,7 +860,7 @@ Class TimePoint_Flag extends TimePoint
 
         $db->select($query, $result);
 
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getFlagReviewFieldsValues(): failed to get the list of review fields for flag ($flagName):\n" . $result->getMessage()."\n$query\n");
         }
 
@@ -884,7 +884,7 @@ Class TimePoint_Flag extends TimePoint
 
             $db->selectRow($query, $fieldValue);
 
-            if (PEAR::isError($fieldValue)) {
+            if (Utility::isErrorX($fieldValue)) {
                 return PEAR::raiseError("Timepoint_Flag::getFlagReviewFieldsValues(): failed to get review field value ($fieldLabel) flag ($flagName):\n" . $fieldValue->getMessage()."\n$query\n");
             }
 
@@ -919,7 +919,7 @@ Class TimePoint_Flag extends TimePoint
         $success = $db->insert('parameter_timepoint_flag_session', $setArray);
 
         // pass the error
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Timepoint_Flag::insertFlag(): Timepoint_flag::insertFlag failed to insert flag ($flagName):\n".$success->getMessage());
         }
         return true;
@@ -964,7 +964,7 @@ Class TimePoint_Flag extends TimePoint
         // update the record
         $success = $db->update('parameter_timepoint_flag_session', $setArray, $whereArray);
 
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Timepoint_Flag::updateFlag(): failed to update flag record ($flagName): \n".$success->getMessage());
         }
 
@@ -1006,7 +1006,7 @@ Class TimePoint_Flag extends TimePoint
         $result = array();
         $db->selectRow($query, $result);
 
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_flag::getFlag(): Error, failed to get flag session data for ($flagName):\n".$result->getMessage());
         }
 
@@ -1026,7 +1026,7 @@ Class TimePoint_Flag extends TimePoint
 
             // get the data for the current flag
             $flagData = $this->getFlag($this->getSessionID(), $currentFlag);
-            if (PEAR::isError($flagData)) {
+            if (Utility::isErrorX($flagData)) {
                 return PEAR::raiseError("Timepoint_flag::getTimepointFlags(): Failed to get flag data for timepoint [".$this->getSessionID()."], flag  [".$currentFlag."]\n".$flagData->getMessage());
             }
 
@@ -1053,7 +1053,7 @@ Class TimePoint_Flag extends TimePoint
 
         $query  = "SELECT count(*) as count from parameter_timepoint_flag_session WHERE SessionID = '$sessionID' AND Flag_name = '$flagName'";
         $db->selectRow($query, $record);
-        if (PEAR::isError($record)) {
+        if (Utility::isErrorX($record)) {
             return PEAR::raiseError ("TimePoint_flag::timepointFlagExists(): failed to get record from db: ".$record->getMessage()."\n");
         }
         
@@ -1076,7 +1076,7 @@ Class TimePoint_Flag extends TimePoint
         $query = "SELECT pt.Name from parameter_timepoint_flag_session as ps, parameter_timepoint_flag_type as pt WHERE pt.TypeID=ps.TypeID AND (ps.Flag_status <> 'OFF' OR ps.Flag_status is null) AND ps.SessionID='".$sessionID."' ORDER BY pt.TypeID DESC LIMIT 1";
         $result=array();
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Timepoint_Flag::getMaxFlagForTimepoint(): failed to get list of instruments used for the timepoint ($sessionID):\n".$result->getMessage());
         }
 

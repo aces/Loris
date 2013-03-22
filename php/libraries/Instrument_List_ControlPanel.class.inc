@@ -28,13 +28,13 @@ Class Instrument_List_ControlPanel extends TimePoint
 
         // start next stage
         $this->tpl_data['access']['next_stage'] = $this->_displayStartNextStage();
-        if (PEAR::isError($this->tpl_data['access']['next_stage'])) {
+        if (Utility::isErrorX($this->tpl_data['access']['next_stage'])) {
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$this->tpl_data['access']['next_stage']->getMessage());
         }
                 
         // generate the time point status buttons
         $this->tpl_data['access']['status'] = $this->_displayStatus();
-        if (PEAR::isError($this->tpl_data['access']['status'])) {
+        if (Utility::isErrorX($this->tpl_data['access']['status'])) {
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$this->tpl_data['access']['status']->getMessage());
         }
         // send to DCC
@@ -42,25 +42,25 @@ Class Instrument_List_ControlPanel extends TimePoint
         if(!$this->tpl_data['access']['send_to_dcc']){
         	$this->tpl_data['access']['send_to_dcc_status_message']=$this->_getSendToDCCStatusMessage();
         }
-        if (PEAR::isError($this->tpl_data['access']['send_to_dcc'])) {
+        if (Utility::isErrorX($this->tpl_data['access']['send_to_dcc'])) {
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$this->tpl_data['access']['send_to_dcc']->getMessage());
         }
 
         // BVLQC - get permission and set the tpl element
         $user =& User::singleton();
         $this->tpl_data['access']['bvl_qc'] = $user->hasPermission('bvl_feedback');
-        if (PEAR::isError($this->tpl_data['access']['bvl_qc_type'])) {
+        if (Utility::isErrorX($this->tpl_data['access']['bvl_qc_type'])) {
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$this->tpl_data['access']['bvl_qc_type']->getMessage());
         }
         
         // BVLQCType
         $success = $this->_displayBVLQCType();
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$success->getMessage());
         }
         // BVLQCStatus
         $success = $this->_displayBVLQCStatus();
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$success->getMessage());
         }
         
@@ -142,19 +142,19 @@ Class Instrument_List_ControlPanel extends TimePoint
             if ($nextStage = 'Recycling Bin'){ 
                 
                 $battery = new NDB_BVL_Battery();
-                if(PEAR::isError($battery)) {
+                if(Utility::isErrorX($battery)) {
                     return PEAR::raiseError("Battery Error: ".$battery->getMessage());
                 }
                 
                 // set the SessionID for the battery
                 $success = $battery->selectBattery($this->getData('SessionID'));
-                if(PEAR::isError($success)) {
+                if(Utility::isErrorX($success)) {
                     return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
                 }
 
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
-                if (PEAR::isError($batteryList)) {
+                if (Utility::isErrorX($batteryList)) {
                     return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
                 }
                 
@@ -191,19 +191,19 @@ Class Instrument_List_ControlPanel extends TimePoint
                 $this->startStage($previousStage);
                   
                 $battery = new NDB_BVL_Battery();
-                if(PEAR::isError($battery)) {
+                if(Utility::isErrorX($battery)) {
                     return PEAR::raiseError("Battery Error: ".$battery->getMessage());
                 }
                 
                 // set the SessionID for the battery
                 $success = $battery->selectBattery($this->getData('SessionID'));
-                if(PEAR::isError($success)) {
+                if(Utility::isErrorX($success)) {
                     return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
                 }
                 
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
-                if (PEAR::isError($batteryList)) {
+                if (Utility::isErrorX($batteryList)) {
                     return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
                 }
                 
@@ -275,36 +275,36 @@ Class Instrument_List_ControlPanel extends TimePoint
 
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
             
         // create user object
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError('User Error: '.$user->getMessage());
         }
 
         $hasAccess = $this->_hasAccess_Status();
-        if (PEAR::isError($hasAccess)) {
+        if (Utility::isErrorX($hasAccess)) {
             return PEAR::raiseError("Instrument List CP::_displayStatus: ".$hasAccess->getMessage());
         }
 
         // check that all the instruments' Data Entry is market Complete
         $battery = new NDB_BVL_Battery;
-        if(PEAR::isError($battery)) {
+        if(Utility::isErrorX($battery)) {
             return PEAR::raiseError("Battery Error: ".$battery->getMessage());
         }
 
         // set the SessionID for the battery
         $success = $battery->selectBattery($_REQUEST['sessionID']);
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("Battery Error (".$_REQUEST['sessionID']."): ".$success->getMessage());
         }
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
-        if (PEAR::isError($batteryList)) {
+        if (Utility::isErrorX($batteryList)) {
             return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
         }
            
@@ -379,7 +379,7 @@ Class Instrument_List_ControlPanel extends TimePoint
     {
         // get user object
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
         
@@ -447,7 +447,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         $study = $config->getSetting('study');
         
         $hasAccess = $this->_hasAccess_SendToDCC();
-        if (PEAR::isError($hasAccess)) {
+        if (Utility::isErrorX($hasAccess)) {
             return PEAR::raiseError("Instrument List CP::_displaySendToDCC: ".$hasAccess->getMessage());
         }
 
@@ -466,19 +466,19 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
 
         $battery = new NDB_BVL_Battery();
-        if(PEAR::isError($battery)) {
+        if(Utility::isErrorX($battery)) {
             return PEAR::raiseError("Battery Error: ".$battery->getMessage());
         }
         
         // set the SessionID for the battery
         $success = $battery->selectBattery($this->getData('SessionID'));
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
         }
         
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
-        if (PEAR::isError($batteryList)) {
+        if (Utility::isErrorX($batteryList)) {
             return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
         }
         
@@ -547,19 +547,19 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
         
         $battery = new NDB_BVL_Battery();
-        if(PEAR::isError($battery)) {
+        if(Utility::isErrorX($battery)) {
             return PEAR::raiseError("Battery Error: ".$battery->getMessage());
         }
         
         // set the SessionID for the battery
         $success = $battery->selectBattery($this->getData('SessionID'));
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("Battery Error (".$this->getData('SessionID')."): ".$success->getMessage());
         }
         
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
-        if (PEAR::isError($batteryList)) {
+        if (Utility::isErrorX($batteryList)) {
             return PEAR::raiseError("Instrument List CP::_displayStatus: " . $batteryList->getMessage());
         }
         
@@ -600,7 +600,7 @@ Class Instrument_List_ControlPanel extends TimePoint
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 		$config =& NDB_Config::singleton();

@@ -25,6 +25,7 @@ set to Active=N).  This behavior is intended, instruments should NEVER be remove
 //foreach candidate we need to look at each timepoint
 //compare the looked up battery to the actual assigned battery
 //add missing instruments.
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 
 require_once "../php/libraries/NDB_Client.class.inc";

@@ -11,12 +11,12 @@ class NDB_Form_create_timepoint extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 
@@ -27,12 +27,12 @@ class NDB_Form_create_timepoint extends NDB_Form
     function _getDefaults()
     {
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 
         $defaults['visitLabel'] = $candidate->getNextVisitLabel();
-        if (PEAR::isError($defaults['visitLabel'])) {
+        if (Utility::isErrorX($defaults['visitLabel'])) {
             return PEAR::raiseError("create_timepoint::_getDefaults(): ".$defaults['visitLabel']->getMessage());
         }
 
@@ -42,7 +42,7 @@ class NDB_Form_create_timepoint extends NDB_Form
     function _process($values)
     {
         $success = TimePoint::createNew($this->identifier, $values['subprojectID'], $values['visitLabel']);
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("create_timepoint::_process(): ".$success->getMessage());
         }
 
@@ -146,12 +146,12 @@ class NDB_Form_create_timepoint extends NDB_Form
         }
 
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 
         $timePointArray = $candidate->getListOfVisitLabels();
-        if (PEAR::isError($timePointArray)) {
+        if (Utility::isErrorX($timePointArray)) {
             return PEAR::raiseError("create_timepoint::_validate(): ".$timePointArray->getMessage());
         }
 

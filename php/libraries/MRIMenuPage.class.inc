@@ -11,14 +11,14 @@ class MRIMenuPage {
     function MRIMenuPage() {
         // create Database object
         $DB = Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: " . $DB->getMessage());
         }
         $this->DB = $DB;
 
         // user is logged in, let's continue with the show...
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("Error creating user object: " . $user->getMessage());
         }
 
@@ -102,7 +102,7 @@ class MRIMenuPage {
                     ORDER BY $extra_orderby p.Name, firstAcqDate, c.CandID, s.Visit_label;";
 
             $DB->select($query, $this->visit_tpl_data['timepoints']);
-            if(PEAR::isError($this->visit_tpl_data['timepoints']))  {
+            if(Utility::isErrorX($this->visit_tpl_data['timepoints']))  {
                 print $this->visit_tpl_data['timepoints']->getMessage()."<br>\n";
             }
         } // end if $_REQUEST[filter] is set
@@ -159,7 +159,7 @@ class MRIMenuPage {
 
     function PopulateOutputTypes() {
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("Error creating user object: " . $user->getMessage());
         }
 

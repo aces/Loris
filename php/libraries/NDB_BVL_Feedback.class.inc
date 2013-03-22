@@ -41,7 +41,7 @@ Class NDB_BVL_Feedback
         if (!isset($feedbackList[$objectName])) {
             $feedbackList[$objectName] = new NDB_BVL_Feedback();
             $error = $feedbackList[$objectName]->setup($username, $candID, $sessionID, $commentID);
-            if (PEAR::isError($error)) {
+            if (Utility::isErrorX($error)) {
                 unset($feedbackList[$objectName]);
                 return PEAR::raiseError("Could not instantiate Feedback Object: ".$error->getMessage());
             }
@@ -69,7 +69,7 @@ Class NDB_BVL_Feedback
         
         // get CandID (and SessionID)
         $success = $this->_setCandidateProfileInfo();
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError ("Could not get candidate info: ".$success->getMessage());
         }
     }
@@ -84,7 +84,7 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -108,7 +108,7 @@ Class NDB_BVL_Feedback
         $query .= " LIMIT 1";
 
         $db->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
         
@@ -136,14 +136,14 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         $query = "SELECT Feedback_type as Type, Name, Description FROM feedback_bvl_type";
         
         $db->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
         
@@ -163,14 +163,14 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         $query = "SELECT Type FROM feedback_bvl_thread WHERE FeedbackID = '$feedbackID'";
         
         $result = $db->selectOne($query);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
         return $result;
@@ -194,14 +194,14 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = '$feedbackID'";
         
         $result = $db->selectOne($query);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
         return $result;
@@ -221,7 +221,7 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -243,7 +243,7 @@ Class NDB_BVL_Feedback
 
         $db->selectRow($query,$result);
         
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
         return $result['Status'];
@@ -258,7 +258,7 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -278,7 +278,7 @@ Class NDB_BVL_Feedback
         $query .= " GROUP BY $queryBy";
         
         $success = $db->selectOne($query);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return "DB Error: ".$success->getMessage();
         }
         return $success;
@@ -297,13 +297,13 @@ Class NDB_BVL_Feedback
         // new DB Object
         
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         // get User object
         $user =& User::singleton($this->_username);
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError('unable to create user object: '.$user->getMessage());
         }
         $hasReadPermission = $user->hasPermission('access_all_profiles');
@@ -327,7 +327,7 @@ Class NDB_BVL_Feedback
 
         $db->select($query, $result);
         
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
         return $result;
@@ -346,13 +346,13 @@ Class NDB_BVL_Feedback
         // new DB Object
         
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         // create user object
         $user =& User::singleton($this->_username);
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return "Unable to create user object".$user->getMessage();
         }
         $hasReadPermission = $user->hasPermission('access_all_profiles');
@@ -391,7 +391,7 @@ Class NDB_BVL_Feedback
 
         $db->select($query, $result);
         
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
         
@@ -409,7 +409,7 @@ Class NDB_BVL_Feedback
         // new DB Object
         
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -422,7 +422,7 @@ Class NDB_BVL_Feedback
         
         $db->select($query, $result);
         
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
         
@@ -438,14 +438,14 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         // get the FeedbackID for the new thread
         $query = "SELECT Max(FeedbackID) + 1 AS FeedbackID FROM feedback_bvl_thread";
         $feedbackID = $db->selectOne($query);
-        if (PEAR::isError($feedbackID)) {
+        if (Utility::isErrorX($feedbackID)) {
             return PEAR::raiseError("dbError: " . $feedbackID->getMessage());
         }
         unset($query);
@@ -487,14 +487,14 @@ Class NDB_BVL_Feedback
         
         $success = $db->insert('feedback_bvl_thread', $setArray);
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
         
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment);
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Unable to add entry".$success->getMessage());
         }
     }
@@ -508,7 +508,7 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -517,7 +517,7 @@ Class NDB_BVL_Feedback
         
         $success = $db->insert('feedback_bvl_entry', $setArray);
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
@@ -537,19 +537,19 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
         // create user object
         $user =& User::singleton($this->_username);
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return "Unable to create user object".$user->getMessage();
         }
         
         // create the new entry - every update need to be follow up with a comment
         $success = $this->createEntry($feedbackID, $comment);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Update thread, failed to create an entry: " . $success->getMessage());
         }
         
@@ -576,7 +576,7 @@ Class NDB_BVL_Feedback
             $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
         }
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
@@ -590,21 +590,21 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         // DELETE the thread's entries
         $success = $db->delete('feedback_bvl_entry', array("FeedbackID"=>'$feedbackID'));
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
         
         // DELETE the thread
         $success = $db->delete('feedback_bvl_thread', array("FeedbackID"=>'$feedbackID'));
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
@@ -619,14 +619,14 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         // DELETE the thread entries
         $success = $db->delete('feedback_bvl_entry', array("ID"=>$entryID));
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
@@ -640,12 +640,12 @@ Class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
         $user =& User::singleton($this->_username);
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return "Unable to create user object in activate threads: ".$user->getMessage();
         }
         
@@ -677,7 +677,7 @@ Class NDB_BVL_Feedback
 
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
 
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
@@ -691,7 +691,7 @@ Class NDB_BVL_Feedback
     {
         // create user object
         $user =& User::singleton($this->_username);
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return "Unable to create user object".$user->getMessage();
         }
 
@@ -701,7 +701,7 @@ Class NDB_BVL_Feedback
         
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -728,7 +728,7 @@ Class NDB_BVL_Feedback
         // close the threads - update feedback_bvl_thread table
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
@@ -745,14 +745,14 @@ Class NDB_BVL_Feedback
         if (empty($statusID)) return PEAR::raiseError("NDB_BVL_Feedback::getFeedbackStatusVerbose  Error, empty status ID\n");
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         $record=array();
         $query  = "SELECT DISTINCT Status FROM feedback_bvl_thread WHERE Status=$statusID";
         $db->selectRow($query, $record);
-        if (PEAR::isError($record)) {
+        if (Utility::isErrorX($record)) {
         	
             return PEAR::raiseError("DBError, failed to select Status from the feedback_bvl_thread for ID ($statusID)\n");
         }

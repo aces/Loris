@@ -14,7 +14,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -45,7 +45,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         $DB =& Database::singleton();
         
         $user =& User::singleton();
-           if(PEAR::isError($user)) {
+           if(Utility::isErrorX($user)) {
              return PEAR::raiseError("User Error: ".$user->getMessage());
            }
 
@@ -201,14 +201,14 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             if($conflict['FieldName'] == 'Examiner') {
                 if($conflict['Value1'] != '') {
                     $name1 = $DB->selectOne("SELECT Full_Name FROM examiners WHERE examinerID=$conflict[Value1]");
-            	    if(PEAR::isError($name1)) {
+            	    if(Utility::isErrorX($name1)) {
 		    	        $name1 = $conflict['Value1'];
 		            }
                 }
 
                 if($conflict['Value2'] != '') {
                     $name2 = $DB->selectOne("SELECT Full_Name FROM examiners WHERE examinerID=$conflict[Value2]");
-           	        if(PEAR::isError($name2)) {
+           	        if(Utility::isErrorX($name2)) {
 			            $name2 = $conflict['Value2'];
 		            }
                 }
