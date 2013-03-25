@@ -27,10 +27,12 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                                'ValidRegex',
                                'SeriesUID'
         );
-        $this->validFilters = array('l.TarchiveID', 'l.SeriesUID');
+        $this->validFilters = array('l.TarchiveID', 'l.SeriesUID', 'l.PatientName', 'l.CandID');
         $this->formToFilter = array (
                                     'TarchiveID' => 'l.TarchiveID',
-                                    'SeriesUID' => 'l.SeriesUID'
+                                    'SeriesUID' => 'l.SeriesUID',
+                                    'PatientName' => 'l.PatientName',
+                                    'CandID' => 'l.CandID'
         );
     }
 
@@ -38,6 +40,8 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
     {
 
         $this->form->addElement('text', 'TarchiveID', 'Tarchive ID:', array("size"=>9, "maxlength"=>20));
+        $this->form->addElement('text', 'PatientName', 'PatientName:', array("size"=>20, "maxlength"=>64));
+        $this->form->addElement('text', 'CandID', 'CandID:', array("size"=>20, "maxlength"=>6));
         $this->form->addElement('text', 'SeriesUID', 'DICOM Series UID:', array("size"=>20, "maxlength"=>64));
 
     }

@@ -11,6 +11,12 @@
         <td nowrap="nowrap">{$form.SeriesUID.html}</td>
     </tr>
     <tr>
+        <td nowrap="nowrap">{$form.PatientName.label}</td>
+        <td nowrap="nowrap">{$form.PatientName.html}</td>
+        <td nowrap="nowrap">{$form.CandID.label}</td>
+        <td nowrap="nowrap">{$form.CandID.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">Actions:</td>
         <td colspan="3"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=mri_violations&reset=true'">
     </tr>
@@ -66,4 +72,3 @@
 <!-- end data table -->
 </table>
 </div>
-
