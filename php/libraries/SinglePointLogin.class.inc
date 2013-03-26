@@ -153,8 +153,8 @@ class SinglePointLogin extends PEAR
             }
             
             // check users table to see if we have a valid user 
-            $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = '".$_POST['username']."'";
-            $ftpdb->selectRow($query, $row);
+            $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = :UID";
+            $row = $ftpdb->pselectRow($query, array('UID' => $_POST['username']));
             if (Utility::isErrorX($row)) {
                 return PEAR::raiseError("DB Error: ".$row->getMessage());
             }
@@ -174,7 +174,7 @@ class SinglePointLogin extends PEAR
                 
                 $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
                 
-                $maxUID = $ftpdb->selectOne($query);
+                $maxUID = $ftpdb->pselectOne($query, array());
                 if (Utility::isErrorX($maxUID)) {
                     return PEAR::raiseError("DB Error: ".$maxUID->getMessage());
                 }
