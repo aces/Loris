@@ -37,7 +37,7 @@ class Notify extends PEAR
     function getTypeID($type)
     {
         $db =& Database::singleton();
-        $typeID = $db->selectOne("SELECT NotificationTypeID FROM notification_types WHERE Type='$type'");
+        $typeID = $db->pselectOne("SELECT NotificationTypeID FROM notification_types WHERE Type=:TP", array('TP' => $type));
         return $typeID;
     }
 }
