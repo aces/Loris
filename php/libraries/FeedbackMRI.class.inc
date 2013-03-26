@@ -192,9 +192,9 @@ class FeedbackMRI {
         }
 
         // build the query
-        $query = "SELECT PredefinedCommentID, Comment FROM feedback_mri_predefined_comments WHERE CommentTypeID='$commentTypeID'";
+        $query = "SELECT PredefinedCommentID, Comment FROM feedback_mri_predefined_comments WHERE CommentTypeID=:CTID";
 
-        $DB->select($query, $result);
+        $result = $DB->pselect($query, array('CTID' => $commentTypeID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -233,9 +233,9 @@ class FeedbackMRI {
         }
 
         // get the parameter type id
-        $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name='$fieldName'";
+        $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
         
-        $parameterTypeID = $DB->selectOne($query);
+        $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
         if (Utility::isErrorX($parameterTypeID)) {
             return PEAR::raiseError("DB Error: ".$parameterTypeID->getMessage());
         } elseif (empty($parameterTypeID)) {
@@ -243,9 +243,9 @@ class FeedbackMRI {
         }
 
         // build the query
-        $query = "SELECT Value FROM parameter_file WHERE ParameterTypeID=$parameterTypeID AND FileID='$this->fileID'";
+        $query = "SELECT Value FROM parameter_file WHERE ParameterTypeID=:PTID AND FileID=:FID";
         
-        $value = $DB->selectOne($query);
+        $value = $DB->pselectOne($query, array('PTID' => $parameterTypeID, 'FID' => $this->fileID));
         if (Utility::isErrorX($value)) {
             return PEAR::raiseError("DB Error: ".$value->getMessage());
         } elseif (empty($value)) {
@@ -279,9 +279,9 @@ class FeedbackMRI {
         }
 
         // get the parameter type id
-        $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name='$fieldName'";
+        $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
-        $parameterTypeID = $DB->selectOne($query);
+        $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
         if (Utility::isErrorX($parameterTypeID)) {
             return PEAR::raiseError("DB Error: ".$parameterTypeID->getMessage());
         } elseif (empty($parameterTypeID)) {
@@ -289,10 +289,10 @@ class FeedbackMRI {
         }
 
         // determine whether to insert or update
-        $query = "SELECT count(*) AS UpdateNeeded FROM parameter_file WHERE ParameterTypeID=$parameterTypeID AND FileID='$this->fileID'";
+        $query = "SELECT count(*) AS UpdateNeeded FROM parameter_file WHERE ParameterTypeID=:PTID AND FileID=:FID";
 
 
-        $updateNeeded = $DB->selectOne($query);
+        $updateNeeded = $DB->selectOne($query, array('PTID' => $parameterTypeID, 'FID' => $this->fileID));
         if (Utility::isErrorX($updateNeeded)) {
             return PEAR::raiseError("DB Error: ".$updateNeeded->getMessage());
         }
@@ -328,9 +328,9 @@ class FeedbackMRI {
         }
 
         // build the array
-        $query = "SELECT CommentTypeID, CommentName, CommentStatusField FROM feedback_mri_comment_types WHERE CommentType='$this->objectType'";
+        $query = "SELECT CommentTypeID, CommentName, CommentStatusField FROM feedback_mri_comment_types WHERE CommentType=:CT";
         
-        $DB->select($query, $result);
+        $result = $DB->pselect($query, array('CT'=> $this->objectType));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -397,9 +397,9 @@ class FeedbackMRI {
         // comment type
         if (empty($commentTypeID) && !empty($predefinedCommentID)) {
             // get the commentTypeID for the entered predefinedCommentID
-            $subquery = "SELECT CommentTypeID FROM feedback_mri_predefined_comments WHERE PredefinedCommentID='$predefinedCommentID'";
+            $subquery = "SELECT CommentTypeID FROM feedback_mri_predefined_comments WHERE PredefinedCommentID=:PCID";
 
-            $commentTypeID = $DB->selectOne($subquery, $result);
+            $commentTypeID = $DB->pselectOne($subquery, array('PCID'=>$predefinedCommentID));
             if (Utility::isErrorX($commentTypeID)) {
                 return PEAR::raiseError("DB Error: ".$commentTypeID->getMessage());
             } elseif (empty($commentTypeID)) {
