@@ -51,7 +51,8 @@ class ConflictDetector {
 
     function isInstrumentInstanceInConflictState($commentId) {
         $db =& Database::singleton();
-        $conflictCount = $db->selectOne("SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1='$commentId'");
+        $conflictCount = $db->pselectOne("SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",
+            array('CID' => $commentId));
         return ($conflictCount != 0);
     }
 

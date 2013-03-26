@@ -263,11 +263,10 @@ class NDB_Reliability extends NDB_Form
             $db =& Database::singleton();
             $user =& User::singleton();
             $centerID = $user->getCenterID();
-            //$centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->identifier."'");
 
             // UofA is a special case--they never enter their own data. So the available examiners are either the ones
             // at the logged in user's site, or UofA
-            $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID IN ('$centerID', 6) ORDER BY full_name", $results);
+            $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID IN (:CentID, 6) ORDER BY full_name", array('CentID' => $centerID));
             if($db->isError($results)) {
                 return $this->raiseError("Could not get examiner names: ".$results->getMessage());
             }
