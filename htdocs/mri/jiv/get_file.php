@@ -28,6 +28,10 @@ $blessPass = blessPassThrough($_GET['file']);
 // passthrough of jpg and jiv images
 if ($blessPass) {
     $imagePath  = $config->getSetting('imagePath');
+    if (empty($imagePath)) {
+        print "IP die\n";
+        die();
+    }
     $imageFile = $imagePath."/".$_GET['file'];
     if(file_exists($imageFile)) {
         $pf = fopen($imageFile, 'r');
@@ -39,6 +43,11 @@ if ($blessPass) {
     // it's still available if it's under DownloadPath. We just check to make sure it doesn't
     // have ".." in it  so that the user can't escape DownloadPath.
     $downloadPath = $config->getSetting('DownloadPath');
+    if (empty($downloadPath)) {
+        print_r($_GET['file']);
+        print "DP die\n";
+        die();
+    }
     $downloadFile = $downloadPath.$_GET['file'];
     if(file_exists($downloadFile) && strrpos($_GET['file'], '..') === FALSE) {
         header("Content-type: application/x-minc");
@@ -56,11 +65,12 @@ if ($blessPass) {
 function blessPassThrough($toBless) {
     $bad  = '/';
     $bad1 = '..';
-    if ((strpos($toBless, $bad1) !== FALSE) || ( strpos($toBless,$bad) == 0 ) ) { 
+
+    if ((strpos($toBless, $bad1) !== false) || ( strpos($toBless,$bad) === 0 ) ) { 
         return false;    
     }
 
-    if (strrpos($toBless, '.jpg') || strrpos($toBless, '.raw_byte.gz') || strrpos($toBless, '.header') || strrpos($toBless, '.mnc')) {
+    if (strrpos($toBless, '.png') || strrpos($toBless, '.jpg') || strrpos($toBless, '.raw_byte.gz') || strrpos($toBless, '.header') || strrpos($toBless, '.mnc')) {
         return true;
     } 
     
