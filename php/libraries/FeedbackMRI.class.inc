@@ -292,7 +292,7 @@ class FeedbackMRI {
         $query = "SELECT count(*) AS UpdateNeeded FROM parameter_file WHERE ParameterTypeID=:PTID AND FileID=:FID";
 
 
-        $updateNeeded = $DB->selectOne($query, array('PTID' => $parameterTypeID, 'FID' => $this->fileID));
+        $updateNeeded = $DB->pselectOne($query, array('PTID' => $parameterTypeID, 'FID' => $this->fileID));
         if (Utility::isErrorX($updateNeeded)) {
             return PEAR::raiseError("DB Error: ".$updateNeeded->getMessage());
         }
