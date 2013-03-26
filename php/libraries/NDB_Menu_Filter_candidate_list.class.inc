@@ -123,9 +123,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
         
         $config=&NDB_Config::singleton();
-	if($config->getSetting("useProjects")=="true"){
-			$this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
-	}
+        if($config->getSetting("useProjects")=="true"){
+           $this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
+        }
         if($config->getSetting("useEDC")=="true"){
         	$this->addBasicText('edc', 'EDC:', 'maxlength=10');
         	$this->tpl_data['useEDC']="true";
