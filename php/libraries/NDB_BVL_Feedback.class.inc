@@ -95,19 +95,23 @@ Class NDB_BVL_Feedback
         }
 
         $query .= " FROM candidate as c";
+        $qparams = array();
 
         if(!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= ", session as s, flag as f WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID = '".$this->_feedbackObjectInfo['CommentID']."'";
+            $query .= ", session as s, flag as f WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID = :ComID";
+            $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         } elseif(!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= ", session as s WHERE c.CandID=s.CandID AND s.ID = '".$this->_feedbackObjectInfo['SessionID']."'";
+            $query .= ", session as s WHERE c.CandID=s.CandID AND s.ID = :SID";
+            $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " WHERE c.CandID = '".$this->_feedbackObjectInfo['CandID']."'";
+            $query .= " WHERE c.CandID = :CaID";
+            $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
         } else {
              return PEAR::raiseError("You need to pass at least one of the following to setup the Feedback Object: CandID, SessionID, or CommentID");
         }
         $query .= " LIMIT 1";
 
-        $db->select($query, $result);
+        $result = $db->pselect($query, $qparams);
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
@@ -142,7 +146,7 @@ Class NDB_BVL_Feedback
         
         $query = "SELECT Feedback_type as Type, Name, Description FROM feedback_bvl_type";
         
-        $db->select($query, $result);
+        $result = $db->pselect($query, array());
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
@@ -167,9 +171,9 @@ Class NDB_BVL_Feedback
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
-        $query = "SELECT Type FROM feedback_bvl_thread WHERE FeedbackID = '$feedbackID'";
+        $query = "SELECT Type FROM feedback_bvl_thread WHERE FeedbackID = :FID";
         
-        $result = $db->selectOne($query);
+        $result = $db->pselectOne($query, array('FID' => $feedbackID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
@@ -198,9 +202,9 @@ Class NDB_BVL_Feedback
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
-        $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = '$feedbackID'";
+        $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = :FID";
         
-        $result = $db->selectOne($query);
+        $result = $db->pselectOne($query, array('FID' => $feedbackID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
@@ -226,14 +230,18 @@ Class NDB_BVL_Feedback
         }
         
         $query = "SELECT Status FROM feedback_bvl_thread WHERE";
+        $qparams = array();
         if (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " CandID = '".$this->_feedbackObjectInfo['CandID']."'";
+            $query .= " CandID = :CID";
+            $qparams['CID'] = $this->_feedbackObjectInfo['CandID'];
         }
         if (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= " SessionID = '".$this->_feedbackObjectInfo['SessionID']."'";
+            $query .= " SessionID = :SID";
+            $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         }
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " CommentID = '".$this->_feedbackObjectInfo['CommentID']."'";
+            $query .= " CommentID = :ComID";
+            $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         }
         if (empty($select_inactive_threads)) {
             $query .= " AND Active = 'Y'";
@@ -241,7 +249,7 @@ Class NDB_BVL_Feedback
         
         $query .= " ORDER BY Status ASC LIMIT 1";
 
-        $db->selectRow($query,$result);
+        $result = $db->pselectRow($query,$qparams);
         
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
@@ -263,21 +271,25 @@ Class NDB_BVL_Feedback
         }
         
         $query  = "SELECT count(*) FROM feedback_bvl_thread WHERE Active ='Y' AND Public = 'Y' AND Status <> 'closed'";
+        $qparams = array();
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " AND CommentID = '".$this->_feedbackObjectInfo['CommentID']."'";
+            $query .= " AND CommentID = :ComID";
+            $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
             $queryBy = " CommentID";
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= " AND SessionID = '".$this->_feedbackObjectInfo['SessionID']."'";
+            $query .= " AND SessionID = :SID";
+            $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
             $queryBy = " SessionID";
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " AND CandID = '".$this->_feedbackObjectInfo['CandID']."'";
+            $query .= " AND CandID = :CanID";
+            $qparams['CanID'] = $this->_feedbackObjectInfo['CandID'];
             $queryBy = " CandID";
         } else {
             return PEAR::raiseError("no CandID, SessionID, CommentID provided");
         }
         $query .= " GROUP BY $queryBy";
         
-        $success = $db->selectOne($query);
+        $success = $db->pselectOne($query, $qparams);
         if (Utility::isErrorX($success)) {
             return "DB Error: ".$success->getMessage();
         }
@@ -313,19 +325,38 @@ Class NDB_BVL_Feedback
             $query .= ", f.Test_name as Instrument, ft.CommentID";
         }
         $query .= " FROM candidate as c, feedback_bvl_thread as ft LEFT JOIN session as s ON (s.ID = ft.SessionID)";
-        if (empty($this->_feedbackObjectInfo['CandID'])) $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
+        $qparams = array();
+        if (empty($this->_feedbackObjectInfo['CandID'])) {
+            $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
+        }
         $query .= " WHERE c.CandID = ft.CandID";
         $query .= " AND ft.Active ='Y'";
-        if (!$user->isMultiSiteEnabled() && !$hasReadPermission===true) $query .= " AND c.CenterID='".$user->getCenterID()."'";
+        if (!$user->isMultiSiteEnabled() && !$hasReadPermission===true) {
+            $query .= " AND c.CenterID=:CentID";
+            $qparams['CentID'] > $user->getCenterID();
+        }
+
         $query .= " AND Public = 'Y' AND Status <> 'closed'";
-        if (!empty($this->_feedbackObjectInfo['CandID'])) $query .= " AND ft.CandID = ".$this->_feedbackObjectInfo['CandID'];
-        if (!empty($this->_feedbackObjectInfo['SessionID'])) $query .= " AND ft.SessionID = ".$this->_feedbackObjectInfo['SessionID'];
-        if (!empty($this->_feedbackObjectInfo['CommentID'])) $query .= " AND ft.SessionID = ".$this->_feedbackCandidateProfileInfo['SessionID'];
+        if (!empty($this->_feedbackObjectInfo['CandID'])) {
+            $query .= " AND ft.CandID = :CaID";
+            $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
+        }
+
+        if (!empty($this->_feedbackObjectInfo['SessionID'])) {
+            $query .= " AND ft.SessionID = :SID";
+            $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
+        }
+        if (!empty($this->_feedbackObjectInfo['CommentID'])) {
+            $query .= " AND ft.SessionID = :CSID";
+            $qparams['CSID'] = $this->_feedbackCandidateProfileInfo['SessionID'];
+        }
         $query .= " GROUP BY ft.CandID, ft.Feedback_level, ft.SessionID";
-        if (empty($this->_feedbackObjectInfo['CandID'])) $query .= ", ft.CommentID";
+        if (empty($this->_feedbackObjectInfo['CandID'])) {
+            $query .= ", ft.CommentID";
+        }
         $query .= " ORDER BY ft.CandID, ft.Feedback_level, ft.Status";
 
-        $db->select($query, $result);
+        $result = $db->pselect($query, $qparams);
         
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
@@ -358,6 +389,7 @@ Class NDB_BVL_Feedback
         $hasReadPermission = $user->hasPermission('access_all_profiles');
         
         $query  = "SELECT c.CandID as CandID, c.PSCID as PSCID";
+        $qparams = array();
         if (!empty($this->_feedbackObjectInfo['SessionID']) || !empty($this->_feedbackObjectInfo['CommentID']))  {
             $query .= ", s.VisitNo as Visit, s.SubprojectID, s.ID as SessionID";
         }
@@ -372,24 +404,33 @@ Class NDB_BVL_Feedback
         $query .= " WHERE c.CandID = ft.CandID AND ftp.Feedback_type = ft.Feedback_type";
         
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " AND ft.SessionID = '".$this->_feedbackCandidateProfileInfo['SessionID']."'";
-            $query .= " AND ft.CommentID = '".$this->_feedbackObjectInfo['CommentID']."' AND ft.CommentID = f.CommentID";
+            $query .= " AND ft.SessionID = :SID'";
+            $query .= " AND ft.CommentID = :ComID AND ft.CommentID = f.CommentID";
+            $qparams['SID'] = $this->_feedbackCandidateProfileInfo['SessionID'];
+            $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= " AND ft.SessionID = '".$this->_feedbackObjectInfo['SessionID']."' AND ft.CommentID is null";
+            $query .= " AND ft.SessionID = :SID AND ft.CommentID is null";
+            $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " AND ft.CandID = '".$this->_feedbackObjectInfo['CandID']."' AND ft.SessionID is null AND ft.CommentID is null";
+            $query .= " AND ft.CandID = :CaID AND ft.SessionID is null AND ft.CommentID is null";
+            $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
         } else {
             return PEAR::raiseError("You need to pass at least one of the following to retrieve the list of thread: CandID, SessionID, or CommentID");
         }
 
         
         // DCC users should be able to see THEIR OWN inactive threads, other users should see only active threads
-        if ($user->isMultiSiteEnabled() || $hasReadPermission===true) $query .= " AND (ft.Active='Y' OR (ft.Active='N' AND ft.UserID='".$this->_username."'))";
-        else $query .= " AND ft.Active ='Y' AND c.CenterID='".$user->getCenterID()."'";
+        if ($user->isMultiSiteEnabled() || $hasReadPermission===true) {
+            $query .= " AND (ft.Active='Y' OR (ft.Active='N' AND ft.UserID=:Username))";
+            $qparams['Username'] = $this->_username;
+        } else {
+            $query .= " AND ft.Active ='Y' AND c.CenterID=:CentID";
+            $qparams['CentID'] = $user->getCenterID();
+        }
         
         $query .= " ORDER BY ft.CandID, ft.Feedback_level, ft.Status, ft.Testdate DESC";
 
-        $db->select($query, $result);
+        $result = $db->pselect($query, $qparams);
         
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
@@ -417,10 +458,10 @@ Class NDB_BVL_Feedback
         $query  = "SELECT";
         $query .= " fe.ID as EntryID, fe.FeedbackID, fe.Comment, fe.UserID as UserID, DATE_FORMAT(fe.Testdate, '%Y-%m-%d') as Date";
         $query .= " FROM feedback_bvl_thread as ft, feedback_bvl_entry as fe, feedback_bvl_type as ftp";
-        $query .= " WHERE ft.FeedbackID = '$feedbackID' AND ft.FeedbackID = fe.FeedbackID AND ft.Feedback_type = ftp.Feedback_type";
+        $query .= " WHERE ft.FeedbackID = :FID AND ft.FeedbackID = fe.FeedbackID AND ft.Feedback_type = ftp.Feedback_type";
         $query .= " ORDER BY ft.FeedbackID, fe.Testdate DESC";
         
-        $db->select($query, $result);
+        $result = $db->pselect($query, array('FID' => $feedbackID));
         
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
@@ -443,8 +484,8 @@ Class NDB_BVL_Feedback
         }
         
         // get the FeedbackID for the new thread
-        $query = "SELECT Max(FeedbackID) + 1 AS FeedbackID FROM feedback_bvl_thread";
-        $feedbackID = $db->selectOne($query);
+        $query = "SELECT MAX(FeedbackID) + 1 AS FeedbackID FROM feedback_bvl_thread";
+        $feedbackID = $db->pselectOne($query, array());
         if (Utility::isErrorX($feedbackID)) {
             return PEAR::raiseError("dbError: " . $feedbackID->getMessage());
         }
@@ -750,8 +791,8 @@ Class NDB_BVL_Feedback
         }
         
         $record=array();
-        $query  = "SELECT DISTINCT Status FROM feedback_bvl_thread WHERE Status=$statusID";
-        $db->selectRow($query, $record);
+        $query  = "SELECT DISTINCT Status FROM feedback_bvl_thread WHERE Status=:StatID";
+        $record = $db->pselectRow($query, array('StatID' => $statusID));
         if (Utility::isErrorX($record)) {
         	
             return PEAR::raiseError("DBError, failed to select Status from the feedback_bvl_thread for ID ($statusID)\n");
