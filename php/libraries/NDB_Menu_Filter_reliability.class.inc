@@ -423,56 +423,60 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
         $DB =& Database::singleton();
         $params = array();
-        $params['PSCID'] = $_POST['Cand1PSCID'];
-        $params['PSCID_V'] = $_POST['Cand1Visit_label'];
-        $params['Instrument'] = $_POST['SwapInstrument'];
-        
-        $query="SELECT reliability.CommentID as OldID, reliability.reliability_center_id as CenterID, reliability.Reliability_score as Score, candidate.CenterID as OldCenterID  FROM candidate JOIN session ON (session.CandID = candidate.CandID) JOIN flag ON (flag.SessionID = session.ID) JOIN reliability ON ( reliability.CommentID=flag.CommentID) WHERE candidate.PSCID=:PSCID AND reliability.Instrument=:Instrument and session.Visit_label=:PSCID_V AND flag.Data_entry IS NOT NULL and flag.Data_entry <> 'None'";
+        $params['pid'] = $_POST['Cand1PSCID'];
+        $params['measure'] = $_POST['SwapInstrument'];
+        $params['id_V'] = $_POST['Cand1Visit_label'];
+        $params_new = array();
+        $params_new['id_Replace']= $_POST['Cand2PSCID'];
+        $params_new['id_replaceV'] = $_POST['Cand2Visit_label'];
+
+        $query="SELECT reliability.CommentID as OldID, reliability.reliability_center_id as CenterID, reliability.Reliability_score as Score, candidate.CenterID as OldCenterID  FROM candidate JOIN session ON (session.CandID = candidate.CandID) JOIN flag ON (flag.SessionID = session.ID) JOIN reliability ON ( reliability.CommentID=flag.CommentID) WHERE candidate.PSCID=:pid AND reliability.Instrument=:measure and session.Visit_label=:id_V AND flag.Data_entry IS NOT NULL and flag.Data_entry <> 'None'";
 
         $CommentID = $DB->pselectRow($query,$params );
         if(!$CommentID) {
-          return array('error' => "$PSCID_Replace/$PSCID_Replace_V did not complete $Instrument or data not entered. Cannot swap candidates.");
+          return array('error' => $params_new['id_Replace']."/".$params_new['id_replaceV']." did not complete".$params['measure']." or data not entered. Cannot swap candidates.");
 
         }
-        $params_new = array();
         $params_new['Instrument'] = $_POST['SwapInstrument'];
-        $params_new['PSCID_Replace_V'] = $_POST['Cand2Visit_label'];
-        $params_new['PSCID_Replace']= $_POST['Cand2PSCID'];
-        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name=:Instrument and c.PSCID=:PSCID_Replace AND s.Visit_label=:PSCID_Replace_V AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
+        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name=:Instrument and c.PSCID=:id_Replace AND s.Visit_label=:id_replaceV AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
         $newCommentID = $DB->pselectRow($query, $params_new);
         if(!$newCommentID) { 
-            $error_msg = $params_new['PSCID_Replace']."/".$params_new['PSCID_Replace_V']." did not complete". $params_new['Instrument']." or data not entered. Cannot swap candidates.";
+            $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." did not complete". $params_new['Instrument']." or data not entered. Cannot swap candidates.";
             return array('error' => '$error_msg');
         }
         if($newCommentID['NewCenterID'] !== $CommentID['OldCenterID']) {
             return array('error' => "Candidates are not from the same site. Cannot swap candidates across sites.");
         }
         elseif($user->getCenterID() != $newCommentID['NewCenterID']) {
-            $error_msg = $params_new['PSCID_Replace']."/".$params_new['PSCID_Replace_V']." is from a different site than you. Can only swap candidates from the same site.";
+            $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
             return array('error' =>'$error_msg');
         }
         elseif($user->getCenterID() != $CommentID['OldCenterID']) {
-           $error_msg = $params_new['PSCID_Replace']."/".$params_new['PSCID_Replace_V']." is from a different site than you. Can only swap candidates from the same site.";
+           $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
            return array('error' => '$error_msg');
 
         }
         $value = array('NewID'=>$newCommentID['NewID']);
         $replacementCheck = $DB->pselectRow("SELECT CommentID FROM reliability WHERE CommentID=:NewID'",$value );
         if(!empty($replacementCheck)) {
-            $error_msg = $params['PSCID_Replace']."/".$params['PSCID_Replace_V']." already in reliability. Cannot swap".$params['PSCID']."/".$params['PSCID_V']."for it";
+            $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." already in reliability. Cannot swap".$params['pid']."/".$params['id_V']."for it";
             return array('error' => '$error_msg');
         }
 
         $CenterID = $CommentID['CenterID'];
         if(!empty($CommentID['Score'])) {
-            return array( "error" => "Reliability score already exists for $PSCID/$PSCID_V. Can not swap candidate.");
+            return array( "error" => "Reliability score already exists for".$params['pid']."/".$params['id_V']."Can not swap candidate.");
         }
-        $where_criteria = array ('CommentID'=>'$CommentID[OldID]' , 'Instrument'=>'$Instrument');
+        $where_criteria = array ('CommentID'=>$CommentID['OldID'] , 'Instrument'=>$params['measure']);
         $values = array('invalid'=>'yes', 'manual_swap'=>'yes'); 
         $DB->update('reliability', $values,$where_criteria);
-        $DB->insert('reliability',array('CommentID'=>'$newCommentID[NewID]','reliability_center_id'=>$CenterID,'Instrument'=>'$Instrument','Manual_Swap'=>'yes') );
+        $DB->insert('reliability',array('CommentID'=>$newCommentID['NewID'],
+             'reliability_center_id'=>$CenterID,
+             'Instrument'=>$params['measure'],
+             'Manual_Swap'=>'yes') 
+        );
 
-        return array("message" => "Swapped candidate".$params['PSCID']." for".$params['PSCID_Replace']);
+        return array("message" => "Swapped candidate".$params['pid']." for".$params_new['id_Replace']);
     }
 
     function _addCandidate() {
