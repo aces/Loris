@@ -16,6 +16,15 @@
 	</li>
 
 	<li>
+       {if $isDataEntryPerson}
+                        <a href="main.php?test_name=participant_status&candID={$candID}&identifier={$candID}"> Participant Status Form</a>
+       {else}
+                        Participant Status Form
+       {/if}
+
+	</li>
+	
+	<li>
     {*
 		{if $isDataEntryPerson}
                         <img src="images/open.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="main.php?test_name=demographics&candID={$candID}&identifier={$candID}">Demographics Form</a>
