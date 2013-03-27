@@ -46,14 +46,22 @@ class NDB_Form_participant_status extends NDB_Form
             $currentUser =& User::singleton($_SESSION['State']->getUsername());
             $id = $currentUser->getData("UserID");
             $values['entry_staff'] = $id;
-
         }
 
         // save the values
-        $success = $DB->update("participant_status", $values,array("CandID"=>$values['CandID']));
+        //if it exists update it
+        if (($DB->pselectOne("SELECT COUNT(*) FROM participant_status WHERE CandID = :cid",array("CandID"=>$values['CandID'])))>0){
+            $success = $DB->update("participant_status", $values,array("CandID"=>$values['CandID']));        	
+        }
+        //insert it
+        else{
+            $success = $DB->insert("participant_status",$values);
+        }
+
         if(PEAR::isError($success)) {
             return PEAR::raiseError("NDB_Form_participant_status::_process: ".$success->getMessage());
         }
+        
         $this->tpl_data['success'] = true;
         $this->form->freeze();
     }
@@ -114,7 +122,6 @@ class NDB_Form_participant_status extends NDB_Form
         unset($group);
 
 
-
         //others text area
         $group[] = $this->form->createElement('textarea', 'other_reasons');
         $group[] = $this->form->createElement("select","other_reasons_not_answered", null, array(null => null) + $notAns4);
@@ -123,13 +130,7 @@ class NDB_Form_participant_status extends NDB_Form
         unset($group);
 
         $this->form->addElement('static', null, '<br /><br />');
-
-        // Comments
-        $group[] = $this->form->createElement('textarea', 'comments');
-        $this->form->addGroup($group, 'comments_group', 'General Comment if any', null, false);
-        $this->tpl_data['element_list'][] = "comments_group";
-        unset($group);
-
+       
         $this->form->addElement('static', null, '<br/><br />');
         $this->form->addFormRule(array(&$this,'_validate'));
     }
@@ -143,10 +144,6 @@ class NDB_Form_participant_status extends NDB_Form
         $date_taken_answered = $fields['Date_taken'];
         $date_taken_notanswered = $fields['Date_taken_not_answered'];
 
-
-        if(empty($fields['qn_1_cohort'])) {
-            $errors['qn_1_cohort']  .= 'Required';
-        }
 
         if (($fields['qn_2_participant_status'])=='ineligible'){
             if ($fields['qn_5_drop_out_reasons'] !==''){
