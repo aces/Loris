@@ -157,7 +157,7 @@ class MRIViewScansPage {
                 $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
                 $params['PPSCID'] = $candidate->getPSCID();
                 $params['PCandID'] = $timePoint->getCandID();
-                $params['PVL' => $timePoint->getVisitLabel();
+                $params['PVL'] = $timePoint->getVisitLabel();
             }
             $tarchiveIDs = $this->DB->pselect("SELECT TarchiveID FROM tarchive WHERE PatientName LIKE $ID", $params);
             $subjectData['ParameterFormCommentID'] = $this->DB->pselectOne(
