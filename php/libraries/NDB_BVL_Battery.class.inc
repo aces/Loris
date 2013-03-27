@@ -256,7 +256,7 @@ class NDB_BVL_Battery extends PEAR
         if(!is_null($stage)) {
             if(!is_null($visit_label)) {
                 $query .= " AND b.Visit_label=:VL";
-                $qparams['VL']= $visit_label
+                $qparams['VL']= $visit_label;
             } else {
                 $query .= " OR b.Visit_label IS NULL";
             }
