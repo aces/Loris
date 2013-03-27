@@ -351,7 +351,7 @@ class NDB_BVL_Battery extends PEAR
     function getInstrumentNameForCommentId($commentId) {
         $db =& Database::singleton();
         $query = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $instrumentName = $db->pselectOne($query, array('CID' => $commentId);
+        $instrumentName = $db->pselectOne($query, array('CID' => $commentId));
         return $instrumentName;
     }
 
