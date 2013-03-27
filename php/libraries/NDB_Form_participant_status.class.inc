@@ -84,10 +84,10 @@ class NDB_Form_participant_status extends NDB_Form
         $this->tpl_data['element_list'][] = "data_entry_date";
         $this->form->addElement('static', null, "<br />");
 
-        $ssid = $DB->pselectone('SELECT PSCID FROM candidate where CandID = :canid',array('candid'=>$this->identifier));
-        $this->form->addElement ('static', 'ssid', 'SSID');
-        $this->tpl_data['element_list'][] = "ssid";
-        $this->tpl_data['ssid'] = $ssid;
+        $pscid = $DB->pselectone('SELECT PSCID FROM candidate where CandID = :canid',array('candid'=>$this->identifier));
+        $this->form->addElement ('static', 'pscid', 'PSCID');
+        $this->tpl_data['element_list'][] = "pscid";
+        $this->tpl_data['ssid'] = $pscid;
 
         // Selections array (standard template for questions selections)
         $noYes = array(null=>'', "0_no"=>"0: No", "1_yes"=>"1: Yes");

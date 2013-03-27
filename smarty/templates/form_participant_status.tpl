@@ -7,11 +7,11 @@
 
     {foreach from=$element_list item=element}
 
-    {if $element eq 'ssid'}
+    {if $element eq 'pscid'}
     
     <tr>
         <td nowrap="nowrap">{$form.$element.label}</td>
-        <td nowrap="nowrap">{$ssid}</td>
+        <td nowrap="nowrap">{$pscid}</td>
     </tr>
     {else}
     <tr>
