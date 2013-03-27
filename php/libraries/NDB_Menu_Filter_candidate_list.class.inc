@@ -33,7 +33,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
+        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID','participant_status.qn_2_participant_status as Participant_Status', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
         $config=&NDB_Config::singleton();
         if($config->getSetting("useEDC")=="true"){
         	$this->columns[]='DATE_FORMAT((candidate.EDC),\'%Y-%m-%d\') AS EDC';
@@ -46,7 +46,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         
         $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Active = 'Y'
          LEFT JOIN feedback_bvl_thread ON (candidate.CandID=feedback_bvl_thread.CandID)
-        WHERE candidate.CenterID = psc.CenterID AND candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
+         LEFT JOIN participant_status ON (participant_status.CandID=candidate.CandID)
+        WHERE candidate.CenterID = psc.CenterID AND candidate.Entity_type = 'Human' AND candidate.Active = 'Y'";
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND candidate.CenterID=" . $user->getCenterID();
@@ -54,7 +55,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         
         $this->group_by = 'candidate.CandID';
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
-        $this->validFilters = array('candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
+        $this->validFilters = array('participant_status.qn_2_participant_status','candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
         $this->validHavingFilters = array('count(DISTINCT session.Visit_label)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
 		
         $this->formToFilter = array(
@@ -67,8 +68,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                     'dob' => 'candidate.DoB',
                                     'Visit_Count' => 'count(DISTINCT session.Visit_label)', // Need distinct because of joining with feedback_bvl_thread
                                     'Latest_Visit_Status' => 'max(session.Current_stage)',
-                                    'Feedback' => 'coalesce(min(feedback_bvl_thread.Status+1), 1)'
-
+                                    'Feedback' => 'coalesce(min(feedback_bvl_thread.Status+1), 1)',
+                                    'Participant_Status' => 'participant_status.qn_2_participant_status'
                                 );
         return true;
     }
@@ -111,6 +112,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $latest_visit_status_options = array(null => 'Any', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
+        $participant_status_options = array(null => 'Any','active' => 'Active', 'ineligible'=>'Ineligible','dropout'=>'Dropout','decline'=>'Decline');
+        
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
         $this->addBasicText('DCCID', 'DCC-ID:');
@@ -121,6 +124,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
+        $this->addSelect('Participant_Status','Participant Status:', $participant_status_options);
         
         $config=&NDB_Config::singleton();
         if($config->getSetting("useEDC")=="true"){
