@@ -138,7 +138,7 @@ class NDB_Form_certification extends NDB_Form
 
 
             //for new certification events
-            if ((empty($certID))) {
+            if (empty($certID) && !empty($pass)) {
                 $success = $DB->insert('certification', array(
                             'examinerID'  => $values['examinerID'], 
                             'date_cert'   => $date_cert,
