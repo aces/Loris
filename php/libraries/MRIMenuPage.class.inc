@@ -116,7 +116,7 @@ class MRIMenuPage {
             $query .= " AND CenterID=:CentID";
             $params['CentID'] = $user->getCenterID();
         }
-        $query .= " ORDER BY Name"
+        $query .= " ORDER BY Name";
         $sites = $DB->pselect($query, $params);
         $this->visit_tpl_data['site_options']['']='&nbsp;';
         foreach($sites AS $site) {
