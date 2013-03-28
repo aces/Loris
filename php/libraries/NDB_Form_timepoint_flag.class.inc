@@ -15,7 +15,7 @@ class NDB_Form_timepoint_flag extends NDB_Form
         $user =& User::singleton();
 		$config =& NDB_Config::singleton();
         $timepoint =& TimePoint_Flag::singleton($this->identifier);
-        if (PEAR::isError($timepoint)) {
+        if (Utility::isErrorX($timepoint)) {
             return PEAR::raiseError("Error, failed to create a form for this timepoint ($this->identifier):\n".$timepoint->getMessage());
         }
         
@@ -55,7 +55,7 @@ class NDB_Form_timepoint_flag extends NDB_Form
         // flag statuses are captured as constants TIMEPOINT_FLAG_TRIGGER, TIMEPOINT_FLAG_NA_INSTRUMENT, TIMEPOINT_FLAG_NULL
         $flagList = array();
         $flagList = $timepointFlagObject->evaluateTimepointFlags();
-        if (PEAR::isError($flagList)) {
+        if (Utility::isErrorX($flagList)) {
             return PEAR::raiseError("Error, failed to evaluate flags for timepoint ($this->identifier):\n". $flagList->getMessage());
         }
         
@@ -71,7 +71,7 @@ class NDB_Form_timepoint_flag extends NDB_Form
 
             // check if the flag exists, i.e. previously triggered
             $flagExists = $timepointFlagObject->timepointFlagExists($sessionID, $flagName);
-            if (PEAR::isError($flagExists)) {
+            if (Utility::isErrorX($flagExists)) {
                 return PEAR::raiseError("Error:\n".$flagExists->getMessage());
             }
 
@@ -101,7 +101,7 @@ class NDB_Form_timepoint_flag extends NDB_Form
         
             foreach ($val as $key1=>$flag) {
                 if ($key != 'MI') {
-                    $this->form->addElement('static',$key.$flag, "FLAG : ".$flag);
+                    $this->addScoreColumn($key.$flag, "FLAG : ".$flag);
                     $this->tpl_data["elements_list_$key"][]=$key.$flag;
                 }
             }
@@ -111,7 +111,7 @@ class NDB_Form_timepoint_flag extends NDB_Form
                 $flagPositiveTriggers = $timepointFlagObject->evaluateFlagTriggers($flag);
                 if (is_array($flagPositiveTriggers)) {
                     foreach ($flagPositiveTriggers as $triggerName=>$triggerStatus) {
-                        $this->form->addElement('static',$key.$flag.$triggerName,$triggerName);
+                        $this->addScoreColumn($key.$flag.$triggerName,$triggerName);
                         $this->tpl_data["elements_list_$key"][]=$key.$flag.$triggerName;
                     }
                 }

@@ -1,4 +1,5 @@
 <?php
+require_once "NDB_Page.class.inc";
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -7,7 +8,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  * Base Form class
  * @package main
  */
-class NDB_Form extends PEAR
+class NDB_Form extends NDB_Page
 {
     /**
      * Class name
@@ -96,13 +97,15 @@ class NDB_Form extends PEAR
         $obj = new $class;
 
         // set the local variables
-        $obj->form = new HTML_QuickForm('test_form');
+        $obj->_setupPage($name, $page, $identifier, null, 'test_form'); 
+
+       /** $obj->form = new HTML_QuickForm('test_form');
         $obj->name = $name;
         $obj->page = $page;
-        $obj->identifier = $identifier;
-        
+        $obj->identifier = $identifier; */  
+       
         $access = $obj->_hasAccess();
-        if (PEAR::isError($access)) {
+        if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Form::factory() access: ".$access->getMessage());
         }
 
@@ -113,14 +116,14 @@ class NDB_Form extends PEAR
 
  	    if (method_exists($obj, $page)) {
 	        $success = $obj->$page();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() page: ".$success->getMessage());
             }
             $obj->template = $page;
 	    }
  	    elseif (method_exists($obj, $name)) {
 	        $success = $obj->$name();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() name: ".$success->getMessage());
             }
             $obj->template = $name;
@@ -140,7 +143,7 @@ class NDB_Form extends PEAR
      *
      *     // create user object
      *     $user =& User::singleton();
-     *     if(PEAR::isError($user)) {
+     *     if(Utility::isErrorX($user)) {
      *         return PEAR::raiseError("User Error: ".$user->getMessage());
      *     }
      *
@@ -159,58 +162,6 @@ class NDB_Form extends PEAR
 
 
     /**
-     * Displays the form
-     *
-     * @return void
-     * @access public
-     */
-    function display()
-    {
-        if(!$this->form->isFrozen()) {
-            // hidden values
-            $this->form->addElement('hidden', 'test_name', $this->name);
-            $this->form->addElement('hidden', 'subtest', $this->page);
-            $this->form->addElement('hidden', 'identifier', $this->identifier);
-         }
-
-        // get the defaults
-        $localDefaults = $this->_getDefaults();
-        if (PEAR::isError($localDefaults)) {
-            return PEAR::raiseError("NDB_Form::display(): ".$localDefaults->getMessage());
-        }
-        if(!is_array($localDefaults)) { $localDefaults = array(); }
-        // set the quickform object defaults
-        $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
-
-	    // trim all values
-    	$this->form->applyFilter('__ALL__', 'trim');
-
-        // display the HTML_Quickform object
-        $smarty = new Smarty_neurodb;
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
-        $smarty->assign('form', $renderer->toArray());
-        $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
-        return $html;
-        //return $this->form->toHTML();
-    }
-
-
-    /**
-     * Returns the form-specific defaults
-     *
-     * @note   overloaded function
-     * @return array
-     * @access private
-     */
-    function _getDefaults()
-    {
-        return array();
-    }
-
-
-    /**
      * Saves the form
      *
      * Attempts to validate the form (using the defined rules) and
@@ -224,7 +175,7 @@ class NDB_Form extends PEAR
     {
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, "_save"), false);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::save(): ".$success->getMessage());
             }
         }
@@ -250,7 +201,7 @@ class NDB_Form extends PEAR
         }
 
         $success = $this->_process($values);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Form::_save(): ".$success->getMessage());
         }
     }
@@ -280,7 +231,8 @@ class NDB_Form extends PEAR
      */
     function _resetForm()
     {
-        $this->form = new HTML_QuickForm('test_form');
+       $this->_setupPage($name, $page, $identifier, null, 'test_form');
+       // $this->form = new HTML_QuickForm('test_form');
     }
 }
 ?>

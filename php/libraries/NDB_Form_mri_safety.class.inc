@@ -27,18 +27,18 @@ class NDB_Form_mri_safety extends NDB_Form
     {
         // create DB object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
 
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $site =& Site::singleton($user->getData('CenterID'));
-        if (PEAR::isError($site)) {
+        if (Utility::isErrorX($site)) {
             return PEAR::raiseError("Site error: ".$site->getMessage());
         }
 
@@ -50,7 +50,7 @@ class NDB_Form_mri_safety extends NDB_Form
         // if creating a new form
         if ($this->identifier=="new") {
             $timepoint =& TimePoint::singleton($_REQUEST['mriSafetySessionID']);
-            if (PEAR::isError($timepoint)) {
+            if (Utility::isErrorX($timepoint)) {
             	return PEAR::raiseError("Candidate Error: ".$timepoint->getMessage());
             }
             // verify candidate profile
@@ -66,7 +66,7 @@ class NDB_Form_mri_safety extends NDB_Form
         $query = "SELECT s.CenterID, m.Findings_confirmed FROM session as s, mri_safety as m WHERE s.ID=m.SessionID AND m.ID = '".$this->identifier."'";
         $result = array();
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
         	return PEAR::raiseError("NDB_Form_mri_safety::_hasAccess".$result->getMessage());
         }
         $recordCenterID = $result['CenterID'];
@@ -91,7 +91,7 @@ class NDB_Form_mri_safety extends NDB_Form
     {
         // create DB object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
 
@@ -111,7 +111,7 @@ class NDB_Form_mri_safety extends NDB_Form
             $query = "SELECT * FROM mri_safety WHERE ID = '".$this->identifier."'";
             $result=array();
             $db->selectRow($query, $result);
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 	return ("NDB_Form_mri_safety::_getDefaults: ".$result->getMessage());
             }
             
@@ -146,7 +146,7 @@ class NDB_Form_mri_safety extends NDB_Form
         
         // create DB object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
         
@@ -158,14 +158,14 @@ class NDB_Form_mri_safety extends NDB_Form
             // insert a new record
             $success = $db->insert('mri_safety', $setArray);
             // check for db errors
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return ("NDB_Form_mri_safety::_process: ".$success->getMessage());
             }
             
             // get the new ID
             $query = "SELECT max(ID) as RecordID from mri_safety";
             $db->selectRow($query, $result);
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError($result->getMessage());
             }
             $this->identifier=$result['RecordID'];
@@ -177,7 +177,7 @@ class NDB_Form_mri_safety extends NDB_Form
             // update the existing record
             $success = $db->update('mri_safety', $setArray, array('ID'=>$this->identifier));
             // check for db errors
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return ("NDB_Form_mri_safety::_process: ".$success->getMessage());
             }
         }
@@ -188,7 +188,7 @@ class NDB_Form_mri_safety extends NDB_Form
         // run the query
         $result=array();
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError($result->getMessage());
         }
 
@@ -227,7 +227,7 @@ class NDB_Form_mri_safety extends NDB_Form
         
         // make local instances of objects
         $config =& NDB_Config::singleton();
-        if (PEAR::isError($config)) {
+        if (Utility::isErrorX($config)) {
         	return PEAR::raiseError($config->getMessage());
         }
 
@@ -250,13 +250,13 @@ class NDB_Form_mri_safety extends NDB_Form
         }
         
         // existing record
-        $this->form->addElement('static', 'Acquisition_date', null);
-        $this->form->addElement('select', 'Check_adverse', null, $optionsArray);
+        $this->addScoreColumn('Acquisition_date', null);
+        $this->addSelect('Check_adverse', null, $optionsArray);
         $this->form->addElement('date', 'Date_review', null, $dateOptions);
-        $this->form->addElement('select', 'Check_incidental', null, $optionsArray);
-        $this->form->addElement('static', 'Comment');
-        $this->form->addElement('static', 'Findings_confirmed');
-        $this->form->addElement('static', 'Findings_comment');
+        $this->addSelect('Check_incidental', null, $optionsArray);
+        $this->addScoreColumn('Comment');
+        $this->addScoreColumn('Findings_confirmed');
+        $this->addScoreColumn('Findings_comment');
 
         $this->form->addRule('Date_review', 'Required', 'required');
         $this->form->addRule('Check_adverse', 'Adverse findings required', 'required');
@@ -276,7 +276,7 @@ class NDB_Form_mri_safety extends NDB_Form
     	
         // create DB object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
 
@@ -284,7 +284,7 @@ class NDB_Form_mri_safety extends NDB_Form
         $query = "SELECT c.CandID, c.PSCID, s.Visit_label FROM candidate as c, session as s, mri_safety as m WHERE c.CandID = s.CandID AND s.ID=m.SessionID AND m.ID = '".$this->identifier."'";
         $result = array();
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
         	return PEAR::raiseError("NDB_Form_mri_safety::_hasAccess".$result->getMessage());
         }
         $this->tpl_data['CandID'] = $result['CandID'];
@@ -292,13 +292,13 @@ class NDB_Form_mri_safety extends NDB_Form
         $this->tpl_data['Visit_label'] = $result['Visit_label'];
         
         // existing record
-        $this->form->addElement('static', 'Acquisition_date', null);
-        $this->form->addElement('static', 'Check_adverse', null);
-        $this->form->addElement('static', 'Date_review', null);
-        $this->form->addElement('static', 'Check_incidental', null);
-        $this->form->addElement('textarea', 'Comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
-        $this->form->addElement('select', 'Findings_confirmed', null, $findingsConfirmedOptions);
-        $this->form->addElement('textarea', 'Findings_comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
+        $this->addScoreColumn('Acquisition_date', null);
+        $this->addScoreColumn('Check_adverse', null);
+        $this->addScoreColumn('Date_review', null);
+        $this->addScoreColumn('Check_incidental', null);
+        $this->addBasicTextArea('Comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
+        $this->addSelect('Findings_confirmed', null, $findingsConfirmedOptions);
+        $this->addBasicTextArea('Findings_comment', null, array("cols"=>60, "rows"=>5, "wrap"=>"soft"));
 
         $this->form->addRule('Findings_confirmed', 'Findings Confirmation is required', 'required');
     }

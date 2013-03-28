@@ -28,7 +28,7 @@ Class TimePoint
         if(!isset($timePointList[$sessionID])) {
             $timePointList[$sessionID] = new TimePoint();
             $success = $timePointList[$sessionID]->select($sessionID);
-            if(PEAR::isError($success)){
+            if(Utility::isErrorX($success)){
                 unset($timePointList[$sessionID]);
                 return PEAR::raiseError("Could not instantiate TimePoint object".$success->getMessage());
             }
@@ -50,15 +50,15 @@ Class TimePoint
     	
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
         // get user data from database
-        $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID, s.VisitNo,s.Visit_label,s.SubprojectID,s.Submitted,s.Current_stage,s.Screening,s.Date_screening,s.Visit,s.Date_visit,s.Approval,s.Date_approval,s.Active, s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request, s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done FROM session as s left join psc as p using (CenterID) left join users as u on (s.registeredBy=u.UserID) WHERE s.ID ='$sessionID' AND s.Active = 'Y'";
-        $db->selectRow($query, $row);
+        $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID, s.VisitNo,s.Visit_label,s.SubprojectID,s.Submitted,s.Current_stage,s.Screening,s.Date_screening,s.Visit,s.Date_visit,s.Approval,s.Date_approval,s.Active, s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request, s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done FROM session as s left join psc as p using (CenterID) left join users as u on (s.registeredBy=u.UserID) WHERE s.ID = :SID AND s.Active = 'Y'";
+        $row = $db->pselectRow($query, array('SID' => $sessionID));
         
-        if(PEAR::isError($row)) {
+        if(Utility::isErrorX($row)) {
             return PEAR::raiseError("Could not retrieve candidate data from database");
         }
 
@@ -105,9 +105,9 @@ Class TimePoint
         $db =& Database::singleton();
 
         // select the candidate data
-        $query = "SELECT c.PSCID, c.CenterID, IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo FROM candidate AS c LEFT OUTER JOIN session AS s USING (CandID) WHERE c.CandID=$candID AND (s.Active='Y' OR s.Active is null) GROUP BY c.CandID";
-        $db->selectRow($query, $row);
-        if(PEAR::isError($row)) {
+        $query = "SELECT c.PSCID, c.CenterID, IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo FROM candidate AS c LEFT OUTER JOIN session AS s USING (CandID) WHERE c.CandID=:CaID AND (s.Active='Y' OR s.Active is null) GROUP BY c.CandID";
+        $row = $db->pselectRow($query, array('CaID' => $candID));
+        if(Utility::isErrorX($row)) {
             return PEAR::raiseError("Could not retrieve existing data for candidate".$row->getMessage());
         }
 
@@ -139,7 +139,7 @@ Class TimePoint
 
         // insert the data
         $success = $db->insert('session', $insertData);
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("Could not register new timepoint record".$success->getMessage());
         }
     }
@@ -354,7 +354,7 @@ Class TimePoint
     function isCurrentStageDynamic()
     {
         $isStageDynamic = $this->isStudyStageDynamic($this->getCurrentStage());
-        if (PEAR::isError($isStageDynamic)) {
+        if (Utility::isErrorX($isStageDynamic)) {
             // pass the error
             return PEAR::raiseError($isStageDynamic->getMessage());
         }
@@ -413,13 +413,13 @@ Class TimePoint
 
         
         $dbErrors = $db->update('session', $update_columns, array('ID'=>$this->getSessionID()));
-        if(PEAR::isError($dbErrors)) {
+        if(Utility::isErrorX($dbErrors)) {
             return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
         }
                                            
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("DB Error: ".$success->getMessage());
         }
     }
@@ -468,13 +468,13 @@ Class TimePoint
         // update session table
         $dbErrors = $db->update('session', $setArray, array('ID'=>$this->getSessionID()));
 
-        if(PEAR::isError($dbErrors)) {
+        if(Utility::isErrorX($dbErrors)) {
             return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
         }
 
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             //throw PEAR error
             return PEAR::raiseError($success->getMessage());
         }
@@ -501,13 +501,13 @@ Class TimePoint
         // update session table
         $dbErrors = $db->update('session', $setArray, array('ID'=>$this->getSessionID()));
 
-        if(PEAR::isError($dbErrors)) {
+        if(Utility::isErrorX($dbErrors)) {
             return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
         }
 
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             //throw PEAR error
             return PEAR::raiseError($success->getMessage());
         }
@@ -528,13 +528,13 @@ Class TimePoint
         // update session table
         $dbErrors = $db->update('session', $setArray, array('ID'=>$this->getSessionID()));
 
-        if(PEAR::isError($dbErrors)) {
+        if(Utility::isErrorX($dbErrors)) {
             return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
         }
 
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             //throw PEAR error
             return PEAR::raiseError($success->getMessage());
         }
@@ -559,7 +559,7 @@ Class TimePoint
     	// if we have not yet started, and at least one timepoint is in screening or visit, do not allow the user to start another timepoint
     	if ($currentStage == 'Not Started') {
     		$candidate =& Candidate::singleton($this->getCandID());
-    		if (PEAR::isError($candidate)) {
+    		if (Utility::isErrorX($candidate)) {
     			return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
     		}
 
@@ -572,7 +572,7 @@ Class TimePoint
     			foreach ($listOfTimePoints as $sessionID) {
     				// create timepoint object
     				$timepoint = TimePoint::singleton($sessionID);
-    				if (PEAR::isError($timepoint)) {
+    				if (Utility::isErrorX($timepoint)) {
     					return PEAR::raiseError("TimePoint Error ($sessionID): ".$timepoint->getMessage());
     				}
 

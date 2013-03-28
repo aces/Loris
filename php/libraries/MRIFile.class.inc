@@ -11,22 +11,23 @@ class MRIFile
     function MRIFile($fileID)
     {
         $db =& Database::singleton();
+        $params = array('FID' => $fileID);
         
-        $query = "SELECT * FROM files WHERE FileID=$fileID";
-        $db->selectRow($query, $fileData);
+        $query = "SELECT * FROM files WHERE FileID=:FID";
+        $fileData = $db->pselectRow($query, $params);
         foreach($fileData AS $key=>$value) {
             $this->fileData[$key] = $value;
         }
         
-        $query = "SELECT * FROM files_qcstatus WHERE FileID=$fileID";
-        $db->selectRow($query, $qcData);
+        $query = "SELECT * FROM files_qcstatus WHERE FileID=:FID";
+        $qcData = $db->pselectRow($query, $params);
         if(!empty($qcData)) {
             foreach($qcData AS $key=>$value) {
                 $this->QCData[$key] = $value;
             }
         }
-        $query = "SELECT Name, Value FROM parameter_file as p, parameter_type as f WHERE f.ParameterTypeID=p.ParameterTypeID AND FileID=$fileID";
-        $db->select($query, $parameterRaw);
+        $query = "SELECT Name, Value FROM parameter_file as p, parameter_type as f WHERE f.ParameterTypeID=p.ParameterTypeID AND FileID=:FID";
+        $parameterRaw = $db->select($query, $params);
         foreach($parameterRaw AS $row) {
             $this->parameters[$row['Name']] = $row['Value'];
         }
@@ -46,8 +47,8 @@ class MRIFile
         
         if(is_null($this->fileData['AcquisitionProtocolID'])) return null;
         
-        $query = "SELECT Scan_type FROM mri_scan_type WHERE ID='".$this->fileData['AcquisitionProtocolID']."'";
-        $acquisitionProtocol = $db->selectOne($query);
+        $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ProtoID";
+        $acquisitionProtocol = $db->pselectOne($query, array('ProtoID' => $this->fileData['AcquisitionProtocolID']));
         return $acquisitionProtocol;
     }
 }

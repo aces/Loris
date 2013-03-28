@@ -1,5 +1,6 @@
 <?
 set_time_limit(0);
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**
  * QUAT uses the parameter_type table to determine the list of
  * parameters available for querying, nukes and reconstructs the query
@@ -159,7 +160,7 @@ function GetSelectStatement($parameterType, $field=NULL) {
 
     case 'mri_acquisition_dates':
         if($field == null) {
-            $field = "mad.$parameterType[SourceField]";
+            $field = "$parameterType[SourceField]";
         }
         $query = "SELECT $field AS Value FROM session s LEFT JOIN candidate USING (CandID) LEFT JOIN mri_acquisition_dates AS mad ON (mad.SessionID=s.ID) WHERE 1=1 ";
 	 break;

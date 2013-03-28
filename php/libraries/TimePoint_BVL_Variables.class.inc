@@ -44,7 +44,7 @@ Class TimePoint_BVL_Variables extends TimePoint
             
             // setup data in the TimePoint class
             $success = $BVLVarsList[$sessionID]->select($sessionID);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
             }
         }
@@ -74,7 +74,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -82,7 +82,7 @@ Class TimePoint_BVL_Variables extends TimePoint
         $query = "SELECT Test_name, CommentID FROM flag where Data_entry = 'Complete' AND SessionID = '".$this->getSessionID()."' ORDER BY Test_name";
         
         $db->select($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
         
@@ -114,7 +114,7 @@ Class TimePoint_BVL_Variables extends TimePoint
             
             // call the method to get the list of bvlVars values
             $bvlVarList = $this->$instrument["Test_name"]();
-            if (PEAR::isError($bvlVarList)) {
+            if (Utility::isErrorX($bvlVarList)) {
                 // if error, return PEAR Error and deal w/ it :-)
                 return PEAR::raiseError("Method ".$instrument["Test_name"]." error: " . $bvlVarList->getMessage());
             }
@@ -133,7 +133,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                 // get ParameterTypeID of the var
                 // it also verifies that they are registered in the paramter_type
                 $varID = $this->getVarID($bvlVar);
-                if (PEAR::isError($varID)) {
+                if (Utility::isErrorX($varID)) {
                     // return the Error
                     return PEAR::raiseError("Method validation".$instrument["Test_name"]." error: " . $varID->getMessage());
                 }
@@ -149,7 +149,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                     $log .= "Will save :: BVLVar: $bvlVar w/ Value: $bvlVarValue\n";
                     // save the new bvlVar value into the table
                     $success = $this->save($varID, $bvlVarValue);
-                    if (PEAR::isError($success)) {
+                    if (Utility::isErrorX($success)) {
                         return PEAR::raiseError("Method validation".$instrument["Test_name"]." :: $bvlVar error: " . $success->getMessage());
                     }
                 }
@@ -165,14 +165,14 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
        // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name = '$bvlVar'";
 
         $result = $db->selectOne($query);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
         
@@ -183,7 +183,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -197,7 +197,7 @@ Class TimePoint_BVL_Variables extends TimePoint
         // check if the value exists in the parameter_session table.
         $query = "SELECT count(*) FROM parameter_session WHERE SessionID = '".$this->getSessionID()."' AND ParameterTypeID = '".$varID."'";
         $result = $db->selectOne($query);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -228,7 +228,7 @@ Class TimePoint_BVL_Variables extends TimePoint
             $success = $db->insert('parameter_session', $setArray);
         }
         
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Db Error: ".$success->getMessage());
         }
     }
@@ -237,7 +237,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -260,7 +260,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   CommentID = '".$this->getCommentID()."'";
 
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
                   
@@ -271,7 +271,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -309,7 +309,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   AND f.F134 = s3.Soc_eccID
                   AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -321,7 +321,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -339,7 +339,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -351,7 +351,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         
@@ -384,7 +384,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -395,7 +395,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
@@ -418,7 +418,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   CommentID = '".$this->getCommentID()."'";
                   
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -429,7 +429,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -439,7 +439,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -450,7 +450,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -460,7 +460,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -471,7 +471,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -481,7 +481,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -492,7 +492,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -502,7 +502,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -513,7 +513,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -530,7 +530,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -541,7 +541,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -558,7 +558,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -569,7 +569,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -593,7 +593,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -604,7 +604,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -628,7 +628,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -639,7 +639,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -662,7 +662,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -676,7 +676,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -690,7 +690,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -701,7 +701,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -714,7 +714,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -726,7 +726,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -738,7 +738,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -749,7 +749,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -762,7 +762,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -773,7 +773,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -786,7 +786,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -797,7 +797,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -811,7 +811,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -822,7 +822,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -837,7 +837,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -848,7 +848,7 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
@@ -863,7 +863,7 @@ Class TimePoint_BVL_Variables extends TimePoint
                   WHERE
                   CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query, $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: ".$result->getMessage());
         }
 
@@ -874,13 +874,13 @@ Class TimePoint_BVL_Variables extends TimePoint
     {
         // new DB Object
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
         // get the data
         $query = "SELECT subtotal_score AS Dps4_SOPH FROM dpsy WHERE subgroup = 'SOPH' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -890,7 +890,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_SAD  FROM dpsy WHERE subgroup = 'SAD' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -900,7 +900,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_AGO  FROM dpsy WHERE subgroup = 'AGO' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -910,7 +910,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_PAN  FROM dpsy WHERE subgroup = 'PAN' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -920,7 +920,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_GAD  FROM dpsy WHERE subgroup = 'GAD' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -930,7 +930,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_SPPH FROM dpsy WHERE subgroup = 'SPPH' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -940,7 +940,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_OCD  FROM dpsy WHERE subgroup = 'OCD' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -950,7 +950,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_EAT  FROM dpsy WHERE subgroup = 'EAT' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -960,7 +960,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_ELIM FROM dpsy WHERE subgroup = 'ELIM' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -970,7 +970,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_MDD  FROM dpsy WHERE subgroup = 'MDD' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -980,7 +980,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_MAN  FROM dpsy WHERE subgroup = 'MAN' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -990,7 +990,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_SCHIZ FROM dpsy WHERE subgroup = 'SCHIZ' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1000,7 +1000,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_ADHD FROM dpsy WHERE subgroup = 'ADHD' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1010,7 +1010,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_ODD FROM dpsy WHERE subgroup = 'ODD' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1020,7 +1020,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_CD FROM dpsy WHERE subgroup = 'CD' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1030,7 +1030,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_ALCH FROM dpsy WHERE subgroup = 'ALCH' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1040,7 +1040,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_MAJI FROM dpsy WHERE subgroup = 'MAJI' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1050,7 +1050,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_OTHERSUB FROM dpsy WHERE subgroup = 'OTHERSUB' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1060,7 +1060,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_AGO_Other FROM dpsy WHERE subgroup = 'AGO_Other' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1070,7 +1070,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_OCD_Other FROM dpsy WHERE subgroup = 'OCD_Other' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;
@@ -1080,7 +1080,7 @@ Class TimePoint_BVL_Variables extends TimePoint
 
         $query = "SELECT subtotal_score AS Dps4_PAN_Other FROM dpsy WHERE subgroup = 'PAN_Other' AND CommentID = '".$this->getCommentID()."'";
         $db->selectRow($query,$result);
-        if (PEAR::isError($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
+        if (Utility::isErrorX($result)) return PEAR::raiseError("Db dasError: ".$result->getMessage());
         if (is_array($result)) {
             foreach ($result as $key=>$val) {
                 $resultArray[$key] = $val;

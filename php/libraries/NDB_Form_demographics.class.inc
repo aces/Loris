@@ -14,7 +14,7 @@ class NDB_Form_demographics extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -24,7 +24,7 @@ class NDB_Form_demographics extends NDB_Form
         }
 
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 
@@ -35,13 +35,13 @@ class NDB_Form_demographics extends NDB_Form
     function _getDefaults()
     {
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 
         foreach ($this->_settableValues as $val) {
             $defaults[$val] = $candidate->getData($val);
-            if (PEAR::isError($defaults[$val])) {
+            if (Utility::isErrorX($defaults[$val])) {
                 return PEAR::raiseError("NDB_Form_demographics::_getDefaults: ".$defaults[$val]->getMessage());
             }
         }
@@ -56,13 +56,13 @@ class NDB_Form_demographics extends NDB_Form
         }
 
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 
         // save the values
         $success = $candidate->setData($values);
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Form_demographics::_process: ".$success->getMessage());
         }
 
@@ -75,20 +75,20 @@ class NDB_Form_demographics extends NDB_Form
     function demographics()
     {
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
+        if(Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
 
         $ethnicityList = array(null=>'');
         $success = Utility::getEthnicityList();
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
         	return PEAR::raiseError("Utility::getEthnicityList error: ".$success->getMessage());
         }
         $ethnicityList = array_merge($ethnicityList,$success);
         unset($success);
         
         $candidate =& Candidate::singleton($this->identifier);
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
 

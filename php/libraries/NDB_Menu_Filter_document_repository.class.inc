@@ -18,7 +18,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
         
     	//create user object
     	$user =& User::singleton();
-    	if (PEAR::isError($user)){
+    	if (Utility::isErrorX($user)){
     		return PEAR::raiseError("User error: " . $user->getMessage());
     	}
 
@@ -29,7 +29,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -75,7 +75,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
     {
     	// create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -83,7 +83,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
            // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) { 
             // get the list of study sites - to be replaced by the Site object
-            if(PEAR::isError($list_of_sites)) {
+            if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
             if(is_array($list_of_sites)) $list_of_sites = array(null => 'Any') + $list_of_sites;
@@ -91,7 +91,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (PEAR::isError($site)) {
+            if (Utility::isErrorX($site)) {
                 return PEAR::raiseError("DB Error: ".$site->getMessage());
             }
             if ($site->isStudySite()) {
@@ -135,20 +135,20 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
 
 
         // Form Elements
-        $this->form->addElement('text', 'File_name', 'File name:'); 
-        $this->form->addElement('text', 'version', 'Version:'); 
+        $this->addBasicText('File_name', 'File name:'); 
+        $this->addBasicText('version', 'Version:'); 
 	
 	    $fileCategories = array(null=>'Any', 'abstract'=>'Abstract', 'audio_visual'=>'Audio-visual', 'instrument'=>'Instrument', 'manual'=>'Manual', 'minutes'=>'Minutes', 'paper'=>"Paper", 'presentation'=>'Presentation', 'protocol'=>'Protocol', 'spreadsheet_table'=>'Spreadsheets-Table', 'other'=>'Other');
 
-        $this->form->addElement('select', 'File_type', 'File type:', $fileTypes); 
-        $this->form->addElement('select', 'File_category', 'File category:', $fileCategories); 
+        $this->addSelect('File_type', 'File type:', $fileTypes); 
+        $this->addSelect('File_category', 'File category:', $fileCategories); 
 	    $this->tpl_data['File_categories'] = $fileCategories;
 	    $this->tpl_data['Sites'] = $list_of_sites;
 	    $user =& User::singleton();
 	    $userID = $user->getData('UserID');
 	    $this->tpl_data['User'] = $userID; 
-        $this->form->addElement('select', 'For_site', 'For Site:', $list_of_sites);
-        $this->form->addElement('text', 'uploaded_by', 'Uploaded By:');
+        $this->addSelect('For_site', 'For Site:', $list_of_sites);
+        $this->addBasicText('uploaded_by', 'Uploaded By:');
        
         return true;
     }

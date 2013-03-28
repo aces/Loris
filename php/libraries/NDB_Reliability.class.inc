@@ -39,14 +39,16 @@ class NDB_Reliability extends NDB_Form
         $obj = new $class;
 
         // set the local variables
-        $obj->form = new HTML_QuickForm('test_form');
+        $obj->_setupPage($name, $page, $identifier, null, 'test_form'); 
+
+   /**  $obj->form = new HTML_QuickForm('test_form');
         $obj->name = $name;
         $obj->page = $page;
-        $obj->identifier = $identifier;
-        $obj->reliability_center_id = $reliability_center_id;
+        $obj->identifier = $identifier; */
+        $obj->reliability_center_id = $reliability_center_id; 
         
         $access = $obj->_hasAccess();
-        if (PEAR::isError($access)) {
+        if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Form::factory() access: ".$access->getMessage());
         }
 
@@ -57,14 +59,14 @@ class NDB_Reliability extends NDB_Form
 
  	    if (method_exists($obj, $page)) {
 	        $success = $obj->$page();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() page: ".$success->getMessage());
             }
             $obj->template = $page;
 	    }
  	    elseif (method_exists($obj, $name)) {
 	        $success = $obj->$name();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::factory() name: ".$success->getMessage());
             }
             $obj->template = $name;
@@ -87,19 +89,19 @@ class NDB_Reliability extends NDB_Form
     function display()
     {
         if($_REQUEST['blind'] == '1') {
-            $this->form->addElement('hidden', 'blind', $_REQUEST['blind']);
+            $this->addHidden('blind', $_REQUEST['blind']);
         }
         if(!$this->form->isFrozen()) {
             // hidden values
-            $this->form->addElement('hidden', 'test_name', $this->name);
-            $this->form->addElement('hidden', 'subtest', $this->page);
-            $this->form->addElement('hidden', 'identifier', $this->identifier);
+            $this->addHidden('test_name', $this->name);
+            $this->addHidden('subtest', $this->page);
+            $this->addHidden('identifier', $this->identifier);
          }
 
 
         // get the defaults
         $localDefaults = $this->_getDefaults();
-        if (PEAR::isError($localDefaults)) {
+        if (Utility::isErrorX($localDefaults)) {
             return PEAR::raiseError("NDB_Form::display(): ".$localDefaults->getMessage());
         }
         if(!is_array($localDefaults)) { $localDefaults = array(); }
@@ -133,7 +135,7 @@ class NDB_Reliability extends NDB_Form
     {
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, "_save"), false);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("NDB_Form::save(): ".$success->getMessage());
             }
         }
@@ -159,16 +161,16 @@ class NDB_Reliability extends NDB_Form
         }
 
         $success = $this->_process($values);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Form::_save(): ".$success->getMessage());
         }
     }
 
     function addDateElement($name, $label){
-         $group [] = $this->form->createElement("date", $name . "_date", null, $this->dateOptions);
+         $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
          $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
-         $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-         $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+         $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+         $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
          unset($group);
          $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
 
@@ -188,9 +190,9 @@ class NDB_Reliability extends NDB_Form
          return true;
      }
      function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
-         $group[]=&$this->form->createElement("text", $field);
-         $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
-         $this->form->addGroup($group, $field.'_group', $label, null, false);
+         $group[]=&$this->createText($field);
+         $group[]=&$this->createSelect($field."_status", "", $refusals);
+         $this->addGroup($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
          $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -205,8 +207,8 @@ class NDB_Reliability extends NDB_Form
       */
       function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
           $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-          $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-          $this->form->addGroup($group, $field.'_group', $label, null, false);
+          $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+          $this->add_Group($group, $field.'_group', $label, null, false);
           unset($group);
           $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
           $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -215,8 +217,8 @@ class NDB_Reliability extends NDB_Form
       function addLargeTextAreaElement($field, $label = "&nbsp;&nbsp;&nbsp;&nbsp;Describe:", $rules=array(), $rule_message='This field must be completed or marked as not answered.') {
          return;  //removed all free form comment text boxes.
          $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>60, 'rows'=>6));
-         $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-         $this->form->addGroup($group, $field.'_group', $label, null, false);
+         $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+         $this->add_Group($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
          $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -234,10 +236,10 @@ class NDB_Reliability extends NDB_Form
                                 'emptyOptionValue' => null
                                 );
 
-           $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
+           $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
            $examiners = $this->_getExaminerNames();
-           $this->form->addElement('select', 'Examiner', 'Reliability Coder', $examiners);
+           $this->addSelect('Examiner', 'Reliability Coder', $examiners);
 
            //$this->form->addElement('text', 'Examiner', 'Examiner');
 
@@ -246,10 +248,10 @@ class NDB_Reliability extends NDB_Form
            $this->form->registerRule('checkdate', 'callback', '_checkDate');
            //$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
            
-           $this->form->addElement('select', 'invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
-           $this->form->addRule('invalid', 'Invalid flag is required.', 'required');
+           $this->addSelect('invalid', '<font color="red">Mark as invalid</font>', array("no" => "No", "yes" => "YES"));
+           $this->addRule('invalid', 'Invalid flag is required.', 'required');
            
-           $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+           $this->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
 
            //$this->form->addRule(array('invalid', 'Examiner'), 'Examiner is required,', 'requiredIf', array('operator'=>'==', 'value'=>'no'));
            //$this->setRequired('invalid');
@@ -261,11 +263,10 @@ class NDB_Reliability extends NDB_Form
             $db =& Database::singleton();
             $user =& User::singleton();
             $centerID = $user->getCenterID();
-            //$centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->identifier."'");
 
             // UofA is a special case--they never enter their own data. So the available examiners are either the ones
             // at the logged in user's site, or UofA
-            $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID IN ('$centerID', 6) ORDER BY full_name", $results);
+            $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID IN (:CentID, 6) ORDER BY full_name", array('CentID' => $centerID));
             if($db->isError($results)) {
                 return $this->raiseError("Could not get examiner names: ".$results->getMessage());
             }

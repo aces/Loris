@@ -11,17 +11,17 @@ class NDB_Form_certification extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $centerID = $DB->selectOne("SELECT centerID FROM examiners, cert_events WHERE examiners.examinerID = cert_events.examinerID AND cert_events.certID = '$this->identifier'");
-        if (PEAR::isError($centerID)) {
+        if (Utility::isErrorX($centerID)) {
             return PEAR::raiseError("DB Error: ".$centerID->getMessage());
         }
 
@@ -31,12 +31,12 @@ class NDB_Form_certification extends NDB_Form
     function _getDefaults()
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $DB->select("SELECT ID FROM test_names", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
@@ -51,7 +51,7 @@ class NDB_Form_certification extends NDB_Form
         if (!empty($this->identifier)) {
             // set the certificatione event details
             $DB->selectRow("SELECT examinerID, date_cert, candID, visit_label FROM cert_events WHERE certID = $this->identifier", $row);
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
 
@@ -68,7 +68,7 @@ class NDB_Form_certification extends NDB_Form
 
             // set the certification results
             $DB->select("SELECT testID, pass, comment FROM cert_details WHERE certID = $this->identifier", $result);
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
 
@@ -87,7 +87,7 @@ class NDB_Form_certification extends NDB_Form
     function _process($values)
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -102,7 +102,7 @@ class NDB_Form_certification extends NDB_Form
                                                               'candID'    => $values['cert_candID'],
                                                               'visit_label'    => $values['cert_visit_label'],
                                                               ));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("DB Error: ".$success->getMessage());
             }
             $this->identifier = $DB->lastInsertID;
@@ -114,14 +114,14 @@ class NDB_Form_certification extends NDB_Form
                                                               'candID'    => $values['cert_candID'],
                                                               'visit_label'    => $values['cert_visit_label'],
                                                               ), array('certID' => $this->identifier));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("DB Error: ".$success->getMessage());
             }
         }
 
         // delete the old event details
         $success = $DB->delete('cert_details', array('certID' => $this->identifier));
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("DB Error: ".$success->getMessage());
         }
 
@@ -135,7 +135,7 @@ class NDB_Form_certification extends NDB_Form
                                                               'pass' => $pass,
                                                               'comment' => $values['comment'][$testID]
                                                               ));
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("DB Error: ".$success->getMessage());
                 }
             }
@@ -161,12 +161,12 @@ class NDB_Form_certification extends NDB_Form
                              );
 
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
         $DB->select("SELECT examinerID, concat(psc.Alias, ' - ', examiners.full_name) AS full_name FROM examiners, psc WHERE examiners.centerID=psc.CenterID ORDER BY full_name", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
         $examinerOptions[0] = '';
@@ -175,20 +175,21 @@ class NDB_Form_certification extends NDB_Form
         }
 
         // examiner
-        $this->form->addElement('select', 'examinerID', 'Examiner', $examinerOptions);
-        $this->form->addRule('examinerID', 'Examiner is required', 'required');
+        $this->addSelect('examinerID', 'Examiner', $examinerOptions); 
+ // $this->addSelect('examinerID', 'Examiner', $examinerOptions);
+        $this->addRule('examinerID', 'Examiner is required', 'required');
 
         // date of certification
-        $this->form->addElement('date', 'date_cert', "Date of testing", $dateOptions);
-        $this->form->addRule('date_cert', 'Date of testing is required', 'required');
+        $this->addBasicDate('date_cert', "Date of testing", $dateOptions);
+        $this->addRule('date_cert', 'Date of testing is required', 'required');
 
         // candid
-        $this->form->addElement('text', 'cert_candID', 'DCCID');
-        $this->form->addElement('text', 'cert_visit_label', 'Visit label');
+        $this->addBasicText('cert_candID', 'DCCID');
+        $this->addBasicText('cert_visit_label', 'Visit label');
 
 
         $DB->select("SELECT ID, Full_name FROM test_names ORDER BY Full_name", $result);
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
@@ -200,9 +201,9 @@ class NDB_Form_certification extends NDB_Form
                                'No QC'=>'No QC');
         
         foreach ($result as $row) {
-            $this->form->addElement('select', 'pass['.$row['ID'].']', $row['Full_name'], $statusOptions);
+            $this->addSelect('pass['.$row['ID'].']', $row['Full_name'], $statusOptions);
             //$this->form->addGroup($options, 'test_Group['.$row['ID'].']', $row['Full_name'], $this->_GUIDelimiter, FALSE);
-            $this->form->addElement('text', 'comment['.$row['ID'].']', 'Comment');
+            $this->addBasicText('comment['.$row['ID'].']', 'Comment');
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));

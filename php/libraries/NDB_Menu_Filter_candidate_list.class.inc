@@ -17,13 +17,13 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));
-        if (PEAR::isError($site)) {
+        if (Utility::isErrorX($site)) {
             return PEAR::raiseError("DB Error: ".$site->getMessage());
         }
         
@@ -78,7 +78,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -86,7 +86,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites =& Utility::getSiteList();
-            if(PEAR::isError($list_of_sites)) {
+            if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
@@ -94,7 +94,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (PEAR::isError($site)) {
+            if (Utility::isErrorX($site)) {
                 return PEAR::raiseError("DB Error: ".$site->getMessage());
             }
             if ($site->isStudySite()) {
@@ -112,23 +112,25 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
         // add form elements
-        $this->form->addElement('select', 'centerID', 'Site:', $list_of_sites);
-        $this->form->addElement('text', 'DCCID', 'DCC-ID:');
-        $this->form->addElement('text', 'PSCID', 'PSC-ID:');
-        $this->form->addElement('select', 'gender', 'Gender:', array('' => 'Any', 'Male' => 'Male', 'Female' => 'Female'));
-        $this->form->addElement('select', 'ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
-        $this->form->addElement('select', 'SubprojectID', 'Sub Project:', array('' => 'Any') + $list_of_subprojects);
-        $this->form->addElement('text', 'dob', 'Date of Birth:', 'maxlength=10');
-        $this->form->addElement('text', 'Visit_Count','Number of Visits:');
-        $this->form->addElement('select', 'Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
-        $this->form->addElement('select', 'Feedback','Feedback:', $feedback_status_options);
+        $this->addSelect('centerID', 'Site:', $list_of_sites);
+        $this->addBasicText('DCCID', 'DCC-ID:');
+        $this->addBasicText('PSCID', 'PSC-ID:');
+        $this->addSelect('gender', 'Gender:', array('' => 'Any', 'Male' => 'Male', 'Female' => 'Female'));
+        $this->addSelect('SubprojectID', 'Sub Project:', array('' => 'Any') + $list_of_subprojects);
+        $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
+        $this->addBasicText('Visit_Count','Number of Visits:');
+        $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
+        $this->addSelect('Feedback','Feedback:', $feedback_status_options);
         
         $config=&NDB_Config::singleton();
+        if($config->getSetting("useProjects")=="true"){
+           $this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
+        }
         if($config->getSetting("useEDC")=="true"){
-        	$this->form->addElement('text', 'edc', 'EDC:', 'maxlength=10');
+        	$this->addBasicText('edc', 'EDC:', 'maxlength=10');
         	$this->tpl_data['useEDC']="true";
         }
-        $this->form->addElement('select', 'feedback', 'Feedback Status:', array_merge(array('' => 'Any'), $feedback_status_options));
+        $this->addSelect('feedback', 'Feedback Status:', array_merge(array('' => 'Any'), $feedback_status_options));
 
         return true;
     }
@@ -138,7 +140,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 		$subprojectlist=Utility::getSubprojectList();

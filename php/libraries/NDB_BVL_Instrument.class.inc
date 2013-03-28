@@ -1,4 +1,5 @@
-<?
+<?php
+require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 include_once ('HTML/QuickForm/Renderer/Default.php');
@@ -11,7 +12,7 @@ include_once ('HTML/QuickForm/Renderer/Default.php');
  * @package behavioural 
  * @access public
  */
-class NDB_BVL_Instrument extends PEAR
+class NDB_BVL_Instrument extends NDB_Page
 {
     // {{{ properties
 
@@ -151,18 +152,16 @@ class NDB_BVL_Instrument extends PEAR
             }
         } else {
             require_once($base."project/instruments/$class.class.inc");
-
-
             // Now go ahead and instantiate it
             $obj = new $class;
             $success = $obj->setup($commentID, $page);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
             }
         }
         
         $access = $obj->_hasAccess();
-        if (PEAR::isError($access)) {
+        if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Instrument::factory(): ".$access->getMessage());
         }
 
@@ -202,7 +201,7 @@ class NDB_BVL_Instrument extends PEAR
         }
         else { //check if user has instrument's permissions
             $user =& User::singleton();
-            if(PEAR::isError($user)) {
+            if(Utility::isErrorX($user)) {
               return PEAR::raiseError("User Error: ".$user->getMessage());
             }
 
@@ -245,9 +244,11 @@ class NDB_BVL_Instrument extends PEAR
     * @abstract
     */
     function setup($commentID, $page)
-    {
-        $this->form = new HTML_Quickform('test_form');
-        $this->page = $page;            // page label (number or
+    { 
+       $this->_setupPage(null, $page, null, $commentID, 'test_form'); 
+    /**       
+     //   $this->form = new HTML_Quickform('test_form');
+       // $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
@@ -255,10 +256,10 @@ class NDB_BVL_Instrument extends PEAR
         $this->testName = "";           // test_names.Test_name
         $this->table = '';              // name of table containing
         // data keyed by commentID
-        $this->commentID = $commentID;
+       // $this->commentID = $commentID;
 
         // required fields for data entry completion status
-        $this->_requiredElements = array();
+        $this->_requiredElements = array();    */ 
     }
 
     // }}}
@@ -298,16 +299,17 @@ class NDB_BVL_Instrument extends PEAR
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->form->addElement('hidden', 'candID', $_REQUEST["candID"]);
-        $this->form->addElement('hidden', 'sessionID', $_REQUEST["sessionID"]);
-        $this->form->addElement('hidden', 'commentID', $this->getCommentID());
-        $this->form->addElement('hidden', 'test_name', $this->testName);
-        $this->form->addElement('hidden', 'page', $this->page);
-        $this->form->addElement('hidden', 'subtest', $this->page);
+        $this->addHidden('candID', $_REQUEST["candID"]);
+        $this->addHidden('sessionID', $_REQUEST["sessionID"]);
+        $this->addHidden('commentID', $this->getCommentID());
+        $this->addHidden('test_name', $this->testName);
+        $this->addHidden('page', $this->page);
+        $this->addHidden('subtest', $this->page);
         
         if(!$this->form->isFrozen()) {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
-            $this->form->addGroup($buttons, null, null, "&nbsp;");
+            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+            $this->addGroup($buttons, null, null, "&nbsp;");
         }
         
  
@@ -315,7 +317,7 @@ class NDB_BVL_Instrument extends PEAR
 
         $db =& Database::singleton();
         if($this->preview !== true) {
-            $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
+            $defaults = $db->pselect("SELECT * FROM $this->table WHERE CommentID=:CID", array('CID' => $this->getCommentID()));
             if($this->isError($defaults)) {
                 return $this->raiseError('Could not get default values for form');
             }
@@ -401,9 +403,9 @@ class NDB_BVL_Instrument extends PEAR
             
             // determine the data entry completion status, and store that in the database
             $dataEntryCompletionStatus = $this->_determineDataEntryCompletionStatus();
-            if(PEAR::isError($dataEntryCompletionStatus)) print "Could not determine DECS: ".$dataEntryCompletionStatus->getMessage()."<br>\n";
+            if(Utility::isErrorX($dataEntryCompletionStatus)) print "Could not determine DECS: ".$dataEntryCompletionStatus->getMessage()."<br>\n";
             $success = $this->_setDataEntryCompletionStatus($dataEntryCompletionStatus);
-            if(PEAR::isError($success)) print "Could not set DECS: ".$success->getMessage()."<br>\n";
+            if(Utility::isErrorX($success)) print "Could not set DECS: ".$success->getMessage()."<br>\n";
             
         } else {
             $submittedData = $this->form->getSubmitValues();
@@ -442,20 +444,25 @@ class NDB_BVL_Instrument extends PEAR
         if(!empty($values['Date_taken'])) {
             $DB = Database::singleton();
             $age = $this->getCandidateAge($values['Date_taken']);
-            if(!PEAR::isError($age)) {
+            if(!Utility::isErrorX($age)) {
                 $agedays = $age['year']*365 + $age['mon']*30 + $age['day'];
                 $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
                 // 1 Decimal.
                 $agemonths = (round($agemonths*10) / 10.0);
                 if(!empty($age)) {
-                    $validage = $DB->selectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'");
+                    $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
+                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $querY_params);
                     $values['Candidate_Age'] = $agemonths;
                     $values['Window_Difference'] = 0;
 
                     // Age isn't valid, so find out how far out it is
 
                     if($validage == 0) {
-                        $DB->select("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'", $Windows);
+                        $Windows = $DB->pselect("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb 
+                            JOIN flag f USING(Test_name) 
+                            JOIN session s ON (s.ID=f.SessionID)  
+                            WHERE tb.Active='Y' and tb.Test_name=:TN 
+                            AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
                         foreach ($Windows as $window) {
                             if($agedays < $window['AgeMinDays']) {
                                 $delta = $window['AgeMinDays'] - $agedays;
@@ -584,23 +591,23 @@ class NDB_BVL_Instrument extends PEAR
                              );
         $this->dateOptions = $dateOptions;
 
-        $this->form->addElement('date', 'Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
         
         if(strrpos($this->testName, '_proband') === FALSE) {
-            $this->form->addElement('static', 'Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
-            $this->form->addElement('static', 'Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
+            $this->addScoreColumn('Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
+            $this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
         }
         $examiners = $this->_getExaminerNames();
-        $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
+        $this->addSelect('Examiner', 'Examiner', $examiners);
         
         //$this->form->addElement('text', 'Examiner', 'Examiner');
         
-        $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
+        $this->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
         
-        $this->form->addRule('Examiner', 'Examiner is required', 'required');
+        $this->addRule('Examiner', 'Examiner is required', 'required');
     }
     
     // }}}
@@ -615,9 +622,9 @@ class NDB_BVL_Instrument extends PEAR
     function _getExaminerNames()
     {
         $db =& Database::singleton();
-        $centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->getCommentID()."'");
+        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:CID", array('CID' => $this->getCommentID()));
 
-        $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
+        $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:CenID ORDER BY full_name", array('CenID' => $centerID));
         if($db->isError($results)) {
             return $this->raiseError("Could not get examiner names: ".$results->getMessage());
         }
@@ -643,7 +650,7 @@ class NDB_BVL_Instrument extends PEAR
     {
         $db =& Database::singleton();
 
-        $success = $db->selectOne("SELECT Full_name FROM test_names WHERE Test_name='$this->testName'");
+        $success = $db->pselectOne("SELECT Full_name FROM test_names WHERE Test_name=:TN", array('TN' => $this->testName));
         return $success;
     }
 
@@ -687,7 +694,7 @@ class NDB_BVL_Instrument extends PEAR
     function getDateOfAdministration()
     {
         $db =& Database::singleton();
-        $doa = $db->selectOne("SELECT Date_taken FROM $this->table WHERE CommentID='".$this->getCommentID()."'");
+        $doa = $db->pselectOne("SELECT Date_taken FROM $this->table WHERE CommentID=:CID", array('CID' => $this->getCommentID()));
         if($this->isError($doa)) {
             return $this->raiseError("Could not get date of administration from $this->table");
         } else {
@@ -710,11 +717,11 @@ class NDB_BVL_Instrument extends PEAR
     {
         // get a database connection
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return $db;
+        if(Utility::isErrorX($db)) return $db;
         
-        $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name='$this->testName' ORDER BY Order_number";
-        $db->select($query, $results);
-        if(PEAR::isError($results)) return $results;
+        $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name=:TN ORDER BY Order_number";
+        $results = $db->pselect($query, array('TN' => $this->testName));
+        if(Utility::isErrorX($results)) return $results;
         
         return $results;
     }
@@ -1022,13 +1029,15 @@ class NDB_BVL_Instrument extends PEAR
     function getFieldValue($field)
     {
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) return PEAR::raiseError("Could not connect to database: ".$DB->getMessage()."<br>\n");
+        if(Utility::isErrorX($DB)) return PEAR::raiseError("Could not connect to database: ".$DB->getMessage()."<br>\n");
 
-        $query = "SELECT $field FROM $this->table WHERE CommentID = '".$this->getCommentID()."'";
-        $fieldValue = $DB->selectOne($query);
+        $query = "SELECT $field FROM $this->table WHERE CommentID = :CID";
+        $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
 
-        if (!empty($fieldValue)) return $fieldValue;
-        else return false;
+        if (!empty($fieldValue)) {
+            return $fieldValue;
+        }
+        return false;
     }
 
     // }}}
@@ -1042,11 +1051,13 @@ class NDB_BVL_Instrument extends PEAR
     function getSessionID()
     {
         $db =& Database::singleton();
-        $query = "SELECT SessionID FROM flag WHERE CommentID = '".$this->getCommentID()."'";
-        $fieldValue = $db->selectOne($query);
+        $query = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+        $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
         
-        if (!empty($fieldValue) && !$db->isError($fieldValue)) return $fieldValue;
-        else return false;
+        if (!empty($fieldValue) && !$db->isError($fieldValue)) {
+            return $fieldValue;
+        }
+        return false;
     }
 
     // }}}
@@ -1063,11 +1074,11 @@ class NDB_BVL_Instrument extends PEAR
         if(empty($this->_requiredElements)) return 'Complete';
 
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
-        $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        $success = $db->selectRow($query, $dataFields);
-        if(PEAR::isError($success)) return PEAR::raiseError("Could not select required elements from database: ".$success->getMessage()."<br>\n");
+        $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID=:CID";
+        $dataFields = $db->pselectRow($query, array('CID' => $this->getCommentID()));
+        if(Utility::isErrorX($success)) return PEAR::raiseError("Could not select required elements from database: ".$success->getMessage()."<br>\n");
         foreach($dataFields as $field) {
             // this shouldn't be just empty() b/c 0 is a valid value for some required fields
             if(is_null($field) || $field === "") return 'Incomplete';
@@ -1086,10 +1097,10 @@ class NDB_BVL_Instrument extends PEAR
     function getDataEntryCompletionStatus()
     {
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
-        $query = "SELECT Data_entry_completion_status FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        return $db->selectOne($query);
+        $query = "SELECT Data_entry_completion_status FROM $this->table WHERE CommentID=:CID";
+        return $db->pselectOne($query, array('CID' => $this->getCommentID()));
     }
 
     // }}}
@@ -1106,14 +1117,14 @@ class NDB_BVL_Instrument extends PEAR
         if(!in_array($status, array('Complete', 'Incomplete'))) return PEAR::raiseError("Invalid status passed to _setDataEntryCompletionStatus - '$status' should have been either 'Complete' or 'Incomplete'<br>\n");
 
         $db =& Database::singleton();
-        if(PEAR::isError($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
         $success = $db->update($this->table,
         array('Data_entry_completion_status'=>$status),
         array('CommentID'=>$this->getCommentID())
         );
 
-        if(PEAR::isError($success)) return PEAR::raiseError("Could not update status: ".$success->getMessage()."<br>\n");
+        if(Utility::isErrorX($success)) return PEAR::raiseError("Could not update status: ".$success->getMessage()."<br>\n");
     }
     // }}}
 
@@ -1125,7 +1136,7 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $rule_message    rule message to display
     */
     function addYesNoElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $this->form->addElement('select', $field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
+        $this->addSelect($field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
         if (!empty($rules)) {
             $this->XINRegisterRule($field, $rules, $rule_message);        
         }
@@ -1140,22 +1151,26 @@ class NDB_BVL_Instrument extends PEAR
     * @param    array   $refusals   options in the refusal select (ie. Refusal, Unknown, Not Answered).
     */
     function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
-        $group[]=&$this->form->createElement("text", $field);
-        $group[]=&$this->form->createElement("select", $field."_status", "", $refusals);
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        $group[]=&$this->createText($field);
+        $group[]=&$this->createSelect($field."_status", "", $refusals);
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
     }
-    /**
-      * Wrapper to create a text field for questions that require Refused and Don't know options
-      */
-     
      
     /**
      * Wrapper to create a text area field for questions that require Refused and Don't know options
      */
      
+    function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
+        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
+        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
+        $this->addGroup($group, $field.'_group', $label, null, false);
+        unset($group);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+    }
     
     /**
     * Wrapper to create a text area field, with an accompanying status field.
@@ -1168,8 +1183,8 @@ class NDB_BVL_Instrument extends PEAR
 
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
         $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->form->createElement("select", $field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-        $this->form->addGroup($group, $field.'_group', $label, null, false);
+        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+        $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1183,9 +1198,9 @@ class NDB_BVL_Instrument extends PEAR
     * @param     string    $rule_message    message to display upon rule violation.
     */
     function addHourMinElement($field, $label, $rules=array(), $rule_message="You are required to select a status if you want to leave this time blank.") {
-        $group[]=&$this->form->createElement("date", $field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
-        $group[]=&$this->form->createElement("select", $field . "_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        $group[]=&$this->createDate($field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
+        $group[]=&$this->createSelect($field . "_status", "", array(NULL=>'', "dnk"=>"DNK", "refusal"=>"Refusal", 'not_answered'=>'Not Answered'));
+        $this->addGroup($group, $field . "_group", $label, null, false);
         $this->XINRegisterRule($field, array_merge($rules, array($field . '_status{@}=={@}')), $rule_message, $field . '_group');
         unset($group);
     }
@@ -1200,10 +1215,10 @@ class NDB_BVL_Instrument extends PEAR
         if($options === null) {
             $options = $this->dateOptions;
         }
-        $group [] = $this->form->createElement("date", $name . "_date", null, $options);
+        $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
-        $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
         
@@ -1213,10 +1228,10 @@ class NDB_BVL_Instrument extends PEAR
     * Wrapper with a user-created date group, a status box and appropriate rule
     */
     function addCustomDateElement($name, $label, $dateArray){
-        $group [] = $this->form->createElement("date", $name . "_date", null, $dateArray);
+        $group [] = $this->createDate($name . "_date", null, $dateArray);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
-        $group [] = $this->form->createElement("select", $name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
-        $this->form->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
+        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
         $this->XINRegisterRule($name . "_date_status", array($name . "_date{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
@@ -1231,11 +1246,11 @@ class NDB_BVL_Instrument extends PEAR
     * @param    string    $label    The question text to display
     */
     function addNumericElement($field, $label, $options = null) {
-        $group [] = $this->form->createElement("text", $field, $label);
-        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        $group [] = $this->createText($field, $label);
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
         $status_rule = $field . '_status{@}=={@}';
         if(is_array($options)) {
@@ -1255,45 +1270,14 @@ class NDB_BVL_Instrument extends PEAR
     */
     
     function addNumericElementRD($field, $label) {
-        $group [] = $this->form->createElement("text", $field, $label);
-        $group [] = $this->form->createElement("select", $field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
-        $this->form->addGroup($group, $field . "_group", $label, null, false);
+        $group [] = $this->createText($field, $label);
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
+        $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->form->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
     }
 
-    /**
-    * Wrapper to create a header
-    */
-
-    function addHeader($header) {
-        $this->form->addElement('header', null, $header); 
-    }
-
-    /**
-    * Wrapper to create a select drop-down list
-    */
-    
-    function addSelect($name, $label, $options=array()) {
-        $this->form->addElement('select', $name, $label, $options);
-    }
-
-    /**
-    * Wrapper to create a static label
-    */
-    
-    function addLabel($label) {
-        $this->form->addElement('static', null, $label);
-    }
-
-    /**
-    * Wrapper to create a static score column
-    */
-   
-    function addScoreColumn($name, $label) {
-        $this->form->addElement('static', $name, $label);
-     }
 
     /**
     * nulls all scores for the record identified by CommentID
@@ -1305,7 +1289,7 @@ class NDB_BVL_Instrument extends PEAR
     function _nullScores($scoreCols)
     {
         $db=& Database::singleton();
-        if (PEAR::isError($db)) {
+        if (Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."\n");
         }
         
@@ -1324,7 +1308,7 @@ class NDB_BVL_Instrument extends PEAR
         
         // update the scores
         $success = $db->update($this->table,$scores,array('CommentID'=>$this->getCommentID()));
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("DB Error, fail null the scores:\n".$success->getMessage()."\n");
         }
         return;
@@ -1356,7 +1340,8 @@ class NDB_BVL_Instrument extends PEAR
     
     function loadInstanceData($instrumentInstance) {
         $db =& Database::singleton();
-        $db->select("SELECT * FROM $instrumentInstance->table WHERE CommentID='".$instrumentInstance->getCommentID()."'", $defaults);
+        $defaults = $db->pselect("SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID", 
+            array('CID' => $instrumentInstance->getCommentID()));
         if($instrumentInstance->isError($defaults)) {
             return $instrumentInstance->raiseError('Could not get default values for form');
         }
@@ -1370,7 +1355,12 @@ class NDB_BVL_Instrument extends PEAR
     function getCandidateAge($Date_taken=FALSE) {
         $db =& Database::singleton();
         $CommentID = $this->getCommentID();
-        $db->selectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID='$CommentID'", $dates);
+        $dates = $db->pselectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i 
+            JOIN flag f USING (CommentID) 
+            JOIN session s ON (f.SessionID=s.ID) 
+            JOIN candidate c USING (CandID) 
+            WHERE f.CommentID=:CID", array('CID' => $CommentID)
+        );
 
         if($Date_taken==FALSE) {
             $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);

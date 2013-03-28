@@ -12,6 +12,8 @@
  * @package behavioural
  */
 
+ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+
 //Ensure php version compatability
 //taken from php.net notes
 if (version_compare(phpversion(),'4.3.0','<'))

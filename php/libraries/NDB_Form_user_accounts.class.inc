@@ -12,14 +12,14 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         // create user object
         $editor =& User::singleton();
-        if (PEAR::isError($editor)) {
+        if (Utility::isErrorX($editor)) {
             return PEAR::raiseError("User Error: ".$editor->getMessage());
         }
 
         if ($this->page == 'edit_user') {
             if(!empty($this->identifier)) {
                 $user =& User::factory($this->identifier);
-                if(PEAR::isError($user)) {
+                if(Utility::isErrorX($user)) {
                     return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
                 }
             }
@@ -36,7 +36,7 @@ class NDB_Form_user_accounts extends NDB_Form
  
         if (!empty($this->identifier)) {
             $user =& User::factory($this->identifier);
-            if(PEAR::isError($user)) {
+            if(Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
             }
 
@@ -105,24 +105,24 @@ class NDB_Form_user_accounts extends NDB_Form
         if (empty($this->identifier)) {
             // insert a new user
             $success = User::insert($set);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() insert: ".$success->getMessage());
             }
 
             $user =& User::factory($set['UserID']);
-            if (PEAR::isError($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error (".$set['UserID'] ."): ".$user->getMessage());
             }
         }
         else {
             // update the user
             $user =& User::factory($this->identifier);
-            if (PEAR::isError($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
             }
 
             $success = $user->update($set);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() update: ".$success->getMessage());
             }
         }
@@ -138,7 +138,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // update the user permissions if applicable
         if (!empty($permIDs)) {
             $success = $user->removePermissions();
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() remove permissions: ".$success->getMessage());
             }
 
@@ -149,7 +149,7 @@ class NDB_Form_user_accounts extends NDB_Form
             }
 
             $success = $user->addPermissions(array_keys($permIDs));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() add permissions: ".$success->getMessage());
             }
         }
@@ -164,14 +164,14 @@ class NDB_Form_user_accounts extends NDB_Form
             // connect to proftpd database
             $ftpdb = new Database();
 	    $success = $ftpdb->connect($ftpSettings['database'], $ftpSettings['username'], $ftpSettings['password'], $ftpSettings['host'], false);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("Could not connect to database: ".$success->getMessage());
             }
             
             // check users table to see if we have a valid user 
             $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = '".$values['UserID']."'"; 
             $ftpdb->selectRow($query, $row);
-            if (PEAR::isError($row)) {
+            if (Utility::isErrorX($row)) {
                 return PEAR::raiseError("DB Error: ".$row->getMessage());
             }
             
@@ -180,7 +180,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 
                 $setArray['passwd'] = crypt($values['Password_md5']);
                 $success = $ftpdb->update('ftpusers', $setArray, array('userid' => $values['UserID']));
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
                 }
             } 
@@ -191,7 +191,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
                 
                 $maxUID = $ftpdb->selectOne($query);
-                if (PEAR::isError($maxUID)) {
+                if (Utility::isErrorX($maxUID)) {
                     return PEAR::raiseError("DB Error: ".$maxUID->getMessage());
                 }
                 
@@ -202,7 +202,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 
                 // insert into proftpd
                 $success = $ftpdb->insert("ftpusers", $setArray);
-                if (PEAR::isError($success)) {
+                if (Utility::isErrorX($success)) {
                     return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
                 }
             }
@@ -243,21 +243,21 @@ class NDB_Form_user_accounts extends NDB_Form
         // it is a new user
         if (empty($this->identifier)) {
             // user name
-            $group[] = $this->form->createElement('text', 'UserID', 'User name');
+            $group[] = $this->createText('UserID', 'User name');
             $group[] = $this->form->createElement('advcheckbox', 'NA_UserID', null, 'Make user name match email address');
-            $this->form->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
+            $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
 
             // user name rules - only required if user name is user-defined
-            $this->form->addGroupRule('UserID_Group', array('UserID' => array(array('The user name must be less than 255 characters long', 'maxlength', 255))));
+            $this->addGroupRule('UserID_Group', array('UserID' => array(array('The user name must be less than 255 characters long', 'maxlength', 255))));
             $reqIfSettings = array('controller' => 'NA_UserID', 'operator' => '!=', 'value' => 1);
-            $this->form->addRule('UserID_Group', 'User name is required', 'requiredIfGroup', 
+            $this->addRule('UserID_Group', 'User name is required', 'requiredIfGroup', 
                                  array_merge($reqIfSettings, array('element' => 'UserID')));
         }
         // it is an existing user
         else {
             // user name
-            $this->form->addElement('text', 'UserID', 'User name');
+            $this->addBasicText('UserID', 'User name');
             $username =& $this->form->getElement('UserID');
             $username->freeze();
         }
@@ -265,7 +265,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // password
         $group[] = $this->form->createElement('password', 'Password_md5');
         $group[] = $this->form->createElement('advcheckbox', 'NA_Password', null, 'Generate new password');
-        $this->form->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
+        $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
         unset($group);
 
@@ -273,53 +273,53 @@ class NDB_Form_user_accounts extends NDB_Form
         if (empty($this->identifier)) {
             // password rules - only required if password is user-defined
             $reqIfSettings = array('controller' => 'NA_Password', 'operator' => '!=', 'value' => 1);
-            $this->form->addRule('Password_Group', 'Password is required', 'requiredIfGroup', 
+            $this->addRule('Password_Group', 'Password is required', 'requiredIfGroup', 
                                  array_merge($reqIfSettings, array('element' => 'Password_md5')));
         }
 
         // full name
-        //$this->form->addElement('text', 'Real_name', 'Full name');
-        $this->form->addElement('text', 'First_name', 'First name');
-        $this->form->addElement('text', 'Last_name', 'Last name');
+        //$this->addBasicText('Real_name', 'Full name');
+        $this->addBasicText('First_name', 'First name');
+        $this->addBasicText('Last_name', 'Last name');
 
         // full name rules
         //$this->form->addRule('Real_name', 'Full name is required', 'required');
         //$this->form->addRule('Real_name', 'Full name must be less than 50 characters long', 'maxlength', 50);
 
-        $this->form->addRule('First_name', 'First name is required', 'required');
-        $this->form->addRule('Last_name', 'Last name is required', 'required');
-        $this->form->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
-		$this->form->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
+        $this->addRule('First_name', 'First name is required', 'required');
+        $this->addRule('Last_name', 'Last name is required', 'required');
+        $this->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
+		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        $this->form->addElement('text', 'Degree', 'Degree');
-        $this->form->addElement('text', 'Position_title', 'Academic Position');
-        $this->form->addElement('text', 'Institution', 'Institution');
-        $this->form->addElement('text', 'Department', 'Department');
-        $this->form->addElement('text', 'Address', 'Street Address');
-        $this->form->addElement('text', 'City', 'City');
-        $this->form->addElement('text', 'State', 'Sta te/Province');
-        $this->form->addElement('text', 'Zip_code', 'Zip/Postal Code');
-        $this->form->addElement('text', 'Country', 'Country');
-        $this->form->addElement('text', 'Fax', 'FAX');
+        $this->addBasicText('Degree', 'Degree');
+        $this->addBasicText('Position_title', 'Academic Position');
+        $this->addBasicText('Institution', 'Institution');
+        $this->addBasicText('Department', 'Department');
+        $this->addBasicText('Address', 'Street Address');
+        $this->addBasicText('City', 'City');
+        $this->addBasicText('State', 'Sta te/Province');
+        $this->addBasicText('Zip_code', 'Zip/Postal Code');
+        $this->addBasicText('Country', 'Country');
+        $this->addBasicText('Fax', 'FAX');
 
         
         // email address
-        $group[] = $this->form->createElement('text', 'Email');
+        $group[] = $this->createText('Email');
         $group[] = $this->form->createElement('checkbox', 'SendEmail', null, 'Send email to user');
-        $this->form->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
+        $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
 
         // email address rules
-        $this->form->addGroupRule('Email_Group', array('Email' => array(array('Email address is required', 'required'))));
-        $this->form->addGroupRule('Email_Group', array('Email' => array(array('The email address must be valid', 'email'))));
-        $this->form->addGroupRule('Email_Group', array('Email' => array(array('The email address must be less than 255 characters long', 'maxlength', 255))));
+        $this->addGroupRule('Email_Group', array('Email' => array(array('Email address is required', 'required'))));
+        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be valid', 'email'))));
+        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be less than 255 characters long', 'maxlength', 255))));
 
         //------------------------------------------------------------
 
         // get user permissions
         $editor =& User::singleton();
-        if(PEAR::isError($editor)) {
+        if(Utility::isErrorX($editor)) {
             return PEAR::raiseError("User Error: ".$editor->getMessage());
         }
 
@@ -332,12 +332,12 @@ class NDB_Form_user_accounts extends NDB_Form
             // allow only to add to their own site
             $siteOptions = array($editor->getData('CenterID') => $editor->getData('Site'));
         }
-        $this->form->addElement('select', 'CenterID', 'Site', $siteOptions);
+        $this->addSelect('CenterID', 'Site', $siteOptions);
 
         // active and examiner
-    	$this->form->addElement('select', 'Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-	    $this->form->addElement('select', 'Pending_approval', 'Pending approval', array('1' => 'Yes', '0' => 'No'));
-	    $this->form->addElement('select', 'Examiner', 'Examiner', array('N' => 'No', 'Y' => 'Yes'));
+    	$this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
+	    $this->addSelect('Pending_approval', 'Pending approval', array('1' => 'Yes', '0' => 'No'));
+	    $this->addSelect('Examiner', 'Examiner', array('N' => 'No', 'Y' => 'Yes'));
 
         //------------------------------------------------------------
 
@@ -353,19 +353,19 @@ class NDB_Form_user_accounts extends NDB_Form
             }
             $group[] = $this->form->createElement('advcheckbox', 'permID['.$row['permID'].']', null, $row['description'], "class=\"perm_$lastRole\"");
         }
-        $this->form->addGroup($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
         unset($group);
 
         if (!empty($this->identifier)) {
             $user =& User::factory($this->identifier);
-            if(PEAR::isError($user)) {
+            if(Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
             }
 
             // add hidden permissions if editor has less permissions than user being edited
             $perms = array_diff($user->getPermissionIDs(), $editor->getPermissionIDs());
             foreach ($perms as $value) {
-                $this->form->addElement('hidden', "permID[$value]", 1);
+                $this->addHidden("permID[$value]", 1);
             }
         }
 
@@ -383,43 +383,43 @@ class NDB_Form_user_accounts extends NDB_Form
         //------------------------------------------------------------
 
         // user name
-        $this->form->addElement('text', 'UserID', 'User name');
+        $this->addBasicText('UserID', 'User name');
         $username =& $this->form->getElement('UserID');
         $username->freeze();
 
         // full name
-        //$this->form->addElement('text', 'Real_name', 'Full name');
-        $this->form->addElement('text', 'First_name', 'First name');
-        $this->form->addElement('text', 'Last_name', 'Last name');
+        //$this->addBasicText('Real_name', 'Full name');
+        $this->addBasicText('First_name', 'First name');
+        $this->addBasicText('Last_name', 'Last name');
 
         // full name rules
         //$this->form->addRule('Real_name', 'Full name is required', 'required');
         //$this->form->addRule('Real_name', 'Full name must be less than 50 characters long', 'maxlength', 50);
 
-        $this->form->addRule('First_name', 'First name is required', 'required');
-        $this->form->addRule('Last_name', 'Last name is required', 'required');
-        $this->form->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
-		$this->form->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
+        $this->addRule('First_name', 'First name is required', 'required');
+        $this->addRule('Last_name', 'Last name is required', 'required');
+        $this->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
+		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        $this->form->addElement('text', 'Degree', 'Degree');
-        $this->form->addElement('text', 'Position_title', 'Academic Position');
-        $this->form->addElement('text', 'Institution', 'Institution');
-        $this->form->addElement('text', 'Department', 'Department');
-        $this->form->addElement('text', 'Address', 'Street Address');
-        $this->form->addElement('text', 'City', 'City');
-        $this->form->addElement('text', 'State', 'Sta te/Province');
-        $this->form->addElement('text', 'Zip_code', 'Zip/Postal Code');
-        $this->form->addElement('text', 'Country', 'Country');
-        $this->form->addElement('text', 'Fax', 'FAX');
+        $this->addBasicText('Degree', 'Degree');
+        $this->addBasicText('Position_title', 'Academic Position');
+        $this->addBasicText('Institution', 'Institution');
+        $this->addBasicText('Department', 'Department');
+        $this->addBasicText('Address', 'Street Address');
+        $this->addBasicText('City', 'City');
+        $this->addBasicText('State', 'Sta te/Province');
+        $this->addBasicText('Zip_code', 'Zip/Postal Code');
+        $this->addBasicText('Country', 'Country');
+        $this->addBasicText('Fax', 'FAX');
 
         // email address
-        $this->form->addElement('text', 'Email', 'Email address');
+        $this->addBasicText('Email', 'Email address');
 
         // email address rules
-        $this->form->addRule('Email', 'Email address is required', 'required');
-        $this->form->addRule('Email', 'Your email address must be valid', 'email');
-        $this->form->addRule('Email', 'Your email address must be less than 255 characters long', 'maxlength', 255);
+        $this->addRule('Email', 'Email address is required', 'required');
+        $this->addRule('Email', 'Your email address must be valid', 'email');
+        $this->addRule('Email', 'Your email address must be less than 255 characters long', 'maxlength', 255);
 
         // password
         $this->form->addElement('password', 'Password_md5', 'New Password');
@@ -436,7 +436,7 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         // create DB object
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -446,7 +446,7 @@ class NDB_Form_user_accounts extends NDB_Form
 	if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
             // check username's uniqueness
             $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE UserID = '" . $values['UserID'] . "'");
-            if (PEAR::isError($result)) {
+            if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
     
@@ -465,7 +465,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // check email address' uniqueness
         $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE Email = '" . $values['Email'] . "' AND UserID != '" . $values['UserID']  . "'");
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
     
@@ -481,7 +481,7 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         // create DB object
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
+        if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
@@ -497,7 +497,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // check email address' uniqueness
         $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE Email = '" . $values['Email'] . "' AND UserID != '" . $values['identifier']  . "'");
-        if (PEAR::isError($result)) {
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
     

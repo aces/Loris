@@ -55,8 +55,8 @@
                     </td>
 		    <td valign="top" align="right">
 {if $editor == true}
-                        <a href="context_help_popup.php?helpID={$help_file.helpID}&mode=Edit"><img src="images/pencil.gif" width="12" height="12" border="0" alt="" />&nbsp;Edit this documentation</a><br />
-                        <a href="context_help_popup.php?parentID={$help_file.helpID}&mode=Create"><img src="images/new.gif" width="12" height="12" border="0" alt="" />&nbsp;Add documentation under this topic</a><br />
+                        <a href="context_help_popup.php?helpID={$help_file.helpID}&mode=Edit"><img src="images/pencil.gif" width="12" height="12" border="0" alt="" />&nbsp;Edit this Topic</a><br />
+                        <a href="context_help_popup.php?parentID={$help_file.helpID}&mode=Create"><img src="images/new.gif" width="12" height="12" border="0" alt="" />&nbsp;Add Sub-topics</a><br />
 {if $hash != "" and $help_file.helpID == $instruments.helpID}
                         <a href="context_help_popup.php?{$query}&mode=Create"><img src="images/new.gif" width="12" height="12" border="0" alt="" />&nbsp;Create documentation for {$topic}</a><br />
 {/if}

@@ -11,12 +11,12 @@ class NDB_Form_new_profile extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         $site =& Site::singleton($user->getData('CenterID'));
-        if (PEAR::isError($site)) {
+        if (Utility::isErrorX($site)) {
             return PEAR::raiseError("Unable to construct the list_of_sites array: ".$site->getMessage());
         }
         if ($site->isStudySite()) {
@@ -42,7 +42,7 @@ class NDB_Form_new_profile extends NDB_Form
 
         // create the candidate
         $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID']);
-        if (PEAR::isError($candID)) {
+        if (Utility::isErrorX($candID)) {
             return PEAR::raiseError("new_profile::_process(): ".$candID->getMessage());
         }
 
@@ -53,7 +53,7 @@ class NDB_Form_new_profile extends NDB_Form
             $candidate->setData('ProjectID', $values['ProjectID']);
 
         }
-        if (PEAR::isError($candidate)) {
+        if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
         }
 
@@ -80,20 +80,21 @@ class NDB_Form_new_profile extends NDB_Form
                              );
 
         // add date of birth
-        $this->form->addElement('date', 'dob1', 'Date of Birth', $dateOptions);
-        $this->form->addElement('date', 'dob2', 'Confirm Date of Birth', $dateOptions);
-    
+        $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
+        $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
+   
+
         // date of birth rules
-        $this->form->addGroupRule('dob1', 'Date of Birth is required', 'required');
-        $this->form->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
+        $this->addGroupRule('dob1', 'Date of Birth is required', 'required');
+        $this->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
 
         if($config->getSetting('useEDC') == "true"){
             // add expected date of confinement
-            $this->form->addElement('date', 'edc1', 'Expected Date of Confinement', $dateOptions);
-            $this->form->addElement('date', 'edc2', 'Confirm EDC', $dateOptions);
+            $this->addBasicDate('edc1', 'Expected Date of Confinement', $dateOptions);
+            $this->addBasicDate('edc2', 'Confirm EDC', $dateOptions);
 
             // expected date of confinement rules
-            $this->form->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
+            $this->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
         }
 
         if($config->getSetting("useProjects") == "true") {
@@ -107,14 +108,14 @@ class NDB_Form_new_profile extends NDB_Form
 
         // add gender
         $genderOptions = array('' => '', 'Male' => 'Male', 'Female' => 'Female');
-        $this->form->addElement('select', 'gender', 'Gender', $genderOptions);
+        $this->addSelect('gender', 'Gender', $genderOptions);
     
         // gender rules
-        $this->form->addRule('gender', 'Gender is required', 'required');
+        $this->addRule('gender', 'Gender is required', 'required');
 
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
-            $this->form->addElement('text', 'PSCID', 'PSCID');
+            $this->addBasicText('PSCID', 'PSCID');
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));

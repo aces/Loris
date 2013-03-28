@@ -11,7 +11,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -21,7 +21,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -54,7 +54,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
     {
     	// create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -62,7 +62,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         if ($user->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites =& Utility::getSiteList(false);
-            if(PEAR::isError($list_of_sites)) {
+            if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
@@ -70,20 +70,20 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (PEAR::isError($site)) {
+            if (Utility::isErrorX($site)) {
                 return PEAR::raiseError("Unable to construct the list_of_sites array: ".$site->getMessage());
             }
             $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
         }
 
         // add form elements
-        $this->form->addElement('select', 'centerID', 'Site:', $list_of_sites);
-        $this->form->addElement('select', 'active', 'Active:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
-        $this->form->addElement('select', 'examiner', 'Examiner:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
-        $this->form->addElement('text', 'userID', 'Username:');
-        $this->form->addElement('text', 'real_name', 'Full name:');
-        $this->form->addElement('text', 'email', 'Email:');
-        $this->form->addElement('select', 'pending', 'Pending Approval:', array(''=>'Any', '0'=>'N', '1'=>'Y'));
+        $this->addSelect('centerID', 'Site:', $list_of_sites);
+        $this->addSelect('active', 'Active:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
+        $this->addSelect('examiner', 'Examiner:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
+        $this->addBasicText('userID', 'Username:');
+        $this->addBasicText('real_name', 'Full name:');
+        $this->addBasicText('email', 'Email:');
+        $this->addSelect('pending', 'Pending Approval:', array(''=>'Any', '0'=>'N', '1'=>'Y'));
 
         return true;
     }

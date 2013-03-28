@@ -27,6 +27,7 @@ class NDB_BVL_Foo extends NDB_Bar
     definition goes here
 }
 
+Instead of using PEAR::isError, use Utility::isErrorX. It does the same thing, but avoids errors about PEAR::isError not being static in newer versions of PHP.
 
 HTML:
 - HTML should never be mixed with code. HTML should go into a template and be rendered using a templating library (smarty for PHP)

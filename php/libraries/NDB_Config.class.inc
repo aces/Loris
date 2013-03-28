@@ -36,7 +36,7 @@ class NDB_Config
         if(is_null($config)) {
             $config = new NDB_Config();
             $success = $config->load($configFile);
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
             }
         }
@@ -55,11 +55,11 @@ class NDB_Config
         // load the configuration data into a global variable $config
         $configObj = new Config;
         $root =& $configObj->parseConfig($configFile, "XML");
-        if(PEAR::isError($root)) {
+        if(Utility::isErrorX($root)) {
             die("Config error: ".$root->getMessage());
         }
         $configObj = $root->searchPath(array('config'));
-        $this->_settings =& $configObj->toArray();
+        $this->_settings = $configObj->toArray();
         $this->_settings = $this->_settings['config'];
         unset($configObj, $root);
     }
