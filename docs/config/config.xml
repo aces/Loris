@@ -102,11 +102,11 @@
         <Projects>
             <project>
              <id>1</id>
-                <title>Sample Project</title>
+             <title>Sample Project</title>
             </project>
             <project>
               <id>2</id>
-                <title>Another Sample Project</title>
+              <title>Another Sample Project</title>
             </project>
         </Projects>
 
