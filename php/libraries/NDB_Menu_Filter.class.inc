@@ -316,6 +316,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // make the SELECT statement
         $query = "SELECT ";
+        $qparams = array();
         if (is_array($this->columns) && count($this->columns) > 0) {
             $query .= implode(', ', $this->columns);
         } else {
@@ -328,16 +329,19 @@ class NDB_Menu_Filter extends NDB_Menu
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
             foreach ($this->filter as $key => $val) {
+                $prepared_key = preg_replace('/\./', '_', $key);
                 if ((!empty($val) || $val === '0') && $key != 'order') {
                     
                     // special rule for dropdowns where value is numeric
                     if (strtolower(substr($key, -8)) == 'centerid' || 
                         strtolower(substr($key, -10)) == 'categoryid' ||
                         strtolower(substr($key, -6)) == 'gender') {
-                        $query .= " AND $key = '$val' ";
+                        $query .= " AND `$key` = :v_$prepared_key";
+                        $qparams["v_$prepared_key"] = $val;
                     }
                     else {
-                        $query .= " AND $key LIKE '%$val%' ";
+                        $query .= " AND `$key` LIKE CONCAT('%', :v_$key, '%') ";
+                        $qparams["v_$key"] = $val;
                     }
                 }
             }
@@ -356,6 +360,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $first = True;
             foreach ($this->having as $key => $val) {
                 if($val !== '' and $val != null) {
+                    $prepared_key = preg_replace('/\./', '_', $key);
                     if($first == False) {
                         $query .= ' AND ';
                     }
@@ -364,7 +369,8 @@ class NDB_Menu_Filter extends NDB_Menu
                     }
                     $first = False;
 
-                    $query .= "$key LIKE " . $DB->quote("$val%");
+                    $query .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
+                        $qparams["v_$prepared_key"] = $val;
                 }
             }
         }
@@ -377,7 +383,8 @@ class NDB_Menu_Filter extends NDB_Menu
         $query .= $this->order_by;
 
         // get the list
-        $DB->select($query, $result);
+        $result = $DB->pselect($query, $qparams);
+
         if(Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }

@@ -34,7 +34,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
     {
   		$DB =& Database::singleton();
         //Get the default values
-        $DB->select("SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID='".$this->identifier."'",&$value_results);
+        $value_results = $DB->pselect(
+            "SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:CaID",
+            array('CaID' => $this->identifier)
+        );
         foreach($value_results AS $vresult){
         	$defaults["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
         }
@@ -88,7 +91,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         // candID
         $this->tpl_data['candID'] = $candidate->getData('CandID');
  		//Extract the fields from the parameter_type table
-        $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID AND ptc.Name='Candidate Parameters' ORDER BY pt.name ASC", &$field_results);
+        $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID AND ptc.Name='Candidate Parameters' ORDER BY pt.name ASC", array());
         //If there are no defined fields pritn a message to that effect
         if(empty($field_results)){
              //  $this->form->addElement('static', "static", "No candidate parameters have been defined for this study");	

@@ -136,7 +136,12 @@ class NDB_Breadcrumb extends PEAR
 
         // add a crumb for subtests
         if (!empty($this->_parameters['subtest'])) {
-            $result = $DB->selectOne("SELECT Description FROM instrument_subtests WHERE Test_name = '" . $this->_parameters['test_name'] . "' AND Subtest_name = '" . $this->_parameters['subtest'] . "'");
+            $params = array(
+                'PTestname' => $this->_parameters['test_name'],
+                'PSubtest'  => $this->_parameters['subtest']
+            );
+            $result = $DB->pselectOne("SELECT Description FROM instrument_subtests WHERE Test_name = :PTestname 
+                AND Subtest_name = :PSubtest", $params);
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -150,7 +155,10 @@ class NDB_Breadcrumb extends PEAR
 
         // add a crumb for instruments
         if (!empty($this->_parameters['commentID'])) {
-            $result = $DB->selectOne("SELECT Full_name FROM test_names WHERE Test_name = '" . $this->_parameters['test_name'] . "'");
+            $params = array(
+                'PTestname' => $this->_parameters['test_name']
+            );
+            $result = $DB->pselectOne("SELECT Full_name FROM test_names WHERE Test_name = :PTestname", $params);
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }

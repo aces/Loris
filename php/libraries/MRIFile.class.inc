@@ -27,7 +27,7 @@ class MRIFile
             }
         }
         $query = "SELECT Name, Value FROM parameter_file as p, parameter_type as f WHERE f.ParameterTypeID=p.ParameterTypeID AND FileID=:FID";
-        $parameterRaw = $db->select($query, $params);
+        $parameterRaw = $db->pselect($query, $params);
         foreach($parameterRaw AS $row) {
             $this->parameters[$row['Name']] = $row['Value'];
         }

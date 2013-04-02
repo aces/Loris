@@ -169,8 +169,8 @@ class NDB_Form_user_accounts extends NDB_Form
             }
             
             // check users table to see if we have a valid user 
-            $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = '".$values['UserID']."'"; 
-            $ftpdb->selectRow($query, $row);
+            $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = :UID"; 
+            $row = $ftpdb->pselectRow($query, array('UID' => $values['UserID']));
             if (Utility::isErrorX($row)) {
                 return PEAR::raiseError("DB Error: ".$row->getMessage());
             }
@@ -190,7 +190,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 
                 $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
                 
-                $maxUID = $ftpdb->selectOne($query);
+                $maxUID = $ftpdb->pselectOne($query, array());
                 if (Utility::isErrorX($maxUID)) {
                     return PEAR::raiseError("DB Error: ".$maxUID->getMessage());
                 }
@@ -445,15 +445,18 @@ class NDB_Form_user_accounts extends NDB_Form
         // if username is user-defined, and it is a new user
 	if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
             // check username's uniqueness
-            $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE UserID = '" . $values['UserID'] . "'");
-            if (Utility::isErrorX($result)) {
-                return PEAR::raiseError("DB Error: ".$result->getMessage());
-            }
-    
-            if ($result > 0) {
-                $errors['UserID_Group'] = 'The user name already exists';
-            }
+        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
+            array('UID' => $values['UserID'] )
+        );
+
+        if (Utility::isErrorX($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
+
+        if ($result > 0) {
+            $errors['UserID_Group'] = 'The user name already exists';
+        }
+    }
 
         // if password is user-defined, and user wants to change password
         if (empty($values['NA_Password']) && !empty($values['Password_md5'])) {
@@ -464,7 +467,7 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         // check email address' uniqueness
-        $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE Email = '" . $values['Email'] . "' AND UserID != '" . $values['UserID']  . "'");
+        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID <> :UID", array('VEmail' => $values['Email'], 'UID' => $values['UserID']));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -496,7 +499,9 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         // check email address' uniqueness
-        $result = $DB->selectOne("SELECT COUNT(*) FROM users WHERE Email = '" . $values['Email'] . "' AND UserID != '" . $values['identifier']  . "'");
+        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID != :UID", 
+            array('VEmail' => $values['Email'], 'UID' => $values['identifier']
+        ));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }

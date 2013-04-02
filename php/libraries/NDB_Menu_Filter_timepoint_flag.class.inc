@@ -167,11 +167,18 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
 
             // DCCID / Visit
             // this query includes only the subject w/ existing flags
+            $params = array();
             $query = "SELECT c.CandID, s.Visit_label, s.ID
             FROM candidate AS c, session AS s, parameter_timepoint_flag_session as p
             WHERE c.CandID = s.CandID AND p.SessionID = s.ID AND c.Entity_type = 'Human' AND c.Active = 'Y'";
-            if (!empty($_REQUEST['centerID'])) $query .= " AND s.CenterID = '".$this->filter['session.CenterID']."'";
-            if (!empty($_REQUEST['subprojectID'])) $query .= " AND s.SubprojectID like '".$_REQUEST['subprojectID']."'";
+            if (!empty($_REQUEST['centerID'])) {
+                $query .= " AND s.CenterID = :CentID";
+                $params['CentID'] = $this->filter['session.CenterID'];
+            }
+            if (!empty($_REQUEST['subprojectID'])) {
+                $query .= " AND s.SubprojectID LIKE :SubprojID";
+                $params['SubprojID'] = $_REQUEST['subprojectID'];
+            }
             if ($_REQUEST['last_change'] == 'evaluated') {
                 $query .= " AND s.BVLQCExclusion IS NOT NULL"; 
             } elseif ($_REQUEST['last_change'] == 'reviewed') {
@@ -181,7 +188,7 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
             }
             $query .= " GROUP BY c.CandID, s.Visit_label ORDER BY c.CandID DESC, s.Visit_label";
 
-            $db->select($query, $result);
+            $result = $db->pselect($query, $params);
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -194,9 +201,8 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
                 // the $result also includes the subjects w/ partially reviewed flags, i.e. some are still NULL
                 // check if the current subject/timepoint has any non-reviewed flags and if yes, exclude from array
                 if ($_REQUEST['last_change'] == 'reviewed') {
-                    $result1 = array();
-                    $query = "SELECT COUNT(ID) as count FROM parameter_timepoint_flag_session WHERE SessionID = '".$row['ID']."' AND Flag_status IS NULL GROUP BY SessionID";
-                    $db->selectRow($query, $result1);
+                    $query = "SELECT COUNT(ID) as count FROM parameter_timepoint_flag_session WHERE SessionID = :SID  AND Flag_status IS NULL GROUP BY SessionID";
+                    $result1 = $db->pselectRow($query, array('SID' => $row['ID']));
                     if (Utility::isErrorX($result1)) {
                         return PEAR::raiseError("DB Error: ".$result1->getMessage());
                     }
@@ -218,12 +224,16 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
 
             case 'flag':
             // Category / Flag
+            $params = array();
             $query = "SELECT f.Flag_name, f.Flag_label, fc.CategoryID, fc.Name 
             FROM parameter_timepoint_flag AS f, parameter_timepoint_flag_category AS fc 
             WHERE f.CategoryID = fc.CategoryID";
-            if (!empty($_REQUEST['subprojectID'])) $query .= " AND f.SubprojectID like '".$this->filter['session.SubprojectID']."'";
+            if (!empty($_REQUEST['subprojectID'])) {
+                $query .= " AND f.SubprojectID LIKE :SubprojID";
+                $params['SubprojID'] = $this->filter['session.SubprojectID'];
+            }
             $query .= " ORDER BY fc.Name, f.ID";
-            $db->select($query, $result);
+            $result = $db->pselect($query, $params);
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
