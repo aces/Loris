@@ -90,10 +90,12 @@ class NDB_BVL_LogicTest
 
         // test type emtpy
         
-        $query = "SELECT Table_name, Field_name, Conditional_operator, Value from data_entry_logic_test WHERE Type = '".$this->getType()."' AND Test_name='".$this->getTestName()."'";
+        $query = "SELECT Table_name, Field_name, Conditional_operator, Value
+            FROM data_entry_logic_test WHERE Type = :VType AND Test_name=:TN";
         
-        $result = array();
-        $db->select($query, $result);
+        $result = $db->pselect($query, array('VType' => $this->getType(),
+            'TN' => $this->getTestName())
+        );
         
         if(Utility::isErrorX($result)) {
             return PEAR::raiseError("Delt construct DBError: " . $result->getMessage());
