@@ -317,7 +317,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $db =& Database::singleton();
         if($this->preview !== true) {
-            $db->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $defaults);
+            $defaults = $db->pselect("SELECT * FROM $this->table WHERE CommentID=:CID", array('CID' => $this->getCommentID()));
             if($this->isError($defaults)) {
                 return $this->raiseError('Could not get default values for form');
             }
@@ -454,21 +454,24 @@ class NDB_BVL_Instrument extends NDB_Page
                 $windowDifferenceType = $timepoint->getWindowDifferenceType();
 
                 if(!empty($age)) {
+                    $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
+                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $querY_params);
                     $values['Candidate_Age'] = $agemonths;
                     $values['Window_Difference'] = 0;
-                    if($windowDifferenceType === 'battery') {
-                        $validage = $DB->selectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'");
 
-                        // Age isn't valid, so find out how far out it is
+                    // Age isn't valid, so find out how far out it is
 
-                        if($validage == 0) {
-                            $DB->select("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name='" . $this->testName . "' AND tb.SubprojectID=s.SubprojectID and f.CommentID='" . $this->getCommentID() . "'", $Windows);
-                            foreach ($Windows as $window) {
-                                if($agedays < $window['AgeMinDays']) {
-                                    $delta = $window['AgeMinDays'] - $agedays;
-                                    if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
-                                        $values['Window_Difference'] = 0-abs($delta);
-                                    }
+                    if($validage == 0) {
+                        $Windows = $DB->pselect("SELECT AgeMinDays, AgeMaxDays FROM test_battery tb 
+                            JOIN flag f USING(Test_name) 
+                            JOIN session s ON (s.ID=f.SessionID)  
+                            WHERE tb.Active='Y' and tb.Test_name=:TN 
+                            AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
+                        foreach ($Windows as $window) {
+                            if($agedays < $window['AgeMinDays']) {
+                                $delta = $window['AgeMinDays'] - $agedays;
+                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                    $values['Window_Difference'] = 0-abs($delta);
                                 }
                                 if($agedays > $window['AgeMaxDays']) {
                                     $delta = $agedays - $window['AgeMaxDays'];
@@ -716,7 +719,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $db =& Database::singleton();
 
-        $success = $db->selectOne("SELECT Full_name FROM test_names WHERE Test_name='$this->testName'");
+        $success = $db->pselectOne("SELECT Full_name FROM test_names WHERE Test_name=:TN", array('TN' => $this->testName));
         return $success;
     }
 
@@ -760,7 +763,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getDateOfAdministration()
     {
         $db =& Database::singleton();
-        $doa = $db->selectOne("SELECT Date_taken FROM $this->table WHERE CommentID='".$this->getCommentID()."'");
+        $doa = $db->pselectOne("SELECT Date_taken FROM $this->table WHERE CommentID=:CID", array('CID' => $this->getCommentID()));
         if($this->isError($doa)) {
             return $this->raiseError("Could not get date of administration from $this->table");
         } else {
@@ -785,8 +788,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) return $db;
         
-        $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name='$this->testName' ORDER BY Order_number";
-        $db->select($query, $results);
+        $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name=:TN ORDER BY Order_number";
+        $results = $db->pselect($query, array('TN' => $this->testName));
         if(Utility::isErrorX($results)) return $results;
         
         return $results;
@@ -1101,11 +1104,13 @@ class NDB_BVL_Instrument extends NDB_Page
         $DB =& Database::singleton();
         if(Utility::isErrorX($DB)) return PEAR::raiseError("Could not connect to database: ".$DB->getMessage()."<br>\n");
 
-        $query = "SELECT $field FROM $this->table WHERE CommentID = '".$this->getCommentID()."'";
-        $fieldValue = $DB->selectOne($query);
+        $query = "SELECT $field FROM $this->table WHERE CommentID = :CID";
+        $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
 
-        if (!empty($fieldValue)) return $fieldValue;
-        else return false;
+        if (!empty($fieldValue)) {
+            return $fieldValue;
+        }
+        return false;
     }
 
     // }}}
@@ -1119,11 +1124,13 @@ class NDB_BVL_Instrument extends NDB_Page
     function getSessionID()
     {
         $db =& Database::singleton();
-        $query = "SELECT SessionID FROM flag WHERE CommentID = '".$this->getCommentID()."'";
-        $fieldValue = $db->selectOne($query);
+        $query = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+        $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
         
-        if (!empty($fieldValue) && !$db->isError($fieldValue)) return $fieldValue;
-        else return false;
+        if (!empty($fieldValue) && !$db->isError($fieldValue)) {
+            return $fieldValue;
+        }
+        return false;
     }
 
     // }}}
@@ -1142,8 +1149,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
-        $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        $success = $db->selectRow($query, $dataFields);
+        $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID=:CID";
+        $dataFields = $db->pselectRow($query, array('CID' => $this->getCommentID()));
         if(Utility::isErrorX($success)) return PEAR::raiseError("Could not select required elements from database: ".$success->getMessage()."<br>\n");
         foreach($dataFields as $field) {
             // this shouldn't be just empty() b/c 0 is a valid value for some required fields
@@ -1165,8 +1172,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
 
-        $query = "SELECT Data_entry_completion_status FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        return $db->selectOne($query);
+        $query = "SELECT Data_entry_completion_status FROM $this->table WHERE CommentID=:CID";
+        return $db->pselectOne($query, array('CID' => $this->getCommentID()));
     }
 
     // }}}
@@ -1405,7 +1412,8 @@ class NDB_BVL_Instrument extends NDB_Page
     
     function loadInstanceData($instrumentInstance) {
         $db =& Database::singleton();
-        $db->select("SELECT * FROM $instrumentInstance->table WHERE CommentID='".$instrumentInstance->getCommentID()."'", $defaults);
+        $defaults = $db->pselect("SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID", 
+            array('CID' => $instrumentInstance->getCommentID()));
         if($instrumentInstance->isError($defaults)) {
             return $instrumentInstance->raiseError('Could not get default values for form');
         }

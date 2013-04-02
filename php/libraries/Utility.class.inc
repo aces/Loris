@@ -130,7 +130,7 @@ class Utility extends PEAR
         $query = "SELECT DISTINCT Race as Ethnicity FROM ethnic WHERE Race <> ''";
 
         // execute the query
-        $DB->select($query, $result);
+        $result = $DB->pselect($query, array());
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -159,7 +159,7 @@ class Utility extends PEAR
         $query = "SELECT DISTINCT Ethnicity FROM candidate WHERE Ethnicity NOT IN (NULL, '') ORDER BY Ethnicity";
         // execute the query
 
-        $DB->select($query, $result);
+        $result = $DB->pselect($query, array());
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -193,8 +193,7 @@ class Utility extends PEAR
                 $query .= "WHERE Study_site='Y'";
         }
 
-
-        $DB->select($query, $result);
+        $result = $DB->pselect($query, array());
         if(Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -217,10 +216,11 @@ class Utility extends PEAR
         	if ($study_site) {
             	$query .= "WHERE Study_site='Y'";
         	}	
-		if (!$DCC)
-		$query .= "AND Name != 'DCC'";
+            if (!$DCC) {
+                $query .= " AND Name != 'DCC'";
+            }
 
-        	$DB->select($query, $result);
+            $result = $DB->pselect($query, array());
         	if(Utility::isErrorX($result)) {
             		return PEAR::raiseError("DB Error: ".$result->getMessage());
         	}
@@ -239,7 +239,7 @@ class Utility extends PEAR
 
          $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
-         $DB->select($query, $result);
+         $result = $DB->pselect($query, array());
          if(Utility::isErrorX($result)) {
              return PEAR::raiseError("DB Error: ".$result->getMessage());
          }
@@ -293,8 +293,8 @@ class Utility extends PEAR
     {
         $db =& Database::singleton();
         
-        $query = "SELECT Test_name FROM flag WHERE CommentID='$commentID'";
-        $testName = $db->selectOne($query);
+        $query = "SELECT Test_name FROM flag WHERE CommentID=:CID";
+        $testName = $db->pselectOne($query, array('CID' => $commentID));
         
         if(Utility::isErrorX($testName)) {
             return PEAR::raiseError("Could not get test name: ".$testName->getMessage());
@@ -439,10 +439,12 @@ class Utility extends PEAR
         $DB =& Database::singleton();
 
         // craft the select query
-        $query = "SELECT t.Test_name FROM test_battery AS b, test_names AS t WHERE t.Test_name=b.Test_name AND b.AgeMinDays<='$age' AND b.AgeMaxDays>='$age' AND b.Active='Y'";
+        $query = "SELECT t.Test_name FROM test_battery AS b, test_names AS t WHERE t.Test_name=b.Test_name AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge AND b.Active='Y'";
+        $params = array('CandAge' => $age);
 
         if(!is_null($stage)) {
-            $query .= " AND b.Stage='$stage'";
+            $query .= " AND b.Stage=:BatStage";
+            $params['BatStage'] = $stage;
         }
 
         $query .= " GROUP BY Test_name ORDER BY Test_name";
@@ -450,7 +452,7 @@ class Utility extends PEAR
         // get the list of instruments
         $rows = array();
         $tests = array();
-        $DB->select($query, $rows);
+        $rows = $DB->pselect($query, $params);
         if(Utility::isErrorX($rows)) {
             fwrite(STDERR, "Could not lookup battery from database: ".$rows->getMessage());
             return false;
@@ -558,7 +560,7 @@ class Utility extends PEAR
 
     function getAllInstruments() {
         $DB =& Database::singleton();
-        $DB->select("SELECT Test_name FROM test_names", $instruments_q);
+        $instruments_q = $DB->pselect("SELECT Test_name FROM test_names", array());
                                 
         // This array_map call turns the result of the above query to
         // a non-associative array, so that we can use the array_combine
@@ -701,7 +703,7 @@ class Utility extends PEAR
 		 JOIN candidate c ON (s.CandID = c.Candid) 
 		 JOIN psc ON (s.CenterID = psc.CenterID)
 		 WHERE c.Active = 'Y' AND s.Active = 'Y' AND c.PSCID NOT LIKE '%scanner%' AND psc.CenterID!= '1' ORDER BY VisitNo";
-		$db->select($query,$visitlabels);
+		$visitlabels = $db->pselect($query,array());
 		$visits = array();
 		for ($i =0 ;$i<count($visitlabels) ; $i++){
 			$visits[$visitlabels[$i]['Visit_label']] = ($visitlabels[$i]['Visit_label']);

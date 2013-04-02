@@ -55,8 +55,8 @@ Class TimePoint
         }
 
         // get user data from database
-        $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID, s.VisitNo,s.Visit_label,s.SubprojectID,s.Submitted,s.Current_stage,s.Screening,s.Date_screening,s.Visit,s.Date_visit,s.Approval,s.Date_approval,s.Active, s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request, s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done FROM session as s left join psc as p using (CenterID) left join users as u on (s.registeredBy=u.UserID) WHERE s.ID ='$sessionID' AND s.Active = 'Y'";
-        $db->selectRow($query, $row);
+        $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID, s.VisitNo,s.Visit_label,s.SubprojectID,s.Submitted,s.Current_stage,s.Screening,s.Date_screening,s.Visit,s.Date_visit,s.Approval,s.Date_approval,s.Active, s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request, s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done FROM session as s left join psc as p using (CenterID) left join users as u on (s.registeredBy=u.UserID) WHERE s.ID = :SID AND s.Active = 'Y'";
+        $row = $db->pselectRow($query, array('SID' => $sessionID));
         
         if(Utility::isErrorX($row)) {
             return PEAR::raiseError("Could not retrieve candidate data from database");
@@ -105,8 +105,8 @@ Class TimePoint
         $db =& Database::singleton();
 
         // select the candidate data
-        $query = "SELECT c.PSCID, c.CenterID, IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo FROM candidate AS c LEFT OUTER JOIN session AS s USING (CandID) WHERE c.CandID=$candID AND (s.Active='Y' OR s.Active is null) GROUP BY c.CandID";
-        $db->selectRow($query, $row);
+        $query = "SELECT c.PSCID, c.CenterID, IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo FROM candidate AS c LEFT OUTER JOIN session AS s USING (CandID) WHERE c.CandID=:CaID AND (s.Active='Y' OR s.Active is null) GROUP BY c.CandID";
+        $row = $db->pselectRow($query, array('CaID' => $candID));
         if(Utility::isErrorX($row)) {
             return PEAR::raiseError("Could not retrieve existing data for candidate".$row->getMessage());
         }

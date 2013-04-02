@@ -45,7 +45,7 @@ class HelpFile extends PEAR
         // set the help ID
         $obj->helpID = $helpID;
 
-        $DB->selectRow("SELECT * FROM help WHERE helpID = '$helpID'", $result);
+        $result = $DB->pselectRow("SELECT * FROM help WHERE helpID = :HID", array('HID' => $helpID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -239,7 +239,7 @@ class HelpFile extends PEAR
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        $result = $DB->selectOne("SELECT COUNT(*) FROM help WHERE parentID = '$this->helpID'");
+        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -275,7 +275,7 @@ class HelpFile extends PEAR
         
         // get its children
         if ($hasChild) {
-            $DB->select("SELECT helpID FROM help WHERE parentID = '$this->helpID'", $result);
+            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", array('HID' =>$this->helpID));
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -336,7 +336,7 @@ class HelpFile extends PEAR
         
         // get its children
         if ($hasChild) {
-            $DB->select("SELECT helpID, topic, $level as level FROM help WHERE parentID = '$this->helpID'", $result);
+            $result = $DB->pselect("SELECT helpID, topic, $level as level FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -430,7 +430,8 @@ class HelpFile extends PEAR
         $parentData = array();
         
         if ($this->data['parentID'] > 0) {
-            $DB->selectRow("SELECT helpID, topic, $level as level FROM help WHERE helpID = '".$this->data['parentID']."'", $result);
+            $result = $DB->pselectRow("SELECT helpID, topic, $level as level FROM help WHERE helpID = :HID",
+                array('HID' => $this->data['parentID']));
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -504,7 +505,9 @@ class HelpFile extends PEAR
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        $DB->select("SELECT helpID, relatedID FROM help_related_links WHERE helpID = '$this->helpID' OR relatedID = '$this->helpID'", $result);        if (Utility::isErrorX($result)) {
+        $result = $DB->pselect("SELECT helpID, relatedID FROM help_related_links WHERE helpID = :HID OR relatedID = :HID ", 
+            array('HID' => $this->helpID));        
+        if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
@@ -626,7 +629,8 @@ class HelpFile extends PEAR
         $tree = array();
 
         if ($hasChild) {
-            $DB->select("SELECT helpID, topic, updated, $level as level FROM help WHERE parentID = '$this->helpID'", $result);
+            $result = $DB->pselect("SELECT helpID, topic, updated, $level as level FROM help WHERE parentID = :HID",
+                array('HID' =>$this->helpID));
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -688,7 +692,7 @@ class HelpFile extends PEAR
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        $helpID = $DB->selectOne("SELECT helpID FROM help WHERE hash = '$hash'");
+        $helpID = $DB->pselectOne("SELECT helpID FROM help WHERE hash = :HID", array('HID' => $hash));
         if(Utility::isErrorX($helpID)) {
             return PEAR::raiseError("HelpFile::hashToID(): ".$helpID->getMessage());
         }

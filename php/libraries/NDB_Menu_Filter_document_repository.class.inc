@@ -35,8 +35,7 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
 
         // create the centerID map
         $db =& Database::singleton();
-        $pscRows = array();
-        $db->select("SELECT CenterID, Name FROM psc", $pscRows);
+        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }

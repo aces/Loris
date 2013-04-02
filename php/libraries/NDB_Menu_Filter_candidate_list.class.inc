@@ -32,16 +32,32 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
 
     function _setupVariables()
     {
-        // set the class variables
-        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
         $config=&NDB_Config::singleton();
-        if($config->getSetting("useEDC")=="true"){
+        $useProjects = $config->getSetting("useProjects");
+        // set the class variables
+        $this->columns = array('psc.Name AS PSC',
+            'candidate.CandID AS DCCID',
+            'candidate.PSCID',
+            'candidate.Gender'
+        );
+        if ($useProjects === "true") {
+            $this->columns[] = 'min(candidate.ProjectID) as Project';
+        }
+        $this->columns=array_merge($this->columns,
+            array('min(session.SubprojectID) as Subproject',
+            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB')
+        );
+        if($config->getSetting("useEDC")==="true") {
         	$this->columns[]='DATE_FORMAT((candidate.EDC),\'%Y-%m-%d\') AS EDC';
         	$this->formToFilter['edc'] = 'candidate.EDC';
         	$this->validFilters[]='candidate.EDC';
         }
 
-        $this->columns=array_merge($this->columns,array('count(DISTINCT session.Visit_label) as Visit_count', 'max(session.Current_stage) as Latest_visit_status', 'min(feedback_bvl_thread.Status+0) as Feedback'));
+        $this->columns=array_merge($this->columns,
+            array('count(DISTINCT session.Visit_label) as Visit_count',
+            'max(session.Current_stage) as Latest_visit_status',
+            'min(feedback_bvl_thread.Status+0) as Feedback')
+        );
 
         
         $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Active = 'Y'
@@ -123,6 +139,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
         
         $config=&NDB_Config::singleton();
+        if($config->getSetting("useProjects")=="true"){
+           $this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
+        }
         if($config->getSetting("useEDC")=="true"){
         	$this->addBasicText('edc', 'EDC:', 'maxlength=10');
         	$this->tpl_data['useEDC']="true";
