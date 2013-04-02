@@ -1524,6 +1524,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                         break;
                     case 'textarea':
+                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
@@ -1591,6 +1592,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                         break;
                     case 'static':
+                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
                             $this->form->addElement('static', $pieces[1], $pieces[2]);
                         }
