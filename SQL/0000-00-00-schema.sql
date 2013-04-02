@@ -1777,3 +1777,14 @@ CREATE TABLE `certification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `certification`
+--
+
+LOCK TABLES `certification` WRITE;
+/*!40000 ALTER TABLE `certification` DISABLE KEYS */;
+/*!40000 ALTER TABLE `certification` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+
