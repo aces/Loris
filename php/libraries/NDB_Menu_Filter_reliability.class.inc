@@ -105,7 +105,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                                     'PSCID' => 'candidate.PSCID',
                                     'Gender' => 'candidate.Gender',
                                     'Visit_label' => 'session.Visit_label',
-		                    'Instrument' => 'reliability.Instrument',
+                                    'Instrument' => 'reliability.Instrument',
                                     'reliability_score'=>'reliability.Reliability_score',
                                     'Current_stage'=>'session.Current_stage',
                                     'Invalid' => 'reliability.invalid'
