@@ -1758,3 +1758,22 @@ CREATE TABLE participant_status (
         PRIMARY KEY  (ID),
         UNIQUE KEY ID (ID) 
 );
+--
+-- Table structure for table `certification`
+--
+
+DROP TABLE IF EXISTS `certification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `certification` (
+  `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `examinerID` int(10) unsigned NOT NULL DEFAULT '0',
+  `date_cert` date DEFAULT NULL,
+  `visit_label` varchar(255) DEFAULT NULL,
+  `testID` varchar(255) NOT NULL DEFAULT '',
+  `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`certID`,`testID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
