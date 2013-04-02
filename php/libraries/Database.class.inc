@@ -20,7 +20,14 @@ class Database extends PEAR
      * @access private
      */
     var $_PDO = null;
-    //var $_databaseHandle = null;
+
+    /**
+     * The database handle for storing history information.
+     * If missing, will be the same as $_PDO
+     *
+     * @access private
+     */
+    var $_HistoryPDO = null;
 
     /**
      * integer number of rows affected by the last replace/update/delete/insert
@@ -104,13 +111,34 @@ class Database extends PEAR
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
+        $historydb = null;
+        $historytable = "history";
+
         if(class_exists('NDB_Config')) {
             $config =& NDB_Config::singleton();
             $this->_showQueries = $config->getSetting('showDatabaseQueries');
+
+            // get history database from config
+            $dbsettings = $config->getSetting("database");
+            if(isset($dbsettings['historydb'])) {
+                $historydb = $dbsettings['historydb'];
+            }
+            if(isset($dbsettings['historytable'])) {
+                $historytable = $dbsettings['historytable'];
+            }
+
         }
         
         $this->_PDO = new PDO("mysql:host=$host;dbname=$database", $username, $password);
-        $this->_preparedStoreHistory = $this->_PDO->prepare("INSERT INTO history (tbl, col, new, old, primaryCols, primaryVals, userID, type) VALUES (:histtable, :histcolumn, :newval, :oldval, :primaryKeys, :primaryVals, :userID, :type)");
+        if (is_null($this->_HistoryPDO)) {
+            if(is_null($historydb)) {
+                $this->_HistoryPDO =& $this->_PDO;
+            } else {
+                $this->_HistoryPDO = new PDO("mysql:host=$host;dbname=$historydb", $username, $password);
+            }
+        }
+
+        $this->_preparedStoreHistory = $this->_HistoryPDO->prepare("INSERT INTO $historytable (tbl, col, new, old, primaryCols, primaryVals, userID, type) VALUES (:histtable, :histcolumn, :newval, :oldval, :primaryKeys, :primaryVals, :userID, :type)");
     }
 
     /**
