@@ -4,6 +4,7 @@
  * @version $Id: NDB_Client.class.inc,v 1.7 2006/04/05 17:07:42 sebas Exp $
  * @package main
  */
+require_once 'Utility.class.inc';
 class NDB_Client
 {
     /**
