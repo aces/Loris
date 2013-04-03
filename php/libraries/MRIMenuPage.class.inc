@@ -112,8 +112,14 @@ class MRIMenuPage {
         $this->PopulateQCData();
         $this->PopulateOutputTypes();
 
-        $query = "SELECT CenterID, Name, MRI_Alias FROM psc WHERE Name NOT LIKE '%DCC%' AND MRI_Alias<>'' ".(!$user->hasPermission('access_all_profiles') ? "AND CenterID=".$user->getCenterID() : '')." ORDER BY Name";
-        $DB->select($query, $sites);
+        $params = array();
+        $query = "SELECT CenterID, Name, MRI_Alias FROM psc WHERE MRI_Alias<>'' ";
+        if (!$user->hasPermission('access_all_profiles')) {
+            $query .= " AND CenterID=:CentID";
+            $params['CentID'] = $user->getCenterID();
+        }
+        $query .= " ORDER BY Name";
+        $sites = $DB->pselect($query, $params);
         $this->visit_tpl_data['site_options']['']='&nbsp;';
         foreach($sites AS $site) {
             $this->visit_tpl_data['site_options'][$site['CenterID']] = $site['Name'];
@@ -127,11 +133,14 @@ class MRIMenuPage {
 
 
     function _PopulateQCBreakdown($ProtocolID, $SessionID) {
-        $Passes = $this->DB->selectOne("SELECT count(File) FROM files join files_qcstatus qc USING (FileID) where SessionID=".$SessionID." AND AcquisitionProtocolID=$ProtocolID AND qc.QCStatus='Pass'");
+        $qParams = array('SID' => $SessionID, 'ProtoID' => $ProtocolID);
+        $Passes = $this->DB->pselectOne("SELECT count(File) FROM files join files_qcstatus qc USING (FileID) WHERE
+            SessionID=:SID AND AcquisitionProtocolID=:ProtoID AND qc.QCStatus='Pass'", $qParams);
         if($Passes > 0) {
             return 'Pass';
         }
-        $Fails = $this->DB->selectOne("SELECT count(File) FROM files JOIN files_qcstatus qc USING (FileID) where SessionID=".$SessionID." AND AcquisitionProtocolID=$ProtocolID AND qc.QCStatus='Fail'");
+        $Fails = $this->DB->pselectOne("SELECT COUNT(File) FROM files JOIN files_qcstatus qc USING (FileID) WHERE
+            SessionID=:SID AND AcquisitionProtocolID=:ProtoID AND qc.QCStatus='Fail'", $qParams);
         if($Fails > 0) {
             return 'Fail';
         }
@@ -146,7 +155,11 @@ class MRIMenuPage {
 
         // Go through each 
         for($i=0; $i<$visit_tpl_data['numTimepoints']; $i++) {
-            $minQCDate = $this->DB->selectOne("select min(QCLastChangeTime) from files left join files_qcstatus USING(FileID) where SessionID=".$visit_tpl_data['timepoints'][$i]['sessionID']." AND OutputType='native' AND AcquisitionProtocolID not in (1, 2, 3, 52) group by QCLastChangeTime order by QCLastChangeTime limit 1");
+            $params['SID'] = $visit_tpl_data['timepoints'][$i]['sessionID'];
+            $minQCDate = $this->DB->pselectOne("SELECT MIN(QCLastChangeTime) FROM files LEFT JOIN files_qcstatus USING(FileID) 
+                WHERE SessionID=:SID AND OutputType='native' AND AcquisitionProtocolID not in (1, 2, 3, 52) 
+                GROUP BY QCLastChangeTime 
+                ORDER BY QCLastChangeTime", $params);
             // New data if not QCed
             $visit_tpl_data['timepoints'][$i]['newData'] = empty($minQCDate);
             $visit_tpl_data['timepoints'][$i]['rownum'] = ($i+1);
@@ -170,7 +183,7 @@ class MRIMenuPage {
         //should be ($user->hasPermission('view_non_native')) 
         if($user->getCenterID() > 0) {
             $query = "SELECT DISTINCT OutputType AS outputType FROM files WHERE FileType='mnc' AND OutputType!='native'";
-            $this->DB->select($query, $outputTypes);
+            $outputTypes = $this->DB->pselect($query, array());
             $this->visit_tpl_data['outputTypes'] = array_merge(
                     array(array('outputType'=>'native'),array('outputType'=>'selected')), 
                     $outputTypes);

@@ -28,10 +28,13 @@ class MRIViewScansPage {
                 $updateSet = array('QCStatus'=>$curStatus, 'QCLastChangeTime'=>time());
 
                 // set first change time, if it's null only
-                $firstChangeTime = $this->DB->selectOne("SELECT QCFirstChangeTime FROM files_qcstatus WHERE FileID=$curFileID");
-                if(empty($firstChangeTime)) $updateSet['QCFirstChangeTime'] = time();
+                $params = array('FID' => $curFileID);
+                $firstChangeTime = $this->DB->pselectOne("SELECT QCFirstChangeTime FROM files_qcstatus WHERE FileID=:FID", $params);
+                if(empty($firstChangeTime)) {
+                    $updateSet['QCFirstChangeTime'] = time();
+                }
 
-                $QCExists = $this->DB->selectOne("SELECT 'x' FROM files_qcstatus WHERE FileID=$curFileID");
+                $QCExists = $this->DB->pselectOne("SELECT 'x' FROM files_qcstatus WHERE FileID=:FID", $params);
                 if(!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
                     $success = $this->DB->update('files_qcstatus', $updateSet, $updateWhere);
@@ -52,14 +55,15 @@ class MRIViewScansPage {
         // update selected's
         if (is_array($_POST['selectedvol'])) {
             foreach ($_POST['selectedvol'] AS $curFileID => $curSelected) {
+                $params = array('FID' => $curFileID, 'STID' => $selectedTypeID);
                 $updateWhere = array('FileID' => $curFileID, 'ParameterTypeID'=>$selectedTypeID);
 
                 if ($curSelected == 'Unselected') {
-                    if($this->DB->selectOne("SELECT COUNT(*) FROM parameter_file WHERE FileID=$curFileID AND ParameterTypeID=$selectedTypeID") > 0) {
+                    if($this->DB->pselectOne("SELECT COUNT(*) FROM parameter_file WHERE FileID=:FID AND ParameterTypeID=:STID", $params) > 0) {
                         $success = $DB->delete('parameter_file', $updateWhere);
                     }
                 } else {
-                    if($this->DB->selectOne("SELECT COUNT(*) FROM parameter_file WHERE FileID=$curFileID AND ParameterTypeID=$selectedTypeID") > 0) {
+                    if($this->DB->pselectOne("SELECT COUNT(*) FROM parameter_file WHERE FileID=:FID AND ParameterTypeID=:STID", $params) > 0) {
                         $updateSet = array('Value'=>$curSelected, 'InsertTime'=>time());
                         $success = $this->DB->update('parameter_file', $updateSet, $updateWhere);
                     } else {
@@ -77,11 +81,12 @@ class MRIViewScansPage {
         // update visit status
         if (!empty($_POST['visit_status'])) {
             $save_visit_status = $_POST['visit_status'] == 'Unrated' ? '' : $_POST['visit_status'];
-            $old_visit_status = $this->DB->selectOne("SELECT MRIQCStatus FROM session WHERE ID=$_REQUEST[sessionID]");
-            $old_pending_status = $this->DB->selectOne("SELECT MRIQCPending FROM session WHERE ID=$_REQUEST[sessionID]");
+            $params = array('SID' => $_REQUEST['sessionID']);
+            $old_visit_status = $this->DB->pselectOne("SELECT MRIQCStatus FROM session WHERE ID=:SID", $params);
+            $old_pending_status = $this->DB->pselectOne("SELECT MRIQCPending FROM session WHERE ID=:SID", $params);
             
             $updateSet = array('MRIQCPending'=>$_POST['visit_pending'], 'MRIQCStatus'=>$_POST['visit_status'], 'MRIQCLastChangeTime'=>date("Y-m-d H:i:s"));
-            $firstChangeTime = $this->DB->selectOne("SELECT MRIQCFirstChangeTime FROM session WHERE ID=$_REQUEST[sessionID]");
+            $firstChangeTime = $this->DB->pselectOne("SELECT MRIQCFirstChangeTime FROM session WHERE ID=:SID", $params);
             if(empty($firstChangeTime)) $updateSet['MRIQCFirstChangeTime'] = $updateSet['MRIQCLastChangeTime'];
 
             $success = $this->DB->update('session', $updateSet, array('ID'=>$_REQUEST['sessionID']));
@@ -126,7 +131,9 @@ class MRIViewScansPage {
         $subjectData['visitLabel'] = $timePoint->getVisitLabel();
         $subjectData['visitNo'] = $timePoint->getVisitNo();
         $subjectData['site'] = $timePoint->getPSC();
-        $this->DB->selectRow("SELECT MRIQCStatus, MRIQCPending FROM session WHERE ID=$_REQUEST[sessionID]", $qcstatus);
+        $qcstatus = $this->DB->pselectRow("SELECT MRIQCStatus, MRIQCPending FROM session WHERE ID=:SID", 
+            array('SID' => $_REQUEST['sessionID'])
+        );
         $subjectData['mriqcstatus'] = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['candid'] = $timePoint->getCandID();
@@ -141,16 +148,23 @@ class MRIViewScansPage {
 
             // This doesn't work. Need to find the proper way to get the TarchiveID. It should be per file, not per 
             // candidate. --Dave
+            $params = array();
             $EntityType = $candidate->getData('Entity_type');
             if($EntityType == 'Scanner') {
-                $ID = "'" . $timePoint->getData('PSCID') . "'";
-
+                $ID = ":PPSCID";
+                $params['PPSCID'] = $timePoint->getData('PSCID');
             }
             else {
-                $ID = "lower('" . $candidate->getPSCID() . "_" . $timePoint->getCandID() . "_" . $timePoint->getVisitLabel() ."%')";
+                $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
+                $params['PPSCID'] = $candidate->getPSCID();
+                $params['PCandID'] = $timePoint->getCandID();
+                $params['PVL'] = $timePoint->getVisitLabel();
             }
-            $this->DB->select("SELECT TarchiveID FROM tarchive WHERE PatientName LIKE $ID", $tarchiveIDs);
-            $subjectData['ParameterFormCommentID'] = $this->DB->selectOne("SELECT CommentID FROM flag WHERE Test_name='mri_parameter_form' AND SessionID=" . $_REQUEST['sessionID']);
+            $tarchiveIDs = $this->DB->pselect("SELECT TarchiveID FROM tarchive WHERE PatientName LIKE $ID", $params);
+            $subjectData['ParameterFormCommentID'] = $this->DB->pselectOne(
+                "SELECT CommentID FROM flag WHERE Test_name='mri_parameter_form' AND SessionID=:SID", 
+                array('SID' => $_REQUEST['sessionID'])
+            );
             $subjectData['tarchiveids'] = $tarchiveIDs;
         }
 
@@ -199,8 +213,8 @@ class MRIViewScansPage {
             if(empty($scannerID)) {
                 $scannerID = $file->getParameter('ScannerID');
                 if(!empty($scannerID)) {
-                    $query = "SELECT CONCAT_WS(' ', Manufacturer, Model, Serial_number) FROM mri_scanner WHERE ID=$scannerID";
-                    $this->_subjectData['scanner'] = $this->DB->selectOne($query);
+                    $query = "SELECT CONCAT_WS(' ', Manufacturer, Model, Serial_number) FROM mri_scanner WHERE ID=:ScanID";
+                    $this->_subjectData['scanner'] = $this->DB->pselectOne($query, array('ScanID' => $scannerID));
                 }
             }
             $fileData[$fIdx]['fileID'] = $fileID['FileID'];
@@ -256,7 +270,7 @@ class MRIViewScansPage {
         $file_tpl_data['selected_options'] = array(''=>'&nbsp;');
         $tmp_types = array();
         $query = "SELECT mri_scan_type.Scan_type FROM mri_scan_type";
-        $this->DB->select($query, $scanTypes);
+        $scanTypes = $this->DB->pselect($query, array());
         
         foreach($scanTypes AS $row) {  
             $scanType = $row['Scan_type'];

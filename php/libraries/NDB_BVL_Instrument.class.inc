@@ -87,7 +87,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate');
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
@@ -611,8 +611,38 @@ class NDB_BVL_Instrument extends NDB_Page
     }
     
     // }}}
-    // {{{
+    //
+    // Process the Config file. This results in:
+    //     1. $CertificationEnabled being true or false,
+    //     2. $CertificationProjects being a list of projects which
+    //     use ceritification and,
+    //     3. $CertificationInstruments being a list of instruments
+    //     that use certification.
+    // This is put in a different function so that instruments that
+    // override getExaminerNames() can still easily get the config
+    // settings and don't need to parse the config file themselves.
+    function _getCertificationConfig() {
+        $config =& NDB_Config::singleton();
+        $CertificationConfig = $config->getSetting("Certification");
+        $CertificationEnabled = $CertificationConfig['EnableCertification'];
+        if($CertificationEnabled) {
+            $CertificationProjects = array();
+            foreach($CertificationConfig['CertificationProjects'] as $key => $projID) {
+                $CertificationProjects[] = $projID;
+            }
+            $CertificationInstruments = array();
+            foreach(Utility::toArray($CertificationConfig['CertificationInstruments']) as $instrument) {
+                foreach(Utility::toArray($instrument['test']) as $test) {
+                    $CertificationInstruments[] = $test['@']['value'];
+                }
+            }
+        }
+        return array($CertificationEnabled, $CertificationProjects, $CertificationInstruments);
+    }
 
+
+    // 
+    // {{{
     /**
      * gets the list of examiners for the current instrument site
      *
@@ -622,11 +652,25 @@ class NDB_BVL_Instrument extends NDB_Page
     function _getExaminerNames()
     {
         $db =& Database::singleton();
-        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:CID", array('CID' => $this->getCommentID()));
 
-        $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:CenID ORDER BY full_name", array('CenID' => $centerID));
-        if($db->isError($results)) {
-            return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
+
+        //get examiner certifications for profiles part of IBIS2
+        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$_REQUEST["candID"]));
+
+        list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
+        if ($CertificationEnabled && in_array($project, $CertificationProjects)
+            && in_array($this->testName, $CertificationInstruments)) {
+            $test_id = $db->pselectOne("SELECT ID from test_names where Test_name =:tst_name", array('tst_name'=>$this->testName));
+            $results = $db->pselect("SELECT certification.examinerID, full_name FROM certification JOIN examiners ON certification.examinerID = examiners.examinerID WHERE testID =:tid AND pass =:cert_id AND centerID =:cid ORDER BY full_name",array('tid'=>$test_id,'cert_id'=>'certified','cid'=>$centerID));
+            if($db->isError($results)) {
+                return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+            }
+        } else {
+            $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:centID ORDER BY full_name", array('centID' => $centerID));
+            if($db->isError($results)) {
+                return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+            }
         }
         
         $examiners = array(''=>'');
@@ -637,6 +681,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         return $examiners;
     }
+
     // }}}
     // {{{ getFullName()
     

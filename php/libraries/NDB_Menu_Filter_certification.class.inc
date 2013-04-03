@@ -1,5 +1,6 @@
 <?php
 require_once 'NDB_Menu_Filter.class.inc';
+require_once 'NDB_Form.class.inc';
 
 /**
  * The menu for certification
@@ -26,34 +27,36 @@ class NDB_Menu_Filter_certification extends NDB_Menu_Filter
         }
 
         // the base query
-        $query = " FROM cert_events, examiners, psc LEFT JOIN cert_details ON cert_events.certID = cert_details.certID WHERE cert_events.examinerID = examiners.examinerID AND examiners.centerID = psc.CenterID ";
+        $query = " FROM certification, examiners, psc, test_names WHERE certification.examinerID = examiners.examinerID AND examiners.centerID = psc.CenterID AND certification.testID = test_names.ID ";
 
         // only view their own profiles, unless they have permission to see all
         if (!$user->hasPermission('certification_multisite')) {
+            //$query .= " AND examiners.centerID = '" . $user->getData('CenterID') . "' ";
             $query .= " AND examiners.centerID = '" . $user->getData('CenterID') . "' ";
         }
 
         // set the class variables
-        $this->columns = array('cert_events.certID AS ID', 'psc.Name AS PSC', 'full_name', 'date_cert AS date', 'candID AS subject', 'MIN(pass) AS status');
+        $this->columns = array('certification.certID AS ID', 'psc.Name AS PSC', 'examiners.full_name as full_name', /*'date_cert AS date', 'MIN(pass) AS status',*/ 'test_names.Full_name as certification', 'certification.visit_label as visit', 'certification.pass as pass');
         $this->query = $query;
-        $this->group_by = 'cert_events.certID';
-        $this->order_by = 'Date DESC';
-        $this->headers = array('PSC', 'full_name', 'date', 'subject', 'status');
-        $this->validFilters = array('examiners.centerID', 'examiners.full_name', 'cert_events.date_cert', 'cert_events.candID');
+//        $this->group_by = 'certification.certID, test_names.Full_name';
+        //        $this->order_by = 'Date DESC';
+        $this->order_by = 'full_name';
+        $this->headers = array('PSC', 'full_name', 'date', 'subject', /*'status',*/ 'certification');
+        $this->validFilters = array('examiners.centerID', 'examiners.full_name', 'cert_events.date_cert', 'test_names.Full_name');
 
         $this->formToFilter = array(
-                                    'centerID' => 'examiners.centerID',
-                                    'full_name' => 'examiners.full_name',
-                                    'date_cert' => 'cert_events.date_cert',
-                                    'subject' => 'cert_events.candID',
-                                    );
+                'centerID' => 'examiners.centerID',
+                'full_name' => 'examiners.full_name',
+                'date_cert' => 'cert_events.date_cert',
+                'measure' => 'test_names.Full_name'
+                );
         return true;
     }
 
 
     function _setFilterForm()
     {
-    	// create user object
+        // create user object
         $user =& User::singleton();
         if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
@@ -81,20 +84,76 @@ class NDB_Menu_Filter_certification extends NDB_Menu_Filter
 
         // add form elements
         $this->form->addElement('select', 'centerID', 'Site:', $list_of_sites);
-        $this->form->addElement('text', 'full_name', 'Full name:');
+        $this->form->addElement('text', 'full_name', 'Examiner full name:');
         $this->form->addElement('text', 'date_cert', 'Date:');
-        $this->form->addElement('text', 'subject', 'DCCID:');
+        $this->form->addElement('text', 'measure', 'Measure:');
 
         return true;
     }
 
     function _setDataTableRows($count)
     {
-        // print out
+        $IDs = array();
+        $duplicates = array();
+        $i = 0;
+
+        foreach ($this->list as $li) {
+            $id = $li['ID'];
+            $certification = $li['certification'];
+
+            $str = explode(' ', $certification);
+            $certification = $str[0];
+
+            if (preg_match('/Mullen/', $certification)) {
+                $certification .= " " . $li['visit'];
+            }
+            if (array_key_exists($id, $IDs)) {
+                if ($li['pass'] == 'certified') {
+                    if ($IDs[$id] == 'none') {
+                        $IDs[$id] = $certification;
+                    }
+                    else {
+                        $IDs[$id] .= ", " . $certification;
+                    }
+                }
+                array_push($duplicates, $i);
+            }
+            else {
+                if ($li['pass'] == 'certified') {
+                    $IDs[$id] = $certification;
+                }
+                else {
+                    $IDs[$id] = "none";
+//                    array_push($duplicates, $i);
+                }
+            }
+            $i++;
+           /* if ($i == (sizeof($this->list) - 1)) {
+//                unset($duplicates);
+            }*/
+        }
+
+
+        //create concatenated list of certifications for each examiner
+        foreach ($this->list as &$l) {
+            if (array_key_exists($l['ID'], $IDs)) {
+                $l['certification'] = $IDs[$l['ID']];
+            }
+        }
+        
+          
+        $list =& $this->list;
+        foreach ($duplicates as $k=>$v) {
+            unset($list[$v]);
+
+        }
+
         $x = 0;
-        foreach ($this->list as $item) {
+        foreach ($list as $item) {
+
             //count column
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
+            $this->tpl_data['items'][$x][1]['value'] = $measures;
 
             //print out data rows
             $i = 1;
@@ -102,9 +161,11 @@ class NDB_Menu_Filter_certification extends NDB_Menu_Filter
                 if ($key == 'full_name') {
                     $this->tpl_data['items'][$x][$i]['ID'] = $item['ID'];
                 }
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                $i++;
+                if ($key != 'visit' && $key != 'pass') {
+                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                    $this->tpl_data['items'][$x][$i]['value'] = $val;
+                    $i++;
+                }
             }
             $x++;
         }

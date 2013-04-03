@@ -25,7 +25,10 @@ class NDB_Form_conflicts_resolve extends NDB_Form
     {
   		$DB =& Database::singleton();
         //Get the default values
-        $DB->select("SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID='".$this->identifier."'",&$value_results);
+        $value_results = $DB->pselect("SELECT ParameterTypeID, Value 
+            FROM parameter_candidate WHERE CandID=:CaID",
+            array('CaID' => $this->identifier)
+        );
         foreach($value_results AS $vresult){
         	$defaults["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
         }
@@ -53,27 +56,36 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         foreach($values AS $key=>$val) {
             if($val != 'none') {
                 $hash = substr($key, 9);
-                $DB->selectRow("SELECT * FROM conflicts_unresolved WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = '$hash'", $row);
+                $row = $DB->pselectRow(
+                    "SELECT * FROM conflicts_unresolved 
+                    WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash", 
+                    array('hash' => $hash)
+                );
                 if(!empty($row)) {
                    
                     // insert into conflicts_resolved
-                    $user1 = $DB->selectOne("SELECT UserID FROM $row[TableName] WHERE CommentID='$row[CommentId1]'");
-                    $user2 = $DB->selectOne("SELECT UserID FROM $row[TableName] WHERE CommentID='$row[CommentId2]'");
-                    $resolutionLog=array('UserID' => $user->getUsername(), 
-                                         // 'ResolutionTimestamp'=>null, 
-					 'User1'=>$user1, 
-					 'User2'=>$user2, 
-					 'TableName'=>$row['TableName'], 
-					 'ExtraKeyColumn'=>$row['ExtraKeyColumn'], 
-					 'ExtraKey1'=>$row['ExtraKey1'], 
-					 'ExtraKey2'=>$row['ExtraKey2'], 
-					 'FieldName'=>$row['FieldName'], 
-					 'CommentId1'=>$row['CommentId1'], 
-					 'CommentId2'=>$row['CommentId2'], 
-					 'OldValue1'=>$row['Value1'], 
-					 'OldValue2'=>$row['Value2'], 
-					 'NewValue'=>$val
-					 );
+                    $user1 = $DB->pselectOne("SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                        array('CID' => $row['CommentId1'])
+                    );
+                    $user2 = $DB->pselectOne("SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                        array('CID' => $row['CommentId2'])
+                    );
+                    $resolutionLog=array(
+                        'UserID' => $user->getUsername(), 
+                        // 'ResolutionTimestamp'=>null, 
+                        'User1'=>$user1, 
+                        'User2'=>$user2, 
+                        'TableName'=>$row['TableName'], 
+                        'ExtraKeyColumn'=>$row['ExtraKeyColumn'], 
+                        'ExtraKey1'=>$row['ExtraKey1'], 
+                        'ExtraKey2'=>$row['ExtraKey2'], 
+                        'FieldName'=>$row['FieldName'], 
+                        'CommentId1'=>$row['CommentId1'], 
+                        'CommentId2'=>$row['CommentId2'], 
+                        'OldValue1'=>$row['Value1'], 
+                        'OldValue2'=>$row['Value2'], 
+                        'NewValue'=>$val
+                    );
 
                     $DB->insert('conflicts_resolved', $resolutionLog);
 
@@ -129,8 +141,8 @@ class NDB_Form_conflicts_resolve extends NDB_Form
 
 	$instruments = Utility::getAllInstruments(false);
 
-  //      $DB->select("SELECT Full_name FROM test_names ORDER BY Full_name", &$instruments_r);
-//        $DB->select("SELECT Test_name FROM test_names ORDER BY Test_name", &$instruments_q);
+        $instruments_q = $DB->pselect("SELECT Test_name FROM test_names", array());
+
         // This array_map call turns the result of the above query to
         // a non-associative array, so that we can use the array_combine
         // trick to get an array of the form array( 'test_name' => 'test_name')
@@ -177,21 +189,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                 $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
                 $this->addScoreColumn('total', 'Total number of results:', $conflicts_num['total']);
             }
-       /* } else {
-            $this->addScoreColumn('status', 'Please select a filter criteria first.');
-        }
-        */
 
-
-        /*        $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved", $conflicts);
-        
-        //If there are no conflicts print a message to that effect
-        if(empty($conflicts)){
-        	$this->form->addElement('static', "static", "No conflicts detected at this time.");
-        	return;
-        } */
-        
-        
         //Loop through the conflicts and add a row per
         foreach($conflicts AS $conflict) {
 	    $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -200,14 +198,18 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             $ssid = substr($conflict[CommentId1],6,7);
             if($conflict['FieldName'] == 'Examiner') {
                 if($conflict['Value1'] != '') {
-                    $name1 = $DB->selectOne("SELECT Full_Name FROM examiners WHERE examinerID=$conflict[Value1]");
+                    $name1 = $DB->pselectOne("SELECT Full_Name FROM examiners WHERE examinerID=:EID",
+                        array('EID' =>$conflict['Value1'])
+                    );
             	    if(Utility::isErrorX($name1)) {
 		    	        $name1 = $conflict['Value1'];
 		            }
                 }
 
                 if($conflict['Value2'] != '') {
-                    $name2 = $DB->selectOne("SELECT Full_Name FROM examiners WHERE examinerID=$conflict[Value2]");
+                    $name2 = $DB->pselectOne("SELECT Full_Name FROM examiners WHERE examinerID=:EID",
+                        array('EID' => $conflict['Value2'])
+                    );
            	        if(Utility::isErrorX($name2)) {
 			            $name2 = $conflict['Value2'];
 		            }

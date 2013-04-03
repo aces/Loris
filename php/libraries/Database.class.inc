@@ -60,7 +60,8 @@ class Database extends PEAR
         if(is_null($database) && is_null($username) && is_null($password) && is_null($host)) {
             if(!empty($connections)) {
                 reset($connections);
-                return current($connections);
+                $connection = current($connections);
+                return $connection;
             } else {
                 return PEAR::raiseError('No database connection exists');
             }
@@ -395,7 +396,10 @@ class Database extends PEAR
 
     function pselectRow($query, $params) {
         $rows = $this->pselect($query . " LIMIT 1", $params);
-        return $rows[0];
+        if(isset($rows[0])) {
+            return $rows[0];
+        }
+        return $rows;
     }
     function pselectOne($query, $params) {
         $result = $this->pselectRow($query, $params);

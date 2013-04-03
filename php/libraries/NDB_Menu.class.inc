@@ -1,5 +1,6 @@
 <?php
 require_once 'PEAR.php';
+require_once 'NDB_Page.class.inc';
 
 /**
  * Base Menu class

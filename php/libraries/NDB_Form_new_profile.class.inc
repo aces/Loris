@@ -150,9 +150,15 @@ class NDB_Form_new_profile extends NDB_Form
             $centerID = $user->getData('CenterID');
             $site =& Site::singleton($centerID);
 
-            if(empty($values['PSCID'])) $errors['PSCID'] = 'PSCID must be specified';
-            elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) $errors['PSCID'] = 'PSCID does not match the required structure';
-            elseif($db->selectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$values[PSCID]'") > 0) $errors['PSCID'] = 'PSCID has already been registered';
+            if(empty($values['PSCID'])) {
+                $errors['PSCID'] = 'PSCID must be specified';
+            } elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) {
+                $errors['PSCID'] = 'PSCID does not match the required structure';
+            } elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID", 
+                array('V_PSCID' => $values[PSCID])) > 0
+            ) {
+                    $errors['PSCID'] = 'PSCID has already been registered';
+            }
         }
         $useProjects = $config->getSetting('useProjects');
         if($useProjects === "true" && empty($values['ProjectID'])) {
