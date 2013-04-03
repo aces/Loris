@@ -33,6 +33,13 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
+$confirm = false;
+if ((isset($argv[1]) && $argv[1] === "confirm") 
+    || (isset($argv[2]) && $argv[2] === "confirm")
+) {
+    $confirm = true;
+}
+
 $DB =& Database::singleton();
 if(!empty($argv[1]) && $argv[1]!="confirm"){
 	$query.=" AND s.visit_label='$argv[1]'";
@@ -42,7 +49,7 @@ if(!empty($argv[1]) && $argv[1]!="confirm"){
 }
 
 function PopulateVisitLabel($result, $visit_label) {
-    global $argv;
+    global $argv, $confirm;
     // create a new battery object && new battery
     $battery =& new NDB_BVL_Battery;
 
@@ -59,7 +66,7 @@ function PopulateVisitLabel($result, $visit_label) {
         echo "\n CandID: ".$timePoint->getCandID()."  Visit Label:  ".$timePoint->getVisitLabel()."\nMissing Instruments:\n";
         print_r($diff);
     }
-    if($argv[1]=="confirm" || $argv[2]=="confirm"){
+    if ($confirm === true) {
         foreach($diff AS $test_name){
             $battery->addInstrument($test_name);
         }
@@ -84,7 +91,7 @@ if(isset($visit_label)) {
     }
 }
 
-if($argv[1]!="confirm" && $argv[2]!="confirm"){
+if($confirm === false) {
 	echo "\n\nRun this tool again with the argument 'confirm' to perform the changes\n\n";
 }
 ?>
