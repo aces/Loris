@@ -331,17 +331,17 @@ class NDB_Menu_Filter extends NDB_Menu
             foreach ($this->filter as $key => $val) {
                 $prepared_key = preg_replace('/\./', '_', $key);
                 if ((!empty($val) || $val === '0') && $key != 'order') {
-                    
+
                     // special rule for dropdowns where value is numeric
                     if (strtolower(substr($key, -8)) == 'centerid' || 
                         strtolower(substr($key, -10)) == 'categoryid' ||
                         strtolower(substr($key, -6)) == 'gender') {
-                        $query .= " AND `$key` = :v_$prepared_key";
+                        $query .= " AND $key = :v_$prepared_key";
                         $qparams["v_$prepared_key"] = $val;
                     }
                     else {
-                        $query .= " AND `$key` LIKE CONCAT('%', :v_$key, '%') ";
-                        $qparams["v_$key"] = $val;
+                        $query .= " AND $key LIKE CONCAT('%', :v_$prepared_key, '%') ";
+                        $qparams["v_$prepared_key"] = $val;
                     }
                 }
             }
@@ -360,7 +360,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $first = True;
             foreach ($this->having as $key => $val) {
                 if($val !== '' and $val != null) {
-                    $prepared_key = preg_replace('/\./', '_', $key);
+                    $prepared_key = preg_replace('/\./g', '_', $key);
                     if($first == False) {
                         $query .= ' AND ';
                     }
