@@ -1,6 +1,27 @@
 <?php
+/**
+ * Test the functionality of the candidate_list menu filter in Loris
+ *
+ * PHP Version 5
+ *
+ *  @category Testing
+ *  @package  Test
+ *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ *  @license  Loris license
+ *  @link     http://www.loris.ca
+ *
+ */
 require_once 'LorisTest.php';
 
+/**
+ * Class to implement test for candidate_list
+ *
+ *  @category Testing
+ *  @package  Test
+ *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ *  @license  Loris license
+ *  @link     http://www.loris.ca
+ */
 class TestOfCandidateList extends LorisTest
 {
 
