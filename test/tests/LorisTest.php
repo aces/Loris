@@ -47,7 +47,7 @@ abstract class LorisTest extends WebTestCase
      */
     function setUp()
     {
-        $this->config =& NDB_Config::singleton();
+        @$this->config =& NDB_Config::singleton();
         
         $database = $this->config->getSetting('database');
         $this->url = $this->config->getSetting("url");
