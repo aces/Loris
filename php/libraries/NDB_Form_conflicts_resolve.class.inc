@@ -58,7 +58,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                 $hash = substr($key, 9);
                 $row = $DB->pselectRow(
                     "SELECT * FROM conflicts_unresolved 
-                    WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash LIMIT 500", 
+                    WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash", 
                     array('hash' => $hash)
                 );
                 if(!empty($row)) {
