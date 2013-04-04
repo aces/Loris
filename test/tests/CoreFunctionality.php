@@ -141,7 +141,7 @@ class TestOfLoris extends LorisTest
      * Helper function to randomly insert data into the form 
      * on the current page, then click Save Data. 
      *
-     * @param int        $AnswerStatus True if _status should be 
+     * @param integer    $AnswerStatus True if _status should be 
      *                                 chosen, False if the field
      *                                 itself should have data entered
      *                                 instead.
@@ -150,7 +150,7 @@ class TestOfLoris extends LorisTest
      *
      * @return null
      */
-    function _testSave(boolean $AnswerStatus, SimplePage $page)
+    function _testSave(integer $AnswerStatus, SimplePage $page)
     {
         // SimpleTest doesn't have any way to get form elements, so we need to go 
         // through the raw data structure to get a list of all the elements
@@ -254,6 +254,11 @@ class TestOfLoris extends LorisTest
             );
 
             if ($this->RunDangerousTests === true) {
+                /* 
+                 * NOTE THIS NO LONGER WORKS, SimpleTest doesn't provide
+                 * a way to get the current page anymore. For now, this
+                 * is commented out, but it was always dangerous to do
+                 * things this way
                 // First test with _status fields equal to answered, then
                 //print "Saving $Flag[CommentID] with _status answered\n";
                 $this->_testSave(0, $page);
@@ -273,6 +278,7 @@ class TestOfLoris extends LorisTest
                     "CommentID: $Flag[CommentID] URL: " . $url
                 );
                 // TODO: Go through subpages of the instrument here.
+                 */
             }
 
 
