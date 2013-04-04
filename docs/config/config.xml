@@ -221,6 +221,9 @@
           </permissions>
           <visible>1</visible>
         </tab>
+        <ConflictResolver>
+            <MaxConflicts>500</MaxConflicts>
+        </ConflictResolver>
 
 </main_menu_tabs>
 
