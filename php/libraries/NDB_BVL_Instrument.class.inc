@@ -451,7 +451,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 $agemonths = (round($agemonths*10) / 10.0);
                 if(!empty($age)) {
                     $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
-                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $querY_params);
+                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
                     $values['Candidate_Age'] = $agemonths;
                     $values['Window_Difference'] = 0;
 
