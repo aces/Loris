@@ -1483,9 +1483,10 @@ class NDB_BVL_Instrument extends NDB_Page
             }
 
             $parsingPage = 'top';
+            $firstSelectOfPage = true;
 
             while(($line = fgets($fp, 4096)) !== false) {
-                $pieces = split("{@}", $line);
+                $pieces = preg_split("/{@}/", $line);
 
                 $type = $pieces[0];
                 if(strpos($pieces[1], "_status") !== FALSE) {
@@ -1507,6 +1508,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         } else {
                             $addElements = false;
                         }
+                        $firstSelectOfPage = true;
                         break;
                     case 'table':
                         $this->testName = trim($pieces[1]);
@@ -1561,7 +1563,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         // fall through and also execute select code below
                     case 'select':
 
-                        $options = split("{-}", trim($pieces[3]));
+                        $options = preg_split("/{-}/", trim($pieces[3]));
                         $opt = array();
                         foreach($options as $o) {
                             $arr = explode("=>", $o);
@@ -1584,6 +1586,10 @@ class NDB_BVL_Instrument extends NDB_Page
                             } else {
                                 $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
                             }
+                        }
+                        if ($firstSelectOfPage) {
+                            $this->_requiredElements[] = $pieces[1];
+                            $firstSelectOfPage = false;
                         }
                         break;
                     case 'header':
