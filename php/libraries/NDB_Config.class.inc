@@ -50,21 +50,99 @@ class NDB_Config
     */
     function load($configFile = "../project/config.xml")
     {
-        // PEAR::Config
-        require_once "Config.php";
 
         // load the configuration data into a global variable $config
+        /*
+        // PEAR::Config
+        require_once "Config.php";
         $configObj = new Config;
         $root =& $configObj->parseConfig($configFile, "XML");
         if(Utility::isErrorX($root)) {
             die("Config error: ".$root->getMessage());
-        }
+        } 
+        
         $configObj = $root->searchPath(array('config'));
-        $this->_settings = $configObj->toArray();
+        $arr = $configObj->toArray(); 
         $this->_settings = $this->_settings['config'];
-        unset($configObj, $root);
+         */
+
+        $newroot = simplexml_load_file($configFile);
+        //$arr2 = NDB_Config::ConvertToArray($newroot);
+        $this->_settings = NDB_Config::ConvertToArray($newroot); //$this->_settings['config'];
+        //unset($configObj, $root);
     }
 
+    static function ConvertToArray(SimpleXMLElement $xml) {
+        $retVal = array();
+        $children = $xml->children();
+        if(count($children) > 0) {
+            foreach ($children as $child) {
+                $name = $child->getName();
+                $tagExists = isset($retVal[$name]);
+
+                $numericArrayExists = 
+                    isset($retVal[$name]) 
+                    && is_array($retVal[$name])
+                    && Utility::NumericArray($retVal[$name])
+                    ;
+
+                if($tagExists) {
+                    if(!$numericArrayExists) {
+                        // The tag is duplicated in the XML, so it should
+                        // be stored in an array. Create a new array and replace
+                        // the tag with what was already parsed before appending
+                        // the child
+                        $newArray = array();
+
+                        $Extant = $retVal[$name];
+                        $newArray [] = $Extant;
+                        $retVal[$name] = $newArray;
+                    } 
+                    // Since the tag appears multiple times, append it to the
+                    // array instead of directly assigning it.
+                    $Converted = NDB_Config::ConvertToArray($child);
+
+                    $attributes = $child->attributes();
+                    if(count($attributes) > 0) {
+                        if(!is_array($Converted)) {
+                            $Converted = array($Converted);
+                        }
+                        $Converted['@'] = array();
+                        foreach($attributes as $atname => $val) {
+                            $Converted['@'][$atname] = $val->__toString();
+                        }
+                    }
+                    $retVal[$name][] = $Converted;
+                } else {
+                    $retVal[$name] = NDB_Config::ConvertToArray($child);
+                    $attributes = $child->attributes();
+
+                    if(count($attributes) > 0) {
+                        if(!is_array($retVal[$name])) {
+                            $retVal[$name] = array($retVal[$name]);
+                        }
+                        $retVal[$name]['@'] = array();
+                        foreach($attributes as $atname => $val) {
+                            $retVal[$name]['@'][$atname] = $val->__toString();
+
+                        }
+                    }
+                }
+            }
+        } else {
+            $retVal = $xml->__toString();
+            $attributes = $xml->attributes();
+            if(count($attributes) > 0) {
+                $retVal = array('#' => $retVal, '@' => array());
+                foreach($attributes as $name => $val) {
+                    $retVal['@'][$name] = $val->__toString();
+                    
+                }
+            }
+            return $retVal;
+        }
+        return $retVal;
+    }
     /**
     * attempts to determine the site of the user currently logged in and uses that to get site specific settings and override study defaults, building the _siteSettings property
     */
