@@ -78,7 +78,7 @@ class NDB_Form_participant_status extends NDB_Form
         $DB =& Database::singleton();
 
         //header
-        $this->form->addElement('header', 'instrument_title', "<p style=\"margin-top:-3px; font-size:12px;\">PARTICIPANT STATUS FORM</p>");
+        $this->form->addElement('header', null,"PARTICIPANT STATUS FORM");
 
         //entry staff info
         $this->form->addElement('static', 'entry_staff', 'Data Entry Staff');
@@ -110,7 +110,7 @@ class NDB_Form_participant_status extends NDB_Form
 
         //ineligible text area
         $group[] = $this->form->createElement('textarea', 'ineligible_others_specify');
-        $group[] = $this->form->createElement("select","ineligible_others_specify_not_answered", null, array(null => null) + $notAns4);
+        $group[] = $this->form->createElement("select","ineligible_others_specify_status", null, array(null => null) + $notAns4);
         $this->form->addGroup($group, 'ineligible_others_specify_group', $this->indent . 'Please specify other reason for ineligible ', null, false);
         $this->tpl_data['element_list'][] = "ineligible_others_specify_group";
         unset($group);
@@ -123,7 +123,7 @@ class NDB_Form_participant_status extends NDB_Form
         $this->tpl_data['element_list'][] = "drop_out_reasons";
 
         $group[] = $this->form->createElement('textarea', 'drop_out_reasons_others_specify');
-        $group[] = $this->form->createElement("select","drop_out_reasons_others_specify_not_answered", null, array(null => null) + $notAns4);
+        $group[] = $this->form->createElement("select","drop_out_reasons_others_specify_status", null, array(null => null) + $notAns4);
         $this->form->addGroup($group, 'drop_out_reasons_others_specify_group', $this->indent .'Please specify other reason for drop out ', null, false);
         $this->tpl_data['element_list'][] = "drop_out_reasons_others_specify_group";
         unset($group);
@@ -131,7 +131,7 @@ class NDB_Form_participant_status extends NDB_Form
 
         //others text area
         $group[] = $this->form->createElement('textarea', 'other_reasons');
-        $group[] = $this->form->createElement("select","other_reasons_not_answered", null, array(null => null) + $notAns4);
+        $group[] = $this->form->createElement("select","other_reasons_status", null, array(null => null) + $notAns4);
         $this->form->addGroup($group, 'other_reasons_group', 'If Others, specify the reason', null, false);
         $this->tpl_data['element_list'][] = "other_reasons_group";
         unset($group);
@@ -149,66 +149,82 @@ class NDB_Form_participant_status extends NDB_Form
 
         $errors=array();
         $date_taken_answered = $fields['Date_taken'];
-        $date_taken_notanswered = $fields['Date_taken_not_answered'];
+        $date_taken_notanswered = $fields['Date_taken_status'];
 
 
-        if (($fields['participant_status'])=='ineligible'){
-            if ($fields['drop_out_reasons'] !==''){
-                $errors['drop_out_reasons'] .= "Must be blank";
-            }
-            //if others is not empty
-            if (($fields['other_reasons'] !=='')||($fields['other_reasons_not_answered'] !=='')){
+        ////////////////////////////////
+        ///////active or death is answered///////////////////
+        ///////////////////////////////////
+        if ((($fields['participant_status'])=='active') || (($fields['participant_status'])=='death')){
+
+            //Others must be empty
+            if ((!empty($fields['other_reasons']))||(!empty($fields['other_reasons_status']))){
                 $errors['other_reasons_group'] .= "Must be blank";
+            }
+            if ((!empty($fields['drop_out_reasons'])) || (!empty($fields['drop_out_reasons_others_specify']))
+                    ||(!empty($fields['drop_out_reasons_others_specify_status']))){
+                $errors['drop_out_reasons_others_specify_group'] .= "Must be blank";
+            }
+            if ((!empty($fields['ineligible_others_specify'])) || (!empty($fields['ineligible_others_specify_status']))){
+                $errors['ineligible_others_specify_group'] .= "Must be blank";
+            }
+
+        }
+        ////////////////////////////////
+        ///ineglible
+        ////////////////////////////////
+        if (($fields['participant_status'])=='ineligible'){
+            if (empty($fields['ineligible_others_specify'])){
+                $errors['ineligible_others_specify_group'] .= "required";
+            }
+
+
+            //Other fields must be empty
+            if ((!empty($fields['other_reasons']))||(!empty($fields['other_reasons_status']))){
+                $errors['other_reasons_group'] .= "Must be blank";
+            }
+            if ((!empty($fields['drop_out_reasons'])) || (!empty($fields['drop_out_reasons_others_specify']))
+                    ||(!empty($fields['drop_out_reasons_others_specify_status']))){
+                $errors['drop_out_reasons_others_specify_group'] .= "Must be blank";
             }
         }
 
+        ////////////////////////////////
         //if dropout is answered
+        ////////////////////////////////
         if (($fields['participant_status'])=='dropout'){
             //dropout is required
-            if (empty($fields['drop_out_reasons'])){
-                $errors['drop_out_reasons'] .= "required";
+            if (empty($fields['drop_out_reasons_others_specify'])){
+                $errors['drop_out_reasons_others_specify_group'] .= "required";
             }
-            //if others is not empty
-            if (($fields['other_reasons'] !=='')||($fields['other_reasons_not_answered'] !=='')){
-                $errors['other_reasons_group'] .= "Must be blank";
-            }
-        }
 
-        //if death is answered
-        if (($fields['participant_status'])=='death'){
-
-            //if others is not empty
-            if (($fields['other_reasons'] !=='')||($fields['other_reasons_not_answered'] !=='')){
+            //Other fields must be empty
+            if ((!empty($fields['other_reasons']))||(!empty($fields['other_reasons_status']))){
                 $errors['other_reasons_group'] .= "Must be blank";
             }
 
-            //if dropout is not empty
-            if (($fields['drop_out_reasons'] !=='')){
-                $errors['drop_out_reasons'] .= "Must be blank";
+            if ((!empty($fields['ineligible_others_specify'])) || (!empty($fields['ineligible_others_specify_status']))){
+                $errors['ineligible_others_specify_group'] .= "Must be blank";
             }
         }
 
+        ////////////////////////////////
         //if others is answered
+        ////////////////////////////////
         if (($fields['participant_status'])=='others'){
             //others is required
-            if ((empty($fields['other_reasons'])) && (empty($fields['other_reasons_group_not_answered']))) {
+            if ((empty($fields['other_reasons'])) && (empty($fields['other_reasons_group_status']))) {
                 $errors['other_reasons_group'] .= "required";
             }
 
-            //if dropout is not empty
-            if (($fields['drop_out_reasons'] !=='')){
-                $errors['drop_out_reasons'] .= "Must be blank";
+            //Other fields must be empty
+            if ((!empty($fields['drop_out_reasons'])) || (!empty($fields['drop_out_reasons_others_specify']))
+                    ||(!empty($fields['drop_out_reasons_others_specify_status']))){
+                $errors['drop_out_reasons_others_specify_group'] .= "Must be blank";
             }
-        }
 
-
-        if(empty($fields['participant_status'])) {
-            $errors['participant_status'] .= 'Required';
-        }
-
-        if($fields['drop_out_reasons'] == '3_others') {
-            if($fields['drop_out_reasons_others_specify'] == NULL && empty($fields['drop_out_reasons_others_specify_not_answered'])) {
-                $errors['drop_out_reasons_others_specify_group'] .= 'Required if  3: Others';
+            if ((!empty($fields['ineligible_others_specify'])) || (!empty($fields['ineligible_others_specify_status']))){
+                $errors['ineligible_others_specify_group'] .= "Must be blank";
             }
         }
 
