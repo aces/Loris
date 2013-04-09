@@ -1668,7 +1668,7 @@ INSERT INTO help (helpID, topic, content) VALUES ('1','LORIS HELP: Using the Dat
 
 CREATE TABLE participant_status (
 ID int(10) unsigned NOT NULL auto_increment,
-CandID int(6) NOT NULL default '0',
+CandID int(6) UNIQUE NOT NULL default '0',
 UserID varchar(255) default NULL,
 Examiner varchar(255) default NULL,
 entry_staff varchar(255) default NULL,
