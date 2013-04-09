@@ -43,10 +43,12 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         if ($useProjects === "true") {
             $this->columns[] = 'min(candidate.ProjectID) as Project';
         }
-        $this->columns=array_merge($this->columns,
-            array('min(session.SubprojectID) as Subproject',
-            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB')
-        );
+        if($config->getSetting("useDoB") == "true"){
+		$this->columns=array_merge($this->columns,
+		array('min(session.SubprojectID) as Subproject',
+		'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB')
+		);
+        } 
         if($config->getSetting("useEDC")==="true") {
         	$this->columns[]='DATE_FORMAT((candidate.EDC),\'%Y-%m-%d\') AS EDC';
         	$this->formToFilter['edc'] = 'candidate.EDC';
@@ -58,7 +60,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             'max(session.Current_stage) as Latest_visit_status',
             'min(feedback_bvl_thread.Status+0) as Feedback')
         );
-
+        $db = Database::singleton();
+        $this->FeedbackIDs = $db->pselect("select distinct min(Status+0) as ID, Status from feedback_bvl_thread group by Status;");
         
         $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Active = 'Y'
          LEFT JOIN feedback_bvl_thread ON (candidate.CandID=feedback_bvl_thread.CandID)
@@ -123,7 +126,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $list_of_projects =& Utility::getProjectList();
 
         // list of feedback statuses
-        $feedback_status_options = array(null => 'Any','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
+        //$feedback_status_options = array('' => 'Any','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
+        $feedback_status_options = array('' => 'Any', '1'=>'opened','2'=>'answered','3'=>'closed','4'=>'comment');
         $latest_visit_status_options = array(null => 'Any', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
@@ -146,7 +150,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         	$this->addBasicText('edc', 'EDC:', 'maxlength=10');
         	$this->tpl_data['useEDC']="true";
         }
-        $this->addSelect('feedback', 'Feedback Status:', array_merge(array('' => 'Any'), $feedback_status_options));
+        $this->addSelect('feedback', 'Feedback Status:', $feedback_status_options);
 
         return true;
     }
@@ -180,10 +184,10 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 // get feedback information for each displayed candidate record
                 if ($key == 'Feedback' && !empty($val)) {
                     // overwrite value
-                    $this->tpl_data['items'][$x][$i]['value'] = NDB_BVL_Feedback::getFeedbackStatusVerbose($val);
+                    $this->tpl_data['items'][$x][$i]['value'] = $this->FeedbackIDs[$val]['Status'];
                     $this->tpl_data['items'][$x][$i]['bgcolor'] = NDB_BVL_Feedback::getThreadColor($this->tpl_data['items'][$x][$i]['value']);
                 } else if ($key=='Feedback' && empty($val)){
-                	$this->tpl_data['items'][$x][$i]['value'] = "None";
+                	$this->tpl_data['items'][$x][$i]['value'] = "";
                 } else if ($key=='Project') {
                 	$this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
                 } else if ($key=='Subproject') {
