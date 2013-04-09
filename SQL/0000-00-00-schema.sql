@@ -389,7 +389,7 @@ CREATE TABLE `files` (
   `SeriesUID` varchar(64) DEFAULT NULL,
   `EchoTime` double DEFAULT NULL,
   `CoordinateSpace` varchar(255) default NULL,
-  `Algorithm` varchar(255) default NULL,
+  `ClassifyAlgorithm` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
   `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat') default NULL,
