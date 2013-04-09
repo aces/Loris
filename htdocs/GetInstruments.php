@@ -11,13 +11,14 @@ $client->makeCommandLine();
 $client->initialize();
 
 require_once "Utility.class.inc";
+
+
 //gets the given visit_label and returns the instrument
 
 
 
 $instruments = Utility::getVisitInstruments($_REQUEST['visit_label']);
 
-print "All Instruments\n";
 foreach($instruments as $instrument){
     print $instrument['Test_name_display'] . "\n";
 }
