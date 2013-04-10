@@ -67,7 +67,7 @@ class NDB_Form_participant_status extends NDB_Form
                 array("CandID"=>$values['CandID'])
             );
         } else {
-        //insert it
+            //insert it
             $success = $DB->insert("participant_status",$values);
         }
 
@@ -320,11 +320,11 @@ class NDB_Form_participant_status extends NDB_Form
         }
         return count( $errors ) > 0 ? $errors : true;
     }
-/**
- * Gets the participant_status options from participant_status_options
- *getPartcipant_status_options()
- * @return unknown
- */
+    /**
+     * Gets the participant_status options from participant_status_options
+     *getPartcipant_status_options()
+     * @return unknown
+     */
     function getPartcipant_status_options() {
         $DB =& Database::singleton();
         $options = $DB->pselect(
