@@ -147,6 +147,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         }
 		$subprojectlist=Utility::getSubprojectList();
         $projectlist=Utility::getProjectList();
+        $participantOptions= NDB_Form_participant_status::getParticipantStatusOptions();
 		
         // print out
         $x = 0;
@@ -174,6 +175,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 	$this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
                 } else if ($key=='Subproject') {
                 	$this->tpl_data['items'][$x][$i]['value'] = $subprojectlist[$val];
+                } else if ($key == 'Participant_Status') {
+                	$this->tpl_data['items'][$x][$i]['value'] = $participantOptions[$val];
                 }
                 	
 
