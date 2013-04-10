@@ -13,7 +13,7 @@ class NDB_Form_participant_status extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
+        if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
@@ -59,7 +59,7 @@ class NDB_Form_participant_status extends NDB_Form
             $success = $DB->insert("participant_status",$values);
         }
 
-        if(PEAR::isError($success)) {
+        if(Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Form_participant_status::_process: ".$success->getMessage());
         }
 
