@@ -255,6 +255,17 @@
           </permissions>
           <visible>1</visible>
         </tab>
+        <tab>
+          <link>data_integrity_flag</link>
+          <label>Data Integrity Flag</label>
+          <access>all</access>
+          <permissions>
+            <perm>
+                data_integrity_flag
+            </perm>
+          </permissions>
+          <visible>1</visible>
+        </tab>
         <ConflictResolver>
             <MaxConflicts>500</MaxConflicts>
         </ConflictResolver>
