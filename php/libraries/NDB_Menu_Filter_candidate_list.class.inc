@@ -113,7 +113,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $latest_visit_status_options = array(null => 'Any', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
-        $participant_status_options=   array(null=>'Any') +  NDB_Form_participant_status::getPartcipant_status_options();
+        $participant_status_options=   array(null=>'Any') +  NDB_Form_participant_status::getParticipantStatusOptions();
         
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);

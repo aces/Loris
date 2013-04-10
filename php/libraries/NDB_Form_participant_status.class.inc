@@ -2,13 +2,24 @@
 require_once "NDB_Form.class.inc";
 
 /**
- * The forms for the new profile menu
- * @package main
+ * The form for the participant status module.
+ *
+ * @category Behavioural 
+ * @package  Main
+ * @author   Zia Mohadesz <zia.mohades@gmail.com>
+ * @license  Loris License
+ * @link     https://github.com/aces/Loris-Trunk
  */
 class NDB_Form_participant_status extends NDB_Form
 {
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
+    /**
+     * Determine if the user should have access to this page.
+     * Currently tied to data_entry permission.
+     *
+     * @return boolean True if the user should have access
+     */
     function _hasAccess()
     {
         // create user object
@@ -28,6 +39,12 @@ class NDB_Form_participant_status extends NDB_Form
         return ($user->hasPermission('data_entry'));
     }
 
+    /**
+     * Gets default options for smarty to fill in.
+     * This comes from the participant status table
+     *
+     * @return array Currently saved entries in database
+     */
     function _getDefaults()
     {
 
@@ -39,9 +56,17 @@ class NDB_Form_participant_status extends NDB_Form
         return $defaults;
     }
 
+    /**
+     * Process the submitted values, called after validation.
+     *
+     * @param array $values The values submitted by the user 
+     *                      to the form.
+     *
+     * @return boolean True on success
+     */
     function _process($values)
     {
-        if (!is_array($values) || count($values) ==0) {
+        if (!is_array($values) || count($values) === 0) {
             return true;
         }
         $DB =& Database::singleton();
@@ -62,13 +87,14 @@ class NDB_Form_participant_status extends NDB_Form
             array("cid"=>$values['CandID'])
         );
         if ($ParticipantCount > 0) {
-            $success = $DB->update("participant_status", 
+            $success = $DB->update(
+                "participant_status", 
                 $values,
                 array("CandID"=>$values['CandID'])
             );
         } else {
             //insert it
-            $success = $DB->insert("participant_status",$values);
+            $success = $DB->insert("participant_status", $values);
         }
 
         if (Utility::isErrorX($success)) {
@@ -81,6 +107,12 @@ class NDB_Form_participant_status extends NDB_Form
         $this->form->freeze();
     }
 
+    /**
+     * Constructor called by loris to setup the tpl_data
+     * array
+     *
+     * @return null
+     */
     function participant_status()
     {
 
@@ -90,7 +122,7 @@ class NDB_Form_participant_status extends NDB_Form
         $DB =& Database::singleton();
 
         //header
-        $this->form->addElement('header', null,"PARTICIPANT STATUS FORM");
+        $this->form->addElement('header', null, "PARTICIPANT STATUS FORM");
 
         //entry staff info
         $this->form->addElement('static', 'entry_staff', 'Data Entry Staff');
@@ -104,7 +136,7 @@ class NDB_Form_participant_status extends NDB_Form
             'SELECT PSCID FROM candidate where CandID = :candid',
             array('candid'=>$this->identifier)
         );
-        $this->form->addElement ('static', 'pscid', 'PSCID');
+        $this->form->addElement('static', 'pscid', 'PSCID');
         $this->tpl_data['element_list'][] = "pscid";
         $this->tpl_data['pscid'] = $pscid;
 
@@ -119,7 +151,7 @@ class NDB_Form_participant_status extends NDB_Form
 
         $this->form->addElement('static', null, '<br /><br />');
 
-        $options = $this->getPartcipant_status_options();
+        $options = $this->getParticipantStatusOptions();
 
         $this->form->addElement(
             'select', 
@@ -209,13 +241,19 @@ class NDB_Form_participant_status extends NDB_Form
     }
 
 
-    // this function is for miscellaneous validation (mainly dependency)
-
-    function _validate($fields){
-
-
+    /** 
+     * This function is for miscellaneous validation (mainly dependency)
+     *
+     * @param array $fields The list of input to the form submitted by
+     *                      smarty.
+     *
+     * @return true|array An array of elements with errors or true
+     *                     if all eleements are valid
+     */
+    function _validate($fields)
+    {
         $errors=array();
-        $options = $this->getPartcipant_status_options();
+        $options = $this->getParticipantStatusOptions();
         $date_taken_answered = $fields['Date_taken'];
         $date_taken_notanswered = $fields['Date_taken_status'];
 
@@ -234,12 +272,14 @@ class NDB_Form_participant_status extends NDB_Form
 
             //Others must be empty
             if ((!empty($fields['other_reasons']))
-                || (!empty($fields['other_reasons_status']))) {
+                || (!empty($fields['other_reasons_status']))
+            ) {
                 $errors['other_reasons_group'] .= "Must be blank";
             }
             if ((!empty($fields['drop_out_reasons'])) 
                 || (!empty($fields['drop_out_reasons_others_specify']))
-                || (!empty($fields['drop_out_reasons_others_specify_status']))) {
+                || (!empty($fields['drop_out_reasons_others_specify_status']))
+            ) {
                 $errors['drop_out_reasons_others_specify_group'] .= "Must be blank";
             }
             if ((!empty($fields['ineligible_others_specify'])) 
@@ -318,14 +358,17 @@ class NDB_Form_participant_status extends NDB_Form
                 $errors['ineligible_others_specify_group'] .= "Must be blank";
             }
         }
-        return count( $errors ) > 0 ? $errors : true;
+        return count($errors) > 0 ? $errors : true;
     }
     /**
      * Gets the participant_status options from participant_status_options
-     *getPartcipant_status_options()
-     * @return unknown
+     * getParticipantStatusOptions()
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
      */
-    function getPartcipant_status_options() {
+    function getParticipantStatusOptions() 
+    {
         $DB =& Database::singleton();
         $options = $DB->pselect(
             "SELECT ID,Description FROM participant_status_options",
