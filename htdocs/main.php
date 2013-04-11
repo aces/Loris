@@ -267,7 +267,17 @@ $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 //Display the links, as specified in the config file
 $links=$config->getSetting('links');
 foreach(Utility::toArray($links['link']) AS $link){
-	$tpl_data['links'][]=array('url'=>$link['@']['url'] . $link_args[$link['@']['args']], 'label'=>$link['#'], 'windowName'=>md5($link['@']['url'])); 
+    $BaseURL = 'url'=>$link['@']['url'];
+    if(isset($link['@']['args'])) {
+        $LinkArgs = $link_args[$link['@']['args']];
+    }
+    $LinkLabel = $link['#'];
+    $WindowName = md5($link['@']['url']);
+    $tpl_data['links'][]=array(
+        'url'        => $BaseURL . $LinkArgs,
+        'label'      => $LinkLabel, 
+        'windowName' => $WindowName
+    ); 
 }
 
 
