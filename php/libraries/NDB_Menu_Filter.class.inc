@@ -329,7 +329,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
             foreach ($this->filter as $key => $val) {
-                $prepared_key = preg_replace('/(\.|\(| ,\))/g', '_', $key);
+                $prepared_key = preg_replace('/[\.\( \,\)]/', '_', $key);
                 if ((!empty($val) || $val === '0') && $key != 'order') {
 
                     // special rule for dropdowns where value is numeric
@@ -360,8 +360,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $first = True;
             foreach ($this->having as $key => $val) {
                 if($val !== '' and $val != null) {
-                    //$prepared_key = preg_replace('/\./g', '_', $key);
-                    $prepared_key = preg_replace('/(\.|\(| ,\))/g', '_', $key);
+                    $prepared_key = preg_replace('/[\.\( \,\)]/', '_', $key);
                     if($first == False) {
                         $query .= ' AND ';
                     }
