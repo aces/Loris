@@ -131,7 +131,9 @@ class NDB_BVL_Instrument extends NDB_Page
         // just tries to load, score, and save. If it doesn't exist, for instance
         // in the case of figs_year3_relatives, we shouldn't require because it 
         // isn't necessarily an error.
-        if(!file_exists($base."project/instruments/$class.class.inc") && $guarantee_exists==false) {
+        if(!file_exists($base."project/instruments/$class.class.inc") 
+            && !file_exists($base."project/instruments/$instrument.linst")
+            && $guarantee_exists==false) {
             return;
         }
         if(file_exists($base."project/instruments/$instrument.linst") || $instrument=='instrument_preview') {
