@@ -1,4 +1,19 @@
 <?php
+/**
+ * This form contains the code for the participant status module of Loris.
+ * The module allows you to save the status of a candidate (ie. 
+ * active/withdrawn/etc) on a candidate level. The valid options for statuses
+ * are in the table participant_status_options, as well as whether or not
+ * that status requires a reason to be specified.
+ *
+ * PHP Version 5
+ *
+ *  @category Behavioural 
+ *  @package  Main
+ *  @author   Zia Mohadesz <zia.mohades@gmail.com>
+ *  @license  Loris License
+ *  @link     https://github.com/aces/Loris-Trunk
+ */
 require_once "NDB_Form.class.inc";
 
 /**
@@ -149,7 +164,11 @@ class NDB_Form_participant_status extends NDB_Form
             array('') + $options + $notAns4
         );
 
-        $this->addTextAreaGroup('reason_specify', $this->indent . 'Please specify reason for status', array(null => null) + $notAns4);
+        $this->addTextAreaGroup(
+            'reason_specify', 
+            $this->indent . 'Please specify reason for status',
+            array(null => null) + $notAns4
+        );
 
 
         //drop out
@@ -164,9 +183,11 @@ class NDB_Form_participant_status extends NDB_Form
             "If withdrawl, provide the reason",
             $options
         );
-        $this->addTextAreaGroup('withdrawl_reasons_other_specify', 
+        $this->addTextAreaGroup(
+            'withdrawl_reasons_other_specify', 
             $this->indent . 'Please specify other reason for drop out ',
-            array(null => null) + $notAns4);
+            array(null => null) + $notAns4
+        );
         $this->form->addFormRule(array(&$this,'_validate'));
     }
 
@@ -188,20 +209,24 @@ class NDB_Form_participant_status extends NDB_Form
 
         $reasonID = $fields['participant_status'];
 
-        if($options[$reasonID]['Required'] == true) {
+        if ($options[$reasonID]['Required'] == true) {
             if (($options[$reasonID]['Description'])=='withdrawl') {
                 if (empty($fields['withdrawl_reasons'])) {
                     $errors['withdrawl_reasons'] = "required";
-                } else if($fields['withdrawl_reasons'] == '3_other') {
-                    if(empty($fields['withdrawl_reasons_other_specify']) 
-                        && empty($fields['withdrawl_reasons_other_specify_status'])) {
-                            $errors['withdrawl_reasons_other_specify_group'] = "required";
-                        }
+                } else if ($fields['withdrawl_reasons'] == '3_other') {
+                    if (empty($fields['withdrawl_reasons_other_specify']) 
+                        && empty($fields['withdrawl_reasons_other_specify_status'])
+                    ) {
+                        $errors['withdrawl_reasons_other_specify_group'] 
+                            = "required";
+                    }
                 }
-            }
-            else {
-                if(empty($fields['reason_specify']) && empty($fields['reason_specify_status'])) {
-                    $errors['reason_specify_group'] = "Must specify when status is " . $options[$reasonID]['Description'];
+            } else {
+                if (empty($fields['reason_specify']) 
+                    && empty($fields['reason_specify_status'])
+                ) {
+                    $errors['reason_specify_group'] = "Must specify when status is " 
+                        . $options[$reasonID]['Description'];
                 }
             }
         }
@@ -228,6 +253,14 @@ class NDB_Form_participant_status extends NDB_Form
         return $option_array;
     }
 
+    /**
+     * Get the participant_status options as an array, where each row
+     * is an array
+     *
+     * @return array An array of options, where each row is an array containing
+     *               the entire row from participant_status_options instead of
+     *               only the description
+     */
     function getParticipantStatusOptionsVerbose()
     {
         $DB =& Database::singleton();
