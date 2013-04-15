@@ -1666,6 +1666,16 @@ CREATE TABLE `help_related_links` (
 
 INSERT INTO help (helpID, topic, content) VALUES ('1','LORIS HELP: Using the Database','Welcome to LORIS database. The help section provides you with guidelines for adding and updating information in the database'), ('2','HOW TO - Guide','Under Construction.Please visit us later'), ('3','Guidelines','Under Construction.Please visit us later'), ('5','Instruments - Guide','Under Construction.Please visit us later');
 
+
+CREATE TABLE participant_status_options (
+        ID int(10) unsigned NOT NULL auto_increment,
+        Description varchar(255) default NULL,
+        Required boolean default NULL,
+        PRIMARY KEY  (ID),
+        UNIQUE KEY ID (ID) 
+);
+INSERT INTO participant_status_options (Description, Required) VALUES ('active', false), ('ineligible', true), ('withdrawal', true), ('death', false), ('other', true);
+
 CREATE TABLE participant_status (
         ID int(10) unsigned NOT NULL auto_increment,
         CandID int(6) UNIQUE NOT NULL default '0',
@@ -1683,14 +1693,4 @@ CREATE TABLE participant_status (
         UNIQUE KEY ID (ID) 
 );
 
-CREATE TABLE participant_status_options (
-        ID int(10) unsigned NOT NULL auto_increment,
-        Description varchar(255) default NULL,
-        Required boolean default NULL,
-        PRIMARY KEY  (ID),
-        UNIQUE KEY ID (ID) 
-);
-
-
-INSERT INTO participant_status_options (Description, Required) VALUES ('active', false), ('ineligible', true), ('withdrawal', true), ('death', false), ('other', true);
 
