@@ -32,18 +32,18 @@
         </td>
     </tr>
     <tr>
-        <td nowrap="nowrap">{$form.withdrawl_reasons.label}</td>
-        <td nowrap="nowrap">{$form.withdrawl_reasons.html}
-        {if $form.withdrawl_reasons.error}
-            <span class='error'>{$form.withdrawl_reasons.error}</span>
+        <td nowrap="nowrap">{$form.withdrawal_reasons.label}</td>
+        <td nowrap="nowrap">{$form.withdrawal_reasons.html}
+        {if $form.withdrawal_reasons.error}
+            <span class='error'>{$form.withdrawal_reasons.error}</span>
         {/if}
         </td>
     </tr>
     <tr>
-        <td nowrap="nowrap">{$form.withdrawl_reasons_other_specify_group.label}</td>
-        <td nowrap="nowrap">{$form.withdrawl_reasons_other_specify_group.html}
-        {if $form.withdrawl_reasons_other_specify_group.error}
-            <span class='error'>{$form.withdrawl_reasons_other_specify_group.error}</span>
+        <td nowrap="nowrap">{$form.withdrawal_reasons_other_specify_group.label}</td>
+        <td nowrap="nowrap">{$form.withdrawal_reasons_other_specify_group.html}
+        {if $form.withdrawal_reasons_other_specify_group.error}
+            <span class='error'>{$form.withdrawal_reasons_other_specify_group.error}</span>
         {/if}
         </td>
     </tr>

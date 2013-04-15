@@ -179,12 +179,12 @@ class NDB_Form_participant_status extends NDB_Form
             "3_other"               => "3. Other"
         );
         $this->addSelect(
-            'withdrawl_reasons',
-            "If withdrawl, provide the reason",
+            'withdrawal_reasons',
+            "If withdrawal, provide the reason",
             $options
         );
         $this->addTextAreaGroup(
-            'withdrawl_reasons_other_specify', 
+            'withdrawal_reasons_other_specify', 
             $this->indent . 'Please specify other reason for drop out ',
             array(null => null) + $notAns4
         );
@@ -210,18 +210,22 @@ class NDB_Form_participant_status extends NDB_Form
         $reasonID = $fields['participant_status'];
 
         if ($options[$reasonID]['Required'] == true) {
-            if (($options[$reasonID]['Description'])=='withdrawl') {
-                if (empty($fields['withdrawl_reasons'])) {
-                    $errors['withdrawl_reasons'] = "required";
-                } else if ($fields['withdrawl_reasons'] == '3_other') {
-                    if (empty($fields['withdrawl_reasons_other_specify']) 
-                        && empty($fields['withdrawl_reasons_other_specify_status'])
+            if (($options[$reasonID]['Description'])=='withdrawal') {
+                if (empty($fields['withdrawal_reasons'])) {
+                    $errors['withdrawal_reasons'] = "required";
+                } else if ($fields['withdrawal_reasons'] == '3_other') {
+                    if (empty($fields['withdrawal_reasons_other_specify']) 
+                        && empty($fields['withdrawal_reasons_other_specify_status'])
                     ) {
-                        $errors['withdrawl_reasons_other_specify_group'] 
+                        $errors['withdrawal_reasons_other_specify_group'] 
                             = "required";
                     }
                 }
             } else {
+                // Not withdrawal
+                if (!empty($fields['withdrawal_reasons'])) {
+                    $errors['withdrawal_reasons'] = 'Only specify if withdrawal';
+                }
                 if (empty($fields['reason_specify']) 
                     && empty($fields['reason_specify_status'])
                 ) {
