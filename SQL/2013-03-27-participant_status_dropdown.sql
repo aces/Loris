@@ -8,6 +8,6 @@ CREATE TABLE participant_status_options (
 
 INSERT INTO participant_status_options (Description, Required) VALUES ('active', false);
 INSERT INTO participant_status_options (Description, Required) VALUES ('ineligible', true);
-INSERT INTO participant_status_options (Description, Required) VALUES ('withdrawl', true);
+INSERT INTO participant_status_options (Description, Required) VALUES ('withdrawal', true);
 INSERT INTO participant_status_options (Description, Required) VALUES ('death', false);
 INSERT INTO participant_status_options (Description, Required) VALUES ('other', true);

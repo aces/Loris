@@ -8,9 +8,9 @@ CREATE TABLE participant_status (
         participant_status integer DEFAULT NULL REFERENCES participant_status_options(ID),
         reason_specify text default NULL,
         reason_specify_status enum('dnk','not_applicable','refusal','not_answered') default NULL,
-        withdrawl_reasons enum('1_voluntary_withdrawal','2_lost_follow_up','3_other') default NULL,
-        withdrawl_reasons_other_specify text default NULL,
-        withdrawl_reasons_other_specify_status enum('dnk','not_applicable','refusal','not_answered') default NULL,
+        withdrawal_reasons enum('1_voluntary_withdrawal','2_lost_follow_up','3_other') default NULL,
+        withdrawal_reasons_other_specify text default NULL,
+        withdrawal_reasons_other_specify_status enum('dnk','not_applicable','refusal','not_answered') default NULL,
         PRIMARY KEY  (ID),
         UNIQUE KEY ID (ID) );
 
