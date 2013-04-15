@@ -1,4 +1,19 @@
 <?php
+/**
+ * This form contains the code for the participant status module of Loris.
+ * The module allows you to save the status of a candidate (ie. 
+ * active/withdrawn/etc) on a candidate level. The valid options for statuses
+ * are in the table participant_status_options, as well as whether or not
+ * that status requires a reason to be specified.
+ *
+ * PHP Version 5
+ *
+ *  @category Behavioural 
+ *  @package  Main
+ *  @author   Zia Mohadesz <zia.mohades@gmail.com>
+ *  @license  Loris License
+ *  @link     https://github.com/aces/Loris-Trunk
+ */
 require_once "NDB_Form.class.inc";
 
 /**
@@ -121,27 +136,18 @@ class NDB_Form_participant_status extends NDB_Form
         $config =& NDB_Config::singleton();
         $DB =& Database::singleton();
 
-        //header
-        $this->form->addElement('header', null, "PARTICIPANT STATUS FORM");
-
         //entry staff info
-        $this->form->addElement('static', 'entry_staff', 'Data Entry Staff');
-        $this->tpl_data['element_list'][] = "entry_staff";
-
-        $this->form->addElement('static', 'data_entry_date', 'Date of Data entry');
-        $this->tpl_data['element_list'][] = "data_entry_date";
-        $this->form->addElement('static', null, "<br />");
+        $this->addScoreColumn('entry_staff', 'Data Entry Staff');
+        $this->addScoreColumn('data_entry_date', 'Date of last Data entry');
 
         $pscid = $DB->pselectone(
             'SELECT PSCID FROM candidate where CandID = :candid',
             array('candid'=>$this->identifier)
         );
-        $this->form->addElement('static', 'pscid', 'PSCID');
-        $this->tpl_data['element_list'][] = "pscid";
+        $this->addScoreColumn('pscid', 'PSCID');
         $this->tpl_data['pscid'] = $pscid;
 
         // Selections array (standard template for questions selections)
-        $noYes = array(null=>'', "0_no"=>"0: No", "1_yes"=>"1: Yes");
         $notAns4 = array(
             "dnk"            => "Don't know", 
             "not_applicable" => "Not applicable",
@@ -149,41 +155,20 @@ class NDB_Form_participant_status extends NDB_Form
             "not_answered"   => "Not Answered"
         );
 
-        $this->form->addElement('static', null, '<br /><br />');
 
         $options = $this->getParticipantStatusOptions();
 
-        $this->form->addElement(
-            'select', 
+        $this->addSelect(
             'participant_status', 
-            "participant Status", 
+            "Participant Status", 
             array('') + $options + $notAns4
         );
-        $this->tpl_data['element_list'][] = "participant_status";
 
-        $this->form->addElement('static', null, '<br /><br />');
-
-
-        //ineligible text area
-        $group[] = $this->form->createElement(
-            'textarea', 'ineligible_others_specify'
-        );
-        $group[] = $this->form->createElement(
-            "select",
-            "ineligible_others_specify_status", 
-            null, 
+        $this->addTextAreaGroup(
+            'reason_specify', 
+            $this->indent . 'Please specify reason for status',
             array(null => null) + $notAns4
         );
-        $this->form->addGroup(
-            $group, 
-            'ineligible_others_specify_group', 
-            $this->indent . 'Please specify other reason for ineligible ', 
-            null, 
-            false
-        );
-        $this->tpl_data['element_list'][] = "ineligible_others_specify_group";
-        unset($group);
-        $this->form->addElement('static', null, '<br /><br />');
 
 
         //drop out
@@ -191,174 +176,61 @@ class NDB_Form_participant_status extends NDB_Form
             null                     => '', 
             "1_voluntary_withdrawal" => "1. Voluntary withdrawal", 
             "2_lost_follow_up"       => "2. Lost to follow up", 
-            "3_others"               => "3. Others"
+            "3_other"               => "3. Other"
         );
-        $this->form->addElement(
-            'select', 
-            'drop_out_reasons', 
-            "If drop out, provide the reason", 
+        $this->addSelect(
+            'withdrawl_reasons',
+            "If withdrawl, provide the reason",
             $options
         );
-        $this->tpl_data['element_list'][] = "drop_out_reasons";
-
-        $group[] = $this->form->createElement(
-            'textarea', 'drop_out_reasons_others_specify'
-        );
-        $group[] = $this->form->createElement(
-            "select",
-            "drop_out_reasons_others_specify_status",
-            null,
-            array(null => null) + $notAns4
-        );
-        $this->form->addGroup(
-            $group,
-            'drop_out_reasons_others_specify_group',
+        $this->addTextAreaGroup(
+            'withdrawl_reasons_other_specify', 
             $this->indent . 'Please specify other reason for drop out ',
-            null, false
-        );
-        $this->tpl_data['element_list'][] = "drop_out_reasons_others_specify_group";
-        unset($group);
-
-
-        //others text area
-        $group[] = $this->form->createElement('textarea', 'other_reasons');
-        $group[] = $this->form->createElement(
-            "select", "other_reasons_status", null, 
             array(null => null) + $notAns4
         );
-        $this->form->addGroup(
-            $group, 
-            'other_reasons_group', 'If Others, specify the reason', 
-            null, false
-        );
-        $this->tpl_data['element_list'][] = "other_reasons_group";
-        unset($group);
-
-        $this->form->addElement('static', null, '<br /><br />');
-
-        $this->form->addElement('static', null, '<br/><br />');
         $this->form->addFormRule(array(&$this,'_validate'));
     }
 
 
     /** 
-     * This function is for miscellaneous validation (mainly dependency)
+     * This function is for validation of user input, depending on
+     * the questions answered.
      *
      * @param array $fields The list of input to the form submitted by
      *                      smarty.
      *
-     * @return true|array An array of elements with errors or true
-     *                     if all eleements are valid
+     * @return array An array of elements with errors. An empty array if
+     *               all elements are valid.
      */
     function _validate($fields)
     {
         $errors=array();
-        $options = $this->getParticipantStatusOptions();
-        $date_taken_answered = $fields['Date_taken'];
-        $date_taken_notanswered = $fields['Date_taken_status'];
+        $options = $this->getParticipantStatusOptionsVerbose();
 
-        ////////////////////////////////
-        ///////active or death is answered///////////////////
-        ///////////////////////////////////
-        if ((($fields['participant_status'])==0) 
-            || empty($fields['participant_status'])
-        ) {
-            $errors['participant_status'] .= "Is required";
-        }
+        $reasonID = $fields['participant_status'];
 
-        if ((($options[$fields['participant_status']])=='active') 
-            || (($options[$fields['participant_status']])=='death')
-        ) {
-
-            //Others must be empty
-            if ((!empty($fields['other_reasons']))
-                || (!empty($fields['other_reasons_status']))
-            ) {
-                $errors['other_reasons_group'] .= "Must be blank";
-            }
-            if ((!empty($fields['drop_out_reasons'])) 
-                || (!empty($fields['drop_out_reasons_others_specify']))
-                || (!empty($fields['drop_out_reasons_others_specify_status']))
-            ) {
-                $errors['drop_out_reasons_others_specify_group'] .= "Must be blank";
-            }
-            if ((!empty($fields['ineligible_others_specify'])) 
-                || (!empty($fields['ineligible_others_specify_status']))
-            ) {
-                $errors['ineligible_others_specify_group'] .= "Must be blank";
-            }
-
-        }
-        ////////////////////////////////
-        ///ineglible
-        ////////////////////////////////
-        if (($options[$fields['participant_status']])=='ineligible') {
-            if (empty($fields['ineligible_others_specify'])) {
-                $errors['ineligible_others_specify_group'] .= "required";
-            }
-            //Other fields must be empty
-            if ((!empty($fields['other_reasons']))
-                || (!empty($fields['other_reasons_status']))
-            ) {
-                $errors['other_reasons_group'] .= "Must be blank";
-            }
-            if ((!empty($fields['drop_out_reasons'])) 
-                || (!empty($fields['drop_out_reasons_others_specify']))
-                || (!empty($fields['drop_out_reasons_others_specify_status']))
-            ) {
-                $errors['drop_out_reasons_others_specify_group'] .= "Must be blank";
+        if ($options[$reasonID]['Required'] == true) {
+            if (($options[$reasonID]['Description'])=='withdrawl') {
+                if (empty($fields['withdrawl_reasons'])) {
+                    $errors['withdrawl_reasons'] = "required";
+                } else if ($fields['withdrawl_reasons'] == '3_other') {
+                    if (empty($fields['withdrawl_reasons_other_specify']) 
+                        && empty($fields['withdrawl_reasons_other_specify_status'])
+                    ) {
+                        $errors['withdrawl_reasons_other_specify_group'] 
+                            = "required";
+                    }
+                }
+            } else {
+                if (empty($fields['reason_specify']) 
+                    && empty($fields['reason_specify_status'])
+                ) {
+                    $errors['reason_specify_group'] = "Must specify when status is " 
+                        . $options[$reasonID]['Description'];
+                }
             }
         }
-
-        ////////////////////////////////
-        //if dropout is answered
-        ////////////////////////////////
-        if (($options[$fields['participant_status']])=='dropout') {
-            //dropout is required
-            if (empty($fields['drop_out_reasons_others_specify'])) {
-                $errors['drop_out_reasons_others_specify_group'] .= "required";
-            }
-
-            //Other fields must be empty
-            if ((!empty($fields['other_reasons']))
-                || (!empty($fields['other_reasons_status']))
-            ) {
-                $errors['other_reasons_group'] .= "Must be blank";
-            }
-
-            if ((!empty($fields['ineligible_others_specify'])) 
-                || (!empty($fields['ineligible_others_specify_status']))
-            ) {
-                $errors['ineligible_others_specify_group'] .= "Must be blank";
-            }
-        }
-
-        ////////////////////////////////
-        //if others is answered
-        ////////////////////////////////
-        if (($options[$fields['participant_status']])=='others') {
-            //others is required
-            if ((empty($fields['other_reasons'])) 
-                && (empty($fields['other_reasons_group_status']))
-            ) {
-                $errors['other_reasons_group'] .= "required";
-            }
-
-            //Other fields must be empty
-            if ((!empty($fields['drop_out_reasons'])) 
-                || (!empty($fields['drop_out_reasons_others_specify']))
-                || (!empty($fields['drop_out_reasons_others_specify_status']))
-            ) {
-                $errors['drop_out_reasons_others_specify_group'] .= "Must be blank";
-            }
-
-            if ((!empty($fields['ineligible_others_specify'])) 
-                || (!empty($fields['ineligible_others_specify_status']))
-            ) {
-                $errors['ineligible_others_specify_group'] .= "Must be blank";
-            }
-        }
-        return count($errors) > 0 ? $errors : true;
+        return $errors;
     }
     /**
      * Gets the participant_status options from participant_status_options
@@ -367,7 +239,7 @@ class NDB_Form_participant_status extends NDB_Form
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    function getParticipantStatusOptions() 
+    function getParticipantStatusOptions()
     {
         $DB =& Database::singleton();
         $options = $DB->pselect(
@@ -377,6 +249,31 @@ class NDB_Form_participant_status extends NDB_Form
         $option_array = array();
         foreach ($options as $option) {
             $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Get the participant_status options as an array, where each row
+     * is an array
+     *
+     * @return array An array of options, where each row is an array containing
+     *               the entire row from participant_status_options instead of
+     *               only the description
+     */
+    function getParticipantStatusOptionsVerbose()
+    {
+        $DB =& Database::singleton();
+        $options = $DB->pselect(
+            "SELECT * FROM participant_status_options",
+            array()
+        );
+
+        $option_array = array();
+        foreach ($options as $option) {
+            $ID = $option['ID'];
+            unset($option['ID']);
+            $option_array[$ID] = $option;
         }
         return $option_array;
     }
