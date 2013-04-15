@@ -209,33 +209,40 @@ class NDB_Form_participant_status extends NDB_Form
 
         $reasonID = $fields['participant_status'];
 
+
         if ($options[$reasonID]['Required'] == true) {
+
             if (($options[$reasonID]['Description'])=='withdrawal') {
                 if (empty($fields['withdrawal_reasons'])) {
                     $errors['withdrawal_reasons'] = "required";
                 } else if ($fields['withdrawal_reasons'] == '3_other') {
-                    if (empty($fields['withdrawal_reasons_other_specify']) 
+                    if (empty($fields['withdrawal_reasons_other_specify'])
                         && empty($fields['withdrawal_reasons_other_specify_status'])
                     ) {
-                        $errors['withdrawal_reasons_other_specify_group'] 
+                        $errors['withdrawal_reasons_other_specify_group']
                             = "required";
                     }
                 }
             } else {
-                // Not withdrawal
-                if (!empty($fields['withdrawal_reasons'])) {
-                    $errors['withdrawal_reasons'] = 'Only specify if withdrawal';
-                }
-                if (empty($fields['reason_specify']) 
+                if (empty($fields['reason_specify'])
                     && empty($fields['reason_specify_status'])
                 ) {
-                    $errors['reason_specify_group'] = "Must specify when status is " 
+                    $errors['reason_specify_group'] = "Must specify when status is "
                         . $options[$reasonID]['Description'];
                 }
             }
         }
+
+        // Not withdrawal
+
+        if ((!empty($fields['withdrawal_reasons'])) 
+            && (($options[$reasonID]['Description'])!='withdrawal')
+        ) {
+            $errors['withdrawal_reasons'] = 'Only specify if withdrawal';
+        }
         return $errors;
     }
+
     /**
      * Gets the participant_status options from participant_status_options
      * getParticipantStatusOptions()
