@@ -222,6 +222,10 @@ class NDB_Form_participant_status extends NDB_Form
                     }
                 }
             } else {
+                // Not withdrawal
+                if (!empty($fields['withdrawal_reasons'])) {
+                    $errors['withdrawal_reasons'] = 'Only specify if withdrawal';
+                }
                 if (empty($fields['reason_specify']) 
                     && empty($fields['reason_specify_status'])
                 ) {
