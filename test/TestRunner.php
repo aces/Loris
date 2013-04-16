@@ -16,6 +16,7 @@ $test->addFile('tests/CoreFunctionality.php');
 // Test individual components
 $test->addFile('tests/CandidateList.php');
 $test->addFile('tests/NewProfile.php');
+$test->addFile('tests/FinalRadiologicalReview.php');
 // Project specific tests..
-$test->addFile('tests/SiteSpecific.php');
+//$test->addFile('tests/SiteSpecific.php');
 exit ($test->run($Reporter) ? 0 : 1);
