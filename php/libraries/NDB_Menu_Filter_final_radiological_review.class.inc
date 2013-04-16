@@ -324,9 +324,15 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
 
                 $this->tpl_data['items'][$x][$i]['value'] = _makePretty($key, $val);
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['CandID'] = $item['CandID'];
-                $this->tpl_data['items'][$x][$i]['CommentID'] = $item['CommentID'];
-                $this->tpl_data['items'][$x][$i]['SessionID'] = $item['SessionID'];
+                if(isset($item['CandID'])) {
+                    $this->tpl_data['items'][$x][$i]['CandID'] = $item['CandID'];
+                }
+                if(isset($item['CommentID'])) {
+                    $this->tpl_data['items'][$x][$i]['CommentID'] = $item['CommentID'];
+                }
+                if(isset($item['SessionID'])) {
+                    $this->tpl_data['items'][$x][$i]['SessionID'] = $item['SessionID'];
+                }
                 $i++;
             }
             $x++;

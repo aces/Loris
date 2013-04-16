@@ -74,7 +74,7 @@ class NDB_Client
         session_start();
 
         // if exiting, destroy the php session
-        if($_REQUEST['logout']) {
+        if(isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
             session_start();
         }
