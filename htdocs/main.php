@@ -20,6 +20,8 @@ require_once 'Instrument_List_ControlPanel.class.inc';
 require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 require_once 'NDB_Breadcrumb.class.inc';
 
+$TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : '';
+$subtest = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
 // make local instances of objects
 $config =& NDB_Config::singleton();
 
@@ -28,11 +30,20 @@ $timer->setMarker('Loaded client');
 //--------------------------------------------------
 
 // set URL params
-$tpl_data['test_name'] = $_REQUEST['test_name']; 
-$tpl_data['subtest']   = $_REQUEST['subtest'];
-$tpl_data['candID']    = $_REQUEST['candID'];
-$tpl_data['sessionID'] = $_REQUEST['sessionID'];
-$tpl_data['commentID'] = $_REQUEST['commentID'];
+function tplFromRequest($param) {
+    global $tpl_data;
+    if(isset($_REQUEST[$param])) {
+        $tpl_data[$param] = $_REQUEST[$param];
+    } else {
+        $tpl_data[$param] = '';
+    }
+}
+
+tplFromRequest('test_name');
+tplFromRequest('subtest');
+tplFromRequest('candID');
+tplFromRequest('sessionID');
+tplFromRequest('commentID');
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
@@ -104,6 +115,7 @@ $timer->setMarker('Drew user information');
 
 // configure browser args for the mri browser
 // !!! array URL args -- need to correct query in mri_browser to accept candidate data
+$argstring = '';
 if (!empty($_REQUEST['candID'])) {
     $argstring .= "filter%5BcandID%5D=".$_REQUEST['candID']."&";
 }
@@ -116,6 +128,7 @@ if (!empty($_REQUEST['sessionID'])) {
         $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
     }
 }
+
 $link_args['MRIBrowser'] = $argstring;
 
 $timer->setMarker('Configured browser arguments for the MRI browser');
@@ -127,9 +140,9 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
  */
 $paths = $config->getSetting('paths');
 
-if (!empty($_REQUEST['test_name'])) {
-    if(file_exists($paths['base'] . "htdocs/js/modules/" . $_REQUEST['test_name'] . ".js")) {
-        $tpl_data['test_name_js'] = "js/modules/" . $_REQUEST['test_name'] . ".js";
+if (!empty($TestName)) {
+    if(file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
+        $tpl_data['test_name_js'] = "js/modules/$TestName.js";
     }
     if (!empty($_REQUEST['commentID'])) {
         // make the control panel object for the current instrument
@@ -138,9 +151,9 @@ if (!empty($_REQUEST['test_name'])) {
         if (Utility::isErrorX($success)) {
               $tpl_data['error_message'][] = $success->getMessage();
         } else {
-            if (empty($_REQUEST['subtest'])) {
+            if (empty($subtest)) {
                 // check if the file/class exists
-                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc") || file_exists($paths['base']."project/instruments/" . $_REQUEST['test_name'].".linst")) {
+                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) {
                     // save possible changes from the control panel...
                     $success = $controlPanel->save();
                     if (Utility::isErrorX($success)) {
@@ -234,7 +247,7 @@ function HandleError($error) {
     }
 }
 $caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
-$workspace = $caller->load($_REQUEST['test_name'], $_REQUEST['subtest']);
+$workspace = $caller->load($TestName, $subtest);
 if (Utility::isErrorX($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
 } else {
@@ -253,7 +266,11 @@ if (Utility::isErrorX($crumbs)) {
 } else {
     $tpl_data['crumbs'] = $crumbs;
     parse_str($crumbs[0]['query'], $parsed);
-    $tpl_data['top_level'] = $parsed['test_name'];
+    if(isset($parsed['test_name'])) {
+        $tpl_data['top_level'] = $parsed['test_name'];
+    } else {
+        $tpl_data['top_level'] = '';
+    }
 }
 
 $timer->setMarker('Drew breadcrumbs');
@@ -267,7 +284,17 @@ $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 //Display the links, as specified in the config file
 $links=$config->getSetting('links');
 foreach(Utility::toArray($links['link']) AS $link){
-	$tpl_data['links'][]=array('url'=>$link['@']['url'] . $link_args[$link['@']['args']], 'label'=>$link['#'], 'windowName'=>md5($link['@']['url'])); 
+    $BaseURL = $link['@']['url'];
+    if(isset($link['@']['args'])) {
+        $LinkArgs = $link_args[$link['@']['args']];
+    }
+    $LinkLabel = $link['#'];
+    $WindowName = md5($link['@']['url']);
+    $tpl_data['links'][]=array(
+        'url'        => $BaseURL . $LinkArgs,
+        'label'      => $LinkLabel, 
+        'windowName' => $WindowName
+    ); 
 }
 
 
