@@ -126,7 +126,6 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $list_of_projects =& Utility::getProjectList();
 
         // list of feedback statuses
-        //$feedback_status_options = array('' => 'Any','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
         $feedback_status_options = array('' => 'Any', '1'=>'opened','2'=>'answered','3'=>'closed','4'=>'comment');
         $latest_visit_status_options = array(null => 'Any', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
