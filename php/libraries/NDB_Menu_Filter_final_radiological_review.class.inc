@@ -143,7 +143,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'c.ProjectID as Project',
             'c.CenterID as Site',
             'c.DOB as Birth_Date',
-            'COALESCE(r.Review_Done, False) as Review_Done',
+            'COALESCE(r.Review_Done, 0) as Review_Done',
             'r.Final_Review_Results as Results',
             'r.Final_Exclusionary as Exclusionary_Status',
             'r.sas as SAS',
@@ -164,18 +164,18 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                'Finalized',
                                'Comments'
         );
-        $this->validFilters = array('c.CandID', 
-            'r.DICOM_ID', 
-            's.visit_label', 
-            'c.PSCID', 
-            'r.Final_Review_Results', 
-            'COALESCE(r.Review_Done, False)', 
-            'r.sas', 
-            'r.pvs', 
-            'r.Final_Exclusionary', 
-            $conflict_condition1, 
-            $conflict_condition2, 
-            'r.Finalized', 
+        $this->validFilters = array('c.CandID',
+            'r.DICOM_ID',
+            's.visit_label',
+            'c.PSCID',
+            'r.Final_Review_Results',
+            'COALESCE(r.Review_Done, 0)',
+            'r.sas',
+            'r.pvs',
+            'r.Final_Exclusionary',
+            $conflict_condition1,
+            $conflict_condition2,
+            'r.Finalized',
             'c.CenterID',
             'C.ProjectID'
         );
@@ -187,7 +187,9 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'ProjectID'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
                                     'Review_done' => 
-                                        'COALESCE(r.Review_Done, False)',
+                                    /* MySQL treats boolean as tinyint,
+                                     * so 0 instead of False */
+                                        'COALESCE(r.Review_Done, 0)',
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -230,7 +232,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         foreach ($projectList as $key => $value) {
             $list_of_projects[$key] =$value;
         }  
-        $options_boolean= array(null => 'Any', true => 'Yes', false => 'No');
+        $options_boolean= array(null => 'Any', 1 => 'Yes', 0 => 'No');
         $conflict_options1 = array(null => 'Any', true => 'Yes', false => 'No', );
         $conflict_options2 = array(null => 'Any', 
             'prim_second' => 'Yes', 
