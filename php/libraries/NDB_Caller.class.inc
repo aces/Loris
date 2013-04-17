@@ -58,7 +58,9 @@ class NDB_Caller extends PEAR
                              || $this->existsAndRequire($base."php/libraries/NDB_Menu_Filter_$test_name.class.inc"))
             ) {
 
-            $html = $this->loadMenu($test_name, $_REQUEST['mode']);
+
+                $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
+                    $html = $this->loadMenu($test_name, $mode);
             if (Utility::isErrorX($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
