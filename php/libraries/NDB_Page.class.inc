@@ -63,6 +63,15 @@ class NDB_Page extends PEAR
         $this->form->addElement('hidden', $label, $attributes);
     }
 
+    function addTextAreaGroup($field, $label,$not_answered_options=array('' =>'', 'not_answered' => 'Not Answered')) {
+        $group = array();
+        $group[] = $this->createTextArea($field, '');
+        $group[] = $this->createSelect($field . '_status', '', $not_answered_options);
+
+        $this->addGroup($group, $field . '_group', $label, null, false); 
+
+
+    }
     function addRule($element, $message, $type, $format=null) {
         $this->form->addRule($element, $message, $type, $format);
     }
@@ -83,6 +92,9 @@ class NDB_Page extends PEAR
        return $this->form->createElement("text", $field, $label);
     } 
 
+    function createTextArea($field, $label=null) {
+       return $this->form->createElement("textarea", $field, $label);
+    } 
     function createDate($field, $label, $dateOptions=null) {
         return $this->form->createElement("date", $field, $label, $dateOptions);
     }
