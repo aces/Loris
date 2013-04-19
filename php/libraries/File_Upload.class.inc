@@ -570,8 +570,15 @@ class File_Upload extends PEAR {
     function setCreateDirectories($mode){
         $this->createDirectories=$mode;
     }
+
+
+    function setFieldName($f){
+        $this->fieldName = $f;
+    }
     
-    
+    function getFieldName(){
+        return $this->fieldName;
+    }
     /**
     * setError:  Adds an error to the error log
     *

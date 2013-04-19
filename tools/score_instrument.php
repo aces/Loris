@@ -43,7 +43,7 @@ if (empty($argv[1]) || $argv[1] == 'help' || !in_array($argv[2], array('all','on
  * get cmd-line arguments
  */
 // get $action argument
-$test_name = strtolower($argv[1]);
+$test_name = $argv[1];//strtolower($argv[1]);
 // get $action argument
 $action = strtolower($argv[2]);
 // CandID

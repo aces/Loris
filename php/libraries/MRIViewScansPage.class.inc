@@ -123,6 +123,7 @@ class MRIViewScansPage {
         if(Utility::isErrorX($timePoint)) {
             print $timePoint->getMessage()."<br>";
         }
+        
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
         $subjectData['SubprojectID'] = $timePoint->getSubprojectID();

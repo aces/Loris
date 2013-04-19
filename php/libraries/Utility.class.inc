@@ -183,14 +183,20 @@ class Utility extends PEAR
      * @access public
      * @static
      */
-    function getSiteList($study_site = true)
+  function getSiteList($study_site = true, $DCC = true)
     {
         $DB =& Database::singleton();
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
         if ($study_site) {
-                $query .= "WHERE Study_site='Y'";
+                if (!$DCC)
+                $query .= "WHERE Study_site='Y' AND Name != 'DCC'";
+        }
+        else {
+                if (!DCC)
+                $query .= "WHERE Name != 'DCC'";
+
         }
 
         $result = $DB->pselect($query, array());

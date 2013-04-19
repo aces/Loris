@@ -129,16 +129,17 @@ BrowserDetect.init();
 
 
 
-<table align="center" bgcolor="#D3DCE3" border="0" cellpadding="2" cellspacing="0">
-    <tr>
-    	<th align="left" class="banner" colspan="2" background="images/title_background.jpg">
-    	    Montreal Neurological Hospital and Institute
+<table align="center" bgcolor="#EEF" border="0" cellpadding="2" cellspacing="0">
+    <tr>&nbsp;</tr>
+	<tr>
+    	<th align="left" class="banner" colspan="3" background="images/title_background.jpg">
+    	    Douglas Hospital Research Centre Prevent-AD Study
 	    </th>
     </tr>
     <tr>
-    	<td><img src="images/mni_logo_transparent.gif" alt="Montreal Neurological Institute" border="0" width="128" height="106" /></td>
+    	<td><img src="images/douglas_logo.png" alt="Montreal Neurological Institute" border="0" width="128" height="106" /></td>
 	    <td>
-	        <table border="0" cellpadding="2" cellspacing="2">
+	        <table border="0" cellpadding="5" cellspacing="2">
         		<tr>
 		            <td align="center" colspan="2">{$error_message}&nbsp;</td>
     		    </tr>
@@ -156,10 +157,11 @@ BrowserDetect.init();
 	            </tr>
    	        </table>
     	</td>
+	<td><img src="images/mni_logo_transparent.gif" alt="Montreal Neurological Institute" border="0" width="128" height="106" /></td>
     </tr>
     <tr>
     	<td align="left" class="tabox" colspan="2">
-    	    Created By: <a href="http://www.bic.mni.mcgill.ca" target="_blank">McConnell Brain Imaging Centre</a>
+    	    Created By: <a href="http://www.bic.mni.mcgill.ca" target="_blank">ACE lab/McConnell Brain Imaging Centre</a>
 	    </td>
     </tr>
 </table>

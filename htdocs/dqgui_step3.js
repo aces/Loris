@@ -7,6 +7,15 @@ function executeQuery(sendTo){
         m.innerHTML = "Packaging your files. They'll be ready to download <a href=\"main.php?test_name=download_files\">here</a> in a few minutes."; 
     }
 
+    if(sendTo == 'cbrain') {
+        var oCbrainField=IFrameDoc.getElementById("cbrain");
+        oCbrainField.value="execute";
+        var m = document.getElementById("message");
+        m.innerHTML = "Launched CIVET task(s) on CBrain. <a href=\"main.php?test_name=civetstatus\">Click here</a> to see status.";
+
+
+        //alert(sendTo);
+    }
     var oQueryField=IFrameDoc.getElementById("queryData");
     var oModeField=IFrameDoc.getElementById("mode");
     oModeField.value="executeQuery";

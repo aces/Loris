@@ -143,9 +143,10 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             $MaxConflicts = 500;
         }
 
- 		//Extract the fields from the parameter_type table
+ 	//Extract the fields from the parameter_type table
         $conflicts = array();
 
+	$instruments = Utility::getAllInstruments(false);
 
         $instruments_q = $DB->pselect("SELECT Test_name FROM test_names", array());
 
@@ -155,12 +156,8 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         // which can be used by quickforms for the dropdown. The array_merge
         // call after that just adds an Any/All Instruments option.
 
-        
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
-
-        
-        
         
         $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
         
