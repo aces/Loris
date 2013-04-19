@@ -566,15 +566,11 @@ class Utility extends PEAR
 
     function getAllInstruments() {
         $DB =& Database::singleton();
-        $instruments_q = $DB->pselect("SELECT Test_name FROM test_names", array());
-                                
-        // This array_map call turns the result of the above query to
-        // a non-associative array, so that we can use the array_combine
-        // trick to get an array of the form array( 'test_name' => 'test_name')
-        // which can be used by quickforms for the dropdown. The array_merge
-        // call after that just adds an Any/All Instruments option.
-        $in = array_map(array('Utility', 'Flatten'), $instruments_q);
-        $instruments = array_combine($in, $in);
+        $instruments_q = $DB->pselect("SELECT Test_name,Full_name FROM test_names", array());
+        foreach($instruments_q as $key){
+              $instruments[$key['Test_name']]=$key['Full_name'];
+        }
+
         return $instruments;
 
    }
@@ -719,7 +715,7 @@ class Utility extends PEAR
 	
 	
 		
-	/**
+/**
 	 * *
 	 * get all the instruments for the given visit...
 	 * @param unknown_type $visit

@@ -404,7 +404,7 @@ Class NDB_BVL_Feedback
         $query .= " WHERE c.CandID = ft.CandID AND ftp.Feedback_type = ft.Feedback_type";
         
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " AND ft.SessionID = :SID'";
+            $query .= " AND ft.SessionID = :SID";
             $query .= " AND ft.CommentID = :ComID AND ft.CommentID = f.CommentID";
             $qparams['SID'] = $this->_feedbackCandidateProfileInfo['SessionID'];
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];

@@ -58,6 +58,13 @@ $(function(){
         <td nowrap="nowrap">PSC-ID:</td>
         <td nowrap="nowrap">{$form.PSCID.html}</td>
     </tr>
+    
+        
+    <tr>
+        <td nowrap="nowrap">{$form.Participant_Status.label}</td>
+        <td nowrap="nowrap" colspan="3">{$form.Participant_Status.html}<//td>
+    </tr>
+    
     <tr>
         <td nowrap="nowrap">Gender:</td>
         <td nowrap="nowrap">{$form.gender.html}</td>

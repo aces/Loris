@@ -131,7 +131,9 @@ class NDB_BVL_Instrument extends NDB_Page
         // just tries to load, score, and save. If it doesn't exist, for instance
         // in the case of figs_year3_relatives, we shouldn't require because it 
         // isn't necessarily an error.
-        if(!file_exists($base."project/instruments/$class.class.inc") && $guarantee_exists==false) {
+        if(!file_exists($base."project/instruments/$class.class.inc") 
+            && !file_exists($base."project/instruments/$instrument.linst")
+            && $guarantee_exists==false) {
             return;
         }
         if(file_exists($base."project/instruments/$instrument.linst") || $instrument=='instrument_preview') {
@@ -451,7 +453,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 $agemonths = (round($agemonths*10) / 10.0);
                 if(!empty($age)) {
                     $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
-                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $querY_params);
+                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
                     $values['Candidate_Age'] = $agemonths;
                     $values['Window_Difference'] = 0;
 
@@ -1440,9 +1442,10 @@ class NDB_BVL_Instrument extends NDB_Page
             }
 
             $parsingPage = 'top';
+            $firstSelectOfPage = true;
 
             while(($line = fgets($fp, 4096)) !== false) {
-                $pieces = split("{@}", $line);
+                $pieces = preg_split("/{@}/", $line);
 
                 $type = $pieces[0];
                 if(strpos($pieces[1], "_status") !== FALSE) {
@@ -1464,6 +1467,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         } else {
                             $addElements = false;
                         }
+                        $firstSelectOfPage = true;
                         break;
                     case 'table':
                         $this->testName = trim($pieces[1]);
@@ -1481,6 +1485,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                         break;
                     case 'textarea':
+                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
@@ -1517,7 +1522,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         // fall through and also execute select code below
                     case 'select':
 
-                        $options = split("{-}", trim($pieces[3]));
+                        $options = preg_split("/{-}/", trim($pieces[3]));
                         $opt = array();
                         foreach($options as $o) {
                             $arr = explode("=>", $o);
@@ -1541,6 +1546,10 @@ class NDB_BVL_Instrument extends NDB_Page
                                 $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
                             }
                         }
+                        if ($firstSelectOfPage) {
+                            $this->_requiredElements[] = $pieces[1];
+                            $firstSelectOfPage = false;
+                        }
                         break;
                     case 'header':
                         if($addElements) {
@@ -1548,6 +1557,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                         break;
                     case 'static':
+                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
                             $this->form->addElement('static', $pieces[1], $pieces[2]);
                         }

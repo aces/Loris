@@ -100,11 +100,13 @@
 
         <useProjects>false</useProjects>
         <Projects>
-            <project id="1">
-                <label>Sample Project</label>
+            <project>
+             <id>1</id>
+             <title>Sample Project</title>
             </project>
-            <project id="2">
-                <label>Another Sample Project</label>
+            <project>
+              <id>2</id>
+              <title>Another Sample Project</title>
             </project>
         </Projects>
 
@@ -151,6 +153,38 @@
         <length>2</length>
         <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
     </visitLabel>
+    <ReliabilityInstruments>
+    <Instrument>
+    <Testname>aosi</Testname>
+    <Threshold>0.5</Threshold>
+    <Displayname>AOSI</Displayname>
+    </Instrument>
+    <Instrument>
+    <Testname>adi_r_proband</Testname>
+    <Threshold>89.5</Threshold>
+    <Displayname>ADI-R (Proband)</Displayname>
+    </Instrument>
+    <Instrument>
+    <Testname>adi_r_subject</Testname>
+    <Threshold>89.5</Threshold>
+    <Displayname>ADI-R (Subject)</Displayname>
+    </Instrument>
+    <Instrument>
+    <Testname>csbs</Testname>
+    <Threshold>79.5</Threshold>
+    <Displayname>CSBS</Displayname>
+    </Instrument>
+    <Instrument>
+    <Testname>ados_module1</Testname>
+    <Threshold>79.5</Threshold>
+    <Displayname>ADOS (Module1)</Displayname>
+    </Instrument>
+    <Instrument>
+    <Testname>ados_module2</Testname>
+    <Threshold>79.5</Threshold>
+    <Displayname>ADOS (Module2)</Displayname>
+    </Instrument>
+    </ReliabilityInstruments>
     </study>
 <!-- end of study definition -->
 
@@ -221,6 +255,20 @@
           </permissions>
           <visible>1</visible>
         </tab>
+        <tab>
+          <link>data_integrity_flag</link>
+          <label>Data Integrity Flag</label>
+          <access>all</access>
+          <permissions>
+            <perm>
+                data_integrity_flag
+            </perm>
+          </permissions>
+          <visible>1</visible>
+        </tab>
+        <ConflictResolver>
+            <MaxConflicts>500</MaxConflicts>
+        </ConflictResolver>
 
 </main_menu_tabs>
 
