@@ -90,24 +90,17 @@ class NDB_Menu_statistics extends NDB_Menu
 
 
                         $this->tpl_data['Subprojects'] = $subprojects;
-                        /*$DB->select("SELECT s.subprojectid as rowid, 
-                            COUNT(DISTINCT(c.PSCID)) as val 
-                            FROM candidate as c LEFT JOIN session s ON (s.CandID=c.CandID) 
-                            WHERE s.active='Y' 
-                            AND s.CenterID <> '1'        
-                            AND c.Active='Y' 
-                            AND (s.Current_stage IN ('Visit', 'Screening')) 
-                            AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                            AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                            $ExtraSite_Criteria
-                            GROUP BY s.subprojectid", $result);
-                        */
 
                         //***Requires Visit_Windows table to be populated with all study visits***
-                        $visits = $DB->pselect("SELECT Visit_label from Visit_Windows"); 
+                        $visits = Utility::getVisitList(); 
 
-                        //***Set the visit to one where you want to check # of candidates with a visit (i.e. the first visit in the study)***
-                        $visit_to_check = "'%EL%'";
+
+                        // NUMBER OF CANDIDATES STATS TABLE
+
+                        //***Set the visit to one where you want to check # of candidates with a visit (i.e. the first visit in the study) - get from config file***
+                        $config =& NDB_Config::singleton();
+                        $statisticsConfig = $config->getSetting('statistics');
+                        $visit_to_check = $statisticsConfig['visitStats'];
 
 
                         $registered_candidates = $DB->pselectOne("SELECT count(DISTINCT(c.PSCID)) as val from candidate as c WHERE c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' " . $ExtraSite_Criteria); 
@@ -120,7 +113,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         $total_visit = 0;
 
                         //Candidates with visit marked as In Progress                        
-                        $result_progress = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'In Progress' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid");// , $result_progress);
+                        $result_progress = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'In Progress' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid");
 
                         foreach($result_progress as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['progress'] = $row['val'];
@@ -129,7 +122,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         }
 
                         //Candidates with visit marked as Pass                        
-                        $result_pass = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Pass' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); //, $result_pass);
+                        $result_pass = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Pass' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); 
 
                         foreach($result_pass as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['pass'] = $row['val'];
@@ -138,7 +131,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         }
 
                         //Candidates with visit marked as Fail                        
-                        $result_fail = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Failure' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); //, $result_fail);
+                        $result_fail = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Failure' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); 
 
                         foreach($result_fail as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['fail'] = $row['val'];
@@ -147,7 +140,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         }
 
                         //Candidates with visit marked as Withdraw                        
-                        $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); //, $result_withdrawal);
+                        $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); 
 
                         foreach($result_withdrawal as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['withdraw'] = $row['val'];
@@ -158,17 +151,6 @@ class NDB_Menu_statistics extends NDB_Menu
                         $this->tpl_data['registered']['total_visit'] = $total_visit;
 
 
-                        // Total, explicitly calculated instead of added in the loop to ensure there's no one double registered in 2 different cohorts
-/*                        $DB->select("SELECT count(distinct(c.PSCID)) from candidate as c WHERE c.PSCID<>'scanner' AND c.CenterID<>'1' AND c.Active='Y' 
-                                $ExtraSite_Criteria", $total);
-                        if (Utility::isErrorX($total)) {
-                            return PEAR::raiseError("DB Error: ".$total->getMessage());
-                        }
-                        list(,$total)=each($total[0]);
-                        $Total_candidates = $total;
-                        $this->tpl_data['Total_candidates'] = $Total_candidates;
-
-*/
                         //COUNT OF CANDIDATES WITH AN MRI SESSION
 
                         $total_scan = 0; 
@@ -181,12 +163,12 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND c.PSCID<>'scanner'
                                 AND s.Current_stage <> 'Recycling Bin'
                                 $ExtraSite_Criteria
-                                GROUP BY s.SubprojectID"); //, $result);
-                        foreach($result as $row) {
-                            $this->tpl_data['scanned'][$row['rowid']]['pass'] = $row['val'];
-                            $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
-                            $total_scan += $row['val'];
-                        }
+                                GROUP BY s.SubprojectID"); 
+                            foreach($result as $row) {
+                                $this->tpl_data['scanned'][$row['rowid']]['pass'] = $row['val'];
+                                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                                $total_scan += $row['val'];
+                            }
 
                         //Scans for visits marked as In Progress
                         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
@@ -196,12 +178,12 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND c.PSCID<>'scanner'
                                 AND s.Current_stage <> 'Recycling Bin'
                                 $ExtraSite_Criteria
-                                GROUP BY s.SubprojectID"); //, $result);
-                        foreach($result as $row) {
-                            $this->tpl_data['scanned'][$row['rowid']]['progress'] = $row['val'];
-                            $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
-                            $total_scan += $row['val'];
-                        }
+                                GROUP BY s.SubprojectID"); 
+                            foreach($result as $row) {
+                                $this->tpl_data['scanned'][$row['rowid']]['progress'] = $row['val'];
+                                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                                $total_scan += $row['val'];
+                            }
 
                         //Scans for visits marked as Fail
                         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
@@ -211,12 +193,12 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND c.PSCID<>'scanner'
                                 AND s.Current_stage <> 'Recycling Bin'
                                 $ExtraSite_Criteria
-                                GROUP BY s.SubprojectID"); //, $result);
-                        foreach($result as $row) {
-                            $this->tpl_data['scanned'][$row['rowid']]['fail'] = $row['val'];
-                            $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
-                            $total_scan += $row['val'];
-                        }
+                                GROUP BY s.SubprojectID"); 
+                            foreach($result as $row) {
+                                $this->tpl_data['scanned'][$row['rowid']]['fail'] = $row['val'];
+                                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                                $total_scan += $row['val'];
+                            }
 
                         //Scans for visits marked as Withdraw
                         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
@@ -226,24 +208,20 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND c.PSCID<>'scanner'
                                 AND s.Current_stage <> 'Recycling Bin'
                                 $ExtraSite_Criteria
-                                GROUP BY s.SubprojectID"); //, $result);
-                        foreach($result as $row) {
-                            $this->tpl_data['scanned'][$row['rowid']]['withdraw'] = $row['val'];
-                            $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
-                            $total_scan += $row['val'];
-                        }
+                                GROUP BY s.SubprojectID"); 
+                            foreach($result as $row) {
+                                $this->tpl_data['scanned'][$row['rowid']]['withdraw'] = $row['val'];
+                                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                                $total_scan += $row['val'];
+                            }
 
                         $this->tpl_data['scanned']['total'] = $total_scan;
-                        // NUMBER OF CANDIDATES STATS TABLE
-                        /*
 
                         // Adds a C to the start of the centerid, because that's how the
-                        // template is looking for it. Exclude DCC and UofA
-                        WHEN 'v6' THEN 'v06'
-                        WHEN '12m' THEN 'v12'*/
+                        // template is looking for it. Exclude DCC 
                         $s = Utility::getSiteList();
 
-                        $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID != '1'"); //, $centers);
+                        $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID != '1'"); 
                         if(Utility::isErrorX($centers)) {
                             return PEAR::raiseError("DB Error: ".$centers->getMessage());
                         }
@@ -260,10 +238,8 @@ class NDB_Menu_statistics extends NDB_Menu
                         $Visits = Utility::getVisitList();
                         $this->tpl_data['Visits'] = $Visits;
 
-                        $instruments  = //array_merge(
-                            array( '' => 'Recruit Gender Breakdown'//),
-                            // Utility::getAllInstruments()
-                            );
+                        $instruments  = 
+                            array( '' => 'Recruit Gender Breakdown');
 
 
                         $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments(); 
@@ -277,7 +253,7 @@ class NDB_Menu_statistics extends NDB_Menu
 
                         $instruments2  = array_merge(
                                 array( null=> 'Please select an instrument' ),
-                                $full_names//Utility::getAllInstruments()
+                                $full_names
                                 );
 
                         if(isset($_REQUEST['instrument2']) && $_REQUEST['instrument2'] != '') {
@@ -305,25 +281,10 @@ class NDB_Menu_statistics extends NDB_Menu
                                     JOIN $_REQUEST[instrument2] i USING(CommentID)
                                     WHERE s.Active='Y' and s.CenterID <> 1
                                     AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
-                                    GROUP BY c.CenterID, SubprojectID, VLabel, Subcat"); //, &$result);
-                            $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
+                                    GROUP BY c.CenterID, SubprojectID, VLabel, Subcat"); 
+                                    $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
                         }
-                        //CASE s.Visit_label
-                        //WHEN 'EL' THEN 'EL'
-                        //ELSE s.Visit_label END as VLabel
-                        /*   } else {
-                        /* $DB->select("SELECT c.CenterID as CenterID, 
-                        s.SubprojectID as SubprojectID, 
-                        s.Visit_label as VLabel,
-                        c.gender as Subcat,
-                        count(s.CandID) as val
-                        FROM session s JOIN candidate c ON (s.CandID=c.CandID) 
-                        WHERE s.active='Y' AND s.CenterID > '1' AND c.CenterID > '1'
-                        AND ((s.Current_stage IN ('Visit', 'Screening')
-                        AND s.SubprojectID IN (1, 2)) OR s.SubprojectID=3) 
-                        AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                        AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                        GROUP BY c.CenterID, SubprojectID, VLabel, Subcat", &$result);*/
+
                         $Subcategories = array('Male', 'Female');
                         $result = $DB->pselect("SELECT c.CenterID as CenterID,    
                                 s.SubprojectID as SubprojectID,  
@@ -334,14 +295,13 @@ class NDB_Menu_statistics extends NDB_Menu
                                 WHERE s.active='Y' AND s.CenterID > '1' AND c.CenterID > '1'                     
                                 AND ((s.Current_stage IN ('Visit', 'Screening')))              
                                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')            
-                                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat"); //, &$result);
-                        //ORDER BY SubprojectID;
+                                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat"); 
+                            //ORDER BY SubprojectID;
 
-                        if (Utility::isErrorX($result)) {
-                            return PEAR::raiseError("DB Error: ".$result->getMessage());
-                        }
+                            if (Utility::isErrorX($result)) {
+                                return PEAR::raiseError("DB Error: ".$result->getMessage());
+                            }
                         $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "demographics");
-                        //  }
 
 
 
@@ -360,34 +320,35 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND c.Active='Y' 
                                 AND s.Current_stage <> 'Recycling Bin'
                                 AND f.CommentID NOT LIKE 'DDE%' 
-                                GROUP by s.CenterID, VLabel, f.Data_Entry"); //, $result);
+                                GROUP by s.CenterID, VLabel, f.Data_Entry"); 
 
-                        foreach($result as $row) {
-                            // Put some things into variables to make the lines shorter
-                            // so that they don't wrap. Note that "c"(enter array) needs to 
-                            // be a reference since we'll be modifying it.
-                            $center = $row['CenterID'];
-                            $vl = $row['VLabel'];
-                            $c =& $this->tpl_data['behaviour']['C' . $center];
+                            foreach($result as $row) {
+                                // Put some things into variables to make the lines shorter
+                                // so that they don't wrap. Note that "c"(enter array) needs to 
+                                // be a reference since we'll be modifying it.
+                                $center = $row['CenterID'];
+                                $vl = $row['VLabel'];
+                                $c =& $this->tpl_data['behaviour']['C' . $center];
 
-                            $c[$vl]['total'] += $row['val'];
-                            $c['all']['total'] += $row['val'];
-                            if($row['Data_Entry'] == 'Complete') {
-                                $c[$vl]['complete'] += $row['val'];
-                                $c['all']['complete'] += $row['val'];
+                                $c[$vl]['total'] += $row['val'];
+                                $c['all']['total'] += $row['val'];
+                                if($row['Data_Entry'] == 'Complete') {
+                                    $c[$vl]['complete'] += $row['val'];
+                                    $c['all']['complete'] += $row['val'];
+                                }
+                                if($c[$vl]['total'] != 0) {
+                                    $c[$vl]['percent'] = 
+                                        floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                                }
+                                if($c['all']['total'] != 0) {
+                                    $c['all']['percent'] = 
+                                        floor($c['all']['complete'] / $c['all']['total']*100);
+                                }
                             }
-                            if($c[$vl]['total'] != 0) {
-                                $c[$vl]['percent'] = 
-                                    floor($c[$vl]['complete'] / $c[$vl]['total']*100);
-                            }
-                            if($c['all']['total'] != 0) {
-                                $c['all']['percent'] = 
-                                    floor($c['all']['complete'] / $c['all']['total']*100);
-                            }
-                        }
 
                         $sites = Utility::getSiteList(true, false); 
                         $this->tpl_data['DataEntryTable'] = $this->render_stats_table("Data Entry Statistics", $Subcategories, $Visits, "site", $sites, '', $centers, $result, "demographics");
+
                         // DDE STATS
 
                         $result = $DB->pselect("SELECT s.CenterID, 
@@ -400,49 +361,43 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND s.Current_stage <> 'Recycling Bin'
                                 AND f.CommentID LIKE 'DDE%' 
                                 AND f.Data_Entry IS NOT NULL
-                                GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID"); //, $result);
-                        //s.Visit_label as VLabel,
-                        //AND (f.Test_name NOT LIKE '%parameter%' 
-                        foreach($result as $row) {
-                            $center = $row['CenterID'];
-                            $vl = $row['VLabel'];
-                            $c =& $this->tpl_data['dde']['C' . $center];
+                                GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID"); 
+                            foreach($result as $row) {
+                                $center = $row['CenterID'];
+                                $vl = $row['VLabel'];
+                                $c =& $this->tpl_data['dde']['C' . $center];
 
-                            $c[$vl]['total'] += $row['val'];
-                            $c['all']['total'] += $row['val'];
-                            if($row['Data_Entry'] == 'Complete') {
-                                $c[$vl]['complete'] += $row['val'];
-                                $c['all']['complete'] += $row['val'];
+                                $c[$vl]['total'] += $row['val'];
+                                $c['all']['total'] += $row['val'];
+                                if($row['Data_Entry'] == 'Complete') {
+                                    $c[$vl]['complete'] += $row['val'];
+                                    $c['all']['complete'] += $row['val'];
+                                }
+                                if($c[$vl]['total'] != 0) {
+                                    $c[$vl]['percent'] = 
+                                        floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                                }
+                                if($c['all']['total'] != 0) {
+                                    $c['all']['percent'] = 
+                                        floor($c['all']['complete'] / $c['all']['total']*100);
+                                }
                             }
-                            if($c[$vl]['total'] != 0) {
-                                $c[$vl]['percent'] = 
-                                    floor($c[$vl]['complete'] / $c[$vl]['total']*100);
-                            }
-                            if($c['all']['total'] != 0) {
-                                $c['all']['percent'] = 
-                                    floor($c['all']['complete'] / $c['all']['total']*100);
-                            }
-                        }
 
                         $MRISubcategories = array('Complete', 'Partial Run', 'No Scan'); 
+                        $MRIOptions = array();
 
                         //The MRI scans as coded in the MRI parameter form 
-                        $MRIOptions = array('T1' => 'T1', 
-                                'FLAIR' => 'FLAIR',
-                                'DTI64' => 'DTI 64',
-                                'Fieldmap_DTI' => 'Fieldmap DTI',
-                                'Fieldmap_BOLD' => 'Fieldmap BOLD',
-                                'BOLD_Encoding_Enrollment' => 'BOLD Encoding (Enrollment)', 
-                                'BOLD_Retrieval_Enrollment' => 'BOLD Retrieval (Enrollment)', 
-                                'BOLD_Resting' => 'BOLD Resting', 
-                                'BOLD_Encoding' => 'BOLD Encoding', 
-                                'GRE_T2_star' => 'GRE T2 star',
-                                'BOLD_Retrieval' => 'BOLD Retrieval',
-                                'ASL' => 'ASL',
-                                );
+                        $MRI_db_categories = $DB->pselect("SELECT distinct Scan_type from mri_scan_type m right join files f on f.AcquisitionProtocolID = m.ID");  
+                        foreach($MRI_db_categories as $key=>$type) {
+                            foreach ($type as $scan=>$label){
+                                if (!empty($label))
+                                    $MRIOptions[$label] =  $label;
+                            }
+                        }
                         if($_REQUEST['mri_type']) {
                             $MRI_Type = $_REQUEST['mri_type'];
-                            $MRI_Type_Field = $_REQUEST['mri_type'] . "_Scan_Done";
+                            //field name should match the field name in the MRI parameter form
+                            $MRI_Type_Field = $_REQUEST['mri_type'];
                             $MRIHeader = "$MRI_Type Breakdown";
                             $CaseStatement = "
                                 CASE($MRI_Type_Field)
@@ -451,7 +406,8 @@ class NDB_Menu_statistics extends NDB_Menu
                                 ELSE $MRI_Type_Field
                                 END";
                         } else {
-                            $MRI_Type_Field = 'T1_Scan_Done';
+                            //By default, T1 statistics load
+                            $MRI_Type_Field = 'T1';
                             $MRI_Type = 'T1';
                             $MRIHeader = "T1 Scan Done Breakdown";
                             $CaseStatement = "
@@ -461,7 +417,7 @@ class NDB_Menu_statistics extends NDB_Menu
                                 ELSE $MRI_Type_Field
                                 END";
                         }
-                        $scan_done = 'T1_Scan_done';
+                        $scan_done = 'T1';
                         $result = $DB->pselect("SELECT s.SubprojectID, 
                                 c.CenterID, 
                                 s.Visit_label as VLabel, 
@@ -474,12 +430,12 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND s.Active='Y'
                                 AND c.Active='Y'
                                 AND m.CommentID NOT LIKE 'DDE%'
-                                GROUP BY Subcat, s.SubprojectID, c.CenterID, VLabel"); //, &$result);
-                        //  AND f.Administration <> 'None'
-                        //  AND m.Administration = 'All'
-                        // lower(s.Visit_label) as VLabel,
-                        //AND m.$scan_done = 'Complete' OR m.$scan_done = 'Partial'
-                        $M_Visits = Utility::getVisitList(); 
+                                AND f.Administration <> 'None'
+                                AND m.Administration = 'All'
+                                GROUP BY Subcat, s.SubprojectID, c.CenterID, VLabel"); 
+                            // lower(s.Visit_label) as VLabel,
+                            //AND m.$scan_done = 'Complete' OR m.$scan_done = 'Partial'
+                            $M_Visits = Utility::getVisitList(); 
                         $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table($MRIHeader, $MRISubcategories, $M_Visits, "mri_type", $MRIOptions, $MRI_Type, $centers, $result, "mri");
                         foreach($result as $row) {
                             $center = $row['CenterID'];
@@ -494,8 +450,6 @@ class NDB_Menu_statistics extends NDB_Menu
 
                         }
 
-
-                        //*************THIS CODE IS DUPLICATED**************
 
 
                         // MRI INTEGRITY STATS 
@@ -513,9 +467,9 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND t.TarchiveID IS NULL 
                                 AND (m.T1_Scan_done IS NULL OR m.T1_Scan_done <> 'No')
                                 AND s.CenterID <> 1
+                                AND f.Administration <> 'None'
+                                AND f.Data_entry='Complete'
                                 GROUP BY s.CenterID"); //, $result);
-                        //  and f.Administration <> 'None'
-                        //  AND f.Data_entry='Complete'
                         foreach($result as $row) {
                             $this->tpl_data['mri_errors'][$row['CenterID']]['no_tarchive'] = $row['val'];
                         }
@@ -531,12 +485,11 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND fi.FileID IS NULL 
                                 AND s.Active='Y' 
                                 AND s.CenterID <> 1
-                                GROUP by s.CenterID"); //, $result);
-                        //OR m.T2_Scan_done <> 'No' 
-                        // AND f.Data_entry = 'Complete'
-                        foreach($result as $row) {
-                            $this->tpl_data['mri_errors'][$row['CenterID']]['no_browser'] = $row['val'];
-                        }
+                                AND f.Data_entry = 'Complete'
+                                GROUP by s.CenterID"); 
+                            foreach($result as $row) {
+                                $this->tpl_data['mri_errors'][$row['CenterID']]['no_browser'] = $row['val'];
+                            }
 
                         // MRI Browser populated, but no MRI parameter form completed.
                         $result = $DB->pselect("SELECT s.CenterID as CenterID, COUNT(distinct s.ID) as val
@@ -551,10 +504,10 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND c.Active = 'Y'
                                 AND c.PSCID <> 'scanner'
                                 AND s.CenterID <> 1
-                                GROUP BY s.CenterID"); //, $result);
-                        foreach($result as $row) {
-                            $this->tpl_data['mri_errors'][$row['CenterID']]['no_parameter'] = $row['val'];
-                        }
+                                GROUP BY s.CenterID"); 
+                            foreach($result as $row) {
+                                $this->tpl_data['mri_errors'][$row['CenterID']]['no_parameter'] = $row['val'];
+                            }
 
 
                         // TOP MRI TABLE
@@ -564,39 +517,41 @@ class NDB_Menu_statistics extends NDB_Menu
                             $id = $center['NumericID'];
                             $name = $center['ShortName'];
                             //$name = $center['LongName'];
+
                             // -------- MRI STATS---------------
 
-                            $result24 = $DB->pselect("SELECT COUNT(s.CandID) FROM session as s, psc as p, candidate as c WHERE c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID  AND s.Scan_done='Y' AND s.CenterID={$id} ORDER BY s.CandID"); //, $result24);
-                            if (Utility::isErrorX($result24)) {
-                                return PEAR::raiseError("DB Error: ".$result24->getMessage());
+                            $claimed = $DB->pselect("SELECT COUNT(s.CandID) FROM session as s, psc as p, candidate as c WHERE c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID  AND s.Scan_done='Y' AND s.CenterID={$id} ORDER BY s.CandID"); 
+                            if (Utility::isErrorX($claimed)) {
+                                return PEAR::raiseError("DB Error: ".$claimed->getMessage());
                             }
-                            list(,$result24)=each($result24[0]);
-                            $claimed_count = $result24;
+                            list(,$claimed)=each($claimed[0]);
+                            $claimed_count = $claimed;
 
-                            $result25 = $DB->pselect("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID={$id} ORDER BY p.Name"); //, $result25);
-                            if (Utility::isErrorX($result25)) {
-                                return PEAR::raiseError("DB Error: ".$result25->getMessage());
+                            $forms = $DB->pselect("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID={$id} ORDER BY p.Name"); 
+                            if (Utility::isErrorX($forms)) {
+                                return PEAR::raiseError("DB Error: ".$forms->getMessage());
                             }
-                            list(,$result25)=each($result25[0]);
-                            $forms_count = $result25;
-                            $three_scans = $DB->selectOne("SELECT count(distinct CandID) FROM session vEN join flag fEN ON (fEN.SessionID=vEN.ID and Test_name='mri_parameter_form' AND CommentID NOT LIKE 'DDE%') join mri_parameter_form mEN ON (fEN.CommentID=mEN.CommentID) 
-                                    WHERE vEN.Active='Y' AND vEN.Visit_label LIKE '%EN%' and mEN.T1_Scan_Done='Complete'
-                                    AND vEN.CenterID='{$id}'");
+                            list(,$forms)=each($forms[0]);
+                            $forms_count = $forms;
 
                             $mri_data[] = array('name' => $name,  'claimed_count' => $claimed_count, 'forms_count' => $forms_count);
 
                         }
 
 
-                        $scans = array('T1_Scan_done', 'FLAIR_Scan_done', 'DTI64_Scan_done', 'Fieldmap_DTI_Scan_done', 'Fieldmap_BOLD_Scan_done', 'BOLD_Resting_Scan_done', 'GRE_T2_star_Scan_done', 'ASL_Scan_done');
+                        //$scans = array('T1_Scan_done', 'FLAIR_Scan_done', 'DTI64_Scan_done', 'Fieldmap_DTI_Scan_done', 'Fieldmap_BOLD_Scan_done', 'BOLD_Resting_Scan_done', 'GRE_T2_star_Scan_done', 'ASL_Scan_done');
                         $sum = 0;
                         $sum_files = 0;
                         $count = array();
-                        $total = array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
-                        $scans_inserted = array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
-                        $count_pass = array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
-                        $total_files = array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
-                        $total_pass = array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
+                        $total = array('Name' => 'Total');
+                        foreach ($MRIOptions as $key=>$scan) {
+                            $total[$key] = 0;
+                        }
+                        $total['All'] = 0; 
+                        $scans_inserted = $total; //array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
+                        $count_pass = $total; //array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
+                        $total_files = $total; //array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
+                        $total_pass = $total; //array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
 
                         foreach (Utility::getSiteList() as $site) {
                             $row = array(null=>"");
@@ -604,9 +559,8 @@ class NDB_Menu_statistics extends NDB_Menu
                                 $row['Center'] = $site;
                                 $sum = 0;
                                 $sum_files = 0;
-                                foreach ($scans as $s) {
-                                    $type = preg_replace('/_Scan_done/', '', $s);
-                                    $count = $DB->pselectRow("SELECT $s,  psc.Name as Center, COUNT(DISTINCT c.CandID) as count FROM candidate c 
+                                foreach ($MRIOptions as $key=>$scan) {
+                                    $count = $DB->pselectRow("SELECT $scan,  psc.Name as Center, COUNT(DISTINCT c.CandID) as count FROM candidate c 
                                             JOIN session s ON (c.CandID=s.CandID and s.Active='Y' and s.Current_stage <> 'Recycling Bin') 
                                             JOIN flag f ON (f.SessionID=s.ID and f.Test_name='mri_parameter_form' AND f.CommentID NOT LIKE 'DDE%') 
                                             JOIN mri_parameter_form m ON (f.CommentID=m.CommentID)  
@@ -614,7 +568,7 @@ class NDB_Menu_statistics extends NDB_Menu
                                             WHERE     c.Active='Y' AND c.PSCID  not like 'dcc%'  
                                             AND c.PSCID <> 'scanner' 
                                             AND psc.Name = '$site' 
-                                            AND m.$s = 'Complete' 
+                                            AND m.$scan = 'Complete' 
                                             GROUP BY c.CenterID ORDER BY c.CenterID");
                                     if (empty($count))
                                         $count['count'] = 0;
@@ -625,27 +579,15 @@ class NDB_Menu_statistics extends NDB_Menu
                                 // 
 
                                 //foreach ($MultiTimepoint as $row) 
-                                $this->tpl_data['mri_all_scans_done'][] = array(
-                                        'Name' => $row['Center'],
-                                        'T1' => $row['T1'],
-                                        'FLAIR' => $row['FLAIR'],
-                                        'DTI64' => $row['DTI64'],
-                                        'Fieldmap_DTI' => $row['Fieldmap_DTI'],
-                                        'Fieldmap_BOLD' => $row['Fieldmap_BOLD'],
-                                        'BOLD_Resting' => $row['BOLD_Resting'],
-                                        'GRE_T2_star' => $row['GRE_T2_star'],
-                                        'ASL' => $row['ASL'],
-                                        'All' => $sum
-                                        );
-                                $total['T1'] += $row['T1'];
-                                $total['FLAIR'] += $row['FLAIR'];
-                                $total['DTI64'] += $row['DTI64'];
-                                $total['Fieldmap_DTI'] += $row['Fieldmap_DTI'];
-                                $total['Fieldmap_BOLD'] += $row['Fieldmap_BOLD'];
-                                $total['BOLD_Resting'] += $row['BOLD_Resting'];
-                                $total['GRE_T2_star'] += $row['GRE_T2_star'];
-                                $toal['ASL'] += $row['ASL'];
+                                $this->tpl_data['mri_all_scans_done'][] = array('Name' => $row['Center']); 
+                                foreach ($MRIOptions as $key=>$scan) {
+                                    $this->tpl_data['mri_all_scans_done'][$key] = $row[$key];
+                                    $total[$key] += $row[$key];
+                                }
+                                $this->tpl_data['All'] = $sum;
                                 $total['All'] += $sum;
+                                //'T1' => $row['T1'],
+                                //$total['T1'] += $row['T1'];
 
                                 $files = $DB->pselect("SELECT m.Scan_type as type, count(*) as c, 
                                         s.Visit_label as VLabel
@@ -663,97 +605,21 @@ class NDB_Menu_statistics extends NDB_Menu
                                         WHERE mriQCStatus = 'Pass' and p.Name = '$site' 
                                         GROUP BY scan_type, VLabel");
 
-                                $mappings = array('T1'=>'adniT1', 'FLAIR'=>'FLAIR', 'DTI64'=>'DTI', 'Fieldmap_BOLD'=>'Fieldmap', 'Fieldmap_DTI'=>'Fieldmap', 'BOLD_Resting'=>'Resting', 'GRE_T2_star'=>'greT2star', 'ASL'=>'ASL');
+                                //                                $mappings = array('T1'=>'adniT1', 'FLAIR'=>'FLAIR', 'DTI64'=>'DTI', 'Fieldmap_BOLD'=>'Fieldmap', 'Fieldmap_DTI'=>'Fieldmap', 'BOLD_Resting'=>'Resting', 'GRE_T2_star'=>'greT2star', 'ASL'=>'ASL');
 
                                 foreach ($files as $file) {
                                     $scans_inserted['Name'] = $site;
-                                    //$total_files[
-                                    if ($file['type'] == 'adniT1') { 
-                                        $scans_inserted['T1'] += $file['c'];
-                                        $total_files['T1'] += $file['c'];
-                                        $sum_files += $file['c'];
-                                    }
-                                    if ($file['type'] == 'FLAIR') {
-                                        $scans_inserted['FLAIR'] += $file['c'];
-                                        $total_files['FLAIR'] += $file['c'];
-                                        $sum_files += $file['c'];
-                                    }
-                                    if ($file['type'] == 'DTI') {
-                                        $scans_inserted['DTI64'] += $file['c'];
-                                        $total_files['DTI64'] += $file['c'];
-                                        $sum_files += $file['c'];
-                                    }
-                                    if ($file['type'] == 'Fieldmap') {
-                                        if ($file['VLabel'] == 'EN') {
-                                            $scans_inserted['Fieldmap_DTI'] += $file['c'];
-                                            $total_files['Fieldmap_DTI'] += $file['c'];
-                                        } else {
-                                            $scans_inserted['Fieldmap_BOLD'] += $file['c'];
-                                            $total_files['Fieldmap_BOLD'] += $file['c'];
-                                        }
-                                        $sum_files += $file['c'];
-                                    }   
-                                    if ($file['type'] == 'Resting') {
-                                        // $this->tpl_data['mri_all_scans_inserted'][]['BOLD_Resting'] = $file['c'];
-                                        $scans_inserted['BOLD_Resting'] += $file['c'];
-                                        $total_files['BOLD_Resting'] += $file['c'];
-                                        $sum_files += $file['c'];
-                                    }
-                                    if ($file['type'] == 'greT2star') {
-                                        $scans_inserted['GRE_T2_star'] += $file['c'];
-                                        $total_files['GRE_T2_star'] += $file['c'];
-                                        $sum_files += $file['c'];
-                                    }
-                                    if ($file['type'] == 'ASL') {
-                                        $scans_inserted['ASL'] += $file['c'];
-                                        $total_files['ASL'] += $file['c'];
-                                        $sum_files += $file['c'];
-                                    }
+                                    $scans_inserted[$file['type']] += $file['c'];
+                                    $total_files[$file['type']] += $file['c'];
+                                    $sum_files += $file['c'];
                                 }
 
                                 $sum_pass = 0;
                                 foreach ($pass as $p) {
                                     $count_pass['Name'] = $site;
-                                    if ($p['type'] == 'adniT1') { 
-                                        $count_pass['T1'] += $p['count_pass'];
-                                        $total_pass['T1'] += $p['count_pass'];
-                                        $sum_pass += $p['count_pass'];
-                                    }
-                                    if ($p['type'] == 'FLAIR') {
-                                        $count_pass['FLAIR'] += $p['count_pass'];
-                                        $total_pass['FLAIR'] += $p['count_pass'];
-                                        $sum_pass += $p['count_pass'];
-                                    }
-                                    if ($p['type'] == 'DTI') {
-                                        $count_pass['DTI64'] += $p['count_pass'];
-                                        $total_pass['DTI64'] += $p['count_pass'];
-                                        $sum_pass += $p['count_pass'];
-                                    }
-                                    if ($p['type'] == 'Fieldmap') {
-                                        if ($p['VLabel'] == 'EN') {
-                                            $count_pass['Fieldmap_DTI'] += $p['count_pass'];
-                                            $total_pass['Fieldmap_DTI'] += $p['count_pass'];
-                                        } else {
-                                            $count_pass['Fieldmap_BOLD'] += $p['count_pass'];
-                                            $total_pass['Fieldmap_BOLD'] += $p['count_pass'];
-                                        }
-                                        $sum_pass += $p['count_pass'];
-                                    }   
-                                    if ($p['type'] == 'Resting') {
-                                        $count_pass['BOLD_Resting'] += $p['count_pass'];
-                                        $total_pass['BOLD_Resting'] += $p['count_pass'];
-                                        $sum_pass += $p['count_pass'];
-                                    }
-                                    if ($p['type'] == 'greT2star') {
-                                        $count_pass['GRE_T2_star'] += $p['count_pass'];
-                                        $total_pass['GRE_T2_star'] += $p['count_pass'];
-                                        $sum_pass += $p['count_pass'];
-                                    }
-                                    if ($p['type'] == 'ASL') {
-                                        $count_pass['ASL'] += $p['count_pass'];
-                                        $total_pass['ASL'] += $p['count_pass'];
-                                        $sum_pass += $p['count_pass'];
-                                    }
+                                    $count_pass[$p['type']] += $p['count_pass'];
+                                    $total_pass[$p['type']] += $p['count_pass'];
+                                    $sum_pass += $p['count_pass'];
                                 }
                             }
                         }
@@ -784,60 +650,31 @@ class NDB_Menu_statistics extends NDB_Menu
                                 GROUP BY f.PredefinedCommentID, m.scan_type, VLabel");
 
                         $comments = array();
-                        //print_r($feedback_comments);
-                        foreach ($feedback_comments as $f=>$g)
+                        foreach ($feedback_comments as $key=>$data)
                         {
-                            if (!array_key_exists($g['Comment'], $comments)) {
-                                $comments[$g['Comment']] = array('T1'=>0, 'FLAIR'=>0, '64 DTI'=>0, 'DTI Fieldmap'=>0, 'BOLD Fieldmap'=>0, 'Resting BOLD'=>0, 'GRE T2*'=>0, 'ASL'=>0, 'All'=>0);
+                            if (!array_key_exists($data['Comment'], $comments)) {
+                                $comments[$data['Comment']] = $total; //array('T1'=>0, 'FLAIR'=>0, '64 DTI'=>0, 'DTI Fieldmap'=>0, 'BOLD Fieldmap'=>0, 'Resting BOLD'=>0, 'GRE T2*'=>0, 'ASL'=>0, 'All'=>0);
                             }
-                            if ($g['scan_type'] == 'adniT1') 
-                                $comments[$g['Comment']]['T1'] += $g['count'];
-                            if ($g['scan_type'] == 'DTI') 
-                                $comments[$g['Comment']]['64 DTI'] += $g['count'];
-                            if ($g['scan_type'] == 'FLAIR')
-                                $comments[$g['Comment']]['FLAIR'] += $g['count'];
-                            if ($g['scan_type'] == 'Fieldmap') {
-                                $comments[$g['Comment']]['DTI Fieldmap'] += $g['count'];
-                                $comments[$g['Comment']]['BOLD Fieldmap'] += $g['count'];
-                            }		
-                            if ($g['scan_type'] == 'Resting')  
-                                $comments[$g['Comment']]['Resting BOLD'] += $g['count'];
-                            if ($g['scan_type'] == 'greT2star')  
-                                $comments[$g['Comment']]['GRE T2*'] += $g['count'];
-                            if ($g['scan_type'] == 'ASL') 
-                                $comments[$g['Comment']]['ASL'] += $g['count'];
-                            $comments[$g['Comment']]['All'] += $g['count'];
 
-                            if ($g['scan_type'] == 'adniT1') 
-                                $new_feedback['T1'][$g['Comment']] = $g['count'];
-                            elseif ($g['scan_type'] == 'DTI') 
-                                $new_feedback['64 DTI'][$g['Comment']] = $g['count'];
-                            elseif ($g['scan_type'] == 'Fieldmap') { 
-                                $new_feedback['DTI Fieldmap'][$g['Comment']] = $g['count'];
-                                $new_feedback['BOLD Fieldmap'][$g['Comment']] = $g['count'];
-                            }
-                            elseif ($g['scan_type'] == 'Resting')  
-                                $new_feedback['Resting BOLD'][$g['Comment']] = $g['count'];
-                            elseif ($g['scan_type'] == 'greT2star')  
-                                $new_feedback['GRE T2*'][$g['Comment']] = $g['count'];
-                            else
-                                $new_feedback[$g['scan_type']][$g['Comment']] = $g['count'];
+                            $comments[$data['Comment']][$data['scan_type']] += $data['count']; 
+                            $comments[$data['Comment']]['All'] += $data['count'];
+
+
+                            //                            if ($g['scan_type'] == 'adniT1') 
+                            $new_feedback[$data['scan_type']][$data['Comment']] = $data['count'];
                             //foreach($g as $comment=>$count) {
                             //$new_feedback[$g['Comment']] = $g['count'];
                             //$this->tpl_data['mri_all_scans_done'][] = array(    
                             //}
-                            foreach($mappings as $label=>$field) {
+                            foreach($MRIOptions as $label=>$field) {
                                 if (!array_key_exists($new_feedback, $label))
                                     $new_feedback[$label] = 0;
                             }
 
                         }
-                        //print_r($new_feedback);
-                        //print_r($comments);
                         $this->tpl_data['feedback_mri_comments'] = $comments;
 
-    } // End function
+        } // End function
 
-
-} // End class
-?>
+    } // End class
+    ?>

@@ -188,6 +188,12 @@
     </study>
 <!-- end of study definition -->
 
+<!-- Statistics options -->
+    <statistics>
+        <visitStats>EL</visitStats>
+        <excludedMeasures>radiology_review</excludedMeasures>
+        <excludedMeasures>mri_parameter_form</excludedMeasures>
+    </statistics>
 
     <!-- GUI default settings -->
     <gui>
@@ -225,7 +231,14 @@
             </permissions>
             <visible>1</visible>
         </tab>
-
+          <tab>
+            <link>statistics</link>
+            <label>Database Statistics</label>
+            <access>all</access>
+           <permissions>
+            </permissions>
+            <visible>1</visible>
+        </tab>
         <tab>
             <link>datadict</link>
             <label>Data Dictionary</label>
