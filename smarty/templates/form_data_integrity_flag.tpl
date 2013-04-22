@@ -77,7 +77,6 @@
 	    <tr>
 	        <td>{$form.instrument.label}</td>
 	        <td>{$form.instrument.html}</td>
-	      
 	    </tr>
 	    
 	    <tr>
