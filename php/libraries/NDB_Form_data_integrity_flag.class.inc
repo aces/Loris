@@ -159,12 +159,15 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         //Loop through the conflicts and add a row per
         foreach($info AS $data) {
             $this->tpl_data['elements_list_names'] [] = $data['dataflag_id'];
+            $full_name = $DB->pselectOne("SELECT Full_name from test_names where Test_name = :tname",array('tname'=>$data['dataflag_instrument']));
             $this->tpl_data['elements_array'][$data['dataflag_id']]['date']= $data['dataflag_date'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['flag'] = $data['dataflag_status'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['comment']= $data['dataflag_comment'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['instrument']= $data['dataflag_instrument'];
+            $this->tpl_data['elements_array'][$data['dataflag_id']]['full_name']= $full_name;
             $this->tpl_data['elements_array'][$data['dataflag_id']]['visit_label']= $data['dataflag_visitlabel'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['userid']= $data['dataflag_userid'];
+            
             //$this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback']= $data['dataflag_dc_open_feedback'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback']= $data['dataflag_fbcreated'] - $data['dataflag_fbclosed']-$data['dataflag_fbcomment'];
         }
