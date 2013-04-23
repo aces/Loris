@@ -208,7 +208,7 @@ class NDB_Reliability extends NDB_Form
       function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
           $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
           $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-          $this->add_Group($group, $field.'_group', $label, null, false);
+          $this->addGroup($group, $field.'_group', $label, null, false);
           unset($group);
           $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
           $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -218,7 +218,7 @@ class NDB_Reliability extends NDB_Form
          return;  //removed all free form comment text boxes.
          $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>60, 'rows'=>6));
          $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
-         $this->add_Group($group, $field.'_group', $label, null, false);
+         $this->addGroup($group, $field.'_group', $label, null, false);
          unset($group);
          $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
          $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
