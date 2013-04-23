@@ -60,8 +60,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             'max(session.Current_stage) as Latest_visit_status',
             'min(feedback_bvl_thread.Status+0) as Feedback')
         );
+        $db = Database::singleton();
+        $this->FeedbackIDs = $db->pselect("select distinct min(Status+0) as ID, Status from feedback_bvl_thread group by Status;");
 
-        
         $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Active = 'Y'
          LEFT JOIN feedback_bvl_thread ON (candidate.CandID=feedback_bvl_thread.CandID)
          LEFT JOIN participant_status ON (participant_status.CandID=candidate.CandID)
@@ -188,7 +189,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 // get feedback information for each displayed candidate record
                 if ($key == 'Feedback' && !empty($val)) {
                     // overwrite value
-                    $this->tpl_data['items'][$x][$i]['value'] = NDB_BVL_Feedback::getFeedbackStatusVerbose($val);
+                    $this->tpl_data['items'][$x][$i]['value'] = $this->FeedbackIDs[$val]['Status'];
                     $this->tpl_data['items'][$x][$i]['bgcolor'] = NDB_BVL_Feedback::getThreadColor($this->tpl_data['items'][$x][$i]['value']);
                 } else if ($key=='Feedback' && empty($val)){
                 	$this->tpl_data['items'][$x][$i]['value'] = "None";
