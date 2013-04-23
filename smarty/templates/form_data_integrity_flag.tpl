@@ -128,7 +128,12 @@
 	    
 	        <tr>
 		        <td nowrap="nowrap" valign="top">{$elements_array[$element].visit_label}</td>
-		        <td nowrap="nowrap" valign="top">{$elements_array[$element].instrument}</td>
+		        <td nowrap="nowrap" valign="top">
+		          <a href="main.php?visit_label={$elements_array[$element].visit_label}&instrument={$elements_array[$element].full_name}
+&filter=Show+Data&test_name=data_team_helper">{$elements_array[$element].instrument}
+		          </a>
+		          </td>
+		        
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].date}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].flag}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].comment}</td>
