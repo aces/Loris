@@ -171,7 +171,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             // Only show current site in the filter
             $sites = array('' => '', $user->getCenterID() => $user->getSiteName());
             // And update the query to only select the current site
-            $extra_where .= "AND s.CenterID = " . $DB->quote($user->getcenterID());
+            $extra_where .= "AND s.CenterID = " . $DB->quote($user->getCenterID());
         }
         // Filter selection elements
         $this->addSelect('site', 'Site:', $sites);
