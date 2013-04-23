@@ -163,7 +163,16 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         
         
         $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
+
         
+        $extra_where = '';
+        $user = User::singleton();
+        if(!$user->hasPermission('access_all_profiles')) {
+            // Only show current site in the filter
+            $sites = array('' => '', $user->getCenterID() => $user->getSiteName());
+            // And update the query to only select the current site
+            $extra_where .= "AND s.CenterID = " . $DB->quote($user->getCenterID());
+        }
         // Filter selection elements
         $this->addSelect('site', 'Site:', $sites);
         $this->addSelect('Instrument', 'Instrument:', $instruments);
@@ -173,7 +182,6 @@ class NDB_Form_conflicts_resolve extends NDB_Form
 
         //This condition is commmented out because the $_REQUEST['site'] will always be empty (All) by default (which will show all the sites)
         //if(!empty($_REQUEST['site'])) {
-            $extra_where = '';
             function AddWhere($Column, $Filter) {
                 if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] != 'all') {
                     global $DB;
