@@ -785,19 +785,22 @@ Class NDB_BVL_Feedback
     {
         if (empty($statusID)) return PEAR::raiseError("NDB_BVL_Feedback::getFeedbackStatusVerbose  Error, empty status ID\n");
         // new DB Object
-        $db =& Database::singleton();
+        $db = Database::singleton();
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
         $record=array();
-        $query  = "SELECT DISTINCT Status FROM feedback_bvl_thread WHERE Status=:StatID";
-        $record = $db->pselectRow($query, array('StatID' => $statusID));
+        // StatusID is passed in as an integer, but the field in the database is an enum, 
+        // so we need to do WHERE Status+0= .. to convert it to an int (of the index into
+        // the enum) so that this query works.
+        $query  = "SELECT Status FROM feedback_bvl_thread WHERE Status+0=:StatID";
+        $param = array('StatID' => $statusID);
+        $record = $db->pselectOne($query,$param ); 
         if (Utility::isErrorX($record)) {
         	
             return PEAR::raiseError("DBError, failed to select Status from the feedback_bvl_thread for ID ($statusID)\n");
         }
-        return $record['Status'];
+        return $record;
     }
 }
 ?>
