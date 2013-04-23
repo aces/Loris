@@ -32,6 +32,7 @@ var Instrument = {
             return;
         }
         var content = this.render();
+        var name = document.getElementById("filename").value || "instrument";
 
         fs = saveAs(content.getBlob("text/plain;charset=utf-8"), name + ".linst");
         fs.onwriteend = function() {

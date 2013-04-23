@@ -103,6 +103,13 @@ class NDB_BVL_Instrument extends NDB_Page
     var $ValidityRequired = true;
 
 
+    /**
+     * An array of questions and their types for LINST style instruments,
+     * useful so that we can look up if it's in a group or not for when
+     * registering rules
+     */
+    var $LinstQuestions = array();
+
     // }}}
     // {{{ factory()
 
@@ -137,7 +144,6 @@ class NDB_BVL_Instrument extends NDB_Page
             return;
         }
         if(file_exists($base."project/instruments/$instrument.linst") || $instrument=='instrument_preview') {
-            //print "Using Loris Instrument Format\n";
             if($instrument == 'instrument_preview') {
                 require_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
                 $obj = new NDB_BVL_Instrument_instrument_preview();
@@ -1483,12 +1489,14 @@ class NDB_BVL_Instrument extends NDB_Page
                         if($addElements) {
                             $this->addTextElement($pieces[1], $pieces[2]);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
                         break;
                     case 'textarea':
                         $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
                         break;
                     case 'date':
                         if(strpos($pieces[1], "_date") !== FALSE) {
@@ -1510,11 +1518,13 @@ class NDB_BVL_Instrument extends NDB_Page
 
                             $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
                         break;
                     case 'numeric':
                         if($addElements) {
                             $this->addNumericElement($pieces[1], $pieces[2]);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'numeric');
                         break;
 
                     case 'selectmultiple':
@@ -1550,6 +1560,7 @@ class NDB_BVL_Instrument extends NDB_Page
                             $this->_requiredElements[] = $pieces[1];
                             $firstSelectOfPage = false;
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'select');
                         break;
                     case 'header':
                         if($addElements) {
@@ -1561,6 +1572,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         if($addElements) {
                             $this->form->addElement('static', $pieces[1], $pieces[2]);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
                         break;
                     default: 
                         //print $line . "<br />";
@@ -1571,16 +1583,70 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
     }
-    function loadInstrumentRules($filename, $base64 = false) {
-        if(file_exists($filename) || $base64 === true) {
+
+    /**
+     * Load the rules for the instrument from $filename, which must be a file
+     * in the Loris Instrument Rule file format inspired by XINRules.
+     *
+     * Rules are of the format:
+     *   question{-}Error message if violated{-}XIN Rules to evaluate
+     *
+     * For example:
+     *
+     * family_other{-}Required if family_member is other{-}family_member{@}=={@}other
+     *
+     *
+     * @param string $filename Either the path to a file, or a base64 encoded
+     *                         string which can be interpreted as a file by
+     *                         PHP and fopen()
+     * @param bool   $base64   If true, the "filename" is really a base64 encoded
+     *                         data URL, so we shouldn't check that the file exists
+     *                         on the filesystem. (Used by preview)
+     *
+     * @return null Registers all instrument rules as a side-effect.
+     */
+    function loadInstrumentRules($filename, $base64 = false)
+    {
+        if (file_exists($filename) || $base64 === true) {
             $fp = fopen($filename, "r");
-            while(($line = fgets($fp, 4096)) !== false) {
-                // Rules Uses {-} as delimiter, unlike linst files, because {@} is part of the rules themselves
+            while (($line = fgets($fp, 4096)) !== false) {
+                // Rules Uses {-} as delimiter, unlike linst files, because {@}
+                // is part of the rules themselves
                 $pieces = split("{-}", trim($line));
                 $question = $pieces[0];
                 $message = $pieces[1];
                 $rules = array_slice($pieces, 2);
-                $this->XINRegisterRule($question, $rules, $message);
+                if (isset($this->LinstQuestions[$question])) {
+                    $q =& $this->LinstQuestions[$question];
+
+                    if ($q['UserRules'] !== true) {
+                        // Unregister the rules that were added by the wrapper
+                        // for the group, because otherwise that'll override the
+                        // user specified rules from the .rules file
+                        unset($this->XINRules[$question]);
+                    }
+                    // Set a flag so that we know a user specified rule has been
+                    // registered and we don't need to reset the rules, which means
+                    // that now newly registered rules are ANDed together, instead
+                    // of replaced.
+                    $q['UserRules'] = true;
+
+                    switch($q['type']) {
+                    case 'select':
+                        // Selects are the only type of rules that aren't part
+                        // of a group, the rest include a _status element
+                        $this->XINRegisterRule($question, $rules, $message);
+                        break;
+                    default:
+                        $this->XINRegisterRule(
+                            $question,
+                            $rules,
+                            $message,
+                            $question . "_group"
+                        );
+                        break;
+                    }
+                }
             }
             fclose($fp);
         }
