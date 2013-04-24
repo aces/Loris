@@ -170,34 +170,33 @@ function CreateScatterplot() {
 </div>
 <div id="data_entry">
 <h2 class="statsH2">Data Entry Statistics:</h2>
+        <form action="#data_entry">
+            {html_options options=$Sites name="site2" selected=$CurrentSite.ID}
+            <input type="hidden" name="test_name" value="statistics" />
+            <input type="submit" />
+            </form>
 <table class="data">
 	<tr>
-	<th rowspan="2"></th>
-    	{foreach from=$Centers item=center key=centername}
-            <th colspan="3">{$center.LongName}</th>
-
-	</tr>
-	<tr>
+            <th></th>
              <th>Forms Created</th>
             <th>Forms Completed</th>
              <th>% Completion</th>
 	</tr>
-	{/foreach}
         {foreach from=$Visits item=visit}
            <tr>
 		<td>{$visit}</td>
-		<td>{$behaviour[$center.ID][$visit].total|default:"0"}</td>
-		<td>{$behaviour[$center.ID][$visit].complete|default:"0"}</td>
-		<td>{$behaviour[$center.ID][$visit].percent|default:"0"}%</td>
+		<td>{$behaviour[$visit].total|default:"0"}</td>
+		<td>{$behaviour[$visit].complete|default:"0"}</td>
+		<td>{$behaviour[$visit].percent|default:"0"}%</td>
            <!-- <th colspan="3">{$visit|upper}</th>-->
     	</tr>
          {/foreach}
     	</tr>
         <tr>
 	<td class = "total">Total</td>
-	<td class="total">{$behaviour[$center.ID].all.total|default:"0"}</td>
-	<td class="total">{$behaviour[$center.ID].all.complete|default:"0"}</td>
-	<td class="total">{$behaviour[$center.ID].all.percent|default:"0"}%</td>
+	<td class="total">{$behaviour.all.total|default:"0"}</td>
+	<td class="total">{$behaviour.all.complete|default:"0"}</td>
+	<td class="total">{$behaviour.all.percent|default:"0"}%</td>
 	</tr>
         <tr>
 	<td colspan="4"><a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}'>Breakdown of statistics per visit, form, participant</a></td>
@@ -205,42 +204,29 @@ function CreateScatterplot() {
 </tr>    
 </table>
 
-  <!--      {$DataEntryTable}
-
-        <form action="#dataEntry">
-            {html_options options=$Sites name="site" selected=$CurrentSite.ID}
-            <input type="hidden" name="site_name" value="statistics" />
-            <input type="submit" />
-        </form>-->
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <table class="data">
-       <tr>
-        <th rowspan="2"></th>
-        {foreach from=$Centers item=center key=centername}
-            <th colspan="3">{$center.LongName}</th>
-
-        </tr>
         <tr>
+            <th></th>
              <th>Forms Created</th>
             <th>Forms Completed</th>
              <th>% Completion</th>
         </tr>
-        {/foreach}
         {foreach from=$Visits item=visit}
            <tr>
                 <td>{$visit}</td>
-                <td>{$dde[$center.ID][$visit].total|default:"0"}</td>
-                <td>{$dde[$center.ID][$visit].complete|default:"0"}</td>
-                <td>{$dde[$center.ID][$visit].percent|default:"0"}%</td>
+                <td>{$dde[$visit].total|default:"0"}</td>
+                <td>{$dde[$visit].complete|default:"0"}</td>
+                <td>{$dde[$visit].percent|default:"0"}%</td>
         </tr>
          {/foreach}
         </tr>
         <tr>
         <td class = "total">Total</td>
-        <td class="total">{$dde[$center.ID].all.total|default:"0"}</td>
-        <td class="total">{$dde[$center.ID].all.complete|default:"0"}</td>
-        <td class="total">{$dde[$center.ID].all.percent|default:"0"}%</td>
+        <td class="total">{$dde.all.total|default:"0"}</td>
+        <td class="total">{$dde.all.complete|default:"0"}</td>
+        <td class="total">{$dde.all.percent|default:"0"}%</td>
         </tr>
         <tr>
         <td colspan="4"><a href='main.php?test_name=statistics_dd_site&CenterID={$center.NumericID}'>Breakdown of statistics per visit, form, participant</a></td>
@@ -275,7 +261,7 @@ function CreateScatterplot() {
             {foreach from=$mri_all_scans_done item=v key=k}
                 {foreach from=$v item=count key=scan}
                     {if $scan neq 'Name'}
-                        {if $scan eq 'All'}
+                        {if $scan eq 'Total'}
                         <td class="total">{$count}</td>
                         {else}
                         <td>{$count}</td>
@@ -289,7 +275,7 @@ function CreateScatterplot() {
             {foreach from=$mri_all_scans_inserted item=v key=k}
                 {foreach from=$v item=count key=scan}
                     {if $scan neq 'Name'}
-                        {if $scan eq 'All'}
+                        {if $scan eq 'Total'}
                         <td class="total">{$count}</td>
                         {else}
                         <td>{$count}</td>
@@ -303,7 +289,7 @@ function CreateScatterplot() {
             {foreach from=$count_pass item=v key=k}
                 {foreach from=$v item=count key=scan}
                     {if $scan neq 'Name'}
-                        {if $scan eq 'All'}
+                        {if $scan eq 'Total'}
                         <td class="total">{$count}</td>
                         {else}
                         <td>{$count}</td>

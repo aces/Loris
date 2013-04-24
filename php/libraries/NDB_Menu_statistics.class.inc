@@ -310,6 +310,16 @@ class NDB_Menu_statistics extends NDB_Menu
                         $sites = Utility::getSiteList(true, false); 
                         $mri_data = array();
 
+                    $this->tpl_data[$centerID] = '';//$_REQUEST['site2'];
+           if(isset($_REQUEST['site2']) && $_REQUEST['site2'] != '') {
+                $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' . $_REQUEST['site2'] . ')' . " GROUP by s.CenterID, VLabel, f.Data_Entry";
+                    $this->tpl_data[$centerID] = $_REQUEST['site2'];
+                        }
+                        else {
+                        $ExtraSite_Criteria = 'GROUP BY VLabel, f.Data_Entry';
+                        //$this->tpl_data[$behavioural_center] = 'All';
+                        }
+
                         $result = $DB->pselect("SELECT s.CenterID,
                                 f.Data_Entry as Data_Entry,
                                 s.Visit_label as VLabel,   
@@ -321,15 +331,16 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND c.Active='Y' 
                                 AND s.Current_stage <> 'Recycling Bin'
                                 AND f.CommentID NOT LIKE 'DDE%' 
-                                GROUP by s.CenterID, VLabel, f.Data_Entry"); 
+                                $ExtraSite_Criteria"); 
+                                //GROUP by s.CenterID, VLabel, f.Data_Entry"); 
 
                             foreach($result as $row) {
                                 // Put some things into variables to make the lines shorter
                                 // so that they don't wrap. Note that "c"(enter array) needs to 
                                 // be a reference since we'll be modifying it.
-                                $center = $row['CenterID'];
+                              //  $center = $_REQUEST['site2'];//$row['CenterID'];
                                 $vl = $row['VLabel'];
-                                $c =& $this->tpl_data['behaviour']['C' . $center];
+                                $c =& $this->tpl_data['behaviour'];//['C' . $center];
 
                                 $c[$vl]['total'] += $row['val'];
                                 $c['all']['total'] += $row['val'];
@@ -362,11 +373,12 @@ class NDB_Menu_statistics extends NDB_Menu
                                 AND s.Current_stage <> 'Recycling Bin'
                                 AND f.CommentID LIKE 'DDE%' 
                                 AND f.Data_Entry IS NOT NULL
-                                GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID"); 
+                                $ExtraSite_Criteria");
+                                //GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID"); 
                             foreach($result as $row) {
-                                $center = $row['CenterID'];
+                                //$center = $row['CenterID'];
                                 $vl = $row['VLabel'];
-                                $c =& $this->tpl_data['dde']['C' . $center];
+                                $c =& $this->tpl_data['dde']; //['C' . $center];
 
                                 $c[$vl]['total'] += $row['val'];
                                 $c['all']['total'] += $row['val'];
@@ -548,7 +560,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         foreach ($MRIOptions as $key=>$scan) {
                             $total[$key] = 0;
                         }
-                        $total['All'] = 0; 
+                        $total['Total'] = 0; 
                         $scans_inserted = $total; //array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
                         $count_pass = $total; //array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
                         $total_files = $total; //array('Name' => 'Total', 'T1' => '0', 'FLAIR' => 0, 'DTI64' => 0, 'Fieldmap_DTI'=>0, 'Fieldmap_BOLD'=>0, 'BOLD_Resting'=>0, 'GRE_T2_star'=>0, 'ASL'=>0, 'All' => 0);
@@ -585,8 +597,8 @@ class NDB_Menu_statistics extends NDB_Menu
                                     $this->tpl_data['mri_all_scans_done'][$key] = $row[$key];
                                     $total[$key] += $row[$key];
                                 }
-                                $this->tpl_data['All'] = $sum;
-                                $total['All'] += $sum;
+                                $this->tpl_data['Total'] = $sum;
+                                $total['Total'] += $sum;
                                 //'T1' => $row['T1'],
                                 //$total['T1'] += $row['T1'];
 
@@ -624,10 +636,10 @@ class NDB_Menu_statistics extends NDB_Menu
                                 }
                             }
                         }
-                        $scans_inserted['All'] = $sum_files; 
-                        $count_pass['All'] = $sum_pass; 
-                        $total_files['All'] = $sum_files; 
-                        $total_pass['All'] = $sum_pass; 
+                        $scans_inserted['Total'] = $sum_files; 
+                        $count_pass['Total'] = $sum_pass; 
+                        $total_files['Total'] = $sum_files; 
+                        $total_pass['Total'] = $sum_pass; 
 
                         //                        $this->tpl_data['mri_all_scans_done'][] = $total;
                         $this->tpl_data['mri_all_scans_inserted'][] = $scans_inserted;
@@ -647,6 +659,8 @@ class NDB_Menu_statistics extends NDB_Menu
                                 JOIN feedback_mri_comments f on fi.FileID=f.FileID 
                                 JOIN feedback_mri_predefined_comments fp on f.PredefinedCommentID = fp.PredefinedCommentID 
                                 WHERE f.SessionID IS NULL 
+                                AND s.Visit_label not like '%phantom%'
+                                AND s.Visit_label not like '%PHANTOM%'
                                 AND f.PredefinedCommentID = '4' OR f.PredefinedCommentID = '6' OR f.PredefinedCommentID = '8' OR f.PredefinedCommentID = '9' OR f.PredefinedCommentID = '36' 
                                 GROUP BY f.PredefinedCommentID, m.scan_type, VLabel");
 
@@ -658,7 +672,7 @@ class NDB_Menu_statistics extends NDB_Menu
                             }
 
                             $comments[$data['Comment']][$data['scan_type']] += $data['count']; 
-                            $comments[$data['Comment']]['All'] += $data['count'];
+                            $comments[$data['Comment']]['Total'] += $data['count'];
 
 
                             //                            if ($g['scan_type'] == 'adniT1') 
