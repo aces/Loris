@@ -52,39 +52,33 @@ $(document).ready(function() {
 	<td nowrap="nowrap">{$form.CommentID.html}</td>
 	{* <td nowrap="nowrap">Objective:</td>
         <td nowrap="nowrap">{$form.Objective.html}</td> *}
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
         <td nowrap="nowrap">{$form.CenterID.label}</td>
         <td nowrap="nowrap">{$form.CenterID.html}</td>
         <td nowrap="nowrap">{$form.Instrument.label}</td>
         <td nowrap="nowrap">{$form.Instrument.html}</td>
         <td nowrap="nowrap">{$form.reliability_center_id.label}</td>
         <td nowrap="nowrap">{$form.reliability_center_id.html}</td>
-      </tr>
-    <tr>
-        <td nowrap="nowrap">DCCID:</td>
-        <td nowrap="nowrap">{$form.DCCID.html}</td>
-        <td nowrap="nowrap">PSCID:</td>
-        <td nowrap="nowrap">{$form.PSCID.html}</td>
- 	    <td nowrap="nowrap">Gender:</td>
+        <td nowrap="nowrap">{$form.ProjectID.label}</td>
+        <td nowrap="nowrap">{$form.ProjectID.html}</td>
+        <td nowrap="nowrap">Gender:</td>
         <td nowrap="nowrap">{$form.Gender.html}</td>
         <td nowrap="nowrap">Visit label:</td>
         <td nowrap="nowrap">{$form.Visit_label.html}</td>
         <td nowrap="nowrap">{$form.Invalid.label}</td>
         <td nowrap="nowrap">{$form.Invalid.html}</td>
-</tr>
+ </tr>
+    <tr>
+        <td nowrap="nowrap">DCCID:</td>
+        <td nowrap="nowrap">{$form.DCCID.html}</td>
+        <td nowrap="nowrap">PSCID:</td>
+        <td nowrap="nowrap">{$form.PSCID.html}</td>
+        <td colspan="12" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
+ 	  </tr>
 
 </table>
 </td>
-   </tr>
-	<tr>  
-	 <td colspan = 15 nowrap="nowrap"><b>Scans Done:</b></td>
-	 </tr>
- 
-   <tr>
-        <td nowrap="nowrap" width='10%'>Actions:</td>
+  <tr>
 <!--        <td nowrap="nowrap"><input type="button" name="button" value="Add Instrument" class="button" onclick="location.href='main.php?test_name=csbs_reliability&subtest=csbs_reliability'"/></td> -->
-        <td colspan="14" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
     </tr>
 </table>
 </form>
@@ -162,8 +156,6 @@ $(document).ready(function() {
     </table>
 </form>
 {/if}
-<br>
-<br>
 <!-- <h2><font color="red">Note: Phase 2 reliability forms are unavailable at the moment as the system is being upgraded.</font></h2> -->
 
 <!--  title table with pagination -->
