@@ -245,15 +245,16 @@ class NDB_Menu_statistics extends NDB_Menu
                         $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments(); 
                         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
                         $instr = Utility::getAllInstruments();
-                        $full_names = array();
+                        /*$full_names = array();
                         foreach ($instr as $i=>$j) {
                             $full_name = $DB->pselectOne("SELECT Full_name from test_names where test_name = '$i'");
                             $full_names[$i] = $full_name;
-                        }
+                        }*/
 
                         $instruments2  = array_merge(
                                 array( null=> 'Please select an instrument' ),
-                                $full_names
+                                $instr
+                             //   $full_names
                                 );
 
                         if(isset($_REQUEST['instrument2']) && $_REQUEST['instrument2'] != '') {

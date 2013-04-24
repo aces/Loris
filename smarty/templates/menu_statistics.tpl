@@ -382,7 +382,7 @@ function CreateScatterplot() {
         Instrument: 
             <select name="InstrumentY" onChange="changeFieldOptions('y')" id="instrumenty">
             {foreach from=$all_instruments item=name key=val}
-                <option value="{$name}">{$name}</option>
+                <option value="{$val}">{$name}</option>
             {/foreach}
             </select>
         Field: 
@@ -395,7 +395,7 @@ function CreateScatterplot() {
         Instrument: 
             <select name="InstrumentX" onChange="changeFieldOptions('x')" id="instrumentx">
             {foreach from=$all_instruments item=name key=val}
-                <option value="{$name}">{$name}</option>
+                <option value="{$val}">{$name}</option>
             {/foreach}
             </select>
         Field: <select name="FieldX" id="fieldx"></select>
