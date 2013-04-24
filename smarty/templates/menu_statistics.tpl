@@ -259,16 +259,14 @@ function CreateScatterplot() {
         <tr>
             <th>Site</th>
             <th></th>
-            <th>T1</th>
-            <th>FLAIR</th>
-            <th>64 DTI</th>
-            <th>DTI Fieldmap</th>
-            <th>BOLD Fieldmap</th>
-            <th>Resting BOLD</th>
-            <th>GRE T2*</th>
-            <th>ASL</th>
-            <th>Total</th>
-        </tr>
+            {foreach from=$mri_all_scans_inserted item=v key=k}
+                {foreach from=$v item=count key=scan}
+                    {if $scan neq 'Name'}
+                        <th>{$scan}</th>
+                    {/if}
+                {/foreach}
+            {/foreach}
+         </tr>
     </thead>
     <tbody>
         <tr>

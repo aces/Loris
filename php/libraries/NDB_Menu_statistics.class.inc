@@ -113,7 +113,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         $total_visit = 0;
 
                         //Candidates with visit marked as In Progress                        
-                        $result_progress = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'In Progress' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid");
+                        $result_progress = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'In Progress' AND s.Visit_label LIKE '%$visit_to_check%' $ExtraSite_Criteria group by s.subprojectid");
 
                         foreach($result_progress as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['progress'] = $row['val'];
