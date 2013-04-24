@@ -859,16 +859,62 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
 
-            // Run any rules that are dependent on the value of the current question, ie if XINRegister was called as
-            // $this->XINRegisterRule("q1", "q1{@}<={@}3", "Must be less than or equal to 3")
-            // These differ from 'required' rules in that they're run even if the value isn't empty
-            // Currently, this only supports simple, one value comparisons (though XINRegister can be called multiple
-            // times and each needs to be enforced independently), because the logic in XINRunElementRules is confusing
-            // and modifying it could potentially break existing XINRules.
-            // DINRunElementRules only runs a single rule, and returns false if it's violated. It's much simpler than 
-            // XINRules but should be expanded later to support more complex logic.
+            // Run any rules that are dependent on the value of the current question,
+            // ie if XINRegister was called as
+            //      $this->XINRegisterRule(
+            //          "q1",
+            //          "q1{@}<={@}3",
+            //          "Must be less than or equal to 3"
+            //      );
+            // These differ from 'required' rules in that they're run even if the
+            // value isn't empty. Currently, this only supports simple, one value
+            // comparisons (though XINRegister can be called multiple times and each
+            // needs to be enforced independently), because the logic in
+            // XINRunElementRules is confusing and modifying it could potentially
+            // break existing XINRules.
+            //
+            // DINRunElementRules only runs a single rule, and returns false if it's
+            // violated. It's much simpler than XINRules but should be expanded
+            // later to support more complex logic.
+            //
             // - Dave
-            if($this->InstrumentType === 'LINST') {
+            if ($this->InstrumentType === 'LINST') {
+
+                // Numeric data types min/max are enforced through PHP, not XINRules.
+                // This is because if a user registers XINRules for the question, we
+                // still want to enforce the min/max for the field. It also makes
+                // dealing with _status==not_answered easier, because the rules for
+                // enforcing range are independent of the rules for enforcing
+                // required.
+                if ($this->LinstQuestions[$elname]['type'] === 'numeric') {
+                    // Cast everything to a double so that < and > work as
+                    // expected
+                    $value = doubleval($elements[$elname]);
+                    $min = doubleval(
+                        $this->LinstQuestions[$elname]['options']['min']
+                    );
+                    $max = doubleval(
+                        $this->LinstQuestions[$elname]['options']['max']
+                    );
+
+                    // If the value is empty, XINRules handle required messages.
+                    // "0" is empty in PHP. If the user entered 0 we still want to
+                    // enforce the min/max.
+                    if (!empty($value) || $elements[$elname] === '0') {
+                        if (!empty($min)) {
+                            if ($value < $min) {
+                                $errors[$elname . "_group"]
+                                    = "Must be greater than $min.";
+                            }
+                        }
+                        if (!empty($max)) {
+                            if ($value > $max) {
+                                $errors[$elname . "_group"]
+                                    = "Must be less than $min.";
+                            }
+                        }
+                    }
+                }
                 if(!empty($this->XINRules[$elname])) {
                     $registered_rules = $this->XINRules[$elname];
                     if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
@@ -1303,18 +1349,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
-        $status_rule = $field . '_status{@}=={@}';
-        if(is_array($options)) {
-            if($options['min']) {
-                $this->XINRegisterRule($field, array($field . '{@}<{@}' . $options['min']), "Must be greater than $options[min]", $field . '_group');
-            }
-            if($options['max']) {
-                $this->XINRegisterRule($field, array($field . '{@}>{@}' . $options['max']), "Must be less than $options[max]", $field . '_group');
-            }
-
-        }
     }
 
     /**
@@ -1521,10 +1557,17 @@ class NDB_BVL_Instrument extends NDB_Page
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
                         break;
                     case 'numeric':
-                        if($addElements) {
-                            $this->addNumericElement($pieces[1], $pieces[2]);
+                        if ($addElements) {
+                            $options = array();
+                            if (!empty($pieces[3])) {
+                                $options['min'] = $pieces[3];
+                            }
+                            if (!empty($pieces[4])) {
+                                $options['max'] = $pieces[4];
+                            }
+                            $this->addNumericElement($pieces[1], $pieces[2], $options);
                         }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'numeric');
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'numeric', 'options' => $options);
                         break;
 
                     case 'selectmultiple':
@@ -1575,7 +1618,6 @@ class NDB_BVL_Instrument extends NDB_Page
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
                         break;
                     default: 
-                        //print $line . "<br />";
                         break;
                 }
             }
