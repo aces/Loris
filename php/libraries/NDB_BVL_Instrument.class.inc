@@ -910,7 +910,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         if (!empty($max)) {
                             if ($value > $max) {
                                 $errors[$elname . "_group"]
-                                    = "Must be less than $min.";
+                                    = "Must be less than $max.";
                             }
                         }
                     }
