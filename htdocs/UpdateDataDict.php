@@ -10,9 +10,9 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-list($field, $test_name,$extra) =   split("___", $_REQUEST['fieldname']);
 
-$name = $test_name . "_" . $field;
+list($name,$extra) =   split("___", $_REQUEST['fieldname']);
+
 if(get_magic_quotes_gpc()) {
     // Magic quotes adds \ to description, get rid of it.
     $description = stripslashes($_REQUEST['description']);
