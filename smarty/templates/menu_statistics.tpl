@@ -100,29 +100,27 @@
             </form>
 <table class="data">
 	<tr>
-            <th></th>
-             <th>Forms Created</th>
-            <th>Forms Completed</th>
-             <th>% Completion</th>
+        <th></th>
+        <th>Forms Created</th>
+        <th>Forms Completed</th>
+        <th>% Completion</th>
 	</tr>
-        {foreach from=$Visits item=visit}
-           <tr>
-		<td>{$visit}</td>
-		<td>{$behaviour[$visit].total|default:"0"}</td>
-		<td>{$behaviour[$visit].complete|default:"0"}</td>
-		<td>{$behaviour[$visit].percent|default:"0"}%</td>
-           <!-- <th colspan="3">{$visit|upper}</th>-->
-    	</tr>
-         {/foreach}
-    	</tr>
+    {foreach from=$Visits item=visit}
         <tr>
-	<td class = "total">Total</td>
-	<td class="total">{$behaviour.all.total|default:"0"}</td>
-	<td class="total">{$behaviour.all.complete|default:"0"}</td>
-	<td class="total">{$behaviour.all.percent|default:"0"}%</td>
+		    <td>{$visit}</td>
+		    <td>{$behaviour[$visit].total|default:"0"}</td>
+		    <td>{$behaviour[$visit].complete|default:"0"}</td>
+		    <td>{$behaviour[$visit].percent|default:"0"}%</td>
+    	</tr>
+    {/foreach}
+    <tr>
+	    <td class = "total">Total</td>
+	    <td class="total">{$behaviour.all.total|default:"0"}</td>
+	    <td class="total">{$behaviour.all.complete|default:"0"}</td>
+	    <td class="total">{$behaviour.all.percent|default:"0"}%</td>
 	</tr>
-        <tr>
-	<td colspan="4"><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
+    <tr>
+	    <td colspan="4"><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
 	</tr>
 </tr>    
 </table>
@@ -130,38 +128,37 @@
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <table class="data">
+    <tr>
+        <th></th>
+        <th>Forms Created</th>
+        <th>Forms Completed</th>
+        <th>% Completion</th>
+    </tr>
+    {foreach from=$Visits item=visit}
         <tr>
-            <th></th>
-             <th>Forms Created</th>
-            <th>Forms Completed</th>
-             <th>% Completion</th>
+            <td>{$visit}</td>
+            <td>{$dde[$visit].total|default:"0"}</td>
+            <td>{$dde[$visit].complete|default:"0"}</td>
+            <td>{$dde[$visit].percent|default:"0"}%</td>
         </tr>
-        {foreach from=$Visits item=visit}
-           <tr>
-                <td>{$visit}</td>
-                <td>{$dde[$visit].total|default:"0"}</td>
-                <td>{$dde[$visit].complete|default:"0"}</td>
-                <td>{$dde[$visit].percent|default:"0"}%</td>
-        </tr>
-         {/foreach}
+     {/foreach}
+        <tr>
+            <td class = "total">Total</td>
+            <td class="total">{$dde.all.total|default:"0"}</td>
+            <td class="total">{$dde.all.complete|default:"0"}</td>
+            <td class="total">{$dde.all.percent|default:"0"}%</td>
         </tr>
         <tr>
-        <td class = "total">Total</td>
-        <td class="total">{$dde.all.total|default:"0"}</td>
-        <td class="total">{$dde.all.complete|default:"0"}</td>
-        <td class="total">{$dde.all.percent|default:"0"}%</td>
-        </tr>
-        <tr>
-        <td colspan="4"><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
+            <td colspan="4"><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
         </tr>
 </tr>
-      </table>
+</table>
 <br />
         {$InstrumentsTable}
 </div>
+
+
 <div id="mri">
-
-
 <h2 class="statsH2">General Statistics with QC Status (All Visits):</h2>
 <table class="data generalStats">
 	<thead>
