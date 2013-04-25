@@ -245,11 +245,6 @@ class NDB_Menu_statistics extends NDB_Menu
                         $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments(); 
                         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
                         $instr = Utility::getAllInstruments();
-                        /*$full_names = array();
-                        foreach ($instr as $i=>$j) {
-                            $full_name = $DB->pselectOne("SELECT Full_name from test_names where test_name = '$i'");
-                            $full_names[$i] = $full_name;
-                        }*/
 
                         $instruments2  = array_merge(
                                 array( null=> 'Please select an instrument' ),
@@ -257,7 +252,7 @@ class NDB_Menu_statistics extends NDB_Menu
                              //   $full_names
                                 );
 
-                        if(isset($_REQUEST['instrument2']) && $_REQUEST['instrument2'] != '') {
+//                        if(isset($_REQUEST['instrument2']) && $_REQUEST['instrument2'] != '') {
                             $Subcategories = array('Complete', 'Incomplete'); 
                             $result = $DB->pselect("SELECT count(*) as val, 
                                     f.Data_entry as Subcat, 
@@ -284,7 +279,7 @@ class NDB_Menu_statistics extends NDB_Menu
                                     AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                                     GROUP BY c.CenterID, SubprojectID, VLabel, Subcat"); 
                                     $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
-                        }
+  //                      }
 
                         $Subcategories = array('Male', 'Female');
                         $result = $DB->pselect("SELECT c.CenterID as CenterID,    
