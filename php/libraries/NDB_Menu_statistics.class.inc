@@ -122,7 +122,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         }
 
                         //Candidates with visit marked as Pass                        
-                        $result_pass = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Pass' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); 
+                        $result_pass = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Pass' AND s.Visit_label LIKE '%$visit_to_check%' $ExtraSite_Criteria group by s.subprojectid"); 
 
                         foreach($result_pass as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['pass'] = $row['val'];
@@ -131,7 +131,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         }
 
                         //Candidates with visit marked as Fail                        
-                        $result_fail = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Failure' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); 
+                        $result_fail = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Failure' AND s.Visit_label LIKE '%$visit_to_check%' $ExtraSite_Criteria group by s.subprojectid"); 
 
                         foreach($result_fail as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['fail'] = $row['val'];
@@ -140,7 +140,7 @@ class NDB_Menu_statistics extends NDB_Menu
                         }
 
                         //Candidates with visit marked as Withdraw                        
-                        $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE $visit_to_check $ExtraSite_Criteria group by s.subprojectid"); 
+                        $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE '%$visit_to_check%' $ExtraSite_Criteria group by s.subprojectid"); 
 
                         foreach($result_withdrawal as $row) {
                             $this->tpl_data['registered'][$row['rowid']]['withdraw'] = $row['val'];
