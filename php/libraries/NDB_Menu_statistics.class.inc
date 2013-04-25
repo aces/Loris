@@ -311,15 +311,17 @@ class NDB_Menu_statistics extends NDB_Menu
                         $mri_data = array();
 
                     $this->tpl_data[$centerID] = '';//$_REQUEST['site2'];
+                    $behavioural_center = '';//$_REQUEST['site2'];
            if(isset($_REQUEST['site2']) && $_REQUEST['site2'] != '') {
                 $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' . $_REQUEST['site2'] . ')' . " GROUP by s.CenterID, VLabel, f.Data_Entry";
-                    $this->tpl_data[$centerID] = $_REQUEST['site2'];
+                    $behavioural_center = $_REQUEST['site2'];
                         }
                         else {
                         $ExtraSite_Criteria = 'GROUP BY VLabel, f.Data_Entry';
-                        //$this->tpl_data[$behavioural_center] = 'All';
+                        $behavioural_center = '<>1';
                         }
 
+                        $this->tpl_data['behavioural_center'] = $behavioural_center; 
                         $result = $DB->pselect("SELECT s.CenterID,
                                 f.Data_Entry as Data_Entry,
                                 s.Visit_label as VLabel,   
@@ -359,7 +361,7 @@ class NDB_Menu_statistics extends NDB_Menu
                             }
 
                         $sites = Utility::getSiteList(true, false); 
-                        $this->tpl_data['DataEntryTable'] = $this->render_stats_table("Data Entry Statistics", $Subcategories, $Visits, "site", $sites, '', $centers, $result, "demographics");
+                        $this->tpl_data['DataEntryTable'] = $this->render_stats_table("Data Entry Statistics", $Subcategories, $Visits, "site2", $sites, $behavioural_center, $centers, $result, "data_entry");
 
                         // DDE STATS
 

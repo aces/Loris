@@ -34,22 +34,30 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
 
     function _CompleteCount($id, $instrument) {
         $DB =& Database::singleton();
-        return $DB->pselectOne("SELECT count(s.CandID)  FROM session as s, candidate as c, flag as f, {$instrument} as i WHERE 
+        if ($id == '<>1')
+            $center = "AND s.CenterID {$id} ";
+        else
+            $center = "AND s.CenterID={$id} ";
+        return $DB->pselectOne("SELECT count(s.CandID)  FROM session s, candidate c, flag f, {$instrument} i WHERE 
                 s.ID=f.SessionID AND f.CommentID=i.CommentID 
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
                 AND s.Current_stage <> 'Recycling Bin'
-                AND s.CenterID={$id} AND f.Data_entry='Complete' AND f.Administration='All' 
-                AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID;");
+                $center AND f.Data_entry='Complete' AND f.Administration='All' 
+                AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID");
     }
     function _GetResults($id, $instrument) {
         $DB =& Database::singleton();
-        $result = $DB->pselect("SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session as s, candidate as c, flag as f, {$instrument} as i 
+        if ($id == '<>1')
+            $center = "AND s.CenterID {$id} ";
+        else
+            $center = "AND s.CenterID={$id} ";
+        $result = $DB->pselect("SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session s, candidate c, flag f, {$instrument} i 
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
                 s.CandID=c.CandID  AND s.Active='Y' 
-                AND s.CenterID={$id} 
+                $center 
                 AND s.Current_stage <> 'Recycling Bin'
-                AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID;"); 
+                AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID"); 
             return $result;
     }
 

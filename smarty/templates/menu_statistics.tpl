@@ -199,7 +199,7 @@ function CreateScatterplot() {
 	<td class="total">{$behaviour.all.percent|default:"0"}%</td>
 	</tr>
         <tr>
-	<td colspan="4"><a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}'>Breakdown of statistics per visit, form, participant</a></td>
+	<td colspan="4"><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
 	</tr>
 </tr>    
 </table>
@@ -229,7 +229,7 @@ function CreateScatterplot() {
         <td class="total">{$dde.all.percent|default:"0"}%</td>
         </tr>
         <tr>
-        <td colspan="4"><a href='main.php?test_name=statistics_dd_site&CenterID={$center.NumericID}'>Breakdown of statistics per visit, form, participant</a></td>
+        <td colspan="4"><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
         </tr>
 </tr>
       </table>
