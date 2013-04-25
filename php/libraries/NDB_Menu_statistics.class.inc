@@ -302,16 +302,20 @@ class NDB_Menu_statistics extends NDB_Menu
 
                     $this->tpl_data[$centerID] = $_REQUEST['site2'];
                     $behavioural_center = '';
+                    $behavioural_center_name = '';
 
                     if(isset($_REQUEST['site2']) && $_REQUEST['site2'] != '') {
                         $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' . $_REQUEST['site2'] . ')' . " GROUP by s.CenterID, VLabel, f.Data_Entry";
                                 $behavioural_center = $_REQUEST['site2'];
+                                $behavioural_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =".$_REQUEST['site2']);
                                 } else {
                                 $ExtraSite_Criteria = 'GROUP BY VLabel, f.Data_Entry';
                                 $behavioural_center = '<>1';
+                                $behavioural_center_name = 'all sites';
                                 }
 
                                 $this->tpl_data['behavioural_center'] = $behavioural_center; 
+                                $this->tpl_data['behavioural_center_name'] = $behavioural_center_name; 
                                 $result = $DB->pselect("SELECT s.CenterID,
                                     f.Data_Entry as Data_Entry,
                                     s.Visit_label as VLabel,   
