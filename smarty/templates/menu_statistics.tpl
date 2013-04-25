@@ -94,7 +94,7 @@
 <div id="data_entry">
 <h2 class="statsH2">Data Entry Statistics:</h2>
         <form action="#data_entry">
-            {html_options options=$Sites name="site2" selected=$CurrentSite.ID}
+            {html_options options=$Sites name="site2" selected=$behavioural_center}
             <input type="hidden" name="test_name" value="statistics" />
             <input type="submit" />
             </form>
@@ -119,12 +119,9 @@
 	    <td class="total">{$behaviour.all.complete|default:"0"}</td>
 	    <td class="total">{$behaviour.all.percent|default:"0"}%</td>
 	</tr>
-    <tr>
-	    <td colspan="4"><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
-	</tr>
 </tr>    
 </table>
-
+<a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Breakdown per visit, form and participant for selected site</a>
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <table class="data">
@@ -148,11 +145,10 @@
             <td class="total">{$dde.all.complete|default:"0"}</td>
             <td class="total">{$dde.all.percent|default:"0"}%</td>
         </tr>
-        <tr>
-            <td colspan="4"><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Breakdown of statistics per visit, form, participant</a></td>
-        </tr>
 </tr>
 </table>
+<a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Breakdown per visit, form and participant for selected site</a>
+
 <br />
         {$InstrumentsTable}
 </div>
