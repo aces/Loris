@@ -121,7 +121,7 @@
 	</tr>
 </tr>    
 </table>
-<a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Breakdown per visit, form and participant for selected site</a>
+<b><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Click here for breakdown per participant for {$behavioural_center_name}</a></b>
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <table class="data">
@@ -147,7 +147,7 @@
         </tr>
 </tr>
 </table>
-<a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Breakdown per visit, form and participant for selected site</a>
+<b><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Click here for breakdown per participant for {$behavioural_center_name}</a></b>
 
 <br />
         {$InstrumentsTable}
