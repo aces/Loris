@@ -3,14 +3,8 @@
 require_once("simpletest/web_tester.php");
 require_once('simpletest/reporter.php');
 require_once('simpletest/autorun.php');
-require_once("xmltime.php");
+set_include_path(get_include_path().":../php/libraries:");
         
-/*
-$Reporter = new TextReporter();
-if($argv[$argc-1] == '-xml') {
-    $Reporter = new XMLTimeReporter();
-}
- */
 $test = &new TestSuite('CouchDB Database wrapper tests');
 $test->addFile('tests/CouchDBWrapper.php');
 $test->addFile('tests/CouchDBImport.php');
