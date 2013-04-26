@@ -1,5 +1,6 @@
 <?php
 require_once 'PEAR.php';
+require_once "NDB_Factory.class.inc";
 require_once "NDB_Config.class.inc";
 
 
@@ -559,10 +560,15 @@ class Utility extends PEAR
     }
 
     function getAllInstruments() {
-        $DB =& Database::singleton();
+
+        $Factory = NDB_Factory::singleton();
+        $DB = $Factory->Database(); //& Database::singleton();
         $instruments_q = $DB->pselect("SELECT Test_name,Full_name FROM test_names", array());
+        $instruments = array();
         foreach($instruments_q as $key){
-              $instruments[$key['Test_name']]=$key['Full_name'];
+            if(isset($key['Test_name']) && isset($key['Full_name'])) {
+                $instruments[$key['Test_name']]=$key['Full_name'];
+            }
         }
 
         return $instruments;
