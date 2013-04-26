@@ -103,6 +103,7 @@ class CouchDB {
         $handler->write("$op $url HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
         $handler->write($data);
+        $response = '';
         while(!$handler->eof()) {
             $response .= $handler->gets();
         }
@@ -146,7 +147,7 @@ class CouchDB {
         $json = $this->_getRelativeURL($id, "DELETE");
         $data = json_decode($json, true);
 
-        return ($data['ok'] === true);
+        return isset($data['ok']) && $data['ok'] === true;
 
     }
 
@@ -175,7 +176,7 @@ class CouchDB {
     function QueryView($designdoc, $viewname, $params) {
         $query = $this->_getRelativeURL("_design/" . $designdoc . "/_view/" . $viewname . "?" . http_build_query($params));
         $data = json_decode($query, true);
-        if($data['error'] == 'not_found') {
+        if(isset($data['error']) && $data['error'] == 'not_found') {
             return array();
         }
         return $data['rows'];
