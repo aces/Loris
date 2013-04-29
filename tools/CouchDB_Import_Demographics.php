@@ -97,7 +97,9 @@ class CouchDBDemographicsImporter {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
             unset($demographics['SubprojectID']);
-            $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
+            if(isset($demographics['Project'])) {
+                $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
+            }
             unset($demographics['ProjectID']);
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',

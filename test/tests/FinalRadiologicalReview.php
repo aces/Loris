@@ -101,6 +101,15 @@ class TestOfFinalRadiologicalReview extends LorisTest
     {
         $this->login("UnitTester", "4test4");
 
+        $this->DB->insert("flag", 
+            array(
+                'Test_name'  => 'radiology_review',
+                'CommentID'  => 'TestCommentID',
+                'Data_entry' => 'Complete',
+                // @todo UNHARDCODE THIS
+                'SessionID'  => 482
+            )
+        );
         $this->get($this->url . "/main.php?test_name=final_radiological_review");
         $PostArray = array(
             'test_name'            => 'final_radiological_review',
@@ -163,6 +172,8 @@ class TestOfFinalRadiologicalReview extends LorisTest
             . "for review done and CandID"
         );
 
+        $this->DB->delete("flag", array('CommentID' => 'TestCommentID'));
+        $this->DB->delete("radiology_review", array('CommentID' => 'TestCommentID'));
     }
 
 }
