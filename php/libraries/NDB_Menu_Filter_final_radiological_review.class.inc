@@ -38,17 +38,17 @@ require_once 'Candidate.class.inc';
  */
 function _makePretty($key, $val)
 {
-    if ($key == 'Review_Done' 
-        || $key=='Conflict1' 
+    if ($key == 'Review_Done'
+        || $key=='Conflict'
         || $key=="Finalized"
-        || $key=="Conflict2" 
+        || $key=="Conflict2"
         || $key=="Conflict"
     ) {
         // The table was created with a boolean, which mysql turns into a tinyint.
         // Print 'Yes' or 'No' instead of 1 or 0.
-        if ($val == 1) {
+        if ($val == 1 || $val === '1' || $val === 'true') {
             return 'Yes';
-        } elseif ($val === "0") { // PHP turns the tinyint back into a string ....
+        } elseif ($val === "0" || $val === "false") { // PHP turns the tinyint back into a string ....
             return 'No';
         } else { // Leave nulls empty so that we can distinguish
             return '';
@@ -112,33 +112,33 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $conflict_condition1 = "(CASE 
-            WHEN orig.review_results <> r.final_review_results THEN True 
-            WHEN orig.abnormal_atypical_exculsionary <> r.final_exclusionary 
-               THEN True
-            WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN True 
-            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN True 
-            WHEN r.SAS <> r.SAS2 THEN True 
-            WHEN r.PVS <> r.PVS2 THEN True 
-            ELSE False END)";
+        $conflict_condition1 = "(CASE
+            WHEN orig.review_results <> r.final_review_results THEN 'true'
+            WHEN orig.abnormal_atypical_exculsionary <> r.final_exclusionary
+               THEN 'true'
+            WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'true'
+            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'true'
+            WHEN r.SAS <> r.SAS2 THEN 'true'
+            WHEN r.PVS <> r.PVS2 THEN 'true'
+            ELSE 'false' END)";
         $conflict_condition2 = "(CASE
             WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'prim_second'
-            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'prim_second' 
+            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'prim_second'
             WHEN r.SAS <> r.SAS2 THEN 'prim_second'
             WHEN r.PVS <> r.PVS2 THEN 'prim_second'
-            ELSE False END)";
+            ELSE 'false' END)";
 
-        $this->query = " FROM radiology_review orig 
-            LEFT JOIN final_radiological_review r ON (r.CommentID=orig.CommentID) 
-            JOIN flag f ON (f.CommentID=orig.CommentID) 
-            JOIN session s ON (s.ID=f.SessionID) 
-            JOIN candidate c ON (c.CandID=s.CandID) 
-            WHERE orig.commentid NOT LIKE 'DDE_%' AND orig.commentid IS NOT NULL 
-            AND s.active='Y' AND NOT (f.Administration='None') 
-            AND f.Data_entry='Complete' 
+        $this->query = " FROM radiology_review orig
+            LEFT JOIN final_radiological_review r ON (r.CommentID=orig.CommentID)
+            JOIN flag f ON (f.CommentID=orig.CommentID)
+            JOIN session s ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE orig.commentid NOT LIKE 'DDE_%' AND orig.commentid IS NOT NULL
+            AND s.active='Y' AND NOT (f.Administration='None')
+            AND f.Data_entry='Complete'
             AND (orig.Scan_done IS NULL OR orig.Scan_done <> 'no')";
-        $this->columns = array('c.PSCID as PSCID', 
-            'c.CandID as DCCID', 
+        $this->columns = array('c.PSCID as PSCID',
+            'c.CandID as DCCID',
             's.visit_label as Visit_Label',
             'c.ProjectID as Project',
             'c.CenterID as Site',
@@ -201,6 +201,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Conflict2'   => $conflict_condition2,
                                     'Finalized'   => 'r.Finalized'
         );
+        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2);
     }
 
     /**
@@ -232,11 +233,11 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         foreach ($projectList as $key => $value) {
             $list_of_projects[$key] =$value;
         }  
-        $options_boolean= array(null => 'Any', 1 => 'Yes', 0 => 'No');
-        $conflict_options1 = array(null => 'Any', true => 'Yes', false => 'No', );
+        $options_boolean= array(null => 'Any', 'true' => 'Yes', 'false' => 'No');
+        $conflict_options1 = array(null => 'Any', 'true' => 'Yes', 'false' => 'No' );
         $conflict_options2 = array(null => 'Any', 
             'prim_second' => 'Yes', 
-            false => 'No'
+            'false' => 'No'
         );
         $comment_options = array(null => 'Any', 'True' => 'Yes', 'False' => 'No');
         $bob_score = array(null => 'Any', 
@@ -265,13 +266,13 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->addSelect('site', 'Site', $list_of_sites);
         $this->addSelect('Review_done', 'Review Done:', $options_boolean);
         $this->addSelect(
-            'Conflict1', 
-            'Conflict between any reviews:', 
+            'Conflict',
+            'Conflict between any reviews:',
             $conflict_options1
         );
         $this->addSelect(
             'Conflict2',
-            'Conflict between final and extra reviews:', 
+            'Conflict between final and extra reviews:',
             $conflict_options2
         );
 
