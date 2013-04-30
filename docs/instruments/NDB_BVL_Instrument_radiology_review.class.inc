@@ -72,7 +72,7 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
         $this->form->addElement('select', 'Review_results', 'Results of local radiology review?', $normal_option);
         $this->XINRegisterRule("Review_results", array("Scan_done{@}=={@}yes"), "Please enter the scan information");
 
-        $this->form->addElement('select', 'abnormal_atypical_exculsionary', $this->indent . "If the results are ABORMAL or ATYPICAL:", $exclusionaryOrNot);
+        $this->form->addElement('select', 'abnormal_atypical_exculsionary', $this->indent . "If the results are ABNORMAL or ATYPICAL:", $exclusionaryOrNot);
         $this->XINRegisterRule('abnormal_atypical_exculsionary', array('Review_results{@}=={@}abnormal|atypical'), "Please indicate if the Abnormal or Atypical review is Exclusionary or Not."); 
         
        	$this->form->addElement('static', null, $this->indent . $this->indent . 'If Abnormal or Atypical, describe incidental finding(s)'); 

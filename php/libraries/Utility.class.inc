@@ -568,7 +568,41 @@ class Utility extends PEAR
         return $instruments;
 
    }
-   
+  
+
+   function getScoredInstruments() {
+       $All = Utility::getAllInstruments();
+       $Scored = array();
+       $Nothing = array();
+       foreach($All as $Instrument=>$Full_name) {
+           if(Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
+               $Scored[] = $Instrument;
+           }
+       }
+       return $Scored;
+   }
+
+   function getScoreColsForInstrument($inst) {
+        require_once "NDB_BVL_Instrument.class.inc";
+        $i = NDB_BVL_Instrument::factory($inst, '', '', true);
+        if(isset($i->scoreLabels)) {
+            $score = $i->scoreLabels;
+        } elseif(isset($i->scoreCols)) {
+            $score = $i->scoreCols;
+        } elseif(isset($i->scores)) {
+            $score = $i->scores;
+        }
+        if(isset($score[0])) {
+            return $score;
+        } else {
+            if($score != null) {
+                return array_keys($score);
+            }
+        }
+        return array();
+   }
+
+
    	function getColumnThresholdCount(){
    	    $config =& NDB_Config::singleton();
 		// get the list of Subprojects

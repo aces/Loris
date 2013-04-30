@@ -59,13 +59,14 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 	{
 
 		$x = 0;
+		
 		foreach ($this->list as $item) {
 			$this->tpl_data['items'][$x][0]['value'] = $x + $count;
 			$i = 1;
 
 			foreach ($item as $key => $val) {
 				if ($key =='description'){
-					$key = $item['sourceField'] . "___" .$item['sourceFrom'] . "___" . "description";
+					$key = $item['Name'] . "___" . "description";
 				}
 				$this->tpl_data['items'][$x][$i]['name'] = $key;
 				$this->tpl_data['items'][$x][$i]['value'] = $val;
