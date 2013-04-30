@@ -108,14 +108,14 @@ class TestOfLoris extends LorisTest {
     function testIntruments() {
         $DDE_instruments = $this->config->getSetting("DoubleDataEntryInstruments");
         if($this->CandID) {
-            $this->DB->selectRow("SELECT *, s.ID as SessionID FROM session s JOIN candidate c using (CandID) WHERE c.CandID=" . $this->CandID, &$Candidate);
+            $this->DB->selectRow("SELECT *, s.ID as SessionID FROM session s JOIN candidate c using (CandID) WHERE c.CandID=" . $this->CandID, $Candidate);
 
         } else {
-            $this->DB->selectRow("select *, s.ID as SessionID from session s join candidate c using (CandID) where c.pscid not like 'dcc%' and c.pscid <> 'scanner' and s.Active='Y' and s.Visit_label='v06' AND s.CenterID = 1 order by s.ID desc limit 1 ", &$Candidate);
+            $this->DB->selectRow("select *, s.ID as SessionID from session s join candidate c using (CandID) where c.pscid not like 'dcc%' and c.pscid <> 'scanner' and s.Active='Y' and s.Visit_label='v06' AND s.CenterID = 1 order by s.ID desc limit 1 ", $Candidate);
         }
-        $this->DB->select("select * from test_battery where AgeMinDays <=180 and SubprojectID=" . $Candidate['SubprojectID'], &$Battery);
+        $this->DB->select("select * from test_battery where AgeMinDays <=180 and SubprojectID=" . $Candidate['SubprojectID'], $Battery);
 
-        $this->DB->select("select * from flag where SessionID=$Candidate[SessionID] AND CommentID NOT LIKE 'DDE%'", &$CommentIDs);
+        $this->DB->select("select * from flag where SessionID=$Candidate[SessionID] AND CommentID NOT LIKE 'DDE%'", $CommentIDs);
         
         //$this->assertEqual(count($Battery), count($CommentIDs), "Missing CommentIDs for $Candidate[CandID]");
 
