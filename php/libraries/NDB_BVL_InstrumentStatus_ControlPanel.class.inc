@@ -25,7 +25,11 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
         $this->tpl_data['commentID'] = $_REQUEST['commentID'];
         $this->tpl_data['test_name'] = $_REQUEST['test_name'];
-        $this->tpl_data['subtest'] = $_REQUEST['subtest'];
+        if(isset($_REQUEST['subtest'])) {
+            $this->tpl_data['subtest'] = $_REQUEST['subtest'];
+        } else {
+            $this->tpl_data['subtest'] = '';
+        }
 
         // get the files path
         $config =& NDB_Config::singleton();

@@ -71,6 +71,12 @@ class NDB_BVL_Instrument extends NDB_Page
     */
 	var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
+    /**
+     * Either PHP or LINST depending on what
+     * type of instrument we're workign with
+     */
+    var $InstrumentType = 'PHP';
+
 	/**
     * array of required fields to check
     * @access private
@@ -160,6 +166,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         } else {
             require_once($base."project/instruments/$class.class.inc");
+            $this->InstrumentType = 'PHP';
             // Now go ahead and instantiate it
             $obj = new $class;
             $success = $obj->setup($commentID, $page);
@@ -405,6 +412,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function save()
     {
+        $scoreResult = '';
         if($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
             $scoreResult = $this->score();

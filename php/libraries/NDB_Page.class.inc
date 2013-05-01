@@ -76,7 +76,7 @@ class NDB_Page extends PEAR
         $this->form->addRule($element, $message, $type, $format);
     }
 
-    function addGroupRule($group, $arg1, $type, $format=null) {
+    function addGroupRule($group, $arg1, $type='', $format=null) {
         $this->form->addGroupRule($group, $arg1, $type, $format);
     }
 

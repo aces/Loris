@@ -85,7 +85,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
                             '4' => 'Marked');
 
         $DB =& Database::singleton();
-        $radiologists_q = $DB->pselect("SELECT * FROM examiners WHERE radiologist=True");
+        $radiologists_q = $DB->pselect("SELECT * FROM examiners WHERE radiologist=True", array());
 
         $radiologists[''] = '';
         foreach ($radiologists_q as &$row) {
@@ -148,6 +148,26 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 "SELECT * FROM $this->__table WHERE CommentID=:CID",
                 array('CID' => $this->identifier)
             );
+            if(empty($final_review)) {
+                $final_review = array(
+                    'CommentID' => '',
+                    'Review_Done' => '',
+                    'Final_Review_Results' => '',
+                    'Final_Exclusionary' => '',
+                    'SAS' => '',
+                    'PVS' => '',
+                    'Final_Incidental_Findings' => '',
+                    'Final_Examiner' => '',
+                    'Final_Review_Results2' => '',
+                    'Final_Examiner2' => '',
+                    'Final_Exclusionary2' => '',
+                    'Review_Done2' => '',
+                    'SAS2' => '',
+                    'PVS2' => '',
+                    'Final_Incidental_Findings2' => '',
+                    'Finalized' => ''
+                );
+            }
 
             $original_review = $DB->pselectRow(
                 "SELECT r.Scan_done as Original_Scan_Done, 
@@ -171,6 +191,15 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 GROUP by CandID, PSCID, Visit_label, SessionID, CommentID", 
                 array('CID' => $this->identifier)
             );
+            if(empty($original_review)) {
+                $original_review = array(
+                    'Original_Scan_Done' => '',
+                    'Original_Review_Results' => '',
+                    'Original_Exclusionary' => '',
+                    'Original_Incidental_Findings' => '',
+                    'Original_Examiner' => ''
+                );
+            }
 
 
             $history = $DB->pselect(
@@ -179,6 +208,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 array('histtbl' =>  $this->__table, 'primKey' => $this->identifier)
             );
 
+            $history_display = '';
             foreach ($history as &$history_item) {
                 $history_display .= '<tr><td>' . 
                     $history_item['changeDate'] . '</td><td>' . 

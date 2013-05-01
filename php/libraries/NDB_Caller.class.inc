@@ -73,7 +73,8 @@ class NDB_Caller extends PEAR
         if ($this->existsAndRequire($base."project/libraries/NDB_Form_$test_name.class.inc")
             || $this->existsAndRequire($base."php/libraries/NDB_Form_$test_name.class.inc")) {
 
-            $html = $this->loadForm($test_name, $subtest, $_REQUEST['identifier']);
+            $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
+            $html = $this->loadForm($test_name, $subtest, $identifier);
             if (Utility::isErrorX($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
