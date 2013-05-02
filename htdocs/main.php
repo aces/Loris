@@ -2,7 +2,6 @@
 /**
  * @package main
  */
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ob_start('ob_gzhandler');
 // start benchmarking
 require_once 'Benchmark/Timer.php';
@@ -20,8 +19,6 @@ require_once 'Instrument_List_ControlPanel.class.inc';
 require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 require_once 'NDB_Breadcrumb.class.inc';
 
-$TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : '';
-$subtest = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
 // make local instances of objects
 $config =& NDB_Config::singleton();
 
@@ -29,21 +26,15 @@ $timer->setMarker('Loaded client');
 
 //--------------------------------------------------
 
-// set URL params
-function tplFromRequest($param) {
-    global $tpl_data;
-    if(isset($_REQUEST[$param])) {
-        $tpl_data[$param] = $_REQUEST[$param];
-    } else {
-        $tpl_data[$param] = '';
-    }
-}
+//dynamictabs should be set in pages which have dynamic tabs. It disables the main_menu_tabs from being recursively displayed below the dynamic tabs.
 
-tplFromRequest('test_name');
-tplFromRequest('subtest');
-tplFromRequest('candID');
-tplFromRequest('sessionID');
-tplFromRequest('commentID');
+// set URL params
+$tpl_data['test_name'] = $_REQUEST['test_name']; 
+$tpl_data['subtest']   = $_REQUEST['subtest'];
+$tpl_data['candID']    = $_REQUEST['candID'];
+$tpl_data['sessionID'] = $_REQUEST['sessionID'];
+$tpl_data['commentID'] = $_REQUEST['commentID'];
+$tpl_data['dynamictabs'] = $_REQUEST['dynamictabs'];
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
@@ -51,7 +42,7 @@ $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['PopUpFeedbackBVL'] = $config->getSetting('PopUpFeedbackBVL');
 // draw the user information table
 $user =& User::singleton();
-if (Utility::isErrorX($user)) {
+if (PEAR::isError($user)) {
     $tpl_data['error_message'][] = "User Error: ".$user->getMessage();
 } else {
     $tpl_data['user'] = $user->getData();
@@ -59,7 +50,7 @@ if (Utility::isErrorX($user)) {
 }
 
 $site =& Site::singleton($user->getData('CenterID'));
-if (Utility::isErrorX($site)) {
+if (PEAR::isError($site)) {
     $tpl_data['error_message'][] = "Site Error: ".$site->getMessage();
     unset($site);
 } else {
@@ -115,20 +106,18 @@ $timer->setMarker('Drew user information');
 
 // configure browser args for the mri browser
 // !!! array URL args -- need to correct query in mri_browser to accept candidate data
-$argstring = '';
 if (!empty($_REQUEST['candID'])) {
     $argstring .= "filter%5BcandID%5D=".$_REQUEST['candID']."&";
 }
 
 if (!empty($_REQUEST['sessionID'])) {
     $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-    if (Utility::isErrorX($timePoint)) {
+    if (PEAR::isError($timePoint)) {
         $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
     } else {
         $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
     }
 }
-
 $link_args['MRIBrowser'] = $argstring;
 
 $timer->setMarker('Configured browser arguments for the MRI browser');
@@ -140,23 +129,23 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
  */
 $paths = $config->getSetting('paths');
 
-if (!empty($TestName)) {
-    if(file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
-        $tpl_data['test_name_js'] = "js/modules/$TestName.js";
+if (!empty($_REQUEST['test_name'])) {
+    if(file_exists($paths['base'] . "htdocs/js/modules/" . $_REQUEST['test_name'] . ".js")) {
+        $tpl_data['test_name_js'] = "js/modules/" . $_REQUEST['test_name'] . ".js";
     }
     if (!empty($_REQUEST['commentID'])) {
         // make the control panel object for the current instrument
         $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
         $success = $controlPanel->select($_REQUEST['commentID']);
-        if (Utility::isErrorX($success)) {
+        if (PEAR::isError($success)) {
               $tpl_data['error_message'][] = $success->getMessage();
         } else {
-            if (empty($subtest)) {
+            if (empty($_REQUEST['subtest'])) {
                 // check if the file/class exists
-                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) {
+                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_".$_REQUEST['test_name'].".class.inc")) {
                     // save possible changes from the control panel...
                     $success = $controlPanel->save();
-                    if (Utility::isErrorX($success)) {
+                    if (PEAR::isError($success)) {
                         $tpl_data['error_message'][] = $success->getMessage();
                     }
                 }
@@ -164,7 +153,7 @@ if (!empty($TestName)) {
 
             // display the control panel
             $html = $controlPanel->display();
-            if (Utility::isErrorX($html)) {
+            if (PEAR::isError($html)) {
                 $tpl_data['error_message'][] = $html->getMessage();
             } else {
                 $tpl_data['control_panel'] = $html;
@@ -175,18 +164,18 @@ if (!empty($TestName)) {
         
         // make the control panel object for the current timepoint
         $controlPanel = new Instrument_List_ControlPanel($_REQUEST['sessionID']);
-        if (Utility::isErrorX($controlPanel)) {
+        if (PEAR::isError($controlPanel)) {
              $tpl_data['error_message'][] = $controlPanel->getMessage();
         } else {
             // save possible changes from the control panel...
             $success = $controlPanel->save();
-            if (Utility::isErrorX($success)) {
+            if (PEAR::isError($success)) {
                 $tpl_data['error_message'][] = $success->getMessage();
             }
         
             // display the control panel
             $html = $controlPanel->display();
-            if (Utility::isErrorX($html)) {
+            if (PEAR::isError($html)) {
                 $tpl_data['error_message'][] = $html->getMessage();
             } else {
                 $tpl_data['control_panel'] = $html;
@@ -210,7 +199,7 @@ $timer->setMarker('Drew the control panel');
 // get candidate data
 if (!empty($_REQUEST['candID'])) {
     $candidate =& Candidate::singleton($_REQUEST['candID']);
-    if (Utility::isErrorX($candidate)) {
+    if (PEAR::isError($candidate)) {
         $tpl_data['error_message'][] = "Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage();
     } else {
         $tpl_data['candidate'] = $candidate->getData();
@@ -224,7 +213,7 @@ if (!empty($_REQUEST['sessionID'])) {
         $tpl_data['SupplementalSessionStatuses'] = true;
     }
     
-    if (Utility::isErrorX($timePoint)) {
+    if (PEAR::isError($timePoint)) {
         $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
     } else {
         $tpl_data['timePoint'] = $timePoint->getData();
@@ -247,8 +236,8 @@ function HandleError($error) {
     }
 }
 $caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
-$workspace = $caller->load($TestName, $subtest);
-if (Utility::isErrorX($workspace)) {
+$workspace = $caller->load($_REQUEST['test_name'], $_REQUEST['subtest']);
+if (PEAR::isError($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
 } else {
     $tpl_data['workspace'] = $workspace;
@@ -261,16 +250,12 @@ $timer->setMarker('Drew main workspace');
 // make the breadcrumb
 $breadcrumb = new NDB_Breadcrumb;
 $crumbs = $breadcrumb->getBreadcrumb();
-if (Utility::isErrorX($crumbs)) {
+if (PEAR::isError($crumbs)) {
     $tpl_data['error_message'][] = $crumbs->getMessage();
 } else {
     $tpl_data['crumbs'] = $crumbs;
     parse_str($crumbs[0]['query'], $parsed);
-    if(isset($parsed['test_name'])) {
-        $tpl_data['top_level'] = $parsed['test_name'];
-    } else {
-        $tpl_data['top_level'] = '';
-    }
+    $tpl_data['top_level'] = $parsed['test_name'];
 }
 
 $timer->setMarker('Drew breadcrumbs');
@@ -284,20 +269,8 @@ $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 //Display the links, as specified in the config file
 $links=$config->getSetting('links');
 foreach(Utility::toArray($links['link']) AS $link){
-    $BaseURL = $link['@']['url'];
-    if(isset($link['@']['args'])) {
-        $LinkArgs = $link_args[$link['@']['args']];
-    }
-    $LinkLabel = $link['#'];
-    $WindowName = md5($link['@']['url']);
-    $tpl_data['links'][]=array(
-        'url'        => $BaseURL . $LinkArgs,
-        'label'      => $LinkLabel, 
-        'windowName' => $WindowName
-    ); 
+	$tpl_data['links'][]=array('url'=>$link['@']['url'] . $link_args[$link['@']['args']], 'label'=>$link['#'], 'windowName'=>md5($link['@']['url'])); 
 }
-
-
 
 //Output template using Smarty
 $tpl_data['css'] = $config->getSetting('css');
