@@ -20,5 +20,4 @@ if(strrpos($_REQUEST['instrument'], "_proband") === false) {
 foreach ($cols as $val) {
     print "$val\n";
 }
-//<option value="Medical Psychoiatric History">Medical Psychiatric History</option>
 ?>
