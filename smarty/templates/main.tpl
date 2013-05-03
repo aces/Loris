@@ -41,6 +41,8 @@ function open_help_section(){
     onload="feedback_bvl_popup();"
 {/if}
 >
+
+{if $dynamictabs neq "dynamictabs"}
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
     <tr>
         <th align="left" background="images/title_background.jpg" class="banner" colspan="2">
@@ -98,7 +100,7 @@ function open_help_section(){
                 {$control_panel}
             {/if}
         {/if}
-
+    
 	<!--links-->
                     <h3 class="controlPanelSection">Links</h3>
                     <ul class="controlPanel">
@@ -126,7 +128,7 @@ function open_help_section(){
                 </tr>
             </table>
 {/if}
-
+{/if}
 {if $error_message != ""}
             <p>The following errors occured while attempting to display this page:
 
@@ -231,7 +233,7 @@ function open_help_section(){
             </table>
         {/if}
     {/if}
-            <!-- included file -->
+<!-- included file -->
 <table width="90%"><tr><td>
 {$workspace}
 </td></tr></table>
