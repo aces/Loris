@@ -180,8 +180,8 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
 
-        $Import->SQLDB->returns('pselect', array( 0 => array('Test_name' => 'hello'), 1 => array('Test_name' => 'hello2')));
-        $tests = array('hello' => 'hello', 'hello2' => 'hello2');
+        $Import->SQLDB->returns('pselect', array( 0 => array('Test_name' => 'hello', 'Full_name' => 'I am a test'), 1 => array('Test_name' => 'hello2', 'Full_name' => 'I am also a test')));
+        $tests = array('hello' => 'I am a test', 'hello2' => 'I am also a test');
         $Import->expectOnce('UpdateDataDicts', array($tests));
         $Import->expectOnce('UpdateCandidateDocs', array($tests));
 
@@ -193,12 +193,11 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import = new CouchDBInstrumentImporterPartial();
         $Import->SQLDB = $this->Factory->Database(); // new MockDatabase();
         $Import->CouchDB = new MockCouchDB();
-        $Import->SQLDB->returns('pselect', array( 0 => array('Test_name' => 'hello'), 1 => array('Test_name' => 'hello2')));
-
+        $Import->SQLDB->returns('pselect', array( 0 => array('Test_name' => 'hello', 'Full_name' => 'I am a test'), 1 => array('Test_name' => 'hello2', 'Full_name' => 'I am also a test')));
         $tests = $Import->GetInstruments();
 
-        $Import->SQLDB->expectOnce("pselect", array("SELECT Test_name FROM test_names", array()) );
-        $this->assertEqual($tests, array('hello' => 'hello', 'hello2' => 'hello2'));
+        $Import->SQLDB->expectOnce("pselect", array("SELECT Test_name, Full_name FROM test_names", array()) );
+        $this->assertEqual($tests, array('hello' => 'I am a test', 'hello2' => 'I am also a test'));
     }
 
     function testImportInstrumentUpdateDict() {
@@ -207,13 +206,21 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
 
+        /*
+        $Import->SQLDB->returnsAt(0, 'pselect',
+            array('hello' => 'I am a test',
+                  'hello2' => 'I am another test')
+        );
+         */
         $Import->SQLDB->returns('pselect', array(
             0 => array('ParameterTypeID' => 3,
                   'Name' => 'Hello',
+                  'SourceField' => 'Hello',
                   'Type' => 'varchar(255)',
                   'Description' => 'I am a field!'),
             1 => array('ParameterTypeID' => 34,
                       'Name' => 'Another_field',
+                      'SourceField' => 'Hello2',
                       'Type' => "enum('three', 'ten')",
                       'Description' => 'Another field!'
                   )
@@ -233,10 +240,18 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
                 'Type' => "enum('Questionable', 'Invalid', 'Valid')",
                 'Description' => 'Validity of data for hello' 
             ),
+            'Conflicts_Exist' => array(
+                'Type'        => "enum('Yes', 'No')",
+                'Description' => 'Conflicts exist for instrument data entry'
+            ),
+            'DDE_Complete' => array(
+                'Type'        => "enum('Yes', 'No')",
+                'Description' => 'Double Data Entry was completed for instrument'
+            ),
             'Hello' => array(
                 'Type' => 'varchar(255)',
                 'Description' => 'I am a field!'),
-            'Another_field' => array(
+            'Hello2' => array(
                 'Type' => "enum('three', 'ten')",
                 'Description' => 'Another field!'
             )
@@ -252,12 +267,7 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import->CouchDB->expectAt(1, 'replaceDoc', array('DataDictionary:hello2',
             // Just make sure the first parameter is correct, since otherwise we need
             // to change all the Admin/Data_entry/Validity descriptions for this assertion
-            '*' /*
-            array('Meta' => array('DataDict' => true),
-                'DataDictionary' => array(
-                    'hello2' => $Dictionary
-                )
-            )*/
+            '*' 
         ));
         $Import->CouchDB->expectCallCount('replaceDoc', 2);
         $Import->UpdateDataDicts(array('hello' => 'hello', 'hello2' => 'hello2'));
@@ -268,7 +278,7 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
 
-        $Instruments = array('hello' => 'hello', 'hello2' => 'hello2');
+        $Instruments = array('hello' => 'I am a test', 'hello2' => 'I am another test');
         $Import->SQLDB->expectAt(0, 'pselect', array('*', array('inst' => 'hello')));
         $Import->SQLDB->expectAt(1, 'pselect', array('*', array('inst' => 'hello2')));
         $Import->SQLDB->returns('pselect', array(0 => 
@@ -306,7 +316,7 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import->UpdateCandidateDocs($Instruments);
 
         $SQL = $Import->generateDocumentSQL('instrumentname');
-        $this->assertEqual($SQL, "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, i.* FROM instrumentname i join flag f USING (CommentID) join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID) WHERE CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'");
+        $this->assertEqual($SQL, "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE i.CommentID=cu.CommentId1 OR i.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS conflicts_exist, CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete, i.* FROM instrumentname i JOIN flag f USING (CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) WHERE f.CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'");
     }
 
     function testDeportSites() {
