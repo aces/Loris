@@ -104,7 +104,16 @@ class UserPermissions
      */
     function hasPermission($code)
     {
-        return ($this->permissions[$code] == true || $this->permissions['superuser'] == true);
+        if (isset($this->permissions[$code]) && $this->permissions[$code] === true) {
+            return true;
+        }
+
+        if (isset($this->permissions['superuser'])
+            && $this->permissions['superuser'] == true
+        ) {
+            return true;
+        }
+        return false;
     }
 
 

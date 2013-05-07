@@ -25,6 +25,11 @@ abstract class LorisTest extends WebTestCase {
             $this->ignoreInstruments = array($ignores);
         }
 
+        // Used to make sure that nothign was written 
+        $this->ApacheErrorLog = $this->config->getSetting("ApacheErrorLog");
+        if($this->ApacheErrorLog) {
+            $this->ApacheErrorTime = filemtime($this->ApacheErrorLog);
+        }
         // Make sure the setting is exactly the string "false", not something
         // else that evaluates to false like 0, just for safety.
         if($track == "false") 
@@ -46,6 +51,19 @@ abstract class LorisTest extends WebTestCase {
         $this->DB =& Database::singleton($database['database'], $database['username'], $database['password'], $database['host'], $track);
         if(PEAR::isError($this->DB)) {
             print $this->DB->getMessage() . "\n";
+        }
+
+        if(empty($this->SessionID)) {
+            if($this->CandID) {
+                $this->DB->selectRow("SELECT s.ID as SessionID FROM session s JOIN candidate c using (CandID) WHERE c.CandID=" . $this->CandID, $Candidate);
+                if(!empty($Candidate)) {
+                    $this->SessionID = $Candidate['SessionID'];
+                }
+
+            } else {
+                $this->DB->selectRow("select s.ID as SessionID from session s join candidate c using (CandID) where c.pscid not like 'dcc%' and c.pscid <> 'scanner' and s.Active='Y' and s.Visit_label='v06' AND s.CenterID = 1 order by s.ID desc limit 1 ", $Candidate);
+                $this->SessionID = $Candidate['SessionID'];
+            }
         }
 
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
@@ -82,6 +100,12 @@ abstract class LorisTest extends WebTestCase {
             'password' => $password,
             'login' => 'login'
         ));
+    }
+
+    function assertNoApacheError($msg) {
+        if(!empty($this->ApacheErrorLog)) {
+            $this->assertEqual($this->ApacheErrorTime, filemtime($this->ApacheErrorLog), $msg);
+        }
     }
 
     function assertBasicConditions() {

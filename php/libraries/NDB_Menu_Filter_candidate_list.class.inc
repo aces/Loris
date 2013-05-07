@@ -193,9 +193,17 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 } else if ($key=='Feedback' && empty($val)){
                 	$this->tpl_data['items'][$x][$i]['value'] = "None";
                 } else if ($key=='Project') {
-                	$this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
+                    if(isset($projectlist[$val])) {
+                        $this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
+                    } else {
+                        $this->tpl_data['items'][$x][$i]['value'] = '';
+                    }
                 } else if ($key=='Subproject') {
-                	$this->tpl_data['items'][$x][$i]['value'] = $subprojectlist[$val];
+                    if(isset($subprojectlist[$val])) {
+                        $this->tpl_data['items'][$x][$i]['value'] = $subprojectlist[$val];
+                    } else {
+                        $this->tpl_data['items'][$x][$i]['value'] = '';
+                    }
                 } else if ($key == 'Participant_Status') {
                 	$this->tpl_data['items'][$x][$i]['value'] = $participantOptions[$val];
                 }
