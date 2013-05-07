@@ -34,12 +34,16 @@
     </div>
 
     <div id="demographics">
-        <h2 class="statsH2">General statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
+        <h2 class="statsH2">General statistics for {$demographics_center_name} {$demographics_project_name}</h2>
         <form action="#demographics">
             {html_options options=$Sites name="site" selected=$CurrentSite.ID}
             <input type="hidden" name="test_name" value="statistics" />
             <input type="submit" />
+            {html_options options=$Projects name="project" selected=$CurrentProject.ID}
+            <input type="hidden" name="projects" value="statistics" />
+            <input type="submit" />
         </form>
+        <table class="data generalStats">
         <table class="data generalStats">
         <thead>
                 <th></th>
@@ -92,10 +96,13 @@
         {$RecruitsTable}
 </div>
 <div id="data_entry">
-<h2 class="statsH2">Data Entry Statistics:</h2>
+<h2 class="statsH2">Data Entry Statistics for {$behavioural_center_name} {$behavioural_project_name}</h2>
         <form action="#data_entry">
             {html_options options=$Sites name="site2" selected=$behavioural_center}
             <input type="hidden" name="test_name" value="statistics" />
+            <input type="submit" />
+            {html_options options=$Projects name="project2" selected=$behavioural_project}
+            <input type="hidden" name="de_project" value="statistics" />
             <input type="submit" />
             </form>
 <table class="data">
@@ -121,9 +128,9 @@
 	</tr>
 </tr>    
 </table>
-<b><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}'>Click here for breakdown per participant for {$behavioural_center_name}</a></b>
+<b><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}&ProjectID={$behavioural_project}'>Click here for breakdown per participant for {$behavioural_center_name} {$behavioural_project_name}</a></b>
 
-<h2 class="statsH2">Double Data Entry Statistics:</h2>
+<h2 class="statsH2">Double Data Entry Statistics for {$behavioural_center_name} {$behavioural_project_name}</h2>
 <table class="data">
     <tr>
         <th></th>
@@ -147,7 +154,7 @@
         </tr>
 </tr>
 </table>
-<b><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}'>Click here for breakdown per participant for {$behavioural_center_name}</a></b>
+<b><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}&ProjectID={$behavioural_project}'>Click here for breakdown per participant for {$behavioural_center_name} {$behavioural_project_name}</a></b>
 
 <br />
         {$InstrumentsTable}
@@ -155,11 +162,18 @@
 
 
 <div id="mri">
-<h2 class="statsH2">General Statistics with QC Status (All Visits):</h2>
+<h2 class="statsH2">General Statistics with QC Status for {$mri_center_name} {$mri_project_name}</h2>
+<form action="#mri">
+    {html_options options=$Sites name="site3" selected=$mri_center}
+    <input type="hidden" name="test_name" value="statistics" />
+    <input type="submit" />
+    {html_options options=$Projects name="project3" selected=$mri_project}
+    <input type="hidden" name="project_mri" value="statistics2" />
+    <input type="submit" />
+</form>
 <table class="data generalStats">
 	<thead>
         <tr>
-            <th>Site</th>
             <th></th>
             {foreach from=$mri_all_scans_inserted item=v key=k}
                 {foreach from=$v item=count key=scan}
@@ -172,7 +186,6 @@
     </thead>
     <tbody>
         <tr>
-            <td rowspan ="8">{$mri_all_scans_done[item].Name}</td>
             <td>'Complete' in MRI parameter form</td>
             {foreach from=$mri_all_scans_done item=v key=k}
                 {foreach from=$v item=count key=scan}
@@ -226,11 +239,10 @@
     </tbody>
 </table>
 
-<h2 class="statsH2">MRI Integrity Statistics:</h2>
+<h2 class="statsH2">MRI Integrity Statistics for {$mri_center_name} {$mri_project_name}</h2>
 <table class="data generalStats">
     <thead>
       <tr>
-            <th>Site</th>
             <th>No Parameter Form Completed</th>
             <th>Nothing in MRI Browser for Form</th>
             <th>No tarchive Entry for Form</th>
@@ -240,11 +252,10 @@
     <tbody>
       {foreach item=center from=$Centers}
       <tr>
-            <td>{$center.ShortName}</td>
             <td>{$mri_errors[$center.NumericID].no_parameter}</td>
             <td>{$mri_errors[$center.NumericID].no_browser}</td>
             <td>{$mri_errors[$center.NumericID].no_tarchive}</td>
-            <td><a href="?test_name=statistics_mri_site&CenterID={$center.NumericID}">Please Click Here</a></td>
+            <td><a href="?test_name=statistics_mri_site&CenterID={$mri_center}&ProjectID={$mri_project}">Click Here for breakdown per participant</a></td>
       </tr>
       {/foreach}
     </tbody>
