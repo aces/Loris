@@ -9,10 +9,22 @@ require_once 'NDB_Menu.class.inc';
 class NDB_Menu_statistics_site extends NDB_Menu
 {
 
-
     var $instruments = array(); 
     var $issues = array();
-    
+    var $query_criteria = '';
+    var $query_vars = array();
+
+    function _checkCriteria($centerID, $projectID) {
+        if (!empty($centerID)) {
+            $this->query_criteria .= " AND s.CenterID =:cid ";
+            $this->query_vars['cid'] = $centerID;
+        }
+        if (!empty($projectID)) {
+            $this->query_criteria .= " AND c.ProjectID =:pid ";
+            $this->query_vars['pid'] = $projectID;
+        }
+    }
+
     function _setInstrumentName() {
         $this->instruments = Utility::getAllInstruments();
     }
@@ -24,15 +36,13 @@ class NDB_Menu_statistics_site extends NDB_Menu
     function _getIssueName($issue) {
         return $issue;
     }
+
     function _getInstrumentName($instrument) {
         return $this->instruments[$instrument];
-        //return $instrument;
     }
-    function _CompleteCount($id, $instrument) {
-        if ($id == '<>1')
-            $center = "AND s.CenterID {$id} ";
-        else
-            $center = "AND s.CenterID={$id} ";
+
+    function _CompleteCount($centerID, $projectID, $instrument) {
+        $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
         $count = $DB->pselectOne(
                 "SELECT count(s.CandID)  FROM session s, 
@@ -40,21 +50,20 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
-                $center AND f.Data_entry='Complete' 
+                AND s.CenterID <> '1' 
+                $this->query_criteria 
+                AND f.Data_entry='Complete' 
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.Administration='All' 
-                AND i.CommentID NOT LIKE 'DDE%'");
+                AND i.CommentID NOT LIKE 'DDE%'", $this->query_vars);
         if (PEAR::isError($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
         return $count;
-
     }
-    function _GetResults($id, $instrument) {
-        if ($id == '<>1')
-            $center = "AND s.CenterID {$id} ";
-        else
-            $center = "AND s.CenterID={$id} ";
+
+    function _GetResults($centerID, $projectID, $instrument) {
+        $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
         $result = $DB->pselect("SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, 
                 s.Visit_label 
@@ -64,15 +73,15 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
                 AND s.Current_stage <> 'Recycling Bin'
-                $center
+                $this->query_criteria
                 AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 
-                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID"); //, $result);
-                //s.Visit_label as Visit_label
+                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID", $this->query_vars);
         if (PEAR::isError($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
         return $result;
     }
+
     function setup()
     {   
         // If following a breadcrumb, redirect to the original statistics page
@@ -85,17 +94,21 @@ class NDB_Menu_statistics_site extends NDB_Menu
         if(PEAR::isError($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
-        if ($_REQUEST['CenterID'] == '<>1')
+        if (!empty($_REQUEST['CenterID']))
         {
-            $id = "<>1";
-            $name = 'All';
+            $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid", array('cid'=>$_REQUEST['CenterID'])); 
+            $centerID = $center['ID'];
+            $name = $center['Name'];
         }
         else
         {
-            $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =" . $_REQUEST['CenterID']); //, $center);
-            $id = $center['ID'];
-            $name = $center['Name'];
+            $name = 'All';
         }
+        if (!empty($_REQUEST['ProjectID'])) {
+            $projectID = $_REQUEST['ProjectID'];
+        }
+        else 
+            $projectID = '';
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given instrument in the 
@@ -105,9 +118,9 @@ class NDB_Menu_statistics_site extends NDB_Menu
         $this->_setInstrumentName();
         $data = array();
         foreach($this->instruments as $instrument=>$label){           
-            $complete_count = $this->_CompleteCount($id, $instrument); 
+            $complete_count = $this->_CompleteCount($centerID, $projectID, $instrument); 
 
-            $results = $this->_GetResults($id, $instrument);
+            $results = $this->_GetResults($centerID, $projectID, $instrument);
 
             $test_url = $instrument;
 
@@ -123,7 +136,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
                         'PSCID' => $row['PSCID']
                         );
             }
-            $data[] = array('name' => $this->_getInstrumentName($instrument), 'count' => $complete_count, 'incompletes' => $results);
+            $data[] = array('name' => $label, 'count' => $complete_count, 'incompletes' => $results);
         }
 
         $this->tpl_data["data"] = $data;
@@ -134,4 +147,4 @@ class NDB_Menu_statistics_site extends NDB_Menu
 
     } // End function
 } // End class
-    ?>
+?>
