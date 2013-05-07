@@ -71,6 +71,12 @@ class NDB_BVL_Instrument extends NDB_Page
     */
 	var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
+    /**
+     * Either PHP or LINST depending on what
+     * type of instrument we're workign with
+     */
+    var $InstrumentType = 'PHP';
+
 	/**
     * array of required fields to check
     * @access private
@@ -110,6 +116,11 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     var $LinstQuestions = array();
 
+    /**
+     * True if the page is being previewed from the instrument builder,
+     * and not really loaded.
+     */
+    var $preview = false;
     // }}}
     // {{{ factory()
 
@@ -162,6 +173,7 @@ class NDB_BVL_Instrument extends NDB_Page
             require_once($base."project/instruments/$class.class.inc");
             // Now go ahead and instantiate it
             $obj = new $class;
+            $obj->InstrumentType = 'PHP';
             $success = $obj->setup($commentID, $page);
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
@@ -307,8 +319,8 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->addHidden('candID', $_REQUEST["candID"]);
-        $this->addHidden('sessionID', $_REQUEST["sessionID"]);
+        $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
+        $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
         $this->addHidden('commentID', $this->getCommentID());
         $this->addHidden('test_name', $this->testName);
         $this->addHidden('page', $this->page);
@@ -377,13 +389,13 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
         
-        if($defaults['Window_Difference'] != 0) {
+        if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0) {
             $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>'; //if($defaults['Window_Difference'] != 0) {
         }
         //Convert select multiple elements into a quickform array
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
-                if(stristr($defaults[$elname], "{@}")){
+                if(isset($defaults[$elname]) && stristr($defaults[$elname], "{@}")){
                     $defaults[$elname]=explode("{@}",$defaults[$elname]);
                 }
             }
@@ -405,6 +417,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function save()
     {
+        $scoreResult = '';
         if($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
             $scoreResult = $this->score();
@@ -662,9 +675,13 @@ class NDB_BVL_Instrument extends NDB_Page
         $db =& Database::singleton();
 
         $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
+        if(is_array($centerID)) {
+            $centerID = null;
+        }
 
         //get examiner certifications for profiles part of IBIS2
-        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$_REQUEST["candID"]));
+        $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=> $candID));
 
         list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
         if ($CertificationEnabled && in_array($project, $CertificationProjects)
@@ -828,6 +845,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access private
      */
     function _getQuickformDate($databaseValue){
+        $formDateValue = null;
         if(!empty($databaseValue)){
             if(strstr($databaseValue,":")){
                 $formDateValue=explode(":",$databaseValue);
@@ -1475,7 +1493,7 @@ class NDB_BVL_Instrument extends NDB_Page
             // we don't.. but even on other pages, we need to parse the whole file for
             // table{@} and other meta elements
             $addElements = true;
-            if($_REQUEST['subtest']) {
+            if(isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
                 $currentPage = $_REQUEST['subtest'];
                 $addElements = false;
             } else {
@@ -1490,14 +1508,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 $pieces = preg_split("/{@}/", $line);
 
                 $type = $pieces[0];
-                if(strpos($pieces[1], "_status") !== FALSE) {
+                $fieldname = isset($pieces[1]) ? $pieces[1] : null;
+                if(strpos($fieldname, "_status") !== FALSE) {
                     continue;
                 }
-                if($pieces[1] == 'Date_taken' 
-                    || $pieces[1] == "Candidate_Age"
-                    || $pieces[1] == "Window_Difference"
-                    || $pieces[1] == "Examiner"
-                    ) {
+                if($fieldname == 'Date_taken' 
+                    || $fieldname == "Candidate_Age"
+                    || $fieldname == "Window_Difference"
+                    || $fieldname == "Examiner"
+                ) {
                     continue;
                 }
                 switch($type) {

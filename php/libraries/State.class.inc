@@ -97,7 +97,9 @@ class State
         } elseif (!empty($_REQUEST['candID']) && in_array($_REQUEST['test_name'], $timepointSubMenus)) {
             return 'main.php?test_name=timepoint_list&candID='.$_REQUEST['candID'];
         } elseif ($caller->type == 'instrument' || (isset($_REQUEST['test_name']) && $_REQUEST['test_name'] == 'next_stage')) {
-            return 'main.php?test_name=instrument_list&candID='.$_REQUEST['candID'].'&sessionID='.$_REQUEST['sessionID'];
+            if(isset($_REQUEST['candID']) && isset($_REQUEST['sessionID'])) {
+                return 'main.php?test_name=instrument_list&candID='.$_REQUEST['candID'].'&sessionID='.$_REQUEST['sessionID'];
+            }
         }
 
         return null;

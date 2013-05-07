@@ -254,7 +254,10 @@ Class NDB_BVL_Feedback
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
-        return $result['Status'];
+        if(isset($result['Status'])) {
+            return $result['Status'];
+        }
+        return null;
     }
    
     /**

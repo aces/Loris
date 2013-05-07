@@ -31,7 +31,13 @@ class SinglePointLogin extends PEAR
      */
     function showLoginScreen()
     {
-        $tpl_data['username'] = $_POST['username'];
+        if(isset($_POST['username'])) {
+            $tpl_data['username'] = $_POST['username'];
+        } else {
+            $tpl_data['username'] = '';
+        }
+
+
 
         // remove logout from request
         parse_str($_SERVER['QUERY_STRING'], $params);
