@@ -7,6 +7,20 @@ require_once 'NDB_Menu_statistics_site.class.inc';
  */
 class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
 {
+    var $query_criteria = '';
+    var $query_vars = array();
+
+    function _checkCriteria($centerID, $projectID) {
+        if (!empty($centerID)) {
+            $this->query_criteria .= " AND s.CenterID =:cid ";
+            $this->query_vars['cid'] = $centerID;
+        }
+        if (!empty($projectID)) {
+            $this->query_criteria .= " AND c.ProjectID =:pid ";
+            $this->query_vars['pid'] = $projectID;
+        }
+    }
+
     function _getIssueName($issue) {
         switch($issue) {
             case "Tarchive_Missing":
@@ -24,17 +38,8 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
     }
 
     function _GetResults($centerID, $projectID, $issue) {
+        $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
-        $centerID = $_REQUEST['CenterID'];
-        $projectID = $_REQUEST['ProjectID'];
-        if ($centerID == '<>1')
-            $center = " AND s.CenterID {$centerID} ";
-        else
-            $center = " AND s.CenterID={$centerID} ";
-        if (!empty($projectID))
-            $project = " AND c.ProjectID = {$projectID} ";
-        else
-            $project = "";
 
         $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type");
         $where = "WHERE (";
@@ -62,9 +67,9 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                             AND f.Administration <> 'None'
                             AND t.TarchiveID IS NULL
                             AND s.Active='Y'
+                            AND s.CenterID <> '1'
                             AND f.Data_entry='Complete'
-                            $center $project
-                            AND c.ProjectID=:pid
+                            $this->query_criteria
                         ORDER BY c.PSCID";
                 break;
             case 'Files_Missing':
@@ -90,7 +95,8 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                         AND fi.FileID IS NULL
                         AND f.Data_entry= 'Complete'
                         AND s.Active='Y'
-                        $center $project
+                        AND s.CenterID <> '1'
+                        $this->query_criteria
                     ORDER BY c.PSCID";
                 break;
             case 'PF_Missing': $query =
@@ -105,12 +111,13 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                            AND (f.ID IS NULL OR
                            f.Data_entry <> 'Complete' OR
                            f.Data_entry IS NULL)
-                           $center $project
+                           AND s.CenterID <> '1'
+                           $this->query_criteria
                            ORDER BY c.PSCID";
                 break;
 
         }
-        if($query) $result = $DB->pselect($query);
+        if($query) $result = $DB->pselect($query, $this->query_vars);
         return $result;
     }
 

@@ -11,6 +11,19 @@ class NDB_Menu_statistics_site extends NDB_Menu
 
     var $instruments = array(); 
     var $issues = array();
+    var $query_criteria = '';
+    var $query_vars = array();
+
+    function _checkCriteria($centerID, $projectID) {
+        if (!empty($centerID)) {
+            $this->query_criteria .= " AND s.CenterID =:cid ";
+            $this->query_vars['cid'] = $centerID;
+        }
+        if (!empty($projectID)) {
+            $this->query_criteria .= " AND c.ProjectID =:pid ";
+            $this->query_vars['pid'] = $projectID;
+        }
+    }
 
     function _setInstrumentName() {
         $this->instruments = Utility::getAllInstruments();
@@ -29,14 +42,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
     }
 
     function _CompleteCount($centerID, $projectID, $instrument) {
-        if ($centerID == '<>1')
-            $center = " AND s.CenterID {$centerID} ";
-        else
-            $center = " AND s.CenterID={$centerID} ";
-        if (!empty($projectID))
-            $project = " AND c.ProjectID = {$projectID} ";
-        else
-            $project = "";
+        $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
         $count = $DB->pselectOne(
                 "SELECT count(s.CandID)  FROM session s, 
@@ -44,11 +50,12 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
-                $center $project
+                AND s.CenterID <> '1' 
+                $this->query_criteria 
                 AND f.Data_entry='Complete' 
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.Administration='All' 
-                AND i.CommentID NOT LIKE 'DDE%'");
+                AND i.CommentID NOT LIKE 'DDE%'", $this->query_vars);
         if (PEAR::isError($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -56,14 +63,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
     }
 
     function _GetResults($centerID, $projectID, $instrument) {
-        if ($centerID == '<>1')
-            $center = " AND s.CenterID {$centerID} ";
-        else
-            $center = " AND s.CenterID={$centerID} ";
-        if (!empty($projectID))
-            $project = " AND c.ProjectID = {$projectID} ";
-        else
-            $project = "";
+        $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
         $result = $DB->pselect("SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, 
                 s.Visit_label 
@@ -73,9 +73,9 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
                 AND s.Current_stage <> 'Recycling Bin'
-                $center $project
+                $this->query_criteria
                 AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 
-                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID");
+                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID", $this->query_vars);
         if (PEAR::isError($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -94,16 +94,15 @@ class NDB_Menu_statistics_site extends NDB_Menu
         if(PEAR::isError($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
-        if ($_REQUEST['CenterID'] == '<>1')
-        {
-            $centerID = "<>1";
-            $name = 'All';
-        }
-        else
+        if (!empty($_REQUEST['CenterID']))
         {
             $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid", array('cid'=>$_REQUEST['CenterID'])); 
             $centerID = $center['ID'];
             $name = $center['Name'];
+        }
+        else
+        {
+            $name = 'All';
         }
         if (!empty($_REQUEST['ProjectID'])) {
             $projectID = $_REQUEST['ProjectID'];

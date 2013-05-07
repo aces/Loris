@@ -78,8 +78,13 @@ class NDB_Menu_statistics extends NDB_Menu
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        $projects = Utility::getProjectList();
-        $this->tpl_data['Projects'] = array('' => 'All Projects');
+        $config=&NDB_Config::singleton();
+        $projects = array('' => 'All Projects');
+        if($config->getSetting("useProjects")=="true"){
+              $projects += Utility::getProjectList();
+        }
+
+        $this->tpl_data['Projects'] = $projects;
         foreach ($projects as $id=>$name) {
             $this->tpl_data['Projects'][$id] = $name;
             if ($_REQUEST['project'] == $id) {
@@ -89,7 +94,6 @@ class NDB_Menu_statistics extends NDB_Menu
 
         $Extra_vars = array();
         $ExtraSite_Criteria = '';
-        $demographics_center = '<>1';
         $demographics_center_name = 'all sites';
         $demographics_project_name = 'all projects';
 
@@ -98,9 +102,6 @@ class NDB_Menu_statistics extends NDB_Menu
             $ExtraSite_Criteria = ' AND c.CenterID=:cid ';
             $Extra_vars['cid']=$_REQUEST['site'];
             $demographics_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:cid", $Extra_vars);
-        }
-        else {
-            $ExtraSite_Criteria = " AND c.CenterID <> '1' ";
         }
         if(isset($_REQUEST['project']) && $_REQUEST['project'] != '') {
             $ExtraSite_Criteria .= ' AND  c.ProjectID=:pid ';
@@ -135,7 +136,7 @@ class NDB_Menu_statistics extends NDB_Menu
         $total_visit = 0;
 
         //Candidates with visit marked as In Progress                        
-        $result_progress = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'In Progress' AND s.Visit_label LIKE CONCAT('%', :visit, '%') $ExtraSite_Criteria group by s.subprojectid", $prepared_check); 
+        $result_progress = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'In Progress' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check); 
 
         foreach($result_progress as $row) {
             $this->tpl_data['registered'][$row['rowid']]['progress'] = $row['val'];
@@ -144,7 +145,7 @@ class NDB_Menu_statistics extends NDB_Menu
         }
 
         //Candidates with visit marked as Pass                        
-        $result_pass = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Pass' AND s.Visit_label LIKE CONCAT('%', :visit, '%') $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
+        $result_pass = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Pass' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
 
         foreach($result_pass as $row) {
             $this->tpl_data['registered'][$row['rowid']]['pass'] = $row['val'];
@@ -153,7 +154,7 @@ class NDB_Menu_statistics extends NDB_Menu
         }
 
         //Candidates with visit marked as Fail                        
-        $result_fail = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' ANDc.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Failure' AND s.Visit_label LIKE CONCAT('%', :visit, '%') $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
+        $result_fail = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' ANDc.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Failure' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
 
         foreach($result_fail as $row) {
             $this->tpl_data['registered'][$row['rowid']]['fail'] = $row['val'];
@@ -162,7 +163,7 @@ class NDB_Menu_statistics extends NDB_Menu
         }
 
         //Candidates with visit marked as Withdraw                        
-        $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE CONCAT('%', :visit, '%') $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
+        $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
 
         foreach($result_withdrawal as $row) {
             $this->tpl_data['registered'][$row['rowid']]['withdraw'] = $row['val'];
@@ -183,7 +184,8 @@ class NDB_Menu_statistics extends NDB_Menu
                 AND s.Active='Y' 
                 AND c.Active='Y' 
                 AND c.PSCID<>'scanner'
-                AND s.Current_stage <> 'Recycling Bin'
+                AND s.Current_stage <> 'Recycling Bin' 
+                AND c.CenterID <> '1'
                 $ExtraSite_Criteria
                 GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
@@ -199,6 +201,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 AND c.Active='Y' 
                 AND c.PSCID<>'scanner'
                 AND s.Current_stage <> 'Recycling Bin'
+                AND c.CenterID <> '1' 
                 $ExtraSite_Criteria
                 GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
@@ -214,6 +217,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 AND c.Active='Y' 
                 AND c.PSCID<>'scanner'
                 AND s.Current_stage <> 'Recycling Bin'
+                AND c.CenterID <> '1' 
                 $ExtraSite_Criteria
                 GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
@@ -229,6 +233,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 AND c.Active='Y' 
                 AND c.PSCID<>'scanner'
                 AND s.Current_stage <> 'Recycling Bin'
+                AND c.CenterID <> '1' 
                 $ExtraSite_Criteria
                 GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
@@ -297,7 +302,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 FROM session s JOIN candidate c USING(CandID) 
                 JOIN flag f ON (f.SessionID=s.ID) 
                 JOIN $_REQUEST[instrument2] i USING(CommentID)
-                WHERE s.Active='Y' and s.CenterID <> 1
+                WHERE s.Active='Y' and s.CenterID <> '1'
                 AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat"); 
                 $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
@@ -328,24 +333,23 @@ class NDB_Menu_statistics extends NDB_Menu
 
         $this->tpl_data[$centerID] = $_REQUEST['site2'];
         $Extra_vars = array();
-        $behavioural_center = '<>1';
+        $behavioural_center = '';
         $behavioural_center_name = 'all sites';
         $behavioural_project_name = 'all projects';
 
         if(isset($_REQUEST['site2']) && $_REQUEST['site2'] != '') {
             $behavioural_center = $_REQUEST['site2'];
             $behavioural_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['site2']));
-            $ExtraSite_Criteria = ' AND (c.CenterID IS NULL OR c.CenterID=:site) ';
+            $ExtraSite_Criteria = ' AND c.CenterID=:site ';
             $Extra_vars['site'] = $_REQUEST['site2'];
         }
         if(isset($_REQUEST['project2']) && $_REQUEST['project2'] != '') {
-            $ExtraSite_Criteria .= ' AND (c.ProjectID IS NULL OR c.ProjectID=:proj) ';
+            $ExtraSite_Criteria .= ' AND c.ProjectID=:proj ';
             $Extra_vars['proj'] = $_REQUEST['project2'];
             $behavioural_project = $_REQUEST['project2'];
             $behavioural_project_name = $projects["$behavioural_project"];
         }
 
-        $ExtraSite_Criteria .= ' GROUP by s.CenterID, VLabel, f.Data_Entry';
         $this->tpl_data['behavioural_center'] = $behavioural_center; 
         $this->tpl_data['behavioural_center_name'] = $behavioural_center_name; 
         $this->tpl_data['behavioural_project'] = $behavioural_project; 
@@ -360,9 +364,11 @@ class NDB_Menu_statistics extends NDB_Menu
                 WHERE 
                 s.Active='Y' 
                 AND c.Active='Y' 
+                AND c.CenterID <> '1' 
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID NOT LIKE 'DDE%' 
-                $ExtraSite_Criteria", $Extra_vars); 
+                $ExtraSite_Criteria
+                GROUP by s.CenterID, VLabel, f.Data_Entry", $Extra_vars); 
 
             foreach($result as $row) {
                 // Put some things into variables to make the lines shorter
@@ -399,10 +405,12 @@ class NDB_Menu_statistics extends NDB_Menu
                 FROM session as s JOIN candidate as c ON (s.CandID=c.CandID) JOIN flag as f ON (f.SessionID=s.ID) 
                 WHERE s.Active='Y' 
                 AND c.Active='Y' 
+                AND c.CenterID <> '1' 
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID LIKE 'DDE%' 
                 AND f.Data_Entry IS NOT NULL
-                $ExtraSite_Criteria", $Extra_vars);
+                $ExtraSite_Criteria
+                GROUP by s.CenterID, VLabel, f.Data_Entry", $Extra_vars);
         foreach($result as $row) {
             $vl = $row['VLabel'];
             $c =& $this->tpl_data['dde']; 
@@ -428,7 +436,7 @@ class NDB_Menu_statistics extends NDB_Menu
 
         $ExtraSite_Criteria = '';
         $Extra_vars = array();
-        $mri_center = '<>1';
+        $mri_center = '';
         $mri_center_name = 'all sites';
         $mri_project_name = 'all projects';
 
@@ -437,8 +445,6 @@ class NDB_Menu_statistics extends NDB_Menu
             $mri_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['site3']));
             $ExtraSite_Criteria = ' AND s.CenterID=:site ';
             $Extra_vars['site'] = $_REQUEST['site3'];
-        } else {
-            $ExtraSite_Criteria = " AND s.CenterID <> '1' ";
         }
         if(isset($_REQUEST['project3']) && $_REQUEST['project3'] != '') {
             $ExtraSite_Criteria .= ' AND c.ProjectID=:proj ';
@@ -454,7 +460,7 @@ class NDB_Menu_statistics extends NDB_Menu
 
         $MRISubcategories = array('Complete', 'Partial Run', 'No Scan'); 
         $MRIOptions = array();
-        $default_scan = 'T1_Scan_done'; //Change accordingly if necessary 
+        $default_scan = 'T1'; //Change accordingly if necessary 
 
         //The MRI scans as coded in the MRI parameter form 
         $MRI_db_categories = $DB->pselect("SELECT distinct Scan_type from mri_scan_type m right join files f on f.AcquisitionProtocolID = m.ID");  
@@ -532,6 +538,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 AND f.Test_name='mri_parameter_form' 
                 and t.TarchiveID IS NULL
                 AND s.Active='Y' 
+                AND s.CenterID <> '1'
                 AND t.TarchiveID IS NULL 
                 AND (m.$default_scan IS NULL OR m.$default_scan <> 'No')
                 AND f.Administration <> 'None'
@@ -551,6 +558,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 LEFT JOIN files fi ON (fi.SessionID=f.SessionID) 
                 WHERE 
                 (m.$default_scan <> 'No') 
+                AND s.CenterID <> '1' 
                 $ExtraSite_Criteria 
                 AND fi.FileID IS NULL 
                 AND s.Active='Y' 
@@ -569,6 +577,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 LEFT JOIN mri_parameter_form mpf ON (mpf.CommentID=f.CommentID)
                 LEFT JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Active='Y' 
+                AND s.CenterID <> '1' 
                 $ExtraSite_Criteria
                 AND (f.ID IS NULL OR f.Data_entry <> 'Complete' OR f.Data_entry IS NULL) 
                 AND c.Active = 'Y'
@@ -596,7 +605,7 @@ class NDB_Menu_statistics extends NDB_Menu
             list(,$claimed)=each($claimed[0]);
             $claimed_count = $claimed;
 
-            $forms = $DB->pselect("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID=:cid ORDER BY p.Name", array('cid'=>$id)); 
+            $forms = $DB->pselect("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID <> '1' AND s.CenterID=:cid ORDER BY p.Name", array('cid'=>$id)); 
             if (Utility::isErrorX($forms)) {
                 return PEAR::raiseError("DB Error: ".$forms->getMessage());
             }
@@ -634,6 +643,7 @@ class NDB_Menu_statistics extends NDB_Menu
                     JOIN mri_parameter_form m ON (f.CommentID=m.CommentID)  
                     JOIN psc on c.CenterID = psc.CenterID
                     WHERE     c.Active='Y' AND c.PSCID  not like 'dcc%'  
+                    AND c.CenterID <> '1' 
                     $ExtraSite_Criteria
                     AND c.PSCID <> 'scanner' 
                     AND m.$scan = 'Complete' 
@@ -661,6 +671,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 JOIN session s on f.sessionID = s.ID 
                 JOIN psc on s.CenterID = psc.CenterID 
                 WHERE s.Active = 'Y' 
+                AND s.CenterID <> '1' 
                 $ExtraSite_Criteria
                 GROUP BY m.Scan_type, VLabel", $Extra_vars);
         $pass = $DB->pselect("SELECT count(mriQCStatus) as count_pass, scan_type as type, 
@@ -669,6 +680,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 JOIN files f on s.ID = f.SessionID 
                 JOIN mri_scan_type m on f.AcquisitionProtocolID=m.ID 
                 WHERE mriQCStatus = 'Pass' 
+                AND s.CenterID <> '1' 
                 $ExtraSite_Criteria
                 GROUP BY scan_type, VLabel", $Extra_vars);
 
@@ -710,6 +722,7 @@ class NDB_Menu_statistics extends NDB_Menu
                 JOIN feedback_mri_comments f on fi.FileID=f.FileID 
                 JOIN feedback_mri_predefined_comments fp on f.PredefinedCommentID = fp.PredefinedCommentID 
                 WHERE f.SessionID IS NULL 
+                AND s.CenterID <> '1' 
                 $ExtraSite_Criteria 
                 AND s.Visit_label not like '%phantom%'
                 AND s.Visit_label not like '%PHANTOM%'

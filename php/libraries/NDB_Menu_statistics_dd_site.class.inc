@@ -8,6 +8,20 @@ require_once 'NDB_Menu_statistics_site.class.inc';
 class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
 {
 
+    var $query_criteria = '';
+    var $query_vars = array();
+
+    function _checkCriteria($centerID, $projectID) {
+        if (!empty($centerID)) {
+            $this->query_criteria .= " AND s.CenterID =:cid ";
+            $this->query_vars['cid'] = $centerID;
+        }
+        if (!empty($projectID)) {
+            $this->query_criteria .= " AND c.ProjectID =:pid ";
+            $this->query_vars['pid'] = $projectID;
+        }
+    }
+
     function notexcluded($var) {
         $config =& NDB_Config::singleton();
         $statisticsConfig = $config->getSetting('statistics');
@@ -32,43 +46,28 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
     }
 
     function _CompleteCount($centerID, $projectID, $instrument) {
+        $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
-        if ($centerID == '<>1')
-            $center = "AND s.CenterID {$centerID} ";
-        else
-            $center = "AND s.CenterID={$centerID} ";
-        if (!empty($projectID))
-            $project = " AND c.ProjectID = {$projectID} ";
-        else
-            $project = "";
 
         return $DB->pselectOne("SELECT count(s.CandID)  FROM session s, candidate c, flag f, {$instrument} i WHERE 
                 s.ID=f.SessionID AND f.CommentID=i.CommentID 
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
                 AND s.Current_stage <> 'Recycling Bin'
-                $center $project
+                $this->query_criteria
                 AND f.Data_entry='Complete' AND f.Administration='All' 
-                AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID");
+                AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID", $this->query_vars);
     }
 
     function _GetResults($centerID, $projectID, $instrument) {
+        $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
-        if ($centerID == '<>1')
-            $center = "AND s.CenterID {$centerID} ";
-        else
-            $center = "AND s.CenterID={$centerID} ";
-        if (!empty($projectID))
-            $project = " AND c.ProjectID = {$projectID} ";
-        else
-            $project = "";
-
         $result = $DB->pselect("SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session s, candidate c, flag f, {$instrument} i 
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
                 s.CandID=c.CandID  AND s.Active='Y' 
-                $center $project
+                $this->query_criteria
                 AND s.Current_stage <> 'Recycling Bin'
-                AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID"); 
+                AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID", $this->query_vars); 
             return $result;
     }
 
