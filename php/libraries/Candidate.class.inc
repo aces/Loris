@@ -439,12 +439,11 @@ class Candidate
 
     /**
     * generates a new random PSCID
-    * @param string $prefix  the prefix to use for the PSCID
     * @static
     * @return string
     * @throws PEAR::Error
     */
-    function _generatePSCID() //$prefix)
+    function _generatePSCID() 
     {
         // get a database connection
         $db =& Database::singleton();
