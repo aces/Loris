@@ -71,6 +71,12 @@ class NDB_BVL_Instrument extends NDB_Page
     */
 	var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
+    /**
+     * Either PHP or LINST depending on what
+     * type of instrument we're workign with
+     */
+    var $InstrumentType = 'PHP';
+
 	/**
     * array of required fields to check
     * @access private
@@ -103,6 +109,18 @@ class NDB_BVL_Instrument extends NDB_Page
     var $ValidityRequired = true;
 
 
+    /**
+     * An array of questions and their types for LINST style instruments,
+     * useful so that we can look up if it's in a group or not for when
+     * registering rules
+     */
+    var $LinstQuestions = array();
+
+    /**
+     * True if the page is being previewed from the instrument builder,
+     * and not really loaded.
+     */
+    var $preview = false;
     // }}}
     // {{{ factory()
 
@@ -131,11 +149,12 @@ class NDB_BVL_Instrument extends NDB_Page
         // just tries to load, score, and save. If it doesn't exist, for instance
         // in the case of figs_year3_relatives, we shouldn't require because it 
         // isn't necessarily an error.
-        if(!file_exists($base."project/instruments/$class.class.inc") && $guarantee_exists==false) {
+        if(!file_exists($base."project/instruments/$class.class.inc") 
+            && !file_exists($base."project/instruments/$instrument.linst")
+            && $guarantee_exists==false) {
             return;
         }
         if(file_exists($base."project/instruments/$instrument.linst") || $instrument=='instrument_preview') {
-            //print "Using Loris Instrument Format\n";
             if($instrument == 'instrument_preview') {
                 require_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
                 $obj = new NDB_BVL_Instrument_instrument_preview();
@@ -154,6 +173,7 @@ class NDB_BVL_Instrument extends NDB_Page
             require_once($base."project/instruments/$class.class.inc");
             // Now go ahead and instantiate it
             $obj = new $class;
+            $obj->InstrumentType = 'PHP';
             $success = $obj->setup($commentID, $page);
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
@@ -299,8 +319,8 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->addHidden('candID', $_REQUEST["candID"]);
-        $this->addHidden('sessionID', $_REQUEST["sessionID"]);
+        $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
+        $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
         $this->addHidden('commentID', $this->getCommentID());
         $this->addHidden('test_name', $this->testName);
         $this->addHidden('page', $this->page);
@@ -369,13 +389,13 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
         
-        if($defaults['Window_Difference'] != 0) {
+        if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0) {
             $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>'; //if($defaults['Window_Difference'] != 0) {
         }
         //Convert select multiple elements into a quickform array
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
-                if(stristr($defaults[$elname], "{@}")){
+                if(isset($defaults[$elname]) && stristr($defaults[$elname], "{@}")){
                     $defaults[$elname]=explode("{@}",$defaults[$elname]);
                 }
             }
@@ -397,6 +417,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function save()
     {
+        $scoreResult = '';
         if($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
             $scoreResult = $this->score();
@@ -451,7 +472,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 $agemonths = (round($agemonths*10) / 10.0);
                 if(!empty($age)) {
                     $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
-                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $querY_params);
+                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
                     $values['Candidate_Age'] = $agemonths;
                     $values['Window_Difference'] = 0;
 
@@ -654,9 +675,13 @@ class NDB_BVL_Instrument extends NDB_Page
         $db =& Database::singleton();
 
         $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
+        if(is_array($centerID)) {
+            $centerID = null;
+        }
 
         //get examiner certifications for profiles part of IBIS2
-        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$_REQUEST["candID"]));
+        $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=> $candID));
 
         list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
         if ($CertificationEnabled && in_array($project, $CertificationProjects)
@@ -820,6 +845,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access private
      */
     function _getQuickformDate($databaseValue){
+        $formDateValue = null;
         if(!empty($databaseValue)){
             if(strstr($databaseValue,":")){
                 $formDateValue=explode(":",$databaseValue);
@@ -851,16 +877,62 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
 
-            // Run any rules that are dependent on the value of the current question, ie if XINRegister was called as
-            // $this->XINRegisterRule("q1", "q1{@}<={@}3", "Must be less than or equal to 3")
-            // These differ from 'required' rules in that they're run even if the value isn't empty
-            // Currently, this only supports simple, one value comparisons (though XINRegister can be called multiple
-            // times and each needs to be enforced independently), because the logic in XINRunElementRules is confusing
-            // and modifying it could potentially break existing XINRules.
-            // DINRunElementRules only runs a single rule, and returns false if it's violated. It's much simpler than 
-            // XINRules but should be expanded later to support more complex logic.
+            // Run any rules that are dependent on the value of the current question,
+            // ie if XINRegister was called as
+            //      $this->XINRegisterRule(
+            //          "q1",
+            //          "q1{@}<={@}3",
+            //          "Must be less than or equal to 3"
+            //      );
+            // These differ from 'required' rules in that they're run even if the
+            // value isn't empty. Currently, this only supports simple, one value
+            // comparisons (though XINRegister can be called multiple times and each
+            // needs to be enforced independently), because the logic in
+            // XINRunElementRules is confusing and modifying it could potentially
+            // break existing XINRules.
+            //
+            // DINRunElementRules only runs a single rule, and returns false if it's
+            // violated. It's much simpler than XINRules but should be expanded
+            // later to support more complex logic.
+            //
             // - Dave
-            if($this->InstrumentType === 'LINST') {
+            if ($this->InstrumentType === 'LINST') {
+
+                // Numeric data types min/max are enforced through PHP, not XINRules.
+                // This is because if a user registers XINRules for the question, we
+                // still want to enforce the min/max for the field. It also makes
+                // dealing with _status==not_answered easier, because the rules for
+                // enforcing range are independent of the rules for enforcing
+                // required.
+                if ($this->LinstQuestions[$elname]['type'] === 'numeric') {
+                    // Cast everything to a double so that < and > work as
+                    // expected
+                    $value = doubleval($elements[$elname]);
+                    $min = doubleval(
+                        $this->LinstQuestions[$elname]['options']['min']
+                    );
+                    $max = doubleval(
+                        $this->LinstQuestions[$elname]['options']['max']
+                    );
+
+                    // If the value is empty, XINRules handle required messages.
+                    // "0" is empty in PHP. If the user entered 0 we still want to
+                    // enforce the min/max.
+                    if (!empty($value) || $elements[$elname] === '0') {
+                        if (!empty($min)) {
+                            if ($value < $min) {
+                                $errors[$elname . "_group"]
+                                    = "Must be greater than $min.";
+                            }
+                        }
+                        if (!empty($max)) {
+                            if ($value > $max) {
+                                $errors[$elname . "_group"]
+                                    = "Must be less than $max.";
+                            }
+                        }
+                    }
+                }
                 if(!empty($this->XINRules[$elname])) {
                     $registered_rules = $this->XINRules[$elname];
                     if($this->XINDebug){echo "<p><b>$elname</b><br> ";} //debugging code
@@ -1295,18 +1367,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
+        $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
         $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
-        $status_rule = $field . '_status{@}=={@}';
-        if(is_array($options)) {
-            if($options['min']) {
-                $this->XINRegisterRule($field, array($field . '{@}<{@}' . $options['min']), "Must be greater than $options[min]", $field . '_group');
-            }
-            if($options['max']) {
-                $this->XINRegisterRule($field, array($field . '{@}>{@}' . $options['max']), "Must be less than $options[max]", $field . '_group');
-            }
-
-        }
     }
 
     /**
@@ -1431,7 +1493,7 @@ class NDB_BVL_Instrument extends NDB_Page
             // we don't.. but even on other pages, we need to parse the whole file for
             // table{@} and other meta elements
             $addElements = true;
-            if($_REQUEST['subtest']) {
+            if(isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
                 $currentPage = $_REQUEST['subtest'];
                 $addElements = false;
             } else {
@@ -1440,19 +1502,21 @@ class NDB_BVL_Instrument extends NDB_Page
             }
 
             $parsingPage = 'top';
+            $firstSelectOfPage = true;
 
             while(($line = fgets($fp, 4096)) !== false) {
-                $pieces = split("{@}", $line);
+                $pieces = preg_split("/{@}/", $line);
 
                 $type = $pieces[0];
-                if(strpos($pieces[1], "_status") !== FALSE) {
+                $fieldname = isset($pieces[1]) ? $pieces[1] : null;
+                if(strpos($fieldname, "_status") !== FALSE) {
                     continue;
                 }
-                if($pieces[1] == 'Date_taken' 
-                    || $pieces[1] == "Candidate_Age"
-                    || $pieces[1] == "Window_Difference"
-                    || $pieces[1] == "Examiner"
-                    ) {
+                if($fieldname == 'Date_taken' 
+                    || $fieldname == "Candidate_Age"
+                    || $fieldname == "Window_Difference"
+                    || $fieldname == "Examiner"
+                ) {
                     continue;
                 }
                 switch($type) {
@@ -1464,6 +1528,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         } else {
                             $addElements = false;
                         }
+                        $firstSelectOfPage = true;
                         break;
                     case 'table':
                         $this->testName = trim($pieces[1]);
@@ -1479,11 +1544,14 @@ class NDB_BVL_Instrument extends NDB_Page
                         if($addElements) {
                             $this->addTextElement($pieces[1], $pieces[2]);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
                         break;
                     case 'textarea':
+                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
                         break;
                     case 'date':
                         if(strpos($pieces[1], "_date") !== FALSE) {
@@ -1505,11 +1573,20 @@ class NDB_BVL_Instrument extends NDB_Page
 
                             $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
                         break;
                     case 'numeric':
-                        if($addElements) {
-                            $this->addNumericElement($pieces[1], $pieces[2]);
+                        if ($addElements) {
+                            $options = array();
+                            if (!empty($pieces[3])) {
+                                $options['min'] = $pieces[3];
+                            }
+                            if (!empty($pieces[4])) {
+                                $options['max'] = $pieces[4];
+                            }
+                            $this->addNumericElement($pieces[1], $pieces[2], $options);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'numeric', 'options' => $options);
                         break;
 
                     case 'selectmultiple':
@@ -1517,7 +1594,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         // fall through and also execute select code below
                     case 'select':
 
-                        $options = split("{-}", trim($pieces[3]));
+                        $options = preg_split("/{-}/", trim($pieces[3]));
                         $opt = array();
                         foreach($options as $o) {
                             $arr = explode("=>", $o);
@@ -1541,6 +1618,11 @@ class NDB_BVL_Instrument extends NDB_Page
                                 $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
                             }
                         }
+                        if ($firstSelectOfPage) {
+                            $this->_requiredElements[] = $pieces[1];
+                            $firstSelectOfPage = false;
+                        }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'select');
                         break;
                     case 'header':
                         if($addElements) {
@@ -1548,12 +1630,13 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                         break;
                     case 'static':
+                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
                             $this->form->addElement('static', $pieces[1], $pieces[2]);
                         }
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
                         break;
                     default: 
-                        //print $line . "<br />";
                         break;
                 }
             }
@@ -1561,16 +1644,70 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
     }
-    function loadInstrumentRules($filename, $base64 = false) {
-        if(file_exists($filename) || $base64 === true) {
+
+    /**
+     * Load the rules for the instrument from $filename, which must be a file
+     * in the Loris Instrument Rule file format inspired by XINRules.
+     *
+     * Rules are of the format:
+     *   question{-}Error message if violated{-}XIN Rules to evaluate
+     *
+     * For example:
+     *
+     * family_other{-}Required if family_member is other{-}family_member{@}=={@}other
+     *
+     *
+     * @param string $filename Either the path to a file, or a base64 encoded
+     *                         string which can be interpreted as a file by
+     *                         PHP and fopen()
+     * @param bool   $base64   If true, the "filename" is really a base64 encoded
+     *                         data URL, so we shouldn't check that the file exists
+     *                         on the filesystem. (Used by preview)
+     *
+     * @return null Registers all instrument rules as a side-effect.
+     */
+    function loadInstrumentRules($filename, $base64 = false)
+    {
+        if (file_exists($filename) || $base64 === true) {
             $fp = fopen($filename, "r");
-            while(($line = fgets($fp, 4096)) !== false) {
-                // Rules Uses {-} as delimiter, unlike linst files, because {@} is part of the rules themselves
+            while (($line = fgets($fp, 4096)) !== false) {
+                // Rules Uses {-} as delimiter, unlike linst files, because {@}
+                // is part of the rules themselves
                 $pieces = split("{-}", trim($line));
                 $question = $pieces[0];
                 $message = $pieces[1];
                 $rules = array_slice($pieces, 2);
-                $this->XINRegisterRule($question, $rules, $message);
+                if (isset($this->LinstQuestions[$question])) {
+                    $q =& $this->LinstQuestions[$question];
+
+                    if ($q['UserRules'] !== true) {
+                        // Unregister the rules that were added by the wrapper
+                        // for the group, because otherwise that'll override the
+                        // user specified rules from the .rules file
+                        unset($this->XINRules[$question]);
+                    }
+                    // Set a flag so that we know a user specified rule has been
+                    // registered and we don't need to reset the rules, which means
+                    // that now newly registered rules are ANDed together, instead
+                    // of replaced.
+                    $q['UserRules'] = true;
+
+                    switch($q['type']) {
+                    case 'select':
+                        // Selects are the only type of rules that aren't part
+                        // of a group, the rest include a _status element
+                        $this->XINRegisterRule($question, $rules, $message);
+                        break;
+                    default:
+                        $this->XINRegisterRule(
+                            $question,
+                            $rules,
+                            $message,
+                            $question . "_group"
+                        );
+                        break;
+                    }
+                }
             }
             fclose($fp);
         }

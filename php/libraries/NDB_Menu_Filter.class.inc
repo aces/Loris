@@ -209,6 +209,13 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $filter = $_SESSION['State']->getProperty('filter');
 
+        /**
+         * TODO: I don't know why this is written this way.
+         *       It should be rewritten both to fix references
+         *       to undefined indexes and because it definitely
+         *       shouldn't be using eval for security reasons.
+         *       - Dave
+         */
         // build the array of defaults
         foreach ($this->formToFilter as $key => $val) {
             if (is_array($filter) && count($filter) > 0) {
@@ -219,7 +226,11 @@ class NDB_Menu_Filter extends NDB_Menu
                     $defaults[] = "'$key' => array(".implode(', ', $sub).")";
                     unset($sub);
                 } else {
-                    $defaults[] = "'$key' => '".$filter[$val]."'";
+                    if(isset($filter[$val])) {
+                        $defaults[] = "'$key' => '".$filter[$val]."'";
+                    } else {
+                        $defaults[] = "'$key' => ''";
+                    }
                 }
             } else {
                 if (strtolower(substr($val, -8)) == 'centerid') {
@@ -239,10 +250,12 @@ class NDB_Menu_Filter extends NDB_Menu
             if (is_array($filter) && count($filter) > 0) {
                 // If it's an aggregate, don't add it to the where clause filters. Add it to the
                 // having clause filters
-                if(in_array($value, $this->validHavingFilters)) {
-                    $this->having[$value] = $filter[$value];
-                } else {
-                    $this->filter[$value] = $filter[$value];
+                if(isset($filter[$value])) {
+                    if( in_array($value, $this->validHavingFilters)) {
+                        $this->having[$value] = $filter[$value];
+                    } else {
+                        $this->filter[$value] = $filter[$value];
+                    }
                 }
             } else {
                 if (strtolower(substr($value, -8)) == 'centerid') {
@@ -252,7 +265,7 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // set the ordering
-        if (in_array($filter['order']['field'], $this->headers)) {
+        if (isset($filter['order']) && in_array($filter['order']['field'], $this->headers)) {
             $this->filter['order'] = $filter['order'];
         }
     }
@@ -329,18 +342,21 @@ class NDB_Menu_Filter extends NDB_Menu
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
             foreach ($this->filter as $key => $val) {
-                $prepared_key = preg_replace('/\./', '_', $key);
+                $prepared_key = Utility::getCleanString($key);
                 if ((!empty($val) || $val === '0') && $key != 'order') {
 
                     // special rule for dropdowns where value is numeric
-                    if (strtolower(substr($key, -8)) == 'centerid' || 
-                        strtolower(substr($key, -10)) == 'categoryid' ||
-                        strtolower(substr($key, -6)) == 'gender') {
-                        $query .= " AND $key = :v_$prepared_key";
-                        $qparams["v_$prepared_key"] = $val;
-                    }
-                    else {
-                        $query .= " AND $key LIKE CONCAT('%', :v_$prepared_key, '%') ";
+                    if (strtolower(substr($key, -8)) == 'centerid'
+                        || strtolower(substr($key, -10)) == 'categoryid'
+                        || strtolower(substr($key, -6)) == 'gender'
+                        || (isset($this->EqualityFilters) 
+                        && in_array($key, $this->EqualityFilters))
+                    ) {
+                            $query .= " AND $key = :v_$prepared_key";
+                            $qparams["v_$prepared_key"] = $val;
+                    } else {
+                        $query 
+                            .= " AND $key LIKE CONCAT('%', :v_$prepared_key, '%') ";
                         $qparams["v_$prepared_key"] = $val;
                     }
                 }
@@ -360,7 +376,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $first = True;
             foreach ($this->having as $key => $val) {
                 if($val !== '' and $val != null) {
-                    $prepared_key = preg_replace('/\./g', '_', $key);
+                    $prepared_key = Utility::getCleanString($key);
                     if($first == False) {
                         $query .= ' AND ';
                     }
@@ -424,7 +440,9 @@ class NDB_Menu_Filter extends NDB_Menu
             // format header
             $this->tpl_data['headers'][$i]['displayName'] = ucwords(str_replace('_', ' ', $header));
             // set field ordering
-            $this->tpl_data['headers'][$i]['fieldOrder'] = ($this->filter['order']['fieldOrder'] == 'ASC') ? 'DESC' : 'ASC';
+            if(isset($this->filter['order'])) {
+                $this->tpl_data['headers'][$i]['fieldOrder'] = ($this->filter['order']['fieldOrder'] == 'ASC') ? 'DESC' : 'ASC';
+            }
             $i++;
         }
 

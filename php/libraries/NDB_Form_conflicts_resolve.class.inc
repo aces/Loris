@@ -29,13 +29,22 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             FROM parameter_candidate WHERE CandID=:CaID",
             array('CaID' => $this->identifier)
         );
+        $defaults = array();
         foreach($value_results AS $vresult){
         	$defaults["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
         }
-        $defaults['site'] = $_REQUEST['site'];
-        $defaults['Instrument'] = $_REQUEST['Instrument'];
-        $defaults['CandID'] = $_REQUEST['CandID'];
-        $defaults['PSCID'] = $_REQUEST['PSCID'];
+        if(isset($_REQUEST['site'])) {
+            $defaults['site'] = $_REQUEST['site'];
+        }
+        if(isset($_REQUEST['Instrument'])) {
+            $defaults['Instrument'] = $_REQUEST['Instrument'];
+        }
+        if(isset($_REQUEST['CandID'])) {
+            $defaults['CandID'] = $_REQUEST['CandID'];
+        }
+        if(isset($_REQUEST['PSCID'])) {
+            $defaults['PSCID'] = $_REQUEST['PSCID'];
+        }
         return $defaults;
     }
 
@@ -135,6 +144,13 @@ class NDB_Form_conflicts_resolve extends NDB_Form
     function conflicts_resolve()
     {
         $DB =& Database::singleton();
+        $config =& NDB_Config::singleton();
+        $cr_config = $config->getSetting("ConflictResolver");
+        if (isset($cr_config['MaxConflicts'])) {
+            $MaxConflicts = $cr_config['MaxConflicts'];
+        } else {
+            $MaxConflicts = 500;
+        }
 
  	//Extract the fields from the parameter_type table
         $conflicts = array();
@@ -153,7 +169,16 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
         
         $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
+
         
+        $extra_where = '';
+        $user = User::singleton();
+        if(!$user->hasPermission('access_all_profiles')) {
+            // Only show current site in the filter
+            $sites = array('' => '', $user->getCenterID() => $user->getSiteName());
+            // And update the query to only select the current site
+            $extra_where .= "AND s.CenterID = " . $DB->quote($user->getCenterID());
+        }
         // Filter selection elements
         $this->addSelect('site', 'Site:', $sites);
         $this->addSelect('Instrument', 'Instrument:', $instruments);
@@ -163,7 +188,6 @@ class NDB_Form_conflicts_resolve extends NDB_Form
 
         //This condition is commmented out because the $_REQUEST['site'] will always be empty (All) by default (which will show all the sites)
         //if(!empty($_REQUEST['site'])) {
-            $extra_where = '';
             function AddWhere($Column, $Filter) {
                 if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] != 'all') {
                     global $DB;
@@ -180,23 +204,25 @@ class NDB_Form_conflicts_resolve extends NDB_Form
 
             // The 1=1 condition is just so that we can AND all the conditions together without worrying about whether or not
             // it's the first condition to be added.
-            $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, Visit_label, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts);
+            $DB->select("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Value1, Value2, Visit_label, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) AS hash FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where LIMIT $MaxConflicts", $conflicts);
             //If there are no conflicts print a message to that effect
             if(empty($conflicts)){
                 $this->addScoreColumn("status", "No conflicts matching criteria found.");
                 return;
             } else {
                 $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
-                $this->addScoreColumn('total', 'Total number of results:', $conflicts_num['total']);
+                $this->addScoreColumn('total', 'Showing ' . count($conflicts) . ' of ' . $conflicts_num['total'] . ' conflicts matching filter.');
             }
 
         //Loop through the conflicts and add a row per
         foreach($conflicts AS $conflict) {
 	    $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
             $hash = 'conflict_' . $conflict['hash'];
-            $dccid = substr($conflict[CommentId1],0,6);
-            $ssid = substr($conflict[CommentId1],6,7);
+            $dccid = substr($conflict['CommentId1'],0,6);
+            $ssid = substr($conflict['CommentId1'],6,7);
             if($conflict['FieldName'] == 'Examiner') {
+                $name1 = $conflict['Value1'];
+                $name2 = $conflict['Value2'];
                 if($conflict['Value1'] != '') {
                     $name1 = $DB->pselectOne("SELECT Full_Name FROM examiners WHERE examinerID=:EID",
                         array('EID' =>$conflict['Value1'])

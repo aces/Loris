@@ -76,7 +76,10 @@ class State
      */
     function getProperty($property)
     {
-        return $this->_stateData[$property];
+        if(isset($this->_stateData[$property])) {
+            return $this->_stateData[$property];
+        }
+        return null;
     }
 
 
@@ -89,12 +92,14 @@ class State
         'mri_safety'
         );
         $caller =& NDB_Caller::singleton();
-        if ($_REQUEST['test_name'] == 'timepoint_list') {
+        if (isset($_REQUEST['test_name']) && $_REQUEST['test_name'] == 'timepoint_list') {
             return 'main.php?test_name=candidate_list';
         } elseif (!empty($_REQUEST['candID']) && in_array($_REQUEST['test_name'], $timepointSubMenus)) {
             return 'main.php?test_name=timepoint_list&candID='.$_REQUEST['candID'];
-        } elseif ($caller->type == 'instrument' || $_REQUEST['test_name'] == 'next_stage') {
-            return 'main.php?test_name=instrument_list&candID='.$_REQUEST['candID'].'&sessionID='.$_REQUEST['sessionID'];
+        } elseif ($caller->type == 'instrument' || (isset($_REQUEST['test_name']) && $_REQUEST['test_name'] == 'next_stage')) {
+            if(isset($_REQUEST['candID']) && isset($_REQUEST['sessionID'])) {
+                return 'main.php?test_name=instrument_list&candID='.$_REQUEST['candID'].'&sessionID='.$_REQUEST['sessionID'];
+            }
         }
 
         return null;

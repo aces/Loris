@@ -30,7 +30,7 @@ var Rules = {
     save: function () {
         var name = document.getElementById("filename").value || "instrument";
 
-        fs = saveAs(content.getBlob("text/plain;charset=utf-8"), name + ".rules");
+        fs = saveAs(this.render().getBlob("text/plain;charset=utf-8"), name + ".rules");
     },
 
     addNew: function () {
