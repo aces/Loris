@@ -14,10 +14,6 @@ define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 
 // id ranges...
-define('CANDIDATE_MIN_CANDID', 100000);
-define('CANDIDATE_MAX_CANDID', 999999);
-define('CANDIDATE_MIN_PSCID', 1000);
-define('CANDIDATE_MAX_PSCID', 9999);
 
 class Candidate
 {
@@ -169,10 +165,11 @@ class Candidate
                return PEAR::raiseError("PSCID not unique", PSCID_NOT_UNIQUE);
            }
        } else {           
-           $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
+           $PSCID = Candidate::_generatePSCID();
            if(Utility::isErrorX($PSCID)) return $PSCID;
        }
-       
+     
+
        // insert the new candidate into the database
        $setArray = array('CandID'       => $candID,
                          'CenterID'     => $centerID,
@@ -187,6 +184,11 @@ class Candidate
                          'UserID'       => $user->getUsername(),
                          );
        
+       if($config->getSetting('useExternalID') === 'true') {
+           $externalID = Candidate::_generateExternalID();
+           $setArray['ExternalID'] = $externalID;
+       } 
+
        $db->insert('candidate', $setArray);
        
        // return the new candid
@@ -421,27 +423,27 @@ class Candidate
         if(Utility::isErrorX($db)) {
             return $db;
         }
-        
-        // generate a candidate id
-        $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        
-        // make sure the cand id is not used
-        while($db->pselectOne("SELECT count(CandID) FROM candidate WHERE CandID=:CaID", array('CaID' => $candID)) > 0) {
-            // pick a new candidate id
-            $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        }
-        
+
+        $config =& NDB_Config::singleton();
+        $CandIDSettings = $config->getSetting('CandID');
+        $idStructure = $CandIDSettings['structure']['seq']['@'];
+
+        do {
+            $candID = rand($idStructure['min'], $idStructure['max']); 
+
+            // check if the candid is used
+        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE CandID=:CID", array('CID'=>$candID)) > 0);
+
         return $candID;
     }  
 
     /**
     * generates a new random PSCID
-    * @param string $prefix  the prefix to use for the PSCID
     * @static
     * @return string
     * @throws PEAR::Error
     */
-    function _generatePSCID($prefix)
+    function _generatePSCID() 
     {
         // get a database connection
         $db =& Database::singleton();
@@ -451,7 +453,7 @@ class Candidate
         
         $config =& NDB_Config::singleton();
         $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays = Candidate::generateArrays($PSCIDSettings, $prefix);
+        $pscidArrays = Candidate::generateArrays($PSCIDSettings); 
 
         // run one first time, then loop until the pscid is not used
         do {
@@ -465,11 +467,39 @@ class Candidate
             } else {
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
             }
-            
+
             // check if the pscid is used
-        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:PID", array('PID' => $pscid)) > 0);
-        
+        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:PID", array('PID'=>$pscid)) > 0);
+
         return $pscid;
+    }
+
+    function _generateExternalID() {
+        $config =& NDB_Config::singleton();
+        $ExternalIDSettings = $config->getSetting('ExternalID');
+        $ExternalIDArrays = Candidate::generateArrays($ExternalIDSettings);
+
+        $db =& Database::singleton();
+        if(Utility::isErrorX($db)) {
+            return $db;
+        }
+
+        do {
+            // genereate a new external ID
+            if($ExternalIDSettings['generation'] == 'sequential') {
+                if(!empty($externalID)) {
+                    $externalID++;
+                } else {
+                    $externalID = Candidate::generateFirstStringFromArrays($ExternalIDArrays);
+                }
+            } else {
+                $externalID = Candidate::generateRandomStringFromArrays($ExternalIDArrays);
+            }
+
+            // check if the external ID is used
+        } while($db->pselectOne("SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID", array('EID'=>$externalID))  > 0);
+
+        return $externalID;
     }
 
     function validatePSCID($PSCID, $siteAbbrev=null)

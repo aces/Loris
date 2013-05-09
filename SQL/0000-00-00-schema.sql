@@ -24,6 +24,7 @@ CREATE TABLE `candidate` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `CandID` int(6) NOT NULL default '0',
   `PSCID` varchar(255) NOT NULL default '',
+  `ExternalID` varchar(255) NOT NULL default '',
   `DoB` date default NULL,
   `EDC` date default NULL,
   `Gender` enum('Male','Female') default NULL,
@@ -44,6 +45,7 @@ CREATE TABLE `candidate` (
   `Entity_type` enum('Human','Scanner') NOT NULL default 'Human',
   PRIMARY KEY  (`CandID`),
   UNIQUE KEY `ID` (`ID`),
+  UNIQUE KEY `ExternalID` (`ExternalID`),
   KEY `FK_candidate_1` (`CenterID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
