@@ -29,13 +29,22 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             FROM parameter_candidate WHERE CandID=:CaID",
             array('CaID' => $this->identifier)
         );
+        $defaults = array();
         foreach($value_results AS $vresult){
         	$defaults["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
         }
-        $defaults['site'] = $_REQUEST['site'];
-        $defaults['Instrument'] = $_REQUEST['Instrument'];
-        $defaults['CandID'] = $_REQUEST['CandID'];
-        $defaults['PSCID'] = $_REQUEST['PSCID'];
+        if(isset($_REQUEST['site'])) {
+            $defaults['site'] = $_REQUEST['site'];
+        }
+        if(isset($_REQUEST['Instrument'])) {
+            $defaults['Instrument'] = $_REQUEST['Instrument'];
+        }
+        if(isset($_REQUEST['CandID'])) {
+            $defaults['CandID'] = $_REQUEST['CandID'];
+        }
+        if(isset($_REQUEST['PSCID'])) {
+            $defaults['PSCID'] = $_REQUEST['PSCID'];
+        }
         return $defaults;
     }
 
@@ -212,9 +221,11 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         foreach($conflicts AS $conflict) {
 	    $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
             $hash = 'conflict_' . $conflict['hash'];
-            $dccid = substr($conflict[CommentId1],0,6);
-            $ssid = substr($conflict[CommentId1],6,7);
+            $dccid = substr($conflict['CommentId1'],0,6);
+            $ssid = substr($conflict['CommentId1'],6,7);
             if($conflict['FieldName'] == 'Examiner') {
+                $name1 = $conflict['Value1'];
+                $name2 = $conflict['Value2'];
                 if($conflict['Value1'] != '') {
                     $name1 = $DB->pselectOne("SELECT Full_Name FROM examiners WHERE examinerID=:EID",
                         array('EID' =>$conflict['Value1'])

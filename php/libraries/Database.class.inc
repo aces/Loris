@@ -337,7 +337,7 @@ class Database extends PEAR
     function selectRow($query, &$result)
     {
         $this->select($query, $result);
-        if(!$this->isError($result) && is_array($result)) {
+        if(!$this->isError($result) && is_array($result) && isset($result[0])) {
             $result = $result[0];
         }
     }

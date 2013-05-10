@@ -69,6 +69,7 @@ class TestOfLoris extends LorisTest {
             $this->assertResponse(200);
             $this->assertNoPattern("/The following errors occured/");
             $this->assertPattern('/^<!DOCTYPE/', "Leftover debugging messages returned on: " . $url);
+            $this->assertNoApacheError("Error in Apache log on $url");
         }
     }
 
