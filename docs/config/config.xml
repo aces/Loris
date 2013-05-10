@@ -94,7 +94,7 @@
 	  <!-- PSCID generation method: sequential|random -->
           <generation>user</generation>
           <structure>
-            <seq type="static">AAA</seq>
+            <seq type="siteAbbrev"/>
             <seq type="numeric" length="4" min='1000' max='9999'/>
           </structure>
         </PSCID>

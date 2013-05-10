@@ -165,7 +165,7 @@ class Candidate
                return PEAR::raiseError("PSCID not unique", PSCID_NOT_UNIQUE);
            }
        } else {           
-           $PSCID = Candidate::_generatePSCID();
+           $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
            if(Utility::isErrorX($PSCID)) return $PSCID;
        }
      
@@ -443,7 +443,7 @@ class Candidate
     * @return string
     * @throws PEAR::Error
     */
-    function _generatePSCID() 
+    function _generatePSCID($prefix) 
     {
         // get a database connection
         $db =& Database::singleton();
@@ -453,7 +453,7 @@ class Candidate
         
         $config =& NDB_Config::singleton();
         $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays = Candidate::generateArrays($PSCIDSettings); 
+        $pscidArrays = Candidate::generateArrays($PSCIDSettings, $prefix); 
 
         // run one first time, then loop until the pscid is not used
         do {
