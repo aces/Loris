@@ -177,14 +177,14 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $conflict_condition2,
             'r.Finalized',
             'c.CenterID',
-            'C.ProjectID'
+            'c.ProjectID'
         );
         
         $this->formToFilter = array (
                                     'dccid'       => 'c.CandID',
                                     'site'        => 'c.CenterID',
                                     'Visit_label' => 's.visit_label',
-                                    'ProjectID'   => 'c.ProjectID',
+                                    'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
                                     'Review_done' => 
                                     /* MySQL treats boolean as tinyint,
