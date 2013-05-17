@@ -38,9 +38,7 @@ require_once 'Candidate.class.inc';
  */
 function _makePretty($key, $val)
 {
-    if ($key == 'Review_Done'
-        || $key=='Conflict'
-        || $key=="Finalized"
+    if( $key=='Conflict'
         || $key=="Conflict2"
         || $key=="Conflict"
     ) {
@@ -53,6 +51,16 @@ function _makePretty($key, $val)
         } else { // Leave nulls empty so that we can distinguish
             return '';
         }
+    }
+    if($key == "Finalized" || $key =="Review_Done"){
+        if($val == "yes"){
+            return 'Yes';
+        }elseif ($val == "no"){
+            return 'No';
+        }else{
+            return '';
+        }
+
     }
 
     if ($key == 'Final_Review_Results' 
@@ -143,7 +151,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'c.ProjectID as Project',
             'c.CenterID as Site',
             'c.DOB as Birth_Date',
-            'COALESCE(r.Review_Done, 0) as Review_Done',
+            'r.Review_Done_val as Review_Done',
             'r.Final_Review_Results as Results',
             'r.Final_Exclusionary as Exclusionary_Status',
             'r.sas as SAS',
@@ -151,7 +159,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'orig.CommentID as CommentID',
             "$conflict_condition1 as Conflict",
             "$conflict_condition2 as Conflict2", 
-            'r.Finalized as Finalized', 
+            'r.Finalized_val as Finalized', 
             'r.Final_Incidental_Findings as Comments'
         );
         $this->order_by = 'PSCID';
@@ -169,13 +177,13 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             's.visit_label',
             'c.PSCID',
             'r.Final_Review_Results',
-            'COALESCE(r.Review_Done, 0)',
+            'r.Review_Done_val',
             'r.sas',
             'r.pvs',
             'r.Final_Exclusionary',
             $conflict_condition1,
             $conflict_condition2,
-            'r.Finalized',
+            'r.Finalized_val',
             'c.CenterID',
             'c.ProjectID'
         );
@@ -186,10 +194,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Visit_label' => 's.visit_label',
                                     'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_done' => 
-                                    /* MySQL treats boolean as tinyint,
-                                     * so 0 instead of False */
-                                        'COALESCE(r.Review_Done, 0)',
+                                    'Review_done' => 'r.Review_Done_val',
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -199,9 +204,9 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'SAS'         => 'r.sas',
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
-                                    'Finalized'   => 'r.Finalized'
+                                    'Finalized'   => 'r.Finalized_val'
         );
-        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2);
+        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized_val','r.Review_Done_val');
     }
 
     /**
@@ -233,7 +238,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         foreach ($projectList as $key => $value) {
             $list_of_projects[$key] =$value;
         }  
-        $options_boolean= array(null => 'Any', 'true' => 'Yes', 'false' => 'No');
+        $options_boolean= array(null => 'Any', 'yes' => 'Yes', 'no' => 'No');
         $conflict_options1 = array(null => 'Any', 'true' => 'Yes', 'false' => 'No' );
         $conflict_options2 = array(null => 'Any', 
             'prim_second' => 'Yes', 
