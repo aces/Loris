@@ -98,8 +98,6 @@ function CreateScatterplot() {
         <li><a href="/main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">General Description</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs">Demographic Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
-        <!--li><a href="/main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li-->
-        <li><a href="/main.php?test_name=statistics&subtest=stats_enrollment&dynamictabs=dynamictabs">Enrollment Report </a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">MRI Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li>
     </ul>
