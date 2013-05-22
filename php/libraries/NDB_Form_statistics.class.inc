@@ -1,11 +1,11 @@
 <?php
-require_once 'NDB_Menu.class.inc';
+require_once 'NDB_Form.class.inc';
 
 /**
  * The welcome menu
  * @package main
  */
-class NDB_Menu_statistics extends NDB_Menu
+class NDB_Form_statistics extends NDB_Form
 {
     function _inCenter($centerID, $Centres) {
         foreach ($Centres as $Centre) {
@@ -69,6 +69,37 @@ class NDB_Menu_statistics extends NDB_Menu
         return $html;
 
     }
+
+   function statistics()
+   {
+        $DB =& Database::singleton();
+        if (PEAR::isError($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        }
+   }
+
+    function stats_general()
+    {
+        $DB =& Database::singleton();
+        if (PEAR::isError($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        }
+    }
+
+    function stats_behavioural()
+    {
+        $this->setup();
+    }
+
+    function stats_demographic()
+    {
+        $this->setup();
+    }
+    function  stats_MRI()
+    {
+        $this->setup();
+    }
+
 
 
     function setup()
