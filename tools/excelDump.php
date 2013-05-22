@@ -86,7 +86,6 @@ foreach ($instruments as $instrument) {
             } 
             $NDB_Config = NDB_Config::singleton();
             $ddeInstruments = $NDB_Config->getSetting("DoubleDataEntryInstruments");
-            print_r($ddeInstruments);
             if(in_array($i, $ddeInstruments)) {
                 $extra_fields .= "CASE ddef.Data_entry='Complete' WHEN 1 then 'Y' 
                                                                  WHEN  NULL then 'Y' 
