@@ -4,52 +4,61 @@
             {html_options options=$Sites name="site" selected=$CurrentSite.ID}
             <input type="hidden" name="test_name" value="statistics" />
             <input type="submit" />
+            {html_options options=$Projects name="project" selected=$CurrentProject.ID}
+            <input type="hidden" name="projects" value="statistics" />
+            <input type="submit" />
         </form>
         <table class="data generalStats">
+        <table class="data generalStats">
         <thead>
-            <tr>
                 <th></th>
-                <th>Undefined Yet</th>
-                {foreach from=$Subprojects item=name key=proj}
-                    <th>{$name}</th>
-                {/foreach}
-                <th class="data">Total</th>
-            </tr>
+                <th>Status</th>
+                <th>Registered candidates with visit</th>
+                <th>Registered candidates with MRI session</th>
         </thead>
         <tbody>
-            <tr>
-                <td>Registered candidates</td>
-                <td>{$registered[NULL].total}</td>
-                {foreach from=$Subprojects item=proj key=keyid}
-                <td>{$registered[$keyid].total}</td>
+                <tr>
+                {foreach from=$Subprojects item=name key=keyid}
+                        <th rowspan="6">{$name}</th>
+                </tr>
+                <tr>
+                <td>In Progress</td>
+                <td>{$registered[$keyid].progress}</td>
+                <td>{$scanned[$keyid].progress}</td>
+                </tr>
+                <tr>
+                <td>Pass</td>
+                <td>{$registered[$keyid].pass}</td>
+                <td>{$scanned[$keyid].pass}</td>
+                </tr>
+                <tr>
+                <td>Fail</td>
+                <td>{$registered[$keyid].fail}</td>
+                <td>{$scanned[$keyid].fail}</td>
+                </tr>
+                <tr>
+                <td>Withdraw</td>
+                <td>{$registered[$keyid].withdraw}</td>
+                <td>{$scanned[$keyid].withdraw}</td>
+                </tr>
+                <tr>
+                <td class="total">Total</td>
+                <td class="total">{$registered[$keyid].visit_total}</td>
+                <td class="total">{$scanned[$keyid].total}</td>
+                </tr>
                 {/foreach}
-                <td class="total">{$registered.total}{if $registered.total-$Total_candidates neq 0} ({$registered.total-$Total_candidates} require DCC review){/if}</td>
-            </tr>
+                <th class="data">Total</th>
+                <td class="total">{$registered_candidates} registered candidates</td>
+                <td class="total">{$registered.total_visit}</td>
+                <td class="total">{$scanned.total}</td>
             <tr>
-                <td colspan="2">Registered candidates currently in or passed screening</td>
-                {foreach from=$Subprojects item=proj key=keyid}
-                <td>{$registered[$keyid].visit}</td>
-                {/foreach}
-                <td class="total">{$registered.visittotal}</td>
-            </tr>
             <tr>
-                <td colspan="2">Registered candidates who have come in for a visit</td>
-                {foreach from=$Subprojects item=proj key=keyid}
-                <td>{$edi[$keyid].complete}</td>
-                {/foreach}
-                <td class="total">{$edi.complete}</td>
             </tr>
-            <tr>
-                <td colspan="2">Registered candidates with T1 acquired</td>
-                {foreach from=$Subprojects item=proj key=keyid}
-                <td>{$scanned[$keyid].complete}</td>
-                {/foreach}
-                <td class="total">{$scanned.complete}</td>
-            </tr>
-
         </tbody>
         </table>
+</br>
 
         {$RecruitsTable}
+
 </div>
 

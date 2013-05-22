@@ -1,77 +1,65 @@
 <div id="data_entry">
-<h2 class="statsH2">Data Entry Statistics:</h2>
-<table class="data">
-         <tr>
-            <th rowspan="2">Site</th>
-            {foreach from=$Visits item=visit}
-            <th colspan="3">{$visit|upper}</th>
-            {/foreach}
-            <th colspan="3">Total</th>
-            <th rowspan="2">Per instrument stats</th>
-         </tr>
-         <tr>
-            {foreach from=$Visits item=visit}
-             <th>Completed</th>
-             <th>Created</th>
-             <th>% Completion</th>
-            {/foreach}
-             {* Total isn't in the visits array, so we need to manually add its header *}
-             <th>Completed</th>
-             <th>Created</th>
-             <th>% Completion</th>
-          </tr>
-         {foreach from=$Centers item=center key=centername}
-         <tr>
-            <td>{$center.LongName}</td>
-            {foreach from=$Visits item=visit}
-                <td>{$behaviour[$center.ID][$visit].complete|default:"0"}</td>
-                <td>{$behaviour[$center.ID][$visit].total|default:"0"}</td>
-                <td>{$behaviour[$center.ID][$visit].percent|default:"0"}%</td>
-            {/foreach}
-            <td class="total">{$behaviour[$center.ID].all.complete|default:"0"}</td>
-            <td class="total">{$behaviour[$center.ID].all.total|default:"0"}</td>
-            <td class="total">{$behaviour[$center.ID].all.percent|default:"0"}%</td>
-            <td> <a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}'>Please Click Here</a></td>
-         </tr>
-         {/foreach}
-</table>
-
-<h2 class="statsH2">Double Data Entry Statistics:</h2>
+<h2 class="statsH2">Data Entry Statistics for {$behavioural_center_name} {$behavioural_project_name}</h2>
+        <form action="#data_entry">
+            {html_options options=$Sites name="site2" selected=$behavioural_center}
+            <input type="hidden" name="test_name" value="statistics" />
+            <input type="submit" />
+            {html_options options=$Projects name="project2" selected=$behavioural_project}
+            <input type="hidden" name="de_project" value="statistics" />
+            <input type="submit" />
+            </form>
 <table class="data">
     <tr>
-        <th rowspan="2">Site</th>
-        {foreach from=$Visits item=visit}
-        <th colspan="3">{$visit|upper}</th>
-        {/foreach}
-        <th colspan="3">Total</th>
-        <th rowspan="2">Per instrument stats</th>
+        <th></th>
+        <th>Forms Created</th>
+        <th>Forms Completed</th>
+        <th>% Completion</th>
     </tr>
-<tr>
-{foreach from=$Visits item=visit}
-             <th>Completed</th>
-             <th>Created</th>
-             <th>% Completion</th>
-            {/foreach}
-             {* Total isn't in the visits array, so we need to manually add its header *}
-             <th>Completed</th>
-             <th>Created</th>
-             <th>% Completion</th>
-          </tr>
-         {foreach from=$Centers item=center key=centername}
-         <tr>
-            <td>{$center.LongName}</td>
-            {foreach from=$Visits item=visit}
-                <td>{$dde[$center.ID][$visit].complete|default:"0"}</td>
-                <td>{$dde[$center.ID][$visit].total|default:"0"}</td>
-                <td>{$dde[$center.ID][$visit].percent|default:"0"}%</td>
-            {/foreach}
-                <td class="total">{$dde[$center.ID].all.complete|default:"0"}</td>
-                <td class="total">{$dde[$center.ID].all.total|default:"0"}</td>
-                <td class="total">{$dde[$center.ID].all.percent|default:"0"}%</td>
-            <td> <a href='main.php?test_name=statistics_dd_site&CenterID={$center.NumericID}'>Please Click Here</a></td>
-         </tr>
-         {/foreach}
-      </table>
+    {foreach from=$Visits item=visit}
+        <tr>
+            <td>{$visit}</td>
+            <td>{$behaviour[$visit].total|default:"0"}</td>
+            <td>{$behaviour[$visit].complete|default:"0"}</td>
+            <td>{$behaviour[$visit].percent|default:"0"}%</td>
+        </tr>
+    {/foreach}
+    <tr>
+        <td class = "total">Total</td>
+        <td class="total">{$behaviour.all.total|default:"0"}</td>
+        <td class="total">{$behaviour.all.complete|default:"0"}</td>
+        <td class="total">{$behaviour.all.percent|default:"0"}%</td>
+    </tr>
+</tr>
+</table>
+<b><a href='main.php?test_name=statistics_site&CenterID={$behavioural_center}&ProjectID={$behavioural_project}'>Click here for breakdown per participant for {$behavioural_center_name} {$behavioural_project_name}</a></b>
+
+<h2 class="statsH2">Double Data Entry Statistics for {$behavioural_center_name} {$behavioural_project_name}</h2>
+<table class="data">
+    <tr>
+        <th></th>
+        <th>Forms Created</th>
+        <th>Forms Completed</th>
+        <th>% Completion</th>
+    </tr>
+    {foreach from=$Visits item=visit}
+        <tr>
+            <td>{$visit}</td>
+            <td>{$dde[$visit].total|default:"0"}</td>
+            <td>{$dde[$visit].complete|default:"0"}</td>
+            <td>{$dde[$visit].percent|default:"0"}%</td>
+        </tr>
+     {/foreach}
+        <tr>
+            <td class = "total">Total</td>
+            <td class="total">{$dde.all.total|default:"0"}</td>
+            <td class="total">{$dde.all.complete|default:"0"}</td>
+            <td class="total">{$dde.all.percent|default:"0"}%</td>
+        </tr>
+</tr>
+</table>
+<b><a href='main.php?test_name=statistics_dd_site&CenterID={$behavioural_center}&ProjectID={$behavioural_project}'>Click here for breakdown per participant for {$behavioural_center_name} {$behavioural_project_name}</a></b>
+
 <br />
+        {$InstrumentsTable}
 </div>
 
