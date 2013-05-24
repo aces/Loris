@@ -348,7 +348,29 @@ class NDB_Form_statistics extends NDB_Form
         $this->setup();
     }
 
+    function stats_scatter()
+    {
+        $DB =& Database::singleton();
+        if (PEAR::isError($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        }
+            $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
+        if(PEAR::isError($centers)) {
+            return PEAR::raiseError("DB Error: ".$centers->getMessage());
+        }
+        $this->tpl_data['Centers'] = $centers;
+        $this->tpl_data['Sites'] = array('' => 'All Sites');
+        foreach ($centers as $row) {
+            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+            if($_REQUEST['site'] == $row['NumericID']) {
+                $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
+            }
 
+        }
+        $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
+        $Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '18 Month' => 'v18', '24 Month' => 'v24', '36 Month' => 'v36');
+        $this->tpl_data['Visits'] = $Visits;
+    }
 
     function setup()
     {
@@ -362,7 +384,7 @@ class NDB_Form_statistics extends NDB_Form
         if($config->getSetting("useProjects")=="true"){
               $projects += Utility::getProjectList();
         }
-
+/*
         $this->tpl_data['Projects'] = $projects;
         foreach ($projects as $id=>$name) {
             $this->tpl_data['Projects'][$id] = $name;
@@ -395,7 +417,7 @@ class NDB_Form_statistics extends NDB_Form
 
         //***Requires Visit_Windows table to be populated with all study visits***
         $visits = Utility::getVisitList(); 
-
+*/
 
         // NUMBER OF CANDIDATES STATS TABLE
 
@@ -601,8 +623,6 @@ class NDB_Form_statistics extends NDB_Form
 //HERE
         $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "demographics");
 
-
-/*
         //---- BEHAVIORAL STATS -----
         $sites = Utility::getSiteList(true, false); 
         $mri_data = array();
@@ -1025,7 +1045,6 @@ class NDB_Form_statistics extends NDB_Form
 
         }
         $this->tpl_data['feedback_mri_comments'] = $comments;
-*/
     } // End function
 
 } // End class
