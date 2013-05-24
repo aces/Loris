@@ -88,7 +88,193 @@ class NDB_Form_statistics extends NDB_Form
 
     function stats_behavioural()
     {
-        $this->setup();
+        $DB =& Database::singleton();
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        }
+
+        $config=&NDB_Config::singleton();
+        $projects = array('' => 'All Projects');
+        if($config->getSetting("useProjects")=="true"){
+              $projects += Utility::getProjectList();
+        }
+        $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID != '1'");
+        if(Utility::isErrorX($centers)) {
+            return PEAR::raiseError("DB Error: ".$centers->getMessage());
+        }
+        $this->tpl_data['Centers'] = $centers;
+        $this->tpl_data['Sites'] = array('' => 'All Sites');
+        foreach ($centers as $row) {
+            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+            if($_REQUEST['site'] == $row['NumericID']) {
+                $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
+            }
+        }
+
+
+
+        $this->tpl_data['Subprojects'] = Utility::getSubprojectList();
+        $Visits = Utility::getVisitList();
+        $this->tpl_data['Visits'] = $Visits;
+        $instruments  =
+            array( '' => 'Recruit Gender Breakdown');
+
+
+        $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments();
+        $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
+        $instr = Utility::getAllInstruments();
+
+        $instruments2  = array_merge(
+                array( null=> 'Please select an instrument' ),
+                $instr
+                );
+
+        $Subcategories = array('Complete', 'Incomplete');
+        $result = $DB->pselect("SELECT count(*) as val, 
+                f.Data_entry as Subcat, 
+                c.CenterID as CenterID, 
+                s.SubprojectID as SubprojectID,
+                s.Visit_label as VLabel   
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN flag f ON (f.SessionID=s.ID)
+                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                WHERE s.Active='Y' AND
+                c.CenterID <> '1' AND f.Data_entry='Complete' AND
+                f.Administration='All' AND
+                f.CommentID NOT LIKE 'DDE%'
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                UNION
+                SELECT count(*) as val, 'Incomplete' as Subcat, 
+                c.CenterID as CenterID, 
+                s.SubprojectID as SubprojectID,
+                s.Visit_label as VLabel 
+                FROM session s JOIN candidate c USING(CandID) 
+                JOIN flag f ON (f.SessionID=s.ID) 
+                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                WHERE s.Active='Y' and s.CenterID <> '1'
+                AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat");
+                $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
+        $Subcategories = array('Male', 'Female');
+        $result = $DB->pselect("SELECT c.CenterID as CenterID,    
+                s.SubprojectID as SubprojectID,  
+                s.Visit_label as VLabel,     
+                c.gender as Subcat,      
+                count(s.CandID) as val                  
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)                   
+                WHERE s.active='Y' AND s.CenterID <> '1' AND c.CenterID <> '1'                     
+                AND ((s.Current_stage IN ('Visit', 'Screening')))              
+                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')            
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat 
+                ORDER BY SubprojectID");
+        if (Utility::isErrorX($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
+        }
+
+        $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "demographics");
+
+        //---- BEHAVIORAL STATS -----
+        $sites = Utility::getSiteList(true, false);
+        $mri_data = array();
+
+        $this->tpl_data[$centerID] = $_REQUEST['site2'];
+        $Extra_vars = array();
+        $behavioural_center = '';
+        $behavioural_center_name = 'all sites';
+        $behavioural_project_name = 'all projects';
+
+        if(isset($_REQUEST['site2']) && $_REQUEST['site2'] != '') {
+            $behavioural_center = $_REQUEST['site2'];
+            $behavioural_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['site2']));
+            $ExtraSite_Criteria = ' AND c.CenterID=:site ';
+            $Extra_vars['site'] = $_REQUEST['site2'];
+        }
+        if(isset($_REQUEST['project2']) && $_REQUEST['project2'] != '') {
+            $ExtraSite_Criteria .= ' AND c.ProjectID=:proj ';
+            $Extra_vars['proj'] = $_REQUEST['project2'];
+            $behavioural_project = $_REQUEST['project2'];
+            $behavioural_project_name = $projects["$behavioural_project"];
+        }
+
+        $this->tpl_data['behavioural_center'] = $behavioural_center;
+        $this->tpl_data['behavioural_center_name'] = $behavioural_center_name;
+        $this->tpl_data['behavioural_project'] = $behavioural_project;
+        $this->tpl_data['behavioural_project_name'] = $behavioural_project_name;
+        $result = $DB->pselect("SELECT s.CenterID,
+                f.Data_Entry as Data_Entry,
+                s.Visit_label as VLabel,   
+                COUNT(s.CandID) as val
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN flag f ON (f.SessionID=s.ID)
+                WHERE 
+                s.Active='Y' 
+                AND c.Active='Y' 
+                AND c.CenterID <> '1' 
+                AND s.Current_stage <> 'Recycling Bin'
+                AND f.CommentID NOT LIKE 'DDE%' 
+                $ExtraSite_Criteria
+                GROUP by s.CenterID, VLabel, f.Data_Entry", $Extra_vars);
+
+            foreach($result as $row) {
+                // Put some things into variables to make the lines shorter
+                // so that they don't wrap. Note that "c"(enter array) needs to 
+                // be a reference since we'll be modifying it.
+                $vl = $row['VLabel'];
+                $c =& $this->tpl_data['behaviour'];
+
+                $c[$vl]['total'] += $row['val'];
+                $c['all']['total'] += $row['val'];
+                if($row['Data_Entry'] == 'Complete') {
+                    $c[$vl]['complete'] += $row['val'];
+                    $c['all']['complete'] += $row['val'];
+                }
+                if($c[$vl]['total'] != 0) {
+                    $c[$vl]['percent'] =
+                        floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                }
+                if($c['all']['total'] != 0) {
+                    $c['all']['percent'] =
+                        floor($c['all']['complete'] / $c['all']['total']*100);
+                }
+            }
+
+        $sites = Utility::getSiteList(true, false);
+        $this->tpl_data['DataEntryTable'] = $this->render_stats_table("Data Entry Statistics", $Subcategories, $Visits, "site2", $sites, $behavioural_center, $centers, $result, "data_entry");
+       // DDE STATS
+
+        $result = $DB->pselect("SELECT s.CenterID, 
+                f.Data_Entry as Data_Entry, 
+                s.Visit_label as VLabel,   
+                COUNT(s.CandID) as val
+                FROM session as s JOIN candidate as c ON (s.CandID=c.CandID) JOIN flag as f ON (f.SessionID=s.ID) 
+                WHERE s.Active='Y' 
+                AND c.Active='Y' 
+                AND c.CenterID <> '1' 
+                AND s.Current_stage <> 'Recycling Bin'
+                AND f.CommentID LIKE 'DDE%' 
+                AND f.Data_Entry IS NOT NULL
+                $ExtraSite_Criteria
+                GROUP by s.CenterID, VLabel, f.Data_Entry", $Extra_vars);
+        foreach($result as $row) {
+            $vl = $row['VLabel'];
+            $c =& $this->tpl_data['dde'];
+
+            $c[$vl]['total'] += $row['val'];
+            $c['all']['total'] += $row['val'];
+            if($row['Data_Entry'] == 'Complete') {
+                $c[$vl]['complete'] += $row['val'];
+                $c['all']['complete'] += $row['val'];
+            }
+            if($c[$vl]['total'] != 0) {
+                $c[$vl]['percent'] =
+                    floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+            }
+            if($c['all']['total'] != 0) {
+                $c['all']['percent'] =
+                    floor($c['all']['complete'] / $c['all']['total']*100);
+            }
+        }
+
     }
 
     function stats_demographic()
@@ -417,7 +603,7 @@ class NDB_Form_statistics extends NDB_Form
 
         //***Requires Visit_Windows table to be populated with all study visits***
         $visits = Utility::getVisitList(); 
-*/
+
 
         // NUMBER OF CANDIDATES STATS TABLE
 
@@ -470,7 +656,6 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['registered'][$row['rowid']]['visit_total'] += $row['val'];
             $total_visit += $row['val'];
         }
-
         $this->tpl_data['registered']['total_visit'] = $total_visit;
 
 
@@ -546,7 +731,7 @@ class NDB_Form_statistics extends NDB_Form
         // Adds a C to the start of the centerid, because that's how the
         // template is looking for it. Exclude DCC 
         $s = Utility::getSiteList();
-
+*/
         $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID != '1'"); 
         if(Utility::isErrorX($centers)) {
             return PEAR::raiseError("DB Error: ".$centers->getMessage());
@@ -604,7 +789,6 @@ class NDB_Form_statistics extends NDB_Form
                 AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat"); 
                 $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
-
         $Subcategories = array('Male', 'Female');
         $result = $DB->pselect("SELECT c.CenterID as CenterID,    
                 s.SubprojectID as SubprojectID,  
@@ -620,7 +804,7 @@ class NDB_Form_statistics extends NDB_Form
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
-//HERE
+        
         $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "demographics");
 
         //---- BEHAVIORAL STATS -----
@@ -650,7 +834,6 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['behavioural_center_name'] = $behavioural_center_name; 
         $this->tpl_data['behavioural_project'] = $behavioural_project; 
         $this->tpl_data['behavioural_project_name'] = $behavioural_project_name; 
-
         $result = $DB->pselect("SELECT s.CenterID,
                 f.Data_Entry as Data_Entry,
                 s.Visit_label as VLabel,   
@@ -691,7 +874,7 @@ class NDB_Form_statistics extends NDB_Form
 
         $sites = Utility::getSiteList(true, false); 
         $this->tpl_data['DataEntryTable'] = $this->render_stats_table("Data Entry Statistics", $Subcategories, $Visits, "site2", $sites, $behavioural_center, $centers, $result, "data_entry");
-
+        
         // DDE STATS
 
         $result = $DB->pselect("SELECT s.CenterID, 
@@ -1045,7 +1228,8 @@ class NDB_Form_statistics extends NDB_Form
 
         }
         $this->tpl_data['feedback_mri_comments'] = $comments;
-    } // End function
+   
+   } // End function
 
 } // End class
 ?>
