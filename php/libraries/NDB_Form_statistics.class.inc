@@ -111,7 +111,13 @@ class NDB_Form_statistics extends NDB_Form
             }
         }
 
-
+        $this->tpl_data['Projects'] = $projects;
+        foreach ($projects as $id=>$name) {
+            $this->tpl_data['Projects'][$id] = $name;
+            if ($_REQUEST['project'] == $id) {
+                $this->tpl_data['CurrentProject'] = array('ID'=> $id, 'Name' => $name);
+            }
+        }
 
         $this->tpl_data['Subprojects'] = Utility::getSubprojectList();
         $Visits = Utility::getVisitList();

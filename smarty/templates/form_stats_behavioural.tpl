@@ -9,11 +9,10 @@
             <input type="submit" />
             </form-->
         <script type="text/javascript" src="js/modules/form_stats_behavioural.js"></script>
-        <script type="text/javascript" src="js/modules/form_stats_behavioural.js"></script>
-        {html_options id="site" options=$Sites name="site" selected=$CurrentSite.ID}
-        <button onClick="updateBehaviouralSite()">Submit Query</button>
-        {html_options id="site" options=$Sites name="site" selected=$CurrentSite.ID}
-        <button onClick="updateBehaviouralProject()">Submit Query</button>
+        {html_options id="site" options=$Sites name="site2" selected=$behavioural_center}
+        {html_options id="project" options=$Projects name="project2" selected=$behavioural_project}
+        <button onClick="updateBehavioural()">Submit Query</button>
+
 <table class="data">
     <tr>
         <th></th>
