@@ -1,13 +1,19 @@
 <div id="data_entry">
 <h2 class="statsH2">Data Entry Statistics for {$behavioural_center_name} {$behavioural_project_name}</h2>
-        <form action="#data_entry">
+        <!--form action="#data_entry">
             {html_options options=$Sites name="site2" selected=$behavioural_center}
             <input type="hidden" name="test_name" value="statistics" />
             <input type="submit" />
             {html_options options=$Projects name="project2" selected=$behavioural_project}
             <input type="hidden" name="de_project" value="statistics" />
             <input type="submit" />
-            </form>
+            </form-->
+        <script type="text/javascript" src="js/modules/form_stats_behavioural.js"></script>
+        <script type="text/javascript" src="js/modules/form_stats_behavioural.js"></script>
+        {html_options id="site" options=$Sites name="site" selected=$CurrentSite.ID}
+        <button onClick="updateBehaviouralSite()">Submit Query</button>
+        {html_options id="site" options=$Sites name="site" selected=$CurrentSite.ID}
+        <button onClick="updateBehaviouralProject()">Submit Query</button>
 <table class="data">
     <tr>
         <th></th>
