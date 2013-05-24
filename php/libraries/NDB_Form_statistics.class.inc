@@ -93,8 +93,256 @@ class NDB_Form_statistics extends NDB_Form
 
     function stats_demographic()
     {
-        $this->setup();
+        $DB =& Database::singleton();
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        }
+
+        $config=&NDB_Config::singleton();
+        $projects = array('' => 'All Projects');
+        if($config->getSetting("useProjects")=="true"){
+              $projects += Utility::getProjectList();
+        }
+
+        $this->tpl_data['Projects'] = $projects;
+        foreach ($projects as $id=>$name) {
+            $this->tpl_data['Projects'][$id] = $name;
+            if ($_REQUEST['project'] == $id) {
+                $this->tpl_data['CurrentProject'] = array('ID'=> $id, 'Name' => $name);
+            }
+        }
+
+        $Extra_vars = array();
+        $ExtraSite_Criteria = '';
+        $demographics_center_name = 'all sites';
+        $demographics_project_name = 'all projects';
+
+        $subprojects = Utility::getSubprojectList();
+        if(isset($_REQUEST['site']) && $_REQUEST['site'] != '') {
+            $ExtraSite_Criteria = ' AND c.CenterID=:cid ';
+            $Extra_vars['cid']=$_REQUEST['site'];
+            $demographics_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:cid", $Extra_vars);
+        }
+        if(isset($_REQUEST['project']) && $_REQUEST['project'] != '') {
+            $ExtraSite_Criteria .= ' AND  c.ProjectID=:pid ';
+            $Extra_vars['pid']=$_REQUEST['project'];
+            $demographics_project_name = $projects["{$_REQUEST['project']}"];
+        }
+
+
+        $this->tpl_data['Subprojects'] = $subprojects;
+        $this->tpl_data['demographics_center_name'] = $demographics_center_name;
+        $this->tpl_data['demographics_project_name'] = $demographics_project_name;
+
+        //***Requires Visit_Windows table to be populated with all study visits***
+        $visits = Utility::getVisitList();
+
+
+        // NUMBER OF CANDIDATES STATS TABLE
+
+        //***Set the visit to one where you want to check # of candidates with a visit (i.e. the first visit in the study) - get from config file***
+        $config =& NDB_Config::singleton();
+        $statisticsConfig = $config->getSetting('statistics');
+        $visit_to_check = $statisticsConfig['visitStats'];
+        $prepared_check = array_merge(array('visit'=>$visit_to_check), $Extra_vars);
+
+        $registered_candidates = $DB->pselectOne("SELECT count(DISTINCT(c.PSCID)) as val from candidate as c WHERE c.PSCID <> 'scanner' AND c.Active='Y' " . $ExtraSite_Criteria, $Extra_vars);
+        if (Utility::isErrorX($registered_candidates)) {
+            return PEAR::raiseError("DB Error: ".$registered_candidates->getMessage());
+        }
+
+
+        $this->tpl_data['registered_candidates'] = $registered_candidates;
+        $total_visit = 0;
+
+        //Candidates with visit marked as In Progress                        
+        $result_progress = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'In Progress' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
+
+        foreach($result_progress as $row) {
+            $this->tpl_data['registered'][$row['rowid']]['progress'] = $row['val'];
+            $this->tpl_data['registered'][$row['rowid']]['visit_total'] += $row['val'];
+            $total_visit += $row['val'];
+        }
+
+        //Candidates with visit marked as Pass                        
+        $result_pass = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Pass' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
+
+        foreach($result_pass as $row) {
+            $this->tpl_data['registered'][$row['rowid']]['pass'] = $row['val'];
+            $this->tpl_data['registered'][$row['rowid']]['visit_total'] += $row['val'];
+            $total_visit += $row['val'];
+        }
+
+        //Candidates with visit marked as Fail                        
+        $result_fail = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' ANDc.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Failure' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
+
+        foreach($result_fail as $row) {
+            $this->tpl_data['registered'][$row['rowid']]['fail'] = $row['val'];
+            $this->tpl_data['registered'][$row['rowid']]['visit_total'] += $row['val'];
+            $total_visit += $row['val'];
+        }
+        //Candidates with visit marked as Withdraw                        
+        $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
+
+        foreach($result_withdrawal as $row) {
+            $this->tpl_data['registered'][$row['rowid']]['withdraw'] = $row['val'];
+            $this->tpl_data['registered'][$row['rowid']]['visit_total'] += $row['val'];
+            $total_visit += $row['val'];
+        }
+
+        $this->tpl_data['registered']['total_visit'] = $total_visit;
+
+
+        //COUNT OF CANDIDATES WITH AN MRI SESSION
+
+        $total_scan = 0;
+
+        //Scans for visits marked as Pass
+        $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
+                AND s.Visit = 'Pass'
+                AND s.Active='Y' 
+                AND c.Active='Y' 
+                AND c.PSCID<>'scanner'
+                AND s.Current_stage <> 'Recycling Bin' 
+                AND c.CenterID <> '1'
+                $ExtraSite_Criteria
+                GROUP BY s.SubprojectID", $Extra_vars);
+            foreach($result as $row) {
+                $this->tpl_data['scanned'][$row['rowid']]['pass'] = $row['val'];
+                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                $total_scan += $row['val'];
+            }
+
+        //Scans for visits marked as In Progress
+        $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
+                AND s.Visit = 'In Progress'
+                AND s.Active='Y' 
+                AND c.Active='Y' 
+                AND c.PSCID<>'scanner'
+                AND s.Current_stage <> 'Recycling Bin'
+                AND c.CenterID <> '1' 
+                $ExtraSite_Criteria
+                GROUP BY s.SubprojectID", $Extra_vars);
+            foreach($result as $row) {
+                $this->tpl_data['scanned'][$row['rowid']]['progress'] = $row['val'];
+                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                $total_scan += $row['val'];
+            }
+        //Scans for visits marked as Fail
+        $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
+                AND s.Visit = 'Failure'
+                AND s.Active='Y' 
+                AND c.Active='Y' 
+                AND c.PSCID<>'scanner'
+                AND s.Current_stage <> 'Recycling Bin'
+                AND c.CenterID <> '1' 
+                $ExtraSite_Criteria
+                GROUP BY s.SubprojectID", $Extra_vars);
+            foreach($result as $row) {
+                $this->tpl_data['scanned'][$row['rowid']]['fail'] = $row['val'];
+                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                $total_scan += $row['val'];
+            }
+
+        //Scans for visits marked as Withdraw
+        $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
+                AND s.Visit = 'Withdrawal'
+                AND s.Active='Y' 
+                AND c.Active='Y' 
+                AND c.PSCID<>'scanner'
+                AND s.Current_stage <> 'Recycling Bin'
+                AND c.CenterID <> '1' 
+                $ExtraSite_Criteria
+                GROUP BY s.SubprojectID", $Extra_vars);
+            foreach($result as $row) {
+                $this->tpl_data['scanned'][$row['rowid']]['withdraw'] = $row['val'];
+                $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
+                $total_scan += $row['val'];
+            }
+
+        $this->tpl_data['scanned']['total'] = $total_scan;
+
+        // Adds a C to the start of the centerid, because that's how the
+        // template is looking for it. Exclude DCC 
+        $s = Utility::getSiteList();
+
+        $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID != '1'");
+        if(Utility::isErrorX($centers)) {
+            return PEAR::raiseError("DB Error: ".$centers->getMessage());
+        }
+        $this->tpl_data['Centers'] = $centers;
+        $this->tpl_data['Sites'] = array('' => 'All Sites');
+        foreach ($centers as $row) {
+            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+            if($_REQUEST['site'] == $row['NumericID']) {
+                $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
+            }
+        }
+
+
+
+        $this->tpl_data['Subprojects'] = Utility::getSubprojectList();
+        $Visits = Utility::getVisitList();
+        $this->tpl_data['Visits'] = $Visits;
+        $instruments  =
+            array( '' => 'Recruit Gender Breakdown');
+
+
+        $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments();
+        $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
+        $instr = Utility::getAllInstruments();
+
+        $instruments2  = array_merge(
+                array( null=> 'Please select an instrument' ),
+                $instr
+                );
+
+        $Subcategories = array('Complete', 'Incomplete');
+        $result = $DB->pselect("SELECT count(*) as val, 
+                f.Data_entry as Subcat, 
+                c.CenterID as CenterID, 
+                s.SubprojectID as SubprojectID,
+                s.Visit_label as VLabel   
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN flag f ON (f.SessionID=s.ID)
+                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                WHERE s.Active='Y' AND
+                c.CenterID <> '1' AND f.Data_entry='Complete' AND
+                f.Administration='All' AND
+                f.CommentID NOT LIKE 'DDE%'
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                UNION
+                SELECT count(*) as val, 'Incomplete' as Subcat, 
+                c.CenterID as CenterID, 
+                s.SubprojectID as SubprojectID,
+                s.Visit_label as VLabel 
+                FROM session s JOIN candidate c USING(CandID) 
+                JOIN flag f ON (f.SessionID=s.ID) 
+                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                WHERE s.Active='Y' and s.CenterID <> '1'
+                AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat");
+                $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
+
+        $Subcategories = array('Male', 'Female');
+        $result = $DB->pselect("SELECT c.CenterID as CenterID,    
+                s.SubprojectID as SubprojectID,  
+                s.Visit_label as VLabel,     
+                c.gender as Subcat,      
+                count(s.CandID) as val                  
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)                   
+                WHERE s.active='Y' AND s.CenterID <> '1' AND c.CenterID <> '1'                     
+                AND ((s.Current_stage IN ('Visit', 'Screening')))              
+                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')            
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat 
+                ORDER BY SubprojectID");
+        if (Utility::isErrorX($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
+        }
+        $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "demographics");
+
     }
+    
     function  stats_MRI()
     {
         $this->setup();
@@ -192,7 +440,6 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['registered'][$row['rowid']]['visit_total'] += $row['val'];
             $total_visit += $row['val'];
         }
-
         //Candidates with visit marked as Withdraw                        
         $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
 
@@ -240,7 +487,6 @@ class NDB_Form_statistics extends NDB_Form
                 $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
                 $total_scan += $row['val'];
             }
-
         //Scans for visits marked as Fail
         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
                 AND s.Visit = 'Failure'
@@ -297,7 +543,6 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); 
         $Visits = Utility::getVisitList();
         $this->tpl_data['Visits'] = $Visits;
-
         $instruments  = 
             array( '' => 'Recruit Gender Breakdown');
 
@@ -350,14 +595,14 @@ class NDB_Form_statistics extends NDB_Form
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')            
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat 
                 ORDER BY SubprojectID");
-
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
+//HERE
         $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "demographics");
 
 
-
+/*
         //---- BEHAVIORAL STATS -----
         $sites = Utility::getSiteList(true, false); 
         $mri_data = array();
@@ -780,7 +1025,7 @@ class NDB_Form_statistics extends NDB_Form
 
         }
         $this->tpl_data['feedback_mri_comments'] = $comments;
-
+*/
     } // End function
 
 } // End class
