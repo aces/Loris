@@ -559,6 +559,14 @@ class NDB_Form_statistics extends NDB_Form
                 $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
             }
         }
+
+        $this->tpl_data['Projects'] = $projects;
+        foreach ($projects as $id=>$name) {
+            $this->tpl_data['Projects'][$id] = $name;
+            if ($_REQUEST['project'] == $id) {
+                $this->tpl_data['CurrentProject'] = array('ID'=> $id, 'Name' => $name);
+            }
+        }
         //MRI STATISTICS
 
         $ExtraSite_Criteria = '';
@@ -566,7 +574,6 @@ class NDB_Form_statistics extends NDB_Form
         $mri_center = '';
         $mri_center_name = 'all sites';
         $mri_project_name = 'all projects';
-
         if(isset($_REQUEST['site3']) && $_REQUEST['site3'] != '') {
             $mri_center = $_REQUEST['site3'];
             $mri_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['site3']));
@@ -584,7 +591,6 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['mri_center_name'] = $mri_center_name;
         $this->tpl_data['mri_project'] = $mri_project;
         $this->tpl_data['mri_project_name'] = $mri_project_name;
-
         $MRISubcategories = array('Complete', 'Partial Run', 'No Scan');
         $MRIOptions = array();
         $default_scan = 'T1'; //Change accordingly if necessary 
@@ -597,7 +603,6 @@ class NDB_Form_statistics extends NDB_Form
                     $MRIOptions[$label] =  $label;
             }
         }
-
         if($_REQUEST['mri_type']) {
             $MRI_Type = $_REQUEST['mri_type'];
             //field name should match the field name in the MRI parameter form

@@ -2,7 +2,7 @@
         <h2 class="statsH2">General statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
         {html_options id="site" options=$Sites name="site" selected=$CurrentSite.ID}
         <script type="text/javascript" src="js/modules/form_stats_demographic.js"></script>
-        <button  onClick="updateReliabilitySite()">Submit Query</button>
+        <button  onClick="updateDemographicSite()">Submit Query</button>
 
         <table class="data generalStats">
         <table class="data generalStats">
