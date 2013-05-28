@@ -97,6 +97,12 @@ class NDB_Form_conflicts_resolve extends NDB_Form
 
                     $DB->insert('conflicts_resolved', $resolutionLog);
 
+                    // If Date_taken is resolved, call _saveCandidateAge in order
+                    // to populate the Candidate_Age columns
+                    if ($row['FieldName'] === 'Date_taken') {
+                        $Age = $Instrument->getCandidateAge();
+                        $Instrument->_saveCandidateAge($setArray);
+                    }
                     // update the source tables
                     $setArray = array($row['FieldName'] => ($val == '1' ? $row['Value1'] : $row['Value2']));
                     $whereArray1 = array('CommentID'=>$row['CommentId1']);
@@ -117,22 +123,18 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                     // instrument (ie. figs_year3_relative)
                     $TableName = $row['TableName'];
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId1'], '', false);
-                    if($Instrument != null) {
+                    if ($Instrument != null) {
                         $Instrument->score();
-                        $Instrument->_saveValues($setArray);
                     }
 
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId2'], '', false);
-                    if($Instrument != null) {
+                    if ($Instrument != null) {
                         $Instrument->score();
-                        $Instrument->_saveValues($setArray);
                     }
                 }
             }
         }
-
         $this->tpl_data['success'] = true;
-
         // freeze it, just in case
         //$this->form->freeze();
     }
