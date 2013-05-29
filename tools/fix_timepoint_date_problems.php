@@ -180,7 +180,7 @@ switch ($action)
  case 'fix_date':
      // fix the date (arguments are checked by the function
      $success = fixDate($candID, $dateType, $newDate, $sessionID);
-     if (PEAR::isError($success)) {
+     if (Utility::isErrorX($success)) {
          fwrite(STDERR, "Failed to fix the date ($newDate) of type ($dateType) for candidate ($candID) [timepoint ($sessionID)]:\n".$success->getMessage()."\n");
          return false;
      }
@@ -409,12 +409,36 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         
         // add the new thread
         $success = $feedback->createThread('profile', '5', "The date of $dateType has been changed to $newDate.", 'N');
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
         	return PEAR::raiseError("Failed to create feedback: ". $success->getMessage());
         }
 
         // log the change
         fwrite (STDERR, "Updated $dateType to: $newDate, for candidate $candID. Check the record in the DB! \n");
+
+        if ($dateType === 'dob') {
+            $rows = $db->pselect(
+                "SELECT f.CommentID, f.Test_name FROM flag f
+                JOIN session s ON (s.ID=f.SessionID) 
+                JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE c.CandID=:CID",
+                array('CID' => $candID)
+            );
+            foreach ($rows as $row) {
+                $setArray = $db->pselectRow(
+                    "SELECT Date_taken FROM `$row[Test_name]`
+                    WHERE CommentID=:CID",
+                    array('CID' => $row['CommentID'])
+                );
+                $inst = NDB_BVL_Instrument::factory($row['Test_name'], $row['CommentID']);
+                $inst->_saveCandidateAge($date_taken);
+
+                $db->update($row['Test_name'], $setArray, 'CommentID' => $row['CommentID']);
+
+            }
+            fwrite (STDERR, "Updated recalculated ages for candidate $candID instruments. Check the record in the DB! \n");
+        }
+
 
     } else {
         
