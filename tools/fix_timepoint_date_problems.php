@@ -53,7 +53,7 @@ $client->makeCommandLine();
 $client->initialize($configFile);
 
 $db =& Database::singleton();
-if(PEAR::isError($db)) {
+if (Utility::isErrorX($db)) {
     fwrite(STDERR, "Could not connect to database: ".$db->getMessage());
     return false;
 }
@@ -131,7 +131,7 @@ if (!preg_match("/^([0-9]{6})$/", $candID)) {
 }
 // Candidate object - to check if valid $candID
 $candidate =& Candidate::singleton($candID);
-if (PEAR::isError($candidate)) {
+if (Utility::isErrorX($candidate)) {
     fwrite(STDERR, "Problem with CandID ($candID)!\n Failed to create candidate object: ".$candidate->getMessage()." \n");
     return false;
 }
@@ -167,7 +167,7 @@ switch ($action)
  case 'add_instrument':
      // add a missing instrument (sessionID and test name are checked inside the function)
      $success = addInstrument($sessionID, $testName);
-     if(PEAR::isError($success)) {
+     if (Utility::isErrorX($success)) {
          fwrite(STDERR,"Error, failed to add instrument ($testName) to the battery for timepoint ($sessionID):\n".$success->getMessage()."\n");
          return false;
      }
@@ -204,7 +204,7 @@ switch ($action)
 
        // create timepoint object
        $timePoint =& TimePoint::singleton($sessionID);
-       if (PEAR::isError($timePoint)) {
+       if (Utility::isErrorX($timePoint)) {
            fwrite(STDERR, "Failed to create timepoint ($sessionID) object: ".$timePoint->getMessage());
            return false;
        }
@@ -216,7 +216,7 @@ switch ($action)
        $listNewInstruments = diagnose($sessionID, $dateType, $newDate);
 
        // handle the error and skip to next time point
-       if (PEAR::isError($listNewInstruments)) {
+       if (Utility::isErrorX($listNewInstruments)) {
            fwrite(STDERR, "Error, failed to get the list of needed instruments for candidate ($candID), timepoint ($sessionID):\n");
            fwrite(STDERR, $listNewInstruments->getMessage()."\n");
            continue;
@@ -255,10 +255,10 @@ function addInstrument($sessionID, $testName)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
-    if($user->getUsername() == null) {
+    if ($user->getUsername() == null) {
         return PEAR::raiseError("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
-    if (PEAR::isError($user)) {
+    if (Utility::isErrorX($user)) {
     	return ("Error, failed to create User object for (".$getenv('USER')."):".$user->getMessage()." \n");
     }
 
@@ -271,25 +271,25 @@ function addInstrument($sessionID, $testName)
 
     // create timepoint object
     $timePoint =& TimePoint::singleton($sessionID);
-    if (PEAR::isError($timePoint)) {
+    if (Utility::isErrorX($timePoint)) {
         return PEAR::raiseError("Failed to create timepoint object: ".$timePoint->getMessage());
     }
     
     // create battery object
     $battery =& new NDB_BVL_Battery_Manual();
-    if(PEAR::isError($battery)) {
+    if (Utility::isErrorX($battery)) {
         return PEAR::raiseError("Failed to create battery object: ".$battery->getMessage());
     }
 
     // set the SessionID for the battery
     $success = $battery->selectBattery($sessionID);
-    if(PEAR::isError($success)) {
+    if (Utility::isErrorX($success)) {
         return PEAR::raiseError("Failed to setup the battery for '$sessionID': ".$success->getMessage());
     }
     
     // check if the instrument is already in the battery
     $existingBattery = $battery->getBattery();
-    if (PEAR::isError($existingBattery)) {
+    if (Utility::isErrorX($existingBattery)) {
         return PEAR::raiseError("Error, failed to get existing battery".$existingBattery->getMessage());
     }
 
@@ -300,7 +300,7 @@ function addInstrument($sessionID, $testName)
     
     // add to battery - this method check if the $testName is valid
     $success = $battery->addInstrument($testName);
-    if (PEAR::isError($success)) {
+    if (Utility::isErrorX($success)) {
         return PEAR::raiseError("Failed to add instrument: ". $success->getMessage());
     }
     
@@ -313,24 +313,27 @@ function addInstrument($sessionID, $testName)
     // feedback object
     print $user->getUsername();
     $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID, $commentID);
-    if (PEAR::isError($feedback)) {
+    if (Utility::isErrorX($feedback)) {
         return PEAR::raiseError("Failed to create feedback object: " . $feedback->getMessage());
     }
 
     // add the new thread
     $success = $feedback->createThread('instrument', '5', "Instrument ($testName) has been added to the battery. You may now complete data entry for this instrument. Please respond to this feedback to acknowledge the changes.", 'Y');
-    if (PEAR::isError($success)) {
+    if (Utility::isErrorX($success)) {
         return PEAR::raiseError("Failed to create feedback: ". $success->getMessage());
     }
 
     // activate threads
     $success = $feedback->activateThread();
-    if (PEAR::isError($success)) {
+    if (Utility::isErrorX($success)) {
         return PEAR::raiseError("Failed to activate feedback: ". $success->getMessage());
     }
     
     // print the success msg
-    fwrite(STDERR,"Added the instrument ($testName) to the battery of the timepoint ($sessionID)\n");
+    fwrite(
+        STDERR,
+        "Added the instrument ($testName) to the battery of the timepoint ($sessionID)\n"
+    );
     
     // destroy objects
     unset($timePoint);
@@ -354,21 +357,25 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
-    if($user->getUsername() == null) {
+    if ($user->getUsername() == null) {
         return PEAR::raiseError("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
-    if (PEAR::isError($user)) {
+    if (Utility::isErrorX($user)) {
         return ("Error, failed to create User object for (".getenv('USER')."):".$user->getMessage()." \n");
     }
 
     $db =& Database::singleton();
-    if (PEAR::isError($db)) {
+    if (Utility::isErrorX($db)) {
         return PEAR::raiseError("Failed to create database object:\n".$db->getMessage());
     }
     
     // check the args
-    if (empty($dateType) || !in_array($dateType, array('dob', 'edc', 'screening', 'visit')) || empty($newDate)
-    || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))) {
+    if (empty($dateType) 
+        || !in_array($dateType, array('dob', 'edc', 'screening', 'visit'))
+        || empty($newDate)
+        || (in_array($dateType, array('screening', 'visit'))
+        && empty($sessionID))
+    ) {
         return PEAR::raiseError("Please pass a valid set of arguments\n");
     }
 
@@ -381,7 +388,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 
     // candidate object - needed to get the dob/edc
     $candidate =& Candidate::singleton($candID);
-    if (PEAR::isError($candidate)) {
+    if (Utility::isErrorX($candidate)) {
         return PEAR::raiseError("Error, failed to create candidate object:\n".$candidate->getMessage());
     }
 
@@ -394,7 +401,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         
         // update candidate table record
         $success = $db->update('candidate', $setArray, $whereArray);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Failed to update the $dateType: " . $success->getMessage());
         }
         
@@ -403,7 +410,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         */
         // feedback object
         $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), $candID);
-        if (PEAR::isError($feedback)) {
+        if (Utility::isErrorX($feedback)) {
         	return PEAR::raiseError("Failed to create feedback object: " . $feedback->getMessage());
         }
         
@@ -430,13 +437,24 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
                     WHERE CommentID=:CID",
                     array('CID' => $row['CommentID'])
                 );
-                $inst = NDB_BVL_Instrument::factory($row['Test_name'], $row['CommentID']);
+                $inst = NDB_BVL_Instrument::factory(
+                    $row['Test_name'],
+                    $row['CommentID']
+                );
                 $inst->_saveCandidateAge($date_taken);
 
-                $db->update($row['Test_name'], $setArray, 'CommentID' => $row['CommentID']);
+                $db->update(
+                    $row['Test_name'],
+                    $setArray,
+                    array('CommentID' => $row['CommentID'])
+                );
 
             }
-            fwrite (STDERR, "Updated recalculated ages for candidate $candID instruments. Check the record in the DB! \n");
+            fwrite(
+                STDERR,
+                "Updated recalculated ages for candidate $candID instruments."
+                . " Check the record in the DB! \n"
+            );
         }
 
 
@@ -446,21 +464,34 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 
         // create timepoint object
         $timePoint =& TimePoint::singleton($sessionID);
-        if (PEAR::isError($timePoint)) {
-            return PEAR::raiseError("Failed to create timepoint object: ".$timePoint->getMessage());
+        if (Utility::isErrorX($timePoint)) {
+            return PEAR::raiseError(
+                "Failed to create timepoint object: ".$timePoint->getMessage()
+            );
         }
 
         // check if the timepoint is started before attempting to make changes to it
         if ($timePoint->getCurrentStage() == 'Not Started') {
-            return PEAR::raiseError("Error: Cannot perform screening/visit date fixes on the non-started timepoints!");
+            return PEAR::raiseError(
+                "Error: Cannot perform screening/visit date fixes on"
+                . " the non-started timepoints!"
+            );
         }
 
         // get the stage statuses
         $screeningStage = $timePoint->getScreeningStatus();
         $visitStage = $timePoint->getVisitStatus();
         // make sure that the stage to fix is started
-        if ($dateType == 'visit' && empty($visitStage) || $dateType == 'screening' && empty($screeningStage)) {
-            return PEAR::raiseError("Error: failed to retrieve the date of $dateType (sessionID: $sessionID) b/c that stage was not started!");
+        if ($dateType == 'visit' 
+            && empty($visitStage)
+            || $dateType == 'screening'
+            && empty($screeningStage)
+        ) {
+            return PEAR::raiseError(
+                "Error: failed to retrieve the date of $dateType "
+                . "(sessionID: $sessionID)"
+                . " b/c that stage was not started!"
+            );
         }
 
         // set and where arrays for the update
@@ -469,27 +500,47 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         
         // update session table record
         $success = $db->update('session', $setArray, $whereArray);
-        if (PEAR::isError($success)) {
-            return PEAR::raiseError("Failed to update the $dateType stage date to $newDate: " . $success->getMessage());
+        if (Utility::isErrorX($success)) {
+            return PEAR::raiseError(
+                "Failed to update the $dateType stage date to $newDate: " 
+                . $success->getMessage()
+            );
         }
 
         /*
         * add Feedback
         */
         // feedback object
-        $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID);
-        if (PEAR::isError($feedback)) {
-        	return PEAR::raiseError("Failed to create feedback object: " . $feedback->getMessage());
+        $feedback =& NDB_BVL_Feedback::singleton(
+            $user->getUsername(),
+            null,
+            $sessionID
+        );
+        if (Utility::isErrorX($feedback)) {
+            return PEAR::raiseError(
+                "Failed to create feedback object: " . $feedback->getMessage()
+            );
         }
         
         // add the new thread
-        $success = $feedback->createThread('session', '5', "The date of $dateType has been changed to $newDate.", 'N');
-        if (PEAR::isError($success)) {
-        	return PEAR::raiseError("Failed to create feedback: ". $success->getMessage());
+        $success = $feedback->createThread(
+            'session',
+            '5',
+            "The date of $dateType has been changed to $newDate.",
+            'N'
+        );
+        if (Utility::isErrorX($success)) {
+            return PEAR::raiseError(
+                "Failed to create feedback: ". $success->getMessage()
+            );
         }
         
         // log the change
-        fwrite(STDERR, "Updated date of $dateType to $newDate, for candidate $candID, timepoint $sessionID. Check the DB record!\n");
+        fwrite(
+            STDERR, 
+            "Updated date of $dateType to $newDate, for candidate $candID" 
+            . ", timepoint $sessionID. Check the DB record!\n"
+        );
     } // end if
     
     return;
@@ -499,9 +550,10 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 /**
  * returns an array of missing instruments for the timepoint
  *
- * @param  int valid timepoint's sessionID, field session.ID
- * @param  string dateType, type of date to change
- * @param  string date, new date to use to define the battery
+ * @param int    $sessionID valid timepoint's sessionID, field session.ID
+ * @param string $dateType  type of date to change
+ * @param string $newDate   new date to use to define the battery
+ *
  * @return array list of missing instruments
  * @throws PEAR error
  */
@@ -514,32 +566,36 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
     // check args: dateType and newDate
     if (!empty($dateType) || !empty($newDate)) {
         // check the args
-        if (empty($dateType) || !in_array($dateType, array('dob', 'edc', 'screening', 'visit')) || empty($newDate)
-        || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))) {
+        if (empty($dateType) 
+            || !in_array($dateType, array('dob', 'edc', 'screening', 'visit')) 
+            || empty($newDate)
+            || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))
+        ) {
             return PEAR::raiseError("Please pass a valid set of arguments\n");
         }
 
         // check the date format (redundant)
         $dateArray = explode('-', $newDate);
-        if (!is_array($dateArray) || !checkdate($dateArray[1], $dateArray[2], $dateArray[0])) {
-            return PEAR::raiseError("Invalid Date! Please use the following format: YYYY-MM-DD \n");
+        if (!is_array($dateArray) 
+            || !checkdate($dateArray[1], $dateArray[2], $dateArray[0])
+        ) {
+            return PEAR::raiseError(
+                "Invalid Date! Please use the following format: YYYY-MM-DD \n"
+            );
         }
         unset($dateArray);
     }
     
     // create timepoint object
     $timePoint =& TimePoint::singleton($sessionID);
-    if (PEAR::isError($timePoint)) {
-        return PEAR::raiseError("Failed to create timepoint object: ".$timePoint->getMessage());
+    if (Utility::isErrorX($timePoint)) {
+        return PEAR::raiseError(
+            "Failed to create timepoint object: ".$timePoint->getMessage()
+        );
     }
 
-    // candidate object - needed to get the dob/edc
-//    $candidate =& Candidate::singleton($timePoint->getCandID());
-//    if (PEAR::isError($candidate)) {
-//        return PEAR::raiseError("Error, failed to create candidate object:\n".$candidate->getMessage());
-//    }
-
-    // get the statuses and dates of the screening and visit stages to decide what to do w/ each of them
+    // get the statuses and dates of the screening and visit stages to decide what
+    // to do w/ each of them
     $stageList['screening']['status'] = $timePoint->getScreeningStatus();
     $stageList['screening']['date'] = $timePoint->getDateOfScreening();
     $stageList['visit']['status'] = $timePoint->getVisitStatus();
@@ -547,16 +603,27 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
     $subProjectID = $timePoint->getSubprojectID();
     
     // define the date of birth to use (dob or edc)
-    if (($dateType=='dob' && $subProjectID==1) || ($dateType=='edc' && $subProjectID==2)) $dateBirth=$newDate;
-    else $dateBirth = $timePoint->getEffectiveDateOfBirth();
+    if (($dateType=='dob' && $subProjectID==1) 
+        || ($dateType=='edc' && $subProjectID==2)
+    ) {
+        $dateBirth=$newDate;
+    } else {
+        $dateBirth = $timePoint->getEffectiveDateOfBirth();
+    }
 
     // check if the timepoint is started before attempting to make changes to it
-    if ($timePoint->getCurrentStage() == 'Not Started' || empty($stageList['screening']['status'])) {
-        return PEAR::raiseError("Error: Cannot diagnose the non-started timepoints!");
+    if ($timePoint->getCurrentStage() == 'Not Started'
+        || empty($stageList['screening']['status'])
+    ) {
+        return PEAR::raiseError(
+            "Error: Cannot diagnose the non-started timepoints!"
+        );
     }
     // check the subProjectID
     if (empty($subProjectID)) {
-        return PEAR::raiseError("SubProjectID ($subProjectID) is empty for timepoint ($sessionID)");
+        return PEAR::raiseError(
+            "SubProjectID ($subProjectID) is empty for timepoint ($sessionID)"
+        );
     }
     
 
@@ -569,11 +636,13 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
         // if the stage is started
         if (!empty($stageData['status'])) {
             
-            $dateOfStage = (!empty($newDate) && strtolower($dateType)==$stage) ? $newDate : $stageList[$stage]['date'];
+            $dateOfStage = (!empty($newDate) && strtolower($dateType)==$stage) ? 
+                $newDate : $stageList[$stage]['date'];
 
             // compute subject age for the current stage
             $ageArray = Utility::calculateAge($dateBirth, $dateOfStage);
-            $age = ($ageArray['year'] * 12 + $ageArray['mon']) * 30 + $ageArray['day'];
+            $age = ($ageArray['year'] * 12 + $ageArray['mon']) * 30 
+                + $ageArray['day'];
             if ($age < 0) {
                 $age = 0;
             }
@@ -582,26 +651,37 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
 
             // create battery object
             $battery =& new NDB_BVL_Battery_Manual();
-            if(PEAR::isError($battery)) {
-                return PEAR::raiseError("Failed to create battery object:\n".$battery->getMessage());
+            if (Utility::isErrorX($battery)) {
+                return PEAR::raiseError(
+                    "Failed to create battery object:\n" . $battery->getMessage()
+                );
             }
 
             // set the SessionID for the battery
             $success = $battery->selectBattery($sessionID);
-            if(PEAR::isError($success)) {
-                return PEAR::raiseError("Error, failed to setup the battery for '$sessionID': ".$success->getMessage());
+            if (Utility::isErrorX($success)) {
+                return PEAR::raiseError(
+                    "Error, failed to setup the battery for '$sessionID': "
+                    . $success->getMessage()
+                );
             }
             
             // get the existing battery for the stage
             $existingTests = $battery->getBattery($stage);
-            if(PEAR::isError($existingTests)) {
-                return PEAR::raiseError("Error, failed to get the existing battery: ".$existingTests->getMessage());
+            if (Utility::isErrorX($existingTests)) {
+                return PEAR::raiseError(
+                    "Error, failed to get the existing battery: "
+                    . $existingTests->getMessage()
+                );
             }
             
             // determine the correct list of instruments
             $neededTests = Utility::lookupBattery($age, $stage);
-            if(PEAR::isError($neededTests)) {
-                return PEAR::raiseError("Error, failed to get the needed battery: ".$neededTests->getMessage());
+            if (Utility::isErrorX($neededTests)) {
+                return PEAR::raiseError(
+                    "Error, failed to get the needed battery: " 
+                    . $neededTests->getMessage()
+                );
             }
 
             // get the differnce between the two batteries
