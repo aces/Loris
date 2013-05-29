@@ -500,7 +500,8 @@ class Database extends PEAR
 	    if(empty($userID)) {
 	        $userID = 'unknown';
 	    }
-        $this->_preparedStoreHistory->bindParam(":primaryKeys", join(",", $primaryKeys));
+        $primaryKey_str = join(",", $primaryKeys);
+        $this->_preparedStoreHistory->bindParam(":primaryKeys", $primaryKey_str);
         $this->_preparedStoreHistory->bindParam(":histtable", $table);
         $this->_preparedStoreHistory->bindParam(":userID", $userID);
         $this->_preparedStoreHistory->bindParam(":type", $type);
@@ -517,7 +518,8 @@ class Database extends PEAR
                 }
 
                 $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
-                $this->_preparedStoreHistory->bindParam(":primaryVals", join(",", $primaryValues));
+                $primaryVal_str = join(",", $primaryValues);
+                $this->_preparedStoreHistory->bindParam(":primaryVals", $primaryVal_str);
                 $this->_preparedStoreHistory->execute();
             }
         }
