@@ -21,6 +21,7 @@ function changeFieldOptions(axis) {
     jQuery("#Administration").change();
 }*/
 function CreateScatterplot() {
+    alert("hi");
     var GetCSVUrl = function() {
         return 'GetCSV.php?InstrumentY=' + jQuery("#instrumenty").val() +
             '&InstrumentX=' + jQuery("#instrumentx").val() +

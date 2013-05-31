@@ -905,6 +905,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
         $Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '18 Month' => 'v18', '24 Month' => 'v24', '36 Month' => 'v36');
         $this->tpl_data['Visits'] = $Visits;
+        $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
     }
 } // End class
 ?>
