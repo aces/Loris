@@ -94,7 +94,6 @@ var ACES_Scatterplot = function() {
 
     this.RenderChart = function() {
         // Basic setup for Highcharts Scatterplot
-         alert("hello");   
         jQuery.get(this.CSVUrl, function(cdata) {
             var CSVData = jQuery.csv(',', '"', "\n")(cdata);
             series[0].data = [];
