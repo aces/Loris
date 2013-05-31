@@ -1,11 +1,3 @@
-<div id="scatter">
-<script type="text/javascript" src="js/jquery.csv.js"></script>
-<!-- highcharts graphing library -->
-<script type="text/javascript" src="js/Highcharts/js/highcharts.src.js"></script>
-<script type="text/javascript" src="js/LorisGraph.js"></script>
-<script type="text/javascript" src="js/scatterplot.js"></script>
-{literal}
-<script type="text/javascript">
 var graph;
 function changeFieldOptions(axis) {
     dropdown = document.getElementById("field" + axis);
@@ -32,8 +24,8 @@ function CreateScatterplot() {
     var GetCSVUrl = function() {
         return 'GetCSV.php?InstrumentY=' + jQuery("#instrumenty").val() +
             '&InstrumentX=' + jQuery("#instrumentx").val() +
-            '&FieldY=' + jQuery("#fieldy").val() +
-            '&FieldX=' + jQuery("#fieldx").val() +
+            '&FieldY=' + jQuery("#fieldy").val() + 
+            '&FieldX=' + jQuery("#fieldx").val() + 
             '&Administration=' + jQuery('#Administration').val() +
             '&Visit_label=' + jQuery('#Visit_label').val() +
             '&site=' + jQuery('#GraphSite').val();
@@ -79,62 +71,3 @@ function CreateScatterplot() {
         graph.RenderChart();
     });
 }
-</script>
-{/literal}
-<form>
-<fieldset>
-    <legend>Candidate Filters</legend>
-    <div>
-        Site: {html_options options=$Sites name="site" selected=$CurrentSite.ID id="GraphSite"}
-        Administration:
-            <select name="Administration" id="Administration">
-                <option value="">Any</option>
-                <option value="All">All</option>
-                <option value="Partial">Partial</option>
-                <option value="None">None</option>
-            </select>
-        Visit Label:
-            <select name="Visit_label" id="Visit_label">
-                <option value="">All</option>
-                {foreach from=$Visits item=name key=val}
-                <option value="{$name}">{$name}</option>
-                {/foreach}
-            </select>
-    </div>
-</fieldset>
-<fieldset>
-    <legend>Y Axis</legend>
-    <div>
-        Instrument:
-            <select name="InstrumentY" onChange="changeFieldOptions('y')" id="instrumenty">
-            {foreach from=$all_instruments item=name key=val}
-                <option value="{$val}">{$name}</option>
-            {/foreach}
-            </select>
-        Field:
-            <select name="FieldY" id="fieldy">
-               <option value="{$onChange}">{$onChange}</option> 
-            </select>
-    </div>
-</fieldset>
-<fieldset>
-    <legend>X Axis</legend>
-    <div>
-        Instrument:
-            <select name="InstrumentX" onChange="changeFieldOptions('x')" id="instrumentx">
-            {foreach from=$all_instruments item=name key=val}
-                <option value="{$val}">{$name}</option>
-            {/foreach}
-            </select>
-        Field: <select name="FieldX" id="fieldx"></select>
-    </div>
-</fieldset>
-<fieldset>
-    <legend>Scatterplot</legend>
-    <input type="button" value="Update chart" onClick="graph.RenderChart();" />
-    <div id="scatterplot" style="width: 800px; height: 600px; margin: 0 auto"></div>
-
-</fieldset>
-</form>
-</div>
-
