@@ -1,3 +1,8 @@
+<script type="text/javascript" src="js/jquery.csv.js"></script>
+<!-- highcharts graphing library -->
+<script type="text/javascript" src="js/Highcharts/js/highcharts.src.js"></script>
+<script type="text/javascript" src="js/LorisGraph.js"></script>
+
 <div id="scatter">
 <form>
 <fieldset>
