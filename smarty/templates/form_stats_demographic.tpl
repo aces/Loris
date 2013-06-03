@@ -3,7 +3,7 @@
         <script type="text/javascript" src="js/modules/form_stats_demographic.js"></script>
         {html_options id="DemographicSite" options=$Sites name="DemographicSite" selected=$CurrentSite.ID}
         {html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID}
-        <button onclick="updateDemographicSite()">Submit Query</button>
+        <button onclick="updateDemographicTab()">Submit Query</button>
 
         <table class="data generalStats">
         <thead>

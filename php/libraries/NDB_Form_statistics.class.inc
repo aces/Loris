@@ -295,12 +295,13 @@ class NDB_Form_statistics extends NDB_Form
         if($config->getSetting("useProjects")=="true"){
               $projects += Utility::getProjectList();
         }
-
+var_dump($_REQUEST['DemographicProject']);
         $this->tpl_data['Projects'] = $projects;
         foreach ($projects as $id=>$name) {
             $this->tpl_data['Projects'][$id] = $name;
             if ($_REQUEST['DemographicProject'] == $id) {
                 $this->tpl_data['CurrentProject'] = array('ID'=> $id, 'Name' => $name);
+            var_dump($this->tpl_data['CurrentProject']);
             }
         }
 
@@ -318,14 +319,13 @@ class NDB_Form_statistics extends NDB_Form
         if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
             $ExtraSite_Criteria .= ' AND  c.ProjectID=:pid ';
             $Extra_vars['pid']=$_REQUEST['project'];
-            $demographics_project_name = $projects["{$_REQUEST['project']}"];
+            $demographics_project_name = $projects["{$_REQUEST['DemographicProject']}"];
         }
 
 
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['demographics_center_name'] = $demographics_center_name;
         $this->tpl_data['demographics_project_name'] = $demographics_project_name;
-
         //***Requires Visit_Windows table to be populated with all study visits***
         $visits = Utility::getVisitList();
 
@@ -337,12 +337,11 @@ class NDB_Form_statistics extends NDB_Form
         $statisticsConfig = $config->getSetting('statistics');
         $visit_to_check = $statisticsConfig['visitStats'];
         $prepared_check = array_merge(array('visit'=>$visit_to_check), $Extra_vars);
-
         $registered_candidates = $DB->pselectOne("SELECT count(DISTINCT(c.PSCID)) as val from candidate as c WHERE c.PSCID <> 'scanner' AND c.Active='Y' " . $ExtraSite_Criteria, $Extra_vars);
         if (Utility::isErrorX($registered_candidates)) {
             return PEAR::raiseError("DB Error: ".$registered_candidates->getMessage());
         }
-
+var_dump($registered_candidates);
 
         $this->tpl_data['registered_candidates'] = $registered_candidates;
         $total_visit = 0;
@@ -404,7 +403,6 @@ class NDB_Form_statistics extends NDB_Form
                 $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
                 $total_scan += $row['val'];
             }
-
         //Scans for visits marked as In Progress
         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
                 AND s.Visit = 'In Progress'
@@ -470,7 +468,6 @@ class NDB_Form_statistics extends NDB_Form
                 $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
             }
         }
-
 
 
         $this->tpl_data['Subprojects'] = Utility::getSubprojectList();

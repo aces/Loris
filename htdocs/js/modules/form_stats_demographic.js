@@ -1,4 +1,4 @@
-        function updateDemographicSite()
+        function updateDemographicTab()
         {
             var DemographicSite = document.getElementById("DemographicSite");
             var DemographicProject = document.getElementById("DemographicProject");
