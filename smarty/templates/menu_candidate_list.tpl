@@ -80,8 +80,11 @@ $(function(){
     <tr>
         <td nowrap="nowrap">{$form.Feedback.label}</td>
         <td nowrap="nowrap">{$form.Feedback.html}</td>
+        <td nowrap="nowrap">{$form.scan_done.label}</td>
+        <td nowrap="nowrap">{$form.scan_done.html}<//td>
         <td nowrap="nowrap">{$form.ProjectID.label}</td>
         <td nowrap="nowrap">{$form.ProjectID.html}</td>
+        
     </tr>
     {if $useEDC=="true"}
     <tr>
@@ -124,7 +127,17 @@ $(function(){
     {section name=piece loop=$items[item]}
         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
 		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
+		    {assign var="PSCID" value=`$items[item][piece].value`}
 		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+		    	
+		{elseif $items[item][piece].name == "scan_Done"}
+        	{if $items[item][piece].value == 'Y'}
+        		{assign var="scan_done" value="Yes"}
+        		<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+            {else}
+                {assign var="scan_done" value="No"}
+                {$scan_done}
+            {/if}
         {else}
             {$items[item][piece].value}
         {/if}
