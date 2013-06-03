@@ -17,7 +17,7 @@
 <h2 class="statsH2">{$Header}</h2>
 
 {if $Subsection!="mri" }
-    {html_options id="instrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
+    {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
     <button onClick="updateDemographicInstrument()">Submit Query</button>
 {/if}
 

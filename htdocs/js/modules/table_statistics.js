@@ -1,8 +1,9 @@
 function updateDemographicInstrument() {
-    var site = document.getElementById("site");
-    var instrument = document.getElementById("instrument");
+    var DemographicSite = document.getElementById("DemographicSite");
+    var DemographicInstrument = document.getElementById("DemographicInstrument");
+    var DemographicProject = document.getElementById("DemographicProject");
     var request = $.ajax({
-        url: 'main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs&site=' + site.value + '&instrument=' + instrument.value,
+        url: 'main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs&DemographicSite=' + DemographicSite.value + '&DemographicInstrument=' + DemographicInstrument.value + '&DemograpicProject=' + DemographicProject.value,
         type: 'GET',
         data: 'html',
         success: function(page, textStatus, jqXHR)

@@ -295,16 +295,13 @@ class NDB_Form_statistics extends NDB_Form
         if($config->getSetting("useProjects")=="true"){
               $projects += Utility::getProjectList();
         }
-var_dump($_REQUEST['DemographicProject']);
         $this->tpl_data['Projects'] = $projects;
         foreach ($projects as $id=>$name) {
             $this->tpl_data['Projects'][$id] = $name;
             if ($_REQUEST['DemographicProject'] == $id) {
                 $this->tpl_data['CurrentProject'] = array('ID'=> $id, 'Name' => $name);
-            var_dump($this->tpl_data['CurrentProject']);
             }
         }
-
 
         $Extra_vars = array();
         $ExtraSite_Criteria = '';
@@ -321,7 +318,7 @@ var_dump($_REQUEST['DemographicProject']);
             $Extra_vars['pid']=$_REQUEST['project'];
             $demographics_project_name = $projects["{$_REQUEST['DemographicProject']}"];
         }
-
+            $this->tpl_data['DemographicInstrument'] = $_REQUEST['DemographicInstrument'];
 
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['demographics_center_name'] = $demographics_center_name;
