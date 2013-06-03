@@ -342,7 +342,7 @@ class NDB_BVL_Battery extends PEAR
         
         $config =& NDB_Config::singleton();
         $doubleDataEntryInstruments= $config->getSetting("DoubleDataEntryInstruments");
-		print_r($doubleDataEntryInstruments);
+
         return in_array($instrumentName,$doubleDataEntryInstruments);
 
 
