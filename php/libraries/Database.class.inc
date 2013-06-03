@@ -500,7 +500,8 @@ class Database extends PEAR
 	    if(empty($userID)) {
 	        $userID = 'unknown';
 	    }
-        $this->_preparedStoreHistory->bindParam(":primaryKeys", join(",", $primaryKeys));
+        $prim_keys = join(",", $primaryKeys);
+        $this->_preparedStoreHistory->bindParam(":primaryKeys", $prim_keys);
         $this->_preparedStoreHistory->bindParam(":histtable", $table);
         $this->_preparedStoreHistory->bindParam(":userID", $userID);
         $this->_preparedStoreHistory->bindParam(":type", $type);
@@ -516,8 +517,9 @@ class Database extends PEAR
                     $primaryValues[] = $set[$key];
                 }
 
+                $prim_vals = join(",", $primaryValues);
                 $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
-                $this->_preparedStoreHistory->bindParam(":primaryVals", join(",", $primaryValues));
+                $this->_preparedStoreHistory->bindParam(":primaryVals", $prim_vals);
                 $this->_preparedStoreHistory->execute();
             }
         }
@@ -547,7 +549,9 @@ class Database extends PEAR
                 foreach($primaryKeys AS $key) {
                     $primaryValues[] = $oldRow[$key];
                 }
-                $this->_preparedStoreHistory->bindParam(":primaryVals", join(",", $primaryValues));
+
+                $prim_Vals = join(",", $primaryValues);
+                $this->_preparedStoreHistory->bindParam(":primaryVals", $prim_Vals);
                 // for every changed column
                  foreach(array_keys($delta) AS $column) {
                     $this->_preparedStoreHistory->bindParam(":histcolumn", $column);
