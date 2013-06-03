@@ -130,7 +130,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
         $instr = Utility::getAllInstruments();
 
-        $instruments2  = array_merge(
+        $BehaviouralInstruments  = array_merge(
                 array( null=> 'Please select an instrument' ),
                 $instr
                 );
@@ -143,7 +143,7 @@ class NDB_Form_statistics extends NDB_Form
                 s.Visit_label as VLabel   
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                 JOIN flag f ON (f.SessionID=s.ID)
-                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                JOIN $_REQUEST[BehaviouralInstrument] i USING(CommentID)
                 WHERE s.Active='Y' AND
                 c.CenterID <> '1' AND f.Data_entry='Complete' AND
                 f.Administration='All' AND
@@ -156,11 +156,11 @@ class NDB_Form_statistics extends NDB_Form
                 s.Visit_label as VLabel 
                 FROM session s JOIN candidate c USING(CandID) 
                 JOIN flag f ON (f.SessionID=s.ID) 
-                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                JOIN $_REQUEST[BehaviouralInstrument] i USING(CommentID)
                 WHERE s.Active='Y' and s.CenterID <> '1'
                 AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat");
-                $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
+                $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[BehaviouralInstrument]", $Subcategories, $Visits, "BehaviouralInstrument", $BehaviouralInstruments, $_REQUEST['BehaviouralInstrument'], $centers, $result, "data_entry");
         $Subcategories = array('Male', 'Female');
         $result = $DB->pselect("SELECT c.CenterID as CenterID,    
                 s.SubprojectID as SubprojectID,  
@@ -177,7 +177,7 @@ class NDB_Form_statistics extends NDB_Form
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-        $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "demographics");
+        $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "instrument", $instruments, '', $centers, $result, "data_entry");
 
         //---- BEHAVIORAL STATS -----
         $sites = Utility::getSiteList(true, false);
@@ -315,7 +315,7 @@ class NDB_Form_statistics extends NDB_Form
         }
         if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
             $ExtraSite_Criteria .= ' AND  c.ProjectID=:pid ';
-            $Extra_vars['pid']=$_REQUEST['project'];
+            $Extra_vars['pid']=$_REQUEST['DemographicProject'];
             $demographics_project_name = $projects["{$_REQUEST['DemographicProject']}"];
         }
             $this->tpl_data['DemographicInstrument'] = $_REQUEST['DemographicInstrument'];
@@ -338,7 +338,6 @@ class NDB_Form_statistics extends NDB_Form
         if (Utility::isErrorX($registered_candidates)) {
             return PEAR::raiseError("DB Error: ".$registered_candidates->getMessage());
         }
-var_dump($registered_candidates);
 
         $this->tpl_data['registered_candidates'] = $registered_candidates;
         $total_visit = 0;
@@ -478,7 +477,7 @@ var_dump($registered_candidates);
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
         $instr = Utility::getAllInstruments();
 
-        $instruments2  = array_merge(
+        $DemographicInstruments  = array_merge(
                 array( null=> 'Please select an instrument' ),
                 $instr
                 );
@@ -491,7 +490,7 @@ var_dump($registered_candidates);
                 s.Visit_label as VLabel   
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                 JOIN flag f ON (f.SessionID=s.ID)
-                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
                 WHERE s.Active='Y' AND
                 c.CenterID <> '1' AND f.Data_entry='Complete' AND
                 f.Administration='All' AND
@@ -504,11 +503,11 @@ var_dump($registered_candidates);
                 s.Visit_label as VLabel 
                 FROM session s JOIN candidate c USING(CandID) 
                 JOIN flag f ON (f.SessionID=s.ID) 
-                JOIN $_REQUEST[instrument2] i USING(CommentID)
+                JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
                 WHERE s.Active='Y' and s.CenterID <> '1'
                 AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat");
-                $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[instrument2]", $Subcategories, $Visits, "instrument2", $instruments2, $_REQUEST['instrument2'], $centers, $result, "data_entry");
+                $this->tpl_data['InstrumentsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[DemographicInstrument]", $Subcategories, $Visits, "DemographicInstrument", $DemographicInstruments, $_REQUEST['DemographicInstrument'], $centers, $result, "demographics");
 
         $Subcategories = array('Male', 'Female');
         $result = $DB->pselect("SELECT c.CenterID as CenterID,    
