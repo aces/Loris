@@ -183,22 +183,22 @@ class NDB_Form_statistics extends NDB_Form
         $sites = Utility::getSiteList(true, false);
         $mri_data = array();
 
-        $this->tpl_data[$centerID] = $_REQUEST['site2'];
+        $this->tpl_data[$centerID] = $_REQUEST['BehaviouralSite'];
         $Extra_vars = array();
         $behavioural_center = '';
         $behavioural_center_name = 'all sites';
         $behavioural_project_name = 'all projects';
 
-        if(isset($_REQUEST['site2']) && $_REQUEST['site2'] != '') {
-            $behavioural_center = $_REQUEST['site2'];
-            $behavioural_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['site2']));
+        if(isset($_REQUEST['BehaviouralSite']) && $_REQUEST['BehaviouralSite'] != '') {
+            $behavioural_center = $_REQUEST['BehaviouralSite'];
+            $behavioural_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['BehaviouralSite']));
             $ExtraSite_Criteria = ' AND c.CenterID=:site ';
-            $Extra_vars['site'] = $_REQUEST['site2'];
+            $Extra_vars['site'] = $_REQUEST['BehaviouralSite'];
         }
-        if(isset($_REQUEST['project2']) && $_REQUEST['project2'] != '') {
+        if(isset($_REQUEST['BehaviouralProject']) && $_REQUEST['BehaviouralProject'] != '') {
             $ExtraSite_Criteria .= ' AND c.ProjectID=:proj ';
-            $Extra_vars['proj'] = $_REQUEST['project2'];
-            $behavioural_project = $_REQUEST['project2'];
+            $Extra_vars['proj'] = $_REQUEST['BehaviouralProject'];
+            $behavioural_project = $_REQUEST['BehaviouralProject'];
             $behavioural_project_name = $projects["$behavioural_project"];
         }
 
@@ -245,7 +245,7 @@ class NDB_Form_statistics extends NDB_Form
             }
 
         $sites = Utility::getSiteList(true, false);
-        $this->tpl_data['DataEntryTable'] = $this->render_stats_table("Data Entry Statistics", $Subcategories, $Visits, "site2", $sites, $behavioural_center, $centers, $result, "data_entry");
+        $this->tpl_data['DataEntryTable'] = $this->render_stats_table("Data Entry Statistics", $Subcategories, $Visits, "BehaviouralSite", $sites, $behavioural_center, $centers, $result, "data_entry");
        // DDE STATS
 
         $result = $DB->pselect("SELECT s.CenterID, 
@@ -299,23 +299,23 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Projects'] = $projects;
         foreach ($projects as $id=>$name) {
             $this->tpl_data['Projects'][$id] = $name;
-            if ($_REQUEST['project'] == $id) {
+            if ($_REQUEST['DemographicProject'] == $id) {
                 $this->tpl_data['CurrentProject'] = array('ID'=> $id, 'Name' => $name);
             }
         }
+
 
         $Extra_vars = array();
         $ExtraSite_Criteria = '';
         $demographics_center_name = 'all sites';
         $demographics_project_name = 'all projects';
-
         $subprojects = Utility::getSubprojectList();
-        if(isset($_REQUEST['site']) && $_REQUEST['site'] != '') {
+        if(isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
             $ExtraSite_Criteria = ' AND c.CenterID=:cid ';
-            $Extra_vars['cid']=$_REQUEST['site'];
+            $Extra_vars['cid']=$_REQUEST['DemographicSite'];
             $demographics_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:cid", $Extra_vars);
         }
-        if(isset($_REQUEST['project']) && $_REQUEST['project'] != '') {
+        if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
             $ExtraSite_Criteria .= ' AND  c.ProjectID=:pid ';
             $Extra_vars['pid']=$_REQUEST['project'];
             $demographics_project_name = $projects["{$_REQUEST['project']}"];
@@ -466,7 +466,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Sites'] = array('' => 'All Sites');
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['site'] == $row['NumericID']) {
+            if($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
             }
         }
@@ -555,7 +555,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Sites'] = array('' => 'All Sites');
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['site'] == $row['NumericID']) {
+            if($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
             }
         }
@@ -574,16 +574,16 @@ class NDB_Form_statistics extends NDB_Form
         $mri_center = '';
         $mri_center_name = 'all sites';
         $mri_project_name = 'all projects';
-        if(isset($_REQUEST['site3']) && $_REQUEST['site3'] != '') {
-            $mri_center = $_REQUEST['site3'];
-            $mri_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['site3']));
+        if(isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
+            $mri_center = $_REQUEST['MRIsite'];
+            $mri_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['MRIsite']));
             $ExtraSite_Criteria = ' AND s.CenterID=:site ';
-            $Extra_vars['site'] = $_REQUEST['site3'];
+            $Extra_vars['site'] = $_REQUEST['MRIsite'];
         }
-        if(isset($_REQUEST['project3']) && $_REQUEST['project3'] != '') {
+        if(isset($_REQUEST['MRIproject']) && $_REQUEST['MRIproject'] != '') {
             $ExtraSite_Criteria .= ' AND c.ProjectID=:proj ';
-            $Extra_vars['proj'] = $_REQUEST['project3'];
-            $mri_project = $_REQUEST['project3'];
+            $Extra_vars['proj'] = $_REQUEST['MRIproject'];
+            $mri_project = $_REQUEST['MRIproject'];
             $mri_project_name = $projects["$mri_project"];
         }
 
@@ -764,8 +764,8 @@ class NDB_Form_statistics extends NDB_Form
 
         $ExtraSite_Criteria = preg_replace('/s.centerID/', 'psc.CenterID', $ExtraSite_Criteria);
         $row = array(null=>"");
-        $row['Center'] = $_REQUEST['site3'];
-        $site = $_REQUEST['site3'];
+        $row['Center'] = $_REQUEST['MRIsite'];
+        $site = $_REQUEST['MRIsite'];
         $sum = 0;
         $sum_files = 0;
         foreach ($MRIOptions as $key=>$scan) {

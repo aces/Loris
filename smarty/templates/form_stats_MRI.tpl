@@ -9,8 +9,8 @@
     <input type="submit" />
 </form-->
     <script type="text/javascript" src="js/modules/form_stats_MRI.js"></script>
-    {html_options id="site3" options=$Sites name="site3" selected=$mri_center}
-    {html_options id="project3" options=$Projects name="project3" selected=$mri_project}
+    {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$mri_center}
+    {html_options id="MRIproject" options=$Projects name="MRIproject" selected=$mri_project}
     <button onClick="updateMRI()">Submit Query</button>
 
 <table class="data generalStats">

@@ -1,9 +1,9 @@
         function updateDemographicSite()
         {
-            var site = document.getElementById("site");
-            var instrument = document.getElementById("instrument");
+            var DemographicSite = document.getElementById("DemographicSite");
+            var DemographicProject = document.getElementById("DemographicProject");
             var request = $.ajax({
-                url: '/main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs&site=' + site.value + '&instrument=' + instrument.value,
+                url: '/main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs&DemographicSite=' + DemographicSite.value + '&DemographicProject=' + DemographicProject.value,
                 type: 'GET',
                 data: 'html',
                 success: function(response, textStatus, jqXHR)
@@ -12,4 +12,3 @@
                 }
             });
         }
-

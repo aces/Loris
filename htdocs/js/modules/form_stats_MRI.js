@@ -1,9 +1,9 @@
 function updateMRI()
 {
-    var site3 = document.getElementById("site3");
-    var project3 = document.getElementById("project3");
+    var MRIsite = document.getElementById("MRIsite");
+    var MRIproject = document.getElementById("MRIproject");
     var request = $.ajax({
-        url: '/main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs&project3=' + project3.value + '&site3=' + site3.value,
+        url: '/main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs&MRIproject=' + MRIproject.value + '&MRIsite=' + MRIsite.value,
         type: 'GET',
         data: 'html',
         success: function(response, textStatus, jqXHR)

@@ -1,10 +1,10 @@
     <div id="demographics">
         <h2 class="statsH2">General statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
-        {html_options id="site" options=$Sites name="site" selected=$CurrentSite.ID}
         <script type="text/javascript" src="js/modules/form_stats_demographic.js"></script>
-        <button  onClick="updateDemographicSite()">Submit Query</button>
+        {html_options id="DemographicSite" options=$Sites name="DemographicSite" selected=$CurrentSite.ID}
+        {html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID}
+        <button onclick="updateDemographicSite()">Submit Query</button>
 
-        <table class="data generalStats">
         <table class="data generalStats">
         <thead>
                 <th></th>
@@ -47,7 +47,6 @@
                 <td class="total">{$registered_candidates} registered candidates</td>
                 <td class="total">{$registered.total_visit}</td>
                 <td class="total">{$scanned.total}</td>
-            <tr>
             <tr>
             </tr>
         </tbody>
