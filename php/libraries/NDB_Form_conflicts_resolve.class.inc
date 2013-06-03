@@ -47,16 +47,16 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         foreach ($value_results AS $vresult) {
             $defaults["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
         }
-        if(isset($_REQUEST['site'])) {
+        if (isset($_REQUEST['site'])) {
             $defaults['site'] = $_REQUEST['site'];
         }
-        if(isset($_REQUEST['Instrument'])) {
+        if (isset($_REQUEST['Instrument'])) {
             $defaults['Instrument'] = $_REQUEST['Instrument'];
         }
-        if(isset($_REQUEST['CandID'])) {
+        if (isset($_REQUEST['CandID'])) {
             $defaults['CandID'] = $_REQUEST['CandID'];
         }
-        if(isset($_REQUEST['PSCID'])) {
+        if (isset($_REQUEST['PSCID'])) {
             $defaults['PSCID'] = $_REQUEST['PSCID'];
         }
         return $defaults;
