@@ -1,4 +1,4 @@
-        function updateReliabilitySite()
+        function updateDemographicTab()
         {
             var site = document.getElementById("site");
             var instrument = document.getElementById("instrument");

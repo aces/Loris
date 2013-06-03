@@ -1,5 +1,6 @@
-        function updateProject()
+        /*function updateProject1()
         {
+         
             var project = document.getElementById("project");
             var site = document.getElementById("site");
             var request = $.ajax({
@@ -11,4 +12,4 @@
                     $('#enroll').html(response);
                 }
             });
-        }
+        }*/
