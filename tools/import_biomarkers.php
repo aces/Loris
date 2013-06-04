@@ -98,14 +98,18 @@ for( $i = 0; $i < sizeof($fixedLines); $i++ )
 
 			$candID = $db->pselectOne("SELECT CandID from candidate where PSCID =:pid", array("pid"=>$PSCID)); 
 			$sessionID = $db->pselectOne("SELECT ID from session where CandID =:cid and Visit_label =:visit", array('cid'=>$candID, 'visit'=>$visit));
-			if (empty($sessionID) && $visit == 'NAPLP00')
+			if (empty($sessionID) && $visit == 'NAPLP00') {
 				$sessionID = $db->pselectOne("SELECT ID from session where CandID =:cid and Visit_label =:visit", array('cid'=>$candID, 'visit'=>'NAPLP01'));
+			}
 			$commentID = $db->pselectOne("SELECT CommentID from flag where sessionID=:sid and test_name = 'LP'", array('sid'=>$sessionID));
+			$DDE_commentID = $db->pselectOne("SELECT CommentID from flag where sessionID=:sid and test_name = 'LP' and CommentID like 'DDE%'", array('sid'=>$sessionID));
 			print "CommentID: " . $commentID ."\n";
 
 			$insertData = array('tau'=>$tau, 'b_amyloid'=>$b_amyloid, 'ptau'=>$ptau);
 			$where = array('CommentID'=>$commentID);
+			$where2 = array('CommentID'=>$DDE_commentID);
 
+			//populate fields in LP form
 			if (!empty($sessionID) && !empty($commentID)) {
 				$success = $DB->update($table, $insertData, $where);
 				if (Utility::isErrorX($success)) {
@@ -117,6 +121,19 @@ for( $i = 0; $i < sizeof($fixedLines); $i++ )
 			else {
 				echo "Does not exist\n";
 
+			}
+			
+			//populate DDE fields in LP form
+			if (!empty($sessionID) && !empty($DDE_commentID)) {
+				$success2 = $DB->update($table, $insertData, $where2);
+				if (Utility::isErrorX($success2)) {
+					fwrite(STDERR, "Failed to update aosi table, DB Error: " . $success2->getMessage()."\n");
+					return false;
+				}
+				echo "DDE Updated!\n";
+			}
+			else {
+				echo "DDE Does not exist\n";
 			}
 
 		}
