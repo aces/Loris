@@ -55,6 +55,10 @@ abstract class LorisTest extends WebTestCase
         $track = $this->config->getSetting('logHistory');
         $this->CandID = $this->config->getSetting("testCandidate");
 
+        // If this isn't set, it gets it from the DB further down after
+        // it's connected
+        $this->Session = $this->config->getSetting("testSession");
+
         $ignores = $this->config->getSetting("ignoreInstruments");
         if (is_array($ignores)) {
             $this->ignoreInstruments = $ignores;
@@ -104,7 +108,6 @@ abstract class LorisTest extends WebTestCase
                 if(!empty($Candidate)) {
                     $this->SessionID = $Candidate['SessionID'];
                 }
-
             } else {
                 $this->DB->selectRow("select s.ID as SessionID from session s join candidate c using (CandID) where c.pscid not like 'dcc%' and c.pscid <> 'scanner' and s.Active='Y' and s.Visit_label='v06' AND s.CenterID = 1 order by s.ID desc limit 1 ", $Candidate);
                 $this->SessionID = $Candidate['SessionID'];
