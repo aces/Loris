@@ -13,8 +13,8 @@
  *
  *
  */
-require_once 'simpletest/web_tester.php';
-require_once 'simpletest/reporter.php';
+require_once("simpletest/web_tester.php");
+require_once('simpletest/reporter.php');
         
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 $Reporter = new TextReporter();
