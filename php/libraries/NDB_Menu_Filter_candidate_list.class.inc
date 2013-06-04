@@ -47,7 +47,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         }
         $this->columns=array_merge($this->columns,
             array('min(session.SubprojectID) as Subproject',
-            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB')
+            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
+            'session.Scan_done as scan_Done')
         );
         if($config->getSetting("useEDC")==="true") {
         	$this->columns[]='DATE_FORMAT((candidate.EDC),\'%Y-%m-%d\') AS EDC';
@@ -74,7 +75,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         
         $this->group_by = 'candidate.CandID';
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
-        $this->validFilters = array('participant_status_options.ID','candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
+        $this->validFilters = array('participant_status_options.ID','candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)','session.Scan_done');
         $this->validHavingFilters = array('count(DISTINCT session.Visit_label)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
 		
         $this->formToFilter = array(
@@ -88,7 +89,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                     'Visit_Count' => 'count(DISTINCT session.Visit_label)', // Need distinct because of joining with feedback_bvl_thread
                                     'Latest_Visit_Status' => 'max(session.Current_stage)',
                                     'Feedback' => 'coalesce(min(feedback_bvl_thread.Status+1), 1)',
-                                    'Participant_Status' => 'participant_status_options.ID'
+                                    'Participant_Status' => 'participant_status_options.ID',
+                                    'scan_done' => 'session.Scan_done'
                                 );
         return true;
     }
@@ -132,7 +134,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
         $participant_status_options=   array(null=>'Any') +  NDB_Form_participant_status::getParticipantStatusOptions();
-        
+        $scan_options = array(null=>'Any','Y'=>'Yes','N'=>'No');
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
         $this->addBasicText('DCCID', 'DCC-ID:');
@@ -144,7 +146,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
         $this->addSelect('Participant_Status','Participant Status:', $participant_status_options);
-        
+        $this->addSelect('scan_done','Scan Done:', $scan_options);
         $config=&NDB_Config::singleton();
         if($config->getSetting("useProjects")=="true"){
            $this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
@@ -207,7 +209,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 } else if ($key == 'Participant_Status') {
                 	$this->tpl_data['items'][$x][$i]['value'] = $participantOptions[$val];
                 }
-                	
+                  else if ($key=='scan_done'){
+                    $this->tpl_data['items'][$x][$i]['value'] = $val;
+                }
 
                 $i++;
             }
