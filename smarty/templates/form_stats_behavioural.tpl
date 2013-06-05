@@ -3,7 +3,7 @@
     <script type="text/javascript" src="js/modules/form_stats_behavioural.js"></script>
     {html_options id="BehaviouralSite" options=$Sites name="BehaviouralSite" selected=$behavioural_center}
     {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$behavioural_project}
-        <button onClick="updateBehavioural()">Submit Query</button>
+        <button onClick="updateBehaviouralTab()">Submit Query</button>
 
 <table class="data">
     <tr>

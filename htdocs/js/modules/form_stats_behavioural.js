@@ -1,4 +1,4 @@
-function updateBehavioural()
+function updateBehaviouralTab()
 {
     var BehaviouralProject = document.getElementById("BehaviouralProject");
     var BehaviouralSite = document.getElementById("BehaviouralSite");

@@ -1,4 +1,4 @@
-function updateMRI()
+function updateMRITab()
 {
     var MRIsite = document.getElementById("MRIsite");
     var MRIproject = document.getElementById("MRIproject");

@@ -32,12 +32,12 @@ function updateBehaviouralInstrument() {
 function updateMRITable() {
     var selectedMRI_TYPE = document.getElementById("mri_type");
     var request = $.ajax({
-url: 'main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value,
-type: 'GET',
-data: 'html',
-success: function(page, textStatus, jqXHR)
-{
-$('#mri').html(page);
-}
-});
+        url: 'main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value,
+        type: 'GET',
+        data: 'html',
+        success: function(page, textStatus, jqXHR)
+        {
+            $('#mri').html(page);
+        }
+    });
 }

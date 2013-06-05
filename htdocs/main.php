@@ -25,7 +25,8 @@ $config =& NDB_Config::singleton();
 $timer->setMarker('Loaded client');
 
 //--------------------------------------------------
-//set URL params
+
+// set URL params
 function tplFromRequest($param) {
     global $tpl_data;
     if(isset($_REQUEST[$param])) {

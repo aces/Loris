@@ -1,17 +1,9 @@
 <div id="mri">
 <h2 class="statsH2">General Statistics with QC Status for {$mri_center_name} {$mri_project_name}</h2>
-<!--form action="#mri">
-    {html_options options=$Sites name="site3" selected=$mri_center}
-    <input type="hidden" name="test_name" value="statistics" />
-    <input type="submit" />
-    {html_options options=$Projects name="project3" selected=$mri_project}
-    <input type="hidden" name="project_mri" value="statistics2" />
-    <input type="submit" />
-</form-->
     <script type="text/javascript" src="js/modules/form_stats_MRI.js"></script>
     {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$mri_center}
     {html_options id="MRIproject" options=$Projects name="MRIproject" selected=$mri_project}
-    <button onClick="updateMRI()">Submit Query</button>
+    <button onClick="updateMRITab()">Submit Query</button>
 
 <table class="data generalStats">
     <thead>
