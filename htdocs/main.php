@@ -143,7 +143,8 @@ $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
     if(file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
-        $tpl_data['test_name_js'] = "js/modules/$TestName.js"; }
+        $tpl_data['test_name_js'] = "js/modules/$TestName.js"; 
+    }
     if (!empty($_REQUEST['commentID'])) {
         // make the control panel object for the current instrument
         $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
@@ -153,7 +154,7 @@ if (!empty($TestName)) {
         } else {
             if (empty($subtest)) {
                 // check if the file/class exists
-                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) { 
+                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) {
                     // save possible changes from the control panel...
                     $success = $controlPanel->save();
                     if (Utility::isErrorX($success)) {
