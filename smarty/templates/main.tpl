@@ -1,8 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-
-
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
@@ -41,7 +39,6 @@ function open_help_section(){
     onload="feedback_bvl_popup();"
 {/if}
 >
-
 {if $dynamictabs neq "dynamictabs"}
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
     <tr>
@@ -100,7 +97,7 @@ function open_help_section(){
                 {$control_panel}
             {/if}
         {/if}
-    
+
 	<!--links-->
                     <h3 class="controlPanelSection">Links</h3>
                     <ul class="controlPanel">
@@ -233,7 +230,7 @@ function open_help_section(){
             </table>
         {/if}
     {/if}
-<!-- included file -->
+        <!-- included file -->
 <table width="90%"><tr><td>
 {$workspace}
 </td></tr></table>

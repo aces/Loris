@@ -307,6 +307,7 @@ class NDB_Form_statistics extends NDB_Form
         $ExtraSite_Criteria = '';
         $demographics_center_name = 'all sites';
         $demographics_project_name = 'all projects';
+        
         $subprojects = Utility::getSubprojectList();
         if(isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
             $ExtraSite_Criteria = ' AND c.CenterID=:cid ';
@@ -318,13 +319,15 @@ class NDB_Form_statistics extends NDB_Form
             $Extra_vars['pid']=$_REQUEST['DemographicProject'];
             $demographics_project_name = $projects["{$_REQUEST['DemographicProject']}"];
         }
-            $this->tpl_data['DemographicInstrument'] = $_REQUEST['DemographicInstrument'];
+        
+        $this->tpl_data['DemographicInstrument'] = $_REQUEST['DemographicInstrument'];
 
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['demographics_center_name'] = $demographics_center_name;
         $this->tpl_data['demographics_project_name'] = $demographics_project_name;
+        
         //***Requires Visit_Windows table to be populated with all study visits***
-        $visits = Utility::getVisitList();
+        $visits = Utility::getVisitList(); 
 
 
         // NUMBER OF CANDIDATES STATS TABLE
@@ -334,10 +337,12 @@ class NDB_Form_statistics extends NDB_Form
         $statisticsConfig = $config->getSetting('statistics');
         $visit_to_check = $statisticsConfig['visitStats'];
         $prepared_check = array_merge(array('visit'=>$visit_to_check), $Extra_vars);
+        
         $registered_candidates = $DB->pselectOne("SELECT count(DISTINCT(c.PSCID)) as val from candidate as c WHERE c.PSCID <> 'scanner' AND c.Active='Y' " . $ExtraSite_Criteria, $Extra_vars);
         if (Utility::isErrorX($registered_candidates)) {
             return PEAR::raiseError("DB Error: ".$registered_candidates->getMessage());
         }
+
 
         $this->tpl_data['registered_candidates'] = $registered_candidates;
         $total_visit = 0;
@@ -382,7 +387,7 @@ class NDB_Form_statistics extends NDB_Form
 
         //COUNT OF CANDIDATES WITH AN MRI SESSION
 
-        $total_scan = 0;
+        $total_scan = 0; 
 
         //Scans for visits marked as Pass
         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
@@ -393,12 +398,13 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin' 
                 AND c.CenterID <> '1'
                 $ExtraSite_Criteria
-                GROUP BY s.SubprojectID", $Extra_vars);
+                GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
                 $this->tpl_data['scanned'][$row['rowid']]['pass'] = $row['val'];
                 $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
                 $total_scan += $row['val'];
             }
+
         //Scans for visits marked as In Progress
         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
                 AND s.Visit = 'In Progress'
@@ -408,12 +414,13 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND c.CenterID <> '1' 
                 $ExtraSite_Criteria
-                GROUP BY s.SubprojectID", $Extra_vars);
+                GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
                 $this->tpl_data['scanned'][$row['rowid']]['progress'] = $row['val'];
                 $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
                 $total_scan += $row['val'];
             }
+
         //Scans for visits marked as Fail
         $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM session s join candidate c ON (c.CandID=s.CandID) WHERE s.Scan_done='Y'
                 AND s.Visit = 'Failure'
@@ -423,7 +430,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND c.CenterID <> '1' 
                 $ExtraSite_Criteria
-                GROUP BY s.SubprojectID", $Extra_vars);
+                GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
                 $this->tpl_data['scanned'][$row['rowid']]['fail'] = $row['val'];
                 $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
@@ -439,7 +446,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND c.CenterID <> '1' 
                 $ExtraSite_Criteria
-                GROUP BY s.SubprojectID", $Extra_vars);
+                GROUP BY s.SubprojectID", $Extra_vars); 
             foreach($result as $row) {
                 $this->tpl_data['scanned'][$row['rowid']]['withdraw'] = $row['val'];
                 $this->tpl_data['scanned'][$row['rowid']]['total'] += $row['val'];
@@ -452,7 +459,7 @@ class NDB_Form_statistics extends NDB_Form
         // template is looking for it. Exclude DCC 
         $s = Utility::getSiteList();
 
-        $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID != '1'");
+        $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID != '1'"); 
         if(Utility::isErrorX($centers)) {
             return PEAR::raiseError("DB Error: ".$centers->getMessage());
         }
@@ -466,14 +473,16 @@ class NDB_Form_statistics extends NDB_Form
         }
 
 
+
         $this->tpl_data['Subprojects'] = Utility::getSubprojectList();
         $Visits = Utility::getVisitList();
         $this->tpl_data['Visits'] = $Visits;
+
         $instruments  =
             array( '' => 'Recruit Gender Breakdown');
 
 
-        $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments();
+        $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments(); 
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
         $instr = Utility::getAllInstruments();
 
@@ -482,7 +491,7 @@ class NDB_Form_statistics extends NDB_Form
                 $instr
                 );
 
-        $Subcategories = array('Complete', 'Incomplete');
+        $Subcategories = array('Complete', 'Incomplete'); 
         $result = $DB->pselect("SELECT count(*) as val, 
                 f.Data_entry as Subcat, 
                 c.CenterID as CenterID, 
@@ -521,6 +530,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')            
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat 
                 ORDER BY SubprojectID");
+
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -567,6 +577,7 @@ class NDB_Form_statistics extends NDB_Form
         $mri_center = '';
         $mri_center_name = 'all sites';
         $mri_project_name = 'all projects';
+        
         if(isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
             $mri_center = $_REQUEST['MRIsite'];
             $mri_center_name = $DB->pselectOne("SELECT psc.PSCArea from psc where psc.CenterID =:site", array('site'=>$_REQUEST['MRIsite']));
@@ -584,18 +595,20 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['mri_center_name'] = $mri_center_name;
         $this->tpl_data['mri_project'] = $mri_project;
         $this->tpl_data['mri_project_name'] = $mri_project_name;
+        
         $MRISubcategories = array('Complete', 'Partial Run', 'No Scan');
         $MRIOptions = array();
         $default_scan = 'T1'; //Change accordingly if necessary 
 
         //The MRI scans as coded in the MRI parameter form 
-        $MRI_db_categories = $DB->pselect("SELECT distinct Scan_type from mri_scan_type m right join files f on f.AcquisitionProtocolID = m.ID");
+        $MRI_db_categories = $DB->pselect("SELECT distinct Scan_type from mri_scan_type m right join files f on f.AcquisitionProtocolID = m.ID"); 
         foreach($MRI_db_categories as $key=>$type) {
             foreach ($type as $scan=>$label){
                 if (!empty($label))
                     $MRIOptions[$label] =  $label;
             }
         }
+
         if($_REQUEST['mri_type']) {
             $MRI_Type = $_REQUEST['mri_type'];
             //field name should match the field name in the MRI parameter form
@@ -636,7 +649,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND m.Administration = 'All'
                 AND f.Administration <> 'None'
                 GROUP BY Subcat, s.SubprojectID, c.CenterID, VLabel");
-        $M_Visits = Utility::getVisitList();
+        $M_Visits = Utility::getVisitList(); 
         $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table($MRIHeader, $MRISubcategories, $M_Visits, "mri_type", $MRIOptions, $MRI_Type, $centers, $result, "mri");
         foreach($result as $row) {
             $center = $row['CenterID'];
@@ -668,7 +681,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND (m.$default_scan IS NULL OR m.$default_scan <> 'No')
                 AND f.Administration <> 'None'
                 AND f.Data_entry='Complete'
-                GROUP BY s.CenterID", $Extra_vars);
+                GROUP BY s.CenterID", $Extra_vars); 
             foreach($result as $row) {
                 $this->tpl_data['mri_errors'][$row['CenterID']]['no_tarchive'] = $row['val'];
             }
@@ -688,7 +701,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND fi.FileID IS NULL 
                 AND s.Active='Y' 
                 AND f.Data_entry = 'Complete'
-                GROUP by s.CenterID", $Extra_vars);
+                GROUP by s.CenterID", $Extra_vars); 
             foreach($result as $row) {
                 $this->tpl_data['mri_errors'][$row['CenterID']]['no_browser'] = $row['val'];
             }
@@ -723,14 +736,14 @@ class NDB_Form_statistics extends NDB_Form
 
             // -------- MRI STATS---------------
 
-            $claimed = $DB->pselect("SELECT COUNT(s.CandID) FROM session as s, psc as p, candidate as c WHERE c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID  AND s.Scan_done='Y' AND s.CenterID=:cid ORDER BY s.CandID", array('cid'=>$id));
+            $claimed = $DB->pselect("SELECT COUNT(s.CandID) FROM session as s, psc as p, candidate as c WHERE c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID  AND s.Scan_done='Y' AND s.CenterID=:cid ORDER BY s.CandID", array('cid'=>$id)); 
             if (Utility::isErrorX($claimed)) {
                 return PEAR::raiseError("DB Error: ".$claimed->getMessage());
             }
             list(,$claimed)=each($claimed[0]);
             $claimed_count = $claimed;
 
-            $forms = $DB->pselect("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID <> '1' AND s.CenterID=:cid ORDER BY p.Name", array('cid'=>$id));
+            $forms = $DB->pselect("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID <> '1' AND s.CenterID=:cid ORDER BY p.Name", array('cid'=>$id)); 
             if (Utility::isErrorX($forms)) {
                 return PEAR::raiseError("DB Error: ".$forms->getMessage());
             }
@@ -781,7 +794,7 @@ class NDB_Form_statistics extends NDB_Form
         // 
 
         //foreach ($MultiTimepoint as $row) 
-        $this->tpl_data['mri_all_scans_done'][] = array('Name' => $row['Center']);
+        $this->tpl_data['mri_all_scans_done'][] = array('Name' => $row['Center']); 
         foreach ($MRIOptions as $key=>$scan) {
             $this->tpl_data['mri_all_scans_done'][$key] = $row[$key];
             $total[$key] += $row[$key];
@@ -816,6 +829,7 @@ class NDB_Form_statistics extends NDB_Form
             $total_files[$file['type']] += $file['c'];
             $sum_files += $file['c'];
         }
+
         $sum_pass = 0;
         foreach ($pass as $p) {
             $count_pass['Name'] = $site;
@@ -858,10 +872,10 @@ class NDB_Form_statistics extends NDB_Form
         foreach ($feedback_comments as $key=>$data)
         {
             if (!array_key_exists($data['Comment'], $comments)) {
-                $comments[$data['Comment']] = $total;
+                $comments[$data['Comment']] = $total; 
             }
 
-            $comments[$data['Comment']][$data['scan_type']] += $data['count'];
+            $comments[$data['Comment']][$data['scan_type']] += $data['count']; 
             $comments['Total']['Total'] += $data['count'];
 
 
