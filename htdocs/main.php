@@ -22,7 +22,7 @@ require_once 'NDB_Breadcrumb.class.inc';
 
 $TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : '';
 $subtest = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
- // make local instances of objects
+// make local instances of objects
 $config =& NDB_Config::singleton();
 
 $timer->setMarker('Loaded client');
@@ -66,6 +66,7 @@ if (Utility::isErrorX($site)) {
 } else {
     $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
 }
+
 
 // the the list of tabs, their links and perms
 $mainMenuTabs = $config->getSetting('main_menu_tabs');
@@ -141,9 +142,8 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
 $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
-    if(file_exists($paths['base'] . "htdocs/js/modules/" . $TestName . ".js")) {
-        $tpl_data['test_name_js'] = "js/modules/" . $TestName . ".js";
-    }
+    if(file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
+        $tpl_data['test_name_js'] = "js/modules/$TestName.js"; }
     if (!empty($_REQUEST['commentID'])) {
         // make the control panel object for the current instrument
         $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
@@ -153,7 +153,7 @@ if (!empty($TestName)) {
         } else {
             if (empty($subtest)) {
                 // check if the file/class exists
-                    if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) { 
+                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) { 
                     // save possible changes from the control panel...
                     $success = $controlPanel->save();
                     if (Utility::isErrorX($success)) {
@@ -248,7 +248,7 @@ function HandleError($error) {
 }
 $caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
 $workspace = $caller->load($TestName, $subtest);
-if (Utility::isErrorX($workspace)) {     
+if (Utility::isErrorX($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
 } else {
     $tpl_data['workspace'] = $workspace;
@@ -270,7 +270,7 @@ if (Utility::isErrorX($crumbs)) {
         $tpl_data['top_level'] = $parsed['test_name'];
     } else {
         $tpl_data['top_level'] = '';
-    } 
+    }
 }
 
 $timer->setMarker('Drew breadcrumbs');
@@ -294,7 +294,7 @@ foreach(Utility::toArray($links['link']) AS $link){
         'url'        => $BaseURL . $LinkArgs,
         'label'      => $LinkLabel, 
         'windowName' => $WindowName
-    );  
+    ); 
 }
 
 
