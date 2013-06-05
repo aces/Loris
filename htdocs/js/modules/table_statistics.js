@@ -1,3 +1,4 @@
+/*global document, $*/
 function updateDemographicInstrument() {
     var DemographicSite = document.getElementById("DemographicSite");
     var DemographicInstrument = document.getElementById("DemographicInstrument");
@@ -6,8 +7,7 @@ function updateDemographicInstrument() {
         url: 'main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs&DemographicSite=' + DemographicSite.value + '&DemographicInstrument=' + DemographicInstrument.value + '&DemographicProject=' + DemographicProject.value,
         type: 'GET',
         data: 'html',
-        success: function(page, textStatus, jqXHR)
-        {
+        success: function(page){
             $('#demographics').html(page);
         }
     });
@@ -21,8 +21,7 @@ function updateBehaviouralInstrument() {
         url: 'main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs&BehaviouralSite=' + BehaviouralSite.value + '&BehaviouralInstrument=' + BehaviouralInstrument.value + '&BehaviouralProject=' + BehaviouralProject.value,
         type: 'GET',
         data: 'html',
-        success: function(page, textStatus, jqXHR)
-        {
+        success: function(page) {
             $('#data_entry').html(page);
         }
     });
@@ -35,8 +34,7 @@ function updateMRITable() {
         url: 'main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value,
         type: 'GET',
         data: 'html',
-        success: function(page, textStatus, jqXHR)
-        {
+        success: function(page) {
             $('#mri').html(page);
         }
     });

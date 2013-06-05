@@ -33,7 +33,6 @@
 
 
 </h2>
-
 <table class="data" width="80%">
     <tr>
         <th rowspan="2">Timepoint</th>
