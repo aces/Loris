@@ -48,7 +48,7 @@ $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['PopUpFeedbackBVL'] = $config->getSetting('PopUpFeedbackBVL');
 // draw the user information table
 $user =& User::singleton();
-if (PEAR::isError($user)) {
+if (Utility::isErrorX($user)) {
     $tpl_data['error_message'][] = "User Error: ".$user->getMessage();
 } else {
     $tpl_data['user'] = $user->getData();
@@ -56,7 +56,7 @@ if (PEAR::isError($user)) {
 }
 
 $site =& Site::singleton($user->getData('CenterID'));
-if (PEAR::isError($site)) {
+if (Utility::isErrorX($site)) {
     $tpl_data['error_message'][] = "Site Error: ".$site->getMessage();
     unset($site);
 } else {
@@ -117,7 +117,7 @@ if (!empty($_REQUEST['candID'])) {
 
 if (!empty($_REQUEST['sessionID'])) {
     $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-    if (PEAR::isError($timePoint)) {
+    if (Utility::isErrorX($timePoint)) {
         $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
     } else {
         $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
@@ -142,7 +142,7 @@ if (!empty($_REQUEST['test_name'])) {
         // make the control panel object for the current instrument
         $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
         $success = $controlPanel->select($_REQUEST['commentID']);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
               $tpl_data['error_message'][] = $success->getMessage();
         } else {
             if (empty($_REQUEST['subtest'])) {
