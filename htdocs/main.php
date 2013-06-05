@@ -143,7 +143,7 @@ $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
     if(file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
-        $tpl_data['test_name_js'] = "js/modules/$TestName.js"; 
+        $tpl_data['test_name_js'] = "js/modules/$TestName.js";
     }
     if (!empty($_REQUEST['commentID'])) {
         // make the control panel object for the current instrument
