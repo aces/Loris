@@ -171,7 +171,6 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         } else {
             require_once($base."project/instruments/$class.class.inc");
-
             // Now go ahead and instantiate it
             $obj = new $class;
             $obj->InstrumentType = 'PHP';

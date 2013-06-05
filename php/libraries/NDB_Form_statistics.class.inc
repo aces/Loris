@@ -325,7 +325,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['demographics_center_name'] = $demographics_center_name;
         $this->tpl_data['demographics_project_name'] = $demographics_project_name;
-        
+
         //***Requires Visit_Windows table to be populated with all study visits***
         $visits = Utility::getVisitList(); 
 
@@ -373,6 +373,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['registered'][$row['rowid']]['visit_total'] += $row['val'];
             $total_visit += $row['val'];
         }
+
         //Candidates with visit marked as Withdraw                        
         $result_withdrawal = $DB->pselect("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.PSCID <> 'scanner' AND c.Active='Y' AND s.Visit = 'Withdrawal' AND s.Visit_label LIKE CONCAT('%', :visit, '%') AND c.CenterID <> '1' $ExtraSite_Criteria group by s.subprojectid", $prepared_check);
 
@@ -474,11 +475,11 @@ class NDB_Form_statistics extends NDB_Form
 
 
 
-        $this->tpl_data['Subprojects'] = Utility::getSubprojectList();
+        $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); 
         $Visits = Utility::getVisitList();
         $this->tpl_data['Visits'] = $Visits;
 
-        $instruments  =
+        $instruments  = 
             array( '' => 'Recruit Gender Breakdown');
 
 
