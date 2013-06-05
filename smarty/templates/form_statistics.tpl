@@ -83,10 +83,6 @@ function CreateScatterplot() {
 
   $(document).ready(function() {
     $(".tabs").tabs();
-    changeFieldOptions('y');
-    changeFieldOptions('x');
-
-    CreateScatterplot();
   });
 
 </script>

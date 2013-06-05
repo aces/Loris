@@ -73,7 +73,7 @@ class NDB_Form_statistics extends NDB_Form
    function statistics()
    {
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
    }
@@ -81,7 +81,7 @@ class NDB_Form_statistics extends NDB_Form
     function stats_general()
     {
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
     }
@@ -894,11 +894,11 @@ class NDB_Form_statistics extends NDB_Form
     function stats_scatter()
     {
         $DB =& Database::singleton();
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
             $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
-        if(PEAR::isError($centers)) {
+        if(Utility::isErrorX($centers)) {
             return PEAR::raiseError("DB Error: ".$centers->getMessage());
         }
         $this->tpl_data['Centers'] = $centers;
