@@ -38,9 +38,7 @@ require_once 'Candidate.class.inc';
  */
 function _makePretty($key, $val)
 {
-    if ($key == 'Review_Done'
-        || $key=='Conflict'
-        || $key=="Finalized"
+    if( $key=='Conflict'
         || $key=="Conflict2"
         || $key=="Conflict"
     ) {
@@ -53,6 +51,16 @@ function _makePretty($key, $val)
         } else { // Leave nulls empty so that we can distinguish
             return '';
         }
+    }
+    if($key == "Finalized" || $key =="Review_Done"){
+        if($val == "yes"){
+            return 'Yes';
+        }elseif ($val == "no"){
+            return 'No';
+        }else{
+            return '';
+        }
+
     }
 
     if ($key == 'Final_Review_Results' 
@@ -143,7 +151,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'c.ProjectID as Project',
             'c.CenterID as Site',
             'c.DOB as Birth_Date',
-            'COALESCE(r.Review_Done, 0) as Review_Done',
+            'r.Review_Done as Review_Done',
             'r.Final_Review_Results as Results',
             'r.Final_Exclusionary as Exclusionary_Status',
             'r.sas as SAS',
@@ -169,7 +177,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             's.visit_label',
             'c.PSCID',
             'r.Final_Review_Results',
-            'COALESCE(r.Review_Done, 0)',
+            'r.Review_Done',
             'r.sas',
             'r.pvs',
             'r.Final_Exclusionary',
@@ -177,19 +185,16 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $conflict_condition2,
             'r.Finalized',
             'c.CenterID',
-            'C.ProjectID'
+            'c.ProjectID'
         );
         
         $this->formToFilter = array (
                                     'dccid'       => 'c.CandID',
                                     'site'        => 'c.CenterID',
                                     'Visit_label' => 's.visit_label',
-                                    'ProjectID'   => 'c.ProjectID',
+                                    'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_done' => 
-                                    /* MySQL treats boolean as tinyint,
-                                     * so 0 instead of False */
-                                        'COALESCE(r.Review_Done, 0)',
+                                    'Review_done' => 'r.Review_Done',
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -201,7 +206,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Conflict2'   => $conflict_condition2,
                                     'Finalized'   => 'r.Finalized'
         );
-        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2);
+        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized','r.Review_Done');
     }
 
     /**
@@ -233,7 +238,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         foreach ($projectList as $key => $value) {
             $list_of_projects[$key] =$value;
         }  
-        $options_boolean= array(null => 'Any', 'true' => 'Yes', 'false' => 'No');
+        $options_boolean= array(null => 'Any', 'yes' => 'Yes', 'no' => 'No');
         $conflict_options1 = array(null => 'Any', 'true' => 'Yes', 'false' => 'No' );
         $conflict_options2 = array(null => 'Any', 
             'prim_second' => 'Yes', 
