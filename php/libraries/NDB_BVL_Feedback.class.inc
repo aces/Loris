@@ -247,15 +247,14 @@ Class NDB_BVL_Feedback
             $query .= " AND Active = 'Y'";
         }
         
-        $query .= " ORDER BY Status ASC LIMIT 1";
-
-        $result = $db->pselectRow($query,$qparams);
+        $query .= " ORDER BY Status ASC";
+        $result = $db->pselectOne($query,$qparams);
         
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
-        if(isset($result['Status'])) {
-            return $result['Status'];
+        if(isset($result)) {
+            return $result;
         }
         return null;
     }

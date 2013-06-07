@@ -48,12 +48,18 @@ class TestOfNewProfile extends LorisTest {
             $this->assertNoPattern("/Date of Birth fields must match/", "Incorrectly enforcing DoB matching");
             $this->assertPattern("/Gender is required/", "Not checking gender input");
 
-            $this->post($this->url . '/main.php', array(
+            $PostArray = array(
                 'test_name' => 'new_profile',
                 'dob1' => array('Y' => 2009, 'M' => 5, 'd' => 1),
                 'dob2' => array('Y' => 2009, 'M' => 5, 'd' => 1),
                 'gender' => 'Male'
-            ));
+            );
+
+            if ($this->config->getSetting("useProjects") === "true") {
+                $PostArray['ProjectID'] = 1;
+            }
+            $this->post($this->url . '/main.php', $PostArray);
+
             $this->assertPattern("/New candidate created/", "Candidate not created properly when all input given");
 
             // Delete permission, make sure we get permission denied
