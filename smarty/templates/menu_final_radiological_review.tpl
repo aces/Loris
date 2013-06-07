@@ -43,7 +43,8 @@
     <tr>
         <td nowrap="nowrap">{$form.Finalized.label}</td>
         <td nowrap="nowrap">{$form.Finalized.html}</td>
-        <td nowrap="nowrap" colspan="2">&nbsp;</td>
+        <td nowrap="nowrap">{$form.Project.label}</td>
+        <td nowrap="nowrap">{$form.Project.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">Actions:</td>
