@@ -1,6 +1,6 @@
 <div id="mri">
 <h2 class="statsH2">General Statistics with QC Status for {$mri_center_name} {$mri_project_name}</h2>
-    <script type="text/javascript" src="js/modules/form_stats_MRI.js"></script>
+    <script type="text/javascript" src="js/modules/table_statistics.js"></script>
     {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$mri_center}
     {html_options id="MRIproject" options=$Projects name="MRIproject" selected=$mri_project}
     <button onClick="updateMRITab()">Submit Query</button>

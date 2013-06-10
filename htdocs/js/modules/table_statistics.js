@@ -26,8 +26,6 @@ function updateBehaviouralInstrument() {
         }
     });
 }
-
-
 function updateMRITable() {
     var selectedMRI_TYPE = document.getElementById("mri_type");
     var request = $.ajax({
