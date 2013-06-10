@@ -30,13 +30,14 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 
 		$this->columns = array('pt.sourceFrom','pt.Name', 'pt.sourceField','coalesce(pto.description,pt.description) as description');
 		$config=&NDB_Config::singleton();
-		$this->validFilters = array('pt.sourceFrom','pt.Description');
+		$this->validFilters = array('pt.sourceFrom','pt.Description','keyword');
 		$this->query = " FROM parameter_type pt LEFT JOIN parameter_type_override pto USING (Name)
 		WHERE pt.Queryable=1";
 	
 		$this->formToFilter = array(
-		'sourceFrom' => 'pt.sourceFrom',
-		'Description' => 'pt.Description'
+		'sourceFrom'  => 'pt.sourceFrom',
+		'Description' => 'pt.Description',
+        'keyword'     => 'Name'
 		);
 		return true;
 	}
@@ -48,9 +49,9 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		// list of feedback statuses
 		$instruments = Utility::getAllInstruments();
 		$instruments = array_merge(array('' => 'All Instruments'), $instruments);
-		$this->form->addElement('select','sourceFrom', 'instruments', $instruments);
+		$this->form->addElement('select','sourceFrom', 'Instruments', $instruments);
 		$this->form->addElement('select','Description', 'Description', array('' => 'All', 'empty'=>'Empty','modified'=>'Modified','unmodified'=>'Unmodified'));
-		
+	    $this->form->addElement('text', 'keyword', 'Search keyword');	
 		return true;
 	}
 
@@ -68,6 +69,9 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 				if ($key =='description'){
 					$key = $item['Name'] . "___" . "description";
 				}
+                if($key == "sourceFrom" && $val== "parameter_session"){
+                    $val = $item['Name'];
+                }
 				$this->tpl_data['items'][$x][$i]['name'] = $key;
 				$this->tpl_data['items'][$x][$i]['value'] = $val;
 
@@ -112,9 +116,10 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 			$query .= $this->query;
 		}
 		
-		
-
-									
+        if(isset ($_REQUEST['keyword'])){
+            $query.= " AND ( (NAME LIKE '%".$_REQUEST['keyword']."%') OR (SourceFrom LIKE '%".$_REQUEST['keyword'].
+                            "%'))" ;    
+        }
 
 		// add filters to query
 		if (is_array($this->filter) && count($this->filter) > 0) {
