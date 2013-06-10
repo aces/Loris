@@ -145,6 +145,9 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             AND s.active='Y' AND NOT (f.Administration='None')
             AND f.Data_entry='Complete'
             AND (orig.Scan_done IS NULL OR orig.Scan_done <> 'no')";
+        if(isset($_REQUEST['keyword'])){
+            $this->query .= " AND r.Final_Incidental_Findings LIKE '%".$_REQUEST['keyword']."%'";     
+        }
         $this->columns = array('c.PSCID as PSCID',
             'c.CandID as DCCID',
             's.visit_label as Visit_Label',
@@ -185,7 +188,8 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $conflict_condition2,
             'r.Finalized',
             'c.CenterID',
-            'c.ProjectID'
+            'c.ProjectID',
+            'keyword'
         );
         
         $this->formToFilter = array (
@@ -204,7 +208,8 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'SAS'         => 'r.sas',
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
-                                    'Finalized'   => 'r.Finalized'
+                                    'Finalized'   => 'r.Finalized',
+                                    'keyword'     => 'r.Final_Incidental_Findings'
         );
         $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized','r.Review_Done');
     }
@@ -289,6 +294,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean);
         $this->addSelect('Project', 'Project', $list_of_projects);
+        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
 
     }
 

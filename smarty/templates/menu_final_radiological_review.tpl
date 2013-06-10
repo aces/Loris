@@ -7,8 +7,8 @@
     <tr>
         <td nowrap="nowrap">{$form.site.label}</td>
         <td nowrap="nowrap">{$form.site.html}</td>
-        <td nowrap="nowrap">&nbsp;</td>
-        <td nowrap="nowrap">&nbsp;</td>
+        <td nowrap="nowrap">{$form.keyword.label}</td>
+        <td nowrap="nowrap">{$form.keyword.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.Conflict.label}</td>
@@ -47,7 +47,9 @@
         <td nowrap="nowrap">{$form.Project.html}</td>
     </tr>
     <tr>
-        <td nowrap="nowrap">Actions:</td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td colspan="3"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=final_radiological_review&reset=true'">
     </tr>
 
