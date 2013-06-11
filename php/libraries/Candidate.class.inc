@@ -99,7 +99,6 @@ class Candidate
         
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
-        print_r($CandArray);
         $query = "SELECT s.ID FROM session as s WHERE s.CandID=:Candidate AND s.Active='Y' ORDER BY ID";
         $row = $db->pselect($query, $CandArray);
         
@@ -435,7 +434,6 @@ class Candidate
                 }
             }
         }
-        print_r($subprojList);
         return $subprojList;
     }
 
