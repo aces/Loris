@@ -99,6 +99,7 @@ class Candidate
         
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
+        print_r($CandArray);
         $query = "SELECT s.ID FROM session as s WHERE s.CandID=:Candidate AND s.Active='Y' ORDER BY ID";
         $row = $db->pselect($query, $CandArray);
         
@@ -408,6 +409,35 @@ class Candidate
         return $nextVisitLabel;
     }
     
+    /**
+     * generates list of valid subprojects for a given project id
+     * @static
+     * @return array
+     * @throws Utility::isErrorX
+     */
+    function getValidSubprojects()
+    {
+        $projID = $this->getProjectID();
+        $db =& Database::singleton();
+        if(Utility::isErrorX($db)) {
+            return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
+        }
+        $query  = "SELECT SubbprojectID from project_rel where ProjectID = :project";
+        $params = array('project'=>$projID);
+        $subproj   = $db->pselect($query, $params);
+        if(Utility::isErrorX($subproj)) {
+            return PEAR::raiseError("Could not connect to database: ".$subproj->getMessage());
+        }
+        foreach($subproj as $row){
+            foreach($row as $key =>$val){
+                if($key == 'SubprojectID') {
+                    $subprojList[$val] = $val;
+                }
+            }
+        }
+        return $subprojList;
+    }
+
     /**
     * generates a new random CandID
     * @static

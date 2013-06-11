@@ -35,7 +35,6 @@ class NDB_Form_create_timepoint extends NDB_Form
         if (Utility::isErrorX($defaults['visitLabel'])) {
             return PEAR::raiseError("create_timepoint::_getDefaults(): ".$defaults['visitLabel']->getMessage());
         }
-
         return $defaults;
     }
 
@@ -63,8 +62,11 @@ class NDB_Form_create_timepoint extends NDB_Form
         // cand ID
         $this->tpl_data['candID'] = $this->identifier;
         $this->addHidden('candID', $this->identifier);
-        
-        
+        $candidate =& Candidate::singleton($this->identifier);
+        if (Utility::isErrorX($candidate)) {
+            return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
+        }
+        $subprojList = $candidate->getValidSubprojects();
         // Sub Project
         $subprojectSettings= $config->getSetting('subprojects');
        
@@ -75,7 +77,9 @@ class NDB_Form_create_timepoint extends NDB_Form
             //if($this->subprojectID==null){
             //    $this->subprojectID=$subproject['id'];
             //}
-            $sp_labelOptions[$subproject['id']] = $subproject['title'];
+            if(in_array($subproject['id'], $subprojList)){
+                $sp_labelOptions[$subproject['id']] = $subproject['title'];
+            }
         }
         
         $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");
