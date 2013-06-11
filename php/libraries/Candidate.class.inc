@@ -422,8 +422,8 @@ class Candidate
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
-        $query  = "SELECT SubbprojectID from project_rel where ProjectID = :project";
-        $params = array('project'=>$projID);
+        $query  = "SELECT SubprojectID from project_rel where ProjectID = :prj";
+        $params = array('prj'=>$projID);
         $subproj   = $db->pselect($query, $params);
         if(Utility::isErrorX($subproj)) {
             return PEAR::raiseError("Could not connect to database: ".$subproj->getMessage());
@@ -435,6 +435,7 @@ class Candidate
                 }
             }
         }
+        print_r($subprojList);
         return $subprojList;
     }
 
