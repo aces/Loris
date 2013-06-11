@@ -83,6 +83,8 @@ class NDB_BVL_Battery extends PEAR
             }
             */
             $this->age = $age;
+        } else {
+            $this->age = null;
         }
 
 
@@ -228,8 +230,8 @@ class NDB_BVL_Battery extends PEAR
     } // end removeInstrument()
     
     /**
-     * gets the array of instruments which are members of the current
-     * battery
+     * gets the array of instruments which are members of the currently
+     * selected session's battery
      *
      * @param string $stage either 'visit' or 'screening' - determines
      * whether to register only screening instruments or visit
@@ -246,40 +248,20 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // craft the select query
-        $query = "SELECT f.Test_name FROM ";
+        $query = "SELECT f.Test_name FROM flag f JOIN session s 
+            ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
+               AND f.CommentID NOT LIKE 'DDE%'";
         $qparams = array('SID' => $this->sessionID);
-        if(!is_null($stage)) {
-            $query .= "test_battery AS b, ";
-        }
-        $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID=:SID AND LEFT(f.CommentID,3) != 'DDE'";
-
-        if(!is_null($stage)) {
-            if(!is_null($visit_label)) {
-                $query .= " AND b.Visit_label=:VL";
-                $qparams['VL']= $visit_label;
-            } else {
-                $query .= " OR b.Visit_label IS NULL";
-            }
-        }
-        if(!is_null($stage)) {
-            $query .= " AND t.Test_name=b.Test_name AND b.Stage=:stg";
-            $qparams['stg'] = $stage;
-
-            if(!is_null($SubprojectID)) {
-                $query .= " AND (b.SubprojectID IS NULL OR b.SubprojectID=:SubprojID)";
-                $qparams['SubprojID'] = $SubprojectID;
-            }
-        }
-        
-        // get the list of instruments
-        $rows = array();
-        $tests = array();
         $rows = $DB->pselect($query, $qparams);
+
         if($this->isError($rows)) {
             return $this->raiseError("Could not get battery from database");
         }
 
         // repackage the array
+        $tests = array();
         foreach($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
@@ -356,8 +338,8 @@ class NDB_BVL_Battery extends PEAR
     }
 
     /**
-     * looks up the appropriate battery for the current visit, based
-     * on age AND subproject
+     * Looks up what the appropriate battery for the current visit should
+     * be, based on age AND subproject
      *
      * @throws PEAR::Error
      * @param int $age   the age of the subject, in months
