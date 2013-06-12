@@ -769,5 +769,16 @@ class Utility extends PEAR
 		return $test_names;
 	}
 
+    static function NumericArray($arr) {
+        if(!is_array($arr)) {
+            return false;
+        }
+        $keys = array_keys($arr);
+        if(count($keys) === 0) {
+            return false;
+        }
+        return isset($arr[0]);
+    }
+
 }
 ?>
