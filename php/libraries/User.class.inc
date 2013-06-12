@@ -1,4 +1,5 @@
 <?php
+require_once 'NDB_Factory.class.inc';
 require_once 'UserPermissions.class.inc';
 require_once 'CouchDB.class.inc';
 
@@ -300,14 +301,34 @@ class User extends UserPermissions
     }
 
     function updateCouchUser($password) {
-        $cdb = CouchDB::singleton();
+        $factory = NDB_Factory::singleton();
+        $cdb = $factory->CouchDB();
+        $config = $factory->Config();
 
-        $userjson = $cdb->_getURL("/_users/org.couchdb.user:" . $this->getUserName());
+
+        $c_config = $config->getSetting('CouchDB');
+        $username = $this->getUsername();
+        $auth = array('Authorization' => 'Basic ' 
+            . base64_encode($c_config['admin'] . ':' . $c_config['adminpass'])
+        );
+        $userjson = $cdb->_getURL("/_users/org.couchdb.user:" . $username, 'GET', $auth);
         $userobj = json_decode($userjson, true);
 
-        //print_r($userobj);
+        if(isset($userobj['error']) && $userobj['error'] == 'not_found') {
+            $userobj = array('_id' => 'org.couchdb.user:' . $username,
+                'type' => 'user',
+                'name' => $username,
+                'roles' => array('dqg')
+            );
+        }
         $userobj['password'] = $password;
-        //print_r($userobj);
+
+
+        $response = $cdb->_postURL("PUT /_users/org.couchdb.user:" . $username,
+            json_encode($userobj),
+            $auth
+        );
+        print "Couch Response: $response";
     }
 }
 ?>

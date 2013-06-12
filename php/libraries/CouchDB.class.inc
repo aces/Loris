@@ -56,7 +56,7 @@ class CouchDB {
         return "$op /$db[database]/$doc";
     }
 
-    function _getURL($url, $op = 'GET') {
+    function _getURL($url, $op = 'GET', $headers = array()) {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
@@ -64,8 +64,13 @@ class CouchDB {
         $handler->setPort($couchconfig['port']);
         $handler->open();
 
-        $handler->write("$op $url HTTP/1.0\r\n\r\n");
+        $handler->write("$op $url HTTP/1.0\r\n");
+        foreach($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
+        }
+        $handler->write("\r\n");
 
+        $response = '';
         while(!$handler->eof()) {
             $response .= $handler->gets();
         }
