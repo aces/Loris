@@ -6,22 +6,18 @@
     <tr>
         <th nowrap="nowrap" colspan=4>Selection Filter</th>
     </tr>
-    
     <tr>
-      <td nowrap="nowrap">{$form.sourceFrom.label}</td>
-      <td nowrap="nowrap">{$form.sourceFrom.html}</td>
-   </tr>
-   
-   <tr>
-      <td nowrap="nowrap">{$form.Description.label}</td>
-      <td nowrap="nowrap">{$form.Description.html}</td>
-   </tr>
-   
-    <tr>
-        <td>Actions:</td>
-        <td>&nbsp;</td>
-        <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=datadict&reset=true'" /></td>
+        <td nowrap="nowrap">{$form.Description.label}</td>
+        <td nowrap="nowrap">{$form.Description.html}</td>
+        <td nowrap="nowrap">{$form.keyword.label}</td>
+        <td nowrap="nowrap">{$form.keyword.html}</td>
     </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.sourceFrom.label}</td>
+        <td nowrap="nowrap">{$form.sourceFrom.html}</td>
+        <td></td>
+        <td  align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=datadict&reset=true'" /></td>
+   </tr>
 <table>
 </form>
 
