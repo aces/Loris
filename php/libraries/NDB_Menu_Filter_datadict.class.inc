@@ -39,7 +39,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		'Description' => 'pt.Description'
 		);
 
-        $this->searchKeyword = array('pt.Name', 'pt.sourceField');
+        $this->searchKeyword = array('pt.Name', 'pt.sourceField','pto.description');
 		return true;
 	}
 
