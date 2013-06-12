@@ -276,8 +276,7 @@ class CouchDB
      * @return string A string representation of the JSON response without
      *                the HTTP headers
      */
-    function _postRelativeURL($url, $data, $op = 'POST', $headers = array())
-    {
+    function _postURL($url, $data, $op = 'POST', $headers = array()) {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
