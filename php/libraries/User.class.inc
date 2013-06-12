@@ -404,6 +404,9 @@ class User extends UserPermissions
 
 
         $c_config = $config->getSetting('CouchDB');
+        if($c_config['SyncAccounts'] !== 'true') {
+            return false;
+        }
         $username = $this->getUsername();
         $auth = array('Authorization' => 'Basic ' 
             . base64_encode($c_config['admin'] . ':' . $c_config['adminpass'])
@@ -425,7 +428,6 @@ class User extends UserPermissions
             json_encode($userobj),
             $auth
         );
-        print "Couch Response: $response";
     }
 }
 ?>

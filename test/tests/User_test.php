@@ -110,4 +110,25 @@ class TestOfUser extends UnitTestCase {
 
         $user->updateCouchUser('password123');
     }
+
+    function testSyncingDisabled() {
+        $user = new MockUserUsername();
+        $couchdb = $this->Factory->CouchDB();
+        $config = $this->Factory->Config();
+        $config->returns(
+            'getSetting',
+            array(
+                'SyncAccounts' => 'false',
+                'admin' => 'adminuser',
+                'adminpass' => 'adminpass'
+            ),
+            array('CouchDB')
+        );
+
+        $couchdb->expectCallCount('_getURL', 0);
+        $couchdb->expectCallCount('_postURL', 0);
+        $ret = $user->updateCouchUser('password123');
+        $this->assertEqual($ret, false);
+    }
+
 }
