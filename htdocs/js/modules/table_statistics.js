@@ -1,10 +1,10 @@
 /*global document, $*/
 function updateDemographicInstrument() {
     var DemographicSite = document.getElementById("DemographicSite");
-    var DemographicInstrument = document.getElementById("DemographicInstrument");
-    var DemographicProject = document.getElementById("DemographicProject");
+    var DemographicInstrument = document.getElementById("instrument");
+    //var DemographicProject = document.getElementById("DemographicProject");
     var request = $.ajax({
-        url: 'main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs&DemographicSite=' + DemographicSite.value + '&DemographicInstrument=' + DemographicInstrument.value + '&DemographicProject=' + DemographicProject.value,
+        url: 'main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs&DemographicSite=' + DemographicSite.value + '&DemographicInstrument=' + DemographicInstrument.value,
         type: 'GET',
         data: 'html',
         success: function(page){
