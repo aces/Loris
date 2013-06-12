@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path().":" . __DIR__ . "/../../php/libraries/");
 require_once 'simpletest/autorun.php';
 require_once 'CouchDB.class.inc';
 
@@ -13,7 +14,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
     }
     function testSingleton() {
         $db = CouchDB::singleton();
-        $this->assertIsA($db, CouchDB);
+        $this->assertIsA($db, 'CouchDB');
 
         $db2 = CouchDB::singleton();
 
@@ -75,7 +76,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
         $smock->expectAt(2, 'write', array("abc"));
         $smock->expectCallCount('write', 3);
         $couch->SocketHandler = $smock;
-        $file = $couch->_postURL("/users/abc", "abc");
+        $file = $couch->_postURL("POST /users/abc", "abc");
         $this->assertEqual($file, "I created it");
    }
     function testConstructURL() {
@@ -102,6 +103,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
 
 
     function testDeleteDoc() {
+        $id = 'Demographics_Session_UNC0219_V06';
         $Mock = new MockCouchDBWrap();
         $Mock->returns("_getRelativeURL", '{"ok":true,"id":"Demographics_Session_UNC0219_V06","rev":"2-c78967e246008b55daed336e61cb8342"}');
         $result = $Mock->deleteDoc($id);
