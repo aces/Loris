@@ -389,7 +389,9 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
         
-        if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0) {
+        // Windows don't apply to probands, but otherwise if it's outside of the window highlight
+        // it as an error
+        if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0 && strrpos($this->testName, '_proband') === FALSE) {
             $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>'; //if($defaults['Window_Difference'] != 0) {
         }
         //Convert select multiple elements into a quickform array
