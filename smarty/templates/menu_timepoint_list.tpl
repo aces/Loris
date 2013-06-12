@@ -43,7 +43,13 @@
 
         <td nowrap="nowrap">
         {if $timePoints[timepoint].Scan_done != ""}
-            {$timePoints[timepoint].Scan_done}
+                   {if $timePoints[timepoint].Scan_done == 'Y'}
+        					{assign var="scan_done" value="Yes"}
+        					<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+						{else}
+							{assign var="scan_done" value="No"}
+							{$scan_done}
+		        		{/if}
         {else}
             <img alt="Data Missing" src="images/help2.gif" border=0>
         {/if}

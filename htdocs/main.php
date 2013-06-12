@@ -44,6 +44,7 @@ tplFromRequest('subtest');
 tplFromRequest('candID');
 tplFromRequest('sessionID');
 tplFromRequest('commentID');
+tplFromRequest('dynamictabs');
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');

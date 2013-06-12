@@ -29,6 +29,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             FROM parameter_candidate WHERE CandID=:CaID",
             array('CaID' => $this->identifier)
         );
+        $defaults = array();
         foreach($value_results AS $vresult){
         	$defaults["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
         }
