@@ -93,7 +93,7 @@ class Utility extends PEAR
      * @access public
      * @static
      */
-    function calculateAge($dob, $testdate)
+    static function calculateAge($dob, $testdate)
     {
         if(!preg_match("/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/", $dob, $matches)) {
             return PEAR::raiseError("Argument 1 does not match expected date format (YYYY-MM-DD)");
