@@ -199,7 +199,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function md5_salt($word)
+    static function md5_salt($word)
     {
         // get a two-character hexadecimal salt from 10 to ff
         $salt = dechex(rand(16, 255));
