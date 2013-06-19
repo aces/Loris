@@ -1714,7 +1714,7 @@ UNLOCK TABLES;
 
 CREATE TABLE `final_radiological_review` (
       `CommentID` varchar(255) NOT NULL,
-      `Review_Done` tinyint(1) DEFAULT NULL,
+      `Review_Done` enum('yes','no','not_answered') DEFAULT NULL,
       `Final_Review_Results` enum('normal','abnormal','atypical','not_answered') DEFAULT NULL,
       `Final_Exclusionary` enum('exclusionary','non_exclusionary','not_answered') DEFAULT NULL,
       `SAS` int(11) DEFAULT NULL,
@@ -1728,7 +1728,7 @@ CREATE TABLE `final_radiological_review` (
       `SAS2` int(11) DEFAULT NULL,
       `PVS2` int(11) DEFAULT NULL,
       `Final_Incidental_Findings2` text,
-      `Finalized` tinyint(1) DEFAULT NULL,
+      `Finalized` enum('yes','no','not_answered') DEFAULT NULL,
       PRIMARY KEY (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- Dump completed on 2012-10-05 10:49:10

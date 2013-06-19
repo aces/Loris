@@ -230,7 +230,7 @@ function open_help_section(){
             </table>
         {/if}
     {/if}
-            <!-- included file -->
+<!-- included file -->        
 <table width="90%"><tr><td>
 {$workspace}
 </td></tr></table>
