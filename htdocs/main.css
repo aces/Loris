@@ -148,11 +148,6 @@ table.std th {
     	-webkit-border-radius: 4px;
     	-moz-border-radius: 4px;
     }
-
-.leftDivider {
-    height: 100px;
-}
-
 table.list td, table.tbl td {
 	background-color: #fff;
     }
@@ -160,7 +155,6 @@ table.list td {
     padding: 2px;
     text-align: center;
     }
-
 /* tabbed boxes */
 td.tabsp {
 	border-bottom: solid #ccc 1px;
@@ -192,7 +186,6 @@ padding:8px;
 -webkit-box-shadow: 0 0 5px 5px#888;
 box-shadow: 1.5px 1.5px 5px 3px rgba(0,0,0,0.4);
 }
-
 /* Message styles */
 .error {
 	color: #f00;
@@ -436,8 +429,6 @@ padding-top: 3px;
 font-size: 130%;
 text-align: center;
 }
-
-
 .LoginFooter {
     position:absolute;
     bottom:0;
@@ -450,8 +441,6 @@ text-align: center;
     background: #000;
     vertical-align: bottom;
 }
-
-
 table.mainlayout {
     border-spacing: 0px;
 }
