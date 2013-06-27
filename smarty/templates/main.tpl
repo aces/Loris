@@ -74,7 +74,9 @@ function open_help_section(){
                 </ul>
         </td>
     </tr>
-
+</table>
+<img src="images/title_background.jpg" colspan="2" width="100%" height="2">
+<table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
     <tr>
         <!-- left section -->
         <td class="tabox sidenav" valign="top">
