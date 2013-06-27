@@ -109,8 +109,7 @@ function open_help_section(){
 
 
         <!-- main page table tags -->
-        <td width="100%" class="tabox" valign="top">
-
+        <td width="100%" class="bgGradient" valign="top">
             <!-- Start workspace area -->
 <h1 align="right"><a href="javascript:open_help_section()" ><u>Help</u></a>  </h1>
 {if $crumbs != ""}

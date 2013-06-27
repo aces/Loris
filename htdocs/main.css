@@ -24,7 +24,7 @@
 
 body {
    	margin: 5px 10px 10px 5px;
-	background-color: ligthgrey; 
+	background-color: #EEF; 
 	font-family: verdana, sans-serif;
 	font-size: 70%;
 }
@@ -148,6 +148,11 @@ table.std th {
     	-webkit-border-radius: 4px;
     	-moz-border-radius: 4px;
     }
+
+.leftDivider {
+    height: 100px;
+}
+
 table.list td, table.tbl td {
 	background-color: #fff;
     }
@@ -165,6 +170,8 @@ td.tabox {
 	background-color: #d3d3e1;
     */
     background-color: #EEF;
+    position: relative;
+
     /*
 	border-left: solid #ccc 2px;
 	border-right: solid #ccc 2px;
@@ -177,6 +184,14 @@ td.tabox {
         */
     padding: 8px;
     }
+
+.bgGradient {
+position: relative;
+padding:8px;
+ -moz-box-shadow: 0 0 5px 5px #888;
+-webkit-box-shadow: 0 0 5px 5px#888;
+box-shadow: 1.5px 1.5px 5px 3px rgba(0,0,0,0.4);
+}
 
 /* Message styles */
 .error {
@@ -416,12 +431,36 @@ table.data {
     margin-top: 5px;
 }
 
+th.login {
+padding-top: 3px;
+font-size: 130%;
+text-align: center;
+}
+
+
+.LoginFooter {
+    position:absolute;
+    bottom:0;
+    clear: both;
+    height: 4em;
+    width: 100%;
+    font-size: 0.9em;
+    color: #aaa;
+    text-align: center;
+    background: #000;
+    vertical-align: bottom;
+}
+
+
 table.mainlayout {
     border-spacing: 0px;
 }
 
 td.sidenav {
-    border-right: solid #08245B 2px;
+    /*border-right: solid #08245B 2px;*/
+    position: relative;
+    border-right: solid #6183b3 2px;
+    
 }
 
 .navigationBar {
@@ -433,7 +472,8 @@ td.sidenav {
 .navigationRow, .ui-tabs-nav {
     margin: 0px;
     padding: 0px;
-    border-bottom: 3px solid #47F !important;
+    /*border-bottom: 3px solid #47F !important;*/
+    /*border-bottom: 3px solid #08245A;*/
     text-align: left;
 }
 .navigationButtons a, .controlPanel li a:hover, .ui-tabs-nav li a {
@@ -505,4 +545,13 @@ h2.statsH2 {
   width: 140px;
   height: 10px;
   padding-bottom: 5px;
+}
+.watermark{
+    position:absolute;
+    bottom:0;
+    right:0;
+    z-index: 100;
+}
+.bottombanner {
+margin-left: 119px;
 }
