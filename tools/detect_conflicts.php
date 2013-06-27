@@ -37,7 +37,7 @@ if ((count($argv)<2) || (count($argv)>6)) {
 
     echo "to insert the conflicts into conflicts_unresovled table type -c \n";
     echo "to remove all/re-insert the conflicts into 
-        conflicts_unresovled table type -ca \n";
+        conflicts_unresovled table type -m \n";
     die();
 }
 
