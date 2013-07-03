@@ -91,6 +91,7 @@ $db = Database::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 $config = NDB_Config::singleton();
 $db_config = $config->getSetting('database');
+//$dataDir = "/home/gustodatabaseuser/conflicts/".$db_config['database'];
 $dataDir = "logs";
 $diff = null;
 $new_conflicts = array();
@@ -101,7 +102,7 @@ $conflicts_to_be_excluded = array();
  * Check to see if the variable instrument is set
  */
 if (isset($instrument)) {
-
+    print  "instrument is $instrument \n";
     $commentids = getCommentIDs($instrument, $visit_label);
 
     /**
@@ -129,7 +130,7 @@ if (isset($instrument)) {
             print "To re-create the conflict, run this script with -c option \n";
             if ((empty($new_conflicts)) && empty($conflicts_to_be_excluded)) {
                 print "No new conflicts or current conflicts to be 
-                removed are detected \n";
+                removed are detected for instrument $instrument \n";
             } else {
                 writeCSV(
                     $new_conflicts, $dataDir, $instrument, $visit_label,
@@ -339,7 +340,7 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
             fputcsv($fp, $data, "\t"); //write the headers to the CSV file
         }
         fclose($fp);
-        print "The CSV output for $prefix is available under $path \n";
+        print "The CSV output for $prefix (for instrument $instrument) is available under $path \n";
     }
 }
 
