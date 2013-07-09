@@ -43,7 +43,7 @@ function open_help_section(){
 {if $dynamictabs neq "dynamictabs"}
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="navbarpadding">
     <tr>
-        <th align="left" background="images/title_background.jpg" class="banner" colspan="1">
+        <th align="left" background="images/title_background.jpg" height="100"class="banner" colspan="1">
             {$study_title} 
         </th>
     </tr>
