@@ -428,8 +428,8 @@ class Database extends PEAR
             if($item===null || $item==='') {
                 $output[] = "`$key`=NULL";
             } else {
-                $item = mysql_escape_string($item);
-                $output[] = "`$key`='$item'";
+                $item = $this->quote($item);
+                $output[] = "`$key`=$item";
             }
         
         return implode($glue, $output);
