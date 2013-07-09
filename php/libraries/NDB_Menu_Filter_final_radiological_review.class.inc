@@ -177,7 +177,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             's.visit_label',
             'c.PSCID',
             'r.Final_Review_Results',
-            'r.Review_Done',
+            "COALESCE(r.Review_Done, 'no')",
             'r.sas',
             'r.pvs',
             'r.Final_Exclusionary',
@@ -194,7 +194,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Visit_label' => 's.visit_label',
                                     'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_done' => 'r.Review_Done',
+                                    'Review_done' => "COALESCE(r.Review_Done, 'no')",
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -206,7 +206,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Conflict2'   => $conflict_condition2,
                                     'Finalized'   => 'r.Finalized'
         );
-        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized','r.Review_Done');
+        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized',"COALESCE(r.Review_Done, 'no')");
     }
 
     /**
