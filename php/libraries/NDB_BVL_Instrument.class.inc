@@ -1593,6 +1593,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     case 'selectmultiple':
                         $type = 'multiple';
+                        $this->_selectMultipleElements[] = $pieces[1];
                         // fall through and also execute select code below
                     case 'select':
 
