@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
+<div id="page">
 <head>
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
@@ -33,34 +34,31 @@ function open_help_section(){
 </script>
 {/literal}
 </head>
-
+<div id="mainBody">
 <body 
 {if $PopUpFeedbackBVL && ($user.permissions.superuser==true || $user.permissions.access_all_profiles==true || $user.user_from_study_site==true)}
     onload="feedback_bvl_popup();"
 {/if}
 >
 {if $dynamictabs neq "dynamictabs"}
-<table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
+<table border="0" cellpadding="3" cellspacing="2" width="100%" class="navbarpadding">
     <tr>
-        <th align="left" background="images/title_background.jpg" class="banner" colspan="2">
-            {$study_title}
+        <th align="left" background="images/title_background.jpg" class="banner" colspan="1">
+            {$study_title} 
         </th>
     </tr>
-
-    <tr>
-    <!-- user info table -->
-         <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
-            User: {$user.Real_name}&nbsp; Site: {$user.Site}&nbsp; Date: {$smarty.now|date_format:"%B %e %Y"}
-        </td>
-    </tr>
+<tr> <!-- user info table -->
+<td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
+User: {$user.Real_name}&nbsp; Site: {$user.Site}&nbsp; Date: {$smarty.now|date_format:"%B %e %Y"}
+</td></tr>
     <tr>
         <!-- nav bar table -->
         <td colspan="2" class="navigationRow">
             <ul class="navigationBar">
                 <!-- the buttons -->
-                {foreach from=$tabs item=tab}
+                {foreach from=$tabs item=tab} 
                     <li class="navigationButtons {if ($tab.link == $test_name && $subtest != "my_preferences")}active{elseif $tab.link == $top_level && $subtest != "my_preferences"}active{/if}">
-                        <a href="main.php?test_name={$tab.link}">{$tab.label}</a>
+                        {if ($tab.link != "main.php?logout=true")}<a href="main.php?test_name={$tab.link}">{$tab.label}</a>{/if}
                     </li>
                 {/foreach}
                 
@@ -78,6 +76,7 @@ function open_help_section(){
 <img src="images/title_background.jpg" colspan="2" width="100%" height="2">
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
     <tr>
+        {if $lastURL != ""}
         <!-- left section -->
         <td class="tabox sidenav" valign="top">
         {if $lastURL != ""}
@@ -86,7 +85,7 @@ function open_help_section(){
 		        <li id="backButton"><a href="{$lastURL}"><img src="images/left.gif" alt="" border="0" width="12" height="12" /> Back</a></li>
 	        </ul>
         {/if}
-
+        {/if}
         {if $test_name != "" && $error_message == ""}
             {if $commentID != ""}
                 <!-- instrument status flags -->
@@ -100,13 +99,13 @@ function open_help_section(){
             {/if}
         {/if}
 
-	<!--links-->
+	<!--links
                     <h3 class="controlPanelSection">Links</h3>
                     <ul class="controlPanel">
                                 {foreach from=$links item=link}
                         <li class="linkButton"><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a></li>
                         {/foreach}
-            </ul>
+            </ul-->
         </td>
 
 
@@ -239,8 +238,31 @@ function open_help_section(){
         </td>
     </tr>
 </table>
-
+</div>
+{if $dynamictabs neq "dynamictabs"}
+<table class="MainFooter" align="center">
+<tr>
+<div id="footerLinks">
+<td width="100%">
+    <ul id="navlist" style="margin-top: 6px; margin-bottom: 2px;" >
+    <li id="active">|</li>
+    {foreach from=$links item=link}
+        <li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
+    {/foreach}
+</ul>
+</td>
+</div>
+</tr>
+<tr>
+<td align="center" colspan="1" style="color:#fff" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+</tr>
+<tr>
+<td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #348b8d;" target="_blank">Created by ACElab</a></td>
+</tr>
+</table>
+{/if}
 </body>
+</div>
 </html>
 
 
