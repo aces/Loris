@@ -185,7 +185,8 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $conflict_condition2,
             'r.Finalized',
             'c.CenterID',
-            'c.ProjectID'
+            'c.ProjectID',
+            'keyword'
         );
         
         $this->formToFilter = array (
@@ -204,9 +205,12 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'SAS'         => 'r.sas',
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
-                                    'Finalized'   => 'r.Finalized'
+                                    'Finalized'   => 'r.Finalized',
+                                    'keyword'     => 'r.Final_Incidental_Findings'
         );
         $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized',"COALESCE(r.Review_Done, 'no')");
+        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized','r.Review_Done');
+        $this->searchKeyword    = array('r.Final_Incidental_Findings');
     }
 
     /**
@@ -289,7 +293,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean);
         $this->addSelect('Project', 'Project', $list_of_projects);
-
+        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
     }
 
 

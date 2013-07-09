@@ -38,6 +38,8 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		'sourceFrom' => 'pt.sourceFrom',
 		'Description' => 'pt.Description'
 		);
+
+        $this->searchKeyword = array('pt.Name', 'pt.sourceField','pto.description');
 		return true;
 	}
 
@@ -48,9 +50,9 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		// list of feedback statuses
 		$instruments = Utility::getAllInstruments();
 		$instruments = array_merge(array('' => 'All Instruments'), $instruments);
-		$this->form->addElement('select','sourceFrom', 'instruments', $instruments);
+		$this->form->addElement('select','sourceFrom', 'Instruments', $instruments);
 		$this->form->addElement('select','Description', 'Description', array('' => 'All', 'empty'=>'Empty','modified'=>'Modified','unmodified'=>'Unmodified'));
-		
+        $this->form->addElement('text', 'keyword', 'Search keyword');		
 		return true;
 	}
 
@@ -65,9 +67,12 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 			$i = 1;
 
 			foreach ($item as $key => $val) {
-				if ($key =='description'){
-					$key = $item['Name'] . "___" . "description";
-				}
+                if ($key =='description'){
+                    $key = $item['Name'] . "___" . "description";
+                }
+                if($key == "sourceFrom" && $val== "parameter_session"){
+                    $val = $item['Name'];
+                }
 				$this->tpl_data['items'][$x][$i]['name'] = $key;
 				$this->tpl_data['items'][$x][$i]['value'] = $val;
 
@@ -79,32 +84,16 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		return true;
 	}
 
-	/**
-     * Returns a list of candidates, users, etc.
-     *
-     * @return array
-     * @throws PEAR_Error
-     * @access private
-     * 
-     * NOTE: This function is getting overriden because of the All/empty , modified and un-modified description criteria
-     
-     */
-	function _getList()
-	{
-		// create DB object
-		$DB =& Database::singleton();
-		if(Utility::isErrorX($DB)) {
-			return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-		}
-		// make the SELECT statement
-		$query = "SELECT ";
-		if (is_array($this->columns) && count($this->columns) > 0) {
-			$query .= implode(', ', $this->columns);
-		} else {
-			$query .= "*";
-		}
-		
-		// add the base query
+    
+    function _getBaseQuery() {
+        // make the SELECT statement
+        $query = "SELECT ";
+        if (is_array($this->columns) && count($this->columns) > 0) {
+            $query .= implode(', ', $this->columns);
+        } else {
+            $query .= "*";
+        }
+    	// add the base query
 		if ($_REQUEST['Description'] =='modified'){
 			$query .= " FROM parameter_type pt JOIN parameter_type_override pto USING (Name) WHERE pt.Queryable=1";
 		}
@@ -112,79 +101,40 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 			$query .= $this->query;
 		}
 		
-		
+        return $query;
+    }
+  
+    function _addValidFilters($prepared_key, $key, $val){
+        $query = '';
+        if ((!empty($val) || $val === '0') && $key != 'order') {
+            //print "key: $key val: $val <BR>"	;
 
-									
+            // special rule for dropdowns where value is numeric
+            if (strtolower(substr($key, -8)) == 'centerid' ||
+                    strtolower(substr($key, -10)) == 'categoryid' ||
+                    strtolower(substr($key, -6)) == 'gender') {
+                $query .= " AND $key = '$val' ";
+            }
+            else {
+                if ($val == 'empty')	{
+                    $query .= " AND COALESCE(pto.description,pt.description) = ''";
+                }
+                elseif ($val=='modified') {
+                    //NO where clause added
+                }
+                elseif ($val=='unmodified'){
+                    $query .= " AND pto.description IS NULL";
+                }
+                else{
+                    $query .= " AND $key LIKE '$val%' ";
+                }
+            }
+        }
 
-		// add filters to query
-		if (is_array($this->filter) && count($this->filter) > 0) {
-			foreach ($this->filter as $key => $val) {
+        return $query; 
 
-				if ((!empty($val) || $val === '0') && $key != 'order') {
-					//print "key: $key val: $val <BR>"	;
+    }
 
-					// special rule for dropdowns where value is numeric
-					if (strtolower(substr($key, -8)) == 'centerid' ||
-					strtolower(substr($key, -10)) == 'categoryid' ||
-					strtolower(substr($key, -6)) == 'gender') {
-						$query .= " AND $key = '$val' ";
-					}
-					else {
-						if ($val == 'empty')	{
-							$query .= " AND COALESCE(pto.description,pt.description) = ''";
-						}
-						elseif ($val=='modified') {
-							//NO where clause added
-						}
-						elseif ($val=='unmodified'){
-							$query .= " AND pto.description IS NULL";
-						}
-						else{
-							$query .= " AND $key LIKE '$val%' ";
-						}
-					}
-				}
-			}
-		}
-
-		// add GROUP BY if applicable
-		if (!empty($this->group_by)) {
-			$query .= " GROUP BY $this->group_by ";
-		}
-		// add HAVING clause (for restricting aggregates)
-		if(!empty($this->having)) {
-
-			$first = True;
-			foreach ($this->having as $key => $val) {
-				if($val !== '' and $val != null) {
-					if($first == False) {
-						$query .= ' AND ';
-					}
-					else {
-						$query .= ' HAVING ';
-					}
-					$first = False;
-
-					$query .= "$key LIKE " . $DB->quote("$val%");
-				}
-			}
-		}
-
-		// apply ORDER BY filters
-		$query .= " ORDER BY ";
-		if (!empty($this->filter['order'])) {
-			$query .= $this->filter['order']['field']." ".$this->filter['order']['fieldOrder'].", ";
-		}
-		$query .= $this->order_by;
-		// get the list
-		//print($query);
-		$DB->select($query, $result);
-		if(Utility::isErrorX($result)) {
-			return PEAR::raiseError("DB Error: ".$result->getMessage());
-		}
-
-		return $result;
-	}
 
 }
 ?>

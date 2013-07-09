@@ -5,10 +5,10 @@
         <th nowrap="nowrap" colspan="4">Selection Filter</th>
     </tr>
     <tr>
-        <td nowrap="nowrap">{$form.site.label}</td>
-        <td nowrap="nowrap">{$form.site.html}</td>
-        <td nowrap="nowrap">&nbsp;</td>
-        <td nowrap="nowrap">&nbsp;</td>
+    <td nowrap="nowrap">{$form.site.label}</td>
+    <td nowrap="nowrap">{$form.site.html}</td>
+    <td nowrap="nowrap">{$form.keyword.label}</td>
+    <td nowrap="nowrap">{$form.keyword.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.Conflict.label}</td>
