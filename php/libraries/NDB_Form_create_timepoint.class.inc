@@ -76,7 +76,7 @@ class NDB_Form_create_timepoint extends NDB_Form
         //Loop through the subprojects to get an id out and to create the subproject drop down.
         $sp_labelOptions = array(null => '');
         foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-            if( ! is_null($subprojList)){
+            if( ! empty($subprojList)){
                 if(in_array($subproject['id'], $subprojList)){
                     $sp_labelOptions[$subproject['id']] = $subproject['title'];
                 }
