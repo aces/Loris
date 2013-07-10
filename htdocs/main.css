@@ -115,7 +115,7 @@ th {
 th.banner {
 	background: #08245b;
 	color: #fff;
-    	border-style: solid;
+        border-style: solid;
     	border-color: #08245b;
     	border-width: 1px;
     	border-radius: 4px;
@@ -488,13 +488,16 @@ color: #fff;
 background-color: #369;
 text-decoration: none;
 }
+#navbarspacer{
+padding-right:5px;
+}
 table.mainlayout {
     margin-left: 0;
     margin-top:6px;
     padding-bottom: 9em;
 }
 table.navbarpadding {
-    border-spacing: 0px;
+    border-spacing: 2px;
 }
 
 td.sidenav {
