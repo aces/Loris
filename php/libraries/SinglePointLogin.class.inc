@@ -339,7 +339,6 @@ class SinglePointLogin extends PEAR
     
     
    function insertFailedDetail($description,$setArray){
-       print "I am here";
         // create DB object
         $DB =& Database::singleton();
         if (Utility::isErrorX($DB)) {
