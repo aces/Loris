@@ -63,87 +63,86 @@ $(document).ready(function() {
         </td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap">Password</td>
+		<td nowrap="nowrap">{$form.Password_Group.label}</td>
 		<td nowrap="nowrap">{$form.Password_Group.html}</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap">Confirm Password</td>
+		<td nowrap="nowrap">{$form.__Confirm.label}</td>
 		<td nowrap="nowrap">{$form.__Confirm.html}</td>
 	</tr>
 {*	<tr>
-        <td nowrap="nowrap">Full name</td>
+        <td nowrap="nowrap">{$form.Real_name.label}</td>
 		<td nowrap="nowrap">{$form.Real_name.html}</td>
 	</tr>*}
 	<tr>
-        <td nowrap="nowrap">First name</td>
+        <td nowrap="nowrap">{$form.First_name.label}</td>
 		<td nowrap="nowrap">{$form.First_name.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">Last name</td>
+        <td nowrap="nowrap">{$form.Last_name.label}</td>
 		<td nowrap="nowrap">{$form.Last_name.html}</td>
 	</tr>
 
 	<tr>
-        <td nowrap="nowrap">Degree</td>
+        <td nowrap="nowrap">{$form.Degree.label}</td>
 		<td nowrap="nowrap">{$form.Degree.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">Position</td>
+        <td nowrap="nowrap">{$form.Position_title.label}</td>
 		<td nowrap="nowrap">{$form.Position_title.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">Institution</td>
+        <td nowrap="nowrap">{$form.Institution.label}</td>
 		<td nowrap="nowrap">{$form.Institution.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">Department</td>
+        <td nowrap="nowrap">{$form.Department.label}</td>
 		<td nowrap="nowrap">{$form.Department.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">Address</td>
+        <td nowrap="nowrap">{$form.Address.label}</td>
 		<td nowrap="nowrap">{$form.Address.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">City</td>
+        <td nowrap="nowrap">{$form.City.label}</td>
 		<td nowrap="nowrap">{$form.City.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">State</td>
+        <td nowrap="nowrap">{$form.State.label}</td>
 		<td nowrap="nowrap">{$form.State.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">Zip/Postal Code</td>
+        <td nowrap="nowrap">{$form.Zip_code.label}</td>
 		<td nowrap="nowrap">{$form.Zip_code.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">Country</td>
+        <td nowrap="nowrap">{$form.Country.label}</td>
 		<td nowrap="nowrap">{$form.Country.html}</td>
 	</tr>
 	<tr>
-        <td nowrap="nowrap">FAX</td>
+        <td nowrap="nowrap">{$form.Fax.label}</td>
 		<td nowrap="nowrap">{$form.Fax.html}</td>
 	</tr>
 
-	
 	<tr>
-		<td nowrap="nowrap">Email address</td>
+		<td nowrap="nowrap">{$form.Email_Group.label}</td>
 		<td nowrap="nowrap">{$form.Email_Group.html}</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap">Site</td>
+		<td nowrap="nowrap">{$form.CenterID.label}</td>
 		<td nowrap="nowrap">{$form.CenterID.html}</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap">Active</td>
+		<td nowrap="nowrap">{$form.Active.label}</td>
 		<td nowrap="nowrap">{$form.Active.html}</td>
 
 	</tr>
 	<tr>
-		<td nowrap="nowrap">Pending approval</td>
+		<td nowrap="nowrap">{$form.Pending_approval.label}</td>
 		<td nowrap="nowrap">{$form.Pending_approval.html}</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap">Examiner</td>
+		<td nowrap="nowrap">{$form.Examiner.label}</td>
 		<td nowrap="nowrap">{$form.Examiner.html}</td>
 	</tr>
 
