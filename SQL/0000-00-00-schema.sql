@@ -1823,4 +1823,19 @@ CREATE TABLE `project_rel` (
   `SubprojectID` int(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+--
+-- Table structure for table `login_history`
+--
+DROP TABLE IF EXISTS `user_login_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_login_history` (
+  ID int(10) unsigned NOT NULL AUTO_INCREMENT,
+  UserID varchar(255) NOT NULL DEFAULT '',
+  SelectedPermission varchar(255) DEFAULT NULL,
+  DroppedPermission varchar(255) DEFAULT NULL,
+  DataType  varchar(255) DEFAULT NULL,
+  DataTypeModifiedInfo varchar(255),
+  Creation_date datetime DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=92 DEFAULT CHARSET=latin1;
