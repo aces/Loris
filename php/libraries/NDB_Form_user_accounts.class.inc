@@ -304,7 +304,7 @@ class NDB_Form_user_accounts extends NDB_Form
             $this->addBasicText('Department', 'Department');
             $this->addBasicText('Address', 'Street Address');
             $this->addBasicText('City', 'City');
-            $this->addBasicText('State', 'Sta te/Province');
+            $this->addBasicText('State', 'State/Province');
             $this->addBasicText('Zip_code', 'Zip/Postal Code');
             $this->addBasicText('Country', 'Country');
             $this->addBasicText('Fax', 'FAX');
@@ -419,7 +419,7 @@ class NDB_Form_user_accounts extends NDB_Form
             $this->addBasicText('Department', 'Department');
             $this->addBasicText('Address', 'Street Address');
             $this->addBasicText('City', 'City');
-            $this->addBasicText('State', 'Sta te/Province');
+            $this->addBasicText('State', 'State/Province');
             $this->addBasicText('Zip_code', 'Zip/Postal Code');
             $this->addBasicText('Country', 'Country');
             $this->addBasicText('Fax', 'FAX');
