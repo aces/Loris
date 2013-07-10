@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**
  * @package mri
  */
@@ -20,14 +21,14 @@ require_once "MRIMenuPage.class.inc";
 
 // create Database object
 $DB = Database::singleton();
-if(PEAR::isError($DB)) {
+if(Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n";
     die();
 }
 
 // user is logged in, let's continue with the show...
 $user =& User::singleton();
-if(PEAR::isError($user)) {
+if(Utility::isErrorX($user)) {
     die("Error creating user object: ".$user->getMessage());
 }
 
@@ -45,9 +46,67 @@ $tpl_data['css']=$config->getSetting('css');
 $tpl_data['user_full_name']=$user->getData('Real_name');
 $tpl_data['user_site_name']=$user->getData('Site');
 
-$tpl_data['sessionID'] = $_REQUEST['sessionID'];
-$tpl_data['commentID'] = $_REQUEST['commentID'];
-$tpl_data['candID']    = $_REQUEST['candID'];
+$tpl_data['sessionID'] = isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '';
+$tpl_data['commentID'] = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
+$tpl_data['candID']    = isset($_REQUEST['candID'])    ? $_REQUEST['candID']    : '';
+
+// the the list of tabs, their links and perms
+$mainMenuTabs = $config->getSetting('main_menu_tabs');
+
+foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
+    $tpl_data['tabs'][]=$myTab;
+    foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
+    {
+        // skip if inactive
+        if ($mySubtab['visible']==0) continue;
+        // replace spec chars
+        $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
+
+        // check for the restricted site access
+        if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
+
+            // if there are no permissions, allow access to the tab
+            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+                $tpl_data['subtab'][]=$mySubtab;
+            } else {
+
+                // if any one permission returns true, allow access to the tab
+                foreach ($mySubtab["permissions"] as $permissions) {
+
+                    // turn into an array
+                    if (!is_array($permissions)) $permissions = array($permissions);
+
+                    // test and grant access to button with 1st permission
+                    foreach ($permissions as $permission) {
+                        if ($user->hasPermission($permission)) {
+                            $tpl_data['subtab'][]=$mySubtab;
+                            break 2;
+                        }
+                        unset($permission);
+                    }
+                    unset($permissions);
+                }
+            }
+        }
+        unset($mySubtab);
+    } // end foreach
+}
+
+//Display the links, as specified in the config file
+$links=$config->getSetting('links');
+foreach(Utility::toArray($links['link']) AS $link){
+    $BaseURL = $link['@']['url'];
+    if(isset($link['@']['args'])) {
+        $LinkArgs = $link_args[$link['@']['args']];
+    }
+    $LinkLabel = $link['#'];
+    $WindowName = md5($link['@']['url']);
+    $tpl_data['links'][]=array(
+        'url'        => $BaseURL . $LinkArgs,
+        'label'      => $LinkLabel,
+        'windowName' => $WindowName
+    );
+}   
 
 /* VISIT LISTING
 */
@@ -91,7 +150,9 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
 
 } else {
     // this happens in the main window. before you select a candidate and the corresponding volumes
-    $page = new MRIMenuPage($_REQUEST['filter']);
+    $filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : null;
+
+    $page = new MRIMenuPage($filter);
     $tpl_data['body']=$page->display();
 }
 
@@ -99,8 +160,8 @@ $smarty=new Smarty_neurodb;
 // this is a fixme. Same data get's assigned to volume_list
 $tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
 $tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
-$smarty->assign('subject', $subjectData);
-$smarty->assign('files', $fileData);
+//$smarty->assign('subject', $subjectData);
+//$smarty->assign('files', $fileData);
 if($user->hasPermission('mri_feedback')) $tpl_data['has_permission'] = true;
 $smarty->assign($tpl_data);
 $smarty->display('mri_browser_main.tpl');

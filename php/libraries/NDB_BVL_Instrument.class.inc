@@ -88,12 +88,15 @@ class NDB_BVL_Instrument extends NDB_Page
     * NOTE: When abstracting the _saveValues() method in the child <instrument> class, add only the dates from the current page to the array using the instruments switch($page) otherwise you'll end up overwriting (NULLing) all other dates in the table that appear on other pages (if they are listed in the array of date fields) - note by Dario
     */
     var $dateTimeFields = array();
-
-
+    
+    /**
+     * Array of date fields that contain only month year fields in frontend with a static value for the date
+     */
+    var $monthYearFields = array();
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age','Data_entry_completion_status');
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
@@ -388,7 +391,10 @@ class NDB_BVL_Instrument extends NDB_Page
         foreach($this->dateTimeFields as $field){
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
-        
+        foreach($this->monthYearFields as $field){
+            $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
+        }
+
         if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0) {
             $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>'; //if($defaults['Window_Difference'] != 0) {
         }
@@ -539,7 +545,17 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         }
-        
+
+        //Convert date/time fields into database dates/times
+        if (is_array($this->monthYearFields) && count($this->monthYearFields) > 0) {
+            foreach($this->monthYearFields as $field){
+                if(isset($values[$field])) {  //Stops it from wiping dates already saved on other pages.
+                    $values[$field]['d'] = 15;
+                    $values[$field]=$this->_getDatabaseDate($values[$field]);
+                }
+            }
+        }
+
         if(strrpos($this->testName, "_proband") === FALSE) {
             $this->_saveCandidateAge($values);
         }
@@ -1072,7 +1088,8 @@ class NDB_BVL_Instrument extends NDB_Page
     //Assumes all conditions are met and then checks each of them, any condition not met will invalidate the rule, 
     //meaning the answer is valid.
     //DONT TOUCH THIS, EVER.
-    function XINRunElementRules($elname, $elements, $rules){
+    function XINRunElementRules($elname, $elements, $rules) {
+        $errors = array();
         $is_required=true; //Conditions for the rule to be true, and thus the element to be required.
         foreach($rules['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
             //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
@@ -1197,7 +1214,6 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID=:CID";
         $dataFields = $db->pselectRow($query, array('CID' => $this->getCommentID()));
-        if(Utility::isErrorX($success)) return PEAR::raiseError("Could not select required elements from database: ".$success->getMessage()."<br>\n");
         foreach($dataFields as $field) {
             // this shouldn't be just empty() b/c 0 is a valid value for some required fields
             if(is_null($field) || $field === "") return 'Incomplete';
@@ -1326,22 +1342,45 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
     * Adds a date group with a status box and appropriate rule
-    * Note: $this->dateOptions must be defined by the subclass calling this wrapper function
-    * @param $name   Name prepended to the HTMLQuickform element
-    * @param $label Element label
+    * Note: $this->dateOptions must be defined by the subclass calling this 
+    * wrapper function
+    *
+    * @param string $name    Name prepended to the HTMLQuickform element
+    * @param string $label   Element label
+    * @param array  $options optional override of class's dateOptions
+    *
+    * @return none
     */
-    function addDateElement($name, $label, $options = null){
-        if($options === null) {
+    function addDateElement($name, $label, $options = null)
+    {
+        if ($options === null) {
             $options = $this->dateOptions;
         }
-        $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
-        $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
+
+        $group [] = $this->createDate($name . "_date", null, $options);
+        if (!in_array($name . "_date", $this->dateTimeFields)) {
+            $this->dateTimeFields[] = $name . "_date"; 
+        }
+
         $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
-        
     }
+
+    /** 
+     * Wrapper to create a month year date field
+     * Adding this to Instrument class instead of NDB_Page is because we need this for saveValues function
+     * @param string $field Name of the field
+     * @param string $label Element label
+     * @param array $options optional override of class's dateOptions
+     *
+     * @return none
+    */
+    function addMonthYear($field, $label, $options=array()) {
+        $this->form->addElement('date', $field, $label, $options);
+    }
+
 
     /** 
     * Wrapper with a user-created date group, a status box and appropriate rule

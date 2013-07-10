@@ -142,7 +142,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             }
             if(is_array($list_of_sites)) 
             {
-                $new_list = array('' => 'Any');
+                $new_list = array('' => 'All');
                 foreach($list_of_sites as $key => $val) {
                     $new_list[$key] = $val;
                 }
@@ -160,21 +160,21 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
         
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
-        $list_of_visit_labels = array(null=>'Any');
+        $list_of_visit_labels = array(null=>'All');
         $visitLabel = Utility::getVisitList();
         foreach($visitLabel as $key => $value){
             $list_of_visit_labels[$key]= $value;
         }
         $list_of_visit_labels_only = $visitLabel;
         $projects = Utility::getProjectList();
-        $list_of_projects = array(null=>'Any');
+        $list_of_projects = array(null=>'All');
         foreach($projects as $key=>$value){
              $list_of_projects[$key]= $value;
         }
         $subproject_options = Utility::getSubprojectList();
-        $subproject_options = array(null=>'Any') + $subproject_options;
-        $gender_options = array(null=>'Any', 'Male'=>'Male', 'Female'=>'Female');
-        $list_of_instruments = array(null=>'Any');
+        $subproject_options = array(null=>'All') + $subproject_options;
+        $gender_options = array(null=>'All', 'Male'=>'Male', 'Female'=>'Female');
+        $list_of_instruments = array(null=>'All');
         $config =& NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $reliabilityInstruments = $reliabilityConfig['Instrument'];
@@ -195,7 +195,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->form->addElement('select', 'Gender', 'Gender:', $gender_options);
         $this->form->addElement('select', 'Visit_label', 'Visit Label:', $list_of_visit_labels);
         $this->form->addElement('select', 'Instrument', 'Instrument:', $list_of_instruments);
-        $this->form->addElement('select', 'Invalid', 'Invalid Candidate:', array('' => '', 'yes' => 'Yes', 'no' => 'No'));
+        $this->form->addElement('select', 'Invalid', 'Invalid Candidate:', array('' => 'All', 'yes' => 'Yes', 'no' => 'No'));
 	 // $this->form->addElement('select', 'Lock_record', 'Lock_record:', $lock_options);
         //$config=&NDB_Config::singleton();
         if($config->getSetting("useProjects")=="true"){

@@ -271,6 +271,11 @@ class Utility extends PEAR
         return $list;
     }
     
+    /**
+     * Returns a list of study Projects
+     * @return array an associative array("projectID" => "project title")
+     * @access public
+     */
     function getProjectList() {
         $config =& NDB_Config::singleton();
 
@@ -281,6 +286,42 @@ class Utility extends PEAR
     		$list[$project['id']]=$project['title'];
     	}
         return $list;
+    }
+    /**
+     * Returns a list of study Subprojects associated with a project
+     * @throws PEAR_Error
+     * @return array       an associative array("SubprojectID" => "Subproject title")
+     * @access public
+     */
+
+    function getSubprojectsForProject($projectID = null) {
+
+        $db =& Database::singleton();
+        $config =& NDB_Config::singleton();
+        $subprojectSettings= $config->getSetting('subprojects');
+        foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
+            $allSubprojects[$subproject['id']]=$subproject['title'];
+        }
+        if($projectID != null) { 
+            $query = "SELECT SubprojectID FROM project_rel WHERE ProjectID=:pID";
+            $subprojList = $db->pselect($query, array('pID' => $projectID));
+
+            if(Utility::isErrorX($subprojList)) {
+                return PEAR::raiseError("Could not list of subprojects ".$subprojList->getMessage());
+            }
+            foreach($subprojList as $row) {
+                $subList[] = $row['SubprojectID'];
+            }
+            $list = array();
+            foreach($subList as $row) {
+                $list[$row] = $allSubprojects[$row];    
+            }
+            return $list;
+        } else {
+            return $allSubprojects;   
+
+        }
+
     }
     /**
      * Returns the test name associated with a given commentID
@@ -726,24 +767,28 @@ class Utility extends PEAR
      * @access public
      * @static
      */
-	function getExistingVisitLabels()
-	{
-		$db =& Database::singleton();
-		$query = "SELECT DISTINCT Visit_label FROM session s 
-		 JOIN candidate c ON (s.CandID = c.Candid) 
-		 JOIN psc ON (s.CenterID = psc.CenterID)
-		 WHERE c.Active = 'Y' AND s.Active = 'Y' AND c.PSCID NOT LIKE '%scanner%' AND psc.CenterID!= '1' ORDER BY VisitNo";
-		$visitlabels = $db->pselect($query,array());
-		$visits = array();
-		for ($i =0 ;$i<count($visitlabels) ; $i++){
-			$visits[$visitlabels[$i]['Visit_label']] = ($visitlabels[$i]['Visit_label']);
-		}
-		return $visits;
-	}
-	
-	
-		
-/**
+    function getExistingVisitLabels($projectID = null)
+    {
+        $db =& Database::singleton();
+        if($projectID != null) {
+            $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
+        } else {
+            $ExtraProject_Criteria ='';
+        }
+        $query = "SELECT DISTINCT Visit_label FROM session s 
+        JOIN candidate c ON (s.CandID = c.Candid) 
+        JOIN psc ON (s.CenterID = psc.CenterID)
+        WHERE c.Active = 'Y' AND s.Active = 'Y' AND c.PSCID NOT LIKE '%scanner%' AND psc.CenterID!= '1'
+        $ExtraProject_Criteria ORDER BY Visit_label";
+        $visitlabels = $db->pselect($query,array());
+        $visits = array();
+        for ($i =0 ;$i<count($visitlabels) ; $i++){
+            $visits[$visitlabels[$i]['Visit_label']] = ($visitlabels[$i]['Visit_label']);
+        }
+        return $visits;
+     }
+
+    /**
 	 * *
 	 * get all the instruments for the given visit...
 	 * @param unknown_type $visit
@@ -768,6 +813,17 @@ class Utility extends PEAR
 		}
 		return $test_names;
 	}
+
+    static function NumericArray($arr) {
+        if(!is_array($arr)) {
+            return false;
+        }
+        $keys = array_keys($arr);
+        if(count($keys) === 0) {
+            return false;
+        }
+        return isset($arr[0]);
+    }
 
 }
 ?>

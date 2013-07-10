@@ -48,6 +48,17 @@ require_once "NDB_Config.class.inc";
 require_once "NDB_BVL_Instrument.class.inc";
 require_once "Candidate.class.inc";
 
+
+////////instruments to be excluded
+ 
+$instrumentsToSkip = array();
+$instruments = getExcludedInstruments();
+foreach ($instruments as $instrument) {
+    if (isset($instrument)) {
+        $instrumentsToSkip[] = $instrument;
+    }
+}
+
 /*
  * new DB Object
  */
@@ -85,30 +96,14 @@ foreach($files AS $file){
     $obj=new $className;
     echo "Initializing instrument object...\n";
     $obj->setup(NULL,NULL);
-    
-    //Some instruments ought not be parsed with the quickform_parser FIGS, FHRDC
-    $instrumentsToSkip = array('fhrdc', //very exceptional structure
-                                 );
-    if (in_array($obj->testName, $instrumentsToSkip)) { 
-        echo "Unconventional structure.  quickform_parser wants to skip file {$file}\n"; 
+
+    //Some instruments ought not be parsed with the quickform_parser 
+    if ((in_array($obj->testName, $instrumentsToSkip))) { 
+        echo "quickform_parser will	skip file {$file}\n"; 
         continue;
     }
 
-    //Bayley mental and motor require StartingAge to be filled in before ENTIRE form will build
-    if($obj->testName == 'bayley_mental' || $obj->testName == 'bayley_motor') {
-        $obj->startingAge = 999; //dummy value
-    }
     $subtests=$obj->getSubtestList();
-    //telephone_screening is a special, bilingual case.  Only use the English version.
-    if ($obj->testName == "telephone_screening") {
-        $size = sizeof($subtests); //original size of the array, before any unsets
-        for($i = 0; $i < $size; $i++) {
-            if (ereg("francais", $subtests[$i]['Name']) != 0) {
-                unset($subtests[$i]);
-            }
-        }
-        array_merge($subtests); //renumbers array sequentially from 0
-    }
     foreach($subtests as $subtest){
         $obj->page=$subtest['Name'];
         echo "Building instrument page '$subtest[Name]'...\n";
@@ -198,6 +193,23 @@ function parseElements($elements, $groupLabel=""){
                 $output.="checkbox{@}".$element->_attributes['name']."{@}".$element->_label."\n";
             break;
             
+        case "html_quickform_radio":
+            $mainquestion = addslashes($element->_label);
+            $optionfield = addslashes($element->_text);
+            if ($element->_attributes['position'] == "first") {
+                $output.= "radio{@}";
+                $output.= $element->_attributes['name'] . "{@}";
+                $output.= $mainquestion . "{@}";
+            }
+            $output.= "'" . $element->_attributes['value'] 
+                   . "'=>'" . $optionfield . "'";
+            if ($element->_attributes['position'] == "last") {
+                $output.="\n";
+            } else {
+                $output.="{-}";
+            }
+        break;
+
             case "html_quickform_html":
             case "html_quickform_file":
             case "html_quickform_hidden":
@@ -212,6 +224,28 @@ function parseElements($elements, $groupLabel=""){
     }
     return $output;
     //print_r($obj->form);
+}
+
+/**
+ * Get the excluded instruments from the config file
+ *
+ * @return Array   List of instruments to be skipped
+ */
+function getExcludedInstruments()
+{
+
+    // Get the abbreviated instruments
+    $config =& NDB_Config::singleton();
+    $excluded_instruments = $config->getSetting('excluded_instruments');
+    
+    $ex_instruments=array();
+    foreach ($excluded_instruments as $instruments) {
+        foreach (Utility::asArray($instruments) as $instrument) {
+            $ex_instruments[$instrument] = $instrument;
+        }
+
+    }
+    return $ex_instruments;
 }
 
 ?>

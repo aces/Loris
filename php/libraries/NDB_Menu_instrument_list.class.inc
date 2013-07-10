@@ -60,11 +60,13 @@ class NDB_Menu_instrument_list extends NDB_Menu
             }
             $username = $user->getData('UserID');
 
+            $feedback_select_inactive = null;
             if ($user->hasPermission('bvl_feedback')) {
                 $feedback_select_inactive = 'Y';
             }
 
             $x = -1;
+            $prevSubgroup = null;
             foreach($listOfInstruments as $instrument) {
                 // print the sub group header row
                 if($instrument['Sub_group'] != $prevSubgroup) {

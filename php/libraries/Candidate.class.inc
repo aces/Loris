@@ -436,6 +436,30 @@ class Candidate
         }
         return $subprojList;
     }
+    /**
+     * returns first visit for a candidate based on Date_visit
+     * @static
+     * @return visit label
+     * @throws PEAR::Error
+     */
+    function getFirstVisit() {
+        $candID = $this->getCandID();
+        $db =& Database::singleton();
+        if(Utility::isErrorX($db)) {
+            return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
+        }
+    
+        $query  = "SELECT Visit_label FROM session s JOIN candidate c ON (c.CandID = s.CandID) 
+            WHERE c.CandID=:cid ORDER BY Date_Visit";
+        $where  = array('cid'=>$candID);
+        $vLabel = $db->pselectOne($query, $where);
+        if(Utility::isErrorX($vLabel)) {
+            return PEAR::raiseError("Could not connect to database: ".$vLabel->getMessage());
+        }
+
+        return $vLabel;
+    }
+
 
     /**
     * generates a new random CandID

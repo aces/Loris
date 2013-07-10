@@ -108,6 +108,8 @@ foreach($instruments AS $instrument){
                     $bits[0]="varchar(255)";
                 } else if ($bits[0]=="static") {
                     $bits[0]="varchar(255)";
+                } else if ($bits[0]=="radio") {
+                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
                 }
                 
                 $bits[2]=htmlspecialchars($bits[2]);

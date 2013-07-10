@@ -49,7 +49,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         // BVLQC - get permission and set the tpl element
         $user =& User::singleton();
         $this->tpl_data['access']['bvl_qc'] = $user->hasPermission('bvl_feedback');
-        if (Utility::isErrorX($this->tpl_data['access']['bvl_qc_type'])) {
+        if (isset($this->tpl_data['access']['bvl_qc_type']) && Utility::isErrorX($this->tpl_data['access']['bvl_qc_type'])) {
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$this->tpl_data['access']['bvl_qc_type']->getMessage());
         }
         
@@ -92,7 +92,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
 
         // submit to dcc (a.k.a., finalize)
-        if ($_REQUEST['setSubmitted'] == 'Y'
+        if (isset($_REQUEST['setSubmitted']) && $_REQUEST['setSubmitted'] == 'Y'
             && $this->_hasAccess_SendToDCC()
             && in_array($currentStage, array('Visit', 'Screening'))
             && $currentStatus != 'In Progress')
@@ -177,7 +177,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
         
         // un-submit to dcc
-        if ($_REQUEST['setSubmitted'] == 'N'
+        if (isset($_REQUEST['setSubmitted']) && $_REQUEST['setSubmitted'] == 'N'
             && $this->_hasAccess_SendToDCC()
             && !in_array($currentStage, array(null, 'Not Started', 'Visit', 'Screening')))
             {
@@ -454,7 +454,8 @@ Class Instrument_List_ControlPanel extends TimePoint
         // This is a toggle button.
         if ($this->getData('Submitted')=='Y') {
             $this->tpl_data['send_to_dcc']['set_submitted'] = 'N';
-        } elseif ($study['timepointFlagCheck_send2dcc'] && $this->getVisitStatus()=='Pass') {
+        } elseif (isset($study['timepointFlagCheck_send2dcc']) && 
+            $study['timepointFlagCheck_send2dcc'] && $this->getVisitStatus()=='Pass') {
             $this->tpl_data['send_to_dcc']['set_submitted'] = 'Check';
         } else {
             $this->tpl_data['send_to_dcc']['set_submitted'] = 'Y';
