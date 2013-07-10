@@ -33,6 +33,10 @@ function open_help_section(){
 //-->
 </script>
 {/literal}
+<link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
+
 </head>
 <div id="mainBody">
 <body 
@@ -44,17 +48,63 @@ function open_help_section(){
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="navbarpadding">
     <tr>
         <th height="30" align="left" background="images/title_background.jpg" class="banner" colspan="1">
-            <!--{$study_title}-->
-            {foreach from=$tabs item=tab} 
-            <a href="main.php?test_name={$tab.link}" id=navbarspacer>{$tab.label}</a>
+        <div id="slidemenu" class="jqueryslidemenu">
+        <ul>
+        <li><a href="#">{$user.Real_name}</a>
+            <ul>
+            {foreach from=$tabs item=tab}
+                {if ($tab.label == "User Accounts")}
+                 <li><a href="main.php?test_name=user_accounts">User Accounts</a></li>
+                {/if}
             {/foreach}
-        </th>
+            <li><a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a></li>
+            <li><a href="main.php?logout=true">Log Out</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Candidate</a>
+            <ul>
+            {foreach from=$tabs item=tab}
+                {if ($tab.label == "New Profile")}
+                <li><a href="main.php?test_name=new_profile">New Profile</a></li>
+                {/if}
+                {if ($tab.label == "Access Profile")}
+                <li><a href="main.php?test_name=candidate_list">Access Profile</a></li>
+                {/if}  
+            {/foreach}
+           </ul>
+        </li> 
+        <li><a href="#">Study</a>
+            <ul>
+            {foreach from=$tabs item=tab}
+                {if ($tab.label == "Reliability Coding")}
+                <li><a href="main.php?test_name=reliability">Reliability Coding</a></li>
+                {/if}
+                {if ($tab.label == "Database Statistics")}
+                <li><a href="main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">Database Statistics</a></li>
+                {/if}
+                {if ($tab.label == "Blind Coding")}
+                <li><a href="main.php?test_name=blind_coding">Blind Coding</a></li>
+                {/if}
+                {if ($tab.label == "Videos")}
+                <li><a href="main.php?test_name=videos">Videos</a></li>
+                {/if}
+                {if ($tab.label == "Conflict Resolver")}
+                <li><a href="main.php?test_name=conflicts_resolve">Conflict Resolver</a></li>
+                {/if}
+            {/foreach}
+        </ul>
+        <li><a href= javascript:open_help_section()">Help</a></li>
+                
+    </li>    
+    </div>
+   <h4 align=right> Site: {$user.Site}</h4>
+    </th>
     </tr>
-<tr> <!-- user info table -->
+<!--tr>
 <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
 User: {$user.Real_name}&nbsp; Site: {$user.Site}&nbsp; Date: {$smarty.now|date_format:"%B %e %Y"}
 </td>   
- </tr>
+ </tr-->
 </table>
 <img src="images/title_background.jpg" colspan="2" width="100%" height="2">
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
@@ -95,7 +145,7 @@ User: {$user.Real_name}&nbsp; Site: {$user.Site}&nbsp; Date: {$smarty.now|date_f
         <!-- main page table tags -->
         <td width="100%" class="bgGradient" valign="top">
             <!-- Start workspace area -->
-<h1 align="right"><a href="javascript:open_help_section()" ><u>Help</u></a>  </h1>
+<!--h1 align="right"><a href="javascript:open_help_section()" ><u>Help</u></a>  </h1-->
 {if $crumbs != ""}
             <!-- bread crumb -->
             <table width="100%" border="0" cellpadding="3" cellspacing="4">
