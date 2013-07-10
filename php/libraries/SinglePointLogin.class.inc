@@ -210,6 +210,21 @@ class SinglePointLogin extends PEAR
     function authenticate()
     {
         $this->_lastError = '';
+        
+        ///////////////////////////
+        ///initialization/////
+        //////////////////////////
+		$this->_username = $_POST['username'];
+		
+        $setArray = array(
+        'UserID'=> $this->_username,
+		'Success' => 'Y',
+		'Failcode' => NULL,
+		'Login_timestamp' => date('Y-m-d'),
+		'IP_address' => $_SERVER['REMOTE_ADDR'],
+		'Page_requested' => $_SERVER['REQUEST_URI']
+		);
+
 
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
@@ -229,10 +244,12 @@ class SinglePointLogin extends PEAR
         }
         if (empty($_POST['username'])) {
             $this->_lastError = 'Please enter a username';
+            $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
             return false;
         }
         if (empty($_POST['password'])) {
             $this->_lastError = 'Please enter a password';
+            $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
             return false;
         }
 
@@ -255,6 +272,7 @@ class SinglePointLogin extends PEAR
                 // check that the user is active
                 if ($row['Active'] == 'N') {
                     $this->_lastError = "Your account has been deactivated.  Please contact your project administrator to reactivate this account.";
+                    $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
                     return false;
                 }
 
@@ -264,14 +282,15 @@ class SinglePointLogin extends PEAR
                     $this->showPasswordExpiryScreen();
                 }
 
-                // user is valid
-                $this->_username = $_POST['username'];
+                // insert the user into the user_login_history table
+                $result =  $DB->insert('user_login_history', $setArray);
                 return true;
-            }
+            }        
             // bad usename or password
         }
 
         $this->_lastError = "Incorrect username or password";
+        $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
         return false;
     }
 
@@ -312,5 +331,24 @@ class SinglePointLogin extends PEAR
 
         $_SESSION['State']->setUsername(null);
     }
+    
+      /**
+     * Inserts the failed_detail into the user_login_history
+     *
+     */
+    
+    
+   function insertFailedDetail($description,$setArray){
+        // create DB object
+        $DB =& Database::singleton();
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        }
+    	$setArray['Success'] = 'N';
+		$setArray['Fail_detail'] = $description;
+        $result =  $DB->insert('user_login_history',$setArray);
+        
+    }
+
 }
 ?>
