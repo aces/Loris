@@ -43,35 +43,18 @@ function open_help_section(){
 {if $dynamictabs neq "dynamictabs"}
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="navbarpadding">
     <tr>
-        <th align="left" background="images/title_background.jpg" height="100"class="banner" colspan="1">
-            {$study_title} 
+        <th height="30" align="left" background="images/title_background.jpg" class="banner" colspan="1">
+            <!--{$study_title}-->
+            {foreach from=$tabs item=tab} 
+            <a href="main.php?test_name={$tab.link}" id=navbarspacer>{$tab.label}</a>
+            {/foreach}
         </th>
     </tr>
 <tr> <!-- user info table -->
 <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
 User: {$user.Real_name}&nbsp; Site: {$user.Site}&nbsp; Date: {$smarty.now|date_format:"%B %e %Y"}
-</td></tr>
-    <tr>
-        <!-- nav bar table -->
-        <td colspan="2" class="navigationRow">
-            <ul class="navigationBar">
-                <!-- the buttons -->
-                {foreach from=$tabs item=tab} 
-                    <li class="navigationButtons {if ($tab.link == $test_name && $subtest != "my_preferences")}active{elseif $tab.link == $top_level && $subtest != "my_preferences"}active{/if}">
-                        {if ($tab.link != "main.php?logout=true")}<a href="main.php?test_name={$tab.link}">{$tab.label}</a>{/if}
-                    </li>
-                {/foreach}
-                
-                <!-- my preferences button-->
-                <li class="navigationButtons {if $test_name== "user_accounts" && $subtest == "my_preferences" }active{/if}">
-                    <a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a>
-                </li>
-                <li class="navigationButtons"> 
-                    <a href="main.php?logout=true">Log Out</a>
-                </li>
-                </ul>
-        </td>
-    </tr>
+</td>   
+ </tr>
 </table>
 <img src="images/title_background.jpg" colspan="2" width="100%" height="2">
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
