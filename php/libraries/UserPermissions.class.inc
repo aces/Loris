@@ -296,6 +296,5 @@ class UserPermissions
         }
     }
 
-
 }
 ?>
