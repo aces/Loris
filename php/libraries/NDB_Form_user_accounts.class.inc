@@ -233,6 +233,10 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         $this->redirect = "test_name=$this->name";
 
+        ///get the value for additional_user_info flag
+        $config =& NDB_Config::singleton();
+        $additional_user_info = $config->getSetting('additional_user_info');
+       
         //------------------------------------------------------------
 
         // register RequiredIfGroup rule
@@ -292,17 +296,19 @@ class NDB_Form_user_accounts extends NDB_Form
 		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        $this->addBasicText('Degree', 'Degree');
-        $this->addBasicText('Position_title', 'Academic Position');
-        $this->addBasicText('Institution', 'Institution');
-        $this->addBasicText('Department', 'Department');
-        $this->addBasicText('Address', 'Street Address');
-        $this->addBasicText('City', 'City');
-        $this->addBasicText('State', 'Sta te/Province');
-        $this->addBasicText('Zip_code', 'Zip/Postal Code');
-        $this->addBasicText('Country', 'Country');
-        $this->addBasicText('Fax', 'FAX');
-
+        print "additional user info is $additional_user_info";
+        if ($additional_user_info){
+            $this->addBasicText('Degree', 'Degree');
+            $this->addBasicText('Position_title', 'Academic Position');
+            $this->addBasicText('Institution', 'Institution');
+            $this->addBasicText('Department', 'Department');
+            $this->addBasicText('Address', 'Street Address');
+            $this->addBasicText('City', 'City');
+            $this->addBasicText('State', 'Sta te/Province');
+            $this->addBasicText('Zip_code', 'Zip/Postal Code');
+            $this->addBasicText('Country', 'Country');
+            $this->addBasicText('Fax', 'FAX');
+        }
         
         // email address
         $group[] = $this->createText('Email');
@@ -380,6 +386,10 @@ class NDB_Form_user_accounts extends NDB_Form
     {
         $this->identifier = $_SESSION['State']->getUsername();
 
+        ///get the value for additional_user_info flag
+        $config =& NDB_Config::singleton();
+        $additional_user_info = $config->getSetting('additional_user_info');
+
         //------------------------------------------------------------
 
         // user name
@@ -402,17 +412,18 @@ class NDB_Form_user_accounts extends NDB_Form
 		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        $this->addBasicText('Degree', 'Degree');
-        $this->addBasicText('Position_title', 'Academic Position');
-        $this->addBasicText('Institution', 'Institution');
-        $this->addBasicText('Department', 'Department');
-        $this->addBasicText('Address', 'Street Address');
-        $this->addBasicText('City', 'City');
-        $this->addBasicText('State', 'Sta te/Province');
-        $this->addBasicText('Zip_code', 'Zip/Postal Code');
-        $this->addBasicText('Country', 'Country');
-        $this->addBasicText('Fax', 'FAX');
-
+        if ($additional_user_info){
+            $this->addBasicText('Degree', 'Degree');
+            $this->addBasicText('Position_title', 'Academic Position');
+            $this->addBasicText('Institution', 'Institution');
+            $this->addBasicText('Department', 'Department');
+            $this->addBasicText('Address', 'Street Address');
+            $this->addBasicText('City', 'City');
+            $this->addBasicText('State', 'Sta te/Province');
+            $this->addBasicText('Zip_code', 'Zip/Postal Code');
+            $this->addBasicText('Country', 'Country');
+            $this->addBasicText('Fax', 'FAX');
+        }
         // email address
         $this->addBasicText('Email', 'Email address');
 
