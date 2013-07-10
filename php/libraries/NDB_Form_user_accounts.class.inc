@@ -62,7 +62,20 @@ class NDB_Form_user_accounts extends NDB_Form
     {
     	// build the "real name"
     	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
-    	
+
+    	//create the user
+        if (!empty($this->identifier)) {
+            $user =& User::factory($this->identifier);
+        }
+        else{
+            $user =& User::factory($values['UserID']);
+        }
+        if(Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
+        }
+        ////Get the current permissions/////
+        $current_permissionids = $user->getPermissionIDs();
+
 	    // store the permission IDs
 	    if (!empty($values['permID'])) {
             $permIDs = $values['permID'];
@@ -92,12 +105,29 @@ class NDB_Form_user_accounts extends NDB_Form
         foreach ($values as $key => $value) {
             if (!empty($value) || $value === '0') {
                 $set[$key] = $value;
+                ////////////////////////////////////////////////////////////////////////////
+                ///if the userinfo is modified insert it into user_account_history table////
+                ////////////////////////////////////////////////////////////////////////////
+                $old_value = $user->getData($key);
+                $new_value = $set[$key];
+                if ($old_value!=$new_value){
+                    if (($key!='Password_md5')&&($key!='Real_name')){
+                        $user->InsertIntoUserAccountHistory(null,null,$key,$old_value,$new_value);
+                    }
+                }
             }
         }
 
         // prepend two random characters
         if (isset($set['Password_md5'])) {
             $set['Password_md5'] = User::md5_salt($set['Password_md5']);
+             ////////////////////////////////////////////////////////////////////////////
+            //if the password is changed insert it into the	user_account_history table///
+            ////////////////////////////////////////////////////////////////////////////
+            if ($user->getData('Password_md5')!=$set['Password_md5']){
+                $user->InsertIntoUserAccountHistory(null,null,'Password_md5',$user->getData('Password_md5'),$set['Password_md5']);
+            }
+
         }
 
 
@@ -108,19 +138,9 @@ class NDB_Form_user_accounts extends NDB_Form
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() insert: ".$success->getMessage());
             }
-
-            $user =& User::factory($set['UserID']);
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error (".$set['UserID'] ."): ".$user->getMessage());
-            }
         }
         else {
             // update the user
-            $user =& User::factory($this->identifier);
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
-            }
-
             $success = $user->update($set);
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() update: ".$success->getMessage());
@@ -144,8 +164,22 @@ class NDB_Form_user_accounts extends NDB_Form
 
             foreach ($permIDs as $key => $value) {
                 if ($value == 0) {
+                    //if the permission existed before and it's removed now///
+                    ///Then insert into the user_account_history as 'D'
+                    if (in_array($key,$current_permissionids)){
+                        $user->InsertIntoUserAccountHistory($key,'D');
+                    }
+
                     unset($permIDs[$key]);
                 }
+                else{
+                    //if the user didn't have the permission and the permission is now assigned///
+                    ///Then insert insert into the user_account_history as 'I'
+                    if (!(in_array($key,$current_permissionids))){
+                        $user->InsertIntoUserAccountHistory($key,'I');
+                    }
+                }
+
             }
 
             $success = $user->addPermissions(array_keys($permIDs));
