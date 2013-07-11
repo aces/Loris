@@ -648,8 +648,10 @@ class NDB_BVL_Instrument extends NDB_Page
         $CertificationEnabled = $CertificationConfig['EnableCertification'];
         if($CertificationEnabled) {
             $CertificationProjects = array();
-            foreach($CertificationConfig['CertificationProjects'] as $key => $projID) {
-                $CertificationProjects[] = $projID;
+            foreach(Utility::toArray($CertificationConfig['CertificationProjects']) as $key => $value) {
+                foreach($value as $k=>$projID) {
+                    $CertificationProjects[$projID] = $projID;
+                }
             }
             $CertificationInstruments = array();
             foreach(Utility::toArray($CertificationConfig['CertificationInstruments']) as $instrument) {
@@ -1591,6 +1593,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     case 'selectmultiple':
                         $type = 'multiple';
+                        $this->_selectMultipleElements[] = $pieces[1];
                         // fall through and also execute select code below
                     case 'select':
 

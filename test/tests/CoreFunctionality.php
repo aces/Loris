@@ -62,11 +62,11 @@ class TestOfLoris extends LorisTest
         $response = $this->get($this->url . '/main.php');
         $this->assertResponse(200);
         $this->assertTitle($this->config->getSetting("title"));
-        $this->assertNoPattern("/Welcome to the Database/");
+        $this->assertNoPattern("/Welcome/");
         $this->login("UnitTester", "4test4");
         $this->assertResponse(200);
         //print_r($this);
-        $this->assertPattern("/Welcome to the Database/");
+        $this->assertPattern("/Welcome/");
         $this->get($this->url . "/main.php?test_name=doesntexist");
         $this->assertResponse(404);
     }
@@ -225,7 +225,7 @@ class TestOfLoris extends LorisTest
         );
         
         $this->login("UnitTester", "4test4");
-        $this->assertPattern("/Welcome to the Database/");
+        $this->assertPattern("/Welcome/");
 
         foreach ($CommentIDs as $Flag) {
             if (isset($this->ignoreInstruments) 

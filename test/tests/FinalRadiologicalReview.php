@@ -153,7 +153,7 @@ class TestOfFinalRadiologicalReview extends LorisTest
             "Could not find $this->CandID with filter"
         );
 
-        $PostArray['Review_done'] = '0';
+        $PostArray['Review_done'] = 'no';
         $this->post($this->url . '/main.php', $PostArray);
         $this->assertBasicConditions();
         $this->assertNoPattern(
