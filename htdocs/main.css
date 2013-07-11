@@ -23,15 +23,13 @@
  */
 
 html, body {
-   	margin: 1px 10px 0px 5px;
-    height: 99%;
+   	margin: 0px 0px 0px 0px;
+
+
+    height: 100%;
     background-color: #EEF; 
 	font-family: verdana, sans-serif;
 	font-size: 90%;
-}
-#mainBody {
-    min-height: 100%;
-    clear:both;
 }
 #page {
     min-height: 100%;
@@ -107,19 +105,21 @@ h4 {
     background-color: #08245B;
     width: 100%;
 }
+.site{
+    color:white
+}
 /* table headers */
 th {
 	font-weight: bold;
     }
-
 th.banner {
-	background: #08245b;
-	color: #fff;
-        border-style: solid;
-    	border-color: #08245b;
-    	border-width: 1px;
-    	border-radius: 4px;
-    	-webkit-border-radius: 4px;
+background: #08245b;
+color: #fff;
+     border-style: solid;
+     border-color: #08245b;
+     border-width: 1px;
+     border-radius: 4px;
+     -webkit-border-radius: 4px;
     }
 th.banner a:link, th.banner a:visited {
 	color: #fff;
@@ -434,8 +434,12 @@ table.data {
     margin-left: 5px;
     margin-top: 5px;
 }
-
-th.login {
+.header {
+background:#08245b;
+}
+.loginheader {
+background: #08245b;
+color: #fff;
 padding-top: 3px;
 font-size: 130%;
 text-align: center;
@@ -455,12 +459,15 @@ text-align: center;
 .MainFooter {
     position:absolute;
     bottom:0;
-    width: 100.8%;
+    width: 100%;
     font-size: 0.9em;
     color: #aaa;
     text-align: center;
     background: #08245b;
     vertical-align: bottom;
+}
+.welcomemessage {
+width:"50%";
 }
 ul#navlist
 {
@@ -492,12 +499,10 @@ text-decoration: none;
 padding-right:5px;
 }
 table.mainlayout {
-    margin-left: 0;
-    margin-top:6px;
+    margin-top:10px;
+    padding-left:8px;
+    padding-right:8px;
     padding-bottom: 9em;
-}
-table.navbarpadding {
-    border-spacing: 2px;
 }
 
 td.sidenav {

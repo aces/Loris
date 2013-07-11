@@ -1,6 +1,16 @@
+.Account{
+float:right;
+}
+.site{
+    padding-top:8px;
+    padding-right:7px;
+    float:right;
+    font-weight: normal;
+}
+
 .jqueryslidemenu{
 font: bold 12px Verdana;
-width: 100%;
+
 z-index:10;
 }
 
@@ -26,7 +36,6 @@ z-index:10;
 .jqueryslidemenu ul li a{
 display: block;
 background: #08245b; /*background of tabs (default state)*/
-color: white;
 padding: 8px 10px;
 border-right: 1px solid #778;
 border-bottom: 1px solid #778;
