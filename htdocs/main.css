@@ -24,8 +24,6 @@
 
 html, body {
    	margin: 0px 0px 0px 0px;
-
-
     height: 100%;
     background-color: #EEF; 
 	font-family: verdana, sans-serif;
@@ -79,7 +77,7 @@ h3.controlPanelSection, td.controlPanelSection {
     }
 
 /* headers */
-h1, h2, h3, h4{
+h1, h2, h3, h4 {
 	margin-bottom: 0;
 	font-weight: bold;
     }
@@ -112,6 +110,7 @@ h4 {
 th {
 	font-weight: bold;
     }
+
 th.banner {
 background: #08245b;
 color: #fff;
@@ -170,6 +169,7 @@ table.list td {
     padding: 2px;
     text-align: center;
     }
+
 /* tabbed boxes */
 td.tabsp {
 	border-bottom: solid #ccc 1px;
@@ -180,7 +180,6 @@ td.tabox {
     */
     background-color: #EEF;
     position: relative;
-
     /*
 	border-left: solid #ccc 2px;
 	border-right: solid #ccc 2px;
@@ -370,7 +369,6 @@ border-bottom: 1px solid #CCCCCC;
 
 table.data {
     border: none; /*thin solid black;*/
-
 }
 .data tr td.male {
     background: #DEF;
