@@ -1835,11 +1835,12 @@ CREATE TABLE `user_login_history` (
   `UserID` varchar(255) NOT NULL DEFAULT '',
   `Success` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Failcode` varchar(2) DEFAULT NULL,
-  `Login_timestamp` date NOT NULL DEFAULT '0000-00-00',
+  `Fail_detail` varchar(255) DEFAULT NULL,
+  `Login_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `IP_address` varchar(255) DEFAULT NULL,
   `Page_requested` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=92 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
