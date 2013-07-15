@@ -214,16 +214,15 @@ class SinglePointLogin extends PEAR
         ///////////////////////////
         ///initialization/////
         //////////////////////////
-		$this->_username = $_POST['username'];
-		
+        $this->_username = $_POST['username'];
         $setArray = array(
-        'UserID'=> $this->_username,
-		'Success' => 'Y',
-		'Failcode' => NULL,
-		'Login_timestamp' => date('Y-m-d'),
-		'IP_address' => $_SERVER['REMOTE_ADDR'],
-		'Page_requested' => $_SERVER['REQUEST_URI']
-		);
+            'UserID'=> $this->_username,
+            'Success' => 'Y',
+            'Failcode' => null,
+            'Login_timestamp' => date('Y-m-d'),
+            'IP_address' => $_SERVER['REMOTE_ADDR'],
+            'Page_requested' => $_SERVER['REQUEST_URI']
+        );
 
 
         // save the new password if the last password expired
@@ -333,21 +332,30 @@ class SinglePointLogin extends PEAR
     }
     
       /**
-     * Inserts the failed_detail into the user_login_history
+     * 
      *
      */
     
-    
-   function insertFailedDetail($description,$setArray){
+    /**
+    * Inserts the login (or failed-login) detail into the user_login_history
+    *
+    * @param String $description description for the failed-login 
+    * @param Array  $setArray    contains data to be inserted
+    * 
+    * @return unknown
+     */
+    function insertFailedDetail($description,$setArray)
+    {
         // create DB object
         $DB =& Database::singleton();
         if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
         }
-    	$setArray['Success'] = 'N';
-		$setArray['Fail_detail'] = $description;
-        $result =  $DB->insert('user_login_history',$setArray);
-        
+        $setArray['Success'] = 'N';
+        $setArray['Fail_detail'] = $description;
+        $result =  $DB->insert('user_login_history', $setArray);
     }
 
 }
