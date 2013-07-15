@@ -243,12 +243,12 @@ class SinglePointLogin extends PEAR
         }
         if (empty($_POST['username'])) {
             $this->_lastError = 'Please enter a username';
-            $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
+            $this->insertFailedDetail($this->_lastError, $setArray);///insert failed_detail into user_login_history
             return false;
         }
         if (empty($_POST['password'])) {
             $this->_lastError = 'Please enter a password';
-            $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
+            $this->insertFailedDetail($this->_lastError, $setArray);///insert failed_detail into user_login_history
             return false;
         }
 
@@ -271,7 +271,7 @@ class SinglePointLogin extends PEAR
                 // check that the user is active
                 if ($row['Active'] == 'N') {
                     $this->_lastError = "Your account has been deactivated.  Please contact your project administrator to reactivate this account.";
-                    $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
+                    $this->insertFailedDetail($this->_lastError, $setArray);///insert failed_detail into user_login_history
                     return false;
                 }
 
@@ -284,12 +284,12 @@ class SinglePointLogin extends PEAR
                 // insert the user into the user_login_history table
                 $result =  $DB->insert('user_login_history', $setArray);
                 return true;
-            }        
+            }
             // bad usename or password
         }
 
         $this->_lastError = "Incorrect username or password";
-        $this->insertFailedDetail($this->_lastError,$setArray);///insert failed_detail into user_login_history
+        $this->insertFailedDetail($this->_lastError, $setArray);///insert failed_detail into user_login_history
         return false;
     }
 
@@ -331,10 +331,6 @@ class SinglePointLogin extends PEAR
         $_SESSION['State']->setUsername(null);
     }
     
-      /**
-     * 
-     *
-     */
     
     /**
     * Inserts the login (or failed-login) detail into the user_login_history
@@ -342,9 +338,9 @@ class SinglePointLogin extends PEAR
     * @param String $description description for the failed-login 
     * @param Array  $setArray    contains data to be inserted
     * 
-    * @return unknown
+    * @return null
      */
-    function insertFailedDetail($description,$setArray)
+    function insertFailedDetail($description, $setArray)
     {
         // create DB object
         $DB =& Database::singleton();
