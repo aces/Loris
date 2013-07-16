@@ -52,11 +52,9 @@ class TestOfTimepointList extends LorisTest
      */
     function testTPLGetPage()
     {
+        $main_link = "$this->url" . "/main.php?test_name=timepoint_list&candID=" .  $this->CandID;
         $this->login("UnitTester", "4test4");
-        $this->get(
-            $this->url . "/main.php?test_name=timepoint_list&candID="
-            . $this->CandID
-        );
+        $this->get($main_link);
         $this->assertBasicConditions();
         $this->assertResponse(200, "Could not access timepoint_list as UnitTester");
         $this->assertPattern(
@@ -83,9 +81,8 @@ class TestOfTimepointList extends LorisTest
             $sid = $row['ID'];
             $this->assertLink(
                 $vl,
-                $this->url . "/main.php?test_name=instrument_list&candID="
-                . $this->CandID . "&sessionID=" . $sid,
-                "Missing link for Visit Label $vl"
+                true,
+                "Missing link for Visit Label $vl at $main_link"
             );
         }
     }
