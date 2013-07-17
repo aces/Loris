@@ -77,7 +77,6 @@ foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
     {
         // skip if inactive
         if ($mySubtab['visible']==0) continue;
-    
         // replace spec chars
         $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
         
@@ -86,9 +85,7 @@ foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
 
             // if there are no permissions, allow access to the tab
             if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
-            
-                $tpl_data['subtabs'][]=$mySubtab;
-            
+                $tpl_data['subtab'][]=$mySubtab;
             } else {
 
                 // if any one permission returns true, allow access to the tab
@@ -100,7 +97,7 @@ foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
                     // test and grant access to button with 1st permission
                     foreach ($permissions as $permission) {
                         if ($user->hasPermission($permission)) {
-                            $tpl_data['subtabs'][]=$mySubtab;
+                            $tpl_data['subtab'][]=$mySubtab;
                             break 2;
                         }
                         unset($permission);
