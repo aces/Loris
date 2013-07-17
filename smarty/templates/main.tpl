@@ -51,50 +51,15 @@ onload="feedback_bvl_popup();"
 <div id="slidemenu" class="jqueryslidemenu">
 <ul>
 <li><a href="main.php"><img width=18 src=images/home-icon.png></a></li>
-
-<li><a href="#">Candidate</a>
-<ul>
 {foreach from=$tabs item=tab}
-{if ($tab.label == "New Profile")}
-<li><a href="main.php?test_name=new_profile">New Profile</a></li>
-{/if}
-{if ($tab.label == "Access Profile")}
-<li><a href="main.php?test_name=candidate_list">Access Profile</a></li>
-{/if}  
+<li><a href="#">{$tab.label}</a>
+<ul>
+{foreach from=$tab.subtab item=mySubtab}
+<a href="main.php?test_name={$mySubtab.link}">{$mySubtab.label}</a>
 {/foreach}
 </ul>
 </li> 
-
-<li><a href="#">{$study_title}</a>
-<ul>
-{foreach from=$tabs item=tab}
-{if ($tab.label == "Reliability Coding")}
-<li><a href="main.php?test_name=reliability">Reliability Coding</a></li>
-{/if}
-{if ($tab.label == "Database Statistics")}
-<li><a href="main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">Database Statistics</a></li>
-{/if}
-{if ($tab.label == "Blind Coding")}
-<li><a href="main.php?test_name=blind_coding">Blind Coding</a></li>
-{/if}
-{if ($tab.label == "Videos")}
-<li><a href="main.php?test_name=videos">Videos</a></li>
-{/if}
-{if ($tab.label == "Conflict Resolver")}
-<li><a href="main.php?test_name=conflicts_resolve">Conflict Resolver</a></li>
-{/if}
 {/foreach}
-</ul>
-</li>
-<li><a href="#">Admin</a>
-<ul>
-{foreach from=$tabs item=tab}
-{if ($tab.label == "User Accounts")}
-<li><a href="main.php?test_name=user_accounts">User Accounts</a></li>
-{/if}
-{/foreach}
-</ul>
- </li>
 
 <li><a href= javascript:open_help_section()">Help</a></li> 
 <div class="Account">

@@ -70,46 +70,48 @@ if (Utility::isErrorX($site)) {
 
 // the the list of tabs, their links and perms
 $mainMenuTabs = $config->getSetting('main_menu_tabs');
-
+        
 foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
-
-    // skip if inactive
-    if ($myTab['visible']==0) continue;
+    $tpl_data['tabs'][]=$myTab;
+    foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
+    {
+        // skip if inactive
+        if ($mySubtab['visible']==0) continue;
     
-    // replace spec chars
-    $myTab['link'] = str_replace("%26","&",$myTab['link']);
+        // replace spec chars
+        $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
+        
+        // check for the restricted site access
+        if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
+
+            // if there are no permissions, allow access to the tab
+            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+            
+                $tpl_data['subtabs'][]=$mySubtab;
+            
+            } else {
+
+                // if any one permission returns true, allow access to the tab
+                foreach ($mySubtab["permissions"] as $permissions) {
     
-    // check for the restricted site access
-    if (isset($site) && ($myTab['access']=='all' || $myTab['access']=='site' && $site->isStudySite())) {
+                    // turn into an array
+                    if (!is_array($permissions)) $permissions = array($permissions);
 
-        // if there are no permissions, allow access to the tab
-        if (!is_array($myTab['permissions']) || count($myTab['permissions'])==0) {
-            
-            $tpl_data['tabs'][]=$myTab;
-            
-        } else {
-
-            // if any one permission returns true, allow access to the tab
-            foreach ($myTab["permissions"] as $permissions) {
-
-                // turn into an array
-                if (!is_array($permissions)) $permissions = array($permissions);
-
-                // test and grant access to button with 1st permission
-                foreach ($permissions as $permission) {
-                    if ($user->hasPermission($permission)) {
-                        $tpl_data['tabs'][]=$myTab;
-                        break 2;
+                    // test and grant access to button with 1st permission
+                    foreach ($permissions as $permission) {
+                        if ($user->hasPermission($permission)) {
+                            $tpl_data['subtabs'][]=$mySubtab;
+                            break 2;
+                        }
+                        unset($permission);
                     }
-                    unset($permission);
+                    unset($permissions);
                 }
-                unset($permissions);
             }
         }
-    }
-    unset($myTab);
-} // end foreach
-
+        unset($mySubtab);
+    } // end foreach
+}
 $timer->setMarker('Drew user information');
 
 //--------------------------------------------------
