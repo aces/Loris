@@ -47,15 +47,17 @@ onload="feedback_bvl_popup();"
 <table width="100%" class="header">
 <tr>
 <th align="left">
-
+<br>
 <div id="slidemenu" class="jqueryslidemenu">
 <ul>
 <li><a href="main.php"><img width=18 src=images/home-icon.png></a></li>
 {foreach from=$tabs item=tab}
 <li><a href="#">{$tab.label}</a>
 <ul>
-{foreach from=$tab.subtab item=mySubtab}
+{foreach from=$subtab item=mySubtab}
+{if $tab.label == $mySubtab.parent}
 <a href="main.php?test_name={$mySubtab.link}">{$mySubtab.label}</a>
+{/if}
 {/foreach}
 </ul>
 </li> 

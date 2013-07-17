@@ -9,7 +9,7 @@ float:right;
 }
 
 .jqueryslidemenu{
-font: bold 12px Verdana;
+font:Verdana-sans-serif;
 
 z-index:10;
 }
@@ -30,6 +30,7 @@ display: inline;
 float: left;
 background: #08245b;
 z-index:10;
+font-size:10;
 }
 
 /*Top level menu link items style*/
@@ -64,6 +65,7 @@ position: absolute;
 left: 0;
 display: block;
 visibility: hidden;
+font-weight:normal;
 }
 
 /*Sub level menu list items (undo style from Top level List Items)*/
