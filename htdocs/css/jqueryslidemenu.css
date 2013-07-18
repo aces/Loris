@@ -66,6 +66,7 @@ left: 0;
 display: block;
 visibility: hidden;
 font-weight:normal;
+width:150px;
 }
 
 /*Sub level menu list items (undo style from Top level List Items)*/
@@ -78,7 +79,6 @@ float: none;
 .jqueryslidemenu ul li ul li ul{
 top: 0;
 }
-
 /* Sub level menu links style */
 .jqueryslidemenu ul li ul li a{
 font: normal 13px Verdana;
