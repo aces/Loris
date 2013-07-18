@@ -46,14 +46,13 @@ onload="feedback_bvl_popup();"
 {if $dynamictabs neq "dynamictabs"}
 <table width="100%" class="header">
 <tr>
-<th align="left">
-<br>
+<th align="left" id="jsheader">
 <div id="slidemenu" class="jqueryslidemenu">
 <ul>
-<li><a href="main.php"><img width=18 src=images/home-icon.png></a></li>
+<li><a href="main.php"><img width=20 src=images/home-icon.png></a></li>
 {foreach from=$tabs item=tab}
 <li><a href="#">{$tab.label}</a>
-<ul>
+<ul width="250">
 {foreach from=$subtab item=mySubtab}
 {if $tab.label == $mySubtab.parent}
 <a href="main.php?test_name={$mySubtab.link}">{$mySubtab.label}</a>
