@@ -54,11 +54,9 @@ class NDB_Form_next_stage extends NDB_Form
         }
         $firstVisit = true;
         $timepointList = $candidate->getNumVisits();
-        print "NNNNUMMMMM".$timepointList;
         if($timepointList > 1){
             $firstVisit = false;    
         }
-        print "FIRSSSSSSSTT".$firstVisit;
         // select a specific time point (sessionID) for the battery
         $battery->selectBattery($timePoint->getData('SessionID'));
         

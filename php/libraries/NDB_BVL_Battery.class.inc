@@ -109,7 +109,7 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // get the current battery (center id is irrelevant here, as is stage probably)
-        $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label, $firstVisit);
+        $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
         if($this->isError($currentTests)) {
             return $this->raiseError("Could not get the current list of instruments, thus unable to assert that the battery is empty");
         }
@@ -121,7 +121,6 @@ class NDB_BVL_Battery extends PEAR
 
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage, $visit_label, $center_ID, $firstVisit);
-        print "NEEDEDTESTS";print_r($neededTests);
         if($this->isError($neededTests)) {
             return $this->raiseError("Could not lookup the battery for age $this->age and subprojectID ".$this->getSubprojectID());
         }
@@ -404,7 +403,6 @@ class NDB_BVL_Battery extends PEAR
             $where = array('FV'=>'Y', 'subID'=>$SubprojectID);
             $rows_firstVisit = $DB->pselect($query_firstVisit,$where); 
         }
-        print_r($rows_firstVisit);
         foreach($rows_firstVisit as $row) {
             array_push($tests, $row['Test_name']);    
         }
