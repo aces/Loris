@@ -53,7 +53,7 @@ class NDB_Form_next_stage extends NDB_Form
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
         $firstVisit = true;
-        $timepointList = $candidate->getNumVisits();
+        $timepointList = $candidate->getNumVisits(); 
         if($timepointList > 1){
             $firstVisit = false;    
         }

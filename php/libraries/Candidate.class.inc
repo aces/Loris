@@ -443,14 +443,14 @@ class Candidate
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
-        $query  = "SELECT count(Visit_label) as Count from session s join candidate c on c.CandID = s.CandID
-                   Where c.CandID:candidate and s.Current_stage <> 'Not Started'";
-        $where  = array('candidate'=>$candID);
-        $numVisits = $db->pselectOne($query, $where);
+        $query  = "SELECT count(Visit_label) AS CountNum FROM session s JOIN candidate c ON (c.CandID = s.CandID)
+                   WHERE c.CandID = :cid AND s.Current_stage <> 'Not Started'";
+        $where  = array('cid'=>$candID);
+        $numVisits = $db->pselectRow($query, $where);
         if(Utility::isErrorX($numVisits)) {
             return PEAR::raiseError("Could not connect to database: ".$numVisits->getMessage());
         }
-        return $numVisits['Count'];
+        return $numVisits['CountNum'];
     }
 
     /**
