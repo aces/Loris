@@ -102,7 +102,7 @@ class NDB_BVL_Battery extends PEAR
      * @return void
      * @access public
      */
-    function createBattery($SubprojectID, $stage=null, $visit_label=null, $center_ID=null)
+    function createBattery($SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit=null)
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
@@ -120,7 +120,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // determine the list of instruments to register
-        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage, $visit_label, $center_ID);
+        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage, $visit_label, $center_ID, $firstVisit);
         if($this->isError($neededTests)) {
             return $this->raiseError("Could not lookup the battery for age $this->age and subprojectID ".$this->getSubprojectID());
         }
@@ -265,7 +265,7 @@ class NDB_BVL_Battery extends PEAR
         foreach($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
-
+   
         // return an array of test names
         return $tests;
     } // end getBattery()
@@ -349,7 +349,7 @@ class NDB_BVL_Battery extends PEAR
      * @return array  an array of instrument names
      * @access public
      */
-    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null)
+    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit=null)
     {
         $DB = Database::singleton();
         if(empty($this->age)) {
@@ -396,7 +396,16 @@ class NDB_BVL_Battery extends PEAR
         foreach($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
-
+        // get the list of instruments that should be part of first visit
+        if($firstVisit) {
+            $query_firstVisit = "SELECT distinct(Test_name) FROM test_battery WHERE firstVisit=:FV 
+                                 AND SubprojectID=:subID";
+            $where = array('FV'=>'Y', 'subID'=>$SubprojectID);
+            $rows_firstVisit = $DB->pselect($query_firstVisit,$where); 
+        }
+        foreach($rows_firstVisit as $row) {
+            array_push($tests, $row['Test_name']);    
+        }
         // return an array of test names
         return $tests;
     } // end lookupBattery()
