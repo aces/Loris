@@ -102,7 +102,7 @@ class NDB_BVL_Battery extends PEAR
      * @return void
      * @access public
      */
-    function createBattery($SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit)
+    function createBattery($SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit=null)
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
@@ -349,7 +349,7 @@ class NDB_BVL_Battery extends PEAR
      * @return array  an array of instrument names
      * @access public
      */
-    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit)
+    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit=null)
     {
         $DB = Database::singleton();
         if(empty($this->age)) {
@@ -398,7 +398,7 @@ class NDB_BVL_Battery extends PEAR
         }
         // get the list of instruments that should be part of first visit
         if($firstVisit) {
-            $query_firstVisit = "SELECT distinct(Test_name) from test_battery where firstVisit=:FV 
+            $query_firstVisit = "SELECT distinct(Test_name) FROM test_battery WHERE firstVisit=:FV 
                                  AND SubprojectID=:subID";
             $where = array('FV'=>'Y', 'subID'=>$SubprojectID);
             $rows_firstVisit = $DB->pselect($query_firstVisit,$where); 
