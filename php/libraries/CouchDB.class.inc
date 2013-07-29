@@ -140,11 +140,7 @@ class CouchDB {
         $json = $this->_getRelativeURL($id, "DELETE");
         $data = json_decode($json, true);
 
-<<<<<<< HEAD
-        return isset($data['ok']) && $data['ok'] === true;
-=======
         return (isset($data['ok']) && $data['ok'] === true);
->>>>>>> CouchDB-UserSync
 
     }
 
