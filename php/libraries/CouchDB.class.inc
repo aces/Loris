@@ -48,13 +48,15 @@ class CouchDB {
         return $db;
     }
 
+
+
     function _constructURL($op, $doc) {
         $config = NDB_Config::singleton();
         $db = $config->getSetting("CouchDB");
         return "$op /$db[database]/$doc";
     }
 
-    function _getURL($url, $op = 'GET') {
+    function _getURL($url, $op = 'GET', $headers = array()) {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
@@ -62,8 +64,13 @@ class CouchDB {
         $handler->setPort($couchconfig['port']);
         $handler->open();
 
-        $handler->write("$op $url HTTP/1.0\r\n\r\n");
+        $handler->write("$op $url HTTP/1.0\r\n");
+        foreach($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
+        }
+        $handler->write("\r\n");
 
+        $response = '';
         while(!$handler->eof()) {
             $response .= $handler->gets();
         }
@@ -92,7 +99,7 @@ class CouchDB {
         return trim($response_split[1]);
     }
 
-    function _postURL($url, $data, $op = 'POST') {
+    function _postURL($url, $data, $headers = array()) {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
@@ -100,7 +107,10 @@ class CouchDB {
         $handler->setPort($couchconfig['port']);
         $handler->open();
 
-        $handler->write("$op $url HTTP/1.0\r\n");
+        $handler->write($url . " HTTP/1.0\r\n");
+        foreach($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
+        }
         $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
         $handler->write($data);
         $response = '';
@@ -110,27 +120,10 @@ class CouchDB {
         $handler->close();
         $response_split = explode("\r\n\r\n", $response, 2);
         return trim($response_split[1]);
-   }
-
-   function _postRelativeURL($url, $data, $op = 'POST') {
-        $config = NDB_Config::singleton();
-        $couchconfig = $config->getSetting('CouchDB');
-        $handler = $this->SocketHandler;
-        $handler->setHost($couchconfig['hostname']);
-        $handler->setPort($couchconfig['port']);
-        $handler->open();
-
-        $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
-        $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
-        $handler->write($data);
-        $response = '';
-        while(!$handler->eof()) {
-            $response .= $handler->gets();
-        }
-        $handler->close();
-        $response_split = explode("\r\n\r\n", $response, 2);
-        return trim($response_split[1]);
-   }
+    }
+    function _postRelativeURL($url, $data, $op = 'POST') {
+        return $this->_postURL($this->_constructURL($op, $url), $data);
+    }
 
     function getDoc($id) {
         $json = $this->_getRelativeURL($id);
@@ -147,7 +140,11 @@ class CouchDB {
         $json = $this->_getRelativeURL($id, "DELETE");
         $data = json_decode($json, true);
 
+<<<<<<< HEAD
         return isset($data['ok']) && $data['ok'] === true;
+=======
+        return (isset($data['ok']) && $data['ok'] === true);
+>>>>>>> CouchDB-UserSync
 
     }
 
