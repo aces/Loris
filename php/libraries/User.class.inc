@@ -271,8 +271,9 @@ class User extends UserPermissions
      */
     function isPasswordStrong($password, $values = array(), $operators = array())
     {
+        $CharTypes = 0;
         // less than 6 characters
-        if (strlen($password) < 6) {
+        if (strlen($password) < 8) {
             return false;
         }
 
@@ -283,6 +284,14 @@ class User extends UserPermissions
 
         // nothing but numbers
         if (!preg_match('/[^0-9]/', $password)) {
+            return false;
+        }
+
+        // preg_match returns 1 on match, 0 on non-match
+        $CharTypes += preg_match('/[0-9]+/', $password);
+        $CharTypes += preg_match('/[A-Za-z]+/', $password);
+        $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $password);
+        if($CharTypes < 3) {
             return false;
         }
 
