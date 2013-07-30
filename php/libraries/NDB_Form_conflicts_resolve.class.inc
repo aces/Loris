@@ -93,7 +93,8 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                         'CommentId2'=>$row['CommentId2'], 
                         'OldValue1'=>$row['Value1'], 
                         'OldValue2'=>$row['Value2'], 
-                        'NewValue'=>$val
+                        'NewValue'=>$val,
+                        'ConflictID'=>$row['ConflictID']
                     );
 
                     $DB->insert('conflicts_resolved', $resolutionLog);
