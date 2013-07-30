@@ -296,8 +296,10 @@ class NDB_Form_user_accounts extends NDB_Form
 		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        print "additional user info is $additional_user_info";
-        if ($additional_user_info){
+
+        ////if the option is not set or if it's and it's true then display it 
+        
+        if ((!isset($additional_user_info)) || ($additional_user_info)){
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
             $this->addBasicText('Institution', 'Institution');
@@ -412,7 +414,9 @@ class NDB_Form_user_accounts extends NDB_Form
 		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
 
         // extra info
-        if ($additional_user_info){
+        ////if the option is not set or if it's and it's true then display it 
+        if ((!isset($additional_user_info)) || ($additional_user_info)){
+            
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
             $this->addBasicText('Institution', 'Institution');
