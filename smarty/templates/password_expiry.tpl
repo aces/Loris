@@ -31,12 +31,10 @@
                 <tr>
                     <td align="left" colspan="3">
             			<ul>
-                			    <li>The password must be at least 8 characters long</li>
-			                    <li>The password must not contain only letters</li>
-                			    <li>The password must not contain only numbers</li>
-                                <li>The password must contain at least 1 letter, 1 number and 1 character from !@#$%^&amp;*()</li>
-			                    <li>The password and the user name must not be the same</li>
-                			    <li>The password and the email address must not be the same</li>
+                            <li>The password must be at least 8 characters long</li>
+                            <li>The password must contain at least 1 letter, 1 number and 1 character from !@#$%^&amp;*()</li>
+                            <li>The password and the user name must not be the same</li>
+                            <li>The password and the email address must not be the same</li>
 
             			</ul>
 	        	    </td>
