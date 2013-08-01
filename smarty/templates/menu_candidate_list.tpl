@@ -47,15 +47,15 @@ $(function(){
         <th nowrap="nowrap" colspan=4>Selection Filter</th>
     </tr>
     <tr>
-        <td nowrap="nowrap">Site:</td>
+        <td nowrap="nowrap">{$form.centerID.label}</td>
         <td nowrap="nowrap">{$form.centerID.html}</td>
-        <td nowrap="nowrap">Subproject:</td>
+        <td nowrap="nowrap">{$form.SubprojectID.label}</td>
         <td nowrap="nowrap">{$form.SubprojectID.html}</td>
     </tr>
     <tr>
-        <td nowrap="nowrap">DCC-ID:</td>
+        <td nowrap="nowrap">{$form.DCCID.label}</td>
         <td nowrap="nowrap">{$form.DCCID.html}</td>
-        <td nowrap="nowrap">PSC-ID:</td>
+        <td nowrap="nowrap">{$form.PSCID.label}</td>
         <td nowrap="nowrap">{$form.PSCID.html}</td>
     </tr>
     
@@ -66,9 +66,9 @@ $(function(){
     </tr>
     
     <tr>
-        <td nowrap="nowrap">Gender:</td>
+        <td nowrap="nowrap">{$form.gender.label}</td>
         <td nowrap="nowrap">{$form.gender.html}</td>
-        <td nowrap="nowrap">Date of Birth:</td>
+        <td nowrap="nowrap">{$form.dob.label}</td>
         <td nowrap="nowrap">{$form.dob.html}</td>
     </tr>
     <tr>
@@ -88,7 +88,7 @@ $(function(){
     </tr>
     {if $useEDC=="true"}
     <tr>
-	        <td nowrap="nowrap">EDC:</td>
+	        <td nowrap="nowrap">{$form.edc.label}</td>
 	        <td nowrap="nowrap">{$form.edc.html}</td>
             <td nowrap="nowrap">&nbsp;</td>
             <td nowrap="nowrap">&nbsp;</td>
