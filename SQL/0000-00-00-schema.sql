@@ -1334,6 +1334,7 @@ CREATE TABLE `test_battery` (
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
+  `firstVisit` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1534,6 +1535,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_unresolved` (
+      `ConflictID` int(10) NOT NULL AUTO_INCREMENT,
       `TableName` varchar(255) NOT NULL,
       `ExtraKeyColumn` varchar(255) DEFAULT NULL,
       `ExtraKey1` varchar(255) NOT NULL,
@@ -1543,10 +1545,11 @@ CREATE TABLE `conflicts_unresolved` (
       `Value1` varchar(255) DEFAULT NULL,
       `CommentId2` varchar(255) NOT NULL,
       `Value2` varchar(255) DEFAULT NULL,
-      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+      PRIMARY KEY (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_resolved` (
+      `ResolvedID` int(10) NOT NULL AUTO_INCREMENT,
       `UserID` varchar(255) NOT NULL,
       `ResolutionTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       `User1` varchar(255) DEFAULT NULL,
@@ -1561,7 +1564,8 @@ CREATE TABLE `conflicts_resolved` (
       `OldValue1` varchar(255) DEFAULT NULL,
       `OldValue2` varchar(255) DEFAULT NULL,
       `NewValue` varchar(255) DEFAULT NULL,
-      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+      `ConflictID` int(10) DEFAULT NULL,
+      PRIMARY KEY (`ResolvedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tarchive_find_new_uploads` (
