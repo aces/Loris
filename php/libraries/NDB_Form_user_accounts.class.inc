@@ -146,7 +146,6 @@ class NDB_Form_user_accounts extends NDB_Form
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() insert: ".$success->getMessage());
             }
-            
             $user =& User::factory($set['UserID']);
             if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error (".$set['UserID'] ."): ".$user->getMessage());
