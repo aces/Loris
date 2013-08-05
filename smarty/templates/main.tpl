@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/ui-lightness/jquery-ui.css" />
 
 <link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
 <script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
@@ -51,18 +52,20 @@ onload="feedback_bvl_popup();"
 <ul>
 <li><a href="main.php"><img width=20 src=images/home-icon.png></a></li>
 {foreach from=$tabs item=tab}
+{if $tab.visible == 1}
 <li><a href="#">{$tab.label}</a>
 <ul width="250">
 {foreach from=$subtab item=mySubtab}
 {if $tab.label == $mySubtab.parent}
-<a href="main.php?test_name={$mySubtab.link}">{$mySubtab.label}</a>
+<a href="{$mySubtab.link}">{$mySubtab.label}</a>
 {/if}
 {/foreach}
 </ul>
 </li> 
+{/if}
 {/foreach}
 
-<li><a href= javascript:open_help_section()">Help</a></li> 
+<li><a href= javascript:open_help_section()>Help</a></li> 
 <div class="Account">
 <li><a href="#">{$user.Real_name}</a>
 <ul>
@@ -84,7 +87,7 @@ Site: {$user.Site} &nbsp;|
 <tr>
 {if $lastURL != ""}
 <!-- left section -->
-<td class="tabox sidenav" valign="top">
+<td class="tabox" valign="top">
 {if $lastURL != ""}
 <h3 class="controlPanelSection">Navigation</h3>
 <ul class="controlPanel">
@@ -237,7 +240,7 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 {/if}
 {/if}
 <!-- included file -->
-<table width="90%"><tr><td>
+<table {if $test_name eq 'candidate_list'} width="100%" {else} width="90%"{/if}><tr><td>
 {$workspace}
 </td></tr></table>
 {/if} 
