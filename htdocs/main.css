@@ -602,3 +602,6 @@ h2.statsH2 {
 .bottombanner {
 margin-left: 119px;
 }
+#hide {
+display:none;
+}
