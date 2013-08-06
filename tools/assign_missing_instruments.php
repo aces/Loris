@@ -57,8 +57,20 @@ function PopulateVisitLabel($result, $visit_label) {
     $battery->selectBattery($result['ID']);
     $timePoint =& TimePoint::singleton($result['ID']);
 
+    $DB =& Database::singleton();
+    $query_firstVisit = "SELECT min(Date_visit),Visit_label FROM session WHERE CandID=".$result['CandID']; 
+    $DB->select($query_firstVisit, $result_firstVisit);
+    foreach($result_firstVisit as $firstVisit) {
+       $vl = $firstVisit['Visit_label'];    
+    }
+    $isFirstVisit = false; 
+    if ($vl == $visit_label) {
+        $isFirstVisit = true;    
+    }
+   
     //To assign missing instruments to all sessions, sent to DCC or not.
-    $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], $timePoint->getCurrentStage(), $visit_label, $timePoint->getCenterID());
+    $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], 
+                     $timePoint->getCurrentStage(), $visit_label, $timePoint->getCenterID(),$isFirstVisit);
     $actual_battery=$battery->getBattery($timePoint->getCurrentStage(), $result['subprojectID']);
 
     $diff=array_diff($defined_battery, $actual_battery);
@@ -78,13 +90,13 @@ function PopulateVisitLabel($result, $visit_label) {
 }
 
 if(isset($visit_label)) {
-    $query="SELECT s.ID, s.subprojectID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.visit_label='$argv[1]'";
+    $query="SELECT s.ID, s.subprojectID, s.CandID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.visit_label='$argv[1]'";
     $DB->select($query, $results);
     foreach($results AS $result){
         PopulateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query="SELECT s.ID, s.subprojectID, s.Visit_label from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
+    $query="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
     $DB->select($query, $results);
     foreach($results AS $result) {
         PopulateVisitLabel($result, $result['Visit_label']);
