@@ -197,7 +197,7 @@ function parseElements($elements, $groupLabel=""){
             case "html_quickform_advcheckbox":
                 $output.="checkbox{@}".$element->_attributes['name']."{@}".$element->_label."\n";
             break;
-
+            
         case "html_quickform_radio":
             $mainquestion = addslashes($element->_label);
             $optionfield = addslashes($element->_text);
@@ -213,7 +213,7 @@ function parseElements($elements, $groupLabel=""){
             } else {
                 $output.="{-}";
             }
-            break;
+        break;
 
             case "html_quickform_html":
             case "html_quickform_file":
