@@ -399,7 +399,7 @@ class NDB_BVL_Battery extends PEAR
         // get the list of instruments that should be part of first visit
         if($firstVisit) {
             $query_firstVisit = "SELECT distinct(Test_name) FROM test_battery WHERE firstVisit=:FV 
-                AND SubprojectID=:subID";
+                                 AND SubprojectID=:subID";
             $where = array('FV'=>'Y', 'subID'=>$SubprojectID);
             $rows_firstVisit = $DB->pselect($query_firstVisit,$where); 
             foreach($rows_firstVisit as $row) {
@@ -407,7 +407,7 @@ class NDB_BVL_Battery extends PEAR
             }
 
         }
-               // return an array of test names
+        // return an array of test names
         return $tests;
     } // end lookupBattery()
      
