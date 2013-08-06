@@ -197,7 +197,24 @@ function parseElements($elements, $groupLabel=""){
             case "html_quickform_advcheckbox":
                 $output.="checkbox{@}".$element->_attributes['name']."{@}".$element->_label."\n";
             break;
-            
+
+        case "html_quickform_radio":
+            $mainquestion = addslashes($element->_label);
+            $optionfield = addslashes($element->_text);
+            if ($element->_attributes['position'] == "first") {
+                $output.= "radio{@}";
+                $output.= $element->_attributes['name'] . "{@}";
+                $output.= $mainquestion . "{@}";
+            }
+            $output.= "'" . $element->_attributes['value'] 
+                   . "'=>'" . $optionfield . "'";
+            if ($element->_attributes['position'] == "last") {
+                $output.="\n";
+            } else {
+                $output.="{-}";
+            }
+            break;
+
             case "html_quickform_html":
             case "html_quickform_file":
             case "html_quickform_hidden":
