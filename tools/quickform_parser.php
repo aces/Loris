@@ -96,7 +96,8 @@ foreach($files AS $file){
     $obj=new $className;
     echo "Initializing instrument object...\n";
     $obj->setup(NULL,NULL);
-    //Some instruments ought not be parsed with the quickform_parser FIGS, FHRDC
+
+    //Some instruments ought not be parsed with the quickform_parser 
     if ((in_array($obj->testName, $instrumentsToSkip))) { 
         echo "Unconventional structure.  quickform_parser wants to skip file {$file}\n"; 
         continue;
