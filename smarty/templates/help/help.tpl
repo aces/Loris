@@ -5,6 +5,10 @@
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 
+<link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
+
 {literal}
 <script language="javascript" type="text/javascript">
 <!--
@@ -60,18 +64,38 @@ function mailThisPage()
 </head>
 
 <body>
+<table width="100%" class="header">
+<tr>
+<th align="left" id="jsheader">
+<div id="slidemenu" class="jqueryslidemenu">
+<ul>
+<li><a href="main.php"><img width=20 src=images/home-icon.png></a></li>
+<li><a href="javascript:doRefresh()"><img src="images/new.gif" width="" height="    " border="0" alt="" />&nbsp;Refresh page</a></li>
+<li> <a href="javascript:window.close()"><img src="images/delete.gif" width="" heigh    t="" border="0" alt="" />&nbsp;Close window</a></li>
+<li><a href="javascript:mailThisPage()"><img src="images/mail.gif" width="12" heigh    t="12" border="0" alt="" />&nbsp;E-mail this</a>
+<li><a href="javascript:window.print()"><img src="images/print.gif" width="12" heig        ht="12" border="0" alt="" />&nbsp;Print this page</a></li>
+<div class="Account">
+<li><a href="#">{$user_full_name}</a>
+<ul>
+<li><a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a></li>
+<li><a href="main.php?logout=true">Log Out</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="site">
+Site: {$user_site_name} &nbsp;|
+</div>
+</div>
+</th>
+</tr>
+</table>
 
 <!-- top table -->
 {if not $is_popup}
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="pagetitle">
     <tr>
         <td><h1>NeuroDB Manual</h1></td>
-        <td align="right">
-	    <p><a href="javascript:doRefresh()"><img src="images/new.gif" width="" height="" border="0" alt="" />&nbsp;Refresh page</a> |
-	    <a href="javascript:window.close()"><img src="images/delete.gif" width="" height="" border="0" alt="" />&nbsp;Close window</a><br />
-	    <a href="javascript:mailThisPage()"><img src="images/mail.gif" width="12" height="12" border="0" alt="" />&nbsp;E-mail this<!--/a--> |
-	    <a href="javascript:window.print()"><img src="images/print.gif" width="12" height="12" border="0" alt="" />&nbsp;Print this page</a></p>
-        </td>
     </tr>
 </table>
 

@@ -18,9 +18,10 @@ $DB =& Database::singleton();
 if(PEAR::isError($DB)) {
     return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
 }
-
 // create user object
 $user =& User::singleton($_SESSION['State']->getUsername());
+$tpl_data['user_site_name'] = $user->getSiteName();
+$tpl_data['user_full_name'] = $user->getFullname();
 if (PEAR::isError($user)) {
     $tpl_data['error_message'] = $user->getMessage();
 }

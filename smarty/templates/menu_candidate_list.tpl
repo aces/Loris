@@ -39,20 +39,20 @@ $(function(){
     </tr>
     <tr>
         <td nowrap="nowrap">Site:</td>
-        <td nowrap="nowrap">{$form.centerID.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
         <td nowrap="nowrap">DCC-ID:</td>
         <td nowrap="nowrap">{$form.DCCID.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">Subproject:</td>
-        <td nowrap="nowrap">{$form.SubprojectID.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.SubprojectID.html}</td>
         <td nowrap="nowrap">PSC-ID:</td>
         <td nowrap="nowrap" colspan="1">{$form.PSCID.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.ProjectID.label}</td>
-        <td nowrap="nowrap">{$form.ProjectID.html}</td>
-        <td colspan="2" style="display:table-cell" id="selector" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
+        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
+        <td colspan="2" style="display:table-cell" align="right" id="selector" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
        <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
         <input type="button" name="advanced" value="Advanced" class="button" onclick="toggleMe('advancedOptions', 'selector')"/></td>
 </tr>
@@ -63,28 +63,28 @@ $(function(){
     </tr>
     <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.Participant_Status.label}</td>
-        <td nowrap="nowrap">{$form.Participant_Status.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Participant_Status.html}</td>
         <td nowrap="nowrap">Date of Birth:</td>
         <td nowrap="nowrap">{$form.dob.html}</td>
     </tr>
     <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">Gender:</td>
-        <td nowrap="nowrap">{$form.gender.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.gender.html}</td>
         <td nowrap="nowrap">{$form.Visit_Count.label}</td>
         <td nowrap="nowrap">{$form.Visit_Count.html}</td>
     </tr>
     <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.Latest_Visit_Status.label}</td>
-        <td nowrap="nowrap">{$form.Latest_Visit_Status.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Latest_Visit_Status.html}</td>
     </tr>
     <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.Feedback.label}</td>
-        <td nowrap="nowrap">{$form.Feedback.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Feedback.html}</td>
     </tr>
     <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.scan_done.label}</td>
-        <td nowrap="nowrap">{$form.scan_done.html}</td>
-        <td colspan="3" id="selector" align="centered" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
+        <td nowrap="nowrap" class="MenuWidth">{$form.scan_done.html}</td>
+        <td colspan="3" id="selector" align="right" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
        <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
         <input type="button" name="advanced" value="Basic" class="button" onclick="toggleMe('advancedOptions', 'selector')"/></td>
     </tr>
@@ -102,6 +102,7 @@ $(function(){
 <input type="hidden" name="test_name" value="timepoint_list">
 <table style="width:50; float:right; margin-top:15px" border="0" cellpadding="2" cellspacing="2">
     <tr>
+    <br><br>
         <th align="right">DCC-ID:</th>
         <td><input tabindex="1" size="10" maxlength="10" type=text name="candID"></td>
     </tr>

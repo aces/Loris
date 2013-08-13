@@ -39,39 +39,53 @@ $(document).ready(function() {
 {if $form.message}
 <div class="error">{$form.message.label}</div>
 {/if}
-<table border="0" valign="top" class="std" width="75%">
+<table border="0" valign="top" class="std" width="33%">
     <tr>
-        <th nowrap="nowrap" colspan="15">Selection Filter</th>
+        <th nowrap="nowrap" colspan="4">Selection Filter</th>
     </tr>
     <tr>
-	<td colspan = 15>
+	<td colspan = 4>
 	<table border="0">
 <tr>
 {* OBJECTIVE IS NIHPD SPECIFIC - BUT WE ARE TOO LAZY TO CHANGE THIS TODAY *}
-	<td nowrap="nowrap" align="right">Subproject:</td>
-	<td nowrap="nowrap">{$form.CommentID.html}</td>
+	<td nowrap="nowrap">Subproject:</td>
+	<td nowrap="nowrap" class="MenuWidth">{$form.CommentID.html}</td>
+    <td nowrap="nowrap">DCCID:</td>
+    <td nowrap="nowrap">{$form.DCCID.html}</td>
+</tr>
+    <tr>
 	{* <td nowrap="nowrap">Objective:</td>
         <td nowrap="nowrap">{$form.Objective.html}</td> *}
         <td nowrap="nowrap">{$form.CenterID.label}</td>
-        <td nowrap="nowrap">{$form.CenterID.html}</td>
-        <td nowrap="nowrap">{$form.Instrument.label}</td>
-        <td nowrap="nowrap">{$form.Instrument.html}</td>
-        <td nowrap="nowrap">{$form.reliability_center_id.label}</td>
-        <td nowrap="nowrap">{$form.reliability_center_id.html}</td>
-        <td nowrap="nowrap">{$form.ProjectID.label}</td>
-        <td nowrap="nowrap">{$form.ProjectID.html}</td>
-        <td nowrap="nowrap">Gender:</td>
-        <td nowrap="nowrap">{$form.Gender.html}</td>
-        <td nowrap="nowrap">Visit label:</td>
-        <td nowrap="nowrap">{$form.Visit_label.html}</td>
-        <td nowrap="nowrap">{$form.Invalid.label}</td>
-        <td nowrap="nowrap">{$form.Invalid.html}</td>
- </tr>
-    <tr>
-        <td nowrap="nowrap">DCCID:</td>
-        <td nowrap="nowrap">{$form.DCCID.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.CenterID.html}</td>
         <td nowrap="nowrap">PSCID:</td>
         <td nowrap="nowrap">{$form.PSCID.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.Instrument.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Instrument.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.reliability_center_id.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.reliability_center_id.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.ProjectID.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">Gender:</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Gender.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">Visit label:</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Visit_label.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.Invalid.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Invalid.html}</td>
+ </tr>
+    <tr>
         <td colspan="12" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
  	  </tr>
 

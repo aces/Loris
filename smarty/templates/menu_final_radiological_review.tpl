@@ -2,52 +2,50 @@
 <form method="post" action="main.php?test_name=final_radiological_review">
 <table border="0" valign="top" class="std">
     <tr>
-        <th nowrap="nowrap" colspan="4">Selection Filter</th>
+        <th nowrap="nowrap" colspan="6">Selection Filter</th>
     </tr>
     <tr>
-    <td nowrap="nowrap">{$form.site.label}</td>
-    <td nowrap="nowrap">{$form.site.html}</td>
-    <td nowrap="nowrap">{$form.keyword.label}</td>
-    <td nowrap="nowrap">{$form.keyword.html}</td>
-    </tr>
-    <tr>
+        <td nowrap="nowrap">{$form.site.label}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.site.html}</td>
         <td nowrap="nowrap">{$form.Conflict.label}</td>
-        <td nowrap="nowrap">{$form.Conflict.html}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Conflict.html}</td>
+        <td nowrap="nowrap">{$form.keyword.label}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.keyword.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">{$form.Conflict2.label}</td>
-        <td nowrap="nowrap">{$form.Conflict2.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.pscid.label}</td>
-        <td nowrap="nowrap">{$form.pscid.html}</td>
-        <td nowrap="nowrap">{$form.dccid.label}</td>
-        <td nowrap="nowrap">{$form.dccid.html}</td>
-    </tr>
-    <tr>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Conflict2.html}</td>
         <td nowrap="nowrap">{$form.Visit_label.label}</td>
-        <td nowrap="nowrap">{$form.Visit_label.html}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Visit_label.html}</td>
+        <td nowrap="nowrap">{$form.pscid.label}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.pscid.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">{$form.Review_done.label}</td>
-        <td nowrap="nowrap">{$form.Review_done.html}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Review_done.html}</td>
+        <td nowrap="nowrap">{$form.Project.label}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Project.html}</td>
+        <td nowrap="nowrap">{$form.dccid.label}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.dccid.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.SAS.label}</td>
-        <td nowrap="nowrap">{$form.SAS.html}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.SAS.html}</td>
         <td nowrap="nowrap">{$form.PVS.label}</td>
-        <td nowrap="nowrap">{$form.PVS.html}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.PVS.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.Final_Review_Results.label}</td>
-        <td nowrap="nowrap">{$form.Final_Review_Results.html}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Final_Review_Results.html}</td>
         <td nowrap="nowrap">{$form.Exclusionary_Status.label}</td>
-        <td nowrap="nowrap">{$form.Exclusionary_Status.html}</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Exclusionary_Status.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.Finalized.label}</td>
-        <td nowrap="nowrap">{$form.Finalized.html}</td>
-        <td nowrap="nowrap">{$form.Project.label}</td>
-        <td nowrap="nowrap">{$form.Project.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">Actions:</td>
+        <td nowrap="nowrap" class="MenuWidth2">{$form.Finalized.html}</td>
+    <td></td>
+    <td></td>
+    <td></td>
         <td colspan="3"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=final_radiological_review&reset=true'">
     </tr>
 

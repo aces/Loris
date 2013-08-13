@@ -82,6 +82,7 @@ Site: {$user.Site} &nbsp;|
 </th>
 </tr>
 </table>
+
 <img src="images/title_background.jpg" colspan="2" width="100%" height="2">
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
 <tr>
@@ -147,11 +148,12 @@ Site: {$user.Site} &nbsp;|
 If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
 <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {elseif $test_name == ""}
-<h1>Welcome to the Database!</h1>
+<h1>Welcome to the LORIS Database!</h1>
 <p width=50%>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</p>
 {else}
 
 {if $candID != ""}
+<br>
 <!-- table with candidate profile info -->
 <table cellpadding="2" class="list" style='width:700px'>
 <!-- column headings -->
@@ -214,7 +216,7 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 </tr>
 </table>
 {if $sessionID != ""}
-<table cellpadding="2" class="list" style='width:700px'>
+<table cellpadding="2" class="list" style='width:727px'>
 <!-- visit statuses -->
 <tr>
 <th nowrap="nowrap" colspan="3">Stage</th>
