@@ -13,7 +13,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     * @return bool
     * @access private
     */
-    function _hasAccess()
+function _hasAccess()
     {
         // create user object
         $user =& User::singleton();

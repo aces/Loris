@@ -6,7 +6,6 @@
     {/foreach}
 </ul>
 {/if}
-
 <h1>General Information</h1>
 <table width="80%" class="instrument">
 <tr>

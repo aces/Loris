@@ -143,7 +143,7 @@ BrowserDetect.init();
 		            <td align="center" colspan="2">{$error_message}&nbsp;</td>
     		    </tr>
         		<tr>
-	        	    <th align="right">User:</th>
+	        	    <th align="center">User:</th>
 		            <td align="left"><input name="username" size="40" tabindex="1" type="text" value="{$username}" /></td>
 		            <td align="center" rowspan="2" valign="center"><input class="button" name="login" type="submit" value="login" /></td>
         		</tr>
