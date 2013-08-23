@@ -199,6 +199,7 @@ if (!empty($TestName)) {
     	$controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
     	// display the control panel
     	$tpl_data['control_panel'] = $controlPanel->display();
+//print ($tpl_data['controlpanel']);
     }
 }
 
@@ -246,7 +247,7 @@ function HandleError($error) {
     }
 }
 $caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
-$workspace = $caller->load($TestName, $subtest);
+$workspace = $caller->load($TestName, $subtest, $controlPanel);
 if (Utility::isErrorX($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
 } else {
