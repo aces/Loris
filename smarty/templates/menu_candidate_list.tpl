@@ -38,18 +38,19 @@ $(function(){
         <th nowrap="nowrap" colspan=6>Selection Filter</th>
     </tr>
     <tr>
-        <td nowrap="nowrap">Site:</td>
+        <td nowrap="nowrap">{$form.centerID.label}</td>
         <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
-        <td nowrap="nowrap">DCC-ID:</td>
+        <td nowrap="nowrap">{$form.DCCID.label}</td>
         <td nowrap="nowrap">{$form.DCCID.html}</td>
     </tr>
     <tr>
-        <td nowrap="nowrap">Subproject:</td>
+        <td nowrap="nowrap">{$form.SubprojectID.label}</td>
         <td nowrap="nowrap" class="MenuWidth">{$form.SubprojectID.html}</td>
-        <td nowrap="nowrap">PSC-ID:</td>
+        <td nowrap="nowrap">{$form.PSCID.label}</td>
         <td nowrap="nowrap" colspan="1">{$form.PSCID.html}</td>
     </tr>
     <tr>
+<<<<<<< HEAD
         <td nowrap="nowrap">{$form.ProjectID.label}</td>
         <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
         <td colspan="2" style="display:table-cell" align="right" id="selector" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
@@ -64,7 +65,7 @@ $(function(){
     <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.Participant_Status.label}</td>
         <td nowrap="nowrap" class="MenuWidth">{$form.Participant_Status.html}</td>
-        <td nowrap="nowrap">Date of Birth:</td>
+        <td nowrap="nowrap">{$form.dob.label}</td>
         <td nowrap="nowrap">{$form.dob.html}</td>
     </tr>
     <tr name="advancedOptions" style="display:none">
@@ -90,7 +91,7 @@ $(function(){
     </tr>
     {if $useEDC=="true"}
     <tr name="advancedOptions" style="display:none">
-            <td nowrap="nowrap">EDC:</td>
+            <td nowrap="nowrap">{$form.edc.label}</td>
             <td nowrap="nowrap">{$form.edc.html}</td>
             <td nowrap="nowrap">&nbsp;</td>
             <td nowrap="nowrap">&nbsp;</td>
