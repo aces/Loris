@@ -67,49 +67,47 @@ if (Utility::isErrorX($site)) {
     $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
 }
 
-
 // the the list of tabs, their links and perms
 $mainMenuTabs = $config->getSetting('main_menu_tabs');
-
+        
 foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
+    $tpl_data['tabs'][]=$myTab;
+    foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
+    {
+        // skip if inactive
+        if ($mySubtab['visible']==0) continue;
+        // replace spec chars
+        $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
+        
+        // check for the restricted site access
+        if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
 
-    // skip if inactive
-    if ($myTab['visible']==0) continue;
+            // if there are no permissions, allow access to the tab
+            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+                $tpl_data['subtab'][]=$mySubtab;
+            } else {
+
+                // if any one permission returns true, allow access to the tab
+                foreach ($mySubtab["permissions"] as $permissions) {
     
-    // replace spec chars
-    $myTab['link'] = str_replace("%26","&",$myTab['link']);
-    
-    // check for the restricted site access
-    if (isset($site) && ($myTab['access']=='all' || $myTab['access']=='site' && $site->isStudySite())) {
+                    // turn into an array
+                    if (!is_array($permissions)) $permissions = array($permissions);
 
-        // if there are no permissions, allow access to the tab
-        if (!is_array($myTab['permissions']) || count($myTab['permissions'])==0) {
-            
-            $tpl_data['tabs'][]=$myTab;
-            
-        } else {
-
-            // if any one permission returns true, allow access to the tab
-            foreach ($myTab["permissions"] as $permissions) {
-
-                // turn into an array
-                if (!is_array($permissions)) $permissions = array($permissions);
-
-                // test and grant access to button with 1st permission
-                foreach ($permissions as $permission) {
-                    if ($user->hasPermission($permission)) {
-                        $tpl_data['tabs'][]=$myTab;
-                        break 2;
+                    // test and grant access to button with 1st permission
+                    foreach ($permissions as $permission) {
+                        if ($user->hasPermission($permission)) {
+                            $tpl_data['subtab'][]=$mySubtab;
+                            break 2;
+                        }
+                        unset($permission);
                     }
-                    unset($permission);
+                    unset($permissions);
                 }
-                unset($permissions);
             }
         }
-    }
-    unset($myTab);
-} // end foreach
-
+        unset($mySubtab);
+    } // end foreach
+}
 $timer->setMarker('Drew user information');
 
 //--------------------------------------------------
@@ -201,6 +199,7 @@ if (!empty($TestName)) {
     	$controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
     	// display the control panel
     	$tpl_data['control_panel'] = $controlPanel->display();
+//print ($tpl_data['controlpanel']);
     }
 }
 
@@ -248,7 +247,7 @@ function HandleError($error) {
     }
 }
 $caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
-$workspace = $caller->load($TestName, $subtest);
+$workspace = $caller->load($TestName, $subtest, $controlPanel);
 if (Utility::isErrorX($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
 } else {
@@ -295,7 +294,7 @@ foreach(Utility::toArray($links['link']) AS $link){
         'url'        => $BaseURL . $LinkArgs,
         'label'      => $LinkLabel, 
         'windowName' => $WindowName
-    ); 
+    );
 }
 
 

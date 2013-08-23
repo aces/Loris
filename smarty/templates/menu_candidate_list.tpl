@@ -1,5 +1,9 @@
 {literal}
+<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<script type="text/javascript" src="js/advancedMenu.js">
+</script>
 <script language="javascript" type="text/javascript">
 
 //window.onload = function(){ alert("welcome"); }
@@ -28,79 +32,94 @@ $(function(){
 </script>
 {/literal}
 
-<form name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
-<input type="hidden" name="test_name" value="timepoint_list">
-<table border="0" cellpadding="2" cellspacing="2">
-    <tr>
-        <th align="right">DCC-ID:</th>
-    	<td><input tabindex="1" size="10" maxlength="10" type=text name="candID"></td>
-    	<th align="right">PSC-ID:</th>
-    	<td><input tabindex="2" size="12" maxlength="12" type=text name="PSCID"></td>
-    	<td><input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="button"></td>
-    </tr>
-</table>
-</form>
-
 <form method="post" action="main.php?test_name=candidate_list">
-<table border="0" valign="top" class="std">
+<table style="width:550px; float:left; margin-bottom:10px" border="0" valign="top" class="std">
     <tr>
-        <th nowrap="nowrap" colspan=4>Selection Filter</th>
+        <th nowrap="nowrap" colspan=6>Selection Filter</th>
     </tr>
     <tr>
         <td nowrap="nowrap">{$form.centerID.label}</td>
-        <td nowrap="nowrap">{$form.centerID.html}</td>
-        <td nowrap="nowrap">{$form.SubprojectID.label}</td>
-        <td nowrap="nowrap">{$form.SubprojectID.html}</td>
-    </tr>
-    <tr>
+        <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
         <td nowrap="nowrap">{$form.DCCID.label}</td>
         <td nowrap="nowrap">{$form.DCCID.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.SubprojectID.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.SubprojectID.html}</td>
         <td nowrap="nowrap">{$form.PSCID.label}</td>
-        <td nowrap="nowrap">{$form.PSCID.html}</td>
+        <td nowrap="nowrap" colspan="1">{$form.PSCID.html}</td>
     </tr>
-    
-        
     <tr>
+        <td nowrap="nowrap">{$form.ProjectID.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
+        <td colspan="2" style="display:table-cell" align="right" id="selector" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
+       <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
+        <input type="button" name="advanced" value="Advanced" class="button" onclick="toggleMe('advancedOptions', 'selector')"/></td>
+</tr>
+
+    </tr>
+    <tr name="advancedOptions" style="display:none">
+        <th colspan="6" nowrap="nowrap">Advanced Options</th>
+    </tr>
+    <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.Participant_Status.label}</td>
-        <td nowrap="nowrap" colspan="3">{$form.Participant_Status.html}<//td>
-    </tr>
-    
-    <tr>
-        <td nowrap="nowrap">{$form.gender.label}</td>
-        <td nowrap="nowrap">{$form.gender.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Participant_Status.html}</td>
         <td nowrap="nowrap">{$form.dob.label}</td>
         <td nowrap="nowrap">{$form.dob.html}</td>
     </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.Latest_Visit_Status.label}</td>
-        <td nowrap="nowrap">{$form.Latest_Visit_Status.html}</td>
+    <tr name="advancedOptions" style="display:none">
+        <td nowrap="nowrap">Gender:</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.gender.html}</td>
         <td nowrap="nowrap">{$form.Visit_Count.label}</td>
         <td nowrap="nowrap">{$form.Visit_Count.html}</td>
     </tr>
-    <tr>
+    <tr name="advancedOptions" style="display:none">
+        <td nowrap="nowrap">{$form.Latest_Visit_Status.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Latest_Visit_Status.html}</td>
+    </tr>
+    <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.Feedback.label}</td>
-        <td nowrap="nowrap">{$form.Feedback.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Feedback.html}</td>
+    </tr>
+    <tr name="advancedOptions" style="display:none">
         <td nowrap="nowrap">{$form.scan_done.label}</td>
-        <td nowrap="nowrap">{$form.scan_done.html}<//td>
-        <td nowrap="nowrap">{$form.ProjectID.label}</td>
-        <td nowrap="nowrap">{$form.ProjectID.html}</td>
-        
+        <td nowrap="nowrap" class="MenuWidth">{$form.scan_done.html}</td>
+        <td colspan="3" id="selector" align="right" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
+       <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
+        <input type="button" name="advanced" value="Basic" class="button" onclick="toggleMe('advancedOptions', 'selector')"/></td>
     </tr>
     {if $useEDC=="true"}
-    <tr>
-	        <td nowrap="nowrap">{$form.edc.label}</td>
-	        <td nowrap="nowrap">{$form.edc.html}</td>
+    <tr name="advancedOptions" style="display:none">
+            <td nowrap="nowrap">{$form.edc.label}</td>
+            <td nowrap="nowrap">{$form.edc.html}</td>
             <td nowrap="nowrap">&nbsp;</td>
             <td nowrap="nowrap">&nbsp;</td>
     </tr>
     {/if}
-    <tr>
-        <td></td>
-        <td>&nbsp;</td>
-        <td colspan="2" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" /></td>
-    </tr>
-<table>
+</table>
 </form>
+<form name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
+<input type="hidden" name="test_name" value="timepoint_list">
+<table style="width:50; float:right; margin-top:15px" border="0" cellpadding="2" cellspacing="2">
+    <tr>
+    <br><br>
+        <th align="right">DCC-ID:</th>
+        <td><input tabindex="1" size="10" maxlength="10" type=text name="candID"></td>
+    </tr>
+    <tr>
+        <th align="right">PSC-ID:</th>
+        <td><input tabindex="2" size="10" maxlength="12" type=text name="PSCID"></td>
+    </tr>
+    <tr>
+    <td></td>
+        <td align="right"><input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="button"></td>
+    </tr>
+</form>
+</td>
+</tr>
+</table>
+</table>
+<table>
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
@@ -110,7 +129,7 @@ $(function(){
     <td align="right">{$page_links}</td>
 </tr>
 </table>
-
+</form>
 <!-- start data table -->
 <table  class ="fancytable" border="0" width="100%">
 <tr>

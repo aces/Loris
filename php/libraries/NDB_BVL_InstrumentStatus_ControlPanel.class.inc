@@ -20,7 +20,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         if(empty($this->_commentID)) {
             return PEAR::raiseError("No instrument instance selected");
         }
-        
         $this->tpl_data['candID'] = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
         $this->tpl_data['commentID'] = $_REQUEST['commentID'];

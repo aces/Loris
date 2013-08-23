@@ -40,20 +40,20 @@
 
 	<tr>
 		<td nowrap="nowrap">Gender</td>
-		<td nowrap="nowrap">{$form.gender.html}</td>
+		<td nowrap="nowrap" class="MenuWidth">{$form.gender.html}</td>
 	</tr>
 
     {if $form.PSCID.html != ""}
 	<tr>
 		<td nowrap="nowrap">PSCID</td>
-		<td nowrap="nowrap">{$form.PSCID.html}</td>
+		<td nowrap="nowrap" class="MenuWidth">{$form.PSCID.html}</td>
 	</tr>
     {/if}
 
     {if $form.ProjectID.html != ""}
     <tr>
         <td nowrap="nowrap">Project</td>
-        <td nowrap="nowrap">{$form.ProjectID.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
     </tr>
     {/if}
 

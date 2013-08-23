@@ -1,4 +1,4 @@
-
+<!--
 	<h3 class="controlPanelSection">Actions</h3>
 	<ul class="controlPanel">
 	    	<li>
@@ -90,10 +90,9 @@
 			{/if}
 		</li>
 	</ul>
-
-<!--
-<table>
-                <tr><td class="controlPanelSection">Actions</td></tr>
+-->
+<table class="std" style="margin-bottom: 0px; margin-top:2px; float:right; margin-right:30px;">
+                <th>Actions</th>
                 <tr>
                     <td class="controlPanelItem">
 {if $access.next_stage}
@@ -103,8 +102,6 @@
 {/if}
                     </td>
                 </tr>
-                <tr><td>&nbsp;</td></tr>
-
                 <tr><td class="controlPanelSection">Stage: {$current_stage}</td></tr>
 {section name=item loop=$status}
                 <tr>
@@ -117,8 +114,6 @@
                     </td>
                 </tr>
 {/section}
-                <tr><td>&nbsp;</td></tr>
-
                 <tr><td class="controlPanelSection">Send Time Point</td></tr>
                 <tr>
                     <td class="controlPanelItem">
@@ -133,8 +128,6 @@
 {/if}
                     </td>
                 </tr>
-                <tr><td>&nbsp;</td></tr>
-
                 <tr><td class="controlPanelSection">BVL QC Type</td></tr>
                 
                 <tr>
@@ -167,9 +160,6 @@
 {/if}
                     </td>
                 </tr>
-
-                <tr><td>&nbsp;</td></tr>
-                
                 <tr><td class="controlPanelSection">BVL QC Status</td></tr>
                 
                 <tr>
@@ -192,12 +182,7 @@
 {/if}
                     </td>
                 </tr>
-
-                <tr><td>&nbsp;</td></tr>
-
-
 </table>
 
--->
 
 

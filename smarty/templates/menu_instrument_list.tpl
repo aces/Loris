@@ -1,6 +1,6 @@
 <!-- table title -->
 <br />
-<table border="0" valign="bottom" width="100%"><td class="controlPanelSection">Behavioral Battery of Instruments</td></table>
+<table border="0" valign="bottom" width="100%"><td class="controlPanelSection"><strong>Behavioral Battery of Instruments</strong></td></table>
 
 <!-- table with list of instruments and links to open them -->
 <table class="listColorCoded" cellpadding="2">

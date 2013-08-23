@@ -3,7 +3,8 @@ require_once 'Pager/Pager.php';
 require_once 'NDB_Menu.class.inc';
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
+require_once 'HTML/QuickForm/text.php';
+require_once 'HTML/QuickForm/select.php';
 /**
  * Menu class, with filtering
  *
@@ -12,6 +13,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  */
 class NDB_Menu_Filter extends NDB_Menu
 {
+    
     /**
      * The columns to SELECT
      * @var    array

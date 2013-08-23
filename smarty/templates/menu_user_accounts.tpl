@@ -6,21 +6,26 @@
     </tr>
     <tr>
         <td nowrap="nowrap">Site:</td>
-        <td nowrap="nowrap">{$form.centerID.html}</td>
-        <td nowrap="nowrap">Active:</td>
-        <td nowrap="nowrap">{$form.active.html}</td>
-        <td nowrap="nowrap">Pending approval:</td>
-        <td nowrap="nowrap">{$form.pending.html}</td>
-        <td nowrap="nowrap">Examiner:</td>
-        <td nowrap="nowrap">{$form.examiner.html}</td>
-    </tr>
-    <tr>
+        <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
         <td nowrap="nowrap">Username:</td>
         <td nowrap="nowrap">{$form.userID.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">Active:</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.active.html}</td>
         <td nowrap="nowrap">Full name:</td>
         <td nowrap="nowrap">{$form.real_name.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">Pending approval:</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.pending.html}</td>
         <td nowrap="nowrap">Email:</td>
         <td nowrap="nowrap">{$form.email.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">Examiner:</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.examiner.html}</td>
+    
     </tr>
     <tr>
         <td nowrap="nowrap"><input type="button" name="button" value="Add User" class="button" onclick="location.href='main.php?test_name=user_accounts&subtest=edit_user'" /></td>
