@@ -50,7 +50,6 @@ $(function(){
         <td nowrap="nowrap" colspan="1">{$form.PSCID.html}</td>
     </tr>
     <tr>
-<<<<<<< HEAD
         <td nowrap="nowrap">{$form.ProjectID.label}</td>
         <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
         <td colspan="2" style="display:table-cell" align="right" id="selector" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" class="button" />
