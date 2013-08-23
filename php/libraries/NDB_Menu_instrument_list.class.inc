@@ -113,8 +113,14 @@ class NDB_Menu_instrument_list extends NDB_Menu
                 }
 
                 $this->tpl_data['instruments'][$x][$i]['feedbackCount'] = (empty($feedback_count)) ? $feedback_status : $feedback_count;
-                $this->tpl_data['instruments'][$x][$i]['feedbackStatus'] = $feedback_status;
-                if($feedback_count > 0) $this->tpl_data['instruments'][$x][$i]['feedbackColor'] = $feedback->getThreadColor($feedback_status);
+                if(!empty($feedback_status)){
+                    $this->tpl_data['instruments'][$x][$i]['feedbackStatus'] = $feedback_status;
+                    if($feedback_count > 0) $this->tpl_data['instruments'][$x][$i]['feedbackColor'] =
+                        $feedback->getThreadColor($feedback_status);
+                } else {
+                    $this->tpl_data['instruments'][$x][$i]['feedbackStatus'] = "-";
+                }
+
                 $i++;
             }
         }

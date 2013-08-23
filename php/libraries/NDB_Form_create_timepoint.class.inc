@@ -35,7 +35,6 @@ class NDB_Form_create_timepoint extends NDB_Form
         if (Utility::isErrorX($defaults['visitLabel'])) {
             return PEAR::raiseError("create_timepoint::_getDefaults(): ".$defaults['visitLabel']->getMessage());
         }
-
         return $defaults;
     }
 
@@ -63,19 +62,28 @@ class NDB_Form_create_timepoint extends NDB_Form
         // cand ID
         $this->tpl_data['candID'] = $this->identifier;
         $this->addHidden('candID', $this->identifier);
-        
-        
-        // Sub Project
+        $candidate =& Candidate::singleton($this->identifier);
+        if (Utility::isErrorX($candidate)) {
+            return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
+        }
+        $subprojList = null; 
+        //List of valid subprojects for a given project
+        if($config->getSetting('useProjects') === 'true') {
+            $subprojList = $candidate->getValidSubprojects();
+        }
+        // List of all subprojects from config file
         $subprojectSettings= $config->getSetting('subprojects');
-       
         //Loop through the subprojects to get an id out and to create the subproject drop down.
         $sp_labelOptions = array(null => '');
         foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-            // Leave default blank, don't take the first one
-            //if($this->subprojectID==null){
-            //    $this->subprojectID=$subproject['id'];
-            //}
-            $sp_labelOptions[$subproject['id']] = $subproject['title'];
+            if( ! empty($subprojList)){
+                if(in_array($subproject['id'], $subprojList)){
+                    $sp_labelOptions[$subproject['id']] = $subproject['title'];
+                }
+             } else { 
+                    $sp_labelOptions[$subproject['id']] = $subproject['title'];
+                 
+                 }
         }
         
         $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");

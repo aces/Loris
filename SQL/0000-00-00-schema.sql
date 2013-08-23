@@ -1334,6 +1334,7 @@ CREATE TABLE `test_battery` (
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
+  `firstVisit` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1534,6 +1535,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_unresolved` (
+      `ConflictID` int(10) NOT NULL AUTO_INCREMENT,
       `TableName` varchar(255) NOT NULL,
       `ExtraKeyColumn` varchar(255) DEFAULT NULL,
       `ExtraKey1` varchar(255) NOT NULL,
@@ -1543,10 +1545,11 @@ CREATE TABLE `conflicts_unresolved` (
       `Value1` varchar(255) DEFAULT NULL,
       `CommentId2` varchar(255) NOT NULL,
       `Value2` varchar(255) DEFAULT NULL,
-      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+      PRIMARY KEY (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_resolved` (
+      `ResolvedID` int(10) NOT NULL AUTO_INCREMENT,
       `UserID` varchar(255) NOT NULL,
       `ResolutionTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       `User1` varchar(255) DEFAULT NULL,
@@ -1561,7 +1564,8 @@ CREATE TABLE `conflicts_resolved` (
       `OldValue1` varchar(255) DEFAULT NULL,
       `OldValue2` varchar(255) DEFAULT NULL,
       `NewValue` varchar(255) DEFAULT NULL,
-      PRIMARY KEY (`TableName`,`CommentId1`,`CommentId2`,`ExtraKey1`,`ExtraKey2`,`FieldName`)
+      `ConflictID` int(10) DEFAULT NULL,
+      PRIMARY KEY (`ResolvedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tarchive_find_new_uploads` (
@@ -1666,10 +1670,6 @@ CREATE TABLE `help_related_links` (
     PRIMARY KEY (`helpID`,`relatedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO help (helpID, topic, content) VALUES ('1','LORIS HELP: Using the Database','Welcome to LORIS database. The help section provides you with guidelines for adding and updating information in the database'), ('2','HOW TO - Guide','Under Construction.Please visit us later'), ('3','Guidelines','Under Construction.Please visit us later'), ('5','Instruments - Guide','Under Construction.Please visit us later');
-
-
-
 --
 -- Table structure for table `data_integrity_flag`
 --
@@ -1758,3 +1758,71 @@ CREATE TABLE participant_status (
         PRIMARY KEY  (ID),
         UNIQUE KEY ID (ID) 
 );
+
+
+--
+-- Table structure for table `certification`
+--
+
+DROP TABLE IF EXISTS `certification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `certification` (
+  `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `examinerID` int(10) unsigned NOT NULL DEFAULT '0',
+  `date_cert` date DEFAULT NULL,
+  `visit_label` varchar(255) DEFAULT NULL,
+  `testID` varchar(255) NOT NULL DEFAULT '',
+  `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`certID`,`testID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `certification`
+--
+
+LOCK TABLES `certification` WRITE;
+/*!40000 ALTER TABLE `certification` DISABLE KEYS */;
+/*!40000 ALTER TABLE `certification` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+--
+-- Table structure for table `certification_history`
+--
+
+DROP TABLE IF EXISTS `certification_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `certification_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `col` varchar(255) NOT NULL DEFAULT '',
+  `old` text,
+  `old_date` date DEFAULT NULL,
+  `new` text,
+  `new_date` date DEFAULT NULL,
+  `primaryCols` varchar(255) DEFAULT 'certID',
+  `primaryVals` text,
+  `testID` int(3) DEFAULT NULL,
+  `visit_label` varchar(255) DEFAULT NULL,
+  `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `userID` varchar(255) NOT NULL DEFAULT '',
+  `type` char(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+DROP TABLE IF EXISTS `project_rel`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `project_rel` (
+  `ProjectID` int(2) DEFAULT NULL,
+  `SubprojectID` int(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `help` VALUES (1,-1,NULL,'LORIS HELP: Using the Database','Welcome to LORIS database. The help section provides you with guidelines for adding and updating information in the database.\r\n\r\nUpon logging on to the Loris Database on the home page the user’s information can automatically be seen at the top of the screen, indicating the User’s Name, the site from which the user belongs to, and the current date.\r\n\r\nThe tabs spanning horizontally along the page represent different features within the database that allow data acquisition and storage to processing and dissemination using the web based interface. ','0000-00-00 00:00:00','2013-04-17 03:37:39'),(2,-1,NULL,'HOW TO - Guide','Under Construction.Please visit us later','0000-00-00 00:00:00',NULL),(3,-1,NULL,'Guidelines','Under Construction.Please visit us later','0000-00-00 00:00:00',NULL),(5,-1,NULL,'Instruments - Guide','For a given time-point a list of study-specific measures are administered to recruited candidates. The instrument list is automatically populated for candidates based on pre-defined battery. \r\n\r\nThe instrument list page for every candidate provides information such:\r\n\r\nData Entry status: this shows whether all mandatory fields for the instrument have been entered or not \r\nAdministration status : this shows whether or not the instrument was administered to the candidate. \r\nDouble Data Entry: clicking on the Double Data Entry allows staff to enter the same data second time to ensure no mistakes occur while data entry. Any conflicts between the first entry and Double Data Entry can be resolved in the Conflict Resolver Module. \r\nDouble Data Entry Status: this shows whether the data entry for Double Data Entry was entered or not.  ','0000-00-00 00:00:00','2013-08-15 01:39:04'),(6,-1,'7292dd87f9a200f21bf40ded779a582c','Hand Preference','Under Construction.Please visit us later','2013-04-05 00:00:00',NULL),(7,-1,'360c8799d4ab4968ca39eea832db7907','New Profile','The New Profile tab allows the authorized user to register a new candidate at a specific site.  The Date of Birth field is mandatory and it is required to be entered twice in-order to minimize error in data entry. Other fields are custom to the project and can be configured to be drop down fields or user input fields. Once all the required data is entered, users can click on the “Create” button to finish registration. It is crucial that no mistakes in data entry are made at this point, as this information cannot be modified after clicking the “Create” button.\r\n\r\nEach new candidate will then be assigned two identifiers: a 6-digit DCC-ID and an alphanumeric PSC-ID typically comprised of a site-specific code, followed by a numeric code (e.g., AAA0000). These two IDs will always be used to identify this candidate. From there, new time-points can be added to the candidate, also referred to as “Visit labels”.','2013-04-05 00:00:00','2013-04-17 03:38:33'),(8,-1,'dd972565b83f01e75be0344d0f0777c7','Access Profile','The Access Profile tab allows the user to efficiently search for a candidate and access the related data. There are several ways to search for a candidate: \r\n\r\n<u>Option 1:</u>  Using DCCID and PSCID\r\nA specific profile can be accessed by entering both the DCCID and PSCID in the white boxes at the top of the screen and clicking the button “Open Profile”.\r\n\r\n<u>Option2:</u> Using Selection Filter\r\nCandidates can be segregated by using various dropdown options such as Site, Project, Subprojects, Gender etc and then clicking the button “Show Data”. A list of profiles will appear below the Selection Filter box based on the user’s selection criteria. If a \"No candidates found\" message appears, this means that no profiles matched the information specified by the selection filter. Depending on the magnitude of the search, there may be more than one page of search results that the user can look through.\r\n\r\n<b>To Access a Profile:</b>\r\nA candidate’s profile can be accessed by clicking on the PSCID outlined in blue text. The form remembers previously selected data so that when the user returns to the Access Profile menu, the selection filter will automatically select profiles according to the last selection settings.  ','2013-04-05 00:00:00','2013-04-17 03:41:33'),(9,-1,'464fe4ea0557b9c34b4ef33c135f6a08','Reliability Module','The Reliability Coding Module was designed to allow users across and within sites to be confident in the scoring of data, thus improving the integrity of the data within the database on an on-going basis. Reliability immediately brings forward any discrepancies in instrument administration or data reports, as well as helping reduce human-error within data reports. Under the Reliability Coding tab, the user can apply the selection filter to narrow down candidates of interest. A list of log entries will appear that organizes candidates by PSCID, the site of reliability, cohort, DCCID, gender, visit label, instrument, reliability score and an indication of whether the chosen candidate has reliable data.\r\n\r\nOnce the user has completed a search within the Reliability Module, the user can click on the PSCID of the candidate for the instrument in question. The data entry screen for that selected candidate and timepoint will appear, and the second rater can enter his/her data. The database will automatically compare the newly entered data to that entered by the first rater and calculate a reliability score. This score can then be viewed on the main reliability page under the “Reliability Score” Column. The “Reliable” Column shows the user whether the reliability score surpasses the established threshold for reliability by being marked as “Yes” in green if the candidate is reliable or “No” in red if the candidate did not pass reliability. If the candidate had been flagged as invalid, the user will see a note in red text beside the PSCID.\r\n \r\nFor each instrument configured under the module, the user will see a table listing the reliability status of each rater (e.g. “Yes” or “In progress”), as well as the date at which reliability was established, date at which the tape was sent, date at which Feedback was received, whether the rater is outside the research group and Administration status (e.g., “Current” or “No”). The criteria required for a candidate to be considered reliable is outlined below the heading of each instrument.\r\n','2013-04-05 00:00:00','2013-04-17 03:47:57'),(10,-1,'c0383bfcc0ed053e2efe63c79a68976a','Conflict Resolver Module','The “Conflict Resolver” tool allows users to view and keep track of any discrepancies that may arise between initial data entry and double data entry forms. The Conflicts Resolver Module has a Selection Filter function to allow users to search for a particular subject and/or instrument. By clicking the button “Show Data” after selecting certain search options, a grey box will appear containing all the search results, which are  organized by the blue headers “Instrument”, “DCCID”, “PSCID”, “Visit Label”, “Question”, and “Correct Answer”. If the user is confident that the data for the particular question of interest is consistent among the two data entry forms, the user can select the appropriate answer from the drop-down menu under the “Correct Answer” column to resolve the issue. Otherwise, the drop-down menu is left as “Unresolved”, serving as a message to other users that an issue still exists.','2013-04-05 00:00:00','2013-04-17 03:48:29'),(11,-1,'2a522424a48073dcf12e783d7210513c','Radiological Reviews Module','The user can view the radiological review status for each candidate and corresponding visit label through the “Radiological Reviews” tab.\r\n\r\n<b>To Access Reviews:</b>\r\n Set appropriate filters in the Selection Filter box and click the “Show Data” button to retrieve a list of the search results. The results are categorized by column by the candidate’s IDs, date of birth, visit label, review completion status, results (e.g., normal, atypical), exclusionary status and custom fields such as subarachnoid spaces (SAS) status (e.g., none, mild, minimal), perivascular spaces (PVS) and any further comments. There is a column addressing whether any conflict exists between final and extra reviews, which can be found under the blue heading “Conflict”. Next to this column, the user will find whether the review was finalized. The user may click on any of the blue titles to sort the column in ascending or descending order.\r\n\r\nBy clicking on a PSCID and opening that candidate’s file, the user can access the radiological review. If a conflict exists between the original and final review, a warning will appear at the top of the screen in red text. General Information, such as PSCID, DCCID, visit label, and DICOM folder can be easily viewed from the Final Radiological Review page. The user can directly access this candidate’s MRI Browser page or Final Radiological Review by following the links next to “Go to:” under the General Information section. Details of the candidate’s radiological review at that particular time-point can be viewed in the box under the navy blue heading “Review Values”. Any changes made to the record will be documented in the box following the heading “Change Log”. ','2013-04-05 00:00:00','2013-04-17 03:47:09'),(12,-1,'9278907d66342544ba6e9e0aeb48d1b8','Data Dictionary','Designed to allow users to edit description for each of the fields of an instrument. ','2013-04-05 00:00:00','2013-04-26 11:23:49'),(13,-1,'b22de5be7bedb9ffc170dab37e178a38','Data Team Helper','Designed to allow users to see percentage completion status for each instrument. ','2013-04-05 00:00:00','2013-04-26 05:09:58'),(14,-1,'f1fd1913c968a1c383c88631e335a7ca','Certification Module','This module allows users to certify examiners on a per instrument basis. Only certified examiner are allowed to administer instruments to recruited candidates. ','2013-04-05 00:00:00','2013-04-26 05:13:28'),(15,-1,'d1e9a0eccc522c82d0d18ccef27b2ef2','Instrument Builder','Under Construction.Please visit us later','2013-04-05 00:00:00',NULL),(16,-1,'7a98aa2b5edd0984895a20f875207ce9','Candidate Profile','The database facilitates data collection of longitudinal studies, so each candidate may have several time-points or “visit labels”. The time-points refer to data collection on different visits for the same candidate. Every time-point contains a subset of data collected at a given point of time with the intention to keep this subset in a tightly related group. \r\n\r\n\r\n<b>Creating a Candidate Time-point:</b>\r\nA new candidate time-point can be created by an authorized user by opening a specific profile and clicking “Create Time Point” under the “Actions” menu on the left-hand side of the screen. The user can then define the candidate’s subproject from the drop-down menu and the visit label. Examples of Subproject: Subject, Control; Visit Labels: V01, V02. It is also possible to have a Supplementary Time-point.\r\n\r\nIt is important to note that visit labels must be input in CAPITAL CASE. Once the user is ready to proceed, click the “Create Time Point” button. If the time point is successfully created, the user can go to the “Click here to continue” link, which will direct the user to the list of visits for this candidate. If the time-point has already been created for a candidate, a warning in red text will appear stating, “This visit label is not unique.”\r\n\r\n\r\n<b>Accessing a Time-point</b>\r\nOnce a candidate’s profile has been opened, the PSCID and DCCID will remain at the top of the screen in white text on a navy banner for the user’s convenience. Below the candidate’s information, the user will find a list of time points. As indicated on the screen, the profile for the candidate at a certain time point can be opened by clicking on the visit label itself in navy text. \r\n\r\nThe user will see some general information about the candidate near the top of the screen, such as gender, visit label, subproject and grant status. The status and date of each particular stage or visit can be viewed directly below, where status can be marked as either “Pass”, “Fail” or “Withdrawal”. Each candidate also has a specific battery of instruments, with the appropriate instruments for that time point. For each instrument, the user can see the progress that has been made with data entry, where the data entry can be marked as “Complete”, “In Progress” or left blank (indicating data entry has not been started yet). For the instruments that have double data entry, the status can likewise be marked as “Complete”, “In Progress” or left blank. The user can also view the administration status for a particular instrument, where administration can be marked as “All”, “Partial” or “Complete”.\r\n\r\nThe user can access a particular instrument by clicking on the test name to view or modify the candidate’s data. In order for data entry to be completed, Administration must be marked as “Complete”, “Partial” or “None” on the left-hand side bar. If the instrument includes a Validity measure, it will appear under the Administration information, where Validity can be marked as “Valid”, “Questionable” or “Invalid”. To complete the visit stage, data for every assigned instrument must be entered and saved. Once data for an instrument have been fully entered, Data Entry will be marked as “Complete” under the Data Entry heading in the Navigation panel. It is important to enter data in all required fields, otherwise the database will not allow the user to proceed with completing data entry.','0000-00-00 00:00:00','2013-04-17 03:46:13'),(20,-1,'md5(data_team_helper)','Data Completion','','0000-00-00 00:00:00',NULL),(18,9,NULL,'Swap Candidates','The reliability module takes a random sample of candidates, but the user can replace a candidate from the random sampling using the \"Swap Candidates\" function. The user enters the PSCID of the candidate and Visit to discard with the PSCID and visit label of the candidate chosen. Once the swap is completed, the candidate can be identified by word \'Manual\' in red on the reliability main page. \r\n','2013-04-18 11:54:07','2013-08-15 12:51:33'),(19,12,NULL,'Put the topic here','Put the content here','2013-04-22 05:19:48',NULL),(21,-1,'md5(data_integrity_flag)','Instrument Verification Status','','0000-00-00 00:00:00',NULL),(22,-1,'md5(statistics)','Database Statistics','','0000-00-00 00:00:00',NULL),(23,-1,'a912a94d79b5124d876951f96ebb256f','Database Statistics','The Database statistics module calculates and displays statistics related to data acquisition, data processing, and data entry for both behavioural and imaging data collections. A brief description of demographics, MRI, and behavioural statistics can be found under the “General Description” tab.\r\n\r\n<b>Demographic Statistics</b>\r\n\r\nGeneral statistics can be retrieved from each site by using the drop-down menu under the first smaller navy heading “General Statistics” and clicking on the button “Submit”. Under General Statistics, the user will find the heading “Breakdown of Registered Candidates”, where a table outlines gender breakdowns per site, time-point and subproject ID. “Data Entry Completion Status” can be viewed for each instrument by selecting from the dropdown menu and clicking the button “Submit”. \r\n\r\n<b>Behavioural Statistics</b>\r\n\r\nThe user will first see a table labeled “Data Entry Statistics”, where each site and timepoint includes the headings “Completed”, “Created”, and “% Completion”. “Completed” refers to the total number of instruments that have been marked “Data Entry= Complete” and “Administration= None/Partial/All”. This column has its percentage counterpart under “% Completion”. “Created” refers to the total number of instruments that have been populated requiring data entry. The “Double Data Entry Statistics” table underneath rests on a similar premise as the “Data Entry Statistics” Table, but with regards to double data entry. In both of these tables, the user has the option of viewing “Per Instrument Stats” in the last column, by following the “Please Click Here” link. The user can then view which candidates have not completed data entry in each site. \r\n\r\nBy following the link, Completion Statistics for each site are displayed, and are organized by instrument and visit label. The “Completion Count” column displays the number of completed entries per instrument. From this column, the user has the option to follow the “View list” link to see a complete list of the candidates with completed data entry. Each PSCID that comes up in the list was designed to be a link itself to that particular candidate’s page for the selected instrument.\r\n\r\n<b>MRI Statistics</b>\r\n\r\nThe MRI Statistics tab opens with a “General MRI Statistics” table including information on acquired scans at each site. Within this table, the column “Scans on the Workstation” refers to the number of candidates that have scans on the study workstation at each site, whereas “Scans Claimed” refers to the candidates where the field “MR Scan Done” on the database has been marked as “Y”. \r\n\r\nThe following table refers to candidates with completed scans for all three timepoints, organized by site. The table holds statistics for the number of candidates with each type of scan completed.\r\n\r\nThe third table within the MRI Statistics Module allows the user to get a breakdown of statistics for candidates by time-point, based on the scan selected. The user can choose from T1, T2, T1 & T2, DTI, BOLD, and Spectroscopy scans to show the relative number of candidates with scans marked as “Complete”, “Partial”, or “None”. Under the column “Percent Complete”, the user can view the percentage of candidates for the scan of interest that have completed scans.\r\n\r\nAt the bottom of the page, there is a table listing “MRI Integrity Statistics” by site. The user can view the number of candidates that have “No Parameter Form Completed”, “Nothing in MRI Browser for Form” (the MRI Parameter form has been completed in this case but the MRI Browser is not populated), and “No t-archive Entry for form”. The user can go to the “Breakdown of Problems” column and select their site of interest to view candidates with incomplete MRI instrument data. By clicking on the candidate IDs, the user is then redirected to the appropriate MRI instrument for that candidate.  \r\n','0000-00-00 00:00:00','2013-04-26 11:35:17'),(24,-1,'244e3ba086ba825fdc1ba7f51f7b8f51','Instrument Verification Status','This module is designed to track the status for every instrument on a per visit basis. Users are allowed to set different time points for each instrument to indicate if an instrument is ready for review, review completion, feedback and finalization. \r\nClicking on the instrument takes you to the Data Completion Module that shows the percentage completion status for that instrument. ','0000-00-00 00:00:00','2013-04-26 11:38:57'),(25,-1,'2558562564eeb5bb2f741b35f94329ab','Document Repository','Allows users to add any type of document related to the project. ','0000-00-00 00:00:00','2013-04-26 11:40:27');
+

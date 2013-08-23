@@ -93,7 +93,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
+    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age','Data_entry_completion_status');
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
@@ -648,8 +648,10 @@ class NDB_BVL_Instrument extends NDB_Page
         $CertificationEnabled = $CertificationConfig['EnableCertification'];
         if($CertificationEnabled) {
             $CertificationProjects = array();
-            foreach($CertificationConfig['CertificationProjects'] as $key => $projID) {
-                $CertificationProjects[] = $projID;
+            foreach(Utility::toArray($CertificationConfig['CertificationProjects']) as $key => $value) {
+                foreach($value as $k=>$projID) {
+                    $CertificationProjects[$projID] = $projID;
+                }
             }
             $CertificationInstruments = array();
             foreach(Utility::toArray($CertificationConfig['CertificationInstruments']) as $instrument) {
@@ -1591,6 +1593,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     case 'selectmultiple':
                         $type = 'multiple';
+                        $this->_selectMultipleElements[] = $pieces[1];
                         // fall through and also execute select code below
                     case 'select':
 
