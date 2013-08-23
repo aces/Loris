@@ -162,6 +162,19 @@ table.std th {
     	-webkit-border-radius: 4px;
     	-moz-border-radius: 4px;
     }
+table.hideable {
+    border: solid #08245b 2px;
+    background-color: #efefef;
+    margin: 10px 0px 10px 0px;
+}
+table.hideable th {
+        font-weight: bold;
+        padding: 3px;
+        border-width: 1px;
+        border-radius: 10px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+}        
 table.list td, table.tbl td {
 	background-color: #fff;
     }
@@ -318,14 +331,15 @@ table.fancytableleft caption {
 
 .button
 {
-   font-size:11px;
+   font-size:13.5px;
    font-family:Verdana,sans-serif;
    color:white;
    background-color:#08245b;
+   margin-top: 3px;
    border-style:ridge;
    border-color:#FFFFFF;
    border-width:1px;
-   border-radius: 4px;
+   border-radius: 10px;
    -webkit-border-radius: 4px;
    -moz-border-radius: 4px;
    cursor: pointer;
@@ -441,6 +455,7 @@ color: #fff;
 padding-top: 3px;
 font-size: 130%;
 text-align: center;
+width:110%;
 }
 .LoginFooter {
     position:absolute;
@@ -453,6 +468,10 @@ text-align: center;
     text-align: center;
     background: #08245b;
     vertical-align: bottom;
+}
+.LoginBackground {
+background-repeat: no-repeat; 
+background-position: 50% 150px;
 }
 .MainFooter {
     position:absolute;
@@ -644,4 +663,7 @@ width: 140px;
 }
 td.MenuWidth2 input[type=text] {
 width: 140px;
+}
+#LogEntries {
+margin-top: 20px;
 }

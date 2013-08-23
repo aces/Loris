@@ -57,16 +57,19 @@ onload="feedback_bvl_popup();"
 <ul width="250">
 {foreach from=$subtab item=mySubtab}
 {if $tab.label == $mySubtab.parent}
+{if $mySubtab.label == "Data Query Tool"}
+<a href="{$mySubtab.link}" target="_blank">{$mySubtab.label}</a>
+{else}
 <a href="{$mySubtab.link}">{$mySubtab.label}</a>
+{/if}
 {/if}
 {/foreach}
 </ul>
 </li> 
 {/if}
 {/foreach}
-
-<li><a href= javascript:open_help_section()>Help</a></li> 
-<div class="Account">
+</ul>
+<ul style="float:right">
 <li><a href="#">{$user.Real_name}</a>
 <ul>
 <li><a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a></li>
@@ -75,8 +78,22 @@ onload="feedback_bvl_popup();"
 </li>
 </ul>
 </div>
+
 <div class="site">
-Site: {$user.Site} &nbsp;|
+   &nbsp;&nbsp;  Site: {$user.Site} &nbsp;|
+
+</div>
+
+
+<div id="slidemenu" style="float:right" class="jqueryslidemenu">
+<ul>
+<li><a href="#" onClick="MyWindow=window.open('feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;"><img width=17 src=images/pencil.gif></a></li>
+<li><a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;"><img width=17 src=images/help.gif></a></li>
+</ul>
+</div>
+
+
+    <!--a href= javascript:open_help_section()><img width=20 align="right" src=images/help.gif style="margin-left: 10px; margin-right: 10px;"></a><a href="javascript:feedback_bvl_popup()" ><img width=20 align="right" src="images/pencil.gif" style="margin-left:10px;"></a-->
 </div>
 </div>
 </th>
@@ -90,25 +107,21 @@ Site: {$user.Site} &nbsp;|
 <!-- left section -->
 <td class="tabox" valign="top">
 {if $lastURL != ""}
-<h3 class="controlPanelSection">Navigation</h3>
+<!--h3 class="controlPanelSection">iNavigation</h3>
 <ul class="controlPanel">
 <li id="backButton"><a href="{$lastURL}"><img src="images/left.gif" alt="" border="0" width="12" height="12" /> Back</a></li>
-</ul>
+</ul-->
 {/if}
 {/if}
 {if $test_name != "" && $error_message == ""}
 {if $commentID != ""}
 <!-- instrument status flags -->
-{$control_panel}
 {elseif $sessionID != ""}
 <!-- instrument list control panel -->
-{$control_panel}
 {elseif $candID != ""}
 <!-- timepoint list control panel -->
-{$control_panel}
 {/if}
 {/if}
-
 <!--links
 <h3 class="controlPanelSection">Links</h3>
 <ul class="controlPanel">
@@ -130,6 +143,7 @@ Site: {$user.Site} &nbsp;|
 <th class="banner" align="left">
 {section name=crumb loop=$crumbs}
 <a href="main.php?{$crumbs[crumb].query}">{$crumbs[crumb].text}</a> {if not $smarty.section.crumb.last}&gt; {/if}
+
 {/section}
 </th>
 </tr>
@@ -155,7 +169,7 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 {if $candID != ""}
 <br>
 <!-- table with candidate profile info -->
-<table cellpadding="2" class="list" style='width:700px'>
+<table cellpadding="2" class="list" style='width:700px; float:left;'>
 <!-- column headings -->
 <tr>
 <th nowrap="nowrap">DOB</th>
@@ -215,8 +229,9 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 {/if}
 </tr>
 </table>
+{$control_panel}
 {if $sessionID != ""}
-<table cellpadding="2" class="list" style='width:727px'>
+<table cellpadding="2" class="list" style='width:727px; float: left;'>
 <!-- visit statuses -->
 <tr>
 <th nowrap="nowrap" colspan="3">Stage</th>

@@ -39,7 +39,7 @@ $(document).ready(function() {
 {if $form.message}
 <div class="error">{$form.message.label}</div>
 {/if}
-<table border="0" valign="top" class="std" width="33%">
+<table border="0" valign="top" class="std" width="33%" style="float:left; margin-top: 10px; margin-right: 110px;">
     <tr>
         <th nowrap="nowrap" colspan="4">Selection Filter</th>
     </tr>
@@ -99,11 +99,11 @@ $(document).ready(function() {
 
 {if $reliability_swap_candidates}
 <form method="post" action="main.php?test_name=reliability">
-    <input type="hidden" name="swap" value="swap" />
-    <table border="0" valign="top" class="std" id="swapcandidates">
+    <input type="hidden" name="swap" value="swap"/>
+    <table border="0" valign="top" class="hideable" id="swapcandidates">
     <thead>
     <tr>
-        <th colspan="4" class="button">Swap Candidates</th>
+        <th colspan="4" class="button" style="margin-top: 5px;">Swap Candidates</th>
     </tr>
     </thead>
     <tbody>
@@ -138,7 +138,7 @@ $(document).ready(function() {
 {/if}
 {if $EARLI_Reliability}
 <form method="post" action="main.php?test_name=reliability">
-    <table border="0" valign="top" class="std" id="addcandidate">
+    <table border="0" valign="top" class="hideable" id="addcandidate">
     <thead>
     <tr>
         <th colspan="4" class="button">Add EARLI Candidate</th>
@@ -173,7 +173,7 @@ $(document).ready(function() {
 <!-- <h2><font color="red">Note: Phase 2 reliability forms are unavailable at the moment as the system is being upgraded.</font></h2> -->
 
 <!--  title table with pagination -->
-<table border="0" valign="bottom" width="100%">
+<table id="LogEntries" border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
     <td class="controlPanelSection">List of Log Entries</td>
