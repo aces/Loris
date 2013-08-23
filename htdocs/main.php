@@ -67,6 +67,7 @@ if (Utility::isErrorX($site)) {
     $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
 }
 
+
 // the the list of tabs, their links and perms
 $mainMenuTabs = $config->getSetting('main_menu_tabs');
         
