@@ -133,6 +133,7 @@ class NDB_Caller extends PEAR
         if (Utility::isErrorX($menu)) {
             return PEAR::raiseError($menu->getMessage());
         }
+
         $success = $menu->setup();
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Caller::loadMenu() save: ".$success->getMessage());

@@ -12,8 +12,7 @@ require_once 'HTML/QuickForm/select.php';
  * @package main
  */
 class NDB_Menu_Filter extends NDB_Menu
-{
-    
+{    
     /**
      * The columns to SELECT
      * @var    array
