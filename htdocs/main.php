@@ -70,13 +70,14 @@ if (Utility::isErrorX($site)) {
 
 // the the list of tabs, their links and perms
 $mainMenuTabs = $config->getSetting('main_menu_tabs');
-        
+
 foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
     $tpl_data['tabs'][]=$myTab;
     foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
     {
         // skip if inactive
         if ($mySubtab['visible']==0) continue;
+
         // replace spec chars
         $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
         
@@ -85,7 +86,9 @@ foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
 
             // if there are no permissions, allow access to the tab
             if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+
                 $tpl_data['subtab'][]=$mySubtab;
+
             } else {
 
                 // if any one permission returns true, allow access to the tab
@@ -200,7 +203,6 @@ if (!empty($TestName)) {
     	$controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
     	// display the control panel
     	$tpl_data['control_panel'] = $controlPanel->display();
-//print ($tpl_data['controlpanel']);
     }
 }
 
@@ -295,7 +297,7 @@ foreach(Utility::toArray($links['link']) AS $link){
         'url'        => $BaseURL . $LinkArgs,
         'label'      => $LinkLabel, 
         'windowName' => $WindowName
-    );
+    ); 
 }
 
 
