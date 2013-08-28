@@ -52,11 +52,9 @@ class NDB_Form_next_stage extends NDB_Form
         if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
-        $config =& NDB_Config::singleton();
-        $toExclude = $config->getSetting('excludeFirstVisit');
 
         $firstVisit = false;
-        $vLabel = $candidate->getFirstVisit(); 
+        $vLabel = $candidate->getFirstVisit();//get first visit for candidate 
         if($vLabel ==  $timePoint->getVisitLabel()){
             $firstVisit = true;    
         }  
