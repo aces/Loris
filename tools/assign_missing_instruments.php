@@ -60,7 +60,7 @@ function PopulateVisitLabel($result, $visit_label) {
     $DB =& Database::singleton();
     $query_firstVisit = "SELECT Visit_label FROM session WHERE CandID=:cid ORDER BY Date_visit"; 
     $where = array ('cid'=>$result['CandID']);
-    $result_firstVisit= $DB->selectOne($query_firstVisit,$where);
+    $result_firstVisit= $DB->pselectOne($query_firstVisit,$where);
  
     $isFirstVisit = false; 
     if ($result_firstVisit == $visit_label) {
@@ -89,14 +89,15 @@ function PopulateVisitLabel($result, $visit_label) {
 }
 
 if(isset($visit_label)) {
-    $query="SELECT s.ID, s.subprojectID, s.CandID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.visit_label='$argv[1]'";
-    $DB->select($query, $results);
+    $query="SELECT s.ID, s.subprojectID, s.CandID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.visit_label=:vl";
+    $where = array('vl'=>"'".$argv[1]."'");
+    $results = $DB->pselect($query, $where);
     foreach($results AS $result){
         PopulateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
     $query="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
-    $DB->select($query, $results);
+    $results = $DB->pselect($query, array());
     foreach($results AS $result) {
         PopulateVisitLabel($result, $result['Visit_label']);
     }
