@@ -62,7 +62,7 @@ function PopulateVisitLabel($result, $visit_label) {
     $where = array ('cid'=>$result['CandID']);
     $result_firstVisit= $DB->pselectOne($query_firstVisit,$where);
  
-    $isFirstVisit = false; 
+    $isFirstVisit = false;//adding check for first visit 
     if ($result_firstVisit == $visit_label) {
         $isFirstVisit = true;    
     }

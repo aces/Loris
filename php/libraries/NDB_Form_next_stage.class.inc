@@ -56,7 +56,7 @@ class NDB_Form_next_stage extends NDB_Form
         $firstVisit = false;
         $vLabel = $candidate->getFirstVisit();//get first visit for candidate 
         if($vLabel ==  $timePoint->getVisitLabel()){
-            $firstVisit = true;    
+            $firstVisit = true; //if current visit label is same as visit label returned must be first visit   
         }  
         
          // select a specific time point (sessionID) for the battery
