@@ -28,7 +28,6 @@ function remove_jiv_panel(name, data) {
             newData.push(jivData[i]);
         }
     }
-
     jivNames = newNames;
     jivData = newData;
     return true;
@@ -63,7 +62,6 @@ for(var i=0; i<name.length; i++) {
       appletCode += "jiv.panel."+panel_counter+".combine : " + name[i] + " " + name[i+1] + " ;\n";;
       panel_counter++;
     }
-
 }
 
 appletCode += "jiv.sync : true ;\n";
@@ -111,9 +109,9 @@ return true;
             <th nowrap="nowrap">Visit Label</th><td nowrap="nowrap">{$subject.visitLabel}</td>
         </tr>
         <tr>
-                
         <tr>
-            <th nowrap="nowrap">DOB</th><td nowrap="nowrap">{$subject.dob}</td><th nowrap="nowrap">Gender</th><td nowrap="nowrap">{$subject.gender}</td>
+            <th nowrap="nowrap">DOB</th><td nowrap="nowrap">{$subject.dob}</td>
+            <th nowrap="nowrap">Gender</th><td nowrap="nowrap">{$subject.gender}</td>
             <th nowrap="nowrap">Output Type</th><td nowrap="nowrap">{$outputType}</td>
         </tr>
 
@@ -125,7 +123,6 @@ return true;
         <tr>
             <th>Mantis ID</th><td colspan="5">{$subject.pscid} {$subject.candid} {$subject.visitLabel}</td>
         </tr>
-        
         <tr>
             <td colspan="5"><a href="#" onClick="javascript:window.open('feedback_mri_popup.php?sessionID={$subject.sessionID}', 'feedback_mri', 
             'width=500%,height=300,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes')">Link to visit-level feedback</a></td>

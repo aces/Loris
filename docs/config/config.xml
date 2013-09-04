@@ -22,7 +22,7 @@
 <!-- file paths -->
 <paths>
     <imagePath>/PATH/TO/MINC/DATA/ROOT/mri-data/minc/</imagePath>
-    <base>%LORISROOT%</base>
+    <base>/var/www/loris/</base>
     <data>SAME AS imagePath</data>
     <extLibs>/PATH/TO/SMARTY/libs</extLibs>
     <mincPath></mincPath>
@@ -31,13 +31,13 @@
 
 <!-- database settings -->
 <database>
-    <host>%HOSTNAME%</host>
-    <username>%USERNAME%</username>
-    <password>%PASSWORD%</password>
-    <database>%DATABASE%</database>
-    <quatUser>%USERNAME%</quatUser>
-    <quatPassword>%PASSWORD%</quatPassword>
-    <name>Example database</name>
+    <host>localhost</host>
+    <username>lorisuser</username>
+    <password>password</password>
+    <database>ibis</database>
+    <quatUser>lorisuser</quatUser>
+    <quatPassword>password</quatPassword>
+    <name>ibisdatabase</name>
 </database>
 
 <dicom_archive>
@@ -47,9 +47,9 @@
 </dicom_archive>
 
 <links>
-    <link url='dicom_archive.php?' args=''>DICOM Archive</link>
-    <link url='mri_browser.php?' args='MRIBrowser'>MRI Browser</link>
-    <link url='query_gui.php?' args=''>Data Query GUI</link>
+    <link url='this.php?' args=''> Report a Bug (Mantis)</link>
+    <link url='that.php?' args=''> Document repository (OWL)</link>
+    <link url='theother.php?' args=''> NIHACE Web Site</link>
 </links>
 
 <!-- mail settings -->
@@ -70,10 +70,8 @@
 
 <!-- study variables -->
     <study>
-        <!--display additional user info -->
-        <additional_user_info>1</additional_user_info>        
         <!-- Descriptive study title, appears on top of the screen-->
-        <title>Example Study</title>
+        <title>Ibis Study</title>
         <!---number of columns the quat table will contain  -->
         <columnThreshold>250</columnThreshold>
         <!-- true/false - use EDC in addition to DoB? -->
@@ -81,7 +79,7 @@
         <!-- minimum age in years (0+)-->
         <ageMin>8</ageMin>
         <!-- max subject age in years -->
-        <ageMax>11</ageMax>
+        <ageMax>32</ageMax>
 	<!-- true/false - more than one site in the project? -->
         <multipleSites>true</multipleSites>
         <!-- true/false - use family ID? -->
@@ -89,7 +87,7 @@
 	<!-- project's start year -->
         <startYear>2004</startYear>
 	<!-- project's end year -->
-        <endYear>2007</endYear>
+        <endYear>2047</endYear>
 
         <PSCID>
 	  <!-- PSCID generation method: sequential|random -->
@@ -99,50 +97,93 @@
           </structure>
         </PSCID>
 
-        <useProjects>false</useProjects>
+        <useProjects>true</useProjects>
         <Projects>
             <project>
-             <id>1</id>
-             <title>Sample Project</title>
+                <id>1</id>
+                <title>IBIS1</title>
             </project>
             <project>
-              <id>2</id>
-              <title>Another Sample Project</title>
+                <id>2</id>
+                <title>IBIS2</title>
+            </project>
+            <project>
+                <id>3</id>
+                <title>FragileX</title>
+            </project>
+            <project>
+                <id>4</id>
+                <title>EARLI Collaboration</title>
             </project>
         </Projects>
 
-<!-- Add items to display in the header table for a candidate/session.
-     Until a project has been going on for a while, this is most likely
-     unnecessary. -->
-<!--HeaderTable>
-     <parameter_candidate>candidate_comment</parameter_candidate>
-</HeaderTable-->
 	<!-- number of subprojects in the project - corresponds to the list of subpojects below -->
 	<!-- max number of timepoints per subject (integer)-->
 	<useScreening>false</useScreening>
 	<subprojects>
 	    <subproject>
-                <id>1</id>
-		<title>MRI session</title>
+            <id>1</id>
+		<title>6 Month Recruit</title>
+		<options>
+		    <useEDC>false</useEDC>
+		</options>
+	    </subproject>
+		<subproject>
+	        <id>2</id>
+		<title>12 Month Recruit</title>
 		<options>
 		    <useEDC>false</useEDC>
 		</options>
 	    </subproject>
 	    <subproject>
-	        <id>2</id>
-		<title>Instrument Data</title>
+	        <id>3</id>
+            <title>Control</title>
 		<options>
 		    <useEDC>false</useEDC>
 		</options>
 	    </subproject>
-	</subprojects>
-
+        <subproject>
+            <id>4</id>
+            <title>6 Month Recruits FRX</title>
+        <options>
+            <useEDC>false</useEDC>
+        </options>
+        </subproject>
+        <subproject>
+            <id>5</id>
+            <title>12 Month Recruits FRX</title>
+        <options>
+            <useEDC>false</useEDC>
+        </options>
+        </subproject>
+        <subproject>
+            <id>6</id>
+            <title>EARLI Sib</title>
+        <options>
+            <useEDC>false</useEDC>
+        </options>
+        </subproject>
+        <subproject>
+            <id>7</id>
+            <title>IBIS2 High Risk</title>
+        <options>
+            <useEDC>false</useEDC>
+        </options>
+        </subproject>
+        <subproject>
+            <id>8</id>
+            <title>IBIS2 Low Risk</title>
+        <options>
+            <useEDC>false</useEDC>
+        </options>
+        </subproject>
+    </subprojects>
     <!-- defines how visit labels are assigned -->
     <visitLabel subprojectID="1">
         <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
-        <generation>user</generation>
+        <generation>sequence</generation>
         <regex>/^[A-Z0-9]{2}$/i</regex>
-        <length>2</length>
+        <length>5</length>
         <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
          <labelSet>
          <item value="V%value%">V%value%</item>
@@ -198,12 +239,6 @@
     </study>
 <!-- end of study definition -->
 
-<!-- Statistics options -->
-    <statistics>
-        <visitStats>EL</visitStats>
-        <excludedMeasures>radiology_review</excludedMeasures>
-        <excludedMeasures>mri_parameter_form</excludedMeasures>
-    </statistics>
 
     <!-- GUI default settings -->
     <gui>
@@ -212,88 +247,184 @@
         <showTiming>0</showTiming>
         <showPearErrors>0</showPearErrors>
         <showDatabaseQueries>0</showDatabaseQueries>
+        <PopUpFeedbackBVL>1</PopUpFeedbackBVL>
     </gui>
 
-    <main_menu_tabs>
-        <!-- tab name -->
-        <tab>
-            <link>new_profile</link>
+
+<main_menu_tabs>
+    <tab>
+        <label>Candidate</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Candidate</parent>
+            <link>main.php?test_name=new_profile</link>
             <label>New Profile</label>
-            <access>site</access>
+            <access>all</access>
             <permissions>
                 <perm>data_entry</perm>
             </permissions>
             <visible>1</visible>
-        </tab>
-        <tab>
-            <link>candidate_list</link>
+        </subtab>
+        <subtab>
+            <parent>Candidate</parent>
+            <link>main.php?test_name=candidate_list</link>
             <label>Access Profile</label>
             <access>all</access>
-            <permissions></permissions>
+            <permissions>
+                <perm>data_entry</perm>
+            </permissions>
             <visible>1</visible>
-        </tab>
-        <tab>
-            <link>user_accounts</link>
+        </subtab>
+    </tab>
+
+    <tab>
+        <label>Clinical</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=reliability</link>
+            <label>Reliability Coding</label>
+            <access>all</access>
+            <permissions>
+                <perm>reliability_edit_all</perm>
+                <perm>access_all_profiles</perm>
+                <perm>EARLI_Reliability</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=blind_coding</link>
+            <label>Blind Coding</label>
+            <access>all</access>
+            <permissions>
+                <perm>blind_add_candidates</perm>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=videos</link>
+            <label>Videos</label>
+            <access>all</access>
+            <permissions>
+                <perm>earli_videos</perm>
+                <perm>video_upload</perm>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=conflicts_resolve</link>
+            <label>Conflicts Resolver</label>
+            <access>all</access>
+            <permissions>
+                <perm>data_entry</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=timepoint_flag</link>
+            <label>Exclusion</label>
+            <access>all</access>
+            <permissions>
+                <perm>timepoint_flag</perm>
+                <perm>timepoint_flag_evaluate</perm>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=mri_parameter_forms</link>
+            <label>MRI Parameter forms</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=certification</link>
+            <label>Certification</label>
+            <access>all</access>
+            <permissions>
+                <perm>certification</perm>
+                <perm>certification_multisite</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
+        <label>Imaging</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Imaging</parent>
+            <link>main.php?test_name=final_radiological_review</link>
+            <label>Radiological Reviews</label>
+            <access>all</access>
+            <permissions>
+                <perm>edit_final_radiological_review</perm>
+                <perm>view_final_radiological_review</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Imaging</parent>
+            <link>dicom_archive.php?</link>
+            <label>Dicom Archive</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>1</visible>    
+        </subtab>
+        <subtab>
+            <parent>Imaging</parent>
+            <link>mri_browser.php?</link>  
+            <label>MRI Browser</label>
+            <access>all</access>
+            <permissions>   
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
+        <label>Reports</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Reports</parent>
+            <link>main.php?test_name=statistics</link>
+            <label>Database Statistics</label>
+            <access>all</access>
+            <permissions>
+                <perm>data_entry</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Reports</parent>
+            <link>query_gui.php</link>
+            <label>Data Query Tool</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
+        <label>Admin</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Admin</parent>
+            <link>main.php?test_name=user_accounts</link>
             <label>User Accounts</label>
             <access>all</access>
             <permissions>
                 <perm>user_accounts</perm>
             </permissions>
             <visible>1</visible>
-        </tab>
-          <tab>
-            <link>statistics</link>
-            <label>Database Statistics</label>
-            <access>all</access>
-           <permissions>
-            </permissions>
-            <visible>1</visible>
-        </tab>
-        <tab>
-            <link>datadict</link>
-            <label>Data Dictionary</label>
-            <access>all</access>
-            <permissions>
-            <perm>data_dict</perm>
-            </permissions>
-            <visible>1</visible>
-        </tab>
-
-        <tab>
-          <link>data_team_helper</link>
-          <label>Data Team Helper</label>
-          <access>all</access>
-          <permissions>
-              <perm>
-              </perm>
-          </permissions>
-          <visible>1</visible>
-        </tab>
-        <tab>
-          <link>violated_scans</link>
-          <label>Violated Scans</label>
-          <access>all</access>
-          <permissions>
-          <perm>violated_scans</perm>
-          </permissions>
-          <visible>1</visible>
-        </tab>
-        <tab>
-          <link>data_integrity_flag</link>
-          <label>Data Integrity Flag</label>
-          <access>all</access>
-          <permissions>
-            <perm>
-                data_integrity_flag
-            </perm>
-          </permissions>
-          <visible>1</visible>
-        </tab>
-        <ConflictResolver>
-            <MaxConflicts>500</MaxConflicts>
-        </ConflictResolver>
-
-</main_menu_tabs>
-
+        </subtab>    
+    </tab>
+	</main_menu_tabs>
 </config>
 
