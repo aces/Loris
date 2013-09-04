@@ -214,7 +214,7 @@
             <parent>Candidate</parent>
             <link>main.php?test_name=new_profile</link>
             <label>New Profile</label>
-            <access>all</access>
+            <access>site</access>
             <permissions>
                 <perm>data_entry</perm>
             </permissions>
@@ -225,9 +225,7 @@
             <link>main.php?test_name=candidate_list</link>
             <label>Access Profile</label>
             <access>all</access>
-            <permissions>
-                <perm>data_entry</perm>
-            </permissions>
+            <permissions></permissions>
             <visible>1</visible>
         </subtab>
     </tab>
@@ -241,6 +239,7 @@
             <label>Reliability Coding</label>
             <access>all</access>
             <permissions>
+                <perm>user_accounts</perm>
                 <perm>reliability_edit_all</perm>
                 <perm>access_all_profiles</perm>
                 <perm>EARLI_Reliability</perm>
@@ -352,7 +351,6 @@
             <label>Database Statistics</label>
             <access>all</access>
             <permissions>
-                <perm>data_entry</perm>
             </permissions>
             <visible>1</visible>
         </subtab>
@@ -362,6 +360,7 @@
             <label>Data Query Tool</label>
             <access>all</access>
             <permissions>
+                <perm>data_dict</perm>
             </permissions>
             <visible>1</visible>
         </subtab>
