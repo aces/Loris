@@ -16,6 +16,20 @@ class NDB_Form_participant_accounts extends NDB_Form
             return PEAR::raiseError("User Error: ".$editor->getMessage());
         }
 
+<<<<<<< HEAD
+=======
+        if ($this->page == 'edit_user') {
+            if(!empty($this->identifier)) {
+                $user =& User::factory($this->identifier);
+                if(Utility::isErrorX($user)) {
+                    return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
+                }
+            }
+
+            return ($editor->hasPermission('user_accounts') && ($editor->hasPermission('user_accounts_multisite') || (empty($this->identifier) || $editor->getData('CenterID') == $user->getData('CenterID'))));
+        }
+
+>>>>>>> Initial page to create accounts for end users direct data entry
         return true;
     }
 
@@ -114,6 +128,9 @@ class NDB_Form_participant_accounts extends NDB_Form
 
     function _createCommentID($CandID, $PSCID, $SessionID, $SubprojectID, $testID) {
         return $CandID . $PSCID . $SessionID . $SubprojectID . $testID . time();
+            )
+        );
+
     }
 
     function add_survey()
