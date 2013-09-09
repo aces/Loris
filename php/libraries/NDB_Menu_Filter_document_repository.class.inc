@@ -152,6 +152,61 @@ class NDB_Menu_Filter_document_repository extends NDB_Menu_Filter
         return true;
     }
 
+
+
+    /**
+     * Sets the template data for the list of candidates, users, etc.
+     *
+     * @return void
+     * @throws PEAR_Error
+     * @access private
+     */
+    function _setDataTable()
+    {
+        // create instance of config object
+    	$config =& NDB_Config::singleton();
+
+	// overriding pagination
+	$DB = Database::singleton();
+	$perpage = $DB->pselectOne("SELECT count(*) FROM document_repository", array());
+    	// configure the page pagination
+	    $params = array(
+            'mode'       => 'Sliding',
+	        'perPage'    => $perpage,
+	        'delta'      => 3,
+	        'itemData'   => $this->list
+	    );
+        $pager = Pager::factory($params);
+        $this->list = $pager->getPageData();
+        $links = $pager->getLinks();
+        $this->tpl_data['page_links'] = $links['all'];
+
+        // print out column headings
+        $i = 0;
+        foreach ($this->headers as $header) {
+            $this->tpl_data['headers'][$i]['name'] = $header;
+            // format header
+            $this->tpl_data['headers'][$i]['displayName'] = ucwords(str_replace('_', ' ', $header));
+            // set field ordering
+            if(isset($this->filter['order'])) {
+                $this->tpl_data['headers'][$i]['fieldOrder'] = ($this->filter['order']['fieldOrder'] == 'ASC') ? 'DESC' : 'ASC';
+            }
+            $i++;
+        }
+
+        // get the template data for the table rows
+        if (is_array($this->list) && !empty($this->list)) {
+            // print out data rows
+            $count = $pager->getOffsetByPageId();
+            $success = $this->_setDataTableRows($count[0]);
+            if(Utility::isErrorX($success)) {
+                return PEAR::raiseError("NDB_Filter::_setDataTable(): ".$success->getMessage());
+            }
+        }
+    }
+
+
+
     function _setDataTableRows($count)
     {
         // This is a hack. It shouldn't be required, and it certainly shouldn't be here.
