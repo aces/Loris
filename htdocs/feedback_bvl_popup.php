@@ -113,13 +113,19 @@ if (isset($feedback) && Utility::isErrorX($feedback)) {
         $z = 0;
         foreach ($feedbackTypes as $val) {
             // Following are used for the "Add Feedback" Form      
-            $tpl_data['threadTypes'][$z]['Type'] = $val['Type'];
-            $tpl_data['threadTypes'][$z]['Label'] = $val['Label'];
+            //////////////////////////////////////////////
+			///This is hack to not display the data_cleaning
+			///////////////////////////////////////////
+			if ($val['Type']!=='2'){
 
-            //These are for the update thread form
-            $tpl_data['threadTypeIDArray'][] = $val['Type'];
-            $tpl_data['threadTypeLabelArray'][] = $val['Label'];
-            $z++;
+	            $tpl_data['threadTypes'][$z]['Type'] = $val['Type'];
+	            $tpl_data['threadTypes'][$z]['Label'] = $val['Label'];
+	
+	            //These are for the update thread form
+	            $tpl_data['threadTypeIDArray'][] = $val['Type'];
+	            $tpl_data['threadTypeLabelArray'][] = $val['Label'];
+	            $z++;
+			}
         }
     }
 
