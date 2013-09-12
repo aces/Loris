@@ -203,7 +203,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
     function AddWhere($Column, $Filter) 
     {
-        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Fields' && (strtolower($_REQUEST[$Filter]) !=='any') && ($_REQUEST[$Filter] !=='All Visits') && $_REQUEST[$Filter] !=='all_flags') {
+        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Fields' && (strtolower($_REQUEST[$Filter]) !=='any') && ($_REQUEST[$Filter] !=='All Visits') && $_REQUEST[$Filter] !=='all_flags' && ($_REQUEST[$Filter] !=='All Instruments')) {
             global $DB;
             if ($Filter == 'instrument') {
                 $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //converts the full_name into the test_name
