@@ -93,8 +93,8 @@ $db = Database::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 $config = NDB_Config::singleton();
 $db_config = $config->getSetting('database');
-$dataDir = "/home/gustodatabaseuser/conflicts/".$db_config['database'];
-//$dataDir = "logs";
+$paths = $config->getSetting('paths');
+$dataDir = $paths['base'] . $config->getSetting('log');
 $diff = null;
 $new_conflicts = array();
 $recreated_conflicts = array();
@@ -326,7 +326,7 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
         } else {
             $name = $prefix . "_". $instrument . "_" . date('ymd-His') . ".csv";
         }
-        $path = "$path/$name";
+        $path = $path.$name;
         /**
          * Write the header into the file
          */
