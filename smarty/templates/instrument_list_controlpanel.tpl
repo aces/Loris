@@ -1,4 +1,3 @@
-<!--
 	<h3 class="controlPanelSection">Actions</h3>
 	<ul class="controlPanel">
 	    	<li>
@@ -90,8 +89,7 @@
 			{/if}
 		</li>
 	</ul>
--->
-<table class="std" style="margin-bottom: 0px; margin-top:2px; float:right; margin-right:30px;">
+<!--table class="std" style="width:150px">
                 <th>Actions</th>
                 <tr>
                     <td class="controlPanelItem">
@@ -182,7 +180,7 @@
 {/if}
                     </td>
                 </tr>
-</table>
+</table-->
 
 
 
