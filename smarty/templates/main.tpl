@@ -80,7 +80,7 @@ onload="feedback_bvl_popup();"
 </div>
 
 <div class="site">
-   &nbsp;&nbsp;  Site: {$user.Site} &nbsp;|
+&nbsp;&nbsp;  Site: {$user.Site} &nbsp;|
 
 </div>
 
@@ -93,7 +93,7 @@ onload="feedback_bvl_popup();"
 </div>
 
 
-    <!--a href= javascript:open_help_section()><img width=20 align="right" src=images/help.gif style="margin-left: 10px; margin-right: 10px;"></a><a href="javascript:feedback_bvl_popup()" ><img width=20 align="right" src="images/pencil.gif" style="margin-left:10px;"></a-->
+<!--a href= javascript:open_help_section()><img width=20 align="right" src=images/help.gif style="margin-left: 10px; margin-right: 10px;"></a><a href="javascript:feedback_bvl_popup()" ><img width=20 align="right" src="images/pencil.gif" style="margin-left:10px;"></a-->
 </div>
 </div>
 </th>
@@ -165,94 +165,128 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 <h1>Welcome to the LORIS Database!</h1>
 <p width=50%>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</p>
 {else}
-    {if $candID != ""}
-            <!-- table with candidate profile info -->
-            <table cellpadding="2" class="list" style='width:700px'>
-                <!-- column headings -->
-                <tr>
-                    <th nowrap="nowrap">DOB</th>
-        {if $candidate.EDC!=""}
-                    <th nowrap="nowrap">EDC</th>
-        {/if}
-                    <th nowrap="nowrap">Gender</th>
-        {if $candidate.ProjectTitle != ""}
-                    <th nowrap="nowrap">Project</th>
-        {/if}
-        {foreach from=$candidate.DisplayParameters item=value key=name}
-                    <th nowrap="nowrap">{$name}</th>
-        {/foreach}
-        {if $sessionID != ""}
-                    <th nowrap="nowrap">Visit Label</th>
-                    <th nowrap="nowrap">Visit to Site</th>
-                    <th nowrap="nowrap">Subproject</th>
-                    <th nowrap="nowrap">MR Scan Done</th>
-                    {* <th nowrap="nowrap">Age During Visit</th> *}
-                    <th nowrap="nowrap">Within Optimal</th>
-                    <th nowrap="nowrap">Within Permitted</th>
-                    {if $SupplementalSessionStatuses }
-                        {foreach from=$timePoint.status item=status key=name}
-                            <th nowrap="nowrap">{$name}</th>
-                        {/foreach}
-                    {/if}
-        {/if}
-                </tr>
-                <tr>
-                    <!-- candidate data -->
-                    <td nowrap="nowrap">{$candidate.DoB}</td>
-        {if $candidate.EDC!=""}
-                    <td nowrap="nowrap">{$candidate.EDC}</td>
-        {/if}
-                    <td nowrap="nowrap">{$candidate.Gender}</td>
-        {if $candidate.ProjectTitle != ""}
-                    <td nowrap="nowrap">{$candidate.ProjectTitle}</td>
-        {/if}
-        {foreach from=$candidate.DisplayParameters item=value key=name}
-                    <td nowrap="nowrap">{$value}</td>
-        {/foreach}
 
-        {if $sessionID != ""}
-                    <!-- timepoint data -->
-                    <td nowrap="nowrap">{$timePoint.Visit_label}</td>
-                    <td nowrap="nowrap">{$timePoint.PSC}</td>
-                    <td nowrap="nowrap">{$timePoint.SubprojectTitle}</td>
-                    <td nowrap="nowrap">{$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"images/help2.gif\" width=\"12\" height=\"12\" />"}</td>
-                    {* <td nowrap="nowrap">{$timePoint.WindowInfo.AgeDays}</td> *}
-                    <td nowrap="nowrap">{if $timePoint.WindowInfo.Optimum}Yes{else}No{/if}</td>
-                    <td nowrap="nowrap" {if not $timePoint.WindowInfo.Optimum}class="error"{/if}>{if $timePoint.WindowInfo.Permitted}Yes{else}No{/if}</td>
-                    {if $SupplementalSessionStatuses }
-                        {foreach from=$timePoint.status item=status}
-                            <td nowrap="nowrap">{$status}</td>
-                        {/foreach}
-                    {/if}
-        {/if}
-                </tr>
-            </table>
-        {if $sessionID != ""}
-    		<table cellpadding="2" class="list" style='width:700px'>
-                <!-- visit statuses -->
-                <tr>
-                    <th nowrap="nowrap" colspan="3">Stage</th>
-                    <th nowrap="nowrap" colspan="3">Status</th>
-                    <th nowrap="nowrap" colspan="2">Date</th>
-                </tr>
-                <tr>
-                    <td nowrap="nowrap" colspan="3">Screening</td>
-                    <td nowrap="nowrap" colspan="3">{$timePoint.Screening}</td>
-                    <td nowrap="nowrap" colspan="2">{$timePoint.Date_screening}</td>
-                </tr>
-                <tr>
-                    <td nowrap="nowrap" colspan="3">Visit</td>
-                    <td nowrap="nowrap" colspan="3">{$timePoint.Visit}</td>
-                    <td nowrap="nowrap" colspan="2">{$timePoint.Date_visit}</td>
-                </tr>
-                <tr>
-                    <td nowrap="nowrap" colspan="3">Approval</td>
-                    <td nowrap="nowrap" colspan="3">{$timePoint.Approval}</td>
-                    <td nowrap="nowrap" colspan="2">{$timePoint.Date_approval}</td>
-                </tr>
-            </table>
-        {/if}
-    {/if}
+{if $candID != ""}
+<!-- table with candidate profile info -->
+<table cellpadding="2" class="list" style='width:600px; float:left'>
+<!-- column headings -->
+<tr>
+<th nowrap="nowrap">DOB</th>
+{if $candidate.EDC!=""}
+<th nowrap="nowrap">EDC</th>
+{/if}
+<th nowrap="nowrap">Gender</th>
+{if $candidate.ProjectTitle != ""}
+<th nowrap="nowrap">Project</th>
+{/if}
+{foreach from=$candidate.DisplayParameters item=value key=name}
+<th nowrap="nowrap">{$name}</th>
+{/foreach}
+{if $sessionID != ""}
+<th nowrap="nowrap">Visit Label</th>
+<th nowrap="nowrap">Visit to Site</th>
+<th nowrap="nowrap">Subproject</th>
+<th nowrap="nowrap">MR Scan Done</th>
+{* <th nowrap="nowrap">Age During Visit</th> *}
+<th nowrap="nowrap">Within Optimal</th>
+<th nowrap="nowrap">Within Permitted</th>
+{if $SupplementalSessionStatuses }
+{foreach from=$timePoint.status item=status key=name}
+<th nowrap="nowrap">{$name}</th>
+{/foreach}
+{/if}
+{/if}
+</tr>
+<tr>
+<!-- candidate data -->
+<td nowrap="nowrap">{$candidate.DoB}</td>
+{if $candidate.EDC!=""}
+<td nowrap="nowrap">{$candidate.EDC}</td>
+{/if}
+<td nowrap="nowrap">{$candidate.Gender}</td>
+{if $candidate.ProjectTitle != ""}
+<td nowrap="nowrap">{$candidate.ProjectTitle}</td>
+{/if}
+{foreach from=$candidate.DisplayParameters item=value key=name}
+<td nowrap="nowrap">{$value}</td>
+{/foreach}
+
+{if $sessionID != ""}
+<!-- timepoint data -->
+<td nowrap="nowrap">{$timePoint.Visit_label}</td>
+<td nowrap="nowrap">{$timePoint.PSC}</td>
+<td nowrap="nowrap">{$timePoint.SubprojectTitle}</td>
+<td nowrap="nowrap">{$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"images/help2.gif\" width=\"12\" height=\"12\" />"}</td>
+{* <td nowrap="nowrap">{$timePoint.WindowInfo.AgeDays}</td> *}
+<td nowrap="nowrap">{if $timePoint.WindowInfo.Optimum}Yes{else}No{/if}</td>
+<td nowrap="nowrap" {if not $timePoint.WindowInfo.Optimum}class="error"{/if}>{if $timePoint.WindowInfo.Permitted}Yes{else}No{/if}</td>
+{if $SupplementalSessionStatuses }
+{foreach from=$timePoint.status item=status}
+<td nowrap="nowrap">{$status}</td>
+{/foreach}
+{/if}
+{/if}
+</tr>
+</table>
+
+<table class="std" style="float:right; margin-top:0; margin-bottom:0; margin-right:4px"> 
+<th>Actions</th>
+<tr>
+<td>
+{if $isDataEntryPerson}
+<a href="main.php?test_name=create_timepoint&candID={$candID}&identifier={$candID}">Create time point</a>
+{else}
+Create time point
+{/if}
+</td>
+</tr>
+<tr>
+<td>
+{if $isDataEntryPerson}
+<a href="main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}">Edit Candidate Info</a>
+{else}
+Edit Candidate Info
+{/if}
+</td>
+</tr>
+<tr>
+<td>
+{if $isDataEntryPerson}
+<a href="main.php?test_name=participant_status&candID={$candID}&identifier={$candID}"> Participant Status Form</a>
+{else}
+Participant Status Form
+{/if}
+</td>
+</tr>
+</table>
+
+</p>
+{if $sessionID != ""}
+<table cellpadding="2" class="list" style='width:700px'>
+<!-- visit statuses -->
+<tr>
+<th nowrap="nowrap" colspan="3">Stage</th>
+<th nowrap="nowrap" colspan="3">Status</th>
+<th nowrap="nowrap" colspan="2">Date</th>
+</tr>
+<tr>
+<td nowrap="nowrap" colspan="3">Screening</td>
+<td nowrap="nowrap" colspan="3">{$timePoint.Screening}</td>
+<td nowrap="nowrap" colspan="2">{$timePoint.Date_screening}</td>
+</tr>
+<tr>
+<td nowrap="nowrap" colspan="3">Visit</td>
+<td nowrap="nowrap" colspan="3">{$timePoint.Visit}</td>
+<td nowrap="nowrap" colspan="2">{$timePoint.Date_visit}</td>
+</tr>
+<tr>
+<td nowrap="nowrap" colspan="3">Approval</td>
+<td nowrap="nowrap" colspan="3">{$timePoint.Approval}</td>
+<td nowrap="nowrap" colspan="2">{$timePoint.Date_approval}</td>
+</tr>
+</table>
+{/if}
+{/if}
 <!-- included file -->        
 <table width="90%"><tr><td>
 {$workspace}
