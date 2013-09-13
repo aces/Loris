@@ -52,7 +52,7 @@ require_once "Candidate.class.inc";
 ////////instruments to be excluded
  
 $instrumentsToSkip = array();
-$instruments = getExludedInstruments();
+$instruments = getExcludedInstruments();
 foreach ($instruments as $instrument) {
     if (isset($instrument)) {
         $instrumentsToSkip[] = $instrument;
@@ -214,7 +214,7 @@ function parseElements($elements, $groupLabel=""){
  *
  * @return Array   List of instruments to be skipped
  */
-function getExludedInstruments()
+function getExcludedInstruments()
 {
 
     // Get the abbreviated instruments
