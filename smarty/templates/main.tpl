@@ -91,9 +91,6 @@ onload="feedback_bvl_popup();"
 <li><a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;"><img width=17 src=images/help.gif></a></li>
 </ul>
 </div>
-
-
-<!--a href= javascript:open_help_section()><img width=20 align="right" src=images/help.gif style="margin-left: 10px; margin-right: 10px;"></a><a href="javascript:feedback_bvl_popup()" ><img width=20 align="right" src="images/pencil.gif" style="margin-left:10px;"></a-->
 </div>
 </div>
 </th>
@@ -105,12 +102,11 @@ onload="feedback_bvl_popup();"
 <tr>
 {if $lastURL != ""}
 <!-- left section -->
-<td class="tabox" valign="top">
-{if $lastURL != ""}
-<!--h3 class="controlPanelSection">iNavigation</h3>
+<td class="tabox sidenav" valign="top">
+{if $lastURL != "" && $sessionID != ""}
 <ul class="controlPanel">
-<li id="backButton"><a href="{$lastURL}"><img src="images/left.gif" alt="" border="0" width="12" height="12" /> Back</a></li>
-</ul-->
+{$control_panel}
+</ul>
 {/if}
 {/if}
 {if $test_name != "" && $error_message == ""}
@@ -226,37 +222,6 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 {/foreach}
 {/if}
 {/if}
-</tr>
-</table>
-
-<table class="std" style="float:right; margin-top:0; margin-bottom:0; margin-right:4px"> 
-<th>Actions</th>
-<tr>
-<td>
-{if $isDataEntryPerson}
-<a href="main.php?test_name=create_timepoint&candID={$candID}&identifier={$candID}">Create time point</a>
-{else}
-Create time point
-{/if}
-</td>
-</tr>
-<tr>
-<td>
-{if $isDataEntryPerson}
-<a href="main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}">Edit Candidate Info</a>
-{else}
-Edit Candidate Info
-{/if}
-</td>
-</tr>
-<tr>
-<td>
-{if $isDataEntryPerson}
-<a href="main.php?test_name=participant_status&candID={$candID}&identifier={$candID}"> Participant Status Form</a>
-{else}
-Participant Status Form
-{/if}
-</td>
 </tr>
 </table>
 
