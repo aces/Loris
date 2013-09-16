@@ -40,6 +40,7 @@ if ((count($argv)<2) || (count($argv)>6)) {
             conflicts_unresovled table type -m \n";
     echo "to run the script for all the instruments
             simply type -i all \n";
+    echo "NOTE: ONLY THE FAILED VISITS ARE EXCLUDED BY THIS SCRIPT \n";
     die();
 }
 
@@ -213,7 +214,8 @@ function getCommentIDs($test_name, $visit_label=null, $candid=null)
         JOIN session s ON (s.ID=f.SessionID) 
         JOIN candidate c ON (c.CandID=s.CandID)";
     $where = " WHERE CommentID NOT LIKE 'DDE%'
-        AND s.Active='Y' AND c.Active='Y'";
+        AND s.Active='Y' AND c.Active='Y'
+        AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
         $where .= " AND f.Test_name= :instrument ";
         $params['instrument'] = $test_name;
@@ -249,7 +251,8 @@ function getCurrentUnresolvedConflicts($test_name,$visit_label=null)
         JOIN session s on (s.id = f.sessionid)
         JOIN candidate c on (c.CandID = s.CandID)";
 
-    $where = " WHERE c.Active='Y' AND  s.Active='Y'";
+    $where = " WHERE c.Active='Y' AND  s.Active='Y'
+        AND s.Visit <> 'Failure'";
     if ($test_name!=null) {
         $where .= " AND f.Test_name= :instrument ";
         $params['instrument'] = $test_name;
