@@ -99,7 +99,7 @@ foreach($files AS $file){
 
     //Some instruments ought not be parsed with the quickform_parser 
     if ((in_array($obj->testName, $instrumentsToSkip))) { 
-        echo "Unconventional structure.  quickform_parser wants to skip file {$file}\n"; 
+        echo "quickform_parser will	skip file {$file}\n"; 
         continue;
     }
 
