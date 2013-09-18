@@ -19,7 +19,7 @@ require_once 'NDB_Factory.class.inc';
 require_once 'User.class.inc';
 require_once 'NDB_Config.class.inc';
 require_once 'Database.class.inc';
-//require_once 'CouchDB.class.inc';
+require_once 'CouchDB.class.inc';
 
 /**
  * Implementation of factory class described in this file's file comment
@@ -190,6 +190,7 @@ class NDB_Factory
             Mock::generatePartial(
                 'CouchDB',
                 'MockCouchDBWrap',
+                /* mock out the functions that make HTTP requests */
                 array('_getRelativeURL', '_postRelativeURL', '_postURL', '_getURL')
             );
             self::$_couchdb = new MockCouchDBWrap();
