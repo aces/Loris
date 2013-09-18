@@ -12,11 +12,11 @@ $configFile = "../project/config.xml";
 // load the configuration data into a global variable $config
 $configObj = new Config;
 $root =& $configObj->parseConfig($configFile, "XML");
-if(PEAR::isError($root)) {
+if(Utility::isErrorX($root)) {
     die("Config error: ".$root->getMessage());
 }
 $configObj =& $root->searchPath(array('config'));
-$config =& $configObj->toArray();
+$config = $configObj->toArray();
 $config = $config['config'];
 unset($configObj, $root);
 
