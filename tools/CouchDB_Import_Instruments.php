@@ -38,7 +38,7 @@ class CouchDBInstrumentImporter {
                 )
             );
             $Fields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom=:inst AND Queryable=1",
-                array('inst' => $name));
+                array('inst' => $instrument));
             foreach($Fields as $field) {
                 if(isset($field['SourceField'])) {
                     $fname = $field['SourceField'];
@@ -51,20 +51,22 @@ class CouchDBInstrumentImporter {
             unset($Dict['city_of_birth']);
             unset($Dict['city_of_birth_status']);
 
-            $this->CouchDB->replaceDoc("DataDictionary:$name", array(
+            $this->CouchDB->replaceDoc("DataDictionary:$instrument", array(
                 'Meta' => array('DataDict' => true),
-                'DataDictionary' => array($name => $Dict)
+                'DataDictionary' => array($instrument => $Dict)
             ));
         }
     }
 
     function generateDocumentSQL($instrument) {
-        return "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE i.CommentID=cu.CommentId1 OR i.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS conflicts_exist, CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete, i.* FROM $instrument i JOIN flag f USING (CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) WHERE f.CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'";
+        return "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE i.CommentID=cu.CommentId1 OR i.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete, i.* FROM $instrument i JOIN flag f USING (CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) WHERE f.CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'";
     }
     function UpdateCandidateDocs($Instruments) {
+        $results = array('new' => 0, 'modified' => 0, 'unchanged' => 0);
         foreach($Instruments as $instrument => $name) {
-            $data = $this->SQLDB->pselect($this->generateDocumentSQL($instrument), array('inst' => $instrument));
-            foreach($data as $row) {
+            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($instrument), array('inst' => $instrument));
+            $preparedStatement->execute();
+            while($row = $preparedStatement->fetch(PDO::FETCH_ASSOC)) {
                 $CommentID  = $row['CommentID'];
                 $docdata = $row;
                 unset($docdata['CommentID']);
@@ -86,18 +88,39 @@ class CouchDBInstrumentImporter {
                 );
                 $success = $this->CouchDB->replaceDoc($CommentID, $doc);
                 print "$row[PSCID] $row[Visit_label] $instrument: $success\n";
+
+                $results[$success] += 1;
             }
 
         }
+        return $results;
     }
 
     function GetInstruments() {
         return Utility::getAllInstruments();
     }
+
+    function createRunLog($results) {
+        $now = date("c");
+        $id = $this->CouchDB->createDoc(
+            array(
+                'Meta' => array('DocType' => 'RunLog'),
+                'RunInfo' => array(
+                    'Script' => 'Instrument Importer',
+                    'Time' => "$now",
+                    'DocsCreated' => $results['new'],
+                    'DocsModified' => $results['modified'],
+                    'DocsUnchanged' => $results['unchanged'],
+                )
+            )
+        );
+        print "Created run log with id $id\n";
+    }
     function run() {
         $tests = $this->GetInstruments();
         $this->UpdateDataDicts($tests);
-        $this->UpdateCandidateDocs($tests);
+        $results = $this->UpdateCandidateDocs($tests);
+        $this->CreateRunLog($results);
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..

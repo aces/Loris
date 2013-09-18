@@ -402,9 +402,10 @@ class NDB_BVL_Battery extends PEAR
                                  AND SubprojectID=:subID";
             $where = array('FV'=>'Y', 'subID'=>$SubprojectID);
             $rows_firstVisit = $DB->pselect($query_firstVisit,$where); 
-        }
-        foreach($rows_firstVisit as $row) {
-            array_push($tests, $row['Test_name']);    
+            foreach($rows_firstVisit as $row) {
+                array_push($tests, $row['Test_name']);    
+            }
+
         }
         // return an array of test names
         return $tests;

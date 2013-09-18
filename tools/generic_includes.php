@@ -1,10 +1,11 @@
 <?php
 
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 // PEAR::Config
 require_once "Config.php";
 
 //allow instruments to find libraries
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+require_once 'Utility.class.inc';
 
 // define which configuration file we're using for this installation
 $configFile = "../project/config.xml";
@@ -12,11 +13,11 @@ $configFile = "../project/config.xml";
 // load the configuration data into a global variable $config
 $configObj = new Config;
 $root =& $configObj->parseConfig($configFile, "XML");
-if(PEAR::isError($root)) {
+if(Utility::isErrorX($root)) {
     die("Config error: ".$root->getMessage());
 }
 $configObj =& $root->searchPath(array('config'));
-$config =& $configObj->toArray();
+$config = $configObj->toArray();
 $config = $config['config'];
 unset($configObj, $root);
 
@@ -31,7 +32,7 @@ require_once "Candidate.class.inc";
  * gets connection name and user name..
  */
 $DB =& Database::singleton($config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['host']);
-if(PEAR::isError($DB)) {
+if(Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n";
     die();
 }
