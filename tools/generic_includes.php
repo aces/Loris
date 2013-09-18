@@ -1,10 +1,11 @@
 <?php
 
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 // PEAR::Config
 require_once "Config.php";
 
 //allow instruments to find libraries
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+require_once 'Utility.class.inc';
 
 // define which configuration file we're using for this installation
 $configFile = "../project/config.xml";

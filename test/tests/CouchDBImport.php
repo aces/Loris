@@ -10,9 +10,11 @@ require_once __DIR__ . '/../../tools/CouchDB_Import_Instruments.php';
 
 Mock::generate('Database');
 Mock::generate('CouchDB');
+Mock::generate('PDOStatement');
 Mock::generatePartial('CouchDBMRIImporter', 'CouchDBMRIImporterPartial', array('UpdateDataDict', 'UpdateCandidateDocs'));
 Mock::generatePartial('CouchDBInstrumentImporter', 'CouchDBInstrumentImporterPartial', array('UpdateDataDicts', 'UpdateCandidateDocs', 'CreateRunLog'));
 Mock::generatePartial('CouchDBSiteDeporter', 'CouchDBSiteDeporterPartial', array('_isSitePurged'));
+
 
 class TestOfCouchDBImportDemographics extends UnitTestCase {
     function setUp() {
@@ -284,11 +286,15 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import = new CouchDBInstrumentImporter();
         $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
+        $PDOMock = new MockPDOStatement();
 
         $Instruments = array('hello' => 'hello', 'hello2' => 'hello2');
-        $Import->SQLDB->expectAt(0, 'pselect', array('*', array('inst' => 'hello')));
-        $Import->SQLDB->expectAt(1, 'pselect', array('*', array('inst' => 'hello2')));
-        $Import->SQLDB->returns('pselect', array(0 => 
+        //$Import->SQLDB->expectAt(0, 'pselect', array('*', array('inst' => 'hello')));
+        //$Import->SQLDB->expectAt(1, 'pselect', array('*', array('inst' => 'hello2')));
+        $PDOMock->returns('fetch', false);
+        $PDOMock->returnsAt(
+            0,
+            'fetch',
             array('PSCID' => 'STL333',
                   'Visit_label' => 'V1',
                   'Administration' => 'All',
@@ -299,10 +305,25 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
                   'Hello' => 'hi!',
                   'Another_field' => 'ffff'
             )
-        )
         );
+        // Call 1 is false to end the first instrument
+        $PDOMock->returnsAt(
+            2,
+            'fetch',
+            array('PSCID' => 'STL333',
+                  'Visit_label' => 'V1',
+                  'Administration' => 'All',
+                  'Data_entry' => 'Complete',
+                  'Validity' => 'Valid',
+                  'Examiner' => 3,
+                  'CommentID' => '324fff',
+                  'Hello' => 'hi!',
+                  'Another_field' => 'ffff'
+            )
+        );
+        $Import->SQLDB->returns("prepare", $PDOMock);
         $Import->SQLDB->returns('pselectOne', 'John Smith the Third'); //, array('SELECT Full_name FROM examiners'));
-        $Import->SQLDB->expectCallCount('pselect', 2);
+        //$Import->SQLDB->expectCallCount('pselect', 2);
         // Two instruments, one value for each one = 2 calls total
         $Import->CouchDB->expectCallCount('replaceDoc', 2);
         $Import->CouchDB->expectAt(0, 'replaceDoc', array('324fff', array(
@@ -320,10 +341,45 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
             )
         )
         ));
-        $Import->UpdateCandidateDocs($Instruments);
+        $Import->CouchDB->returnsAt(0, 'replaceDoc', 'new');
+        $Import->CouchDB->returnsAt(1, 'replaceDoc', 'unchanged');
+        $results = $Import->UpdateCandidateDocs($Instruments);
 
+        $this->assertEqual(
+            $results, 
+            array('new' => 1, 'modified' => 0, 'unchanged' => 1),
+            'Update candidate docs did not return results summary'
+        );
         $SQL = $Import->generateDocumentSQL('instrumentname');
         $this->assertEqual($SQL, "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE i.CommentID=cu.CommentId1 OR i.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete, i.* FROM instrumentname i JOIN flag f USING (CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) WHERE f.CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'");
+    }
+
+    function testImportInstrumentCreateRunLog() {
+        $Import = new CouchDBInstrumentImporter();
+        $Import->SQLDB = $this->Factory->database();
+        $Import->CouchDB = new MockCouchDB();
+
+        $Import->CouchDB->returns("createDoc", "abc123");
+        $now = date("c");
+
+        $Import->CouchDB->expectOnce(
+            "createDoc", array(array('Meta' => array(
+                    'DocType' => 'RunLog'
+                ),
+                'RunInfo' => array(
+                    'Script' => 'Instrument Importer',
+                    'Time' => "$now",
+                    'DocsCreated' => 12,
+                    'DocsModified' => 33,
+                    'DocsUnchanged' => 1
+                )
+            )
+        )
+        );
+
+        $Import->createRunLog(
+            array('new' => 12, 'modified' => 33, 'unchanged' => 1)
+        );
     }
 
     /*

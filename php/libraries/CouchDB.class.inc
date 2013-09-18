@@ -282,7 +282,8 @@ class CouchDB
         $handler->open();
 
         $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
-        $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
+        $handler->write("Content-Length: " . strlen($data) . "\r\n");
+        $handler->write("Content-type: application/json\r\n\r\n");
         $handler->write($data);
         $response = '';
         while (!$handler->eof()) {
@@ -342,8 +343,47 @@ class CouchDB
      */
     function putDoc($id, $doc)
     {
-        $json = $this->_postRelativeURL($id, json_encode($doc), 'PUT');
-        return $json
+        $encoded = json_encode($doc);
+        $json = $this->_postRelativeURL($id, $encoded, 'PUT');
+        return $json;
+    }
+
+    /**
+     * Makes a raw POST request to CouchDB server. This will create the
+     * document with a CouchDB generated id.
+     *
+     * @return string the JSON string returned by the CouchDB server
+     */
+    function postDoc($doc) {
+        $json = $this->_postRelativeURL("", json_encode($doc), 'POST');
+        return $json;
+    }
+
+    /**
+     * Creates a new document in the CouchDB database with a server
+     * generated id.
+     *
+     * NOTE: If you know the id of the document you want to create,
+     *       use replaceDoc instead.
+     *
+     * @param array $doc An associative array representing the document
+     *                   to create.
+     *
+     * @return string|FALSE id of created document or FALSE if creation failed.
+     */
+    function createDoc($doc)
+    {
+        $json = $this->postDoc($doc);
+        $data = json_decode($json, true);
+        if (!isset($data['ok'])) {
+            return false;
+        }
+
+        if (isset($data['error'])) {
+            return false;
+        }
+        return $data["id"];
+
     }
 
     /**
