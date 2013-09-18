@@ -94,6 +94,7 @@ class CouchDB {
 
     function _postURL($url, $data, $op = 'POST') {
         $config = NDB_Config::singleton();
+        $response = '';
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
         $handler->setHost($couchconfig['hostname']);
@@ -146,6 +147,9 @@ class CouchDB {
         $json = $this->_getRelativeURL($id, "DELETE");
         $data = json_decode($json, true);
 
+        if(!isset($data['ok'])) {
+            return false;
+        }
         return ($data['ok'] === true);
 
     }
@@ -175,7 +179,7 @@ class CouchDB {
     function QueryView($designdoc, $viewname, $params) {
         $query = $this->_getRelativeURL("_design/" . $designdoc . "/_view/" . $viewname . "?" . http_build_query($params));
         $data = json_decode($query, true);
-        if($data['error'] == 'not_found') {
+        if(isset($data['error']) && $data['error'] == 'not_found') {
             return array();
         }
         return $data['rows'];

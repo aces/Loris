@@ -27,32 +27,43 @@ class CouchDBInstrumentImporter {
                 'Validity' => array(
                     'Type' => "enum('Questionable', 'Invalid', 'Valid')",
                     'Description' => "Validity of data for $name"
+                ),
+                'Conflicts_Exist' => array(
+                    'Type'        => "enum('Yes', 'No')",
+                    'Description' => 'Conflicts exist for instrument data entry'
+                ),
+                'DDE_Complete' => array(
+                    'Type'        => "enum('Yes', 'No')",
+                    'Description' => 'Double Data Entry was completed for instrument'
                 )
             );
             $Fields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom=:inst AND Queryable=1",
-                array('inst' => $name));
+                array('inst' => $instrument));
             foreach($Fields as $field) {
-                $fname = $field['SourceField'];
-                $Dict[$fname]['Type'] = $field['Type'];
-                $Dict[$fname]['Description'] = $field['Description'];
+                if(isset($field['SourceField'])) {
+                    $fname = $field['SourceField'];
+                    $Dict[$fname] = array();
+                    $Dict[$fname]['Type'] = $field['Type'];
+                    $Dict[$fname]['Description'] = $field['Description'];
+                }
             }
 
             unset($Dict['city_of_birth']);
             unset($Dict['city_of_birth_status']);
 
-            $this->CouchDB->replaceDoc("DataDictionary:$name", array(
+            $this->CouchDB->replaceDoc("DataDictionary:$instrument", array(
                 'Meta' => array('DataDict' => true),
-                'DataDictionary' => array($name => $Dict)
+                'DataDictionary' => array($instrument => $Dict)
             ));
         }
     }
 
     function generateDocumentSQL($instrument) {
-        return "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, i.* FROM $instrument i join flag f USING (CommentID) join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID) WHERE CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'";
+        return "SELECT c.PSCID, s.Visit_label, f.Administration, f.Data_entry, f.Validity, CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE i.CommentID=cu.CommentId1 OR i.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete, i.* FROM $instrument i JOIN flag f USING (CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID)) WHERE f.CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'";
     }
     function UpdateCandidateDocs($Instruments) {
         foreach($Instruments as $instrument => $name) {
-            $data = $this->SQLDB->pselect($this->generateDocumentSQL($instrument), array('inst' => $name));
+            $data = $this->SQLDB->pselect($this->generateDocumentSQL($instrument), array('inst' => $instrument));
             foreach($data as $row) {
                 $CommentID  = $row['CommentID'];
                 $docdata = $row;
@@ -68,13 +79,13 @@ class CouchDBInstrumentImporter {
                 }
                 $doc = array ('Meta' => 
                     array(
-                        'DocType' => $name,
+                        'DocType' => $instrument,
                         'identifier' => array($row['PSCID'], $row['Visit_label'])
                     ),
                     'data' => $docdata
                 );
                 $success = $this->CouchDB->replaceDoc($CommentID, $doc);
-                print "$row[PSCID] $row[Visit_label] $name: $success\n";
+                print "$row[PSCID] $row[Visit_label] $instrument: $success\n";
             }
 
         }
@@ -83,10 +94,14 @@ class CouchDBInstrumentImporter {
     function GetInstruments() {
         return Utility::getAllInstruments();
     }
+
+    function CreateRunLog() {
+    }
     function run() {
         $tests = $this->GetInstruments();
         $this->UpdateDataDicts($tests);
         $this->UpdateCandidateDocs($tests);
+        $this->CreateRunLog();
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..

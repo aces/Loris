@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../test_includes.php';
+require_once 'NDB_Config.class.inc';
 require_once 'CouchDB.class.inc';
 
 Mock::generatePartial('CouchDB', 'MockCouchDBWrap', array('_getRelativeURL', '_postRelativeURL'));
@@ -12,7 +14,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
     }
     function testSingleton() {
         $db = CouchDB::singleton();
-        $this->assertIsA($db, CouchDB);
+        $this->assertIsA($db, 'CouchDB');
 
         $db2 = CouchDB::singleton();
 
@@ -102,6 +104,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
 
     function testDeleteDoc() {
         $Mock = new MockCouchDBWrap();
+        $id = "Demographics_Session_UNC0219_V06";
         $Mock->returns("_getRelativeURL", '{"ok":true,"id":"Demographics_Session_UNC0219_V06","rev":"2-c78967e246008b55daed336e61cb8342"}');
         $result = $Mock->deleteDoc($id);
         $this->assertTrue($result);
