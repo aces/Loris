@@ -50,13 +50,14 @@ if(!empty($_REQUEST['sessionID'])) {
 if (!empty($_REQUEST['commentID'])) {
     
     $tpl_data['commentID'] = $_REQUEST["commentID"];
+    $subtest = isset($_REQUEST['subtest']) ?  $subtest : null;
 
     if (!empty($_REQUEST['test_name'])) {
         if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$_REQUEST[test_name].class.inc")) {
             // otherwise create an instrument_<test_name> object
             include_once $paths['base']."project/instruments/NDB_BVL_Instrument_$_REQUEST[test_name].class.inc";
 
-            $instrument =& NDB_BVL_Instrument::factory($_REQUEST['test_name'], $_REQUEST['commentID'], $_REQUEST['subtest']);
+            $instrument =& NDB_BVL_Instrument::factory($_REQUEST['test_name'], $_REQUEST['commentID'], $subtest);
             if (PEAR::isError($instrument)) {
                 $tpl_data['error_message'][] = $instrument->getMessage();
             }
@@ -92,14 +93,14 @@ if (!empty($_REQUEST['commentID'])) {
 } else {
 }
 
-if (PEAR::isError($feedback)) {
+if (isset($feedback) && Utility::isErrorX($feedback)) {
 
     // if feedback object return an error
     $tpl_data['error_message'][] = $feedback->getMessage();
 
-} elseif (!is_object($feedback)) {
+} elseif (isset($feedback) && !is_object($feedback)) {
 
-} else {
+} elseif(isset($feedback)) {
 
     // define feedback level
     $tpl_data['feedbackLevel'] = $feedback->getFeedbackLevel();

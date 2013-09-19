@@ -65,6 +65,7 @@ class NDB_Menu_instrument_list extends NDB_Menu
             }
 
             $x = -1;
+            $prevSubgroup = null;
             foreach($listOfInstruments as $instrument) {
                 // print the sub group header row
                 if($instrument['Sub_group'] != $prevSubgroup) {

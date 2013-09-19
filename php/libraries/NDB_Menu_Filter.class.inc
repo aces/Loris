@@ -361,6 +361,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $qparams = array();
         // add the base query
+        $query = '';
         $query .= $this->_getBaseQuery();
 
         // add filters to query
