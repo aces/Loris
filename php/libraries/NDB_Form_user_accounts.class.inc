@@ -100,7 +100,10 @@ class NDB_Form_user_accounts extends NDB_Form
         $couch_config = $config->getSetting("CouchDB");
         if ($couch_config['SyncAccounts'] === "true") {
             $user =& User::factory($set['UserID']);
-            $user->updateCouchUser($set['Password_md5']);
+            if(isset($set['Password_md5'])) {
+                // Don't sync if they didn't change their password..
+                $user->updateCouchUser($set['Password_md5']);
+            }
         }
 
         // prepend two random characters

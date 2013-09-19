@@ -148,10 +148,11 @@ Class TimePoint
     {
         if (is_null($var)) {
             return $this->_timePointInfo;
-        }
-        else {
+        } elseif(isset($this->_timePointInfo[$var])) {
+
             return $this->_timePointInfo[$var];
         }
+        return null;
     }
     
     function setData($var, $value=null)

@@ -63,14 +63,16 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                 if ($key == 'Severity') {
                     $this->tpl_data['items'][$x]['severity'] = $val; #_makePretty($key, $val);
                 }
+                $row = array(
+                    'value' => $val,
+                    'name' => $key
+                );
+                $row['CandID'] = isset($item['CandID']) ? $item['CandID'] : '';
+                $row['CommentID'] = isset($item['CommentID']) ? $item['CommentID'] : '';
+                $row['SessionID'] = isset($item['SessionID']) ? $item['SessionID'] : '';
 
 
-                $this->tpl_data['items'][$x][$i]['value'] = $val; #_makePretty($key, $val);
-
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['CandID'] = $item['CandID'];
-                $this->tpl_data['items'][$x][$i]['CommentID'] = $item['CommentID'];
-                $this->tpl_data['items'][$x][$i]['SessionID'] = $item['SessionID'];
+                $this->tpl_data['items'][$x][$i] = $row;
                 $i++;
             }
             $x++;
