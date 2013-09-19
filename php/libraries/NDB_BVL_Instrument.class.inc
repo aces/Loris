@@ -1100,7 +1100,8 @@ class NDB_BVL_Instrument extends NDB_Page
     //Assumes all conditions are met and then checks each of them, any condition not met will invalidate the rule, 
     //meaning the answer is valid.
     //DONT TOUCH THIS, EVER.
-    function XINRunElementRules($elname, $elements, $rules){
+    function XINRunElementRules($elname, $elements, $rules) {
+        $errors = array();
         $is_required=true; //Conditions for the rule to be true, and thus the element to be required.
         foreach($rules['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
             //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
