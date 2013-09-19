@@ -1354,16 +1354,26 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
     * Adds a date group with a status box and appropriate rule
-    * Note: $this->dateOptions must be defined by the subclass calling this wrapper function
-    * @param $name   Name prepended to the HTMLQuickform element
-    * @param $label Element label
+    * Note: $this->dateOptions must be defined by the subclass calling this 
+    * wrapper function
+    *
+    * @param string $name    Name prepended to the HTMLQuickform element
+    * @param string $label   Element label
+    * @param array  $options optional override of class's dateOptions
+    *
+    * @return none
     */
-    function addDateElement($name, $label, $options = null){
-        if($options === null) {
+    function addDateElement($name, $label, $options = null)
+    {
+        if ($options === null) {
             $options = $this->dateOptions;
         }
-        $group [] = $this->createDate($name . "_date", null, $this->dateOptions);
-        $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
+
+        $group [] = $this->createDate($name . "_date", null, $options);
+        if (!in_array($name . "_date", $this->dateTimeFields)) {
+            $this->dateTimeFields[] = $name . "_date"; 
+        }
+
         $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
         $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);

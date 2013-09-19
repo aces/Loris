@@ -52,12 +52,14 @@ class NDB_Form_next_stage extends NDB_Form
         if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
         }
-        $firstVisit = true;
-        $timepointList = $candidate->getNumVisits(); 
-        if($timepointList > 1){
-            $firstVisit = false;    
-        }
-        // select a specific time point (sessionID) for the battery
+
+        $firstVisit = false;
+        $vLabel = $candidate->getFirstVisit();//get first visit for candidate 
+        if($vLabel ==  $timePoint->getVisitLabel()){
+            $firstVisit = true; //if current visit label is same as visit label returned must be first visit   
+        }  
+        
+         // select a specific time point (sessionID) for the battery
         $battery->selectBattery($timePoint->getData('SessionID'));
         
         // add instruments to the time point (lower case stage)

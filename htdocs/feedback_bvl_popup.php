@@ -1,4 +1,5 @@
 <?
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**
  * @version $Id: feedback_bvl_popup.php,v 3.13 2007/03/02 16:16:41 sebas Exp $
  * @package behavioural
@@ -129,7 +130,8 @@ if (PEAR::isError($feedback)) {
      * process form data
      */
     // add new threads
-    if ($_REQUEST['add_new_thread_form_submit'] == 'Save Data') {
+    if (isset($_REQUEST['add_new_thread_form_submit']) 
+        && $_REQUEST['add_new_thread_form_submit'] == 'Save Data') {
         foreach($_REQUEST['newFormThreadData'] as $type => $threadData) {
             if (!empty($threadData['Comment'])) {
                 
@@ -161,7 +163,8 @@ if (PEAR::isError($feedback)) {
     }
     
     // activate threads
-    if ($_REQUEST['activate_thread_form_submit'] == 'Post New Feedback') {
+    if ( isset($_REQUEST['activate_thread_form_submit']) && 
+        $_REQUEST['activate_thread_form_submit'] == 'Post New Feedback') {
         $success = $feedback->activateThread();
         if (PEAR::isError($success)) {
             $tpl_data['form_error_message']['activate'] = "Unable to post new feedback: ".$success->getMessage();
@@ -171,7 +174,8 @@ if (PEAR::isError($feedback)) {
     }
     
     // close threads
-    if ($_REQUEST['close_thread_form_submit'] == 'Close All Threads') {
+    if (isset($_REQUEST['close_thread_form_submit'])
+        && $_REQUEST['close_thread_form_submit'] == 'Close All Threads') {
         $success = $feedback->closeThread();
         if (PEAR::isError($success)) {
             $tpl_data['form_error_message']['close'] = "Unable to close threads: ".$success->getMessage();
@@ -181,7 +185,7 @@ if (PEAR::isError($feedback)) {
     }
 
     // add entries and/or update threads
-    if ($_REQUEST['existing_thread_form_submit'] == 'Save Data') {
+    if (isset($_REQUEST['existing_thread_form_submit']) && $_REQUEST['existing_thread_form_submit'] == 'Save Data') {
         // if anything is passed by the thread form
         if (is_array($_REQUEST['formThreadData'])) {
             
@@ -224,12 +228,19 @@ if (PEAR::isError($feedback)) {
             
             $tpl_data['thread_summary_headers'] = array_keys($success[0]);
             for($i=0;$i<count($success);$i++){
-                $tpl_data['thread_summary_data'][$i]['QC_Class'] = $success[$i]['QC_Class'];
-                $tpl_data['thread_summary_data'][$i]['No_Threads'] = $success[$i]['No_Threads'];
-                $tpl_data['thread_summary_data'][$i]['Instrument'] = $success[$i]['Instrument'];
-                $tpl_data['thread_summary_data'][$i]['CommentID'] = $success[$i]['CommentID'];
-                $tpl_data['thread_summary_data'][$i]['Visit'] = $success[$i]['Visit'];
-                $tpl_data['thread_summary_data'][$i]['SessionID'] = $success[$i]['SessionID'];
+                $row = array(
+                    'QC_Class' => 
+                        isset($success[$i]['QC_Class']) ? $success[$i]['QC_Class'] : '',
+                    'No_Threads' =>
+                        isset($success[$i]['No_Threads']) ? $success[$i]['No_Threads'] : '',
+                    'Instrument' => 
+                        isset($success[$i]['Instrument']) ? $success[$i]['Instrument'] : '',
+                            'CommentID' => 
+                            isset($success[$i]['CommentID']) ? $success[$i]['CommentID'] : '',
+                    'Visit' => isset($success[$i]['Visit']) ? $success[$i]['Visit'] : '',
+                    'SessionID' => isset( $success[$i]['SessionID']) ? $success[$i]['SessionID'] : ''
+                );
+                $tpl_data['thread_summary_data'][$i] = $row;
             }
         }
     }
