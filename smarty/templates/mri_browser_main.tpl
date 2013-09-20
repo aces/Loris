@@ -1,12 +1,27 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 	   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+<div id="page">
 <head>
 <LINK REL=StyleSheet HREF="{$css}" TYPE="text/css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <!-- page title -->
 <TITLE>MRI - {$study_title}</TITLE>
+
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/ui-lightness/jquery-ui.css" />
+<link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" /> 
+<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+{if $test_name_js}
+<script type="text/javascript" src="{$test_name_js}"></script>
+{/if}
+
+
+<link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
+
 <!-- end page header -->
 </head>
 
@@ -18,8 +33,55 @@ var x = 200, y = 400;
   //alert(open_params);
   window.open(newurl, 'feedback_mri', open_params);
 }
+
+function open_help_section(){
+    {/literal}
+    var helpurl = "context_help_popup.php?test_name={$test_name}";
+    {literal}
+    window.open(helpurl);
+}
 </script>
 {/literal}
+
+<table width="100%" class="header">
+<tr>
+<th align="left" id="jsheader">
+<div id="slidemenu" class="jqueryslidemenu">
+<ul>
+<li><a href="main.php"><img width=20 src=images/home-icon.png></a></li>
+{foreach from=$tabs item=tab}
+{if $tab.visible == 1}
+<li><a href="#">{$tab.label}</a>
+<ul width="250">
+{foreach from=$tab.subtab item=mySubtab}
+{if $tab.label == $mySubtab.parent && $mySubtab.visible == 1}
+<a href="{$mySubtab.link}">{$mySubtab.label}</a>
+{/if}
+{/foreach}
+{if $tab.subtab.label != ''}
+<a href="{$tab.subtab.link}">{$tab.subtab.label}</a>
+{/if}
+</ul>
+</li>
+{/if}
+{/foreach}
+<li><a href= javascript:open_help_section()>Help</a></li>
+<div class="Account">
+<li><a href="#">{$user_full_name}</a>
+<ul>
+<li><a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a></li>
+<li><a href="main.php?logout=true">Log Out</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="site">
+Site: {$user_site_name} &nbsp;|
+</div>
+</div>
+</th>
+</tr>
+</table>
 
 <div id="divTopLeft" style="position:absolute">
 <!-- back button and other navigation buttons -->
@@ -111,22 +173,6 @@ JSFX_FloatDiv("divBottomLeft",    10, 350).flt();
 <!-- start main table -->
 <table width="95%" border="0" cellpadding="5" cellspacing="2">
 <tr>
-    <th background="images/title_background.jpg" class="banner" colspan="2" align="left">
-        <strong>MRI browser - {$study_title}</strong>
-    </th>
-</tr>
-<tr>
-    <td colspan="2" class="controlPanelSection">
-        User:&nbsp;
-        {$user_full_name}
-        &nbsp;&nbsp;Site:&nbsp;
-        {$user_site_name}
-        &nbsp;&nbsp;Date:&nbsp;
-        {$smarty.now|date_format:"%B %e %Y"}
-    </td>
-</tr>
-
-<tr>
     <td width="10%"  valign="top" nowrap="nowrap">
     
         <!-- Start Section on the left -->
@@ -139,11 +185,6 @@ JSFX_FloatDiv("divBottomLeft",    10, 350).flt();
             </td>
         </tr>
         {/if}        
-        <tr>
-            <td class="controlPanelItem">
-                <a href="{$mantis}" target="mantis"><img src="images/transfer.gif" alt="Mantis" border="0" width="12" height="12">&nbsp;Mantis</a>
-            </td>
-        </tr>
         </table>
     </td>
     
@@ -162,7 +203,33 @@ JSFX_FloatDiv("divBottomLeft",    10, 350).flt();
     </td>
 </tr>
 </table>
+<table class="MainFooter" align="center">
+<tr>
+<div id="footerLinks">
+<td width="100%">
+<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" >
+<li id="active">|</li>
+{foreach from=$links item=link}
+<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
+{/foreach}
+</ul>
+</td>
+</div>
+</tr>
+<tr>
+<td align="center" colspan="1" style="color:#fff" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+</tr>
+<tr>
+<td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #348b8d;" target="_blank">Created by ACElab</a></td>
+</tr>
+</table>
+
 </BODY>
+<br>
+<br>
+<br>
+<br>
+</div>
 </HTML>
 
 
