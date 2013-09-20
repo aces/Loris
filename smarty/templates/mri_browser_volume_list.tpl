@@ -1,6 +1,21 @@
 {literal}
 <script language="javascript" type="text/javascript">
 <!--
+
+function getParameterByName(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.search);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+sID = getParameterByName('sessionID');
+
 var jivNames = new Array();
 var jivData = new Array();
 
@@ -45,7 +60,7 @@ function is_added_jiv_panel(name, data) {
 function show_jiv(name, data, combine) { 
 
 // start APPLET
-var appletCode = "<applet height=50 width=200 codebase=\"/mri/jiv\" archive=\"jiv.jar\" code=\"jiv/Main.class\" name=\"jiv_mri\">\n" + 
+var appletCode = "<applet height=50 width=100 codebase=\"/mri/jiv\" archive=\"jiv.jar\" code=\"jiv/Main.class\" name=\"jiv_mri\">\n" + 
     "<param name=\"inline_config\" value=\"# ;\n" + 
     "jiv.download : upfront ;\n";
 
@@ -82,51 +97,32 @@ return true;
 
 <!-- listing of files -->
 <!-- table with candidate profile info -->
-{if $has_permission}<form action="" method="post">{/if}
 <table><tr>
+{literal}<script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script>{/literal}
+<!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
     <td>
     <table class="fancytableleft" cellpadding="2">
-        <tr><th nowrap="nowrap">QC Status</th>
-            <td nowrap="nowrap">
-                {*if $has_permission}
-                    {html_options options=$status_options selected=$subject.mriqcstatus name=visit_status tabindex=1> }
-                {else *}
-                    {$subject.mriqcstatus}
-                {* /if *}
-            </td>
+        <tr>
+            <th nowrap="nowrap">QC Status</th>
+            <td nowrap="nowrap">{$subject.mriqcstatus}</td>
             <th nowrap="nowrap">PSCID</th><td nowrap="nowrap">{$subject.pscid}</td>
             <th nowrap="nowrap">Site</th><td nowrap="nowrap">{$subject.site}</td>
         </tr>
-        <tr><th nowrap="nowrap">QC Pending</th>
+        <tr>
+        <th nowrap="nowrap">QC Pending</th>
             <td nowrap="nowrap">
-                {*if $has_permission}
-                    {html_options options=$pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2}
-                {else*}
                     {if $subject.mriqcpending=="Y"}<img src="images/check_blue.gif" width="12" height="12">{else}&nbsp;{/if}
-                {*/if*}
             </td>
             <th nowrap="nowrap">DCCID</th><td nowrap="nowrap">{$subject.candid}</td>
             <th nowrap="nowrap">Visit Label</th><td nowrap="nowrap">{$subject.visitLabel}</td>
         </tr>
-        <tr>
-        <tr>
-            <th nowrap="nowrap">DOB</th><td nowrap="nowrap">{$subject.dob}</td>
-            <th nowrap="nowrap">Gender</th><td nowrap="nowrap">{$subject.gender}</td>
+            <th nowrap="nowrap">DOB</th><td nowrap="nowrap">{$subject.dob}</td><th nowrap="nowrap">Gender</th><td nowrap="nowrap">{$subject.gender}</td>
             <th nowrap="nowrap">Output Type</th><td nowrap="nowrap">{$outputType}</td>
         </tr>
-
         <tr>
             <th nowrap="nowrap">Scanner</th><td nowrap="nowrap">{$subject.scanner}</td>
             <th nowrap="nowrap">Subproject</th><td nowrap="nowrap">{$subject.SubprojectTitle}</td>
-            <th nowrap="nowrap">Current Stage</th><td nowrap="nowrap">{$subject.Current_stage}</td>
-        </tr>
-        <tr>
-            <th>Mantis ID</th><td colspan="5">{$subject.pscid} {$subject.candid} {$subject.visitLabel}</td>
-        </tr>
-        <tr>
-            <td colspan="5"><a href="#" onClick="javascript:window.open('feedback_mri_popup.php?sessionID={$subject.sessionID}', 'feedback_mri', 
-            'width=500%,height=300,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes')">Link to visit-level feedback</a></td>
-            <td colspan="1">{if $has_permission}<input class="button" type="submit" accesskey="s" value="Save" name="save_changes"></td>{/if}
+            <th nowrap="nowrap">EDC</th><td nowrap="nowrap">{$subject.edc}</td>
         </tr>
     </table>
 </td>
@@ -139,11 +135,6 @@ return true;
 </tr>
 </table>
 
-
-<input type="button" accesskey="c" class="button" value="3-D with combined" onClick="javascript:show_jiv(jivNames, jivData, true);"><br>
-<input type="button" accesskey="d" class="button" value="3-D" onClick="javascript:show_jiv(jivNames, jivData, false);"><br>
-
-
 {* show the files *}
 <table border="0" cellspacing="0" cellpadding="0" width="80%">
     {section loop=$files name=fIdx}
@@ -152,8 +143,7 @@ return true;
         <td align="center">
         <table class="std">
 {* checked boxes can be viewed with Alt + d *}
-        <tr><td>Add panel<input type="checkbox" onClick="javascript:toggle_jiv_panel('{$files[fIdx].jivFilename}', '{$files[fIdx].jivAddress}');">
-        </td></tr>
+        <tr><td>Add panel<input type="checkbox" onClick="javascript:toggle_jiv_panel('{$files[fIdx].jivFilename}', '{$files[fIdx].jivAddress}');"></td></tr>
 
 {* SELECTED DROPDOWN only for native images*}
 {if $files[fIdx].outputType == "native"} 
@@ -177,26 +167,12 @@ return true;
                 {if $files[fIdx].qcStatus != ""}{$files[fIdx].qcStatus}{else}&nbsp;{/if}
             {/if}
             </td></tr>
-            <tr><th>Caveat Emptor</th></tr>
-            <tr><td>
-            {if $has_permission}
-                {if $files[fIdx].Caveat}
-                <a href="main.php?test_name=mri_violations&SeriesUID={$files[fIdx].SeriesUID}&filter=true">Caveat List</a>
-                {/if}
-                {html_options options=$caveat_options selected=$files[fIdx].Caveat tabindex=5 name=caveat[`$files[fIdx].fileID`]}
-            {else}
-                {if $files[fIdx].Caveat}<a href="main.php?test_name=mri_violations&SeriesUID={$files[fIdx].SeriesUID}&filter=true">Caveats</a>
-                {else}No caveats{/if}
-                </a>
-            {/if}
-            </td></tr>
-
             <tr><td>&nbsp;</td></tr>
 {* LINK TO COMMENTS *}
             <tr><td>
             {if $files[fIdx].fileID}<a href="#{$smarty.section.fIdx.index}" 
             onClick='javascript:window.open("feedback_mri_popup.php?fileID={$files[fIdx].fileID}", "feedback_mri", 
-            "width=500%,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>Link to comments</a><br>{else}&nbsp;{/if}
+            "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>Link to comments</a><br>{else}&nbsp;{/if}
             </td></tr>
         </table>
         </td>
@@ -208,47 +184,50 @@ return true;
             </tr>
             
 {* IMG *}
-            <tr><td colspan="2">
-{* This was the old way with an additional popup window 
-            <a href="#{$smarty.section.fIdx.index}" accesskey="{$smarty.section.fIdx.index}" 
-            onClick='javascript:window.open("mri/jiv/show_one_jiv_file.php?jiv[name][]={$files[fIdx].jivFilename}&jiv[data][]={$files[fIdx].jivAddress}", "mri_jiv", 
-            "width=415, height=55, toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")'>
-*}
-            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">
-            <img src="{$files[fIdx].checkpicFilename}" height="180" border="0">
-            </a>
-            </td></tr>
-            <tr><th>Voxel size</th>
-                    <td>{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
-                    {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
-                    </td>
+
+
+            <tr>
+            	<td colspan="2">
+            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', '2D Minc Viewer', 'location = 0,width = 1300, height = 600')">
+               	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
+            	</a>
+            	</td>
             </tr>
             <tr>
-                {if $files[fIdx].fileID}
-                <td><a href='minc.html?minc_id={$files[fIdx].fileID}' target="_blank"> Link to Brain Browser </a></td>
-                {/if}
+            	<th>Voxel size</th>
+                <td>{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
+                    {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
+                </td>
             </tr>
-
+	   		<tr>
+            {if $files[fIdx].fileID}
+                        
+            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">Click here to view this acquisition in the JIV viewer</a>
+       	  </td>
+			{/if}
+	    </tr>
             </table>
         </td>
 
 {* ----------------- This is the end of the second section ---------------- *}    
 
-        <td><table class="fancytableleft" border="1">
+        <td><table width="300px" class="fancytableleft" border="1">
+            {if $files[fIdx].Pipeline != ""}<tr><th width="100px">Pipeline</th><td>{$files[fIdx].Pipeline}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].outputType != ""}<tr><th width="100px">Output Type</th><td>{$files[fIdx].outputType}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].acquisitionProtocol != "NA"}<tr><th width="100px">Protocol</th><td>{$files[fIdx].acquisitionProtocol}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].coordinateSpace != ""}<tr><th width="100px">Space</th><td>{$files[fIdx].coordinateSpace}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].Algorithm != ""}<tr><th width="100px">Algorithm</th><td>{$files[fIdx].Algorithm}{else}&nbsp;</td></tr>{/if}
 
-            <tr><th>Protocol</th><td>{if $files[fIdx].acquisitionProtocol != ""}{$files[fIdx].acquisitionProtocol}{else}&nbsp;{/if}</td></tr>
-            <tr><th>Space</th><td>{if $files[fIdx].coordinateSpace != ""}{$files[fIdx].coordinateSpace}{else}&nbsp;{/if}</td></tr>
-            <tr><th>Cls Alg</th><td>{if $files[fIdx].classifyAlgorithm != ""}{$files[fIdx].classifyAlgorithm}{else}&nbsp;{/if}</td></tr>
-
-            <tr><th>Acq Date</th><td>{if $files[fIdx].acquisitionDate>0}{$files[fIdx].acquisitionDate|date_format}{elseif $smarty.section.fIdx.index==0}Acquisition date{else}&nbsp;{/if}</td></tr>
-            <tr><th>Inserted</th><td>{if $files[fIdx].fileInsertDate>0}{$files[fIdx].fileInsertDate|date_format}{elseif $smarty.section.fIdx.index==0}Insert date{else}&nbsp;{/if}</td></tr>
+            {if $files[fIdx].acquisitionDate>0}<tr><th width="100px">Acq Date</th><td>{$files[fIdx].acquisitionDate|date_format}{else}&nbsp;</td></tr>{/if}
+            <tr><th width="100px">Inserted</th><td>{if $files[fIdx].fileInsertDate>0}{$files[fIdx].fileInsertDate|date_format}{elseif $smarty.section.fIdx.index==0}Insert date{else}&nbsp;{/if}</td></tr>
                                                 
-            <tr><th>Ser Desc</th><td>{if $files[fIdx].seriesDescription != ""}{$files[fIdx].seriesDescription}{else}&nbsp;{/if}</td></tr>
-            <tr><th>Ser Num</th><td>{if $files[fIdx].seriesNumber != ""}{$files[fIdx].seriesNumber}{else}&nbsp;{/if}</td></tr>
-            <tr><th>Echo Time</th><td>{if $files[fIdx].echoTime != ""}{$files[fIdx].echoTime} ms{else}&nbsp;{/if}</td></tr>
-            <tr><th>Rep Time</th><td>{if $files[fIdx].repetitionTime != ""}{$files[fIdx].repetitionTime} ms{else}&nbsp;{/if}</td></tr>
-            <tr><th>Slice Thick</th><td>{if $files[fIdx].sliceThickness != ""}{$files[fIdx].sliceThickness} mm{else}&nbsp;{/if}</td></tr>
-            
+            {if $files[fIdx].seriesDescription != ""}<tr><th width="100px">Ser Desc</th><td>{$files[fIdx].seriesDescription}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].seriesNumber != ""}<tr><th width="100px">Ser Num</th><td>{$files[fIdx].seriesNumber}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].echoTime != "" && $files[fIdx].echoTime != "0.00" }<tr><th width="100px">Echo Time</th><td>{$files[fIdx].echoTime} ms{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].repetitionTime != "" && $files[fIdx].repetitionTime != "0.00"}<tr><th width="100px">Rep Time</th><td>{$files[fIdx].repetitionTime} ms{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].sliceThickness != ""&& $files[fIdx].sliceThickness != "0.00"}<tr><th width="100px">Slice Thick</th><td>{$files[fIdx].sliceThickness} mm{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].time != ""&& $files[fIdx].time != "0.00"}<tr><th width="100px">Nb of vol.</th><td>{$files[fIdx].time} volumes{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].Comment != ""}<tr><th width="100px">Comment</th><td>{$files[fIdx].Comment}{else}&nbsp;</td></tr>{/if}  
             </table>
         </td>        
 </tr>

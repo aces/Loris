@@ -76,6 +76,7 @@ class NDB_Client
         // if exiting, destroy the php session
         if(isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
+            setcookie("FeedbackButtonBoolean", "");
             session_start();
         }
 

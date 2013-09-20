@@ -18,17 +18,43 @@
 {literal}
 <script language="javascript" type="text/javascript"> 
 <!--
+var FeedbackButtonBoolean;
+
+function FeedbackButtonClicked() {
+    document.cookie = "FeedbackButtonBoolean = true";
+    {/literal}
+    var thisUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
+    {literal}
+    window.open(thisUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+}
+
 function feedback_bvl_popup(features) { 
-    {/literal}    
+    if (getCookie('FeedbackButtonBoolean')) {
+    {/literal}
     var myUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
     {literal}
     window.open(myUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+    }
 }
 function open_help_section(){
     {/literal}
     var helpurl = "context_help_popup.php?test_name={$test_name}";
     {literal}
     window.open(helpurl);
+}
+
+function getCookie(c_name) {
+    "use strict";
+    var cookies = document.cookie.split("; "),
+        i,
+        cookie;
+    for (i = 0; i < cookies.length; i += 1) {
+        cookie = cookies[i].split("=");
+        if (cookie[0] === c_name) {
+            return cookie[1];
+        }
+    }
+    return undefined;
 }
 
 //-->
@@ -40,7 +66,7 @@ function open_help_section(){
 
 </head>
 <body 
-{if ($user.permissions.superuser==true || $user.permissions.access_all_profiles==true || $user.user_from_study_site==true)}
+{if $PopUpFeedbackBVL && ($user.permissions.superuser==true || $user.permissions.access_all_profiles==true || $user.user_from_study_site==true)}
 onload="feedback_bvl_popup();" 
 {/if}
 >
@@ -87,7 +113,7 @@ onload="feedback_bvl_popup();"
 
 <div id="slidemenu" style="float:right" class="jqueryslidemenu">
 <ul>
-<li><a href="#" onClick="feedback_bvl_popup()"><img width=17 src=images/pencil.gif></a></li>
+<li><a href="#" onclick="FeedbackButtonClicked()"><img width=17 src=images/pencil.gif></a></li>
 
 <li><a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;"><img width=17 src=images/help.gif></a></li>
 </ul>

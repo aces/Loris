@@ -4,10 +4,18 @@
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
-
 <title>{$study_title}</title>
 </head>
 <body>
+<script language="javascript" type="text/javascript">
+{literal}
+function closeTheWindow() {
+    document.cookie = 'FeedbackButtonBoolean=';
+    window.close();
+}
+{/literal}
+</script>
+
 
 <!-- start main table -->
 <table valign="top" width="100%" border="0" cellpadding="3" cellspacing="2">
@@ -226,5 +234,6 @@
 </td>
 </tr>
 </table>
+<a href onclick="closeTheWindow()">Stop this window from popping up</a>
 </body>
 </html>
