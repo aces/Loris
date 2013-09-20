@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**
  * context help script
  *
