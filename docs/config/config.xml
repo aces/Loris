@@ -187,6 +187,11 @@
     <Displayname>ADOS (Module2)</Displayname>
     </Instrument>
     </ReliabilityInstruments>
+    <!--Define a list of instruments to be skipped by quickform_parser.php -->
+    <excluded_instruments>
+        <instrument></instrument>
+    </excluded_instruments>
+
     </study>
 <!-- end of study definition -->
 
