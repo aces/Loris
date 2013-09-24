@@ -42,17 +42,37 @@ class CouchDBDemographicsImporter {
             'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
             'Type' => "enum('Failure','Withdrawal','Neither')",
         ),
-       'Project' => array(
-            'Description' => 'Project for which the candidate belongs',
-            'Type' => "enum('IBIS1','IBIS2','Fragile X', 'EARLI Collaboration')",
+        'Status' => array(
+            'Description' => 'Participant status',
+            'Type' => "varchar(255)"
         ),
-        'Plan' => array(
-            'Description' => 'Plan for IBIS2 candidate',
-            'Type' => "varchar(20)",
+        'ApoE_112' => array(
+            'Description' => 'ApoE 112',
+            'Type' => "varchar(10)"
         ),
-        'EDC' => array(
-            'Description' => 'Expected Date of Confinement (Due Date)',
-            'Type' => "varchar(255)",
+        'ApoE_158' => array(
+            'Description' => 'ApoE 158',
+            'Type' => "varchar(10)"
+        ),
+        'ApoE_genotype_1' => array(
+            'Description' => 'ApoE genotype 1',
+            'Type' => "varchar(10)"
+        ),
+        'ApoE_genotype_2' => array(
+            'Description' => 'ApoE genotype 2',
+            'Type' => "varchar(10)"
+        ),
+        'BchE' => array(
+            'Description' => 'BchE',
+            'Type' => "varchar(10)"
+        ),
+        'BDNF' => array(
+            'Description' => 'BDNF',
+            'Type' => "varchar(10)"
+        ),
+        'HMGR_intron_M' => array(
+            'Description' => 'HMGR intron M',
+            'Type' => "varchar(10)"
         )
 
     );
@@ -75,7 +95,7 @@ class CouchDBDemographicsImporter {
     function _getProject($id) {
         $config = NDB_Config::singleton();
         $subprojsXML = $config->getSetting("Projects");
-        $subprojs = $subprojsXML['project'];
+        $subprojs = $subprojsXML['subproject'];
         foreach($subprojs as $subproj) {
             if($subproj['id'] == $id) {
                 return $subproj['title'];
@@ -97,8 +117,8 @@ class CouchDBDemographicsImporter {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
             unset($demographics['SubprojectID']);
-            $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
-            unset($demographics['ProjectID']);
+//            $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
+ //           unset($demographics['ProjectID']);
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
                 'identifier' => array($demographics['PSCID'], $demographics['Visit_label'])

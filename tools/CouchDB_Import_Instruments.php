@@ -30,7 +30,7 @@ class CouchDBInstrumentImporter {
                 )
             );
             $Fields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom=:inst AND Queryable=1",
-                array('inst' => $name));
+                array('inst' => $instrument));
             foreach($Fields as $field) {
                 $fname = $field['SourceField'];
                 $Dict[$fname]['Type'] = $field['Type'];
@@ -40,9 +40,12 @@ class CouchDBInstrumentImporter {
             unset($Dict['city_of_birth']);
             unset($Dict['city_of_birth_status']);
 
-            $this->CouchDB->replaceDoc("DataDictionary:$name", array(
+		print "NAME: " . $name;
+                print_r($Dict);
+
+            $this->CouchDB->replaceDoc("DataDictionary:$instrument", array(
                 'Meta' => array('DataDict' => true),
-                'DataDictionary' => array($name => $Dict)
+                'DataDictionary' => array($instrument => $Dict)
             ));
         }
     }
@@ -52,7 +55,7 @@ class CouchDBInstrumentImporter {
     }
     function UpdateCandidateDocs($Instruments) {
         foreach($Instruments as $instrument => $name) {
-            $data = $this->SQLDB->pselect($this->generateDocumentSQL($instrument), array('inst' => $name));
+            $data = $this->SQLDB->pselect($this->generateDocumentSQL($instrument), array('inst' => $instrument));
             foreach($data as $row) {
                 $CommentID  = $row['CommentID'];
                 $docdata = $row;
@@ -68,13 +71,13 @@ class CouchDBInstrumentImporter {
                 }
                 $doc = array ('Meta' => 
                     array(
-                        'DocType' => $name,
+                        'DocType' => $instrument,
                         'identifier' => array($row['PSCID'], $row['Visit_label'])
                     ),
                     'data' => $docdata
                 );
                 $success = $this->CouchDB->replaceDoc($CommentID, $doc);
-                print "$row[PSCID] $row[Visit_label] $name: $success\n";
+                print "$row[PSCID] $row[Visit_label] $instrument: $success\n";
             }
 
         }
