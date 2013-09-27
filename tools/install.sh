@@ -59,6 +59,15 @@ if [ -f ../project/config.xml ]; then
     exit 2;
 fi
 
+if [[ -n $(which pear) ]]; then
+    echo ""
+    echo "PEAR appears to be installed."
+else
+    echo ""
+    echo "PEAR does not appear to be installed. Aborting."
+    exit 2;
+fi
+
 cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
@@ -196,10 +205,6 @@ while true; do
             sudo pear install Spreadsheet_Excel_Writer >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Structures_Graph >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install XML_Parser >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            if [[ -n $(which pear) ]]; then
-		echo ""
-                echo "PEAR libraries seem to be installed now."
-            fi
             break;;
         [Nn]* ) 
             echo "Not installing PEAR libraries."
