@@ -17,6 +17,14 @@ class NDB_Caller extends PEAR
     var $type;
 
     /**
+     * Determines how data entry is being performed (directly from a study participant,
+     * or by a data entry staff.
+     * @var string
+     * @access private
+     */
+    var $DataEntry;
+
+    /**
      * Singleton method
      *
      * @return NDB_Caller
@@ -244,7 +252,8 @@ class NDB_Caller extends PEAR
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress' || !$user->hasPermission('data_entry') || $user->getData("CenterID") != $timepoint->getData("CenterID")) {
-            if($instrument->preview !== true ) {
+            if($instrument->preview !== true && $this->DataEntry !== 'Direct') {
+                print "I AM HERE";
                 $instrument->freeze();
             }
         }
@@ -269,6 +278,10 @@ class NDB_Caller extends PEAR
         }
 
         return false;
+    }
+
+    function setDataEntryType($type) {
+        $this->DataEntry = $type;
     }
 }
 ?>
