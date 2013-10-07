@@ -6,7 +6,6 @@
   (such as <item/> <item/>) occurs in the study or sites tree, the
   sites tree will overwrite the element entirely instead of simply
   merging - i.e., if the multiple elements are branches, the sites
-  branch in its entirety will override the study branch.
 
 -->
 <config>
@@ -119,9 +118,7 @@
      <parameter_candidate>candidate_comment</parameter_candidate>
 </HeaderTable-->
 	<!-- number of subprojects in the project - corresponds to the list of subpojects below -->
-	<objectives>1</objectives>
 	<!-- max number of timepoints per subject (integer)-->
-	<visits>1</visits>
 	<useScreening>false</useScreening>
 	<subprojects>
 	    <subproject>
@@ -147,6 +144,9 @@
         <regex>/^[A-Z0-9]{2}$/i</regex>
         <length>2</length>
         <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
+         <labelSet>
+         <item value="V%value%">V%value%</item>
+         </labelSet>
     </visitLabel>
     <visitLabel subprojectID="2">
         <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
@@ -154,6 +154,9 @@
         <regex>/^[A-Z0-9]{2}$/i</regex>
         <length>2</length>
         <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
+         <labelSet>
+         <item value="V%value%">V%value%</item>
+         </labelSet>
     </visitLabel>
     <ReliabilityInstruments>
     <Instrument>
