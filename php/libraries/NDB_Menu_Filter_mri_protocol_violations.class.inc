@@ -66,6 +66,7 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->form->addElement('text', 'CandID', 'DCC-ID:');
         $this->form->addElement('text', 'PSCID', 'PSC-ID:');
         $this->form->addElement('text', 'PatientName', 'Patient-Name:');
+        $this->form->addElement('text', 'SeriesUID', 'SeriesUID:');
 
         return true;
     }

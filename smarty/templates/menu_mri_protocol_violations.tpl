@@ -20,6 +20,11 @@
       <td nowrap="nowrap">{$form.PatientName.html}</td>
    </tr>
    
+    
+   <tr>
+      <td nowrap="nowrap">{$form.SeriesUID.label}</td>
+      <td nowrap="nowrap">{$form.SeriesUID.html}</td>
+   </tr>
     <tr>
         <td>Actions:</td>
         <td>&nbsp;</td>
