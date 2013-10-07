@@ -15,6 +15,11 @@
       <td nowrap="nowrap">{$form.PSCID.html}</td>
    </tr>
    
+   <tr>
+      <td nowrap="nowrap">{$form.PatientName.label}</td>
+      <td nowrap="nowrap">{$form.PatientName.html}</td>
+   </tr>
+   
     <tr>
         <td>Actions:</td>
         <td>&nbsp;</td>

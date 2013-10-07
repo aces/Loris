@@ -65,23 +65,8 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         }
         $this->form->addElement('text', 'CandID', 'DCC-ID:');
         $this->form->addElement('text', 'PSCID', 'PSC-ID:');
+        $this->form->addElement('text', 'PatientName', 'Patient-Name:');
 
-        return true;
-    }
-
-    function _setDataTableRows($count)
-    {
-        $x=0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                $i++;
-            }
-            $x++;
-        }
         return true;
     }
 
