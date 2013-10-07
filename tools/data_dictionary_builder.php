@@ -125,7 +125,7 @@ $abbreviations=array(
 'mri_parameter_form' => 'mri_para_form',
 'baseline' => 'base',
 'enrollment' => 'enroll',
-'telephone_visit' => 'tele_visit',
+'telephone_visit' => 'tel_vst',
 );
 
 
