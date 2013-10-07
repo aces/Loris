@@ -118,7 +118,14 @@ $abbreviations=array(
 'parental_bonding_inventory'=>'pbi',
 'state_trait_anxiety_inventory'=>'stai',
 'med_records_24' => 'med_rec_24',
-'med_records_recruit' => 'med_rec_recr'
+'med_records_recruit' => 'med_rec_recr',
+'general_medical_history' => 'gmh',
+'navigational_task_session_1' => 'nav1',
+'navigational_task_session_2' => 'nav2',
+'mri_parameter_form' => 'mri_para_form',
+'baseline' => 'base',
+'enrollment' => 'enroll',
+'telephone_visit' => 'tele_visit',
 );
 
 
