@@ -5,7 +5,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * 
  * 
  */
-class NDB_Menu_violated_scans extends NDB_Menu_Filter
+class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
 {
     /**
      * overloading this method to allow access to site users (their own site only) and users w/ multisite privs
