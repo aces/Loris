@@ -1532,6 +1532,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ystep_range` varchar(255) DEFAULT NULL,
   `zstep_range` varchar(255) DEFAULT NULL,
   `time_range` varchar(255)  DEFAULT NULL,
+  `SeriesUID` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conflicts_unresolved` (
