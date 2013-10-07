@@ -6,7 +6,7 @@
   (such as <item/> <item/>) occurs in the study or sites tree, the
   sites tree will overwrite the element entirely instead of simply
   merging - i.e., if the multiple elements are branches, the sites
-
+  branch in its entirely will override the study branch.
 -->
 <config>
     <tests>
