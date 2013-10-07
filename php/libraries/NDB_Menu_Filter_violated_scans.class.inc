@@ -39,7 +39,9 @@ class NDB_Menu_violated_scans extends NDB_Menu_Filter
         if(PEAR::isError($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        $this->columns = array('mpv.CandID','mpv.PSCID','mpv.time_run','mpv.series_description','mpv.minc_location','mpv.PatientName','mpv.TR_range','mpv.TE_range','mpv.TI_range','mpv.slice_thickness_range','mpv.xspace_range','mpv.yspace_range','mpv.zspace_range','mpv.xstep_range','mpv.ystep_range','mpv.zstep_range','mpv.time_range');
+        $this->columns = array('mpv.CandID','mpv.PSCID','mpv.time_run','mpv.series_description','mpv.minc_location','mpv.PatientName','mpv.TR_range',
+        'mpv.TE_range','mpv.TI_range','mpv.slice_thickness_range','mpv.xspace_range','mpv.yspace_range','mpv.zspace_range','mpv.xstep_range',
+        'mpv.ystep_range','mpv.zstep_range','mpv.time_range','mpv.SeriesUID');
         $config=&NDB_Config::singleton();
         $this->validFilters = array('mpv.CandID','mpv.PSCID');
         $this->query = " FROM mri_protocol_violated_scans mpv WHERE 1=1";
