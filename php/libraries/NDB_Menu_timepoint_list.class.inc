@@ -65,6 +65,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
             }
             $username = $user->getData('UserID');
 
+            $feedback_select_inactive = null;
             if ($user->hasPermission('bvl_feedback')) {
                 $feedback_select_inactive = 'Y';
             }
