@@ -88,8 +88,11 @@ class NDB_BVL_Instrument extends NDB_Page
     * NOTE: When abstracting the _saveValues() method in the child <instrument> class, add only the dates from the current page to the array using the instruments switch($page) otherwise you'll end up overwriting (NULLing) all other dates in the table that appear on other pages (if they are listed in the array of date fields) - note by Dario
     */
     var $dateTimeFields = array();
-
-
+    
+    /**
+     * Array of date fields that contain only month year fields in frontend with a static value for the date
+     */
+    var $monthYearFields = array();
     /**
      * Array of column names to be ignored by the double data entry conflict detector.
      */
@@ -539,7 +542,17 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         }
-        
+
+        //Convert date/time fields into database dates/times
+        if (is_array($this->monthYearFields) && count($this->monthYearFields) > 0) {
+            foreach($this->monthYearFields as $field){
+                if(isset($values[$field])) {  //Stops it from wiping dates already saved on other pages.
+                    $values[$field]['d'] = 15;
+                    $values[$field]=$this->_getDatabaseDate($values[$field]);
+                }
+            }
+        }
+
         if(strrpos($this->testName, "_proband") === FALSE) {
             $this->_saveCandidateAge($values);
         }
@@ -1351,6 +1364,15 @@ class NDB_BVL_Instrument extends NDB_Page
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
     }
+
+    /** 
+     * Wrapper to create a month year date field
+     * Adding this to Instrument class instead of NDB_Page is because we need this for saveValues function
+    */
+    function addMonthYear($field, $label, $options=array()) {
+        $this->form->addElement('date', $field, $label, $options);
+    }
+
 
     /** 
     * Wrapper with a user-created date group, a status box and appropriate rule
