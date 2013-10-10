@@ -125,6 +125,7 @@ if (!empty($DownloadFilename)) {
     header("Content-Disposition: attachment; filename=$DownloadFilename");
 }
 $fp = fopen($FullPath, 'r');
+ob_end_clean();
 fpassthru($fp);
 fclose($fp);
 ?>
