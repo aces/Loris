@@ -8,6 +8,7 @@ function updateDemographicTab() {
         data: 'html',
         success: function(response) {
             $('#demographics').html(response);
+  
         }
         }
     );

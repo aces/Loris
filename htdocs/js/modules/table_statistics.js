@@ -27,8 +27,10 @@ function updateBehaviouralInstrument() {
 }
 function updateMRITable() {
     var selectedMRI_TYPE = document.getElementById("mri_type");
+    var MRIProject = document.getElementById("MRIProject");
     var request = $.ajax({
-        url: 'main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value,
+        url: 'main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value +
+             '&MRIProject=' + MRIProject.value,
         type: 'GET',
         data: 'html',
         success: function(page) {
