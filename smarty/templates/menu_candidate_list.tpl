@@ -6,8 +6,6 @@
 </script>
 <script language="javascript" type="text/javascript">
 
-//window.onload = function(){ alert("welcome"); }
-
 function checkAccessProfileForm(){
    var form = document.accessProfileForm;
    if(form.candID.value == ""){

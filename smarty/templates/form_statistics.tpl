@@ -88,7 +88,6 @@ function CreateScatterplot() {
 
 </script>
 {/literal}
-
 <div id="tabs">
     <h1>Available Statistics</h1>
     <ul>

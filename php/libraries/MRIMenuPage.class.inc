@@ -118,7 +118,7 @@ class MRIMenuPage {
         }
         $query .= " ORDER BY Name";
         $sites = $DB->pselect($query, $params);
-        $this->visit_tpl_data['site_options']['']='&nbsp;';
+        $this->visit_tpl_data['site_options']['']='all';
         foreach($sites AS $site) {
             $this->visit_tpl_data['site_options'][$site['CenterID']] = $site['Name'];
             $this->visit_tpl_data['MRI_Alias'][$site['CenterID']] = $site['MRI_Alias'];

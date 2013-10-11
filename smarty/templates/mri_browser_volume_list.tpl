@@ -98,7 +98,7 @@ return true;
 <!-- listing of files -->
 <!-- table with candidate profile info -->
 <table><tr>
-{literal}<script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script>{/literal}
+{literal}<!--script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script-->{/literal}
 <!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
     <td>
     <table class="fancytableleft" cellpadding="2">

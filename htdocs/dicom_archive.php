@@ -171,7 +171,7 @@ else {
               "AND CenterID=".$user->getCenterID() : '')." ORDER BY Name";
     $DB->select($query, $sites);
     // only create the all site selection filter for users with universal access permission
-    if ($user->hasPermission('access_all_profiles')) { $visit_tpl_data['site_options']['']='&nbsp;'; }
+    if ($user->hasPermission('access_all_profiles')) { $visit_tpl_data['site_options']['']='All'; }
     foreach($sites AS $site) {
         $visit_tpl_data['site_options'][$site['CenterID']] = $site['MRI_alias'];
     }
@@ -283,7 +283,7 @@ else {
                 $visit_tpl_data['archives'][$i]['PSCID'] = $sp[0];
                 $visit_tpl_data['archives'][$i]['DCCID'] = $sp[1];
                 $visit_tpl_data['archives'][$i]['Visit_Label'] = $sp[2];
-                if(!empty($SessionID['ID'])) {
+                if(!empty($sessionID['ID'])) {
                     $visit_tpl_data['archives'][$i]['SessionID'] = $SessionID['ID'];
                 }
             }
