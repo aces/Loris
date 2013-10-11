@@ -40,6 +40,16 @@ function open_help_section(){
     {literal}
     window.open(helpurl);
 }
+
+var FeedbackButtonBoolean;
+
+function FeedbackButtonClicked() {
+    document.cookie = "FeedbackButtonBoolean = true";
+    {/literal}
+    var thisUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
+    {literal}
+    window.open(thisUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+}
 </script>
 {/literal}
 
@@ -65,7 +75,6 @@ function open_help_section(){
 </li>
 {/if}
 {/foreach}
-<li><a href= javascript:open_help_section()>Help</a></li>
 <div class="Account">
 <li><a href="#">{$user_full_name}</a>
 <ul>
@@ -76,8 +85,16 @@ function open_help_section(){
 </ul>
 </div>
 <div class="site">
-Site: {$user_site_name} &nbsp;|
+&nbsp;&nbsp; Site: {$user_site_name} &nbsp;|
 </div>
+<div id="slidemenu" style="float:right" class="jqueryslidemenu">
+<ul>
+<li><a href="#" onclick="FeedbackButtonClicked()"><img width=17 src=images/pencil.gif></a></li>
+
+<li><a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;"><img width=17 src=images/help.gif></a></li>
+</ul>
+</div>
+
 </div>
 </th>
 </tr>
@@ -87,31 +104,32 @@ Site: {$user_site_name} &nbsp;|
 <!-- back button and other navigation buttons -->
     {if $backURL!=""}
 <!-- Back Button -  -->
-        <p>Navigation</p>
+        <h3>Navigation</h3>
         <p><a href="{$backURL}"><img src="images/left.gif" align="texttop" alt="Back" border="0" width="12" height="12"><img src="images/left.gif" align="texttop" alt="Back" border="0" width="12" height="12">&nbsp;Back to list</a></p>
     {/if}
 <!-- Prev Button -->
     {if $prevTimepoint.URL!=""}
          <p><a href="{$prevTimepoint.URL}">&nbsp;&nbsp;&nbsp;<img src="images/left.gif" align="texttop" alt="Back" border="0" width="12" height="12">&nbsp;Previous</a></p>
-    {else}<br><br>{/if}
+    {else}{/if}
 <!-- Next Button -->
     {if $nextTimepoint.URL!=""}
-       <p><a href="{$nextTimepoint.URL}">&nbsp;&nbsp;&nbsp;Next&nbsp;<img src="images/right.gif" alt="Back" align="texttop" border="0" width="12" height="12"></a></p>
+       <p><a href="{$nextTimepoint.URL}">&nbsp;&nbsp;&nbsp;<img src="images/right.gif" alt="Back" align="texttop" border="0" width="12" height="12"></a><a href="{$nextTimepoint.URL}">&nbsp;Next</a></p>
     {/if}
     {if $prevTimepoint.URL!="" && $nextTimepoint.URL!=""}<br><br>{/if}
 </div>
 
 {if $showFloatJIV}
 <div id="divTopRight" style="position:absolute">
-<p>3D panel viewing<br><br>
+<h3>3D Panel Viewing<br><br>
 <input type="button" accesskey="c" class="button" value="3D+Overlay" onClick="javascript:show_jiv(jivNames, jivData, true);"><br>
 <input type="button" accesskey="d" class="button" value="3D Only" onClick="javascript:show_jiv(jivNames, jivData, false);">
-</p>
+</h3>
 </div>
 
 <div id="divBottomLeft" style="position:absolute">
-<p>Visit-Level controls</p>
- <a href="#" onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">Visit-level<br>feedback</a>
+<h3>Visit Controls</h3>
+<br>
+ <a href="#" onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">Visit-level feedback</a>
 <!-- table with candidate profile info -->
 {if $has_permission}<form action="" method="post">{/if}
 <p>QC Status<br>   {if $has_permission}{html_options options=$status_options selected=$subject.mriqcstatus name=visit_status tabindex=1>}
@@ -161,9 +179,9 @@ function JSFX_FloatDiv(id, sx, sy)
 	}
 	return el;
 }
-JSFX_FloatDiv("divTopLeft",       10, 100).flt();
-JSFX_FloatDiv("divTopRight", 	  10, 230).flt();
-JSFX_FloatDiv("divBottomLeft",    10, 350).flt();
+JSFX_FloatDiv("divTopLeft",       10, 46).flt();
+JSFX_FloatDiv("divTopRight", 	  10, 180).flt();
+JSFX_FloatDiv("divBottomLeft",    10, 300).flt();
 //JSFX_FloatDiv("divBottomRight", -100, -100).flt();
 
 </script>
@@ -171,38 +189,32 @@ JSFX_FloatDiv("divBottomLeft",    10, 350).flt();
 
 <BODY>
 <!-- start main table -->
-<table width="95%" border="0" cellpadding="5" cellspacing="2">
-<tr>
-    <td width="10%"  valign="top" nowrap="nowrap">
+<table width="100%" border="0" class="mainlayout" cellpadding="3" cellspacing="2">
+    <tr>
+        {if $sessionID != ""}   
+        <td width="10%"  valign="top" nowrap="nowrap">
     
-        <!-- Start Section on the left -->
-        <table border="0" valign="top" cellpadding="1" cellspacing="1" width="100px"><tr>
+            <!-- Start Section on the left -->
+            <table border="0" valign="top" cellpadding="1" cellspacing="1" width="100px"><tr>
         
-        {if $efax.assigned_dir!=""}
-        <tr>
-            <td class="controlPanelItem">
-                <a href="mri_efax.php?mri_efax_screen=assigned" target="MRI_EFAX"><img src="images/transfer.gif" alt="MRI Parameter Forms" border="0" width="12" height="12">&nbsp;MRI Parameter Forms</a>
-            </td>
-        </tr>
-        {/if}        
-        </table>
-    </td>
-    
-    
-    <!-- main page table tags -->
-    <td width=100% class="tabox" valign="top">
-    
-    
-    <!-- Start workspace area -->
-    
-    {$body}
-    
-    <!-- end workspace area -->
-    
-    <!-- end Main Table and HTML PAGE -->
-    </td>
-</tr>
+            {if $efax.assigned_dir!=""}
+                <tr>
+                    <td class="controlPanelItem">
+                        <a href="mri_efax.php?mri_efax_screen=assigned" target="MRI_EFAX"><img src="images/transfer.gif" alt="MRI Parameter Forms" border="0" width="12" height="12">&nbsp;MRI Parameter Forms</a>
+                    </td>
+                </tr>
+            {/if}        
+            </table>
+        </td>
+        {/if}
+        <!-- main page table tags -->
+        <td width=100% class="bgGradient" valign="top">
+        {$body}
+        </td>
+    </tr>
 </table>
+
+
 <table class="MainFooter" align="center">
 <tr>
 <div id="footerLinks">

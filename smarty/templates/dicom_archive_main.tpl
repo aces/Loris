@@ -2,6 +2,7 @@
 	   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <HEAD>
+<div id="page">
 <LINK REL=StyleSheet HREF="{$css}" TYPE="text/css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
@@ -147,6 +148,6 @@ Site: {$user_site_name} &nbsp;|
 <td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #348b8d;" target="_blank">Created by ACElab</a></td>
 </tr>
 </table>
-
+</div>
 </BODY>
 </HTML>
