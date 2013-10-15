@@ -271,6 +271,11 @@ class Utility extends PEAR
         return $list;
     }
     
+    /**
+     * Returns a list of study Projects
+     * @return array an associative array("projectID" => "project title")
+     * @access public
+     */
     function getProjectList() {
         $config =& NDB_Config::singleton();
 
@@ -281,6 +286,42 @@ class Utility extends PEAR
     		$list[$project['id']]=$project['title'];
     	}
         return $list;
+    }
+    /**
+     * Returns a list of study Subprojects associated with a project
+     * @throws PEAR_Error
+     * @return array       an associative array("SubprojectID" => "Subproject title")
+     * @access public
+     */
+
+    function getSubprojectsForProject($projectID = null) {
+
+        $db =& Database::singleton();
+        $config =& NDB_Config::singleton();
+        $subprojectSettings= $config->getSetting('subprojects');
+        foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
+            $allSubprojects[$subproject['id']]=$subproject['title'];
+        }
+        if($projectID != null) { 
+            $query = "SELECT SubprojectID FROM project_rel WHERE ProjectID=:pID";
+            $subprojList = $db->pselect($query, array('pID' => $projectID));
+
+            if(Utility::isErrorX($subprojList)) {
+                return PEAR::raiseError("Could not list of subprojects ".$subprojList->getMessage());
+            }
+            foreach($subprojList as $row) {
+                $subList[] = $row['SubprojectID'];
+            }
+            $list = array();
+            foreach($subList as $row) {
+                $list[$row] = $allSubprojects[$row];    
+            }
+            return $list;
+        } else {
+            return $allSubprojects;   
+
+        }
+
     }
     /**
      * Returns the test name associated with a given commentID
