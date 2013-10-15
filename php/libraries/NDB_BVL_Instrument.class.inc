@@ -1368,6 +1368,11 @@ class NDB_BVL_Instrument extends NDB_Page
     /** 
      * Wrapper to create a month year date field
      * Adding this to Instrument class instead of NDB_Page is because we need this for saveValues function
+     * @param string $field Name of the field
+     * @param string $label Element label
+     * @param array $options optional override of class's dateOptions
+     *
+     * @return none
     */
     function addMonthYear($field, $label, $options=array()) {
         $this->form->addElement('date', $field, $label, $options);
