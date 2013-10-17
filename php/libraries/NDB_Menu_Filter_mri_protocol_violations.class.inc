@@ -5,7 +5,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * 
  * 
  */
-class NDB_Menu_violated_scans extends NDB_Menu_Filter
+class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
 {
     /**
      * overloading this method to allow access to site users (their own site only) and users w/ multisite privs
@@ -39,7 +39,9 @@ class NDB_Menu_violated_scans extends NDB_Menu_Filter
         if(PEAR::isError($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        $this->columns = array('mpv.CandID','mpv.PSCID','mpv.time_run','mpv.series_description','mpv.minc_location','mpv.PatientName','mpv.TR_range','mpv.TE_range','mpv.TI_range','mpv.slice_thickness_range','mpv.xspace_range','mpv.yspace_range','mpv.zspace_range','mpv.xstep_range','mpv.ystep_range','mpv.zstep_range','mpv.time_range');
+        $this->columns = array('mpv.CandID','mpv.PSCID','mpv.time_run','mpv.series_description','mpv.minc_location','mpv.PatientName','mpv.TR_range',
+        'mpv.TE_range','mpv.TI_range','mpv.slice_thickness_range','mpv.xspace_range','mpv.yspace_range','mpv.zspace_range','mpv.xstep_range',
+        'mpv.ystep_range','mpv.zstep_range','mpv.time_range','mpv.SeriesUID');
         $config=&NDB_Config::singleton();
         $this->validFilters = array('mpv.CandID','mpv.PSCID');
         $this->query = " FROM mri_protocol_violated_scans mpv WHERE 1=1";
@@ -63,23 +65,9 @@ class NDB_Menu_violated_scans extends NDB_Menu_Filter
         }
         $this->form->addElement('text', 'CandID', 'DCC-ID:');
         $this->form->addElement('text', 'PSCID', 'PSC-ID:');
+        $this->form->addElement('text', 'PatientName', 'Patient-Name:');
+        $this->form->addElement('text', 'SeriesUID', 'SeriesUID:');
 
-        return true;
-    }
-
-    function _setDataTableRows($count)
-    {
-        $x=0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                $i++;
-            }
-            $x++;
-        }
         return true;
     }
 

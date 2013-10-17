@@ -1,5 +1,5 @@
 
-<form method="post" action="main.php?test_name=violated_scans">
+<form method="post" action="main.php?test_name=mri_protocol_violations">
 <table border="0" valign="top" class="std">
     <tr>
         <th nowrap="nowrap" colspan=4>Selection Filter</th>
@@ -15,10 +15,20 @@
       <td nowrap="nowrap">{$form.PSCID.html}</td>
    </tr>
    
+   <tr>
+      <td nowrap="nowrap">{$form.PatientName.label}</td>
+      <td nowrap="nowrap">{$form.PatientName.html}</td>
+   </tr>
+   
+    
+   <tr>
+      <td nowrap="nowrap">{$form.SeriesUID.label}</td>
+      <td nowrap="nowrap">{$form.SeriesUID.html}</td>
+   </tr>
     <tr>
         <td>Actions:</td>
         <td>&nbsp;</td>
-        <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=violated_scans&reset=true'"/></td>
+        <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=mri_protocol_violations&reset=true'"/></td>
     </tr>
 <table>
 </form>
@@ -69,8 +79,6 @@
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
-    <td class="controlPanelSection">List of Profiles</td>
-    <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>
 </table>
@@ -80,7 +88,7 @@
 <tr>
  <th nowrap="nowrap">No.</th>
     {section name=header loop=$headers}
-        <th nowrap="nowrap"><a href="main.php?test_name=violated_scans&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
+        <th nowrap="nowrap"><a href="main.php?test_name=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
     {/section}
 </tr>
 {section name=item loop=$items}
