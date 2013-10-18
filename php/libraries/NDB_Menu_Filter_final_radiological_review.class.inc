@@ -180,13 +180,13 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             "COALESCE(r.Review_Done, 'no')",
             'r.sas',
             'r.pvs',
-            "COALESCE(r.Final_Exclusionary,'no')",
+            'r.Final_Exclusionary',
             $conflict_condition1,
             $conflict_condition2,
             "COALESCE(r.Finalized,'no')",
             'c.CenterID',
             'c.ProjectID',
-            'keyword'
+            'r.Final_Incidental_Findings'
         );
         
         $this->formToFilter = array (
