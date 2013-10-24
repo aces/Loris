@@ -41,7 +41,12 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
         }
         $this->columns = array('v.PatientName', 'v.TimeRun', 'v.MincFile', 'v.Series_Description as Series_Description_Or_Scan_Type', 'v.Problem');
         $config=&NDB_Config::singleton();
-        $this->query = " FROM (select PatientName as PatientName, time_run as TimeRun, minc_location as MincFile, series_description as Series_Description, 'Could not identify scan type' as Problem FROM mri_protocol_violated_scans UNION select PatientName, TimeRun, MincFile, mri_scan_type.Scan_type, 'Protocol Violation' FROM mri_violations_log left join mri_scan_type ON (mri_scan_type.ID=mri_violations_log.Scan_type)) as v WHERE 1=1";
+        $this->query = " FROM (select PatientName as PatientName, time_run as TimeRun, minc_location as MincFile, series_description as Series_Description, 'Could not identify scan type' as Problem FROM mri_protocol_violated_scans "
+            .  " UNION " . 
+            "select PatientName, TimeRun, MincFile, mri_scan_type.Scan_type, 'Protocol Violation' FROM mri_violations_log left join mri_scan_type ON (mri_scan_type.ID=mri_violations_log.Scan_type)"
+            .  " UNION " . 
+            "SELECT PatientName, TimeRun, MincFile, null, Reason FROM MRICandidateErrors"
+         . ") as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         /* $this->formToFilter = array(
