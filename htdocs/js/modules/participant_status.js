@@ -19,15 +19,15 @@ function loadDefaultStatus() {
         pstatus_dropdown = document.getElementById('participant_statusID'),
         status_value = pstatus_dropdown.value,
         default_vals;
-
     $.get("GetParticipant_suboptions.php?pscid="+pscid_value,
             function (data) {
                 default_vals = data.split(";");
+              // alert(default_vals[0]);
                 pstatus_dropdown.value = default_vals[0];
                 if(default_vals.length >1) {
                     loadDefaultSubOption(default_vals[0], default_vals[1]);
                 }
-                });
+             });
 }
 function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
     "use strict";    
@@ -43,16 +43,16 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
             pstatus_sub.options.length = 0;
             var i, numOptions = options.length, val;
             for (i = 0; i < numOptions; i += 1) {
-            val = options[i];
-            if (val !== '') {
-            pstatus_sub.options[i] = new Option(val, val);
-            if ((dropdown_value === val) && (dropdown_value !== '')) {
-            pstatus_sub.options[i].selected = "selected";
-            }
-            }
+                val = options[i];
+                if (val !== '') {
+                    pstatus_sub.options[i] = new Option(val, val);
+                    if ((dropdown_value === val) && (dropdown_value !== '')) {
+                        pstatus_sub.options[i].selected = "selected";
+                    }
+                }
             }
             //jQuery('#visits').change();
-            }); 
+         }); 
 }
 function changeParticipantStatus() {
     "use strict";
@@ -90,6 +90,9 @@ function changeParticipantStatus() {
 $(function () {
     "use strict";
     loadDefaultStatus();
+    $("#participant_statusID").change(function() {
+        changeParticipantStatus();
+    });
 });
 
 
