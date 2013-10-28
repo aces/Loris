@@ -47,7 +47,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->query = " FROM psc, candidate LEFT JOIN session ON candidate.CandID = session.CandID AND session.Active = 'Y'
          LEFT JOIN feedback_bvl_thread ON (candidate.CandID=feedback_bvl_thread.CandID)
          LEFT JOIN participant_status ON (participant_status.CandID=candidate.CandID)
-         LEFT JOIN participant_status_options ON (participant_status.participant_status=participant_status_options.ID)
+         LEFT JOIN participant_status_options ON (participant_status.participant_statusID=participant_status_options.ID)
         WHERE candidate.CenterID = psc.CenterID AND candidate.Entity_type = 'Human' AND candidate.Active = 'Y'";
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
