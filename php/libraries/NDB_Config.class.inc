@@ -1,5 +1,6 @@
 <?php
 require_once("PEAR.php");
+require_once("Utility.class.inc");
 /**
  * provides an interface to the NeuroDB configuration
  * @access public
