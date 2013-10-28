@@ -75,24 +75,21 @@ function changeParticipantStatus() {
             pstatus_sub.options.length = 0;
             var i, numOptions = options.length, val;
             for (i = 0; i < numOptions; i += 1) {
-            val = options[i];
-            if (val !== '') {
-            pstatus_sub.options[i] = new Option(val, val);
-            if ((dropdown_value === val) && (dropdown_value !== '')) {
-            pstatus_sub.options[i].selected = "selected";
+                val = options[i];
+                if (val !== '') {
+                    pstatus_sub.options[i] = new Option(val, val);
+                    if ((dropdown_value === val) && (dropdown_value !== '')) {
+                        pstatus_sub.options[i].selected = "selected";
+                    }
+                }
             }
-            }
-            }
-            //jQuery('#visits').change();
-            });
+           });
 }
-/*
+
 //runs the function when the page is loaded..
 $(function () {
     "use strict";
-    changeParticipantStatus();
-            $('#participant_subOptions,#participant_statusID,#users').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the instrument dropdown is changed
-            $('#update_data').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the dropdown is changed
-            });
-*/
+    loadDefaultStatus();
+});
+
 

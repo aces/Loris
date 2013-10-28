@@ -14,14 +14,15 @@
 
   $DB =& Database::singleton();
   if(isset($_REQUEST['p_status'])){
-  $parentid = $DB->pselectOne("SELECT ID FROM participant_status_options WHERE Description='".$_REQUEST['p_status']."'");
-  print " \n";
-  $results = $DB->pselect("SELECT Description FROM participant_status_options WHERE parentID=:pid",
-                          array('pid'=> $parentid));
+      $parentid = $DB->pselectOne("SELECT ID FROM participant_status_options WHERE Description=:desc",
+                                   array('desc'=>$_REQUEST['p_status']));
+      print " \n";
+      $results = $DB->pselect("SELECT Description FROM participant_status_options WHERE parentID=:pid",
+                               array('pid'=> $parentid));
   
-  foreach($results as $row){
+      foreach($results as $row){
           print $row['Description'] . "\n";
-  }
+      }
   } else if(isset($_REQUEST['pscid']))  {
        $results = $DB->pselect("SELECT participant_statusID, participant_subOptions from participant_status p JOIN 
                               candidate c on c.CandID = p.CandID WHERE c.PSCID='".$_REQUEST['pscid']."'");
