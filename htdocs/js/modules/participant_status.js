@@ -21,10 +21,7 @@ function loadDefaultStatus() {
         default_vals;
     $.get("GetParticipant_suboptions.php?pscid="+pscid_value,
             function (data) {
-              // setTimeout(function(){alert("ooo");},5000);
                 default_vals = data.split(";");
-             // alert(default_vals[0]);
-                //pstatus_dropdown.selected = default_vals[0];
                $('#participant_statusID').val(default_vals[0]);
                 if(default_vals.length >1) {
                     loadDefaultSubOption(default_vals[0], default_vals[1]);
@@ -38,7 +35,6 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
         status_value = pstatus_dropdown.value,
         options,
         dropdown_value = defaultPstat_sub;
-       // alert(dropdown_value);
     $.get("GetParticipant_suboptions.php?p_status=" + defaultPstat,
             function (data) {
             options = data.split("\n");
@@ -48,14 +44,13 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
             for (i = 0; i < numOptions; i += 1) {
                 val = options[i];
                 if (val !== '') {
-                    pstatus_sub.options[i] = new Option(val, val);//alert(pstatus_sub.options[i]);
+                    pstatus_sub.options[i] = new Option(val, val);
                     if ((dropdown_value === val) && (dropdown_value !== '')) {
                         pstatus_sub.options[i].selected = "selected";
                     }
                 }
             }
-           // alert(dropdown_value);
-             $('#participant_subOptions').val(dropdown_value);
+            $('#participant_subOptions').val(dropdown_value);
 
             //jQuery('#visits').change();
          }); 
