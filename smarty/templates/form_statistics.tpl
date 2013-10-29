@@ -4,8 +4,10 @@
 <script type="text/javascript" src="js/jquery.csv.js"></script>
 <!-- highcharts graphing library -->
 <script type="text/javascript" src="js/Highcharts/js/highcharts.src.js"></script>
-<script type="text/javascript" src="js/LorisGraph.js"></script>
+<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<script type="text/javascript" src="js/LorisGraph.js"></script>
 <script language="javascript" type="text/javascript">
 var graph;
 function changeFieldOptions(axis) {
@@ -80,20 +82,19 @@ function CreateScatterplot() {
         graph.RenderChart();
     });
 }
-
   $(document).ready(function() {
-    $(".tabs").tabs();
+    $("#tabs").tabs();
   });
 
 </script>
 {/literal}
-
-<div class="tabs">
+<div id="tabs">
     <h1>Available Statistics</h1>
     <ul>
         <li><a href="/main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">General Description</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs">Demographic Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
+        <li><a href="/main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">MRI Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li>
     </ul>

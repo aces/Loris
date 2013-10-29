@@ -34,7 +34,62 @@ $tpl_data['user_full_name']=$user->getData('Real_name');
 $tpl_data['user_site_name']=$user->getData('Site');
 
 $tpl_data['TarchiveID'] = $_REQUEST['TarchiveID'];
+// the the list of tabs, their links and perms
+$mainMenuTabs = $config->getSetting('main_menu_tabs');
 
+foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
+    $tpl_data['tabs'][]=$myTab;
+    foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
+    {
+        // skip if inactive
+        if ($mySubtab['visible']==0) continue;
+        // replace spec chars
+        $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
+
+        // check for the restricted site access
+        if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
+
+            // if there are no permissions, allow access to the tab
+            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+                $tpl_data['subtab'][]=$mySubtab;
+            } else {
+
+                // if any one permission returns true, allow access to the tab
+                foreach ($mySubtab["permissions"] as $permissions) {
+
+                    // turn into an array
+                    if (!is_array($permissions)) $permissions = array($permissions);
+
+                    // test and grant access to button with 1st permission
+                    foreach ($permissions as $permission) {
+                        if ($user->hasPermission($permission)) {
+                            $tpl_data['subtab'][]=$mySubtab;
+                            break 2;
+                        }
+                        unset($permission);
+                    }
+                    unset($permissions);
+                }
+            }
+        }
+        unset($mySubtab);
+    } // end foreach
+}
+//Display the links, as specified in the config file
+$links=$config->getSetting('links');
+foreach(Utility::toArray($links['link']) AS $link){
+    $BaseURL = $link['@']['url'];
+    if(isset($link['@']['args'])) {
+        $LinkArgs = $link_args[$link['@']['args']];
+    }
+    $LinkLabel = $link['#'];
+    $WindowName = md5($link['@']['url']);
+    $tpl_data['links'][]=array(
+        'url'        => $BaseURL . $LinkArgs,
+        'label'      => $LinkLabel,
+        'windowName' => $WindowName
+    );
+}
 // fixme: this is a hack to avoid mri_browser complaining on line 240
 $some = array();
 $_SESSION['State']->setProperty('mriSessionsListed' , $some);
@@ -116,7 +171,7 @@ else {
               "AND CenterID=".$user->getCenterID() : '')." ORDER BY Name";
     $DB->select($query, $sites);
     // only create the all site selection filter for users with universal access permission
-    if ($user->hasPermission('access_all_profiles')) { $visit_tpl_data['site_options']['']='&nbsp;'; }
+    if ($user->hasPermission('access_all_profiles')) { $visit_tpl_data['site_options']['']='All'; }
     foreach($sites AS $site) {
         $visit_tpl_data['site_options'][$site['CenterID']] = $site['MRI_alias'];
     }
@@ -228,7 +283,7 @@ else {
                 $visit_tpl_data['archives'][$i]['PSCID'] = $sp[0];
                 $visit_tpl_data['archives'][$i]['DCCID'] = $sp[1];
                 $visit_tpl_data['archives'][$i]['Visit_Label'] = $sp[2];
-                if(!empty($SessionID['ID'])) {
+                if(!empty($sessionID['ID'])) {
                     $visit_tpl_data['archives'][$i]['SessionID'] = $SessionID['ID'];
                 }
             }

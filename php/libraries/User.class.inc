@@ -184,6 +184,10 @@ class User extends UserPermissions
             return $this->userInfo[$var];
         }
     }
+    function getFullname()
+    {
+        return $this->userInfo['Real_name'];
+    }
 
     /**
      * Get the user's username

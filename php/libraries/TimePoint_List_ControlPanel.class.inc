@@ -31,7 +31,6 @@ Class TimePoint_List_ControlPanel extends Candidate
     	
         $this->tpl_data['candID'] = $this->getData('CandID');
 		$isDataEntryPerson=$user->hasPermission('data_entry') && $user->getData('CenterID') == $this->getData('CenterID');
-        
         $this->tpl_data['isDataEntryPerson'] = $isDataEntryPerson;
 
         $smarty = new Smarty_neurodb;
@@ -42,3 +41,4 @@ Class TimePoint_List_ControlPanel extends Candidate
 
 }
 ?>
+
