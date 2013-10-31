@@ -40,7 +40,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->columns = array('psc.Name AS PSC',
             'candidate.CandID AS DCCID',
             'candidate.PSCID',
-            'candidate.Gender'
+            'candidate.Gender',
+            'participant_status_options.ID AS Participant_Status',
         );
         if ($useProjects === "true") {
             $this->columns[] = 'min(candidate.ProjectID) as Project';
@@ -171,7 +172,6 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
 		$subprojectlist=Utility::getSubprojectList();
         $projectlist=Utility::getProjectList();
         $participantOptions= NDB_Form_participant_status::getParticipantStatusOptions();
-		
         // print out
         $x = 0;
         foreach ($this->list as $item) {
@@ -180,7 +180,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
 
             //print out data rows
             $i = 1;
-            foreach ($item as $key => $val) {
+            foreach ($item as $key => $val) { 
                 //if it's a non-PSC user show the URL to the timepoint list on PSCID field
                 if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
                     $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
@@ -207,6 +207,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                         $this->tpl_data['items'][$x][$i]['value'] = '';
                     }
                 } else if ($key == 'Participant_Status') {
+                   
                 	$this->tpl_data['items'][$x][$i]['value'] = $participantOptions[$val];
                 }
                   else if ($key=='scan_done'){
