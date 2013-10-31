@@ -97,14 +97,42 @@ class NDB_Form_statistics extends NDB_Form
         }
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites'] = array('' => 'All Sites');
+
+        $projects[null] = 'All Projects';
+        foreach(Utility::getProjectList() as $key=>$value) {
+           $projects[$key] = $value;    
+        }
+        $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['site'] == $row['NumericID']) {
+            if($_REQUEST['BehaviouralSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
             }
 
         }
-        $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
+        if(isset($_REQUEST['BehaviouralSite']) && $_REQUEST['BehaviouralSite'] != '') {
+            foreach ($centers as $row) {
+                if($_REQUEST['BehaviouralSite'] == $row['NumericID']) {
+                    $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
+                }
+            }
+        }
+
+        if(isset($_REQUEST['BehaviouralProject']) && $_REQUEST['BehaviouralProject'] != '') {
+            $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['BehaviouralProject'] . ')';
+            $currentProject = $_REQUEST['BehaviouralProject'];
+            $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
+        } else {
+            $ExtraProject_Criteria = '';
+         }
+         $subprojects = Utility::getSubprojectsForProject($currentProject);
+
+         $this->tpl_data['Subprojects'] = $subprojects;
+         foreach($subprojects as $key=>$val) {
+         $subprojList .= $key.",";
+         }
+         $subprojList = substr($subprojList, 0, -1);
+
         $Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '18 Month' => 'v18', '24 Month' => 'v24', '36 Month' => 'v36');
         $this->tpl_data['Visits'] = $Visits;
 
@@ -126,6 +154,8 @@ class NDB_Form_statistics extends NDB_Form
                 s.Active='Y' AND c.Active='Y' 
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID NOT LIKE 'DDE%' 
+                AND s.SubprojectID IN ($subprojList)
+                $ExtraProject_Criteria
                 GROUP by s.CenterID, VLabel, f.Data_Entry",
                 $result);
 
