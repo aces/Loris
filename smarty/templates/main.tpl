@@ -165,8 +165,11 @@ onload="feedback_bvl_popup();"
 <tr>
 <th class="banner" align="left">
 {section name=crumb loop=$crumbs}
+{if $test_name == "conflicts_resolve"}
+<a href="main.php/{$crumbs[crumb].query}">Conflicts Resolver</a> {if not $smarty.section.crumb.last}&gt; {/if}
+{else}
 <a href="main.php?{$crumbs[crumb].query}">{$crumbs[crumb].text}</a> {if not $smarty.section.crumb.last}&gt; {/if}
-
+{/if}
 {/section}
 </th>
 </tr>
@@ -293,10 +296,12 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 <div id="footerLinks">
 <td width="100%">
 <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" >
+<!--
 <li id="active">|</li>
 {foreach from=$links item=link}
 <li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
 {/foreach}
+-->
 </ul>
 </td>
 </div>
