@@ -43,7 +43,7 @@ class NDB_Caller extends PEAR
         return $instance;
     }
 
-   /**
+    /**
     * Renders the called menu, form or the instrument into html
     * @param string     the object type to load.  The test_name of the menu, form or instrument
     * @param string     the subtest.  The page of the form or instrument.
@@ -79,14 +79,13 @@ class NDB_Caller extends PEAR
             if (Utility::isErrorX($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
-  
             $this->type = 'menu';
             return $html;
         }
 
         // it is a form
         if ($this->existsAndRequire($base."project/libraries/NDB_Form_$test_name.class.inc")
-            || $this->existsAndRequire($base."php/libraries/NDB_Form_$test_name.class.inc")) {
+        || $this->existsAndRequire($base."php/libraries/NDB_Form_$test_name.class.inc")) {
 
             $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
             $html = $this->loadForm($test_name, $subtest, $identifier);
@@ -97,19 +96,19 @@ class NDB_Caller extends PEAR
             $this->type = 'form';
             return $html;
         }
-        
+
         // it is a reliability form
-          if ($this->existsAndRequire($base."project/libraries/NDB_Reliability_$test_name.class.inc")
-              || $this->existsAndRequire($base."php/libraries/NDB_Reliability_$test_name.class.inc")) {
+        if ($this->existsAndRequire($base."project/libraries/NDB_Reliability_$test_name.class.inc")
+        || $this->existsAndRequire($base."php/libraries/NDB_Reliability_$test_name.class.inc")) {
 
-              $html = $this->loadReliability($test_name, $subtest, $_REQUEST['identifier'], $_REQUEST['reliability_center_id']);
-              if (Utility::isErrorX($html)) {
-                  return PEAR::raiseError($html->getMessage());
-              }
+            $html = $this->loadReliability($test_name, $subtest, $_REQUEST['identifier'], $_REQUEST['reliability_center_id']);
+            if (Utility::isErrorX($html)) {
+                return PEAR::raiseError($html->getMessage());
+            }
 
-              $this->type = 'reliability';
-              return $html;
-          }
+            $this->type = 'reliability';
+            return $html;
+        }
 
         // it is an intrument
           if ($this->existsAndRequire($base."project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
@@ -135,7 +134,7 @@ class NDB_Caller extends PEAR
         return PEAR::raiseError("This page ($test_name) is under construction.", 404);
     }
 
-   /**
+    /**
     * Renders html for a Menu
     * @param string The Menu being loaded
     * @param string The Menu mode
@@ -143,6 +142,7 @@ class NDB_Caller extends PEAR
     */
     function loadMenu($menu, $mode)
     {
+        print "menu is $menu";
         // make an instance of the menu's object
         $menu =& NDB_Menu::factory($menu, $mode);
         if (Utility::isErrorX($menu)) {
@@ -165,7 +165,7 @@ class NDB_Caller extends PEAR
         return $html;
     }
 
-   /**
+    /**
     * Renders html for a Form
     * @param string The Form to load
     * @param string The page of the Form to load
@@ -178,7 +178,7 @@ class NDB_Caller extends PEAR
         if (Utility::isErrorX($form)) {
             return PEAR::raiseError($form->getMessage());
         }
-    
+
         $success = $form->save();
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Caller::loadForm() save: ".$success->getMessage());
@@ -191,7 +191,7 @@ class NDB_Caller extends PEAR
 
         return $html;
     }
-    
+
     /**
      * Renders html for a Reliability Form
      * @param string The Form to load
@@ -199,28 +199,28 @@ class NDB_Caller extends PEAR
      * @param string The identifier of the Form
      * @param string The id of the center at which the reliability test is being performed.
      */
-     function loadReliability($class, $page, $identifier, $reliability_center_id)
-     {
-         // make an instance of the form's object
-         $form = NDB_Reliability::factory($class, $page, $identifier, $reliability_center_id);
-         if (Utility::isErrorX($form)) {
-             return PEAR::raiseError($form->getMessage());
-         }
+    function loadReliability($class, $page, $identifier, $reliability_center_id)
+    {
+        // make an instance of the form's object
+        $form = NDB_Reliability::factory($class, $page, $identifier, $reliability_center_id);
+        if (Utility::isErrorX($form)) {
+            return PEAR::raiseError($form->getMessage());
+        }
 
-         $success = $form->save();
-         if (Utility::isErrorX($success)) {
-             return PEAR::raiseError("NDB_Caller::loadReliability() save: ".$success->getMessage());
-         }
+        $success = $form->save();
+        if (Utility::isErrorX($success)) {
+            return PEAR::raiseError("NDB_Caller::loadReliability() save: ".$success->getMessage());
+        }
 
-         $html = $form->display();
-         if (Utility::isErrorX($html)) {
-             return PEAR::raiseError("NDB_Caller::loadReliability() display: ".$html->getMessage());
-         }
+        $html = $form->display();
+        if (Utility::isErrorX($html)) {
+            return PEAR::raiseError("NDB_Caller::loadReliability() display: ".$html->getMessage());
+        }
 
-         return $html;
-     }
+        return $html;
+    }
 
-   /**
+    /**
     * Renders html for a quickform Instrument
     * @param string name of the instrument to load
     * @param string page (subtest) of the instrument
