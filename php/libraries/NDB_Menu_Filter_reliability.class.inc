@@ -195,7 +195,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->form->addElement('select', 'Gender', 'Gender:', $gender_options);
         $this->form->addElement('select', 'Visit_label', 'Visit Label:', $list_of_visit_labels);
         $this->form->addElement('select', 'Instrument', 'Instrument:', $list_of_instruments);
-        $this->form->addElement('select', 'Invalid', 'Invalid Candidate:', array('' => '', 'yes' => 'Yes', 'no' => 'No'));
+        $this->form->addElement('select', 'Invalid', 'Invalid Candidate:', array('' => 'All', 'yes' => 'Yes', 'no' => 'No'));
 	 // $this->form->addElement('select', 'Lock_record', 'Lock_record:', $lock_options);
         //$config=&NDB_Config::singleton();
         if($config->getSetting("useProjects")=="true"){
