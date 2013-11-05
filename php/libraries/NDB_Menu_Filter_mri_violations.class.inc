@@ -1,81 +1,95 @@
-<?
+<?php
 require_once 'NDB_Menu_Filter.class.inc';
-
+/**
+ * @package main
+ * 
+ * 
+ */
 class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
 {
+    /**
+     * overloading this method to allow access to site users (their own site only) and users w/ multisite privs
+     * @note   overloaded function
+     * @return bool
+     * @access private
+     */
+
     function _hasAccess()
     {
+        // create user object
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
+        if(PEAR::isError($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        return $user->hasPermission('view_final_radiological_review');
+
+        // allow only to view own site data
+        $site =& Site::singleton($user->getData('CenterID'));
+        if (PEAR::isError($site)) {
+            return PEAR::raiseError("DB Error: ".$site->getMessage());
+        }
+        $this->tpl_data['violated_scans_modifications']  = $user->hasPermission('violated_scans_modifications');
+        return ($user->hasPermission('violated_scans'));
     }
 
     function _setupVariables()
     {
-        $this->query = " FROM mri_violations_log l WHERE 1=1 ";
-        $this->columns = array('l.PatientName','l.CandID','l.Visit_label','l.Severity', 'l.Header', 'l.Value', 'l.ValidRange', 'l.ValidRegex', 'l.SeriesUID', 'l.TarchiveID');
-        $this->order_by = 'PatientName';
-        $this->headers = array('PatientName',
-                               'CandID',
-                               'Visit_label',
-                               'Severity',
-                               'Header',
-                               'Value',
-                               'ValidRange',
-                               'ValidRegex',
-                               'SeriesUID'
-        );
-        $this->validFilters = array('l.TarchiveID', 'l.SeriesUID', 'l.PatientName', 'l.CandID');
-        $this->formToFilter = array (
-                                    'TarchiveID' => 'l.TarchiveID',
-                                    'SeriesUID' => 'l.SeriesUID',
-                                    'PatientName' => 'l.PatientName',
-                                    'CandID' => 'l.CandID'
-        );
+        // set the class variables
+        // create user object
+        $user =& User::singleton();
+        if(PEAR::isError($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+        $this->columns = array('v.PatientName', 'v.TimeRun', 'v.MincFile', 'v.Series_Description as Series_Description_Or_Scan_Type', 'v.Problem');
+        $config=&NDB_Config::singleton();
+        $this->query = " FROM (select PatientName as PatientName, time_run as TimeRun, minc_location as MincFile, series_description as Series_Description, 'Could not identify scan type' as Problem FROM mri_protocol_violated_scans "
+            .  " UNION " . 
+            "select PatientName, TimeRun, MincFile, mri_scan_type.Scan_type, 'Protocol Violation' FROM mri_violations_log left join mri_scan_type ON (mri_scan_type.ID=mri_violations_log.Scan_type)"
+            .  " UNION " . 
+            "SELECT PatientName, TimeRun, MincFile, null, Reason FROM MRICandidateErrors"
+         . ") as v WHERE 1=1";
+        $this->order_by = 'v.TimeRun DESC';
+
+        /* $this->formToFilter = array(
+                'CandID' => 'mpv.CandID',
+                'PSCID' => 'mpv.PSCID'
+                );
+         */
+        return true;
     }
 
+
+    /*
     function _setFilterForm()
     {
+        // create user object
+        $user =& User::singleton();
+        if(PEAR::isError($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+        $this->form->addElement('text', 'CandID', 'DCC-ID:');
+        $this->form->addElement('text', 'PSCID', 'PSC-ID:');
 
-        $this->form->addElement('text', 'TarchiveID', 'Tarchive ID:', array("size"=>9, "maxlength"=>20));
-        $this->form->addElement('text', 'PatientName', 'PatientName:', array("size"=>20, "maxlength"=>64));
-        $this->form->addElement('text', 'CandID', 'CandID:', array("size"=>20, "maxlength"=>6));
-        $this->form->addElement('text', 'SeriesUID', 'DICOM Series UID:', array("size"=>20, "maxlength"=>64));
-
+        return true;
     }
 
-
+     */
     function _setDataTableRows($count)
     {
-        $x = 0;
+        $x=0;
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
-                if ($key == 'TarchiveID') {
-                    $this->tpl_data['items'][$x]['TarchiveID'] = $val; #_makePretty($key, $val);
-                    continue;
+                if ($key === 'PatientName') {
+                    $this->tpl_data['items'][$x]['PatientName'] = $val;
                 }
-                if ($key == 'Severity') {
-                    $this->tpl_data['items'][$x]['severity'] = $val; #_makePretty($key, $val);
-                }
-                $row = array(
-                    'value' => $val,
-                    'name' => $key
-                );
-                $row['CandID'] = isset($item['CandID']) ? $item['CandID'] : '';
-                $row['CommentID'] = isset($item['CommentID']) ? $item['CommentID'] : '';
-                $row['SessionID'] = isset($item['SessionID']) ? $item['SessionID'] : '';
-
-
-                $this->tpl_data['items'][$x][$i] = $row;
+                $this->tpl_data['items'][$x][$i]['name'] = $key;
+                $this->tpl_data['items'][$x][$i]['value'] = $val;
                 $i++;
             }
             $x++;
         }
+        return true;
     }
 }
+?>
