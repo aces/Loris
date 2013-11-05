@@ -49,6 +49,64 @@ $tpl_data['sessionID'] = $_REQUEST['sessionID'];
 $tpl_data['commentID'] = $_REQUEST['commentID'];
 $tpl_data['candID']    = $_REQUEST['candID'];
 
+// the the list of tabs, their links and perms
+$mainMenuTabs = $config->getSetting('main_menu_tabs');
+
+foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
+    $tpl_data['tabs'][]=$myTab;
+    foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
+    {
+        // skip if inactive
+        if ($mySubtab['visible']==0) continue;
+        // replace spec chars
+        $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
+
+        // check for the restricted site access
+        if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
+
+            // if there are no permissions, allow access to the tab
+            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+                $tpl_data['subtab'][]=$mySubtab;
+            } else {
+
+                // if any one permission returns true, allow access to the tab
+                foreach ($mySubtab["permissions"] as $permissions) {
+
+                    // turn into an array
+                    if (!is_array($permissions)) $permissions = array($permissions);
+
+                    // test and grant access to button with 1st permission
+                    foreach ($permissions as $permission) {
+                        if ($user->hasPermission($permission)) {
+                            $tpl_data['subtab'][]=$mySubtab;
+                            break 2;
+                        }
+                        unset($permission);
+                    }
+                    unset($permissions);
+                }
+            }
+        }
+        unset($mySubtab);
+    } // end foreach
+}
+
+//Display the links, as specified in the config file
+$links=$config->getSetting('links');
+foreach(Utility::toArray($links['link']) AS $link){
+    $BaseURL = $link['@']['url'];
+    if(isset($link['@']['args'])) {
+        $LinkArgs = $link_args[$link['@']['args']];
+    }
+    $LinkLabel = $link['#'];
+    $WindowName = md5($link['@']['url']);
+    $tpl_data['links'][]=array(
+        'url'        => $BaseURL . $LinkArgs,
+        'label'      => $LinkLabel,
+        'windowName' => $WindowName
+    );
+}   
+
 /* VISIT LISTING
 */
 

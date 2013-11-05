@@ -214,86 +214,179 @@
         <showDatabaseQueries>0</showDatabaseQueries>
     </gui>
 
-    <main_menu_tabs>
-        <!-- tab name -->
-        <tab>
-            <link>new_profile</link>
+<main_menu_tabs>
+    <tab>
+        <label>Candidate</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Candidate</parent>
+            <link>main.php?test_name=new_profile</link>
             <label>New Profile</label>
             <access>site</access>
             <permissions>
                 <perm>data_entry</perm>
             </permissions>
             <visible>1</visible>
-        </tab>
-        <tab>
-            <link>candidate_list</link>
+        </subtab>
+        <subtab>
+            <parent>Candidate</parent>
+            <link>main.php?test_name=candidate_list</link>
             <label>Access Profile</label>
             <access>all</access>
             <permissions></permissions>
             <visible>1</visible>
-        </tab>
-        <tab>
-            <link>user_accounts</link>
+        </subtab>
+    </tab>
+
+    <tab>
+        <label>Clinical</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=reliability</link>
+            <label>Reliability Coding</label>
+            <access>all</access>
+            <permissions>
+                <perm>user_accounts</perm>
+                <perm>reliability_edit_all</perm>
+                <perm>access_all_profiles</perm>
+                <perm>EARLI_Reliability</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=blind_coding</link>
+            <label>Blind Coding</label>
+            <access>all</access>
+            <permissions>
+                <perm>blind_add_candidates</perm>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=videos</link>
+            <label>Videos</label>
+            <access>all</access>
+            <permissions>
+                <perm>earli_videos</perm>
+                <perm>video_upload</perm>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=conflicts_resolve</link>
+            <label>Conflicts Resolver</label>
+            <access>all</access>
+            <permissions>
+                <perm>data_entry</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=timepoint_flag</link>
+            <label>Exclusion</label>
+            <access>all</access>
+            <permissions>
+                <perm>timepoint_flag</perm>
+                <perm>timepoint_flag_evaluate</perm>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=mri_parameter_forms</link>
+            <label>MRI Parameter forms</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>0</visible>
+        </subtab>
+        <subtab>
+            <parent>Clinical</parent>
+            <link>main.php?test_name=certification</link>
+            <label>Certification</label>
+            <access>all</access>
+            <permissions>
+                <perm>certification</perm>
+                <perm>certification_multisite</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
+        <label>Imaging</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Imaging</parent>
+            <link>main.php?test_name=final_radiological_review</link>
+            <label>Radiological Reviews</label>
+            <access>all</access>
+            <permissions>
+                <perm>edit_final_radiological_review</perm>
+                <perm>view_final_radiological_review</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Imaging</parent>
+            <link>dicom_archive.php?</link>
+            <label>Dicom Archive</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Imaging</parent>
+            <link>mri_browser.php?</link>
+            <label>MRI Browser</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
+        <label>Reports</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Reports</parent>
+            <link>main.php?test_name=statistics</link>
+            <label>Database Statistics</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Reports</parent>
+            <link>query_gui.php</link>
+            <label>Data Query Tool</label>
+            <access>all</access>
+            <permissions>
+                <perm>data_dict</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
+        <label>Admin</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Admin</parent>
+            <link>main.php?test_name=user_accounts</link>
             <label>User Accounts</label>
             <access>all</access>
             <permissions>
                 <perm>user_accounts</perm>
             </permissions>
             <visible>1</visible>
-        </tab>
-          <tab>
-            <link>statistics</link>
-            <label>Database Statistics</label>
-            <access>all</access>
-           <permissions>
-            </permissions>
-            <visible>1</visible>
-        </tab>
-        <tab>
-            <link>datadict</link>
-            <label>Data Dictionary</label>
-            <access>all</access>
-            <permissions>
-            <perm>data_dict</perm>
-            </permissions>
-            <visible>1</visible>
-        </tab>
-
-        <tab>
-          <link>data_team_helper</link>
-          <label>Data Team Helper</label>
-          <access>all</access>
-          <permissions>
-              <perm>
-              </perm>
-          </permissions>
-          <visible>1</visible>
-        </tab>
-        <tab>
-          <link>violated_scans</link>
-          <label>Violated Scans</label>
-          <access>all</access>
-          <permissions>
-          <perm>violated_scans</perm>
-          </permissions>
-          <visible>1</visible>
-        </tab>
-        <tab>
-          <link>data_integrity_flag</link>
-          <label>Data Integrity Flag</label>
-          <access>all</access>
-          <permissions>
-            <perm>
-                data_integrity_flag
-            </perm>
-          </permissions>
-          <visible>1</visible>
-        </tab>
-        <ConflictResolver>
-            <MaxConflicts>500</MaxConflicts>
-        </ConflictResolver>
-
-</main_menu_tabs>
-
+        </subtab>
+    </tab>
+    </main_menu_tabs>
 </config>
 

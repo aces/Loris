@@ -40,7 +40,7 @@ class NDB_Caller extends PEAR
     * @return string    rendered object, as html
     *
     */
-    function load($test_name, $subtest)
+    function load($test_name, $subtest, $controlPanel=null)
     {
         // if no first argument, return
         if (empty($test_name)) {
@@ -60,7 +60,7 @@ class NDB_Caller extends PEAR
 
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
-                    $html = $this->loadMenu($test_name, $mode);
+                $html = $this->loadMenu($test_name, $mode, $controlPanel);
             if (Utility::isErrorX($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
@@ -126,10 +126,10 @@ class NDB_Caller extends PEAR
     * @param string The Menu mode
     *
     */
-    function loadMenu($menu, $mode)
+    function loadMenu($menu, $mode, $controlPanel=null)
     {
         // make an instance of the menu's object
-        $menu =& NDB_Menu::factory($menu, $mode);
+        $menu =& NDB_Menu::factory($menu, $mode, $controlPanel);
         if (Utility::isErrorX($menu)) {
             return PEAR::raiseError($menu->getMessage());
         }
@@ -139,6 +139,9 @@ class NDB_Caller extends PEAR
             return PEAR::raiseError("NDB_Caller::loadMenu() save: ".$success->getMessage());
         }
 
+        if($controlPanel) {
+            $menu->controlPanel = $controlPanel->display();
+        }
         $html = $menu->display();
         if (Utility::isErrorX($html)) {
             return PEAR::raiseError("NDB_Caller::loadMenu() display: ".$html->getMessage());

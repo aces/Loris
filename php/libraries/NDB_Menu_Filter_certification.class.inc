@@ -69,7 +69,7 @@ class NDB_Menu_Filter_certification extends NDB_Menu_Filter
             if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
-            if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
+            if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
         }
         else {
             // allow only to view own site data
