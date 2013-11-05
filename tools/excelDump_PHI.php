@@ -17,7 +17,7 @@ require_once "Archive/Tar.php";
 //$dataDir = "dataDump" . date("dMy");
 $dumpName = "IBISdataDump_PHI" . date("dMy"); // label for dump
 $dataDir = $config['paths']['base'] . "tools/$dumpName/"; //temporary working directory
-$destinationDir = $config['paths']['base'] . "htdocs/dataDumps_PHI"; //temporary working directory
+$destinationDir = $config['paths']['base'] . "htdocs/dataDumpsPHI"; //temporary working directory
 
 /*
 * Prepare output directory, if needed.
