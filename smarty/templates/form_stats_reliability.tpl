@@ -2,7 +2,7 @@
 <div id="reliability">
 <h2 class="statsH2">Reliability Statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
         {html_options id="ReliabilitySite" options=$Sites name="ReliabilitySite" selected=$CurrentSite.ID}   
-        
+        {html_options id="ReliabilityProject" options=$Projects name="ReliabilityProject" selected=$CurrentProject.ID}   
         <button onClick="updateReliabilityTab()">Submit Query</button>
 
 <table class="data">
