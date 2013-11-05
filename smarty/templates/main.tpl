@@ -61,7 +61,7 @@ function getCookie(c_name) {
 </script>
 {/literal}
 <link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
 
 </head>
