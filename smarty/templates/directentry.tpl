@@ -8,6 +8,7 @@
 <link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
 <script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<script type="text/javascript" src="js/modules/direct_entry.js"></script>
 
 {if $test_name_js}
 <script type="text/javascript" src="{$test_name_js}"></script>
@@ -59,13 +60,17 @@
 {if $prevpage}
 {if $prevpage eq 'top'}
 <a href="?key={$key}">Previous page</a>
+<button>Go Back</button>
 {else}
 <a href="?key={$key}&pageNum={$prevpage}">Previous page</a>
+<button>Go Back</button>
+
 {/if}
 {/if}
 
 {if $nextpage} 
 <a href="?key={$key}&pageNum={$nextpage}">Next page</a>
+<button id="savecontinue" data-next="{$nextpage}">Save And Continue</button>
 {/if}
 </td>
 </tr>
