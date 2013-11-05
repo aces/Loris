@@ -700,7 +700,7 @@ class NDB_Form_statistics extends NDB_Form
             array( '' => 'Recruit Gender Breakdown'),
             Utility::getAllInstruments()
         );
-        $this->tpl_data['scored_instruments'] = ProjectUtility::getScoredInstruments();
+        $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments();
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array('Complete', 'Incomplete');
