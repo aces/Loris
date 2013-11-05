@@ -48,13 +48,15 @@ class NDB_Caller extends PEAR
     * @return string    rendered object, as html
     *
     */
-    function load($test_name, $subtest)
+    function load($test_name, $subtest, $CommentID = '')
     {
         // if no first argument, return
         if (empty($test_name)) {
             return;
         }
-
+        if(empty($CommentID)) {
+            $CommentID = $_REQUEST['commentID'];
+        }
         // get the files path, aka the base directory
         $config =& NDB_Config::singleton();
         $base = $config->getSetting('base');
@@ -108,7 +110,7 @@ class NDB_Caller extends PEAR
           if ($this->existsAndRequire($base."project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
                 || $test_name=='instrument_preview') {
     
-            $html = $this->loadInstrument($test_name, $subtest, $_REQUEST['commentID']);
+            $html = $this->loadInstrument($test_name, $subtest, $CommentID);
             if (Utility::isErrorX($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
@@ -116,7 +118,7 @@ class NDB_Caller extends PEAR
             $this->type = 'instrument';
             return $html;
         } else if(file_exists($base."project/instruments/$test_name.linst")) {
-            $html = $this->loadInstrument($test_name, $subtest, $_REQUEST['commentID']);
+            $html = $this->loadInstrument($test_name, $subtest, $CommentID);
             if (PEAR::isError($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
@@ -253,7 +255,6 @@ class NDB_Caller extends PEAR
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress' || !$user->hasPermission('data_entry') || $user->getData("CenterID") != $timepoint->getData("CenterID")) {
             if($instrument->preview !== true && $this->DataEntry !== 'Direct') {
-                print "I AM HERE";
                 $instrument->freeze();
             }
         }
