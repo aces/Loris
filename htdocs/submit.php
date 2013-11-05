@@ -63,12 +63,15 @@ class DirectDataEntryMainPage {
         $this->NextPageNum = $this->getNextPageNum($pageNum);
         $this->PrevPageNum = $this->getPrevPageNum($pageNum);
 
+        $this->CommentID   = $this->getCommentID();
         $this->tpl_data = array(
             'nextpage' => $this->NextPageNum, 
             'prevpage' => $this->PrevPageNum, 
             'key' => $this->key);
 
     }
+
+
 
     function GetNextPageNum($currentPage) {
         $DB = Database::singleton();
@@ -91,13 +94,27 @@ class DirectDataEntryMainPage {
         return $DB->pselectOne("SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Order_number < :PN ORDER BY Order_number DESC", array('TN' => $this->TestName, 'PN' => $currentPage));
     }
 
+    function getDefaults() {
+    }
+
     function run() {
         $this->initialize();
         $this->display();
     }
 
+    function getCommentID() {
+        $DB = Database::singleton();
+        return $DB->pselectOne(
+            "SELECT CommentID FROM participant_accounts WHERE OneTimePassword=:key AND Complete='No'",
+            array(
+                'key' => $this->key
+            )
+        );
+    }
+
     function display() {
-        $workspace = $this->caller->load($this->TestName, $this->Subtest, 'FakeCommentID');
+        
+        $workspace = $this->caller->load($this->TestName, $this->Subtest, $this->CommentID);
         $this->tpl_data['workspace'] = $workspace;
         $smarty = new Smarty_neurodb;
         $smarty->assign($this->tpl_data);

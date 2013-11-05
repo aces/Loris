@@ -3,7 +3,7 @@ require_once __DIR__ . '/../test_includes.php';
 require_once __DIR__ . '/../../htdocs/submit.php';
 
 Mock::generate('Database');
-Mock::generatePartial('DirectDataEntryMainPage', 'DirectDataEntryMainPageRunPartial', array('initialize', 'display'));
+Mock::generatePartial('DirectDataEntryMainPage', 'DirectDataEntryMainPageRunPartial', array('initialize', 'display', 'getCommentID'));
 
 class TestOfDirectDataEntry extends UnitTestCase {
     function setUp() {

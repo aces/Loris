@@ -315,8 +315,16 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->addHidden('test_name', $this->testName);
         $this->addHidden('page', $this->page);
         $this->addHidden('subtest', $this->page);
-        
-        if(!$this->form->isFrozen()) {
+
+        $DataEntryType = 'normal'; 
+        if(isset($_REQUEST['key'])) {
+            // Don't show save button for Direct Data entry type,
+            // because that's part of the DirectEntry template
+            // and has Save/Continue and go back buttons
+            $DataEntryType = 'DirectEntry';
+            $this->addHidden('key', $_REQUEST['key']);
+        }
+        if(!$this->form->isFrozen() && $DataEntryType === 'normal') {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->addGroup($buttons, null, null, "&nbsp;");
