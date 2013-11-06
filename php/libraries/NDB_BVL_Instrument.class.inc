@@ -391,7 +391,10 @@ class NDB_BVL_Instrument extends NDB_Page
         foreach($this->dateTimeFields as $field){
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
-        
+        foreach($this->monthYearFields as $field){
+            $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
+        }
+
         if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0) {
             $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>'; //if($defaults['Window_Difference'] != 0) {
         }
