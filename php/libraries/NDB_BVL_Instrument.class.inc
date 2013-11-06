@@ -612,7 +612,7 @@ class NDB_BVL_Instrument extends NDB_Page
             if(strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
-        }
+        }//print_r($values);
         $db =& Database::singleton();
         $result = $db->update($this->table, $values, array('CommentID'=>$this->getCommentID()));
         if($this->isError($result)) {
