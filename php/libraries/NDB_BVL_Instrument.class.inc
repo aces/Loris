@@ -391,7 +391,10 @@ class NDB_BVL_Instrument extends NDB_Page
         foreach($this->dateTimeFields as $field){
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
-        
+        foreach($this->monthYearFields as $field){
+            $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
+        }
+
         // Windows don't apply to probands, but otherwise if it's outside of the window highlight
         // it as an error
         if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0 && strrpos($this->testName, '_proband') === FALSE) {
@@ -612,7 +615,7 @@ class NDB_BVL_Instrument extends NDB_Page
             if(strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
-        }//print_r($values);
+        }
         $db =& Database::singleton();
         $result = $db->update($this->table, $values, array('CommentID'=>$this->getCommentID()));
         if($this->isError($result)) {
