@@ -574,7 +574,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         if(strrpos($this->testName, "_proband") === FALSE) {
             $this->_saveCandidateAge($values);
-        //}
+        }
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
