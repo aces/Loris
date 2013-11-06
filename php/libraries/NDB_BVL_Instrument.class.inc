@@ -574,7 +574,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         if(strrpos($this->testName, "_proband") === FALSE) {
             $this->_saveCandidateAge($values);
-        //}
+        }
         //Convert select multiple elements into database storable values
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
@@ -1763,7 +1763,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 if (isset($this->LinstQuestions[$question])) {
                     $q =& $this->LinstQuestions[$question];
 
-                    if ($q['UserRules'] !== true) {
+                    if (!isset($q['UserRules']) || $q['UserRules'] !== true) {
                         // Unregister the rules that were added by the wrapper
                         // for the group, because otherwise that'll override the
                         // user specified rules from the .rules file
