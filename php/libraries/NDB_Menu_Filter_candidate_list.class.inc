@@ -32,6 +32,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
 
     function _setupVariables()
     {
+        $this->tpl_data['toggled_visible']=false;
         // set the class variables
         $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID','participant_status_options.ID as Participant_Status', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
         $config=&NDB_Config::singleton();
@@ -47,7 +48,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         }
         $this->columns=array_merge($this->columns,
             array('min(session.SubprojectID) as Subproject',
-            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB')
+            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
+            'session.Scan_done as scan_Done')
         );
         if($config->getSetting("useEDC")==="true") {
         	$this->columns[]='DATE_FORMAT((candidate.EDC),\'%Y-%m-%d\') AS EDC';
@@ -74,7 +76,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         
         $this->group_by = 'candidate.CandID';
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
-        $this->validFilters = array('participant_status_options.ID','candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
+        $this->validFilters = array('participant_status_options.ID','candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)','session.Scan_done');
         $this->validHavingFilters = array('count(DISTINCT session.Visit_label)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
 		
         $this->formToFilter = array(
@@ -88,7 +90,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                                     'Visit_Count' => 'count(DISTINCT session.Visit_label)', // Need distinct because of joining with feedback_bvl_thread
                                     'Latest_Visit_Status' => 'max(session.Current_stage)',
                                     'Feedback' => 'coalesce(min(feedback_bvl_thread.Status+1), 1)',
-                                    'Participant_Status' => 'participant_status_options.ID'
+                                    'Participant_Status' => 'participant_status_options.ID',
+                                    'scan_done' => 'session.Scan_done'
                                 );
         return true;
     }
@@ -109,7 +112,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
-            if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
+            if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
         }
         else {
             // allow only to view own site data
@@ -127,33 +130,33 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $list_of_projects =& Utility::getProjectList();
 
         // list of feedback statuses
-        $feedback_status_options = array(null => 'Any','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
-        $latest_visit_status_options = array(null => 'Any', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
+        $feedback_status_options = array(null => 'All','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
+        $latest_visit_status_options = array(null => 'All', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
-        $participant_status_options=   array(null=>'Any') +  NDB_Form_participant_status::getParticipantStatusOptions();
-        
+        $participant_status_options=   array(null=>'All') +  NDB_Form_participant_status::getParticipantStatusOptions();
+        $scan_options = array(null=>'All','Y'=>'Yes','N'=>'No');
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
         $this->addBasicText('DCCID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
-        $this->addSelect('gender', 'Gender:', array('' => 'Any', 'Male' => 'Male', 'Female' => 'Female'));
-        $this->addSelect('SubprojectID', 'Sub Project:', array('' => 'Any') + $list_of_subprojects);
+        $this->addSelect('gender', 'Gender:', array('' => 'All', 'Male' => 'Male', 'Female' => 'Female'));
+        $this->addSelect('SubprojectID', 'Sub Project:', array('' => 'All') + $list_of_subprojects);
         $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
         $this->addSelect('Participant_Status','Participant Status:', $participant_status_options);
-        
+        $this->addSelect('scan_done','Scan Done:', $scan_options);
         $config=&NDB_Config::singleton();
         if($config->getSetting("useProjects")=="true"){
-           $this->addSelect('ProjectID', 'Project:', array('' => 'Any') + $list_of_projects);
+           $this->addSelect('ProjectID', 'Project:', array('' => 'All') + $list_of_projects);
         }
         if($config->getSetting("useEDC")=="true"){
         	$this->addBasicText('edc', 'EDC:', 'maxlength=10');
         	$this->tpl_data['useEDC']="true";
         }
-        $this->addSelect('feedback', 'Feedback Status:', array_merge(array('' => 'Any'), $feedback_status_options));
+        $this->addSelect('feedback', 'Feedback Status:', array_merge(array('' => 'All'), $feedback_status_options));
 
         return true;
     }
@@ -207,7 +210,9 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 } else if ($key == 'Participant_Status') {
                 	$this->tpl_data['items'][$x][$i]['value'] = $participantOptions[$val];
                 }
-                	
+                  else if ($key=='scan_done'){
+                    $this->tpl_data['items'][$x][$i]['value'] = $val;
+                }
 
                 $i++;
             }

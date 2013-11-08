@@ -39,63 +39,71 @@ $(document).ready(function() {
 {if $form.message}
 <div class="error">{$form.message.label}</div>
 {/if}
-<table border="0" valign="top" class="std" width="75%">
+<table border="0" valign="top" class="std" width="33%" style="float:left; margin-top: 10px; margin-right: 110px;">
     <tr>
-        <th nowrap="nowrap" colspan="15">Selection Filter</th>
+        <th nowrap="nowrap" colspan="4">Selection Filter</th>
     </tr>
     <tr>
-	<td colspan = 15>
+	<td colspan = 4>
 	<table border="0">
 <tr>
 {* OBJECTIVE IS NIHPD SPECIFIC - BUT WE ARE TOO LAZY TO CHANGE THIS TODAY *}
-	<td nowrap="nowrap" align="right">Subproject:</td>
-	<td nowrap="nowrap">{$form.CommentID.html}</td>
+	<td nowrap="nowrap">Subproject:</td>
+	<td nowrap="nowrap" class="MenuWidth">{$form.CommentID.html}</td>
+    <td nowrap="nowrap">DCCID:</td>
+    <td nowrap="nowrap">{$form.DCCID.html}</td>
+</tr>
+    <tr>
 	{* <td nowrap="nowrap">Objective:</td>
         <td nowrap="nowrap">{$form.Objective.html}</td> *}
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
         <td nowrap="nowrap">{$form.CenterID.label}</td>
-        <td nowrap="nowrap">{$form.CenterID.html}</td>
-        <td nowrap="nowrap">{$form.Instrument.label}</td>
-        <td nowrap="nowrap">{$form.Instrument.html}</td>
-        <td nowrap="nowrap">{$form.reliability_center_id.label}</td>
-        <td nowrap="nowrap">{$form.reliability_center_id.html}</td>
-      </tr>
-    <tr>
-        <td nowrap="nowrap">DCCID:</td>
-        <td nowrap="nowrap">{$form.DCCID.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.CenterID.html}</td>
         <td nowrap="nowrap">PSCID:</td>
         <td nowrap="nowrap">{$form.PSCID.html}</td>
- 	    <td nowrap="nowrap">Gender:</td>
-        <td nowrap="nowrap">{$form.Gender.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.Instrument.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Instrument.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.reliability_center_id.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.reliability_center_id.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">{$form.ProjectID.label}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap">Gender:</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Gender.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">Visit label:</td>
-        <td nowrap="nowrap">{$form.Visit_label.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Visit_label.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">{$form.Invalid.label}</td>
-        <td nowrap="nowrap">{$form.Invalid.html}</td>
-</tr>
+        <td nowrap="nowrap" class="MenuWidth">{$form.Invalid.html}</td>
+ </tr>
+    <tr>
+        <td colspan="12" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
+ 	  </tr>
 
 </table>
 </td>
-   </tr>
-	<tr>  
-	 <td colspan = 15 nowrap="nowrap"><b>Scans Done:</b></td>
-	 </tr>
- 
-   <tr>
-        <td nowrap="nowrap" width='10%'>Actions:</td>
+  <tr>
 <!--        <td nowrap="nowrap"><input type="button" name="button" value="Add Instrument" class="button" onclick="location.href='main.php?test_name=csbs_reliability&subtest=csbs_reliability'"/></td> -->
-        <td colspan="14" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
     </tr>
 </table>
 </form>
 
 {if $reliability_swap_candidates}
 <form method="post" action="main.php?test_name=reliability">
-    <input type="hidden" name="swap" value="swap" />
-    <table border="0" valign="top" class="std" id="swapcandidates">
+    <input type="hidden" name="swap" value="swap"/>
+    <table border="0" valign="top" class="hideable" id="swapcandidates">
     <thead>
     <tr>
-        <th colspan="4" class="button">Swap Candidates</th>
+        <th colspan="4" class="button" style="margin-top: 5px;">Swap Candidates</th>
     </tr>
     </thead>
     <tbody>
@@ -130,7 +138,7 @@ $(document).ready(function() {
 {/if}
 {if $EARLI_Reliability}
 <form method="post" action="main.php?test_name=reliability">
-    <table border="0" valign="top" class="std" id="addcandidate">
+    <table border="0" valign="top" class="hideable" id="addcandidate">
     <thead>
     <tr>
         <th colspan="4" class="button">Add EARLI Candidate</th>
@@ -162,12 +170,10 @@ $(document).ready(function() {
     </table>
 </form>
 {/if}
-<br>
-<br>
 <!-- <h2><font color="red">Note: Phase 2 reliability forms are unavailable at the moment as the system is being upgraded.</font></h2> -->
 
 <!--  title table with pagination -->
-<table border="0" valign="bottom" width="100%">
+<table id="LogEntries" border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
     <td class="controlPanelSection">List of Log Entries</td>

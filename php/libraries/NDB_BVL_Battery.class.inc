@@ -83,6 +83,8 @@ class NDB_BVL_Battery extends PEAR
             }
             */
             $this->age = $age;
+        } else {
+            $this->age = null;
         }
 
 
@@ -100,7 +102,7 @@ class NDB_BVL_Battery extends PEAR
      * @return void
      * @access public
      */
-    function createBattery($SubprojectID, $stage=null, $visit_label=null, $center_ID=null)
+    function createBattery($SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit=null)
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
@@ -118,7 +120,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // determine the list of instruments to register
-        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage, $visit_label, $center_ID);
+        $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage, $visit_label, $center_ID, $firstVisit);
         if($this->isError($neededTests)) {
             return $this->raiseError("Could not lookup the battery for age $this->age and subprojectID ".$this->getSubprojectID());
         }
@@ -228,8 +230,8 @@ class NDB_BVL_Battery extends PEAR
     } // end removeInstrument()
     
     /**
-     * gets the array of instruments which are members of the current
-     * battery
+     * gets the array of instruments which are members of the currently
+     * selected session's battery
      *
      * @param string $stage either 'visit' or 'screening' - determines
      * whether to register only screening instruments or visit
@@ -246,44 +248,24 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // craft the select query
-        $query = "SELECT f.Test_name FROM ";
+        $query = "SELECT f.Test_name FROM flag f JOIN session s 
+            ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
+               AND f.CommentID NOT LIKE 'DDE%'";
         $qparams = array('SID' => $this->sessionID);
-        if(!is_null($stage)) {
-            $query .= "test_battery AS b, ";
-        }
-        $query .= " flag AS f, test_names as t WHERE f.Test_name=t.Test_name AND f.SessionID=:SID AND LEFT(f.CommentID,3) != 'DDE'";
-
-        if(!is_null($stage)) {
-            if(!is_null($visit_label)) {
-                $query .= " AND b.Visit_label=:VL";
-                $qparams['VL']= $visit_label;
-            } else {
-                $query .= " OR b.Visit_label IS NULL";
-            }
-        }
-        if(!is_null($stage)) {
-            $query .= " AND t.Test_name=b.Test_name AND b.Stage=:stg";
-            $qparams['stg'] = $stage;
-
-            if(!is_null($SubprojectID)) {
-                $query .= " AND (b.SubprojectID IS NULL OR b.SubprojectID=:SubprojID)";
-                $qparams['SubprojID'] = $SubprojectID;
-            }
-        }
-        
-        // get the list of instruments
-        $rows = array();
-        $tests = array();
         $rows = $DB->pselect($query, $qparams);
+
         if($this->isError($rows)) {
             return $this->raiseError("Could not get battery from database");
         }
 
         // repackage the array
+        $tests = array();
         foreach($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
-
+   
         // return an array of test names
         return $tests;
     } // end getBattery()
@@ -356,8 +338,8 @@ class NDB_BVL_Battery extends PEAR
     }
 
     /**
-     * looks up the appropriate battery for the current visit, based
-     * on age AND subproject
+     * Looks up what the appropriate battery for the current visit should
+     * be, based on age AND subproject
      *
      * @throws PEAR::Error
      * @param int $age   the age of the subject, in months
@@ -367,7 +349,7 @@ class NDB_BVL_Battery extends PEAR
      * @return array  an array of instrument names
      * @access public
      */
-    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null)
+    function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit=null)
     {
         $DB = Database::singleton();
         if(empty($this->age)) {
@@ -402,7 +384,6 @@ class NDB_BVL_Battery extends PEAR
     } else {
             $query .= " AND b.CenterID IS NULL"; // Unless the center is specified & matched, don't return site-restricted instruments
         }
-
         // get the list of instruments
         $tests = array();
         $rows = $DB->pselect($query, $qparams);
@@ -414,7 +395,19 @@ class NDB_BVL_Battery extends PEAR
         foreach($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
+        // get the list of instruments that should be part of first visit
+        if($firstVisit) {
+            $query_firstVisit = "SELECT  DISTINCT Test_name FROM test_battery WHERE firstVisit=:FV 
+                                 AND SubprojectID=:subID";
+            $where = array('FV'=>'Y','subID'=>$SubprojectID);
+            $rows_firstVisit = $DB->pselect($query_firstVisit,$where); 
+            foreach($rows_firstVisit as $row) {
+                if(!in_array($row['Test_name'], $tests)){
+                    array_push($tests, $row['Test_name']);   
+                }     
+            }
 
+        }        
         // return an array of test names
         return $tests;
     } // end lookupBattery()

@@ -3,7 +3,8 @@ require_once 'Pager/Pager.php';
 require_once 'NDB_Menu.class.inc';
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
+require_once 'HTML/QuickForm/text.php';
+require_once 'HTML/QuickForm/select.php';
 /**
  * Menu class, with filtering
  *
@@ -11,7 +12,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  * @package main
  */
 class NDB_Menu_Filter extends NDB_Menu
-{
+{    
     /**
      * The columns to SELECT
      * @var    array
@@ -310,7 +311,39 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return true;
     }
+    function _getBaseQuery(){
+        $query = "SELECT ";
+        if (is_array($this->columns) && count($this->columns) > 0) {
+            $query .= implode(', ', $this->columns);
+        } else {
+            $query .= "*";
+        }
+        $query .= $this->query;
+        return $query; 
 
+    } 
+    function _addValidFilters($prepared_key, $field, $val){
+        $query = '';
+        if ((!empty($val) || $val === '0') && $field != 'order') {
+
+                    // special rule for dropdowns where value is numeric
+                    if (strtolower(substr($field, -8)) == 'centerid'
+                        || strtolower(substr($field, -10)) == 'categoryid'
+                        || strtolower(substr($field, -6)) == 'gender'
+                        || (isset($this->EqualityFilters) 
+                        && in_array($field, $this->EqualityFilters))
+                    ) {
+                            $query .= " AND $field = :v_$prepared_key";
+                           // $qparams["v_$prepared_key"] = $val;
+                    } else {
+                        $query 
+                            .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
+                        //$qparams["v_$prepared_key"] = $val;
+                    }
+                }
+        return $query; 
+        
+     }
 
     /**
      * Returns a list of candidates, users, etc.
@@ -327,40 +360,32 @@ class NDB_Menu_Filter extends NDB_Menu
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        // make the SELECT statement
-        $query = "SELECT ";
         $qparams = array();
-        if (is_array($this->columns) && count($this->columns) > 0) {
-            $query .= implode(', ', $this->columns);
-        } else {
-            $query .= "*";
-        }
-
         // add the base query
-        $query .= $this->query;
+        $query .= $this->_getBaseQuery();
 
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
-            foreach ($this->filter as $key => $val) {
-                $prepared_key = Utility::getCleanString($key);
-                if ((!empty($val) || $val === '0') && $key != 'order') {
-
-                    // special rule for dropdowns where value is numeric
-                    if (strtolower(substr($key, -8)) == 'centerid'
-                        || strtolower(substr($key, -10)) == 'categoryid'
-                        || strtolower(substr($key, -6)) == 'gender'
-                        || (isset($this->EqualityFilters) 
-                        && in_array($key, $this->EqualityFilters))
-                    ) {
-                            $query .= " AND $key = :v_$prepared_key";
-                            $qparams["v_$prepared_key"] = $val;
-                    } else {
-                        $query 
-                            .= " AND $key LIKE CONCAT('%', :v_$prepared_key, '%') ";
-                        $qparams["v_$prepared_key"] = $val;
-                    }
+            foreach ($this->filter as $field => $val) {
+                $prepared_key = Utility::getCleanString($field);
+                $query_piece = $this->_addValidFilters($prepared_key, $field, $val); 
+                if(! empty($query_piece)){
+                    $query .= $query_piece;
+                    $qparams["v_$prepared_key"] = $val;
                 }
             }
+        }
+
+        if(isset($this->searchKeyword) && isset($_REQUEST['keyword'])){
+            $query .= " AND (";
+            $fields = array();
+            foreach($this->searchKeyword as $field){
+              //  $fields[] =" $field LIKE :v_SearchValue";
+              $fields[] =" $field LIKE CONCAT('%', :v_searchkey, '%')"; 
+            }
+            $query .= join ( " OR ", $fields);
+              $qparams['v_searchkey'] = $_REQUEST['keyword'];
+            $query .= ")";
         }
 
         // add GROUP BY if applicable

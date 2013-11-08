@@ -86,15 +86,24 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
             $query .= " AND candidate.centerID = '" . $user->getData('CenterID') . "' "; 
         }
-
+        $config=&NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
         // set the class variables
-        $this->columns = array('reliability.CommentID', 'candidate.PSCID', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label', 'reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap');
-
+        $this->columns = array('reliability.CommentID', 'candidate.PSCID', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
+        if ($useProjects === "true") {
+            $this->columns[] = 'candidate.ProjectID as Project';
+        }
+        $this->columns=array_merge($this->columns,
+             array('reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap' ));
         $this->query = $query;
         $this->group_by = '';
         $this->order_by = 'reliability.Instrument, session.CandID, session.Visit_label';
-        $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label', 'Instrument', 'reliability_score', 'Reliable');
-        $this->validFilters = array('reliability.CommentID', 'reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid');
+        $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label');
+        if ($useProjects === "true") {
+            $this->headers[] = 'Project';
+        }
+        $this->headers=array_merge($this->headers,array('Instrument', 'reliability_score', 'Reliable'));
+        $this->validFilters = array('reliability.CommentID', 'reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid');
 
         $this->formToFilter = array(
                                     'CommentID' => 'reliability.CommentID',
@@ -108,7 +117,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                                     'Instrument' => 'reliability.Instrument',
                                     'reliability_score'=>'reliability.Reliability_score',
                                     'Current_stage'=>'session.Current_stage',
-                                    'Invalid' => 'reliability.invalid'
+                                    'Invalid' => 'reliability.invalid',
+                                    'ProjectID'=>'candidate.ProjectID'
                                     // 'Lock_record' => 'session.Lock_record'
                                     );
         return true;
@@ -132,7 +142,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             }
             if(is_array($list_of_sites)) 
             {
-                $new_list = array('' => 'Any');
+                $new_list = array('' => 'All');
                 foreach($list_of_sites as $key => $val) {
                     $new_list[$key] = $val;
                 }
@@ -150,16 +160,21 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
         
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
-        $list_of_visit_labels = array(null=>'Any');
+        $list_of_visit_labels = array(null=>'All');
         $visitLabel = Utility::getVisitList();
         foreach($visitLabel as $key => $value){
             $list_of_visit_labels[$key]= $value;
         }
         $list_of_visit_labels_only = $visitLabel;
+        $projects = Utility::getProjectList();
+        $list_of_projects = array(null=>'All');
+        foreach($projects as $key=>$value){
+             $list_of_projects[$key]= $value;
+        }
         $subproject_options = Utility::getSubprojectList();
-        $subproject_options = array(null=>'Any') + $subproject_options;
-        $gender_options = array(null=>'Any', 'Male'=>'Male', 'Female'=>'Female');
-        $list_of_instruments = array(null=>'Any');
+        $subproject_options = array(null=>'All') + $subproject_options;
+        $gender_options = array(null=>'All', 'Male'=>'Male', 'Female'=>'Female');
+        $list_of_instruments = array(null=>'All');
         $config =& NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $reliabilityInstruments = $reliabilityConfig['Instrument'];
@@ -180,9 +195,13 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->form->addElement('select', 'Gender', 'Gender:', $gender_options);
         $this->form->addElement('select', 'Visit_label', 'Visit Label:', $list_of_visit_labels);
         $this->form->addElement('select', 'Instrument', 'Instrument:', $list_of_instruments);
-        $this->form->addElement('select', 'Invalid', 'Invalid Candidate:', array('' => '', 'yes' => 'Yes', 'no' => 'No'));
+        $this->form->addElement('select', 'Invalid', 'Invalid Candidate:', array('' => 'All', 'yes' => 'Yes', 'no' => 'No'));
 	 // $this->form->addElement('select', 'Lock_record', 'Lock_record:', $lock_options);
-       
+        //$config=&NDB_Config::singleton();
+        if($config->getSetting("useProjects")=="true"){
+            $this->addSelect('ProjectID', 'Project:', $list_of_projects);
+        }
+
        // For swapping candidates
         if ($user->hasPermission('reliability_swap_candidates')) {
             $this->tpl_data['reliability_swap_candidates'] = true;
@@ -239,8 +258,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     }
     function _setDataTableRows($count)
     {
-
-        $threshold = $this->getThreshholds();
+       $projectlist=Utility::getProjectList();
+       $threshold = $this->getThreshholds();
         // print out
         $x = 0;
         foreach ($this->list as $item) {
@@ -280,11 +299,14 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                    $this->tpl_data['items'][$x][$i]['invalid'] = $invalid;
                    $this->tpl_data['items'][$x][$i]['manual'] = $manual;
                 }
-                if ($key == 'Site')
+                elseif ($key == 'Site')
                 {
                    $this->tpl_data['items'][$x][$i]['value'] = $this->centerIDMap[$item['Site']];
                 }
-                if($key == 'Reliability_score'){
+                elseif ($key=='Project') {
+                    $this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
+                }
+                elseif($key == 'Reliability_score'){
                   $this->tpl_data['items'][$x][$i+1]['name'] = 'Reliability';
                   if(is_null($val))
                     $reliable = null;

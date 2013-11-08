@@ -98,7 +98,7 @@ return true;
 <!-- listing of files -->
 <!-- table with candidate profile info -->
 <table><tr>
-<!--{literal}<script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script>{/literal}-->
+{literal}<!--script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script-->{/literal}
 <!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
 <td nowrap="nowrap"><input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
 <td nowrap="nowrap"><input type="button" name="button" value="MRI Parameter Form" class="button" style = "background-color: #816e91" onclick="window.open('main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}')" /></td>

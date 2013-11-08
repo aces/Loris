@@ -65,7 +65,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
             if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
-            if(is_array($list_of_sites)) $list_of_sites = array('' => 'Any') + $list_of_sites;
+            if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
         }
         else {
             // allow only to view own site data
@@ -78,12 +78,12 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
 
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
-        $this->addSelect('active', 'Active:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
-        $this->addSelect('examiner', 'Examiner:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
+        $this->addSelect('active', 'Active:', array('' => 'All', 'Y' => 'Y', 'N' => 'N'));
+        $this->addSelect('examiner', 'Examiner:', array('' => 'All', 'Y' => 'Y', 'N' => 'N'));
         $this->addBasicText('userID', 'Username:');
         $this->addBasicText('real_name', 'Full name:');
         $this->addBasicText('email', 'Email:');
-        $this->addSelect('pending', 'Pending Approval:', array(''=>'Any', '0'=>'N', '1'=>'Y'));
+        $this->addSelect('pending', 'Pending Approval:', array(''=>'All', '0'=>'N', '1'=>'Y'));
 
         return true;
     }

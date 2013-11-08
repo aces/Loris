@@ -6,15 +6,15 @@
 </tr>
 <tr>
     <td>{$form.Instrument.label}</td>
-    <td>{$form.Instrument.html}</td>
-    <td>{$form.site.label}</td>
-    <td>{$form.site.html}</td>
+    <td class="MenuWidth">{$form.Instrument.html}</td>
+    <td>{$form.PSCID.label}</td>
+    <td class="MenuWidth">{$form.PSCID.html}</td>
 </tr>
 <tr>
+    <td>{$form.site.label}</td>
+    <td class="MenuWidth">{$form.site.html}</td>
     <td>{$form.CandID.label}</td>
-    <td>{$form.CandID.html}</td>
-    <td>{$form.PSCID.label}</td>
-    <td>{$form.PSCID.html}</td>
+    <td class="MenuWidth">{$form.CandID.html}</td>
 </tr>
 <tr>
     <td></td>

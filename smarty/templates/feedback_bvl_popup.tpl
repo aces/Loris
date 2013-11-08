@@ -4,10 +4,18 @@
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
-
 <title>{$study_title}</title>
 </head>
 <body>
+<script language="javascript" type="text/javascript">
+{literal}
+function closeTheWindow() {
+    document.cookie = 'FeedbackButtonBoolean=';
+    window.close();
+}
+{/literal}
+</script>
+
 
 <!-- start main table -->
 <table valign="top" width="100%" border="0" cellpadding="3" cellspacing="2">
@@ -73,11 +81,14 @@
     <th colspan="4">Add new {$feedbackLevel} level feedback</TH>
     </tr>
     {if $form_error_message.new!=""}
-        <TH colspan="4">{$form_error_message.new}</TH>
+        <TH class="error" bcolor="#FF0000" colspan="4" >{$form_error_message.new}</TH>
     {/if}
     <form name="newThreadForm" method="post" action="{$formAction}">
       <tr>
       <th>Type</th>
+      {if $commentID!=""}
+          <th>FieldNames</th>
+      {/if}
       <th>Comment</th>
       <th>Action Required?</th>
       <td align="center" rowspan="6"><input type="submit" name="add_new_thread_form_submit" value="Save Data" class="button"></td>
@@ -89,13 +100,17 @@
           <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Type]" value="{$newTypeCounter}">
           <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Level]" value="{$feedbackLevel}">
           </td>
-          <td align="center"><input type="text" size="30" maxlength="255" name="newFormThreadData[{$newTypeCounter}][Comment]" value="{$new_thread_data[$newTypeCounter].CommentValue}"></td>
           <td align="center">
-    {if $has_permission}
-          {html_options name="newFormThreadData[$newTypeCounter][Public]" values=$YNArray selected=$new_thread_data[$newTypeCounter].PublicValue options=$YNLabelArray}
-    {else}
-          <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Public]" value="N">
-    {/if}
+			     {html_options name="newFormThreadData[$newTypeCounter][FieldName]" values=$FieldNames selected=$new_thread_data[$newTypeCounter].FieldNameValue options=$FieldNames}
+   	      </td>
+          <td align="center"><input type="text" size="30" maxlength="255" name="newFormThreadData[{$newTypeCounter}][Comment]" value="{$new_thread_data[$newTypeCounter].CommentValue}"></td>
+          
+          <td align="center">
+                {if $has_permission}
+                    {html_options name="newFormThreadData[$newTypeCounter][Public]" values=$YNArray selected=$new_thread_data[$newTypeCounter].PublicValue options=$YNLabelArray}
+                {else}
+                    <input type="hidden" name="newFormThreadData[{$newTypeCounter}][Public]" value="N">
+                {/if}
           </td>
         </tr>
         {/section}
@@ -139,6 +154,7 @@
     <table valign="top" width="100%" class="std">
     {section name=thread loop=$thread_list_data}
     {assign var=threadCount value=$smarty.section.thread.index}
+        <th nowrap="nowrap">FieldName</th>
         <th nowrap="nowrap">FeedbackID</th>
         <th nowrap="nowrap">Type</th>
         <th nowrap="nowrap">QC Status</th>
@@ -146,7 +162,8 @@
         <th nowrap="nowrap">Modified</th>
         <th nowrap="nowrap">Active</th>
         </tr>
-        <tr>
+        <tr id= "{$thread_list_data[thread].FeedbackID}">
+        <td align="center">{$thread_list_data[thread].FieldName}</td>
         <td align="center">{$thread_list_data[thread].FeedbackID}</td>
         <td align="center">{$thread_list_data[thread].Type}</td>
         <td align="center" bgcolor="{$thread_list_data[thread].QC_color}">{$thread_list_data[thread].QC_status}</td>
@@ -158,8 +175,10 @@
             <tr>
             <td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp;
             [{$thread_entry[thread][entry].Date}] &nbsp;
-            <B>{$thread_entry[thread][entry].Comment}</B>
             </td>
+            <td>[{$thread_entry[thread][entry].Date}] &nbsp</td>
+          	<td>{$thread_entry[thread][entry].FieldName}</td>
+     		<td><B>{$thread_entry[thread][entry].Comment}</B></td>
             </tr>
         {/section}
         <!-- error message row -->
@@ -203,7 +222,8 @@
                 </tr>
             </table>
         </td>
-        </tr>
+        </tr>  
+        <br>
     {/section}
     </table>    
 
@@ -214,5 +234,6 @@
 </td>
 </tr>
 </table>
+<a href onclick="closeTheWindow()">Stop this window from popping up</a>
 </body>
 </html>

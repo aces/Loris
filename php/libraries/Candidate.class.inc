@@ -409,6 +409,59 @@ class Candidate
     }
     
     /**
+     * generates list of valid subprojects for a given project id
+     * @static
+     * @return array
+     * @throws Utility::isErrorX
+     */
+    function getValidSubprojects()
+    {
+        $projID = $this->getProjectID();
+        $db =& Database::singleton();
+        if(Utility::isErrorX($db)) {
+            return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
+        }
+        $query  = "SELECT SubprojectID from project_rel where ProjectID = :prj";
+        $params = array('prj'=>$projID);
+        $subproj   = $db->pselect($query, $params);
+        if(Utility::isErrorX($subproj)) {
+            return PEAR::raiseError("Could not connect to database: ".$subproj->getMessage());
+        }
+        foreach($subproj as $row){
+            foreach($row as $key =>$val){
+                if($key == 'SubprojectID') {
+                    $subprojList[$val] = $val;
+                }
+            }
+        }
+        return $subprojList;
+    }
+    /**
+     * returns first visit for a candidate based on Date_visit
+     * @static
+     * @return visit label
+     * @throws PEAR::Error
+     */
+    function getFirstVisit() {
+        $candID = $this->getCandID();
+        $db =& Database::singleton();
+        if(Utility::isErrorX($db)) {
+            return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
+        }
+    
+        $query  = "SELECT Visit_label FROM session s JOIN candidate c ON (c.CandID = s.CandID) 
+            WHERE c.CandID=:cid ORDER BY Date_Visit";
+        $where  = array('cid'=>$candID);
+        $vLabel = $db->pselectOne($query, $where);
+        if(Utility::isErrorX($vLabel)) {
+            return PEAR::raiseError("Could not connect to database: ".$vLabel->getMessage());
+        }
+
+        return $vLabel;
+    }
+
+
+    /**
     * generates a new random CandID
     * @static
     * @return int

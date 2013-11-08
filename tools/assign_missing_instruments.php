@@ -33,6 +33,13 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
+$confirm = false;
+if ((isset($argv[1]) && $argv[1] === "confirm") 
+    || (isset($argv[2]) && $argv[2] === "confirm")
+) {
+    $confirm = true;
+}
+
 $DB =& Database::singleton();
 $query="SELECT ID, subprojectID from session";
 if(!empty($argv[1]) && $argv[1]!="confirm"){
@@ -43,7 +50,7 @@ if(!empty($argv[1]) && $argv[1]!="confirm"){
 }
 
 function PopulateVisitLabel($result, $visit_label) {
-    global $argv;
+    global $argv, $confirm;
     // create a new battery object && new battery
     $battery =& new NDB_BVL_Battery;
 
@@ -51,8 +58,19 @@ function PopulateVisitLabel($result, $visit_label) {
     $battery->selectBattery($result['ID']);
     $timePoint =& TimePoint::singleton($result['ID']);
 
+    $DB =& Database::singleton();
+    $query_firstVisit = "SELECT Visit_label FROM session WHERE CandID=:cid ORDER BY Date_visit"; 
+    $where = array ('cid'=>$result['CandID']);
+    $result_firstVisit= $DB->pselectOne($query_firstVisit,$where);
+ 
+    $isFirstVisit = false;//adding check for first visit 
+    if ($result_firstVisit == $visit_label) {
+        $isFirstVisit = true;    
+    }
+   
     //To assign missing instruments to all sessions, sent to DCC or not.
-    $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], $timePoint->getCurrentStage(), $visit_label, $timePoint->getCenterID());
+    $defined_battery=$battery->lookupBattery($battery->age, $result['subprojectID'], 
+                     $timePoint->getCurrentStage(), $visit_label, $timePoint->getCenterID(),$isFirstVisit);
     $actual_battery=$battery->getBattery($timePoint->getCurrentStage(), $result['subprojectID']);
 
     $diff=array_diff($defined_battery, $actual_battery);
@@ -60,7 +78,7 @@ function PopulateVisitLabel($result, $visit_label) {
         echo "\n CandID: ".$timePoint->getCandID()."  Visit Label:  ".$timePoint->getVisitLabel()."\nMissing Instruments:\n";
         print_r($diff);
     }
-    if($argv[1]=="confirm" || $argv[2]=="confirm"){
+    if ($confirm === true) {
         foreach($diff AS $test_name){
             $battery->addInstrument($test_name);
         }
@@ -72,20 +90,21 @@ function PopulateVisitLabel($result, $visit_label) {
 }
 
 if(isset($visit_label)) {
-    $query="SELECT s.ID, s.subprojectID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.visit_label = '$argv[1]'";
-    $DB->select($query, $results);
+    $query="SELECT s.ID, s.subprojectID, s.CandID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.visit_label=:vl";
+    $where = array('vl'=>"'".$argv[1]."'");
+    $results = $DB->pselect($query, $where);
     foreach($results AS $result){
         PopulateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query="SELECT s.ID, s.subprojectID, s.Visit_label from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y'";
-    $DB->select($query, $results);
+    $query="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
+    $results = $DB->pselect($query, array());
     foreach($results AS $result) {
         PopulateVisitLabel($result, $result['Visit_label']);
     }
 }
 
-if($argv[1]!="confirm" && $argv[2]!="confirm"){
+if($confirm === false) {
 	echo "\n\nRun this tool again with the argument 'confirm' to perform the changes\n\n";
 }
 ?>

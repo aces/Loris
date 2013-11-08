@@ -101,6 +101,19 @@ class TestOfFinalRadiologicalReview extends LorisTest
     {
         $this->login("UnitTester", "4test4");
 
+        $this->DB->insert("flag",
+            array('CommentID' => 'TestCommentID',
+            'Data_entry' => 'Complete',
+            'Administration' => 'Partial',
+            'Test_name' => 'radiology_review',
+            'SessionID' => $this->SessionID
+        ));
+        $this->DB->insert("radiology_review",
+            array(
+                'CommentID' => 'TestCommentID'
+            )
+        );
+
         $this->get($this->url . "/main.php?test_name=final_radiological_review");
         $PostArray = array(
             'test_name'            => 'final_radiological_review',
@@ -140,7 +153,7 @@ class TestOfFinalRadiologicalReview extends LorisTest
             "Could not find $this->CandID with filter"
         );
 
-        $PostArray['Review_done'] = '0';
+        $PostArray['Review_done'] = 'no';
         $this->post($this->url . '/main.php', $PostArray);
         $this->assertBasicConditions();
         $this->assertNoPattern(
@@ -163,6 +176,8 @@ class TestOfFinalRadiologicalReview extends LorisTest
             . "for review done and CandID"
         );
 
+        $this->DB->delete("radiology_review", array('CommentID' => 'TestCommentID'));
+        $this->DB->delete("flag", array('CommentID' => 'TestCommentID'));
     }
 
 }

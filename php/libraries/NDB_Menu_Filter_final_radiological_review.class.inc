@@ -38,9 +38,7 @@ require_once 'Candidate.class.inc';
  */
 function _makePretty($key, $val)
 {
-    if ($key == 'Review_Done'
-        || $key=='Conflict'
-        || $key=="Finalized"
+    if( $key=='Conflict'
         || $key=="Conflict2"
         || $key=="Conflict"
     ) {
@@ -53,6 +51,16 @@ function _makePretty($key, $val)
         } else { // Leave nulls empty so that we can distinguish
             return '';
         }
+    }
+    if($key == "Finalized" || $key =="Review_Done"){
+        if($val == "yes"){
+            return 'Yes';
+        }elseif ($val == "no"){
+            return 'No';
+        }else{
+            return '';
+        }
+
     }
 
     if ($key == 'Final_Review_Results' 
@@ -143,7 +151,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'c.ProjectID as Project',
             'c.CenterID as Site',
             'c.DOB as Birth_Date',
-            'COALESCE(r.Review_Done, 0) as Review_Done',
+            'r.Review_Done as Review_Done',
             'r.Final_Review_Results as Results',
             'r.Final_Exclusionary as Exclusionary_Status',
             'r.sas as SAS',
@@ -169,7 +177,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             's.visit_label',
             'c.PSCID',
             'r.Final_Review_Results',
-            'COALESCE(r.Review_Done, 0)',
+            "COALESCE(r.Review_Done, 'no')",
             'r.sas',
             'r.pvs',
             'r.Final_Exclusionary',
@@ -177,19 +185,17 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $conflict_condition2,
             'r.Finalized',
             'c.CenterID',
-            'C.ProjectID'
+            'c.ProjectID',
+            'keyword'
         );
         
         $this->formToFilter = array (
                                     'dccid'       => 'c.CandID',
                                     'site'        => 'c.CenterID',
                                     'Visit_label' => 's.visit_label',
-                                    'ProjectID'   => 'c.ProjectID',
+                                    'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_done' => 
-                                    /* MySQL treats boolean as tinyint,
-                                     * so 0 instead of False */
-                                        'COALESCE(r.Review_Done, 0)',
+                                    'Review_done' => "COALESCE(r.Review_Done, 'no')",
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -199,9 +205,12 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'SAS'         => 'r.sas',
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
-                                    'Finalized'   => 'r.Finalized'
+                                    'Finalized'   => 'r.Finalized',
+                                    'keyword'     => 'r.Final_Incidental_Findings'
         );
-        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2);
+        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized',"COALESCE(r.Review_Done, 'no')");
+        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized','r.Review_Done');
+        $this->searchKeyword    = array('r.Final_Incidental_Findings');
     }
 
     /**
@@ -211,12 +220,12 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $list_of_visit_labels = array(null => 'Any' );
+        $list_of_visit_labels = array(null => 'All' );
         $visitList = Utility::getVisitList();
         foreach ($visitList as $key=>$value) {
             $list_of_visit_labels[$key] = $value;
         }
-        $list_of_sites = array(null =>'Any');
+        $list_of_sites = array(null =>'All');
         $sitesList = Utility::getSiteList(false);
         if (Utility::isErrorX($sitesList)) {
             return PEAR::raiseError("DB Error: ".$sitesList->getMessage());
@@ -225,7 +234,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $list_of_sites[$key]= $value;
         } 
         ksort($list_of_sites);
-        $list_of_projects = array(null =>'Any');
+        $list_of_projects = array(null =>'All');
         $projectList = Utility::getProjectList();
         if (Utility::isErrorX($projectList)) {
                 return PEAR::raiseError("DB Error: ".$projectList->getMessage());
@@ -233,26 +242,26 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         foreach ($projectList as $key => $value) {
             $list_of_projects[$key] =$value;
         }  
-        $options_boolean= array(null => 'Any', 'true' => 'Yes', 'false' => 'No');
-        $conflict_options1 = array(null => 'Any', 'true' => 'Yes', 'false' => 'No' );
-        $conflict_options2 = array(null => 'Any', 
+        $options_boolean= array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
+        $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );
+        $conflict_options2 = array(null => 'All', 
             'prim_second' => 'Yes', 
             'false' => 'No'
         );
-        $comment_options = array(null => 'Any', 'True' => 'Yes', 'False' => 'No');
-        $bob_score = array(null => 'Any', 
+        $comment_options = array(null => 'All', 'True' => 'Yes', 'False' => 'No');
+        $bob_score = array(null => 'All', 
             '0' => 'None', 
             '1' => 'Minimal', 
             '2' => 'Mild', 
             '3' => 'Moderate', 
             '4' => 'Marked'
         );
-        $abnormal_atypical = array(null => 'Any', 
+        $abnormal_atypical = array(null => 'All', 
             'abnormal' => 'Abnormal', 
             'atypical' => 'Atypical', 
             'normal' => 'Normal'
         );
-        $exclude = array(null => 'Any', 
+        $exclude = array(null => 'All', 
             'exclusionary' => 'Exclusionary', 
             'non_exclusionary' => 'Non Exclusionary'
         );
@@ -284,7 +293,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean);
         $this->addSelect('Project', 'Project', $list_of_projects);
-
+        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
     }
 
 
