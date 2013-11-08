@@ -767,24 +767,28 @@ class Utility extends PEAR
      * @access public
      * @static
      */
-	function getExistingVisitLabels()
-	{
-		$db =& Database::singleton();
-		$query = "SELECT DISTINCT Visit_label FROM session s 
-		 JOIN candidate c ON (s.CandID = c.Candid) 
-		 JOIN psc ON (s.CenterID = psc.CenterID)
-		 WHERE c.Active = 'Y' AND s.Active = 'Y' AND c.PSCID NOT LIKE '%scanner%' AND psc.CenterID!= '1' ORDER BY VisitNo";
-		$visitlabels = $db->pselect($query,array());
-		$visits = array();
-		for ($i =0 ;$i<count($visitlabels) ; $i++){
-			$visits[$visitlabels[$i]['Visit_label']] = ($visitlabels[$i]['Visit_label']);
-		}
-		return $visits;
-	}
-	
-	
-		
-/**
+    function getExistingVisitLabels($projectID = null)
+    {
+        $db =& Database::singleton();
+        if($projectID != null) {
+            $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
+        } else {
+            $ExtraProject_Criteria ='';
+        }
+        $query = "SELECT DISTINCT Visit_label FROM session s 
+        JOIN candidate c ON (s.CandID = c.Candid) 
+        JOIN psc ON (s.CenterID = psc.CenterID)
+        WHERE c.Active = 'Y' AND s.Active = 'Y' AND c.PSCID NOT LIKE '%scanner%' AND psc.CenterID!= '1'
+        $ExtraProject_Criteria ORDER BY Visit_label";
+        $visitlabels = $db->pselect($query,array());
+        $visits = array();
+        for ($i =0 ;$i<count($visitlabels) ; $i++){
+            $visits[$visitlabels[$i]['Visit_label']] = ($visitlabels[$i]['Visit_label']);
+        }
+        return $visits;
+     }
+
+    /**
 	 * *
 	 * get all the instruments for the given visit...
 	 * @param unknown_type $visit
