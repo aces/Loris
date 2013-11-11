@@ -7,7 +7,6 @@
   require_once 'NDB_Client.class.inc';
   $config =& NDB_Config::singleton();
   $client = new NDB_Client();
-  $client->makeCommandLine();
   $client->initialize();
 
   require_once "Utility.class.inc";
