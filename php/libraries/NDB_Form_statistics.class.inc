@@ -2,7 +2,6 @@
 require_once 'Utility.class.inc';
 require_once 'NDB_Form.class.inc';
 require_once 'NDB_Menu_Filter_reliability.class.inc';
-require_once 'ProjectUtility.class.inc';
 
 /**
  * The welcome menu
@@ -91,7 +90,7 @@ class NDB_Form_statistics extends NDB_Form
         if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
         if(Utility::isErrorX($centers)) {
             return PEAR::raiseError("DB Error: ".$centers->getMessage());
         }
@@ -129,25 +128,19 @@ class NDB_Form_statistics extends NDB_Form
 
          $this->tpl_data['Subprojects'] = $subprojects;
          foreach($subprojects as $key=>$val) {
-         $subprojList .= $key.",";
+             $subprojList .= $key.",";
          }
          $subprojList = substr($subprojList, 0, -1);
          $config = NDB_Config::singleton();
 
-        $Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '18 Month' => 'v18', '24 Month' => 'v24', '36 Month' => 'v36');
+        $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
 
         //---- BEHAVIORAL STATS -----
-        $sites = array('2' => 'sea', '3' => 'phi', '4' => 'stl', '5' => 'unc');
         $mri_data = array();
         $DB->select("SELECT s.CenterID,
                 f.Data_Entry as Data_Entry,
-                CASE s.visit_label
-                WHEN '6mo' THEN 'v06'
-                WHEN '12m' THEN 'v12'
-                WHEN '18mo' THEN 'v18'
-                WHEN '24mo' THEN 'v24'
-                ELSE lower(s.visit_label) END as VLabel,
+                s.visit_label as VLabel,
                 COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                 JOIN flag f ON (f.SessionID=s.ID)
@@ -186,12 +179,7 @@ class NDB_Form_statistics extends NDB_Form
         // DDE STATS
         $DB->select("SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
-                CASE s.visit_label
-                WHEN '6mo' THEN 'v06'
-                WHEN '12m' THEN 'v12'
-                WHEN '18mo' THEN 'v18'
-                WHEN '24mo' THEN 'v24'
-                ELSE lower(s.visit_label) END as VLabel,
+                s.visit_label as VLabel,
                 COUNT(s.CandID) as val
                 FROM session as s JOIN candidate as c ON (s.CandID=c.CandID) JOIN flag as f ON (f.SessionID=s.ID) 
                 WHERE s.Active='Y' 
@@ -261,7 +249,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Projects'] = $projects;
 
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
                     if(Utility::isErrorX($centers)) {
                     return PEAR::raiseError("DB Error: ".$centers->getMessage());
                     }
@@ -275,7 +263,7 @@ class NDB_Form_statistics extends NDB_Form
 
                     }
                     $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
-                    $Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '18 Month' => 'v18', '24 Month' => 'v24', '36 Month' => 'v36');
+                    $Visits = Utility::getExistingVisitLabels($currentProject);
                     $this->tpl_data['Visits'] = $Visits;
 
 
@@ -322,7 +310,7 @@ class NDB_Form_statistics extends NDB_Form
                     }
                     $DB->select("SELECT s.SubprojectID, 
                             c.CenterID, 
-                            lower(s.Visit_label) as VLabel,
+                            s.Visit_label as VLabel,
                             $CaseStatement as Subcat,
                             COUNT(*) as val 
                             FROM mri_parameter_form m JOIN flag f USING (CommentID) 
@@ -336,7 +324,7 @@ class NDB_Form_statistics extends NDB_Form
                             AND s.SubprojectID IN ($subprojList)
                             $ExtraProject_Criteria
                             GROUP BY Subcat, s.SubprojectID, c.CenterID, s.Visit_label", $result);
-                    $M_Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '24 Month' => 'v24');
+                    $M_Visits = Utility::getExistingVisitLabels($currentProject);
                     $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table($MRIHeader, $MRISubcategories, $M_Visits, "mri_type", $MRIOptions, $MRI_Type, $centers, $result, "mri", $currentProject);
 
                     $DB->select("SELECT s.SubprojectID, 
@@ -534,7 +522,7 @@ class NDB_Form_statistics extends NDB_Form
         if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
         if(Utility::isErrorX($centers)) {
             return PEAR::raiseError("DB Error: ".$centers->getMessage());
         }
@@ -571,7 +559,7 @@ class NDB_Form_statistics extends NDB_Form
         if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
         if(Utility::isErrorX($centers)) {
             return PEAR::raiseError("DB Error: ".$centers->getMessage());
         }
@@ -584,19 +572,11 @@ class NDB_Form_statistics extends NDB_Form
             }
         }
         $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
-        $Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '18 Month' => 'v18', '24 Month' => 'v24', '36 Month' => 'v36');
+        $Visits = Utility::getExistingVisitLabels();
         $this->tpl_data['Visits'] = $Visits;
 
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
-        /*      foreach(Utility::getScoredInstruments() as $Instrument)
-                {
-                foreach(Utility::getScoreColsForInstrument($Instrument) as $Field)
-                {
-                print $Field;
-                }
-                }
-         */
-    }
+ }
 
 
     function stats_demographic()
@@ -699,8 +679,8 @@ class NDB_Form_statistics extends NDB_Form
 
 
         // Adds a C to the start of the centerid, because that's how the
-        // template is looking for it. Exclude DCC and UofA
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
+        // template is looking for it. Exclude DCC 
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
         if(Utility::isErrorX($centers)) {
             return PEAR::raiseError("DB Error: ".$centers->getMessage());
         }
@@ -713,15 +693,14 @@ class NDB_Form_statistics extends NDB_Form
             }
 
         }
-       // $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
-        $Visits = array ('6 Month' => 'v06', '12 Month' => 'v12', '18 Month' => 'v18', '24 Month' => 'v24', '36 Month' => 'v36');
+        $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
 
         $instruments  = array_merge(
             array( '' => 'Recruit Gender Breakdown'),
             Utility::getAllInstruments()
         );
-        $this->tpl_data['scored_instruments'] = ProjectUtility::getScoredInstruments();
+        $this->tpl_data['scored_instruments'] = Utility::getScoredInstruments();
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array('Complete', 'Incomplete');
@@ -729,13 +708,7 @@ class NDB_Form_statistics extends NDB_Form
                 f.Data_entry as Subcat, 
                 c.CenterID as CenterID, 
                 s.SubprojectID as SubprojectID,
-                CASE s.visit_label
-                WHEN 'v6' THEN 'v06'
-                WHEN '6mo' THEN 'v06'
-                WHEN '12m' THEN 'v12'
-                WHEN '18mo' THEN 'v18'
-                WHEN '24mo' THEN 'v24'
-                ELSE lower(s.visit_label) END as VLabel
+                s.visit_label as VLabel
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
@@ -748,12 +721,7 @@ class NDB_Form_statistics extends NDB_Form
                 SELECT count(*) as val, 'Incomplete' as Subcat, 
                 c.CenterID as CenterID, 
                 s.SubprojectID as SubprojectID,
-                CASE s.visit_label
-                WHEN '6mo' THEN 'v06'
-                WHEN '12m' THEN 'v12'
-                WHEN '18mo' THEN 'v18'
-                WHEN '24mo' THEN 'v24'
-                ELSE lower(s.visit_label) END as VLabel
+                s.visit_label as VLabel
                 FROM session s JOIN candidate c USING(CandID) 
                 JOIN flag f ON (f.SessionID=s.ID) 
                 JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
@@ -766,21 +734,16 @@ class NDB_Form_statistics extends NDB_Form
             $Subcategories = array('Male', 'Female');
             $DB->select("SELECT c.CenterID as CenterID, 
                 s.SubprojectID as SubprojectID, 
-                CASE s.visit_label
-                WHEN '6mo' THEN 'v06'
-                WHEN '12m' THEN 'v12'
-                WHEN '18mo' THEN 'v18'
-                WHEN '24mo' THEN 'v24'
-                ELSE lower(s.visit_label) END as VLabel,
-                    c.gender as Subcat,
-                    count(s.CandID) as val
-                    FROM session s JOIN candidate c ON (s.CandID=c.CandID) 
-                    WHERE s.active='Y' AND s.CenterID <> '1'
-                    AND ((s.Current_stage IN ('Visit', 'Screening')
-                    AND s.SubprojectID IN (1, 2)) OR s.SubprojectID=3) 
-                    AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                    AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                    GROUP BY c.CenterID, SubprojectID, VLabel, Subcat", $result);
+                s.visit_label as VLabel,
+                c.gender as Subcat,
+                count(s.CandID) as val
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID) 
+                WHERE s.active='Y' AND s.CenterID <> '1'
+                AND (s.Current_stage IN ('Visit', 'Screening')
+                AND s.SubprojectID IN ($subprojList))  
+                AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
+                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat", $result);
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
