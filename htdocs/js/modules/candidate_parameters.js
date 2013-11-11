@@ -16,7 +16,7 @@ function loadDefaultStatus() {
     "use strict";
     var pscid = document.getElementById('pscid'),
         pscid_value = pscid.textContent,
-        pstatus_dropdown = document.getElementById('participant_statusID'),
+        pstatus_dropdown = document.getElementById('participant_status'),
         status_value = pstatus_dropdown.value,
         default_vals;
     $.get("GetParticipant_suboptions.php?pscid="+pscid_value,
@@ -31,7 +31,7 @@ function loadDefaultStatus() {
 function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
     "use strict";    
     var pstatus_sub = document.getElementById('participant_subOptions'),
-        pstatus_dropdown = document.getElementById('participant_statusID'),
+        pstatus_dropdown = document.getElementById('participant_status'),
         status_value = pstatus_dropdown.value,
         options,
         dropdown_value = defaultPstat_sub;
@@ -59,7 +59,7 @@ function changeParticipantStatus() {
     "use strict";
     //get the value for the visit selected
     var pstatus_sub = document.getElementById('participant_subOptions'),
-        pstatus_dropdown = document.getElementById('participant_statusID'),
+        pstatus_dropdown = document.getElementById('participant_status'),
         pscid = document.getElementById('pscid'),
         pscid_value = pscid.value,
         status_value = pstatus_dropdown.value,
@@ -91,7 +91,7 @@ function changeParticipantStatus() {
 $(function () {
     "use strict";
     loadDefaultStatus();
-    $("#participant_statusID").change(function() {
+    $("#participant_status").change(function() {
         changeParticipantStatus();
     });
 });
