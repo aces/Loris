@@ -319,8 +319,8 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
-        $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
+        //$this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
+        //$this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
         $this->addHidden('commentID', $this->getCommentID());
         $this->addHidden('test_name', $this->testName);
         $this->addHidden('page', $this->page);
@@ -333,6 +333,7 @@ class NDB_BVL_Instrument extends NDB_Page
             // and has Save/Continue and go back buttons
             $DataEntryType = 'DirectEntry';
             $this->addHidden('key', $_REQUEST['key']);
+            $this->addHidden('pageNum', $_REQUEST['pageNum']);
         }
         if(!$this->form->isFrozen() && $DataEntryType === 'normal') {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
@@ -420,7 +421,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return void
+     * @return false if failure to save data
      * @access public
      */
     function save()
@@ -439,7 +440,6 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             $submittedData = $this->form->getSubmitValues();
             
-           
             if(count($submittedData)) {
                 
                 // the form WAS submitted but validate() failed...
@@ -455,6 +455,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                     }
                 }
+                return false;
             }
         }
         
@@ -464,6 +465,7 @@ class NDB_BVL_Instrument extends NDB_Page
             print "This error will not prevent data from being saved, unless the data entry error is also displayed.<BR>Please inform DCC of this error<br>\n";
             return PEAR::raiseError($scoreResult->getMessage());
         }
+        return true;
     }
     
     // }}}
@@ -566,7 +568,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         
         // do not alter this when overwriting the method
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
+        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['key'], $values['nextpage'], $values['pageNum']);
         $this->_save($values);
     }
     
@@ -873,6 +875,7 @@ class NDB_BVL_Instrument extends NDB_Page
     // {{{ XINValidate()
     
     function XINValidate($elements){
+        unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug=false;  //Turn this on to see rules debuggin output
 
         $errors=array();
