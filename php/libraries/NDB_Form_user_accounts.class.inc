@@ -95,17 +95,6 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
 
-        // Update CouchDB. Must do before password is salted/hashed.
-        $config =& NDB_Config::singleton();
-        $couch_config = $config->getSetting("CouchDB");
-        if ($couch_config['SyncAccounts'] === "true") {
-            $user =& User::factory($set['UserID']);
-            if(isset($set['Password_md5'])) {
-                // Don't sync if they didn't change their password..
-                $user->updateCouchUser($set['Password_md5']);
-            }
-        }
-
         // prepend two random characters
         if (isset($set['Password_md5'])) {
             $set['Password_md5'] = User::md5_salt($set['Password_md5']);
