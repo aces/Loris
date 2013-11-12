@@ -80,6 +80,7 @@ class DirectDataEntryMainPage {
         }
         return $DB->pselectOne("SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Order_number > :PN ORDER BY Order_number", array('TN' => $this->TestName, 'PN' => $currentPage));
     }
+
     function GetPrevPageNum($currentPage) {
         $DB = Database::singleton();
         if($currentPage === null) {
@@ -113,8 +114,19 @@ class DirectDataEntryMainPage {
     }
 
     function display() {
+        $nextpage = null;
+        if ($this->NextPageNum && isset($_REQUEST['nextpage'])) {
+            $DB = Database::singleton();
+            $nextpage = $DB->pselectOne(
+                "SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:TN AND Order_number=:PN", 
+                array(
+                    'TN' => $this->TestName,
+                    'PN' => $this->NextPageNum
+                )
+            );
+        }
         
-        $workspace = $this->caller->load($this->TestName, $this->Subtest, $this->CommentID);
+        $workspace = $this->caller->load($this->TestName, $this->Subtest, $this->CommentID, $nextpage);
         $this->tpl_data['workspace'] = $workspace;
         $smarty = new Smarty_neurodb;
         $smarty->assign($this->tpl_data);

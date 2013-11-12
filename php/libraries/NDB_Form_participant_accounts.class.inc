@@ -70,6 +70,13 @@ class NDB_Form_participant_accounts extends NDB_Form
             )
         );
 
+        $timepoint =& TimePoint::singleton($SessionID);
+
+        $battery = new NDB_BVL_Battery();
+        $battery->selectBattery($SessionID);
+
+        $commentID = $battery->addInstrument($values['Test_name']);
+
         $db->insert(
             "participant_accounts", 
             array(
@@ -77,12 +84,25 @@ class NDB_Form_participant_accounts extends NDB_Form
                 'Test_name'        => $values['Test_name'],
                 'Email'            => $values['Email'],
                 'Complete'         => 'No',
-                'OneTimePassword'  => User::newPassword()
+                'OneTimePassword'  => User::newPassword(),
+                'CommentID'        => $commentID
+/*$this->_createCommentID(
+                    $values['CandID'],
+                    $values['PSCID'],
+                    $SessionID,
+                    $timepoint->getSubprojectID(),
+                    $testID
+                )
+                 */
+                    
             )
         );
 
     }
 
+    function _createCommentID($CandID, $PSCID, $SessionID, $SubprojectID, $testID) {
+        return $CandID . $PSCID . $SessionID . $SubprojectID . $testID . time();
+    }
     function add_survey()
     {
         $this->redirect = "test_name=$this->name";

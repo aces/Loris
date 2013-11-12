@@ -48,10 +48,11 @@ class NDB_Caller extends PEAR
     * @param string     the subtest.  The page of the form or instrument.
     * @param unknown    controlPanel?
     * @param string     the commentid being loaded. 
+    * @param string     a page to forward to on completion of save. Used in direct data entry.
     * @return string    rendered object, as html
     *
     */
-    function load($test_name, $subtest, $controlPanel=null, $CommentID = '')
+    function load($test_name, $subtest, $controlPanel=null, $CommentID = '', $nextpage=null)
     {
         // if no first argument, return
         if (empty($test_name)) {
@@ -113,7 +114,7 @@ class NDB_Caller extends PEAR
           if ($this->existsAndRequire($base."project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
                 || $test_name=='instrument_preview') {
     
-            $html = $this->loadInstrument($test_name, $subtest, $CommentID);
+            $html = $this->loadInstrument($test_name, $subtest, $CommentID, $nextpage);
             if (Utility::isErrorX($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
@@ -225,7 +226,7 @@ class NDB_Caller extends PEAR
     * @param string commentID of the instrument
     * @note: added a call to Timepoint class using $_REQUIEST['sessionID'] which implies that the instrument call must be made within the timepoint
     */
-    function loadInstrument($instrument, $page, $commentID)
+    function loadInstrument($instrument_s, $page, $commentID, $nextpage=null)
     {
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
@@ -240,7 +241,7 @@ class NDB_Caller extends PEAR
         }
 
         // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory($instrument, $commentID, $page);
+        $instrument =& NDB_BVL_Instrument::factory($instrument_s, $commentID, $page);
         if (Utility::isErrorX($instrument)) {
             return $instrument;
         }
@@ -251,6 +252,12 @@ class NDB_Caller extends PEAR
             return PEAR::raiseError("NDB_Caller::loadInstrument() save: ".$success->getMessage());
         }
 
+        if($nextpage !== null && $success !== FALSE) {
+            $instrument =& NDB_BVL_Instrument::factory($instrument_s, $commentID, $nextpage);
+            if (Utility::isErrorX($instrument)) {
+                return PEAR::raiseError("Error loading page: " . $instrument->getMessage());
+            }
+        }
         // create an instrument status object
         $status = new NDB_BVL_InstrumentStatus;
         $success = $status->select($commentID);
