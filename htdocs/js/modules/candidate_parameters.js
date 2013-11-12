@@ -30,7 +30,7 @@ function loadDefaultStatus() {
 }
 function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
     "use strict";    
-    var pstatus_sub = document.getElementById('participant_subOptions'),
+    var pstatus_sub = document.getElementById('participant_suboptions'),
         pstatus_dropdown = document.getElementById('participant_status'),
         status_value = pstatus_dropdown.value,
         options,
@@ -50,7 +50,7 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
                     }
                 }
             }
-            $('#participant_subOptions').val(dropdown_value);
+            $('#participant_suboptions').val(dropdown_value);
 
             //jQuery('#visits').change();
          }); 
@@ -58,14 +58,14 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
 function changeParticipantStatus() {
     "use strict";
     //get the value for the visit selected
-    var pstatus_sub = document.getElementById('participant_subOptions'),
+    var pstatus_sub = document.getElementById('participant_suboptions'),
         pstatus_dropdown = document.getElementById('participant_status'),
         pscid = document.getElementById('pscid'),
         pscid_value = pscid.value,
         status_value = pstatus_dropdown.value,
         options,
         dropdown_value;
-    dropdown_value = getQueryVariable("participant_subOptions");
+    dropdown_value = getQueryVariable("participant_suboptions");
     if (dropdown_value !== undefined) {
                 dropdown_value = dropdown_value.replace(/\+/g, ' ');
     }

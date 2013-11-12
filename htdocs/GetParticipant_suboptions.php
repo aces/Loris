@@ -21,17 +21,17 @@
           print $row['Description'] . "\n";
       }
   } else if(isset($_REQUEST['pscid']))  {
-       $results = $DB->pselect("SELECT participant_status, participant_subOptions from participant_status p JOIN 
+       $results = $DB->pselect("SELECT participant_status, participant_suboptions from participant_status p JOIN 
                               candidate c on c.CandID = p.CandID WHERE c.PSCID='".$_REQUEST['pscid']."'");
                             //  array('pid'=>"'".$_REQUEST['pscid']."'"));    
        foreach($results as $row){
            $id = $row['participant_status'];
-          // $sub_id = $row['participant_subOptions'];
+          // $sub_id = $row['participant_suboptions'];
 
            $desc = $DB->pselectOne("SELECT Description FROM participant_status_options WHERE ID=:id",
                                      array('id'=> $id));
            $sub_desc = $DB->pselectOne("SELECT Description FROM participant_status_options WHERE ID=:sid",
-                                     array('sid'=> $row['participant_subOptions']));
+                                     array('sid'=> $row['participant_suboptions']));
 
            print $id.";".$sub_desc;
            
