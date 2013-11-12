@@ -17,22 +17,20 @@ function loadDefaultStatus() {
     var pscid = document.getElementById('pscid'),
         pscid_value = pscid.textContent,
         pstatus_dropdown = document.getElementById('participant_status'),
-        status_value = pstatus_dropdown.value,
         default_vals;
-    $.get("GetParticipant_suboptions.php?pscid="+pscid_value,
+    $.get("GetParticipant_suboptions.php?pscid=" + pscid_value,
             function (data) {
-                default_vals = data.split(";");
-               $('#participant_statusID').val(default_vals[0]);
-                if(default_vals.length >1) {
-                    loadDefaultSubOption(default_vals[0], default_vals[1]);
-                }
-             });
+             default_vals = data.split(";");
+             $('#participant_statusID').val(default_vals[0]);
+             if(default_vals.length >1) {
+               loadDefaultSubOption(default_vals[0], default_vals[1]);
+            }
+        });
 }
 function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
     "use strict";    
     var pstatus_sub = document.getElementById('participant_suboptions'),
         pstatus_dropdown = document.getElementById('participant_status'),
-        status_value = pstatus_dropdown.value,
         options,
         dropdown_value = defaultPstat_sub;
     $.get("GetParticipant_suboptions.php?p_status=" + defaultPstat,
