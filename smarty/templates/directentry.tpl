@@ -70,7 +70,11 @@
 
 {if $nextpage} 
 <a href="?key={$key}&pageNum={$nextpage}">Next page</a>
-<button id="savecontinue" data-next="{$nextpage}">Save And Continue</button>
+<button id="savecontinue">
+    <span style="display: none" id="nextpage">{$nextpage}</span>
+    <span style="display: none" id="key">{$key}</span>
+    Save And Continue
+</button>
 {/if}
 </td>
 </tr>
@@ -83,9 +87,3 @@
 
 </body>
 </html>
-
-
-
-
-
-

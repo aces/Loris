@@ -204,6 +204,7 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to flag: $testName");
         }
+        return $commentID;
         
     } // end addInstrument()
     
