@@ -1,4 +1,6 @@
 <?php
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+
 /**
  * lost password form
  * @package main
