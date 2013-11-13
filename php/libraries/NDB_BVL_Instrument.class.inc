@@ -338,6 +338,13 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->addHidden('page', $this->page);
         $this->addHidden('subtest', $this->page);
 
+        $this->DataEntryType = 'normal'; 
+        if(isset($_REQUEST['key'])) {
+            $this->DataEntryType = 'DirectEntry';
+            //$this->addHidden('key', $_REQUEST['key']);
+            //$this->addHidden('pageNum', $this->getPageNumber());
+        }
+
         // Don't show save button for Direct Data entry type,
         // because that's part of the DirectEntry template
         // and has Save/Continue and go back buttons
