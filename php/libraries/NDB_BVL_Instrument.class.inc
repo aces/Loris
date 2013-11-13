@@ -299,6 +299,20 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 
+
+
+    /*
+    function getPageNumber() {
+        $DB = Database::singleton();
+        return $DB->pselectOne(
+            "SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Subtest_name=:STN",
+            array(
+                'TN' => $this->testName,
+                'STN' => $this->page
+            )
+        );
+    }
+     */
     /**
     * method to display the form - usually not overridden as it
     * includes all the base code that any instrument will require.
@@ -316,16 +330,17 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->addHidden('page', $this->page);
         $this->addHidden('subtest', $this->page);
 
-        $DataEntryType = 'normal'; 
+        $this->DataEntryType = 'normal'; 
         if(isset($_REQUEST['key'])) {
-            // Don't show save button for Direct Data entry type,
-            // because that's part of the DirectEntry template
-            // and has Save/Continue and go back buttons
-            $DataEntryType = 'DirectEntry';
-            $this->addHidden('key', $_REQUEST['key']);
-            $this->addHidden('pageNum', $_REQUEST['pageNum']);
+            $this->DataEntryType = 'DirectEntry';
+            //$this->addHidden('key', $_REQUEST['key']);
+            //$this->addHidden('pageNum', $this->getPageNumber());
         }
-        if(!$this->form->isFrozen() && $DataEntryType === 'normal') {
+
+        // Don't show save button for Direct Data entry type,
+        // because that's part of the DirectEntry template
+        // and has Save/Continue and go back buttons
+        if(!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->addGroup($buttons, null, null, "&nbsp;");
@@ -562,7 +577,9 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         
         // do not alter this when overwriting the method
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['key'], $values['nextpage'], $values['pageNum']);
+        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
+        // nor these -- these ones are for direct data entry
+        unset($values['key'], $values['nextpage'], $values['pageNum']);
         $this->_save($values);
     }
     

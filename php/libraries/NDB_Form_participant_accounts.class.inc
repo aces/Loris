@@ -86,15 +86,6 @@ class NDB_Form_participant_accounts extends NDB_Form
                 'Complete'         => 'No',
                 'OneTimePassword'  => User::newPassword(),
                 'CommentID'        => $commentID
-/*$this->_createCommentID(
-                    $values['CandID'],
-                    $values['PSCID'],
-                    $SessionID,
-                    $timepoint->getSubprojectID(),
-                    $testID
-                )
-                 */
-                    
             )
         );
 
