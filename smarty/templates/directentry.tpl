@@ -54,29 +54,37 @@
 <table width="90%"><tr><td>
 {$workspace}
 </td></tr>
-{if $nextpage || $prevpage}
+{if ($nextpage || $prevpage) && !$complete}
 <tr>
-<td>
-{if $prevpage}
-{if $prevpage eq 'top'}
-<a href="?key={$key}">Previous page</a>
-<button>Go Back</button>
-{else}
-<a href="?key={$key}&pageNum={$prevpage}">Previous page</a>
-<button>Go Back</button>
+    <td>
+    {if $prevpage}
+        {if $prevpage eq 'top'}
+            <button onclick="window.location='?key={$key}'">Go Back</button>
+        {else}
+            <button onclick="window.location='?key={$key}&pageNum={$prevpage}'">Go Back</button>
+        {/if}
+    {/if}
 
-{/if}
-{/if}
+    {if $nextpage} 
+    <button id="savecontinue">
+        <span style="display: none" id="nextpage">{$nextpage}</span>
+        <span style="display: none" id="key">{$key}</span>
+        Save And Continue
+    </button>
+    {else}
+    <br />
+    <p>
+    <b>You must click below to save this page and submit data to the study. Please note that once you submit data you can not modify your answers.</b>
 
-{if $nextpage} 
-<a href="?key={$key}&pageNum={$nextpage}">Next page</a>
-<button id="savecontinue">
-    <span style="display: none" id="nextpage">{$nextpage}</span>
-    <span style="display: none" id="key">{$key}</span>
-    Save And Continue
-</button>
-{/if}
-</td>
+    </p>
+    <div>
+    <button id="complete">
+        <span style="display: none" id="key">{$key}</span>
+        Save and Submit Data
+    </button>
+    </div>
+    {/if}
+    </td>
 </tr>
 {/if}
 </table>
