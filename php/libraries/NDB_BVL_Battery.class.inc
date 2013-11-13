@@ -464,6 +464,37 @@ class NDB_BVL_Battery extends PEAR
     } // end _createCommentID()
     
     /**
+     * Generates a CommentID of the appropriate format given a SessionID and a Test name
+     *
+     * @return string A Validly formatted CommentID
+     */
+    static function generateCommentID($SessionID, $Test_name) {
+        $DB = Database::singleton();
+        
+        $TestID = $DB->pselectOne(
+            "SELECT ID FROM test_names WHERE Test_name=:TN",
+            array('TN' => $Test_name)
+        );
+
+
+        $OtherInfo = $DB->pselectRow(
+            "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
+                    JOIN candidate c USING (CandID)
+                WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
+            array('SID' => $SessionID)
+        );
+
+        if (empty($TestID) || empty($OtherInfo)) {
+            return null;
+        }
+        return $OtherInfo['CandID'] 
+            . $OtherInfo['PSCID'] 
+            . $SessionID 
+            . $OtherInfo['SubprojectID'] 
+            . $TestID 
+            . time();
+    }
+    /**
      * asserts that the current battery object corresponds to a
      * specific visit (in other words, asserts that selectBattery has
      * been run
