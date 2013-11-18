@@ -39,8 +39,8 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
         if(PEAR::isError($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
+
         $this->columns = array('v.PatientName', 'v.TimeRun', 'v.MincFile', 'v.Series_Description as Series_Description_Or_Scan_Type', 'v.Problem');
-        $config=&NDB_Config::singleton();
         $this->query = " FROM (select PatientName as PatientName, time_run as TimeRun, minc_location as MincFile, series_description as Series_Description, 'Could not identify scan type' as Problem FROM mri_protocol_violated_scans "
             .  " UNION " . 
             "select PatientName, TimeRun, MincFile, mri_scan_type.Scan_type, 'Protocol Violation' FROM mri_violations_log left join mri_scan_type ON (mri_scan_type.ID=mri_violations_log.Scan_type)"
@@ -49,16 +49,22 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
          . ") as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
-        /* $this->formToFilter = array(
-                'CandID' => 'mpv.CandID',
-                'PSCID' => 'mpv.PSCID'
-                );
-         */
+        $this->formToFilter = array(
+                'PatientName' => 'v.PatientName',
+                'TimeRun' => 'v.TimeRun',
+                'ProblemType' => 'v.Problem',
+                'Filename' => 'v.MincFile'
+            );
+        $this->validFilters = array(
+            'v.PatientName',
+            'v.TimeRun',
+            'v.MincFile',
+            'v.Problem'
+        );
         return true;
     }
 
 
-    /*
     function _setFilterForm()
     {
         // create user object
@@ -66,13 +72,23 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
         if(PEAR::isError($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        $this->form->addElement('text', 'CandID', 'DCC-ID:');
-        $this->form->addElement('text', 'PSCID', 'PSC-ID:');
+        $this->addBasicText('PatientName', 'PatientName');
+        $this->addBasicText('TimeRun', 'Time Run');
+        $this->addBasicText('Filename', 'File name');
+        $this->addSelect(
+            "ProblemType",
+            "Type of problem",
+            array(
+                '' => 'Any',
+                'CandID and PSCID do not match database'      => 'Candidate Mismatch',
+                'Could not identify scan type'   => 'Could not identify scan type',
+                'Protocol Violation' => 'MRI Protocol Check violation'
+        )
+        );
 
         return true;
     }
 
-     */
     function _setDataTableRows($count)
     {
         $x=0;
