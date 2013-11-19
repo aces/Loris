@@ -58,7 +58,8 @@ function PopulateVisitLabel($result, $visit_label) {
     $timePoint =& TimePoint::singleton($result['ID']);
 
     $DB =& Database::singleton();
-    $query_firstVisit = "SELECT Visit_label FROM session WHERE CandID=:cid ORDER BY Date_visit"; 
+    $query_firstVisit = "SELECT Visit_label FROM session WHERE CandID=:cid AND Visit_label NOT LIKE 'Screening'
+                         AND COALESCE(Date_visit,'') ORDER BY Date_visit"; 
     $where = array ('cid'=>$result['CandID']);
     $result_firstVisit= $DB->pselectOne($query_firstVisit,$where);
  
