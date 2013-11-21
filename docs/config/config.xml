@@ -28,6 +28,9 @@
     <mincPath>/data/%PROJECTNAME%/data/</mincPath>
     <DownloadPath>%LORISROOT%</DownloadPath>
     <log>tools/logs/</log>
+    <IncomingPath>/data/incoming/gusto/</IncomingPath>
+    <MRICodePath>/data/gusto/bin/mri/</MRICodePath>
+
 </paths>
 
 <!-- database settings -->
