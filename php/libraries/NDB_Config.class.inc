@@ -160,7 +160,7 @@ class NDB_Config
         } else {
             $user =& User::singleton($username);
             $siteName = Utility::getCleanString($user->getSiteName());
-            if(is_array($this->_settings['sites'][$siteName])) {
+            if(isset($this->_settings['sites'][$siteName]) && is_array($this->_settings['sites'][$siteName])) {
                 $this->_siteSettings = $this->_settings;
                 $this->_siteSettings['study'] = Utility::array_merge_recursive_overwriting($this->_settings['study'], $this->_settings['sites'][$siteName]);
                 unset($this->_siteSettings['sites']);

@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**
  * @package mri
  */
@@ -20,14 +21,14 @@ require_once "MRIMenuPage.class.inc";
 
 // create Database object
 $DB = Database::singleton();
-if(PEAR::isError($DB)) {
+if(Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n";
     die();
 }
 
 // user is logged in, let's continue with the show...
 $user =& User::singleton();
-if(PEAR::isError($user)) {
+if(Utility::isErrorX($user)) {
     die("Error creating user object: ".$user->getMessage());
 }
 
@@ -45,9 +46,9 @@ $tpl_data['css']=$config->getSetting('css');
 $tpl_data['user_full_name']=$user->getData('Real_name');
 $tpl_data['user_site_name']=$user->getData('Site');
 
-$tpl_data['sessionID'] = $_REQUEST['sessionID'];
-$tpl_data['commentID'] = $_REQUEST['commentID'];
-$tpl_data['candID']    = $_REQUEST['candID'];
+$tpl_data['sessionID'] = isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '';
+$tpl_data['commentID'] = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
+$tpl_data['candID']    = isset($_REQUEST['candID'])    ? $_REQUEST['candID']    : '';
 
 // the the list of tabs, their links and perms
 $mainMenuTabs = $config->getSetting('main_menu_tabs');
@@ -149,7 +150,9 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
 
 } else {
     // this happens in the main window. before you select a candidate and the corresponding volumes
-    $page = new MRIMenuPage($_REQUEST['filter']);
+    $filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : null;
+
+    $page = new MRIMenuPage($filter);
     $tpl_data['body']=$page->display();
 }
 
@@ -157,8 +160,8 @@ $smarty=new Smarty_neurodb;
 // this is a fixme. Same data get's assigned to volume_list
 $tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
 $tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
-$smarty->assign('subject', $subjectData);
-$smarty->assign('files', $fileData);
+//$smarty->assign('subject', $subjectData);
+//$smarty->assign('files', $fileData);
 if($user->hasPermission('mri_feedback')) $tpl_data['has_permission'] = true;
 $smarty->assign($tpl_data);
 $smarty->display('mri_browser_main.tpl');
