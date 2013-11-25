@@ -215,8 +215,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
                 putenv("PERL5LIB=$path");
                 putenv("TMPDIR=/tmp");
-                putenv("HOME=/home/zia");
-                putenv("USER=ZIA");
+                $current_user = trim(shell_exec('whoami'));
+                putenv("HOME=/home/$current_user");
+                putenv("USER=$current_user");
                 $this->log->addLog("The Environment Variables are now set \n");
 
                 ///////////////////////////////////////////////////////////////////
