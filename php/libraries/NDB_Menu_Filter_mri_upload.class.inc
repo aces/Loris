@@ -158,6 +158,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 /////////////////////////////////////////////////////////////
                 $config =& NDB_Config::singleton();
                 $paths = $config->getSetting('paths');
+                $mri_user = $paths['MRIUser'];
                 $mri_code_path = $paths['MRICodePath'];
                 $mri_incoming_path = $paths['IncomingPath'];
                 $mri_header_executer = $mri_code_path . "customize_headers.pl";
@@ -215,9 +216,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
                 putenv("PERL5LIB=$path");
                 putenv("TMPDIR=/tmp");
-                $current_user = trim(shell_exec('whoami'));
-                putenv("HOME=/home/$current_user");
-                putenv("USER=$current_user");
+                putenv("HOME=/home/$mri_user");
+                putenv("USER=$mri_user");
                 $this->log->addLog("The Environment Variables are now set \n");
 
                 ///////////////////////////////////////////////////////////////////
