@@ -292,6 +292,18 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         $patient_id \n <BR> "
                         );
                     }
+                    ///Change the name of the tar file 
+                    $new_file_location = $tarchive_location ."/". $patient_name . ".tar";
+                    print "command is $cmd";
+                    $output = shell_exec($cmd);
+                    print $output;
+
+                    ////Write into the tarchive-file log filrchiveLocation $new_file_location";
+                    $handle = fopen($tarchive_file_log, "w");
+                    fwrite($fp, $patient_name . ".tar");
+                    fclose($fp);
+
+
                 } else {
                     /////////////////////////////////////////////////////////////////
                     /////////////////otherwise use the file-name////////////////////
@@ -318,6 +330,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $tarchive_id = $row['TarchiveID'];
                     $ArchiveLocation = $row['ArchiveLocation'];
                     $patient_name = $row['PatientName'];
+                    ///Change the Name of the file
+                    $new_file_location = $tarchive_location ."/". $patient_name . ".tar";
+                    $cmd = "mv $ArchiveLocation $new_file_location";
+                    print "command is $cmd";
+                    $output = shell_exec($cmd);
+                    print $output;
+
                 }
 
                 //////////////////////////////////////////////////////////////////////
@@ -328,12 +347,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ///////////////////////////////set the file-name to patient-name //////
                 ///////////////////////////////////////////////////////////////////////
                 ///////////////////////////////////////////////////////////////////////
-                $new_file_location = $tarchive_location ."/". $patient_name . ".tar";
-                $cmd = "mv $ArchiveLocation $new_file_location";
-                print "command is $cmd";
-                $output = shell_exec($cmd);
-                print $output;
-                ////////////////////////////////////////////////////////////////////////
+                                ////////////////////////////////////////////////////////////////////////
                 ////////////Insert the TarchiveID into the mri_upload table/////////////
                 ////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////////////////////////////////////
@@ -368,12 +382,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $output = shell_exec($command);
                     print $output;
                     $db->update('mri_upload',array('MincInserted'=>1),array('SourceLocation'=>$source_location));
+                    $this->tpl_data['minc_success'] = true;
                 }
                 else{
                     print "It's already inserted";
                 }
                 
-                $this->tpl_data['minc_success'] = true;
                 $this->tpl_data['upload_success'] = true;
         }
     }
