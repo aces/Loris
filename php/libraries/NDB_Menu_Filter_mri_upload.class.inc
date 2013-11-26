@@ -309,7 +309,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     print "-----------------------------";
                     print "<BR>";
                     $family_id = $this->getFamilyIDUsingFileName($file_name);
-                    $candid = getCandID($family_id);
+                    $candid = $this->getCandID($family_id);
                     $row=$db->pselectRow(
                     "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive \
                     WHERE patientname LIKE concat ('%', :pname, '%') ",
