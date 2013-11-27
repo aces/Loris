@@ -679,5 +679,9 @@ font-color #000000:
 color: #000;
 text-align: center;
 vertical-align: bottom;
+}
 
+
+tr.directentry {
+    background: #BDDDBD;
 }
