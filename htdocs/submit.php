@@ -42,6 +42,7 @@ class DirectDataEntryMainPage {
         $this->caller =& NDB_Caller::singleton();
 
         //$this->caller->setErrorHandling(PEAR_ERROR_CALLBACK, array($this, 'HandleError'));
+        //PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array($this, 'HandleError'));
         $this->caller->setDataEntryType('Direct');
 
         if(empty($_REQUEST['key'])) {
@@ -54,6 +55,9 @@ class DirectDataEntryMainPage {
         $this->CommentID = $DB->pselectOne("SELECT CommentID FROM participant_accounts WHERE OneTimePassword=:key AND Complete='No'", array('key' => $this->key));
         $this->NumPages = $DB->pselectOne("SELECT COUNT(*) FROM instrument_subtests WHERE Test_name=:TN", array('TN' => $this->TestName));
 
+        if(empty($this->TestName) && empty($this->CommentID)) {
+            throw new Exception("Data has already been submitted.", 403);
+        }
         $pageNum = null;
 
         if(!empty($_REQUEST['pageNum']))  {
@@ -70,8 +74,6 @@ class DirectDataEntryMainPage {
             'nextpage' => $this->NextPageNum, 
             'prevpage' => $this->PrevPageNum, 
             'key' => $this->key);
-
-
     }
 
 
@@ -102,8 +104,13 @@ class DirectDataEntryMainPage {
     }
 
     function run() {
+        try {
+
         $this->initialize();
         $this->display();
+        } catch(Exception $e) {
+            $this->displayError($e);
+        }
     }
 
     function getCommentID() {
@@ -116,10 +123,23 @@ class DirectDataEntryMainPage {
         );
     }
 
+    function displayError($e) {
+        switch($e->getCode()) {
+        case 404: header("HTTP/1.1 404 Not Found"); break;
+        case 403: header("HTTP/1.1 403 Forbidden"); break;
+        }
+
+        $this->tpl_data['workspace'] = $e->getMessage();
+        $this->tpl_data['complete'] = false;
+        $smarty = new Smarty_neurodb;
+        $smarty->assign($this->tpl_data);
+        $smarty->display('directentry.tpl');
+        
+    }
     function display() {
+        $DB = Database::singleton();
         $nextpage = null;
         if ($this->NextPageNum && isset($_REQUEST['nextpage'])) {
-            $DB = Database::singleton();
             $nextpage = "submit.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]"; 
 
             /*if($_REQUEST['nextpage'] === 'complete') {
@@ -134,6 +154,13 @@ class DirectDataEntryMainPage {
         if($_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
             $this->tpl_data['complete'] = true;
+            
+            $DB->update(
+                "participant_accounts",
+                array('Complete' => 'Yes'),
+                array('OneTimePassword' => $this->key)
+            );
+
         } else {
             $this->tpl_data['workspace'] = $workspace;
         }
