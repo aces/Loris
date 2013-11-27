@@ -23,8 +23,8 @@
         <td nowrap="nowrap">{$form.email.html}</td>
     </tr>
     <tr>
-        <td nowrap="nowrap"><input type="button" name="button" value="Add User" class="button" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'" /></td>
-        <td colspan="7" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=user_accounts&reset=true'" /></td>
+        <td nowrap="nowrap"><input type="button" name="button" value="Add Survey" class="button" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'" /></td>
+        <td colspan="7" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=participant_accounts&reset=true'" /></td>
     </tr>
 <table>
 </form>
@@ -63,7 +63,7 @@
     {/section}
     </tr>           
 {sectionelse}
-    <tr><td colspan="8">No users found</td></tr>
+    <tr><td colspan="8">No surveys found</td></tr>
 {/section}
                     
 <!-- end data table -->
