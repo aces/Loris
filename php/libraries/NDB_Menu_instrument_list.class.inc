@@ -97,6 +97,7 @@ class NDB_Menu_instrument_list extends NDB_Menu
                 $this->tpl_data['instruments'][$x][$i]['isDdeEnabled'] = NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument($instrument['Test_name']);
                 $this->tpl_data['instruments'][$x][$i]['ddeCommentID'] = $instrument['DDECommentID'];
                 $this->tpl_data['instruments'][$x][$i]['ddeDataEntryStatus'] = $ddeStatus->getDataEntryStatus();
+                $this->tpl_data['instruments'][$x][$i]['isDirectEntry'] = $instrument['isDirectEntry'];
                 		
                 // create feedback object for the time point
                 $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);
