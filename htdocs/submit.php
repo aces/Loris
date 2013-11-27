@@ -66,6 +66,7 @@ class DirectDataEntryMainPage {
 
         $this->Subtest = $DB->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:TN AND Order_number=:PN", array('TN' => $this->TestName, 'PN' => $pageNum));
 
+        $totalPages = $DB->pselectOne("SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN", array('TN' => $this->TestName));
         $this->NextPageNum = $this->getNextPageNum($pageNum);
         $this->PrevPageNum = $this->getPrevPageNum($pageNum);
 
@@ -73,6 +74,8 @@ class DirectDataEntryMainPage {
         $this->tpl_data = array(
             'nextpage' => $this->NextPageNum, 
             'prevpage' => $this->PrevPageNum, 
+            'pageNum'  => $pageNum ? $pageNum + 1: 1,
+            'totalPages' => $totalPages,
             'key' => $this->key);
     }
 
