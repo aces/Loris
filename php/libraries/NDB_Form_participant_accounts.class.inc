@@ -77,6 +77,7 @@ class NDB_Form_participant_accounts extends NDB_Form
 
         $commentID = $battery->addInstrument($values['Test_name']);
 
+        $key = User::newPassword();
         $db->insert(
             "participant_accounts", 
             array(
@@ -84,11 +85,19 @@ class NDB_Form_participant_accounts extends NDB_Form
                 'Test_name'        => $values['Test_name'],
                 'Email'            => $values['Email'],
                 'Complete'         => 'No',
-                'OneTimePassword'  => User::newPassword(),
+                'OneTimePassword'  => $key,
                 'CommentID'        => $commentID
             )
         );
 
+
+        $msg_data = array(
+            'study' => 'test',
+            'url'   => 'http://localhost?key=' . $key
+        );
+        Email::send($values['Email'], 'new_survey.tpl', $msg_data); 
+        // for testing..
+        //Email::send('driusan', 'new_survey.tpl', $msg_data); 
     }
 
     function _createCommentID($CandID, $PSCID, $SessionID, $SubprojectID, $testID) {
@@ -100,7 +109,7 @@ class NDB_Form_participant_accounts extends NDB_Form
         $this->addBasicText("CandID", "DCC ID");
         $this->addBasicText("PSCID", "PSCID");
         $this->addSelect("VL", "Visit Label", Utility::getVisitList());
-        $this->addSelect("Test_name", "Test name", Utility::getAllInstruments());
+        $this->addSelect("Test_name", "Test name", Utility::getDirectInstruments());
         $this->addBasicText("Email", "Email address");
 
         $this->form->addFormRule(array(&$this, '_validate_add_survey'));
