@@ -290,7 +290,7 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // craft the select query
-        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group FROM flag AS f, test_names as t, test_subgroups as ts ";
+        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group, t.isDirectEntry FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
 
         if(!is_null($stage)) {
