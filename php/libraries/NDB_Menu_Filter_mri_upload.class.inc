@@ -167,7 +167,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $update_header = $mri_code_path. "dicom-archive/updateHeaders.pl";
                 $tarchive_location =  $paths['data'] . "tarchive";
                 $bach_upload_script  = $mri_code_path . "batch_uploads_tarchive";
-                $patient_name="";
                 $candid = $values['CandID'];
                 $pscid = $values['PSCID'];
                 $visit_label = $values['VisitLabel'];
