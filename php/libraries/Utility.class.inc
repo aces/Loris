@@ -880,6 +880,28 @@ class Utility extends PEAR
         return $Scored;
     }
 
+    function getDirectInstruments() {
+        $DB =& Database::singleton();
+        $instruments_q = $DB->pselect("SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true", array());
+        foreach($instruments_q as $key){
+            $instruments[$key['Test_name']]=$key['Full_name'];
+        }
+
+        return $instruments;
+    }
+
+   function getScoredInstruments() {
+       $All = Utility::getAllInstruments();
+       $Scored = array();
+       $Nothing = array();
+       foreach($All as $Instrument=>$Full_name) {
+           if(Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
+               $Scored[] = $Instrument;
+           }
+       }
+       return $Scored;
+   }
+
     /**
      * Return the score columns which exist for a given instrument.
      *
@@ -888,9 +910,8 @@ class Utility extends PEAR
      *
      * @return non-associative array of scored columns for the instrument given
      */
-    static function getScoreColsForInstrument($inst)
-    {
-        include_once "NDB_BVL_Instrument.class.inc";
+   function getScoreColsForInstrument($inst) {
+        require_once "NDB_BVL_Instrument.class.inc";
         $i = NDB_BVL_Instrument::factory($inst, '', '', true);
         if (isset($i->scoreLabels)) {
             $score = $i->scoreLabels;
