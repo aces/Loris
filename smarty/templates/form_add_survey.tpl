@@ -1,7 +1,7 @@
-<form method="post" name="edit_user" id="edit_user">
+<form method="post" name="participant_accounts" id="participant_accounts_form">
 <table class="std">
     <!-- table title -->
-    <tr><th colspan="2">Password Rules</th></tr>
+    <tr><th colspan="2">Usage</th></tr>
 
     <tr>
         <td colspan="2">
@@ -42,11 +42,14 @@
 		<td nowrap="nowrap" colspan="2">
     {if not $success}
         <input class="button" name="fire_away" value="Create survey" type="submit" />
-        <input class="button" name="fire_away" value="Create and email participant">
+        <input class="button email" name="fire_away" value="Create and email" type="submit">
 
     {/if}
         </td>
 	</tr>
 </table>
 {$form.hidden}
+<div id="email_dialog">
+    <textarea name="email_dialog">This is where your message goes.</textarea>
+</div>
 </form>
