@@ -114,14 +114,8 @@ class NDB_Form_participant_accounts extends NDB_Form
 
     function _createCommentID($CandID, $PSCID, $SessionID, $SubprojectID, $testID) {
         return $CandID . $PSCID . $SessionID . $SubprojectID . $testID . time();
-            )
-        );
-
     }
 
-    function _createCommentID($CandID, $PSCID, $SessionID, $SubprojectID, $testID) {
-        return $CandID . $PSCID . $SessionID . $SubprojectID . $testID . time();
-    }
     function add_survey()
     {
         $this->redirect = "test_name=$this->name";
