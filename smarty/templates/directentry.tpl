@@ -28,6 +28,7 @@
     <!-- user info table -->
          <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
             Date: {$smarty.now|date_format:"%B %e %Y"}
+            Page {$pageNum} of {$totalPages}
         </td>
     </tr>
     <tr>
