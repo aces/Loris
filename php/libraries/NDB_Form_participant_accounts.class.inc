@@ -72,6 +72,16 @@ class NDB_Form_participant_accounts extends NDB_Form
 
         $timepoint =& TimePoint::singleton($SessionID);
 
+        $InstrumentExists = $db->pselectOne(
+            "SELECT 'x' FROM participant_accounts WHERE Test_name=:TN AND SessionID=:SID",
+            array(
+                'TN' => $values['Test_name'],
+                'SID' => $SessionID
+            )
+        );
+        if($InstrumentExists == 'x') {
+            return;
+        }
         $battery = new NDB_BVL_Battery();
         $battery->selectBattery($SessionID);
 
