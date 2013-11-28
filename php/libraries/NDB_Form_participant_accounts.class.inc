@@ -105,7 +105,7 @@ class NDB_Form_participant_accounts extends NDB_Form
             'study' => 'test',
             'url'   => 'http://localhost?key=' . $key
         );
-        Email::send($values['Email'], 'new_survey.tpl', $msg_data); 
+        //Email::send($values['Email'], 'new_survey.tpl', $msg_data); 
         // for testing..
         //Email::send('driusan', 'new_survey.tpl', $msg_data); 
     }
