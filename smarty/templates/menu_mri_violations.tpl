@@ -54,7 +54,7 @@
         {if $items[item][piece].value eq 'Could not identify scan type'}
     
        	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-	  		<a href="main.php?test_name=mri_violations&PatientName={$items[item].PatientName}">{$items[item][piece].value}</a>
+	  		<a href="main.php?test_name=violated_scans&PatientName={$items[item].PatientName}">{$items[item][piece].value}</a>
         </td>
         {elseif $items[item][piece].value eq 'Protocol Violation'}
        	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
