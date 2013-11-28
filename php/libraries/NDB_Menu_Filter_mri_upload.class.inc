@@ -145,17 +145,16 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         print_r($values);
         if ($this->_saveFile($values)) {
-            ///////////////////////////////////////////////////////////////////
-            //////////////get the location of the last uploaded folder//////////
-            //////////////////////////////////////////////////////////////////
+            
+            /////////////////////////////////////////////////////////////
+            ////////////////////////initialization///////////////////////
+            /////////////////////////////////////////////////////////////
             $db=& Database::singleton();
+            /////get the location of the last uploaded folder//////////
             $source_location = $db->pselectOne(
             "SELECT  SourceLocation FROM mri_upload
                 WHERE DicomInserted = 0 ORDER BY UploadID DESC"
                 );
-                /////////////////////////////////////////////////////////////
-                /////////get the path where the mri code is stored///////////////
-                /////////////////////////////////////////////////////////////
                 $config =& NDB_Config::singleton();
                 $paths = $config->getSetting('paths');
                 $mri_user = $paths['MRIUser'];
@@ -172,78 +171,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $visit_label = $values['VisitLabel'];
                 $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
                 $patient_id = "GUSTO";
-
-                /////log/////
-                $mri_log_file = $paths['data'] . "logs/" .$patient_name. "_mri_upload_log.log";
-                $tarchive_file_log = $paths['data'] . "logs/" . $patient_name."_tarchive_file.txt";
-
-                ///truncate the file if the log file exists:
-                $today= getdate();
-                $date = sprintf(
-                "%04d-%02d-%02d", $today['year'],
-                $today['mon'], $today['mday']
-                );
-                $log_file = "/data/gusto/data/logs/" . "MRI_upload." .  $date . ".log";
-                $f = @fopen($log_file, "r+");
-                if ($f !== false) {
-                    ftruncate($f, 0);
-                    fclose($f);
-                }
-                ///////////////////////////////////////////////////////////////////////
-                ////////////////////////1) untar or unzip the uploaded folder//////////
-                ///////////////////////////////////////////////////////////////////////
-                // decompress from gz
-                //if it's a tar.gz or tgz////
-                if ((preg_match("/.tgz/i", $source_location))
-                || (preg_match("/.tar.gz/i", $source_location))
-                ) {
-                    try {
-                        $p = new PharData($source_location);
-                        $p->decompress(); // creates /path/to/my.tar
-                        $p->extractTo($mri_incoming_path);
-                        //could remove the folder later once completed...
-                    } catch (Exception $e) {
-                        print $e->getMessage();
-                        // handle errors
-                        print "error";
-                    }
-                    $this->log->addLog(
-                    "The File $source_location is now
-                    untarred into $mri_incoming_path \n <BR>"
-                    );
-                }
-
-                ///////////////////////////////////////////////////////////////////
-                ///////////////////////////2) source the environment variable//////
-                ///////////////////////////////////////////////////////////////////
-                print "-----------------------------";
-                $path = $mri_code_path. ":". getenv('PATH');
-                putenv("PATH=$path");
-                $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
-                putenv("PERL5LIB=$path");
-                putenv("TMPDIR=/tmp");
-                putenv("HOME=/home/$mri_user");
-                putenv("USER=$mri_user");
-                $this->log->addLog("The Environment Variables are now set \n");
-
-                ///////////////////////////////////////////////////////////////////
-                //////////////////////run dicomtar and updateheaders for the///////
-                /////////////////DICOM file////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////
-                /*
-                print "<BR>";
-                $cmd = "source $environment_script 2>&1";
-                print "command is $cmd";
-                //exec(" /bin/bash $environment_script",$output);
-                //echo shell_exec("cd $mri_code_path; . ./environment 2>&1");
-                echo shell_exec("source $environment_script 2>&1");
-                print "-----------------------------";
-                print "<BR>";
-                */
-                ///////////////////////////////////////////////////////////////////////
-                ///////////////////initialization//////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////
-
+                $this->tpl_data['minc_success'] = false;
+                ///dynamic output log file////////
+                $mri_log_file = $paths['data'] . "logs/" . $patient_name. "_mri_upload_log.log";  
+                ///log file containing the name of the tarred file which will be the input for batchupload
+                $tarchive_file_log = $paths['data'] . "logs/" . $patient_name ."_tarchive_file.txt";
                 $file_name = pathinfo($source_location, PATHINFO_FILENAME);
                 $file_name_without_exention = preg_replace(
                 "/\\.[^.\\s]{3,4}$/", "", $source_location
@@ -252,120 +184,35 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $file_name_without_exention and sourcelocation $source_location";
                 print "visitlabel $visit_label pscid: $pscid and candid : $candid";
 
-                ///////////////////////////////////////////////////////////////////////
-                /////////////////2) Running the Dicomtar and Update Headers////////////
-                /////////////////// are set//////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////
-                /////////////////if candid, pscid and visitabel text elements///////////
-                /////////////////// are set//////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////
+                /////untar or unzip the uploaded folder///////////////////////
+                /////////////////////////////////////////////////////////////////
+                $this->unTarUploadedFolder($source_location,$mri_incoming_path);
+
+                ///////////////////////////////////////////////////////////////
+                /////Source Environment Variables///////////////////////////////
+                /////////////////////////////////////////////////////////////////
+                $this->sourceEnvironment($mri_code_path,$mri_user);
+
+                ///////////////////////////////////////////////////////////////////
+                //////////////////////run dicomtar and updateheaders for the///////
+                /////////////////DICOM file////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////////
+
+                ///if the candid, pscid, and visit_label are inserted
                 if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
-                    $cmd = "/usr/bin/perl $DICOMTAR $file_name_without_exention $tarchive_location"
-                    .  " -clobber -database -profile prod";
-                    print "cmd : $cmd \n";
-                    $output = shell_exec($cmd);
-                    print $output;
-                    $row = $db->pselectRow(
-                    "Select ArchiveLocation,TarchiveID FROM tarchive
-                    ORDER BY Lastupdate DESC"
-                    );
-                    $ArchiveLocation = $row['ArchiveLocation'];
-                    $tarchive_id = $row['TarchiveID'];
-                    $this->log->addLog(
-                    "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
-                    );
-
-                    if (isset($ArchiveLocation)) {
-                        $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
-                        . " '(0010,0010)' $patient_name -set '(0010,0020)' $patient_id -database -profile prod";
-                        print "cmd : $cmd \n";
-                        print "query to be ran is $cmd";
-                        print "-----------------------------";
-                        print "<BR>";
-                        $output = shell_exec($cmd);
-                        print $output;
-                        print "-----------------------------";
-                        print "<BR>";
-                        $this->log->addLog(
-                        "The DICOM tar file $ArchiveLocation is now updated
-                        with the following patientname: $patient_name patientid: 
-                        $patient_id \n <BR> "
-                        );
-                    }
-                    /////////////////////////////////////////////////////////////////////
-                    ////////////Change the name of the tar file//////////////////////////
-                    ////////////////////////////////////////////////////////////////////
-                    $new_file_location = $tarchive_location ."/". $patient_name . ".tar";
-                    //$cmd = "mv $ArchiveLocation $new_file_location";
-                    //print "command is $cmd";
-                    //$output = shell_exec($cmd);
-                    //print $output;
-
-                    ///////////////////////////////////////////////////////////////////////////////
-                    ////Write into the tarchive-file log filrchiveLocation $new_file_location";
-                    //if it already exists remove it...
-                    //////////////////////////////////////////////////////////////////////////////////
-                    if (file_exists($tarchive_file_log)){
-                        unlink($tarchive_file_log);
-                    }
-                    $handle = fopen($tarchive_file_log, "w");
-                    $data = basename($ArchiveLocation);
-                    //$data = $patient_name . ".tar";
-                    fwrite($handle, $data);
-                    fclose($handle);
-
-                } else {
-                    /////////////////////////////////////////////////////////////////
-                    /////////////////otherwise use the file-name////////////////////
-                    /////////////////////////////////////////////////////////////////
-                    $cmd = "/usr/bin/perl  $mri_header_executer"
-                    . " $file_name_without_exention &>> $mri_log_file ";
-                    $query = "/usr/bin/perl  $mri_header_executer"
-                    . " $file_name_without_exention ";
-                    print "query to be ran is $cmd";
-                    print "-----------------------------";
-                    print "<BR>";
-                    //echo passthru($query);
-                    $output = shell_exec($cmd);
-                    print $output;
-                    print "-----------------------------";
-                    print "<BR>";
-                    $family_id = $this->getFamilyIDUsingFileName($file_name);
-                    $candid = $this->getCandID($family_id);
-                    $row=$db->pselectRow(
-                    "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive \
-                    WHERE patientname LIKE concat ('%', :pname, '%') ",
-                    array('pname'=>$family_id)
-                    );
-                    $tarchive_id = $row['TarchiveID'];
-                    $ArchiveLocation = $row['ArchiveLocation'];
-                    //$patient_name = $row['PatientName'];
-                    ///Change the Name of the file
-                    //$new_file_location = $tarchive_location ."/". $patient_name . ".tar";
-                    //$cmd = "mv $ArchiveLocation $new_file_location";
-                    //print "command is $cmd";
-                    //$output = shell_exec($cmd);
-                    //print $output;
-
+                    $success = $this->UpdateHeaderWithPatientName($DICOMTAR,$file_name_without_exention,$tarchive_location,$patient_id);
+                }
+                ///otherwise
+                else{
+                    $success = $this->UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name);
                 }
 
-                //////////////////////////////////////////////////////////////////////
-                ////////////////////////write the output into a log file//////////////
-                //////////////////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////
-                ///////////////////////////////set the file-name to patient-name //////
-                ///////////////////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////
-                ////////////////////////////////////////////////////////////////////////
-                ////////////Insert the TarchiveID into the mri_upload table/////////////
-                ////////////////////////////////////////////////////////////////////////
-                ////////////////////////////////////////////////////////////////////////
-                if ((!(preg_match("/not processed/", $output)))
-                && ($tarchive_id!=null)
-                ) {
+                //////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////set the tarchiveid and DicomInserted to true//////////////
+                ////////////////in mri_upload table////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////////
+                if ($success){
                     $db->update(
                     "mri_upload", array('TarchiveID'=>$tarchive_id,
                     'DicomInserted'=>1),
@@ -374,10 +221,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $this->tpl_data['dicom_success'] = true;
                 }
 
+
                 /////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////////////////////////////////
                 ///////////////////////////RUN the MINC Insertion///////////////////
-                ////////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////////////
                 ////make it such that the file can be passed to it...
                 $command = "cd $mri_code_path; /usr/bin/perl $bach_upload_script < $tarchive_file_log";
 
@@ -386,9 +234,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                               JOIN session s ON (s.ID = f.sessionID)
                                WHERE s.CandID =  :cid", array('cid'=>$candid));
 
-                ////if the minc is not inserted into the files table///
+                ///////////////////////////////////////////////////////////////////////////////
+                ////if the minc is not inserted into the files table///////////////
                 ////Run the minc-insertion pipeline
-                if ($count==0){
+                /////////////////////////////////////////////////////////////////////////
+                if ($count>0){
                     print "command is $command";
                     $output = shell_exec($command);
                     print $output;
@@ -397,9 +247,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     "The minc file for patient-name $patient_name is now inserted into the db \n <BR>"
                     );
                     $this->tpl_data['minc_success'] = true;
-                }
-                else{
-                    print "It's already inserted";
                 }
 
                 $this->tpl_data['upload_success'] = true;
@@ -830,6 +677,189 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $output="{$args["user_id"]}/";
         return $output;
     }
+
+    /**
+     * untar or unzip the uploaded folder
+     *
+     * @param String $source_location Location where tarred folder resides
+     * @param String $mri_incoming_path Location where the folder is untarred to
+     * 
+     * @return NULL
+     */
+
+    function unTarUploadedFolder($source_location,$mri_incoming_path){
+
+
+        //if it's a tar.gz or tgz////
+        if ((preg_match("/.tgz/i", $source_location))
+        || (preg_match("/.tar.gz/i", $source_location))
+        ) {
+            try {
+                $p = new PharData($source_location);
+                $p->decompress(); // creates /path/to/my.tar
+                $p->extractTo($mri_incoming_path);
+                //could remove the folder later once completed...
+            } catch (Exception $e) {
+                print $e->getMessage();
+                // handle errors
+                print "error";
+            }
+            $this->log->addLog(
+            "The File $source_location is now
+                    untarred into $mri_incoming_path \n <BR>"
+                    );
+        }
+    }
+
+    /**
+     * source the environment variable
+     *
+     * @param String $mri_code_path Path to the MRI-Code
+     * @param String $mri_user Linux MRI User
+     * 
+     * @return NULL
+     */
+    function sourceEnvironment($mri_code_path,$mri_user){
+
+        $path = $mri_code_path. ":". getenv('PATH');
+        putenv("PATH=$path");
+        $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
+        putenv("PERL5LIB=$path");
+        putenv("TMPDIR=/tmp");
+        putenv("HOME=/home/$mri_user");
+        putenv("USER=$mri_user");
+        $this->log->addLog("The Environment Variables are now set \n");
+    }
+
+    /**
+     * Enter description here...
+     *
+     * @param String $DICOMTAR Path to Dicomtar.pl
+     * @param String $file_name_without_exention Filename without extension
+     * @param String $tarchive_location Path to where the tarchive folder
+     * @param String $patient_id Patient ID
+     * 
+     * @return Boolean True if successfully completed, otherwise false
+     */
+
+    function UpdateHeaderWithPatientName($patient_name,$DICOMTAR,$file_name_without_exention,$tarchive_location,$patient_id)
+    {
+        $db=& Database::singleton();
+        $cmd = "/usr/bin/perl $DICOMTAR $file_name_without_exention $tarchive_location"
+        .  " -clobber -database -profile prod";
+        print "cmd : $cmd \n";
+        $output = shell_exec($cmd);
+        print $output;
+        $row = $db->pselectRow(
+        "Select ArchiveLocation,TarchiveID FROM tarchive
+                    ORDER BY Lastupdate DESC"
+                    );
+                    $ArchiveLocation = $row['ArchiveLocation'];
+                    $tarchive_id = $row['TarchiveID'];
+                    $this->log->addLog(
+                    "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
+                    );
+
+                    if (isset($ArchiveLocation)) {
+                        $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
+                        . " '(0010,0010)' $patient_name -set '(0010,0020)' $patient_id -database -profile prod";
+                        print "cmd : $cmd \n";
+                        print "query to be ran is $cmd";
+                        print "-----------------------------";
+                        print "<BR>";
+                        $output = shell_exec($cmd);
+                        print $output;
+                        print "-----------------------------";
+                        print "<BR>";
+                        $this->log->addLog(
+                        "The DICOM tar file $ArchiveLocation is now updated
+                        with the following patientname: $patient_name patientid: 
+                        $patient_id \n <BR> "
+                        );
+                    }
+
+                    ///////////////////////////////////////////////////////////////////////////////
+                    ////Write into the tarchive-file log filrchiveLocation $new_file_location";
+                    //if it already exists remove it...
+                    //////////////////////////////////////////////////////////////////////////////////
+                    if (file_exists($tarchive_file_log)){
+                        unlink($tarchive_file_log);
+                    }
+                    $handle = fopen($tarchive_file_log, "w");
+                    $data = basename($ArchiveLocation);
+                    //$data = $patient_name . ".tar";
+                    fwrite($handle, $data);
+                    fclose($handle);
+
+                    ////////////////////////////////////////////////////////////////////
+                    /////////////////if successfully completed return true//////////////
+                    ////////////////////////////////////////////////////////////////////
+
+                    if ((!(preg_match("/not processed/", $output)))
+                    && ($tarchive_id!=null)
+
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+    }
+
+    /**
+     * Runs the Dicomtar.pl and updateheaders.pl using the patient-name
+     * extracted from the file-name. This option will only be used for GUSTO
+     * Since the folder-name includes the correct patient-name
+     * 
+     *
+     * @param String $mri_header_executer The path to the customize_header.pl script
+     * @param String $mri_log_file The path to the MRI log file
+     * @param String $file_name_without_exention The name of the file without extension
+     * @param String $file_name The file-name
+     * 
+     * @return Boolean True if successfully completed, otherwise false
+     */
+    function UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name){
+
+
+        $db=& Database::singleton();
+        $cmd = "/usr/bin/perl  $mri_header_executer"
+        . " $file_name_without_exention &>> $mri_log_file ";
+        $query = "/usr/bin/perl  $mri_header_executer"
+        . " $file_name_without_exention ";
+        print "query to be ran is $cmd";
+        print "-----------------------------";
+        print "<BR>";
+        //echo passthru($query);
+        $output = shell_exec($cmd);
+        print $output;
+        print "-----------------------------";
+        print "<BR>";
+        $family_id = $this->getFamilyIDUsingFileName($file_name);
+        $candid = $this->getCandID($family_id);
+        $row=$db->pselectRow(
+        "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive \
+                    WHERE patientname LIKE concat ('%', :pname, '%') ",
+        array('pname'=>$family_id)
+        );
+        $tarchive_id = $row['TarchiveID'];
+        $ArchiveLocation = $row['ArchiveLocation'];
+
+        ////////////////////////////////////////////////////////////////////
+        /////////////////if successfully completed return true//////////////
+        ////////////////////////////////////////////////////////////////////
+
+        if ((!(preg_match("/not processed/", $output)))
+        && ($tarchive_id!=null)
+
+        ) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+
 }
 
 ?>
