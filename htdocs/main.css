@@ -703,3 +703,11 @@ vertical-align: bottom;
 tr.directentry {
     background: #BDDDBD;
 }
+
+table.instrument tbody tr:nth-child(even) {
+    background: pink;
+}
+
+table.instrument tbody tr:nth-child(odd) {
+    background: #CC99FF;
+}
