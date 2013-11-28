@@ -142,7 +142,6 @@ class NDB_Caller extends PEAR
     */
     function loadMenu($menu, $mode)
     {
-        print "menu is $menu";
         // make an instance of the menu's object
         $menu =& NDB_Menu::factory($menu, $mode);
         if (Utility::isErrorX($menu)) {
