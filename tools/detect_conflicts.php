@@ -35,7 +35,7 @@ if ((count($argv)<2) || (count($argv)>6)) {
     echo "Usage: php detect_conflicts.php -i Instrument \n";
     echo "Example: php detect_conflicts.php bdi \n";
 
-    echo "to insert the conflicts into conflicts_unresovled table type -c \n";
+    echo "to insert the conflicts into conflicts_unresovled table type -c -i \n";
     echo "to remove all/re-insert the conflicts into
             conflicts_unresovled table type -m \n";
     echo "to run the script for all the instruments
@@ -80,12 +80,13 @@ if (array_key_exists('c', $opts)) {
 }
 
 if (array_key_exists('m', $opts)) {
-    $chage_all = true;
+    $change_all = true;
 }
 
 if ($change && $change_all) {
     $die("Choose either Change (-c) or remove and re-insert all conflicts (-m)");
 }
+
 /**
  * Initialization
  */
@@ -104,64 +105,69 @@ $conflicts_to_be_excluded = array();
 /**
  * Check to see if the variable instrument is set
  */
-if (($instrument=='all') ||($instrument=='All')){
+if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
-}
-else{
+} else {
     $instruments = array($instrument=>$instrument);
 }
-foreach ($instruments as $instrument){
+foreach ($instruments as $instrument) {
     if (isset($instrument)) {
         print  "instrument is $instrument \n";
 
         //Run the script for all the instruments
         $commentids = getCommentIDs($instrument, $visit_label);
 
-        /**
-     * check to make sure that the commentids are set
-     */
+        
+         //check to make sure that the commentids are set
         if (isset($commentids)) {
             //get the current conflicts
-            $current_conflicts =getCurrentUnresolvedConflicts($instrument, $visit_label);
+            $current_conflicts =getCurrentUnresolvedConflicts(
+                $instrument, $visit_label
+            );
             $recreated_conflicts = reCreateConflicts(
-            $instrument, $commentids, $current_conflicts
+                $instrument, $commentids, $current_conflicts
             );
 
-            $new_conflicts = getNewConflicts($current_conflicts, $recreated_conflicts);
+            $new_conflicts = getNewConflicts(
+                $current_conflicts, $recreated_conflicts
+            );
             $conflicts_to_be_excluded = detectConflictsTobeExcluded(
-            $instrument, $commentids, $current_conflicts
+                $instrument, $commentids, $current_conflicts
             );
             /**
-         * Only Create report for the  confliclits
-         1) that should be inserted into the conflicts_unresolved table
-         2) that should be deleted from the conflicts_unresolved table
-         */
+            * Only Create report for the  confliclits
+            1) that should be inserted into the conflicts_unresolved table
+            2) that should be deleted from the conflicts_unresolved table
+            */
             if ((!$change)&&(!$change_all)) {
 
                 //just show the conflicts
-                print "This will only display the conflicts needed to be inserted \n";
-                print "To re-create the conflict, run this script with -c option \n";
+                print "This will only display the conflicts needed to
+                be inserted \n";
+                print "To re-create the conflict, run this script with 
+                -c option \n";
                 if ((empty($new_conflicts)) && empty($conflicts_to_be_excluded)) {
                     print "No new conflicts or current conflicts to be
                 removed are detected for instrument $instrument \n";
                 } else {
                     writeCSV(
-                    $new_conflicts, $dataDir, $instrument, $visit_label,
-                    "Conflicts_to_be_inserted"
+                        $new_conflicts, $dataDir, $instrument, $visit_label,
+                        "Conflicts_to_be_inserted"
                     );
                     writeCSV(
-                    $conflicts_to_be_excluded, $dataDir, $instrument,
-                    $visit_label, "Conflicts_to_be_removed"
+                        $conflicts_to_be_excluded, $dataDir, $instrument,
+                        $visit_label, "Conflicts_to_be_removed"
                     );
                 }
             }
             /**
-         * Only insert those conflicts which are new and are not currently
-         * in the conflict_uresolved
-         * 1)remove/clear the existing conflicts
-         * 2) And then re-create the conflicts
-         */
+            * Only insert those conflicts which are new and are not currently
+            * in the conflict_uresolved
+            * 1)remove/clear the existing conflicts
+            * 2) And then re-create the conflicts
+            */
 
+            ///if the instrument is not provided, run it only for all the instruments
             if ($change) {
                 if ((empty($new_conflicts)) || (!isset($new_conflicts))) {
                     die("There are No new conflicts to be inserted ");
@@ -169,29 +175,31 @@ foreach ($instruments as $instrument){
                 foreach ($new_conflicts as $conflict) {
                     if (($conflict!=null)&&(!empty($conflict))) {
                         ConflictDetector::clearConflictsForInstance(
-                        $conflict['CommentId1']
+                            $conflict['CommentId1']
                         ); ///clear the conflicts
                     }
                 }
                 //////re-insert them into the table
                 ConflictDetector::recordUnresolvedConflicts($new_conflicts);
             }
+
+
             /**
-         * Remove all the current conflicts for the givent instrument/visit_label
-         * And re-insert them
-         */
+            * Remove all the current conflicts for the givent instrument/visit_label
+            * And re-insert them
+            */
             if ($change_all) {
                 foreach ($commentids as $cid) {
                     ConflictDetector::clearConflictsForInstance($cid['CommentID']);
                     $diff=ConflictDetector::detectConflictsForCommentIds(
-                    $test_name, $cid['CommentID'], $cid['DDECommentID']
+                        $test_name, $cid['CommentID'], $cid['DDECommentID']
                     );
                     ConflictDetector::recordUnresolvedConflicts($diff);
                 }
             }
         }
     } else {
-        die("the instrument is not set or there are no commentids");
+        die("the instrument is not set or there are no commentids \n");
     }
 }
 
@@ -291,7 +299,7 @@ function reCreateConflicts($test_name,$commentids,$current_conflicts)
          * Detect new conflicts
          */
         $diff=ConflictDetector::detectConflictsForCommentIds(
-        $test_name, $cid['CommentID'], $cid['DDECommentID']
+            $test_name, $cid['CommentID'], $cid['DDECommentID']
         );
         if ($diff!=null) {
             foreach ($diff as $row) {
@@ -358,7 +366,8 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
             fputcsv($fp, $data, "\t"); //write the headers to the CSV file
         }
         fclose($fp);
-        print "The CSV output for $prefix (for instrument $instrument) is available under $path \n";
+        print "The CSV output for $prefix (for instrument $instrument)
+         is available under $path \n";
     }
 }
 
@@ -375,12 +384,12 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
 function getInfoUsingCommentID($commentid)
 {
     $data =  $GLOBALS['DB']->pselectRow(
-    "SELECT c.PSCID, c.CandID, s.Visit_label FROM flag f
+        "SELECT c.PSCID, c.CandID, s.Visit_label FROM flag f
         JOIN session s on (f.sessionid=s.ID)
         JOIN candidate c on (c.CandID=s.CandID)
         WHERE f.CommentID = :cid", array('cid'=>$commentid)
-        );
-        return $data;
+    );
+    return $data;
 }
 
 
@@ -400,7 +409,7 @@ function detectConflictsTobeExcluded($instrument,$commentids,$current_conflicts)
 
     $conflicts_to_excluded = array();
     $instance1 =& NDB_BVL_Instrument::factory(
-    $instrument, $commentids[0]['CommentID'], null
+        $instrument, $commentids[0]['CommentID'], null
     );
     $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
     foreach ($current_conflicts as $conflict) {
@@ -473,11 +482,11 @@ function findConflict($conflict,$conflicts)
     foreach ($conflicts as $cf) {
         ////////if the value exists then set found to true////
         if ((in_array($conflict['CommentId1'], $cf))
-        && (in_array($conflict['FieldName'], $cf))
+            && (in_array($conflict['FieldName'], $cf))
         ) {
             ///if the values are the same////////////
             if (($conflict['Value1'] == $cf['Value1'])
-            && ($conflict['Value2'] == $cf['Value2'])
+                && ($conflict['Value2'] == $cf['Value2'])
             ) {
                 return true;
             }
