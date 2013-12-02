@@ -3,6 +3,7 @@
  * @package main
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
 // start benchmarking
 require_once 'Benchmark/Timer.php';
