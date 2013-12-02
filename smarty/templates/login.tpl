@@ -135,7 +135,7 @@ BrowserDetect.init();
 <tr>
 <!--td style="padding:0px"><img src="images/neuro_logo_blue.gif" alt="Montreal Neurological Institute" border="0" width="64" height="57" /></td-->
 <th align="center" class="loginheader" colspan="3" style="padding:5px;"  background="images/title_background.jpg">
-{$study_title}
+<img src="{$study_logo}" border="0" width="64" height="57" />{$study_title}
 </br>
 <!--</th>
 </tr>
