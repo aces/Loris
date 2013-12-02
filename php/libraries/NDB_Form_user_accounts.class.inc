@@ -1,4 +1,4 @@
-kdi <?php
+<?php
 require_once "NDB_Form.class.inc";
 require_once "Email.class.inc";
 
