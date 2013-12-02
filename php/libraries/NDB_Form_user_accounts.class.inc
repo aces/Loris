@@ -60,9 +60,8 @@ class NDB_Form_user_accounts extends NDB_Form
 
     function _process($values)
     {
-        // build the "real name"
-        $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
-
+       // build the "real name"
+       $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
 	    // store the permission IDs
 	    if (!empty($values['permID'])) {
