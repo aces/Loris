@@ -270,8 +270,7 @@ class UserPermissions
      * @return null
      */
     function insertIntoUserAccountHistory(
-        $PermID=null,$permAction=null,$DataField=null,
-        $DataFieldValueOld=null,$DataFieldValueNew=null
+        $PermID=null,$permAction=null
     ) {
 
         // create DB object
@@ -286,9 +285,7 @@ class UserPermissions
             'user_account_history',
             array(
                 'userID'=>$this->userID,'PermID'=>$PermID,
-                'PermAction'=>$permAction,'DataField'=>$DataField,
-                'DataFieldValueOld'=>$DataFieldValueOld,
-                'DataFieldValueNew'=>$DataFieldValueNew
+                'PermAction'=>$permAction
             )
         );
         if (Utility::isErrorX($success)) {
