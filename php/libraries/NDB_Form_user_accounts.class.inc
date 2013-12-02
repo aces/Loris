@@ -1,4 +1,4 @@
-<?php
+kdi <?php
 require_once "NDB_Form.class.inc";
 require_once "Email.class.inc";
 
@@ -60,9 +60,9 @@ class NDB_Form_user_accounts extends NDB_Form
 
     function _process($values)
     {
-      // build the "real name"
-      $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
-
+    	// build the "real name"
+    	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
+    	
 	    // store the permission IDs
 	    if (!empty($values['permID'])) {
             $permIDs = $values['permID'];
@@ -108,7 +108,8 @@ class NDB_Form_user_accounts extends NDB_Form
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() insert: ".$success->getMessage());
             }
-                                                                                                                                                       $user =& User::factory($set['UserID']);
+
+            $user =& User::factory($set['UserID']);
             if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error (".$set['UserID'] ."): ".$user->getMessage());
             }
@@ -148,7 +149,6 @@ class NDB_Form_user_accounts extends NDB_Form
                     if (in_array($key, $current_permissionids)) {
                         $user->insertIntoUserAccountHistory($key, 'D');
                     }
-
                     unset($permIDs[$key]);
                 } else {
                     /* if the user didn't have the permission 
