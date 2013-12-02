@@ -263,9 +263,6 @@ class UserPermissions
      *
      * @param Integer $PermID            The ID of the permission
      * @param String  $permAction        The Type of user-modification ('D' or 'I')
-     * @param String  $DataField         The field-name been modified
-     * @param String  $DataFieldValueOld The old value for the field-name
-     * @param String  $DataFieldValueNew The new value for the field-name
      * 
      * @return null
      */
