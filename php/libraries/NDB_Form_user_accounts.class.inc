@@ -63,19 +63,6 @@ class NDB_Form_user_accounts extends NDB_Form
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
-        //create the user
-        if (!empty($this->identifier)) {
-            $user =& User::factory($this->identifier);
-        } else {
-            $user =& User::factory($values['UserID']);
-        }
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError(
-                "User Error ($this->identifier): ".$user->getMessage()
-            );
-        }
-        ////Get the current permissions/////
-        $current_permissionids = $user->getPermissionIDs();
 
 	    // store the permission IDs
 	    if (!empty($values['permID'])) {
@@ -106,36 +93,13 @@ class NDB_Form_user_accounts extends NDB_Form
         foreach ($values as $key => $value) {
             if (!empty($value) || $value === '0') {
                 $set[$key] = $value;
-                /*
-                    if the userinfo is modified insert it into
-                    user_account_history table
-                */
-                $old_value = $user->getData($key);
-                $new_value = $set[$key];
-                if ($old_value!=$new_value) {
-                    if (($key!='Password_md5')&&($key!='Real_name')) {
-                        $user->insertIntoUserAccountHistory(
-                            null, null, $key, $old_value, $new_value
-                        );
-                    }
-                }
+              
             }
         }
 
         // prepend two random characters
         if (isset($set['Password_md5'])) {
             $set['Password_md5'] = User::md5_salt($set['Password_md5']);
-            /*
-             if the password is changed insert it into the	
-             user_account_history table
-            */            
-            if ($user->getData('Password_md5')!=$set['Password_md5']) {
-                $user->insertIntoUserAccountHistory(
-                    null, null, 'Password_md5', $user->getData('Password_md5'), 
-                    $set['Password_md5']
-                );
-            }
-
         }
 
 
