@@ -63,6 +63,21 @@ class NDB_Form_user_accounts extends NDB_Form
     	// build the "real name"
     	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
     	
+        //create the user
+        if (!empty($this->identifier)) {
+            $user =& User::factory($this->identifier);
+        }
+        else{
+            $user =& User::factory($values['UserID']);
+        }
+        if(Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
+        }
+        ////Get the current permissions/////
+        $current_permissionids = $user->getPermissionIDs();
+
+
+    	
 	    // store the permission IDs
 	    if (!empty($values['permID'])) {
             $permIDs = $values['permID'];
