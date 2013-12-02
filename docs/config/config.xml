@@ -45,6 +45,10 @@
     <patientNameRegex>/./i</patientNameRegex>
     <showTransferStatus>false</showTransferStatus>
 </dicom_archive>
+<Studylinks>
+    <link url='http://www.loris.ca'>Loris Website</link>
+    <link url='http://www.github.com'>GitHub</link>
+</Studylinks>
 
 <links>
     <link url='dicom_archive.php?' args=''>DICOM Archive</link>
