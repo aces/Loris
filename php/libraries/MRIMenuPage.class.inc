@@ -1,5 +1,6 @@
 <?php
 require_once "Database.class.inc";
+//require_once "Utility.class.inc";
 // This class is the old mri_browser.php portion of the code that 
 // deals with showing the menu list of candidates/filtering, refactored
 // into a different class to make the mri browser code easier to read
@@ -31,7 +32,7 @@ class MRIMenuPage {
                 'site' => 'p.CenterID',
                 'candID' => 'c.CandID',
                 'pscID' => 'c.PSCID',
-                'visitLabel' => 's.Visit_label',
+                'visit' => 's.Visit_label',
                 'qcStatus' => 's.MRIQCStatus',
                 'SubprojectID' => 's.SubprojectID',
                 'pending' => "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"
@@ -101,6 +102,7 @@ class MRIMenuPage {
                     GROUP BY f.SessionID
                     ORDER BY $extra_orderby p.Name, firstAcqDate, c.CandID, s.Visit_label;";
 
+                //took this out of query as column is missing from table: UNIX_TIMESTAMP(s.MRIQCLastChangeTime) AS lastQCDate
             $DB->select($query, $this->visit_tpl_data['timepoints']);
             if(Utility::isErrorX($this->visit_tpl_data['timepoints']))  {
                 print $this->visit_tpl_data['timepoints']->getMessage()."<br>\n";

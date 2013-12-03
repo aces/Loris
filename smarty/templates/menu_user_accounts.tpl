@@ -5,6 +5,14 @@
         <th nowrap="nowrap" colspan="8">Selection Filter</th>
     </tr>
     <tr>
+        <td nowrap="nowrap">Username:</td>
+        <td nowrap="nowrap">{$form.userID.html}</td>
+        <td nowrap="nowrap">Full name:</td>
+        <td nowrap="nowrap">{$form.real_name.html}</td>
+        <td nowrap="nowrap">Email:</td>
+        <td nowrap="nowrap">{$form.email.html}</td>
+    </tr>
+    <tr>
         <td nowrap="nowrap">Site:</td>
         <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
         <td nowrap="nowrap">Username:</td>

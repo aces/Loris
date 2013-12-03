@@ -160,10 +160,18 @@ onload="feedback_bvl_popup();"
 <!-- Start workspace area -->
 <!--h1 align="right"><a href="javascript:open_help_section()" ><u>Help</u></a>  </h1-->
 {if $crumbs != ""}
+<<<<<<< HEAD
+            <!-- bread crumb -->
+            <table width="100%" border="0" cellpadding="3" cellspacing="4">
+                <tr>
+                    <!--   <th class="crumbBanner" align="left">-->
+                        <th align="left">
+=======
 <!-- bread crumb -->
 <table width="100%" border="0" cellpadding="3" cellspacing="4">
 <tr>
 <th class="banner" align="left">
+>>>>>>> aces/master
 {section name=crumb loop=$crumbs}
 {if $test_name == "conflicts_resolve"}
 <a href="main.php/{$crumbs[crumb].query}">Conflicts Resolver</a> {if not $smarty.section.crumb.last}&gt; {/if}
@@ -188,8 +196,13 @@ onload="feedback_bvl_popup();"
 If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
 <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {elseif $test_name == ""}
+<<<<<<< HEAD
+            <h1>Welcome to the Database for the Prevent-AD project!</h1>
+	    <p>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help section to the left. Otherwise, feel free to contact us. We strive to make data collection almost fun.</p>
+=======
 <h1>Welcome to the LORIS Database!</h1>
 <p width=50%>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</p>
+>>>>>>> aces/master
 {else}
 
 {if $candID != ""}
