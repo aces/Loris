@@ -63,6 +63,21 @@ class NDB_Form_user_accounts extends NDB_Form
     	// build the "real name"
     	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
     	
+        //create the user
+        if (!empty($this->identifier)) {
+            $user =& User::factory($this->identifier);
+        }
+        else{
+            $user =& User::factory($values['UserID']);
+        }
+        if(Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
+        }
+        ////Get the current permissions/////
+        $current_permissionids = $user->getPermissionIDs();
+
+
+    	
 	    // store the permission IDs
 	    if (!empty($values['permID'])) {
             $permIDs = $values['permID'];
@@ -144,7 +159,20 @@ class NDB_Form_user_accounts extends NDB_Form
 
             foreach ($permIDs as $key => $value) {
                 if ($value == 0) {
+                    //if the permission existed before and it's removed now///
+                    ///Then insert into the user_account_history as 'D'
+                    if (in_array($key, $current_permissionids)) {
+                        $user->insertIntoUserAccountHistory($key, 'D');
+                    }
                     unset($permIDs[$key]);
+                } else {
+                    /* if the user didn't have the permission 
+                    and the permission is now assigned then insert 
+                    insert into the user_account_history as 'I'
+                    */
+                    if (!(in_array($key, $current_permissionids))) {
+                        $user->insertIntoUserAccountHistory($key, 'I');
+                    }
                 }
             }
 
