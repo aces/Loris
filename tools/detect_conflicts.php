@@ -1,7 +1,10 @@
 #!/usr/bin/php
 <?php
 /**
- * detects the conflicts
+ * - Option to detect conflicts for the given instrument 
+ * and create corresponding CSV file
+ * - Option to insert the missing conflict for the given instrument
+ * - Option to remove and re-insert conflict for the given instrument
  *
  * PHP version 5
  *
@@ -18,14 +21,9 @@ require_once "NDB_BVL_Instrument.class.inc";
 require_once "User.class.inc";
 require_once "Utility.class.inc";
 require_once "NDB_Client.class.inc";
-/**
- * *Todo:
- * 1) The option for removing the excluded_feedbacks should be added as well
- */
 
-/**
- * User prompt
- */
+/// User prompt
+ 
 if ((count($argv)<2) || (count($argv)>6)) {
 
     echo "Usage: php detect_conflicts.php -i Instrument -t Timepoint\n";
@@ -44,9 +42,7 @@ if ((count($argv)<2) || (count($argv)>6)) {
     die();
 }
 
-/**
- * parse the options
- */
+// parse the options
 $opts = getopt("m:i:t:c");
 $change = false;
 $change_all = false;
@@ -57,23 +53,17 @@ if (!is_array($opts)) {
     exit(1);
 }
 
-/**
- * IF it's an instrument
- */
+/// IF it's an instrument
 if ($opts['i']!=null) {
     $instrument = $opts['i'];
 }
 
-/**
- * if it's an visit
- */
+// if it's an visit
 if ($opts['t'] !=null) {
     $visit_label = $opts['t'];
 }
 
-/**
- * Set the variables $change and $chage_all
- */
+// Set the variables $change and $chage_all
 
 if (array_key_exists('c', $opts)) {
     $change = true;
@@ -87,9 +77,7 @@ if ($change && $change_all) {
     $die("Choose either Change (-c) or remove and re-insert all conflicts (-m)");
 }
 
-/**
- * Initialization
- */
+/// Initialization
 $config = NDB_Config::singleton();
 $db = Database::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
@@ -99,12 +87,12 @@ $paths = $config->getSetting('paths');
 $dataDir = $paths['base'] . $config->getSetting('log');
 $diff = null;
 $new_conflicts = array();
-$recreated_conflicts = array();
+$detected_conflicts = array();
 $current_conflicts = array();
 $conflicts_to_be_excluded = array();
-/**
- * Check to see if the variable instrument is set
- */
+
+
+// Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
 } else {
@@ -124,12 +112,12 @@ foreach ($instruments as $instrument) {
             $current_conflicts =getCurrentUnresolvedConflicts(
                 $instrument, $visit_label
             );
-            $recreated_conflicts = reCreateConflicts(
+            $detected_conflicts = detectConflicts(
                 $instrument, $commentids, $current_conflicts
             );
 
             $new_conflicts = getNewConflicts(
-                $current_conflicts, $recreated_conflicts
+                $current_conflicts, $detected_conflicts
             );
             $conflicts_to_be_excluded = detectConflictsTobeExcluded(
                 $instrument, $commentids, $current_conflicts
@@ -216,6 +204,7 @@ foreach ($instruments as $instrument) {
 
 function getCommentIDs($test_name, $visit_label=null, $candid=null)
 {
+    $db =& Database::singleton();
     $params = array();
     $query = "SELECT CommentID, s.visit_label,Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
@@ -253,6 +242,7 @@ function getCommentIDs($test_name, $visit_label=null, $candid=null)
 
 function getCurrentUnresolvedConflicts($test_name,$visit_label=null)
 {
+    $db =& Database::singleton();
     $params = array();
     $query = "SELECT cu.* FROM conflicts_unresolved cu
         JOIN flag f on (f.commentid = cu.commentid1)
@@ -271,13 +261,13 @@ function getCurrentUnresolvedConflicts($test_name,$visit_label=null)
         }
     }
     $query .=$where;
-    $conflicts = $GLOBALS['DB']->pselect($query, $params);
+    $conflicts = $db->pselect($query, $params);
     return $conflicts;
 }
 
 
 /**
-* Recreate the conflicts by 
+* detect the conflicts by 
 * 1) instantiating the instrument for each given commmentid
 * 2) and then taking the diff
 *
@@ -285,12 +275,12 @@ function getCurrentUnresolvedConflicts($test_name,$visit_label=null)
 * @param Array  $commentids        An array of commentids used as haystack
 * @param Array  $current_conflicts An array of current conflicts detected
 * 
-* @return Array $recreated_conflicts List of newly detected conflicts
+* @return Array $detected_conflicts List of newly detected conflicts
 */
 
-function reCreateConflicts($test_name,$commentids,$current_conflicts)
+function detectConflicts($test_name,$commentids,$current_conflicts)
 {
-    $recreated_conflicts = array();
+    $detected_conflicts = array();
     /**
      * Go through each commentid
      */
@@ -303,11 +293,11 @@ function reCreateConflicts($test_name,$commentids,$current_conflicts)
         );
         if ($diff!=null) {
             foreach ($diff as $row) {
-                $recreated_conflicts[] = $row;
+                $detected_conflicts[] = $row;
             }
         }
     }
-    return $recreated_conflicts;
+    return $detected_conflicts;
 }
 
 
@@ -316,10 +306,10 @@ function reCreateConflicts($test_name,$commentids,$current_conflicts)
 *  Write the data into a csv file
 *
 * @param String       $output      Array of data been written into csv
-* @param unknown_type $path        The file path
-* @param unknown_type $instrument  The name of the instrument
-* @param unknown_type $visit_label The name of the visit
-* @param unknown_type $prefix      The type of csv file
+* @param String $path        The file path
+* @param String $instrument  The name of the instrument
+* @param String $visit_label The name of the visit
+* @param String $prefix      The type of csv file
 * 
 * @return Null
 */
@@ -338,9 +328,7 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
             $name = $prefix . "_". $instrument . "_" . date('ymd-His') . ".csv";
         }
         $path = $path.$name;
-        /**
-         * Write the header into the file
-         */
+        /// Write the header into the file
         $fp = fopen($path, 'w');
         $column_headers = $output[0];
         unset($column_headers['ExtraKeyColumn']);
@@ -352,9 +340,8 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
         $column_headers[] = "PSCID";
         $column_headers[] = "CandID";
         fputcsv($fp, $column_headers, "\t"); //write the headers to the CSV file
-        /**
-         * insert the data into the csv file
-         */
+
+        //// insert the data into the csv file
         foreach ($output as $data) {
             unset($data['ExtraKeyColumn']);
             unset($data['ExtraKey1']);
@@ -383,7 +370,8 @@ function writeCSV($output,$path,$instrument,$visit_label,$prefix)
 
 function getInfoUsingCommentID($commentid)
 {
-    $data =  $GLOBALS['DB']->pselectRow(
+    $db =& Database::singleton();
+    $data =  $db->pselectRow(
         "SELECT c.PSCID, c.CandID, s.Visit_label FROM flag f
         JOIN session s on (f.sessionid=s.ID)
         JOIN candidate c on (c.CandID=s.CandID)
@@ -430,27 +418,27 @@ function detectConflictsTobeExcluded($instrument,$commentids,$current_conflicts)
  * Detect those conflicts not currently in conflicts unresolved table
  *
  * @param Array $current_conflicts   The list of current conflicts detected
- * @param Array $recreated_conflicts The list of newly created conflicts
+ * @param Array $detected_conflicts The list of newly created conflicts
  * 
  * @return Array $new_conflicts  The list of conflicts to be included
  */
 
-function getNewConflicts ($current_conflicts, $recreated_conflicts)
+function getNewConflicts ($current_conflicts, $detected_conflicts)
 {
     $new_conflicts = array();
 
     /**
-     * 1) Make sure that the $recreated_conflicts is not empty
+     * 1) Make sure that the $detected_conflicts is not empty
      * 2) if the current_conflicts is empty, then the 
-     * new conflicts = $recreated_conflicts
+     * new conflicts = $detected_conflicts
      */
-    if (!(empty($recreated_conflicts))) {
+    if (!(empty($detected_conflicts))) {
         /**
          * 1) go through the current conflicts
          * 2) and detect those conflicts in recreated conflicts 
          * which are not in the current_conflicts
          */
-        foreach ($recreated_conflicts as $re_conflict) {
+        foreach ($detected_conflicts as $re_conflict) {
 
             if (empty($current_conflicts)) {///if the conflict doesn't exist
                 $new_conflicts[] = $re_conflict;
