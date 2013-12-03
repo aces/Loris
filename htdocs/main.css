@@ -472,7 +472,7 @@ width:110%;
 }
 .LoginBackground {
 background-repeat: no-repeat; 
-background-position: 50% 150px;
+background-position: 55% 250px;
 }
 .MainFooter {
     position:absolute;
@@ -514,7 +514,7 @@ list-style-type: none;
 
 #navlist a:link, #navlist a:visited
 {
-color: #fff;
+color: #000;
 text-decoration: none;
 }
 
@@ -667,4 +667,17 @@ width: 140px;
 }
 #LogEntries {
 margin-top: 20px;
+}
+
+.StudyWeblinks {
+position:absolute;
+top:800px;
+height: 3em;
+width: 100%;
+font-size: 14px;
+font-color #000000: 
+color: #000;
+text-align: center;
+vertical-align: bottom;
+
 }
