@@ -61,17 +61,18 @@
     <td>
     {if $prevpage}
         {if $prevpage eq 'top'}
-            <button onclick="window.location='?key={$key}'">Go Back</button>
+            <button id="goback">Save And Go Back</button>
         {else}
-            <button onclick="window.location='?key={$key}&pageNum={$prevpage}'">Go Back</button>
+            <button id="goback">Save And Go Back</button>
         {/if}
+        <span style="display: none" id="prevpage">{$prevpage}</span>
     {/if}
 
     {if $nextpage} 
     <button id="savecontinue">
         <span style="display: none" id="nextpage">{$nextpage}</span>
         <span style="display: none" id="key">{$key}</span>
-        Save And Continue
+        Save and Continue
     </button>
     {else}
     <br />
