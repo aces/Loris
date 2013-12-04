@@ -54,8 +54,8 @@
     <!-- print out data rows -->
     {section name=piece loop=$items[item]}
     <td nowrap="nowrap">
-        {if  $items[item][piece].name == "Username"}
-        <a href="main.php?test_name=user_accounts&subtest=edit_user&identifier={$items[item][piece].value}">{$items[item][piece].value}</a>
+        {if  $items[item][piece].name == "URL"}
+        <a href="submit.php?key={$items[item][piece].value}">{$items[item][piece].value}</a>
         {else}
         {$items[item][piece].value}
         {/if}
