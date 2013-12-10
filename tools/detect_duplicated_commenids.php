@@ -106,17 +106,19 @@ foreach ($instruments as $instrument=>$full_name) {
              JOIN flag f on (f.sessionid=s.id)
              WHERE s.candID = :cid AND f.test_name = :fname AND s.subprojectid = :subid",
                 array('cid'=>$candid,'fname'=>$instrument,'subid'=>$subprojectid['subprojectid']));
-                $sessionid = $session_info['ID'];
-                $visit_label = $session_info['Visit_label'];
-                if ($sessionid !=null){
-                    // if ($pscid == '010-20860'){
-                    $commentid = getCommentIDs($instrument,$visit_label,$sessionid,$candid,$pscid,$subprojectid['subprojectid']);
-                    $size = sizeof($commentid);
-                    if ($size>=2){
-                        print_r($commentid);
-                        print"\n=================================================================\n";
-                        $commentids[] = $commentid;
-                        //print_r($commentids);
+                if (($session_info!=null) && (!empty($session_info))){
+                    $sessionid = $session_info['ID'];
+                    $visit_label = $session_info['Visit_label'];
+                    if ($sessionid !=null){
+                        // if ($pscid == '010-20860'){
+                        $commentid = getCommentIDs($instrument,$visit_label,$sessionid,$candid,$pscid,$subprojectid['subprojectid']);
+                        $size = sizeof($commentid);
+                        if ($size>=2){
+                            print_r($commentid);
+                            print"\n=================================================================\n";
+                            $commentids[] = $commentid;
+                            //print_r($commentids);
+                        }
                     }
                 }
             }
@@ -181,7 +183,7 @@ function getCommentIDs($test_name, $visit_label=null,$sid=null, $candid=null,$ps
             }
             $commentid = $flag_info + $commentid;
             $commentids[$key] = $commentid;
-            
+
         }
 
     }
