@@ -7,6 +7,8 @@ $(document).ready(function() {
 
         if(e.currentTarget.id === 'savecontinue') {
             nextPage = nextpageNode.textContent;
+        } else if(e.currentTarget.id === 'finalize') {
+            nextPage = 'finalpage';
         } else if(e.currentTarget.id === 'complete') {
             nextPage = 'complete';
         } else if (e.currentTarget.id === 'goback') {
@@ -22,6 +24,7 @@ $(document).ready(function() {
         $("#test_form").submit();
     }
     $("#savecontinue").click(ajaxSubmit);
+    $("#finalize").click(ajaxSubmit);
     $("#complete").click(ajaxSubmit);
     $("#goback").click(ajaxSubmit);
 });

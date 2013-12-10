@@ -88,26 +88,39 @@ class NDB_Form_participant_accounts extends NDB_Form
         $commentID = $battery->addInstrument($values['Test_name']);
 
         $key = User::newPassword();
+
+        $email = false;
+        if(isset($_REQUEST['send_email'])) {
+            $email = true;
+        }
+        if($email) {
+            $status = 'Sent';
+        } else {
+            $status = 'Created';
+        }
+
         $db->insert(
             "participant_accounts", 
             array(
                 'SessionID'        => $SessionID,
                 'Test_name'        => $values['Test_name'],
                 'Email'            => $values['Email'],
-                'Complete'         => 'No',
+                'Status'           => $status,
                 'OneTimePassword'  => $key,
                 'CommentID'        => $commentID
             )
         );
 
 
-        $msg_data = array(
-            'study' => 'test',
-            'url'   => 'http://localhost?key=' . $key
-        );
-        //Email::send($values['Email'], 'new_survey.tpl', $msg_data); 
-        // for testing..
-        //Email::send('driusan', 'new_survey.tpl', $msg_data); 
+        if($email) {
+            $msg_data = array(
+                'study' => 'test',
+                'url'   => 'http://localhost?key=' . $key
+            );
+            //Email::send($values['Email'], 'new_survey.tpl', $msg_data); 
+            // for testing..
+            Email::send('driusan', 'new_survey.tpl', $msg_data); 
+         }
     }
 
     function _createCommentID($CandID, $PSCID, $SessionID, $SubprojectID, $testID) {

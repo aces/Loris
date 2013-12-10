@@ -9,6 +9,7 @@ require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Caller.class.inc';
 require_once 'NDB_Client.class.inc';
 require_once 'NDB_BVL_Instrument.class.inc';
+require_once 'Log.class.inc';
 
 class DirectDataEntryMainPage {
     var $key;
@@ -51,8 +52,8 @@ class DirectDataEntryMainPage {
         $this->key = $_REQUEST['key'];
 
         $DB = Database::singleton();
-        $this->TestName = $DB->pselectOne("SELECT Test_name FROM participant_accounts WHERE OneTimePassword=:key AND Complete='No'", array('key' => $this->key));
-        $this->CommentID = $DB->pselectOne("SELECT CommentID FROM participant_accounts WHERE OneTimePassword=:key AND Complete='No'", array('key' => $this->key));
+        $this->TestName = $DB->pselectOne("SELECT Test_name FROM participant_accounts WHERE OneTimePassword=:key AND Status <> 'Complete'", array('key' => $this->key));
+        $this->CommentID = $DB->pselectOne("SELECT CommentID FROM participant_accounts WHERE OneTimePassword=:key AND Status <> 'Complete'", array('key' => $this->key));
         $this->NumPages = $DB->pselectOne("SELECT COUNT(*) FROM instrument_subtests WHERE Test_name=:TN", array('TN' => $this->TestName));
 
         if(empty($this->TestName) && empty($this->CommentID)) {
@@ -119,7 +120,7 @@ class DirectDataEntryMainPage {
     function getCommentID() {
         $DB = Database::singleton();
         return $DB->pselectOne(
-            "SELECT CommentID FROM participant_accounts WHERE OneTimePassword=:key AND Complete='No'",
+            "SELECT CommentID FROM participant_accounts WHERE OneTimePassword=:key AND Status <> 'Complete'",
             array(
                 'key' => $this->key
             )
@@ -139,32 +140,75 @@ class DirectDataEntryMainPage {
         $smarty->display('directentry.tpl');
         
     }
+
+    /**
+     * Updates the status of the current key
+     *
+     * @param status string The status to be updated to
+     *
+     * @return True on success, false on failure
+     */
+    function updateStatus($status) {
+        $DB = Database::singleton();
+
+        $currentStatus = $DB->pselectOne('SELECT Status FROM participant_accounts WHERE OneTimePassword=:key', array('key' => $this->key));
+
+        if(Utility::isErrorX($currentStatus)) {
+            return false;
+        }
+
+        if($currentStatus === 'Complete') {
+            // Already completed, don't want to accidentally change it back to
+            // started or some other status..
+            return false;
+        }
+
+        $DB->update(
+            "participant_accounts",
+            array('Status' => $status),
+            array('OneTimePassword' => $this->key)
+        );
+
+        return true;
+    }
+
+    function logRequest() {
+        $log = new Log("direct_entry");
+        $logmsg = $_SERVER['REMOTE_ADDR'];
+        if(!empty($_SERVER['HTTP_X_FORDWARDED_FOR'])) {
+            $logmsg .= " (" . $_SERVER['HTTP_X_FORDWARDED_FOR'] . ")";
+        }
+
+        $logmsg .= substr(print_r($_REQUEST, true), 5);
+        $log->addLog($logmsg);
+
+    }
     function display() {
         $DB = Database::singleton();
-        $nextpage = null;
+            $nextpage = null;
+
+        $this->logRequest();
         if ($this->NextPageNum && isset($_REQUEST['nextpage'])) {
             $nextpage = "submit.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]"; 
-
-            /*if($_REQUEST['nextpage'] === 'complete') {
-                $nextpage = null;
-            }*/
         }
         
         $workspace = $this->caller->load($this->TestName, $this->Subtest, $this->CommentID, $nextpage);
 
         // Caller calls instrument's save function and might have errors, so we still need to call it.
         // But if nextpage is 'complete', then after that override with a "Thank you" message
-        if($_REQUEST['pageNum'] === 'complete') {
+        if ($_REQUEST['pageNum'] === 'finalpage') {
+            $this->tpl_data['workspace'] = '';
+            $this->tpl_data['finalpage'] = true;
+        }
+
+        if ($_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
             $this->tpl_data['complete'] = true;
             
-            $DB->update(
-                "participant_accounts",
-                array('Complete' => 'Yes'),
-                array('OneTimePassword' => $this->key)
-            );
+            $this->updateStatus('Complete');
 
         } else {
+            $this->updateStatus('In Progress');
             $this->tpl_data['workspace'] = $workspace;
         }
         $smarty = new Smarty_neurodb;
