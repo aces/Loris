@@ -78,18 +78,19 @@ $conflicts_to_be_excluded = array();
 /**
  * Check to see if the variable instrument is set
  */
-if (($instrument=='all') ||($instrument=='All')){
+if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
-}
-else{
+} else {
     $instruments = array($instrument=>$instrument);
 }
 
-$candidates= $DB->pselect("SELECT CandID, PSCID FROM candidate",array());
-
-//get all the candidates:
-//$candidates = $db->pselect("SELECT Candid,PSCID FROM CANDIDATES")
-$subprojectids = $DB->pselect("SELECT DISTINCT subprojectid FROM session",array());
+//get all candidates
+$candidates= $DB->pselect("SELECT CandID, PSCID FROM candidate", array());
+//get all subprojectids
+$subprojectids = $DB->pselect(
+    "SELECT DISTINCT subprojectid FROM session",
+    array()
+);
 
 //print_r($instruments);
 foreach ($instruments as $instrument=>$full_name) {
@@ -97,36 +98,38 @@ foreach ($instruments as $instrument=>$full_name) {
     if ((isset($instrument)) && (hasData($instrument))) {
         print "instrument is $instrument";
         $commentids = array();
-        foreach ($candidates as $candidate){
+        foreach ($candidates as $candidate) {
             $candid = $candidate['CandID'];
             $pscid = $candidate['PSCID'];
-            foreach($subprojectids as $subprojectid) {
-                $session_info = $DB->pselectRow("SELECT DISTINCT s.Visit_label,s.ID from session s
-             JOIN candidate c on (c.candid=s.candid)
-             JOIN flag f on (f.sessionid=s.id)
-             WHERE s.candID = :cid AND f.test_name = :fname AND s.subprojectid = :subid",
-                array('cid'=>$candid,'fname'=>$instrument,'subid'=>$subprojectid['subprojectid']));
-                if (($session_info!=null) && (!empty($session_info))){
+            foreach ($subprojectids as $subprojectid) {
+                $session_info = $DB->pselectRow(
+                    "SELECT DISTINCT s.Visit_label,s.ID from session s
+                    JOIN candidate c on (c.candid=s.candid)
+                    JOIN flag f on (f.sessionid=s.id)
+                    WHERE s.candID = :cid AND f.test_name = :fname AND
+                    s.subprojectid = :subid",
+                    array('cid'=>$candid,'fname'=>$instrument,
+                    'subid'=>$subprojectid['subprojectid'])
+                );
+                if (($session_info!=null) && (!empty($session_info))) {
                     $sessionid = $session_info['ID'];
                     $visit_label = $session_info['Visit_label'];
-                    if ($sessionid !=null){
-                        // if ($pscid == '010-20860'){
-                        $commentid = getCommentIDs($instrument,$visit_label,$sessionid,$candid,$pscid,$subprojectid['subprojectid']);
+                    if ($sessionid !=null) {
+                        $commentid = getCommentIDs(
+                            $instrument, $visit_label, $sessionid, $candid,
+                            $pscid, $subprojectid['subprojectid']
+                        );
                         $size = sizeof($commentid);
-                        if ($size>=2){
-                            print_r($commentid);
-                            print"\n=================================================================\n";
+                        if ($size>=2) {
                             $commentids[] = $commentid;
-                            //print_r($commentids);
                         }
                     }
                 }
             }
         }
-        writeCSV($commentids, $dataDir, $instrument,"Conflicts_to_be_inserted");
+        writeCSV($commentids, $dataDir, $instrument, "Conflicts_to_be_inserted");
     }
 }
-///print_r($commentids);
 
 
 
@@ -135,8 +138,8 @@ foreach ($instruments as $instrument=>$full_name) {
 *Get the commentids for the given instrument, candidate and visit_label
 *
 * @param String $test_name    The instrument been searched
-* @param string $Visitlabel   The VisitLabel Placed in the CSV file
-* @param string $sessionid    The SessionID been searched
+* @param string $visit_label  The VisitLabel Placed in the CSV file
+* @param string $sid          The SessionID been searched
 * @param string $candid       The candid been searched
 * @param string $pscid        The PSCID been searched
 * @param string $subprojectid The subprojecitd been searched
@@ -145,19 +148,19 @@ foreach ($instruments as $instrument=>$full_name) {
 * 
 */
 
-//Add in or not-in flag...
-//Data_entry done or not...
-
-function getCommentIDs($test_name, $visit_label=null,$sid=null, $candid=null,$pscid=null,$subprojectid=null)
-{
+function getCommentIDs(
+    $test_name, $visit_label=null, $sid=null,
+    $candid=null,$pscid=null, $subprojectid=null
+) {
 
     $commentID = $candid. $pscid. $sid . $subprojectid;
     $commentids = array();
     $flag_info = array();
 
-    if ($commentID !=null && $test_name!=null){
-        $query = " SELECT '$pscid' AS PSCID,'$visit_label' AS VisitLabel, t.* FROM $test_name t";
-        $where = " WHERE t.CommentID like concat ('%', :cid, '%')
+    if ($commentID !=null && $test_name!=null) {
+        $query = " SELECT '$pscid' AS PSCID,'$visit_label' AS VisitLabel,
+                 t.* FROM $test_name t";
+        $where = " WHERE t.CommentID LIKE CONCAT ('%', :cid, '%')
                    AND t.CommentID NOT LIKE '%DDE%'";
 
         if ($commentID!=null) {
@@ -172,13 +175,16 @@ function getCommentIDs($test_name, $visit_label=null,$sid=null, $candid=null,$ps
     if ($commentids !=null) {
 
 
-        foreach ($commentids as $key=>$commentid){
+        foreach ($commentids as $key=>$commentid) {
             $flag = array();
-            $flag = $GLOBALS['DB']->pselectRow("SELECT * FROM flag where CommentID = :cid",array('cid'=>$commentid['CommentID']));
+            $flag = $GLOBALS['DB']->pselectRow(
+                "SELECT * FROM flag WHERE CommentID = :cid",
+                array('cid'=>$commentid['CommentID'])
+            );
             $flag_info['flag_data_entry'] = $flag['Data_entry'];
             $flag_info['in_flag'] = 'No';
 
-            if (($flag!=null)&&(!empty($flag))){
+            if (($flag!=null)&&(!empty($flag))) {
                 $flag_info['in_flag'] = 'Yes';
             }
             $commentid = $flag_info + $commentid;
@@ -187,15 +193,6 @@ function getCommentIDs($test_name, $visit_label=null,$sid=null, $candid=null,$ps
         }
 
     }
-
-
-    /*
-    if ($cids!=null){
-    foreach ($cids as $cid){
-    $commentids[] = $cid;
-    }
-    }
-    */
     return $commentids;
 }
 
@@ -204,16 +201,14 @@ function getCommentIDs($test_name, $visit_label=null,$sid=null, $candid=null,$ps
 /**
 *  Write the data into a csv file
 *
-* @param String       $output      Array of data been written into csv
-* @param unknown_type $path        The file path
-* @param unknown_type $instrument  The name of the instrument
-* @param unknown_type $visit_label The name of the visit
-* @param unknown_type $prefix      The type of csv file
+* @param String $output     Array of data been written into csv
+* @param String $path       The file path
+* @param String $instrument The name of the instrument
 * 
-* @return Null
+* @return NULL
 */
 
-function writeCSV($output,$path,$instrument)
+function writeCSV($output,$path,$instrument) 
 {
 
     /**
@@ -235,20 +230,31 @@ function writeCSV($output,$path,$instrument)
          * insert the data into the csv file
          */
         foreach ($output as $data) {
-            foreach($data as $array){
+            foreach ($data as $array) {
                 //print_r($array);
                 fputcsv($fp, $array, "\t"); //write the headers to the CSV file
             }
         }
         fclose($fp);
-        print "The CSV output for $prefix (for instrument $instrument) is available under $path \n";
+        print "The CSV output for $prefix (for instrument $instrument)
+        is available under $path \n";
     }
 }
+/**
+ * checks to see if the table has some data
+ *
+ * @param String $instrument instrument-name
+ * 
+ * @return NULL
+ */
 
-
-function hasData($instrument){
-    $commentids = $GLOBALS['DB']->pselect("SELECT COUNT(*) FROM $instrument", array());
-    if ((count($commentids)) > 0){
+function hasData($instrument) 
+{
+    $commentids = $GLOBALS['DB']->pselect(
+        "SELECT COUNT(*) FROM $instrument",
+        array()
+    );
+    if ((count($commentids)) > 0) {
         return true;
     }
     return false;
