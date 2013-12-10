@@ -53,17 +53,49 @@
 {else}
 
         <!-- included file -->
-<table width="90%"><tr><td>
-{$workspace}
-</td></tr>
+{if $finalpage} 
+<form id="test_form" method="post">
+<table width="90%">
+    <tr>
+        <td>How would you rate the ease of filling out this survey?</td>
+        <td>
+            <input type="radio" name="ease" value="1"> Very easy
+            <input type="radio" name="ease" value="2"> Moderately easy
+            <input type="radio" name="ease" value="3"> Average
+            <input type="radio" name="ease" value="4"> Moderately difficult
+            <input type="radio" name="ease" value="5"> Difficult
+    </tr>
+    <tr>
+        <td>Do you have any other comments to make?</td>
+        <td><textarea id="comments" rows="5" placeholder="Enter any comments about this survey here"></textarea></td>
+    </tr>
+    <tr>
+        <td>
+            <b>Note that once data is submitted you will not be able to modify it.</b>
+        <button id="complete">
+        <span style="display: none" id="key">{$key}</span>
+            Submit data
+        </button>
+        </td>
+    </tr>
+</table>
+</form>
+{else}
+<table width="90%">
+<tr>
+    <td>
+            
+        {$workspace}
+    </td>
+</tr>
 {if ($nextpage || $prevpage) && !$complete}
 <tr>
     <td>
     {if $prevpage}
         {if $prevpage eq 'top'}
-            <button id="goback">Save And Go Back</button>
+            <button id="goback">Save and Go Back</button>
         {else}
-            <button id="goback">Save And Go Back</button>
+            <button id="goback">Save and Go Back</button>
         {/if}
         <span style="display: none" id="prevpage">{$prevpage}</span>
     {/if}
@@ -75,26 +107,20 @@
         Save and Continue
     </button>
     {else}
-    <br />
-    <p>
-    <b>You must click below to save this page and submit data to the study. Please note that once you submit data you can not modify your answers.</b>
-
-    </p>
-    <div>
-    <button id="complete">
+    <button id="finalize">
         <span style="display: none" id="key">{$key}</span>
-        Save and Submit Data
+        Save and Finalize
     </button>
-    </div>
     {/if}
     </td>
 </tr>
-{/if}
-</table>
 {/if} 
+</table>
+{/if}
         </td>
     </tr>
 </table>
+{/if}
 
 </body>
 </html>

@@ -31,7 +31,7 @@ class NDB_Menu_Filter_participant_accounts extends NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID)";
 
         // set the class variables
-        $this->columns = array('c.PSCID AS PSCID', 's.Visit_label AS Visit', 'p.Email as Email', 'p.Test_name as SurveyName', 'p.OneTimePassword as URL','p.Complete');
+        $this->columns = array('c.PSCID AS PSCID', 's.Visit_label AS Visit', 'p.Email as Email', 'p.Test_name as SurveyName', 'p.OneTimePassword as URL','p.Status');
         $this->query = $query;
         $this->order_by = 'PSCID';
         $this->validFilters = array();
