@@ -296,12 +296,10 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 <div id="footerLinks">
 <td width="100%">
 <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" >
-<!--
 <li id="active">|</li>
 {foreach from=$links item=link}
 <li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
 {/foreach}
--->
 </ul>
 </td>
 </div>
