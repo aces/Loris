@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 /**
  * detects the duplicated commentids for the given instrument
@@ -68,16 +67,14 @@ $db = Database::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 $config = NDB_Config::singleton();
 $db_config = $config->getSetting('database');
-//$dataDir = "/home/gustodatabaseuser/conflicts/".$db_config['database'];
 $dataDir = "logs";
 $diff = null;
 $new_conflicts = array();
 $recreated_conflicts = array();
 $current_conflicts = array();
 $conflicts_to_be_excluded = array();
-/**
- * Check to see if the variable instrument is set
- */
+
+//Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
 } else {
@@ -92,11 +89,9 @@ $subprojectids = $DB->pselect(
     array()
 );
 
-//print_r($instruments);
 foreach ($instruments as $instrument=>$full_name) {
-    print "instrument is $instrument";
+    print "instrument is $instrument \n";
     if ((isset($instrument)) && (hasData($instrument))) {
-        print "instrument is $instrument";
         $commentids = array();
         foreach ($candidates as $candidate) {
             $candid = $candidate['CandID'];
@@ -132,8 +127,6 @@ foreach ($instruments as $instrument=>$full_name) {
 }
 
 
-
-
 /**
 *Get the commentids for the given instrument, candidate and visit_label
 *
@@ -162,19 +155,15 @@ function getCommentIDs(
                  t.* FROM $test_name t";
         $where = " WHERE t.CommentID LIKE CONCAT ('%', :cid, '%')
                    AND t.CommentID NOT LIKE '%DDE%'";
-
         if ($commentID!=null) {
             $params['cid'] = $commentID;
         }
-
         $query .=$where;
         $commentids = $GLOBALS['DB']->pselect($query, $params);
     }
 
-    ///include the flag_data_entry  and in_flag
+    ///include the flag_data_entry and in_flag
     if ($commentids !=null) {
-
-
         foreach ($commentids as $key=>$commentid) {
             $flag = array();
             $flag = $GLOBALS['DB']->pselectRow(
@@ -183,15 +172,12 @@ function getCommentIDs(
             );
             $flag_info['flag_data_entry'] = $flag['Data_entry'];
             $flag_info['in_flag'] = 'No';
-
             if (($flag!=null)&&(!empty($flag))) {
                 $flag_info['in_flag'] = 'Yes';
             }
             $commentid = $flag_info + $commentid;
             $commentids[$key] = $commentid;
-
         }
-
     }
     return $commentids;
 }
@@ -210,28 +196,21 @@ function getCommentIDs(
 
 function writeCSV($output,$path,$instrument) 
 {
-
     /**
      * Construct the file-path
      */
     if ($output!=null) {
         $name = $instrument . "_" . date('ymd-His') . ".csv";
         $path = "$path/$name";
-        /**
-         * Write the header into the file
-         */
-        $fp = fopen($path, 'w');
 
+        //Write the header into the file
+        $fp = fopen($path, 'w');
         $column_headers = $output[0][0];
-        //print_r($column_headers);
         $column_headers = array_keys($column_headers);
         fputcsv($fp, $column_headers, "\t"); //write the headers to the CSV file
-        /**
-         * insert the data into the csv file
-         */
+        // insert the data into the csv file
         foreach ($output as $data) {
             foreach ($data as $array) {
-                //print_r($array);
                 fputcsv($fp, $array, "\t"); //write the headers to the CSV file
             }
         }
