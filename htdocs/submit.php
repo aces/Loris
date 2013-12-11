@@ -65,7 +65,12 @@ class DirectDataEntryMainPage {
             $pageNum = $_REQUEST['pageNum'];
         }
 
-        $this->Subtest = $DB->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:TN AND Order_number=:PN", array('TN' => $this->TestName, 'PN' => $pageNum));
+
+        if($pageNum === 'finalpage') {
+            $this->Subtest = 'finalpage';
+        } else {
+            $this->Subtest = $DB->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:TN AND Order_number=:PN", array('TN' => $this->TestName, 'PN' => $pageNum));
+        }
 
         $totalPages = $DB->pselectOne("SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN", array('TN' => $this->TestName));
         $this->NextPageNum = $this->getNextPageNum($pageNum);
@@ -172,6 +177,17 @@ class DirectDataEntryMainPage {
         return true;
     }
 
+    function updateComments($ease, $comments) {
+        $DB = Database::singleton();
+        $DB->update(
+            "participant_accounts",
+            array(
+                'UserEaseRating' => $ease,
+                'UserComments'   => $comments
+            ),
+            array('OneTimePassword' => $this->key)
+        );
+    }
     function logRequest() {
         $log = new Log("direct_entry");
         $logmsg = $_SERVER['REMOTE_ADDR'];
@@ -188,25 +204,32 @@ class DirectDataEntryMainPage {
             $nextpage = null;
 
         $this->logRequest();
-        if ($this->NextPageNum && isset($_REQUEST['nextpage'])) {
+        
+        if (isset($_REQUEST['nextpage'])) {
+        //if (isset($_REQUEST['nextpage'])) {
             $nextpage = "submit.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]"; 
         }
         
+        if(isset($_POST['ease'])) {
+            // Comments is too comment of an instrument fieldname,
+            // so just check if ease is set
+            $this->updateComments(
+                $_POST['ease'], 
+                $_POST['comments']
+            );
+        }
         $workspace = $this->caller->load($this->TestName, $this->Subtest, $this->CommentID, $nextpage);
 
         // Caller calls instrument's save function and might have errors, so we still need to call it.
         // But if nextpage is 'complete', then after that override with a "Thank you" message
         if ($_REQUEST['pageNum'] === 'finalpage') {
-            $this->tpl_data['workspace'] = '';
+            $this->tpl_data['workspace'] = $workspace;
             $this->tpl_data['finalpage'] = true;
-        }
-
-        if ($_REQUEST['pageNum'] === 'complete') {
+        } else if ($_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
             $this->tpl_data['complete'] = true;
             
             $this->updateStatus('Complete');
-
         } else {
             $this->updateStatus('In Progress');
             $this->tpl_data['workspace'] = $workspace;
