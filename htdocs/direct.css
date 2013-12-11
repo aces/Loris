@@ -326,3 +326,11 @@ table.instrument tbody tr:nth-child(even) {
 table.instrument tbody tr:nth-child(odd) {
     background: #CC99FF;
 }
+
+#savecontinue {
+    float: right;
+}
+
+#finalize {
+    float: right;
+}

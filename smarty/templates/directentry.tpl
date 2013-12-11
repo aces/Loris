@@ -90,8 +90,10 @@
     </td>
 </tr>
 {if ($nextpage || $prevpage) && !$complete}
-<tr>
-    <td>
+{* This is defined here but moved to the instrument table
+   through javascript *}
+<tr id="buttons">
+    <td colspan="2">
     {if $prevpage}
         {if $prevpage eq 'top'}
             <button id="goback">Save and Go Back</button>
