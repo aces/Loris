@@ -223,7 +223,11 @@ class DirectDataEntryMainPage {
         // Caller calls instrument's save function and might have errors, so we still need to call it.
         // But if nextpage is 'complete', then after that override with a "Thank you" message
         if ($_REQUEST['pageNum'] === 'finalpage') {
-            $this->tpl_data['workspace'] = $workspace;
+            if(isset($_POST['ease'])) {
+                $this->tpl_data['workspace'] = $workspace;
+            } else {
+                $this->tpl_data['workspace'] = '';
+            }
             $this->tpl_data['finalpage'] = true;
         } else if ($_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
