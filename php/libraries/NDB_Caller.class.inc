@@ -228,6 +228,9 @@ class NDB_Caller extends PEAR
     */
     function loadInstrument($instrument_s, $page, $commentID, $redirectToOnSuccess=null)
     {
+        if ($page === 'finalpage') {
+            return "<script language='javascript'>window.location='$redirectToOnSuccess'</script>";
+        }
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
