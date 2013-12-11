@@ -54,6 +54,7 @@
 
         <!-- included file -->
 {if $finalpage} 
+{$workspace}
 <form id="test_form" method="post">
 <table width="90%">
     <tr>
@@ -67,7 +68,7 @@
     </tr>
     <tr>
         <td>Do you have any other comments to make?</td>
-        <td><textarea id="comments" rows="5" placeholder="Enter any comments about this survey here"></textarea></td>
+        <td><textarea name="comments" id="comments" rows="5" placeholder="Enter any comments about this survey here"></textarea></td>
     </tr>
     <tr>
         <td>
