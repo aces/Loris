@@ -353,3 +353,11 @@ table.instrument tbody tr:nth-child(odd) {
     float: right;
     font-size: 1.1em;
 }
+
+#savecontinue {
+    float: right;
+}
+
+#finalize {
+    float: right;
+}
