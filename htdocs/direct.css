@@ -2,7 +2,7 @@ body {
    	margin: 5px 10px 10px 5px;
 	background-color: ligthgrey; 
 	font-family: verdana, sans-serif;
-	font-size: 70%;
+	font-size: 1.1em;
 }
 
 
@@ -129,7 +129,7 @@ td.tabox {
     /*
 	background-color: #d3d3e1;
     */
-    background-color: #EEF;
+    background-color: white;
     /*
 	border-left: solid #ccc 2px;
 	border-right: solid #ccc 2px;
@@ -320,17 +320,36 @@ tr.directentry {
 }
 
 table.instrument tbody tr:nth-child(even) {
-    background: pink;
+    background: #BCC6CC;
+   /* background: #E5E4E2; */
 }
 
 table.instrument tbody tr:nth-child(odd) {
-    background: #CC99FF;
+    background: #98AFC7;
+    /* background: #CCDDFF;
+    background: #D6FFFF; */
 }
 
+.instrument tbody tr td, .instrument tbody tr th {
+    padding: 10px; /*
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    */
+}
+#goback {
+    padding-top: 5px;
+    font-size: 1.1em;
+}
 #savecontinue {
+    padding-top: 5px;
     float: right;
+    font-size: 1.1em;
 }
 
 #finalize {
+    padding-top: 5px;
+    
     float: right;
+    font-size: 1.1em;
 }
