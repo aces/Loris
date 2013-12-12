@@ -31,7 +31,6 @@ Class TimePoint_List_ControlPanel extends Candidate
     	
         $this->tpl_data['candID'] = $this->getData('CandID');
 		$isDataEntryPerson=$user->hasPermission('data_entry') && $user->getData('CenterID') == $this->getData('CenterID');
-        
         $this->tpl_data['isDataEntryPerson'] = $isDataEntryPerson;
 
         $this->tpl_data['isDCC'] = ($user->getCenterID() == 1);

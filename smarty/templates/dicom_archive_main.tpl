@@ -2,11 +2,19 @@
 	   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <HEAD>
+<div id="page">
 <LINK REL=StyleSheet HREF="{$css}" TYPE="text/css">
+<link rel=StyleSheet HREF="css/jquery-ui-1.8.2.custom.css" TYPE="text/css">
+<link rel=StyleSheet HREF="css/jqueryslidemenu.css" TYPE="text/css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <!-- page title -->
 <TITLE>DICOM - {$study_title}</TITLE>
+
+<link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
+<script type="text/javascript" src="js/jquery/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
 <!-- end page header -->
 </HEAD>
 
@@ -63,30 +71,68 @@ function JSFX_FloatDiv(id, sx, sy)
 	}
 	return el;
 }
-JSFX_FloatDiv("divTopLeft",       10, 200).flt();
+JSFX_FloatDiv("divTopLeft",10, 200).flt();
 
 </script>
 {/literal}
 
 <BODY>
+
+<table width="100%" class="header">
+<tr>
+<th align="left" id="jsheader">
+<div id="slidemenu" class="jqueryslidemenu">
+<ul>
+<li><a href="main.php"><img width=20 src=images/home-icon.png></a></li>
+{foreach from=$tabs item=tab}
+{if $tab.visible == 1}
+<li><a href="#">{$tab.label}</a>
+<ul width="250">
+{foreach from=$subtab item=mySubtab}
+{if $tab.label == $mySubtab.parent}
+{if $mySubtab.label == "Data Query Tool"}
+<a href="{$mySubtab.link}" target="_blank">{$mySubtab.label}</a>
+{else}
+<a href="{$mySubtab.link}">{$mySubtab.label}</a>
+{/if}
+{/if}
+{/foreach}
+</ul>
+</li>
+{/if}
+{/foreach}
+</ul>
+<ul style="float:right">
+<li><a href="#">{$user.Real_name}</a>
+<ul>
+<li><a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a></li>
+<li><a href="main.php?logout=true">Log Out</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="site">
+&nbsp;&nbsp;  Site: {$user.Site} &nbsp;|
+
+</div>
+
+
+<div id="slidemenu" style="float:right" class="jqueryslidemenu">
+<ul>
+<li><a href="#" onclick="FeedbackButtonClicked()"><img width=17 src=images/pencil.gif></a></li>
+
+<li><a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;"><img width=17 src=images/help.gif></a></li>
+</ul>
+</div>
+</div>
+</div>
+</th>
+</tr>
+</table>
 <!-- start main table -->
 <table width="90%" cellpadding="5" cellspacing="2">
-<tr>
-    <th background="images/title_background.jpg" class="banner" align="left" colspan="2">
-        <strong>DICOM archive - {$study_title}</strong>
-    </th>
-</tr>
-<tr>
-    <td colspan="2" class="controlPanelSection" >
-        User:&nbsp;{$user_full_name}
-        &nbsp;&nbsp;Site:&nbsp;{$user_site_name}
-        &nbsp;&nbsp;Date:&nbsp;{$smarty.now|date_format:"%B %e %Y"}
-    </td>
-</tr>
 <!-- navigation panel -->
 <tr>
-    <td width="10%" class="tabox" valign="top">
-   </td>
 
 <!-- main page table tags -->
     <td class="tabox" valign="top">
@@ -97,5 +143,26 @@ JSFX_FloatDiv("divTopLeft",       10, 200).flt();
     </td>
 </tr>
 </table>
+<table class="mriFooter" align="center">
+<tr>
+<div id="footerLinks">
+<td width="100%">
+<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" >
+<li id="active">|</li>
+{foreach from=$links item=link}
+<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
+{/foreach}
+</ul>
+</td>
+</div>
+</tr>
+<tr>
+<td align="center" colspan="1" style="color:#fff" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+</tr>
+<tr>
+<td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #348b8d;" target="_blank">Created by ACElab</a></td>
+</tr>
+</table>
+</div>
 </BODY>
 </HTML>

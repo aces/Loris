@@ -111,7 +111,7 @@
         <input type="submit" value="Save" />
         </form>
     </div>
-    <h2>Rules (Optional)</h2>
+    <!--h2>Rules (Optional)</h2>
     <div>
         <dl>
             <dt>Question</dt>
@@ -139,7 +139,7 @@
         </table>
         <input type="button" onclick="Rules.save()" value="Save Rules" />
 
-    </div>
+    </div-->
 </div>
 </body>
 </html>

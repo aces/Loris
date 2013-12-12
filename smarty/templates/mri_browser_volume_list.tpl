@@ -98,8 +98,16 @@ return true;
 <!-- listing of files -->
 <!-- table with candidate profile info -->
 <table><tr>
-{literal}<script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script>{/literal}
+{literal}<!--script>document.write('<a href="BrainBrowser/display.html?sessionID='+sID+'" id = "dccid" name = "dccid">&nbsp;3D Viewer</a>');</script-->{/literal}
 <!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
+<td nowrap="nowrap"><input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
+<td nowrap="nowrap"><input type="button" name="button" value="MRI Parameter Form" class="button" style = "background-color: #816e91" onclick="window.open('main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}')" /></td>
+</br>
+</tr>
+
+<!--{literal}<script>document.write('<a href="main.php?test_name=mri_parameter_form&candID='</script>{/literal}{$subject.candid}{literal}<script>document.write('&sessionID='+sID+'">MRI Parameter Form</a>');</script>{/literal}
+<a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}" id = "MRIparam" name  = "MRIparam" target="_blank">&nbsp;MRI Parameter Form</a>
+-->
     <td>
     <table class="fancytableleft" cellpadding="2">
         <tr>
@@ -188,7 +196,7 @@ return true;
 
             <tr>
             	<td colspan="2">
-            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', '2D Minc Viewer', 'location = 0,width = 1300, height = 600')">
+            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', 'BrainCanvas Minc Viewer', 'location = 0,width = 1300, height = 600')">
                	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
             	</a>
             	</td>

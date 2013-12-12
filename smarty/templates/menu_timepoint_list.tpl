@@ -1,9 +1,12 @@
-<br />
-<!-- table title -->
-<table border="0" valign="bottom" width="100%"><td class="controlPanelSection">List of Visits (Time Points)</td></table>
+<br>
+<h1 style="float:left">Actions:&nbsp&nbsp</h1> {$controlPanel}
+<br>
+<br>
 
+<!-- table title -->
+<strong>List of Visits (Time Points)</strong>
 <!-- list of timepoints table -->
-<table class="listColorCoded" cellpadding="2">
+<table style="margin-top:0" class="listColorCoded" cellpadding="2">
 <!-- table column headings -->
     <tr>
         <th nowrap="nowrap">Visit Label<BR>(Click to Open)</th>

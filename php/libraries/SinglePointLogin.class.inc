@@ -30,7 +30,8 @@ class SinglePointLogin extends PEAR
      * @access public
      */
     function showLoginScreen()
-    {
+    {   
+        $tpl_data = array();
         if(isset($_POST['username'])) {
             $tpl_data['username'] = $_POST['username'];
         } else {
@@ -49,6 +50,24 @@ class SinglePointLogin extends PEAR
         $tpl_data['css']=$config->getSetting('css');
         $tpl_data['action'] = $_SERVER['PHP_SELF'].'?'.Utility::unparse_str($params);
         $tpl_data['error_message'] = $this->_lastError;
+        $study_links = $config->getSetting('Studylinks');// print_r($study_links);
+        foreach(Utility::toArray($study_links['link']) AS $link){
+            $BaseURL = $link['@']['url'];
+            if(isset($link['@']['args'])) {
+                $LinkArgs = $link_args[$link['@']['args']];
+            }
+            $LinkLabel = $link['#'];
+            $WindowName = md5($link['@']['url']);
+            $tpl_data['studylinks'][]=array(
+                    'url'        => $BaseURL . $LinkArgs,
+                    'label'      => $LinkLabel,
+                    'windowName' => $WindowName
+                    );
+        }
+        $study_title = $config->getSetting('title');
+        $study_logo  = $config->getSetting('studylogo');
+        $tpl_data['study_title'] = $study_title;
+        $tpl_data['study_logo']  = $study_logo;
         
         //Output template using Smarty
         $smarty = new Smarty_neurodb;

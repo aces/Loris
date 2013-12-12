@@ -52,7 +52,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         if (Utility::isErrorX($candidate)) {
             return PEAR::raiseError("Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage());
         }
-
+        
         $numberOfVisits = 0;
         $this->tpl_data['candID'] = $_REQUEST['candID'];
         $this->tpl_data['PSCID'] = $candidate->getPSCID();

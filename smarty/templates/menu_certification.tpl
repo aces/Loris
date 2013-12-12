@@ -6,11 +6,11 @@
     </tr>
     <tr>
         <td nowrap="nowrap">Site:</td>
-        <td nowrap="nowrap">{$form.centerID.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
         <td nowrap="nowrap">Full name:</td>
-        <td nowrap="nowrap">{$form.full_name.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.full_name.html}</td>
         <td nowrap="nowrap">Measure:</td>
-        <td nowrap="nowrap">{$form.measure.html}</td>
+        <td nowrap="nowrap" class="MenuWidth">{$form.measure.html}</td>
 <!--        <td nowrap="nowrap">Date:</td>
         <td nowrap="nowrap">{$form.date_cert.html}</td>
         <td nowrap="nowrap">DCCID:</td>

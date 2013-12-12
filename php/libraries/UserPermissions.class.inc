@@ -257,5 +257,38 @@ class UserPermissions
 
         return $results;
     }
+    
+    /**
+     * Inserts the user modifications into the user_account_history
+     *
+     * @param Integer $PermID            The ID of the permission
+     * @param String  $permAction        The Type of user-modification ('D' or 'I')
+     * 
+     * @return null
+     */
+    function insertIntoUserAccountHistory(
+        $PermID=null,$permAction=null
+    ) {
+
+        // create DB object
+        $DB =& Database::singleton();
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
+        }
+        //insert into the login_history
+        $sucess =  $DB->insert(
+            'user_account_history',
+            array(
+                'userID'=>$this->userID,'PermID'=>$PermID,
+                'PermAction'=>$permAction
+            )
+        );
+        if (Utility::isErrorX($success)) {
+            return PEAR::raiseError("DB Error: ".$success->getMessage());
+        }
+    }
+
 }
 ?>

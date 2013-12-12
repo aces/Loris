@@ -219,12 +219,12 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $list_of_visit_labels = array(null => 'Any' );
+        $list_of_visit_labels = array(null => 'All' );
         $visitList = Utility::getVisitList();
         foreach ($visitList as $key=>$value) {
             $list_of_visit_labels[$key] = $value;
         }
-        $list_of_sites = array(null =>'Any');
+        $list_of_sites = array(null =>'All');
         $sitesList = Utility::getSiteList(false);
         if (Utility::isErrorX($sitesList)) {
             return PEAR::raiseError("DB Error: ".$sitesList->getMessage());
@@ -233,7 +233,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $list_of_sites[$key]= $value;
         } 
         ksort($list_of_sites);
-        $list_of_projects = array(null =>'Any');
+        $list_of_projects = array(null =>'All');
         $projectList = Utility::getProjectList();
         if (Utility::isErrorX($projectList)) {
                 return PEAR::raiseError("DB Error: ".$projectList->getMessage());
@@ -241,26 +241,26 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         foreach ($projectList as $key => $value) {
             $list_of_projects[$key] =$value;
         }  
-        $options_boolean= array(null => 'Any', 'yes' => 'Yes', 'no' => 'No');
-        $conflict_options1 = array(null => 'Any', 'true' => 'Yes', 'false' => 'No' );
-        $conflict_options2 = array(null => 'Any', 
+        $options_boolean= array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
+        $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );
+        $conflict_options2 = array(null => 'All', 
             'prim_second' => 'Yes', 
             'false' => 'No'
         );
-        $comment_options = array(null => 'Any', 'True' => 'Yes', 'False' => 'No');
-        $bob_score = array(null => 'Any', 
+        $comment_options = array(null => 'All', 'True' => 'Yes', 'False' => 'No');
+        $bob_score = array(null => 'All', 
             '0' => 'None', 
             '1' => 'Minimal', 
             '2' => 'Mild', 
             '3' => 'Moderate', 
             '4' => 'Marked'
         );
-        $abnormal_atypical = array(null => 'Any', 
+        $abnormal_atypical = array(null => 'All', 
             'abnormal' => 'Abnormal', 
             'atypical' => 'Atypical', 
             'normal' => 'Normal'
         );
-        $exclude = array(null => 'Any', 
+        $exclude = array(null => 'All', 
             'exclusionary' => 'Exclusionary', 
             'non_exclusionary' => 'Non Exclusionary'
         );

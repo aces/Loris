@@ -16,14 +16,16 @@ $client->initialize();
 
 // create Database object
 $DB = Database::singleton();
-if(PEAR::isError($DB)) {
+if(Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n";
     die();
 }
 // check for valid user login
 
 $user =& User::singleton();
-if(PEAR::isError($user)) {
+$site =& Site::singleton($user->getData('CenterID'));
+
+if(Utility::isErrorX($user)) {
     die("Error creating user object: ".$user->getMessage());
 }
 
@@ -34,8 +36,65 @@ $tpl_data['css']=$config->getSetting('css');
 $tpl_data['user_full_name']=$user->getData('Real_name');
 $tpl_data['user_site_name']=$user->getData('Site');
 
+$tpl_data['user'] = $user->getData();
 $tpl_data['TarchiveID'] = $_REQUEST['TarchiveID'];
+// the the list of tabs, their links and perms
+$mainMenuTabs = $config->getSetting('main_menu_tabs');
 
+foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
+    $tpl_data['tabs'][]=$myTab;
+
+    foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
+    {
+        // skip if inactive
+        if ($mySubtab['visible']==0) continue;
+        // replace spec chars
+        $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
+
+        // check for the restricted site access
+        if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
+
+            // if there are no permissions, allow access to the tab
+            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+                $tpl_data['subtab'][]=$mySubtab;
+            } else {
+
+                // if any one permission returns true, allow access to the tab
+                foreach ($mySubtab["permissions"] as $permissions) {
+
+                    // turn into an array
+                    if (!is_array($permissions)) $permissions = array($permissions);
+
+                    // test and grant access to button with 1st permission
+                    foreach ($permissions as $permission) {
+                        if ($user->hasPermission($permission)) {
+                            $tpl_data['subtab'][]=$mySubtab;
+                            break 2;
+                        }
+                        unset($permission);
+                    }
+                    unset($permissions);
+                }
+            }
+        }
+        unset($mySubtab);
+    } // end foreach
+}
+//Display the links, as specified in the config file
+$links=$config->getSetting('links');
+foreach(Utility::toArray($links['link']) AS $link){
+    $BaseURL = $link['@']['url'];
+    if(isset($link['@']['args'])) {
+        $LinkArgs = $link_args[$link['@']['args']];
+    }
+    $LinkLabel = $link['#'];
+    $WindowName = md5($link['@']['url']);
+    $tpl_data['links'][]=array(
+        'url'        => $BaseURL . $LinkArgs,
+        'label'      => $LinkLabel,
+        'windowName' => $WindowName
+    );
+}
 // fixme: this is a hack to avoid mri_browser complaining on line 240
 $some = array();
 $_SESSION['State']->setProperty('mriSessionsListed' , $some);
@@ -46,7 +105,7 @@ $_SESSION['State']->setProperty('mriSessionsListed' , $some);
 if(!empty($_REQUEST['TarchiveID'])) {
     $query = "SELECT * FROM tarchive WHERE TarchiveID ='{$_REQUEST['TarchiveID']}'";
     $DB->selectRow($query, $detail_tpl_data['archive']);
-    if(PEAR::isError($detail_tpl_data['archive'])) print $detail_tpl_data['archive']->getMessage()."<br>\n";
+    if(Utility::isErrorX($detail_tpl_data['archive'])) print $detail_tpl_data['archive']->getMessage()."<br>\n";
 
     // determine if the patient name is valid
     if(preg_match($dicom_archive_settings['patientNameRegex'], $detail_tpl_data['archive']['PatientName']))
@@ -67,11 +126,11 @@ if(!empty($_REQUEST['TarchiveID'])) {
     
     $query = "SELECT * FROM tarchive_series WHERE TarchiveID = '{$_REQUEST['TarchiveID']}' ORDER BY TarchiveSeriesID";
     $DB->select($query, $detail_tpl_data['archive_series']);
-    if(PEAR::isError($detail_tpl_data['archive_series'])) print $detail_tpl_data['archive_series']->getMessage()."<br>\n";
+    if(Utility::isErrorX($detail_tpl_data['archive_series'])) print $detail_tpl_data['archive_series']->getMessage()."<br>\n";
 
     $query = "SELECT * FROM tarchive_files WHERE TarchiveID ='{$_REQUEST['TarchiveID']}' ORDER BY TarchiveFileID";
     $DB->select($query, $detail_tpl_data['archive_files']);
-    if(PEAR::isError($detail_tpl_data['archive_files'])) print $detail_tpl_data['archive_files']->getMessage()."<br>\n";
+    if(Utility::isErrorX($detail_tpl_data['archive_files'])) print $detail_tpl_data['archive_files']->getMessage()."<br>\n";
 
     // the State property Tarchive list is used to assign next and prev
     $filteredTarchiveList = $_SESSION['State']->getProperty('TarchivesListed');
@@ -117,7 +176,7 @@ else {
               "AND CenterID=".$user->getCenterID() : '')." ORDER BY Name";
     $DB->select($query, $sites);
     // only create the all site selection filter for users with universal access permission
-    if ($user->hasPermission('access_all_profiles')) { $visit_tpl_data['site_options']['']='&nbsp;'; }
+    if ($user->hasPermission('access_all_profiles')) { $visit_tpl_data['site_options']['']='All'; }
     foreach($sites AS $site) {
         $visit_tpl_data['site_options'][$site['CenterID']] = $site['MRI_alias'];
     }
@@ -173,7 +232,7 @@ else {
 /*  This can be activated to do a retrospective linking of dicom archives to the MRI browser. 
     NOTE: this is useless if you are using tarchiveLoader
         $DB->select($query, $visit_tpl_data['archives']);       
-        if(PEAR::isError($visit_tpl_data['archives'])) print $visit_tpl_data['archives']->getMessage()."<br>\n";
+        if(Utility::isErrorX($visit_tpl_data['archives'])) print $visit_tpl_data['archives']->getMessage()."<br>\n";
 
         // link with session
         foreach ($visit_tpl_data['archives'] as $key => $archive) {
@@ -189,7 +248,7 @@ else {
 */
 
         $DB->select($query, $visit_tpl_data['archives']);
-        if(PEAR::isError($visit_tpl_data['archives'])) print $visit_tpl_data['archives']->getMessage()."<br>\n";
+        if(Utility::isErrorX($visit_tpl_data['archives'])) print $visit_tpl_data['archives']->getMessage()."<br>\n";
         $visit_tpl_data['numArchives'] = count($visit_tpl_data['archives']);
 
         // per-record code
@@ -225,11 +284,17 @@ else {
             if($visit_tpl_data['archives'][$i]['patientNameValid'] == 1 && !empty($visit_tpl_data['archives'][$i]['PatientName'])) {
                 $PatientName = $visit_tpl_data['archives'][$i]['PatientName'];
                 $sp = explode("_", $PatientName);
-                $DB->selectRow("SELECT ID FROM session WHERE CandID=$sp[1] AND Visit_label='$sp[2]'", &$SessionID);
+                $SessionID = $DB->pselectRow(
+                    "SELECT ID FROM session WHERE CandID=:sp1 AND Visit_label=:sp2",
+                    array(
+                        'sp1' => $sp[1],
+                        'sp2' => $sp[2]
+                    )
+                );
                 $visit_tpl_data['archives'][$i]['PSCID'] = $sp[0];
                 $visit_tpl_data['archives'][$i]['DCCID'] = $sp[1];
                 $visit_tpl_data['archives'][$i]['Visit_Label'] = $sp[2];
-                if(!empty($SessionID['ID'])) {
+                if(!empty($sessionID['ID'])) {
                     $visit_tpl_data['archives'][$i]['SessionID'] = $SessionID['ID'];
                 }
             }

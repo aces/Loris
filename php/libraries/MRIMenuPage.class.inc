@@ -119,25 +119,20 @@ class MRIMenuPage {
         }
         $query .= " ORDER BY Name";
         $sites = $DB->pselect($query, $params);
-        $this->visit_tpl_data['site_options']['']='&nbsp;';
+        $this->visit_tpl_data['site_options']['']='All';
         foreach($sites AS $site) {
             $this->visit_tpl_data['site_options'][$site['CenterID']] = $site['Name'];
             $this->visit_tpl_data['MRI_Alias'][$site['CenterID']] = $site['MRI_Alias'];
         }
 
-        $this->visit_tpl_data['qcStatus_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
-        $this->visit_tpl_data['SubprojectID_options'] = array (''=>'&nbsp;', '1'=>'1', '2'=>'2');
-        $mri_projs = array(' ' => 'All Projects');
-        $projects = $DB->select("SELECT DISTINCT (cad.ProjectID) from candidate cad 
-                                 JOIN session sn on cad.CandID = sn.CandID 
-                                 JOIN files f on sn.ID = f.SessionID ORDER BY cad.ProjectID");
-        $projectList = Utility::getProjectList();
-        foreach($projects as $row){
-            $projid = $row['ProjectID']; 
-            if(!is_null($projid))
-                $mri_projs[$projid] = $projectList[$projid]; 
+        $this->visit_tpl_data['qcStatus_options'] = array (''=>'All', 'Pass'=>'Pass', 'Fail'=>'Fail');
+        $this->visit_tpl_data['SubprojectID_options'] = array (''=>'All', '1'=>'1', '2'=>'2');
+        $projects[null] = 'All';
+        foreach(Utility::getProjectList() as $key=>$value) {
+            $projects[$key] = $value;
         }
-        $this->visit_tpl_data['projects'] = $mri_projs; 
+        $this->visit_tpl_data['projects'] = $projects;
+
     }
 
 
