@@ -124,8 +124,6 @@ class NDB_BVL_Instrument extends NDB_Page
      * and not really loaded.
      */
     var $preview = false;
-    // }}}
-    // {{{ factory()
 
     /**
     * factory generates a new instrument instance of type
@@ -310,8 +308,20 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     // }}}
-    // {{{ display()
 
+
+    /*
+    function getPageNumber() {
+        $DB = Database::singleton();
+        return $DB->pselectOne(
+            "SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Subtest_name=:STN",
+            array(
+                'TN' => $this->testName,
+                'STN' => $this->page
+            )
+        );
+    }
+     */
     /**
     * method to display the form - usually not overridden as it
     * includes all the base code that any instrument will require.
@@ -322,14 +332,24 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
-        $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
+        //$this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
+        //$this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
         $this->addHidden('commentID', $this->getCommentID());
         $this->addHidden('test_name', $this->testName);
         $this->addHidden('page', $this->page);
         $this->addHidden('subtest', $this->page);
-        
-        if(!$this->form->isFrozen()) {
+
+        $this->DataEntryType = 'normal'; 
+        if(isset($_REQUEST['key'])) {
+            $this->DataEntryType = 'DirectEntry';
+            //$this->addHidden('key', $_REQUEST['key']);
+            //$this->addHidden('pageNum', $this->getPageNumber());
+        }
+
+        // Don't show save button for Direct Data entry type,
+        // because that's part of the DirectEntry template
+        // and has Save/Continue and go back buttons
+        if(!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->addGroup($buttons, null, null, "&nbsp;");
@@ -420,7 +440,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return void
+     * @return false if failure to save data
      * @access public
      */
     function save()
@@ -439,7 +459,6 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             $submittedData = $this->form->getSubmitValues();
             
-           
             if(count($submittedData)) {
                 
                 // the form WAS submitted but validate() failed...
@@ -455,6 +474,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                     }
                 }
+                return false;
             }
         }
         
@@ -464,6 +484,7 @@ class NDB_BVL_Instrument extends NDB_Page
             print "This error will not prevent data from being saved, unless the data entry error is also displayed.<BR>Please inform DCC of this error<br>\n";
             return PEAR::raiseError($scoreResult->getMessage());
         }
+        return true;
     }
     
     function _saveCandidateAge(&$values) {
@@ -594,6 +615,8 @@ class NDB_BVL_Instrument extends NDB_Page
         
         // do not alter this when overwriting the method
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
+        // nor these -- these ones are for direct data entry
+        unset($values['key'], $values['nextpage'], $values['pageNum']);
         $this->_save($values);
     }
     
@@ -909,6 +932,7 @@ class NDB_BVL_Instrument extends NDB_Page
     // {{{ XINValidate()
     
     function XINValidate($elements){
+        unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug=false;  //Turn this on to see rules debuggin output
 
         $errors=array();

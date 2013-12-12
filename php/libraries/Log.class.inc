@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 /**
  * Log class file

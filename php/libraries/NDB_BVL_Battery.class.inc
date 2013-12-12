@@ -204,6 +204,7 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to flag: $testName");
         }
+        return $commentID;
         
     } // end addInstrument()
     
@@ -289,7 +290,7 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // craft the select query
-        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group FROM flag AS f, test_names as t, test_subgroups as ts ";
+        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group, t.isDirectEntry FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
 
         if(!is_null($stage)) {
@@ -462,6 +463,37 @@ class NDB_BVL_Battery extends PEAR
         
     } // end _createCommentID()
     
+    /**
+     * Generates a CommentID of the appropriate format given a SessionID and a Test name
+     *
+     * @return string A Validly formatted CommentID
+     */
+    static function generateCommentID($SessionID, $Test_name) {
+        $DB = Database::singleton();
+        
+        $TestID = $DB->pselectOne(
+            "SELECT ID FROM test_names WHERE Test_name=:TN",
+            array('TN' => $Test_name)
+        );
+
+
+        $OtherInfo = $DB->pselectRow(
+            "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
+                    JOIN candidate c USING (CandID)
+                WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
+            array('SID' => $SessionID)
+        );
+
+        if (empty($TestID) || empty($OtherInfo)) {
+            return null;
+        }
+        return $OtherInfo['CandID'] 
+            . $OtherInfo['PSCID'] 
+            . $SessionID 
+            . $OtherInfo['SubprojectID'] 
+            . $TestID 
+            . time();
+    }
     /**
      * asserts that the current battery object corresponds to a
      * specific visit (in other words, asserts that selectBattery has
