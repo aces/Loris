@@ -82,7 +82,7 @@
 </table>
 </form>
 {else}
-<table width="90%">
+<table align="center">
 <tr>
     <td>
             
