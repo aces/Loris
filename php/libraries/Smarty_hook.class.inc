@@ -8,12 +8,12 @@ class Smarty_neurodb extends Smarty {
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
         $this->Smarty();
-	$this->plugins_dir[] = $paths['base']."php/libraries/smarty/plugins";
-        $this->template_dir = $paths['base']."php/smarty/templates/";
+	$this->plugins_dir[] = $paths['base']."smarty/plugins";
+        $this->template_dir = $paths['base']."smarty/templates/";
         $this->project_template_dir = $paths['base']."project/templates/";
-        $this->compile_dir = $paths['base']."php/smarty/templates_c/";
-        $this->config_dir = $paths['base']."php/smarty/configs/";
-        $this->cache_dir = $paths['base']."php/smarty/cache/";
+        $this->compile_dir = $paths['base']."smarty/templates_c/";
+        $this->config_dir = $paths['base']."smarty/configs/";
+        $this->cache_dir = $paths['base']."smarty/cache/";
         $this->caching = false;
         $this->default_resource_type="neurodb";
         $this->assign('app_name','NeuroDB');
