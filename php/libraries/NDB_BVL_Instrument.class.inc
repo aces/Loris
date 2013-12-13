@@ -338,12 +338,19 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->addHidden('page', $this->page);
         $this->addHidden('subtest', $this->page);
 
-        $this->DataEntryType = 'normal'; 
         if(isset($_REQUEST['key'])) {
             $this->DataEntryType = 'DirectEntry';
-            //$this->addHidden('key', $_REQUEST['key']);
-            //$this->addHidden('pageNum', $this->getPageNumber());
+        } else {
+            $this->DataEntryType = 'normal'; 
+            // These are required for Save Data to work properly, but not when it's
+            // a direct data entry page
+            $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
+            $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
         }
+        $this->addHidden('commentID', $this->getCommentID());
+        $this->addHidden('test_name', $this->testName);
+        $this->addHidden('page', $this->page);
+        $this->addHidden('subtest', $this->page);
 
         // Don't show save button for Direct Data entry type,
         // because that's part of the DirectEntry template
