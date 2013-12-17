@@ -6,6 +6,7 @@
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 
 <link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
+<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
 
@@ -63,6 +64,7 @@ function mailThisPage()
 <!-- end page header -->
 </head>
 <body>
+<form action="context_help_popup.php" method="get">
 <table width="100%" class="header">
 <tr>
 <th align="left" id="jsheader">
@@ -80,7 +82,6 @@ function mailThisPage()
 </li>
 <div class="Account">
 <li align="right">
-<form action="context_help_popup.php" action="post">
 <input type="text" name="search" /><br />
 </li>
 <li>
@@ -92,6 +93,7 @@ function mailThisPage()
 </th>
 </tr>
 </table>
+</form>
 
 <!-- top table -->
 {if not $is_popup}
