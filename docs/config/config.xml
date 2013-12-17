@@ -67,8 +67,8 @@
 
     <!-- www settings -->
     <www>
-        <host>HOSTNAME</host>
-        <url>https://HOSTNAME/main.php</url>
+        <host>localhost</host>
+        <url>https://localhost/</url>
         <mantis_url></mantis_url>
     </www>
 
