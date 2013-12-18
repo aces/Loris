@@ -34,17 +34,21 @@ if ((count($argv)<2) || (count($argv)>6)) {
 
     echo "to run the script for all the instruments
             simply type -i all \n";
+    echo "to remmove the duplicates, run the script for all/single instrument
+            simply type -i instrument-name -r \n";
+
     die();
 }
 
 /**
  * parse the options
  */
-$opts = getopt("i:t");
+$opts = getopt("i:r");
 $change = false;
 $change_all = false;
 $instrument = null;
 $visit_label = null;
+$to_remove = false;
 if (!is_array($opts)) {
     print "There was a problem reading in the options.\n\n";
     exit(1);
@@ -57,6 +61,12 @@ if ($opts['i']!=null) {
     $instrument = $opts['i'];
 }
 
+/**
+ * to be removed
+ */
+if ($opts['r']!=null) {
+    $to_remove = true;
+}
 
 
 /**
@@ -73,7 +83,7 @@ $new_conflicts = array();
 $recreated_conflicts = array();
 $current_conflicts = array();
 $conflicts_to_be_excluded = array();
-
+$commentids = array();
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
@@ -85,8 +95,8 @@ if (($instrument=='all') ||($instrument=='All')) {
 $candidates= $DB->pselect("SELECT CandID, PSCID FROM candidate", array());
 //get all subprojectids
 $subprojectids = $DB->pselect(
-    "SELECT DISTINCT subprojectid FROM session",
-    array()
+"SELECT DISTINCT subprojectid FROM session",
+array()
 );
 
 foreach ($instruments as $instrument=>$full_name) {
@@ -98,21 +108,21 @@ foreach ($instruments as $instrument=>$full_name) {
             $pscid = $candidate['PSCID'];
             foreach ($subprojectids as $subprojectid) {
                 $session_info = $DB->pselectRow(
-                    "SELECT DISTINCT s.Visit_label,s.ID from session s
+                "SELECT DISTINCT s.Visit_label,s.ID from session s
                     JOIN candidate c on (c.candid=s.candid)
                     JOIN flag f on (f.sessionid=s.id)
                     WHERE s.candID = :cid AND f.test_name = :fname AND
                     s.subprojectid = :subid",
-                    array('cid'=>$candid,'fname'=>$instrument,
-                    'subid'=>$subprojectid['subprojectid'])
+                array('cid'=>$candid,'fname'=>$instrument,
+                'subid'=>$subprojectid['subprojectid'])
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
                     $sessionid = $session_info['ID'];
                     $visit_label = $session_info['Visit_label'];
                     if ($sessionid !=null) {
                         $commentid = getCommentIDs(
-                            $instrument, $visit_label, $sessionid, $candid,
-                            $pscid, $subprojectid['subprojectid']
+                        $instrument, $visit_label, $sessionid, $candid,
+                        $pscid, $subprojectid['subprojectid']
                         );
                         $size = sizeof($commentid);
                         if ($size>=2) {
@@ -123,8 +133,23 @@ foreach ($instruments as $instrument=>$full_name) {
             }
         }
         writeCSV($commentids, $dataDir, $instrument, "Conflicts_to_be_inserted");
+        
+        ///if removed option is chosen
+        
+        if (($test_name != 'expenditure_18m_p1') && ($test_name != 'expenditure_18m_p2')){
+            foreach ($commentids as $key=>$commentid) {
+                $cid = $commentid['CommentID'];
+                $in_flag = $commentid['in_flag'];
+                if ($in_flag =='No'){
+                    $query = "DELETE FROM $instrument WHERE CommentID = '$cid'";
+                    print $query. "\n";
+                }
+                //$query = "DELETE FROM $instrument WHERE CommentID = :cid" ,array('cid'=>$commentid)
+            }
+        }
     }
 }
+
 
 
 /**
@@ -142,8 +167,8 @@ foreach ($instruments as $instrument=>$full_name) {
 */
 
 function getCommentIDs(
-    $test_name, $visit_label=null, $sid=null,
-    $candid=null,$pscid=null, $subprojectid=null
+$test_name, $visit_label=null, $sid=null,
+$candid=null,$pscid=null, $subprojectid=null
 ) {
 
     $commentID = $candid. $pscid. $sid . $subprojectid;
@@ -167,8 +192,8 @@ function getCommentIDs(
         foreach ($commentids as $key=>$commentid) {
             $flag = array();
             $flag = $GLOBALS['DB']->pselectRow(
-                "SELECT * FROM flag WHERE CommentID = :cid",
-                array('cid'=>$commentid['CommentID'])
+            "SELECT * FROM flag WHERE CommentID = :cid",
+            array('cid'=>$commentid['CommentID'])
             );
             $flag_info['flag_data_entry'] = $flag['Data_entry'];
             $flag_info['in_flag'] = 'No';
@@ -194,7 +219,7 @@ function getCommentIDs(
 * @return NULL
 */
 
-function writeCSV($output,$path,$instrument) 
+function writeCSV($output,$path,$instrument)
 {
     /**
      * Construct the file-path
@@ -227,11 +252,11 @@ function writeCSV($output,$path,$instrument)
  * @return NULL
  */
 
-function hasData($instrument) 
+function hasData($instrument)
 {
     $commentids = $GLOBALS['DB']->pselect(
-        "SELECT COUNT(*) FROM $instrument",
-        array()
+    "SELECT COUNT(*) FROM $instrument",
+    array()
     );
     if ((count($commentids)) > 0) {
         return true;
