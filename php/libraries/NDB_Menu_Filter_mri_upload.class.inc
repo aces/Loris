@@ -100,7 +100,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         /////////////////////////////////////////////////////////////
         $this->addBasicText('CandID', 'CandID:');
         $this->addBasicText('PSCID', 'PSCID:');
-        $visitlabels = Utility::getAllVisits();
+        $visitlabels = array_merge(array(null=>''),Utility::getExistingVisitLabels());
         $this->addSelect('VisitLabel', 'VisitLabel:', $visitlabels);
         $new_files = array();
         $DB =& Database::singleton();
@@ -281,7 +281,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file->registerForm($this->form);
 
         //Tell File_Upload what file handlers to use.
-        $file->setFileHandler("mri_file", &$this);
+        $file->setFileHandler("mri_file", $this);
 
         //Set the target directory that you want files moved
         //into once they are validated and processed.
@@ -533,30 +533,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $db->Insert('mri_upload', $values);
         return true;
     }
-    /**
-     * Set the front-end DataTable
-     *
-     * @param INT $count Number of existing fields
-     * 
-     * @return boolean
-     */
-    function _setDataTableRows($count)
-    {
-        $x = 0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                $i++;
-            }
-            $x++;
-        }
-        return true;
-    }
-
+  
     /**
      * Mapps the file-name visit_label to the 
      * actual visit_label in the database
