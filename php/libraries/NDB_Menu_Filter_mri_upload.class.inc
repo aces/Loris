@@ -172,6 +172,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
                 $patient_id = "GUSTO";
                 $this->tpl_data['minc_success'] = false;
+                $dicom_created = false;
                 ///dynamic output log file////////
                 $mri_log_file = $paths['data'] . "logs/" . $patient_name. "_mri_upload_log.log";
                 ///log file containing the name of the tarred file which will be the input for batchupload
@@ -181,7 +182,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 "/\\.[^.\\s]{3,4}$/", "", $source_location
                 );
                 print "file-name : $file_name, file-name-wo-extension:
-            $file_name_without_exention and sourcelocation $source_location";
+                       $file_name_without_exention and sourcelocation $source_location";
                 print "visitlabel $visit_label pscid: $pscid and candid : $candid";
 
                 ///////////////////////////////////////////////////////////////
@@ -201,18 +202,22 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
                 ///if the candid, pscid, and visit_label are inserted
                 if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
-                    $success = $this->UpdateHeaderWithPatientName($DICOMTAR,$file_name_without_exention,$tarchive_location,$patient_id);
+                    $result = $this->UpdateHeaderWithPatientName($DICOMTAR,$file_name_without_exention,$tarchive_location,$patient_id);
+                    $dicom_created = $result[0]
+                    $tarchive_id = $result[1];
                 }
                 ///otherwise
                 else{
-                    $success = $this->UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name);
+                    $result = $this->UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name);
+                    $dicom_created = $result[0]
+                    $tarchive_id = $result[1];
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////
                 /////////////////////////set the tarchiveid and DicomInserted to true//////////////
                 ////////////////in mri_upload table////////////////////////////////////////////
                 ////////////////////////////////////////////////////////////////////////////////////
-                if ($success){
+                if ($dicom_created){
                     $db->update(
                     "mri_upload", array('TarchiveID'=>$tarchive_id,
                     'DicomInserted'=>1),
@@ -800,7 +805,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
         $tarchive_location =  $paths['data'] . "tarchive";
-        $tarchive_file_created = false;
+        $tarchive_file_created = false; 
+        $dicom_inserted = false;
+        $result = array();
         $db=& Database::singleton();
         $cmd = "/usr/bin/perl  $mri_header_executer"
         . " $file_name_without_exention &>> $mri_log_file ";
@@ -817,9 +824,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $family_id = $this->getFamilyIDUsingFileName($file_name);
         $candid = $this->getCandID($family_id);
         $row=$db->pselectRow(
-        "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive
-            WHERE patientname LIKE concat ('%', :pname, '%') ",
-        array('pname'=>$family_id)
+            "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive
+             WHERE patientname LIKE concat ('%', :pname, '%') ",
+             array('pname'=>$family_id)
         );
         $tarchive_id = $row['TarchiveID'];
         $ArchiveLocation = $row['ArchiveLocation'];
@@ -840,9 +847,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ////////////////////////////////////////////////////////////////////
 
         if (($tarchive_file_created)&& ($tarchive_id!=null)) {
-            return true;
+            $dicom_inserted  =true;
         }
-        return false;
+        $result[] = $dicom_inserted;
+        $result[] = $tarchive_id;
+       
+        return $result;
     }
 }
 
