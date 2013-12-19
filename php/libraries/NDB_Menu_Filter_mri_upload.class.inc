@@ -145,7 +145,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         print_r($values);
         if ($this->_saveFile($values)) {
-            
+
             /////////////////////////////////////////////////////////////
             ////////////////////////initialization///////////////////////
             /////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $patient_id = "GUSTO";
                 $this->tpl_data['minc_success'] = false;
                 ///dynamic output log file////////
-                $mri_log_file = $paths['data'] . "logs/" . $patient_name. "_mri_upload_log.log";  
+                $mri_log_file = $paths['data'] . "logs/" . $patient_name. "_mri_upload_log.log";
                 ///log file containing the name of the tarred file which will be the input for batchupload
                 $tarchive_file_log = $paths['data'] . "logs/" . $patient_name ."_tarchive_file.txt";
                 $file_name = pathinfo($source_location, PATHINFO_FILENAME);
@@ -533,7 +533,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $db->Insert('mri_upload', $values);
         return true;
     }
-  
+
     /**
      * Mapps the file-name visit_label to the 
      * actual visit_label in the database
@@ -797,7 +797,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name){
 
-
+        $config =& NDB_Config::singleton();
+        $paths = $config->getSetting('paths');
+        $tarchive_location =  $paths['data'] . "tarchive";
+        $tarchive_file_created = false;
         $db=& Database::singleton();
         $cmd = "/usr/bin/perl  $mri_header_executer"
         . " $file_name_without_exention &>> $mri_log_file ";
@@ -814,29 +817,33 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $family_id = $this->getFamilyIDUsingFileName($file_name);
         $candid = $this->getCandID($family_id);
         $row=$db->pselectRow(
-        "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive \
-                    WHERE patientname LIKE concat ('%', :pname, '%') ",
+        "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive
+            WHERE patientname LIKE concat ('%', :pname, '%') ",
         array('pname'=>$family_id)
         );
         $tarchive_id = $row['TarchiveID'];
         $ArchiveLocation = $row['ArchiveLocation'];
 
+        ///////////////////////////////////////////////////////////////////
+        /////////////Check to see if the file exists in tarchive folder////
+        //////////////looks for the partial name, with family id 23323
+        ////////////i.e /data/gusto/data/tarchive/*23323*
+        ///////////////////////////////////////////////////////////////////
+        $files = glob("$tarchive_location/*$family_id*"); 
+        if (count($files) > 0){
+            $tarchive_file_created= true;
+        }
+
+
         ////////////////////////////////////////////////////////////////////
         /////////////////if successfully completed return true//////////////
         ////////////////////////////////////////////////////////////////////
 
-        if ((!(preg_match("/not processed/", $output)))
-        && ($tarchive_id!=null)
-
-        ) {
+        if (($tarchive_file_created)&& ($tarchive_id!=null)) {
             return true;
         }
-
         return false;
-
     }
-
-
 }
 
 ?>
