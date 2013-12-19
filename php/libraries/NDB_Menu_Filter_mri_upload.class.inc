@@ -203,13 +203,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ///if the candid, pscid, and visit_label are inserted
                 if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
                     $result = $this->UpdateHeaderWithPatientName($DICOMTAR,$file_name_without_exention,$tarchive_location,$patient_id);
-                    $dicom_created = $result[0]
+                    $dicom_created = $result[0];
                     $tarchive_id = $result[1];
                 }
                 ///otherwise
                 else{
                     $result = $this->UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name);
-                    $dicom_created = $result[0]
+                    $dicom_created = $result[0];
                     $tarchive_id = $result[1];
                 }
 
