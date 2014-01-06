@@ -202,9 +202,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
                 ///if the candid, pscid, and visit_label are inserted
                 if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
-                    $result = $this->UpdateHeaderWithPatientName($DICOMTAR,$file_name_without_exention,$tarchive_location,$patient_id);
+                    $result = $this->UpdateHeaderWithPatientName($DICOMTAR,$file_name_without_exention,$file_name,$tarchive_location,$patient_id);
                     $dicom_created = $result[0];
                     $tarchive_id = $result[1];
+                    $patient_name = $result[2];
+                    $ArchiveLocation = $result[3];
                 }
                 ///otherwise
                 else{
@@ -213,6 +215,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $tarchive_id = $result[1];
                     $candid = $result[2];
                     $patient_name = $result[3];
+                    $ArchiveLocation = $result[4];
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////
@@ -263,8 +266,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ////Run the minc-insertion pipeline
                 /////////////////////////////////////////////////////////////////////////
                 if ($count==0){
-
-
 
                     print "command is $command";
                     $output = shell_exec($command);
@@ -746,7 +747,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * @return Boolean True if successfully completed, otherwise false
      */
 
-    function UpdateHeaderWithPatientName($patient_name,$DICOMTAR,$file_name_without_exention,$tarchive_location,$patient_id)
+    function UpdateHeaderWithPatientName($patient_name,$DICOMTAR,$file_name_without_exention,$file_name,$tarchive_location,$patient_id)
     {
         $db=& Database::singleton();
 
@@ -791,18 +792,38 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             );
         }
 
-       ////////////////////////////////////////////////////////////////////
-       /////////////////if successfully completed return true//////////////
-       ////////////////////////////////////////////////////////////////////
+        
+        ///////////////////////////////////////////////////////////////////
+        /////////////Check to see if the file exists in tarchive folder////
+        ////////////////////////////////////////////////////////////////////
 
-       if ((!(preg_match("/not processed/", $output)))
-            && ($tarchive_id!=null)
+        $files = glob("$tarchive_location/*$file_name*");
+        if (count($files) > 0){
+            $tarchive_file_created= true;
+        }
 
-          ) {
-                return true;
-       }
 
-       return false;
+        ////////////////////////////////////////////////////////////////////
+        /////////////////if successfully completed return true//////////////
+        ////////////////////////////////////////////////////////////////////
+
+        if (($tarchive_file_created)&& ($tarchive_id!=null)) {
+            $dicom_inserted  =true;
+        }
+        
+        ////////////////////////////////////////////////////////////////////
+        /////////////////if successfully completed return true//////////////
+        ////////////////////////////////////////////////////////////////////
+
+        if (($tarchive_file_created)&& ($tarchive_id!=null)) {
+            $dicom_inserted  =true;
+        }
+        $result[] = $dicom_inserted;
+        $result[] = $tarchive_id;
+        $result[] = $candid;
+        $result[] = $patient_name;
+        $result[] = $ArchiveLocation;
+        return $result;
     }
 
     /**
@@ -849,8 +870,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $tarchive_id = $row['TarchiveID'];
         $ArchiveLocation = $row['ArchiveLocation'];
         $patient_name = $row['PatientName'];
-
-
+    
         ///////////////////////////////////////////////////////////////////
         /////////////Check to see if the file exists in tarchive folder////
         //////////////looks for the partial name, with family id 23323
@@ -873,6 +893,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $result[] = $tarchive_id;
         $result[] = $candid;
         $result[] = $patient_name;
+        $result[] = $ArchiveLocation;
 
 
         return $result;
