@@ -211,6 +211,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $result = $this->UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name);
                     $dicom_created = $result[0];
                     $tarchive_id = $result[1];
+                    $candid = $result[2];
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////
@@ -851,6 +852,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
         $result[] = $dicom_inserted;
         $result[] = $tarchive_id;
+        $result[] = $candid;
        
         return $result;
     }
