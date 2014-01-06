@@ -244,7 +244,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ////if the minc is not inserted into the files table///////////////
                 ////Run the minc-insertion pipeline
                 /////////////////////////////////////////////////////////////////////////
-                if ($count>0){
+                if ($count==0){
                     print "command is $command";
                     $output = shell_exec($command);
                     print $output;
