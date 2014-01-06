@@ -103,7 +103,7 @@
             <seq type="alphanumeric" minLength="4"/>
           </structure>
         </PSCID>
-
+        <useProband>false</useProband>
         <useProjects>false</useProjects>
         <Projects>
             <project>
