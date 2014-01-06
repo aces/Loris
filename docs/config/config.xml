@@ -116,6 +116,8 @@
           </structure>
         </ExternalID>
         <!--useProject field is false unless study involves more than one project where each project has multiple cohorts/subprojects-->
+
+        <useProband>false</useProband>
         <useProjects>false</useProjects>
         <Projects>
             <project>
