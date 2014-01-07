@@ -6,6 +6,10 @@
     <p>Dicoms Are inserted<br/></p>
 {/if}
 
+{if $minc_success}
+    <p>Mincs Are inserted<br/></p>
+{/if}
+
 <br />
 <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data">
     <table class="std">
@@ -96,25 +100,17 @@
             <tr>
                 <!-- print out data rows -->
                 {section name=piece loop=$items[item]}
-                {**$items[item]|@print_r**}
                     {if $items[item][piece].name eq 'TarchiveID'}
                         <td nowrap="nowrap"><a href="dicom_archive.php?TarchiveID={$items[item][piece].value}">
                         {$items[item][piece].value}{$headers[header].displayName}</a></td>
-                          
                     {elseif $items[item][piece].name eq 'MincData'}     
-                        {if $items[item][piece].value eq '0'}
-                        <!----uploadid_candid--->     
-                        <td nowrap="nowrap" id="{$items[item][1].value}_{$items[item][2].value}"  class='entire_pipeline'> 
-                        <!--a href="#"-->Click here to run the mri_pipeline<!--/a-->
-                        </td>
-                    {else}
-                        <td nowrap="nowrap">
-                            <a href="mri_browser.php?filter%5BcandID%5D={$items[item][2].value}">
-                                {$items[item][2].value}
-                            </a>
-                        </td>
-                    {/if}
-                    
+                        {if $items[item][piece].value neq '0'}
+                            <td nowrap="nowrap">
+                                <a href="mri_browser.php?filter%5BcandID%5D={$items[item][2].value}">
+                                    {$items[item][2].value}
+                                </a>
+                            </td>
+                        {/if}
                     {else}
                         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                 {$items[item][piece].value} 
