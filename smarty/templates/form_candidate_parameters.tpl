@@ -36,7 +36,6 @@
      </td>
      </tr>
 {if $display_proband}
-hello
      <tr><th colspan="6">Proband Information</th> </tr>
 {foreach from=$proband_info item=value key=name}
 <tr>
