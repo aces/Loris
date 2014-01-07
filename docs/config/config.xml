@@ -217,6 +217,7 @@
         <showTiming>0</showTiming>
         <showPearErrors>0</showPearErrors>
         <showDatabaseQueries>0</showDatabaseQueries>
+        <PopUpFeedbackBVL>1</PopUpFeedbackBVL>
     </gui>
 
 <main_menu_tabs>
