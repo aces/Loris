@@ -251,8 +251,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         unlink($tarchive_file_log);
                     }
                     $handle = fopen($tarchive_file_log, "w");
-                    $data = basename($ArchiveLocation);
-                    fwrite($handle, $data);
+                    fwrite($handle, $ArchiveLocation);
                     fclose($handle);
     
                     $command = "cd $mri_code_path; /usr/bin/perl $bach_upload_script < $tarchive_file_log";
