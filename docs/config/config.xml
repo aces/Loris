@@ -391,6 +391,13 @@
             </permissions>
             <visible>1</visible>
         </subtab>
+            <subtab>
+            <parent>Admin</parent>
+            <link>main.php?test_name=instrument_builder</link>
+            <label>Instrument Builder</label>
+            <access>all</access>
+            <visible>1</visible>
+        </subtab>
     </tab>
     </main_menu_tabs>
 </config>
