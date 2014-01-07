@@ -17,9 +17,9 @@ How to create an instrument from scratch.
 	   -Quickform element names should not end in "_status".  This word is reserved for the names of select boxes accompanying text fields and causes particular (peculiar?) functionality.
     
 3. To view this instrument, insert the necessary records into database
-	-Insert a record into the table "test_names" where Test_name = <TEST_NAME> and Full_name is a full text title, LimitAge=0 (worthless field), Sub_group is = the appropriate id from the test_subgroups table.
+	-Insert a record into the table "test_names" where Test_name = <TEST_NAME> and Full_name is a full text title, Sub_group is = the appropriate id from the test_subgroups table.
 	-For example:
-	INSERT INTO test_names VALUES ('', 'saliva_36', 'Saliva 36 Months', '0', '1');
+	INSERT INTO test_names VALUES ('', 'saliva_36', 'Saliva 36 Months', '1');
 
 	-If Paged...
 		-Insert one record per page into the table "instrument_subtests" where Subtest_name is the page name (case for $this->page in the instrument)
