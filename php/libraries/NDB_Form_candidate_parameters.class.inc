@@ -120,7 +120,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->tpl_data['display_consent'] = true;
         }
         $this->tpl_data['display_proband'] = false;
-        print $config->getSetting('useProband');
         if($config->getSetting('useProband') === 'true') {
             $this->tpl_data['display_proband'] = true;
         }
