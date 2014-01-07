@@ -173,7 +173,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $patient_id = "GUSTO";
                 $this->tpl_data['minc_success'] = false;
                 $dicom_created = false;
-                ///dynamic output log file////////
+                ///////////////////////////////////////////////////////////
+                ///////////dynamic output log file/////////////////////////
+                ///////////////////////////////////////////////////////////
                 $mri_log_file = $paths['data'] . "logs/" . $patient_name. "_mri_upload_log.log";
                 ///log file containing the name of the tarred file which will be the input for batchupload
 
