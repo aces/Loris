@@ -254,29 +254,28 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $data = basename($ArchiveLocation);
                     fwrite($handle, $data);
                     fclose($handle);
-                }
-
-                $command = "cd $mri_code_path; /usr/bin/perl $bach_upload_script < $tarchive_file_log";
-
-                $count = $db->pselectOne("SELECT COUNT(f.FileID) FROM mri_upload mu
-                              JOIN files f ON (f.sessionID = mu.SessionID)
-                              JOIN session s ON (s.ID = f.sessionID)
-                               WHERE s.CandID =  :cid", array('cid'=>$candid));
-
-                ///////////////////////////////////////////////////////////////////////////////
-                ////if the minc is not inserted into the files table///////////////
-                ////Run the minc-insertion pipeline
-                /////////////////////////////////////////////////////////////////////////
-                if ($count==0){
-
-                    print "command is $command";
-                    $output = shell_exec($command);
-                    print $output;
-                    $db->update('mri_upload',array('MincInserted'=>1),array('SourceLocation'=>$source_location));
-                    $this->log->addLog(
-                    "The minc file for patient-name $patient_name is now inserted into the db \n <BR>"
-                    );
-                    $this->tpl_data['minc_success'] = true;
+    
+                    $command = "cd $mri_code_path; /usr/bin/perl $bach_upload_script < $tarchive_file_log";
+    
+                    $count = $db->pselectOne("SELECT COUNT(f.FileID) FROM mri_upload mu
+                                  JOIN files f ON (f.sessionID = mu.SessionID)
+                                  JOIN session s ON (s.ID = f.sessionID)
+                                   WHERE s.CandID =  :cid", array('cid'=>$candid));
+    
+                    ///////////////////////////////////////////////////////////////////////////////
+                    ////if the minc is not inserted into the files table///////////////
+                    ////Run the minc-insertion pipeline
+                    /////////////////////////////////////////////////////////////////////////
+                    if ($count==0){
+                        print "command is $command";
+                        $output = shell_exec($command);
+                        print $output;
+                        $db->update('mri_upload',array('MincInserted'=>1),array('SourceLocation'=>$source_location));
+                        $this->log->addLog(
+                        "The minc file for patient-name $patient_name is now inserted into the db \n <BR>"
+                        );
+                        $this->tpl_data['minc_success'] = true;
+                    }
                 }
 
                 $this->tpl_data['upload_success'] = true;
