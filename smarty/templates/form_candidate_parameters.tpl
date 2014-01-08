@@ -91,6 +91,7 @@
 *}
 <tr>
 <td><b>Status</b></td>
+<td><b>Details</b></td>
 <td><b>Data Entry Staff</b></td>
 <td><b>Date Updated</b></td>
 <td><b>Comments</b></td>
@@ -116,34 +117,23 @@
 
 {if $display_consent}
 <tr><th colspan="6">Participation Consent Status</th></tr>
-<tr>
-<td><b>Consent to Study</b></td>
-<td><b>Date of Consent to Study</b></td>
-<td><b>Date of withdrawal of <br>Consent to Study</b></td>
-<td><b>Data Entry Staff</b></td>
-<td><b>Date Updated</b></td>
-</tr>
-{foreach from=$study_consent_history item=row}
+{foreach from=$consent_list item=list}
+{foreach from=$list item=consent key=listname}
+{if $listname=='label'}
+{foreach from=$consent item=row}
+<td><b>{$row}</b></td>
+{/foreach}
+{/if}
+{if $listname=='history'}
+{foreach from=$consent item=row}
 <tr>
 {foreach from=$row item=value key=name}
 <td>{$value}
 {/foreach}
 </tr>
 {/foreach}
-<tr>
-<td><b>NDAR Consent</b> </td>
-<td><b>Date of NDAR Consent</b></td>
-<td><b>Date of withdrawal of<br> NDAR Consent</b></td>
-<td><b>Data Entry Staff</b></td>
-<td><b>Date Updated</b></td>
-</tr>
-{foreach from=$ndar_consent_history item=row}
-<tr>
-{foreach from=$row item=value key=name}
-<td>{$value}
+{/if}
 {/foreach}
-</tr>
-</tr>
 {/foreach}
 {if $form.$row.error}
 <span class="error">{$form.$row.error}</span>
