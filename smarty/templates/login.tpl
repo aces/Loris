@@ -177,6 +177,7 @@ BrowserDetect.init();
         </td>
     </tr>
 </table>
+<!-- old study web links positioning
 <table class="StudyWeblinks" align="center">
 <tr>
 <div id="footerLinks">
@@ -194,8 +195,21 @@ BrowserDetect.init();
 </tr>
 
 </table>
+-->
 <!--img src="images/mni_logo.png" class="watermark" alt="Montreal Neurological Institute" border="0" width="100" height="83"-->
 <table class="LoginFooter" align="center">
+<tr>
+<td width="100%">
+<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
+
+<li id="active">|</li>
+{foreach from=$studylinks item=link}
+<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
+{/foreach}
+
+</ul>
+</td>
+</tr>
 <tr>
 <!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
 </tr>       
