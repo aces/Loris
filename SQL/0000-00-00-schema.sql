@@ -1359,7 +1359,6 @@ CREATE TABLE `test_names` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Test_name` varchar(255) default NULL,
   `Full_name` varchar(255) default NULL,
-  `LimitAge` smallint(5) unsigned NOT NULL default '0',
   `Sub_group` int(11) unsigned default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Test_name` (`Test_name`),
