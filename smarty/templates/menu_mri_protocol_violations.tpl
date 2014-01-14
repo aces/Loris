@@ -44,6 +44,7 @@
 </div> 
 
 <table class ="fancytable" id="tbl" border="0" width="100%" class="listColorCoded">
+<br>
 	<tr>
 	{assign var=count value=0}
 	{foreach from=$mri_protocol_header item=mp}
