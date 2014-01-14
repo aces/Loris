@@ -1832,7 +1832,7 @@ CREATE TABLE `intermediary_files` (
   KEY `FK_intermediary_files_2` (`Input_FileID`),
   CONSTRAINT `FK_intermediary_files_1` FOREIGN KEY (`Output_FileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_intermediary_files_2` FOREIGN KEY (`Input_FileID`) REFERENCES `files` (`FileID`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
