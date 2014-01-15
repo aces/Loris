@@ -117,15 +117,29 @@ function FeedbackButtonClicked() {
     {/if}
     {if $prevTimepoint.URL!="" && $nextTimepoint.URL!=""}<br><br>{/if}
 </div>
-
 {if $showFloatJIV}
 <div id="divTopRight" style="position:absolute">
 <h3>3D Panel Viewing<br><br>
 <input type="button" accesskey="c" class="button" value="3D+Overlay" onClick="javascript:show_jiv(jivNames, jivData, true);"><br>
 <input type="button" accesskey="d" class="button" value="3D Only" onClick="javascript:show_jiv(jivNames, jivData, false);">
 </h3>
+</h3>
 </div>
+<div id="divBottomRight" style="position:absolute">
+<h3>Links</h3><br>
+<a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}">MRI Parameter Form</a>
+<br>
+<!--td nowrap="nowrap"><input type="button" name="button" value="Radiology Review" class="button" style = "background-color: #08245b" onclick="window.open('main.php?test_name=radiology_review&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.RadiologyReviewCommentID}')" /></td-->
+<a href="main.php?test_name=radiology_review&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.RadiologyReviewCommentID}">Radiology Review </a>
+<br>
+{foreach from=$subject.tarchiveids item=tarchive}
+<!--td nowrap="nowrap"><input type="button" name="button" value="DICOM Archive" class="button" style = "background-color: #08245b" onclick="window.open('dicom_archive.php?TarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}')" /></td-->
+<a href="dicom_archive.php?TarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive</a>
+<br>
+{/foreach}
 
+
+</div>
 <div id="divBottomLeft" style="position:absolute">
 <h3>Visit Controls</h3>
 <br>
@@ -181,8 +195,8 @@ function JSFX_FloatDiv(id, sx, sy)
 }
 JSFX_FloatDiv("divTopLeft",       10, 46).flt();
 JSFX_FloatDiv("divTopRight", 	  10, 180).flt();
-JSFX_FloatDiv("divBottomLeft",    10, 300).flt();
-//JSFX_FloatDiv("divBottomRight", -100, -100).flt();
+JSFX_FloatDiv("divBottomLeft",    10, 400).flt();
+JSFX_FloatDiv("divBottomRight",   10, 300).flt();
 
 </script>
 {/literal}
@@ -196,14 +210,15 @@ JSFX_FloatDiv("divBottomLeft",    10, 300).flt();
     
             <!-- Start Section on the left -->
             <table border="0" valign="top" cellpadding="1" cellspacing="1" width="100px"><tr>
-        
+       <!-- 
             {if $efax.assigned_dir!=""}
                 <tr>
                     <td class="controlPanelItem">
                         <a href="mri_efax.php?mri_efax_screen=assigned" target="MRI_EFAX"><img src="images/transfer.gif" alt="MRI Parameter Forms" border="0" width="12" height="12">&nbsp;MRI Parameter Forms</a>
                     </td>
                 </tr>
-            {/if}        
+            {/if}
+            -->
             </table>
         </td>
         {/if}

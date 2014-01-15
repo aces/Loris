@@ -164,6 +164,11 @@ class MRIViewScansPage {
                 "SELECT CommentID FROM flag WHERE Test_name='mri_parameter_form' AND SessionID=:SID", 
                 array('SID' => $_REQUEST['sessionID'])
             );
+            $subjectData['RadiologyReviewCommentID'] = $this->DB->pselectOne(
+                    "SELECT CommentID FROM flag WHERE Test_name='radiology_review' AND SessionID=:SID",
+                    array('SID' => $_REQUEST['sessionID'])
+                    );
+
             $subjectData['tarchiveids'] = $tarchiveIDs;
         }
 

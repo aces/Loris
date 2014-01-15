@@ -67,8 +67,8 @@
 
     <!-- www settings -->
     <www>
-        <host>HOSTNAME</host>
-        <url>https://HOSTNAME/main.php</url>
+        <host>localhost</host>
+        <url>https://localhost/</url>
         <mantis_url></mantis_url>
     </www>
 
@@ -217,6 +217,7 @@
         <showTiming>0</showTiming>
         <showPearErrors>0</showPearErrors>
         <showDatabaseQueries>0</showDatabaseQueries>
+        <PopUpFeedbackBVL>1</PopUpFeedbackBVL>
     </gui>
 
 <main_menu_tabs>
@@ -389,6 +390,13 @@
             <permissions>
                 <perm>user_accounts</perm>
             </permissions>
+            <visible>1</visible>
+        </subtab>
+            <subtab>
+            <parent>Admin</parent>
+            <link>main.php?test_name=instrument_builder</link>
+            <label>Instrument Builder</label>
+            <access>all</access>
             <visible>1</visible>
         </subtab>
     </tab>
