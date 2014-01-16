@@ -39,6 +39,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     * @return bool
     * @access private
     */
+    
+    var $show_errors = false;
+    
 
     function _hasAccess()
     {
@@ -143,7 +146,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        print_r($values);
+        
         if ($this->_saveFile($values)) {
 
             /////////////////////////////////////////////////////////////
@@ -181,11 +184,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
                 $file_name = pathinfo($source_location, PATHINFO_FILENAME);
                 $file_name_without_exention = preg_replace(
-                "/\\.[^.\\s]{3,4}$/", "", $source_location
+                    "/\\.[^.\\s]{3,4}$/", "", $source_location
                 );
-                print "file-name : $file_name, file-name-wo-extension:
+                if ($this->show_errors) { 
+                    print "file-name : $file_name, file-name-wo-extension:
                        $file_name_without_exention and sourcelocation $source_location";
-                print "visitlabel $visit_label pscid: $pscid and candid : $candid";
+                    print "visitlabel $visit_label pscid: $pscid and candid : $candid";
+                }
 
                 ///////////////////////////////////////////////////////////////
                 /////untar or unzip the uploaded folder///////////////////////
@@ -266,9 +271,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ////Run the minc-insertion pipeline
                     /////////////////////////////////////////////////////////////////////////
                     if ($count==0){
-                        print "command is $command";
+                        
                         $output = shell_exec($command);
-                        print $output;
+                        if ($this->show_errors) {
+                            print "command is $command";    
+                            print $output;
+                        }
                         $db->update('mri_upload',array('MincInserted'=>1),array('SourceLocation'=>$source_location));
                         $this->log->addLog(
                         "The minc file for patient-name $patient_name is now inserted into the db \n <BR>"
@@ -349,7 +357,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isValid($file, $args)
     {
 
-        print_r($args);
+        
         //make sure the file-name is  valid
         /**
          * 1) The patient-name and the vist-label do exist...
@@ -394,7 +402,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $candid = $args['values']['CandID'];
         $pscid = $args['values']['PSCID'];
         $visit_label = $args['values']['VisitLabel'];
-        print "visitlabel $visit_label pscid: $pscid and candid : $candid";
+        
         if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
             if ($db->pselectOne(
             "SELECT COUNT(*) FROM candidate
@@ -423,7 +431,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $regex = "[a-zA-Z]{3}[0-9]{6}-[0-9]{5}_[a-zA-Z]*";
             $withoutExt = preg_replace("/\\.[^.\\s]{3,4}$/", "", $file_name);
 
-            print "file without extension $withoutExt";
+            //print "file without extension $withoutExt";
             //KKH100111-04029_Neonatal
             if (!(preg_match("/$regex/", $file_name))) {
                 $errors[]="Incorrect File-name, The Correct Folder Name should
@@ -433,7 +441,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////
             /////////////////Make sure the Visit_label exists///////////////
             ///////////////////////////////////////////////////////////////
-            print("without extension is $withoutExt");
+            //print("without extension is $withoutExt");
             list ($first, $visit_label)= split("_", $withoutExt);
             $visit_label = $this->getProperVisitLabel($visit_label);
             if ((!$this->VisitExists($visit_label)) || empty($visit_label)) {
@@ -444,7 +452,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ////////////////////////////Make sure the PSCID exist///////
             //////////////////////////////////////////////////////////////
             $family_id = $this->getFamilyIDUsingFileName($withoutExt);
-            print "family id is $family_id and visitlabel is $visit_label <BR>";
+            //print "family id is $family_id and visitlabel is $visit_label <BR>";
 
 
             $pscid = $this->getPSCID($family_id);
@@ -539,7 +547,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $candid = $args['values']['CandID'];
             $pscid = $args['values']['PSCID'];
             $visit_label = $args['values']['VisitLabel'];
-            print "visitlabel $visit_label pscid: $pscid and candid : $candid";
+            //print "visitlabel $visit_label pscid: $pscid and candid : $candid";
         } else {
             /////////////////////////////////////////////////////
             /////////////////Use the File-name///////////////////////
@@ -548,7 +556,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $pscid = $this->getPSCID($family_id);
             $candid = Utility::convert_ssid_to_dcc($pscid);
             list ($first, $visit_label)= split("_", $file->fileInfo['name']);
-            print "visit_label is $visit_label";
+            //print "visit_label is $visit_label";
             $visit_label = $this->getProperVisitLabel($visit_label);
         }
         $sessionid = $db->pselectOne(
@@ -756,9 +764,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////
         $cmd = "/usr/bin/perl $DICOMTAR $file_name_without_exention $tarchive_location"
         .  " -clobber -database -profile prod";
-        print "cmd : $cmd \n";
+        
         $output = shell_exec($cmd);
-        print $output;
+        if ($this->show_errors) {
+            print "cmd : $cmd \n";
+            print $output;
+        }
+        
         ///////////////////////////////////////////////////////////////////
         //////////////////Get the ArchiveLocation//////////////////////////
         ///////////////////////////////////////////////////////////////////
@@ -777,10 +789,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (isset($ArchiveLocation)) {
             $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
                    . " '(0010,0010)' $patient_name -set '(0010,0020)' $patient_id -database -profile prod";
-            print "cmd : $cmd \n";
-            print "query to be ran is $cmd";
-            print "-----------------------------";
-            print "<BR>";
             $output = shell_exec($cmd);
             print $output;
             print "-----------------------------";
