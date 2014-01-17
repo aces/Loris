@@ -220,10 +220,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $result = $this->UpdateHeaderWithoutPatientName($mri_header_executer,$mri_log_file,$file_name_without_exention,$file_name);
                     $dicom_created = $result[0];
                     $tarchive_id = $result[1];
-                    $candid = $result[2];
-                    $patient_name = $result[3];
-                    $ArchiveLocation = $result[4];
-                    $visit_label = $result[5];
+                    $patient_name = $result[2];
+                    $ArchiveLocation = $result[3];
+                    list ($pscid, $candid,$visit_label)= split("_", $patient_name);
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////
@@ -877,10 +876,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         print "-----------------------------";
         print "<BR>";
         $family_id = $this->getFamilyIDUsingFileName($file_name);
-        
+        $candid = $this->getCandID($family_id);
         $row=$db->pselectRow(
-        "Select ArchiveLocation,TarchiveID,PatientName,s.Visit_label,s.CandID FROM tarchive t
-             JOIN session s on (s.ID=t.SessionID)
+        "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive t
              WHERE patientname LIKE concat ('%', :pname, '%') 
               ",
         array('pname'=>$family_id)
@@ -888,8 +886,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $tarchive_id = $row['TarchiveID'];
         $ArchiveLocation = $row['ArchiveLocation'];
         $patient_name = $row['PatientName'];
-        $candid = $row['CandID'];
-        $visit_label = $row['Visit_label'];
     
         ///////////////////////////////////////////////////////////////////
         /////////////Check to see if the file exists in tarchive folder////
@@ -911,10 +907,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
         $result[] = $dicom_inserted;
         $result[] = $tarchive_id;
-        $result[] = $candid;
         $result[] = $patient_name;
         $result[] = $ArchiveLocation;
-        $result[] = $visit_label;
 
 
         return $result;
