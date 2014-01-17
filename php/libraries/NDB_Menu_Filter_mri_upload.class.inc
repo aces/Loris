@@ -223,6 +223,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $candid = $result[2];
                     $patient_name = $result[3];
                     $ArchiveLocation = $result[4];
+                    $visit_label = $result[5];
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////
@@ -264,7 +265,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $count = $db->pselectOne("SELECT COUNT(f.FileID) FROM mri_upload mu
                                   JOIN files f ON (f.sessionID = mu.SessionID)
                                   JOIN session s ON (s.ID = f.sessionID)
-                                   WHERE s.CandID =  :cid", array('cid'=>$candid));
+                                   WHERE s.CandID =  :cid AND s.Visit_label= :vlabel", 
+                                  array('cid'=>$candid,'vlabel'=>$visit_label));
     
                     ///////////////////////////////////////////////////////////////////////////////
                     ////if the minc is not inserted into the files table///////////////
@@ -277,6 +279,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                             print "command is $command";    
                             print $output;
                         }
+                        ////////////////////TODO:////////////////////////////////////////////////////////////////////////////////////
+                        //extra checks can be added to make sure that the mincs are created, before the minc-inserted is set to true
+                        
                         $db->update('mri_upload',array('MincInserted'=>1),array('SourceLocation'=>$source_location));
                         $this->log->addLog(
                         "The minc file for patient-name $patient_name is now inserted into the db \n <BR>"
@@ -563,7 +568,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         "SELECT ID FROM  session WHERE CandID = :cid AND Visit_label =:vlabel ",
         array('cid'=>$candid,'vlabel'=>$visit_label)
         );
-        $values = array('FileType'=>'mnc','UploadedBy'=>$user_name,
+        
+        $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+        
+        $values = array('FileType'=>$ext,'UploadedBy'=>$user_name,
         'UploadDate'=>$date,'UploadSuccess'=>1,'SourceLocation'=>$file_name,
         'SessionID'=>$sessionid);
         $db->Insert('mri_upload', $values);
@@ -869,15 +877,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         print "-----------------------------";
         print "<BR>";
         $family_id = $this->getFamilyIDUsingFileName($file_name);
-        $candid = $this->getCandID($family_id);
+        
         $row=$db->pselectRow(
-        "Select ArchiveLocation,TarchiveID,PatientName FROM tarchive
-             WHERE patientname LIKE concat ('%', :pname, '%') ",
+        "Select ArchiveLocation,TarchiveID,PatientName,s.Visit_label,s.CandID FROM tarchive t
+             JOIN session s on (s.ID=t.SessionID)
+             WHERE patientname LIKE concat ('%', :pname, '%') 
+              ",
         array('pname'=>$family_id)
         );
         $tarchive_id = $row['TarchiveID'];
         $ArchiveLocation = $row['ArchiveLocation'];
         $patient_name = $row['PatientName'];
+        $candid = $row['CandID'];
+        $visit_label = $row['Visit_label'];
     
         ///////////////////////////////////////////////////////////////////
         /////////////Check to see if the file exists in tarchive folder////
@@ -902,6 +914,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $result[] = $candid;
         $result[] = $patient_name;
         $result[] = $ArchiveLocation;
+        $result[] = $visit_label;
 
 
         return $result;
