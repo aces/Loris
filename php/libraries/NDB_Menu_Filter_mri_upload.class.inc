@@ -867,14 +867,16 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         . " $file_name_without_exention &>> $mri_log_file ";
         $query = "/usr/bin/perl  $mri_header_executer"
         . " $file_name_without_exention ";
-        print "query to be ran is $cmd";
-        print "-----------------------------";
-        print "<BR>";
-        //echo passthru($query);
         $output = shell_exec($cmd);
-        print $output;
-        print "-----------------------------";
-        print "<BR>";
+        if ($this->show_errors) {
+            print "query to be ran is $cmd";
+            print "-----------------------------";
+            print "<BR>";
+            //echo passthru($query);
+            print $output;
+            print "-----------------------------";
+            print "<BR>";
+        }
         $family_id = $this->getFamilyIDUsingFileName($file_name);
         $candid = $this->getCandID($family_id);
         $row=$db->pselectRow(
