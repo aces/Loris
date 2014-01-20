@@ -183,5 +183,149 @@ foreach($data as $row) {
     print implode("\t", $row);
     print "\n";
 }
+/* ************************************************************************* */
+// CHECK IF Mullen date of administration - MRI PF date of administration >30
+/* ************************************************************************* */
+
+print "\n\n CHECK IF Mullen date of administration - MRI PF date of administration >30 \n";
+print "--------------------------------------\n";
+$data = $DB->pselect("SELECT c.PSCID,c.CandID,s.Visit_label, ROUND(DATEDIFF(m.Date_taken, mr.Date_taken) / (365/12)*30) AS datediff from candidate c JOIN session s on s.CandID=c.CandID  join flag f1 on ( s.ID=f1.SessionID AND f1.CommentID NOT LIKE 'DDE%' ) join mullen m ON (m.CommentID=f1.CommentID) join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%' ) JOIN mri_parameter_form mr ON (mr.CommentID=f2.CommentID) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y'", array());
+$header = array('PSCID', 'DCCID', 'Visit_label', 'Date difference');
+foreach($header as $row) {
+     print $row."\t";
+}
+print "\n";
+foreach($data as $row) {
+    if(abs($row['datediff']) > 30) {
+        $row['datediff'] = "\t".abs($row['datediff']);
+        print implode("\t", $row);
+        print "\n";
+    }
+}
+/* ************************************************************************* */
+// CHECK IF DOB proband in Vineland, ADI R Proband and DOB_proband in candidate are same
+/* ************************************************************************* */
+
+print "\n\n CHECK IF DOB proband in Vineland, ADI R Proband and DOB_proband in candidate are same\n";
+print "--------------------------------------\n";
+$data = $DB->pselect("SELECT c.PSCID,c.CandID, c.ProbandDoB, a.DoB_proband,v.BIRTH_DATE from candidate c JOIN session s on s.CandID=c.CandID  join flag f1 on ( s.ID=f1.SessionID AND f1.CommentID NOT LIKE 'DDE%' ) join  adi_r_proband a ON (a.CommentID=f1.CommentID) join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%' ) JOIN vineland_proband v ON (v.CommentID=f2.CommentID) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y'", array());
+$header = array('PSCID', 'DCCID', 'ProbandDoB', 'ADI-R ProbandDoB','Vineland ProbandDob');
+foreach($header as $row) {
+             print $row."\t";
+}
+print "\n";
+foreach($data as $row) {
+    if(!empty($row['ProbandDoB']) || $row['ProbandDoB'] != '0000-00-00' ) {
+        if( !empty( $row['DoB_proband']) && $row['ProbandDoB'] != $row['DoB_proband']) {
+            $row['BIRTH_DATE'] = "\t".$row['BIRTH_DATE'];
+            print implode("\t", $row);
+            print "\n";
+            break;
+
+        } else if(!empty($row['BIRTH_DATE']) && $row['BIRTH_DATE'] != $row['ProbandDoB']) {
+            $row['BIRTH_DATE'] = "\t".$row['BIRTH_DATE'];
+            print implode("\t", $row);
+            print "\n";
+            break;
+
+
+        }
+
+    }
+}
+/* ************************************************************************* */
+// CHECK IF proband gender in Vineland, proband gender in candidate are same
+/* ************************************************************************* */
+
+print "\n\n CHECK IF proband gender in Vineland and proband gender in candidate are same\n";
+print "--------------------------------------\n";
+$data = $DB->pselect("SELECT c.PSCID,c.CandID, c.ProbandGender,v.SEX from candidate c JOIN session s on s.CandID=c.CandID join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%' ) JOIN vineland_proband v ON (v.CommentID=f2.CommentID) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y'", array());
+$header = array('PSCID', 'DCCID', 'ProbandGender', 'Vineland_ProbandGender');
+foreach($header as $row) {
+             print $row."\t";
+}
+print "\n";
+foreach($data as $row) {
+    if(!empty($row['ProbandGender']) ) {
+        $gender = substr($row['ProbandGender'], 0, 1);
+        if( !empty( $row['SEX'])  && (strcasecmp($row['SEX'],$gender) != 0)) {
+            $row['SEX'] = "\t".$row['SEX'];
+            print implode("\t", $row);
+            print "\n";
+
+        }
+    }
+}
+/* ************************************************************************* */
+// CHECK IF DOB candidate < DOB proband
+/* ************************************************************************* */
+
+print "\n\n CHECK IF DOB candidate < DOB proband\n";
+print "--------------------------------------\n";
+$data = $DB->pselect("SELECT c.PSCID,c.CandID, c.DoB,c.ProbandDoB,ROUND(DATEDIFF(c.DOB, c.ProbandDoB) / (365/12)) AS datediff from candidate c JOIN session s on s.CandID=c.CandID join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%' ) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y'", array());
+$header = array('PSCID', 'DCCID', 'CandidateDoB', 'ProbandDoB', 'Age_Diff');
+if(sizeof($data) > 0 ){
+    foreach($header as $row) {
+        print $row."\t";
+    }
+    print "\n";
+}
+foreach($data as $row) {
+    if($row['datediff'] < 0) {
+        print implode("\t", $row);
+        print "\n";
+    }
+
+}
+/* ************************************************************************* */
+// CHECK _score and _score_override are equal for q1,q2,q3,q6 for AOSI
+/* ************************************************************************* */
+
+print "\n\n CHECK _score and _score_override are equal for q1,q2,q3,q6 for AOSI\n";
+print "--------------------------------------\n";
+$fields = array('q1_visual_tracking','q2_disengagement_of_attention','q3_orients_to_name',
+              'q6_imitation_of_actions');
+$data = $DB->pselect("SELECT c.PSCID,c.CandID,s.Visit_label,a.CommentID, a.q1_visual_tracking_score,a.q1_visual_tracking_score_override,a.q2_disengagement_of_attention_score,a.q2_disengagement_of_attention_score_override,a.q3_orients_to_name_score,a.q3_orients_to_name_score_override,a.q6_imitation_of_actions_score,a.q6_imitation_of_actions_score_override from candidate c JOIN session s on s.CandID=c.CandID join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%') JOIN aosi a ON (a.CommentID=f2.CommentID) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y' AND a.Data_entry_completion_status='Complete'", array());
+$header = array('PSCID', 'DCCID', 'Visit_label', 'CommentID','q1_visual_tracking_score','q1_visual_tracking_score_override',
+                'q2_disengagement_of_attention_score','q2_disengagement_of_attention_score_override','q3_orients_to_name_score',
+                'q3_orients_to_name_score_override','q6_imitation_of_actions_score','q6_imitation_of_actions_score_override');
+if(sizeof($data) > 0 ){
+    foreach($header as $row) {
+                 print $row."\t";
+    }
+    print "\n";
+}
+foreach($data as $row) {
+    foreach($fields as $field) {
+        $score = substr($row[$field."_score"], 0, 1);
+        if($row[$field."_score_override"] != 8 && $score != 'U'
+                && $row[$field."_score_override"] != $row[$field."_score"]) {
+            print implode("\t", $row);
+            print "\n";
+            break;
+        }
+    }
+}
+/* ************************************************************************* */
+// CHECK consent status and consent withdrawal status
+/* ************************************************************************* */
+
+print "\n\n CHECK consent status and consent withdrawal status \n";
+print "--------------------------------------\n";
+$data = $DB->pselect("SELECT c.PSCID,c.CandID,ps.study_consent,ps.study_consent_withdrawal, ps.ndar_consent,ps.ndar_consent_withdrawal from candidate c JOIN participant_status ps ON (ps.CandID = c.CandID) WHERE c.Active='Y' AND c.PSCID NOT LIKE 'DCC%'", array());
+$header = array('PSCID', 'DCCID', 'Visit_label', 'CommentID','Studyconsent','Study withdrawal','NDARconsent','NDAR withdrawal');
+if(sizeof($data) > 0 ){
+    foreach($header as $row) {
+                 print $row."\t";
+    }
+    print "\n";
+}
+foreach($data as $row) {
+    if($row['study_consent'] == 'yes' && ($row['study_consent_withdrawal']!= '0000-00-00')
+            || $row['ndar_consent'] == 'yes' && ($row['ndar_consent_withdrawal']!= '0000-00-00')) {
+        print implode("\t", $row);
+        print "\n";
+    }
+}
 
 ?>
