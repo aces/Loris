@@ -287,6 +287,27 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         );
                         $this->tpl_data['minc_success'] = true;
                     }
+
+                    ///////////////////////////////////////////////////////////////////////////////
+                    ////update the outputtype in the files table///////////////////////////////////
+                    ///////////////////////////////////////////////////////////////////////////////
+                    $query = "SELECT * FROM files WHERE File LIKE CONCAT('%', :cid, '%')";
+                    $files = $DB->pselect($query,array('cid'=>$candid));
+                    foreach ($files as $file){
+                        $file_name = $file['File'];
+                        $file_id = $file['FileID'];
+                        $output_type = null;
+                        //print "mincheader $file_name | grep -i series_description \n";
+                        //Don't use system...since system prints out the result by default...
+                        $series_description = shell_exec("mincheader $file_name | grep -i series_description");
+                        if (preg_match("/brain/i",$series_description)){
+                            $output_type = 'brain';
+                        }
+                        else {
+                            $output_type = 'body';
+                        }
+                        $DB->update('files',array('OutputType'=>$output_type),array('FileID'=>$file_id));
+                    }
                 }
 
                 $this->tpl_data['upload_success'] = true;
