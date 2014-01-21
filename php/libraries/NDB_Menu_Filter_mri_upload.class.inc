@@ -294,7 +294,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $query = "SELECT * FROM files WHERE File LIKE CONCAT('%', :cid, '%')";
                     $files = $db->pselect($query,array('cid'=>$candid));
                     foreach ($files as $file){
-                        $file_name = $file['File'];
+                        $file_name = $paths['data'] . $file['File'];
                         $file_id = $file['FileID'];
                         $output_type = null;
                         //print "mincheader $file_name | grep -i series_description \n";
