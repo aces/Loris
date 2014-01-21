@@ -127,7 +127,7 @@ function FeedbackButtonClicked() {
 </div>
 <div id="divBottomRight" style="position:absolute">
 <h3>Links</h3><br>
-<a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}">MRI Form</a>
+<a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}">MRI Parameter Form</a>
 <br>
 <!--td nowrap="nowrap"><input type="button" name="button" value="Radiology Review" class="button" style = "background-color: #08245b" onclick="window.open('main.php?test_name=radiology_review&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.RadiologyReviewCommentID}')" /></td-->
 <a href="main.php?test_name=radiology_review&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.RadiologyReviewCommentID}">Radiology Review </a>
