@@ -137,7 +137,7 @@ function FeedbackButtonClicked() {
 <a href="dicom_archive.php?TarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive</a>
 <br>
 {/foreach}
-
+<a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a>
 
 </div>
 <div id="divBottomLeft" style="position:absolute">
