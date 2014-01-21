@@ -922,6 +922,7 @@ CREATE TABLE `parameter_type` (
   `SourceCondition` text,
   `CurrentGUITable` varchar(255) default NULL,
   `Queryable` tinyint(1) default '1',
+  `IsFile` tinyint(1) default '0',
   PRIMARY KEY  (`ParameterTypeID`),
   KEY `name` (`Name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';

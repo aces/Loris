@@ -104,17 +104,10 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['BehaviouralSite'] == $row['NumericID']) {
+            if($_REQUEST['site'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
             }
 
-        }
-        if(isset($_REQUEST['BehaviouralSite']) && $_REQUEST['BehaviouralSite'] != '') {
-            foreach ($centers as $row) {
-                if($_REQUEST['BehaviouralSite'] == $row['NumericID']) {
-                    $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
-                }
-            }
         }
 
         if(isset($_REQUEST['BehaviouralProject']) && $_REQUEST['BehaviouralProject'] != '') {

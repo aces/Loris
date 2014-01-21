@@ -1,7 +1,6 @@
 <div id="data_entry">
 <h2 class="statsH2">Data Entry Statistics  {if $CurrentProject} for {$CurrentProject.Name} {/if}</h2>
     <script type="text/javascript" src="js/modules/form_stats_behavioural.js"></script>
-    {html_options id="BehaviouralSite" options=$Sites name="BehaviouralSite" selected=$CurrentSite.ID}
     {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID}
         <button onClick="updateBehaviouralTab()">Submit Query</button>
 
