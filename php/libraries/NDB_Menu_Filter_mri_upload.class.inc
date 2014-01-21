@@ -292,7 +292,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ////update the outputtype in the files table///////////////////////////////////
                     ///////////////////////////////////////////////////////////////////////////////
                     $query = "SELECT * FROM files WHERE File LIKE CONCAT('%', :cid, '%')";
-                    $files = $DB->pselect($query,array('cid'=>$candid));
+                    $files = $db->pselect($query,array('cid'=>$candid));
                     foreach ($files as $file){
                         $file_name = $file['File'];
                         $file_id = $file['FileID'];
@@ -306,7 +306,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         else {
                             $output_type = 'body';
                         }
-                        $DB->update('files',array('OutputType'=>$output_type),array('FileID'=>$file_id));
+                        $db->update('files',array('OutputType'=>$output_type),array('FileID'=>$file_id));
                     }
                 }
 
