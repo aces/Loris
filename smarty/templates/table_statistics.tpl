@@ -18,7 +18,7 @@
 
 {if $Subsection=="demographics" }
     {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
-    <button onClick="updateDemographicInstrument()">Submit Query</button>
+    <button onClick="updateDemographicTab()">Submit Query</button>
 {/if}
 
 {if $Subsection==mri }
