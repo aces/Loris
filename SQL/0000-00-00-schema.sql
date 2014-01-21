@@ -1816,22 +1816,22 @@ CREATE TABLE `certification_history` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `intermediary_files`
+-- Table structure for table `files_intermediary`
 --
 
-DROP TABLE IF EXISTS `intermediary_files`;
+DROP TABLE IF EXISTS `files_intermediary`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `intermediary_files` (
+CREATE TABLE `files_intermediary` (
   `IntermedID` int(11) NOT NULL AUTO_INCREMENT,
   `Output_FileID` int(10) unsigned NOT NULL,
   `Input_FileID` int(10) unsigned NOT NULL,
   `Tool` varchar(255) NOT NULL,
   PRIMARY KEY (`IntermedID`),
-  KEY `FK_intermediary_files_1` (`Output_FileID`),
-  KEY `FK_intermediary_files_2` (`Input_FileID`),
-  CONSTRAINT `FK_intermediary_files_1` FOREIGN KEY (`Output_FileID`) REFERENCES `files` (`FileID`),
-  CONSTRAINT `FK_intermediary_files_2` FOREIGN KEY (`Input_FileID`) REFERENCES `files` (`FileID`)
+  KEY `FK_files_intermediary_1` (`Output_FileID`),
+  KEY `FK_files_intermediary_2` (`Input_FileID`),
+  CONSTRAINT `FK_files_intermediary_1` FOREIGN KEY (`Output_FileID`) REFERENCES `files` (`FileID`),
+  CONSTRAINT `FK_files_intermediary_2` FOREIGN KEY (`Input_FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
