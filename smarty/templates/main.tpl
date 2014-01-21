@@ -194,7 +194,7 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 
 {if $candID != ""}
 <!-- table with candidate profile info -->
-<table cellpadding="2" class="list" style='width:600px; float:left'>
+<table cellpadding="2" class="list" style='width:600px'>
 <!-- column headings -->
 <tr>
 <th nowrap="nowrap">DOB</th>
@@ -255,7 +255,6 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 </tr>
 </table>
 
-</p>
 {if $sessionID != ""}
 <table cellpadding="2" class="list" style='width:700px'>
 <!-- visit statuses -->
