@@ -100,14 +100,14 @@
             <tr>
                 <!-- print out data rows -->
                 {section name=piece loop=$items[item]}
-                    {if $items[item][piece].name eq 'TarchiveID'}
+                    {if $items[item][piece].name eq 'Tarchive_Info'}
                         <td nowrap="nowrap"><a href="dicom_archive.php?TarchiveID={$items[item][piece].value}">
-                        {$items[item][piece].value}{$headers[header].displayName}</a></td>
-                    {elseif $items[item][piece].name eq 'MincData'}     
+                        View Details</a></td>
+                    {elseif $items[item][piece].name eq 'MRI_Browser'}     
                         {if $items[item][piece].value neq '0'}
                             <td nowrap="nowrap">
                                 <a href="mri_browser.php?filter%5BcandID%5D={$items[item][2].value}">
-                                    {$items[item][2].value}
+                                    View Images
                                 </a>
                             </td>
                         {/if}
