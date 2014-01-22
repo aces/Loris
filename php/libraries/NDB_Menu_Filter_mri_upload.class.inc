@@ -65,7 +65,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         $this->columns = array('UploadID','s.CandID','s.visit_label',
         'SourceLocation','FileType','UploadDate','UploadedBy',
-        'TarchiveID','MincInserted AS MincData' );
+        'TarchiveID AS Tarchive_Info','MincInserted AS MRI_Browser' );
 
         $this->validFilters = array('SourceLocation');
         $this->query = " FROM mri_upload mu
@@ -156,7 +156,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             /////get the location of the last uploaded folder//////////
             $source_location = $db->pselectOne(
             "SELECT  SourceLocation FROM mri_upload
-                WHERE DicomInserted = 0 ORDER BY UploadID DESC"
+                WHERE TarchiveID IS NULL ORDER BY UploadID DESC"
                 );
                 $config =& NDB_Config::singleton();
                 $paths = $config->getSetting('paths');
@@ -226,10 +226,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////
-                /////////////////////////set the tarchiveid and DicomInserted to true//////////////
-                ////////////////in mri_upload table////////////////////////////////////////////
-                ////////////////////////////////////////////////////////////////////////////////////
-                if ($dicom_created){
+                /////////////////////////set the tarchiveid in mri_upload table///////////////////
+                //////////////////////////////////////////////////////////////////////////////////
+                if ($tarchive_id){
                     $db->update(
                     "mri_upload", array('TarchiveID'=>$tarchive_id,
                     'DicomInserted'=>1),
