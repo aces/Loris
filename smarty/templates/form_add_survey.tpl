@@ -50,6 +50,6 @@
 </table>
 {$form.hidden}
 <div id="email_dialog">
-    <textarea name="email_dialog">This is where your message goes.</textarea>
+    <textarea name="email_dialog" rows="24" cols="80">This is where your message goes.</textarea>
 </div>
 </form>
