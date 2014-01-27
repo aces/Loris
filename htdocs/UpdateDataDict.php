@@ -26,7 +26,7 @@ if (Utility::isErrorX($user)) {
 	return PEAR::raiseError("User Error: ".$user->getMessage());
 }
 
-if ($user->hasPermission('data_dict')) { //if user has edit permission
+if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
 	if ($DB->pselectOne("SELECT COUNT(*) FROM parameter_type_override WHERE Name =:id",array('id'=>$name))==0) {  //if it doesn't exist
 		$DB->insert('parameter_type_override',array('Name'=>$name,'Description'=>$description)); //insert it
 	} else {
