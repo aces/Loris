@@ -20,7 +20,7 @@
    <script type="text/javascript" src="js/brainbrowser.volume-viewer.ui-controls.min.js"></script>
    <script type="text/javascript" src="js/brainbrowser.config.js"></script>
 
-   <script type="text/javascript">
+<script type="text/javascript" charset="utf-8"> 
 
     BrainBrowser.VolumeViewer.start("brainbrowser", function(viewer) {
   
@@ -34,7 +34,8 @@
       volumes: [
         {
           type: 'minc',
-          filename: "minc.php" + link 
+          header_url: "minc.php" + link + "&minc_headers=true",
+          raw_data_url: "minc.php" + link + "&raw_data=true"
         }
       ]
     });
