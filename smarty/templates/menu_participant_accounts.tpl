@@ -1,4 +1,4 @@
-<form method="post" action="main.php?test_name=user_accounts">
+<form method="post" action="main.php?test_name=participant_accounts">
 <!-- start the selection table -->
 <table border="0" valign="top" class="std">
     <tr>
@@ -45,7 +45,7 @@
  <th nowrap="nowrap">No.</th>
     <!-- print out column headings - quick & dirty hack -->
     {section name=header loop=$headers}
-        <th nowrap="nowrap"><a href="main.php?test_name=user_accounts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+        <th nowrap="nowrap"><a href="main.php?test_name=participant_accounts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
     {/section}
 </tr>
 

@@ -1,3 +1,30 @@
+<<<<<<< HEAD
+=======
+/*
+ * suggested order of CSS properties
+ *
+ * display
+ * list-style
+ * position
+ * float
+ * clear
+ * width
+ * height
+ * margin
+ * padding
+ * border
+ * background
+ * color
+ * font
+ * text-decoration
+ * text-align
+ * vertical-align
+ * white-space
+ * other text
+ * content
+ */
+
+>>>>>>> DirectEntry
 html, body {
    	margin: 0px 0px 0px 0px;
     height: 100%;
@@ -197,6 +224,7 @@ box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.4);
     font-size: 1.4em;
     font-weight: bold;
 }
+<<<<<<< HEAD
 .warn {
 	/* color: #ffd700; */
     color: #FA0;
@@ -204,6 +232,8 @@ box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.4);
     font-size: 1.4em;
     font-weight: bold;
 }
+=======
+>>>>>>> DirectEntry
 
 .pagetitle p {
     line-height: 1.5em;
@@ -667,4 +697,12 @@ vertical-align: bottom;
 
 tr.directentry {
     background: #BDDDBD;
+}
+
+table.instrument tbody tr:nth-child(even) {
+    background: pink;
+}
+
+table.instrument tbody tr:nth-child(odd) {
+    background: #CC99FF;
 }

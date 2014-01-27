@@ -49,7 +49,7 @@ class NDB_Caller extends PEAR
     * @return string    rendered object, as html
     *
     */
-    function load($test_name, $subtest, $controlPanel=null, $CommentID = '', $nextpage=null)
+    function load($test_name, $subtest, $controlPanel=null, $CommentID= '', $nextpage=null)
     {
         // if no first argument, return
         if (empty($test_name)) {
