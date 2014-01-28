@@ -195,7 +195,7 @@ return true;
 
             <tr>
             	<td colspan="2">
-            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', 'BrainCanvas Minc Viewer', 'location = 0,width = 1300, height = 600')">
+            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', 'BrainCanvas Minc Viewer', 'location = 0,width = 500, height = 800')">
                	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
             	</a>
             	</td>
