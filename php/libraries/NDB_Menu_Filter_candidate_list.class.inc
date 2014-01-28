@@ -207,8 +207,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                     } else {
                         $this->tpl_data['items'][$x][$i]['value'] = '';
                     }
-                } else if ($key == 'Participant_Status') {
-                   
+                } else if ($key == 'Participant_Status' && !empty($val)) {
                 	$this->tpl_data['items'][$x][$i]['value'] = $participantOptions[$val];
                 }
                   else if ($key=='scan_done'){
