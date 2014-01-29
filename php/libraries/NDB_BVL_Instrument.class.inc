@@ -1610,16 +1610,49 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                         break;
 
+                    case 'begintable':
+                        if($addElements) {
+                            $this->form->addElement(
+                                'static',
+                                null,
+                                "</td></tr></table><table><tr><td>&nbsp;",
+                                ""
+                            );
+                        }
+                    case 'endtable':
+                        if($addElements) {
+                            $this->form->addElement(
+                                'static',
+                                null,
+                                "</td></tr></table><table><tr><td>&nbsp;",
+                                ""
+                            );
+                        }
+                        break;
                     case 'text':
                         if($addElements) {
-                            $this->addTextElement($pieces[1], $pieces[2]);
+                            if($Group['Name'] != null) {
+                                $Group['Elements'][] = 
+                                    $this->createText(
+                                        $pieces[1],
+                                        $pieces[2]
+                                    );
+
+                            } else {
+                                $this->addTextElement($pieces[1], $pieces[2]);
+                                                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
                         break;
                     case 'textarea':
                         $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
-                            $this->addTextAreaElement($pieces[1], $pieces[2]);
+                            if($Group['Name'] != null) {
+                                $Group['Elements'][] = 
+                                    $this->createTextArea($pieces[1], $pieces[2]);
+                            } else {
+                                $this->addTextAreaElement($pieces[1], $pieces[2]);
+                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
                         break;
@@ -1725,7 +1758,18 @@ class NDB_BVL_Instrument extends NDB_Page
                     case 'static':
                         $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
-                            $this->form->addElement('static', $pieces[1], $pieces[2]);
+                            if($Group['Name'] != null) {
+                                print "Creating $pieces[1] with label: $pieces[2]";
+                                $Group['Elements'][] = 
+                                    $this->form->createElement(
+                                        'static',
+                                        $pieces[1],
+                                        null,
+                                        $pieces[2]
+                                    );
+                            } else {
+                                $this->form->addElement('static', $pieces[1], $pieces[2]);
+                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
                         break;
