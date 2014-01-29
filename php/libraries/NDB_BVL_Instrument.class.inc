@@ -1545,6 +1545,12 @@ class NDB_BVL_Instrument extends NDB_Page
             $parsingPage = 'top';
             $firstSelectOfPage = true;
 
+            $Group = array(
+                'Name' => null,
+                'Elements' => array(),
+                'Delimiter' => $this->_GUIDelimiter
+            );
+
             while(($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
 
@@ -1581,6 +1587,29 @@ class NDB_BVL_Instrument extends NDB_Page
                             $this->_addMetadataFields();
                         }
                         break;
+                    case 'begingroup':
+                        if($addElements) {
+                            $Group['Name'] = $pieces[1] . '_group';
+                            $Group['Delimiter'] = trim($pieces[2]);
+                            if(empty($Group['Delimiter'])) {
+                                $Group['Delimiter'] = $this->_GUIDelimiter;
+                            }
+                        }
+                        break;
+                    case 'endgroup':
+                        if($addElements) {
+                            $groupLabel = $pieces[2];
+                            $this->addGroup(
+                                $Group['Elements'],
+                                $Group['Name'],
+                                $groupLabel, 
+                                $Group['Delimiter'], false);
+
+                            $Group['Name'] = null;
+                            $Group['Elements'] = array();
+                        }
+                        break;
+
                     case 'text':
                         if($addElements) {
                             $this->addTextElement($pieces[1], $pieces[2]);
@@ -1654,10 +1683,32 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
 
                         if($addElements) {
-                            if($type == 'multiple') {
-                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
+                            if($Group['Name'] != null) {
+                                if($type == 'multiple') {
+                                    $Group['Elements'][] = 
+                                        $this->form->createElement(
+                                            'select',
+                                            $pieces[1],
+                                            $pieces[2],
+                                            $opt,
+                                            "multiple"
+                                        );
+                                } else {
+                                    $Group['Elements'][] = 
+                                        $this->form->createElement(
+                                            'select',
+                                            $pieces[1],
+                                            $pieces[2],
+                                            $opt
+                                        );
+                                }
                             } else {
-                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+                                if($type == 'multiple') {
+                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
+                                } else {
+                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+                                }
+
                             }
                         }
                         if ($firstSelectOfPage) {
