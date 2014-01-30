@@ -1378,7 +1378,11 @@ class NDB_BVL_Instrument extends NDB_Page
      * @return none
     */
     function addMonthYear($field, $label, $options=array()) {
+        if(is_array($options)) {
+            $options['format'] = 'YM';
+        }
         $this->form->addElement('date', $field, $label, $options);
+        $this->monthYearFields[] = $field;
     }
 
 
@@ -1674,7 +1678,12 @@ class NDB_BVL_Instrument extends NDB_Page
                                 );
                             }
 
-                            $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
+                            $pieces[5] = trim($pieces[5]);
+                            if($pieces[5] === 'MonthYear') {
+                                $this->addMonthYear($pieces[1], $pieces[2], $dateOptions);
+                            } else {
+                                $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
+                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
                         break;
