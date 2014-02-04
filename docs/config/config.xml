@@ -100,9 +100,26 @@
 	  <!-- PSCID generation method: sequential|random -->
           <generation>user</generation>
           <structure>
-            <seq type="alphanumeric" minLength="4"/>
+            <seq type="siteAbbrev"/>
+            <seq type="numeric" length="4" min='1000' max='9999'/>
           </structure>
         </PSCID>
+
+        <CandID>
+          <generation>random</generation>
+          <structure>
+            <seq type="numeric" length="6" min='100000' max='999999'/>
+          </structure>
+        </CandID>
+
+        <useExternalID>true</useExternalID>
+        <ExternalID>
+          <generation>random</generation>
+          <structure>
+            <seq type="static">BBB</seq>
+            <seq type="numeric" length="4" min='1000' max='9999'/>
+          </structure>
+        </ExternalID>
 
         <useProjects>false</useProjects>
         <Projects>
