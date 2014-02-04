@@ -1593,7 +1593,11 @@ DROP TABLE IF EXISTS `project_rel`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project_rel` (
   `ProjectID` int(2) DEFAULT NULL,
-  `SubprojectIDtructure for table `MRICandidateErrors`
+   `SubprojectID` int(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+--
+--  Table structure for table `MRICandidateErrors`
 --
 
 DROP TABLE IF EXISTS `MRICandidateErrors`;
