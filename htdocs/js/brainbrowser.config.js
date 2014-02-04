@@ -31,7 +31,7 @@
 //     - worker: url of the web worker used to parse the file.
 // 
 // volume_viewer:
-//   - color_scales: an array of color scale definitions
+//   - color_maps: an array of color scale definitions
 //     - name: name to be display for the color scale in the UI
 //     - url: url of the color scale file
 //     - crosshair_color: color of the crosshair to be used when 
@@ -67,30 +67,30 @@
     },
 
     volume_viewer: {
-      color_scales: [
+      color_maps: [
         {
           name: "Spectral",
-          url: "../color_scales/spectral.txt",
+          url: "../color_maps/spectral.txt",
           cursor_color: "#FFFFFF"
         },
         {
           name: "Thermal",
-          url: "../color_scales/thermal.txt",
+          url: "../color_maps/thermal.txt",
           cursor_color: "#FFFFFF"
         },
         {
           name: "Gray",
-          url: "../color_scales/gray_scale.txt",
+          url: "../color_maps/gray_scale.txt",
           cursor_color: "#FF0000"
         },
         {
           name: "Blue",
-          url: "../color_scales/blue.txt",
+          url: "../color_maps/blue.txt",
           cursor_color: "#FFFFFF"
         },
         {
           name: "Green",
-          url: "../color_scales/green.txt",
+          url: "../color_maps/green.txt",
           cursor_color: "#FF0000"
         }
       ]

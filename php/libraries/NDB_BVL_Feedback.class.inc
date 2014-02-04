@@ -185,7 +185,7 @@ Class NDB_BVL_Feedback
     * @static
     * @return string color hex code (format #xxxxxx)
     */
-    function getThreadColor($status)
+    static function getThreadColor($status)
     {
         if(empty($status)) return '';
 
@@ -791,7 +791,7 @@ Class NDB_BVL_Feedback
     * @throws PEAR error
     * @access static
     */
-    function getFeedbackStatusVerbose($statusID) 
+    static function getFeedbackStatusVerbose($statusID)
     {
         if (empty($statusID)) return PEAR::raiseError("NDB_BVL_Feedback::getFeedbackStatusVerbose  Error, empty status ID\n");
         // new DB Object

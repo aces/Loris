@@ -57,51 +57,6 @@ LOCK TABLES `candidate` WRITE;
 /*!40000 ALTER TABLE `candidate` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `cert_details`
---
-
-DROP TABLE IF EXISTS `cert_details`;
-CREATE TABLE `cert_details` (
-  `certID` int(10) unsigned NOT NULL default '0',
-  `testID` int(10) unsigned NOT NULL default '0',
-  `pass` enum('Invalid','Invalid scoring','Valid') default NULL,
-  `comment` text,
-  PRIMARY KEY  (`certID`,`testID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `cert_details`
---
-
-LOCK TABLES `cert_details` WRITE;
-/*!40000 ALTER TABLE `cert_details` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cert_details` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `cert_events`
---
-
-DROP TABLE IF EXISTS `cert_events`;
-CREATE TABLE `cert_events` (
-  `certID` int(10) unsigned NOT NULL auto_increment,
-  `examinerID` int(10) unsigned NOT NULL default '0',
-  `date_cert` date NOT NULL default '0000-00-00',
-  `candID` int(10) unsigned default NULL,
-  `visit_label` varchar(255) default NULL,
-  PRIMARY KEY  (`certID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `cert_events`
---
-
-LOCK TABLES `cert_events` WRITE;
-/*!40000 ALTER TABLE `cert_events` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cert_events` ENABLE KEYS */;
-UNLOCK TABLES;
-
 DROP TABLE IF EXISTS `document_repository`;
 CREATE TABLE `document_repository` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -148,40 +103,6 @@ CREATE TABLE `examiners` (
 LOCK TABLES `examiners` WRITE;
 /*!40000 ALTER TABLE `examiners` DISABLE KEYS */;
 /*!40000 ALTER TABLE `examiners` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `example_instrument`
---
-
-DROP TABLE IF EXISTS `example_instrument`;
-CREATE TABLE `example_instrument` (
-  `CommentID` char(255) NOT NULL default '',
-  `UserID` char(255) default NULL,
-  `Examiner` int(11) unsigned default NULL,
-  `Date_taken` date default NULL,
-  `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
-  `MenstruationCheck` enum('N','Y','NA') default NULL,
-  `QuickVueDate` date default NULL,
-  `QuickVueResult` enum('Positive','Negative','NA') default NULL,
-  `LaboratoryDate` date default NULL,
-  `LaboratoryResult` enum('Positive','Negative','NA') default NULL,
-  PRIMARY KEY  (`CommentID`),
-  KEY `FK_example_instrument_2` (`UserID`),
-  KEY `FK_example_instrument_3` (`Examiner`),
-  CONSTRAINT `FK_example_instrument_3` FOREIGN KEY (`Examiner`) REFERENCES `examiners` (`examinerID`),
-  CONSTRAINT `FK_example_instrument_1` FOREIGN KEY (`CommentID`) REFERENCES `flag` (`CommentID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_example_instrument_2` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `example_instrument`
---
-
-LOCK TABLES `example_instrument` WRITE;
-/*!40000 ALTER TABLE `example_instrument` DISABLE KEYS */;
-/*!40000 ALTER TABLE `example_instrument` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -474,29 +395,6 @@ LOCK TABLES `flag` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `hardcopy_requests`
---
-
-DROP TABLE IF EXISTS `hardcopy_requests`;
-CREATE TABLE `hardcopy_requests` (
-  `CenterID` tinyint(2) unsigned NOT NULL default '0',
-  `Last_checked` tinyint(2) unsigned NOT NULL default '0',
-  `Next_selection` tinyint(2) unsigned NOT NULL default '0',
-  `Group_size` tinyint(2) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`CenterID`),
-  CONSTRAINT `FK_hardcopy_requests_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `hardcopy_requests`
---
-
-LOCK TABLES `hardcopy_requests` WRITE;
-/*!40000 ALTER TABLE `hardcopy_requests` DISABLE KEYS */;
-/*!40000 ALTER TABLE `hardcopy_requests` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `history`
 --
 
@@ -573,64 +471,6 @@ LOCK TABLES `mri_acquisition_dates` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `mri_efax_deleted_pages`
---
-
-DROP TABLE IF EXISTS `mri_efax_deleted_pages`;
-CREATE TABLE `mri_efax_deleted_pages` (
-  `ID` int(10) unsigned NOT NULL auto_increment,
-  `File_name` varchar(255) NOT NULL default '',
-  `Date` date NOT NULL default '0000-00-00',
-  PRIMARY KEY  (`File_name`,`Date`),
-  UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `mri_efax_deleted_pages`
---
-
-LOCK TABLES `mri_efax_deleted_pages` WRITE;
-/*!40000 ALTER TABLE `mri_efax_deleted_pages` DISABLE KEYS */;
-/*!40000 ALTER TABLE `mri_efax_deleted_pages` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `mri_efax_parameter_form`
---
-
-DROP TABLE IF EXISTS `mri_efax_parameter_form`;
-CREATE TABLE `mri_efax_parameter_form` (
-  `ID` int(10) unsigned NOT NULL auto_increment,
-  `CenterID` tinyint(2) unsigned NOT NULL default '1',
-  `Scan_category` enum('subject','ACRQC','living_phantom','mritest') NOT NULL default 'subject',
-  `CandID` int(6) NOT NULL default '0',
-  `VisitNo` tinyint(1) NOT NULL default '0',
-  `Visit_label` varchar(255) default NULL,
-  `SessionID` int(10) unsigned default NULL,
-  `Acquisition_date` date default NULL,
-  `File_name` varchar(255) NOT NULL default '',
-  `Page` char(3) NOT NULL default '',
-  `UserID` varchar(255) NOT NULL default '',
-  `Date_taken` date default NULL,
-  `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `Comment` varchar(255) default NULL,
-  PRIMARY KEY  (`File_name`,`Page`),
-  UNIQUE KEY `ID` (`ID`),
-  KEY `CenterID` (`CenterID`),
-  KEY `Scan_category` (`Scan_category`),
-  KEY `VisitNo` (`VisitNo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `mri_efax_parameter_form`
---
-
-LOCK TABLES `mri_efax_parameter_form` WRITE;
-/*!40000 ALTER TABLE `mri_efax_parameter_form` DISABLE KEYS */;
-/*!40000 ALTER TABLE `mri_efax_parameter_form` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `mri_protocol`
 --
 
@@ -668,38 +508,6 @@ CREATE TABLE `mri_protocol` (
 LOCK TABLES `mri_protocol` WRITE;
 /*!40000 ALTER TABLE `mri_protocol` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mri_protocol` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `mri_safety`
---
-
-DROP TABLE IF EXISTS `mri_safety`;
-CREATE TABLE `mri_safety` (
-  `ID` int(10) unsigned NOT NULL auto_increment,
-  `SessionID` int(11) NOT NULL default '0',
-  `Acquisition_date` date NOT NULL default '0000-00-00',
-  `Date_review` date default NULL,
-  `Check_adverse` enum('N','Y') default NULL,
-  `Check_incidental` enum('N','Y') default NULL,
-  `Findings_confirmed` enum('In Progress','Included','Included_flagged','Excluded') default NULL,
-  `Findings_comment` text,
-  `Comment` text,
-  PRIMARY KEY  (`SessionID`,`Acquisition_date`),
-  UNIQUE KEY `ID` (`ID`),
-  KEY `Acquisition_date` (`Acquisition_date`),
-  KEY `Date_review` (`Date_review`),
-  KEY `Check_adverse` (`Check_adverse`),
-  KEY `Check_incidental` (`Check_incidental`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `mri_safety`
---
-
-LOCK TABLES `mri_safety` WRITE;
-/*!40000 ALTER TABLE `mri_safety` DISABLE KEYS */;
-/*!40000 ALTER TABLE `mri_safety` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -748,31 +556,6 @@ LOCK TABLES `mri_scanner` WRITE;
 /*!40000 ALTER TABLE `mri_scanner` DISABLE KEYS */;
 INSERT INTO `mri_scanner` VALUES (0,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `mri_scanner` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `mri_staging`
---
-
-DROP TABLE IF EXISTS `mri_staging`;
-CREATE TABLE `mri_staging` (
-  `StagingID` int(10) unsigned NOT NULL auto_increment,
-  `SessionID` int(10) unsigned NOT NULL default '0',
-  `PatientName` varchar(255) default NULL,
-  `StudyDate` int(10) unsigned default NULL,
-  `Resolution` enum('accepted','to delete','deleted') default NULL,
-  `ResolvedBy` varchar(255) default NULL,
-  `ResolvedTime` int(10) unsigned default NULL,
-  PRIMARY KEY  (`StagingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table will be used in the future';
-
---
--- Dumping data for table `mri_staging`
---
-
-LOCK TABLES `mri_staging` WRITE;
-/*!40000 ALTER TABLE `mri_staging` DISABLE KEYS */;
-/*!40000 ALTER TABLE `mri_staging` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1400,39 +1183,6 @@ INSERT INTO test_subgroups VALUES (1, 'Instruments');
 UNLOCK TABLES;
 
 --
--- Table structure for table `tracking_logs`
---
-
-DROP TABLE IF EXISTS `tracking_logs`;
-CREATE TABLE `tracking_logs` (
-  `Tracking_log_ID` int(11) NOT NULL auto_increment,
-  `Subproject_ID` int(11) default NULL,
-  `CenterID` int(11) unsigned default NULL,
-  `CandID` int(11) default NULL,
-  `PSCID` varchar(255) default NULL,
-  `Visit_label` varchar(255) default NULL,
-  `aMRI_date` date default NULL,
-  `Relaxometry_done` tinyint(1) default NULL,
-  `DTI_done` tinyint(1) default NULL,
-  `Second_DC_done` tinyint(1) default NULL,
-  `MRS_done` tinyint(1) default NULL,
-  `MRSI_done` tinyint(1) default NULL,
-  `eDTI_done` tinyint(1) default NULL,
-  `Lock_record` enum('','Locked','Unlocked') default NULL,
-  `Comments` text,
-  PRIMARY KEY  (`Tracking_log_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `tracking_logs`
---
-
-LOCK TABLES `tracking_logs` WRITE;
-/*!40000 ALTER TABLE `tracking_logs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tracking_logs` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user_perm_rel`
 --
 
@@ -1814,6 +1564,26 @@ CREATE TABLE `certification_history` (
   `userID` varchar(255) NOT NULL DEFAULT '',
   `type` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `files_intermediary`
+--
+
+DROP TABLE IF EXISTS `files_intermediary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `files_intermediary` (
+  `IntermedID` int(11) NOT NULL AUTO_INCREMENT,
+  `Output_FileID` int(10) unsigned NOT NULL,
+  `Input_FileID` int(10) unsigned NOT NULL,
+  `Tool` varchar(255) NOT NULL,
+  PRIMARY KEY (`IntermedID`),
+  KEY `FK_files_intermediary_1` (`Output_FileID`),
+  KEY `FK_files_intermediary_2` (`Input_FileID`),
+  CONSTRAINT `FK_files_intermediary_1` FOREIGN KEY (`Output_FileID`) REFERENCES `files` (`FileID`),
+  CONSTRAINT `FK_files_intermediary_2` FOREIGN KEY (`Input_FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
