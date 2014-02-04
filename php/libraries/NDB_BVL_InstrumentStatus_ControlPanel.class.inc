@@ -1,4 +1,5 @@
 <?php
+require_once 'NDB_BVL_InstrumentStatus.class.inc';
 /**
  * Behavioural instrument status control panel class
  *
