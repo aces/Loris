@@ -1,12 +1,20 @@
 <?php
 /**
- * Candidate class
- * @package main
+ * This file contains a class which is a wrapper around the concept
+ * of a candidate in Loris.
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-//require_once("Site.class.inc");
-require_once("PEAR.php");
+require_once "PEAR.php";
 
+/* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
@@ -19,15 +27,36 @@ define('CANDIDATE_MAX_CANDID', 999999);
 define('CANDIDATE_MIN_PSCID', 1000);
 define('CANDIDATE_MAX_PSCID', 9999);
 
+/**
+ * Wrapper around a candidate in Loris. Mostly, it gets information
+ * from the candidate table, but this class is abstract enough that
+ * it could get information from other places too
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 class Candidate
 {
     var $candidateInfo;
     var $listOfTimePoints;
 
+    /**
+     * This returns a single Candidate object for the given
+     * candID, and will only ever instantiate one object in
+     * the even that it's called multiple times.
+     *
+     * @param integer $candID A 6 digit Loris CandID that matches
+     *                        a candidate in the candidate table
+     * 
+     * @return Candidate the Candidate object
+     */
     static function &singleton($candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
-        if(!isset($candidateList[$candID])) {
+        if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
             $success = $candidateList[$candID]->select($candID);
 
@@ -39,6 +68,16 @@ class Candidate
         return $candidateList[$candID];
     }
     
+    /**
+     * This does the work of selecting the candidate and related
+     * information from the database and populating it into the
+     * Candidate object. Used by singleton method.
+     *
+     * @param integer $candID The 6 digit Loris CandID
+     *
+     * @return null But as a side-affect loads candidate into current
+     *              object
+     */
     function select($candID)
     {
         $config = NDB_Config::singleton();
@@ -48,42 +87,64 @@ class Candidate
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
-            return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()
+            );
         }
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender, p.Name AS PSC, c.Ethnicity, c.ZIP, c.Sibling1, c.Sibling2, c.Sibling3, c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID FROM candidate as c left join psc as p using (CenterID) left join users as u1 on (u1.UserID = c.RegisteredBy) WHERE c.CandID=:Candidate AND c.Active = 'Y'";
+        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
+            p.Name AS PSC, c.Ethnicity, c.ZIP, c.Sibling1, c.Sibling2, c.Sibling3,
+            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID 
+            FROM candidate as c 
+                LEFT JOIN psc as p USING (CenterID) 
+                LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy) 
+            WHERE c.CandID=:Candidate AND c.Active = 'Y'";
         $row = array();
         $row = $db->pselectRow($query, $CandArray);
         
-        if(Utility::isErrorX($row)) {
+        if (Utility::isErrorX($row)) {
             return PEAR::raiseError("DB Error: " . $row->getMessage());
         }
 
         if (!is_array($row) || sizeof($row) == 0) {
-            return PEAR::raiseError("Could not select Candidate data from the database (DCCID: $candID)", CANDIDATE_INVALID);
+            return PEAR::raiseError(
+                "Could not select Candidate data from the database (DCCID: $candID)",
+                CANDIDATE_INVALID
+            );
         }
 
         // store user data in object property
-        foreach($row AS $key=>$value) {
+        foreach ($row AS $key=>$value) {
             $this->candidateInfo[$key] = $value;
         }
 
-        if($config->getSetting('useProjects') === 'true') {
+        if ($config->getSetting('useProjects') === 'true') {
             $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
         }
 
         $headerSetting = $config->getSetting('HeaderTable');
-        if(!empty($headerSetting)) {
+        if (!empty($headerSetting)) {
             $params = array();
             $parameterCandSettings = $headerSetting['parameter_candidate'];
-            if(!is_array($parameterCandSettings)) {
+            if (!is_array($parameterCandSettings)) {
                 $parameterCandSettings= array($parameterCandSettings);
             }
-            foreach($parameterCandSettings as $parameter_type) {
-                $row = $db->pselectRow("SELECT Value, pt.Description FROM candidate c JOIN parameter_candidate pc ON (pc.CandID=c.CandID) LEFT JOIN parameter_type pt ON (pc.ParameterTypeID=pt.ParameterTypeID) WHERE c.CandID=:Candidate AND pt.Name=:PTName", array('Candidate' => $candID, 'PTName' => $parameter_type));
-                if(!empty($row['Value'])) {
+            foreach ($parameterCandSettings as $parameter_type) {
+                $row = $db->pselectRow(
+                    "SELECT Value, pt.Description 
+                    FROM candidate c 
+                        JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
+                        LEFT JOIN parameter_type pt ON 
+                            (pc.ParameterTypeID=pt.ParameterTypeID)
+                    WHERE c.CandID=:Candidate AND pt.Name=:PTName", 
+                    array(
+                        'Candidate' => $candID,
+                        'PTName' => $parameter_type
+                    )
+                );
+                if (!empty($row['Value'])) {
                     $params[$row['Description']] = $row['Value'];
                 }
             }
@@ -92,22 +153,28 @@ class Candidate
 
         // checK PSCID - only if it's passed by the open profile form
         if (isset($_REQUEST['PSCID'])) {
-            if (strtolower(trim($_REQUEST['PSCID'])) != strtolower($this->getPSCID())) {
+            if (strtolower(trim($_REQUEST['PSCID']))
+                != strtolower($this->getPSCID())
+            ) {
                 return (PEAR::raiseError("IDs do not match"));
             }
         }
         
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
-        $query = "SELECT s.ID FROM session as s WHERE s.CandID=:Candidate AND s.Active='Y' ORDER BY ID";
+        $query = "SELECT s.ID FROM session as s 
+            WHERE s.CandID=:Candidate AND s.Active='Y'
+            ORDER BY ID";
         $row = $db->pselect($query, $CandArray);
-        
-        if(Utility::isErrorX($row)) {
-            return PEAR::raiseError("Could not retrieve candidate/timepoint data from database");
+
+        if (Utility::isErrorX($row)) {
+            return PEAR::raiseError(
+                "Could not retrieve candidate/timepoint data from database"
+            );
         }
 
         // store user data in object property
-        foreach($row AS $value) {
+        foreach ($row AS $value) {
             $this->listOfTimePoints[] = $value["ID"];
         }
    }
@@ -199,6 +266,114 @@ class Candidate
    }
 
     /**
+     * creates a new candidate, assigning CandID and PSCID - MUST be called 
+     * statically
+     *
+     * @param int    $centerID    centerID of the site to which the candidate 
+     *                            will belong
+     * @param string $dateOfBirth date of birth written as YYYY-MM-DD
+     * @param string $edc         estimated date of confinement written as YYYY-MM-DD
+     * @param string $gender      gender, either 'Male' or 'Female'
+     * @param string $PSCID       PSCID specified by the user, if available
+     *
+     * @return int   $candID      candidate id of the new candidate
+     */
+    static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
+    {
+        if (!empty($this->candidateInfo['candID'])) {
+            return PEAR::raiseError("createNew must be called statically");
+        }
+
+        $db =& Database::singleton();
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()
+            );
+        }
+
+        $site =& Site::singleton($centerID);
+        if (Utility::isErrorX($site)) {
+            return PEAR::raiseError(
+                "Could not create a new candidate for site: ("
+                .$site->getMessage()
+                .")"
+            );
+        }
+
+        $user =& User::singleton($_SESSION['State']->getUsername());
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError(
+                "Could not create a new candidate for user: ("
+                .$user->getMessage()
+                .")"
+            );
+        }
+
+        // generate candid
+        $candID = Candidate::_generateCandID();
+        if (Utility::isErrorX($candID)) {
+            return $candID;
+        }
+
+        // figure out how to generate PSCID
+        $config =& NDB_Config::singleton();
+        $PSCIDSettings = $config->getSetting('PSCID');
+
+        if ($PSCIDSettings['generation'] == 'user') {
+            // check pscid is specified
+            if (empty($PSCID)) {
+                return PEAR::raiseError(
+                    "PSCID must be specified", PSCID_NOT_SPECIFIED
+                );
+            }
+
+            // check pscid structure
+            if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
+                return PEAR::raiseError(
+                    "PSCID has an invalid structure", PSCID_INVALID_STRUCTURE
+                );
+            }
+
+            // check pscid uniqueness
+            if ($db->pselectOne(
+                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
+                array('PID' => $PSCID)
+            ) > 0) {
+                return PEAR::raiseError(
+                    "PSCID not unique", PSCID_NOT_UNIQUE
+                );
+            }
+        } else {           
+            $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
+            if (Utility::isErrorX($PSCID)) {
+                return $PSCID;
+            }
+        }
+
+        // insert the new candidate into the database
+        $setArray = array(
+            'CandID'       => $candID,
+            'CenterID'     => $centerID,
+            'PSCID'        => $PSCID,
+            'DoB'          => $dateOfBirth,
+            'EDC'          => $edc,
+            'Gender'       => $gender,
+            'Date_active'  => date('Y-m-d'),
+            'Date_registered' => date('Y-m-d'),
+            'Entity_type'  => 'Human',
+            'RegisteredBy' => $user->getUsername(),
+            'UserID'       => $user->getUsername(),
+        );
+
+        $db->insert('candidate', $setArray);
+
+        // return the new candid
+        return $candID;
+    }
+
+    /**
+     * Get a list of timepoints that this Candidate has registered
+     *
      * @return array list of SessionIDs w/ 1st Time Point indexed to 0
      */
     function getListOfTimePoints()
@@ -207,26 +382,48 @@ class Candidate
     }
 
     /**
+     * Returns the sessionID for this Candidate's nth visit
+     *
+     * @param integer $visitNo The visit number for which you
+     *                         want the SessionID
+     *
      * @return array with SessionIDs w/ 1st Time Point indexed to 0
+     * FIXME: Return comment looks inaccurate based on the code
      */
     function getSessionID($visitNo)
     {
         return $this->listOfTimePoints[$visitNo-1];
     }
 
+    /**
+     * Return a piece of data about this candidate 
+     *
+     * @param string $var The type of data about the Candidate
+     *                    to be returned
+     *
+     * @return any The info requested 
+     */
     function getData($var = null)
     {
         if (is_null($var)) {
             return $this->candidateInfo;
-        }
-        else {
+        } else {
             return $this->candidateInfo[$var];
         }
     }
 
+    /**
+     * Sets some data about the candidate and saves it into the
+     * database
+     *
+     * @param string $var   The variable to be set
+     * @param any    $value The value to be set to
+     *
+     * @return true on success, PEAR Error otherwise
+     */
     function setData($var, $value=null)
     {
-        if(!is_array($var)) {
+        if (!is_array($var)) {
             $setData = array($var=>$value);
         } else {
             $setData = $var;
@@ -235,7 +432,7 @@ class Candidate
         $this->candidateInfo = array_merge($this->candidateInfo, $setData);
 
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
+        if (Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
         $success = $db->update('candidate', $setData, array('CandID'=>$this->getData('CandID')));
@@ -447,10 +644,11 @@ class Candidate
      * @return visit label
      * @throws PEAR::Error
      */
-    function getFirstVisit() {
+    function getFirstVisit()
+    {
         $candID = $this->getCandID();
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
+        if (Utility::isErrorX($db)) {
             return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
         }
     
@@ -458,8 +656,9 @@ class Candidate
             WHERE c.CandID=:cid ORDER BY Date_Visit";
         $where  = array('cid'=>$candID);
         $vLabel = $db->pselectOne($query, $where);
-        if(Utility::isErrorX($vLabel)) {
-            return PEAR::raiseError("Could not connect to database: ".$vLabel->getMessage());
+        if (Utility::isErrorX($vLabel)) {
+            return PEAR::raiseError("Could not connect to database: 
+                ".$vLabel->getMessage());
         }
 
         return $vLabel;
@@ -476,7 +675,7 @@ class Candidate
     {
         // get a database connection
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
+        if (Utility::isErrorX($db)) {
             return $db;
         }
         
@@ -484,7 +683,8 @@ class Candidate
         $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         
         // make sure the cand id is not used
-        while($db->pselectOne("SELECT count(CandID) FROM candidate WHERE CandID=:CaID", array('CaID' => $candID)) > 0) {
+        while ($db->pselectOne("SELECT count(CandID) FROM candidate WHERE 
+            CandID=:CaID", array('CaID' => $candID)) > 0) {
             // pick a new candidate id
             $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         }
@@ -503,7 +703,7 @@ class Candidate
     {
         // get a database connection
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
+        if (Utility::isErrorX($db)) {
             return $db;
         }
         
@@ -514,14 +714,16 @@ class Candidate
         // run one first time, then loop until the pscid is not used
         do {
             // pick a new pscid
-            if($PSCIDSettings['generation'] == 'sequential') {
-                if(!empty($pscid)) {
+            if ($PSCIDSettings['generation'] == 'sequential') {
+                if (!empty($pscid)) {
                     $pscid++;
                 } else {
-                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
+                    $pscid = 
+                        Candidate::generateFirstStringFromArrays($pscidArrays);
                 }
             } else {
-                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
+                $pscid = 
+                    Candidate::generateRandomStringFromArrays($pscidArrays);
             }
 
             // check if the pscid is used
@@ -562,7 +764,10 @@ class Candidate
     {
         $config =& NDB_Config::singleton();
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex = Utility::structureToPCRE($PSCIDSettings['structure'], $siteAbbrev);
+        $regex = Utility::structureToPCRE(
+            $PSCIDSettings['structure'], 
+            $siteAbbrev
+        );
         return preg_match($regex, $PSCID);
     }
 
@@ -571,10 +776,11 @@ class Candidate
     {
         $string = "";
         foreach($arrays AS $array) {
-            if(is_array($array))
+            if (is_array($array)) {
                 $string .= $array[array_rand($array)];
-            else
+            } else {
                 $string .= $array;
+            }
         }
         return $string;
     }
@@ -582,7 +788,7 @@ class Candidate
     function generateFirstStringFromArrays($arrays)
     {
         $string = "";
-        foreach($arrays AS $array) {
+        foreach ($arrays AS $array) {
             $string .= array_shift($array);
         }
         return $string;
@@ -593,19 +799,19 @@ class Candidate
         $idStructure = $idStructure['structure']['seq'];
 
         $arrays = array();
-        foreach($idStructure AS $seq) {
-            if(isset($seq['@']['length'])) {
+        foreach ($idStructure AS $seq) {
+            if (isset($seq['@']['length'])) {
                 $length = $seq['@']['length'];
-            } elseif(isset($seq['@']['minLength'])) {
+            } elseif (isset($seq['@']['minLength'])) {
                 $length = $seq['@']['minLength'];
             } else {
                 $length = 1;
             }
 
-            for($i=0; $i<$length; $i++) {
+            for ($i=0; $i<$length; $i++) {
                 switch($seq['@']['type']) {
                 case 'alpha':
-                    $arrays[] = range('a','z');
+                    $arrays[] = range('a', 'z');
                     break;
                 
                 case 'alphanumeric':
@@ -621,7 +827,7 @@ class Candidate
                     break;
 
                 case 'set':
-                    if(strpos($seq['#'], '|') !== false) {
+                    if (strpos($seq['#'], '|') !== false) {
                         $arrays[] = explode('|', $seq['#']);
                     } else {
                         $arrays[] = str_split($seq['#']);
