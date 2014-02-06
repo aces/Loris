@@ -194,7 +194,7 @@ return true;
 
 
             <tr>
-            	<td colspan="2">
+                <td colspan="3">
             	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto')">
                	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
             	</a>
@@ -202,17 +202,24 @@ return true;
             </tr>
             <tr>
             	<th>Voxel size</th>
-                <td>{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
+                <td colspan="2">{if $files[fIdx].xstep != "" and $files[fIdx].ystep != ""}X: {$files[fIdx].xstep} mm Y: {$files[fIdx].ystep} mm Z: {$files[fIdx].zstep} mm
                     {elseif $files[fIdx].xstep != ""}{$files[fIdx].xstep}{else}&nbsp;{/if}
                 </td>
             </tr>
-	   		<tr>
             {if $files[fIdx].fileID}
-                        
-            <a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">Click here to view this acquisition in the JIV viewer</a>
+	   		<tr>
+                <td><a href="#{$smarty.section.fIdx.index}" onClick='javascript:show_jiv(new Array("{$files[fIdx].jivFilename}"), new Array("{$files[fIdx].jivAddress}"), false)' accesskey="{$smarty.section.fIdx.index}">JIV Viewer</a></td>
+                <td>
+            	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto')">
+                BrainBrowser Volume Viewer
+                </a>
+                </td>
+                <td>
+                    <a href="mri/jiv/get_file.php?file={$files[fIdx].fullFilename}">Download</a>
+                </td>
        	  </td>
+            </tr>
 			{/if}
-	    </tr>
             </table>
         </td>
 
