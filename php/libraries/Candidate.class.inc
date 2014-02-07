@@ -76,7 +76,7 @@ class Candidate
      *
      * @param integer $candID The 6 digit Loris CandID
      *
-     * @return null As a side-affect loads candidate into current
+     * @return null As a side-effect loads candidate into current
      *              object
      */
     function select($candID)

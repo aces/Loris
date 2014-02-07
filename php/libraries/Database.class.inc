@@ -455,7 +455,7 @@ class Database extends PEAR
      *
      * @param string $query The SQL query to run
      *
-     * @return None As a side-affect updates affected and lastInsertID 
+     * @return None As a side-effect updates affected and lastInsertID 
      *              if applicable
      */
     function run($query)
@@ -640,7 +640,7 @@ class Database extends PEAR
      * @param char   $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *
-     * @return none As a side-affect populates history table
+     * @return none As a side-effect populates history table
      */
     private function _trackChanges($table, $set, $where, $type='U')
     {
@@ -750,7 +750,7 @@ class Database extends PEAR
      *                       They will be replaced in the print statement so that the
      *                       user knows what parameters were used.
      *
-     * @return null As a side-affect, prints to the screen if config option is 
+     * @return null As a side-effect, prints to the screen if config option is 
      *              enabled
      */
     function _printQuery($query, $params=null)
