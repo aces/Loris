@@ -197,10 +197,6 @@ class Candidate
      */
     static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
     {
-        if (!empty($this->candidateInfo['candID'])) {
-            return PEAR::raiseError("createNew must be called statically");
-        }
-
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
             return PEAR::raiseError(
