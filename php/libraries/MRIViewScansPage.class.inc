@@ -237,6 +237,7 @@ class MRIViewScansPage {
             }
             $fileData[$fIdx]['fileInsertDate'] = $file->getParameter('InsertTime');
             $fileData[$fIdx]['filename'] = basename($file->getParameter('File'));
+            $fileData[$fIDx]['fullFilename'] = $file->getParameter('File');
             $fileData[$fIdx]['seriesDescription'] = $file->getParameter('series_description');
             $fileData[$fIdx]['seriesNumber'] = $file->getParameter('series_number');
             $fileData[$fIdx]['echoTime'] = number_format($file->getParameter('echo_time')*1000, 2);
