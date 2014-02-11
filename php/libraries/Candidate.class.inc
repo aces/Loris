@@ -99,12 +99,12 @@ class Candidate
             p.Name AS PSC, c.Ethnicity, c.ZIP, c.Sibling1, c.Sibling2, c.Sibling3,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID 
             FROM candidate as c 
-                LEFT JOIN psc as p USING (CenterID) 
-                LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy) 
+            LEFT JOIN psc as p USING (CenterID) 
+            LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy) 
             WHERE c.CandID=:Candidate AND c.Active = 'Y'";
         $row = array();
         $row = $db->pselectRow($query, $CandArray);
-        
+
         if (Utility::isErrorX($row)) {
             return PEAR::raiseError("DB Error: " . $row->getMessage());
         }
@@ -136,9 +136,9 @@ class Candidate
                 $row = $db->pselectRow(
                     "SELECT Value, pt.Description 
                     FROM candidate c 
-                        JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
-                        LEFT JOIN parameter_type pt ON 
-                            (pc.ParameterTypeID=pt.ParameterTypeID)
+                    JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
+                    LEFT JOIN parameter_type pt ON 
+                    (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName", 
                     array(
                         'Candidate' => $candID,
@@ -161,7 +161,7 @@ class Candidate
                 return (PEAR::raiseError("IDs do not match"));
             }
         }
-        
+
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
         $query = "SELECT s.ID FROM session as s 
@@ -179,106 +179,21 @@ class Candidate
         foreach ($row AS $value) {
             $this->listOfTimePoints[] = $value["ID"];
         }
-   }
+    }
    
-   /**
-   * creates a new candidate, assigning CandID and PSCID - MUST be called statically
-   *
-   * @param int    $centerID    centerID of the site to which the candidate will belong
-   * @param string $dateOfBirth date of birth written as YYYY-MM-DD
-   * @param string $edc         estimated date of confinement written as YYYY-MM-DD
-   * @param string $gender      gender, either 'Male' or 'Female'
-   * @param string $PSCID       PSCID specified by the user, if available
-   * @return int   $candID      candidate id of the new candidate
-   * @throws PEAR::Error
-   * @static
-   */
-   function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
-   {
-       if(!empty($this->candidateInfo['candID'])) {
-           return PEAR::raiseError("createNew must be called statically");
-       }
-       
-       $db =& Database::singleton();
-       if(Utility::isErrorX($db)) {
-           return PEAR::raiseError("Could not connect to database: ".$db->getMessage());
-       }
-       
-       $site =& Site::singleton($centerID);
-       if(Utility::isErrorX($site)) {
-           return PEAR::raiseError("Could not create a new candidate for site: (".$site->getMessage().")");
-       }
-       
-       $user =& User::singleton($_SESSION['State']->getUsername());
-       if(Utility::isErrorX($user)) {
-           return PEAR::raiseError("Could not create a new candidate for user: (".$user->getMessage().")");
-       }
-       
-       // generate candid
-       $candID = Candidate::_generateCandID();
-       if(Utility::isErrorX($candID)) return $candID;
-
-       // figure out how to generate PSCID
-       $config =& NDB_Config::singleton();
-       $PSCIDSettings = $config->getSetting('PSCID');
-
-       if($PSCIDSettings['generation'] == 'user') {
-           // check pscid is specified
-           if(empty($PSCID)) {
-               return PEAR::raiseError("PSCID must be specified", PSCID_NOT_SPECIFIED);
-           }
-
-           // check pscid structure
-           if(!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
-               return PEAR::raiseError("PSCID has an invalid structure", PSCID_INVALID_STRUCTURE);
-           }
-
-           // check pscid uniqueness
-           if($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:PID", array('PID' => $PSCID)) > 0) {
-               return PEAR::raiseError("PSCID not unique", PSCID_NOT_UNIQUE);
-           }
-       } else {           
-           $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
-           if(Utility::isErrorX($PSCID)) return $PSCID;
-       }
-       
-       // insert the new candidate into the database
-       $setArray = array('CandID'       => $candID,
-                         'CenterID'     => $centerID,
-                         'PSCID'        => $PSCID,
-                         'DoB'          => $dateOfBirth,
-                         'EDC'          => $edc,
-                         'Gender'       => $gender,
-                         'Date_active'  => date('Y-m-d'),
-                         'Date_registered' => date('Y-m-d'),
-                         'Entity_type'  => 'Human',
-                         'RegisteredBy' => $user->getUsername(),
-                         'UserID'       => $user->getUsername(),
-                         );
-       
-       if($config->getSetting('useExternalID') === 'true') {
-           $externalID = Candidate::_generateExternalID();
-           $setArray['ExternalID'] = $externalID;
-       } 
-
-       $db->insert('candidate', $setArray);
-       
-       // return the new candid
-       return $candID;
-   }
-
     /**
-     * creates a new candidate, assigning CandID and PSCID - MUST be called 
-     * statically
+     * creates a new candidate, assigning CandID and PSCID
      *
-     * @param int    $centerID    centerID of the site to which the candidate 
-     *                            will belong
+     * @param int    $centerID    centerID of the site to which the candidate will
+     *                            belong
      * @param string $dateOfBirth date of birth written as YYYY-MM-DD
      * @param string $edc         estimated date of confinement written as YYYY-MM-DD
      * @param string $gender      gender, either 'Male' or 'Female'
      * @param string $PSCID       PSCID specified by the user, if available
      *
      * @return int   $candID      candidate id of the new candidate
+     * @throws PEAR::Error
+     * @static
      */
     static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
     {
@@ -297,8 +212,8 @@ class Candidate
         if (Utility::isErrorX($site)) {
             return PEAR::raiseError(
                 "Could not create a new candidate for site: ("
-                .$site->getMessage()
-                .")"
+                . $site->getMessage()
+                . ")"
             );
         }
 
@@ -306,8 +221,8 @@ class Candidate
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError(
                 "Could not create a new candidate for user: ("
-                .$user->getMessage()
-                .")"
+                . $user->getMessage()
+                . ")"
             );
         }
 
@@ -325,14 +240,16 @@ class Candidate
             // check pscid is specified
             if (empty($PSCID)) {
                 return PEAR::raiseError(
-                    "PSCID must be specified", PSCID_NOT_SPECIFIED
+                    "PSCID must be specified",
+                    PSCID_NOT_SPECIFIED
                 );
             }
 
             // check pscid structure
             if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
                 return PEAR::raiseError(
-                    "PSCID has an invalid structure", PSCID_INVALID_STRUCTURE
+                    "PSCID has an invalid structure",
+                    PSCID_INVALID_STRUCTURE
                 );
             }
 
@@ -340,10 +257,9 @@ class Candidate
             if ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
                 array('PID' => $PSCID)
-            ) > 0) {
-                return PEAR::raiseError(
-                    "PSCID not unique", PSCID_NOT_UNIQUE
-                );
+            ) > 0
+            ) {
+                return PEAR::raiseError("PSCID not unique", PSCID_NOT_UNIQUE);
             }
         } else {           
             $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
@@ -353,8 +269,7 @@ class Candidate
         }
 
         // insert the new candidate into the database
-        $setArray = array(
-            'CandID'       => $candID,
+        $setArray = array('CandID'       => $candID,
             'CenterID'     => $centerID,
             'PSCID'        => $PSCID,
             'DoB'          => $dateOfBirth,
@@ -366,6 +281,11 @@ class Candidate
             'RegisteredBy' => $user->getUsername(),
             'UserID'       => $user->getUsername(),
         );
+
+        if ($config->getSetting('useExternalID') === 'true') {
+            $externalID = Candidate::_generateExternalID();
+            $setArray['ExternalID'] = $externalID;
+        } 
 
         $db->insert('candidate', $setArray);
 
@@ -853,35 +773,57 @@ class Candidate
             }
 
             // check if the pscid is used
-        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:PID", array('PID' => $pscid)) > 0);
+        } while (
+            $db->pselectOne(
+                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
+                array('PID' => $pscid)
+            ) > 0
+        );
 
         return $pscid;
     }
 
-    function _generateExternalID() {
+    /**
+     * Generates a new ExternalID in the format defined by the config file.
+     * This is based on _generatePSCID.
+     *
+     * @return string Anonymized ExternalID for distributing data
+     * @throws PEAR::Error
+     */
+    function _generateExternalID()
+    {
         $config =& NDB_Config::singleton();
         $ExternalIDSettings = $config->getSetting('ExternalID');
         $ExternalIDArrays = Candidate::generateArrays($ExternalIDSettings);
 
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
+        if (Utility::isErrorX($db)) {
             return $db;
         }
 
         do {
             // genereate a new external ID
-            if($ExternalIDSettings['generation'] == 'sequential') {
-                if(!empty($externalID)) {
+            if ($ExternalIDSettings['generation'] == 'sequential') {
+                if (!empty($externalID)) {
                     $externalID++;
                 } else {
-                    $externalID = Candidate::generateFirstStringFromArrays($ExternalIDArrays);
+                    $externalID = Candidate::generateFirstStringFromArrays(
+                        $ExternalIDArrays
+                    );
                 }
             } else {
-                $externalID = Candidate::generateRandomStringFromArrays($ExternalIDArrays);
+                $externalID = Candidate::generateRandomStringFromArrays(
+                    $ExternalIDArrays
+                );
             }
 
             // check if the external ID is used
-        } while($db->pselectOne("SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID", array('EID'=>$externalID))  > 0);
+        } while (
+            $db->pselectOne(
+                "SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID",
+                array('EID' => $externalID)
+            )  > 0
+        );
 
         return $externalID;
     }
