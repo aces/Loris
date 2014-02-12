@@ -1,0 +1,68 @@
+#volume-viewer {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+#threshold-slider0 {
+    position: absolute;
+    left: 68px;
+    top: 918px;
+    width: 230px;
+}
+
+.slice-display {
+/*    height: 220px;*/
+}
+
+.volume-container {
+    width: 300px;
+    padding-bottom: 10px;
+}
+
+.volume-viewer-controls {
+    width: 600px;
+}
+
+.control-inputs {
+    width:60px;
+    margin-right:20px;
+    -moz-border-radius: 3px; 
+    -webkit-border-radius: 3px; 
+    border-radius: 3px; 
+}
+
+.thresh-input-left {
+    width:30px;
+    margin-right:270px;
+}
+
+.thresh-input-right {
+    width:30px;
+}
+
+#slice-series-heading0 {
+    display: none;
+}
+
+#slice-series-buttons0 {
+    overflow: hidden;
+    position: absolute;
+    top: 10px;
+    left: 130px;
+}
+
+#time-val {
+    width: 30px;
+}
+
+#threshold-time-slider0 {
+    position: absolute;
+    left: 85px;
+    top: 120px;
+    top: 968px;
+    width: 210px;
+}
+
+html {
+    overflow-y: scroll;
+}
