@@ -591,7 +591,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $ext = pathinfo($file_name, PATHINFO_EXTENSION);
         
         $values = array('FileType'=>$ext,'UploadedBy'=>$user_name,
-        'UploadDate'=>$date,'UploadSuccess'=>1,'SourceLocation'=>$file_name,
+        'UploadDate'=>$date,'SourceLocation'=>$file_name,
         'SessionID'=>$sessionid);
         $db->Insert('mri_upload', $values);
         return true;
