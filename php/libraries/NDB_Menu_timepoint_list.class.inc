@@ -21,7 +21,8 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         }
 
         // check user permissions
-    	if ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID')) {
+    	if ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID')
+            || $user->getData('CenterID') == 1) {
             return true;
         }
 

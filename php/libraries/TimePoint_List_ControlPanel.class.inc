@@ -30,7 +30,9 @@ Class TimePoint_List_ControlPanel extends Candidate
     	$user =& User::singleton();
     	
         $this->tpl_data['candID'] = $this->getData('CandID');
-		$isDataEntryPerson=$user->hasPermission('data_entry') && $user->getData('CenterID') == $this->getData('CenterID');
+        //adding permission for all DCC persons to access candidate profile
+		$isDataEntryPerson=$user->hasPermission('data_entry') && ($user->getData('CenterID') == $this->getData('CenterID')
+                            || $user->isUserDCC());
         $this->tpl_data['isDataEntryPerson'] = $isDataEntryPerson;
 
         $smarty = new Smarty_neurodb;
