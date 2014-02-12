@@ -51,7 +51,7 @@ class CouchDBMRIImporter {
         return $Query;
     }
 
-    function UpdateCandidateDocs($data) {
+    function UpdateCandidateDocs($data, $ScanTypes) {
         foreach($data as $row) {
             $doc = $row;
             $identifier = array($row['PSCID'], $row['Visit_label']);
@@ -66,6 +66,20 @@ class CouchDBMRIImporter {
                 'data' => $doc
             ));
             print $docid . ": " . $success . "\n";
+
+            $config = NDB_Config::singleton();
+            $paths = $config->getSetting('paths');
+            foreach($ScanTypes as $Scan) {
+                $fileName = $doc['Selected_' . $Scan['ScanType']];
+                $fullPath = $paths['mincPath'] . $fileName;
+                if(file_exists($fullPath)) {
+                    if(!empty($fileName)) {
+                        print "Adding $fileName to $docid\n";
+                    }
+                } else {
+                        print "****COULD NOT FIND $fullPath TO ADD TO $docid***\n";
+                }
+            }
         }
         return;
     }
@@ -74,7 +88,7 @@ class CouchDBMRIImporter {
         $this->UpdateDataDict($ScanTypes);
         $query = $this->_generateCandidatesQuery($ScanTypes);
         $CandidateData = $this->SQLDB->pselect($query, array());
-        $this->UpdateCandidateDocs($CandidateData);
+        $this->UpdateCandidateDocs($CandidateData, $ScanTypes);
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..
