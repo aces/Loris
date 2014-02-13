@@ -77,19 +77,38 @@ class CouchDBMRIImporter {
                 // CouchDB, it isn't very clean.
                 // This should all be done using a single multipart request eventually.
                 $latestDoc = $this->CouchDB->getDoc($docid);
-                print_r($latestDoc);
 
                 $fileName = $doc['Selected_' . $Scan['ScanType']];
                 $fullPath = $paths['mincPath'] . $fileName;
                 if(file_exists($fullPath)) {
                     if(!empty($fileName)) {
-                        print "Adding $fileName to $docid\n";
-                        print_r($latestDoc);
-                        //$this->putFile($docid, $fileName, $fullPath);
-                        $output = $this->CouchDB->_postRelativeURL($docid . '/' . $fileName . '?rev=' . $latestDoc['_rev'], file_get_contents($fullPath), 'PUT', 'application/x-minc');
-                        print "Output: $output";
-                        //$latestDoc = $this->CouchDB->getDoc($docid);
-                        //print_r($latestDoc);
+                        $toUpload = null;
+                        $data = file_get_contents($fullPath);
+                        if(!empty($latestDoc['_attachments'])) {
+                            
+                            if(isset($latestDoc['_attachments'][$fileName])) {
+                                $size = $latestDoc['_attachments'][$fileName]['length'];
+                                if($size != filesize($fullPath)) {
+                                    // File has been modified, upload it.
+                                    $toUpload = $fileName;
+
+                                }
+                            } else {
+                                // This attachment not been uploaded - ever
+                                $toUpload = $fileName;
+                            }
+
+                        } else {
+                            // No current attachments, so this file has not
+                            // been uploaded
+                            $toUpload = $fileName;
+                        }
+
+                        if(!empty($toUpload)) {
+                            print "Adding $fileName to $docid\n";
+                            $output = $this->CouchDB->_postRelativeURL($docid . '/' . $fileName . '?rev=' . $latestDoc['_rev'], $data, 'PUT', 'application/x-minc');
+                        }
+                       
 
 
                     }
