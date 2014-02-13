@@ -69,12 +69,29 @@ class CouchDBMRIImporter {
 
             $config = NDB_Config::singleton();
             $paths = $config->getSetting('paths');
+
             foreach($ScanTypes as $Scan) {
+                // This isn't very efficient to get the document a second time, but we need
+                // the rev for adding the attachments. This whole section should be
+                // optimized/cleaned up. For now it's just a hack to get the data into
+                // CouchDB, it isn't very clean.
+                // This should all be done using a single multipart request eventually.
+                $latestDoc = $this->CouchDB->getDoc($docid);
+                print_r($latestDoc);
+
                 $fileName = $doc['Selected_' . $Scan['ScanType']];
                 $fullPath = $paths['mincPath'] . $fileName;
                 if(file_exists($fullPath)) {
                     if(!empty($fileName)) {
                         print "Adding $fileName to $docid\n";
+                        print_r($latestDoc);
+                        //$this->putFile($docid, $fileName, $fullPath);
+                        $output = $this->CouchDB->_postRelativeURL($docid . '/' . $fileName . '?rev=' . $latestDoc['_rev'], file_get_contents($fullPath), 'PUT', 'application/x-minc');
+                        print "Output: $output";
+                        //$latestDoc = $this->CouchDB->getDoc($docid);
+                        //print_r($latestDoc);
+
+
                     }
                 } else {
                         print "****COULD NOT FIND $fullPath TO ADD TO $docid***\n";
@@ -83,6 +100,7 @@ class CouchDBMRIImporter {
         }
         return;
     }
+
     function run() {
         $ScanTypes = $this->SQLDB->pselect("SELECT DISTINCT pf.ParameterTypeID, pf.Value as ScanType from parameter_type pt JOIN parameter_file pf USING (ParameterTypeID) WHERE pt.Name='selected' AND COALESCE(pf.Value, '') <> ''", array());
         $this->UpdateDataDict($ScanTypes);
