@@ -83,7 +83,6 @@ class CouchDBMRIImporter {
                 if(file_exists($fullPath)) {
                     if(!empty($fileName)) {
                         $toUpload = null;
-                        $data = file_get_contents($fullPath);
                         if(!empty($latestDoc['_attachments'])) {
                             
                             if(isset($latestDoc['_attachments'][$fileName])) {
@@ -105,6 +104,7 @@ class CouchDBMRIImporter {
                         }
 
                         if(!empty($toUpload)) {
+                            $data = file_get_contents($fullPath);
                             print "Adding $fileName to $docid\n";
                             $output = $this->CouchDB->_postRelativeURL($docid . '/' . $fileName . '?rev=' . $latestDoc['_rev'], $data, 'PUT', 'application/x-minc');
                         }
