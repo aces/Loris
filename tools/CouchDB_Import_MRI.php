@@ -26,7 +26,8 @@ class CouchDBMRIImporter {
             $ScanType = $type['ScanType'];
             $this->Dictionary["Selected_$ScanType"] = array(
                 'Type' => 'varchar(255)',
-                'Description' => "Selected $ScanType file for session"
+                'Description' => "Selected $ScanType file for session",
+                'IsFile' => true
             );
             $this->Dictionary[$ScanType . "_QCStatus"] = array(
                 'Type' => "enum('Pass', 'Fail')",
