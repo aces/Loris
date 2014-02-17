@@ -197,7 +197,10 @@ class CouchDB {
         }
 
         $doc['_rev'] = $original_doc['_rev'];
-        $doc['_attachments'] = $original_doc['_attachments'];
+        if(isset($original_doc['_attachments'])) {
+            // Preserve the attachments if there are any.
+            $doc['_attachments'] = $original_doc['_attachments'];
+        }
         $this->putDoc($id, $doc);
         return 'modified';
     }

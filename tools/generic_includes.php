@@ -31,7 +31,7 @@ require_once "Candidate.class.inc";
  * gets connection name and user name..
  */
 $DB =& Database::singleton($config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['host']);
-if(PEAR::isError($DB)) {
+if(Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n";
     die();
 }
