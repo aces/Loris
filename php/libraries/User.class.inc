@@ -387,7 +387,6 @@ class User extends UserPermissions
      *
      * @return boolean
      * @access public
-     * @static
      */
 
      function isUserDCC() {
