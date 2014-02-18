@@ -187,7 +187,9 @@ return true;
 
         <td><a name="{$smarty.section.fIdx.index}"><table class="fancytableleft" border="1">
             <tr>
-                <th>Filename</th><td>{if $files[fIdx].filename != ""}{$files[fIdx].filename}{else}&nbsp;{/if}</td>
+                <th>Filename</th>
+                <td> {if $files[fIdx].filename != ""}{$files[fIdx].filename}{else}&nbsp;{/if}</td>
+                <td {if $files[fIdx].qcStatus != ""}class="image{$files[fIdx].qcStatus}{/if}">{$files[fIdx].qcStatus}</td>
             </tr>
             
 {* IMG *}
