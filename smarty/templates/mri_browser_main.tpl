@@ -157,9 +157,9 @@ function FeedbackButtonClicked() {
 </p>
 {if $has_permission}<input class="button" type="submit" accesskey="s" value="Save" name="save_changes">{/if}            
 </div>
-</div>
 
 {/if}
+</div>
 <BODY>
 <!-- start main table -->
 <table width="100%" border="0" class="mainlayout" cellpadding="3" cellspacing="2">
