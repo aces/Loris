@@ -187,7 +187,9 @@ return true;
 
         <td><a name="{$smarty.section.fIdx.index}"><table class="fancytableleft" border="1">
             <tr>
-                <th>Filename</th><td>{if $files[fIdx].filename != ""}{$files[fIdx].filename}{else}&nbsp;{/if}</td>
+                <th>Filename</th>
+                <td> {if $files[fIdx].filename != ""}{$files[fIdx].filename}{else}&nbsp;{/if}</td>
+                <td {if $files[fIdx].qcStatus != ""}class="image{$files[fIdx].qcStatus}{/if}">{$files[fIdx].qcStatus}</td>
             </tr>
             
 {* IMG *}
@@ -196,7 +198,7 @@ return true;
             <tr>
                 <td colspan="3">
             	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto')">
-               	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
+               	<img src="{$files[fIdx].checkpicFilename}" height="180" border="0">
             	</a>
             	</td>
             </tr>
