@@ -38,7 +38,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
-        $this->columns = array('psc.Name AS PSC',
+        $this->columns = array('psc.Name AS Site',
             'candidate.CandID AS DCCID',
             'candidate.PSCID',
             'candidate.Gender',
@@ -139,10 +139,10 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $scan_options = array(null=>'All','Y'=>'Yes','N'=>'No');
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
-        $this->addBasicText('DCCID', 'DCC-ID:');
-        $this->addBasicText('PSCID', 'PSC-ID:');
+        $this->addBasicText('DCCID', 'DCCID:');
+        $this->addBasicText('PSCID', 'PSCID:');
         $this->addSelect('gender', 'Gender:', array('' => 'All', 'Male' => 'Male', 'Female' => 'Female'));
-        $this->addSelect('SubprojectID', 'Sub Project:', array('' => 'All') + $list_of_subprojects);
+        $this->addSelect('SubprojectID', 'Suproject:', array('' => 'All') + $list_of_subprojects);
         $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
