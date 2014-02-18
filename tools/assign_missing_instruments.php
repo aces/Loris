@@ -45,7 +45,7 @@ $query="SELECT ID, subprojectID from session";
 if(!empty($argv[1]) && $argv[1]!="confirm"){
 	$query.=" WHERE visit_label='$argv[1]'";
 } else {
-    $visit_labels = $DB->pselect("SELECT DISTINCT Visit_label FROM session WHERE Active='Y' AND Visit_label NOT LIKE '%phantom%' AND Visit_label NOT LIKE 'Vsup%'", array());
+    $visit_labels = $DB->pselect("SELECT DISTINCT Visit_label FROM session WHERE Active='Y' AND Visit_label NOT LIKE '%phantom%' AND Visit_label NOT LIKE 'Vsup%' AND COALESCE(Submitted,'N')='N'  ", array());
 }
 
 function PopulateVisitLabel($result, $visit_label) {
