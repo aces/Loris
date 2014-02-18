@@ -1,16 +1,15 @@
-
+<html>
 <head>
 	<title>BrainBrowser Volume Viewer</title>
+       <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />
+       <link type="text/css" href="css/surface-viewer-demo.css" rel="Stylesheet" />
+       <link type="text/css" href="css/common.css" rel="Stylesheet" />
+       <link type="text/css" href="css/loris-brainbrowser.css" rel="Stylesheet" />
+       <link type="text/css" href="css/layout.css" rel="Stylesheet" />
  </head>
 <body style="background: #e9ebfe;">
    <div id="brainbrowser"></div>
 
-   <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />
-   <link type="text/css" href="css/ui-darkness/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />
-   <link type="text/css" href="css/surface-viewer-demo.css" rel="Stylesheet" />
-   <link type="text/css" href="css/common.css" rel="Stylesheet" />
-   <link type="text/css" href="css/loris-brainbrowser.css" rel="Stylesheet" />
-   <link type="text/css" href="css/layout.css" rel="Stylesheet" />
    <script type="text/javascript" src="js/jquery/jquery.js"></script>
    <script type="text/javascript" src="js/jquery/jquery-ui-1.8.10.custom.min.js"></script>
    <script type="text/javascript" src="js/jquery/jquery.mousewheel.min.js"></script>
@@ -19,26 +18,6 @@
    <script type="text/javascript" src="js/brainbrowser.volume-viewer.ui-controls.min.js"></script>
    <script type="text/javascript" src="js/brainbrowser.config.js"></script>
 
-<script type="text/javascript" charset="utf-8"> 
-
-    BrainBrowser.VolumeViewer.start("brainbrowser", function(viewer) {
-  
-    viewer.addEventListener("ready", function() {
-      $(".button").button();
-    });
-
-    link = window.location.search;
-
-    viewer.loadVolumes({
-      volumes: [
-        {
-          type: 'minc',
-          header_url: "minc.php" + link + "&minc_headers=true",
-          raw_data_url: "minc.php" + link + "&raw_data=true"
-        }
-      ]
-    });
-});
-
-	</script>
+   <script type="text/javascript" src="js/brainbrowser.loris.js"></script> 
 </body>
+</html>
