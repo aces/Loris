@@ -381,5 +381,18 @@ class User extends UserPermissions
 
         return true;
     }
+    /**
+     * Check if user belongs to DCC
+     *
+     *
+     * @return boolean
+     * @access public
+     */
+
+     function isUserDCC() {
+      //DCC site = 1 by LORIS convention
+      return ($this->userInfo['CenterID']== 1);     
+     }
+
 }
 ?>
