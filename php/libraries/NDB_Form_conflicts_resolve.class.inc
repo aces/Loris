@@ -251,6 +251,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             $conflict_array = array(
                 'name' => 'conflict_' . $conflict['hash'],
                 'instrument' => $conflict['TableName'],
+                'extrakey1' => $conflict['ExtraKey1'],
                 'dccid' => $dccid,
                 'pscid' => $ssid,
                 'field' => $conflict['FieldName'],
