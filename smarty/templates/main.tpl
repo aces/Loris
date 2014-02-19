@@ -167,6 +167,8 @@ onload="feedback_bvl_popup();"
 {section name=crumb loop=$crumbs}
 {if $test_name == "conflicts_resolve"}
 <a href="main.php/{$crumbs[crumb].query}">Conflicts Resolver</a> {if not $smarty.section.crumb.last}&gt; {/if}
+{elseif $test_name == "statistics_dd_site"}
+<a href="main.php/{$crumbs[crumb].query}">Double Data Entry Site Statistics</a> {if not $smarty.section.crumb.last}&gt; {/if}
 {else}
 <a href="main.php?{$crumbs[crumb].query}">{$crumbs[crumb].text}</a> {if not $smarty.section.crumb.last}&gt; {/if}
 {/if}

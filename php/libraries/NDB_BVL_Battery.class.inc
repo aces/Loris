@@ -407,6 +407,16 @@ class NDB_BVL_Battery extends PEAR
                     array_push($tests, $row['Test_name']);   
                 }     
             }
+            //also remove instruments that should not be part of the first visit
+            $query_notfirstVisit = "SELECT  DISTINCT Test_name FROM test_battery WHERE firstVisit=:FV 
+                                 AND SubprojectID=:subID";
+            $where = array('FV'=>'N','subID'=>$SubprojectID);
+            $rows_notfirstVisit = $DB->pselect($query_notfirstVisit,$where);
+            foreach($rows_notfirstVisit as $row) {
+                if(($key = array_search($row['Test_name'], $tests)) !== FALSE){ 
+                    unset($tests[$key]); //remove the instrument from showing up on the first visit
+                }
+            }
 
         }        
         // return an array of test names

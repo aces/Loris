@@ -152,9 +152,16 @@ class Candidate
             $this->candidateInfo['DisplayParameters'] = $params;
         }
 
-        // checK PSCID - only if it's passed by the open profile form
+        // check that PSCID matches CandID when entered into the boxes
+        // on the candidate_list form (and is therefore trying to open
+        // the timepoint_list page, which is why the if statement checks
+        // for timepoint_list instead of candidate_list)
+        //
+        // Since other pages (ie. the filter in the conflicts_resolve page)
+        // might include an element named PSCID, we also need to check that
+        // the test_name matches before throwing the error.
         if (isset($_REQUEST['PSCID'])
-            && (isset($_REQUEST['test_name']) 
+            && (isset($_REQUEST['test_name'])
             && $_REQUEST['test_name']=='timepoint_list')
         ) {
             if (strtolower(
