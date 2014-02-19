@@ -13,6 +13,7 @@
 <link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" /> 
 <script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<script type="text/javascript" src="js/mribrowser.js"></script>
 {if $test_name_js}
 <script type="text/javascript" src="{$test_name_js}"></script>
 {/if}
@@ -120,11 +121,15 @@ function FeedbackButtonClicked() {
 </div>
 {if $showFloatJIV}
 <div id="divTopRight">
-<h3>3D Panel Viewing<br><br>
+<h3>JIV Panel</h3>
+<br>
 <input type="button" accesskey="c" class="button" value="3D+Overlay" onClick="javascript:show_jiv(jivNames, jivData, true);"><br>
 <input type="button" accesskey="d" class="button" value="3D Only" onClick="javascript:show_jiv(jivNames, jivData, false);">
-</h3>
-</h3>
+
+<h3>BrainBrowser</h3>
+<br>
+<input type="button" value="3D+Overlay" id="bboverlay" class="button"><br/>
+<input type="button" value="3D Only" id="bbonly" class="button"><br/>
 </div>
 <div id="divBottomRight">
 <h3>Links</h3><br>
