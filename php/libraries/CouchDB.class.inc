@@ -118,6 +118,21 @@ class SocketWrapper
     function write($str)
     {
         fwrite($this->socket, $str);
+        /*
+        $total = strlen($str);
+        $bytesSent = 0;
+        do {
+            $bytesSentThisTime = fwrite($this->socket, $str, 1000);
+            if($bytesSentThisTime == 0) {
+                throw new Exception("Error writing data");
+            }
+            $bytesSent += $bytesSentThisTime;
+        } while ($bytesSent < $total);
+         */
+        /* if(!fwrite($this->socket, $str)) {
+            throw new Exception("abc");
+        }
+         */
     }
 }
 
@@ -266,12 +281,13 @@ class CouchDB
      * Internal function to make a low level HTTP POST request to the CouchDB
      * server, relative to the CouchDB database.
      *
-     * @param string $url  The URL relative to the CouchDB database to
-     *                     make a POST request to.
-     * @param array  $data An array representing the JSON document to be
-     *                     POSTed to CouchDB
-     * @param string $op   The HTTP verb to use for the request. Defaults
-     *                     to POST.
+     * @param string $url      The URL relative to the CouchDB database to
+     *                         make a POST request to.
+     * @param array  $data     An array representing the JSON document to be
+     *                         POSTed to CouchDB
+     * @param string $op       The HTTP verb to use for the request. Defaults
+     *                         to POST.
+     * @param string $mimeType The mime type to send while posting this URL
      *
      * @return string A string representation of the JSON response without
      *                the HTTP headers
@@ -285,12 +301,13 @@ class CouchDB
         $handler->setPort($couchconfig['port']);
         $handler->open();
 
-        $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
-        $handler->write("Content-Length: " . strlen($data) . "\r\n");
-        $handler->write("Content-type: application/json\r\n\r\n");
+        $handler->write($this->_constructURL($op, $url) . " HTTP/1.1\r\n");
+        $handler->write("Host: " . $couchconfig['hostname'] . "\r\n");
+        $handler->write("Connection: close\r\n");
+        $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
         $handler->write($data);
         $response = '';
-        while (!$handler->eof()) {
+        while(!$handler->eof()) {
             $response .= $handler->gets();
         }
         $handler->close();
@@ -301,13 +318,25 @@ class CouchDB
     /**
      * Returns a document from CouchDB database
      *
-     * @param string $id The document to retrieve
+     * @param string $id     The document to retrieve
+     * @param array $options HTTP options to add to the request
      *
      * @return array An associative array representing the document
      */
-    function getDoc($id)
-    {
+    function getDoc($id, $options = array()) {
         $json = $this->_getRelativeURL($id);
+
+        if(!empty($options)) {
+            if(strpos($id, "?") === false) {
+                $url = $id . "?" . http_build_query($options);
+            } else {
+                $url = $id . "&" . http_build_query($options);
+            }
+        } else {
+            $url = $id;
+        }
+        $json = $this->_getRelativeURL($url);
+>>>>>>> CouchDB-AddMRIFiles
         $data = json_decode($json, true);
 
         if (isset($data['error']) && $data['error'] === 'not_found') {
@@ -410,11 +439,16 @@ class CouchDB
         $m_original = $original_doc;
         unset($m_original['_id']);
         unset($m_original['_rev']);
-        if ($m_original === $doc) {
-            return 'unchanged';
+        unset($m_original['_attachments']);
+        if($m_original === $doc) {
+            return 'unchanged contents';
         }
 
         $doc['_rev'] = $original_doc['_rev'];
+        if(isset($original_doc['_attachments'])) {
+            // Preserve the attachments if there are any.
+            $doc['_attachments'] = $original_doc['_attachments'];
+        }
         $this->putDoc($id, $doc);
         return 'modified';
     }

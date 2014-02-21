@@ -26,7 +26,8 @@ class CouchDBMRIImporter {
             $ScanType = $type['ScanType'];
             $this->Dictionary["Selected_$ScanType"] = array(
                 'Type' => 'varchar(255)',
-                'Description' => "Selected $ScanType file for session"
+                'Description' => "Selected $ScanType file for session",
+                'IsFile' => true
             );
             $this->Dictionary[$ScanType . "_QCStatus"] = array(
                 'Type' => "enum('Pass', 'Fail')",
@@ -51,7 +52,7 @@ class CouchDBMRIImporter {
         return $Query;
     }
 
-    function UpdateCandidateDocs($data) {
+    function UpdateCandidateDocs($data, $ScanTypes) {
         foreach($data as $row) {
             $doc = $row;
             $identifier = array($row['PSCID'], $row['Visit_label']);
@@ -66,15 +67,66 @@ class CouchDBMRIImporter {
                 'data' => $doc
             ));
             print $docid . ": " . $success . "\n";
+
+            $config = NDB_Config::singleton();
+            $paths = $config->getSetting('paths');
+
+            foreach($ScanTypes as $Scan) {
+                // This isn't very efficient to get the document a second time, but we need
+                // the rev for adding the attachments. This whole section should be
+                // optimized/cleaned up. For now it's just a hack to get the data into
+                // CouchDB, it isn't very clean.
+                // This should all be done using a single multipart request eventually.
+                $latestDoc = $this->CouchDB->getDoc($docid);
+
+                $fileName = $doc['Selected_' . $Scan['ScanType']];
+                $fullPath = $paths['mincPath'] . $fileName;
+                if(file_exists($fullPath)) {
+                    if(!empty($fileName)) {
+                        $toUpload = null;
+                        if(!empty($latestDoc['_attachments'])) {
+                            
+                            if(isset($latestDoc['_attachments'][$fileName])) {
+                                $size = $latestDoc['_attachments'][$fileName]['length'];
+                                if($size != filesize($fullPath)) {
+                                    // File has been modified, upload it.
+                                    $toUpload = $fileName;
+
+                                }
+                            } else {
+                                // This attachment not been uploaded - ever
+                                $toUpload = $fileName;
+                            }
+
+                        } else {
+                            // No current attachments, so this file has not
+                            // been uploaded
+                            $toUpload = $fileName;
+                        }
+
+                        if(!empty($toUpload)) {
+                            $data = file_get_contents($fullPath);
+                            print "Adding $fileName to $docid\n";
+                            $output = $this->CouchDB->_postRelativeURL($docid . '/' . $fileName . '?rev=' . $latestDoc['_rev'], $data, 'PUT', 'application/x-minc');
+                        }
+                       
+
+
+                    }
+                } else {
+                        print "****COULD NOT FIND $fullPath TO ADD TO $docid***\n";
+                }
+            }
         }
         return;
     }
+
     function run() {
         $ScanTypes = $this->SQLDB->pselect("SELECT DISTINCT pf.ParameterTypeID, pf.Value as ScanType from parameter_type pt JOIN parameter_file pf USING (ParameterTypeID) WHERE pt.Name='selected' AND COALESCE(pf.Value, '') <> ''", array());
         $this->UpdateDataDict($ScanTypes);
         $query = $this->_generateCandidatesQuery($ScanTypes);
         $CandidateData = $this->SQLDB->pselect($query, array());
-        $this->UpdateCandidateDocs($CandidateData);
+        $this->UpdateCandidateDocs($CandidateData, $ScanTypes);
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..
