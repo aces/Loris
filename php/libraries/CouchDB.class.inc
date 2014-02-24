@@ -336,7 +336,6 @@ class CouchDB
             $url = $id;
         }
         $json = $this->_getRelativeURL($url);
->>>>>>> CouchDB-AddMRIFiles
         $data = json_decode($json, true);
 
         if (isset($data['error']) && $data['error'] === 'not_found') {
