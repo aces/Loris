@@ -1,4 +1,6 @@
+```html
 <a href="https://docs.google.com/document/d/1wh-kLdT6u80c-VxtcGrgPvGWuc2R_7PqleDC1VC6co0">Loris Installation Guide</a>
+```
 
 Permissions on document_repository directory should be 777 in order to save uploaded files
 
