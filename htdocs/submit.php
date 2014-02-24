@@ -106,6 +106,10 @@ class DirectDataEntryMainPage {
             // on the first subtest page the previous page is the top page
             return 'top';
         }
+
+        if($currentPage === 'finalpage') {
+            return $DB->pselectOne("SELECT MAX(Order_number) FROM instrument_subtests WHERE Test_name=:TN", array('TN' => $this->TestName));
+        }
         return $DB->pselectOne("SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Order_number < :PN ORDER BY Order_number DESC", array('TN' => $this->TestName, 'PN' => $currentPage));
     }
 
@@ -218,16 +222,39 @@ class DirectDataEntryMainPage {
                 $_POST['comments']
             );
         }
-        $workspace = $this->caller->load($this->TestName, $this->Subtest, $this->CommentID, $nextpage);
+
+        $workspace = $this->caller->load($this->TestName, $this->Subtest, null, $this->CommentID, $nextpage);
 
         // Caller calls instrument's save function and might have errors, so we still need to call it.
         // But if nextpage is 'complete', then after that override with a "Thank you" message
         if ($_REQUEST['pageNum'] === 'finalpage') {
             if(isset($_POST['ease'])) {
+                // Data was submitted on the last page.
                 $this->tpl_data['workspace'] = $workspace;
             } else {
+                // We're just getting to the last page for the first time
+
                 $this->tpl_data['workspace'] = '';
+                $this->tpl_data['questions'] = $DB->pselect(
+                    "SELECT Description as question, SourceField FROM parameter_type WHERE SourceFrom=:TN AND SourceField NOT IN ('Validity', 'Administration')",
+                    array(
+                        'TN' => $this->TestName 
+                    )
+                );
+
+                $Responses = $DB->pselectRow(
+                    "SELECT * FROM " . $this->TestName . " WHERE CommentID=:CID",
+                    array('CID' => $this->CommentID)
+                );
+
+                foreach($this->tpl_data['questions'] as &$row) {
+                    if(isset($Responses[$row['SourceField']])) {
+                        $row['response'] = $Responses[$row['SourceField']];
+                    }
+                }
+
             }
+            $this->tpl_data['lastpage'] = "submit.php?key=$_REQUEST[key]";
             $this->tpl_data['finalpage'] = true;
         } else if ($_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
@@ -249,4 +276,3 @@ if(!class_exists('UnitTestCase')) {
     $Runner->run();
 }
 ?>
-

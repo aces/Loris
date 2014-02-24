@@ -377,3 +377,7 @@ table.instrument tbody tr:nth-child(odd) {
     float: right;
     font-size: 1.1em;
 }
+
+.unanswered {
+    color: red;
+}

@@ -55,8 +55,39 @@
         <!-- included file -->
 {if $finalpage} 
 {$workspace}
+<p>Please review your data entry below and click submit to finish sending your data to this study. If there are any problems with data entry, use the back button to go back.</p>
+<p>Unanswered questions are highlighted in red.</p>
+<hr>
+
+<br><br>
+<h1>Review</h1>
+<table class="instrument">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Response</th>
+        </tr>
+    </thead>
+    <tbody>
+{foreach item=row from=$questions}
+        <tr {if $row.response==''}class="unanswered"{/if}>
+            <td>{$row.question}</td>
+            <td>{$row.response|default:"N/A"}</td>
+        </tr>
+
+
+{/foreach}
+    </tbody>
+</table>
+<hr>
 <form id="test_form" method="post">
-<table width="90%">
+<br>
+<br>
+<br>
+<h1>Survey Comments</h1>
+<br>
+<br>
+<table class="instrument">
     <tr>
         <td>How would you rate the ease of filling out this survey?</td>
         <td>
@@ -73,10 +104,13 @@
     <tr>
         <td>
             <b>Note that once data is submitted you will not be able to modify it.</b>
-        <button id="complete">
-        <span style="display: none" id="key">{$key}</span>
-            Submit data
-        </button>
+        </td>
+        <td>
+            <input type="button" onclick="location.href='submit.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
+            <button id="complete" style="font-weight: bold">
+            <span style="display: none" id="key">{$key}</span>
+                Submit data
+            </button>
         </td>
     </tr>
 </table>
