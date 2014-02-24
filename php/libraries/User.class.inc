@@ -418,7 +418,7 @@ class User extends UserPermissions
             $userobj = array('_id' => 'org.couchdb.user:' . $username,
                 'type' => 'user',
                 'name' => $username,
-                'roles' => array('dqg')
+                'roles' => array('dqg', $c_config['database'])
             );
         }
         $userobj['password'] = $password;
