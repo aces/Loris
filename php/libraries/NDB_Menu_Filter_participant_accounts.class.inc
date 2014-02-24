@@ -34,18 +34,22 @@ class NDB_Menu_Filter_participant_accounts extends NDB_Menu_Filter
         $this->columns = array('c.PSCID AS PSCID', 's.Visit_label AS Visit', 'p.Email as Email', 'p.Test_name as SurveyName', 'p.OneTimePassword as URL','p.Status');
         $this->query = $query;
         $this->order_by = 'PSCID';
-        $this->validFilters = array();
-        //'users.CenterID', 'users.UserID', 'users.Real_name', 'users.Email', 'users.Active', 'users.Examiner', 'users.Pending_approval');
-
-        $this->formToFilter = array();/*
-                                    'centerID' => 'users.CenterID',
-                                    'active' => 'users.Active',
-                                    'examiner' => 'users.Examiner',
-                                    'userID' => 'users.UserID',
-                                    'real_name' => 'users.Real_name',
-                                    'email' => 'users.Email',
-                                    'pending' => 'users.Pending_approval'
-                                );*/
+        $this->validFilters = array(
+            'c.PSCID',
+            's.Visit_label',
+            'p.Email',
+            'p.Test_name',
+            'p.OneTimePassword',
+            'p.Status',
+            'p.Test_name'
+        );
+        $this->formToFilter = array(
+            'PSCID' => 'c.PSCID',
+            'VisitLabel' => 's.Visit_label',
+            'Email' => 'p.Email',
+            'key' => 'p.OneTimePassword',
+            'Instrument' => 'p.Test_name'
+        );
         return true;
     }
 
@@ -58,14 +62,12 @@ class NDB_Menu_Filter_participant_accounts extends NDB_Menu_Filter
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
+        $this->addBasicText('PSCID', 'PSCID');
         // add form elements
-        $this->addSelect('centerID', 'Site:', $list_of_sites);
-        $this->addSelect('active', 'Active:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
-        $this->addSelect('examiner', 'Examiner:', array('' => 'Any', 'Y' => 'Y', 'N' => 'N'));
-        $this->addBasicText('userID', 'Username:');
-        $this->addBasicText('real_name', 'Full name:');
-        $this->addBasicText('email', 'Email:');
-        $this->addSelect('pending', 'Pending Approval:', array(''=>'Any', '0'=>'N', '1'=>'Y'));
+        $this->addSelect('VisitLabel', 'Visit:', array_merge(array('' => 'All'), Utility::getVisitList()));
+        $this->addSelect('Instrument', 'Instrument:', array_merge(array('' => 'All'), Utility::getDirectInstruments()));
+        $this->addBasicText('Email', 'Email:');
+        $this->addBasicText('key', 'Key:');
 
         return true;
     }

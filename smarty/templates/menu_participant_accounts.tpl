@@ -5,22 +5,16 @@
         <th nowrap="nowrap" colspan="8">Selection Filter</th>
     </tr>
     <tr>
-        <td nowrap="nowrap">Site:</td>
-        <td nowrap="nowrap">{$form.centerID.html}</td>
-        <td nowrap="nowrap">Active:</td>
-        <td nowrap="nowrap">{$form.active.html}</td>
-        <td nowrap="nowrap">Pending approval:</td>
-        <td nowrap="nowrap">{$form.pending.html}</td>
-        <td nowrap="nowrap">Examiner:</td>
-        <td nowrap="nowrap">{$form.examiner.html}</td>
+        <td nowrap="nowrap">{$form.PSCID.label}</td>
+        <td nowrap="nowrap">{$form.PSCID.html}</td>
+        <td nowrap="nowrap">{$form.VisitLabel.label}</td>
+        <td nowrap="nowrap">{$form.VisitLabel.html}</td>
     </tr>
     <tr>
-        <td nowrap="nowrap">Username:</td>
-        <td nowrap="nowrap">{$form.userID.html}</td>
-        <td nowrap="nowrap">Full name:</td>
-        <td nowrap="nowrap">{$form.real_name.html}</td>
-        <td nowrap="nowrap">Email:</td>
-        <td nowrap="nowrap">{$form.email.html}</td>
+        <td nowrap="nowrap">{$form.Email.label}</td>
+        <td nowrap="nowrap">{$form.Email.html}</td>
+        <td nowrap="nowrap">{$form.Instrument.label}</td>
+        <td nowrap="nowrap">{$form.Instrument.html}</td>
     </tr>
     <tr>
         <td nowrap="nowrap"><input type="button" name="button" value="Add Survey" class="button" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'" /></td>
