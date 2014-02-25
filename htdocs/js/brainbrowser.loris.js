@@ -628,8 +628,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     if (getQueryVariable("overlay") === "true") {
         bboptions.overlay = {
             template: {
-                element_id: "volume-ui-template",
-                viewer_insert_class: "volume-viewer-display"
+                element_id: "overlay-ui-template",
+                viewer_insert_class: "overlay-viewer-display"
             }
         }
     }
