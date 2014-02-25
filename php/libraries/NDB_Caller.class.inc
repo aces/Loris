@@ -1,5 +1,6 @@
 <?php
 require_once 'PEAR.php';
+require_once 'User.class.inc';
 
 /**
  * Caller class
