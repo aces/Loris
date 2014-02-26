@@ -20,7 +20,13 @@ cat <<BANNER
 
 BANNER
 
-# First check that we're running in the proper environment.
+# Check that bash is being used
+if $BASH ; then
+    echo "Please use bash shell. Run the install script as command: ./install.sh"
+    exit 2
+fi
+
+# Check that we're running in the proper directory structure.
 if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
     echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
     exit 2
@@ -76,10 +82,10 @@ Please answer the following questions. You'll be asked:
      a simple identifier such as "Loris" or "Abc_Def".
      This database will be created later on.
 
-  b) The hostname for the machine where the MySQL server run
-     (this is where we'll create the database).";
+  b) The hostname for the machine where the MySQL server will run on
+     (this is where we'll create the database).
 
-  c) The MySQL username the that Loris system will use to connect
+  c) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
      created later on.
 
@@ -95,18 +101,15 @@ start it again.
 QUESTIONS
 
 
-read -p "What is the database name? " mysqldb
-read -p "Database host? " mysqlhost
-read -p "What MySQL user will Loris connect as? " mysqluser
+read -p "What do you want to name the database? " mysqldb
+read -p "What is the database host? " mysqlhost
+read -p "What do you want to name the MySQL user that Loris will connect as? " mysqluser
 stty -echo
-read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
+read -p "What will the password for the MySQL user '$mysqluser' be? " mysqlpass
 stty echo ; echo ""
 stty -echo
-read -p "Enter Loris admin user's password: " lorispass
+read -p "Enter a password for the Loris admin user: " lorispass
 stty echo ; echo ""
-read -p "Enter www host:  " host
-read -p "Enter www url: " url 
-
 
 
 echo
@@ -161,17 +164,7 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
     -e "s/%DATABASE%/$mysqldb/g" \
     -e "s#%LORISROOT%#$RootDir/#g" \
-    -e "s_<host>HOSTNAME</host>_<host>$host</host>_g" \
-    -e "s_<url>https://HOSTNAME/main.php</url>_<url>https://$url/main.php</url>_g" \
     < ../docs/config/config.xml > ../project/config.xml
-
-
-echo ""
-echo "Creating smarty symlink."
-echo ""
-if ! [ -L $RootDir/php/smarty ]; then
-	ln -s $RootDir/php/smarty/ $RootDir/smarty
-fi
 
 
 echo ""
@@ -179,7 +172,6 @@ echo "Setting up templates_c directory."
 echo ""
 mkdir -p  $RootDir/php/smarty/templates_c
 chmod 777 $RootDir/php/smarty/templates_c
-
 
 
 while true; do
