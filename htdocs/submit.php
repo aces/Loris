@@ -261,6 +261,16 @@ class DirectDataEntryMainPage {
             $this->tpl_data['complete'] = true;
             
             $this->updateStatus('Complete');
+            $Responses = $DB->update(
+                $this->TestName,
+                array(
+                    'Date_taken' => date('Y-m-d')
+                ),
+                array(
+                    'CID' => $this->CommentID
+                )
+            );
+
         } else {
             $this->updateStatus('In Progress');
             $this->tpl_data['workspace'] = $workspace;
