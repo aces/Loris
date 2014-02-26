@@ -6,3 +6,8 @@ CREATE TABLE participant_accounts(
     Complete enum('Yes', 'No'),
     OneTimePassword varchar(8) 
 );
+
+CREATE TABLE participant_emails(
+    Test_name varchar(255) NOT NULL PRIMARY KEY REFERENCES test_names(Test_name),
+    DefaultEmail TEXT NULL
+);

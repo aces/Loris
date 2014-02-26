@@ -11,6 +11,14 @@ $(document).ready(function () {
                     name: 'send_email',
                     value: 'true'
                 }).appendTo('#participant_accounts_form');
+                $("<textarea>").attr({
+                    // For some reason .dialog() takes the
+                    // email_dialog out of the form and moves
+                    // it in the dom, so we add a new one
+                    // with javascript with the correct content
+                    name: 'EmailContent',
+                    value: $("#email_dialog textarea").val()
+                }).appendTo("#participant_accounts_form");
                 $("#participant_accounts_form").submit();
             },
             'Cancel': function () {
@@ -23,5 +31,19 @@ $(document).ready(function () {
             $("#email_dialog").dialog("open");
             return false;
         }
+    });
+    $("select[name=Test_name]").change(function (e) {
+        var testname = $(this).val();
+
+        $.get("GetEmailContent.php", {
+            test_name: testname
+        },
+        function(content) {
+            console.log(content);
+            $("#email_dialog textarea").val(content);
+        }
+        );
+        
+
     });
 });
