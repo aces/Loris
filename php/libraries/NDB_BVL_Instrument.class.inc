@@ -301,18 +301,6 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
 
-    /*
-    function getPageNumber() {
-        $DB = Database::singleton();
-        return $DB->pselectOne(
-            "SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Subtest_name=:STN",
-            array(
-                'TN' => $this->testName,
-                'STN' => $this->page
-            )
-        );
-    }
-     */
     /**
     * method to display the form - usually not overridden as it
     * includes all the base code that any instrument will require.
@@ -323,20 +311,6 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-
-        if(isset($_REQUEST['key'])) {
-            $this->DataEntryType = 'DirectEntry';
-        } else {
-            $this->DataEntryType = 'normal'; 
-            // These are required for Save Data to work properly, but not when it's
-            // a direct data entry page
-            $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
-            $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
-        }
-        $this->addHidden('commentID', $this->getCommentID());
-        $this->addHidden('test_name', $this->testName);
-        $this->addHidden('page', $this->page);
-        $this->addHidden('subtest', $this->page);
 
         if(isset($_REQUEST['key'])) {
             $this->DataEntryType = 'DirectEntry';
