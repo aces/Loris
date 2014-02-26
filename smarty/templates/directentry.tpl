@@ -72,7 +72,7 @@
 {foreach item=row from=$questions}
         <tr {if $row.response==''}class="unanswered"{/if}>
             <td>{$row.question}</td>
-            <td>{$row.response|default:"N/A"}</td>
+            <td>{$row.response|default:"N/A"|replace:"_":" "|capitalize}</td>
         </tr>
 
 
