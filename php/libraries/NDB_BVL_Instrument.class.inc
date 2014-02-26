@@ -392,6 +392,11 @@ class NDB_BVL_Instrument extends NDB_Page
         $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
         $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
+
+        // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
+        // so that we can have instructions/labels in the direct data entry instruments that span into
+        // the column for data entry.
+        $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
         $this->form->accept($renderer);
         return $renderer->toHtml();
     }
