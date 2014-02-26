@@ -102,13 +102,15 @@ class NDB_Form_participant_accounts extends NDB_Form
 
 
         if($email) {
+            $config = NDB_Config::singleton();
+            $www = $config->getSetting("www");
+
             $msg_data = array(
-                'study' => 'test',
-                'url'   => 'http://localhost?key=' . $key
+                'study'     => $config->getSetting("title"),
+                'url'       => $www['url'] . '/submit.php?key=' . $key,
+                'EmailForm' => $values['EmailContent']
             );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);
-            // for testing..
-            //Email::send('driusan', 'new_survey.tpl', $msg_data);
          }
     }
 
