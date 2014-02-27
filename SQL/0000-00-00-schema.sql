@@ -300,6 +300,26 @@ INSERT INTO `feedback_mri_predefined_comments` VALUES (1,2,'missing slices'),(2,
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+--
+-- Table structure for table `mri_processing_protocol`
+--
+
+DROP TABLE IF EXISTS `mri_processing_protocol`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mri_processing_protocol` (
+  `ProcessProtocolID` int(11) NOT NULL AUTO_INCREMENT,
+  `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
+  `FileType` enum('xml','txt') DEFAULT NULL,
+  `Tool` varchar(255) NOT NULL DEFAULT '',
+  `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
+  `md5sum` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`ProcessProtocolID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 --
 -- Table structure for table `files`
 --
@@ -322,6 +342,7 @@ CREATE TABLE `files` (
   `SourcePipeline` varchar(255),
   `PipelineDate` date,
   `SourceFileID` int(10) unsigned DEFAULT '0',
+  `ProcessProtocolID` int(11) unsigned, 
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -332,6 +353,7 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`)
+  CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `files_qcstatus`;
