@@ -101,26 +101,100 @@ start it again.
 QUESTIONS
 
 
-read -p "What do you want to name the database? " mysqldb
-read -p "What is the database host? " mysqlhost
-read -p "What do you want to name the MySQL user that Loris will connect as? " mysqluser
+while true; do
+	read -p "What is the database name? " mysqldb
+	case $mysqldb in
+		"" )
+			read -p "What is the database name? " mysqldb
+			continue;;
+		* ) 
+			break;;
+	esac
+done;
+
+while true; do 
+        read -p "Database host? " mysqlhost
+        case $mysqlhost in
+                "" )
+                        read -p "Database host? " mysqlhost
+                        continue;;
+                * ) 
+                        break;;
+        esac
+done;
+
+while true; do 
+        read -p "What MySQL user will Loris connect as? " mysqluser
+        case $mysqluser in
+                "" )
+                        read -p "What MySQL user will Loris connect as? " mysqluser
+                        continue;;
+                * ) 
+                        break;;
+        esac
+done;
+
 stty -echo
-read -p "What will the password for the MySQL user '$mysqluser' be? " mysqlpass
+
+while true; do 
+        read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
+        case $mysqlpass in
+                "" )
+                        read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
+                        continue;;
+                * ) 
+                        break;;
+        esac
+done;
+
 stty echo ; echo ""
 stty -echo
-read -p "Enter a password for the Loris admin user: " lorispass
+
+while true; do 
+        read -p "Enter Loris admin user's password: " lorispass
+        case $lorispass in
+                "" )
+                        read -p "Enter Loris admin user's password: " lorispass
+                        continue;;
+                * ) 
+                        break;;
+        esac
+done;
+
 stty echo ; echo ""
+
 
 
 echo
 echo "This install script needs a root MySQL user to install the"
 echo "default schema. This will only be used once, to create and populate"
 echo "the default tables."
-read -p "Root MySQL username: " mysqlrootuser
-stty -echo
-read -p "Root MySQL password: " mysqlrootpass
-stty echo
 
+while true; do 
+        read -p "Root MySQL username: " mysqlrootuser
+        case $mysqlrootuser in
+                "" )
+                        read -p "Root MySQL username: " mysqlrootuser
+                        continue;;
+                * ) 
+                        break;;
+        esac
+done;
+
+stty -echo
+
+while true; do 
+        read -p "Root MySQL password: " mysqlrootpass
+        case $mysqlrootpass in
+                "" )
+                        read -p "Root MySQL password: " mysqlrootpass
+                        continue;;
+                * ) 
+                        break;;
+        esac
+done;
+
+stty echo
 
 
 echo ""
