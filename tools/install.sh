@@ -48,6 +48,7 @@ mkdir -p logs ../project ../project/tables_sql
 # From now on, STDOUT and STDERR are sent to both the terminal AND a logfile in logs/
 #
 START=`date "+%Y-%m-%dT%H:%M:%S"`
+LOGDIR="logs"
 LOGFILE="logs/install-$START.log"
 LOGPIPE=/tmp/pipe.$$
 mkfifo -m 700 $LOGPIPE
@@ -56,6 +57,20 @@ tee <$LOGPIPE capt &
 exec 1>$LOGPIPE 2>&1
 
 
+if [ ! -w $LOGDIR ] ; then
+	echo "The logs directory is not writeable. You will not have an automatically generated report of your installation." 
+	while true; do
+    		read -p "Do you still want to continue? [yn] " yn
+    		case $yn in
+		        [Yy]* )
+				break;;
+		        [Nn]* )
+            			echo "Aborting installation."
+				exit 2;
+	         * ) echo "Please enter 'y' or 'n'."
+    		esac
+	done;
+fi
 
 echo "LORIS Installation Script starting at $START"
 echo "The log for this session will be stored in file $CWD/$LOGFILE"
@@ -305,5 +320,6 @@ while true; do
 done;
 
 echo "Installation complete."
+
 
 
