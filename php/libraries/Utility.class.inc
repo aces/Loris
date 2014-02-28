@@ -327,7 +327,7 @@ class Utility extends PEAR
 
         $list = array();
         foreach ($result as $row) {
-            $list[$row["Visit_label"]] = $row["Visit_label"];
+            $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
         }
         return $list;
     }
