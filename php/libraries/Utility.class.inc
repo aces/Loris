@@ -247,6 +247,8 @@ class Utility extends PEAR
 
          $list = array();
          foreach ($result as $row) {
+             //adding ucfirst function to make the first letter uppercase in
+             //list of visit labels returned by the function
              $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
          }
          return $list;
