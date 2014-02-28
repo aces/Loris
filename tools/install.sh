@@ -106,8 +106,14 @@ Please answer the following questions. You'll be asked:
 
   d) The password for this username (it will be set later on).
 
-  e) Another password for the 'admin' account of the Loris DB
+  e) Credentials of an existing root MySQL account to install the
+     default schema. This will only be used once, to create and
+     populate the default tables, and to grant privileges to the
+     newly created MySQL user in part c).
+
+  f) Another password for the 'admin' account of the Loris DB
      (it will also be set later on).
+
 
 Validations are POORLY implemented here; if you make a mistake
 answering these questions, kill the script with CTRL-C and
@@ -177,13 +183,6 @@ while true; do
 done;
 
 stty echo ; echo ""
-
-
-
-echo
-echo "This install script needs a root MySQL user to install the"
-echo "default schema. This will only be used once, to create and populate"
-echo "the default tables."
 
 while true; do 
         read -p "Root MySQL username: " mysqlrootuser
