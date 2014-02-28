@@ -1,4 +1,10 @@
+{if $success}
+<p>Survey was added successful.<br/> Click here to go back to view the list of survey's created : <a href=main.php?test_name=participant_accounts> Participant Survey List</a><br /></p>
+<br />
+{/if}
+<br />
 <form method="post" name="participant_accounts" id="participant_accounts_form">
+{if not $success}
 <table class="std">
     <!-- table title -->
     <tr><th colspan="2">Usage</th></tr>
@@ -40,7 +46,6 @@
 	</tr>
 	<tr>
 		<td nowrap="nowrap" colspan="2">
-    {if not $success}
         <input class="button" name="fire_away" value="Create survey" type="submit" />
         <input class="button email" name="fire_away" value="Create and email" type="submit">
 

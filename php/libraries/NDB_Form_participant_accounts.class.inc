@@ -36,7 +36,7 @@ class NDB_Form_participant_accounts extends NDB_Form
         $numSessions = $db->pselectOne("SELECT COUNT(*) FROM session WHERE CandID=:v_CandID AND UPPER(Visit_label)=UPPER(:v_VL) AND Active='Y'", array('v_CandID' => $values['CandID'], 'v_VL' => $values['VL']));
 
         if($numSessions != 1) {
-            return array('VL' => "Visit does not exist for chosen candidate $numSessions");
+            return array('VL' => "Visit ". $values['VL']." does not exist for given candidate");
         }
 
         if(!filter_var($values['Email'], FILTER_VALIDATE_EMAIL)) {
@@ -88,7 +88,7 @@ class NDB_Form_participant_accounts extends NDB_Form
             $status = 'Created';
         }
 
-        $db->insert(
+        $success = $db->insert(
             "participant_accounts", 
             array(
                 'SessionID'        => $SessionID,
@@ -99,8 +99,11 @@ class NDB_Form_participant_accounts extends NDB_Form
                 'CommentID'        => $commentID
             )
         );
-
-
+        if (Utility::isErrorX($success)) {
+            return PEAR::raiseError("DB Error: ".$success->getMessage());
+        }
+        $this->tpl_data['success'] = $success;
+        
         if($email) {
             $config = NDB_Config::singleton();
             $www = $config->getSetting("www");
