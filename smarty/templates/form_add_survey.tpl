@@ -1,5 +1,5 @@
 {if $success}
-<p>Survey was added successful.<br/> Click here to go back to view the list of survey's created : <a href=main.php?test_name=participant_accounts> Participant Survey List</a><br /></p>
+<p>Survey was added successfully.<br/> Click here to go back to view the list of survey's created : <a href=main.php?test_name=participant_accounts> Participant Survey List</a><br /></p>
 <br />
 {/if}
 <br />
