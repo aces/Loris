@@ -337,6 +337,19 @@ table.instrument tbody tr:nth-child(odd) {
     padding-left: 10px;
     */
 }
+table.instrument_review tbody tr:nth-child(even) {
+    background: #BCC6CC;
+}
+
+table.instrument_review tbody tr:nth-child(odd) {
+    background: #98AFC7;
+}
+
+.instrument_review tbody tr td, .instrument_review tbody tr th {
+    padding: 10px;
+    font-size: 0.9em;
+}
+
 #goback {
     padding-top: 5px;
     font-size: 1.1em;

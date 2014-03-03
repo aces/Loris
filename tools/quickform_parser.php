@@ -176,7 +176,8 @@ function parseElements($elements, $groupLabel=""){
             
             case "html_quickform_static":
                 //see how static element is used...
-                if(($element->_attributes['name'] == null) || array_key_exists($element->_attributes['name'], $obj->localDefaults)) {
+                if(($element->_attributes['name'] == null) || array_key_exists($element->_attributes['name'], $obj->localDefaults)
+                    || $element->_attributes['name'] =='lorisSubHeader') {
                     //element is plain form text, or a header.
                     $output.="header{@}";
                 }
