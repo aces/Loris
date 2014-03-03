@@ -301,18 +301,6 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
 
-    /*
-    function getPageNumber() {
-        $DB = Database::singleton();
-        return $DB->pselectOne(
-            "SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Subtest_name=:STN",
-            array(
-                'TN' => $this->testName,
-                'STN' => $this->page
-            )
-        );
-    }
-     */
     /**
     * method to display the form - usually not overridden as it
     * includes all the base code that any instrument will require.
@@ -323,20 +311,6 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-
-        if(isset($_REQUEST['key'])) {
-            $this->DataEntryType = 'DirectEntry';
-        } else {
-            $this->DataEntryType = 'normal'; 
-            // These are required for Save Data to work properly, but not when it's
-            // a direct data entry page
-            $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
-            $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
-        }
-        $this->addHidden('commentID', $this->getCommentID());
-        $this->addHidden('test_name', $this->testName);
-        $this->addHidden('page', $this->page);
-        $this->addHidden('subtest', $this->page);
 
         if(isset($_REQUEST['key'])) {
             $this->DataEntryType = 'DirectEntry';
@@ -392,6 +366,11 @@ class NDB_BVL_Instrument extends NDB_Page
         $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
         $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
+
+        // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
+        // so that we can have instructions/labels in the direct data entry instruments that span into
+        // the column for data entry.
+        $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
         $this->form->accept($renderer);
         return $renderer->toHtml();
     }
