@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 #
@@ -227,7 +226,51 @@ echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --pas
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
     echo "Could not connect to database with the root user provided.";
-    exit 1;
+    while true; do
+    	read -p "Would you like to try one last time? [yn] " yn
+    	case $yn in
+        	[Yy]* )
+			echo "Attempting to create the MySQL database '$mysqldb' ..."
+			while true; do 
+			        read -p "Root MySQL username: " mysqlrootuser
+        			case $mysqlrootuser in
+                			"" )
+			                        read -p "Root MySQL username: " mysqlrootuser
+                        			continue;;
+		                	* ) 
+                			        break;;
+        			esac
+			done;
+
+			stty -echo
+
+			while true; do 
+			        read -p "Root MySQL password: " mysqlrootpass
+        			case $mysqlrootpass in
+                			"" )
+			                        read -p "Root MySQL password: " mysqlrootpass
+                        			continue;;
+                			* ) 
+		        	                break;;
+        			esac
+			done;
+
+			stty echo
+            		break;;
+        	[Nn]* ) 
+            		echo "Exiting."
+			exit 1;;
+        	* ) echo "Please enter 'y' or 'n'."
+	esac
+    done;
+
+    echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+    MySQLError=$?;
+    if [ $MySQLError -ne 0 ] ; then
+        echo "Could not connect to database with the root user provided.";
+        exit 1;
+    fi
+
 fi
 
 
