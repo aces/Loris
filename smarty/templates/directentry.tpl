@@ -55,8 +55,39 @@
         <!-- included file -->
 {if $finalpage} 
 {$workspace}
+<h1 align="center">Review Page</h1>
+<p>Please review the data entered below. Unanwered questions are highlighed in red. Please use the back button to go access the previous pages and enter any data that is missing.</p>
+<p>Unanswered questions are highlighted in red.</p>
+<hr>
+
+<br><br>
+<table class="instrument_review" width="75%" align="center">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Response</th>
+        </tr>
+    </thead>
+    <tbody>
+{foreach item=row from=$questions}
+        <tr {if $row.response==''}class="unanswered"{/if}>
+            <td>{$row.question}</td>
+            <td>{$row.response|default:"-"|replace:"_":" "|capitalize}</td>
+        </tr>
+
+
+{/foreach}
+    </tbody>
+</table>
+<hr>
 <form id="test_form" method="post">
-<table width="90%">
+<br>
+<br>
+<br>
+<h1>Survey Comments</h1>
+<br>
+<br>
+<table class="instrument">
     <tr>
         <td>How would you rate the ease of filling out this survey?</td>
         <td>
@@ -67,16 +98,19 @@
             <input type="radio" name="ease" value="5"> Difficult
     </tr>
     <tr>
-        <td>Do you have any other comments to make?</td>
+        <td>Do you have any other comments ?</td>
         <td><textarea name="comments" id="comments" rows="5" placeholder="Enter any comments about this survey here"></textarea></td>
     </tr>
     <tr>
         <td>
-            <b>Note that once data is submitted you will not be able to modify it.</b>
-        <button id="complete">
-        <span style="display: none" id="key">{$key}</span>
-            Submit data
-        </button>
+            <b>Please note that once data is submitted you will not be able to modify it.</b>
+        </td>
+        <td>
+            <input type="button" onclick="location.href='submit.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
+            <button id="complete" style="font-weight: bold">
+            <span style="display: none" id="key">{$key}</span>
+                Submit data
+            </button>
         </td>
     </tr>
 </table>
