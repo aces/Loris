@@ -80,6 +80,15 @@ if [ -f ../project/config.xml ]; then
     exit 2;
 fi
 
+if [[ -n $(which php) ]]; then
+    echo ""
+    echo "PHP appears to be installed."
+else
+    echo ""
+    echo "PHP does not appear to be installed. Aborting."
+    exit 2;
+fi
+
 if [[ -n $(which pear) ]]; then
     echo ""
     echo "PEAR appears to be installed."
