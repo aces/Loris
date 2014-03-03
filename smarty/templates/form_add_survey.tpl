@@ -16,7 +16,7 @@
     </tr>
 
     <!-- table title -->
-    <tr><th colspan="2">Add/Edit User</th></tr>
+    <tr><th colspan="2">Add Survey</th></tr>
 
     {foreach from=$form.errors item=error}
     <tr>
