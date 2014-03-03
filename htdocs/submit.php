@@ -106,13 +106,10 @@ class DirectDataEntryMainPage {
             // on the first subtest page the previous page is the top page
             return 'top';
         }
-<<<<<<< HEAD
-=======
 
         if($currentPage === 'finalpage') {
             return $DB->pselectOne("SELECT MAX(Order_number) FROM instrument_subtests WHERE Test_name=:TN", array('TN' => $this->TestName));
         }
->>>>>>> DirectEntry
         return $DB->pselectOne("SELECT Order_number FROM instrument_subtests WHERE Test_name=:TN AND Order_number < :PN ORDER BY Order_number DESC", array('TN' => $this->TestName, 'PN' => $currentPage));
     }
 
