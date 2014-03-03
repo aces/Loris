@@ -124,10 +124,10 @@ class NDB_Form_participant_accounts extends NDB_Form
     function add_survey()
     {
         $this->redirect = "test_name=$this->name";
-        $this->addBasicText("CandID", "DCC ID");
+        $this->addBasicText("CandID", "DCCID");
         $this->addBasicText("PSCID", "PSCID");
         $this->addSelect("VL", "Visit Label", Utility::getVisitList());
-        $this->addSelect("Test_name", "Test name", Utility::getDirectInstruments());
+        $this->addSelect("Test_name", "Instrument", Utility::getDirectInstruments());
         $this->addBasicText("Email", "Email address");
 
         $this->form->addFormRule(array(&$this, '_validate_add_survey'));
