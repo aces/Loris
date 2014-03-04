@@ -40,6 +40,8 @@ fi
 # Create some subdirectories, if needed.
 mkdir -p logs ../project ../project/tables_sql ../smarty/templates_c
 
+# Setting 777 permissions for templates_c
+chmod 777 ../smarty/templates_c
 
 
 #
