@@ -20,7 +20,7 @@ cat <<BANNER
 BANNER
 
 # Check that bash is being used
-if $BASH ; then
+if ! [ $BASH ] ; then
     echo "Please use bash shell. Run the install script as command: ./install.sh"
     exit 2
 fi
@@ -38,7 +38,7 @@ if ! test -t 0 -a -t 1 -a -t 2 ; then
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p logs ../project ../project/tables_sql
+mkdir -p logs ../project ../project/tables_sql ../smarty/templates_c
 
 
 
@@ -60,14 +60,14 @@ if [ ! -w $LOGDIR ] ; then
 	echo "The logs directory is not writeable. You will not have an automatically generated report of your installation." 
 	while true; do
     		read -p "Do you still want to continue? [yn] " yn
-    		case $yn in
-		        [Yy]* )
+		case $yn in
+			[Yy]* )
 				break;;
-		        [Nn]* )
+			[Nn]* )
             			echo "Aborting installation."
-				exit 2;
-	         * ) echo "Please enter 'y' or 'n'."
-    		esac
+				exit 2;;
+			* ) echo "Please enter 'y' or 'n'."
+		esac
 	done;
 fi
 
@@ -114,18 +114,13 @@ Please answer the following questions. You'll be asked:
 
   d) The password for this username (it will be set later on).
 
-  e) Credentials of an existing root MySQL account to install the
+  e) Another password for the 'admin' account of the Loris DB
+     (it will also be set later on).
+
+  f) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
      populate the default tables, and to grant privileges to the
      newly created MySQL user in part c).
-
-  f) Another password for the 'admin' account of the Loris DB
-     (it will also be set later on).
-
-
-Validations are POORLY implemented here; if you make a mistake
-answering these questions, kill the script with CTRL-C and
-start it again.
 
 QUESTIONS
 
@@ -221,7 +216,6 @@ stty echo
 
 echo ""
 echo "Attempting to create the MySQL database '$mysqldb' ..."
-echo ""
 echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
@@ -277,7 +271,6 @@ fi
 
 echo ""
 echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'localhost' ..."
-echo ""
 echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
@@ -298,7 +291,6 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 
 echo ""
 echo "Creating config file."
-echo ""
 sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%USERNAME%/$mysqluser/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
@@ -371,6 +363,4 @@ while true; do
 done;
 
 echo "Installation complete."
-
-
 
