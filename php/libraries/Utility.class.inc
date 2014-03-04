@@ -862,25 +862,6 @@ class Utility extends PEAR
 
 
     /**
-     * Return a list of instruments which have scored columns specified
-     * for the instrument. 
-     *
-     * @return non-associative array of the test names which have scoring
-     */
-    function getScoredInstruments()
-    {
-        $All = Utility::getAllInstruments();
-        $Scored = array();
-        $Nothing = array();
-        foreach ($All as $Instrument=>$Full_name) {
-            if (Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
-                $Scored[] = $Instrument;
-            }
-        }
-        return $Scored;
-    }
-
-    /**
      * Gets a list of all instruments where are administered as direct data
      * entry from subjects. 
      * This should return an array in a format suitable for addSelect() from
