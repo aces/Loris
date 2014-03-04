@@ -244,6 +244,11 @@ return true;
             {if $files[fIdx].sliceThickness != ""&& $files[fIdx].sliceThickness != "0.00"}<tr><th width="100px">Slice Thick</th><td>{$files[fIdx].sliceThickness} mm{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].time != ""&& $files[fIdx].time != "0.00"}<tr><th width="100px">Nb of vol.</th><td>{$files[fIdx].time} volumes{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].Comment != ""}<tr><th width="100px">Comment</th><td>{$files[fIdx].Comment}{else}&nbsp;</td></tr>{/if}  
+            {if $files[fIdx].processingPipeline != ""}<tr><th width="100px">Processing pipeline</th><td>{$files[fIdx].processingPipeline}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].totalRejected != ""}<tr><th width="100px">Nb of rejected directions</th><td>{$files[fIdx].totalRejected}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].slicewiseRejected != ""}<tr><th width="100px">Slicewise correlations (Nb)</th><td>{$files[fIdx].slicewiseRejected}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].interlaceRejected != ""}<tr><th width="100px">Interlace correlations (Nb)</th><td>{$files[fIdx].interlaceRejected}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].intergradientRejected != ""}<tr><th width="100px">Gradient-wise correlations (Nb)</th><td>{$files[fIdx].intergradientRejected}{else}&nbsp;</td></tr>{/if}
             </table>
         </td>        
 </tr>
