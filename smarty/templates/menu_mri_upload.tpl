@@ -12,34 +12,39 @@
 
 <br />
 <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data">
-    <table class="std">
+    <table class="std zia">
         <!-- table title -->
-        <tr><th colspan="6">Upload a New File</th></tr>
-        {foreach from=$form.errors item=error}
         <tr>
-            <td nowrap="nowrap" colspan="2" class="error">{$error}</td>
-        </tr>
-        {/foreach}
-
-        <tr>
-      		<td nowrap="nowrap">{$form.mri_file.label}</td>
-      		<td nowrap="nowrap">{$form.mri_file.html}</td>
-      	</tr>
-      	
-      	<tr>
-           <td colspan="2">
-             Note: file name should be of type .tgz or tar.gz or .zip
-           </td>
-        </tr>
+            <td>
+                <tr><th colspan="6">Upload a New File</th></tr>
+                {foreach from=$form.errors item=error}
+                <tr>
+                    <td nowrap="nowrap" colspan="2" class="error">{$error}</td>
+                </tr>
+                {/foreach}
         
-        <tr>
-      		<td nowrap="nowrap">{$form.SourceLocation.label}</td>
-      		<td nowrap="nowrap">{$form.SourceLocation.html}</td>
-      		<td colspan="3" align="right" nowrap="nowrap"> 
-      		    <input type="button" id="advanced" name="advanced" value="Advanced" class="button"/>
-      		</td>
-      	</tr>
-      
+                <tr>
+              		<td nowrap="nowrap">{$form.mri_file.label}</td>
+              		<td nowrap="nowrap">{$form.mri_file.html}</td>
+              	</tr>
+              	
+              	<tr>
+                   <td colspan="2">
+                     Note: file name should be of type .tgz or tar.gz or .zip
+                   </td>
+                </tr>
+           </td>
+           <td>
+                <tr>
+                    <td nowrap="nowrap">{$form.CandID.label}</td>
+                    <td nowrap="nowrap">{$form.CandID.html}</td>
+                    <td nowrap="nowrap">{$form.PSCID.label}</td>
+                    <td nowrap="nowrap">{$form.PSCID.html}</td>
+                    <td nowrap="nowrap">{$form.VisitLabel.label}</td>
+                    <td nowrap="nowrap">{$form.VisitLabel.html}</td>
+                </tr>
+            </td>
+        </tr>
       	<tr>
       		<td nowrap="nowrap" colspan="2">
       		    <input class="button" name="fire_away" id="upload" value="Upload" type="submit" />
@@ -47,25 +52,7 @@
       		<td align="center">
       		    <input type="submit" name="filter" id="filter" value="Show Data" class="button" />&nbsp;
       		</td>
-      		<!--input type="button" name="reset" value="Clear Form" class="button" 
-            onclick="location.href='main.php?test_name=datadict  &reset=true'" /--> 
       	</tr>
-    
-      	<tr name="advancedOptions" style="display:none" class="advancedOptions">
-            <th colspan="6" nowrap="nowrap">Advanced Options</th>
-        </tr>
-        
-        <tr name="advancedOptions" style="display:none" class="advancedOptions">
-            <td nowrap="nowrap">{$form.CandID.label}</td>
-            <td nowrap="nowrap">{$form.CandID.html}</td>
-            <td nowrap="nowrap">{$form.PSCID.label}</td>
-            <td nowrap="nowrap">{$form.PSCID.html}</td>
-            <td nowrap="nowrap">{$form.VisitLabel.label}</td>
-            <td nowrap="nowrap">{$form.VisitLabel.html}</td>
-            <td colspan="3" class="selector" align="right" nowrap="nowrap" class="advancedOptions">
-                <input type="button" name="advanced" id="basic" value="Basic" class="button" />
-            </td>
-        </tr>
         
     </table>
     <table>
@@ -130,4 +117,3 @@
     
     {$form.hidden}
 </form>
-
