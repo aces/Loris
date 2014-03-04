@@ -121,7 +121,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (empty($_FILES) && empty($_POST)
         && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
-            //print_r($_SERVER);
             //$postMax = ini_get('post_max_size'); //grab the size limits...
             $upload_max_size = ini_get('upload_max_filesiqze');
             //echo "upload max size is $upload_max_size <BR>";
@@ -155,7 +154,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 WHERE TarchiveID IS NULL ORDER BY UploadID DESC",array());
             $config =& NDB_Config::singleton();
             $paths = $config->getSetting('paths');
-            print_r($paths);
             $mri_user = $paths['MRIUser'];
             $mri_code_path = $paths['MRICodePath'];
             $mri_incoming_path = $paths['IncomingPath'];
@@ -246,7 +244,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 fclose($handle);
 
                 $command = "cd $mri_code_path; /usr/bin/perl $bach_upload_script < $tarchive_file_log";
-                print "command is $command \n";
+                //print "command is $command \n";
                 $count = $db->pselectOne("SELECT COUNT(f.FileID) FROM mri_upload mu
                                   JOIN files f ON (f.sessionID = mu.SessionID)
                                   JOIN session s ON (s.ID = f.sessionID)
@@ -261,7 +259,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
                     $output = shell_exec($command);
                     if ($this->show_errors) {
-                        print "command is $command";
+                        //print "command is $command";
                         print $output;
                     }
                     ////////////////////TODO:////////////////////////////////////////////////////////////////////////////////////
@@ -747,7 +745,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         $output = shell_exec($cmd);
         if ($this->show_errors) {
-            print "cmd : $cmd \n";
+            //print "cmd : $cmd \n";
             print $output;
         }
 
@@ -787,7 +785,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
                     $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tarchive_location), RecursiveIteratorIterator::SELF_FIRST);
                     foreach($objects as $name => $object){
-                        print "name is $name and file-name is $file_name <BR>";
+                        //print "name is $name and file-name is $file_name <BR>";
                         if (is_file($object)) {
                             if ($name==$file_name) {
                                 $tarchive_file_created= true;
