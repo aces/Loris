@@ -1,10 +1,14 @@
-CREATE TABLE participant_accounts(
-    ID integer unsigned not null auto_increment PRIMARY KEY,
-    SessionID int(6),
-    Test_name varchar(255),
-    Email varchar(255),
-    Complete enum('Yes', 'No'),
-    OneTimePassword varchar(8) 
+CREATE TABLE `participant_accounts` (
+      `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `SessionID` int(6) DEFAULT NULL,
+      `Test_name` varchar(255) DEFAULT NULL,
+      `Email` varchar(255) DEFAULT NULL,
+      `Status` enum('Created','Sent','In Progress','Complete') DEFAULT NULL,
+      `OneTimePassword` varchar(8) DEFAULT NULL,
+      `CommentID` varchar(255) DEFAULT NULL,
+      `UserEaseRating` varchar(1) DEFAULT NULL,
+      `UserComments` text,
+      PRIMARY KEY (`ID`)
 );
 
 CREATE TABLE participant_emails(
