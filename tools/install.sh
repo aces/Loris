@@ -40,6 +40,8 @@ fi
 # Create some subdirectories, if needed.
 mkdir -p logs ../project ../project/tables_sql ../smarty/templates_c
 
+# Setting 777 permissions for templates_c
+chmod 777 ../smarty/templates_c
 
 
 #
@@ -298,12 +300,6 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s#%LORISROOT%#$RootDir/#g" \
     < ../docs/config/config.xml > ../project/config.xml
 
-
-echo ""
-echo "Setting up templates_c directory."
-echo ""
-mkdir -p  $RootDir/php/smarty/templates_c
-chmod 777 $RootDir/php/smarty/templates_c
 
 
 while true; do
