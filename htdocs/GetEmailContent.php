@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 require_once "Database.class.inc";
 require_once 'NDB_Config.class.inc';
