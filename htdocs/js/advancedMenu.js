@@ -3,12 +3,11 @@
 
 function isElementSet() {
     "use strict";
-     var set = 0,
+    var set = 0,
         options = $('.advancedOptions option:selected'),  ///get all the selected dropdowns for the TR with the ID advancedOptions
         texts = $('.advancedOptions input[type=text]');
     ///brows through the selected dropdowns
     ///if any of the dropdown is not equal to 'All' then set the variable set to true
-    
     options.each(function () {
         var value = $(this).text();
         if (value !=='All') {
@@ -41,14 +40,12 @@ function showAdvancedOptionsCheck() {
     "use strict";
     var els = $('.advancedOptions'),///get all the TR elements with the ID advancedOptions
         set = isElementSet();
-        
     if (set) {
         els.show();
         $("#basicSelector").hide();
     } else {
         els.hide();
     }
-    
 }
 
 $(function () {
