@@ -301,12 +301,6 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 
-echo ""
-echo "Setting up templates_c directory."
-echo ""
-mkdir -p  $RootDir/php/smarty/templates_c
-chmod 777 $RootDir/php/smarty/templates_c
-
 
 while true; do
     read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
