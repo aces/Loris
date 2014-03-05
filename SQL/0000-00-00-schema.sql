@@ -342,7 +342,7 @@ CREATE TABLE `files` (
   `SourcePipeline` varchar(255),
   `PipelineDate` date,
   `SourceFileID` int(10) unsigned DEFAULT '0',
-  `ProcessProtocolID` int(11) unsigned, 
+  `ProcessProtocolID` int(11), 
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -352,7 +352,7 @@ CREATE TABLE `files` (
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
-  CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`)
+  CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
