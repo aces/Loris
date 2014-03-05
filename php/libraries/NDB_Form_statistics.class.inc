@@ -710,7 +710,6 @@ class NDB_Form_statistics extends NDB_Form
                 f.Administration='All' AND
                 f.CommentID NOT LIKE 'DDE%'
                 $ExtraProject_Criteria
-                AND s.SubprojectID IN ($subprojList)
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
                 UNION
                 SELECT count(*) as val, 'Incomplete' as Subcat, 
@@ -722,7 +721,6 @@ class NDB_Form_statistics extends NDB_Form
                 JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
                 WHERE s.Active='Y' and s.CenterID <> 1
                 $ExtraProject_Criteria
-                AND s.SubprojectID IN ($subprojList)
                 AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
                 ", $result);
