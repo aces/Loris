@@ -11,7 +11,6 @@
  * @link     https://github.com/aces/IBIS
  */
 require_once "generic_includes.php";
-require_once "ConflictDetector.class.inc";
 require_once "NDB_BVL_InstrumentStatus.class.inc";
 require_once "NDB_BVL_Instrument.class.inc";
 require_once "User.class.inc";
@@ -29,8 +28,8 @@ require_once "NDB_Client.class.inc";
 if ((count($argv)<2) || (count($argv)>6)) {
 
 
-    echo "Usage: php detect_conflicts.php -i Instrument \n";
-    echo "Example: php detect_conflicts.php bdi \n";
+    echo "Usage: php detect_duplicated_commentids.php -i Instrument \n";
+    echo "Example: php detect_duplicated_commentids.php bdi \n";
 
     echo "to run the script for all the instruments
             simply type -i all \n";
@@ -79,10 +78,6 @@ $config = NDB_Config::singleton();
 $db_config = $config->getSetting('database');
 $dataDir = "logs";
 $diff = null;
-$new_conflicts = array();
-$recreated_conflicts = array();
-$current_conflicts = array();
-$conflicts_to_be_excluded = array();
 $commentids = array();
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
@@ -100,8 +95,9 @@ array()
 );
 
 foreach ($instruments as $instrument=>$full_name) {
-    print "instrument is $instrument \n";
+
     if ((isset($instrument)) && (hasData($instrument))) {
+        print "instrument is $instrument \n";
         $commentids = array();
         foreach ($candidates as $candidate) {
             $candid = $candidate['CandID'];
@@ -132,23 +128,14 @@ foreach ($instruments as $instrument=>$full_name) {
                 }
             }
         }
-        writeCSV($commentids, $dataDir, $instrument, "Conflicts_to_be_inserted");
-        
-        ///if removed option is chosen
-        
-        if (($test_name != 'expenditure_18m_p1') && ($test_name != 'expenditure_18m_p2')){
-            foreach ($commentids as $key=>$commentid) {
-                $cid = $commentid['CommentID'];
-                $in_flag = $commentid['in_flag'];
-                if ($in_flag =='No'){
-                    $query = "DELETE FROM $instrument WHERE CommentID = '$cid'";
-                    print $query. "\n";
-                }
-                //$query = "DELETE FROM $instrument WHERE CommentID = :cid" ,array('cid'=>$commentid)
-            }
+        if (empty($commentids)) {
+            print "No duplicated Data detected for $instrument \n";
         }
+        writeCSV($commentids, $dataDir, $instrument, "detect_duplicated_commentids");
     }
 }
+
+
 
 
 
