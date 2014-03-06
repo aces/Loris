@@ -163,10 +163,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $id = $currentUser->getData("UserID");
             $values['entry_staff'] = $id;
         }
-        //delete old values
-        $DB->delete("parameter_candidate", array("CandID"=>$this->identifier));
 
-        //insert new values
         while(list($key, $value)=each($values)){
         	$set="";
             if(strpos($key, "PTID_") === 0) {
@@ -174,6 +171,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $set['CandID']=$this->identifier;
                 $set['Value']=$value;
                 $set['InsertTime']=time();
+                
+                //delete old values
+                $DB->delete("parameter_candidate", array("CandID"=>$this->identifier,"ParameterTypeID"=>$set['ParameterTypeID']));
+                //insert new values
                 $DB->insert("parameter_candidate", $set);
             } else if($key == "ProbandGUID" || $key == 'ProbandDoB' || $key == 'ProbandGender'
                       || $key =='flagged_caveatemptor' || $key == 'flagged_reason' || $key == 'flagged_other'
