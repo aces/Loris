@@ -124,6 +124,8 @@ Please answer the following questions. You'll be asked:
      populate the default tables, and to grant privileges to the
      newly created MySQL user in part c).
 
+  e) Your project name. This should be an alphanumeric name.
+
 QUESTIONS
 
 
@@ -190,10 +192,10 @@ done;
 stty echo ; echo ""
 
 while true; do 
-        read -p "Root MySQL username: " mysqlrootuser
+        read -p "Existing root MySQL username: " mysqlrootuser
         case $mysqlrootuser in
                 "" )
-                        read -p "Root MySQL username: " mysqlrootuser
+                        read -p "Existing root MySQL username: " mysqlrootuser
                         continue;;
                 * ) 
                         break;;
@@ -203,7 +205,7 @@ done;
 stty -echo
 
 while true; do 
-        read -p "Root MySQL password: " mysqlrootpass
+        read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         case $mysqlrootpass in
                 "" )
                         read -p "Root MySQL password: " mysqlrootpass
@@ -307,23 +309,42 @@ while true; do
     case $yn in
         [Yy]* )
             echo "Installing PEAR libraries (may prompt for sudo password)."
+            echo ""
+            echo "Upgrading PEAR..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear upgrade-all >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Benchmark..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Benchmark >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Config..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Config >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR File_Archive..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install File_Archive >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR HTML_Common..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install HTML_Common >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR HTML_QuickForm..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install HTML_QuickForm >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Configuring PEAR preferred state..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear config-set preferred_state beta >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR HTML_QuickForm2..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install HTML_QuickForm2 >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Mail..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Mail >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Mail_Mime..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Mail_Mime >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Net_SMTP..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Net_SMTP >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Net_Socket..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Net_Socket >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR OLE..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install OLE >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Pager..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Pager >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR PhpDocumentor..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install PhpDocumentor >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Spreadsheet_Excel_Writer..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Spreadsheet_Excel_Writer >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR Structures_Graph..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install Structures_Graph >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Installing PEAR XML_Parser..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
             sudo pear install XML_Parser >> logs/install-`date +%Y-%m-%d`.log 2>&1
             break;;
         [Nn]* ) 
