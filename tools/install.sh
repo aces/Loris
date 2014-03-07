@@ -7,8 +7,6 @@
 # This will only install the database components and Loris config file.
 #
 
-{
-
 CWD=`pwd`
 RootDir=`dirname $CWD`
 
@@ -61,7 +59,7 @@ exec 1>$LOGPIPE 2>&1
 
 
 if [ ! -w $LOGDIR ] ; then
-	echo "The logs directory is not writeable. You will not have an automatically generated report of your installation." 
+	echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
 	while true; do
     		read -p "Do you still want to continue? [yn] " yn
 		case $yn in
@@ -281,44 +279,44 @@ while true; do
         [Yy]* )
             echo "Installing PEAR libraries (may prompt for sudo password)."
             echo ""
-            echo "Upgrading PEAR..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear upgrade-all >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Benchmark..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Benchmark >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Config..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Config >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR File_Archive..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install File_Archive >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR HTML_Common..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install HTML_Common >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR HTML_QuickForm..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install HTML_QuickForm >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Configuring PEAR preferred state..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear config-set preferred_state beta >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR HTML_QuickForm2..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install HTML_QuickForm2 >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Mail..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Mail >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Mail_Mime..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Mail_Mime >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Net_SMTP..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Net_SMTP >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Net_Socket..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Net_Socket >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR OLE..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install OLE >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Pager..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Pager >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR PhpDocumentor..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install PhpDocumentor >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Spreadsheet_Excel_Writer..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Spreadsheet_Excel_Writer >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR Structures_Graph..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Structures_Graph >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            echo "Installing PEAR XML_Parser..." >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install XML_Parser >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo "Upgrading PEAR..."
+            sudo pear upgrade-all
+            echo "Installing PEAR Benchmark..."
+            sudo pear install Benchmark
+            echo "Installing PEAR Config..."
+            sudo pear install Config
+            echo "Installing PEAR File_Archive..."
+            sudo pear install File_Archive
+            echo "Installing PEAR HTML_Common..."
+            sudo pear install HTML_Common
+            echo "Installing PEAR HTML_QuickForm..."
+            sudo pear install HTML_QuickForm
+            echo "Configuring PEAR preferred state..."
+            sudo pear config-set preferred_state beta
+            echo "Installing PEAR HTML_QuickForm2..."
+            sudo pear install HTML_QuickForm2
+            echo "Installing PEAR Mail..."
+            sudo pear install Mail
+            echo "Installing PEAR Mail_Mime..."
+            sudo pear install Mail_Mime
+            echo "Installing PEAR Net_SMTP..."
+            sudo pear install Net_SMTP
+            echo "Installing PEAR Net_Socket..."
+            sudo pear install Net_Socket
+            echo "Installing PEAR OLE..."
+            sudo pear install OLE
+            echo "Installing PEAR Pager..."
+            sudo pear install Pager
+            echo "Installing PEAR PhpDocumentor..."
+            sudo pear install PhpDocumentor
+            echo "Installing PEAR Spreadsheet_Excel_Writer..."
+            sudo pear install Spreadsheet_Excel_Writer
+            echo "Installing PEAR Structures_Graph..."
+            sudo pear install Structures_Graph
+            echo "Installing PEAR XML_Parser..."
+            sudo pear install XML_Parser
             break;;
-        [Nn]* ) 
+        [Nn]* )
             echo "Not installing PEAR libraries."
             break;;
         * ) echo "Please enter 'y' or 'n'."
@@ -352,4 +350,3 @@ done;
 
 echo "Installation complete."
 
-} 2>&1 | tee logs/install-`date +%Y-%m-%d`.log 2>&1
