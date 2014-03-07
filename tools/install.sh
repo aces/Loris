@@ -126,9 +126,25 @@ Please answer the following questions. You'll be asked:
 
   e) Your project name. This should be an alphanumeric name.
      It will be used to automatically create/install apache config files.
+     It will also be used to modify the paths for MRI in the generated
+     config.xml file for LORIS.
 
 QUESTIONS
 
+
+while true; do
+        read -p "Ready to continue? [yn] " yn
+        case $yn in
+            [Yy]* )
+                break;;
+            [Nn]* )
+		echo "Exiting."
+                exit 1;;
+             * ) echo "Please enter y or n"
+        esac
+done;
+
+echo ""
 
 while true; do
 	read -p "What is the database name? " mysqldb
@@ -169,7 +185,7 @@ while true; do
         read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
 	echo ""
         read -p "Re-enter the password to check for accuracy " mysqlpass2
-	if [ $mysqlpass == $mysqlpass2 ] ; then
+	if [[ $mysqlpass == $mysqlpass2 ]] ; then
 	        break;
 	fi
 	echo "Passwords did not match. Please try again.";
@@ -179,10 +195,10 @@ stty echo ; echo ""
 stty -echo
 
 while true; do
-        read -p "Enter Loris admin user's password: " lorispass
+        read -p "Enter the front-end Loris 'admin' user's password: " lorispass
         echo ""
         read -p "Re-enter the password to check for accuracy " lorispass2
-        if [ $lorispass == $lorispass2 ] ; then
+        if [[ $lorispass == $lorispass2 ]] ; then
                 break;
         fi
 	echo "Passwords did not match. Please try again.";
@@ -207,7 +223,7 @@ while true; do
         read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         echo ""
         read -p "Re-enter the password to check for accuracy " mysqlrootpass2
-        if [ $mysqlrootpass == $mysqlrootpass2 ] ; then
+        if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
                 break;
         fi
 	echo "Passwords did not match. Please try again.";
@@ -228,7 +244,7 @@ if [ $MySQLError -ne 0 ] ; then
 		while true; do
         		read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         		read -p "Re-enter the password to check for accuracy " mysqlrootpass2
-        		if [ $mysqlrootpass == $mysqlrootpass2 ] ; then
+        		if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
                 		break;
 		        fi
 			echo "Passwords did not match. Please try again.";
@@ -272,6 +288,7 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
     -e "s/%DATABASE%/$mysqldb/g" \
     -e "s#%LORISROOT%#$RootDir/#g" \
+    -e "s#%MINCPATH%#$projectname/#g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 
