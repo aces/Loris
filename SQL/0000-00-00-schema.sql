@@ -54,9 +54,6 @@ CREATE TABLE `candidate` (
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE caveat_options (ID INT, Description varchar(255), PRIMARY KEY (ID) );
-INSERT INTO caveat_options VALUES (1,'Older Sibling diagnosed with autism. Child moved from LR to HR'),(2,'Family met exclusionary criteria after enrollment in study'), (3,'Other');
-
 --
 -- Dumping data for table `candidate`
 --
@@ -1536,7 +1533,7 @@ CREATE TABLE participant_status (
         entry_staff varchar(255) default NULL,
         data_entry_date timestamp NOT NULL,
         participant_status integer DEFAULT NULL REFERENCES participant_status_options(ID),
-        participant_suboptions int(10) DEFAULT NULL,
+        participant_suboptions integer DEFAULT NULL REFERENCES participant_status_options(ID),
         reason_specify text default NULL,
         reason_specify_status enum('dnk','not_applicable','refusal','not_answered') default NULL,
         PRIMARY KEY  (ID),
