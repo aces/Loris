@@ -4,7 +4,7 @@
 <HEAD>
 <div id="page">
 <LINK REL=StyleSheet HREF="{$css}" TYPE="text/css">
-<link rel=StyleSheet HREF="css/jquery-ui-1.8.2.custom.css" TYPE="text/css">
+<link rel=StyleSheet HREF="css/loris-jquery/jquery-ui-1.10.4.custom.min.css" TYPE="text/css">
 <link rel=StyleSheet HREF="css/jqueryslidemenu.css" TYPE="text/css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
@@ -13,7 +13,7 @@
 
 <link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
 <script type="text/javascript" src="js/jquery/jquery-1.4.2.min.js"></script>
-<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.8.10.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
 <!-- end page header -->
 </HEAD>
