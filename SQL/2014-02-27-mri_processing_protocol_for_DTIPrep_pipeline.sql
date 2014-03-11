@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `mri_processing_protocol`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `mri_processing_protocol` (
-  `ProcessProtocolID` int(11) NOT NULL AUTO_INCREMENT,
+  `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
   `FileType` enum('xml','txt') DEFAULT NULL,
   `Tool` varchar(255) NOT NULL DEFAULT '',
