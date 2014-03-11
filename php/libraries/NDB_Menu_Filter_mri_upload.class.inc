@@ -377,13 +377,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         */
 
         $temp_file = $file->fileInfo['tmp_name'];
+        print "temp file " . $temp_file . "<BR>";
+        if (!copy($temp_file, '/tmp/new_compressed')) {
+           echo "failed to copy $temp_file...\n";
+        }
         $db=& Database::singleton();
         $errors = array();
         $config=&NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting('dicom_archive');
         $corect_name = $dicom_archive_settings['patientNameRegex'];
         $file_name = $file->fileInfo['name'];
-
+          
 
         //////////////////////////////////////////////////////
         //////////////Make sure the extension is valid////////
@@ -395,6 +399,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $errors[]="Incorrect File-name extention, The file-name
             should either of type '.gz', '.zip' or 'tgz' ";
         }
+    
 
         ////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out////////
@@ -407,6 +412,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $errors[]="Make sure the CandID, PSCID and Visit_label are
             filled out ";
         }
+        
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////Go through the zipped file
 
         ////////////////////////////////////////////////////////////////////
         ////////////// make sure the PSCID, CandID and Visit_label
@@ -434,7 +442,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 )==0) {
                     $errors[] = "The VisitLabel: $visit_label Doesn't exist";
                 }
-
+                $errors [] = 'stop';
+                
                 /////////////////////////////////////////////////////////////////////
                 //////////////////Check to see if the dicom file is already//////////
                 //////////////////////////////inserted in the tarchive table/////////
@@ -446,7 +455,20 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $errors[]=" The Dicom file $file_name has already been inserted into
                     the tarchive table";
                 }
-
+                
+                /////////////////////////////////////////////////////////
+                ////////////////////////If extension is valid////////////
+                /////////////////////////////////////////////////////////
+                    /**
+                        * 1) uncompress the file
+                        * 2) go through the folder and iterate..
+                        * 3) Check to see if each file is of type dicom..
+                        * 4) 
+                    */
+                 
+            
+        
+               
                 /////////////////////////////////////////////////////////////////////////
                 ////////Check to see if the file has already been uploaded or not////////
                 /////////////////////////////////////////////////////////////////////////
@@ -458,13 +480,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ))>0) {
                     $errors[]=" The file-name $file_name has already been uploaded";
                 }
-
+                
                 if (count($errors) > 0) {
                     return $errors;
                 }
 
         }
-        return true;
+        return false;
     }
 
     /**
@@ -522,17 +544,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $pscid = $args['values']['PSCID'];
             $visit_label = $args['values']['VisitLabel'];
             //print "visitlabel $visit_label pscid: $pscid and candid : $candid";
-        } else {
-            /////////////////////////////////////////////////////
-            /////////////////Use the File-name///////////////////////
-            /////////////////////////////////////////////////////
-            $family_id = $this->getFamilyIDUsingFileName($file->fileInfo['name']);
-            $pscid = $this->getPSCID($family_id);
-            $candid = Utility::convert_ssid_to_dcc($pscid);
-            list ($first, $visit_label)= split("_", $file->fileInfo['name']);
-            //print "visit_label is $visit_label";
-            $visit_label = $this->getProperVisitLabel($visit_label);
         }
+        
         $sessionid = $db->pselectOne(
         "SELECT ID FROM  session WHERE CandID = :cid AND Visit_label =:vlabel ",
         array('cid'=>$candid,'vlabel'=>$visit_label)
@@ -547,108 +560,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return true;
     }
 
-    /**
-     * Mapps the file-name visit_label to the 
-     * actual visit_label in the database
-     *
-     * @param STRING $visit THe visit_label
-     * 
-     * @return STRING
-     */
-    function getProperVisitLabel($visit)
-    {
-        $visit_label = $visit;
-        if (preg_match("/6wk/", $visit)) {
-            $visit_label = '6week_mri';
-        }
-
-        if (preg_match("/6mth/", $visit)) {
-            $visit_label = '6month';
-        }
-
-        if (preg_match("/6wk/", $visit)) {
-            $visit_label = '6week_mri';
-        }
-
-        if (preg_match("/Neonatal/", $visit)) {
-            $visit_label = 'MRIday';
-        }
-
-        return $visit_label;
-    }
-
-    /**
-     * Check to see if the given visit exists 
-     * in the database
-     *
-     * @param STRING $visit The visit_label
-     * 
-     * @return boolean
-     */
-    function visitExists($visit)
-    {
-        $db=& Database::singleton();
-        if (($db->pselectOne(
-        "SELECT COUNT(*) FROM session WHERE Visit_label = :vlabel",
-        array('vlabel'=>$visit)
-        ))==0) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Gets the PSCID using the family_id
-     * Family_id is a substring of the PSCID
-     *
-     * @param STRING $family_id the family_id
-     * 
-     * @return STRING
-     */
-    function getPSCID($family_id)
-    {
-        $db=& Database::singleton();
-        $pscid = $db->pselectOne(
-        "SELECT PSCID FROM candidate WHERE PSCID like concat ('%', :fid, '%')",
-        array('fid'=>$family_id)
-        );
-        return $pscid;
-    }
-
-    /**
-     * Gets the CandID using the family_id
-     * Family_id is a substring of the PSCID
-     *
-     * @param STRING $family_id the family_id
-     * 
-     * @return STRING
-     */
-
-    function getCandID($family_id)
-    {
-        $db=& Database::singleton();
-        $candid = $db->pselectOne(
-        "SELECT CandID FROM candidate WHERE PSCID like concat ('%', :fid, '%')",
-        array('fid'=>$family_id)
-        );
-        return $candid;
-    }
-
-
-    /**
-    * parses the file-name and extract the family-id
-    *
-    * @param STRING $fname the file-name
-    * 
-    * @return STRING
-    */
-    function getFamilyIDUsingFileName($fname)
-    {
-        list ($first, $visit_label)= split("_", $fname);
-        list ($first, $family_id)= split("-", $first);
-        return $family_id;
-    }
-
+      
 
     /**
     * getTargetDirectory retrieves info about where the file should be stored.
