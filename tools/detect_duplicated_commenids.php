@@ -33,8 +33,6 @@ if ((count($argv)<2) || (count($argv)>6)) {
 
     echo "to run the script for all the instruments
             simply type -i all \n";
-    echo "to remmove the duplicates, run the script for all/single instrument
-            simply type -i instrument-name -r \n";
 
     die();
 }
