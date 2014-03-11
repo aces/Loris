@@ -288,7 +288,7 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
     -e "s/%DATABASE%/$mysqldb/g" \
     -e "s#%LORISROOT%#$RootDir/#g" \
-    -e "s#%MINCPATH%#$projectname/#g" \
+    -e "s#%PROJECT%#$projectname/#g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 

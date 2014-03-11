@@ -25,7 +25,7 @@
     <base>%LORISROOT%</base>
     <data>SAME AS imagePath</data>
     <extLibs>/PATH/TO/SMARTY/libs</extLibs>
-    <mincPath>/data/%MINCPATH%/data/</mincPath>
+    <mincPath>/data/%PROJECT%/data/</mincPath>
     <log>tools/logs/</log>
 </paths>
 
