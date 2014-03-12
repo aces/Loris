@@ -257,7 +257,7 @@ class CouchDB
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $op = 'POST', $headers = array()) {
+    function _postURL($url, $data, $headers = array()) {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
@@ -265,13 +265,13 @@ class CouchDB
         $handler->setPort($couchconfig['port']);
         $handler->open();
 
-        $handler->write("$op $url HTTP/1.0\r\n");
+        $handler->write("$url HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n");
-        $handler->write("Content-type: application/json\r\n\r\n");
-        $handler->write($url . " HTTP/1.0\r\n");
+        $handler->write("Content-type: application/json\r\n");
         foreach($headers as $key => $value) {
             $handler->write($key . ':' . $value . "\r\n");
         }
+        $handler->write("\r\n");
         $handler->write($data);
         $response = '';
         while(!$handler->eof()) {
