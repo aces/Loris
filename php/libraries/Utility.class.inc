@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'PEAR.php';
-require_once "NDB_Factory.class.inc";
 require_once "NDB_Config.class.inc";
 require_once 'NDB_Factory.class.inc';
 
@@ -326,14 +325,12 @@ class Utility extends PEAR
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-         $list = array();
-         foreach ($result as $row) {
-             //adding ucfirst function to make the first letter uppercase in
-             //list of visit labels returned by the function
-             $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
-         }
-         return $list;
-     }
+        $list = array();
+        foreach ($result as $row) {
+            $list[$row["Visit_label"]] = $row["Visit_label"];
+        }
+        return $list;
+    }
 
 
     /**
@@ -863,6 +860,16 @@ class Utility extends PEAR
         return $instruments;
     }
 
+    function getDirectInstruments() {
+        $DB =& Database::singleton();
+        $instruments_q = $DB->pselect("SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true", array());
+        foreach($instruments_q as $key){
+            $instruments[$key['Test_name']]=$key['Full_name'];
+        }
+
+        return $instruments;
+    }
+
 
     /**
      * Return a list of instruments which have scored columns specified
@@ -883,32 +890,17 @@ class Utility extends PEAR
         return $Scored;
     }
 
-   }
-  
-    function getDirectInstruments() {
-        $DB =& Database::singleton();
-        $instruments_q = $DB->pselect("SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true", array());
-        foreach($instruments_q as $key){
-            $instruments[$key['Test_name']]=$key['Full_name'];
-        }
-
-        return $instruments;
-    }
-
-   function getScoredInstruments() {
-       $All = Utility::getAllInstruments();
-       $Scored = array();
-       $Nothing = array();
-       foreach($All as $Instrument=>$Full_name) {
-           if(Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
-               $Scored[] = $Instrument;
-           }
-       }
-       return $Scored;
-   }
-
-   function getScoreColsForInstrument($inst) {
-        require_once "NDB_BVL_Instrument.class.inc";
+    /**
+     * Return the score columns which exist for a given instrument.
+     *
+     * @param string $inst The test_name of the instrument for which you would
+     *                     like to know the score columns
+     *
+     * @return non-associative array of scored columns for the instrument given
+     */
+    static function getScoreColsForInstrument($inst)
+    {
+        include_once "NDB_BVL_Instrument.class.inc";
         $i = NDB_BVL_Instrument::factory($inst, '', '', true);
         if (isset($i->scoreLabels)) {
             $score = $i->scoreLabels;
