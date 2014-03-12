@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../test_includes.php';
-require_once 'NDB_Config.class.inc';
+set_include_path(get_include_path().":" . __DIR__ . "/../../php/libraries/");
+require_once 'simpletest/autorun.php';
 require_once 'CouchDB.class.inc';
 
 Mock::generatePartial('CouchDB', 'MockCouchDBWrap', array('_getRelativeURL', '_postRelativeURL'));
@@ -77,7 +77,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
         $smock->expectAt(2, 'write', array("abc"));
         $smock->expectCallCount('write', 3);
         $couch->SocketHandler = $smock;
-        $file = $couch->_postURL("/users/abc", "abc", "POST");
+        $file = $couch->_postURL("POST /users/abc", "abc");
         $this->assertEqual($file, "I created it");
    }
     function testConstructURL() {

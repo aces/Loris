@@ -1,4 +1,4 @@
-<?
+<?php
 function smarty_resource_neurodb_source($rsrc_name, &$source, &$smarty){
     if(strpos($rsrc_name, '/')===0) $filename = $rsrc_name;
     else {

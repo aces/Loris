@@ -300,6 +300,26 @@ INSERT INTO `feedback_mri_predefined_comments` VALUES (1,2,'missing slices'),(2,
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+--
+-- Table structure for table `mri_processing_protocol`
+--
+
+DROP TABLE IF EXISTS `mri_processing_protocol`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mri_processing_protocol` (
+  `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
+  `FileType` enum('xml','txt') DEFAULT NULL,
+  `Tool` varchar(255) NOT NULL DEFAULT '',
+  `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
+  `md5sum` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`ProcessProtocolID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 --
 -- Table structure for table `files`
 --
@@ -322,6 +342,7 @@ CREATE TABLE `files` (
   `SourcePipeline` varchar(255),
   `PipelineDate` date,
   `SourceFileID` int(10) unsigned DEFAULT '0',
+  `ProcessProtocolID` int(11) unsigned, 
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -331,7 +352,8 @@ CREATE TABLE `files` (
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
-  CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`)
+  CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
+  CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `files_qcstatus`;
@@ -718,7 +740,7 @@ CREATE TABLE `parameter_type` (
 
 LOCK TABLES `parameter_type` WRITE;
 /*!40000 ALTER TABLE `parameter_type` DISABLE KEYS */;
-INSERT INTO `parameter_type` VALUES (1,'Selected','varchar(10)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),(2,'Geometric_intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0),(3,'Intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0),(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0),(5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0),(6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0),(7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1);
+INSERT INTO `parameter_type` VALUES (1,'Selected','varchar(10)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),(2,'Geometric_intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(3,'Intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1,0);
 /*!40000 ALTER TABLE `parameter_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1260,7 +1282,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin',NULL,'Admin account',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2006-11-27',NULL);
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Examiner,Password_md5,Password_expiry) VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2006-11-27');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

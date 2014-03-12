@@ -191,8 +191,7 @@ class CouchDB
      *
      * @return string A string representation of the JSON returned by CouchDB
      */
-    function _getURL($url, $op = 'GET')
-    {
+    function _getURL($url, $op = 'GET', $headers = array()) {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
@@ -206,7 +205,8 @@ class CouchDB
         }
         $handler->write("\r\n");
 
-        while (!$handler->eof()) {
+        $response = '';
+        while(!$handler->eof()) {
             $response .= $handler->gets();
         }
         $handler->close();
@@ -253,13 +253,12 @@ class CouchDB
      * @param string $url  The URL relative to the server to make a POST request to.
      * @param array  $data Associative array representing the JSON document to POST.
      * @param string $op   HTTP verb to use for the request
+     * @param array  $headers  The extra HTTP headers to send with the request
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $op = 'POST')
-    {
+    function _postURL($url, $data, $op = 'POST', $headers = array()) {
         $config = NDB_Config::singleton();
-        $response = '';
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
         $handler->setHost($couchconfig['hostname']);
@@ -267,44 +266,12 @@ class CouchDB
         $handler->open();
 
         $handler->write("$op $url HTTP/1.0\r\n");
-        $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
-        $handler->write($data);
-        while (!$handler->eof()) {
-            $response .= $handler->gets();
+        $handler->write("Content-Length: " . strlen($data) . "\r\n");
+        $handler->write("Content-type: application/json\r\n\r\n");
+        $handler->write($url . " HTTP/1.0\r\n");
+        foreach($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
         }
-        $handler->close();
-        $response_split = explode("\r\n\r\n", $response, 2);
-        return trim($response_split[1]);
-    }
-
-    /**
-     * Internal function to make a low level HTTP POST request to the CouchDB
-     * server, relative to the CouchDB database.
-     *
-     * @param string $url      The URL relative to the CouchDB database to
-     *                         make a POST request to.
-     * @param array  $data     An array representing the JSON document to be
-     *                         POSTed to CouchDB
-     * @param string $op       The HTTP verb to use for the request. Defaults
-     *                         to POST.
-     * @param string $mimeType The mime type to send while posting this URL
-     *
-     * @return string A string representation of the JSON response without
-     *                the HTTP headers
-     */
-    function _postRelativeURL($url, $data, $op = 'POST')
-    {
-        $config = NDB_Config::singleton();
-        $couchconfig = $config->getSetting('CouchDB');
-        $handler = $this->SocketHandler;
-        $handler->setHost($couchconfig['hostname']);
-        $handler->setPort($couchconfig['port']);
-        $handler->open();
-
-        $handler->write($this->_constructURL($op, $url) . " HTTP/1.1\r\n");
-        $handler->write("Host: " . $couchconfig['hostname'] . "\r\n");
-        $handler->write("Connection: close\r\n");
-        $handler->write("Content-Length: " . strlen($data) . "\r\n\r\n");
         $handler->write($data);
         $response = '';
         while(!$handler->eof()) {
@@ -313,6 +280,10 @@ class CouchDB
         $handler->close();
         $response_split = explode("\r\n\r\n", $response, 2);
         return trim($response_split[1]);
+    }
+
+    function _postRelativeURL($url, $data, $op = 'POST') {
+        return $this->_postURL($this->_constructURL($op, $url), $data);
     }
 
     /**
