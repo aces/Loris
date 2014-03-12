@@ -384,39 +384,6 @@ class User extends UserPermissions
         return true;
     }
 
-    function updateCouchUser($password) {
-        $factory = NDB_Factory::singleton();
-        $cdb = $factory->CouchDB();
-        $config = $factory->Config();
-
-
-        $c_config = $config->getSetting('CouchDB');
-        if($c_config['SyncAccounts'] !== 'true') {
-            return false;
-        }
-        $username = $this->getUsername();
-        $auth = array('Authorization' => 'Basic ' 
-            . base64_encode($c_config['admin'] . ':' . $c_config['adminpass'])
-        );
-        $userjson = $cdb->_getURL("/_users/org.couchdb.user:" . $username, 'GET', $auth);
-        $userobj = json_decode($userjson, true);
-
-        if(isset($userobj['error']) && $userobj['error'] == 'not_found') {
-            $userobj = array('_id' => 'org.couchdb.user:' . $username,
-                'type' => 'user',
-                'name' => $username,
-                'roles' => array('dqg')
-            );
-        }
-        $userobj['password'] = $password;
-
-
-        $response = $cdb->_postURL("PUT /_users/org.couchdb.user:" . $username,
-            json_encode($userobj),
-            $auth
-        );
-    }
-
     /**
      * Check if user belongs to DCC
      *
