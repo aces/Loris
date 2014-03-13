@@ -21,9 +21,9 @@
 
 <!-- file paths -->
 <paths>
-    <imagePath>/PATH/TO/MINC/DATA/ROOT/mri-data/minc/</imagePath>
+    <imagePath>/data/%PROJECT%/data/</imagePath>
     <base>%LORISROOT%</base>
-    <data>SAME AS imagePath</data>
+    <data>/data/%PROJECT%/data/</data>
     <extLibs>/PATH/TO/SMARTY/libs</extLibs>
     <mincPath>/data/%PROJECT%/data/</mincPath>
     <log>tools/logs/</log>
