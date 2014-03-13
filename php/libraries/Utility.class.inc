@@ -860,17 +860,6 @@ class Utility extends PEAR
         return $instruments;
     }
 
-    function getDirectInstruments() {
-        $DB =& Database::singleton();
-        $instruments_q = $DB->pselect("SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true", array());
-        foreach($instruments_q as $key){
-            $instruments[$key['Test_name']]=$key['Full_name'];
-        }
-
-        return $instruments;
-    }
-
-
     /**
      * Gets a list of all instruments where are administered as direct data
      * entry from subjects. 
