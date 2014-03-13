@@ -619,7 +619,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             header_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
             raw_data_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
             template: {
-                element_id: "volume-ui-template",
+                element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
             }
         });
@@ -636,5 +636,19 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
     bboptions.volumes = minc_volumes;
 
+    viewer.addEventListener("ready", function() {
+        var i = 0, volumes = this.volumes, el;
+        for(i = 0; i < volumes.length; i += 1) {
+            if(volumes[i].header.time) {
+                // 4d dataset, keep the Play button
+            } else {
+                // It's a 3d dataset, so hide the play
+                // button
+                el = document.getElementById("time-" + i);
+                $(el).hide();
+
+            }
+        }
+    });
     viewer.loadVolumes(bboptions);
 });
