@@ -125,9 +125,9 @@ Please answer the following questions. You'll be asked:
      newly created MySQL user in part c).
 
   e) Your project name. This should be an alphanumeric name.
-     It will be used to automatically create/install apache config files.
-     It will also be used to modify the paths for MRI in the generated
-     config.xml file for LORIS.
+     It will be used to modify the paths for MRI in the generated
+     config.xml file for LORIS. It may also be used to automatically
+     create/install apache config files.
 
 QUESTIONS
 
@@ -231,6 +231,18 @@ done;
 
 stty echo
 
+while true; do 
+        read -p "Enter project name: " projectname
+        case $projectname in
+                "" )
+                        read -p "Enter project name: " projectname
+                        continue;;
+                * ) 
+                        break;;
+        esac
+done;
+
+
 
 echo ""
 echo "Attempting to create the MySQL database '$mysqldb' ..."
@@ -288,7 +300,7 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
     -e "s/%DATABASE%/$mysqldb/g" \
     -e "s#%LORISROOT%#$RootDir/#g" \
-    -e "s#%PROJECT%#$projectname/#g" \
+    -e "s#%PROJECTNAME%#$projectname/#g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 
@@ -348,7 +360,6 @@ while true; do
     read -p "Would you like to automatically create/install apache config files? [yn] " yn
     case $yn in
         [Yy]* )
-            read -p "Enter project name: " projectname
             if [ -f /etc/apache2/sites-available/$projectname ]; then
                 echo "Apache appears to already be configured for $projectname. Aborting\n"
                 exit 1
