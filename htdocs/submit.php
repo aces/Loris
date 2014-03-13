@@ -267,7 +267,7 @@ class DirectDataEntryMainPage {
                     'Date_taken' => date('Y-m-d')
                 ),
                 array(
-                    'CID' => $this->CommentID
+                    'CommentID' => $this->CommentID
                 )
             );
 
