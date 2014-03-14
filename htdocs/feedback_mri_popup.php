@@ -2,6 +2,7 @@
 /**
  * @package mri
  */
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ob_start('ob_gzhandler');
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
