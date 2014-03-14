@@ -103,28 +103,28 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-  a) A name for the MySQL Database. This should be
+  1) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
      This database will be created later on.
 
-  b) The hostname for the machine where the MySQL server will run on
+  2) The hostname for the machine where the MySQL server will run on
      (this is where we'll create the database).
 
-  c) The MySQL username that the Loris system will use to connect
+  3) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
      created later on.
 
-  d) The password for this username (it will be set later on).
+  4) The password for this username (it will be set later on).
 
-  e) Another password for the 'admin' account of the Loris DB
+  5) Another password for the 'admin' account of the Loris DB
      (it will also be set later on).
 
-  f) Credentials of an existing root MySQL account to install the
+  6) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
      populate the default tables, and to grant privileges to the
      newly created MySQL user in part c).
 
-  e) Your project name. This should be an alphanumeric name.
+  7) Your project name. This should be an alphanumeric name.
      It will be used to modify the paths for MRI in the generated
      config.xml file for LORIS. It may also be used to automatically
      create/install apache config files.
