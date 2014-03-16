@@ -15,6 +15,7 @@
 require_once 'NDB_Menu_Filter_Form.class.inc';
 require_once 'Log.class.inc';
 require_once "Archive/Tar.php";
+require_once "File_Decompress.class.inc";
 
 /**
  * Log Class
@@ -40,7 +41,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     * @access private
     */
 
-    var $show_errors = false;
+    var $show_errors = true;
 
 
     function _hasAccess()
@@ -159,8 +160,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $mri_incoming_path = $paths['IncomingPath'];
             $mri_header_executer = $mri_code_path . "customize_headers.pl";
             $environment_script = $mri_code_path . "environment";
-            $DICOMTAR = $mri_code_path. "dicom-archive/dicomTar.pl";
-            $update_header = $mri_code_path. "dicom-archive/updateHeaders.pl";
+            $DICOMTAR = $mri_code_path. "dicom-archive-tools/dicomTar.pl";
+            $update_header = $mri_code_path. "dicom-archive-tools/updateHeaders.pl";
             $tarchive_location =  $paths['data'] . "tarchive";
             $bach_upload_script  = $mri_code_path . "batch_uploads_tarchive";
             $candid = $values['CandID'];
@@ -177,9 +178,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///log file containing the name of the tarred file which will be the input for batchupload
 
             $file_name = pathinfo($source_location, PATHINFO_FILENAME);
-            $file_name_without_exention = preg_replace(
-            "/\\.[^.\\s]{3,4}$/", "", $source_location
-            );
+            //$file_name_without_exention = preg_replace(
+            //"/\\.[^.\\s]{3,4}$/", "", $source_location
+            //);
             if ($this->show_errors) {
                 print "file-name : $file_name, file-name-wo-extension:
                        $file_name_without_exention and sourcelocation $source_location";
@@ -189,25 +190,33 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////
             /////untar or unzip the uploaded folder///////////////////////
             /////////////////////////////////////////////////////////////////
-            $this->unTarUploadedFolder($source_location,$mri_incoming_path);
-
-            ///////////////////////////////////////////////////////////////
-            /////Source Environment Variables///////////////////////////////
-            /////////////////////////////////////////////////////////////////
-            $this->sourceEnvironment($mri_code_path,$mri_user);
+            $decomp = new File_Decompress($source_location,$mri_incoming_path);
+            $decompressed_folder = $mri_incoming_path . "/" .$decomp->decompress_file();
+            if (!($decompressed_folder))  { //decompress the file
+                $this->log->addLog(
+                "The File $source_location is now
+                    untarred into $mri_incoming_path \n <BR>"
+                    );
+            }
 
             ///////////////////////////////////////////////////////////////////
-            //////////////////////run dicomtar and updateheaders for the///////
-            /////////////////DICOM file////////////////////////////////////////
+            /////Source Environment Variables//////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+            $this->sourceEnvironment($mri_code_path,$mri_user);
+            print "mri_user" . $mri_user . "<BR>";
+            
+            ///////////////////////////////////////////////////////////////////
+            //////////////////////run dicomtar for the DICOM file//////////////
             ///////////////////////////////////////////////////////////////////
 
             ///if the candid, pscid, and visit_label are inserted
             if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
-                $result = $this->UpdateHeader($patient_name,$DICOMTAR,$file_name_without_exention,$file_name,$tarchive_location,$patient_id);
+                $result = $this->InsertDicom($DICOMTAR,$file_name,
+                               $decompressed_folder,$tarchive_location,$patient_name,$patient_id,$update_header);
+         
                 $dicom_created = $result[0];
                 $tarchive_id = $result[1];
-                $patient_name = $result[2];
-                $ArchiveLocation = $result[3];
+                $ArchiveLocation = $result[2];
             }
             print "dicom created is " . $dicom_created . "<BR>";
             //////////////////////////////////////////////////////////////////////////////////
@@ -215,13 +224,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             //////////////////////////////////////////////////////////////////////////////////
             if ($tarchive_id){
                 $db->update(
-                "mri_upload", array('TarchiveID'=>$tarchive_id,
-                'DicomInserted'=>1),
+                "mri_upload", array('TarchiveID'=>$tarchive_id),
                 array('SourceLocation'=>$source_location)
                 );
                 $this->tpl_data['dicom_success'] = true;
             }
-
 
             /////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////
@@ -259,7 +266,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
                     $output = shell_exec($command);
                     if ($this->show_errors) {
-                        //print "command is $command";
+                        print "command is $command";
                         print $output;
                     }
                     ////////////////////TODO:////////////////////////////////////////////////////////////////////////////////////
@@ -273,26 +280,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     }
                 }
 
-                ///////////////////////////////////////////////////////////////////////////////
-                ////update the outputtype in the files table///////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////////////
-                $query = "SELECT * FROM files WHERE File LIKE CONCAT('%', :cid, '%')";
-                $files = $db->pselect($query,array('cid'=>$candid));
-                foreach ($files as $file){
-                    $file_name = $paths['data'] . $file['File'];
-                    $file_id = $file['FileID'];
-                    $output_type = null;
-                    //print "mincheader $file_name | grep -i series_description \n";
-                    //Don't use system...since system prints out the result by default...
-                    $series_description = shell_exec("mincheader $file_name | grep -i series_description");
-                    if (preg_match("/brain/i",$series_description)){
-                        $output_type = 'brain';
-                    }
-                    else {
-                        $output_type = 'body';
-                    }
-                    $db->update('files',array('OutputType'=>$output_type),array('FileID'=>$file_id));
-                }
             }
 
             $this->tpl_data['upload_success'] = true;
@@ -377,9 +364,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         */
 
         $temp_file = $file->fileInfo['tmp_name'];
+        $temp_dir = $this->tempdir(true);
+        $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         print "temp file " . $temp_file . "<BR>";
         if (!copy($temp_file, '/tmp/new_compressed')) {
-           echo "failed to copy $temp_file...\n";
+            echo "failed to copy $temp_file...\n";
         }
         $db=& Database::singleton();
         $errors = array();
@@ -387,7 +376,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $dicom_archive_settings = $config->getSetting('dicom_archive');
         $corect_name = $dicom_archive_settings['patientNameRegex'];
         $file_name = $file->fileInfo['name'];
-          
+        $not_dicom = false;
+        $files_not_dicom = 0;
+        $file_not_matching_patient_name = 0;
+        $header_patient_name = array();
+        $hader_patient_name;
 
         //////////////////////////////////////////////////////
         //////////////Make sure the extension is valid////////
@@ -399,7 +392,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $errors[]="Incorrect File-name extention, The file-name
             should either of type '.gz', '.zip' or 'tgz' ";
         }
-    
+
 
         ////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out////////
@@ -412,9 +405,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $errors[]="Make sure the CandID, PSCID and Visit_label are
             filled out ";
         }
-        
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////Go through the zipped file
 
         ////////////////////////////////////////////////////////////////////
         ////////////// make sure the PSCID, CandID and Visit_label
@@ -442,8 +432,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 )==0) {
                     $errors[] = "The VisitLabel: $visit_label Doesn't exist";
                 }
-                $errors [] = 'stop';
-                
+
                 /////////////////////////////////////////////////////////////////////
                 //////////////////Check to see if the dicom file is already//////////
                 //////////////////////////////inserted in the tarchive table/////////
@@ -455,20 +444,97 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $errors[]=" The Dicom file $file_name has already been inserted into
                     the tarchive table";
                 }
-                
-                /////////////////////////////////////////////////////////
-                ////////////////////////If extension is valid////////////
-                /////////////////////////////////////////////////////////
-                    /**
+
+                ///////////////////////////////////////////////////////////////
+                ///////validate the files in teh compressed uploaded folder////
+                //////////Are in fact DICOM////////////////////////////////////
+                ///////////////////////////////////////////////////////////////
+                /**
+                        * 1) copy the temp file to $file->fileInfo['name']
                         * 1) uncompress the file
                         * 2) go through the folder and iterate..
                         * 3) Check to see if each file is of type dicom..
-                        * 4) 
                     */
-                 
-            
-        
-               
+
+                ///////////////////////////////////////////////////////////////
+                //////////copy the temporairy file to a temporairy directory///
+                //////////with a correct Extension/////////////////////////////
+                ///////////////////////////////////////////////////////////////
+                if (!copy($temp_file, $new_temp_file)) {
+                    echo "failed to copy $temp_file to $new_temp_file \n";
+                }
+
+                ///////////////////////////////////////////////////////////////
+                ///////////////////////decompress the uploaded file////////////
+                ///////////////////////////////////////////////////////////////
+                $decomp = new File_Decompress($new_temp_file,$temp_dir);
+                $decomp->decompress_file(); //decompress the file
+
+                ///////////////////////////////////////////////////////////////
+                //////////////////iterate through the folder///////////////////
+                ///////////////////////////////////////////////////////////////
+                $objects = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($temp_dir),
+                RecursiveIteratorIterator::SELF_FIRST
+                );
+                foreach($objects as $name => $file){
+
+                    if (is_file($file)) {
+                        ///////////////////////////////////////////////////////
+                        ///////////////determin the file-type//////////////////
+                        ///////////////////////////////////////////////////////
+                        $file_type = shell_exec("file $file");
+
+                        ///////////////////////////////////////////////////////
+                        ///////////////if the file is not a dicom//////////////
+                        ///////////////////////////////////////////////////////
+                        if (!(preg_match("/DICOM/",$file_type))) {
+
+                            //////////////////////////////////////////////////
+                            /////////////if it's not of type archive or gzip//
+                            //////////////////////////////////////////////////
+                            if ((!(preg_match("/archive/i",$file_type))) &&
+                            (!(preg_match("/gzip compressed data/i",$file_type)))) {
+                                $files_not_dicom++;
+                            }
+                            continue;
+                        }
+                        ///////////////////////////////////////////////////////
+                        ///////////////if it's dicom///////////////////////////
+                        ///////////////////////////////////////////////////////
+
+                        $cmd = "dcmdump $file | grep -ri patientname";
+                        $patient_name_string = shell_exec($cmd);
+                        preg_match("^\[(.*?)\]^",$patient_name_string,$fields);
+                        $patient_name_from_header = $fields[1];
+
+                        ///////////////////////////////////////////////////
+                        //if the patient-name doesn't match the header/////
+                        ///////////////////////////////////////////////////
+                        if (!($patient_name == $patient_name_from_header)) {
+                            $file_not_matching_patient_name++;
+                        }
+                    }
+                }
+                if ($files_not_dicom > 0) {
+                    $errors[]=" There are  $files_not_dicom files detected which are not of type DICOM";
+                }
+
+                if ($file_not_matching_patient_name > 0) {
+                    /*
+                    $errors[]=" There are  $file_not_matching_patient_name ".
+                    "DICOM files where the patient_name is  ".
+                    "$patient_name_from_header and doesn't match $patient_name";
+                    */
+                }
+
+                ////////////////////////////////////////////////////////////////
+                ///////////////remove the  temp_folder//////////////////////////
+                ////////////////////////////////////////////////////////////////
+                if (!is_dir($temp_dir)) {
+                    rmdir($temp_dir);
+                }
+
                 /////////////////////////////////////////////////////////////////////////
                 ////////Check to see if the file has already been uploaded or not////////
                 /////////////////////////////////////////////////////////////////////////
@@ -480,7 +546,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ))>0) {
                     $errors[]=" The file-name $file_name has already been uploaded";
                 }
-                
+
                 if (count($errors) > 0) {
                     return $errors;
                 }
@@ -545,7 +611,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $visit_label = $args['values']['VisitLabel'];
             //print "visitlabel $visit_label pscid: $pscid and candid : $candid";
         }
-        
+
         $sessionid = $db->pselectOne(
         "SELECT ID FROM  session WHERE CandID = :cid AND Visit_label =:vlabel ",
         array('cid'=>$candid,'vlabel'=>$visit_label)
@@ -560,7 +626,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return true;
     }
 
-      
+
 
     /**
     * getTargetDirectory retrieves info about where the file should be stored.
@@ -580,38 +646,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return $output;
     }
 
-    /**
-     * untar or unzip the uploaded folder
-     *
-     * @param String $source_location Location where tarred folder resides
-     * @param String $mri_incoming_path Location where the folder is untarred to
-     * 
-     * @return NULL
-     */
-
-    function unTarUploadedFolder($source_location,$mri_incoming_path){
-
-
-        //if it's a tar.gz or tgz////
-        if ((preg_match("/.tgz/i", $source_location))
-        || (preg_match("/.tar.gz/i", $source_location))
-        ) {
-            try {
-                $p = new PharData($source_location);
-                $p->decompress(); // creates /path/to/my.tar
-                $p->extractTo($mri_incoming_path);
-                //could remove the folder later once completed...
-            } catch (Exception $e) {
-                print $e->getMessage();
-                // handle errors
-                print "error";
-            }
-            $this->log->addLog(
-            "The File $source_location is now
-                    untarred into $mri_incoming_path \n <BR>"
-                    );
-        }
-    }
 
     /**
      * source the environment variable
@@ -637,14 +671,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * Enter description here...
      *
      * @param String $DICOMTAR Path to Dicomtar.pl
-     * @param String $file_name_without_exention Filename without extension
      * @param String $tarchive_location Path to where the tarchive folder
      * @param String $patient_id Patient ID
      * 
      * @return Boolean True if successfully completed, otherwise false
      */
 
-    function UpdateHeader($patient_name,$DICOMTAR,$file_name_without_exention,$file_name,$tarchive_location,$patient_id)
+    function InsertDicom($DICOMTAR,$file_name,$decompressed_folder,
+                        $tarchive_location,$patient_name,$patient_id,$update_header)
     {
         $db=& Database::singleton();
         $dicom_inserted = false;
@@ -652,74 +686,84 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////
         //////////////////Run the dicom_tar////////////////////////////////
         ///////////////////////////////////////////////////////////////////
-        $cmd = "/usr/bin/perl $DICOMTAR $file_name_without_exention $tarchive_location"
+        $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
         .  " -clobber -database -profile prod";
-
         $output = shell_exec($cmd);
         if ($this->show_errors) {
-            //print "cmd : $cmd \n";
+            print "cmd : $cmd \n";
             print $output;
         }
 
         ///////////////////////////////////////////////////////////////////
         //////////////////Get the ArchiveLocation//////////////////////////
         ///////////////////////////////////////////////////////////////////
-        $row = $db->pselectRow(
-        "Select ArchiveLocation,TarchiveID FROM tarchive
+        $row = $db->pselectRow("Select ArchiveLocation,TarchiveID FROM tarchive
                     ORDER BY Lastupdate DESC"
-                    );
-                    $ArchiveLocation = $row['ArchiveLocation'];
-                    $tarchive_id = $row['TarchiveID'];
-                    $this->log->addLog(
+        );
+        $ArchiveLocation = $row['ArchiveLocation'];
+        $tarchive_id = $row['TarchiveID'];
+        $this->log->addLog(
                     "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
+               );
+               
+
+         ///////////////////////////////////////////////////////////////////
+         /////////////Check to see if the file exists in tarchive folder////
+         ////////////////////////////////////////////////////////////////////
+         print "tarchive location is $tarchive_location";
+         ///////////////////FIX THIS///////////////////////////
+         $tarchive_file_created = true;
+         /*
+         $objects = new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($tarchive_location), 
+                        RecursiveIteratorIterator::SELF_FIRST
                     );
-                    ///////////////////////////////////////////////////////////////////
-                    /////////////update the header if the ArchiveLocation is set///////
-                    ///////////////////////////////////////////////////////////////////
-                    if (isset($ArchiveLocation)) {
-                        $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
+                    
+         foreach($objects as $name => $object){
+            print "name is $name and file-name is $file_name <BR>";
+            if (is_file($object)) {
+                if ($name==$file_name) {
+                    $tarchive_file_created= true;
+                 }
+             }
+         }
+
+         */
+         
+         
+          ///////////////////////////////////////////////////////////////////
+          /////////////update the header if the ArchiveLocation is set///////
+          ///////////////////////////////////////////////////////////////////
+          if (isset($ArchiveLocation)) {
+            $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
                         . " '(0010,0010)' $patient_name -set '(0010,0020)' $patient_id -database -profile prod";
-                        $output = shell_exec($cmd);
-                        print $output;
-                        print "-----------------------------";
-                        print "<BR>";
-                        $this->log->addLog(
-                        "The DICOM tar file $ArchiveLocation is now updated
-                 with the following patientname: $patient_name patientid: 
-                 $patient_id \n <BR> "
-                 );
-                    }
+            print $cmd . "<BR>";
+            $output = shell_exec($cmd);
+            print $output;
+            print "-----------------------------";
+            print "<BR>";
+            $this->log->addLog(
+                     "The DICOM tar file $ArchiveLocation is now updated
+             with the following patientname: $patient_name patientid: 
+            $patient_id \n <BR> "
+            );
+          }
 
+         
+         
+         ////////////////////////////////////////////////////////////////////
+         /////////////////if successfully completed return true//////////////
+         ////////////////////////////////////////////////////////////////////
 
-                    ///////////////////////////////////////////////////////////////////
-                    /////////////Check to see if the file exists in tarchive folder////
-                    ////////////////////////////////////////////////////////////////////
+         if (($tarchive_file_created)&& ($tarchive_id!=null)) {
+            print "setting the dicom_inserted to true <BR>";
+            $dicom_inserted  =true;
+         }
 
-                    $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tarchive_location), RecursiveIteratorIterator::SELF_FIRST);
-                    foreach($objects as $name => $object){
-                        //print "name is $name and file-name is $file_name <BR>";
-                        if (is_file($object)) {
-                            if ($name==$file_name) {
-                                $tarchive_file_created= true;
-                            }
-                        }
-                    }
-
-                    ////////////////////////////////////////////////////////////////////
-                    /////////////////if successfully completed return true//////////////
-                    ////////////////////////////////////////////////////////////////////
-
-                    if (($tarchive_file_created)&& ($tarchive_id!=null)) {
-                        print "setting the dicom_inserted to true <BR>";
-                        $dicom_inserted  =true;
-                    }
-
-                    $result[] = $dicom_inserted;
-                    $result[] = $tarchive_id;
-                    $result[] = $candid;
-                    $result[] = $patient_name;
-                    $result[] = $ArchiveLocation;
-                    return $result;
+         $result[] = $dicom_inserted;
+         $result[] = $tarchive_id;
+         $result[] = $ArchiveLocation;
+         return $result;
     }
 
 
