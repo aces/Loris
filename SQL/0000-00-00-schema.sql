@@ -1686,7 +1686,3 @@ CREATE TABLE `mri_violations_log` (
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`LogID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-
