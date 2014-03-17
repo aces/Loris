@@ -190,8 +190,8 @@ onload="feedback_bvl_popup();"
 If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
 <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {elseif $test_name == ""}
-<h1>Welcome to the LORIS Database!</h1>
-<p width=50%>This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</p>
+<h1 style="align:center">Welcome to the LORIS Database!</h1>
+<div style="width:50%">This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.</div>
 {else}
 
 {if $candID != ""}
@@ -295,6 +295,7 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 <table class="MainFooter" align="center">
 <tr>
 <div id="footerLinks">
+<hr width = 70%>
 <td width="100%">
 <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" >
 <li id="active">|</li>
@@ -306,10 +307,10 @@ If this error persists, please report a bug using <a target="mantis" href="{$man
 </div>
 </tr>
 <tr>
-<td align="center" colspan="1" style="color:#fff" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+<td align="center" colspan="1" style="color:#064785" >Powered by LORIS &copy; 2013. All rights reserved.</td>
 </tr>
 <tr>
-<td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #348b8d;" target="_blank">Created by ACElab</a></td>
+<td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #2a2a2a;" target="_blank">Created by ACElab</a></td>
 </tr>
 </table>
 {/if}
