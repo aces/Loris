@@ -343,6 +343,8 @@ CREATE TABLE `files` (
   `PipelineDate` date,
   `SourceFileID` int(10) unsigned DEFAULT '0',
   `ProcessProtocolID` int(11) unsigned, 
+  `Caveat` tinyint(1) default NULL,
+  `TarchiveSource` int(11) default NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),

@@ -11,3 +11,6 @@ CREATE TABLE `mri_upload` (
   `IsValidated` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`UploadID`)
 ) ;
+
+ALTER TABLE files ADD COLUMN `Caveat` tinyint(1) DEFAULT NULL;
+ALTER TABLE files ADD COLUMN `TarchiveSource` int(11) DEFAULT NULL;
