@@ -61,7 +61,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-
+        
         // set the class variables
         $this->columns = array('UploadID','s.CandID','s.visit_label',
         'SourceLocation','FileType','UploadDate','UploadedBy',
@@ -204,7 +204,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             $this->sourceEnvironment($mri_code_path,$mri_user);
             print "mri_user" . $mri_user . "<BR>";
-            
+
             ///////////////////////////////////////////////////////////////////
             //////////////////////run dicomtar for the DICOM file//////////////
             ///////////////////////////////////////////////////////////////////
@@ -212,8 +212,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///if the candid, pscid, and visit_label are inserted
             if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
                 $result = $this->InsertDicom($DICOMTAR,$file_name,
-                               $decompressed_folder,$tarchive_location,$patient_name,$patient_id,$update_header);
-         
+                $decompressed_folder,$tarchive_location,$patient_name,$patient_id,$update_header);
+
                 $dicom_created = $result[0];
                 $tarchive_id = $result[1];
                 $ArchiveLocation = $result[2];
@@ -281,7 +281,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 }
 
             }
-
             $this->tpl_data['upload_success'] = true;
         }
     }
@@ -362,7 +361,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
          * 1) Ask them to use the database_based visit_labels:
          * 
         */
-
+        
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir = $this->tempdir(true);
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
@@ -546,13 +545,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ))>0) {
                     $errors[]=" The file-name $file_name has already been uploaded";
                 }
-
-                if (count($errors) > 0) {
-                    return $errors;
-                }
-
         }
-        return false;
+        else {
+            $errors[]=" Please make sure CandID, PSCID and VisitLabel are filled out";
+        }
+        
+        if (count($errors) > 0) {
+            return $errors;
+        }
+        return true;
     }
 
     /**
@@ -678,7 +679,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
 
     function InsertDicom($DICOMTAR,$file_name,$decompressed_folder,
-                        $tarchive_location,$patient_name,$patient_id,$update_header)
+    $tarchive_location,$patient_name,$patient_id,$update_header)
     {
         $db=& Database::singleton();
         $dicom_inserted = false;
@@ -699,71 +700,71 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////
         $row = $db->pselectRow("Select ArchiveLocation,TarchiveID FROM tarchive
                     ORDER BY Lastupdate DESC"
-        );
-        $ArchiveLocation = $row['ArchiveLocation'];
-        $tarchive_id = $row['TarchiveID'];
-        $this->log->addLog(
-                    "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
-               );
-               
-
-         ///////////////////////////////////////////////////////////////////
-         /////////////Check to see if the file exists in tarchive folder////
-         ////////////////////////////////////////////////////////////////////
-         print "tarchive location is $tarchive_location";
-         ///////////////////FIX THIS///////////////////////////
-         $tarchive_file_created = true;
-         /*
-         $objects = new RecursiveIteratorIterator(
-                        new RecursiveDirectoryIterator($tarchive_location), 
-                        RecursiveIteratorIterator::SELF_FIRST
                     );
-                    
-         foreach($objects as $name => $object){
-            print "name is $name and file-name is $file_name <BR>";
-            if (is_file($object)) {
-                if ($name==$file_name) {
-                    $tarchive_file_created= true;
-                 }
-             }
-         }
+                    $ArchiveLocation = $row['ArchiveLocation'];
+                    $tarchive_id = $row['TarchiveID'];
+                    $this->log->addLog(
+                    "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
+                    );
 
-         */
-         
-         
-          ///////////////////////////////////////////////////////////////////
-          /////////////update the header if the ArchiveLocation is set///////
-          ///////////////////////////////////////////////////////////////////
-          if (isset($ArchiveLocation)) {
-            $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
+
+                    ///////////////////////////////////////////////////////////////////
+                    /////////////Check to see if the file exists in tarchive folder////
+                    ////////////////////////////////////////////////////////////////////
+                    print "tarchive location is $tarchive_location";
+                    ///////////////////FIX THIS///////////////////////////
+                    $tarchive_file_created = true;
+                    /*
+                    $objects = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($tarchive_location),
+                    RecursiveIteratorIterator::SELF_FIRST
+                    );
+
+                    foreach($objects as $name => $object){
+                    print "name is $name and file-name is $file_name <BR>";
+                    if (is_file($object)) {
+                    if ($name==$file_name) {
+                    $tarchive_file_created= true;
+                    }
+                    }
+                    }
+
+                    */
+
+
+                    ///////////////////////////////////////////////////////////////////
+                    /////////////update the header if the ArchiveLocation is set///////
+                    ///////////////////////////////////////////////////////////////////
+                    if (isset($ArchiveLocation)) {
+                        $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
                         . " '(0010,0010)' $patient_name -set '(0010,0020)' $patient_id -database -profile prod";
-            print $cmd . "<BR>";
-            $output = shell_exec($cmd);
-            print $output;
-            print "-----------------------------";
-            print "<BR>";
-            $this->log->addLog(
-                     "The DICOM tar file $ArchiveLocation is now updated
+                        print $cmd . "<BR>";
+                        $output = shell_exec($cmd);
+                        print $output;
+                        print "-----------------------------";
+                        print "<BR>";
+                        $this->log->addLog(
+                        "The DICOM tar file $ArchiveLocation is now updated
              with the following patientname: $patient_name patientid: 
             $patient_id \n <BR> "
             );
-          }
+                    }
 
-         
-         
-         ////////////////////////////////////////////////////////////////////
-         /////////////////if successfully completed return true//////////////
-         ////////////////////////////////////////////////////////////////////
 
-         if (($tarchive_file_created)&& ($tarchive_id!=null)) {
-            print "setting the dicom_inserted to true <BR>";
-            $dicom_inserted  =true;
-         }
 
-         $result[] = $dicom_inserted;
-         $result[] = $tarchive_id;
-         $result[] = $ArchiveLocation;
-         return $result;
+                    ////////////////////////////////////////////////////////////////////
+                    /////////////////if successfully completed return true//////////////
+                    ////////////////////////////////////////////////////////////////////
+
+                    if (($tarchive_file_created)&& ($tarchive_id!=null)) {
+                        print "setting the dicom_inserted to true <BR>";
+                        $dicom_inserted  =true;
+                    }
+
+                    $result[] = $dicom_inserted;
+                    $result[] = $tarchive_id;
+                    $result[] = $ArchiveLocation;
+                    return $result;
     }
 
 
