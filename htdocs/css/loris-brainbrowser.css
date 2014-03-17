@@ -44,6 +44,13 @@
     display: none;
 }
 
+.slice-series-button {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
 #slice-series-buttons0 {
     overflow: hidden;
     position: absolute;
@@ -64,23 +71,32 @@
 }
 
 html {
-    overflow-y: scroll;
+    overflow: scroll;
+    overflow: auto;
+    -moz-scrollbars-vertical !important;
+    min-height: 100%; margin-bottom: 1px; 
+    overflow-y: scroll 30%  !important;
+}
+    
+body {
+    background: #e2e2e2 !important;
 }
 
+
 #brainbrowser-wrapper {
-    background: white;
+/*    background: white;*/
 }
 
 #global-controls {
     padding: 5px;
     background: #555555;
-    border-radius: 0;
-    -webkit-border-radius: 0;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
 }
 
 #app-name {
     border:0;
-    background: #08245b;
+    background: #064785;
     z-index: 999
     display: block;
 }
