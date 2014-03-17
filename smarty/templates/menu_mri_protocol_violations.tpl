@@ -20,12 +20,17 @@
       <td nowrap="nowrap">{$form.PatientName.html}</td>
    </tr>
    
-    
    <tr>
       <td nowrap="nowrap">{$form.SeriesUID.label}</td>
       <td nowrap="nowrap">{$form.SeriesUID.html}</td>
    </tr>
+   <tr>
+      <td nowrap="nowrap">{$form.SeriesDescription.label}</td>
+      <td nowrap="nowrap">{$form.SeriesDescription.html}</td>
+   </tr>
     <tr>
+    <tr>
+    
         <td>Actions:</td>
         <td>&nbsp;</td>
         <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=mri_protocol_violations&reset=true'"/></td>
