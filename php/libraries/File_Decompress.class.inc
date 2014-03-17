@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 /**
  * File_Decompress class file
@@ -42,7 +41,6 @@ class File_Decompress extends PEAR
     function File_Decompress($file_name,$destination_path) {
         $this->file_name = $file_name;
         $this->dest_path = $destination_path;
-        
     }
 
     
