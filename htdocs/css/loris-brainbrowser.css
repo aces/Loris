@@ -32,14 +32,18 @@
 }
 
 .thresh-input-left {
-    width:30px;
     margin-right:270px;
 }
 
-.thresh-input-right {
+.thresh-input-right, .time-inputs,.thresh-input-left {
     width:30px;
 }
 
+.ui-slider {
+    width: 174px;
+    margin-right: 38px;
+
+}
 #slice-series-heading0 {
     display: none;
 }
