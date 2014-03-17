@@ -183,6 +183,69 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
       });
 
+
+$(".time-div").each(function() {
+        var div = $(this);
+        var vol_id = div.data("volume-id");
+        var volume = viewer.volumes[vol_id];
+        
+        var slider = div.find(".slider");
+        var time_input = div.find("#time-val-" + vol_id);
+        var play_button = div.find("#play-" + vol_id);
+
+        var min = 0;
+        var max = volume.data.time.space_length - 1;
+        var play_interval;
+    
+        slider.slider({
+          min: min,
+          max: max,
+          value: 0,
+          step: 1,
+          slide: function(event, ui) {
+            var value = +ui.value;
+            time_input.val(value);
+            volume.current_time = value;
+            viewer.redrawVolumes();
+          },
+          stop: function() {
+            $(this).find("a").blur();
+          }
+        });
+        
+        time_input.change(function() {
+          var value = parseInt(this.value, 10);
+          if (!BrainBrowser.utils.isNumeric(value)) {
+            value = 0;
+          }
+
+          value = Math.max(min, Math.min(value, max));
+
+          this.value = value;
+          time_input.val(value);
+          slider.slider("value", value);
+          volume.current_time = value;
+          viewer.redrawVolumes();
+        });
+        
+        play_button.change(function() {
+          if(play_button.is(":checked")){
+            clearInterval(play_interval);
+            play_interval = setInterval(function() {
+              var value = volume.current_time + 1;
+              value = value > max ? 0 : value;
+              volume.current_time = value;
+              time_input.val(value);
+              slider.slider("value", value);
+              viewer.redrawVolumes();
+            }, 200);
+          } else {
+            clearInterval(play_interval);
+          }
+        });
+
+      });
+
       // Create an image of all slices in a certain
       // orientation.
       $(".slice-series-div").each(function() {
@@ -619,7 +682,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             header_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
             raw_data_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
             template: {
-                element_id: "volume-ui-template",
+                element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
             }
         });
@@ -636,5 +699,19 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
     bboptions.volumes = minc_volumes;
 
+    viewer.addEventListener("ready", function() {
+        var i = 0, volumes = this.volumes, el;
+        for(i = 0; i < volumes.length; i += 1) {
+            if(volumes[i].header.time) {
+                // 4d dataset, keep the Play button
+            } else {
+                // It's a 3d dataset, so hide the play
+                // button
+                el = document.getElementById("time-" + i);
+                $(el).hide();
+
+            }
+        }
+    });
     viewer.loadVolumes(bboptions);
 });
