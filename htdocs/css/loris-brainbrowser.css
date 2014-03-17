@@ -35,15 +35,15 @@
     margin-right:270px;
 }
 
-.thresh-input-right, .time-inputs,.thresh-input-left {
+.thresh-input-right, .thresh-input-left, .time-inputs, .blend-inputs{
     width:30px;
 }
 
 .ui-slider {
     width: 174px;
     margin-right: 38px;
-
 }
+
 #slice-series-heading0 {
     display: none;
 }

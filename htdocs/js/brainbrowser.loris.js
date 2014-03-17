@@ -194,7 +194,7 @@ $(".time-div").each(function() {
         var play_button = div.find("#play-" + vol_id);
 
         var min = 0;
-        var max = volume.data.time.space_length - 1;
+        var max = volume.data.time.length - 1;
         var play_interval;
     
         slider.slider({
