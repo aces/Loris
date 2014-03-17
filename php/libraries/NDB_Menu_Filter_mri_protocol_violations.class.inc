@@ -43,12 +43,13 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         'mpv.TE_range','mpv.TI_range','mpv.slice_thickness_range','mpv.xspace_range','mpv.yspace_range','mpv.zspace_range','mpv.xstep_range',
         'mpv.ystep_range','mpv.zstep_range','mpv.time_range','mpv.SeriesUID');
         $config=&NDB_Config::singleton();
-        $this->validFilters = array('mpv.CandID','mpv.PSCID');
+        $this->validFilters = array('mpv.CandID','mpv.PSCID', 'mpv.series_description');
         $this->query = " FROM mri_protocol_violated_scans mpv WHERE 1=1";
 
         $this->formToFilter = array(
                 'CandID' => 'mpv.CandID',
-                'PSCID' => 'mpv.PSCID'
+                'PSCID' => 'mpv.PSCID',
+                'SeriesDescription' => 'mpv.series_description'
                 );
         $this->tpl_data['mri_protocol_data']  = $this->getMRIProtocolData();
         $this->tpl_data['mri_protocol_header']  = array_keys($this->tpl_data['mri_protocol_data'][0]);
@@ -67,6 +68,7 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->form->addElement('text', 'PSCID', 'PSC-ID:');
         $this->form->addElement('text', 'PatientName', 'Patient-Name:');
         $this->form->addElement('text', 'SeriesUID', 'SeriesUID:');
+        $this->form->addElement('text', 'SeriesDescription', 'Series Description:');
 
         return true;
     }
