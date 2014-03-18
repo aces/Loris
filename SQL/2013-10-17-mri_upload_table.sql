@@ -1,6 +1,6 @@
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat','xml','txt') DEFAULT NULL,
+  `FileType` enum('tgz','tar.gz','zip') DEFAULT NULL,
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
   `UploadDate` DateTime DEFAULT NULL,
   `SourceLocation` varchar(255) NOT NULL DEFAULT '',
