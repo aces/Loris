@@ -109,7 +109,7 @@
             <b>Please note that once data is submitted you will not be able to modify it.</b>
         </td>
         <td>
-            <input type="button" onclick="location.href='submit.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
+            <input type="button" onclick="location.href='survey.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
             <button id="complete" style="font-weight: bold">
             <span style="display: none" id="key">{$key}</span>
                 Submit data

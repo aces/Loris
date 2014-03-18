@@ -110,7 +110,7 @@ class NDB_Form_participant_accounts extends NDB_Form
 
             $msg_data = array(
                 'study'     => $config->getSetting("title"),
-                'url'       => $www['url'] . '/submit.php?key=' . $key,
+                'url'       => $www['url'] . '/survey.php?key=' . $key,
                 'EmailForm' => $values['EmailContent']
             );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);

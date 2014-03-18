@@ -49,7 +49,7 @@
     {section name=piece loop=$items[item]}
     <td nowrap="nowrap">
         {if  $items[item][piece].name == "URL"}
-        <a href="submit.php?key={$items[item][piece].value}">{$items[item][piece].value}</a>
+        <a href="survey.php?key={$items[item][piece].value}">{$items[item][piece].value}</a>
         {else}
         {$items[item][piece].value}
         {/if}
