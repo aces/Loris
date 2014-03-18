@@ -1369,7 +1369,11 @@ class NDB_BVL_Instrument extends NDB_Page
      * @return none
     */
     function addMonthYear($field, $label, $options=array()) {
+        if(is_array($options)) {
+            $options['format'] = 'YM';
+        }
         $this->form->addElement('date', $field, $label, $options);
+        $this->monthYearFields[] = $field;
     }
 
 
@@ -1552,6 +1556,12 @@ class NDB_BVL_Instrument extends NDB_Page
             $parsingPage = 'top';
             $firstSelectOfPage = true;
 
+            $Group = array(
+                'Name' => null,
+                'Elements' => array(),
+                'Delimiter' => $this->_GUIDelimiter
+            );
+
             while(($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
 
@@ -1588,16 +1598,72 @@ class NDB_BVL_Instrument extends NDB_Page
                             $this->_addMetadataFields();
                         }
                         break;
+                    case 'begingroup':
+                        if($addElements) {
+                            $Group['Name'] = $pieces[1] . '_group';
+                            $Group['Delimiter'] = trim($pieces[2]);
+                            if(empty($Group['Delimiter'])) {
+                                $Group['Delimiter'] = $this->_GUIDelimiter;
+                            }
+                        }
+                        break;
+                    case 'endgroup':
+                        if($addElements) {
+                            $groupLabel = $pieces[2];
+                            $this->addGroup(
+                                $Group['Elements'],
+                                $Group['Name'],
+                                $groupLabel, 
+                                $Group['Delimiter'], false);
+
+                            $Group['Name'] = null;
+                            $Group['Elements'] = array();
+                        }
+                        break;
+
+                    case 'begintable':
+                        if($addElements) {
+                            $this->form->addElement(
+                                'static',
+                                null,
+                                "</td></tr></table><table><tr><td>&nbsp;",
+                                ""
+                            );
+                        }
+                    case 'endtable':
+                        if($addElements) {
+                            $this->form->addElement(
+                                'static',
+                                null,
+                                "</td></tr></table><table><tr><td>&nbsp;",
+                                ""
+                            );
+                        }
+                        break;
                     case 'text':
                         if($addElements) {
-                            $this->addTextElement($pieces[1], $pieces[2]);
+                            if($Group['Name'] != null) {
+                                $Group['Elements'][] = 
+                                    $this->createText(
+                                        $pieces[1],
+                                        $pieces[2]
+                                    );
+
+                            } else {
+                                $this->addTextElement($pieces[1], $pieces[2]);
+                                                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
                         break;
                     case 'textarea':
                         $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
-                            $this->addTextAreaElement($pieces[1], $pieces[2]);
+                            if($Group['Name'] != null) {
+                                $Group['Elements'][] = 
+                                    $this->createTextArea($pieces[1], $pieces[2]);
+                            } else {
+                                $this->addTextAreaElement($pieces[1], $pieces[2]);
+                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
                         break;
@@ -1619,7 +1685,12 @@ class NDB_BVL_Instrument extends NDB_Page
                                 );
                             }
 
-                            $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
+                            $pieces[5] = trim($pieces[5]);
+                            if($pieces[5] === 'MonthYear') {
+                                $this->addMonthYear($pieces[1], $pieces[2], $dateOptions);
+                            } else {
+                                $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
+                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
                         break;
@@ -1661,10 +1732,32 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
 
                         if($addElements) {
-                            if($type == 'multiple') {
-                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
+                            if($Group['Name'] != null) {
+                                if($type == 'multiple') {
+                                    $Group['Elements'][] = 
+                                        $this->form->createElement(
+                                            'select',
+                                            $pieces[1],
+                                            $pieces[2],
+                                            $opt,
+                                            "multiple"
+                                        );
+                                } else {
+                                    $Group['Elements'][] = 
+                                        $this->form->createElement(
+                                            'select',
+                                            $pieces[1],
+                                            $pieces[2],
+                                            $opt
+                                        );
+                                }
                             } else {
-                                $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+                                if($type == 'multiple') {
+                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
+                                } else {
+                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
+                                }
+
                             }
                         }
                         if ($firstSelectOfPage) {
@@ -1681,7 +1774,18 @@ class NDB_BVL_Instrument extends NDB_Page
                     case 'static':
                         $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                         if($addElements) {
-                            $this->form->addElement('static', $pieces[1], $pieces[2]);
+                            if($Group['Name'] != null) {
+                                print "Creating $pieces[1] with label: $pieces[2]";
+                                $Group['Elements'][] = 
+                                    $this->form->createElement(
+                                        'static',
+                                        $pieces[1],
+                                        null,
+                                        $pieces[2]
+                                    );
+                            } else {
+                                $this->form->addElement('static', $pieces[1], $pieces[2]);
+                            }
                         }
                         $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
                         break;

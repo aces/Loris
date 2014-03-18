@@ -265,9 +265,9 @@ class CouchDB
         $handler->setPort($couchconfig['port']);
         $handler->open();
 
-        $handler->write("$url HTTP/1.0\r\n");
+        $handler->write($url . " HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n");
-        $handler->write("Content-type: application/json\r\n");
+        $handler->write("Content-type: application/json\r\n\r\n");
         foreach($headers as $key => $value) {
             $handler->write($key . ':' . $value . "\r\n");
         }
