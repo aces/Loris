@@ -1,13 +1,38 @@
 <?php
+/**
+ * This file implements the add_survey page which is used by the Loris
+ * survey module, for creating user account/keys that are tied to a
+ * CommentID and only valid for one use.
+ *
+ * PHP Version 5
+ *
+ * @category Survey
+ * @package  Loris
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 require_once "NDB_Form.class.inc";
 require_once "Email.class.inc";
 
 /**
- * The forms for the user accounts menu
- * @package main
+ * The form which creates the add_survey page for the
+ * Loris survey module
+ *
+ * @category Survey
+ * @package  Loris
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Form_participant_accounts extends NDB_Form
 {
+    /**
+     * Determine whether the logged in user has access to this page.
+     * Tied to data_entry
+     * 
+     * @return boolean true if user has access to this page
+     */
     function _hasAccess()
     {
         // create user object
@@ -16,30 +41,60 @@ class NDB_Form_participant_accounts extends NDB_Form
             return PEAR::raiseError("User Error: ".$editor->getMessage());
         }
 
-        return true;
+        return $editor->hasPermission('data_entry');
     }
 
+    /**
+     * Return default values for QuickForm elements on this page
+     *
+     * @return associative array of FieldName => Default Value mapping
+     */
     function _getDefaults()
     {
         $defaults = array();
         return $defaults;
     }
 
-    function _validate_add_survey($values) {
+    /**
+     * Validate that user data entered on the add survey page was correct
+     *
+     * @param array $values Array of values submitted on the page
+     *
+     * @return array Empty if no error, associative array of element with
+     *               error if there was a problem with data entered.
+     */
+    function _validate_add_survey($values)
+    {
         $db = Database::singleton();
 
-        $numCandidates = $db->pselectOne("SELECT count(*) FROM candidate WHERE PSCID=:v_PSCID AND CandID=:v_CandID AND Active='Y'", array('v_PSCID' => $values['PSCID'], 'v_CandID' => $values['CandID']));
-        if($numCandidates != 1) {
-            return array('CandID' =>'PSCID and DCC ID do not match or candidate does not exist.');
+        $numCandidates = $db->pselectOne(
+            "SELECT COUNT(*) FROM candidate 
+            WHERE PSCID=:v_PSCID 
+            AND CandID=:v_CandID AND Active='Y'",
+            array('v_PSCID' => $values['PSCID'], 'v_CandID' => $values['CandID'])
+        );
+        if ($numCandidates != 1) {
+            return array(
+                'CandID' =>
+                    'PSCID and DCC ID do not match or candidate does not exist.'
+            );
         }
 
-        $numSessions = $db->pselectOne("SELECT COUNT(*) FROM session WHERE CandID=:v_CandID AND UPPER(Visit_label)=UPPER(:v_VL) AND Active='Y'", array('v_CandID' => $values['CandID'], 'v_VL' => $values['VL']));
+        $numSessions = $db->pselectOne(
+            "SELECT COUNT(*) FROM session 
+            WHERE CandID=:v_CandID 
+            AND UPPER(Visit_label)=UPPER(:v_VL) 
+            AND Active='Y'", 
+            array('v_CandID' => $values['CandID'], 'v_VL' => $values['VL'])
+        );
 
-        if($numSessions != 1) {
-            return array('VL' => "Visit ". $values['VL']." does not exist for given candidate");
+        if ($numSessions != 1) {
+            return array(
+                'VL' => "Visit ". $values['VL']." does not exist for given candidate"
+            );
         }
 
-        if(!filter_var($values['Email'], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL)) {
             return array('Email' => 'Email is not valid.');
 
         }
@@ -48,6 +103,15 @@ class NDB_Form_participant_accounts extends NDB_Form
         return array();
     }
 
+    /**
+     * Process the form submission. Data has already been validated
+     * when this is called, so we only need to handle insertion into
+     * the database
+     *
+     * @param array $values The values submitted on the page
+     *
+     * @return none, but as a side-effect inserts into database
+     */
     function _process($values)
     {
         $db = Database::singleton();
@@ -62,13 +126,14 @@ class NDB_Form_participant_accounts extends NDB_Form
         $timepoint =& TimePoint::singleton($SessionID);
 
         $InstrumentExists = $db->pselectOne(
-            "SELECT 'x' FROM participant_accounts WHERE Test_name=:TN AND SessionID=:SID",
+            "SELECT 'x' FROM participant_accounts
+            WHERE Test_name=:TN AND SessionID=:SID",
             array(
                 'TN' => $values['Test_name'],
                 'SID' => $SessionID
             )
         );
-        if($InstrumentExists == 'x') {
+        if ($InstrumentExists == 'x') {
             return;
         }
         $battery = new NDB_BVL_Battery();
@@ -79,10 +144,10 @@ class NDB_Form_participant_accounts extends NDB_Form
         $key = User::newPassword();
 
         $email = false;
-        if(isset($_REQUEST['send_email'])) {
+        if (isset($_REQUEST['send_email'])) {
             $email = true;
         }
-        if($email) {
+        if ($email) {
             $status = 'Sent';
         } else {
             $status = 'Created';
@@ -104,7 +169,7 @@ class NDB_Form_participant_accounts extends NDB_Form
         }
         $this->tpl_data['success'] = $success;
         
-        if($email) {
+        if ($email) {
             $config = NDB_Config::singleton();
             $www = $config->getSetting("www");
 
@@ -114,13 +179,15 @@ class NDB_Form_participant_accounts extends NDB_Form
                 'EmailForm' => $values['EmailContent']
             );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);
-         }
+        }
     }
 
-    function _createCommentID($CandID, $PSCID, $SessionID, $SubprojectID, $testID) {
-        return $CandID . $PSCID . $SessionID . $SubprojectID . $testID . time();
-    }
-
+    /**
+     * Implements the quickform portion of the page which is used for
+     * adding user surveys
+     *
+     * @return none
+     */
     function add_survey()
     {
         $this->redirect = "test_name=$this->name";
