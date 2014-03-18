@@ -38,7 +38,7 @@ if ! test -t 0 -a -t 1 -a -t 2 ; then
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p logs ../project ../project/libraries ../project/instruments ../project/tables_sql ../smarty/templates_c
+mkdir -p logs ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
