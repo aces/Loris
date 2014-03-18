@@ -195,8 +195,8 @@ class DirectDataEntryMainPage {
     function logRequest() {
         $log = new Log("direct_entry");
         $logmsg = $_SERVER['REMOTE_ADDR'];
-        if(!empty($_SERVER['HTTP_X_FORDWARDED_FOR'])) {
-            $logmsg .= " (" . $_SERVER['HTTP_X_FORDWARDED_FOR'] . ")";
+        if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $logmsg .= " (" . $_SERVER['HTTP_X_FORWARDED_FOR'] . ")";
         }
 
         $logmsg .= substr(print_r($_REQUEST, true), 5);
