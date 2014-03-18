@@ -41,7 +41,7 @@ class NDB_Form_participant_accounts extends NDB_Form
             return PEAR::raiseError("User Error: ".$editor->getMessage());
         }
 
-        return $editor->hasPermission('data_entry');
+        return $editor->hasPermission('user_accounts');
     }
 
     /**
