@@ -211,7 +211,7 @@ class DirectDataEntryMainPage {
         
         if (isset($_REQUEST['nextpage'])) {
         //if (isset($_REQUEST['nextpage'])) {
-            $nextpage = "submit.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]"; 
+            $nextpage = "survey.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]"; 
         }
         
         if(isset($_POST['ease'])) {
@@ -254,7 +254,7 @@ class DirectDataEntryMainPage {
                 }
 
             }
-            $this->tpl_data['lastpage'] = "submit.php?key=$_REQUEST[key]";
+            $this->tpl_data['lastpage'] = "survey.php?key=$_REQUEST[key]";
             $this->tpl_data['finalpage'] = true;
         } else if ($_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
