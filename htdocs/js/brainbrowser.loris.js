@@ -189,6 +189,9 @@ $(".time-div").each(function() {
         var vol_id = div.data("volume-id");
         var volume = viewer.volumes[vol_id];
         
+        if (volume.data.time === undefined) {
+            return;
+        }
         var slider = div.find(".slider");
         var time_input = div.find("#time-val-" + vol_id);
         var play_button = div.find("#play-" + vol_id);
