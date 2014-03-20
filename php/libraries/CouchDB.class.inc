@@ -267,11 +267,11 @@ class CouchDB
 
         $handler->write($url . " HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n");
-        $handler->write("Content-type: application/json\r\n\r\n");
+        $handler->write("Content-type: application/json\r\n");
         foreach($headers as $key => $value) {
             $handler->write($key . ':' . $value . "\r\n");
         }
-        $handler->write("\r\n");
+	$handler->write("\r\n");
         $handler->write($data);
         $response = '';
         while(!$handler->eof()) {
