@@ -4,12 +4,14 @@ Subject: New Survey - {$study}
 {$EmailForm}
 
 ***************
+{else}
+{$study} would like to request that you complete the following survey.
 
 {/if}
 
-{$study} would like to request that you complete the following survey.
+Please click on the link below to access the survey online:
 
-Please access it at {$url}.
+{$url}
 
-Thank you,
-{$study}
+If clicking the link doesn't work, you can copy and paste the link
+into your web browser.

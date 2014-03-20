@@ -226,7 +226,7 @@ class NDB_Caller extends PEAR
     * @param string commentID of the instrument
     * @note: added a call to Timepoint class using $_REQUIEST['sessionID'] which implies that the instrument call must be made within the timepoint
     */
-    function loadInstrument($instrument_s, $page, $commentID, $redirectToOnSuccess=null)
+    function loadInstrument($instrumentName, $page, $commentID, $redirectToOnSuccess=null)
     {
         if ($page === 'finalpage') {
             return "<script language='javascript'>window.location='$redirectToOnSuccess'</script>";
@@ -244,7 +244,7 @@ class NDB_Caller extends PEAR
         }
 
         // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory($instrument_s, $commentID, $page);
+        $instrument =& NDB_BVL_Instrument::factory($instrumentName, $commentID, $page);
         if (Utility::isErrorX($instrument)) {
             return $instrument;
         }
