@@ -22,8 +22,8 @@
 </tr>
 
 <tr>
-<td nowrap="nowrap">{$form.SiblingID.label}</td>
-<td nowrap="nowrap">{$form.SiblingID.html}</td>
+<td nowrap="nowrap">{$form.FamilyMemberID.label}</td>
+<td nowrap="nowrap">{$form.FamilyMemberID.html}</td>
 </tr>
 <tr>
 <td nowrap="nowrap">{$form.relation_type.label}</td>
@@ -34,7 +34,7 @@
 <td nowrap="nowrap" colspan="2">
 <input class="button" name="fire_away" value="Save" type="submit" />
 {/if}
-<input class="button" onclick="location.href='main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}'" value="Return to profile" type="button" />
+<input class="button" onclick="location.href='main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}'" value="Return to Candidate Info" type="button" />
 
 </td>
 </tr>

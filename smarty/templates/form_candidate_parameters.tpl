@@ -58,6 +58,7 @@
     </td>
     </tr>
 {/if}
+{if $display_family}
       <tr><th colspan="6">Family Information</th></tr>
     <tr>
        {foreach from=$sibling_list item=sibling key=keyid}
@@ -79,9 +80,9 @@
     <td></td>
     <td></td>
     <td nowrap="nowrap" colspan="6">
-    <input class="button" colspan="2" onclick="location.href='main.php?test_name=candidate_parameters&subtest=add_family&candID={$candID}&identifier={$candID}'" value="Add Sibling" type="button" />
+    <input class="button" colspan="2" onclick="location.href='main.php?test_name=candidate_parameters&subtest=add_family&candID={$candID}&identifier={$candID}'" value="Add Family Info" type="button" />
     </td>
-  
+ {/if} 
 <tr><th colspan="6">Participant Status</th></tr>
 {*
 <tr>

@@ -30,8 +30,7 @@ Specify Reason</br>(Required only for status Inactive/Incomplete)
     </td>
     <td>
     <div>
-    <select name="participant_suboptions" id="participant_suboptions">
-    </select>
+    {html_options id="participant_suboptions" options=$pstatus_suboptions name="participant_suboptions" selected=$pstat_sub}
     </div>
     </td>
     <tr>
@@ -44,7 +43,7 @@ Specify Reason</br>(Required only for status Inactive/Incomplete)
 <td nowrap="nowrap" colspan="2">
 <input class="button" name="fire_away" value="Save" type="submit" />
 {/if}
-<input class="button" onclick="location.href='main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}'" value="Return to profile" type="button" />
+<input class="button" onclick="location.href='main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}'" value="Return to Candidate Info" type="button" />
 
 </td>
 </tr>
