@@ -13,5 +13,4 @@ Please click on the link below to access the survey online:
 
 {$url}
 
-If clicking the link doesn't work, you can copy and paste the link
-into your web browser.
+If clicking the link doesn't work, you can copy and paste the link into your web browser.
