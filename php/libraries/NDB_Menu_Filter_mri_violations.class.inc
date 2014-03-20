@@ -93,13 +93,15 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                 'PatientName' => 'v.PatientName',
                 'TimeRun' => 'v.TimeRun',
                 'ProblemType' => 'v.Problem',
-                'Filename' => 'v.MincFile'
+                'Filename' => 'v.MincFile',
+                'Description' => 'v.Series_Description'
             );
         $this->validFilters = array(
             'v.PatientName',
             'v.TimeRun',
             'v.MincFile',
-            'v.Problem'
+            'v.Problem',
+            'v.Series_Description'
         );
         return true;
     }
@@ -118,6 +120,7 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
         $this->addBasicText('PatientName', 'PatientName');
+        $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicText('TimeRun', 'Time Run');
         $this->addBasicText('Filename', 'File name');
         $this->addSelect(
