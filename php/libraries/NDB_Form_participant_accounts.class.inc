@@ -94,9 +94,14 @@ class NDB_Form_participant_accounts extends NDB_Form
             );
         }
 
-        if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL)) {
-            return array('Email' => 'Email is not valid.');
+        if($_REQUEST['fire_away'] !== 'Create survey') {
+            if (!filter_var(
+                $values['Email'],
+                FILTER_VALIDATE_EMAIL)
+            ) {
+                return array('Email' => 'Email is not valid.');
 
+            }
         }
 
 
