@@ -7,10 +7,17 @@
 # This will only install the database components and Loris config file.
 #
 
+# Must be run interactively.
+if ! test -t 0 -a -t 1 -a -t 2 ; then
+    echo "This installation program should be run interactively."
+    exit 2
+fi
+
 START=`date "+%Y-%m-%dT%H:%M:%S"`
 LOGDIR="logs"
 LOGFILE="logs/install-$START.log"
 exec > >(tee $LOGFILE)
+exec 2>&1
 
 
 CWD=`pwd`
@@ -38,10 +45,10 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
 fi
 
 # Must be run interactively.
-if ! test -t 0 -a -t 1 -a -t 2 ; then
-    echo "This installation program should be run interactively."
-    exit 2
-fi
+#if ! test -t 0 -a -t 1 -a -t 2 ; then
+#    echo "This installation program should be run interactively."
+#    exit 2
+#fi
 
 # Create some subdirectories, if needed.
 mkdir -p logs ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
@@ -152,7 +159,7 @@ done;
 
 echo ""
 
-while true; do
+while [ "$mysqldb" == "" ]; do
 	read -p "What is the database name? " mysqldb
 	case $mysqldb in
 		"" )
@@ -163,26 +170,26 @@ while true; do
 	esac
 done;
 
-while true; do
+while [ "$mysqlhost" == "" ]; do
         read -p "Database host? " mysqlhost
-        case $mysqlhost in
-                "" )
-                        read -p "Database host? " mysqlhost
-                        continue;;
+       	case $mysqlhost in
+               	"" )
+                       	read -p "Database host? " mysqlhost
+                       	continue;;
                 * )
-                        break;;
+       	                break;;
         esac
 done;
 
-while true; do
+while [ "$mysqluser" == "" ]; do
         read -p "What MySQL user will Loris connect as? " mysqluser
-        case $mysqluser in
-                "" )
-                        read -p "What MySQL user will Loris connect as? " mysqluser
-                        continue;;
+       	case $mysqluser in
+               	"" )
+                       	read -p "What MySQL user will Loris connect as? " mysqluser
+                       	continue;;
                 * )
-                        break;;
-        esac
+       	                break;;
+       	esac
 done;
 
 stty -echo
@@ -194,6 +201,7 @@ while true; do
 	if [[ $mysqlpass == $mysqlpass2 ]] ; then
 	        break;
 	fi
+	echo ""
 	echo "Passwords did not match. Please try again.";
 done;
 
@@ -207,20 +215,21 @@ while true; do
         if [[ $lorispass == $lorispass2 ]] ; then
                 break;
         fi
+	echo ""
 	echo "Passwords did not match. Please try again.";
 done;
 
 stty echo ; echo ""
 
-while true; do 
-        read -p "Existing root MySQL username: " mysqlrootuser
-        case $mysqlrootuser in
-                "" )
-                        read -p "Existing root MySQL username: " mysqlrootuser
-                        continue;;
+while [ "$mysqlrootuser" == "" ]; do 
+       	read -p "Existing root MySQL username: " mysqlrootuser
+       	case $mysqlrootuser in
+               	"" )
+                       	read -p "Existing root MySQL username: " mysqlrootuser
+                       	continue;;
                 * ) 
-                        break;;
-        esac
+       	                break;;
+       	esac
 done;
 
 stty -echo
@@ -232,20 +241,22 @@ while true; do
         if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
                 break;
         fi
+	echo ""
 	echo "Passwords did not match. Please try again.";
 done;
 
 stty echo
+echo ""
 
-while true; do 
+while [ "$projectname" == "" ]; do 
         read -p "Enter project name: " projectname
-        case $projectname in
-                "" )
-                        read -p "Enter project name: " projectname
-                        continue;;
+       	case $projectname in
+               	"" )
+                       	read -p "Enter project name: " projectname
+                       	continue;;
                 * ) 
-                        break;;
-        esac
+       	                break;;
+       	esac
 done;
 
 
@@ -265,6 +276,7 @@ if [ $MySQLError -ne 0 ] ; then
         		if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
                 		break;
 		        fi
+			echo ""
 			echo "Passwords did not match. Please try again.";
 		done;
 		stty echo
