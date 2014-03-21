@@ -7,6 +7,12 @@
 # This will only install the database components and Loris config file.
 #
 
+START=`date "+%Y-%m-%dT%H:%M:%S"`
+LOGDIR="logs"
+LOGFILE="logs/install-$START.log"
+exec > >(tee $LOGFILE)
+
+
 CWD=`pwd`
 RootDir=`dirname $CWD`
 
@@ -48,14 +54,14 @@ chmod 777 ../smarty/templates_c
 # Configure logging.
 # From now on, STDOUT and STDERR are sent to both the terminal AND a logfile in logs/
 #
-START=`date "+%Y-%m-%dT%H:%M:%S"`
-LOGDIR="logs"
-LOGFILE="logs/install-$START.log"
-LOGPIPE=/tmp/pipe.$$
-mkfifo -m 700 $LOGPIPE
-trap "rm -f $LOGPIPE" EXIT
-tee <$LOGPIPE capt &
-exec 1>$LOGPIPE 2>&1
+#START=`date "+%Y-%m-%dT%H:%M:%S"`
+#LOGDIR="logs"
+#LOGFILE="logs/install-$START.log"
+#LOGPIPE=/tmp/pipe.$$
+#mkfifo -m 700 $LOGPIPE
+#trap "rm -f $LOGPIPE" EXIT
+#tee <$LOGPIPE capt &
+#exec 1>$LOGPIPE 2>&1
 
 
 if [ ! -w $LOGDIR ] ; then
@@ -380,4 +386,5 @@ while true; do
 done;
 
 echo "Installation complete."
+
 
