@@ -26,6 +26,7 @@
     <data>/data/%PROJECTNAME%/data/</data>
     <extLibs>/PATH/TO/SMARTY/libs</extLibs>
     <mincPath>/data/%PROJECTNAME%/data/</mincPath>
+    <DownloadPath>%LORISROOT%</DownloadPath>
     <log>tools/logs/</log>
 </paths>
 
