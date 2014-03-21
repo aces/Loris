@@ -4,6 +4,7 @@
 # This will:
 #   1. Install PEAR libraries
 #   2. Set up the Loris DB schema
+#   3. Log the installation in the logs directory
 # This will only install the database components and Loris config file.
 #
 
@@ -44,31 +45,11 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
     exit 2
 fi
 
-# Must be run interactively.
-#if ! test -t 0 -a -t 1 -a -t 2 ; then
-#    echo "This installation program should be run interactively."
-#    exit 2
-#fi
-
 # Create some subdirectories, if needed.
 mkdir -p logs ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
-
-
-#
-# Configure logging.
-# From now on, STDOUT and STDERR are sent to both the terminal AND a logfile in logs/
-#
-#START=`date "+%Y-%m-%dT%H:%M:%S"`
-#LOGDIR="logs"
-#LOGFILE="logs/install-$START.log"
-#LOGPIPE=/tmp/pipe.$$
-#mkfifo -m 700 $LOGPIPE
-#trap "rm -f $LOGPIPE" EXIT
-#tee <$LOGPIPE capt &
-#exec 1>$LOGPIPE 2>&1
 
 
 if [ ! -w $LOGDIR ] ; then
