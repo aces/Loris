@@ -43,7 +43,7 @@ function run_mri() {
 //doWork();
 $(function () {
     "use strict";
-    toggle();
+    //toggle();
     change();
   
 });
