@@ -380,6 +380,14 @@ input[type=button], button#complete {
     font-size: 1.1em;
     padding-top:5px;
 }
+
+.note {
+    text-align: center;
+}
+
+#complete {
+    float: right;
+}
 #goback {
     padding-top: 5px;
     font-size: 1.1em;
