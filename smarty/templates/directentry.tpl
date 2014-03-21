@@ -110,6 +110,7 @@
         </td>
     </tr>
 </table>
+<input type="hidden" name="FinalPageSubmission" value="Yes">
 <input type="button" onclick="location.href='survey.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
 <button id="complete" style="font-weight: bold;">
 <span style="display: none" id="key">{$key}</span>
