@@ -105,18 +105,16 @@
         <td><textarea name="comments" id="comments" rows="5" placeholder="Enter any comments about this survey here"></textarea></td>
     </tr>
     <tr>
-        <td>
+        <td class="note" colspan="2">
             <b>Please note that once data is submitted you will not be able to modify it.</b>
-        </td>
-        <td>
-            <input type="button" onclick="location.href='survey.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
-            <button id="complete" style="font-weight: bold">
-            <span style="display: none" id="key">{$key}</span>
-                Submit data
-            </button>
         </td>
     </tr>
 </table>
+<input type="button" onclick="location.href='survey.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
+<button id="complete" style="font-weight: bold;">
+<span style="display: none" id="key">{$key}</span>
+Submit data
+</button>
 </form>
 {else}
 <table align="center">
