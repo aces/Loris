@@ -153,7 +153,7 @@ class Database extends PEAR
         }
         
         $this->_PDO = new PDO(
-            "mysql:host=$host;dbname=$database",
+            "mysql:host=$host;dbname=$database;charset=UTF8",
             $username,
             $password
         );

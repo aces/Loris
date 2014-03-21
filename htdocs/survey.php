@@ -354,7 +354,9 @@ class DirectDataEntryMainPage
         // so we still need to call it. But if nextpage is 'complete', 
         // then after that override with a "Thank you" message
         if ($_REQUEST['pageNum'] === 'finalpage') {
-            if (isset($_POST['ease'])) {
+            if (isset($_POST['FinalPageSubmission'])
+                && $_POST['FinalPageSubmission'] == "Yes"
+            ) {
                 // Data was submitted on the last page.
                 $this->tpl_data['workspace'] = $workspace;
             } else {
