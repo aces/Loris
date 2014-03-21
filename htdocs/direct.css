@@ -374,6 +374,12 @@ table.instrument_review tbody tr:nth-child(odd) {
     padding-left: 10px;
     */
 }
+
+/* Go back button on the last page */
+input[type=button], button#complete {
+    font-size: 1.1em;
+    padding-top:5px;
+}
 #goback {
     padding-top: 5px;
     font-size: 1.1em;
