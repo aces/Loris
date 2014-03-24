@@ -27,9 +27,10 @@ CREATE TABLE `family` (
 CREATE TABLE `consent_info_history` (
         `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
         `CandID` int(6) NOT NULL DEFAULT '0',
-        `UserID` varchar(255) DEFAULT NULL,
-        `Examiner` varchar(255) DEFAULT NULL,
         `entry_staff` varchar(255) DEFAULT NULL,
+        `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
+        `study_consent_date` date DEFAULT NULL,
+        `study_consent_withdrawal` date DEFAULT NULL,
         `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`ID`),
         UNIQUE KEY `ID` (`ID`)
@@ -40,3 +41,6 @@ ALTER TABLE candidate ADD COLUMN flagged_other varchar(255);
 ALTER TABLE candidate ADD CoLUMN flagged_other_status enum ('not_answered');
 CREATE TABLE caveat_options (ID INT, Description varchar(255), PRIMARY KEY (ID) );
 INSERT INTO caveat_options VALUES (1,'Older Sibling diagnosed with autism. Child moved from LR to HR'),(2,'Family met exclusionary criteria after enrollment in study'), (3,'Other');
+ALTER TABLE participant_status ADD COLUMN study_consent enum('yes','no','not_answered');
+ALTER TABLE participant_status ADD COLUMN study_consent_date date;
+ALTER TABLE participant_status ADD COLUMN study_consent_withdrawal date;

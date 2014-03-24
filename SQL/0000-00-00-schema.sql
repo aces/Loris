@@ -1536,6 +1536,9 @@ CREATE TABLE participant_status (
         participant_suboptions integer DEFAULT NULL REFERENCES participant_status_options(ID),
         reason_specify text default NULL,
         reason_specify_status enum('dnk','not_applicable','refusal','not_answered') default NULL,
+        study_consent enum('yes','no','not_answered') default NULL,
+        study_consent_date date default NULL,
+        study_consent_withdrawal date default NULL,
         PRIMARY KEY  (ID),
         UNIQUE KEY ID (ID) 
 );
@@ -1729,16 +1732,11 @@ CREATE TABLE `participant_status_history` (
 CREATE TABLE `consent_info_history` (
         `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
         `CandID` int(6) NOT NULL DEFAULT '0',
-        `UserID` varchar(255) DEFAULT NULL,
-        `Examiner` varchar(255) DEFAULT NULL,
         `entry_staff` varchar(255) DEFAULT NULL,
         `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
         `study_consent_date` date DEFAULT NULL,
         `study_consent_withdrawal` date DEFAULT NULL,
-        `ndar_consent` enum('yes','no','not_answered') DEFAULT NULL,
-        `ndar_consent_date` date DEFAULT NULL,
-        `ndar_consent_withdrawal` date DEFAULT NULL,
         PRIMARY KEY (`ID`),
         UNIQUE KEY `ID` (`ID`)
         ) ;
