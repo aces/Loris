@@ -23,6 +23,13 @@
     /* width: 600px; */
 }
 
+.blend-div {
+    padding-top: 40px;
+}
+
+#blend-slider {
+}
+
 .control-inputs {
     width:60px;
     margin-right:20px;
