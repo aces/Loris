@@ -20,9 +20,29 @@ LOGFILE="logs/install-$START.log"
 exec > >(tee $LOGFILE)
 exec 2>&1
 
-
 CWD=`pwd`
 RootDir=`dirname $CWD`
+
+
+echo "LORIS Installation Script starting at $START"
+
+if [ ! -w $LOGDIR ] ; then
+        echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
+        while true; do
+                read -p "Do you still want to continue? [yn] " yn
+                case $yn in
+                        [Yy]* )
+                                break;;
+                        [Nn]* )
+                                echo "Aborting installation."
+                                exit 2;;
+                        * ) echo "Please enter 'y' or 'n'."
+                esac
+        done;
+else
+	echo "The log for this session will be stored in file $CWD/$LOGFILE"
+fi
+
 
 # Banner
 cat <<BANNER
@@ -51,24 +71,6 @@ mkdir -p logs ../project ../project/libraries ../project/instruments ../project/
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
 
-
-if [ ! -w $LOGDIR ] ; then
-	echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
-	while true; do
-    		read -p "Do you still want to continue? [yn] " yn
-		case $yn in
-			[Yy]* )
-				break;;
-			[Nn]* )
-            			echo "Aborting installation."
-				exit 2;;
-			* ) echo "Please enter 'y' or 'n'."
-		esac
-	done;
-fi
-
-echo "LORIS Installation Script starting at $START"
-echo "The log for this session will be stored in file $CWD/$LOGFILE"
 
 if [ -f ../project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
