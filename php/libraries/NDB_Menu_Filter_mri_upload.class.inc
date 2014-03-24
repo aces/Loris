@@ -64,7 +64,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         
         // set the class variables
         $this->columns = array('UploadID','s.CandID','s.visit_label',
-        'SourceLocation','FileType','UploadDate','UploadedBy',
+        'SourceLocation','UploadDate','UploadedBy',
         'TarchiveID AS Tarchive_Info','number_of_mincInserted',
         'number_of_mincCreated');
         //'MincInserted AS MRI_Browser' );
@@ -160,8 +160,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $mri_incoming_path = $paths['IncomingPath'];
             $mri_header_executer = $mri_code_path . "customize_headers.pl";
             $environment_script = $mri_code_path . "environment";
-            $DICOMTAR = $mri_code_path. "dicom-archive-tools/dicomTar.pl";
-            $update_header = $mri_code_path. "dicom-archive-tools/updateHeaders.pl";
+            $DICOMTAR = $mri_code_path. "dicom-archive/dicomTar.pl";
+            $update_header = $mri_code_path. "dicom-archive/updateHeaders.pl";
             $tarchive_location =  $paths['data'] . "tarchive";
             $bach_upload_script  = $mri_code_path . "batch_uploads_tarchive";
             $candid = $values['CandID'];
@@ -191,7 +191,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             /////untar or unzip the uploaded folder///////////////////////
             /////////////////////////////////////////////////////////////////
             $decomp = new File_Decompress($source_location,$mri_incoming_path);
-            $decompressed_folder = $mri_incoming_path . "/" .$decomp->decompress_file();
+            $decompressed_folder = $decomp->decompress_file();
+            $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
             if (!($decompressed_folder))  { //decompress the file
                 $this->log->addLog(
                 "The File $source_location is now
@@ -618,9 +619,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         array('cid'=>$candid,'vlabel'=>$visit_label)
         );
 
-        $ext = pathinfo($file_name, PATHINFO_EXTENSION);
-
-        $values = array('FileType'=>$ext,'UploadedBy'=>$user_name,
+        $values = array('UploadedBy'=>$user_name,
         'UploadDate'=>$date,'SourceLocation'=>$file_name,
         'SessionID'=>$sessionid);
         $db->Insert('mri_upload', $values);
