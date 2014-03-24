@@ -14,6 +14,9 @@ if ! test -t 0 -a -t 1 -a -t 2 ; then
     exit 2
 fi
 
+# Create logs directory, if needed.
+mkdir -p logs
+
 START=`date "+%Y-%m-%dT%H:%M:%S"`
 LOGDIR="logs"
 LOGFILE="logs/install-$START.log"
@@ -66,7 +69,7 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p logs ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
+mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
