@@ -55,7 +55,7 @@ class File_Decompress extends PEAR
     {
 
         //if it's of type .tgz
-
+        
         if ((preg_match("/.tgz/i",$this->file_name)) ||
         (preg_match("/.tar.gz/i",$this->file_name)))
         {
@@ -79,20 +79,18 @@ class File_Decompress extends PEAR
      * @return boolean
      */
     function tgz_decompress() {
+        $decompressed_folder = null;
         try {
             $p = new PharData($this->file_name);
             $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
             $is_extracted = $p->extractTo($this->dest_path);
-            return $decompressed_folder;
             //could remove the folder later once completed...
         } catch (Exception $e) {
             print $e->getMessage();
             print "error";
             // handle errors
-            return false;
         }
-
-        return false;
+        return $decompressed_folder;
     }
     
     function gzip_decompress() {
