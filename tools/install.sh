@@ -4,11 +4,52 @@
 # This will:
 #   1. Install PEAR libraries
 #   2. Set up the Loris DB schema
+#   3. Log the installation in the logs directory
 # This will only install the database components and Loris config file.
 #
 
+# Must be run interactively.
+if ! test -t 0 -a -t 1 -a -t 2 ; then
+    echo "This installation program should be run interactively."
+    exit 2
+fi
+
+# Create logs directory, if needed.
+mkdir -p logs
+
+START=`date "+%Y-%m-%dT%H:%M:%S"`
+LOGDIR="logs"
+LOGFILE="logs/install-$START.log"
+LOGPIPE=/tmp/pipe.$$
+mkfifo -m 700 $LOGPIPE
+trap "rm -f $LOGPIPE" EXIT
+tee -a <$LOGPIPE $LOGFILE &
+exec 1>$LOGPIPE 2>&1
+
 CWD=`pwd`
 RootDir=`dirname $CWD`
+
+
+echo "LORIS Installation Script starting at $START"
+
+if [ ! -w $LOGDIR ] ; then
+        echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
+        while true; do
+                read -p "Do you still want to continue? [yn] " yn
+		echo $yn | tee -a $LOGFILE > /dev/null
+                case $yn in
+                        [Yy]* )
+                                break;;
+                        [Nn]* )
+                                echo "Aborting installation."
+                                exit 2;;
+                        * ) echo "Please enter 'y' or 'n'."
+                esac
+        done;
+else
+	echo "The log for this session will be stored in file $CWD/$LOGFILE"
+fi
+
 
 # Banner
 cat <<BANNER
@@ -31,50 +72,12 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
     exit 2
 fi
 
-# Must be run interactively.
-if ! test -t 0 -a -t 1 -a -t 2 ; then
-    echo "This installation program should be run interactively."
-    exit 2
-fi
-
 # Create some subdirectories, if needed.
-mkdir -p logs ../project ../project/tables_sql ../smarty/templates_c
+mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
 
-
-#
-# Configure logging.
-# From now on, STDOUT and STDERR are sent to both the terminal AND a logfile in logs/
-#
-START=`date "+%Y-%m-%dT%H:%M:%S"`
-LOGDIR="logs"
-LOGFILE="logs/install-$START.log"
-LOGPIPE=/tmp/pipe.$$
-mkfifo -m 700 $LOGPIPE
-trap "rm -f $LOGPIPE" EXIT
-tee <$LOGPIPE capt &
-exec 1>$LOGPIPE 2>&1
-
-
-if [ ! -w $LOGDIR ] ; then
-	echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
-	while true; do
-    		read -p "Do you still want to continue? [yn] " yn
-		case $yn in
-			[Yy]* )
-				break;;
-			[Nn]* )
-            			echo "Aborting installation."
-				exit 2;;
-			* ) echo "Please enter 'y' or 'n'."
-		esac
-	done;
-fi
-
-echo "LORIS Installation Script starting at $START"
-echo "The log for this session will be stored in file $CWD/$LOGFILE"
 
 if [ -f ../project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
@@ -103,37 +106,38 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-  a) A name for the MySQL Database. This should be
+  1) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
      This database will be created later on.
 
-  b) The hostname for the machine where the MySQL server will run on
+  2) The hostname for the machine where the MySQL server will run on
      (this is where we'll create the database).
 
-  c) The MySQL username that the Loris system will use to connect
+  3) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
      created later on.
 
-  d) The password for this username (it will be set later on).
+  4) The password for this username (it will be set later on).
 
-  e) Another password for the 'admin' account of the Loris DB
+  5) Another password for the 'admin' account of the Loris DB
      (it will also be set later on).
 
-  f) Credentials of an existing root MySQL account to install the
+  6) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
      populate the default tables, and to grant privileges to the
      newly created MySQL user in part c).
 
-  e) Your project name. This should be an alphanumeric name.
-     It will be used to automatically create/install apache config files.
-     It will also be used to modify the paths for MRI in the generated
-     config.xml file for LORIS.
+  7) Your project name. This should be an alphanumeric name.
+     It will be used to modify the paths for MRI in the generated
+     config.xml file for LORIS. It may also be used to automatically
+     create/install apache config files.
 
 QUESTIONS
 
 
 while true; do
         read -p "Ready to continue? [yn] " yn
+	echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
                 break;;
@@ -146,8 +150,9 @@ done;
 
 echo ""
 
-while true; do
+while [ "$mysqldb" == "" ]; do
 	read -p "What is the database name? " mysqldb
+	echo $mysqldb | tee -a $LOGFILE > /dev/null
 	case $mysqldb in
 		"" )
 			read -p "What is the database name? " mysqldb
@@ -157,26 +162,28 @@ while true; do
 	esac
 done;
 
-while true; do
+while [ "$mysqlhost" == "" ]; do
         read -p "Database host? " mysqlhost
-        case $mysqlhost in
-                "" )
-                        read -p "Database host? " mysqlhost
-                        continue;;
+	echo $mysqlhost | tee -a $LOGFILE > /dev/null
+       	case $mysqlhost in
+               	"" )
+                       	read -p "Database host? " mysqlhost
+                       	continue;;
                 * )
-                        break;;
+       	                break;;
         esac
 done;
 
-while true; do
+while [ "$mysqluser" == "" ]; do
         read -p "What MySQL user will Loris connect as? " mysqluser
-        case $mysqluser in
-                "" )
-                        read -p "What MySQL user will Loris connect as? " mysqluser
-                        continue;;
+	echo $mysqluser | tee -a $LOGFILE > /dev/null
+       	case $mysqluser in
+               	"" )
+                       	read -p "What MySQL user will Loris connect as? " mysqluser
+                       	continue;;
                 * )
-                        break;;
-        esac
+       	                break;;
+       	esac
 done;
 
 stty -echo
@@ -188,6 +195,7 @@ while true; do
 	if [[ $mysqlpass == $mysqlpass2 ]] ; then
 	        break;
 	fi
+	echo ""
 	echo "Passwords did not match. Please try again.";
 done;
 
@@ -201,20 +209,22 @@ while true; do
         if [[ $lorispass == $lorispass2 ]] ; then
                 break;
         fi
+	echo ""
 	echo "Passwords did not match. Please try again.";
 done;
 
 stty echo ; echo ""
 
-while true; do 
-        read -p "Existing root MySQL username: " mysqlrootuser
-        case $mysqlrootuser in
-                "" )
-                        read -p "Existing root MySQL username: " mysqlrootuser
-                        continue;;
+while [ "$mysqlrootuser" == "" ]; do 
+       	read -p "Existing root MySQL username: " mysqlrootuser
+	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+       	case $mysqlrootuser in
+               	"" )
+                       	read -p "Existing root MySQL username: " mysqlrootuser
+                       	continue;;
                 * ) 
-                        break;;
-        esac
+       	                break;;
+       	esac
 done;
 
 stty -echo
@@ -226,10 +236,25 @@ while true; do
         if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
                 break;
         fi
+	echo ""
 	echo "Passwords did not match. Please try again.";
 done;
 
 stty echo
+echo ""
+
+while [ "$projectname" == "" ]; do 
+        read -p "Enter project name: " projectname
+	echo $projectname | tee -a $LOGFILE > /dev/null
+       	case $projectname in
+               	"" )
+                       	read -p "Enter project name: " projectname
+                       	continue;;
+                * ) 
+       	                break;;
+       	esac
+done;
+
 
 
 echo ""
@@ -240,6 +265,7 @@ if [ $MySQLError -ne 0 ] ; then
 	while true; do
 		echo "Could not connect to database with the root user provided. Please try again.";
 	        read -p "Existing root MySQL username: " mysqlrootuser
+		echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
 		stty -echo
 		while true; do
         		read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
@@ -247,6 +273,7 @@ if [ $MySQLError -ne 0 ] ; then
         		if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
                 		break;
 		        fi
+			echo ""
 			echo "Passwords did not match. Please try again.";
 		done;
 		stty echo
@@ -288,13 +315,14 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
     -e "s/%DATABASE%/$mysqldb/g" \
     -e "s#%LORISROOT%#$RootDir/#g" \
-    -e "s#%PROJECT%#$projectname/#g" \
+    -e "s#%PROJECTNAME%#$projectname#g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 
 
 while true; do
     read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
             echo "Installing PEAR libraries (may prompt for sudo password)."
@@ -346,9 +374,9 @@ done;
 
 while true; do
     read -p "Would you like to automatically create/install apache config files? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
-            read -p "Enter project name: " projectname
             if [ -f /etc/apache2/sites-available/$projectname ]; then
                 echo "Apache appears to already be configured for $projectname. Aborting\n"
                 exit 1
@@ -369,4 +397,5 @@ while true; do
 done;
 
 echo "Installation complete."
+
 
