@@ -452,27 +452,40 @@ class NDB_BVL_Battery extends PEAR
         if(Utility::isErrorX($candidate)) 
             return $this->raiseError("Could not create candidate object: ".$candidate->getMessage());
 
-        // get test_names.ID
-        $query = "SELECT ID FROM test_names WHERE Test_name=:TN";
-        $row = $DB->pselectRow($query, array('TN' => $testName));
-        if(Utility::isErrorX($row)) {
-            return $this->raiseError("DB Error: ".$row->getMessage());
-        }
-        $testID = $row['ID'];
-
-        // formula for CommentID = concat(session.CandID,
-        // session.PSCID, session.ID, session.SubprojectId, test_names.ID, timestamp)
-        $commentID = $candidate->getCandID()
-            . $candidate->getPSCID()
-            . $timepoint->getSessionID()
-            . $timepoint->getSubprojectID()
-            . $testID
-            . time();
-
-        return $commentID;
-        
-    } // end _createCommentID()
+        return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
+    }
     
+    /**
+     * Generates a CommentID of the appropriate format given a SessionID and a Test name
+     *
+     * @return string A Validly formatted CommentID
+     */
+    static function generateCommentID($SessionID, $Test_name) {
+        $DB = Database::singleton();
+        
+        $TestID = $DB->pselectOne(
+            "SELECT ID FROM test_names WHERE Test_name=:TN",
+            array('TN' => $Test_name)
+        );
+
+
+        $OtherInfo = $DB->pselectRow(
+            "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
+                    JOIN candidate c USING (CandID)
+                WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
+            array('SID' => $SessionID)
+        );
+
+        if (empty($TestID) || empty($OtherInfo)) {
+            return null;
+        }
+        return $OtherInfo['CandID'] 
+            . $OtherInfo['PSCID'] 
+            . $SessionID 
+            . $OtherInfo['SubprojectID'] 
+            . $TestID 
+            . time();
+    }
     /**
      * Generates a CommentID of the appropriate format given a SessionID and a Test name
      *

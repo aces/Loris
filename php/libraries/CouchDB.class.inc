@@ -271,7 +271,7 @@ class CouchDB
         foreach($headers as $key => $value) {
             $handler->write($key . ':' . $value . "\r\n");
         }
-	$handler->write("\r\n");
+        $handler->write("\r\n");
         $handler->write($data);
         $response = '';
         while(!$handler->eof()) {

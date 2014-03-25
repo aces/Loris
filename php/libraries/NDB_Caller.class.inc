@@ -46,7 +46,7 @@ class NDB_Caller extends PEAR
     * Renders the called menu, form or the instrument into html
     * @param string     the object type to load.  The test_name of the menu, form or instrument
     * @param string     the subtest.  The page of the form or instrument.
-    * @param unknown    controlPanel?
+    * @param string     HTML for a control panel to be added to the template data. Passed along from main.php
     * @param string     the commentid being loaded. 
     * @param string     a page to forward to on completion of save. Used in direct data entry.
     * @return string    rendered object, as html

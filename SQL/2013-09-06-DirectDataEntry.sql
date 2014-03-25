@@ -17,3 +17,5 @@ CREATE TABLE participant_emails(
 );
 
 ALTER TABLE test_names ADD COLUMN IsDirectEntry BOOLEAN;
+
+UPDATE permissions SET description='User Management / Survey Participant Management' WHERE code='user_accounts';
