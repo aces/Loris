@@ -299,6 +299,8 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 
+
+
     /**
     * method to display the form - usually not overridden as it
     * includes all the base code that any instrument will require.
@@ -309,14 +311,25 @@ class NDB_BVL_Instrument extends NDB_Page
     function display()
     {
         // ALWAYS INCLUDE THESE!
-        $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
-        $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
+
+        if(isset($_REQUEST['key'])) {
+            $this->DataEntryType = 'DirectEntry';
+        } else {
+            $this->DataEntryType = 'normal'; 
+            // These are required for Save Data to work properly, but not when it's
+            // a direct data entry page
+            $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
+            $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
+        }
         $this->addHidden('commentID', $this->getCommentID());
         $this->addHidden('test_name', $this->testName);
         $this->addHidden('page', $this->page);
         $this->addHidden('subtest', $this->page);
-        
-        if(!$this->form->isFrozen()) {
+
+        // Don't show save button for Direct Data entry type,
+        // because that's part of the DirectEntry template
+        // and has Save/Continue and go back buttons
+        if(!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
             $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->addGroup($buttons, null, null, "&nbsp;");
@@ -353,6 +366,11 @@ class NDB_BVL_Instrument extends NDB_Page
         $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
         $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
+
+        // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
+        // so that we can have instructions/labels in the direct data entry instruments that span into
+        // the column for data entry.
+        $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
         $this->form->accept($renderer);
         return $renderer->toHtml();
     }
@@ -399,7 +417,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return void
+     * @return false if failure to save data
      * @access public
      */
     function save()
@@ -418,7 +436,6 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             $submittedData = $this->form->getSubmitValues();
             
-           
             if(count($submittedData)) {
                 
                 // the form WAS submitted but validate() failed...
@@ -434,6 +451,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                     }
                 }
+                return false;
             }
         }
         
@@ -443,6 +461,7 @@ class NDB_BVL_Instrument extends NDB_Page
             print "This error will not prevent data from being saved, unless the data entry error is also displayed.<BR>Please inform DCC of this error<br>\n";
             return PEAR::raiseError($scoreResult->getMessage());
         }
+        return true;
     }
     
     function _saveCandidateAge(&$values) {
@@ -553,6 +572,8 @@ class NDB_BVL_Instrument extends NDB_Page
         
         // do not alter this when overwriting the method
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
+        // nor these -- these ones are for direct data entry
+        unset($values['key'], $values['nextpage'], $values['pageNum']);
         $this->_save($values);
     }
     
@@ -834,6 +855,7 @@ class NDB_BVL_Instrument extends NDB_Page
     
     
     function XINValidate($elements){
+        unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug=false;  //Turn this on to see rules debuggin output
 
         $errors=array();

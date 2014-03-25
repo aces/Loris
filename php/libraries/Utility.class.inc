@@ -327,7 +327,7 @@ class Utility extends PEAR
 
         $list = array();
         foreach ($result as $row) {
-            $list[$row["Visit_label"]] = $row["Visit_label"];
+            $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
         }
         return $list;
     }
@@ -862,12 +862,34 @@ class Utility extends PEAR
 
 
     /**
-     * Return a list of instruments which have scored columns specified
-     * for the instrument. 
+     * Gets a list of all instruments where are administered as direct data
+     * entry from subjects. 
+     * This should return an array in a format suitable for addSelect() from
+     * NDB_Page
      *
-     * @return non-associative array of the test names which have scoring
+     * @return associative array of test_names in a Test_Name => "Full Name"
      */
-    function getScoredInstruments()
+    static function getDirectInstruments()
+    {
+        $DB =& Database::singleton();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
+            array()
+        );
+        foreach ($instruments_q as $key) {
+            $instruments[$key['Test_name']]=$key['Full_name'];
+        }
+
+        return $instruments;
+    }
+
+    /**
+     * Get a list of all instruments which have scoring implemented.
+     * Used in statistics module.
+     *
+     * @return array non-associative array of test_names
+     */
+    static function getScoredInstruments()
     {
         $All = Utility::getAllInstruments();
         $Scored = array();
