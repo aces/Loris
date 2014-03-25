@@ -20,8 +20,11 @@ mkdir -p logs
 START=`date "+%Y-%m-%dT%H:%M:%S"`
 LOGDIR="logs"
 LOGFILE="logs/install-$START.log"
-exec > >(tee $LOGFILE)
-exec 2>&1
+LOGPIPE=/tmp/pipe.$$
+mkfifo -m 700 $LOGPIPE
+trap "rm -f $LOGPIPE" EXIT
+tee -a <$LOGPIPE $LOGFILE &
+exec 1>$LOGPIPE 2>&1
 
 CWD=`pwd`
 RootDir=`dirname $CWD`
@@ -33,6 +36,7 @@ if [ ! -w $LOGDIR ] ; then
         echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
         while true; do
                 read -p "Do you still want to continue? [yn] " yn
+		echo $yn | tee -a $LOGFILE > /dev/null
                 case $yn in
                         [Yy]* )
                                 break;;
@@ -133,6 +137,7 @@ QUESTIONS
 
 while true; do
         read -p "Ready to continue? [yn] " yn
+	echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
                 break;;
@@ -147,6 +152,7 @@ echo ""
 
 while [ "$mysqldb" == "" ]; do
 	read -p "What is the database name? " mysqldb
+	echo $mysqldb | tee -a $LOGFILE > /dev/null
 	case $mysqldb in
 		"" )
 			read -p "What is the database name? " mysqldb
@@ -158,6 +164,7 @@ done;
 
 while [ "$mysqlhost" == "" ]; do
         read -p "Database host? " mysqlhost
+	echo $mysqlhost | tee -a $LOGFILE > /dev/null
        	case $mysqlhost in
                	"" )
                        	read -p "Database host? " mysqlhost
@@ -169,6 +176,7 @@ done;
 
 while [ "$mysqluser" == "" ]; do
         read -p "What MySQL user will Loris connect as? " mysqluser
+	echo $mysqluser | tee -a $LOGFILE > /dev/null
        	case $mysqluser in
                	"" )
                        	read -p "What MySQL user will Loris connect as? " mysqluser
@@ -209,6 +217,7 @@ stty echo ; echo ""
 
 while [ "$mysqlrootuser" == "" ]; do 
        	read -p "Existing root MySQL username: " mysqlrootuser
+	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
        	case $mysqlrootuser in
                	"" )
                        	read -p "Existing root MySQL username: " mysqlrootuser
@@ -236,6 +245,7 @@ echo ""
 
 while [ "$projectname" == "" ]; do 
         read -p "Enter project name: " projectname
+	echo $projectname | tee -a $LOGFILE > /dev/null
        	case $projectname in
                	"" )
                        	read -p "Enter project name: " projectname
@@ -255,6 +265,7 @@ if [ $MySQLError -ne 0 ] ; then
 	while true; do
 		echo "Could not connect to database with the root user provided. Please try again.";
 	        read -p "Existing root MySQL username: " mysqlrootuser
+		echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
 		stty -echo
 		while true; do
         		read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
@@ -311,6 +322,7 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
 
 while true; do
     read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
             echo "Installing PEAR libraries (may prompt for sudo password)."
@@ -362,6 +374,7 @@ done;
 
 while true; do
     read -p "Would you like to automatically create/install apache config files? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
             if [ -f /etc/apache2/sites-available/$projectname ]; then
