@@ -54,7 +54,7 @@
 <links>
     <link url='dicom_archive.php?' args=''>DICOM Archive</link>
     <link url='mri_browser.php?' args='MRIBrowser'>MRI Browser</link>
-    <link url='query_gui.php?' args=''>Data Query GUI</link>
+    <link url='query_gui.php?' args=''>Data Query Tool</link>
 </links>
 
 <!-- mail settings -->
@@ -75,7 +75,7 @@
 
 <!-- study variables -->
     <study>
-        <!--display additional user info -->
+        <!--display additional user fields in User Accounts page e.g. Institution-->
         <additional_user_info>1</additional_user_info>        
         <!-- Descriptive study title, appears on top of the screen-->
         <title>Example Study</title>a
@@ -83,7 +83,7 @@
         <studylogo>images/neuro_logo_blue.gif</studylogo>
         <!---number of columns the quat table will contain  -->
         <columnThreshold>250</columnThreshold>
-        <!-- true/false - use EDC (Expected Date of Confinement) : used for studies involving infants-->
+        <!-- true/false - use EDC (Expected Date of Confinement) field is false unless the study focuses on neonatals for birthdate estimations.-->
         <useEDC>false</useEDC>
         <!-- minimum age in years (0+)-->
         <ageMin>8</ageMin>
@@ -105,7 +105,7 @@
             <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
           </structure>
         </PSCID>
-        <!--External ID to be used when data is submitted to external source  -->
+        <!--External ID field is false unless data is used for blind data distribution, or/from external data sources  -->
         <useExternalID>false</useExternalID>
         <ExternalID>
           <generation>random</generation>
@@ -114,7 +114,7 @@
             <seq type="numeric" length="4" min='1000' max='9999'/>
           </structure>
         </ExternalID>
-        <!-- enable mutiple projects within same loris installation-->
+        <!--useProject field is false unless study involves more than one project where each project has multiple cohorts/subprojects-->
         <useProjects>false</useProjects>
         <Projects>
             <project>
@@ -240,7 +240,6 @@
 
 <!-- Statistics options -->
     <statistics>
-        <visitStats>EL</visitStats>
         <excludedMeasures>radiology_review</excludedMeasures>
         <excludedMeasures>mri_parameter_form</excludedMeasures>
     </statistics>
@@ -291,7 +290,6 @@
                 <perm>user_accounts</perm>
                 <perm>reliability_edit_all</perm>
                 <perm>access_all_profiles</perm>
-                <perm>EARLI_Reliability</perm>
             </permissions>
             <visible>1</visible>
         </subtab>
@@ -311,7 +309,6 @@
             <label>Videos</label>
             <access>all</access>
             <permissions>
-                <perm>earli_videos</perm>
                 <perm>video_upload</perm>
             </permissions>
             <visible>0</visible>
