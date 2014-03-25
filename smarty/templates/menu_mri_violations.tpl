@@ -17,6 +17,10 @@
       <td nowrap="nowrap">{$form.ProblemType.label}</td>
       <td nowrap="nowrap">{$form.ProblemType.html}</td>
    </tr>
+   <tr>
+      <td nowrap="nowrap">{$form.Description.label}</td>
+      <td nowrap="nowrap">{$form.Description.html}</td>
+   </tr>
    
     <tr>
         <td>Actions:</td>
