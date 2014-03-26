@@ -15,7 +15,7 @@ function getQueryVariable(variable) {
 
 BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     "use strict";
-    var link, minc_ids, minc_ids_arr, minc_volumes = [], i,
+    var link, minc_ids, minc_ids_arr, minc_volumes = [], i, 
         bboptions = {};
 
     viewer.addEventListener("ready", function () {
@@ -370,13 +370,13 @@ $(".time-div").each(function() {
       viewer.volumes.forEach(function(volume, vol_id) {
         var world_coords = volume.getWorldCoords();
         var voxel_coords = volume.getVoxelCoords();
-        $("#world-x-" + vol_id).val(world_coords.x.toPrecision(6));
-        $("#world-y-" + vol_id).val(world_coords.y.toPrecision(6));
-        $("#world-z-" + vol_id).val(world_coords.z.toPrecision(6));
+        $("#world-x-" + vol_id).val(world_coords.x.toPrecision(4));
+        $("#world-y-" + vol_id).val(world_coords.y.toPrecision(4));
+        $("#world-z-" + vol_id).val(world_coords.z.toPrecision(4));
 
-        $("#voxel-x-" + vol_id).val(voxel_coords.x.toPrecision(6));
-        $("#voxel-y-" + vol_id).val(voxel_coords.y.toPrecision(6));
-        $("#voxel-z-" + vol_id).val(voxel_coords.z.toPrecision(6));
+        $("#voxel-x-" + vol_id).val(voxel_coords.x.toPrecision(4));
+        $("#voxel-y-" + vol_id).val(voxel_coords.y.toPrecision(4));
+        $("#voxel-z-" + vol_id).val(voxel_coords.z.toPrecision(4));
       });
     });      // Should cursors in all panels be synchronized?
       $("#sync-volumes").change(function() {
@@ -656,13 +656,13 @@ $(".time-div").each(function() {
       viewer.volumes.forEach(function(volume, vol_id) {
         var world_coords = volume.getWorldCoords();
         var voxel_coords = volume.getVoxelCoords();
-        $("#world-x-" + vol_id).val(world_coords.x.toPrecision(6));
-        $("#world-y-" + vol_id).val(world_coords.y.toPrecision(6));
-        $("#world-z-" + vol_id).val(world_coords.z.toPrecision(6));
+        $("#world-x-" + vol_id).val(world_coords.x.toPrecision(4));
+        $("#world-y-" + vol_id).val(world_coords.y.toPrecision(4));
+        $("#world-z-" + vol_id).val(world_coords.z.toPrecision(4));
 
-        $("#voxel-x-" + vol_id).val(voxel_coords.x.toPrecision(6));
-        $("#voxel-y-" + vol_id).val(voxel_coords.y.toPrecision(6));
-        $("#voxel-z-" + vol_id).val(voxel_coords.z.toPrecision(6));
+        $("#voxel-x-" + vol_id).val(voxel_coords.x.toPrecision(4));
+        $("#voxel-y-" + vol_id).val(voxel_coords.y.toPrecision(4));
+        $("#voxel-z-" + vol_id).val(voxel_coords.z.toPrecision(4));
       });
     });
 
@@ -722,6 +722,14 @@ $(".time-div").each(function() {
         el = $(".volume-container");
         for(i = 0; i < el.length; i += 1) {
             width += $(el[i]).width();
+        }
+
+        //issue with non-consistent size - decrease manually
+        if (el.length == 1) {
+            width -=25;
+        } 
+        else if (el.length == 2 || el.length == 3) {
+            width -=30;
         }
 
         $("#brainbrowser-wrapper").width(width);
