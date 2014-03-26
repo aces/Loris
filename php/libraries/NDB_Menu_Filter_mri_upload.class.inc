@@ -161,7 +161,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $mri_header_executer = $mri_code_path . "customize_headers.pl";
             $environment_script = $mri_code_path . "environment";
             $DICOMTAR = $mri_code_path. "dicom-archive/dicomTar.pl";
-            $update_header = $mri_code_path. "dicom-archive/updateHeaders.pl";
+            //$update_header = $mri_code_path. "dicom-archive/updateHeaders.pl";
             $tarchive_location =  $paths['data'] . "tarchive";
             $bach_upload_script  = $mri_code_path . "batch_uploads_tarchive";
             $candid = $values['CandID'];
@@ -213,7 +213,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///if the candid, pscid, and visit_label are inserted
             if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
                 $result = $this->InsertDicom($DICOMTAR,$file_name,
-                $decompressed_folder,$tarchive_location,$patient_name,$patient_id,$update_header);
+                $decompressed_folder,$tarchive_location,$patient_name,$patient_id);
 
                 $dicom_created = $result[0];
                 $tarchive_id = $result[1];
@@ -678,7 +678,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
 
     function InsertDicom($DICOMTAR,$file_name,$decompressed_folder,
-    $tarchive_location,$patient_name,$patient_id,$update_header)
+    $tarchive_location,$patient_name,$patient_id)
     {
         $db=& Database::singleton();
         $dicom_inserted = false;
@@ -734,6 +734,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////////////////////////////////////////////////////////
                     /////////////update the header if the ArchiveLocation is set///////
                     ///////////////////////////////////////////////////////////////////
+                    /*
                     if (isset($ArchiveLocation)) {
                         $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
                         . " '(0010,0010)' $patient_name -set '(0010,0020)' $patient_id -database -profile prod";
@@ -748,7 +749,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $patient_id \n <BR> "
             );
                     }
-
+                    */
 
 
                     ////////////////////////////////////////////////////////////////////
