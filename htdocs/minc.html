@@ -9,102 +9,13 @@
  </head>
 <body>
   <h1 id="app-name" class="app-label" style="display: block">Imaging Browser</h1>
-  <script id="volume-ui-template" type="x-volume-ui-template">
-    <div class="volume-viewer-display">
-    </div>
-    <div class="volume-viewer-controls volume-controls">
-      
-      <div class="coords">
-        <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-          World Coordinates: 
-        </div>
-        <div class="world-coords" data-volume-id="{{VOLID}}">
-          X:<input id="world-x-{{VOLID}}" class="control-inputs">
-          Y:<input id="world-y-{{VOLID}}" class="control-inputs">
-          Z:<input id="world-z-{{VOLID}}" class="control-inputs">
-        </div>
-        <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
-          Voxel Coordinates: 
-        </div>
-        <div class="voxel-coords" data-volume-id="{{VOLID}}">
-          X:<input id="voxel-x-{{VOLID}}" class="control-inputs">
-          Y:<input id="voxel-y-{{VOLID}}" class="control-inputs">
-          Z:<input id="voxel-z-{{VOLID}}" class="control-inputs">
-        </div>
-      </div>
-      
-      <div id="color-map-{{VOLID}}">
-        <span class="control-heading" id="color-map-heading-{{VOLID}}">
-          Color Map: 
-        </span>
-        <select class="color-map-select" data-volume-id="{{VOLID}}">
-          <option value="0" selected="">Spectral</option>
-          <option value="1">Thermal</option>
-          <option value="2">Gray</option>
-          <option value="3">Blue</option>
-          <option value="4">Green</option>
-        </select>
-      </div>
-
-      <div class="threshold-div" data-volume-id="{{VOLID}}">
-        <div class="control-heading">
-          Threshold: 
-        </div>
-        <div class="thresh-inputs">
-          <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
-          <input id="max-threshold-{{VOLID}}" class="control-inputs thresh-input-right" value="255"/>
-        </div> 
-        <div class="slider volume-viewer-threshold" id="threshold-slider-{{VOLID}}"></div>
-      </div>
-
-      
-
-      <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
-        <div class="control-heading" id="slice-series-heading-{{VOLID}}">Slices to capture:</div>
-        <span class="slice-series-button button" data-axis="xspace">Sagittal</span>
-        <span class="slice-series-button button" data-axis="yspace">Coronal</span>
-        <span class="slice-series-button button" data-axis="zspace">Transverse</span>
-      </div>
-      
-    </div>
-  </script>
-  <script id="overlay-ui-template" type="x-volume-ui-template">
-    <div class="overlay-viewer-display">
-    </div>
-    <div class="volume-viewer-controls volume-controls">
-      
-      <div class="coords">
-        <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-          World Coordinates: 
-        </div>
-        <div class="world-coords" data-volume-id="{{VOLID}}">
-          X:<input id="world-x-{{VOLID}}" class="control-inputs">
-          Y:<input id="world-y-{{VOLID}}" class="control-inputs">
-          Z:<input id="world-z-{{VOLID}}" class="control-inputs">
-        </div>
-        <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
-          Voxel Coordinates: 
-        </div>
-        <div class="voxel-coords" data-volume-id="{{VOLID}}">
-          X:<input id="voxel-x-{{VOLID}}" class="control-inputs">
-          Y:<input id="voxel-y-{{VOLID}}" class="control-inputs">
-          Z:<input id="voxel-z-{{VOLID}}" class="control-inputs">
-        </div>
-      </div>
-
-      <div class="blend-div" data-volume-id="{{VOLID}}">
-        <span class="control-heading" id="blend-heading{{VOLID}}">Blend (0.0 to 1.0):</span>
-        <input class="control-inputs blend-inputs" value="0.5" id="blend-val"/>
-        <div id="blend-slider" class="slider volume-viewer-blend"></div>
-      </div>
-      
-    </div>
-  </script>
 
    <script id="volume-ui-template4d" type="x-volume-ui-template">
     <div class="volume-viewer-display">
     </div>
     <div class="volume-viewer-controls volume-controls">
+    <div class="filename" id="filename-{{VOLID}}">
+    </div>
         <div class="coords">
             <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                 World Coordinates: 

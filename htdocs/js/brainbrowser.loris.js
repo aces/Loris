@@ -15,7 +15,7 @@ function getQueryVariable(variable) {
 
 BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     "use strict";
-    var link, minc_ids, minc_ids_arr, minc_volumes = [], i, 
+    var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
         bboptions = {};
 
     viewer.addEventListener("ready", function () {
@@ -680,6 +680,24 @@ $(".time-div").each(function() {
     }
 
     for (i = 0; i < minc_ids_arr.length; i += 1) {
+
+        var filename;
+        $.ajax({
+            data: 'minc_id=' + minc_ids_arr[i],
+            url: 'getMincName.php',
+            method: 'GET',
+            async: false,
+            success: function(data) {
+                filename = data;
+            }
+        });
+
+
+        minc_filenames.push(filename);
+        viewer.addEventListener("ready", function () {
+            viewer.setFileNames(minc_filenames);
+        });
+
         minc_volumes.push({
             type: 'minc',
             header_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
@@ -734,5 +752,12 @@ $(".time-div").each(function() {
 
         $("#brainbrowser-wrapper").width(width);
     });
+
+    viewer.setFileNames = function (filenames) {
+        for (i=0; i < filenames.length; i += 1) {
+           $("#filename-"+i).html(filenames[i]);
+       }
+    }
+
     viewer.loadVolumes(bboptions);
 });
