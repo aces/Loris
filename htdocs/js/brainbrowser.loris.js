@@ -703,7 +703,7 @@ $(".time-div").each(function() {
     bboptions.volumes = minc_volumes;
 
     viewer.addEventListener("ready", function() {
-        var i = 0, volumes = this.volumes, el;
+        var i = 0, volumes = this.volumes, el, width = 0;
         for(i = 0; i < volumes.length; i += 1) {
             if(volumes[i].header.time) {
                 // 4d dataset, keep the Play button
@@ -715,6 +715,16 @@ $(".time-div").each(function() {
 
             }
         }
+
+        // Get all the volumes and add their width together
+        // so that we can set the width of the wrapper
+        // dynamically based on the number of volumes loaded.
+        el = $(".volume-container");
+        for(i = 0; i < el.length; i += 1) {
+            width += $(el[i]).width();
+        }
+
+        $("#brainbrowser-wrapper").width(width);
     });
     viewer.loadVolumes(bboptions);
 });
