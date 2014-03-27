@@ -1,13 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
-<div id="page">
 <head>
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
-<title>{$study_title}</title>
-<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript" />
-
 <link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
+<title>{$study_title}</title>
 <script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
 
@@ -70,6 +67,7 @@ function getCookie(c_name) {
 onload="feedback_bvl_popup();" 
 {/if}
 >
+<div id="page">
 {if $dynamictabs neq "dynamictabs"}
 <table width="100%" class="header">
 <tr>
@@ -167,6 +165,8 @@ onload="feedback_bvl_popup();"
 {section name=crumb loop=$crumbs}
 {if $test_name == "conflicts_resolve"}
 <a href="main.php/{$crumbs[crumb].query}">Conflicts Resolver</a> {if not $smarty.section.crumb.last}&gt; {/if}
+{elseif $test_name == "statistics_dd_site"}
+<a href="main.php/{$crumbs[crumb].query}">Double Data Entry Site Statistics</a> {if not $smarty.section.crumb.last}&gt; {/if}
 {else}
 <a href="main.php?{$crumbs[crumb].query}">{$crumbs[crumb].text}</a> {if not $smarty.section.crumb.last}&gt; {/if}
 {/if}

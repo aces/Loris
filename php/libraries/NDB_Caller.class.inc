@@ -1,5 +1,6 @@
 <?php
 require_once 'PEAR.php';
+require_once 'User.class.inc';
 
 /**
  * Caller class
@@ -15,6 +16,14 @@ class NDB_Caller extends PEAR
      * @access public
      */
     var $type;
+
+    /**
+     * Determines how data entry is being performed (directly from a study participant,
+     * or by a data entry staff.
+     * @var string
+     * @access private
+     */
+    var $DataEntry;
 
     /**
      * Singleton method
@@ -37,16 +46,21 @@ class NDB_Caller extends PEAR
     * Renders the called menu, form or the instrument into html
     * @param string     the object type to load.  The test_name of the menu, form or instrument
     * @param string     the subtest.  The page of the form or instrument.
+    * @param string     HTML for a control panel to be added to the template data. Passed along from main.php
+    * @param string     the commentid being loaded. 
+    * @param string     a page to forward to on completion of save. Used in direct data entry.
     * @return string    rendered object, as html
     *
     */
-    function load($test_name, $subtest, $controlPanel=null)
+    function load($test_name, $subtest, $controlPanel=null, $CommentID = '', $nextpage=null)
     {
         // if no first argument, return
         if (empty($test_name)) {
             return;
         }
-
+        if(empty($CommentID)) {
+            $CommentID = $_REQUEST['commentID'];
+        }
         // get the files path, aka the base directory
         $config =& NDB_Config::singleton();
         $base = $config->getSetting('base');
@@ -100,7 +114,7 @@ class NDB_Caller extends PEAR
           if ($this->existsAndRequire($base."project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
                 || $test_name=='instrument_preview') {
     
-            $html = $this->loadInstrument($test_name, $subtest, $_REQUEST['commentID']);
+            $html = $this->loadInstrument($test_name, $subtest, $CommentID, $nextpage);
             if (Utility::isErrorX($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
@@ -108,7 +122,7 @@ class NDB_Caller extends PEAR
             $this->type = 'instrument';
             return $html;
         } else if(file_exists($base."project/instruments/$test_name.linst")) {
-            $html = $this->loadInstrument($test_name, $subtest, $_REQUEST['commentID']);
+            $html = $this->loadInstrument($test_name, $subtest, $CommentID);
             if (PEAR::isError($html)) {
                 return PEAR::raiseError($html->getMessage());
             }
@@ -212,8 +226,11 @@ class NDB_Caller extends PEAR
     * @param string commentID of the instrument
     * @note: added a call to Timepoint class using $_REQUIEST['sessionID'] which implies that the instrument call must be made within the timepoint
     */
-    function loadInstrument($instrument, $page, $commentID)
+    function loadInstrument($instrumentName, $page, $commentID, $redirectToOnSuccess=null)
     {
+        if ($page === 'finalpage') {
+            return "<script language='javascript'>window.location='$redirectToOnSuccess'</script>";
+        }
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
@@ -227,7 +244,7 @@ class NDB_Caller extends PEAR
         }
 
         // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory($instrument, $commentID, $page);
+        $instrument =& NDB_BVL_Instrument::factory($instrumentName, $commentID, $page);
         if (Utility::isErrorX($instrument)) {
             return $instrument;
         }
@@ -238,6 +255,9 @@ class NDB_Caller extends PEAR
             return PEAR::raiseError("NDB_Caller::loadInstrument() save: ".$success->getMessage());
         }
 
+        if($redirectToOnSuccess !== null && $success !== FALSE) {
+            return "<script language='javascript'>window.location='$redirectToOnSuccess'</script>";
+        }
         // create an instrument status object
         $status = new NDB_BVL_InstrumentStatus;
         $success = $status->select($commentID);
@@ -247,7 +267,7 @@ class NDB_Caller extends PEAR
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress' || !$user->hasPermission('data_entry') || $user->getData("CenterID") != $timepoint->getData("CenterID")) {
-            if($instrument->preview !== true ) {
+            if($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();
             }
         }
@@ -272,6 +292,10 @@ class NDB_Caller extends PEAR
         }
 
         return false;
+    }
+
+    function setDataEntryType($type) {
+        $this->DataEntry = $type;
     }
 }
 ?>

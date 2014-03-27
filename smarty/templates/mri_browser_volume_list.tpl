@@ -187,7 +187,9 @@ return true;
 
         <td><a name="{$smarty.section.fIdx.index}"><table class="fancytableleft" border="1">
             <tr>
-                <th>Filename</th><td>{if $files[fIdx].filename != ""}{$files[fIdx].filename}{else}&nbsp;{/if}</td>
+                <th>Filename</th>
+                <td> {if $files[fIdx].filename != ""}{$files[fIdx].filename}{else}&nbsp;{/if}</td>
+                <td {if $files[fIdx].qcStatus != ""}class="image{$files[fIdx].qcStatus}{/if}">{$files[fIdx].qcStatus}</td>
             </tr>
             
 {* IMG *}
@@ -196,7 +198,7 @@ return true;
             <tr>
                 <td colspan="3">
             	<a href="#{$smarty.section.fIdx.index}" onClick="window.open('minc.html?minc_id={$files[fIdx].fileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto')">
-               	<img src="{$files[fIdx].checkpicFilename}" {if $files[fIdx].qcStatus != ""}height="180"{/if} border="0">
+               	<img src="{$files[fIdx].checkpicFilename}" height="180" border="0">
             	</a>
             	</td>
             </tr>
@@ -242,6 +244,11 @@ return true;
             {if $files[fIdx].sliceThickness != ""&& $files[fIdx].sliceThickness != "0.00"}<tr><th width="100px">Slice Thick</th><td>{$files[fIdx].sliceThickness} mm{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].time != ""&& $files[fIdx].time != "0.00"}<tr><th width="100px">Nb of vol.</th><td>{$files[fIdx].time} volumes{else}&nbsp;</td></tr>{/if}
             {if $files[fIdx].Comment != ""}<tr><th width="100px">Comment</th><td>{$files[fIdx].Comment}{else}&nbsp;</td></tr>{/if}  
+            {if $files[fIdx].processingPipeline != ""}<tr><th width="100px">Processing pipeline</th><td>{$files[fIdx].processingPipeline}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].totalRejected != ""}<tr><th width="100px">Nb of rejected directions</th><td>{$files[fIdx].totalRejected}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].slicewiseRejected != ""}<tr><th width="100px">Slicewise correlations (Nb)</th><td>{$files[fIdx].slicewiseRejected}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].interlaceRejected != ""}<tr><th width="100px">Interlace correlations (Nb)</th><td>{$files[fIdx].interlaceRejected}{else}&nbsp;</td></tr>{/if}
+            {if $files[fIdx].intergradientRejected != ""}<tr><th width="100px">Gradient-wise correlations (Nb)</th><td>{$files[fIdx].intergradientRejected}{else}&nbsp;</td></tr>{/if}
             </table>
         </td>        
 </tr>

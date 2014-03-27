@@ -27,7 +27,13 @@ $test->addFile('tests/NewProfile.php');
 $test->addFile('tests/FinalRadiologicalReview.php');
 $test->addFile('tests/CandidateList.php');
 $test->addFile('tests/TimePointList.php');
+$test->addFile('tests/CouchDBWrapper.php');
+$test->addFile('tests/CouchDBImport.php');
+
+//$couchtests = new TestSuite('CouchDB Database wrapper and import script tests');
 
 // Project specific tests..
 //$test->addFile('tests/SiteSpecific.php');
-exit ($test->run($Reporter) ? 0 : 1);
+exit ($test->run($Reporter)  ? 0 : 1);
+
+

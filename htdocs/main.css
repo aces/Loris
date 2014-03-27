@@ -624,6 +624,7 @@ h2.statsH2 {
   height: 10px;
   padding-bottom: 5px;
 }
+
 .watermark{
     position:absolute;
     bottom:0;
@@ -680,4 +681,25 @@ color: #000;
 text-align: center;
 vertical-align: bottom;
 
+}
+
+.imagePass {
+    /* border: 2px solid green; */
+    background-color: rgb(24, 99, 0) !important;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.imageFail {
+    /* border: 2px solid red; */
+    background-color: rgb(175, 0, 0) !important;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+
+tr.directentry {
+    background: #BDDDBD;
 }

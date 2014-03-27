@@ -67,7 +67,7 @@ foreach($instruments AS $instrument){
             case "table":
                 $tablename = $bits[1];
 
-                $filename="tables_sql/".$bits[1].".super_sql";
+                $filename="../project/tables_sql/".$bits[1].".super_sql";
                 $output="CREATE TABLE `$bits[1]` (\n";
                 $output.="`CommentID` varchar(255) NOT NULL default '',
                           `UserID` varchar(255) default NULL,

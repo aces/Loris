@@ -224,6 +224,11 @@ class MRIViewScansPage {
             $fileData[$fIdx]['fileID'] = $fileID['FileID'];
             $fileData[$fIdx]['acquisitionProtocol'] = $file->getAcquisitionProtocol();
             $fileData[$fIdx]['coordinateSpace'] = $file->getParameter('CoordinateSpace');
+            $fileData[$fIdx]['processingPipeline'] = $file->getParameter('processing:pipeline');
+            $fileData[$fIdx]['slicewiseRejected'] = $file->getParameter('processing:slicewise_rejected');
+            $fileData[$fIdx]['interlaceRejected'] = $file->getParameter('processing:interlace_rejected');
+            $fileData[$fIdx]['intergradientRejected'] = $file->getParameter('processing:intergradient_rejected');
+            $fileData[$fIdx]['totalRejected'] = $file->getParameter('processing:total_rejected');
             $fileData[$fIdx]['Algorithm'] = $file->getParameter('Algorithm');
             $fileData[$fIdx]['outputType'] = $file->getParameter('OutputType');
             $fileData[$fIdx]['selected'] = $file->getParameter('Selected');
@@ -237,7 +242,7 @@ class MRIViewScansPage {
             }
             $fileData[$fIdx]['fileInsertDate'] = $file->getParameter('InsertTime');
             $fileData[$fIdx]['filename'] = basename($file->getParameter('File'));
-            $fileData[$fIDx]['fullFilename'] = $file->getParameter('File');
+            $fileData[$fIdx]['fullFilename'] = $file->getParameter('File');
             $fileData[$fIdx]['seriesDescription'] = $file->getParameter('series_description');
             $fileData[$fIdx]['seriesNumber'] = $file->getParameter('series_number');
             $fileData[$fIdx]['echoTime'] = number_format($file->getParameter('echo_time')*1000, 2);

@@ -10,9 +10,9 @@ function isElementSet() {
     ///if any of the dropdown is not equal to 'All' then set the variable set to true
     options.each(function () {
         var value = $(this).text();
-        if (value !== 'All') {
-            set = 1;
-            return false;
+        if (value !=='All') {
+            set =1;
+            return;
         }
     });
     //browse though the text elements
@@ -20,10 +20,11 @@ function isElementSet() {
     texts.each(function () {
         var value = $(this).val();
         if (value !== '') {
-            set = 1;
-            return false;
+            set =1;
+            return;
         }
     });
+    return set;
 }
 
 

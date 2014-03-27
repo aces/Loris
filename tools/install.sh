@@ -1,15 +1,55 @@
-
 #!/bin/bash
 
 #
 # This will:
 #   1. Install PEAR libraries
 #   2. Set up the Loris DB schema
+#   3. Log the installation in the logs directory
 # This will only install the database components and Loris config file.
 #
 
+# Must be run interactively.
+if ! test -t 0 -a -t 1 -a -t 2 ; then
+    echo "This installation program should be run interactively."
+    exit 2
+fi
+
+# Create logs directory, if needed.
+mkdir -p logs
+
+START=`date "+%Y-%m-%dT%H:%M:%S"`
+LOGDIR="logs"
+LOGFILE="logs/install-$START.log"
+LOGPIPE=/tmp/pipe.$$
+mkfifo -m 700 $LOGPIPE
+trap "rm -f $LOGPIPE" EXIT
+tee -a <$LOGPIPE $LOGFILE &
+exec 1>$LOGPIPE 2>&1
+
 CWD=`pwd`
 RootDir=`dirname $CWD`
+
+
+echo "LORIS Installation Script starting at $START"
+
+if [ ! -w $LOGDIR ] ; then
+        echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
+        while true; do
+                read -p "Do you still want to continue? [yn] " yn
+		echo $yn | tee -a $LOGFILE > /dev/null
+                case $yn in
+                        [Yy]* )
+                                break;;
+                        [Nn]* )
+                                echo "Aborting installation."
+                                exit 2;;
+                        * ) echo "Please enter 'y' or 'n'."
+                esac
+        done;
+else
+	echo "The log for this session will be stored in file $CWD/$LOGFILE"
+fi
+
 
 # Banner
 cat <<BANNER
@@ -20,42 +60,36 @@ cat <<BANNER
 
 BANNER
 
-# First check that we're running in the proper environment.
+# Check that bash is being used
+if ! [ $BASH ] ; then
+    echo "Please use bash shell. Run the install script as command: ./install.sh"
+    exit 2
+fi
+
+# Check that we're running in the proper directory structure.
 if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
     echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
     exit 2
 fi
 
-# Must be run interactively.
-if ! test -t 0 -a -t 1 -a -t 2 ; then
-    echo "This installation program should be run interactively."
-    exit 2
-fi
-
 # Create some subdirectories, if needed.
-mkdir -p logs ../project ../project/tables_sql
+mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
+# Setting 777 permissions for templates_c
+chmod 777 ../smarty/templates_c
 
-
-#
-# Configure logging.
-# From now on, STDOUT and STDERR are sent to both the terminal AND a logfile in logs/
-#
-START=`date "+%Y-%m-%dT%H:%M:%S"`
-LOGFILE="logs/install-$START.log"
-LOGPIPE=/tmp/pipe.$$
-mkfifo -m 700 $LOGPIPE
-trap "rm -f $LOGPIPE" EXIT
-tee <$LOGPIPE capt &
-exec 1>$LOGPIPE 2>&1
-
-
-
-echo "LORIS Installation Script starting at $START"
-echo "The log for this session will be stored in file $CWD/$LOGFILE"
 
 if [ -f ../project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
+    exit 2;
+fi
+
+if [[ -n $(which php) ]]; then
+    echo ""
+    echo "PHP appears to be installed."
+else
+    echo ""
+    echo "PHP does not appear to be installed. Aborting."
     exit 2;
 fi
 
@@ -72,70 +106,191 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-  a) A name for the MySQL Database. This should be
+  1) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
      This database will be created later on.
 
-  b) The hostname for the machine where the MySQL server run
-     (this is where we'll create the database).";
+  2) The hostname for the machine where the MySQL server will run on
+     (this is where we'll create the database).
 
-  c) The MySQL username the that Loris system will use to connect
+  3) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
      created later on.
 
-  d) The password for this username (it will be set later on).
+  4) The password for this username (it will be set later on).
 
-  e) Another password for the 'admin' account of the Loris DB
+  5) Another password for the 'admin' account of the Loris DB
      (it will also be set later on).
 
-Validations are POORLY implemented here; if you make a mistake
-answering these questions, kill the script with CTRL-C and
-start it again.
+  6) Credentials of an existing root MySQL account to install the
+     default schema. This will only be used once, to create and
+     populate the default tables, and to grant privileges to the
+     newly created MySQL user in part c).
+
+  7) Your project name. This should be an alphanumeric name.
+     It will be used to modify the paths for MRI in the generated
+     config.xml file for LORIS. It may also be used to automatically
+     create/install apache config files.
 
 QUESTIONS
 
 
-read -p "What is the database name? " mysqldb
-read -p "Database host? " mysqlhost
-read -p "What MySQL user will Loris connect as? " mysqluser
+while true; do
+        read -p "Ready to continue? [yn] " yn
+	echo $yn | tee -a $LOGFILE > /dev/null
+        case $yn in
+            [Yy]* )
+                break;;
+            [Nn]* )
+		echo "Exiting."
+                exit 1;;
+             * ) echo "Please enter y or n"
+        esac
+done;
+
+echo ""
+
+while [ "$mysqldb" == "" ]; do
+	read -p "What is the database name? " mysqldb
+	echo $mysqldb | tee -a $LOGFILE > /dev/null
+	case $mysqldb in
+		"" )
+			read -p "What is the database name? " mysqldb
+			continue;;
+		* )
+			break;;
+	esac
+done;
+
+while [ "$mysqlhost" == "" ]; do
+        read -p "Database host? " mysqlhost
+	echo $mysqlhost | tee -a $LOGFILE > /dev/null
+       	case $mysqlhost in
+               	"" )
+                       	read -p "Database host? " mysqlhost
+                       	continue;;
+                * )
+       	                break;;
+        esac
+done;
+
+while [ "$mysqluser" == "" ]; do
+        read -p "What MySQL user will Loris connect as? " mysqluser
+	echo $mysqluser | tee -a $LOGFILE > /dev/null
+       	case $mysqluser in
+               	"" )
+                       	read -p "What MySQL user will Loris connect as? " mysqluser
+                       	continue;;
+                * )
+       	                break;;
+       	esac
+done;
+
 stty -echo
-read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
+
+while true; do
+        read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
+	echo ""
+        read -p "Re-enter the password to check for accuracy " mysqlpass2
+	if [[ $mysqlpass == $mysqlpass2 ]] ; then
+	        break;
+	fi
+	echo ""
+	echo "Passwords did not match. Please try again.";
+done;
+
 stty echo ; echo ""
 stty -echo
-read -p "Enter Loris admin user's password: " lorispass
+
+while true; do
+        read -p "Enter the front-end Loris 'admin' user's password: " lorispass
+        echo ""
+        read -p "Re-enter the password to check for accuracy " lorispass2
+        if [[ $lorispass == $lorispass2 ]] ; then
+                break;
+        fi
+	echo ""
+	echo "Passwords did not match. Please try again.";
+done;
+
 stty echo ; echo ""
-read -p "Enter www host:  " host
-read -p "Enter www url: " url 
 
+while [ "$mysqlrootuser" == "" ]; do 
+       	read -p "Existing root MySQL username: " mysqlrootuser
+	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+       	case $mysqlrootuser in
+               	"" )
+                       	read -p "Existing root MySQL username: " mysqlrootuser
+                       	continue;;
+                * ) 
+       	                break;;
+       	esac
+done;
 
-
-echo
-echo "This install script needs a root MySQL user to install the"
-echo "default schema. This will only be used once, to create and populate"
-echo "the default tables."
-read -p "Root MySQL username: " mysqlrootuser
 stty -echo
-read -p "Root MySQL password: " mysqlrootpass
+
+while true; do 
+        read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
+        echo ""
+        read -p "Re-enter the password to check for accuracy " mysqlrootpass2
+        if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
+                break;
+        fi
+	echo ""
+	echo "Passwords did not match. Please try again.";
+done;
+
 stty echo
+echo ""
+
+while [ "$projectname" == "" ]; do 
+        read -p "Enter project name: " projectname
+	echo $projectname | tee -a $LOGFILE > /dev/null
+       	case $projectname in
+               	"" )
+                       	read -p "Enter project name: " projectname
+                       	continue;;
+                * ) 
+       	                break;;
+       	esac
+done;
 
 
 
 echo ""
 echo "Attempting to create the MySQL database '$mysqldb' ..."
-echo ""
-echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A > /dev/null 2>&1
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
-    echo "Could not connect to database with the root user provided.";
-    exit 1;
+	while true; do
+		echo "Could not connect to database with the root user provided. Please try again.";
+	        read -p "Existing root MySQL username: " mysqlrootuser
+		echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+		stty -echo
+		while true; do
+        		read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
+        		read -p "Re-enter the password to check for accuracy " mysqlrootpass2
+        		if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
+                		break;
+		        fi
+			echo ""
+			echo "Passwords did not match. Please try again.";
+		done;
+		stty echo
+		echo "Attempting to create the MySQL database '$mysqldb' ..."
+		echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+		MySQLError=$?;
+		if [ $MySQLError -ne 0 ] ; then
+			continue;
+		fi
+		break;
+	done;
 fi
-
 
 
 echo ""
 echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'localhost' ..."
-echo ""
-echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A > /dev/null 2>&1
+echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
     echo "Could not connect to database with the root user provided.";
@@ -147,66 +302,69 @@ fi
 echo ""
 echo "Creating database tables from schema."
 echo ""
-mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A 2>&1 < ../SQL/0000-00-00-schema.sql
+mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
 echo "Updating Loris admin user's password."
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password=$mysqlpass -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')) WHERE ID=1"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')) WHERE ID=1"
 
 
 
 echo ""
 echo "Creating config file."
-echo ""
 sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%USERNAME%/$mysqluser/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
     -e "s/%DATABASE%/$mysqldb/g" \
     -e "s#%LORISROOT%#$RootDir/#g" \
-    -e "s_<host>HOSTNAME</host>_<host>$host</host>_g" \
-    -e "s_<url>https://HOSTNAME/main.php</url>_<url>https://$url/main.php</url>_g" \
+    -e "s#%PROJECTNAME%#$projectname#g" \
     < ../docs/config/config.xml > ../project/config.xml
-
-
-echo ""
-echo "Creating smarty symlink."
-echo ""
-if ! [ -L $RootDir/php/smarty ]; then
-	ln -s $RootDir/php/smarty/ $RootDir/smarty
-fi
-
-
-echo ""
-echo "Setting up templates_c directory."
-echo ""
-mkdir -p  $RootDir/php/smarty/templates_c
-chmod 777 $RootDir/php/smarty/templates_c
 
 
 
 while true; do
     read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
             echo "Installing PEAR libraries (may prompt for sudo password)."
-            sudo pear upgrade-all >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Benchmark >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Config >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install File_Archive >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install HTML_Common >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install HTML_QuickForm >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear config-set preferred_state beta >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install HTML_QuickForm2 >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Mail >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Mail_Mime >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Net_SMTP >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Net_Socket >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install OLE >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Pager >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install PhpDocumentor >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Spreadsheet_Excel_Writer >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install Structures_Graph >> logs/install-`date +%Y-%m-%d`.log 2>&1
-            sudo pear install XML_Parser >> logs/install-`date +%Y-%m-%d`.log 2>&1
+            echo ""
+            echo "Upgrading PEAR..."
+            sudo pear upgrade-all
+            echo "Installing PEAR Benchmark..."
+            sudo pear install Benchmark
+            echo "Installing PEAR Config..."
+            sudo pear install Config
+            echo "Installing PEAR File_Archive..."
+            sudo pear install File_Archive
+            echo "Installing PEAR HTML_Common..."
+            sudo pear install HTML_Common
+            echo "Installing PEAR HTML_QuickForm..."
+            sudo pear install HTML_QuickForm
+            echo "Configuring PEAR preferred state..."
+            sudo pear config-set preferred_state beta
+            echo "Installing PEAR HTML_QuickForm2..."
+            sudo pear install HTML_QuickForm2
+            echo "Installing PEAR Mail..."
+            sudo pear install Mail
+            echo "Installing PEAR Mail_Mime..."
+            sudo pear install Mail_Mime
+            echo "Installing PEAR Net_SMTP..."
+            sudo pear install Net_SMTP
+            echo "Installing PEAR Net_Socket..."
+            sudo pear install Net_Socket
+            echo "Installing PEAR OLE..."
+            sudo pear install OLE
+            echo "Installing PEAR Pager..."
+            sudo pear install Pager
+            echo "Installing PEAR PhpDocumentor..."
+            sudo pear install PhpDocumentor
+            echo "Installing PEAR Spreadsheet_Excel_Writer..."
+            sudo pear install Spreadsheet_Excel_Writer
+            echo "Installing PEAR Structures_Graph..."
+            sudo pear install Structures_Graph
+            echo "Installing PEAR XML_Parser..."
+            sudo pear install XML_Parser
             break;;
-        [Nn]* ) 
+        [Nn]* )
             echo "Not installing PEAR libraries."
             break;;
         * ) echo "Please enter 'y' or 'n'."
@@ -216,9 +374,9 @@ done;
 
 while true; do
     read -p "Would you like to automatically create/install apache config files? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
-            read -p "Enter project name: " projectname
             if [ -f /etc/apache2/sites-available/$projectname ]; then
                 echo "Apache appears to already be configured for $projectname. Aborting\n"
                 exit 1

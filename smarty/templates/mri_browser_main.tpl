@@ -157,18 +157,18 @@ function FeedbackButtonClicked() {
 </p>
 {if $has_permission}<input class="button" type="submit" accesskey="s" value="Save" name="save_changes">{/if}            
 </div>
-</div>
 
 {/if}
+</div>
 <BODY>
 <!-- start main table -->
 <table width="100%" border="0" class="mainlayout" cellpadding="3" cellspacing="2">
     <tr>
         {if $sessionID != ""}   
-        <td width="10%"  valign="top" nowrap="nowrap">
+        <td valign="top" nowrap="nowrap">
     
             <!-- Start Section on the left -->
-            <table border="0" valign="top" cellpadding="1" cellspacing="1" width="100px"><tr>
+            <table border="0" valign="top" cellpadding="1" cellspacing="1" width="167px"><tr>
        <!-- 
             {if $efax.assigned_dir!=""}
                 <tr>
@@ -182,7 +182,7 @@ function FeedbackButtonClicked() {
         </td>
         {/if}
         <!-- main page table tags -->
-        <td width=100% class="bgGradient" valign="top">
+        <td class="bgGradient" valign="top">
         {$body}
         </td>
     </tr>

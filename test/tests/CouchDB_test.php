@@ -1,4 +1,6 @@
 <?php
+set_include_path(get_include_path().":" . __DIR__ . "/../../php/libraries/");
+require_once 'simpletest/autorun.php';
 require_once 'CouchDB.class.inc';
 
 Mock::generatePartial('CouchDB', 'MockCouchDBWrap', array('_getRelativeURL', '_postRelativeURL'));
@@ -12,7 +14,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
     }
     function testSingleton() {
         $db = CouchDB::singleton();
-        $this->assertIsA($db, CouchDB);
+        $this->assertIsA($db, 'CouchDB');
 
         $db2 = CouchDB::singleton();
 
@@ -50,9 +52,10 @@ class TestOfCouchDBWrapper extends UnitTestCase {
 
         $url = $couch->_constructURL('POST', 'hello.txt');
         $smock->expectAt(0, 'write', array("$url HTTP/1.0\r\n")); // write the POST 
-        $smock->expectAt(1, 'write', array("Content-Length: 3\r\n\r\n")); // Write the length
-        $smock->expectAt(2, 'write', array("abc"));
-        $smock->expectCallCount('write', 3);
+        $smock->expectAt(1, 'write', array("Content-Length: 3\r\n"));
+        $smock->expectAt(2, 'write', array("Content-type: application/json\r\n\r\n")); // Write the length
+        $smock->expectAt(3, 'write', array("abc"));
+        $smock->expectCallCount('write', 4);
         $couch->SocketHandler = $smock;
         $file = $couch->_postRelativeURL("hello.txt", "abc");
         $this->assertEqual($file, "I created it");
@@ -74,7 +77,7 @@ class TestOfCouchDBWrapper extends UnitTestCase {
         $smock->expectAt(2, 'write', array("abc"));
         $smock->expectCallCount('write', 3);
         $couch->SocketHandler = $smock;
-        $file = $couch->_postURL("/users/abc", "abc");
+        $file = $couch->_postURL("POST /users/abc", "abc");
         $this->assertEqual($file, "I created it");
    }
     function testConstructURL() {
@@ -101,7 +104,9 @@ class TestOfCouchDBWrapper extends UnitTestCase {
 
 
     function testDeleteDoc() {
+        $id = 'Demographics_Session_UNC0219_V06';
         $Mock = new MockCouchDBWrap();
+        $id = "Demographics_Session_UNC0219_V06";
         $Mock->returns("_getRelativeURL", '{"ok":true,"id":"Demographics_Session_UNC0219_V06","rev":"2-c78967e246008b55daed336e61cb8342"}');
         $result = $Mock->deleteDoc($id);
         $this->assertTrue($result);
@@ -121,6 +126,33 @@ class TestOfCouchDBWrapper extends UnitTestCase {
         $result = $Mock->putDoc("abc", array('a' => 'b'));
         
 
+    }
+
+    function testPostDoc()
+    {
+        $data = array('a' => 'b');
+        $data_json = json_encode($data);
+        $Mock = new MockCouchDBWrap();
+        $Mock->returns("_postRelativeURL", '{"ok":true,"id":"abc","rev":"2-c78967e246008b55daed336e61cb8342"}');
+        $Mock->expectOnce("_postRelativeURL", array("", $data_json, 'POST'));
+        $result = $Mock->postDoc(array('a' => 'b'));
+    }
+
+    function testCreateDoc() 
+    {
+        $data = array('a' => 'b');
+        $data_json = json_encode($data);
+        $Mock = new MockCouchDBWrap();
+
+        $Mock->returns("_postRelativeURL", '{"ok":true,"id":"abc","rev":"2-c78967e246008b55daed336e61cb8342"}');
+        $Mock->expectOnce("_postRelativeURL", array("", $data_json, 'POST'));
+
+        $result = $Mock->createDoc($data);
+        print "Result is $result\n";
+        // Assert seems to use == instead of ===, so using
+        // assertTrue instead
+        //$this->assertEqual($result, "abc");
+        $this->assertTrue($result === "abc", "createDoc did not return new document id");
     }
     function testReplaceDoc() {
         $data = array ('a' => 'b');
@@ -166,6 +198,5 @@ class TestOfCouchDBWrapper extends UnitTestCase {
                     )
         ));
     }
-
 }
 ?>
