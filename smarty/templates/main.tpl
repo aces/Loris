@@ -3,6 +3,7 @@
 <div id="page">
 <head>
 <link rel="stylesheet" href="{$css}" type="text/css" />
+<link rel="stylesheet" href="css/instruments/{$test_name}.css" type="text/css" />
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 <script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript" />
