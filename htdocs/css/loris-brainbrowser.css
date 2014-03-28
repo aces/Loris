@@ -20,7 +20,7 @@
 }
 
 .volume-viewer-controls {
-    /* width: 600px; */
+    height: 320px !important; 
 }
 
 .blend-div {
@@ -28,6 +28,10 @@
 }
 
 #blend-slider {
+}
+
+.control-heading {
+    font-weight: normal !important;
 }
 
 .control-inputs {
