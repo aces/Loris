@@ -47,12 +47,16 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
     */
     function save()
     {
-        if ($_REQUEST['filter'] !='Show Data'){
+        if ($_REQUEST['filter'] !='Show Data') {
             if ($this->form->validate()) {
                 
                 $success = $this->form->process(array(&$this, "_save"), false);
-                if (PEAR::isError($success)) {
-                    return PEAR::raiseError("NDB_Form::save(): ".$success->getMessage());
+                if (PEAR::isError($success)
+                ) {
+                    return PEAR::raiseError(
+                        "NDB_Form::save(): ".
+                        $success->getMessage()
+                    );
                 }
             }
         }
