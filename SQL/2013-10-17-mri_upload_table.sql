@@ -54,4 +54,3 @@ CREATE TABLE `mri_violations_log` (
 
 ALTER TABLE files ADD COLUMN `Caveat` tinyint(1) DEFAULT NULL;
 ALTER TABLE files ADD COLUMN `TarchiveSource` int(11) DEFAULT NULL;
-
