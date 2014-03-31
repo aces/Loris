@@ -1,5 +1,4 @@
 <?php
- 
 /**
  * Controls access to files on the filesystem. This script should ensure that 
  * only files relative to the paths specified in the config.xml are accessible.
@@ -21,11 +20,11 @@
  *
  */
 
+
 // Load config file and ensure paths are correct
 set_include_path(
     get_include_path() . ":../../../project/libraries:../../../php/libraries"
 );
-
 // Since we're sending binary data, we don't want PHP to print errors or warnings 
 // inline. They'll still show up in the Apache logs.
 ini_set("display_errors", "Off");
@@ -44,9 +43,7 @@ $imagePath    = $paths['imagePath'];
 $DownloadPath = $paths['DownloadPath'];
 $mincPath     = $paths['mincPath'];
 if (empty($imagePath) || empty($DownloadPath) || empty($mincPath)) {
-	
-	error_log("ERROR: Config settings are missing");
-	
+    error_log("ERROR: Config settings are missing");
     header("HTTP/1.1 500 Internal Server Error"); 
     exit(1);
 }
@@ -64,10 +61,8 @@ $File = $_GET['file'];
 if (strpos($File, ".") === false) {
     error_log("ERROR: Could not determine file type.");
     header("HTTP/1.1 400 Bad Request");
-
     exit(3);
 }
-
 
 // Find the extension
 $pieces  = preg_split('/\./', basename($File));
@@ -125,7 +120,6 @@ if (!empty($DownloadFilename)) {
     header("Content-Disposition: attachment; filename=$DownloadFilename");
 }
 $fp = fopen($FullPath, 'r');
-ob_end_clean();
 fpassthru($fp);
 fclose($fp);
 ?>
