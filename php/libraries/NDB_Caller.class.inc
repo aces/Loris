@@ -159,7 +159,9 @@ class NDB_Caller extends PEAR
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
             if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("NDB_Caller::loadForm() save: ".$success->getMessage());
+                return PEAR::raiseError(
+                    "NDB_Caller::loadForm() save: ".$success->getMessage()
+                );
             }
         }
         
