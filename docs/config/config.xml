@@ -79,7 +79,7 @@
         <!--display additional user fields in User Accounts page e.g. Institution-->
         <additional_user_info>1</additional_user_info>        
         <!-- Descriptive study title, appears on top of the screen-->
-        <title>Example Study</title>a
+        <title>Example Study</title>
         <!-- Logo of the study, appears on the left of the title on the top of the screen -->
         <studylogo>images/neuro_logo_blue.gif</studylogo>
         <!---number of columns the quat table will contain  -->
