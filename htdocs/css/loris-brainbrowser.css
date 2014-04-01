@@ -20,7 +20,7 @@
 }
 
 .volume-viewer-controls {
-    width: 600px;
+    /* width: 600px; */
 }
 
 .control-inputs {
@@ -65,4 +65,32 @@
 
 html {
     overflow-y: scroll;
+}
+
+#brainbrowser-wrapper {
+    background: white;
+}
+
+#global-controls {
+    padding: 5px;
+    background: #555555;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+}
+
+#app-name {
+    border:0;
+    background: #08245b;
+    z-index: 999
+    display: block;
+}
+
+.app-label {
+    position: inherit;
+    text-align: center;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
