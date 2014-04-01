@@ -13,7 +13,7 @@
 
 <form action="lost_password.php" target="_self" method="post">
 <!-- start main table -->
-<table border="0" align="center" bgcolor="#D3DCE3" cellpadding="2" cellspacing="0">
+<table border="0" align="center" bgcolor="#e2e2e2" cellpadding="2" cellspacing="0">
     <tr>
 	<th background="images/title_background.jpg" class="banner" colspan="2" align="left">
 	    <strong>Montreal Neurological Hospital and Institute</strong>
@@ -24,7 +24,7 @@
 	<td align="left" valign="top" colspan="1" rowspan="1"><img src="images/mni_logo_transparent.gif" border="0" /></td>
 	<!-- inner table -->
 	<td align="center" valign="center" colspan="1" rowspan="1">
-	    <table border="0" align="center" valign="top" bgcolor="#D3DCE3" cellpadding="2" cellspacing="2">
+	    <table border="0" align="center" valign="top" bgcolor="#e2e2e2" cellpadding="2" cellspacing="2">
 		<tr>
 		    <!-- message -->
 		    <td align="center" colspan="3">{$error_message}{$confirm}&nbsp;</td>

@@ -150,7 +150,7 @@ return true;
         <td align="center">
         <table class="std">
 {* checked boxes can be viewed with Alt + d *}
-        <tr><td>Add panel<input type="checkbox" onClick="javascript:toggle_jiv_panel('{$files[fIdx].jivFilename}', '{$files[fIdx].jivAddress}');"></td></tr>
+        <tr><td>Add panel<input class="mripanel" data-file-id="{$files[fIdx].fileID}" type="checkbox" onClick="javascript:toggle_jiv_panel('{$files[fIdx].jivFilename}', '{$files[fIdx].jivAddress}');"></td></tr>
 
 {* SELECTED DROPDOWN only for native images*}
 {if $files[fIdx].outputType == "native"} 
