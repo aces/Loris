@@ -203,6 +203,11 @@ class NDB_Menu_Filter extends NDB_Menu
             // save filter data in the session
             $oldFormFilters = $_SESSION['State']->getProperty('filter');
             if(is_array($oldFormFilters)) {
+                foreach ($oldFormFilters as $key => $val) {
+                    if (in_array($key, $this->CheckboxFilters)) {
+                        unset($oldFormFilters[$key]);
+                    }
+                }
                 $formFilters = array_merge($oldFormFilters, $formFilters);
             }
             $_SESSION['State']->setProperty('filter', $formFilters);
@@ -326,8 +331,10 @@ class NDB_Menu_Filter extends NDB_Menu
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
 
-                    // special rule for dropdowns where value is numeric
-                    if (strtolower(substr($field, -8)) == 'centerid'
+            if (in_array($field, $this->CheckboxFilters) && $val) {
+                $query .= "AND $field";
+            } elseif (strtolower(substr($field, -8)) == 'centerid'
+                // special rule for dropdowns where value is numeric
                         || strtolower(substr($field, -10)) == 'categoryid'
                         || strtolower(substr($field, -6)) == 'gender'
                         || (isset($this->EqualityFilters) 
@@ -370,10 +377,15 @@ class NDB_Menu_Filter extends NDB_Menu
             foreach ($this->filter as $field => $val) {
                 $prepared_key = Utility::getCleanString($field);
                 $query_piece = $this->_addValidFilters($prepared_key, $field, $val); 
-                if(! empty($query_piece)){
+                if (!empty($query_piece)) {
                     $query .= $query_piece;
+
+                    if (in_array($field, $this->CheckboxFilters)) {
+                        continue;
+                    }
                     $qparams["v_$prepared_key"] = $val;
                 }
+
             }
         }
 
