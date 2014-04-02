@@ -22,24 +22,14 @@ TD.tip:hover SPAN {
     filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
 }
 
-.ui-dialog, .ui-dialog-buttonpane {
-    background: #d4dcd2 !important;
-}
-.ui-dialog-titlebar {
-    background: #a6bca3 !important;
-}
-
 .form-fields {
     float:right;
     size:40;
 }
+
 .fieldset {
     outline-style: none !important;
 
-}
-.ui-dialog .ui-dialog-content .ui-widget .ui-widget-content {
-    width: 350px !important;
-    height: 500px !important;
 }
 
 .selected {
@@ -83,23 +73,6 @@ label em {
     -moz-opacity: 0.05;
     opacity: 0.01;
     font-size: 100px;
-}
-
-.eggplant-button {
-    padding: .2em .5em;
-}
-
-.eggplant-button:hover {
-    background: #EAE6EA !important;
-    border: 1px solid #D1C5D8 !important;
-    color: #734D99 !important;
-}
-
-.eggplant-button:active {
-    background: #5f5964 !important;
-    border: 1px solid #7e7783 !important; 
-    color: #ffffff !important; 
-    font-weight: bold !important; 
 }
 
 .upload-success {

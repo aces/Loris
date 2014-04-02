@@ -9,10 +9,9 @@
 <!-- page title -->
 <TITLE>MRI - {$study_title}</TITLE>
 
-<link rel="stylesheet" type="text/css" href="js/jquery/JQeggplant/css/eggplant/jquery-ui-1.8.2.custom.css" />
-<link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" /> 
-<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/loris-jquery/jquery-ui-1.10.4.custom.min.css" />
+<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="js/mribrowser.js"></script>
 {if $test_name_js}
 <script type="text/javascript" src="{$test_name_js}"></script>
@@ -20,7 +19,6 @@
 
 
 <link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
-<script type="text/javascript" src="js/jquery/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
 
 <!-- end page header -->

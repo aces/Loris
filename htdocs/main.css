@@ -51,15 +51,15 @@ em {
     }
 
 /* anchor tags */
-	a:link, a:visited, .ui-widget-content a:link, .ui-widget-content a:visited {
+a, a:link, a:visited {
 	color: #064785; 
 	text-decoration: none;
  	}
-a:active, .ui-widget-content a:active {
+a:active {
 	color: #f00;
 	text-decoration: none;
     }
-a:hover, .ui-widget-content a:hover {
+a:hover {
 	color: #666;
 /*	text-decoration: underline;*/
     }
@@ -551,21 +551,21 @@ td.sidenav {
     padding-top: 0;
     margin-top: 0;
 }
-.navigationRow, .ui-tabs-nav {
+.navigationRow {
     margin: 0px;
     padding: 0px;
     /*border-bottom: 3px solid #47F !important;*/
     /*border-bottom: 3px solid #08245A;*/
     text-align: left;
 }
-.navigationButtons a, .controlPanel li a:hover, .ui-tabs-nav li a {
+.navigationButtons a, .controlPanel li a:hover {
 	color: #fff !important;
 }
-.navigationButtons.active, .controlPanel li:hover, .ui-tabs-nav li.ui-state-active {
+.navigationButtons.active, .controlPanel li:hover {
     background: #47F !important; 
     /* background: green; */
 }
-.navigationButtons, .ui-tabs-nav li {
+.navigationButtons {
     float: left !important;
     list-style: none !important;
     padding-top: 4px;
@@ -589,7 +589,7 @@ td.sidenav {
     -webkit-border-top-right-radius: 4px;
     -webkit-border-top-left-radius: 4px;
 }
-.navigationButtons:hover, .ui-tabs-nav li:hover {
+.navigationButtons:hover {
     opacity: 0.5;
 }
 .navigationButtons a:active {
@@ -601,14 +601,6 @@ h2.statsH2 {
 }
 .statsParagraph {
 	width: 70%;
-}
-
-.ui-widget-header {
-    border: none !important;
-}
-.ui-widget-content, .ui-widget-header {
-    background: inherit !important;
-    color: inherit !important;
 }
 
 /* DQG jQuery things */
