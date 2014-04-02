@@ -345,7 +345,6 @@ class DirectDataEntryMainPage
         $workspace = $this->caller->load(
             $this->TestName,
             $this->Subtest,
-            null,
             $this->CommentID,
             $nextpage
         );
