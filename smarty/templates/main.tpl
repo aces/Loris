@@ -127,32 +127,12 @@ onload="feedback_bvl_popup();"
 <img src="images/title_background.jpg" colspan="2" width="100%" height="2">
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
 <tr>
-{if $lastURL != ""}
 <!-- left section -->
-<td class="tabox sidenav" valign="top">
-{if $lastURL != "" && $sessionID != ""}
-<ul class="controlPanel">
-{$control_panel}
-</ul>
+{if $control_panel}
+    <td class="tabox sidenav" valign="top">
+    {$control_panel}
+    </td>
 {/if}
-{/if}
-{if $test_name != "" && $error_message == ""}
-{if $commentID != ""}
-<!-- instrument status flags -->
-{elseif $sessionID != ""}
-<!-- instrument list control panel -->
-{elseif $candID != ""}
-<!-- timepoint list control panel -->
-{/if}
-{/if}
-<!--links
-<h3 class="controlPanelSection">Links</h3>
-<ul class="controlPanel">
-{foreach from=$links item=link}
-<li class="linkButton"><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a></li>
-{/foreach}
-</ul-->
-</td>
 
 
 <!-- main page table tags -->

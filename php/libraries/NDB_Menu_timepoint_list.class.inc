@@ -181,6 +181,8 @@ class NDB_Menu_timepoint_list extends NDB_Menu
                 }
             } // end list
         }
+
+        $this->tpl_data['actions'] = $this->getActionButtons();
     }
 
     function _determinePreviousStage($sessionID)
@@ -202,7 +204,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         return  'Not Started';
     }
 
-    function getControlPanel() {
+    function getActionButtons() {
         $controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
         return $controlPanel->display();
     }

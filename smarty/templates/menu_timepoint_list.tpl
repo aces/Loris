@@ -1,5 +1,5 @@
 <br>
-<h1 style="float:left">Actions:&nbsp&nbsp</h1> {$controlPanel}
+<h1 style="float:left">Actions:&nbsp&nbsp</h1> {$actions}
 <br>
 <br>
 
