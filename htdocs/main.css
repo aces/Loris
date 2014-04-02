@@ -51,7 +51,7 @@ em {
     }
 
 /* anchor tags */
-	a:link, a:visited, .ui-widget-content a:link, .ui-widget-content a:visited {
+a, a:link, a:visited {
 	color: #064785; 
 	text-decoration: none;
  	}

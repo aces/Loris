@@ -1,6 +1,6 @@
 {literal}
-<script language="javascript" type="text/javascript" src="../../js/jquery/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="../../js/jquery/jquery-ui-1.8.10.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="../../js/jquery/jquery-1.11.0.min.js"></script>
+<script language="javascript" type="text/javascript" src="../../js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script language="javascript" type="text/javascript" src="../flexigrid-1.1/js/flexigrid.pack.js"></script>
 {/literal}
 <div clcass-"flexigrid">
