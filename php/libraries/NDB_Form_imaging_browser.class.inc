@@ -21,7 +21,10 @@ class NDB_Form_imaging_browser extends NDB_Form
             $file = array(
                 'FileID'   => $fileRow['FileID'],
                 'Filename' => basename($FileObj->getParameter('File')),
-                'CheckPic' => $FileObj->getParameter('check_pic_filename')
+                'CheckPic' => $FileObj->getParameter('check_pic_filename'),
+                'FullFilename' => $FileObj->getParameter('File'),
+                'JivFilename' => basename($FileObj->getParameter('File')),
+                'JivAddress' => str_replace('_check.jpg', '', $FileObj->getParameter('check_pic_filename'))
             );
 
                 $this->tpl_data['files'][] = $file;
@@ -38,7 +41,7 @@ class NDB_Form_imaging_browser extends NDB_Form
     }
 
     function getControlPanel() {
-        $controlPanel = new Imaging_Session_ControlPanel(1234);
+        $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
         return $controlPanel->display();
     }
 }

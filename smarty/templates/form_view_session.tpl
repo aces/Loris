@@ -32,9 +32,21 @@
             </tfoot>
             <tfoot>
                 <tr>
-                    <td>JIV Viewer</td>
-                    <td>BrainBrowser Volume Viewer</td>
-                    <td>Download</th>
+                    <td>
+                        <a href="#{$smarty.section.file.index}" onClick='javascript:show_jiv(new Array("{$files[file].JivFilename}"), new Array("{$files[file].JivAddress}"), false)' accesskey="{$smarty.section.file.index}">JIV Viewer</a>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#{$smarty.section.file.index}" 
+                            onclick="window.open('minc.html?minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location=0,width=auto,height=auto')">
+                            BrainBrowser Volume Viewer
+                        </a>
+                    </td>
+                    <td>
+                        <a href="mri/jiv/get_file.php?file={$files[file].FullFilename}">
+                            Download
+                        </a>
+                    </th>
                 </tr>
             </tfoot>
 
