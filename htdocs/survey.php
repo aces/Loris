@@ -363,26 +363,7 @@ class DirectDataEntryMainPage
                 // We're just getting to the last page for the first time
 
                 $this->tpl_data['workspace'] = '';
-                $this->tpl_data['questions'] = $DB->pselect(
-                    "SELECT Description as question,
-                            SourceField FROM parameter_type 
-                        WHERE SourceFrom=:TN AND 
-                            SourceField NOT IN ('Validity', 'Administration')",
-                    array(
-                        'TN' => $this->TestName 
-                    )
-                );
-
-                $Responses = $DB->pselectRow(
-                    "SELECT * FROM " . $this->TestName . " WHERE CommentID=:CID",
-                    array('CID' => $this->CommentID)
-                );
-
-                foreach ($this->tpl_data['questions'] as &$row) {
-                    if (isset($Responses[$row['SourceField']])) {
-                        $row['response'] = $Responses[$row['SourceField']];
-                    }
-                }
+                $this->tpl_data['review']  = $this->caller->instrument->getReview();
 
             }
             $this->tpl_data['lastpage'] = "survey.php?key=$_REQUEST[key]";

@@ -25,6 +25,7 @@ class NDB_Caller extends PEAR
      */
     var $DataEntry;
 
+    var $instrument;
     /**
      * Singleton method
      *
@@ -229,6 +230,8 @@ class NDB_Caller extends PEAR
     function loadInstrument($instrumentName, $page, $commentID, $redirectToOnSuccess=null)
     {
         if ($page === 'finalpage') {
+            $instrument =& NDB_BVL_Instrument::factory($instrumentName, $commentID, $page);
+            $this->instrument = $instrument;
             return "<script language='javascript'>window.location='$redirectToOnSuccess'</script>";
         }
         $user =& User::singleton();
@@ -245,6 +248,7 @@ class NDB_Caller extends PEAR
 
         // make an instance of the instrument's object
         $instrument =& NDB_BVL_Instrument::factory($instrumentName, $commentID, $page);
+        $this->instrument = $instrument;
         if (Utility::isErrorX($instrument)) {
             return $instrument;
         }
