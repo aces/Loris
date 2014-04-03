@@ -28,8 +28,8 @@
     <mincPath>/data/%PROJECTNAME%/data/</mincPath>
     <DownloadPath>%LORISROOT%</DownloadPath>
     <log>tools/logs/</log>
-    <IncomingPath>/PATH/TO/Incoming/DATA/ </IncomingPath>
-    <MRICodePath>/Path/TO/ MRI CODE/</MRICodePath>
+    <IncomingPath>/data/incoming/</IncomingPath>
+    <MRICodePath>data/%PROJECTNAME%/bin/mri/</MRICodePath>
     <MRIUser>MRI/LINUX/USER</MRIUser>
 
 </paths>
