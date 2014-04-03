@@ -149,7 +149,7 @@ if (!empty($TestName)) {
         $tpl_data['test_name_js'] = "js/modules/$TestName.js";
     }
     if(file_exists("css/instruments/$TestName.css")) {
-       $tpl_data['test_name_css'] = "css/instruments/$TestName.css";
+       $tpl_data['test_name_css'] = "$TestName.css";
     }
     if (!empty($_REQUEST['commentID'])) {
         // make the control panel object for the current instrument
