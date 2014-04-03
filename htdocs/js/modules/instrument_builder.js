@@ -58,23 +58,11 @@ $(document).ready(function() {
         var instloaded = false;
         var rulesloaded = false;
         var that = this;
-        instrument_reader.onload = function() {
-            instloaded = true;
-            document.getElementById("instrumentdata").value = this.result;
-            if(instloaded && rulesloaded) {
-                document.getElementById("preview").form.submit();
-            }
-        }
-        instrument_reader.readAsText(instrument.getBlob());
 
-        rules_reader.onload = function() {
-            rulesloaded = true;
-            document.getElementById("instrumentrules").value = this.result;
-            if(instloaded && rulesloaded) {
-                document.getElementById("preview").form.submit();
-            }
-        }
-        rules_reader.readAsText(rules.getBlob());
+        document.getElementById("instrumentdata").value = instrument;
+        document.getElementById("instrumentrules").value = rules;
+        document.getElementById("preview").form.submit();
+
         return false;
     });
 });
@@ -321,7 +309,7 @@ function Enumize(option) {
     var enum_option = option.replace(/ /g, "_");
     enum_option = enum_option.replace(/\./, "");
     enum_option = enum_option.toLowerCase();
-    return enum_option
+    return enum_option;
 }
 
 // from http://stackoverflow.com/questions/1391278/contenteditable-change-events
