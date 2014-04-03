@@ -2,6 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
 <head>
 <link rel="stylesheet" href="{$css}" type="text/css" />
+{if $test_name_css}
+<link rel="stylesheet" href="css/instruments/{$test_name_css}" type="text/css" />
+{/if}
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <link type="text/css" href="css/jquery-ui-1.8.2.custom.css" rel="Stylesheet" />	
 <title>{$study_title}</title>
