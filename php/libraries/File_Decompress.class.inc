@@ -19,7 +19,7 @@
  * decompress the file
  * 
  *
- * PHP version 5
+ * PHP version >= 5.3
  * 
  * @category Behavioural
  * @package  Main 
@@ -40,7 +40,7 @@ require_once 'PEAR.php';
  * @package  Main 
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  Loris License
- * @link     https://github.com/aces/IBIS
+ * @link     https://github.com/aces/Loris-Trunk
 */
 class File_Decompress extends PEAR
 {
@@ -65,10 +65,15 @@ class File_Decompress extends PEAR
 
     /**
      * decompress_file
-     * decompresses the file for the given extension by 
-     * calling the specific functions
-     *
-     * @return unknown
+     * decompresses a file for the given extension by 
+     * calling the specific functions:
+     * - tgzDecompres()   (to decompress and untar)
+     * - gzipDecompress() (to decompress)
+     * - untar()          (to untar)
+     * - unzip()          (to unzip) 
+     * 
+     * @return boolean returns false if the decompressiong fails
+     *  and true otherwise
      */
     function decompressFile()
     {
@@ -92,9 +97,9 @@ class File_Decompress extends PEAR
     /**
      * tgzDecompres
      *
-     * decompress and untars the .tgz and tar.gz files
+     * decompress and untars .tgz and tar.gz files
      * 
-     * @return boolean
+     * @return String Returns the name of the decompressed folder
      */
     function tgzDecompres() 
     {
@@ -112,50 +117,49 @@ class File_Decompress extends PEAR
     }
     
     /**
-     * Decompress the gzipped file
+     * Decompress a gzipped file
      *
-     * @return Boolean
+     * @return Boolean return false if the decompression fails
+     *  And true otherwise
      */
     function gzipDecompress() 
     {
+        $return_value = false;
         try {
-            $p = new PharData($this->file_name);
-            $r = $p->decompress(); // creates /path/to/my.tar
-            return $r;
+            $decomp_file = new PharData($this->file_name);
+            $return_value 
+                = $decomp_file->decompress(); // creates /path/to/my.tar
         } catch (Exception $e) {
             // handle errors
             print $e->getMessage();
-            return false;
+            throw $e;
         }
-
-        return false;
+        return $return_value;
     }
     
     /**
      * untar 
-     * untar the file into the destination folder
+     * untar a file into the destination folder
      *
      * @return boolean
      */
     function untar() 
     {
-
+        $return_value = false;
         try {
             $p = new PharData($this->file_name);
-            $p->extractTo($this->dest_path);
+            $return_value = $p->extractTo($this->dest_path);
             //could remove the folder later once completed...
         } catch (Exception $e) {
             print $e->getMessage();
-            return false;
+            throw($e);
         }
-
-        return true;
-
+        return $return_value;
     }
 
 
     /**
-     * unzips the file by :
+     * unzips a file by :
      * creating a Zip archive of the file, opening it, 
      * extracting it to the destination folder and
      * then closing the zip-archive handler
@@ -165,14 +169,14 @@ class File_Decompress extends PEAR
 
     function unzip() 
     {
+        $result = false;
         $zip = new ZipArchive;
-        $res = $zip->open($this->file_name);
-        if ($res === true) {
+        $result = $zip->open($this->file_name);
+        if ($result === true) {
             $zip->extractTo($this->dest_path);
             $zip->close();
-            return true;
         }
-        return false;
+        return $result;
     }
 }
 ?>
