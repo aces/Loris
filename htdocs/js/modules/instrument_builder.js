@@ -151,7 +151,7 @@ function addQuestion() {
     dbtype.innerHTML = selected;
 
     actions = document.createElement("td");
-    actions.innerHTML = '(<a onclick="return moveUp(this);" href="javascript:return 0;">up</a>) (<a onclick="return moveDown(this);" href="javascript:return 0;">down</a>) (<a onclick="remove(this);" href="javascript:return 0;">delete</a>)';
+    actions.innerHTML = '(<a onclick="return moveUp(this);" href="javascript:return 0;">up</a>) (<a onclick="return moveDown(this);" href="javascript:return 0;">down</a>) (<a onclick="removeRow(this);" href="javascript:return 0;">delete</a>)';
 
     row.appendChild(dbname);
     row.appendChild(dbtype);
@@ -292,10 +292,11 @@ function clearDropdownOption(type) {
 }
 
 /* Controls for rows */
-function remove(aEl) {
-    table = document.getElementById("workspace");
+function removeRow(aEl) {
+    var table = document.getElementById("workspace"),
+        i;
     for (i in table.rows) {
-        if(aEl.parentNode.parentNode == table.rows[i]) {
+        if (aEl.parentNode.parentNode == table.rows[i]) {
             table.deleteRow(i);
             return false;
         }
@@ -324,11 +325,11 @@ function Enumize(option) {
 }
 
 // from http://stackoverflow.com/questions/1391278/contenteditable-change-events
-$('[contenteditable]').live('focus', function() {
+$('[contenteditable]').on('focus', function() {
     var $this = $(this);
     $this.data('before', $this.html());
     return $this;
-}).live('blur paste', function() {
+}).on('blur paste', function() {
     var $this = $(this);
     if ($this.data('before') !== $this.html()) {
         $this.data('before', $this.html());
