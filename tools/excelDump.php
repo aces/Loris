@@ -197,7 +197,7 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 	$headerFormat->setAlign('center');
 
 	// Formatting:  Freeze only the first worksheet, at the metaCols and header intersection.
-        // This is not used to be compatible with figs_year3_relatives and the candidate_info.csv files where there are non-standard numbers of columns
+	// This is not used to be compatible with figs_year3_relatives and the candidate_info.csv files where there are non-standard numbers of columns
 	//	$worksheet =& $worksheets[0];
 	//	$worksheet->freezePanes(array(1, count($metaCols), 1, count($metaCols)));  //change after # of cols are decided.
 
