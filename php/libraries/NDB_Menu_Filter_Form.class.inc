@@ -12,18 +12,13 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-
-require_once 'Pager/Pager.php';
-require_once 'NDB_Menu.class.inc';
 require_once 'NDB_Menu_Filter.class.inc';
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /**
  * Menu_Filter_Form Class
  *
  * This class over-rides the NDB_Menu_Filter class by including the functionality 
- * of saving/processing the form.
+ * to save/process the form.
  * 
  * @category Behavioural
  * @package  Main 
@@ -51,7 +46,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             if ($this->form->validate()) {
                 
                 $success = $this->form->process(array(&$this, "_save"), false);
-                if (PEAR::isError($success)
+                if (Utility::isErrorX($success)
                 ) {
                     return PEAR::raiseError(
                         "NDB_Form::save(): ".
@@ -86,7 +81,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         }
 
         $success = $this->_process($values);
-        if (PEAR::isError($success)) {
+        if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Form::_save(): ".$success->getMessage());
         }
     }
