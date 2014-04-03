@@ -1,6 +1,23 @@
 <?php
 /**
  * File_Decompress class file
+ * 
+ * This class can be instantiated as follows:
+ * $file_decompress = new File_Decompress ($file_name, $destination_path)
+ * by passing the path to the file to be decompressed :$file_name
+ * and the desintation folder where the file will be decompressed in
+ * 
+ * This class currently only accepts the following file types:
+ * - .tar
+ * - .gz
+ * - .tgz or .tar.gz
+ * - .zip
+ * 
+ * 
+ * The function decompressFile() will automatically detect the file-type
+ * and call the appropriate function (depending on the file-type) to 
+ * decompress the file
+ * 
  *
  * PHP version 5
  * 
@@ -8,8 +25,9 @@
  * @package  Main 
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  Loris License
- * @link     https://github.com/aces/IBIS
+ * @link     https://github.com/aces/Loris-Trunk
 */
+
 
 require_once 'PEAR.php';
 
@@ -34,12 +52,12 @@ class File_Decompress extends PEAR
      * Constructor
      *
      * @param String $file_name        File to be decompressed
-     * @param String $destination_path Path of the destinationation folder
+     * @param String $destination_path Path of the destination folder
      * 
      * @return File_Decompress
      */
 
-    function File_Decompress($file_name,$destination_path) 
+    function File_Decompress($file_name, $destination_path) 
     {
         $this->file_name = $file_name;
         $this->dest_path = $destination_path;
@@ -65,6 +83,8 @@ class File_Decompress extends PEAR
             return $this->untar();
         } elseif (preg_match("/.zip/", $this->file_name)) {
             return $this->unzip();
+        } elseif (preg_match("/.gz/", $this->file_name)) {
+            return $this->gzipDecompress();
         }
         return false;
     }
@@ -86,7 +106,6 @@ class File_Decompress extends PEAR
             //could remove the folder later once completed...
         } catch (Exception $e) {
             print $e->getMessage();
-            print "error";
             // handle errors
         }
         return $decompressed_folder;
@@ -136,7 +155,10 @@ class File_Decompress extends PEAR
 
 
     /**
-     * unzip
+     * unzips the file by :
+     * creating a Zip archive of the file, opening it, 
+     * extracting it to the destination folder and
+     * then closing the zip-archive handler
      *
      * @return booean
      */
@@ -148,7 +170,6 @@ class File_Decompress extends PEAR
         if ($res === true) {
             $zip->extractTo($this->dest_path);
             $zip->close();
-            print "file is unzipped";
             return true;
         }
         return false;
