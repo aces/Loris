@@ -2,21 +2,20 @@
 /**
  * File_Decompress class file
  * 
- * This class can be instantiated as follows:
+ * This class is used to detect the file using the extension and decompress
+ * the file accordingly
+ * 
+ * It can be instantiated as follows:
  * $file_decompress = new File_Decompress ($file_name, $destination_path)
- * by passing the path to the file to be decompressed :$file_name
- * and the desintation folder where the file will be decompressed in
+ * by passing the path to the file to be decompressed ($file_name)
+ * and the desintation folder where the file will be decompressed in 
+ * ($destination_path)
  * 
  * This class currently only accepts the following file types:
  * - .tar
  * - .gz
  * - .tgz or .tar.gz
  * - .zip
- * 
- * 
- * The function decompressFile() will automatically detect the file-type
- * and call the appropriate function (depending on the file-type) to 
- * decompress the file
  * 
  *
  * PHP version >= 5.3
@@ -64,21 +63,14 @@ class File_Decompress extends PEAR
     }
 
     /**
-     * decompress_file
-     * decompresses a file for the given extension by 
-     * calling the specific functions:
-     * - tgzDecompres()   (to decompress and untar)
-     * - gzipDecompress() (to decompress)
-     * - untar()          (to untar)
-     * - unzip()          (to unzip) 
+     *  This function will automatically detect the file-type
+     * and will decompress the file by calling the appropriate function 
      * 
      * @return boolean returns false if the decompressiong fails
      *  and true otherwise
      */
     function decompressFile()
     {
-
-        //if it's of type .tgz
         
         if ((preg_match("/.tgz/i", $this->file_name)) 
             || (preg_match("/.tar.gz/i", $this->file_name))
