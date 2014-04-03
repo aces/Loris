@@ -104,36 +104,25 @@ class File_Decompress extends PEAR
     function tgzDecompres() 
     {
         $decompressed_folder = null;
-        try {
-            $p = new PharData($this->file_name);
-            $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
-            $is_extracted = $p->extractTo($this->dest_path);
-            //could remove the folder later once completed...
-        } catch (Exception $e) {
-            print $e->getMessage();
-            // handle errors
-        }
+        $p = new PharData($this->file_name);
+        $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
+        $is_extracted = $p->extractTo($this->dest_path);
         return $decompressed_folder;
     }
     
     /**
      * Decompress a gzipped file
      *
-     * @return Boolean return false if the decompression fails
+     * @return Boolean returns false if the decompression fails
      *  And true otherwise
      */
     function gzipDecompress() 
     {
         $return_value = false;
-        try {
-            $decomp_file = new PharData($this->file_name);
-            $return_value 
-                = $decomp_file->decompress(); // creates /path/to/my.tar
-        } catch (Exception $e) {
-            // handle errors
-            print $e->getMessage();
-            throw $e;
-        }
+        
+        $decomp_file = new PharData($this->file_name);
+        $return_value 
+            = $decomp_file->decompress(); // creates /path/to/my.tar
         return $return_value;
     }
     
@@ -146,14 +135,9 @@ class File_Decompress extends PEAR
     function untar() 
     {
         $return_value = false;
-        try {
-            $p = new PharData($this->file_name);
-            $return_value = $p->extractTo($this->dest_path);
-            //could remove the folder later once completed...
-        } catch (Exception $e) {
-            print $e->getMessage();
-            throw($e);
-        }
+        $p = new PharData($this->file_name);
+        $return_value = $p->extractTo($this->dest_path);
+           //could remove the folder later once completed...
         return $return_value;
     }
 
