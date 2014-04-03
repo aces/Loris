@@ -20,12 +20,17 @@ $dataDir = $config['paths']['base'] . "tools/$dumpName/"; //temporary working di
 $destinationDir = $config['paths']['base'] . "htdocs/dataDumps"; //temporary working directory
 
 /*
-* Prepare output directory, if needed.
+* Prepare output/tmp directories, if needed.
 */
 //Create
 if(!file_exists($dataDir)) {
 	mkdir($dataDir);
 }
+//Create
+if(!file_exists($destinationDir)) {
+        mkdir($destinationDir);
+}
+
 //Delete all previous files.
 $d = dir($dataDir);
 while($entry = $d->read()) {
