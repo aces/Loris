@@ -390,20 +390,20 @@ table.data {
     border: none; /*thin solid black;*/
 }
 .data tr td.male {
-    background: #DEF;
+    background: #C1D4ED;
 }
 
 .data tr td.female {
-    background: #FDF;
+    background: #F6BEBE;
 }
 
 .data tr td.male.total {
-    background: #DEF;
+    background: #C1D4ED;
     font-weight: bold;
 }
 .data tr td.female.total {
     font-weight: bold;
-    background: #FDF;
+    background: #F6BEBE;
 }
 .data tr td.subtotal {
     background: #DDD;
