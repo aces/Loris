@@ -101,7 +101,7 @@ h4 {
     margin-top: 5px;
     text-color: white;
     font-size: 110%;
-    background-color: #08245B;
+    background-color: #064785;
     width: 100%;
 }
 .site{
@@ -432,7 +432,7 @@ table.data {
 }
 
 .data tr th {
-    background: #08245B;
+    background: #DDDDDD;
     /* color: #CCC; */
     color: white;
     padding: 3px;
@@ -573,7 +573,7 @@ td.sidenav {
     padding-left: 10px;
     padding-right: 10px;
     margin-right: 1px;
-    background: #08245B !important;
+    background: #064785 !important;
     /* background: #989; */
 	color: #fff !important;
     border-top-style: solid;
