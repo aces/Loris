@@ -398,37 +398,37 @@ table.data {
 }
 
 .data tr td.male.total {
-    background: #808080;
+    background: #C1D4ED;
     font-weight: bold;
 }
 .data tr td.female.total {
     font-weight: bold;
-    background: #808080;
+    background: #F6BEBE;
 }
 .data tr td.subtotal {
-    background: #808080;
+    background: #87878C;
 }
 
 .data tr td.complete {
-    background: #808080;
+    background: #87878C;
 }
 .data tr td.incomplete, .data tr td.no_scan, .data tr td.no_scan.total {
-    background: #808080;
+    background: #87878C;
 }
 .data tr td.partial_run, .data tr td.partial_run.total {
-    background: #808080; /*rgb(217, 217, 119); */
+    background: #87878C; /*rgb(217, 217, 119); */
 }
 .data tr td.complete.total {
-    background: #808080; 
+    background: #87878C; 
     font-weight: bold;
 }
 .data tr td.incomplete.total {
-    background: #808080;
+    background: #87878C;
     font-weight: bold;
 }
 .data tr td.total {
     font-weight: bold;
-    background: #808080;
+    background: #87878C;
 }
 
 .data tr th {
