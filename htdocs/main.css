@@ -391,11 +391,12 @@ table.data {
 }
 .data tr td.male {
     background: #1C70B6; /*#C1D4ED;*/
-    opactiy:0.5;
+    filter: alpha(opacity=50);
 }
 
 .data tr td.female {
-    background: #E4A09E transparent;
+    background: #E4A09E 
+    filter: alpha(opacity=50);
 }
 
 .data tr td.male.total {
