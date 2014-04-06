@@ -419,7 +419,7 @@ table.data {
     background: #FFFECA; /*rgb(217, 217, 119); */
 }
 .data tr td.complete.total {
-    background: #A3A3A3; 
+    background: #BBC992; 
     font-weight: bold;
 }
 .data tr td.incomplete.total {
