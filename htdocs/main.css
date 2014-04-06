@@ -410,7 +410,7 @@ table.data {
 }
 
 .data tr td.complete {
-    background: #E1F5A9;
+    background: #CEF6CE;
 }
 .data tr td.incomplete, .data tr td.no_scan, .data tr td.no_scan.total {
     background: #F5A9A9;
@@ -419,7 +419,7 @@ table.data {
     background: #F5F6CE; /*rgb(217, 217, 119); */
 }
 .data tr td.complete.total {
-    background: #E1F5A9; 
+    background: #CEF6CE; 
     font-weight: bold;
 }
 .data tr td.incomplete.total {
