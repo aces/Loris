@@ -403,32 +403,32 @@ table.data {
 }
 .data tr td.female.total {
     font-weight: bold;
-    background: #F6BEBE;
+    background: #808080;
 }
 .data tr td.subtotal {
-    background: #DDD;
+    background: #808080;
 }
 
 .data tr td.complete {
-    background: #DFD;
+    background: #808080;
 }
 .data tr td.incomplete, .data tr td.no_scan, .data tr td.no_scan.total {
-    background: #FDD;
+    background: #808080;
 }
 .data tr td.partial_run, .data tr td.partial_run.total {
-    background: #FFD; /*rgb(217, 217, 119); */
+    background: #808080; /*rgb(217, 217, 119); */
 }
 .data tr td.complete.total {
-    background: #DFD; 
+    background: #808080; 
     font-weight: bold;
 }
 .data tr td.incomplete.total {
-    background: #FDD;
+    background: #808080;
     font-weight: bold;
 }
 .data tr td.total {
     font-weight: bold;
-    background: #DDD;
+    background: #808080;
 }
 
 .data tr th {
