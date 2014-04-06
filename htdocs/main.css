@@ -395,7 +395,8 @@ table.data {
 }
 
 .data tr td.female {
-    background: #E4A09E 
+    background: #E4A09E;
+    opacity: 0.5;
     filter: alpha(opacity=50);
 }
 
