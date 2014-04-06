@@ -406,29 +406,29 @@ table.data {
     background: #F6BEBE;
 }
 .data tr td.subtotal {
-    background: #87878C;
+    background: #868686;
 }
 
 .data tr td.complete {
-    background: #87878C;
+    background: #868686;
 }
 .data tr td.incomplete, .data tr td.no_scan, .data tr td.no_scan.total {
-    background: #87878C;
+    background: #868686;
 }
 .data tr td.partial_run, .data tr td.partial_run.total {
-    background: #87878C; /*rgb(217, 217, 119); */
+    background: #868686; /*rgb(217, 217, 119); */
 }
 .data tr td.complete.total {
-    background: #87878C; 
+    background: #868686; 
     font-weight: bold;
 }
 .data tr td.incomplete.total {
-    background: #87878C;
+    background: #868686;
     font-weight: bold;
 }
 .data tr td.total {
     font-weight: bold;
-    background: #87878C;
+    background: #868686;
 }
 
 .data tr th {
