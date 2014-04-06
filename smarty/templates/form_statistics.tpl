@@ -87,7 +87,7 @@ function CreateScatterplot() {
 
 </script>
 {/literal}
-<div id="tabs" style="background: #e2e2e>
+<div id="tabs" style="background: #e2e2e">
     <h1>Available Statistics</h1>
     <ul>
         <li><a href="/main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">General Description</a></li>
