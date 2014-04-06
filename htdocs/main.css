@@ -413,7 +413,7 @@ table.data {
     background: #BBC992;
 }
 .data tr td.incomplete, .data tr td.no_scan, .data tr td.no_scan.total {
-    background: #FF4D58;
+    background: #E57C7B;
 }
 .data tr td.partial_run, .data tr td.partial_run.total {
     background: #FFFECA; /*rgb(217, 217, 119); */
