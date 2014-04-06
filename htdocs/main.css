@@ -410,13 +410,13 @@ table.data {
 }
 
 .data tr td.complete {
-    background: #86BC78;
+    background: #BBC992;
 }
 .data tr td.incomplete, .data tr td.no_scan, .data tr td.no_scan.total {
-    background: #C43120;
+    background: #FF4D58;
 }
 .data tr td.partial_run, .data tr td.partial_run.total {
-    background: #F2AC41; /*rgb(217, 217, 119); */
+    background: #FFFECA; /*rgb(217, 217, 119); */
 }
 .data tr td.complete.total {
     background: #A3A3A3; 
