@@ -390,14 +390,11 @@ table.data {
     border: none; /*thin solid black;*/
 }
 .data tr td.male {
-    background: #1C70B6; /*#C1D4ED;*/
-    filter: alpha(opacity=50);
+    background: #E0ECF8; /*#C1D4ED;*/
 }
 
 .data tr td.female {
-    background: #E4A09E;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+    background: #FBEFF8
 }
 
 .data tr td.male.total {
@@ -406,7 +403,7 @@ table.data {
 }
 .data tr td.female.total {
     font-weight: bold;
-    background: #E4A09E transparent;
+    background: #FBEFF8;
 }
 .data tr td.subtotal {
     background: #A3A3A3;
