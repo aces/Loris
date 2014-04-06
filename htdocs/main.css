@@ -398,7 +398,7 @@ table.data {
 }
 
 .data tr td.male.total {
-    background: #C1D4ED;
+    background: #808080;
     font-weight: bold;
 }
 .data tr td.female.total {
