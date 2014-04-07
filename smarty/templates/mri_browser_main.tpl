@@ -207,7 +207,7 @@ function FeedbackButtonClicked() {
 </div>
 </tr>
 <tr>
-<td align="center" colspan="1" style="color:#064785" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
 </tr>
 <tr>
 <td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #2a2a2a;" target="_blank">Created by ACElab</a></td>

@@ -215,16 +215,16 @@ BrowserDetect.init();
 <!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
 </tr>       
 <tr>
-<td align="center" colspan="1" style="color:#064785" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
+<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
 </tr>	
 <tr>
-<td align="center" colspan="1" style="color:#064785" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
 </tr>	
 <tr>
-<td align="center" colspan="1"style="color: #2a2a2a">Created by <a href="http://cbrain.mcgill.ca" style="color: #2a2a2a;" target="_blank"> ACElab</a></td>
+<td align="center" colspan="1"style="color: #064785">Created by <a href="http://cbrain.mcgill.ca" style="color: #064785" target="_blank"> ACElab</a></td>
 </tr>
 <tr>
-<td align="center" colspan="1" style="color: #064785"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #348b8d;" target="_blank">Montreal Neurological Institute and Hospital</a></td>
+<td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
 
 </tr>
 </table>
