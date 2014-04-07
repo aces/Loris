@@ -214,15 +214,7 @@
     <excluded_instruments>
         <instrument></instrument>
     </excluded_instruments>
-     <!-- consent module parameters--> 
-     <ConsentModule>
-           <useConsent>false</useConsent>
-           <Consent>
-               <name></name>
-               <label></label>
-           </Consent>
-       </ConsentModule>
-    <!-- certification module -->
+     <!-- certification module -->
       <Certification>
             <EnableCertification>0</EnableCertification>
             <CertificationProjects>
@@ -238,6 +230,14 @@
     <!-- Add instruments for which Double Data entry should be enabled -->
     <DoubleDataEntryInstruments></DoubleDataEntryInstruments>
 
+    <!-- Consent module allows addition of consent information in the candidate information page-->
+     <ConsentModule>
+           <useConsent>false</useConsent>
+           <Consent>
+               <name>study_consent</name>
+               <label>Consent to Study</label>
+           </Consent>
+      </ConsentModule>
     </study>
 <!-- end of study definition -->
 
