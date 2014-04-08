@@ -38,6 +38,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
     {
   		$DB =& Database::singleton();
         //Get the default values
+        $value_results = $DB->pselect(
+            "SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:CaID",
+            array('CaID' => $this->identifier)
+        );
        
         $proband_info['ProbandGUID'] = $DB->pselectOne("SELECT ProbandGUID FROM candidate WHERE CandID=:CandidateID", array('CandidateID' => $this->identifier));
         $defaults['ProbandGUID'] =  $proband_info['ProbandGUID'];
@@ -689,7 +693,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->form->addFormRule(array(&$this,'_validate'));
 
     }
-    
+   /* 
+>>>>>>> Stashed changes
     function participant_status_history(){
         
         $this->tpl_data['candID'] = $_REQUEST['candID'];
@@ -717,6 +722,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
     }
 
+*/
     function _validate_add_family($values)
     {   
         if(!is_array($values) || count($values) ==0) {

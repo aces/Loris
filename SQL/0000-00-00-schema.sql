@@ -1692,6 +1692,11 @@ CREATE TABLE `mri_violations_log` (
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`LogID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
 
 CREATE TABLE `participant_accounts` (
     `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1719,7 +1724,7 @@ CREATE TABLE `family` (
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TABLE `participant_status_history` (
         `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-        `CandID` int(6) NOT NULL DEFAULT '0',
+        `CandID` int(6) NOT NULL DEFAULT 0,
         `entry_staff` varchar(255) DEFAULT NULL,
         `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `participant_status` int(11) DEFAULT NULL,
@@ -1731,7 +1736,7 @@ CREATE TABLE `participant_status_history` (
         );
 CREATE TABLE `consent_info_history` (
         `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-        `CandID` int(6) NOT NULL DEFAULT '0',
+        `CandID` int(6) NOT NULL DEFAULT 0,
         `entry_staff` varchar(255) DEFAULT NULL,
         `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
