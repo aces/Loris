@@ -2,6 +2,7 @@
 require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
+require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 include_once ('HTML/QuickForm/Renderer/Default.php');
 
 /**
@@ -1840,7 +1841,35 @@ class NDB_BVL_Instrument extends NDB_Page
             fclose($fp);
         }
     }
-}
+
+    function getControlPanel() {
+        if (!empty($_REQUEST['commentID'])) {
+            // make the control panel object for the current instrument
+            $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
+            $success = $controlPanel->select($_REQUEST['commentID']);
+            if (Utility::isErrorX($success)) {
+                $tpl_data['error_message'][] = $success->getMessage();
+            } else {
+                if (empty($subtest)) {
+                    // check if the file/class exists
+                    if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) {
+                        // save possible changes from the control panel...
+                        $success = $controlPanel->save();
+                        if (Utility::isErrorX($success)) {
+                            $tpl_data['error_message'][] = $success->getMessage();
+                        }
+                    }
+                }
+
+                // display the control panel
+                $html = $controlPanel->display();
+                return $html;
+
+            }
+        }
+    }
+
+} //end class NDB_BVL_Instrument
 
 function _checkDateTaken($dateElement) {
     // if all three elements are empty, return true b/c it'll save the NULL in date field
