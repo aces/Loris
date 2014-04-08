@@ -14,18 +14,18 @@ function getQueryVariable(variable) {
 }
 function loadDefaultStatus() {
     "use strict";
-    if (document.getElementById('pscid') != undefined) {
+    if (document.getElementById('pscid') !== undefined) {
         var pscid = document.getElementById('pscid'),
             pscid_value = pscid.textContent,
             pstatus_dropdown = document.getElementById('participant_status'),
             default_vals;
         $.get("GetParticipant_suboptions.php?pscid=" + pscid_value,
                 function (data) {
-                 default_vals = data.split(";");
-                 $('#participant_statusID').val(default_vals[0]);
-                 if(default_vals.length >1) {
-                   loadDefaultSubOption(default_vals[0], default_vals[1]);
-                }
+                  default_vals = data.split(";");
+                  $('#participant_statusID').val(default_vals[0]);
+                  if (default_vals.length >1) {
+                    loadDefaultSubOption(default_vals[0], default_vals[1]);
+                 }
             });
     }
 }
