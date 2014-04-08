@@ -1,20 +1,27 @@
+/*global document: false, $: false, alert: false, saveAs: false, Enumize: false*/
 var Instrument = {
-    validate: function() {
-        var names = []
-        var table = document.getElementById("workspace");
-        var name, type, question;
-        for(var i=1; i < table.rows.length; i++) {
+    validate: function () {
+        "use strict";
+        var names = [],
+            table = document.getElementById("workspace"),
+            name,
+            type,
+            question,
+            i,
+            row;
+
+        for (i = 1; i < table.rows.length; i += 1) {
             //alert("Checking row" + i);
             row = table.rows[i];
             name = $.trim(row.children[0].textContent);
             type = $.trim(row.children[1].textContent);
             question = $.trim(row.children[2].textContent);
 
-            if(type == "textbox" || type == "dropdown" || type == "scored" || type == "textarea" || type == "date" || type == 'multiselect') {
-                if(name == '') {
+            if (type === "textbox" || type === "dropdown" || type === "scored" || type === "textarea" || type === "date" || type === 'multiselect') {
+                if (name === '') {
                     alert("Must supply database name for " + type);
                     return false;
-                } else if(names.indexOf(name) >= 0) {
+                } else if (names.indexOf(name) >= 0) {
                     alert("Duplicate question name: " + name);
                     return false;
                 }
@@ -26,136 +33,156 @@ var Instrument = {
         return true;
     },
 
-    save: function() {
-        var valid = this.validate();
-        if(!valid) {
+    save: function () {
+        "use strict";
+        var valid = this.validate(), content, name, fs;
+        if (!valid) {
             return;
         }
-        var content = this.render();
-        var name = document.getElementById("filename").value || "instrument";
+        content = this.render();
+        name = document.getElementById("filename").value || "instrument";
 
         fs = saveAs(content.getBlob("text/plain;charset=utf-8"), name + ".linst");
-        fs.onwriteend = function() {
+        fs.onwriteend = function () {
             alert("Saved file");
-        }
-        fs.onwritestart = function() {
+        };
+        fs.onwritestart = function () {
             alert("Saving " + name + ".linst");
-        }
+        };
     },
-    render: function() {
-        var content = new BlobBuilder();
-        //name = prompt("Enter filename of instrument")
-        var name = document.getElementById("filename").value || "instrument";
-        if(!name) {
+    render: function () {
+        "use strict";
+        var content = '',
+            name = document.getElementById("filename").value || "instrument",
+            title,
+            table,
+            rows,
+            row,
+            i,
+            type,
+            questionCell,
+            qVal,
+            addStatus,
+            min,
+            max,
+            selectOptions,
+            j,
+            enum_option,
+            options,
+            option;
+        if (!name) {
             alert("Invalid name");
             return;
         }
 
-        content = new BlobBuilder();
-        content.append("table{@}" + name + "\n");
+        content += "table{@}" + name + "\n";
         title = document.getElementById("longname").value;
-        if(title) {
-            content.append("title{@}" + title + "\n");
+        if (title) {
+            content += "title{@}" + title + "\n";
             // Add metadata fields
-            content.append("date{@}Date_taken{@}Date of Administration{@}2006{@}2012\n");
-            content.append("static{@}Candidate_Age{@}Candidate Age (Months)\n")
-            content.append("static{@}Window_Difference{@}Window Difference (+/- Days)\n")
-            content.append("select{@}Examiner{@}Examiner{@}NULL=>''\n");
+            content += "date{@}Date_taken{@}Date of Administration{@}2006{@}2012\n";
+            content += "static{@}Candidate_Age{@}Candidate Age (Months)\n";
+            content += "static{@}Window_Difference{@}Window Difference (+/- Days)\n";
+            content += "select{@}Examiner{@}Examiner{@}NULL=>''\n";
 
         }
 
         table = document.getElementById("workspace");
-        var rows = table.rows;
-        for(var i=1; i < rows.length; i++) {
+        rows = table.rows;
+        for (i = 1; i < rows.length; i += 1) {
             row = rows[i];
-            if(row.children.length < 3) {
+            if (row.children.length < 3) {
                 continue;
             }
             name = $.trim(row.children[0].textContent);
             type = $.trim(row.children[1].textContent);
             questionCell = row.children[2];
 
-            if(questionCell.firstChild) {
+            if (questionCell.firstChild) {
                 qVal = $.trim(questionCell.firstChild.textContent);
-            } else { 
+            } else {
                 qVal = '';
             }
 
             addStatus = false;
-            switch(type) {
-                case 'header':
-                    content.append('header'); break;
-                case 'textbox':
-                    content.append('text'); 
-                    addStatus = true;
-                    break;
-                case 'textarea':
-                    content.append('textarea'); 
-                    addStatus = true;
-                    break;
-                case 'date':
-                    content.append('date'); 
-                    name = name + "_date";
-                    // questionCell.lastChild is the year's select box.
-                    // the first option in that is the start year, the last one is the end year.
-                    min = questionCell.lastChild.firstChild.textContent;
-                    max = questionCell.lastChild.lastChild.textContent;
-                    addStatus = true;
-                    break;
-                case 'numeric':
-                    content.append('numeric');
-                    min = questionCell.lastChild.firstChild.textContent;
-                    max = questionCell.lastChild.lastChild.textContent;
-                    addStatus = true;
-                    break;
-                case 'dropdown':
-                    content.append('select');
-                    selectOptions = questionCell.firstChild.nextSibling;
-                    // Dropdowns have not answered as an option, not as a separate dropdown
-                    addStatus = false;
-                    break;
-                case 'multiselect':
-                    content.append('selectmultiple');
-                    selectOptions = questionCell.firstChild.nextSibling;
-                    addStatus = false;
-                    break;
-                case 'page':
-                    content.append('page'); break;
-                case 'scored':
-                case 'line':
-                case 'label':
-                    content.append('static'); break;
-                default: break;
+            switch (type) {
+            case 'header':
+                content += 'header';
+                break;
+            case 'textbox':
+                content += 'text';
+                addStatus = true;
+                break;
+            case 'textarea':
+                content += 'textarea';
+                addStatus = true;
+                break;
+            case 'date':
+                content += 'date';
+                name = name + "_date";
+                // questionCell.lastChild is the year's select box.
+                // the first option in that is the start year, the last one is the end year.
+                min = questionCell.lastChild.firstChild.textContent;
+                max = questionCell.lastChild.lastChild.textContent;
+                addStatus = true;
+                break;
+            case 'numeric':
+                content += 'numeric';
+                min = questionCell.lastChild.firstChild.textContent;
+                max = questionCell.lastChild.lastChild.textContent;
+                addStatus = true;
+                break;
+            case 'dropdown':
+                content += 'select';
+                selectOptions = questionCell.firstChild.nextSibling;
+                // Dropdowns have not answered as an option, not as a separate dropdown
+                addStatus = false;
+                break;
+            case 'multiselect':
+                content += 'selectmultiple';
+                selectOptions = questionCell.firstChild.nextSibling;
+                addStatus = false;
+                break;
+            case 'page':
+                content += 'page';
+                break;
+            case 'scored':
+            case 'line':
+            case 'label':
+                content += 'static';
+                break;
+            default:
+                break;
             }
 
-            content.append("{@}");
-            content.append(name);
-            content.append("{@}");
-            content.append(qVal);
-            if(type === 'line') {
-                content.append('<br />');
+            content += "{@}";
+            content += name;
+            content += "{@}";
+            content += qVal;
+            if (type === 'line') {
+                content += '<br />';
             }
-            if(type === 'date' || type === 'numeric') {
-                content.append("{@}" + min + "{@}" + max);
+            if (type === 'date' || type === 'numeric') {
+                content += "{@}" + min + "{@}" + max;
             }
 
-            if(type == 'dropdown' || type == 'multiselect') {
-                content.append('{@}');
-                content.append("NULL=>''");
+            if (type === 'dropdown' || type === 'multiselect') {
+                content += '{@}';
+                content += "NULL=>''";
                 options = selectOptions.children;
-                for(var j = 0; j < options.length; j++) {
-                    option = options[j].textContent
+                for (j = 0; j < options.length; j += 1) {
+                    option = options[j].textContent;
                     enum_option = Enumize(options[j].textContent);
-                    content.append("{-}'" + enum_option + "'=>'" + option + "'");
-                    
+                    content += "{-}'" + enum_option + "'=>'" + option + "'";
+
                 }
-                content.append("{-}'not_answered'=>'Not Answered'");
+                content += "{-}'not_answered'=>'Not Answered'";
             }
 
-            content.append("\n");
-            if(addStatus) {
-                content.append("select{@}" + name + "_status" +
-                    "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n");
+            content += "\n";
+            if (addStatus) {
+                content += "select{@}" + name + "_status" +
+                    "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
             }
         }
         return content;
