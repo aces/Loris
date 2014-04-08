@@ -235,9 +235,9 @@ $(document).ready(function() {
       		{/if}</td>
   	{elseif  $items[item][piece].name == "Reliability"}
   	  {if $items[item][piece].value== "Yes"}
-  	  <td nowrap="nowrap" style="background-color:#55FF55;">{$items[item][piece].value}</td>
+  	  <td nowrap="nowrap" style="background-color:#86BC78;">{$items[item][piece].value}</td>
   	  {elseif $items[item][piece].value== "No"}
-  	  <td nowrap="nowrap" style="background-color:#FF2222;color:white">{$items[item][piece].value}</td>
+  	  <td nowrap="nowrap" style="background-color:#C43120;color:white">{$items[item][piece].value}</td>
   	  {else}
   	  <td nowrap="nowrap"></td>
   	  {/if}

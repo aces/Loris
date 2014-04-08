@@ -101,7 +101,7 @@ h4 {
     margin-top: 5px;
     text-color: white;
     font-size: 110%;
-    background-color: #08245B;
+    background-color: #064785;
     width: 100%;
 }
 .site{
@@ -390,49 +390,49 @@ table.data {
     border: none; /*thin solid black;*/
 }
 .data tr td.male {
-    background: #DEF;
+    background: #E0ECF8; /*#C1D4ED;*/
 }
 
 .data tr td.female {
-    background: #FDF;
+    background: #F8E0EC;
 }
 
 .data tr td.male.total {
-    background: #DEF;
+    background: #E0ECF8;
     font-weight: bold;
 }
 .data tr td.female.total {
     font-weight: bold;
-    background: #FDF;
+    background: #F8E0EC;
 }
 .data tr td.subtotal {
-    background: #DDD;
+    background: #A3A3A3;
 }
 
 .data tr td.complete {
-    background: #DFD;
+    background: #CEF6CE;
 }
 .data tr td.incomplete, .data tr td.no_scan, .data tr td.no_scan.total {
-    background: #FDD;
+    background: #F5A9A9;
 }
 .data tr td.partial_run, .data tr td.partial_run.total {
-    background: #FFD; /*rgb(217, 217, 119); */
+    background: #F5F6CE; /*rgb(217, 217, 119); */
 }
 .data tr td.complete.total {
-    background: #DFD; 
+    background: #CEF6CE; 
     font-weight: bold;
 }
 .data tr td.incomplete.total {
-    background: #FDD;
+    background: #F5A9A9;
     font-weight: bold;
 }
 .data tr td.total {
     font-weight: bold;
-    background: #DDD;
+    background: #A3A3A3;
 }
 
 .data tr th {
-    background: #08245B;
+    background: #1C70B6;
     /* color: #CCC; */
     color: white;
     padding: 3px;
@@ -518,7 +518,7 @@ list-style-type: none;
 
 #navlist a:link, #navlist a:visited
 {
-color: #2a2a2a;
+color: #064785;
 text-decoration: none;
 }
 
@@ -573,7 +573,7 @@ td.sidenav {
     padding-left: 10px;
     padding-right: 10px;
     margin-right: 1px;
-    background: #08245B !important;
+    background: #064785 !important;
     /* background: #989; */
 	color: #fff !important;
     border-top-style: solid;

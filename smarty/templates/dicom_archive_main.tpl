@@ -156,10 +156,10 @@ JSFX_FloatDiv("divTopLeft",10, 200).flt();
 </div>
 </tr>
 <tr>
-<td align="center" colspan="1" style="color:#fff" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
 </tr>
 <tr>
-<td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #348b8d;" target="_blank">Created by ACElab</a></td>
+<td align="center" colspan="1"><a href="http://cbrain.mcgill.ca" style="color: #064785;" target="_blank">Created by ACElab</a></td>
 </tr>
 </table>
 </div>
