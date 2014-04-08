@@ -31,7 +31,6 @@ function loadDefaultStatus() {
 function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
     "use strict";
     var pstatus_sub = document.getElementById('participant_suboptions'),
-        pstatus_dropdown = document.getElementById('participant_status'),
         options,
         dropdown_value = defaultPstat_sub;
     $.get("GetParticipant_suboptions.php?p_status=" + defaultPstat,
@@ -52,7 +51,7 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
             $('#participant_suboptions').val(dropdown_value);
 
             //jQuery('#visits').change();
-        }); 
+        });
 }
 function changeParticipantStatus() {
     "use strict";
