@@ -21,11 +21,11 @@ function loadDefaultStatus() {
             default_vals;
         $.get("GetParticipant_suboptions.php?pscid=" + pscid_value,
                 function (data) {
-                  default_vals = data.split(";");
-                  $('#participant_statusID').val(default_vals[0]);
-                  if (default_vals.length >1) {
-                    loadDefaultSubOption(default_vals[0], default_vals[1]);
-                 }
+                default_vals = data.split(";");
+                $('#participant_statusID').val(default_vals[0]);
+                if (default_vals.length >1) {
+                  loadDefaultSubOption(default_vals[0], default_vals[1]);
+                }
             });
     }
 }
