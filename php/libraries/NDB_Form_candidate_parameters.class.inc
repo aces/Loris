@@ -84,19 +84,23 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->tpl_data['sibling_list'][]= $relation;
         }
        
-        $cand_info['flagged_caveatemptor'] = $DB->pselectOne("SELECT flagged_caveatemptor FROM candidate 
-                                             WHERE CandID=:CandidateID",
+        $emptor_info = $DB->pselectRow("SELECT flagged_caveatemptor,flagged_reason,flagged_other
+                                             FROM candidate WHERE CandID=:CandidateID",
                                              array('CandidateID' => $this->identifier));
-        $desc = $DB->pselectOne("SELECT Description AS Reason FROM candidate c join caveat_options o on 
-                (o.ID = c.flagged_reason) WHERE CandID=:CandidateID",array('CandidateID' => $this->identifier));
-        if(!empty($desc)) {
-           $cand_info['flagged_reason'] = $desc;
-           if($cand_info['flagged_reason'] == 'Other') {
-               $cand_info['flagged_other'] = $DB->pselectOne("SELECT flagged_other FROM candidate 
-                       WHERE CandID=:CandidateID",array('CandidateID' => $this->identifier));
-           }
-        }
-         $DB->select("SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID='".$this->identifier."'", $value_results);
+        foreach($emptor_info as $key=>$val){
+            if($key == 'flagged_reason') {
+                $reason = $DB->pselectOne("SELECT Description AS Reason FROM candidate c join caveat_options o on 
+                                (o.ID = c.flagged_reason) WHERE CandID=:CandidateID",array('CandidateID' => $this->identifier));
+                if(!empty($reason)) {
+                   $cand_info['flagged_reason'] = $reason; 
+               }
+            } else {
+                $cand_info[$key]= $val;
+            }
+         
+         }
+ 
+        $DB->select("SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID='".$this->identifier."'", $value_results);
         foreach($value_results AS $vresult){
             if(!empty($vresult['Value'])) {
         	    $cand_info["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
@@ -397,15 +401,15 @@ class NDB_Form_candidate_parameters extends NDB_Form
         // candID
         $this->tpl_data['candID'] = $candidate->getData('CandID');
 
-        $this->form->addElement('static','flagged_caveatemptor','Caveat Emptor flag for Candidate');
-        $this->form->addElement('static','flagged_reason',$this->indent.'Reason for Caveat Emptor flag');
-        $this->form->addElement('static','flagged_other', $this->indent.'Additional Comments for flag');
+        $this->addScoreColumn('flagged_caveatemptor','Caveat Emptor flag for Candidate');
+        $this->addScoreColumn('flagged_reason',$this->indent.'Reason for Caveat Emptor flag');
+        $this->addScoreColumn('flagged_other', $this->indent.'Additional Comments for flag');
 
  		//Extract the fields from the parameter_type table
         $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", $field_results);
         //If there are no defined fields print a message to that effect
         if(empty($field_results)){
-        	$this->form->addElement('static', "static", "No candidate parameters have been defined for this study");
+        	$this->addScoreColumn("static", "No candidate parameters have been defined for this study");
         	return;
         }
         
@@ -414,13 +418,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->form->addElement('static', "PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
         }
         
-        $this->form->addElement('static', 'ProbandGUID', 'Proband GUID:');
-        $this->form->addElement('static', 'ProbandDoB', 'DoB Proband:');
-        $this->form->addElement('static', 'ProbandGender', 'Proband gender:');
-        $this->form->addElement('static', 'Age_Difference','Age Difference between candidate<BR> and proband (in months):');
+        $this->addScoreColumn('ProbandGUID', 'Proband GUID:');
+        $this->addScoreColumn('ProbandDoB', 'DoB Proband:');
+        $this->addScoreColumn('ProbandGender', 'Proband gender:');
+        $this->addScoreColumn('Age_Difference','Age Difference between candidate<BR> and proband (in months):');
 
-        $this->form->addElement('static','SiblingcID','Family Member ID:'); 
-        $this->form->addElement('static','relation_type','Relationship:');
+        $this->addScoreColumn('SiblingcID','Family Member ID:'); 
+        $this->addScoreColumn('relation_type','Relationship:');
         //participant status 
 
         //entry staff info
@@ -513,8 +517,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $this->tpl_data['pscid'] = $pscid;
 
-        $this->form->addElement('text','FamilyMemberID','Family Member ID:<BR/> (Enter DCCID)' );
-        $this->form->addElement('select','relation_type','Relation Type', $this->relationType);
+        $this->addBasicText('FamilyMemberID','Family Member ID:<BR/> (Enter DCCID)' );
+        $this->addSelect('relation_type','Relation Type', $this->relationType);
         $this->form->addFormRule(array(&$this, '_validate_add_family'));
         $this->tpl_data['candID'] = $this->identifier; 
 
@@ -564,9 +568,9 @@ class NDB_Form_candidate_parameters extends NDB_Form
         foreach($options as $row) {
             $caveat_options[$row['ID']] = $row['Description'];
         }
-        $this->form->addElement('select','flagged_caveatemptor','Caveat Emptor flag for candidate', 
+        $this->addSelect('flagged_caveatemptor','Caveat Emptor flag for candidate', 
                                  array(''=>'','true'=>'True','false'=>'False'));
-        $this->form->addElement('select','flagged_reason',$this->indent.'Reason for Caveat Emptor flag',
+        $this->addSelect('flagged_reason',$this->indent.'Reason for Caveat Emptor flag',
                                 $caveat_options);
         $this->addTextAreaGroup('flagged_other',$this->indent.'If Other, please specify',
                                           array(null=>'','not_answered'=>'Not Answered'));
@@ -574,7 +578,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", $field_results);
         //If there are no defined fields pritn a message to that effect
         if(empty($field_results)){
-        	$this->form->addElement('static', "static", "No candidate parameters have been defined for this study");
+        	$this->addScoreColumn("static", "No candidate parameters have been defined for this study");
         	return;
         }
         
@@ -589,18 +593,18 @@ class NDB_Form_candidate_parameters extends NDB_Form
                     foreach($options as $option) {
                         $elOptions[$option] = $option;
                     }
-        			$this->form->addElement('select', "PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $elOptions);
+        			$this->addSelect("PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $elOptions);
         		break;
         		
         		case "dat":
-        			$this->form->addElement('date', "PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $dateOptions);
+        			$this->addBasicDate("PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $dateOptions);
         		break;
         		
         		case "int":
         		case "var":
         		case "tex":
             default:
-        			$this->form->addElement('textarea', "PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
+        			$this->addBasicTextArea("PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
         		
         	}
         	$this->tpl_data['elements_list'][]="PTID_".$fresult['ParameterTypeID'];
@@ -621,7 +625,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $this->tpl_data['pscid'] = $pscid;
         
-        $this->form->addElement('text', 'ProbandGUID', 'Proband GUID:');
+        $this->addBasicText('ProbandGUID', 'Proband GUID:');
         
         $config =& NDB_Config::singleton();
         $probandDateOptions = array(
@@ -633,9 +637,9 @@ class NDB_Form_candidate_parameters extends NDB_Form
             'emptyOptionValue' => null
         );
 
-        $this->form->addElement('date', 'ProbandDoB', 'DoB Proband:', $probandDateOptions);
-        $this->form->addElement('date', 'ProbandDoB2', 'Confirm DoB Proband:', $probandDateOptions);
-        $this->form->addElement('select', 'ProbandGender', 'Proband gender:', array('' => '','Male' => 'Male', 'Female' => 'Female') );
+        $this->addBasicDate('ProbandDoB', 'DoB Proband:', $probandDateOptions);
+        $this->addBasicDate('ProbandDoB2', 'Confirm DoB Proband:', $probandDateOptions);
+        $this->addSelect('ProbandGender', 'Proband gender:', array('' => '','Male' => 'Male', 'Female' => 'Female') );
         
         $this->form->addFormRule(array(&$this,'_validate'));
     }

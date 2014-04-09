@@ -1692,11 +1692,6 @@ CREATE TABLE `mri_violations_log` (
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`LogID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
 
 CREATE TABLE `participant_accounts` (
     `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
