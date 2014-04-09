@@ -1,16 +1,36 @@
 <?php
+/**
+ * This file contains code for edit candidate profile page
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Various <example@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+
 require_once "NDB_Form.class.inc";
 require_once "Utility.class.inc";
 
 /**
- * Candidate Parameter form
- * @package main
+ * A class for holding a set of functions to update candidate 
+ * info page.
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Various <example@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
+
 class NDB_Form_candidate_parameters extends NDB_Form
 {
     var $relationType =  array(null=>'','full_sibling'=>'Full Sibling',
-                               'half_sibling'=>'Half Sibling','1st_cousin'=>'First Cousin');
-    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                               'half_sibling'=>'Half Sibling',
+                               '1st_cousin'=>'First Cousin');
+    var $indent       = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     function _hasAccess()
     {
