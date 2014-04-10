@@ -228,21 +228,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
 
             ///////////////////////////////////////////////////////////////////
-            ////Write into the tarchive-file log filrchiveLocation ////////////
-            ///$new_file_location" if it already exists remove it..////////////
-            ///////////////////////////////////////////////////////////////////
             //////Set the file-path based on the patient_name//////////////////
             ///////////////////////////////////////////////////////////////////
             if ($dicom_created) {
-                $tarchive_file_log = $paths['data'] . "logs/" . $patient_name. 
-                "_tarchive_file.txt";
-                if (file_exists($tarchive_file_log)) {
-                    unlink($tarchive_file_log);
-                }
-                $handle = fopen($tarchive_file_log, "w");
-                fwrite($handle, $ArchiveLocation);
-                fclose($handle);
-
+                
+                //create a new log file for the tarchive_file
+                $tarchive_log= new Log(
+                    $patient_name. "_tarchive_file", $paths['data'] . "logs/"
+                );
+                $tarchive_log->addLog($ArchiveLocation,false);
+                
+                //get the path to the error_log
+                $tarchive_file_log  = $tarchive_log->getLogPath();
+                
                 $command = "cd $mri_code_path; /usr/bin/perl $bach_upload_script".
                            "< $tarchive_file_log";
                 $query = "SELECT COUNT(f.FileID) FROM mri_upload mu".
