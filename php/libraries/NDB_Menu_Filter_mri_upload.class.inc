@@ -30,17 +30,7 @@ require_once "File_Decompress.class.inc";
 */
 class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
-    //var $log;
-    /**
-    * overloading this method to allow access to site users 
-    * (their own site only) and users w/ multisite privs
-    * 
-    * @note   overloaded function
-    * 
-    * @return bool
-    * @access private
-    */
-
+  
     var $show_errors = true;
 
     /**
@@ -96,9 +86,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $this->form->addElement('file', 'mri_file', 'File to Upload');
-        $this->form->addElement('static', 'File_name', 'File name');
-        $this->form->addElement('static', 'status', 'Status');
+        $this->addFile('mri_file', 'File to Upload');
+        $this->addScoreColumn('File_name', 'File name');
+        $this->addScoreColumn('status', 'Status');
 
         ///////////////////////////////////////////////////////////////////////
         //////////////////Patient-name and Patient-ID fields///////////////////
@@ -120,10 +110,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $new_files[$file['SourceLocation']] =$file['SourceLocation'];
         }
         $new_files = array(null=>'Any') + $new_files;
-        $this->form->addElement(
-            'select', 'SourceLocation', 'SourceLocation', $new_files
-        );
-
+        $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
+        
         if (empty($_FILES) 
             && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
@@ -159,6 +147,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $source_location = $db->pselectOne($query, array());
             $config =& NDB_Config::singleton();
             $paths = $config->getSetting('paths');
+            $dicom_archive_settings = $config->getSetting('dicom_archive');
             $mri_user = $paths['MRIUser'];
             $mri_code_path = $paths['MRICodePath'];
             $mri_incoming_path = $paths['IncomingPath'];
@@ -172,7 +161,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $pscid = $values['PSCID'];
             $visit_label = $values['VisitLabel'];
             $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
-            $patient_id = "GUSTO";
             $this->tpl_data['minc_success'] = false;
             $dicom_created = false;
             ///////////////////////////////////////////////////////////////////
@@ -459,7 +447,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 "SELECT COUNT(*) FROM tarchive WHERE patientname = :pname",
                 array('pname'=>$patient_name)
             ))>0) {
-                $errors[]=" The Dicom file $file_name has already been".
+                $errors[]=" The Dicom file $file_name has already been ".
                           "inserted into the tarchive table";
             }
 
@@ -541,11 +529,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
 
             if ($file_not_matching_patient_name > 0) {
-                /*
                 $errors[]=" There are  $file_not_matching_patient_name ".
                 "DICOM files where the patient_name is  ".
                 "$patient_name_from_header and doesn't match $patient_name";
-                */
             }   
 
             ///////////////////////////////////////////////////////////////////
@@ -705,7 +691,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
 
     function insertDicom($DICOMTAR,$file_name,$decompressed_folder,
-        $tarchive_location,$patient_name,$patient_id
+        $tarchive_location
     ) {
         $db=& Database::singleton();
         $dicom_inserted = false;
@@ -741,43 +727,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         print "tarchive location is $tarchive_location";
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
-        /*
-        $objects = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($tarchive_location),
-        RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        foreach($objects as $name => $object){
-        print "name is $name and file-name is $file_name <BR>";
-        if (is_file($object)) {
-        if ($name==$file_name) {
-        $tarchive_file_created= true;
-        }
-        }
-        }
-
-        */
-        ///////////////////////////////////////////////////////////////////////
-        //////update the header if the ArchiveLocation is set//////////////////
-        ///////////////////////////////////////////////////////////////////////
-        /*
-        if (isset($ArchiveLocation)) {
-        $cmd = "/usr/bin/perl $update_header $ArchiveLocation -verbose -set"
-        . " '(0010,0010)' $patient_name -set '(0010,0020)' $patient_id
-         -database -profile prod";
-        print $cmd . "<BR>";
-        $output = shell_exec($cmd);
-        print $output;
-        print "-----------------------------";
-        print "<BR>";
-        $this->log->addLog(
-        "The DICOM tar file $ArchiveLocation is now updated
-        with the following patientname: $patient_name patientid: 
-        $patient_id \n <BR> "
-        );
-        }
-        */
-
 
          //////////////////////////////////////////////////////////////////////
          /////////////////if successfully completed return true////////////////
