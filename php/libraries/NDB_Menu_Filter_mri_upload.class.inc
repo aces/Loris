@@ -190,7 +190,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             /////Source Environment Variables//////////////////////////////////
             ///////////////////////////////////////////////////////////////////
             $this->sourceEnvironment($mri_code_path, $mri_user);
-            print "mri_user" . $mri_user . "<BR>";
 
             ///////////////////////////////////////////////////////////////////
             //////////////////////run dicomtar for the DICOM file//////////////
@@ -362,7 +361,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir = $this->tempdir(true);
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
-        print "temp file " . $temp_file . "<BR>";
         if (!copy($temp_file, '/tmp/new_compressed')) {
             echo "failed to copy $temp_file...\n";
         }
@@ -712,11 +710,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
         );
 
-
-        ///////////////////////////////////////////////////////////////////////
-        /////////////Check to see if the file exists in tarchive folder////////
-        ///////////////////////////////////////////////////////////////////////
-        print "tarchive location is $tarchive_location";
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
 
