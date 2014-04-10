@@ -31,7 +31,7 @@ require_once "File_Decompress.class.inc";
 class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
   
-    var $show_errors = true;
+    var $show_queries = true;
 
     /**
      * _has_access returns true
@@ -163,19 +163,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
             $this->tpl_data['minc_success'] = false;
             $dicom_created = false;
-            ///////////////////////////////////////////////////////////////////
-            ///////////dynamic output log file/////////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            $mri_log_file = $paths['data'] . "logs/" . 
-                            $patient_name. "_mri_upload_log.log";
-
-            ///log file containing the name of the tarred file which will 
-            ///be the input for batchupload
+            
 
             $file_name = pathinfo($source_location, PATHINFO_FILENAME);
-            if ($this->show_errors) {
-                print "file-name : $file_name, file-name-wo-extension:".
-                       "$file_name_without_exention and sourcelocation".
+            if ($this->show_queries) {
+                print "file-name : $file_name, and sourcelocation".
                        $source_location;
                 print "visitlabel $visit_label pscid: $pscid and candid:".
                        $candid;
@@ -268,7 +260,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ///////////////////////////////////////////////////////////////
                 if ($count==0) {
                     $output = shell_exec($command);
-                    if ($this->show_errors) {
+                    if ($this->show_queries) {
                         print "command is $command";
                         print $output;
                     }
@@ -702,7 +694,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
         .  " -clobber -database -profile prod";
         $output = shell_exec($cmd);
-        if ($this->show_errors) {
+        if ($this->show_queries) {
             print "cmd : $cmd \n";
             print $output;
         }
