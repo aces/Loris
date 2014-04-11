@@ -236,7 +236,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $tarchive_log= new Log(
                     $patient_name. "_tarchive_file", $paths['data'] . "logs/"
                 );
-                $tarchive_log->addLog($ArchiveLocation,false);
+                $tarchive_log->addLog($ArchiveLocation, false);
                 
                 //get the path to the error_log
                 $tarchive_file_log  = $tarchive_log->getLogPath();
@@ -313,7 +313,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //into once they are validated and processed.
         $file->setBaseUploadDirectory($stored_file_path);
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError(
                 "User Error: ". $user->getMessage()
             );
@@ -342,7 +342,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
      * 
-     * @return Boolean
+     * @return Array  Returns an array of errors or 
+     * Boolean if it's true
      */
     function isValid($file, $args)
     {
@@ -575,7 +576,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $user_name = $args['user_id'];
         if (($user_name==null) || (!(isset($user_name)))) {
             $user =& User::singleton();
-            if (PEAR::isError($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error: ".$user->getMessage());
             }
             $user_name = $user->getUsername();
@@ -671,8 +672,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * @param String $file_name           Path to the uploaded file
      * @param String $decompressed_folder Path to the decompressed folder
      * @param String $tarchive_location   Path to where the tarchive folder
-     * @param String $patient_name        Patient Name
-     * @param String $patient_id          Patient ID
      * 
      * @return Boolean True if successfully completed, otherwise false
      * 
