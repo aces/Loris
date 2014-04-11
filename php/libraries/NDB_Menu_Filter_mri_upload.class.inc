@@ -241,7 +241,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 //get the path to the error_log
                 $tarchive_file_log  = $tarchive_log->getLogPath();
                 
-                $command = "cd $mri_code_path; /usr/bin/perl $bach_upload_script".
+                $command = "cd $mri_code_path; perl $bach_upload_script".
                            "< $tarchive_file_log";
                 $query = "SELECT COUNT(f.FileID) FROM mri_upload mu".
                          "JOIN files f ON (f.sessionID = mu.SessionID)".
@@ -356,6 +356,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
          * 1) Ask them to use the database_based visit_labels:
          * 
         */
+        
         
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir = $this->tempdir(true);
@@ -659,14 +660,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         putenv("PATH=$path");
         $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
         putenv("PERL5LIB=$path");
-        putenv("TMPDIR=/tmp");
+        
+        //Set the TMPDIR path only if it's not already set
+        if (!isset(getenv('TMPDIR'))){
+            putenv("TMPDIR=/tmp");    
+        }
         putenv("HOME=/home/$mri_user");
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
     }
 
     /**
-     * Enter description here...
+     * Runs the dicomTar.pl and will return true if the dicom is inserted,
+     * ,tarchiveid, and archivelocation
      *
      * @param String $DICOMTAR            Path to Dicomtar.pl
      * @param String $file_name           Path to the uploaded file
@@ -686,7 +692,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         //////////////////Run the dicom_tar////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
+        $cmd = "perl $DICOMTAR $decompressed_folder $tarchive_location"
         .  " -clobber -database -profile prod";
         $output = shell_exec($cmd);
         if ($this->show_queries) {
@@ -717,7 +723,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (($tarchive_file_created)
             && ($tarchive_id!=null)
         ) {
-            print "setting the dicom_inserted to true <BR>";
             $dicom_inserted  =true;
         }
 
