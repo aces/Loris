@@ -66,6 +66,11 @@ if ! [ $BASH ] ; then
     exit 2
 fi
 
+if [ -f ../project/config.xml ]; then
+    echo "Loris appears to already be installed. Aborting."
+    exit 2;
+fi
+
 # Check that we're running in the proper directory structure.
 if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
     echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
@@ -77,12 +82,6 @@ mkdir -p ../project ../project/libraries ../project/instruments ../project/templ
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
-
-
-if [ -f ../project/config.xml ]; then
-    echo "Loris appears to already be installed. Aborting."
-    exit 2;
-fi
 
 if [[ -n $(which php) ]]; then
     echo ""
@@ -192,7 +191,7 @@ while true; do
         read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
 	echo ""
         read -p "Re-enter the password to check for accuracy " mysqlpass2
-	if [[ $mysqlpass == $mysqlpass2 ]] ; then
+	if [[ "$mysqlpass" == "$mysqlpass2" ]] ; then
 	        break;
 	fi
 	echo ""
@@ -206,7 +205,7 @@ while true; do
         read -p "Enter the front-end Loris 'admin' user's password: " lorispass
         echo ""
         read -p "Re-enter the password to check for accuracy " lorispass2
-        if [[ $lorispass == $lorispass2 ]] ; then
+        if [[ "$lorispass" == "$lorispass2" ]] ; then
                 break;
         fi
 	echo ""
@@ -233,7 +232,7 @@ while true; do
         read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         echo ""
         read -p "Re-enter the password to check for accuracy " mysqlrootpass2
-        if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
+        if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
                 break;
         fi
 	echo ""
@@ -270,7 +269,7 @@ if [ $MySQLError -ne 0 ] ; then
 		while true; do
         		read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         		read -p "Re-enter the password to check for accuracy " mysqlrootpass2
-        		if [[ $mysqlrootpass == $mysqlrootpass2 ]] ; then
+        		if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
                 		break;
 		        fi
 			echo ""
