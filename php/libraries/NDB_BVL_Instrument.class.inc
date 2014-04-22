@@ -1850,8 +1850,11 @@ class NDB_BVL_Instrument extends NDB_Page
             if (Utility::isErrorX($success)) {
                 $tpl_data['error_message'][] = $success->getMessage();
             } else {
+                $config = NDB_Config::singleton();
+                $paths = $config->getSetting('paths');
                 if (empty($subtest)) {
                     // check if the file/class exists
+                    $TestName = $this->testName;
                     if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) {
                         // save possible changes from the control panel...
                         $success = $controlPanel->save();
