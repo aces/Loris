@@ -142,8 +142,8 @@ if (!empty($TestName)) {
     if(file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
         $tpl_data['test_name_js'] = "js/modules/$TestName.js";
     }
-    if(file_exists("css/instruments/$TestName.css")) {
-       $tpl_data['test_name_css'] = "css/instruments/$TestName.css";
+    if(file_exists("css/instruments/$TestName.css")) { 
+       $tpl_data['test_name_css'] = "$TestName.css";
     }
 }
 
