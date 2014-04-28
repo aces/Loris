@@ -156,7 +156,7 @@ class NDB_Caller extends PEAR
 
         if(method_exists($menu, 'getControlPanel')) {
             $this->controlPanel = $menu->getControlPanel();
-
+        }
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
             if (Utility::isErrorX($success)) {
