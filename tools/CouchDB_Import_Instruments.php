@@ -1,4 +1,4 @@
-<?
+<?php
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
@@ -14,6 +14,7 @@ class CouchDBInstrumentImporter {
     }
 
     function UpdateDataDicts($Instruments) {
+
         foreach($Instruments as $instrument => $name) {
             $Dict = array(
                 'Administration' => array(
@@ -118,6 +119,7 @@ class CouchDBInstrumentImporter {
     }
     function run() {
         $tests = $this->GetInstruments();
+        $tests = array('mullen' => 'Mullen instrument stuff');
         $this->UpdateDataDicts($tests);
         $results = $this->UpdateCandidateDocs($tests);
         $this->CreateRunLog($results);

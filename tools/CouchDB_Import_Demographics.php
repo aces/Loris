@@ -1,4 +1,4 @@
-<?
+<?php
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
@@ -56,6 +56,18 @@ class CouchDBDemographicsImporter {
         )
 
     );
+
+    var $Config = array(
+        'Meta' => array(
+            'DocType' => 'ServerConfig'
+        ),
+        'Config' => array(
+            'GroupString'  => 'How to arrange data: ',
+            'GroupOptions' => 
+                array('Cross-sectional', 'Longitudinal')
+        )
+    );
+
     function __construct() {
         $this->SQLDB = Database::singleton();
         $this->CouchDB = CouchDB::singleton();
@@ -84,7 +96,8 @@ class CouchDBDemographicsImporter {
     }
 
     function run() {
-
+        $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
+        print "Updating Config:BaseConfig: $config";
         $this->CouchDB->replaceDoc('DataDictionary:Demographics',
             array('Meta' => array('DataDict' => true),
                   'DataDictionary' => array('demographics' => $this->Dictionary) 
