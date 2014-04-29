@@ -30,7 +30,6 @@
     <log>tools/logs/</log>
     <IncomingPath>/data/incoming/</IncomingPath>
     <MRICodePath>data/%PROJECTNAME%/bin/mri/</MRICodePath>
-    <MRIUser>MRI/LINUX/USER</MRIUser>
 
 </paths>
 
