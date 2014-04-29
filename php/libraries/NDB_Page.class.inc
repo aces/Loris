@@ -13,6 +13,14 @@ class NDB_Page extends PEAR
         $this->identifier = $identifier;
         $this->commentID = $commentID;
     }
+    
+    
+    /**
+    * Wrapper to create a file element
+    */
+    function addFile($name, $label) {
+        $this->form->addElement('file', $name, $label);
+    }
 
      /**
     * Wrapper to create a header
