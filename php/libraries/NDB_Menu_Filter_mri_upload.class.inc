@@ -134,7 +134,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-
         if ($this->_saveFile($values)) {
 
             ///////////////////////////////////////////////////////////////////
@@ -142,13 +141,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             $db=& Database::singleton();
             /////get the location of the last uploaded folder//////////////////
-            $query = "SELECT  SourceLocation FROM mri_upload".
+            $query = "SELECT  SourceLocation,UploadedBy FROM mri_upload".
                      " WHERE TarchiveID IS NULL ORDER BY UploadID DESC";
-            $source_location = $db->pselectOne($query, array());
+            
+            $upload_info = $db->pselectRow($query, array());
+            $source_location = $upload_info['SourceLocation'];
+            $mri_user = $upload_info['UploadedBy'];
             $config =& NDB_Config::singleton();
             $paths = $config->getSetting('paths');
             $dicom_archive_settings = $config->getSetting('dicom_archive');
-            $mri_user = $paths['MRIUser'];
             $mri_code_path = $paths['MRICodePath'];
             $mri_incoming_path = $paths['IncomingPath'];
             $mri_header_executer = $mri_code_path . "customize_headers.pl";
@@ -189,7 +190,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             /////Source Environment Variables//////////////////////////////////
             ///////////////////////////////////////////////////////////////////
-            $this->sourceEnvironment($mri_code_path, $mri_user);
+            $this->sourceEnvironment($mri_code_path,$mri_user);
 
             ///////////////////////////////////////////////////////////////////
             //////////////////////run dicomtar for the DICOM file//////////////
@@ -243,10 +244,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 
                 $command = "cd $mri_code_path; perl $bach_upload_script".
                            "< $tarchive_file_log";
-                $query = "SELECT COUNT(f.FileID) FROM mri_upload mu".
-                         "JOIN files f ON (f.sessionID = mu.SessionID)".
-                         "JOIN session s ON (s.ID = f.sessionID)".
-                         "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel";
+                $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
+                         "JOIN files f ON (f.sessionID = mu.SessionID) ".
+                         "JOIN session s ON (s.ID = f.sessionID) ".
+                         "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
                 $count = $db->pselectOne(
                     $query, array('cid'=>$candid, 'vlabel'=>$visit_label)
                 );
@@ -372,6 +373,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file_name = $file->fileInfo['name'];
         $not_dicom = false;
         $files_not_dicom = 0;
+        $files_not_readable = 0;
         $file_not_matching_patient_name = 0;
         $header_patient_name = array();
         $hader_patient_name;
@@ -480,7 +482,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////determin the file-type//////////////////////
                     ///////////////////////////////////////////////////////////
                     $file_type = shell_exec("file $file");
-    
+                    
+                    ///////////////////////////////////////////////////////////
+                    /////////////// check if it's readable/////////////////////
+                    ///////////////////////////////////////////////////////////
+                    if (!is_readable($file)) {
+                        $files_not_readable++;
+                        continue;
+                    }
+                    
+
+                    
                     ///////////////////////////////////////////////////////////
                     ///////////////if the file is not a dicom//////////////////
                     ///////////////////////////////////////////////////////////
@@ -492,6 +504,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         if ((!(preg_match("/archive/i", $file_type))) 
                             && (!(preg_match("/gzip compressed data/i", $file_type)))
                         ) {
+                            
+                            
                             $files_not_dicom++;
                         }
                         continue;
@@ -514,9 +528,16 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 }
             }
             if ($files_not_dicom > 0) {
-                $errors[]=" There are  $files_not_dicom files detected which".
+                $errors[]=" There are  $files_not_dicom files detected which ".
                       "are not of type DICOM";
             }
+            
+            if ($files_not_readable > 0) {
+                $errors[]=" There are  $files_not_readable files which are not ".
+               "readable by the browser. Please make sure that the files have ".
+               "the right permission";
+            }
+            
 
             if ($file_not_matching_patient_name > 0) {
                 $errors[]=" There are  $file_not_matching_patient_name ".
@@ -649,7 +670,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * source the environment variable
      *
      * @param String $mri_code_path Path to the MRI-Code
-     * @param String $mri_user      Linux MRI User
      * 
      * @return NULL
      */
@@ -658,14 +678,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         $path = $mri_code_path. ":". getenv('PATH');
         putenv("PATH=$path");
+        $loris_config = $mri_code_path . "dicom-archive";
+        putenv("LORIS_CONFIG=$loris_config");
         $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
         putenv("PERL5LIB=$path");
         
+        $tempdir = getenv('TMPDIR');
         //Set the TMPDIR path only if it's not already set
-        if (!isset(getenv('TMPDIR'))){
+        if (!isset($tempdir)) {
             putenv("TMPDIR=/tmp");    
         }
-        putenv("HOME=/home/$mri_user");
+
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
     }
