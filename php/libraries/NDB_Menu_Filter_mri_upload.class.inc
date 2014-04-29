@@ -353,8 +353,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         /**
          * 1) The patient-name and the vist-label do exist...
          * 2) if not correct the user can input the correct name...
-         * 3) Make sure it's not corrupted..
-         * 1) Ask them to use the database_based visit_labels:
+         * 3) Make sure the file is not corrupted..
          * 
         */
         
@@ -444,14 +443,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
 
             ///////////////////////////////////////////////////////////////////
-            ///////validate the files in teh compressed uploaded folder////////
+            ///////validate the files in the compressed uploaded folder////////
             //////////Are in fact DICOM////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////
             /**
              * 1) copy the temp file to $file->fileInfo['name']
-             * 1) uncompress the file
-             * 2) go through the folder and iterate..
-             * 3) Check to see if each file is of type dicom..
+             * 2) uncompress the file
+             * 3) go through the folder and iterate..
+             * 4) Check to see if each file is of type dicom..
             */
 
             ///////////////////////////////////////////////////////////////////
