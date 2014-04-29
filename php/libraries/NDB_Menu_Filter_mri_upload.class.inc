@@ -58,16 +58,18 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         
         // set the class variables
-        $this->columns = array('UploadID','s.CandID','s.visit_label',
-        'SourceLocation','UploadDate','UploadedBy',
-        'TarchiveID AS Tarchive_Info','number_of_mincInserted',
-        'number_of_mincCreated');
+        $this->columns = array('mu.UploadID','s.CandID','s.visit_label',
+        'mu.SourceLocation','mu.UploadDate','mu.UploadedBy',
+        'mu.TarchiveID AS Tarchive_Info','mu.number_of_mincInserted',
+        'mu.number_of_mincCreated',"'MRI_browser' as MRI_browser",
+        't.PatientName as MRI_Violation');
         //'MincInserted AS MRI_Browser' );
 
         $this->validFilters = array();
         $this->query = " FROM mri_upload mu
            JOIN session s ON (s.ID = mu.SessionID)
-            WHERE 1=1 ";
+           JOIN tarchive t ON (t.TarchiveID = mu.TarchiveID)
+           WHERE 1=1 ";
         $this->formToFilter = array();
         $this->log= new Log("MRI_upload", "/data/gusto/data/logs/");
 
@@ -773,8 +775,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $tempfile; 
         }
     }
-
-
+      
 }
-
 ?>
