@@ -135,3 +135,29 @@ body {
     font-weight: bold;
     color: #BBFF00;
 }
+
+.ui-state-default, .ui-widget-header, .ui-widget-content .ui-state-default {
+    background: #808080;
+    border: 1px solid #555555 !important; 
+}
+
+.ui-state-hover {
+    border: 1px solid #d1c5d8; 
+    background: #eae6ea;
+    color: #000;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { 
+    border: 1px solid #7e7783; 
+    background: #47F; 
+    color: #ffffff; 
+}
+
+.ui-button-text-only .ui-buttno-text {
+    padding: .4em 1em;
+}
+
+.ui-slider, .ui-slider-range {
+    border: 0px;
+}
+
