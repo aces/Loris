@@ -114,29 +114,5 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         $this->form = new HTML_QuickForm('test_form');
     }
 
-
-    /**
-     * Displays the menu page
-     * Overrides the parent-class function by allowing
-     * the menu_form to load (instead of menu)
-     *
-     * @return void
-     * @access public
-     */
-    function display()
-    {
-
-        // dump the html for the menu
-        $smarty = new Smarty_neurodb;
-        $renderer =& new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-
-        $this->form->accept($renderer);
-        $smarty->assign('mode', $this->mode);
-        $smarty->assign('form', $renderer->toArray());
-        $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("menu_$this->menu.tpl");
-        return $html;
-    }
-
 }
 ?>
