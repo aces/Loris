@@ -255,7 +255,7 @@ class MRIViewScansPage {
             $fileData[$fIdx]['Pipeline'] = $file->getParameter('Pipeline');
             $fileData[$fIdx]['Comment'] = $file->getParameter('Comment');
             // this has been changed for more security
-            $fileData[$fIdx]['checkpicFilename'] = "/mri/jiv/get_file.php?file=" .'pic/'. $file->getParameter('check_pic_filename');
+            $fileData[$fIdx]['checkpicFilename'] = "mri/jiv/get_file.php?file=" .'pic/'. $file->getParameter('check_pic_filename');
             // the jivs
             $fileData[$fIdx]['jivFilename'] = basename($file->getParameter('File'));
             $fileData[$fIdx]['jivAddress'] = str_replace('_check.jpg', '', $file->getParameter('check_pic_filename'));
