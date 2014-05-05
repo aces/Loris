@@ -78,8 +78,7 @@
              <th nowrap="nowrap">No.</th>
                 {section name=header loop=$headers}
                     <th nowrap="nowrap">
-                        <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]
-                            ={$headers[header].fieldOrder}">{$headers[header].displayName}
+                        <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}
                         </a>
                     </th>
                 {/section}
@@ -88,28 +87,17 @@
             <tr>
                 <!-- print out data rows -->
                 {section name=piece loop=$items[item]}
-                
                     {if $items[item][piece].name eq 'Tarchive_Info'}
                         <td nowrap="nowrap"><a href="dicom_archive.php?TarchiveID={$items[item][piece].value}">
                         View Details</a></td>
-                    {elseif $items[item][piece].name eq 'MRI_browser'}     
+                    {elseif $items[item][piece].name eq 'MRI_Browser'}     
                         {if $items[item][piece].value neq '0'}
                             <td nowrap="nowrap">
-                                
                                 <a href="mri_browser.php?filter%5BcandID%5D={$items[item][2].value}">
                                     View Images
                                 </a>
                             </td>
                         {/if}
-                        
-                    {elseif $items[item][piece].name eq 'MRI_Violation'}     
-                        {if $items[item][piece].value neq ''}
-                            <td nowrap="nowrap">
-                                <a href="main.php?test_name=mri_violations&PatientName={$items[item][piece].value}">
-                                    View Violated Scans
-                                </a>
-                            </td>
-                        {/if}    
                     {else}
                         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                 {$items[item][piece].value} 
