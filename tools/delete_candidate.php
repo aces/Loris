@@ -62,20 +62,17 @@ $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" .
          implode(" , ", $sessions) . ")";
 $instruments = $DB->pselect($query, array()); 
 
-//delete the session(s)
-foreach ($sessions as $session) {
-    $DB->delete("session", array("ID" => $session));
-}
+//delete the sessions
+$DB->delete("session", array("CandID" => $DCCID));
 
 //delete each instrument table entry
 foreach ($instruments as $instrument) {
 
     //delete the entry from the instrument table
-    $dde = "DDE_" . $instrument['CommentID'];
+
     $DB->delete(
         $instrument['Test_name'], array("CommentID" => $instrument['CommentID'])
     );
-    $DB->delete($instrument['Test_name'], array("CommentID" => $dde));
 
     //delete its flag
     $DB->delete("flag", array("ID" => $instrument['ID']));
@@ -101,8 +98,6 @@ $DB->delete("participant_status", array("CandID" => $DCCID));
 
 //delete from the participant_status_history table
 $DB->delete("participant_status", array("CandID" => $DCCID));
-
-//delete from the candidate table
 
 //delete the candidate
 $DB->delete("candidate", array("CandID" => $DCCID));
