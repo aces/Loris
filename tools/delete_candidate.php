@@ -69,12 +69,11 @@ $DB->delete("session", array("CandID" => $DCCID));
 foreach ($instruments as $instrument) {
 
     //delete the entry from the instrument table
-
     $DB->delete(
         $instrument['Test_name'], array("CommentID" => $instrument['CommentID'])
     );
 
-    //delete its flag
+    //delete from flag
     $DB->delete("flag", array("ID" => $instrument['ID']));
     
      //delete from conflicts_resolved
