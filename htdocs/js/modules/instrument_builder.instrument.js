@@ -35,20 +35,17 @@ var Instrument = {
 
     save: function () {
         "use strict";
-        var valid = this.validate(), content, name, fs;
+        var valid = this.validate(), content, name, fs, element;
         if (!valid) {
             return;
         }
         content = this.render();
         name = document.getElementById("filename").value || "instrument";
 
-        fs = saveAs(content.getBlob("text/plain;charset=utf-8"), name + ".linst");
-        fs.onwriteend = function () {
-            alert("Saved file");
-        };
-        fs.onwritestart = function () {
-            alert("Saving " + name + ".linst");
-        };
+        element = document.createElement("a");
+        element.href = "data:text/plain;base64," + window.btoa(content);
+        element.download = name + ".linst";
+        element.click();
     },
     render: function () {
         "use strict";
