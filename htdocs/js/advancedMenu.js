@@ -30,7 +30,7 @@ function isElementSet() {
 
 function toggleMe() {
     "use strict";
-    $(".selector").toggle();
+    $("#basicSelector").toggle();  
     $(".advancedOptions").toggle();
 }
 
