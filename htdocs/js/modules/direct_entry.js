@@ -30,9 +30,11 @@ $(document).ready(function() {
     $("#goback").click(ajaxSubmit);
 
     var NavButtons = document.getElementById("buttons");
-    var InstrumentTable = document.getElementsByClassName("instrument")[0];
-    var Footer = document.createElement("tfoot");
-    Footer.appendChild(NavButtons);
-    InstrumentTable.appendChild(Footer);
+    if(NavButtons) {
+        var InstrumentTable = document.getElementsByClassName("instrument")[0];
+        var Footer = document.createElement("tfoot");
+        Footer.appendChild(NavButtons);
+        InstrumentTable.appendChild(Footer);
+    }
 
 });
