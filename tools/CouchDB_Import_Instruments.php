@@ -119,7 +119,6 @@ class CouchDBInstrumentImporter {
     }
     function run() {
         $tests = $this->GetInstruments();
-        $tests = array('mullen' => 'Mullen instrument stuff');
         $this->UpdateDataDicts($tests);
         $results = $this->UpdateCandidateDocs($tests);
         $this->CreateRunLog($results);
