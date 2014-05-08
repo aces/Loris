@@ -1,0 +1,64 @@
+.mri {
+    width: 80%;
+    cellspacing: 0;
+    cellpadding: 0;
+    border: 0;
+    border-collapse: collapse;
+}
+
+.std {
+    margin-right: 1em;
+    height: 300px;
+}
+
+.std th {
+    height: 20px;
+}
+
+.mrisubtable {
+    border-collapse: collapse;
+    margin: 1em 1em 1em 0;
+    height: 300px;
+}
+
+.mrisubtable th {
+    background: none repeat scroll 0 0 #999999;
+    text-align: left;
+}
+.mrisubtable th, .mrisubtable td {
+    border: 1px solid #C0C0C0;
+   /* padding: 0.3em;*/
+}
+
+#left {
+    background-color: #efefef;
+    border: 2px solid #064785;
+    margin-right: 1em;
+    padding: 1em 0;
+}
+
+#right {
+    margin-top:-5px;
+    width: 300px;
+}
+
+#right>tr>th {
+    width: 100px;
+}
+
+.checkpic {
+    height: 180px;
+    border: 0;
+}
+
+/******* Control Panel *******/
+.cpanel {
+    width: 187px;
+    cellspacing: 1px;
+    cellpadding: 1px;
+    border: 0;
+}
+ul {
+margin: 0px;
+padding: 12px;
+}

@@ -24,17 +24,35 @@ class NDB_Form_imaging_browser extends NDB_Form
                 'CheckPic' => $FileObj->getParameter('check_pic_filename'),
                 'FullFilename' => $FileObj->getParameter('File'),
                 'JivFilename' => basename($FileObj->getParameter('File')),
-                'JivAddress' => str_replace('_check.jpg', '', $FileObj->getParameter('check_pic_filename'))
+                'JivAddress' => str_replace('_check.jpg', '', $FileObj->getParameter('check_pic_filename')),
+		'New' => ($FileObj->getParameter('QCFirstChangeTime') == '') ? 1 : 0	
             );
-
-                $this->tpl_data['files'][] = $file;
+	    
+            $this->tpl_data['files'][] = $file;
         }
+
+	// get forms for the session_view table
+	// left subtable
+	$types_q = $DB->pselect("SELECT mri_scan_type.Scan_type FROM mri_scan_type", array());
+	$types[''] = '';
+        foreach($types_q as $row) {
+            $type = $row['Scan_type'];
+            $types[$type] = $type;
+        }
+		
+	$this->addSelect('Scan_Types', 'Selected', $types);
+
+	$fail_pass = array('' => '', '1' => 'Pass', '0' => 'Fail');
+	$this->addSelect('QC_Status', 'QC Status', $fail_pass);
+	
+	// middle subtable
+	 
     }
 
     function getHeaderTable() {
         $tpl_data = array();
         $tpl_data['subject'] = $this->getSubjectData();
-
+	
         if(!empty($_REQUEST['outputType'])) {
             $tpl_data['outputType'] = urldecode($_REQUEST['outputType']);
         }

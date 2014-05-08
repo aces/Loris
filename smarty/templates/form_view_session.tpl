@@ -1,11 +1,38 @@
 {$headerTable}
 
+{* LEFT SUBTABLE *}
 <table class="fancytable">
 {section name=file loop=$files}
-<tr>
+{cycle values="#eeeeee,#d0d0d0" assign="rowBgColor"}
+<tr bgcolor="{$rowBgColor}">
     <td>
-        QCControlStuff
+        <table class='std'>
+    	<tr>
+	    <td>Add panel<input class='mripanel' type='checkbox' name='add_panel' value='1'\
+            {*if $add_panel?}checked{/if*}></td>
+    	</tr>
+    	<tr>
+	    <th>{$form.Scan_Types.label}</th>
+    	</tr>
+    	<tr>
+	    <td>{$form.Scan_Types.html}</td>
+        </tr>
+        <tr>
+            <th>{$form.QC_Status.label}</th>
+        </tr>
+        <tr>
+	    <td>{if $files[file].New}<font color='red'>NEW</font>{/if}
+	    {$form.QC_Status.html}</td>
+        </tr>
+{* LINK TO COMMENTS *}
+        <tr>
+            <td>{if $files[file].FileID}<a href="#{$smarty.section.file.index}" 
+ onClick='javascript:open_popup("feedback_mri_popup.php?fileID={$files[file].FileID}")'>Link to comments</a><br>{else}&nbsp;{/if}
+            </td>
+        </tr>
+    </table>  
     </td>
+{* MIDDLE TABLE *}
     <td>
         <table border="0">
             <thead>
@@ -52,6 +79,7 @@
 
         </table>
     </td>
+{* RIGHT SUBTABLE*}
     <td>
         ImageData
     </td>
