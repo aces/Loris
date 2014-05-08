@@ -21,8 +21,8 @@ $(document).ready(function() {
 	return null;
     }
     function eraseCookie(name) {
-    createCookie(name,"",-1);
-   }
+       createCookie(name,"",-1);
+    }
     var cookie_name = 'MissingResponses';
     if(readCookie(cookie_name)) {
        var g = document.createElement('div');
