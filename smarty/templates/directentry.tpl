@@ -74,7 +74,7 @@
 <h1 align="center">Survey Comments</h1>
 <br>
 <br>
-<table class="instrument" align="center">
+<table class="instrument">
     <tr>
         <td>How would you rate the ease of filling out this survey?</td>
         <td>
