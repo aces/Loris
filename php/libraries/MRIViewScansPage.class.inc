@@ -50,7 +50,41 @@ class MRIViewScansPage {
                 }
             }
         }
+        if (is_array($values['caveat'])) {
+            $user = User::singleton();
+            $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+            $candid = $timePoint->getCandID();
+            $visit_label = $timePoint->getData('Visit_label');
+
+            foreach ($values['caveat'] as $curFileID => $curCaveat) {
+                if ($curCaveat === '') {
+                    $curCaveat = null;
+                }
+                $this->DB->update(
+                    "files",
+                    array('Caveat' => $curCaveat),
+                    array('FileID' => $curFileID)
+                );
+
+                if($curCaveat == true) {
+                    $file = new MRIFile($curFileID);
+                    $insertSet['SeriesUID'] = $file->getParameter('series_instance_uid');
+                    $insertSet['TarchiveID'] = $file->getParameter('TarchiveSource');
+                    $insertSet['MincFile'] = $file->getParameter('File');
+                    $insertSet['PatientName'] = $file->getParameter('patient_name');
+                    $insertSet['CandID'] = $candid;
+                    $insertSet['Visit_label'] = $visit_label;
+                    $insertSet['CheckID'] = null;
+                    $insertSet['Severity'] = 'warning';
+                    $insertSet['Header'] = 'Manual Caveat Set by ' . $user->getUsername();
+
+                    $this->DB->insert("mri_violations_log", $insertSet);
+
+                }
+            }
+        }
     }
+
     function _updateSelected($selectedTypeID) {
         // update selected's
         if (is_array($_POST['selectedvol'])) {
@@ -254,6 +288,8 @@ class MRIViewScansPage {
             $fileData[$fIdx]['zstep'] = number_format($file->getParameter('zstep'), 2);
             $fileData[$fIdx]['Pipeline'] = $file->getParameter('Pipeline');
             $fileData[$fIdx]['Comment'] = $file->getParameter('Comment');
+            $fileData[$fIdx]['Caveat'] = $file->getParameter('Caveat');
+            $fileData[$fIdx]['SeriesUID'] = $file->getParameter('SeriesUID');
             // this has been changed for more security
             $fileData[$fIdx]['checkpicFilename'] = "mri/jiv/get_file.php?file=" .'pic/'. $file->getParameter('check_pic_filename');
             // the jivs
@@ -275,6 +311,7 @@ class MRIViewScansPage {
         $fileData = $this->GetFileData($selectedTypeID);
         $file_tpl_data['outputType'] = $this->_getOutputType();
         $file_tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
+        $file_tpl_data['caveat_options'] = array (''=>'&nbsp;', true=>'True', false=>'False');
         //$file_tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
 
         $file_tpl_data['selected_options'] = array(''=>'&nbsp;');
