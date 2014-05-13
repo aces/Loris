@@ -7,7 +7,7 @@
 <title>{$study_title}</title>
 
 <link type="text/css" href="css/jquery-ui-1.8.10.custom.css" rel="Stylesheet" />	
-<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="js/jquery/jquery-1.10.2.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="js/modules/direct_entry.js"></script>
 
