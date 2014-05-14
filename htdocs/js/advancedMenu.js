@@ -28,11 +28,10 @@ function isElementSet() {
 }
 
 
-function toggleMe() {
-    "use strict";
-    $("#basicSelector").toggle();  
-    $(".advancedOptions").toggle();
-}
+// function toggleMe() {
+//     "use strict";
+//     $("#advanced-label").toggle(); 
+// }
 
 
 function showAdvancedOptionsCheck() {

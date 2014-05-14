@@ -19,6 +19,17 @@ function checkAccessProfileForm(){
    }
    return true;
 }
+function hideFilter(){
+    $("#panel-body").toggle();
+    $("#down").toggle();
+    $("#up").toggle();
+}
+function toggleMe() {
+    "use strict";
+    $("#advanced-label").toggle();
+    $("#advanced-options").toggle();
+    $("#advanced-buttons").toggle(); 
+}
 
 $(function(){
 		$('input[name=dob]').datepicker({
@@ -30,93 +41,174 @@ $(function(){
 </script>
 {/literal}
 
-<form method="post" action="main.php?test_name=candidate_list">
-<table style="width:550px; float:left; margin-bottom:10px" border="0" valign="top" class="std">
-    <tr>
-        <th nowrap="nowrap" colspan=6>Selection Filter</th>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.centerID.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
-        <td nowrap="nowrap">{$form.DCCID.label}</td>
-        <td nowrap="nowrap">{$form.DCCID.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.SubprojectID.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.SubprojectID.html}</td>
-        <td nowrap="nowrap">{$form.PSCID.label}</td>
-        <td nowrap="nowrap" colspan="1">{$form.PSCID.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.ProjectID.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
-        <td colspan="2" style="display:table-cell" align="right" class="selector" nowrap="nowrap" id="basicSelector"><input type="submit" name="filter" value="Show Data" class="button" />
-       <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
-        <input type="button" name="advanced" value="Advanced" class="button" onclick="toggleMe()"/></td>
-</tr>
+<div class="col-sm-9">
+<div class="panel panel-primary">
+    <div class="panel-heading" onclick="hideFilter();">
+        Selection Filter  
+        <label id="advanced-label" style="display:none">(Advanced Options)</label>
+        <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+        <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+    </div>
+    <div class="panel-body" id="panel-body">
+        <form method="post" action="main.php?test_name=candidate_list">
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="col-sm-6">
+                        {$form.centerID.label}
+                    </label>
+                    <!-- <div class="col-sm-7"> -->
+                        {$form.centerID.html}
+                    <!-- </div> -->
+                </div>
+                <div class="form-group col-sm-6">
+                    <label class="col-sm-4">
+                        {$form.DCCID.label}
+                    </label>
+                    {$form.DCCID.html}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="col-sm-6">
+                        {$form.SubprojectID.label}
+                    </label>
+                    {$form.SubprojectID.html}
+                </div>
+                <div class="form-group col-sm-6">
+                    <label class="col-sm-4">
+                        {$form.PSCID.label}
+                    </label>
+                    {$form.PSCID.html}
+                </div>
+            </div>
+            <div id="advanced-options" style="display:none">
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-6">
+                            {$form.Participant_Status.label}
+                        </label>
+                        {$form.Participant_Status.html}
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-6">
+                            {$form.dob.label}
+                        </label>
+                        {$form.dob.html}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-6">
+                            {$form.gender.label}
+                        </label>
+                        {$form.gender.html}
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-8">
+                            {$form.Visit_Count.label}
+                        </label>
+                        {$form.Visit_Count.html}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-6">
+                            {$form.Latest_Visit_Status.label}
+                        </label>
+                        {$form.Latest_Visit_Status.html}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-6">
+                            {$form.Feedback.label}
+                        </label>
+                        {$form.Feedback.html}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-6">
+                            {$form.scan_done.label}
+                        </label>
+                        {$form.scan_done.html}
+                    </div>
+                    <br class="visible-xs">
+                    <div class="form-group col-sm-6">
+                        <!-- <div class="col-sm-6"> -->
+                            <div class="col-sm-4 col-xs-12">
+                                <input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="btn btn-sm btn-primary col-xs-12" />
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-4 col-xs-12">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-4 col-xs-12">
+                                <input type="button" name="advanced" value="Basic" class="btn btn-sm btn-primary col-xs-12" onclick="toggleMe()"/>
+                            </div>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+            <br class="visible-xs">
+            <div id="advanced-buttons">
+                <!-- <div class="form-group col-sm-6 col-sm-offset-6"> -->
+                        <!-- <div class="col-sm-6"> -->
+                            <div class="col-sm-2 col-xs-12 col-sm-offset-6">
+                                <input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="btn btn-sm btn-primary col-xs-12" />
+                            </div>
 
-    </tr>
-    <tr name="advancedOptions" style="display:none" class="advancedOptions">
-        <th colspan="6" nowrap="nowrap">Advanced Options</th>
-    </tr>
-    <tr name="advancedOptions" style="display:none" class="advancedOptions">
-        <td nowrap="nowrap">{$form.Participant_Status.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.Participant_Status.html}</td>
-        <td nowrap="nowrap">{$form.dob.label}</td>
-        <td nowrap="nowrap">{$form.dob.html}</td>
-    </tr>
-    <tr name="advancedOptions" style="display:none" class="advancedOptions">
-        <td nowrap="nowrap">{$form.gender.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.gender.html}</td>
-        <td nowrap="nowrap">{$form.Visit_Count.label}</td>
-        <td nowrap="nowrap">{$form.Visit_Count.html}</td>
-    </tr>
-    <tr name="advancedOptions" style="display:none" class="advancedOptions">
-        <td nowrap="nowrap">{$form.Latest_Visit_Status.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.Latest_Visit_Status.html}</td>
-    </tr>
-    <tr name="advancedOptions" style="display:none" class="advancedOptions">
-        <td nowrap="nowrap">{$form.Feedback.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.Feedback.html}</td>
-    </tr>
-    <tr name="advancedOptions" style="display:none" class="advancedOptions">
-        <td nowrap="nowrap">{$form.scan_done.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.scan_done.html}</td>
-        <td colspan="3" class="selector" align="right" nowrap="nowrap"><input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="button" />
-       <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
-        <input type="button" name="advanced" value="Basic" class="button" onclick="toggleMe()"/></td>
-    </tr>
-    {if $useEDC=="true"}
-    <tr name="advancedOptions" style="display:none">
-            <td nowrap="nowrap">{$form.edc.label}</td>
-            <td nowrap="nowrap">{$form.edc.html}</td>
-            <td nowrap="nowrap">&nbsp;</td>
-            <td nowrap="nowrap">&nbsp;</td>
-    </tr>
-    {/if}
-</table>
-</form>
-<form name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
-<input type="hidden" name="test_name" value="timepoint_list">
-<table style="width:50; float:right; margin-top:15px" border="0" cellpadding="2" cellspacing="2">
-    <tr>
-    <br><br>
-        <th align="right">DCC-ID:</th>
-        <td><input tabindex="1" size="10" maxlength="10" type=text name="candID"></td>
-    </tr>
-    <tr>
-        <th align="right">PSC-ID:</th>
-        <td><input tabindex="2" size="10" maxlength="12" type=text name="PSCID"></td>
-    </tr>
-    <tr>
-    <td></td>
-        <td align="right"><input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="button"></td>
-    </tr>
-</form>
-</td>
-</tr>
-</table>
-</table>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2 col-xs-12">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2 col-xs-12">
+                                <input type="button" name="advanced" value="Advanced" class="btn btn-sm btn-primary col-xs-12" onclick="toggleMe()"/>
+                            </div>
+                        <!-- </div> -->
+                    <!-- </div> -->
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<div class="col-sm-3">
+    <div class="hidden-xs">
+        <br><br><br>
+    </div>
+    <form name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
+        <div class="row">
+            <label class="col-sm-5">
+                DCC-ID:            
+            </label>
+            <input tabindex="2" size="10" maxlength="12" type=text name="candID" class="col-sm-7">
+        </div>
+        <br>
+        <div class="row">
+            <label class="col-sm-5">
+                PSC-ID:           
+            </label>
+            <input tabindex="2" size="10" maxlength="12" type=text name="PSCID" class="col-sm-7">
+        </div>
+        <br>
+        <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-sm-5 col-sm-offset-8">
+    </form>
+</div>
+
 <table>
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
