@@ -6,46 +6,53 @@
     border-collapse: collapse;
 }
 
-.std {
-    margin-right: 1em;
-    height: 300px;
-}
-
-.std th {
-    height: 20px;
-}
-
-.mrisubtable {
+.mri-subtable {
     border-collapse: collapse;
-    margin: 1em 1em 1em 0;
     height: 300px;
+    margin: 1em 1em 1em 0;
+    text-align: left;
+    width: 90%;
 }
 
-.mrisubtable th {
+.mri-subtable th {
     background: none repeat scroll 0 0 #999999;
     text-align: left;
 }
-.mrisubtable th, .mrisubtable td {
+.mri-subtable th, .mri-subtable td {
     border: 1px solid #C0C0C0;
-   /* padding: 0.3em;*/
 }
 
-#left {
+.left-select-table {
+    text-align: center;
+}
+
+#mri-left-subtable {
+    height: 300px;
+    /* from std, if std exists, no need to rewrite
     background-color: #efefef;
     border: 2px solid #064785;
-    margin-right: 1em;
+    margin: 20px 0;*/
     padding: 1em 0;
+    margin: auto;
+    width: 80%;
 }
 
-#right {
-    margin-top:-5px;
+#mri-left-subtable th {
+    height: 20px;
+}
+
+#mri-right-subtable {
     width: 300px;
 }
 
-#right>tr>th {
+#mri-right-subtable>tbody>tr>th {
     width: 100px;
 }
 
+#mri-left-td-select {
+    height: 20px;
+    padding-bottom: 10px;
+}
 .checkpic {
     height: 180px;
     border: 0;
@@ -53,12 +60,34 @@
 
 /******* Control Panel *******/
 .cpanel {
-    width: 187px;
+    width: 180px;
     cellspacing: 1px;
     cellpadding: 1px;
     border: 0;
 }
 ul {
-margin: 0px;
-padding: 12px;
+    margin: 0px;
+    padding: 12px;
+    list-style-type: none;
+}
+
+.img-navigation-array {
+    border: 0;
+    width: 12px;
+    height: 12px;
+    vertical-align: text-top;
+}
+
+.img-pending {
+    width: 12px;
+    height: 12px;
+}
+
+/***** Header table *******/
+.table-header-right {
+    float: left;
+    margin: 3em 0;
+}
+#table-header-left {
+    float: left;
 }

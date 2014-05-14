@@ -1,4 +1,4 @@
-<table class="fancytableleft">
+<table class="fancytableleft" id='table-header-left'>
     <tbody>
         <tr>
             <th>QC Status</th><td>{$subject.mriqcstatus}</td>
