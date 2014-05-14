@@ -208,54 +208,64 @@ $(function(){
         <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-sm-5 col-sm-offset-8">
     </form>
 </div>
-
-<table>
+<div class="hidden-xs">
+    <br><br><br><br><br><br><br><br><br><br><br>
+</div>
+<div class="pull-right">
+    {$page_links}
+</div>
+<br>
+<!-- <table> -->
 <!--  title table with pagination -->
-<table border="0" valign="bottom" width="100%">
-<tr>
+<!-- <table border="0" valign="bottom" width="100%"> -->
+<!-- <tr> -->
     <!-- title -->
-    <td class="controlPanelSection"></td>
+    <!-- <td class="controlPanelSection"></td> -->
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
-</tr>
-</table>
-</form>
+    <!-- <td align="right">{$page_links}</td> -->
+<!-- </tr> -->
+<!-- </table> -->
+<!-- </form> -->
 <!-- start data table -->
-<table  class ="fancytable" border="0" width="100%">
-<tr>
- <th nowrap="nowrap">No.</th>
-    <!-- print out column headings - quick & dirty hack -->
-    {section name=header loop=$headers}
-        <th nowrap="nowrap"><a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-    {/section}
-</tr>
-
-{section name=item loop=$items}
-    <tr>
-    <!-- print out data rows -->
-    {section name=piece loop=$items[item]}
-        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-		    {assign var="PSCID" value="$items[item][piece].value"}
-		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-		    	
-		{elseif $items[item][piece].name == "scan_Done"}
-        	{if $items[item][piece].value == 'Y'}
-        		{assign var="scan_done" value="Yes"}
-        		<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+<div class="table-responsive">
+<table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
+    <thead>
+        <tr class="info">
+         <th>No.</th>
+            <!-- print out column headings - quick & dirty hack -->
+            {section name=header loop=$headers}
+                <th><a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+            {/section}
+        </tr>
+    </thead>
+    <tbody>
+    {section name=item loop=$items}
+        <tr>
+        <!-- print out data rows -->
+        {section name=piece loop=$items[item]}
+            <td bgcolor="{$items[item][piece].bgcolor}">
+    		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
+    		    {assign var="PSCID" value=`$items[item][piece].value`}
+    		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+    		    	
+    		{elseif $items[item][piece].name == "scan_Done"}
+            	{if $items[item][piece].value == 'Y'}
+            		{assign var="scan_done" value="Yes"}
+            		<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+                {else}
+                    {assign var="scan_done" value="No"}
+                    {$scan_done}
+                {/if}
             {else}
-                {assign var="scan_done" value="No"}
-                {$scan_done}
+                {$items[item][piece].value}
             {/if}
-        {else}
-            {$items[item][piece].value}
-        {/if}
-		</td>
+    		</td>
+        {/section}
+        </tr>           
+    {sectionelse}
+        <tr><td colspan="12">No candidates found</td></tr>
     {/section}
-    </tr>           
-{sectionelse}
-    <tr><td colspan="12">No candidates found</td></tr>
-{/section}
+</tbody>
                     
 <!-- end data table -->
 </table>
