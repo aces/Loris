@@ -26,7 +26,7 @@ class NDB_Form_imaging_browser extends NDB_Form
             if ($this->_hasAccess() && isset($_POST['save_changes'])) {
 	        $this->_updateStatus($_POST);
 		$this->_updateSelected();
-                $this->_updateVisitStatus($_POST);
+                $this->_updateVisitStatus();
             }
 	 
             $NavBar = new MRINavigation($this->sessionID);
@@ -102,7 +102,7 @@ class NDB_Form_imaging_browser extends NDB_Form
             $file = array(
                 'FileID'   => $fileRow['FileID'],
             	'Filename' => basename($FileObj->getParameter('File')),
-                'CheckPic' => "mri/jiv/get_file.php?file=" . $FileObj->getParameter('check_pic_filename'),
+                'CheckPic' => "/mri/jiv/get_file.php?file=pic/" . $FileObj->getParameter('check_pic_filename'),
                 'FullFilename' => $FileObj->getParameter('File'),
                 'JivFilename' => basename($FileObj->getParameter('File')),
                 'JivAddress' => str_replace('_check.jpg', '', $FileObj->getParameter('check_pic_filename')),
@@ -232,7 +232,7 @@ class NDB_Form_imaging_browser extends NDB_Form
 	}
     }
 
-    function _updateVisitStatus($_POST) {
+    function _updateVisitStatus() {
     	// update visit status
         if (!empty($_POST['visit_status'])) {
             $save_visit_status = $_POST['visit_status'] == 'Unrated' ? '' : $_POST['visit_status'];

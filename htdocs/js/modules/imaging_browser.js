@@ -86,8 +86,8 @@ function show_jiv(name, data, combine) {
 }
 
 $(function() {
-    $(".mri>tbody>tr:odd").css("background-color", "#d0d0d0");
-    $(".mri>tbody>tr:even").css("background-color", "#eeeeee");
+    $(".table-mri>tbody>tr:odd").css("background-color", "#d0d0d0");
+    $(".table-mri>tbody>tr:even").css("background-color", "#eeeeee");
     
 });
 

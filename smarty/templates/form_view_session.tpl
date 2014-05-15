@@ -4,7 +4,7 @@
 <!--<a href="BrainBrowser/display.html?dccid={$subject.candid}" id = "dccid" name  = "dccid" value = "{$subject.dccid}" onclick = "getValue(this)">&nbsp;3D Viewer</a>-->
 {if $show3DViewer}
 
-{*<td nowrap="nowrap">the first open td already set in main.tpl *}<input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
+{*<td nowrap="nowrap">the first opening td already opened in main.tpl *}<input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
 
 </br>
 {/if}
@@ -13,8 +13,6 @@
 <tr>
     <td>
     {$headerTable}
-   {* </td>
-    <td>*}
     <table class='table-header-right'>
 	<tr><td>{if $files|@count}{$files|@count} file(s) displayed.</td></tr>
         <tr><td><div id="jivApplet">&nbsp;</div></td></tr>
@@ -23,14 +21,14 @@
 </tr>
 </table>
 {* MAIN MRI TABLE *}
-<table class='mri'>
+<table class='table-mri'>
 {section name=file loop=$files}
 <tr>
-    <td class='left-select-table'>
+    <td class='td-mri-lefttable'>
 {* LEFT SUBTABLE (SELECTIONS) *}
-        <table class='std' id='mri-left-subtable'>
+        <table class='table-mri-lefttable'>
     	<tr>
-	    <td id='mri-left-td-select'>Add panel<input class='mripanel' data-file-id='{$files[file].fileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
+	    <td class='td-mri-lefttable-select'>Add panel<input class='mripanel' data-file-id='{$files[file].fileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
     	</tr>
 {* SELECTED DROPDOWN only for native images *}
 {if $files[file].OutputType == "native"}
@@ -38,7 +36,7 @@
 	    <th>Selected</th>
     	</tr>
     	<tr>
-	    <td id='mri-left-td-select'>
+	    <td id='td-mri-lefttable-select'>
 	    {if $has_permission}
 	    {html_options|indent:12 options=$selected_options selected=$files[file].Selected tabindex=3 name=selectedvol[`$files[file].FileID`]}
 	    {else}
@@ -53,7 +51,7 @@
             <th>QC Status</th>
         </tr>
         <tr>
-	    <td id='mri-left-td-select'>
+	    <td id='td-mri-lefttable-select'>
 	    {if $has_permission}	
 	        {if $files[file].New}<font color='red'>NEW</font>{/if}
 		{html_options options=$status_options selected=$files[file].QCStatus tabindex=4 name=status[`$files[file].FileID`]}
@@ -65,7 +63,7 @@
         </tr>
 	{if $files[file].FileID} 
             <tr><th>Caveat Emptor</th></tr>
-            <tr><td id='mri-left-td-select'>
+            <tr><td id='td-mri-lefttable-select'>
             {if $has_permission}
                 {if $files[file].Caveat}
                 <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
@@ -87,7 +85,7 @@
     </td>
 {* MIDDLE TABLE (PICS) *}
     <td><a name="{$smarty.section.file.index}">
-        <table class="mri-subtable">
+        <table class="table-mri-right-and-center">
             <thead>
                 <tr>
                     <th>Filename</th>
@@ -101,7 +99,7 @@
                 <tr>
                     <td colspan="3">
 		    <a href="#{$smarty.section.file.index}" onClick="window.open('minc.html?minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto')">
-                    <img class='checkpic' src="{$files[file].CheckPic}">
+                    <img class='img-checkpic' src="{$files[file].CheckPic}">
                     </a>
                     </td>
                 </tr>
@@ -131,7 +129,7 @@
     </td>
 {* RIGHT SUBTABLE*}
     <td>
-        <table class="mri-subtable" id='mri-right-subtable'>
+        <table class="table-mri-right-and-center" id='table-mri-righttable'>
 	{if $files[file].Pipeline != ""}<tr><th>Pipeline</th><td>{$files[file].Pipeline}</td></tr>{/if}
         {if $files[file].OutputType != ""}<tr><th>Output Type</th><td>{$files[file].OutputType}</td></tr>{/if}
         {if $files[file].AcquisitionProtocol != "NA"}<tr><th>Protocol</th><td>{$files[file].AcquisitionProtocol}</td></tr>{/if}
