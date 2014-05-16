@@ -38,4 +38,6 @@
     </dl>
     {if $subject.has_permission}<input class="button" type="submit" accesskey="s" value="Save" name="save_changes">{/if}
 </div></div>
+</td>
+<td class='td-cpanel-fake'><table class='table-cpanel-fake'></table>
 <!-- /Control Panel -->
