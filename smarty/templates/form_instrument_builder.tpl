@@ -115,12 +115,24 @@
                     <input class="form-control" type="text" id="questionText" size="75"/>
                 </div>
             </div>
-            <div id="dropdownoptions" class="options col-xs-12 form-group">
-                Dropdown Option: <input type="text" id="newSelectOption">
-                    <input type="button" value="Add option" onClick="addDropdownOption();" />
-                    <input type="button" value="Reset" onClick="clearDropdownOption()" />
-                Preview:
-                <select id="selectOptions">
+
+            <!-- Advanced input options -->
+            <div id="dropdownoptions" class="options">
+                <div class="form-group">
+                <label class="col-sm-2 control-label">Dropdown Option: </label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="text" id="newSelectOption">
+                    </div>
+                    <input class="btn btn-default" type="button" value="Add option" onClick="addDropdownOption();" />
+                    <input class="btn btn-default" type="button" value="Reset" onClick="clearDropdownOption()" />
+                </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Preview: </label>
+                        <div class="col-sm-2">
+                            <select id="selectOptions" class="form-control">
+                            </select>
+                    </div>
+                </div>
                 </select>
             </div>
             <div id="multiselectoptions" class="options col-xs-12 form-group">
