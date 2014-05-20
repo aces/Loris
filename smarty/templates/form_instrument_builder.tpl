@@ -172,18 +172,25 @@
                 </div>
             </div>
         <!-- </div> -->
-
-        <input type="button" value="Add Row" onClick="addQuestion();" />
-        <table id="workspace" border="1">
-        <tr>
-            <th>Database Name (DB)</th>
-            <th>Type</th>
-            <th>Question Display (Front End)</th>
-            <th>Options</th>
-        </tr>
-        </table>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input class="btn btn-default" type="button" value="Add Row" onClick="addQuestion();" />
+            </div>
+        </div>
+        
         
     </form>
+    <div class="table-responsive">
+        <table id="workspace" border="1" class="table table-hover table-primary table-bordered">
+            <tr class="info">
+                <th>Database Name (DB)</th>
+                <th>Type</th>
+                <th>Question Display (Front End)</th>
+                <th>Options</th>
+            </tr>
+        </table>
+    </div>
+
     <form target="_blank" method="post" action="main.php?test_name=instrument_preview" id="previewform">
         <input type="hidden" name="instrumentdata" id="instrumentdata">
         <input type="hidden" name="instrumentrules" id="instrumentrules">
