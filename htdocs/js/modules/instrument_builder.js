@@ -8,6 +8,7 @@ $(document).ready(function() {
         $(this).addClass("selected");
         id = $(this).attr("id");
         $("#" + id + "options").toggle();
+        $('#search_concept').text($(this).text());
     });
     $("#textboxoptions").hide();
     $("#dropdownoptions").hide();

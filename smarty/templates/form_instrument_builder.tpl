@@ -4,7 +4,7 @@
 {literal}
 <style>
 .selected {
-    background: #099;
+    background: none;
 }
 </style>
 <script language="javascript" type="text/javascript">
@@ -49,8 +49,9 @@
         Question Type:
         <div class="btn-group">
             <!-- <dt>Information</dt> -->
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                select one <span class="caret"></span>
+            <button id="selected-input" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span id="search_concept">Select One </span>
+                <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
                 <li>
@@ -90,7 +91,6 @@
                 <li>
                     <div class="col-sm-12"><h5 class="">Formatting</h5></div>
                 <li>
-            <!-- <dt></dt> -->
                 <li>
                     <a id="line" class="option" title="Empty line">Blank Line</a>
                 </li>
