@@ -29,7 +29,7 @@
 <body> -->
 <div id="message" class="error">&nbsp;</div>
 <!-- <div id="elements"> -->
-<div class="col-xs-4">
+<div class="col-sm-4 hidden-xs">
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideLoad();">
             Load Instrument (optional)
@@ -45,30 +45,60 @@
 </div>
 <div class="col-xs-12">
     <h2>Create Instrument</h2>
-    <div>
+    <div class="col-xs-12">
         Question Type:
-        <dl style="margin-left: 25px">
-            <dt>Information</dt>
-            <dd>
-            <button id="header" class="option" title="Centered, header information">Header</button>
-            <button id="label" class="option" title="Unemphasized display text">Label</button>
-            <button id="scored" class="option" title="Column which stores calculated data">Scored Field</button>
-            </dd>
-            <dt>Data entry</dt>
-            <dd>
-            <button id="textbox" class="option" title="Text box for user data entry">Textbox</button>
-            <button id="textarea" class="option" title="Larger text area for data entry">Textarea</button>
-            <button id="dropdown" class="option" title="Dropdown menu for users to select data from">Dropdown</button>
-            <button id="multiselect" class="option" title="Data entry where multiple options may be selected">Multiselect</button>
-            <button id="date" class="option" title="User data entry of a date">Date</button>
-            <button id="numeric" class="option" title="User data entry of a number">Numeric</button>
-            </dd>
-            <dt>Formatting</dt>
-            <dd>
-            <button id="line" class="option" title="Empty line">Blank Line</button>
-            <button id="page" class="option" title="Start a new page">Page Break</button>
-            </dd>
-        </dl>
+        <div class="btn-group">
+            <!-- <dt>Information</dt> -->
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                select one <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <div class="col-sm-12"><h5 class="">Information</h5></div>
+                <li>
+                    <a id="header" class="option" title="Centered, header information">Header</a>
+                </li>
+                <li>
+                    <a id="label" class="option" title="Unemphasized display text">Label</a>
+                </li>
+                <li>
+                    <a id="scored" class="option" title="Column which stores calculated data">Scored Field</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <div class="col-sm-12"><h5 class="">Data entry</h5></div>
+                <li>
+                <li>
+                    <a id="textbox" class="option" title="Text box for user data entry">Textbox</a>
+                </li>
+                <li>
+                    <a id="textarea" class="option" title="Larger text area for data entry">Textarea</a>
+                </li>
+                <li>
+                    <a id="dropdown" class="option" title="Dropdown menu for users to select data from">Dropdown</a>
+                </li>
+                <li>    
+                    <a id="multiselect" class="option" title="Data entry where multiple options may be selected">Multiselect</a>
+                </li>
+                <li>
+                    <a id="date" class="option" title="User data entry of a date">Date</a>
+                </li>
+                <li>
+                    <a id="numeric" class="option" title="User data entry of a number">Numeric</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <div class="col-sm-12"><h5 class="">Formatting</h5></div>
+                <li>
+            <!-- <dt></dt> -->
+                <li>
+                    <a id="line" class="option" title="Empty line">Blank Line</a>
+                </li>
+                <li>
+                    <a id="page" class="option" title="Start a new page">Page Break</a>
+                </li>
+        </div>
+        <br>
         <div>
 
             <div>
