@@ -1,26 +1,50 @@
-<html>
-<head>
-<title>Loris Form Builder</title>
-<style>
+<!-- <html>
+<head> -->
+<!-- <title>Loris Form Builder</title> -->
 {literal}
+<style>
 .selected {
     background: #099;
 }
-{/literal}
 </style>
+<script language="javascript" type="text/javascript">
+    // $(document).ready(function(){
+    //     $(".panel-header").click(function(e) {
+    //         alert(e);
+    //     });
+    // });
+    function hideLoad(){
+        $("#panel-load").toggle();
+        $("#down").toggle();
+        $("#up").toggle();
+    }
+</script>
+{/literal}
 
 <script type="application/javascript" src="js/modules/instrument_builder.instrument.js"></script>
 <script type="application/javascript" src="js/modules/instrument_builder.rules.js"></script>
 <script type="application/ecmascript" src="js/BlobBuilder.min.js"></script>
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
-</head>
-<body>
+
+<!-- </head>
+<body> -->
 <div id="message" class="error">&nbsp;</div>
-<div id="elements">
-    <h2>Load Instrument (optional)</h2>
-    <div>
-        <input type="file" id="instfile" /><input type="button" id="load" value="Load Instrument" />
+<!-- <div id="elements"> -->
+<div class="col-xs-4">
+    <div class="panel panel-primary">
+        <div class="panel-heading" onclick="hideLoad();">
+            Load Instrument (optional)
+            <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+            <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span> 
+        </div> 
+        <div class="panel-body" id="panel-load">
+            <input type="file" id="instfile" />
+            <br>
+            <input type="button" id="load" value="Load Instrument" />
+        </div>
     </div>
+</div>
+<div class="col-xs-12">
     <h2>Create Instrument</h2>
     <div>
         Question Type:
@@ -144,5 +168,5 @@
 
     </div>
 </div>
-</body>
-</html>
+<!-- </body>
+</html> -->
