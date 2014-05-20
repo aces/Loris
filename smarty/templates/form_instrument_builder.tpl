@@ -162,9 +162,15 @@
                     <input class="form-control" type="number" id="datemax" min="1900" max="2100">
                 </div>
             </div>
-            <div id="numericoptions" class="options col-xs-12 form-group">
-                Min: <input id="numericmin" type="number">
-                Max: <input id="numericmax" type="number">
+            <div id="numericoptions" class="options form-group">
+                <label class="col-sm-2 control-label">Min: </label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="number" id="numericmin">
+                </div>
+                <label class="col-sm-2 control-label">Max: </label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="number" id="numericmax">
+                </div>
             </div>
         <!-- </div> -->
 
