@@ -152,17 +152,15 @@
                     </div>
                 </div>
             </div>
-            <div id="dateoptions" class="options col-xs-12 form-group">
-                Start year: <input type="number" id="datemin" min="1900" max="2100">
-                            <!--select id="startyear">
-                                <option>Project default</option>
-                                <option>2000</option>
-                                <option>2001</option>
-                                <option>2002</option>
-                                <option>2003</option>
-                            </select-->
-
-                End year: <input type="number" id="datemax" min="1900" max="2100">
+            <div id="dateoptions" class="options form-group">
+                <label class="col-sm-2 control-label">Start year: </label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="number" id="datemin" min="1900" max="2100">
+                </div>
+                <label class="col-sm-2 control-label">End year: </label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="number" id="datemax" min="1900" max="2100">
+                </div>
             </div>
             <div id="numericoptions" class="options col-xs-12 form-group">
                 Min: <input id="numericmin" type="number">
