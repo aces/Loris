@@ -249,7 +249,7 @@ foreach(Utility::toArray($links['link']) AS $link){
 $tpl_data['css'] = $config->getSetting('css');
 $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
-$smarty->display('main.tpl');
+$smarty->display('mainB.tpl');
 
 $timer->setMarker('Compiled HTML page');
 
