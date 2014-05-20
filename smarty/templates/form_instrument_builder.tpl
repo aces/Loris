@@ -46,69 +46,77 @@
 </div>
 <div class="col-xs-12">
     <h2>Create Instrument</h2>
-    <div class="col-xs-12">
-        Question Type:
-        <div class="btn-group">
-            <!-- <dt>Information</dt> -->
-            <button id="selected-input" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span id="search_concept">Select One </span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li>
-                    <div class="col-sm-12"><h5 class="">Information</h5></div>
-                <li>
-                    <a id="header" class="option" title="Centered, header information">Header</a>
-                </li>
-                <li>
-                    <a id="label" class="option" title="Unemphasized display text">Label</a>
-                </li>
-                <li>
-                    <a id="scored" class="option" title="Column which stores calculated data">Scored Field</a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <div class="col-sm-12"><h5 class="">Data entry</h5></div>
-                <li>
-                <li>
-                    <a id="textbox" class="option" title="Text box for user data entry">Textbox</a>
-                </li>
-                <li>
-                    <a id="textarea" class="option" title="Larger text area for data entry">Textarea</a>
-                </li>
-                <li>
-                    <a id="dropdown" class="option" title="Dropdown menu for users to select data from">Dropdown</a>
-                </li>
-                <li>    
-                    <a id="multiselect" class="option" title="Data entry where multiple options may be selected">Multiselect</a>
-                </li>
-                <li>
-                    <a id="date" class="option" title="User data entry of a date">Date</a>
-                </li>
-                <li>
-                    <a id="numeric" class="option" title="User data entry of a number">Numeric</a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <div class="col-sm-12"><h5 class="">Formatting</h5></div>
-                <li>
-                <li>
-                    <a id="line" class="option" title="Empty line">Blank Line</a>
-                </li>
-                <li>
-                    <a id="page" class="option" title="Start a new page">Page Break</a>
-                </li>
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <label for="selected-input" class="col-sm-2 control-label">Question Type:</label>
+            <div class="col-sm-4">
+                <div class="btn-group">
+                    <!-- <dt>Information</dt> -->
+                    <button id="selected-input" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span id="search_concept">Select One </span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <div class="col-sm-12"><h5 class="">Information</h5></div>
+                        <li>
+                            <a id="header" class="option" title="Centered, header information">Header</a>
+                        </li>
+                        <li>
+                            <a id="label" class="option" title="Unemphasized display text">Label</a>
+                        </li>
+                        <li>
+                            <a id="scored" class="option" title="Column which stores calculated data">Scored Field</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="col-sm-12"><h5 class="">Data entry</h5></div>
+                        <li>
+                        <li>
+                            <a id="textbox" class="option" title="Text box for user data entry">Textbox</a>
+                        </li>
+                        <li>
+                            <a id="textarea" class="option" title="Larger text area for data entry">Textarea</a>
+                        </li>
+                        <li>
+                            <a id="dropdown" class="option" title="Dropdown menu for users to select data from">Dropdown</a>
+                        </li>
+                        <li>    
+                            <a id="multiselect" class="option" title="Data entry where multiple options may be selected">Multiselect</a>
+                        </li>
+                        <li>
+                            <a id="date" class="option" title="User data entry of a date">Date</a>
+                        </li>
+                        <li>
+                            <a id="numeric" class="option" title="User data entry of a number">Numeric</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="col-sm-12"><h5 class="">Formatting</h5></div>
+                        <li>
+                        <li>
+                            <a id="line" class="option" title="Empty line">Blank Line</a>
+                        </li>
+                        <li>
+                            <a id="page" class="option" title="Start a new page">Page Break</a>
+                        </li>
+                </div>
+            </div>
         </div>
-        <br>
-        <div>
-
-            <div>
-        Question Name: <input type="text" id="questionName" />
+        <!-- <div class="col-xs-12 form-group"> -->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Question Name: </label>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" id="questionName" />
+                </div>
             </div>
-            <div>
-        Question Text: <input type="text" id="questionText" size="75"/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Question Text: </label>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" id="questionText" size="75"/>
+                </div>
             </div>
-            <div id="dropdownoptions" class="options">
+            <div id="dropdownoptions" class="options col-xs-12 form-group">
                 Dropdown Option: <input type="text" id="newSelectOption">
                     <input type="button" value="Add option" onClick="addDropdownOption();" />
                     <input type="button" value="Reset" onClick="clearDropdownOption()" />
@@ -116,7 +124,7 @@
                 <select id="selectOptions">
                 </select>
             </div>
-            <div id="multiselectoptions" class="options">
+            <div id="multiselectoptions" class="options col-xs-12 form-group">
                 Option: <input type="text" id="newmultiSelectOption">
                     <input type="button" value="Add option" onClick="addDropdownOption('multi');" />
                     <input type="button" value="Reset" onClick="clearDropdownOption('multi')" />
@@ -124,7 +132,7 @@
                 <select id="multiselectOptions" multiple>
                 </select>
             </div>
-            <div id="dateoptions" class="options">
+            <div id="dateoptions" class="options col-xs-12 form-group">
                 Start year: <input type="number" id="datemin" min="1900" max="2100">
                             <!--select id="startyear">
                                 <option>Project default</option>
@@ -136,11 +144,11 @@
 
                 End year: <input type="number" id="datemax" min="1900" max="2100">
             </div>
-            <div id="numericoptions" class="options">
+            <div id="numericoptions" class="options col-xs-12 form-group">
                 Min: <input id="numericmin" type="number">
                 Max: <input id="numericmax" type="number">
             </div>
-        </div>
+        <!-- </div> -->
 
         <input type="button" value="Add Row" onClick="addQuestion();" />
         <table id="workspace" border="1">
@@ -151,12 +159,13 @@
             <th>Options</th>
         </tr>
         </table>
-        <form target="_blank" method="post" action="main.php?test_name=instrument_preview" id="previewform">
-            <input type="hidden" name="instrumentdata" id="instrumentdata">
-            <input type="hidden" name="instrumentrules" id="instrumentrules">
-            <input type="button" id="preview" value="Preview">
-        </form>
-    </div>
+        
+    </form>
+    <form target="_blank" method="post" action="main.php?test_name=instrument_preview" id="previewform">
+        <input type="hidden" name="instrumentdata" id="instrumentdata">
+        <input type="hidden" name="instrumentrules" id="instrumentrules">
+        <input type="button" id="preview" value="Preview">
+    </form>
     <h2>Save Instrument</h2>
     <div>
 
