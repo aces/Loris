@@ -120,7 +120,7 @@
             <!-- Advanced input options -->
             <div id="dropdownoptions" class="options">
                 <div class="form-group">
-                <label class="col-sm-2 control-label">Dropdown Option: </label>
+                    <label class="col-sm-2 control-label">Dropdown Option: </label>
                     <div class="col-sm-3">
                         <input class="form-control" type="text" id="newSelectOption">
                     </div>
@@ -134,15 +134,23 @@
                             </select>
                     </div>
                 </div>
-                </select>
             </div>
-            <div id="multiselectoptions" class="options col-xs-12 form-group">
-                Option: <input type="text" id="newmultiSelectOption">
-                    <input type="button" value="Add option" onClick="addDropdownOption('multi');" />
-                    <input type="button" value="Reset" onClick="clearDropdownOption('multi')" />
-                Preview:
-                <select id="multiselectOptions" multiple>
-                </select>
+            <div id="multiselectoptions" class="options">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"> Option: </label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="text" id="newmultiSelectOption">
+                    </div>
+                    <input class="btn btn-default" type="button" value="Add option" onClick="addDropdownOption('multi');" />
+                    <input class="btn btn-default" type="button" value="Reset" onClick="clearDropdownOption('multi')" />
+                </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Preview: </label>
+                        <div class="col-sm-2">
+                            <select multiple id="multiselectOptions" class="form-control">
+                            </select>
+                    </div>
+                </div>
             </div>
             <div id="dateoptions" class="options col-xs-12 form-group">
                 Start year: <input type="number" id="datemin" min="1900" max="2100">
