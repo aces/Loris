@@ -18,6 +18,11 @@
         $("#down").toggle();
         $("#up").toggle();
     }
+    function hideRule(){
+        $("#panel-rule").toggle();
+        $("#down-rule").toggle();
+        $("#up-rule").toggle();
+    }
 </script>
 {/literal}
 
@@ -207,9 +212,15 @@
         <input type="submit" value="Save" />
         </form>
     </div>
-    <h2>Rules (Optional)</h2>
-    <div>
-        <p>NOTE THAT THE RULES PORTION OF THE INSTRUMENT BUILDER IS STILL A WORK IN PROGRESS. DO NOT USE THESE UNLESS YOU KNOW WHAT YOU'RE DOING</p>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading" onclick="hideRule();">
+            Rules (Optional)
+            <span class="glyphicon glyphicon-chevron-down pull-right" id="down-rule"></span>
+            <span class="glyphicon glyphicon-chevron-up pull-right" style="display:none" id="up-rule"></span>
+        </div> 
+        <div class="panel-body" id="panel-rule" style="display:none">
+            <p>NOTE THAT THE RULES PORTION OF THE INSTRUMENT BUILDER IS STILL A WORK IN PROGRESS. DO NOT USE THESE UNLESS YOU KNOW WHAT YOU'RE DOING</p>
         <dl>
             <dt>Question</dt>
             <dd><select id="rule_q"></select></dd>
@@ -235,7 +246,7 @@
             </tr>
         </table>
         <input type="button" onclick="Rules.save()" value="Save Rules" />
-
+        </div>
     </div>
 </div>
 <!-- </body>
