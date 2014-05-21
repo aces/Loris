@@ -228,31 +228,55 @@
         </div> 
         <div class="panel-body" id="panel-rule" style="display:none">
             <p>NOTE THAT THE RULES PORTION OF THE INSTRUMENT BUILDER IS STILL A WORK IN PROGRESS. DO NOT USE THESE UNLESS YOU KNOW WHAT YOU'RE DOING</p>
-        <dl>
-            <dt>Question</dt>
-            <dd><select id="rule_q"></select></dd>
-            <dt>Required if</dt>
-            <dd><select id="rule_depends"></select></dd>
-            <dl>
-                <dt>EITHER Equals any of</dt>
-                <dd><select id="rule_values" multiple></select></dd>
-                <dt>OR Matches regex</dt>
-                <dd><input type="text" id="rule_regex" /></select></dd>
-            </dl>
-
-            <dt><br />Error message</dt>
-            <dd><input type="text" value="Required" id="rule_message" /></dd>
-        </dl>
-        <input type="button" onclick="Rules.addNew()" value="Add Rule" />
-        <table id="rules_workspace">
-            <tr>
-                <th>Question</th>
-                <th>Required if</th>
-                <th>Matches</th>
-                <th>Message</th>
-            </tr>
-        </table>
-        <input type="button" onclick="Rules.save()" value="Save Rules" />
+        
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Question</label>
+                    <div class="col-sm-2">
+                        <select id="rule_q" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Required if</label>
+                    <div class="col-sm-2">
+                        <select id="rule_depends" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">EITHER Equals any of</label>
+                    <div class="col-sm-2">
+                        <select multiple id="rule_values" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">OR Matches regex</label>
+                    <div class="col-sm-2">
+                        <input type="text" id="rule_regex" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Error message</label>
+                    <div class="col-sm-2">
+                        <input type="text" value="Required" id="rule_message" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input class="btn btn-default" type="button" onclick="Rules.addNew()" value="Add Rule" />
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table id="rules_workspace" class="table table-hover table-primary table-bordered">
+                    <tr class="info">
+                        <th>Question</th>
+                        <th>Required if</th>
+                        <th>Matches</th>
+                        <th>Message</th>
+                    </tr>
+                </table>
+            </div>
+            <input class="btn btn-default" type="button" onclick="Rules.save()" value="Save Rules" />
         </div>
     </div>
 </div>
