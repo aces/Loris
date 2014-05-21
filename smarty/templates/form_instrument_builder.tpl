@@ -203,15 +203,23 @@
         <input class="btn btn-default" type="button" id="preview" value="Preview">
     </form>
     <h2>Save Instrument</h2>
-    <div>
+    <!-- <div> -->
 
-        <form name="saveform" id="saveform">
-        Filename: <input type="text" id="filename" value="" />
-        Instrument Name: <input type="text" id="longname" value="" />
-        <input type="button" onclick="Instrument.validate()" value="Validate" />
-        <input type="submit" value="Save" />
+        <form class="form-horizontal" role="form" name="saveform" id="saveform">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Filename: </label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="filename" value="" />
+                </div>
+                <label class="col-sm-2 control-label">Instrument Name: </label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="longname" value="" />
+                </div>
+                <input class="btn btn-default" type="button" onclick="Instrument.validate()" value="Validate" />
+                <input class="btn btn-default" type="submit" value="Save" />
+            </div>
         </form>
-    </div>
+    <!-- </div> -->
 
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideRule();">
