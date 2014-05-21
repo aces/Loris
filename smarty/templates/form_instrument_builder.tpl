@@ -15,8 +15,8 @@
     // });
     function hideLoad(){
         $("#panel-load").toggle();
-        $("#down").toggle();
-        $("#up").toggle();
+        $("#down-load").toggle();
+        $("#up-load").toggle();
     }
     function hideRule(){
         $("#panel-rule").toggle();
@@ -38,13 +38,13 @@
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideLoad();">
             Load Instrument (optional)
-            <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
-            <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span> 
+            <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-load"></span>
+            <span class="glyphicon glyphicon-chevron-up pull-right" id="up-load"></span> 
         </div> 
         <div class="panel-body" id="panel-load">
             <input type="file" id="instfile" />
             <br>
-            <input type="button" id="load" value="Load Instrument" />
+            <input class="btn btn-default" type="button" id="load" value="Load Instrument" />
         </div>
     </div>
 </div>
