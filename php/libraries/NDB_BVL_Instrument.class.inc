@@ -369,7 +369,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</form>");
         }
  
-        $renderer->setElementTemplate("<div class=\"form-group\"><lable class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}   </lable>{element}</div>");
+        $renderer->setElementTemplate("<div class=\"form-group col-sm-12\"><lable class=\"lab col-sm-4\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}   </lable><div class=\"col-sm-8\">{element}</div></div>");
         $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
         $renderer->setHeaderTemplate("<h3>{header}</h3>");
 
