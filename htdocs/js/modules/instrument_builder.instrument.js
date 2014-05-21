@@ -119,14 +119,18 @@ var Instrument = {
                 name = name + "_date";
                 // questionCell.lastChild is the year's select box.
                 // the first option in that is the start year, the last one is the end year.
-                min = questionCell.lastChild.firstChild.textContent;
-                max = questionCell.lastChild.lastChild.textContent;
+		if( questionCell.lastChild.firstChild != null) {
+			min = questionCell.lastChild.firstChild.textContent;
+			max = questionCell.lastChild.lastChild.textContent;
+		}
                 addStatus = true;
                 break;
             case 'numeric':
                 content += 'numeric';
-                min = questionCell.lastChild.firstChild.textContent;
-                max = questionCell.lastChild.lastChild.textContent;
+		if( questionCell.lastChild.firstChild != null) {
+			min = questionCell.lastChild.firstChild.textContent;
+			max = questionCell.lastChild.lastChild.textContent;
+		}
                 addStatus = true;
                 break;
             case 'dropdown':
