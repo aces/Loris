@@ -80,18 +80,22 @@ td.sidenav {
 }
 
 .table-cpanel-fake {
-    width: 180px;
+    width: 160px;
 }
 
-.div-cpanel>h3:first-child {
-    margin-top: 5px;
-}
 ul {
     margin: 0px;
-    padding: 12px;
+    padding-left: 12px;
+    padding-top: 5px;
     list-style-type: none;
 }
 
+dl {
+    margin-top: 0px;
+    margin-bottom: 8px;
+    padding-top: 5px;
+    
+}
 .img-navigation-array {
     border: 0;
     width: 12px;
