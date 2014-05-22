@@ -87,14 +87,16 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->validFilters = array(
             'mpv.CandID',
             'mpv.PSCID',
-            'mpv.series_description'
+            'mpv.series_description',
+            'mpv.time_run'
         );
         $this->query = " FROM mri_protocol_violated_scans mpv WHERE 1=1";
 
         $this->formToFilter = array(
                 'CandID' => 'mpv.CandID',
                 'PSCID' => 'mpv.PSCID',
-                'SeriesDescription' => 'mpv.series_description'
+                'SeriesDescription' => 'mpv.series_description',
+                'TimeRun' => 'mpv.time_run'
                 );
         $this->tpl_data['mri_protocol_data']  = $this->getMRIProtocolData();
         $this->tpl_data['mri_protocol_header'] 
@@ -115,7 +117,7 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->addBasicText('PatientName', 'Patient-Name:');
         $this->addBasicText('SeriesUID', 'SeriesUID:');
         $this->addBasicText('SeriesDescription', 'Series Description:');
-
+        $this->addBasicText('TimeRun', 'Time Run');
         return true;
     }
 
@@ -127,10 +129,13 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
     function getMRIProtocolData()
     {
         $db =& Database::singleton();
+        // select all except Objective from mri_protocol plus Scan_type from mri_scan_type
         $mri_protocols = $db->pselect("SELECT p.ID, Center_name, ScannerID, p.Scan_type as Scan_type, TR_range, TE_range, TI_range, slice_thickness_range, FoV_x_range, FoV_y_range, xspace_range, yspace_range, zspace_range, xstep_range, ystep_range, zstep_range, time_range, series_description_regex, s.Scan_type as type2 FROM mri_protocol as p LEFT JOIN mri_scan_type as s ON p.Scan_type=s.ID", array());
+        // add Scan_type from mri_scan_type and remove it from $mri_protocols
         for ($i = 0; $i < sizeof($mri_protocols); $i++) {
             if ($mri_protocols[$i][type2] != '') 
                 $mri_protocols[$i][Scan_type] .= " (" . $mri_protocols[$i][type2] . ")";
+            
             unset ($mri_protocols[$i][type2]);
         }
         return $mri_protocols;
