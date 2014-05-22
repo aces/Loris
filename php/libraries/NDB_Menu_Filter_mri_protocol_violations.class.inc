@@ -128,6 +128,9 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
     {
         $db =& Database::singleton();
         $mri_protocols = $db->pselect("SELECT * FROM mri_protocol", array());
+        for ($i = 0; $i < sizeof($mri_protocols); $i++) {
+            unset ($mri_protocols[$i][Objective]);
+        }
         return $mri_protocols;
     }
 }
