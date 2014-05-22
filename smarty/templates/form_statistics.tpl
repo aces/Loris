@@ -87,14 +87,14 @@ function CreateScatterplot() {
             $('.ui-state-default').removeClass('ui-tabs-active');
         })
         $('.ui-state-default').removeClass('ui-tabs-active');
-        // $(".tab-option").click(function(event){
-        //     // alert(event.target);
-        //     location.hash = event.target.id;
-        // });
-        // var element = document.getElementById(location.hash.replace('#', ''));
-        // if(element != null){
-        //     element.click();
-        // }
+        $(".tab-option").click(function(event){
+            // alert(event.target);
+            location.hash = event.target.id;
+        });
+        var element = document.getElementById(location.hash.replace('#', ''));
+        if(element != null){
+            element.click();
+        }
     });
 
 </script>
