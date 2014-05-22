@@ -127,9 +127,11 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
     function getMRIProtocolData()
     {
         $db =& Database::singleton();
-        $mri_protocols = $db->pselect("SELECT * FROM mri_protocol", array());
+        $mri_protocols = $db->pselect("SELECT p.ID, Center_name, ScannerID, p.Scan_type as Scan_type, TR_range, TE_range, TI_range, slice_thickness_range, FoV_x_range, FoV_y_range, xspace_range, yspace_range, zspace_range, xstep_range, ystep_range, zstep_range, time_range, series_description_regex, s.Scan_type as type2 FROM mri_protocol as p LEFT JOIN mri_scan_type as s ON p.Scan_type=s.ID", array());
         for ($i = 0; $i < sizeof($mri_protocols); $i++) {
-            unset ($mri_protocols[$i][Objective]);
+            if ($mri_protocols[$i][type2] != '') 
+                $mri_protocols[$i][Scan_type] .= " (" . $mri_protocols[$i][type2] . ")";
+            unset ($mri_protocols[$i][type2]);
         }
         return $mri_protocols;
     }
