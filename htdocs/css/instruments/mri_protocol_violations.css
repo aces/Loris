@@ -1,0 +1,9 @@
+.toggle_mri_tbl{
+  cursor: pointer;
+  width: 200px;
+  margin-bottom: 5px;
+}
+
+#show {
+    margin-bottom: -35px;
+}
