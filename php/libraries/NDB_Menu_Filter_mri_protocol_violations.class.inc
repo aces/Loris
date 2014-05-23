@@ -129,15 +129,8 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
     function getMRIProtocolData()
     {
         $db =& Database::singleton();
-        // select all except Objective from mri_protocol plus Scan_type from mri_scan_type
-        $mri_protocols = $db->pselect("SELECT p.ID, Center_name, ScannerID, p.Scan_type as Scan_type, TR_range, TE_range, TI_range, slice_thickness_range, FoV_x_range, FoV_y_range, xspace_range, yspace_range, zspace_range, xstep_range, ystep_range, zstep_range, time_range, series_description_regex, s.Scan_type as type2 FROM mri_protocol as p LEFT JOIN mri_scan_type as s ON p.Scan_type=s.ID", array());
-        // add Scan_type from mri_scan_type and remove it from $mri_protocols
-        for ($i = 0; $i < sizeof($mri_protocols); $i++) {
-            if ($mri_protocols[$i][type2] != '') 
-                $mri_protocols[$i][Scan_type] .= " (" . $mri_protocols[$i][type2] . ")";
-            
-            unset ($mri_protocols[$i][type2]);
-        }
+        // select all except Objective from mri_protocol and add Scan_type from mri_scan_type to mri_protocol's Scan_type
+        $mri_protocols = $db->pselect("SELECT p.ID, Center_name, ScannerID, CONCAT(p.Scan_type, IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')) as Scan_type, TR_range, TE_range, TI_range, slice_thickness_range, FoV_x_range, FoV_y_range, xspace_range, yspace_range, zspace_range, xstep_range, ystep_range, zstep_range, time_range, series_description_regex FROM mri_protocol as p LEFT JOIN mri_scan_type as s ON p.Scan_type=s.ID", array());
         return $mri_protocols;
     }
 }
