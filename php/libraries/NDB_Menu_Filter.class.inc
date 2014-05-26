@@ -332,7 +332,7 @@ class NDB_Menu_Filter extends NDB_Menu
         if ((!empty($val) || $val === '0') && $field != 'order') {
 
             if (in_array($field, $this->CheckboxFilters) && $val) {
-                $query .= "AND $field";
+                $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 // special rule for dropdowns where value is numeric
                         || strtolower(substr($field, -10)) == 'categoryid'

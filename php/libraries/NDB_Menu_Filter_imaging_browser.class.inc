@@ -177,7 +177,7 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
         $this->tpl_data['numOutputTypes'] = count($outputTypes);
         $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
 
-        $outputTypes = $DB->pselect("SELECT DISTINCT OutputType AS outputType FROM files WHERE FileType='mnc' AND OutputType!='native'", array());
+       /* $outputTypes = $DB->pselect("SELECT DISTINCT OutputType AS outputType FROM files WHERE FileType='mnc' AND OutputType!='native'", array());
 
         $this->tpl_data['outputTypes'] = array_merge(
             array(
@@ -186,8 +186,8 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             $outputTypes
         );
 
-        $this->tpl_data['numOutputTypes'] = count($outputTypes);
-	$this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
+        $this->tpl_data['numOutputTypes'] = count($outputTypes);*/
+	    $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
 
     function _setDataTableRows($count)
