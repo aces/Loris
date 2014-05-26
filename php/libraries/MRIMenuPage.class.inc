@@ -122,7 +122,7 @@ class MRIMenuPage {
             $projects[$key] = $value;
         }
         $this->visit_tpl_data['projects'] = $projects;
-        $this->visit_tpl_data['pending_new_options'] = array ('' => '', 'P' => 'Pending', 'N' => 'New', 'PN' => 'Pending and New'); 
+        $this->visit_tpl_data['pending_new_options'] = array ('' => '', 'P' => 'Pending', 'N' => 'New', 'PN' => 'Pending or New'); 
     }
 
 
