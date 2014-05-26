@@ -260,6 +260,8 @@ var Instrument = {
                                $("#label").click(); break;
                            }
                         }
+                    case "page":
+                        $("#page-break").click(); break;
                     default:
                         $("#" + pieces[0]).click(); break;
                         break;
