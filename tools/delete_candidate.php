@@ -27,20 +27,22 @@ require_once "Utility.class.inc";
 
 
 //define the command line parameters
-if (count($argv)!=2) {
-    echo "Usage: php delete_candidate DCCID\n";
-    echo "Example: php delete_candidate 608858\n";
+if (count($argv)!=3) {
+    echo "Usage: php delete_candidate DCCID PSCID\n";
+    echo "Example: php delete_candidate 608858 SEA0252\n";
     die();
 } else {
     $DCCID = $argv[1];
+    $PSCID = $argv[2];
 }
 
 if ($DB->pselectOne(
-    "SELECT COUNT(*) FROM candidate WHERE CandID = :cid",
-    array('cid'=>$DCCID)
+    "SELECT COUNT(*) FROM candidate WHERE CandID = :cid AND PSCID = :pid ",
+    array('cid'=>$DCCID, 'pid'=>$PSCID)
 ) ==0
 ) {
-    echo "The Candid : $DCCID Doesn't Exist in the database\n";
+    echo "The Candid : $DCCID  AND PSCID : $PSCID Doesn't Exist in " .
+    "the database\n";
     die();
 }
 
@@ -48,14 +50,15 @@ if ($DB->pselectOne(
 $candidate = new Candidate();
 $candidate->select($DCCID); //find the candidate with the given DCCID
 
-echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "\n";
-
 //find sessions
 $sessions = $candidate->getListOfTimePoints();
 if (is_null($sessions) || empty($sessions)) {
     echo "There are no coressponding session for Candid : $DCCID \n";
     die();
 }
+
+echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID:" .
+$PSCID. "\n";
 
 //find the test_names and commentIDs
 $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" . 
@@ -90,15 +93,36 @@ foreach ($instruments as $instrument) {
     $DB->delete(
         "conflicts_unresolved", array("CommentId2" => $instrument['CommentID'])
     );
+    
+    //delete from final_radiological_review
+    $DB->delete(
+        "final_radiological_review", array("CommentID" => $instrument['CommentID'])
+    );
+    
 }
+
+///Delete from the feedback related tables
+$Feedbackids = $DB->pselect(
+    "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID =:cid",
+    array('cid'=>$DCCID)
+);
+foreach ($Feedbackids as $Feedbackid) {
+    $DB->delete(
+        "feedback_bvl_entry", array('FeedbackID'=>$Feedbackid['FeedbackID'])
+    );
+}
+$DB->delete("feedback_bvl_thread", array('CandID'=>$DCCID));
 
 //delete from the participant_status table
 $DB->delete("participant_status", array("CandID" => $DCCID));
 
 //delete from the participant_status_history table
-$DB->delete("participant_status", array("CandID" => $DCCID));
+$DB->delete("participant_status_history", array("CandID" => $DCCID));
 
-//delete the candidate
+//delete from parameter_candidate
+$DB->delete("parameter_candidate", array("CandID" => $DCCID));
+
+//delete from candidate
 $DB->delete("candidate", array("CandID" => $DCCID));
 
 ?>
