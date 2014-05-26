@@ -53,104 +53,124 @@ $(function(){
         <form method="post" action="main.php?test_name=candidate_list">
             <div class="row">
                 <div class="form-group col-sm-6">
-                    <label class="col-sm-6">
+                    <label class="col-sm-12 col-md-4">
                         {$form.centerID.label}
                     </label>
-                    <!-- <div class="col-sm-7"> -->
+                    <div class="col-sm-12 col-md-8">
                         {$form.centerID.html}
-                    <!-- </div> -->
+                    </div>
                 </div>
                 <div class="form-group col-sm-6">
-                    <label class="col-sm-4">
+                    <label class="col-sm-12 col-md-4">
                         {$form.DCCID.label}
                     </label>
-                    {$form.DCCID.html}
+                    <div class="col-sm-12 col-md-8">
+                        {$form.DCCID.html}
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-sm-6">
-                    <label class="col-sm-6">
+                    <label class="col-sm-12 col-md-4">
                         {$form.SubprojectID.label}
                     </label>
-                    {$form.SubprojectID.html}
+                    <div class="col-sm-12 col-md-8">
+                        {$form.SubprojectID.html}
+                    </div>
                 </div>
                 <div class="form-group col-sm-6">
-                    <label class="col-sm-4">
+                    <label class="col-sm-12 col-md-4">
                         {$form.PSCID.label}
                     </label>
-                    {$form.PSCID.html}
+                    <div class="col-sm-12 col-md-8">
+                        {$form.PSCID.html}
+                    </div>
                 </div>
             </div>
             <div id="advanced-options" style="display:none">
                 <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-6">
+                        <label class="col-sm-12 col-md-4">
                             {$form.Participant_Status.label}
                         </label>
-                        {$form.Participant_Status.html}
+                        <div class="col-sm-12 col-md-8">
+                            {$form.Participant_Status.html}
+                        </div>
                     </div>
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-6">
+                        <label class="col-sm-12 col-md-4">
                             {$form.dob.label}
                         </label>
-                        {$form.dob.html}
+                        <div class="col-sm-12 col-md-8">
+                            {$form.dob.html}
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-6">
+                        <label class="col-sm-12 col-md-4">
                             {$form.gender.label}
                         </label>
-                        {$form.gender.html}
+                        <div class="col-sm-12 col-md-8">
+                            {$form.gender.html}
+                        </div>
                     </div>
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-8">
+                        <label class="col-sm-12 col-md-4">
                             {$form.Visit_Count.label}
                         </label>
-                        {$form.Visit_Count.html}
+                        <div class="col-sm-12 col-md-8">
+                            {$form.Visit_Count.html}
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-6">
+                        <label class="col-sm-12 col-md-4">
                             {$form.Latest_Visit_Status.label}
                         </label>
-                        {$form.Latest_Visit_Status.html}
+                        <div class="col-sm-12 col-md-8">
+                            {$form.Latest_Visit_Status.html}
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-6">
+                        <label class="col-sm-12 col-md-4">
                             {$form.Feedback.label}
                         </label>
-                        {$form.Feedback.html}
+                        <div class="col-sm-12 col-md-8">
+                            {$form.Feedback.html}
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-sm-6">
-                        <label class="col-sm-6">
+                    <div class="form-group col-sm-4">
+                        <label class="col-sm-12 col-md-6">
                             {$form.scan_done.label}
                         </label>
-                        {$form.scan_done.html}
+                        <div class="col-sm-12 col-md-6">
+                            {$form.scan_done.html}
+                        </div>
                     </div>
                     <br class="visible-xs">
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-8">
                         <!-- <div class="col-sm-6"> -->
-                            <div class="col-sm-4 col-xs-12">
+                            <div class="col-md-4 col-xs-12">
                                 <input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-4 col-xs-12">
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="col-md-4 col-xs-12">
                                 <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
                             </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-4 col-xs-12">
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="visible-xs visible-sm col-xs-12"> </div>
+                            <div class="col-md-4 col-xs-12">
                                 <input type="button" name="advanced" value="Basic" class="btn btn-sm btn-primary col-xs-12" onclick="toggleMe()"/>
                             </div>
                         <!-- </div> -->
@@ -161,7 +181,7 @@ $(function(){
             <div id="advanced-buttons">
                 <!-- <div class="form-group col-sm-6 col-sm-offset-6"> -->
                         <!-- <div class="col-sm-6"> -->
-                            <div class="col-sm-4 col-md-2 col-xs-12 col-md-offset-6">
+                            <div class="col-sm-4 col-md-3 col-xs-12 col-md-offset-3">
                                 <input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
 
@@ -169,14 +189,14 @@ $(function(){
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-4 col-md-2 col-xs-12">
+                            <div class="col-sm-4 col-md-3 col-xs-12">
                                 <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-4 col-md-2 col-xs-12">
+                            <div class="col-sm-4 col-md-3 col-xs-12">
                                 <input type="button" name="advanced" value="Advanced" class="btn btn-sm btn-primary col-xs-12" onclick="toggleMe()"/>
                             </div>
                         <!-- </div> -->
@@ -205,14 +225,16 @@ $(function(){
             <input tabindex="2" size="10" maxlength="12" type=text name="PSCID" class="col-sm-7">
         </div>
         <br>
-        <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-sm-5 col-sm-offset-8">
+        <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-sm-12 col-md-offset-8">
     </form>
 </div>
 <div class="hidden-xs">
     <br><br><br><br><br><br><br><br><br><br><br>
 </div>
-<div class="pull-right">
-    {$page_links}
+<div class="col-xs-12">
+    <div class="pull-right">
+        {$page_links}
+    </div>
 </div>
 <br>
 <!-- <table> -->
