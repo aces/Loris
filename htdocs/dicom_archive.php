@@ -108,7 +108,10 @@ if(!empty($_REQUEST['TarchiveID'])) {
     if(Utility::isErrorX($detail_tpl_data['archive'])) print $detail_tpl_data['archive']->getMessage()."<br>\n";
 
     // determine if the patient name is valid
-    if(preg_match($dicom_archive_settings['patientNameRegex'], $detail_tpl_data['archive']['PatientName']))
+    if ((preg_match($dicom_archive_settings['patientNameRegex'], $detail_tpl_data['archive']['PatientName'])) 
+      || (preg_match($dicom_archive_settings['LegoPhantomRegex'], $detail_tpl_data['archive']['PatientName'])) 
+      || (preg_match($dicom_archive_settings['LivingPhantomRegex'], $detail_tpl_data['archive']['PatientName']))) 
+    
        $detail_tpl_data['archive']['patientNameValid']=1;
     else {
        $detail_tpl_data['archive']['patientNameValid']=0;
