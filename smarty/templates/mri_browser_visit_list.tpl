@@ -22,7 +22,7 @@
     <!--th>Subproject</th><td colspan="2">{html_options options=$SubprojectID_options selected=$filter.SubprojectID name=filter[SubprojectID]}</td-->
 </tr>
 <tr>
-   <th>Pending and New</th><td class="MenuWidth">{html_options options=$pending_new_options selected=$filter.pending name=filter[pending]}</td>   
+   <th>Pending or New</th><td class="MenuWidth">{html_options options=$pending_new_options selected=$filter.pending name=filter[pending]}</td>   
 <td></td> 
     <td colspan="4"><input class="button" type="submit"></td>
 </tr>
