@@ -1758,7 +1758,7 @@ table td[class*="col-"], table th[class*="col-"] {
     background-color: #ebcccc
 }
 
-@media (max-width:767px){.table-responsive {
+@media (max-width:1000px){.table-responsive {
         width: 100%;
         margin-bottom: 15px;
         overflow-y: hidden;
