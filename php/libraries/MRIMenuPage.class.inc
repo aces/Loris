@@ -209,7 +209,7 @@ class MRIMenuPage {
                     case "N":
                         return " AND (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)";
                     case "PN":
-                         return " AND s.MRIQCPending='Y' AND (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)";
+                         return " AND s.MRIQCPending='Y' OR (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)";
                 } 
             }
         }
