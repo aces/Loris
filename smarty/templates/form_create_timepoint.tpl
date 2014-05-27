@@ -22,11 +22,11 @@
 		<div class="col-sm-10">{$candID}</div>
 	</div>
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">Subproject</label>
+		<label class="col-sm-2">{$form.subprojectID.label}</label>
 		<div class="col-sm-10">{$form.subprojectID.html}</div>
 	</div>
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">Visit label</label>
+		<label class="col-sm-2">{$form.visitLabel.label}</label>
 		<div class="col-sm-10">{$form.visitLabel.html}</div>
 	</div>
 
