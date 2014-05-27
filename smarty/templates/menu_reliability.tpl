@@ -48,9 +48,9 @@ $(document).ready(function() {
 	<table border="0">
 <tr>
 {* OBJECTIVE IS NIHPD SPECIFIC - BUT WE ARE TOO LAZY TO CHANGE THIS TODAY *}
-	<td nowrap="nowrap">Subproject:</td>
+	<td nowrap="nowrap">Subproject:</td> {* Changin this to {$form.CommentID.label} changes the label *}
 	<td nowrap="nowrap" class="MenuWidth">{$form.CommentID.html}</td>
-    <td nowrap="nowrap">DCCID:</td>
+    <td nowrap="nowrap">{$form.DCCID.label}</td>
     <td nowrap="nowrap">{$form.DCCID.html}</td>
 </tr>
     <tr>
@@ -58,7 +58,7 @@ $(document).ready(function() {
         <td nowrap="nowrap">{$form.Objective.html}</td> *}
         <td nowrap="nowrap">{$form.CenterID.label}</td>
         <td nowrap="nowrap" class="MenuWidth">{$form.CenterID.html}</td>
-        <td nowrap="nowrap">PSCID:</td>
+        <td nowrap="nowrap">{$form.PSCID.label}</td>
         <td nowrap="nowrap">{$form.PSCID.html}</td>
     </tr>
     <tr>
