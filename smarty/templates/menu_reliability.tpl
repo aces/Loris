@@ -8,6 +8,11 @@ function hideFilter(){
     $("#down").toggle();
     $("#up").toggle();
 }
+function hideSwap(){
+    $("#swap-body").toggle();
+    $("#swapDown").toggle();
+    $("#swapUp").toggle();
+}
 $(document).ready(function() {
     function _swapWrapper() {
         return toggleTable('swapcandidates');
@@ -136,43 +141,51 @@ $(document).ready(function() {
 
 
 {if $reliability_swap_candidates}
-<form method="post" action="main.php?test_name=reliability">
-    <input type="hidden" name="swap" value="swap"/>
-    <table border="0" valign="top" class="hideable" id="swapcandidates">
-    <thead>
-    <tr>
-        <th colspan="4" class="button" style="margin-top: 5px;">Swap Candidates</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr colspan="4">
-        <td>Original Candidate</td>
-    </tr>
-    <tr>
-        <td>{$form.Cand1PSCID.label}</td>
-        <td>{$form.Cand1PSCID.html}</td>
-        <td>{$form.Cand1Visit_label.label}</td>
-        <td>{$form.Cand1Visit_label.html}</td>
-    </tr>
-    <tr colspan="4">
-        <td>Replacement Candidate</td>
-    </tr>
-    <tr>
-        <td>{$form.Cand2PSCID.label}</td>
-        <td>{$form.Cand2PSCID.html}</td>
-        <td>{$form.Cand2Visit_label.label}</td>
-        <td>{$form.Cand2Visit_label.html}</td>
-    </tr>
-    <tr>
-        <td>{$form.SwapInstrument.label}</td>
-        <td colspan="3">{$form.SwapInstrument.html}</td>
-    </tr>
-    <tr>
-        <td colspan="4" align="right"><input type="submit" name="swap" value="Swap Candidates" class="button" /></td>
-    </tr>
-    </tbody>
-    </table>
-</form>
+    <div class="col-sm-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading" onclick="hideSwap();">
+                Swap Candidates
+                <span class="glyphicon glyphicon-chevron-down pull-right" id="swapDown"></span>
+                <span class="glyphicon glyphicon-chevron-up pull-right" style="display:none" id="swapUp"></span>
+            </div>
+            <div class="panel-body" style="display:none" id="swap-body">
+                <form method="post" action="main.php?test_name=reliability">
+                    <input type="hidden" name="swap" value="swap"/>
+                    <h5>Original Candidate</h5>
+                    <div class="row">
+                        <label class="col-sm-12 col-md-4">{$form.Cand1PSCID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Cand1PSCID.html}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-12 col-md-4">{$form.Cand1Visit_label.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Cand1Visit_label.html}</div>
+                    </div>
+                    <h5>Replacement Candidate</h5>
+                    <div class="row">
+                        <label class="col-sm-12 col-md-4">{$form.Cand2PSCID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Cand2PSCID.html}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-12 col-md-4">{$form.Cand2Visit_label.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Cand2Visit_label.html}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-12 col-md-4">{$form.SwapInstrument.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.SwapInstrument.html}</div>
+                    </div>
+                    <div class="row">
+                        <div class="visible-xs visible-sm col-xs-12"> </div>
+                        <div class="visible-xs visible-sm col-xs-12"> </div>
+                        <div class="visible-xs visible-sm col-xs-12"> </div>
+                        <div class="visible-xs visible-sm col-xs-12"> </div>
+                        <div class="col-md-5 col-xs-12 col-md-offset-6">
+                            <input type="submit" name="swap" value="Swap Candidates" class="btn btn-sm btn-primary col-xs-12" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>   
+</div>
 {/if}
 {if $EARLI_Reliability}
 <form method="post" action="main.php?test_name=reliability">
