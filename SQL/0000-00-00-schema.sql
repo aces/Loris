@@ -24,7 +24,7 @@ CREATE TABLE `candidate` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `CandID` int(6) NOT NULL default '0',
   `PSCID` varchar(255) NOT NULL default '',
-  `ExternalID` varchar(255) NOT NULL default '',
+  `ExternalID` varchar(255) default NULL,
   `DoB` date default NULL,
   `EDC` date default NULL,
   `Gender` enum('Male','Female') default NULL,
