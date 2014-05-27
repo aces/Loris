@@ -34,7 +34,7 @@ class MRIMenuPage {
                 'visitLabel' => 's.Visit_label',
                 'qcStatus' => 's.MRIQCStatus',
                 'SubprojectID' => 's.SubprojectID',
-                'pending' => "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"
+                'pending' => ''
                 );
         $this->headers = array(
                 'No.' => '',
@@ -56,15 +56,7 @@ class MRIMenuPage {
 
             $oldFilter = $_SESSION['State']->getProperty('filter');
             if(is_array($oldFilter)) {
-                $pending = $this->filter['pending'];
                 $this->filter = array_merge($oldFilter, $this->filter);
-                // Since pending is a checkbox, if we just merge it'll get readded because of the way the HTML standard works for
-                // checkboxes (only gets sent by the browser if it's checked, otherwise send nothing). Therefore, unset it after 
-                // the array_merge if it wasn't in the submitted filter.
-                if(!$pending) {
-                    unset($this->filter['pending']);
-                }
-
             }
             $_SESSION['State']->setProperty('filter', $this->filter);
 
@@ -75,7 +67,6 @@ class MRIMenuPage {
             foreach($this->formToFilter as $varname=> $field) {
                 $extra_where_string .= $this->_addFilter($varname);
             }
-
 
             if(is_array($this->filter['order'])) {
                 if($this->filter['order']['field'] != '' && $this->headers[$this->filter['order']['field']] != '')
@@ -100,7 +91,7 @@ class MRIMenuPage {
                     AND f.PendingStaging=0 AND f.FileType='mnc' AND f.OutputType='native' AND f.AcquisitionProtocolID not in (1, 2, 3, 52) 
                     GROUP BY f.SessionID
                     ORDER BY $extra_orderby p.Name, firstAcqDate, c.CandID, s.Visit_label;";
-
+                  
             $DB->select($query, $this->visit_tpl_data['timepoints']);
             if(Utility::isErrorX($this->visit_tpl_data['timepoints']))  {
                 print $this->visit_tpl_data['timepoints']->getMessage()."<br>\n";
@@ -131,7 +122,7 @@ class MRIMenuPage {
             $projects[$key] = $value;
         }
         $this->visit_tpl_data['projects'] = $projects;
-
+        $this->visit_tpl_data['pending_new_options'] = array ('' => '', 'P' => 'Pending', 'N' => 'New', 'PN' => 'Pending or New'); 
     }
 
 
@@ -203,12 +194,24 @@ class MRIMenuPage {
     // Adds a filter to the where query in the constructor
     function _addFilter($fname) {
         if(!empty($this->filter[$fname])) {
-            // override to allow for comma separated list 
-            // if input contains a comma.
-            if(!preg_match("/,/", $this->filter[$fname])) {
-                return ' AND ' . $this->formToFilter[$fname] . ' LIKE ' . $this->DB->quote($this->filter[$fname] . '%');
+            if ($fname != 'pending') {
+                // override to allow for comma separated list 
+                // if input contains a comma.
+                if(!preg_match("/,/", $this->filter[$fname])) {
+                    return ' AND ' . $this->formToFilter[$fname] . ' LIKE ' . $this->DB->quote($this->filter[$fname] . '%');
+                }
+                return ' AND '.  $this->formToFilter[$fname] . ' IN (' . $this->filter[$fname] .')';
             }
-            return ' AND '.  $this->formToFilter[$fname] . ' IN (' . $this->filter[$fname] .')';
+            else {
+                switch ($this->filter[$fname]) {
+                    case "P":
+                        return " AND s.MRIQCPending='Y'"; 
+                    case "N":
+                        return " AND (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)";
+                    case "PN":
+                         return " AND s.MRIQCPending='Y' OR (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)";
+                } 
+            }
         }
         return '';
     }
