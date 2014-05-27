@@ -82,19 +82,24 @@ function CreateScatterplot() {
     });
 }
   $(document).ready(function() {
-    $("#tabs").tabs();
-  });
+        $("#tabs").tabs();
+        $('.ui-state-default').click(function(){
+            $('.ui-state-default').removeClass('ui-tabs-active');
+        })
+        $('.ui-state-default').removeClass('ui-tabs-active');
+        $('.ui-tabs-nav').removeClass('ui-widget-header');
+    });
 
 </script>
 {/literal}
+
 <div id="tabs" style="background: #e2e2e2">
     <h1>Available Statistics</h1>
-    <ul>
+    <ul style="background:#e2e2e2">
         <li><a href="/main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">General Description</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs">Demographic Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li>
         <li><a href="/main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">MRI Statistics</a></li>
-        <li><a href="/main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li>
+        <!-- <li><a href="/main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li> -->
     </ul>
-</div>
