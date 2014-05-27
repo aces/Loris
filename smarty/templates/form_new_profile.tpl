@@ -8,58 +8,55 @@
 
 <br />
 <form method="post" name="new_profile" id="new_profile">
-<table class="std">
-    <!-- table title -->
-    <tr><th colspan="2">New Profile</th></tr>
 
     {foreach from=$form.errors item=error}
-    <tr>
-        <td nowrap="nowrap" colspan="2" class="error">{$error}</td>
-    </tr>
+    <div class="col-sm-12">
+        <label class="error col-sm-12">{$error}</label>
+    </div>
     {/foreach}
 
-	<tr>
-		<td nowrap="nowrap">Date of Birth</td>
-		<td nowrap="nowrap">{$form.dob1.html}</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">Confirm Date of Birth</td>
-		<td nowrap="nowrap">{$form.dob2.html}</td>
-	</tr>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">Date of Birth</label>
+		<div class="col-sm-10">{$form.dob1.html}</div>
+	</div>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">Confirm Date of Birth</label>
+		<div class="col-sm-10">{$form.dob2.html}</div>
+	</div>
 
     {if $form.edc1.html != ""}
-	<tr>
-		<td nowrap="nowrap">Expected Date of Confinement</td>
-		<td nowrap="nowrap">{$form.edc1.html}</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">Confirm EDC</td>
-		<td nowrap="nowrap">{$form.edc2.html}</td>
-	</tr>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">Expected Date of Confinement</label>
+		<div class="col-sm-10">{$form.edc1.html}</td>
+	</div>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">Confirm EDC</label>
+		<div class="col-sm-10">{$form.edc2.html}</div>
+	</div>
     {/if}
 
-	<tr>
-		<td nowrap="nowrap">Gender</td>
-		<td nowrap="nowrap" class="MenuWidth">{$form.gender.html}</td>
-	</tr>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">Gender</label>
+		<div class="col-sm-10">{$form.gender.html}</div>
+	</div>
 
     {if $form.PSCID.html != ""}
-	<tr>
-		<td nowrap="nowrap">PSCID</td>
-		<td nowrap="nowrap" class="MenuWidth">{$form.PSCID.html}</td>
-	</tr>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">PSCID</label>
+		<div class="col-sm-10">{$form.PSCID.html}</div>
+	</div>
     {/if}
 
     {if $form.ProjectID.html != ""}
-    <tr>
-        <td nowrap="nowrap">Project</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
-    </tr>
+    <div class="form-group col-sm-12">
+        <label class="col-sm-2">Project</label>
+        <div class="col-sm-10">{$form.ProjectID.html}</div>
+    </div>
     {/if}
 
-	<tr>
-		<td nowrap="nowrap" colspan="2" align="right"><input class="button" name="fire_away" value="Create" type="submit" /></td>
-	</tr>
+	<div class="form-group col-sm-12">
+		<div class="col-sm-12"><input class="btn btn-primary col-sm-offset-2 col-sm-2" name="fire_away" value="Create" type="submit" /></div>
+	</div>
 </table>
 {$form.hidden}
 </form>
