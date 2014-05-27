@@ -3,6 +3,11 @@
 {literal}
 
 <script language="javascript" type="text/javascript">
+function hideFilter(){
+    $("#panel-body").toggle();
+    $("#down").toggle();
+    $("#up").toggle();
+}
 $(document).ready(function() {
     function _swapWrapper() {
         return toggleTable('swapcandidates');
@@ -22,6 +27,7 @@ $(document).ready(function() {
             }
         }
     }
+    
 
     $('table#swapcandidates th').click(_swapWrapper);
     $('table#addcandidate th').click(_addWrapper);
@@ -31,71 +37,103 @@ $(document).ready(function() {
 });
 </script>
 {/literal}
-<form method="post" action="main.php?test_name=reliability">
-<!-- start the selection table -->
-{if $form.error}
-<div class="error">{$form.error.label}</div>
-{/if}
-{if $form.message}
-<div class="error">{$form.message.label}</div>
-{/if}
-<table border="0" valign="top" class="std" width="33%" style="float:left; margin-top: 10px; margin-right: 110px;">
-    <tr>
-        <th nowrap="nowrap" colspan="4">Selection Filter</th>
-    </tr>
-    <tr>
-	<td colspan = 4>
-	<table border="0">
-<tr>
-{* OBJECTIVE IS NIHPD SPECIFIC - BUT WE ARE TOO LAZY TO CHANGE THIS TODAY *}
-	<td nowrap="nowrap">Subproject:</td> {* Changin this to {$form.CommentID.label} changes the label *}
-	<td nowrap="nowrap" class="MenuWidth">{$form.CommentID.html}</td>
-    <td nowrap="nowrap">{$form.DCCID.label}</td>
-    <td nowrap="nowrap">{$form.DCCID.html}</td>
-</tr>
-    <tr>
-	{* <td nowrap="nowrap">Objective:</td>
-        <td nowrap="nowrap">{$form.Objective.html}</td> *}
-        <td nowrap="nowrap">{$form.CenterID.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.CenterID.html}</td>
-        <td nowrap="nowrap">{$form.PSCID.label}</td>
-        <td nowrap="nowrap">{$form.PSCID.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.Instrument.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.Instrument.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.reliability_center_id.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.reliability_center_id.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.ProjectID.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.ProjectID.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">Gender:</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.Gender.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">Visit label:</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.Visit_label.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.Invalid.label}</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.Invalid.html}</td>
- </tr>
-    <tr>
-        <td colspan="12" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
- 	  </tr>
 
-</table>
-</td>
-  <tr>
-<!--        <td nowrap="nowrap"><input type="button" name="button" value="Add Instrument" class="button" onclick="location.href='main.php?test_name=csbs_reliability&subtest=csbs_reliability'"/></td> -->
-    </tr>
-</table>
-</form>
+<div class="col-sm-8">
+    <div class="panel panel-primary">
+        <div class="panel-heading" onclick="hideFilter();">
+            Selection Filter  
+            <label id="advanced-label" style="display:none">(Advanced Options)</label>
+            <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+            <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+        </div>
+        <div class="panel-body" id="panel-body">
+            <form method="post" action="main.php?test_name=reliability">
+            <!-- start the selection table -->
+                {if $form.error}
+                <div class="error">{$form.error.label}</div>
+                {/if}
+                {if $form.message}
+                <div class="error">{$form.message.label}</div>
+                {/if}
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                    {* OBJECTIVE IS NIHPD SPECIFIC - BUT WE ARE TOO LAZY TO CHANGE THIS TODAY *}
+                        <label class="col-sm-12 col-md-4">Subproject:</label>{* Changin this to {$form.CommentID.label} changes the label *}
+                        <div class="col-sm-12 col-md-8">{$form.CommentID.html}</div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.DCCID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.DCCID.html}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                    <!-- {* <td nowrap="nowrap">Objective:</td>
+                        <td nowrap="nowrap">{$form.Objective.html}</td> *} -->
+                        <label class="col-sm-12 col-md-4">{$form.CenterID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.CenterID.html}</div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.PSCID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.PSCID.html}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.Instrument.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Instrument.html}</div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.reliability_center_id.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.reliability_center_id.html}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.ProjectID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.ProjectID.html}</div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.Gender.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Gender.html}</div>
+                    </div>
+                </div>    
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.Visit_label.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Visit_label.html}</div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.Invalid.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.Invalid.html}</div>
+                    </div>
+                </div>
+
+                    <!-- <tr>
+                        <td colspan="12" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
+                      </tr> -->
+                <div class="row">
+                    <div class="col-sm-4 col-md-3 col-xs-12 col-md-offset-5 col-sm-offset-4">
+                        <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                    </div>
+
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    
+                    <div class="col-sm-4 col-md-3 col-xs-12">
+                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=reliability&reset=true'" />
+                    </div>
+                </div> 
+                <!--        <td nowrap="nowrap"><input type="button" name="button" value="Add Instrument" class="button" onclick="location.href='main.php?test_name=csbs_reliability&subtest=csbs_reliability'"/></td> -->
+               
+            </form>
+        </div>
+    </div>
+</div>    
+
+
 
 {if $reliability_swap_candidates}
 <form method="post" action="main.php?test_name=reliability">
