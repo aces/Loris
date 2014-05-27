@@ -16,40 +16,40 @@
     {/foreach}
 
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">Date of Birth</label>
+		<label class="col-sm-2">{$form.dob1.label}</label>
 		<div class="col-sm-10">{$form.dob1.html}</div>
 	</div>
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">Confirm Date of Birth</label>
+		<label class="col-sm-2">{$form.dob2.label}</label>
 		<div class="col-sm-10">{$form.dob2.html}</div>
 	</div>
 
     {if $form.edc1.html != ""}
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">Expected Date of Confinement</label>
-		<div class="col-sm-10">{$form.edc1.html}</td>
+		<label class="col-sm-2">{$form.edc1.label}</label>
+		<div class="col-sm-10">{$form.edc1.html}</div>
 	</div>
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">Confirm EDC</label>
+		<label class="col-sm-2">$form.edc2.label}</label>
 		<div class="col-sm-10">{$form.edc2.html}</div>
 	</div>
     {/if}
 
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">Gender</label>
+		<label class="col-sm-2">{$form.gender.label}</label>
 		<div class="col-sm-10">{$form.gender.html}</div>
 	</div>
 
     {if $form.PSCID.html != ""}
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">PSCID</label>
+		<label class="col-sm-2">{$form.PSCID.label}</label>
 		<div class="col-sm-10">{$form.PSCID.html}</div>
 	</div>
     {/if}
 
     {if $form.ProjectID.html != ""}
     <div class="form-group col-sm-12">
-        <label class="col-sm-2">Project</label>
+        <label class="col-sm-2">{$form.ProjectID.label}</label>
         <div class="col-sm-10">{$form.ProjectID.html}</div>
     </div>
     {/if}
