@@ -1,26 +1,63 @@
-<form method="post" action="main.php?test_name=certification">
-<!-- start the selection table -->
-<table border="0" valign="top" class="std">
-    <tr>
-        <th nowrap="nowrap" colspan="7">Selection Filter</th>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">Site:</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.centerID.html}</td>
-        <td nowrap="nowrap">Full name:</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.full_name.html}</td>
-        <td nowrap="nowrap">Measure:</td>
-        <td nowrap="nowrap" class="MenuWidth">{$form.measure.html}</td>
-<!--        <td nowrap="nowrap">Date:</td>
-        <td nowrap="nowrap">{$form.date_cert.html}</td>
-        <td nowrap="nowrap">DCCID:</td>
-        <td nowrap="nowrap">{$form.subject.html}</td>-->
-    <tr>
-        <td colspan="2" nowrap="nowrap"><input type="button" name="button" value="Add Certification" class="button" onclick="location.href='main.php?test_name=certification&subtest=edit_event'" /></td>
-        <td colspan="6" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=certification&reset=true'" /></td>
-    </tr>
-<table>
-</form>
+{literal}   
+<script language="javascript" type="text/javascript">
+    function hideFilter(){
+        $("#panel-body").toggle();
+        $("#down").toggle();
+        $("#up").toggle();
+    }
+</script>
+{/literal}
+
+<div class="col-md-7 col-sm-10 col-lg-6">
+    <form method="post" action="main.php?test_name=certification">
+        <div class="panel panel-primary">
+            <div class="panel-heading" onclick="hideFilter();">
+                Selection Filter
+                <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+            </div>
+            <div class="panel-body" id="panel-body">
+                <div class="row">
+                    <div class="form-group col-sm-2">
+                        <label class="col-sm-12">{$form.centerID.label}</label>
+                        <div class="col-sm-12">{$form.centerID.html}</div>
+                    </div>
+                    <div class="form-group col-sm-5">
+                        <label class="col-sm-12">{$form.full_name.label}</label>
+                        <div class="col-sm-12">{$form.full_name.html}</div>
+                    </div>
+                    <div class="form-group col-sm-5">
+                        <label class="col-sm-12">{$form.measure.label}</label>
+                        <div class="col-sm-12">{$form.measure.html}</div>
+                    </div>
+            <!--        <td nowrap="nowrap">Date:</td>
+                    <td nowrap="nowrap">{$form.date_cert.html}</td>
+                    <td nowrap="nowrap">DCCID:</td>
+                    <td nowrap="nowrap">{$form.subject.html}</td>-->
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 col-xs-12">
+                        <input type="button" name="button" value="Add Certification" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=certification&subtest=edit_event'" />
+                    </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="col-sm-3 col-xs-12">
+                        <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                    </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="col-sm-3 col-xs-12">
+                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=certification&reset=true'" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
