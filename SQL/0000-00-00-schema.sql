@@ -239,6 +239,30 @@ INSERT INTO `feedback_mri_comment_types` VALUES (1,'Geometric intensity','volume
 UNLOCK TABLES;
 
 --
+-- Table structure for table `feedback_mri_predefined_comments`
+--
+
+DROP TABLE IF EXISTS `feedback_mri_predefined_comments`;
+CREATE TABLE `feedback_mri_predefined_comments` (
+  `PredefinedCommentID` int(11) unsigned NOT NULL auto_increment,
+  `CommentTypeID` int(11) unsigned NOT NULL default '0',
+  `Comment` text NOT NULL,
+  PRIMARY KEY  (`PredefinedCommentID`),
+  KEY `CommentType` (`CommentTypeID`),
+  CONSTRAINT `FK_feedback_mri_predefined_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `feedback_mri_predefined_comments`
+--
+
+LOCK TABLES `feedback_mri_predefined_comments` WRITE;
+/*!40000 ALTER TABLE `feedback_mri_predefined_comments` DISABLE KEYS */;
+INSERT INTO `feedback_mri_predefined_comments` VALUES (1,2,'missing slices'),(2,2,'reduced dynamic range due to bright artifact/pixel'),(3,2,'slice to slice intensity differences'),(4,2,'noisy scan'),(5,2,'susceptibilty artifact above the ear canals.'),(6,2,'susceptibilty artifact due to dental work'),(7,2,'sagittal ghosts'),(8,3,'slight ringing artefacts'),(9,3,'severe ringing artefacts'),(10,3,'movement artefact due to eyes'),(11,3,'movement artefact due to carotid flow'),(12,4,'slight movement between packets'),(13,4,'large movement between packets'),(14,5,'Large AP wrap around, affecting brain'),(15,5,'Medium AP wrap around, no affect on brain'),(16,5,'Small AP wrap around, no affect on brain'),(17,5,'Too tight LR, cutting into scalp'),(18,5,'Too tight LR, affecting brain'),(19,5,'Top of scalp cut off'),(20,5,'Top of brain cut off'),(21,5,'Base of cerebellum cut off'),(22,5,'missing top third - minc conversion?'),(23,6,'copy of prev data');
+/*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `feedback_mri_comments`
 --
 
@@ -278,30 +302,6 @@ CREATE TABLE `feedback_mri_comments` (
 LOCK TABLES `feedback_mri_comments` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comments` DISABLE KEYS */;
 /*!40000 ALTER TABLE `feedback_mri_comments` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `feedback_mri_predefined_comments`
---
-
-DROP TABLE IF EXISTS `feedback_mri_predefined_comments`;
-CREATE TABLE `feedback_mri_predefined_comments` (
-  `PredefinedCommentID` int(11) unsigned NOT NULL auto_increment,
-  `CommentTypeID` int(11) unsigned NOT NULL default '0',
-  `Comment` text NOT NULL,
-  PRIMARY KEY  (`PredefinedCommentID`),
-  KEY `CommentType` (`CommentTypeID`),
-  CONSTRAINT `FK_feedback_mri_predefined_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `feedback_mri_predefined_comments`
---
-
-LOCK TABLES `feedback_mri_predefined_comments` WRITE;
-/*!40000 ALTER TABLE `feedback_mri_predefined_comments` DISABLE KEYS */;
-INSERT INTO `feedback_mri_predefined_comments` VALUES (1,2,'missing slices'),(2,2,'reduced dynamic range due to bright artifact/pixel'),(3,2,'slice to slice intensity differences'),(4,2,'noisy scan'),(5,2,'susceptibilty artifact above the ear canals.'),(6,2,'susceptibilty artifact due to dental work'),(7,2,'sagittal ghosts'),(8,3,'slight ringing artefacts'),(9,3,'severe ringing artefacts'),(10,3,'movement artefact due to eyes'),(11,3,'movement artefact due to carotid flow'),(12,4,'slight movement between packets'),(13,4,'large movement between packets'),(14,5,'Large AP wrap around, affecting brain'),(15,5,'Medium AP wrap around, no affect on brain'),(16,5,'Small AP wrap around, no affect on brain'),(17,5,'Too tight LR, cutting into scalp'),(18,5,'Too tight LR, affecting brain'),(19,5,'Top of scalp cut off'),(20,5,'Top of brain cut off'),(21,5,'Base of cerebellum cut off'),(22,5,'missing top third - minc conversion?'),(23,6,'copy of prev data');
-/*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
