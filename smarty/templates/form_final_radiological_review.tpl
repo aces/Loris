@@ -1,39 +1,44 @@
 <form method="post" name="new_final_review" id="final_review">
-{if $conflicts}
-<ul class="error">
-{foreach from=$conflicts item=conflict}
-    <li>{$conflict}</li>
-    {/foreach}
-</ul>
-{/if}
+    {if $conflicts}
+    <ul class="error">
+    {foreach from=$conflicts item=conflict}
+        <li>{$conflict}</li>
+        {/foreach}
+    </ul>
+    {/if}
 
-<h1>General Information</h1>
-<table width="80%" class="instrument">
-<tr>
-</tr>
-<tr>
-    <td>{$form.PSCID.label}</td>
-    <td>{$form.PSCID.html}</td>
-</tr>
-<tr>
-    <td>{$form.CandID.label}</td>
-    <td>{$form.CandID.html}</td>
-</tr>
-<tr>
-    <td>{$form.Visit_label.label}</td>
-    <td>{$form.Visit_label.html}</td>
-</tr>
-<tr>
-    <td>{$form.DICOM_Folder_Name.label}</td>
-    <td>{$form.DICOM_Folder_Name.html}</td>
-</tr>
-<tr>
-    <td>Go to:</td>
-    <td><a href="mri_browser.php?sessionID={$form.SessionID.html}" target="_blank">MRI Browser</a><br /><a href="main.php?test_name=radiology_review&candID={$form.CandID.html}&sessionID={$form.SessionID.html}&commentID={$form.CommentID.html}" target="_blank">Original Radiology Review</a></td>
-</tr>
-</table>
+    <h1>General Information</h1>
+    <div class="col-sm-8 col-md-6 col-xs-12">
+        <div class="col-xs-12">
+            <label class="col-xs-6">{$form.PSCID.label}</label>
+            <div class="col-xs-6">{$form.PSCID.html}</div>
+        </div>
+        <div class="col-xs-12">
+            <label class="col-xs-6">{$form.CandID.label}</label>
+            <div class="col-xs-6">{$form.CandID.html}</div>
+        </div>
+        <div class="col-xs-12">
+            <label class="col-xs-6">{$form.Visit_label.label}</label>
+            <div class="col-xs-6">{$form.Visit_label.html}</div>
+        </div>
+        <div class="col-xs-12">
+            <label class="col-xs-6">{$form.DICOM_Folder_Name.label}</label>
+            <div class="col-xs-6">{$form.DICOM_Folder_Name.html}</div>
+        </div>
+        <div class="col-xs-12">
+            <label class="col-xs-6">Go to:</label>
+            <div class="col-xs-6">
+                <a href="mri_browser.php?sessionID={$form.SessionID.html}" target="_blank">MRI Browser</a>
+            </div>
+            <div class="col-xs-6 col-xs-offset-6">
+                <a href="main.php?test_name=radiology_review&candID={$form.CandID.html}&sessionID={$form.SessionID.html}&commentID={$form.CommentID.html}" target="_blank">Original Radiology Review</a>
+            </div>
+        </div>
+    </div>
 
-<h1>Review Values</h1>
+<div class="col-xs-12">
+    <h1>Review Values</h1>
+</div>
 <table width="80%" class="std">
 <tr>
     <th>Field</th>
