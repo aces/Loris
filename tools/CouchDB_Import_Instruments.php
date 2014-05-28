@@ -65,6 +65,7 @@ class CouchDBInstrumentImporter {
     function UpdateCandidateDocs($Instruments) {
         $results = array('new' => 0, 'modified' => 0, 'unchanged' => 0);
         foreach($Instruments as $instrument => $name) {
+            $this->CouchDB->beginBulkTransaction();
             $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($instrument), array('inst' => $instrument));
             $preparedStatement->execute();
             while($row = $preparedStatement->fetch(PDO::FETCH_ASSOC)) {
@@ -93,6 +94,8 @@ class CouchDBInstrumentImporter {
                 $results[$success] += 1;
             }
 
+            $result = $this->CouchDB->commitBulkTransaction();
+            
         }
         return $results;
     }
