@@ -200,7 +200,7 @@
                         <div class="panel-heading">
                             {section name=crumb loop=$crumbs}
                                 {if $test_name == "conflicts_resolve"}
-                                    <a href="main.php/{$crumbs[crumb].query}" class="text-default">
+                                    <a href="main.php/{$crumbs[crumb].query}" class="text-default" style="color: white">
                                         Conflicts Resolver
                                     </a> 
                                     {if not $smarty.section.crumb.last}
