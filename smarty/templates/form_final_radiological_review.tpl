@@ -36,82 +36,87 @@
         </div>
     </div>
 
-<div class="col-xs-12">
-    <h1>Review Values</h1>
-</div>
-<table width="80%" class="std">
-<tr>
-    <th>Field</th>
-    <th colspan="2">Project Reviews</th>
-    <th>Site Review</th>
-</tr>
-<tr>
-    <th>&nbsp;</th>
-    <th>Final Review</th>
-    <th>Extra Review</th>
-    <th>&nbsp;</th>
-</tr>
-<tr>
-    <td>{$form.Final_Examiner.label}</td>
-    <td>{$form.Final_Examiner.html}</td>
-    <td>{$form.Final_Examiner2.html}</td>
-    <td>{$form.Original_Examiner.html}</td>
-</tr>
-<tr>
-    <td>{$form.Review_Done.label}</td>
-    <td>{$form.Review_Done.html}</td>
-    <td>{$form.Review_Done2.html}</td>
-    <td>{$form.Original_Scan_Done.html}</td>
-</tr>
-<tr>
-    <td>{$form.Final_Review_Results.label}</td>
-    <td>{$form.Final_Review_Results.html}</td>
-    <td>{$form.Final_Review_Results2.html}</td>
-    <td>{$form.Original_Review_Results.html}</td>
-</tr>
-<tr>
-    <td>{$form.Final_Exclusionary.label}</td>
-    <td>{$form.Final_Exclusionary.html}</td>
-    <td>{$form.Final_Exclusionary2.html}</td>
-    <td>{$form.Original_Exclusionary.html}</td>
-</tr>
-<tr>
-    <td>{$form.SAS.label}</td>
-    <td>{$form.SAS.html}</td>
-    <td>{$form.SAS2.html}</td>
-    <td>&nbsp;</td>
-</tr>
-<tr>
-    <td>{$form.PVS.label}</td>
-    <td>{$form.PVS.html}</td>
-    <td>{$form.PVS2.html}</td>
-    <td>&nbsp;</td>
-</tr>
-<tr>
-    <td>{$form.Final_Incidental_Findings.label}</td>
-    <td>{$form.Final_Incidental_Findings.html}</td>
-    <td>{$form.Final_Incidental_Findings2.html}</td>
-    <td>{$form.Original_Incidental_Findings.html}</td>
-</tr>
-<tr>
-    <td>{$form.Finalized.label}</td>
-    <td>{$form.Finalized.html}</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-</tr>
-</table>
-<input type="submit" name="fire_away" value="Save" />
-	
-{$form.hidden}
+    <div class="col-xs-12">
+        <h1>Review Values</h1>
+    </div>
+    <div class="table-responsive">
+        <table width="80%" class="table table-hover table-primary table-bordered">
+            <tr class="info">
+                <th>Field</th>
+                <th colspan="2">Project Reviews</th>
+                <th>Site Review</th>
+            </tr>
+            <tr class="info">
+                <th>&nbsp;</th>
+                <th>Final Review</th>
+                <th>Extra Review</th>
+                <th>&nbsp;</th>
+            </tr>
+            <tr>
+                <td>{$form.Final_Examiner.label}</td>
+                <td>{$form.Final_Examiner.html}</td>
+                <td>{$form.Final_Examiner2.html}</td>
+                <td>{$form.Original_Examiner.html}</td>
+            </tr>
+            <tr>
+                <td>{$form.Review_Done.label}</td>
+                <td>{$form.Review_Done.html}</td>
+                <td>{$form.Review_Done2.html}</td>
+                <td>{$form.Original_Scan_Done.html}</td>
+            </tr>
+            <tr>
+                <td>{$form.Final_Review_Results.label}</td>
+                <td>{$form.Final_Review_Results.html}</td>
+                <td>{$form.Final_Review_Results2.html}</td>
+                <td>{$form.Original_Review_Results.html}</td>
+            </tr>
+            <tr>
+                <td>{$form.Final_Exclusionary.label}</td>
+                <td>{$form.Final_Exclusionary.html}</td>
+                <td>{$form.Final_Exclusionary2.html}</td>
+                <td>{$form.Original_Exclusionary.html}</td>
+            </tr>
+            <tr>
+                <td>{$form.SAS.label}</td>
+                <td>{$form.SAS.html}</td>
+                <td>{$form.SAS2.html}</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>{$form.PVS.label}</td>
+                <td>{$form.PVS.html}</td>
+                <td>{$form.PVS2.html}</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>{$form.Final_Incidental_Findings.label}</td>
+                <td>{$form.Final_Incidental_Findings.html}</td>
+                <td>{$form.Final_Incidental_Findings2.html}</td>
+                <td>{$form.Original_Incidental_Findings.html}</td>
+            </tr>
+            <tr>
+                <td>{$form.Finalized.label}</td>
+                <td>{$form.Finalized.html}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+    <input type="submit" class="btn btn-sm btn-primary col-xs-4 col-sm-2" name="fire_away" value="Save" />
+    {$form.hidden}
 </form>
-<h1>Change Log</h1>
-<table class="std">
-<tr>
-<th>Time</th>
-<th>User</th>
-<th>Field</th>
-<th>Old Value</th>
-<th>New Value</th>
-</tr>
-{$form.history.html}
-</table>
+<div class="col-xs-12">
+    <h1>Change Log</h1>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover table-primary table-bordered">
+        <tr class="info">
+            <th>Time</th>
+            <th>User</th>
+            <th>Field</th>
+            <th>Old Value</th>
+            <th>New Value</th>
+        </tr>
+        {$form.history.html}
+    </table>
+</div>
