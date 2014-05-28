@@ -66,57 +66,59 @@
 </div>
 
 <br>
-<form method="post" name="conflicts_resolve" id="conflicts_resolve">
-<table class="fancytable" border="0">
+<div class="table-responsive">
+    <form method="post" name="conflicts_resolve" id="conflicts_resolve">
+        <table class="table table-hover table-primary table-bordered" border="0">
 
-    {if $form.total}
-        <tr class="nohover">
-            <td colspan="5" align="right" style="border: none;" class="nohover">{$form.total.label}</td>
-        </tr>
-    {/if}
+            {if $form.total}
+                <tr class="nohover">
+                    <td colspan="6" align="right" class="nohover">{$form.total.label}</td>
+                </tr>
+            {/if}
 
-    {foreach from=$form.errors item=error}
-    <tr>
-        <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
-    </tr>
-    {/foreach}
-	
-	<tr>
-        <th>Instrument</th>
-        <th>DCCID</th>
-        <th>PSCID</th>
-        <th>Visit Label</th>
-        <th>Question</th>
-        <th>Correct Answer</th>
-    </tr>
-	
+            {foreach from=$form.errors item=error}
+            <tr>
+                <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
+            </tr>
+            {/foreach}
+        	
+        	<tr class="info">
+                <th>Instrument</th>
+                <th>DCCID</th>
+                <th>PSCID</th>
+                <th>Visit Label</th>
+                <th>Question</th>
+                <th>Correct Answer</th>
+            </tr>
+        	
 
-    {foreach from=$elements_list_names item=element}
-	<tr>
-        <td>{$elements_array[$element].instrument}</td>
-        <td>{$elements_array[$element].dccid}</td>
-        <td>{$elements_array[$element].pscid}</td>
-        <td>{$elements_array[$element].visit_label}</td>
-        <td>{$elements_array[$element].field}</td>
-		<td nowrap="nowrap" align="right">{$form.$element.html}</td>
-	</tr>
-    {foreachelse}
-        <tr>
-            <td colspan="6"><b>{$form.status.label}</b></td>
-        </tr>
-	{/foreach}
-
-
-        <tr>
-        <td nowrap="nowrap" colspan="5">&nbsp;</td>
-                <td nowrap="nowrap">
-        <input class="button" name="fire_away" value="Save" type="submit" />
-        <input class="button" value="Reset" type="reset" />
-        </td>
-        </tr>
+            {foreach from=$elements_list_names item=element}
+        	<tr>
+                <td>{$elements_array[$element].instrument}</td>
+                <td>{$elements_array[$element].dccid}</td>
+                <td>{$elements_array[$element].pscid}</td>
+                <td>{$elements_array[$element].visit_label}</td>
+                <td>{$elements_array[$element].field}</td>
+        		<td nowrap="nowrap" align="right">{$form.$element.html}</td>
+        	</tr>
+            {foreachelse}
+                <tr>
+                    <td colspan="6"><b>{$form.status.label}</b></td>
+                </tr>
+        	{/foreach}
 
 
-</table>
-{$form.hidden}
-</form>
+                <tr>
+                <td nowrap="nowrap" colspan="5">&nbsp;</td>
+                        <td nowrap="nowrap">
+                <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
+                <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+                </td>
+                </tr>
+
+
+        </table>
+        {$form.hidden}
+    </form>
+</div>
 
