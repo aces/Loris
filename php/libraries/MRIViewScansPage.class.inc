@@ -261,9 +261,28 @@ class MRIViewScansPage {
             $fileData[$fIdx]['processingPipeline'] = $file->getParameter('processing:pipeline');
             $fileData[$fIdx]['sourceFile'] = basename($file->getParameter('processing:sourceFile'));
             $fileData[$fIdx]['Tool'] = $file->getParameter('Tool');
-            $fileData[$fIdx]['slicewiseRejected'] = $file->getParameter('processing:slicewise_rejected');
-            $fileData[$fIdx]['interlaceRejected'] = $file->getParameter('processing:interlace_rejected');
-            $fileData[$fIdx]['intergradientRejected'] = $file->getParameter('processing:intergradient_rejected');
+            // Order rejected directions by DTIPrep for display
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:slicewise_rejected'), $sliceRej)) {
+                $dirList = preg_split('/\,/', $sliceRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                }
+                $fileData[$fIdx]['slicewiseRejected'] = "Directions " . join(", ", $dirList) . " " . $sliceRej[3]; 
+            }
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:interlace_rejected'), $laceRej)) {
+                $dirList = preg_split('/\,/', $laceRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                } 
+                $fileData[$fIdx]['interlaceRejected'] = "Directions " . join(", ", $dirList) . " " . $laceRej[3];    
+            }
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:intergradient_rejected'), $interRej)) {
+                $dirList = preg_split('/\,/', $interRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                } 
+                $fileData[$fIdx]['intergradientRejected'] = "Directions " . join(", ", $dirList) . " " . $interRej[3];    
+            }
             $fileData[$fIdx]['totalRejected'] = $file->getParameter('processing:total_rejected');
             $fileData[$fIdx]['Algorithm'] = $file->getParameter('Algorithm');
             $fileData[$fIdx]['outputType'] = $file->getParameter('OutputType');
