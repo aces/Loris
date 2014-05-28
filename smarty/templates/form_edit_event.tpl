@@ -79,25 +79,25 @@
 				</table>
 				{$form.hidden}
             </div>
-
-	    
-
 		</div>
 	</form>
 </div>
 
-<table class="std">
-<p>&nbsp;</p>
-<h1>Change Log</h1>
-<tr>
-<th>Time</th>
-<th>User</th>
-<th>Measure</th>
-<th>Visit</th>
-<th>Old Value</th>
-<th>Old Date</th>
-<th>New Value</th>
-<th>New Date</th>
-</tr>
-{$form.certification_history.html}
-</table>
+<div class="col-xs-12">
+	<h1>Change Log</h1>
+</div>
+<div class="table-responsive">
+	<table class="table table-hover table-primary table-bordered">
+		<tr class="info">
+			<th>Time</th>
+			<th>User</th>
+			<th>Measure</th>
+			<th>Visit</th>
+			<th>Old Value</th>
+			<th>Old Date</th>
+			<th>New Value</th>
+			<th>New Date</th>
+		</tr>
+		{$form.certification_history.html}
+	</table>
+</div>
