@@ -40,7 +40,7 @@ class NDB_Form_certification extends NDB_Form
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-        $DB->select('SELECT userID, changeDate, old, old_date, Full_name as Measure, visit_label, primaryVals, new, new_date FROM certification_history JOIN test_names on certification_history.testID = test_names.ID WHERE primaryVals=' . $DB->quote($this->identifier) . ' ORDER BY changeDate DESC', &$certification_history );
+        $DB->select('SELECT userID, changeDate, old, old_date, Full_name as Measure, visit_label, primaryVals, new, new_date FROM certification_history JOIN test_names on certification_history.testID = test_names.ID WHERE primaryVals=' . $DB->quote($this->identifier) . ' ORDER BY changeDate DESC', $certification_history );
 
         foreach($certification_history as &$history_item)
         {
