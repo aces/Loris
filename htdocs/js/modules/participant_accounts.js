@@ -3,7 +3,7 @@ $(document).ready(function () {
     $("#email_dialog").dialog({
         'autoOpen': false,
         'title'   : "Email to Study Participant",
-        'width'   : 700,
+        'width'   : 900,
         modal: true,
         buttons: {
             'Email': function () {

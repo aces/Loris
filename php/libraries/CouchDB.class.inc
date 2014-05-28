@@ -95,7 +95,9 @@ class SocketWrapper
      */
     function eof()
     {
-        return feof($this->socket);
+        if($this->socket) {
+           return feof($this->socket);
+        }
     }
 
     /**
@@ -105,7 +107,9 @@ class SocketWrapper
      */
     function gets()
     {
-        return fgets($this->socket);
+        if($this->socket) {
+            return fgets($this->socket);
+        }
     }
 
     /**
