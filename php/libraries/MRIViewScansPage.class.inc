@@ -259,9 +259,30 @@ class MRIViewScansPage {
             $fileData[$fIdx]['acquisitionProtocol'] = $file->getAcquisitionProtocol();
             $fileData[$fIdx]['coordinateSpace'] = $file->getParameter('CoordinateSpace');
             $fileData[$fIdx]['processingPipeline'] = $file->getParameter('processing:pipeline');
-            $fileData[$fIdx]['slicewiseRejected'] = $file->getParameter('processing:slicewise_rejected');
-            $fileData[$fIdx]['interlaceRejected'] = $file->getParameter('processing:interlace_rejected');
-            $fileData[$fIdx]['intergradientRejected'] = $file->getParameter('processing:intergradient_rejected');
+            $fileData[$fIdx]['sourceFile'] = basename($file->getParameter('processing:sourceFile'));
+            $fileData[$fIdx]['Tool'] = $file->getParameter('Tool');
+            // Order rejected directions by DTIPrep for display
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:slicewise_rejected'), $sliceRej)) {
+                $dirList = preg_split('/\,/', $sliceRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                }
+                $fileData[$fIdx]['slicewiseRejected'] = "Directions " . join(", ", $dirList) . " " . $sliceRej[3]; 
+            }
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:interlace_rejected'), $laceRej)) {
+                $dirList = preg_split('/\,/', $laceRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                } 
+                $fileData[$fIdx]['interlaceRejected'] = "Directions " . join(", ", $dirList) . " " . $laceRej[3];    
+            }
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:intergradient_rejected'), $interRej)) {
+                $dirList = preg_split('/\,/', $interRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                } 
+                $fileData[$fIdx]['intergradientRejected'] = "Directions " . join(", ", $dirList) . " " . $interRej[3];    
+            }
             $fileData[$fIdx]['totalRejected'] = $file->getParameter('processing:total_rejected');
             $fileData[$fIdx]['Algorithm'] = $file->getParameter('Algorithm');
             $fileData[$fIdx]['outputType'] = $file->getParameter('OutputType');
@@ -274,6 +295,10 @@ class MRIViewScansPage {
             if(preg_match("/(\d{4})-?(\d{2})-?(\d{2})/", $file->getParameter('acquisition_date'), $acqDate)) {
                 $fileData[$fIdx]['acquisitionDate'] = mktime(12, 0, 0, $acqDate[2], $acqDate[3], $acqDate[1]);
             }
+            if(preg_match("/(\d{4})?(\d{2})?(\d{2})/", $file->getParameter('processing:processing_date'), $procDate)) {
+                $fileData[$fIdx]['procDate'] = mktime(12, 0, 0, $procDate[2], $procDate[3], $procDate[1]);
+            }
+            //$fileData[$fIdx]['procDate'] = $file->getParameter('processing:processing_date');
             $fileData[$fIdx]['fileInsertDate'] = $file->getParameter('InsertTime');
             $fileData[$fIdx]['filename'] = basename($file->getParameter('File'));
             $fileData[$fIdx]['fullFilename'] = $file->getParameter('File');
@@ -292,9 +317,13 @@ class MRIViewScansPage {
             $fileData[$fIdx]['SeriesUID'] = $file->getParameter('SeriesUID');
             // this has been changed for more security
             $fileData[$fIdx]['checkpicFilename'] = "mri/jiv/get_file.php?file=" .'pic/'. $file->getParameter('check_pic_filename');
+            $fileData[$fIdx]['XMLreport'] = $file->getParameter('processing:DTIPrepXmlReport');
+            $fileData[$fIdx]['XMLprotocol'] = $file->getParameter('ProtocolFile');
+            $fileData[$fIdx]['NrrdFile'] = $file->getParameter('processing:nrrd_file');
             // the jivs
             $fileData[$fIdx]['jivFilename'] = basename($file->getParameter('File'));
             $fileData[$fIdx]['jivAddress'] = str_replace('_check.jpg', '', $file->getParameter('check_pic_filename'));
+            $fileData[$fIdx]['FileType'] = $file->getParameter('FileType');
 
             $fIdx++;
         }

@@ -66,8 +66,15 @@ if (strpos($File, ".") === false) {
 
 // Find the extension
 $pieces  = preg_split('/\./', basename($File));
-array_shift($pieces);
-$FileExt = join(".", $pieces);
+if (array_search('xml', $pieces)) {
+    // if extension if xml, protocol filename can have 
+    // multiple . in middle of its name that are 
+    // extension independent.
+    $FileExt = "xml";
+} else {
+    array_shift($pieces);
+    $FileExt = join(".", $pieces);
+}
 unset($pieces);
 
 // Make sure that the user isn't trying to break out of the $path by
@@ -100,6 +107,16 @@ case 'raw_byte.gz':
     // And they don't have a real mime type.
     $FullPath = $imagePath . '/' . $File;
     $MimeType = 'application/octet-stream';
+    break;
+case 'xml':
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'application/xml';
+    $DownloadFilename = basename($File);
+    break;
+case 'nrrd':
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
     break;
 default:
     $FullPath = $DownloadPath . '/' . $File;
