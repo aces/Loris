@@ -196,6 +196,7 @@
             {/if}
             <div class="page-content inset">
                 <div class="panel panel-primary">
+                    {if $dynamictabs neq "dynamictabs"}
                     {if $crumbs != ""}
                         <div class="panel-heading">
                             {section name=crumb loop=$crumbs}
@@ -223,6 +224,7 @@
                                 {/if}
                             {/section}
                         </div>
+                    {/if}
                     {/if}
                         <div class="panel-body">
                             {if $error_message != ""}
