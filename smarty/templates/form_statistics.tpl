@@ -82,24 +82,29 @@ function CreateScatterplot() {
     });
 }
   $(document).ready(function() {
-        $("#tabs").tabs();
-        $('.ui-state-default').click(function(){
-            $('.ui-state-default').removeClass('ui-tabs-active');
-        })
-        $('.ui-state-default').removeClass('ui-tabs-active');
-        $('.ui-tabs-nav').removeClass('ui-widget-header');
-    });
+    $(".tab-pane").load($('#onLoad').attr('value'));
+    $(".statsTabLink").click(function(){
+        $(".tab-pane").load($(this).attr('value'));
+        $(".statsTab").removeClass("active");
+        $(this).parent().addClass("active");
+    })
+  });
 
 </script>
 {/literal}
-
-<div id="tabs" style="background: #e2e2e2">
+<div id="tabs" style="background: white">
     <h1>Available Statistics</h1>
-    <ul style="background:#e2e2e2">
-        <li><a href="main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">General Description</a></li>
-        <li><a href="main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs">Demographic Statistics</a></li>
-        <li><a href="main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
-        <li><a href="main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li>
-        <li><a href="main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">MRI Statistics</a></li>
-        <!-- <li><a href="/main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li> -->
+    <ul class="nav nav-tabs">
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad" value="main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs">General Description</a></li>
+        <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs">Demographic Statistics</a></li>
+        <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
+        <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li>
+        <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">MRI Statistics</a></li>
+       <!--  <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li> -->
     </ul>
+    <div class="tab-content">
+        <div class="tab-pane active">
+                        
+        </div>
+    </div>
+</div>
