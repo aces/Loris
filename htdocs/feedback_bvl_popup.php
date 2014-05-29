@@ -1,4 +1,4 @@
-<?
+<?php
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**
  * @version $Id: feedback_bvl_popup.php,v 3.13 2007/03/02 16:16:41 sebas Exp $
