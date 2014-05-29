@@ -6,10 +6,6 @@ INSERT INTO feedback_mri_comment_types (CommentTypeID, CommentName, CommentType,
 -- Add Entropy rating feedback mri comment type
 --
 INSERT INTO feedback_mri_comment_types (CommentTypeID, CommentName, CommentType, CommentStatusField) VALUES (9,"Entropy Rating (DWI ONLY)", "volume", 'a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
--- Add Motion Slice Wise (DWI ONLY)
--- INSERT INTO feedback_mri_comment_types (CommentTypeID, CommentName, CommentType, CommentStatusField) VALUES (10,"Slice Wise Motion (DWI ONLY)", "volume", 'a:2:{s:5:"field";s:17:"Slice Wise Motion";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"None";i:2;s:6:"Slight";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}');
--- Add Motion Gradient Wise (DWI ONLY)
--- INSERT INTO feedback_mri_comment_types (CommentTypeID, CommentName, CommentType, CommentStatusField) VALUES (11,"Gradient Wise Motion (DWI ONLY)", "volume", 'a:2:{s:5:"field";s:20:"Gradient Wise Motion";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"None";i:2;s:6:"Slight";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}');
 
 -- insert in parameter_type table color artifact and entropy entries
 INSERT INTO parameter_type (Name, Type, SourceFrom, Queryable, IsFile) VALUES ("Color_Artifact","text","parameter_file",0,0);
@@ -35,6 +31,6 @@ INSERT INTO feedback_mri_predefined_comments (PredefinedCommentID,CommentTypeID,
 INSERT INTO feedback_mri_predefined_comments (PredefinedCommentID,CommentTypeID,Comment) VALUES (36,6,"Duplicate series");
 
 -- motion artifacts
-INSERT INTO feedback_mri_predefined_comments (PredefinedCommentID,CommentTypeID,Comment) VALUES (38,3,"slice wise artifact (DWI ONLY)");
-INSERT INTO feedback_mri_predefined_comments (PredefinedCommentID,CommentTypeID,Comment) VALUES (40,3,"gradient wise artifact (DWI ONLY)");
+INSERT INTO feedback_mri_predefined_comments (PredefinedCommentID,CommentTypeID,Comment) VALUES (37,3,"slice wise artifact (DWI ONLY)");
+INSERT INTO feedback_mri_predefined_comments (PredefinedCommentID,CommentTypeID,Comment) VALUES (38,3,"gradient wise artifact (DWI ONLY)");
 
