@@ -5,7 +5,7 @@
         <th colspan="6">Selection Filter</th>
         </tr>
         <tr>
-        <td>Site</td><td>{html_options options=$site_options selected=$filter.site name=filter[site]}</td>
+        <td>Site</td><td>{html_options options=$site_options selected=$filter.site name="filter[site]"}</td>
         <td>&nbsp;</td><td>&nbsp;</td>
         </tr>
         <tr>
