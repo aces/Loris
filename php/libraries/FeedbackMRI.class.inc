@@ -335,8 +335,10 @@ class FeedbackMRI {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-        // build the output array
+        // build the output array and keep overall section at the end of the array
         $commentNames = array();
+        $overallType;
+        $overallName  = array();
         if (is_array($result)) {
             foreach ($result as $row) {
                 // deal with CommentStatusField
@@ -344,13 +346,24 @@ class FeedbackMRI {
                     $statusField = unserialize($row['CommentStatusField']);
                 }
 
-                // add a row to the output array
-                $commentNames[$row['CommentTypeID']] = array('name'   => stripslashes($row['CommentName']),
-                                                             'field'  => $statusField['field'],
-                                                             'values' => $statusField['values']);
+                // if CommentName is overall, don't add them yet to commentNames array
+                // we want them only at the end
+                if ($row['CommentName'] == "Overall") {
+                    $overallType = $row['CommentTypeID'];
+                    $overallName = array('name'   => stripslashes($row['CommentName']),
+                                                                 'field'  => $statusField['field'],
+                                                                 'values' => $statusField['values']); 
+                } else {
+                    // add a row to the output array
+                    $commentNames[$row['CommentTypeID']] = array('name'   => stripslashes($row['CommentName']),
+                                                                 'field'  => $statusField['field'],
+                                                                 'values' => $statusField['values']);
+                }
 
                 unset($statusField);
             }
+            // add overall row to the end of the output array 
+            $commentNames[$overallType] = $overallName;
         }
 
         // return the output array
