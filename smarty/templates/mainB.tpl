@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%; background:transparent">
+    {if $dynamictabs neq "dynamictabs"}
     <head>
 
 
@@ -91,6 +92,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     </head>
+    {/if}
     <body {if $PopUpFeedbackBVL && ($user.permissions.superuser==true 
               || $user.permissions.access_all_profiles==true 
               || $user.user_from_study_site==true)}
@@ -193,10 +195,9 @@
             {/if}
             {if $dynamictabs neq "dynamictabs"}
                 <br><br><br>
-            {/if}
             <div class="page-content inset">
                 <div class="panel panel-primary">
-                    {if $dynamictabs neq "dynamictabs"}
+                    
                     {if $crumbs != ""}
                         <div class="panel-heading">
                             {section name=crumb loop=$crumbs}
@@ -224,7 +225,6 @@
                                 {/if}
                             {/section}
                         </div>
-                    {/if}
                     {/if}
                         <div class="panel-body">
                             {if $error_message != ""}
@@ -453,7 +453,6 @@
                                 </div>  
                             {/if}
                         </div>
-                        {if $dynamictabs neq "dynamictabs"} 
                         <div class="panel-footer">
                                         
                                                         <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" align="center">
@@ -480,7 +479,7 @@
                                                         </a>
                                                     <div>
                         </div>  
-                        {/if} 
+                        
                     </div>              
                 
                 
@@ -488,6 +487,9 @@
                    
                 </div>
             </div>
+            {else}
+                {$workspace}
+            {/if}
         </div>
     </body>
 </html>
