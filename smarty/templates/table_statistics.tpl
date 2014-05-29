@@ -67,28 +67,25 @@
    *}
    <th colspan="{php}print (count($this->get_template_vars("Subcategories"))+1)*(count($this->get_template_vars("Subprojects"))+1)+1;{/php}" width="50%">{$center.LongName}<br></th></tr>
         {foreach item=visit from=$Visits key=title}
-            {assign var="rowtotal" value="0}
+            {assign var="rowtotal" value="0"}
 
             {if $visit neq 'v06'}
             <tr>
             {/if}
                 <td>{$title}</td>
-                {foreach key=proj item=value from=$Subprojects}
-                    {* Special case. proj=2 means its a 12 month visit.
-                     * and it's impossible to have a 6 month visit for
-                     * a 12 month recruit. *}
+                {foreach key="proj" item="value" from=$Subprojects}
                 {assign var="subtotal" value="0" }
                 {foreach key=sub item=subcat from=$Subcategories}
                     {if $visit eq 'v06' and $proj eq 2}
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">NA</td>
                     {else}
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">{$data[$proj][$center.ID][$visit][$subcat]|default:"0"}</td>
-                        {assign var="subtotal" value=`$subtotal+$data[$proj][$center.ID][$visit][$subcat]` }
-                        {assign var="rowtotal" value=`$rowtotal+$data[$proj][$center.ID][$visit][$subcat]` }
+                        {assign var="subtotal" value="$subtotal+$data[$proj][$center.ID][$visit][$subcat]" }
+                        {assign var="rowtotal" value="$rowtotal+$data[$proj][$center.ID][$visit][$subcat]" }
                     {/if}
                 {/foreach}
                 <td class="subtotal">
-                    {assign var="Numerator" value=`$data[$proj][$center.ID][$visit][$Subcategories.0]`}
+                    {assign var="Numerator" value="$data[$proj][$center.ID][$visit][$Subcategories.0]"}
                     {php}
                         $Numerator = $this->get_template_vars("Numerator");
                         $Denominator = $this->get_template_vars("subtotal");
@@ -106,7 +103,7 @@
                     <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$center.ID][$visit][$subcat]|default:"0"}</td>
                 {/foreach}
                 <td class="total">
-                    {assign var="Numerator" value=`$data[$center.ID][$visit][$Subcategories.0]`}
+                    {assign var="Numerator" value="$data[$center.ID][$visit][$Subcategories.0]"}
                     {php}
                         $Numerator = $this->get_template_vars("Numerator");
                         $Denominator = $this->get_template_vars("rowtotal");
@@ -127,13 +124,13 @@
                 {assign var="sitetotal" value="0"}
                 {foreach key=sub item=subcat from=$Subcategories}
                 <td class="{$subcat|lower|regex_replace:"/ /":"_"} subtotal">
-                    {assign var="sitetotal" value=`$sitetotal+$data[$proj][$center.ID][$subcat]` }
+                    {assign var="sitetotal" value="$sitetotal+$data[$proj][$center.ID][$subcat]" }
                     {$data[$proj][$center.ID][$subcat]|default:"0"}
                 </td>
                 {/foreach}
                 <td class="subtotal">
-                    {assign var="totalsitetotal" value=`$totalsitetotal+$sitetotal` }
-                    {assign var="Numerator" value=`$data[$proj][$center.ID][$Subcategories.0]`}
+                    {assign var="totalsitetotal" value="$totalsitetotal+$sitetotal" }
+                    {assign var="Numerator" value="$data[$proj][$center.ID][$Subcategories.0]"}
                     {php}
                         $Numerator = $this->get_template_vars("Numerator");
                         $Denominator = $this->get_template_vars("sitetotal");
@@ -152,7 +149,7 @@
                 </td>
             {/foreach}
             <td class="total">
-                {assign var="Numerator" value=`$data[$center.ID][$Subcategories.0]`}
+                {assign var="Numerator" value="$data[$center.ID][$Subcategories.0]"}
                 {php}
                     $Numerator = $this->get_template_vars("Numerator");
                     $Denominator = $this->get_template_vars("totalsitetotal");
@@ -185,11 +182,11 @@
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">NA</td>
                     {else}
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">{$data[$proj][$visit][$subcat]|default:"0"}</td>
-                        {assign var="subtotal" value=`$subtotal+$data[$proj][$visit][$subcat]` }
+                        {assign var="subtotal" value="$subtotal+$data[$proj][$visit][$subcat]" }
                     {/if}
                 {/foreach}
                 <td class="subtotal">
-                    {assign var="Numerator" value=`$data[$proj][$visit][$Subcategories.0]`}
+                    {assign var="Numerator" value="$data[$proj][$visit][$Subcategories.0]"}
                     {php}
                         $Numerator = $this->get_template_vars("Numerator");
                         $Denominator = $this->get_template_vars("subtotal");
@@ -205,10 +202,10 @@
             {assign var="finaltotal" value="0" }
             {foreach key=sub item=subcat from=$Subcategories}
                 <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$visit][$subcat]|default:"0"}</td>
-                {assign var="finaltotal" value=`$finaltotal+$data[$visit][$subcat]` }
+                {assign var="finaltotal" value="$finaltotal+$data[$visit][$subcat]" }
             {/foreach}
             <td class="total">
-                {assign var="Numerator" value=`$data[$visit][$Subcategories.0]`}
+                {assign var="Numerator" value="$data[$visit][$Subcategories.0]"}
                     {php}
                         $Numerator = $this->get_template_vars("Numerator");
                         $Denominator = $this->get_template_vars("finaltotal");
@@ -230,11 +227,11 @@
                    being excluded from stats *}
                 {assign var="total" value="0"}
                 {foreach key=sub item=subcat from=$Subcategories}
-                    {assign var="total" value=`$total+$data[$proj][$subcat]`}
+                    {assign var="total" value="$total+$data[$proj][$subcat]"}
                     <td class="total" >{$data[$proj][$subcat]|default:"0"}</td>
                 {/foreach}
                 <td class="total">
-                    {assign var="Numerator" value=`$data[$proj][$Subcategories.0]`}
+                    {assign var="Numerator" value="$data[$proj][$Subcategories.0]"}
                     {php}
                         $Numerator = $this->get_template_vars("Numerator");
                         $Denominator= $this->get_template_vars("total");

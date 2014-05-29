@@ -8,18 +8,18 @@
     <th nowrap="nowrap" colspan="5">Selection Filter</th>
 </tr>
 <tr>
-   <th>Projects</th><td class="MenuWidth">{html_options options=$projects selected=$filter.project name=filter[project]}</td>
+   <th>Projects</th><td class="MenuWidth">{html_options options=$projects selected=$filter.project name="filter[project]"}</td>
     <th>DCCID</th><td colspan="1" class="MenuWidth"><input type='text' name='filter[candID]' value='{$filter.candID}' size="30"></td>
 </tr>
 <tr>
-    <th>Site</th><td colspan="1" class="MenuWidth">{html_options options=$site_options selected=$filter.site name=filter[site]}</td>
+    <th>Site</th><td colspan="1" class="MenuWidth">{html_options options=$site_options selected=$filter.site name="filter[site]"}</td>
     <th>PSCID</th><td colspan="1" class="MenuWidth"><input type='text' name='filter[pscID]' value='{$filter.pscID}' size="30"></td><td>&nbsp;</td>
 </tr>
 
 <tr>
-    <th>QC Status</th><td class="MenuWidth">{html_options options=$qcStatus_options selected=$filter.qcStatus name=filter[qcStatus]}</td>    
+    <th>QC Status</th><td class="MenuWidth">{html_options options=$qcStatus_options selected=$filter.qcStatus name="filter[qcStatus]"}</td>    
     <th>Visit label</th><td class="MenuWidth"><input type='text' name='filter[visitLabel]' value='{$filter.visitLabel}' size="4"></td></td><td>&nbsp;</td>
-    <!--th>Subproject</th><td colspan="2">{html_options options=$SubprojectID_options selected=$filter.SubprojectID name=filter[SubprojectID]}</td-->
+    <!--th>Subproject</th><td colspan="2">{html_options options=$SubprojectID_options selected=$filter.SubprojectID name="filter[SubprojectID]"}</td-->
 </tr>
 <tr>
     <th>Pending and new</th><td><input type='checkbox' name='filter[pending]' value='1' {if $filter.pending}checked{/if}></td>
