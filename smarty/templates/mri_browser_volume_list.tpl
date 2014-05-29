@@ -157,7 +157,7 @@ return true;
             <tr><th>Selected</th></tr>
             <tr><td> 
             {if $has_permission}
-                {html_options options=$selected_options selected=$files[fIdx].selected tabindex=3  name=selectedvol[`$files[fIdx].fileID`]}
+                {html_options options=$selected_options selected=$files[fIdx].selected tabindex=3  name="selectedvol[`$files[fIdx].fileID`]"}
             {else}
                 {if $files[fIdx].selected != ""}{$files[fIdx].selected}{else}&nbsp;{/if}
             {/if}
@@ -169,7 +169,7 @@ return true;
             <tr><td>
             {if $has_permission}
                 {if $files[fIdx].new}<font color="red">NEW</font> {/if}
-                {html_options options=$status_options selected=$files[fIdx].qcStatus  tabindex=4 name=status[`$files[fIdx].fileID`]}
+                {html_options options=$status_options selected=$files[fIdx].qcStatus  tabindex=4 name="status[`$files[fIdx].fileID`]"}
             {else}
                 {if $files[fIdx].qcStatus != ""}{$files[fIdx].qcStatus}{else}&nbsp;{/if}
             {/if}
