@@ -148,7 +148,8 @@ var Instrument = {
                 selectOptions = questionCell.firstChild.nextSibling;
                 addStatus = false;
                 break;
-            case 'page':
+            case 'page-break':
+                console.log("here");
                 content += 'page';
                 break;
             case 'scored':
