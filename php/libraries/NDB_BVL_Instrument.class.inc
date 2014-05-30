@@ -159,7 +159,6 @@ class NDB_BVL_Instrument extends NDB_Page
             if($instrument == 'instrument_preview') {
                 require_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
                 $obj = new NDB_BVL_Instrument_instrument_preview();
-                $obj->preview = true;
             } else {
                 $obj = new NDB_BVL_Instrument();
             }
@@ -1557,9 +1556,13 @@ class NDB_BVL_Instrument extends NDB_Page
                     case 'page':
                         $parsingPage = trim($pieces[2]);
                         $pageName = $db->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:testinst AND Description=:parsing", array("testinst" => $this->testName, "parsing" => $parsingPage));
-                        if($currentPage == $pageName) {
+                        if($this->preview === true){
                             $addElements = true;
-                        } else {
+                            $this->form->addElement('header', 'v', '<hr>');
+                        } else if($currentPage == $pageName) {
+                            $addElements = true;
+                        }
+                         else {
                             $addElements = false;
                         }
                         $firstSelectOfPage = true;
