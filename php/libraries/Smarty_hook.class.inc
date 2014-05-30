@@ -2,13 +2,16 @@
 /**
  * @package main
  */
-require('smarty/Smarty.class.php');
+require_once('smarty3/Smarty.class.php');
 class Smarty_neurodb extends Smarty {
+    var $template_dir;
+    var $project_template_dir;
+
     function Smarty_neurodb() {
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
-        $this->Smarty();
-	$this->plugins_dir[] = $paths['base']."smarty/plugins";
+        $this->__construct();
+        $this->addPluginsDir($paths['base']."php/libraries/smarty/plugins");
         $this->template_dir = $paths['base']."smarty/templates/";
         $this->project_template_dir = $paths['base']."project/templates/";
         $this->compile_dir = $paths['base']."smarty/templates_c/";
@@ -18,15 +21,8 @@ class Smarty_neurodb extends Smarty {
         $this->default_resource_type="neurodb";
         $this->assign('app_name','NeuroDB');
 
-        //Load the default config file (should exist)
-        if(file_exists($this->template_dir."default.conf") && is_readable($this->template_dir."default.conf")){
-            $this->config_load("file:".$this->template_dir."default.conf");
-        }
-
-        //Load the project specific config file if it exists.  this will overwrite any settings from the default.
-        if(file_exists($this->project_template_dir."project.conf") && is_readable($this->project_template_dir."project.conf")){
-            $this->config_load("file:".$this->project_template_dir."project.conf");
-        }
+        $this->addConfigDir($this->template_dir);
+        $this->addConfigDir($this->project_template_dir);
     }
 }
 
