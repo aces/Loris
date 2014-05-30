@@ -144,7 +144,8 @@ var Instrument = {
                 selectOptions = questionCell.firstChild.nextSibling;
                 addStatus = false;
                 break;
-            case 'page':
+            case 'page-break':
+                console.log("here");
                 content += 'page';
                 break;
             case 'scored':
@@ -264,6 +265,8 @@ var Instrument = {
                                $("#label").click(); break;
                            }
                         }
+                    case "page":
+                        $("#page-break").click(); break;
                     default:
                         $("#" + pieces[0]).click(); break;
                         break;
