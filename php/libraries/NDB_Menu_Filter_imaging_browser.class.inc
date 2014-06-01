@@ -118,6 +118,7 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             'T2_Passed',
             'Links'
         );
+       
         $this->validFilters = array(
             'c.PSCID',
             's.Visit_label',
@@ -125,7 +126,8 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             'c.ProjectID',
             'c.CenterID',
             's.MRIQCStatus',
-            "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"
+           // "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"
+           'pending'
         );
 
         $pendingSQL = "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)";
@@ -136,7 +138,7 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             'ProjectID' => 'c.ProjectID',
             'SiteID' => 'c.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
-            'pending' => $pendingSQL
+            'pending' => 'pendingF'
         );
         $this->EqualityFilters = array();
         $this->searchKeyword    = array();
@@ -163,8 +165,12 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             array(''=>'All', 'Pass'=>'Pass', 'Fail'=>'Fail')
         );
 
-        $this->tpl_data['pending'] = isset($_REQUEST['pending']);
+      //  $this->tpl_data['pending'] = isset($_REQUEST['pending']);
 
+        $this->addSelect(
+            'pending',
+            'Pending and New',
+            array(''=>All, 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pendng or New')          ); 
         $outputTypes = $DB->pselect("SELECT DISTINCT OutputType AS outputType FROM files WHERE FileType='mnc' AND OutputType!='native'", array());
 
         $this->tpl_data['outputTypes'] = array_merge(
@@ -204,5 +210,45 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
         $this->tpl_data['numTimepoints'] = $x;
         return true;
     }
+   /* function _addValidFilters($prepared_key, $field, $val){
+        $query = '';
+        if ((!empty($val) || $val === '0') && $field != 'order') {
+            if ($field != 'pending') {
+                if (in_array($field, $this->CheckboxFilters) && $val) {
+                    $query .= " AND $field";
+                } 
+                // special rule for dropdowns where value is numeric    
+                elseif (strtolower(substr($field, -8)) == 'centerid'
+                        || strtolower(substr($field, -10)) == 'categoryid'
+                        || strtolower(substr($field, -6)) == 'gender'
+                        || (isset($this->EqualityFilters)
+                        && in_array($field, $this->EqualityFilters))
+                        ) {
+                    $query .= " AND $field = :v_$prepared_key";
+                    // $qparams["v_$prepared_key"] = $val;
+                } 
+                else {
+                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, \
+'%') ";
+                   //$qparams["v_$prepared_key"] = $val;
+                }
+            }
+            else {
+                switch ($val) {
+                    case "P":
+                       //  print "Here PLEASE P"; break;
+                        $query .= " AND s.MRIQCPending='Y'"; break;
+                    case "N":
+                        $query .= " AND (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; break;
+                    case "PN":
+                        $query .= " AND s.MRIQCPending='Y' OR (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; break;
+                }
+                 
+            }
+        }
+        print "Query: $query";
+        return $query;
+
+     }*/
 
 }

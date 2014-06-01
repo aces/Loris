@@ -223,6 +223,7 @@ class NDB_Menu_Filter extends NDB_Menu
          *       - Dave
          */
         // build the array of defaults
+        print_r ($this->formToFilter);
         foreach ($this->formToFilter as $key => $val) {
             if (is_array($filter) && count($filter) > 0) {
                 if (is_array($val)) {
@@ -251,6 +252,7 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // set only the valid filters
+        print_r ($this->validFilters);
         foreach ($this->validFilters as $value) {
             // if no filter was defined (i.e. first hit) limit listing to the user's site
             if (is_array($filter) && count($filter) > 0) {
@@ -348,7 +350,7 @@ class NDB_Menu_Filter extends NDB_Menu
                         //$qparams["v_$prepared_key"] = $val;
                     }
                 }
-        return $query; 
+         return $query; 
         
      }
 
@@ -374,9 +376,12 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
+        print "Filter\n";
+        print_r ($this->filter);
             foreach ($this->filter as $field => $val) {
                 $prepared_key = Utility::getCleanString($field);
                 $query_piece = $this->_addValidFilters($prepared_key, $field, $val); 
+                print "Key: $prepared_key, field: $field, val: $val)";
                 if (!empty($query_piece)) {
                     $query .= $query_piece;
 
@@ -435,7 +440,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $query .= $this->filter['order']['field']." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-
+        print "Final: $query";
         // get the list
         $result = $DB->pselect($query, $qparams);
 
