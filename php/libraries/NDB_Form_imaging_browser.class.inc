@@ -1,8 +1,6 @@
 <?php
-//require_once 'NDB_Form.class.inc';
 require_once 'Imaging_Session_ControlPanel.class.inc';
 require_once 'Notify.class.inc';
-//require_once 'MRIFile.class.inc';
 
 class NDB_Form_imaging_browser extends NDB_Form
 {
@@ -20,43 +18,40 @@ class NDB_Form_imaging_browser extends NDB_Form
             die();
         }
 
-	$this->sessionID = $_REQUEST['sessionID'];
+	    $this->sessionID = $_REQUEST['sessionID'];
 	
-	if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
+        if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
             if ($this->_hasAccess() && isset($_POST['save_changes'])) {
-	        $this->_updateStatus($_POST);
-		$this->_updateSelected();
-                $this->_updateVisitStatus();
+	           $this->_updateStatus($_POST);
+		       $this->_updateSelected();
+               $this->_updateVisitStatus();
             }
 	 
-            $NavBar = new MRINavigation($this->sessionID);
-	    $this->tpl_data['nextTimepoint']['URL'] = $NavBar->NextLink();
-            $this->tpl_data['prevTimepoint']['URL'] = $NavBar->PrevLink();
-
             $this->setFilesData();
 
-	    $this->tpl_data['headerTable'] = $this->getHeaderTable();
+	        $this->tpl_data['headerTable'] = $this->getHeaderTable();
 		
 
-	    $this->tpl_data['showFloatJIV'] = True;
+	        $this->tpl_data['showFloatJIV'] = True;
     	    $file = $this->DB->pselectOne("SELECT File FROM files f JOIN session s ON (s.ID=f.SessionID) WHERE s.ID=:sid AND FileType='obj'", array('sid' =>$this->sessionID));
-	    if(!empty($file)) {
+	        if(!empty($file)) {
                 $this->tpl_data['show3DViewer'] = True;
     	    }
 	    
-	    $types_q = $this->DB->pselect("SELECT mri_scan_type.Scan_type FROM mri_scan_type", array());
-	    $types[''] = '';
+            $types_q = $this->DB->pselect("SELECT mri_scan_type.Scan_type FROM mri_scan_type", array());
+	        $types[''] = '';
             foreach($types_q as $row) {
                 $type = $row['Scan_type'];
                 $types[$type] = $type;
             }
-	    $this->tpl_data['selected_options'] = $types;
+	        $this->tpl_data['selected_options'] = $types;
 	
-	    $this->tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
-	    $this->tpl_data['caveat_options'] = array ('' => '&nbsp;', true => 'True', false => 'False');
+            $this->tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
+	        $this->tpl_data['caveat_options'] = array ('' => '&nbsp;', true => 'True', false => 'False');
 
-	    $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
-   	   
+	        $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
+ 
+
     	}
     }
     private function setFilesData() {
@@ -343,8 +338,7 @@ class NDB_Form_imaging_browser extends NDB_Form
 }
 
 /**
- * Olga: Class to get prev and next sessions. Not tested yet, maybe
- * better to remove to Form_imaging***.class.
+ * Class to get prev and next sessions. 
  */
 class MRINavigation {
     function MRINavigation($sessionID = null) {

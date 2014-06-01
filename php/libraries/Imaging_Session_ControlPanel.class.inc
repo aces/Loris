@@ -38,23 +38,23 @@ class Imaging_Session_ControlPanel {
     */
     function getData() {
        	$DB = Database::singleton();
-	$timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-	if(Utility::isErrorX($timePoint)) {
+	    $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+	    if(Utility::isErrorX($timePoint)) {
             print $timePoint->getMessage()."<br>";
         }
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
-	$subjectData['candid'] = $timePoint->getCandID();
-	$subjectData['ParameterFormCommentID'] = $DB->pselectOne(
+	    $subjectData['candid'] = $timePoint->getCandID();
+	    $subjectData['ParameterFormCommentID'] = $DB->pselectOne(
                 "SELECT CommentID FROM flag WHERE Test_name='mri_parameter_form' AND SessionID=$this->sessionID");
-	$subjectData['RadiologyReviewCommentID'] = $DB->pselectOne(
+	    $subjectData['RadiologyReviewCommentID'] = $DB->pselectOne(
                 "SELECT CommentID FROM flag WHERE Test_name='radiology_review' AND SessionID=$this->sessionID");
 
-	$candidate =& Candidate::singleton($timePoint->getCandID());
+	    $candidate =& Candidate::singleton($timePoint->getCandID());
         if(Utility::isErrorX($candidate)) {
             print $candidate->getMessage()."<br>";
         } 
-	else {
+	    else {
             $params = array();
             $EntityType = $candidate->getData('Entity_type');
             if($EntityType == 'Scanner') {
@@ -68,24 +68,28 @@ class Imaging_Session_ControlPanel {
             	$params['PVL'] = $timePoint->getVisitLabel();
             }
         }
-	$tarchiveIDs = $DB->pselect("SELECT TarchiveID FROM tarchive WHERE PatientName LIKE $ID", $params);
+	    $tarchiveIDs = $DB->pselect("SELECT TarchiveID FROM tarchive WHERE PatientName LIKE $ID", $params);
 	
-	$subjectData['tarchiveids'] = $tarchiveIDs;
+        $subjectData['tarchiveids'] = $tarchiveIDs;
 	
-	$config =& NDB_Config::singleton();
-	$subjectData['mantis'] = $config->getSetting('mantis_url');
+    	$config =& NDB_Config::singleton();
+	    $subjectData['mantis'] = $config->getSetting('mantis_url');
  	
-	$subjectData['has_permission'] = $this->_hasAccess();
-	$subjectData['status_options'] = array (''=>'', 'Pass'=>'Pass', 'Fail'=>'Fail' );
-	$subjectData['pending_options'] = array ('Y' => 'Yes', 'N' => 'No'); 
+        $subjectData['has_permission'] = $this->_hasAccess();
+	    $subjectData['status_options'] = array (''=>'', 'Pass'=>'Pass', 'Fail'=>'Fail' );
+	    $subjectData['pending_options'] = array ('Y' => 'Yes', 'N' => 'No'); 
 
         $qcstatus = $DB->pselectRow("SELECT MRIQCStatus, MRIQCPending FROM session WHERE ID=$this->sessionID");
          
         $subjectData['mriqcstatus'] = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
   	
-	$subjectData['backURL'] = urldecode($_REQUEST['backURL']);
-	return $subjectData;     
+        $subjectData['backURL'] = urldecode($_REQUEST['backURL']);
+        $NavBar = new MRINavigation($this->sessionID);
+        $subjectData['nextTimepoint']['URL'] = $NavBar->NextLink();
+        $subjectData['prevTimepoint']['URL'] = $NavBar->PrevLink();
+        
+        return $subjectData;     
     } 
     /**
      * generates the HTML to display the set of buttons for the timepoint status flags
@@ -104,5 +108,5 @@ class Imaging_Session_ControlPanel {
         return $html;
     }
 }
-
+      
 ?>

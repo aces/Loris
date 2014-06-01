@@ -3,8 +3,8 @@
     {if $subject.backURL!=""}<h3>Navigation</h3>{/if}
     <ul>{if $subject.backURL != ""}
         <li><a href="{$subject.backURL}"><img class='img-navigation-array' src="images/left.gif" alt="Back"><img class='img-navigation-array' src="images/left.gif" alt="Back">&nbsp;Back to list</a></li>{/if}
-        {if $prevTimepoint.URL != ''}<li><a href="{$prevTimepoint.URL}">&nbsp;&nbsp;&nbsp;<img class='img-navigation-array' src="images/left.gif" alt="Prev">&nbsp;Previous</a></li>{/if}
-       	{if $nextTimepoint.URL != ''}<li><a href="{$nextTimepoint.URL}">&nbsp;&nbsp;&nbsp;<img class='img-navigation-array' src="images/right.gif" alt="Next">&nbsp;Next</a></li>{/if}
+        {if $subject.prevTimepoint.URL != ''}<li><a href="{$subject.prevTimepoint.URL}">&nbsp;&nbsp;&nbsp;<img class='img-navigation-array' src="images/left.gif" alt="Prev">&nbsp;Previous</a></li>{/if}
+       	{if $subject.nextTimepoint.URL != ''}<li><a href="{$subject.nextTimepoint.URL}">&nbsp;&nbsp;&nbsp;<img class='img-navigation-array' src="images/right.gif" alt="Next">&nbsp;Next</a></li>{/if}
     </ul>
     {if $prevTimepoint.URL!="" && $nextTimepoint.URL!=""}<br><br>{/if}
     <h3>3D Panel Viewing</h3>
