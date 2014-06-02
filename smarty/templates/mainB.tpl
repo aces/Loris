@@ -4,7 +4,7 @@
     <head>
 
 
-        <link rel="stylesheet" href="{$css}" type="text/css" />
+        <!-- <link rel="stylesheet" href="{$css}" type="text/css" /> -->
         {if $test_name_css}
             <link rel="stylesheet" href="css/instruments/{$test_name_css}" type="text/css" />
         {/if}
@@ -16,7 +16,8 @@
         <link type="text/css" href="css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
 
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
+        <!-- <link rel="stylesheet" href="bootstrap-3.1.1/css/magic-bootstrap.css"> -->
 
         <!-- Optional theme -->
         <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css" rel="stylesheet">
