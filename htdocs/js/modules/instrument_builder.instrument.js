@@ -43,7 +43,11 @@ var Instrument = {
         name = document.getElementById("filename").value || "instrument";
 
         element = document.createElement("a");
-        element.href = "data:text/plain;base64," + window.btoa(content);
+
+        var blob = new Blob([window.btoa(content)], { type: 'text/plain;base64' });
+        var url = URL.createObjectURL(blob);
+
+        element.href = url;
         element.download = name + ".linst";
         element.click();
     },

@@ -11,7 +11,8 @@
 
 <script type="application/javascript" src="js/modules/instrument_builder.instrument.js"></script>
 <script type="application/javascript" src="js/modules/instrument_builder.rules.js"></script>
-<script type="application/ecmascript" src="js/BlobBuilder.min.js"></script>
+<!-- <script type="application/ecmascript" src="js/BlobBuilder.min.js"></script> -->
+<script type="application/ecmascript" src="js/Blob.js"></script>
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
 </head>
 <body>
