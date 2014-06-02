@@ -124,3 +124,8 @@ dl {
 #table-header-left {
     float: left;
 }
+
+h3 {
+    margin-top: 25px;
+}
+
