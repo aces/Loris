@@ -44,7 +44,7 @@ var Instrument = {
 
         element = document.createElement("a");
 
-        var blob = new Blob([window.btoa(content)], { type: 'text/plain;base64' });
+        var blob = new Blob([content], { type: 'text/plain;base64' });
         var url = URL.createObjectURL(blob);
 
         element.href = url;
