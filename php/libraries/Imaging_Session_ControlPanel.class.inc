@@ -30,7 +30,7 @@ class Imaging_Session_ControlPanel {
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return $user->hasPermission('mri_feedback');
+        return $user->hasPermission('view_final_radiological_review');
     }
 
     /**
@@ -108,5 +108,44 @@ class Imaging_Session_ControlPanel {
         return $html;
     }
 }
-      
+     
+class MRINavigation {
+    function MRINavigation($sessionID = null) {
+    $this->Session = $sessionID;
+        $this->FilteredSessionList = $_SESSION['State']->getProperty('mriSessionsListed');
+
+        if (!is_array($this->FilteredSessionList)) {
+            $this->FilteredSessionList = array();
+        }
+        $this->currentListIndex = array_search($this->Session, $this->FilteredSessionList);
+        $this->urlParams = $this->_splitURL();
+    }
+
+    function _splitURL() {
+        // Parse the request into hostname/params, so that it can be reconstructed into
+        // a link which has the same parameters
+        $linkBase = $_SERVER['REQUEST_URI'];
+        $this->bits[0] = substr($linkBase, 0, strpos($linkBase, '?'));
+        $this->bits[1] = substr($linkBase, strpos($linkBase, '?')+1);
+        parse_str($this->bits[1], $urlParams);
+        return $urlParams;
+    }
+
+    function _OtherLink($delta) {
+        if(isset($this->FilteredSessionList[$this->currentListIndex+$delta])) {
+            $urlParams = $this->urlParams;
+            $urlParams['sessionID'] = $this->FilteredSessionList[$this->currentListIndex+$delta];
+            $this->bits[1] = Utility::unparse_str($urlParams);
+            return implode('?', $this->bits);
+        }
+    }
+    function NextLink() {
+        return $this->_OtherLink(1);
+    }
+
+     function PrevLink() {
+        return $this->_OtherLink(-1);
+    }
+}
+ 
 ?>
