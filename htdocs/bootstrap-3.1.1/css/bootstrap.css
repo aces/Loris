@@ -2290,8 +2290,8 @@ textarea.input-lg, select[multiple].input-lg {
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
     color: #ffffff;
-    background-color: #1990d5;
-    border-color: #1684c2
+    background-color: #778;
+    border-color: #778
 }
 
 .btn-primary:active, .btn-primary.active, .open .dropdown-toggle.btn-primary {
@@ -3411,7 +3411,7 @@ input[type="button"].btn-block {
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
     text-decoration: none;
     color: #ffffff;
-    background-color: #2fa4e7
+    background-color: #778
 }
 
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
@@ -4402,7 +4402,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
     color: #ffffff;
-    background-color: #178acc
+    background-color: #778
 }
 
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover,
@@ -4435,7 +4435,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover,
 .navbar-default .navbar-nav>.open>a:focus {
-    background-color: #178acc;
+    background-color: #778;
     color: #ffffff
 }
 
