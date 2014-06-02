@@ -382,6 +382,17 @@ class DirectDataEntryMainPage
                     'CommentID' => $this->CommentID
                 )
             );
+            $Responses_flag = $DB->update(
+                'flag',
+                array(
+                    'Data_entry' => 'Complete',
+                    'Administration'=>'All'
+                ),
+                array(
+                    'CommentID' => $this->CommentID
+                )
+
+             );
 
         } else {
             $this->updateStatus('In Progress');
