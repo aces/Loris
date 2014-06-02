@@ -72,6 +72,8 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             CASE s.MRIQCStatus
                 WHEN 'Fail' THEN
                     IF(s.MRIQCPending, 'Pending Fail', 'Fail')
+                WHEN 'Pass' THEN
+                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
                 ELSE s.MRIQCStatus
             END 
             ";
@@ -126,11 +128,11 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             'c.ProjectID',
             'c.CenterID',
             's.MRIQCStatus',
+            'pending'
            // "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"
-           'pending'
         );
 
-        $pendingSQL = "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)";
+       // $pendingSQL = "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)";
         $this->formToFilter = array(
             'pscid' => 'c.PSCID',
             'VL'    => 's.Visit_label',
@@ -138,11 +140,11 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             'ProjectID' => 'c.ProjectID',
             'SiteID' => 'c.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
-            'pending' => 'pendingF'
+            'Pending' => 'pending'
         );
         $this->EqualityFilters = array();
         $this->searchKeyword    = array();
-        $this->CheckboxFilters = array($pendingSQL);
+    //    $this->CheckboxFilters = array($pendingSQL);
     }
 
     /**
@@ -168,9 +170,9 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
       //  $this->tpl_data['pending'] = isset($_REQUEST['pending']);
 
         $this->addSelect(
-            'pending',
+            'Pending',
             'Pending and New',
-            array(''=>All, 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pendng or New')          ); 
+            array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pendng or New')          ); 
         $outputTypes = $DB->pselect("SELECT DISTINCT OutputType AS outputType FROM files WHERE FileType='mnc' AND OutputType!='native'", array());
 
         $this->tpl_data['outputTypes'] = array_merge(
@@ -210,7 +212,7 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
         $this->tpl_data['numTimepoints'] = $x;
         return true;
     }
-   /* function _addValidFilters($prepared_key, $field, $val){
+    function _addValidFilters($prepared_key, $field, $val){
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if ($field != 'pending') {
@@ -236,7 +238,6 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             else {
                 switch ($val) {
                     case "P":
-                       //  print "Here PLEASE P"; break;
                         $query .= " AND s.MRIQCPending='Y'"; break;
                     case "N":
                         $query .= " AND (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; break;
@@ -246,9 +247,6 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
                  
             }
         }
-        print "Query: $query";
         return $query;
-
-     }*/
-
+     }
 }

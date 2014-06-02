@@ -182,7 +182,7 @@ class NDB_Menu_Filter extends NDB_Menu
         } elseif (isset($_REQUEST['filter'])) {
             // get the form's filters
             foreach ($this->formToFilter as $key => $val) {
-                if (is_array($val)) {
+                  if (is_array($val)) {
                     foreach ($val as $key2 => $val2) {
                         if (isset($_REQUEST[$key][$key2])) {
                             $formFilters[$val2] = $_REQUEST[$key][$key2];
@@ -194,7 +194,6 @@ class NDB_Menu_Filter extends NDB_Menu
                     }
                 }
             }
-
             // get the ordering
             if (is_array($_REQUEST['filter']) && in_array($_REQUEST['filter']['order']['field'], $this->headers)) {
                 $formFilters['order'] = $_REQUEST['filter']['order'];
@@ -223,7 +222,6 @@ class NDB_Menu_Filter extends NDB_Menu
          *       - Dave
          */
         // build the array of defaults
-        print_r ($this->formToFilter);
         foreach ($this->formToFilter as $key => $val) {
             if (is_array($filter) && count($filter) > 0) {
                 if (is_array($val)) {
@@ -252,7 +250,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // set only the valid filters
-        print_r ($this->validFilters);
         foreach ($this->validFilters as $value) {
             // if no filter was defined (i.e. first hit) limit listing to the user's site
             if (is_array($filter) && count($filter) > 0) {
@@ -376,19 +373,17 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
-        print "Filter\n";
-        print_r ($this->filter);
             foreach ($this->filter as $field => $val) {
                 $prepared_key = Utility::getCleanString($field);
                 $query_piece = $this->_addValidFilters($prepared_key, $field, $val); 
-                print "Key: $prepared_key, field: $field, val: $val)";
                 if (!empty($query_piece)) {
                     $query .= $query_piece;
 
                     if (in_array($field, $this->CheckboxFilters)) {
                         continue;
                     }
-                    $qparams["v_$prepared_key"] = $val;
+                    if ($prepared_key != 'pending')
+                        $qparams["v_$prepared_key"] = $val;
                 }
 
             }
@@ -440,14 +435,12 @@ class NDB_Menu_Filter extends NDB_Menu
             $query .= $this->filter['order']['field']." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-        print "Final: $query";
         // get the list
         $result = $DB->pselect($query, $qparams);
-
+        
         if(Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
-
         return $result;
     }
 

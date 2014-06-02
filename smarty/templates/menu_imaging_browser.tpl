@@ -20,7 +20,7 @@
     <th>{$form.VL.label}</th><td class="MenuWidth">{$form.VL.html}</td>
 </tr>
 <tr>
-    <th>{$form.pending.label}</th><td class="MenuWidth">{$form.pending.html}</td>
+    <th>{$form.Pending.label}</th><td class="MenuWidth">{$form.Pending.html}</td>
     <td colspan="4"><input type="submit" class="button" name="filter" value="Show Data"></td>
 </tr>
 </table>
