@@ -260,7 +260,7 @@
                                 {if $candID != ""}
                                     <!-- table with candidate profile info -->
                                     <div class="table-responsive">
-                                        <table cellpadding="2" class="table table-hover table-primary table-bordered" style="max-width:auto">
+                                        <table cellpadding="2" class="table table-info table-bordered" style="max-width:auto">
                                             <!-- column headings -->
                                             <thead>
                                                 <tr class="info">
@@ -392,7 +392,7 @@
 
                                     {if $sessionID != ""}
                                         <div class="table-responsive">
-                                            <table class="table table-hover table-bordered">
+                                            <table class="table table-bordered">
                                                 <!-- visit statuses -->
                                                 <thead>
                                                     <tr class="info">
