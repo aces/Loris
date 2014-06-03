@@ -28,6 +28,11 @@
       <td nowrap="nowrap">{$form.SeriesDescription.label}</td>
       <td nowrap="nowrap">{$form.SeriesDescription.html}</td>
    </tr>
+   <tr>
+      <td nowrap="nowrap">{$form.TimeRun.label}</td>
+      <td nowrap="nowrap">{$form.TimeRun.html}</td>
+   </tr>
+
     <tr>
     <tr>
     
