@@ -144,7 +144,7 @@ $(function(){
     {section name=piece loop=$items[item]}
         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
 		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-		    {assign var="PSCID" value=`$items[item][piece].value`}
+		    {assign var="PSCID" value="$items[item][piece].value"}
 		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
 		    	
 		{elseif $items[item][piece].name == "scan_Done"}
