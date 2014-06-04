@@ -4,7 +4,8 @@
     {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID}
         <button onClick="updateBehaviouralTab()">Submit Query</button>
 
-<table class="data">
+<div class="table-responsive">
+<table class="table table-hover table-primary table-bordered">
 <tr>
 <th rowspan="2">Site</th>
 {foreach from=$Visits item=visit}
@@ -40,6 +41,7 @@
          {/foreach}
 
 </table>
+</div>
 <b><a href='main.php?test_name=statistics_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
