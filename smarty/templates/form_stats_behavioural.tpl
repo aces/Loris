@@ -21,32 +21,29 @@
 <br><br>
 
 <div class="table-responsive">
-    <table class="table table-primary table-bordered">
-        <thead>
-            <tr class="info">
-                <th rowspan="2">Visit</th>
-                {foreach from=$Centers item=center key=centername}
-                    <th colspan="3" id='{$center.LongName}'>
-                        {$center.LongName}  
-                        <a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>(Per instrument stats)</a>
-                    </th>
-                {/foreach}
-               <!--  <th colspan="3" id='total'>Total</th>
-                <th rowspan="2"></th> -->
-            </tr>
-            <tr class="info">
-                {foreach from=$Centers item=center}
-                 <th class='{$center.LongName}'>Completed</th>
-                 <th class='{$center.LongName}'>Created</th>
-                 <th>% Completion</th>
-                {/foreach}
-                 {* Total isn't in the visits array, so we need to manually add its header *}
-                 <!-- <th class='total'>Completed</th>
-                 <th class='total'>Created</th>
-                 <th>% Completion</th> -->
-              </tr>
-        </thead>
-        <tbody>
+<table class="table table-hover table-primary table-bordered">
+<tr>
+<th rowspan="2">Site</th>
+{foreach from=$Visits item=visit}
+<th colspan="3">{$visit|upper}</th>
+{/foreach}
+<th colspan="3">Total</th>
+<th rowspan="2">Per instrument stats</th>
+    </tr>
+         <tr>
+            {foreach from=$Visits item=visit}
+             <th>Completed</th>
+             <th>Created</th>
+             <th>% Completion</th>
+            {/foreach}
+             {* Total isn't in the visits array, so we need to manually add its header *}
+             <th>Completed</th>
+             <th>Created</th>
+             <th>% Completion</th>
+          </tr>
+         {foreach from=$Centers item=center key=centername}
+         <tr>
+            <td>{$center.LongName}</td>
             {foreach from=$Visits item=visit}
                 <tr>
                     <td>{$visit|upper}</td>
@@ -73,6 +70,8 @@
     </table>
 </div>
 
+</table>
+</div>
 <b><a href='main.php?test_name=statistics_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
