@@ -608,7 +608,7 @@ class NDB_Form_statistics extends NDB_Form
             FROM candidate as c LEFT JOIN session s ON (s.CandID=c.CandID) 
             WHERE s.active='Y' AND s.CenterID <> '1'        
             AND c.Active='Y'
-            AND (s.Current_stage IN ('Visit', 'Screening')) 
+            AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')) 
             AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
             AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
             $ExtraSite_Criteria $ExtraProject_Criteria
@@ -734,7 +734,7 @@ class NDB_Form_statistics extends NDB_Form
                 count(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID) 
                 WHERE s.active='Y' AND s.CenterID <> '1'
-                AND (s.Current_stage IN ('Visit', 'Screening')
+                AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
                 AND s.SubprojectID IN ($subprojList))  
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
