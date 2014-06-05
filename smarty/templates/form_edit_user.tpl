@@ -56,7 +56,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		NOTE:
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		<B>When generating a new password, please notify the user by checking 'Send email to user' box!</B>
     	</div>
     </div>
@@ -65,7 +65,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Password_Group.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Password_Group.html}
     	</div>
     </div>
@@ -73,7 +73,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.__Confirm.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.__Confirm.html}
     	</div>
     </div>
@@ -81,7 +81,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Real_name.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Real_name.html}
     	</div>
     </div>
@@ -89,7 +89,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.First_name.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.First_name.html}
     	</div>
     </div>
@@ -97,7 +97,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Last_name.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Last_name.html}
     	</div>
     </div>
@@ -105,7 +105,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Degree.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Degree.html}
     	</div>
     </div>
@@ -113,7 +113,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Position_title.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Position_title.html}
     	</div>
     </div>
@@ -121,7 +121,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Institution.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Institution.html}
     	</div>
     </div>
@@ -129,7 +129,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Department.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Department.html}
     	</div>
     </div>
@@ -137,7 +137,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Address.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Address.html}
     	</div>
     </div>
@@ -145,7 +145,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.City.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.City.html}
     	</div>
     </div>
@@ -153,7 +153,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.State.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.State.html}
     	</div>
     </div>
@@ -161,7 +161,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Zip_code.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Zip_code.html}
     	</div>
     </div>
@@ -169,7 +169,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Country.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Country.html}
     	</div>
     </div>
@@ -177,7 +177,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Fax.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Fax.html}
     	</div>
     </div>
@@ -185,7 +185,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Email_Group.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Email_Group.html}
     	</div>
     </div>
@@ -193,7 +193,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.CenterID.label}
     	</label>	
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.CenterID.html}
     	</div>
     </div>
@@ -201,7 +201,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Active.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Active.html}
     	</div>
     </div>
@@ -209,7 +209,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Pending_approval.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Pending_approval.html}
     	</div>
     </div>
@@ -217,7 +217,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.Examiner.label}
     	</label>
-    	<div class="col-sm-6">
+    	<div class="col-sm-10">
     		{$form.Examiner.html}
     	</div>
     </div>
