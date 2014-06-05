@@ -1,13 +1,13 @@
 #wrapper {
-  padding-left: 150px;
+  padding-left: 250px;
   transition: all 0.4s ease 0s;
 }
 
 #sidebar-wrapper {
-  margin-left: -150px;
-  left: 150px;
-  width: 150px;
-  background: #2FA4E7;
+  margin-left: -250px;
+  left: 250px;
+  width: 250px;
+  background: #064785;
   position: fixed;
   height: 100%;
   overflow-y: auto;
@@ -22,7 +22,7 @@
 .sidebar-nav {
   position: absolute;
   top: 0;
-  width: 150px;
+  width: 250px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -108,12 +108,12 @@
 
 #wrapper.active {
   position: relative;
-  left: 150px;
+  left: 250px;
 }
 
 #wrapper.active #sidebar-wrapper {
-  left: 150px;
-  width: 150px;
+  left: 250px;
+  width: 250px;
   transition: all 0.4s ease 0s;
 }
 

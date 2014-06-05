@@ -1,3 +1,6 @@
+/* 
+ * CSS not implemented in bootstrap
+*/
 .LoginFooter {
     bottom:0;
     clear: both;
@@ -18,6 +21,25 @@ padding-left: 0;
 {
 display: inline;
 list-style-type: none;
+}
+.button
+{
+   font-size:13.5px;
+   font-family:Verdana,sans-serif;
+   color:white;
+   background-color:#064785;
+   margin-top: 3px;
+   border-style:ridge;
+   border-color:#FFFFFF;
+   border-width:1px;
+   border-radius: 10px;
+   -webkit-border-radius: 4px;
+   -moz-border-radius: 4px;
+   cursor: pointer;
+}
+.button:hover {
+    background: grey; /*opacity: 0.5;*/
+    border: 1px solid black;
 }
 
 /*!
@@ -324,7 +346,7 @@ input, button, select, textarea {
 }
 
 a {
-    color: #2fa4e7;
+    color: #064785;
     text-decoration: none
 }
 
@@ -1650,6 +1672,10 @@ th {
     text-align: left
 }
 
+table th{
+    color: white;
+}
+
 .table {
     width: 100%;
     margin-bottom: 20px
@@ -1666,6 +1692,10 @@ th {
 .table>thead>tr>th {
     vertical-align: bottom;
     border-bottom: 2px solid #dddddd
+}
+
+.table>thead>tr>th>a {
+    color: #ffffff;
 }
 
 .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>th,
@@ -1705,7 +1735,7 @@ th {
 }
 
 .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
-    background-color: #f5f5f5
+    background-color: #bbb;
 }
 
 table col[class*="col-"] {
@@ -1748,12 +1778,15 @@ table td[class*="col-"], table th[class*="col-"] {
 .table>thead>tr>th.info, .table>tbody>tr>th.info, .table>tfoot>tr>th.info,
 .table>thead>tr.info>td, .table>tbody>tr.info>td, .table>tfoot>tr.info>td,
 .table>thead>tr.info>th, .table>tbody>tr.info>th, .table>tfoot>tr.info>th {
-    background-color: #d9edf7
+    background-color: #1c70b6
 }
 
 .table-hover>tbody>tr>td.info:hover, .table-hover>tbody>tr>th.info:hover,
 .table-hover>tbody>tr.info:hover>td, .table-hover>tbody>tr.info:hover>th {
-    background-color: #c4e3f3
+    background-color: #989
+}
+.table-hover>thead>tr.info>th:hover {
+    background-color: grey
 }
 
 .table>thead>tr>td.warning, .table>tbody>tr>td.warning, .table>tfoot>tr>td.warning,
@@ -2286,15 +2319,15 @@ textarea.input-lg, select[multiple].input-lg {
 
 .btn-primary {
     color: #ffffff;
-    background-color: #2fa4e7;
-    border-color: #2fa4e7
+    background-color: #064785;
+    border-color: #064785
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
     color: #ffffff;
-    background-color: #1990d5;
-    border-color: #1684c2
+    background-color: #778;
+    border-color: #778
 }
 
 .btn-primary:active, .btn-primary.active, .open .dropdown-toggle.btn-primary {
@@ -3414,7 +3447,7 @@ input[type="button"].btn-block {
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
     text-decoration: none;
     color: #ffffff;
-    background-color: #2fa4e7
+    background-color: #778
 }
 
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
@@ -4382,8 +4415,8 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 }
 
 .navbar-default {
-    background-color: #2fa4e7;
-    border-color: #1995dc
+    background-color: #064785;
+    border-color: #064785
 }
 
 .navbar-default .navbar-brand {
@@ -4405,7 +4438,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
     color: #ffffff;
-    background-color: #178acc
+    background-color: #778
 }
 
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover,
@@ -4438,7 +4471,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover,
 .navbar-default .navbar-nav>.open>a:focus {
-    background-color: #178acc;
+    background-color: #778;
     color: #ffffff
 }
 
@@ -5527,7 +5560,7 @@ a.list-group-item-danger.active:focus {
 
 .panel-primary>.panel-heading {
     color: #ffffff;
-    background-color: #2fa4e7;
+    background-color: #064785;
     border-color: #dddddd
 }
 
@@ -6366,8 +6399,6 @@ button.close {
 }
 
 .navbar {
-    background-image: -webkit-linear-gradient(#54b4eb, #2fa4e7 60%, #1d9ce5);
-    background-image: linear-gradient(#54b4eb, #2fa4e7 60%, #1d9ce5);
     background-repeat: no-repeat;
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff54b4eb', endColorstr='#ff1d9ce5', GradientType=0);
     border-bottom: 1px solid #178acc;
@@ -6424,8 +6455,6 @@ button.close {
 }
 
 .btn-primary {
-    background-image: -webkit-linear-gradient(#54b4eb, #2fa4e7 60%, #1d9ce5);
-    background-image: linear-gradient(#54b4eb, #2fa4e7 60%, #1d9ce5);
     background-repeat: no-repeat;
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff54b4eb', endColorstr='#ff1d9ce5', GradientType=0);
     filter: none;
