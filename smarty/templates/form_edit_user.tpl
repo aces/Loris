@@ -27,139 +27,220 @@ $(document).ready(function() {
 });
 </script>
 {/literal}
-<form method="post" name="edit_user" id="edit_user">
-<table class="std">
-    <!-- table title -->
-    <tr><th colspan="2">Password Rules</th></tr>
-
-    <tr>
-        <td colspan="2">
-            <ul>
-                <li>The password must be at least 8 characters long</li>
-                <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
-                <li>The password and the user name must not be the same</li>
-                <li>The password and the email address must not be the same</li>
-            </ul>
-        </td>
-    </tr>
-
-    <!-- table title -->
-    <tr><th colspan="2">Add/Edit User</th></tr>
-
-    {foreach from=$form.errors item=error}
-    <tr>
-        <td nowrap="nowrap" colspan="2" class="error">{$error}</td>
-    </tr>
+<form method="post" name="edit_user" >
+	<h3>Password Rules</h3>
+	<ul>
+		<li>The password must be at least 8 characters long</li>
+        <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
+        <li>The password and the user name must not be the same</li>
+        <li>The password and the email address must not be the same</li>
+	</ul>
+	<h3>Add/Edit User</h3>
+	{foreach from=$form.errors item=error}
+	    <ul>
+	        <li class="error">{$error}</li>
+	    </ul>
     {/foreach}
-
-	<tr>
-		<td nowrap="nowrap">User name</td>
-		<td nowrap="nowrap">{$form.UserID.html}{$form.UserID_Group.html}</td>
-	</tr>
-	<tr>
-		<td colspan="2" nowrap="nowrap">
-        NOTE: <BR><B>When generating a new password, please notify the user<BR>by checking 'Send email to user' box!</B>
-        </td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">{$form.Password_Group.label}</td>
-		<td nowrap="nowrap">{$form.Password_Group.html}</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">{$form.__Confirm.label}</td>
-		<td nowrap="nowrap">{$form.__Confirm.html}</td>
-	</tr>
-{*	<tr>
-        <td nowrap="nowrap">{$form.Real_name.label}</td>
-		<td nowrap="nowrap">{$form.Real_name.html}</td>
-	</tr>*}
-	<tr>
-        <td nowrap="nowrap">{$form.First_name.label}</td>
-		<td nowrap="nowrap">{$form.First_name.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Last_name.label}</td>
-		<td nowrap="nowrap">{$form.Last_name.html}</td>
-	</tr>
-
-	<tr>
-        <td nowrap="nowrap">{$form.Degree.label}</td>
-		<td nowrap="nowrap">{$form.Degree.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Position_title.label}</td>
-		<td nowrap="nowrap">{$form.Position_title.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Institution.label}</td>
-		<td nowrap="nowrap">{$form.Institution.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Department.label}</td>
-		<td nowrap="nowrap">{$form.Department.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Address.label}</td>
-		<td nowrap="nowrap">{$form.Address.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.City.label}</td>
-		<td nowrap="nowrap">{$form.City.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.State.label}</td>
-		<td nowrap="nowrap">{$form.State.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Zip_code.label}</td>
-		<td nowrap="nowrap">{$form.Zip_code.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Country.label}</td>
-		<td nowrap="nowrap">{$form.Country.html}</td>
-	</tr>
-	<tr>
-        <td nowrap="nowrap">{$form.Fax.label}</td>
-		<td nowrap="nowrap">{$form.Fax.html}</td>
-	</tr>
-
-	<tr>
-		<td nowrap="nowrap">{$form.Email_Group.label}</td>
-		<td nowrap="nowrap">{$form.Email_Group.html}</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">{$form.CenterID.label}</td>
-		<td nowrap="nowrap">{$form.CenterID.html}</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">{$form.Active.label}</td>
-		<td nowrap="nowrap">{$form.Active.html}</td>
-
-	</tr>
-	<tr>
-		<td nowrap="nowrap">{$form.Pending_approval.label}</td>
-		<td nowrap="nowrap">{$form.Pending_approval.html}</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">{$form.Examiner.label}</td>
-		<td nowrap="nowrap">{$form.Examiner.html}</td>
-	</tr>
-
-	<tr>
-		<td nowrap="nowrap" valign="top">Permissions</td>
-		<td nowrap="nowrap"><div>{$form.PermID_Group.html}</div></td>
-    </tr>
-
-	<tr>
-        <td nowrap="nowrap">&nbsp;</td>
-		<td nowrap="nowrap" colspan="2">
-    {if not $success}
-        <input class="button" name="fire_away" value="Save" type="submit" />
-        <input class="button" value="Reset" type="reset" />
-    {/if}
-        <input class="button" onclick="location.href='main.php?test_name=user_accounts'" value="Back" type="button" />
-        </td>
-	</tr>
-</table>
-{$form.hidden}
+    <div class="row">
+    	<div class="form-group">
+	    	<label class="col-sm-12 col-sm-2">
+                   {$form.UserID_Group.label}
+            </label>
+	    	<div class="col-sm-10">
+	    		{$form.UserID_Group.html}
+	    	</div>
+	    </div>
+    </div>
+    <br>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		NOTE:
+    	</label>
+    	<div class="col-sm-6">
+    		<B>When generating a new password, please notify the user by checking 'Send email to user' box!</B>
+    	</div>
+    </div>
+    <br>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Password_Group.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Password_Group.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.__Confirm.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.__Confirm.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Real_name.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Real_name.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.First_name.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.First_name.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Last_name.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Last_name.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Degree.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Degree.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Position_title.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Position_title.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Institution.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Institution.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Department.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Department.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Address.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Address.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.City.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.City.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.State.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.State.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Zip_code.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Zip_code.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Country.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Country.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Fax.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Fax.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Email_Group.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Email_Group.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.CenterID.label}
+    	</label>	
+    	<div class="col-sm-6">
+    		{$form.CenterID.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Active.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Active.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Pending_approval.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Pending_approval.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.Examiner.label}
+    	</label>
+    	<div class="col-sm-6">
+    		{$form.Examiner.html}
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<label class="col-sm-2">
+    		{$form.PermID_Group.label}
+    	</label>
+    	<div class="col-sm-10">
+    		<div>
+    		{$form.PermID_Group.html}
+    		</div>
+    	</div>
+    </div>
+    <div class="row form-group">
+    	<div class="col-sm-2">
+    		<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
+    	</div>
+    	<div class="col-sm-2">
+    		<input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
+    	</div>
+    	<div class="col-sm-2">
+    		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=user_accounts'" value="Back" type="button" />
+    	</div>
+    </div>
+<!-- </form> -->
 </form>
