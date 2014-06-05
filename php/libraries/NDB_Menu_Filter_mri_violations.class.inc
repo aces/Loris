@@ -62,7 +62,8 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             'v.TimeRun',
             'v.MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
-            'v.Problem'
+            'v.Problem',
+	    'v.SeriesUID'
         );
 
         $this->query = " FROM (
@@ -70,14 +71,16 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                 time_run as TimeRun,
                 minc_location as MincFile,
                 series_description as Series_Description,
-                'Could not identify scan type' as Problem 
+                'Could not identify scan type' as Problem,
+		SeriesUID 
             FROM mri_protocol_violated_scans "
             .  " UNION " . 
             "SELECT PatientName,
                 TimeRun,
                 MincFile,
                 mri_scan_type.Scan_type,
-                'Protocol Violation' FROM mri_violations_log 
+                'Protocol Violation',
+                SeriesUID FROM mri_violations_log 
             LEFT JOIN mri_scan_type 
             ON (mri_scan_type.ID=mri_violations_log.Scan_type)"
             .  " UNION " . 
@@ -85,7 +88,8 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                 TimeRun,
                 MincFile,
                 null,
-                Reason FROM MRICandidateErrors"
+                Reason, 
+                SeriesUID FROM MRICandidateErrors"
          . ") as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
@@ -94,15 +98,20 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                 'TimeRun' => 'v.TimeRun',
                 'ProblemType' => 'v.Problem',
                 'Filename' => 'v.MincFile',
-                'Description' => 'v.Series_Description'
-            );
+                'Description' => 'v.Series_Description',
+		'SeriesUID' => 'v.SeriesUID'
+        );
         $this->validFilters = array(
             'v.PatientName',
             'v.TimeRun',
             'v.MincFile',
             'v.Problem',
-            'v.Series_Description'
+            'v.Series_Description',
+	    'v.SeriesUID'
         );
+//	if (isset($_REQUEST['SeriesUID'])) {	
+  //          $this->tpl_data['series'] = $_REQUEST['SeriesUID'];
+//	} 
         return true;
     }
 
@@ -123,7 +132,8 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicText('TimeRun', 'Time Run');
         $this->addBasicText('Filename', 'File name');
-        $this->addSelect(
+	$this->addBasicText('SeriesUID', 'Series UID');
+	$this->addSelect(
             "ProblemType",
             "Type of problem",
             array(
@@ -156,16 +166,125 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
             foreach ($item as $key => $val) {
-                if ($key === 'PatientName') {
+	    	if ($key === 'PatientName') {
                     $this->tpl_data['items'][$x]['PatientName'] = $val;
                 }
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
+		if ($key === 'SeriesUID') {
+                    $this->tpl_data['series'] = $val;
+	        } else {		 
+                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                    $this->tpl_data['items'][$x][$i]['value'] = $val;
+		}            
                 $i++;
             }
             $x++;
         }
         return true;
+    }
+     /**
+     * Overwrites the function not to save the old filter.
+     * When goes to the mri_violations via the SeriesUID link 
+     * and then back to tarchive, SeriesUID filter should be reset.
+     *
+     * @return void
+     * @access private
+     */
+    function _setupFilters()
+    {
+	// create user object
+        $user =& User::singleton();
+        if(Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+
+        // manipulate the filters
+        if (isset($_REQUEST['reset'])) {
+            // erase filter data from the session
+            $_SESSION['State']->setProperty('filter', NULL);
+	    } elseif (isset($_REQUEST['filter'])) {
+            // get the form's filters
+            foreach ($this->formToFilter as $key => $val) {
+                if (is_array($val)) {
+                    foreach ($val as $key2 => $val2) {
+                        if (isset($_REQUEST[$key][$key2])) {
+                            $formFilters[$val2] = $_REQUEST[$key][$key2];
+                        }
+                    }
+                } else {
+                    if (isset($_REQUEST[$key])) {
+                        $formFilters[$val] = $_REQUEST[$key];
+                    }
+                }
+            }
+            // get the ordering
+            if (is_array($_REQUEST['filter']) && in_array($_REQUEST['filter']['order']['field'], $this->headers)) {
+                $formFilters['order'] = $_REQUEST['filter']['order'];
+            }
+
+            $_SESSION['State']->setProperty('filter', $formFilters);
+        }
+
+        $filter = $_SESSION['State']->getProperty('filter');
+
+        /**
+         * TODO: I don't know why this is written this way.
+         *       It should be rewritten both to fix references
+         *       to undefined indexes and because it definitely
+         *       shouldn't be using eval for security reasons.
+         *       - Dave
+         */
+        // build the array of defaults
+	 foreach ($this->formToFilter as $key => $val) {
+            if (is_array($filter) && count($filter) > 0) {
+                if (is_array($val)) {
+                    foreach ($val as $key2 => $val2) {
+                        $sub[] = "'".$filter[$val2]."'";
+                    }
+                    $defaults[] = "'$key' => array(".implode(', ', $sub).")";
+                    unset($sub);
+                } else {
+                    if(isset($filter[$val])) {
+                        $defaults[] = "'$key' => '".$filter[$val]."'";
+                    } else {
+                        $defaults[] = "'$key' => ''";
+                    }
+                }
+            } else {
+                if (strtolower(substr($val, -8)) == 'centerid') {
+                    $defaults[] = "'$key' => '".$user->getData('CenterID')."'";
+                }
+            }
+
+            // set the filter form's defaults
+            if(!empty($defaults)) {
+                eval("\$this->form->setDefaults(array(".implode(', ', $defaults)."));");
+            }
+        }
+
+	  // set only the valid filters
+        foreach ($this->validFilters as $value) {
+            // if no filter was defined (i.e. first hit) limit listing to the user's site
+            if (is_array($filter) && count($filter) > 0) {
+                // If it's an aggregate, don't add it to the where clause filters. Add it to the
+                // having clause filters
+                if(isset($filter[$value])) {
+                    if( in_array($value, $this->validHavingFilters)) {
+                        $this->having[$value] = $filter[$value];
+                    } else {
+                        $this->filter[$value] = $filter[$value];
+                    }
+                }
+            } else {
+                if (strtolower(substr($value, -8)) == 'centerid') {
+                    $this->filter[$value] = $user->getData('CenterID');
+                }
+            }
+        }
+
+        // set the ordering
+        if (isset($filter['order']) && in_array($filter['order']['field'], $this->headers)) {
+            $this->filter['order'] = $filter['order'];
+        }
     }
 }
 ?>
