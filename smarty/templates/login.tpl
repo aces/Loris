@@ -156,14 +156,14 @@ BrowserDetect.init();
 		  		<div class="col-xs-12">
 		  		<form action="{$action}" method="post">
 		  			<div class="form-group">
-		  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
+		  				<input name="username" class="form-control" type="email" value="{$username}" placeholder="User"/>
 		  			</div>
 		  			<div class="form-group">
 		  				<input name="password" class="form-control" type="password" placeholder="Password"/>
 		  			</div>
 		  			<input class="btn btn-primary col-xs-12" name="login" type="submit" value="login" />
 		  			<br><br><br>
-		  			<a href="lost_password.php" align="middle"><center>Forgot your password?</center></a>
+		  			<a href="lost_password.php"><center>Forgot your password?</center></a>
 		  		</form>
 		  		</div>
 		  		
