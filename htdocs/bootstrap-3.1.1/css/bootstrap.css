@@ -1,3 +1,25 @@
+.LoginFooter {
+    bottom:0;
+    clear: both;
+    height: 3em;
+    width: 100%;
+    font-size: 0.9em;
+    color: gray; /*#aaa;*/
+    text-align: center;
+    /*background: #064785;*/
+    vertical-align: bottom;
+}
+ul#navlist
+{
+margin-left: 0;
+padding-left: 0;
+}
+#navlist li
+{
+display: inline;
+list-style-type: none;
+}
+
 /*!
  * Bootswatch v3.1.1
  * Homepage: http://bootswatch.com
