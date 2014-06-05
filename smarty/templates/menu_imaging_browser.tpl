@@ -64,11 +64,11 @@
     {/section}
     {* Links to files/output types *}
     {section name=typeIdx loop=$outputTypes}
-    	     <td><a href="main.php?test_name=imaging_browser&subtest=view_session&sessionID={$items[item].sessionID}&outputType={if $outputTypes[typeIdx].outputType=='selected'}native&selectedOnly=1
+    	     <td><a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$items[item].sessionID}&outputType={if $outputTypes[typeIdx].outputType=='selected'}native&selectedOnly=1
                 {else}{$outputTypes[typeIdx].outputType|escape:"url"}{/if}&backURL={$backURL|escape:"url"}">{$outputTypes[typeIdx].outputType}</a>
 	    </td>
     {/section}
-            <td><a href="main.php?test_name=imaging_browser&subtest=view_session&sessionID={$items[item].sessionID}&backURL={$backURL|escape:"url"}">all types</a></td>
+            <td><a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$items[item].sessionID}&backURL={$backURL|escape:"url"}">all types</a></td>
     </tr>
     {sectionelse}
     <tr><td colspan="8">Nothing found</td></tr>

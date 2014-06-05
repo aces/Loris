@@ -1,10 +1,12 @@
 <?php
+
 /**
  * This class features the code for the menu portion of the Loris imaging
  * browser.
  *
  * PHP Version 5
  *
+ *  @category   Behavioural
  *  @package    Main
  *  @subpackage Imaging 
  *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
@@ -17,13 +19,14 @@ require_once 'NDB_Menu_Filter.class.inc';
 /**
  * Provides the PHP code for the menu filter for the imaging browser
  *
+ *  @category   Behavioural
  *  @package    Main
  *  @subpackage Imaging
  *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license    Loris license
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
+class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 {
     /**
      * Determine whether the user has permission to view this page
@@ -48,20 +51,39 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
     function _setupVariables()
     {
         $NewDataSubquery = "CASE 
-            COALESCE((SELECT MIN(QCLastChangeTime) from files left join files_qcstatus USING(FileID) WHERE files.SessionID=s.ID AND OutputType='native' AND AcquisitionProtocolID not in (1, 2, 3, 52) group by QCLastChangeTime order by QCLastChangeTime limit 1), 'new')
+            COALESCE((
+                SELECT MIN(QCLastChangeTime) 
+                FROM files LEFT JOIN files_qcstatus 
+                USING(FileID) 
+                WHERE files.SessionID=s.ID 
+                AND OutputType='native' 
+                AND AcquisitionProtocolID not in (1, 2, 3, 52) 
+                GROUP BY QCLastChangeTime 
+                ORDER BY QCLastChangeTime limit 1
+            ), 'new')
             WHEN 'new' THEN 'new' 
             WHEN '' THEN 'new'
             ELSE ''
             END";
         $T1PassSubquery = "CASE 
-            COALESCE((SELECT MIN(files_qcstatus.QCStatus+0) FROM files JOIN files_qcstatus USING (FileID) WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=44 GROUP BY files.SessionID), '')
+            COALESCE((
+                SELECT MIN(files_qcstatus.QCStatus+0) 
+                FROM files JOIN files_qcstatus 
+                USING (FileID) 
+                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=44 
+                GROUP BY files.SessionID), '')
             WHEN '' THEN ''
             WHEN 1 THEN 'Passed'
             WHEN 2 THEN 'Failed'
             END
             ";
         $T2PassSubquery = "CASE 
-            COALESCE((SELECT MIN(files_qcstatus.QCStatus+0) FROM files JOIN files_qcstatus USING (FileID) WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=45 GROUP BY files.SessionID), '')
+            COALESCE((
+                SELECT MIN(files_qcstatus.QCStatus+0) 
+                FROM files JOIN files_qcstatus 
+                USING (FileID) 
+                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=45 
+                GROUP BY files.SessionID), '')
             WHEN '' THEN ''
             WHEN 1 THEN 'Passed'
             WHEN 2 THEN 'Failed'
@@ -90,7 +112,6 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             f.OutputType='native' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
 
-        //        GROUP BY f.SessionID ORDER BY p.Name, firstAcqDate, c.CandID, s.Visit_label;
         $this->columns = array(
             'p.MRI_alias as Site',
             'c.PSCID as PSCID',
@@ -129,10 +150,8 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             'c.CenterID',
             's.MRIQCStatus',
             'pending'
-           // "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)"
         );
 
-       // $pendingSQL = "(s.MRIQCPending='Y' OR s.MRIQCStatus='' OR ifnull(fqc.QCFirstChangeTime,0)=0)";
         $this->formToFilter = array(
             'pscid' => 'c.PSCID',
             'VL'    => 's.Visit_label',
@@ -144,7 +163,6 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
         );
         $this->EqualityFilters = array();
         $this->searchKeyword    = array();
-    //    $this->CheckboxFilters = array($pendingSQL);
     }
 
     /**
@@ -156,9 +174,13 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
     {
         $DB = Database::singleton();
         $allAr = array('' => 'All');
-        $this->addBasicText('pscid','PSCID', array("size"=>10,"maxlength"=>25));
-        $this->addBasicText('VL', 'Visit Label', array('size' => "10", "maxlength"=>"25") );
-        $this->addBasicText('DCCID', 'DCCID', array('size' => 10, "maxlength" => 25));
+        $this->addBasicText('pscid', 'PSCID', array("size"=>10,"maxlength"=>25));
+        $this->addBasicText(
+            'VL', 'Visit Label', array('size' => "10", "maxlength"=>"25")
+        );
+        $this->addBasicText(
+            'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
+        );
         $this->addSelect('ProjectID', 'Project', $allAr + Utility::getProjectList());
         $this->addSelect('SiteID', 'Site', $allAr + Utility::getSiteList());
         $this->addSelect(
@@ -167,13 +189,15 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             array(''=>'All', 'Pass'=>'Pass', 'Fail'=>'Fail')
         );
 
-      //  $this->tpl_data['pending'] = isset($_REQUEST['pending']);
-
         $this->addSelect(
             'Pending',
             'Pending and New',
-            array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pendng or New')          ); 
-        $outputTypes = $DB->pselect("SELECT DISTINCT OutputType AS outputType FROM files WHERE FileType='mnc' AND OutputType!='native'", array());
+            array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pendng or New')
+        ); 
+        $outputTypes = $DB->pselect(
+            "SELECT DISTINCT OutputType AS outputType 
+            FROM files WHERE FileType='mnc' AND OutputType!='native'", array()
+        );
 
         $this->tpl_data['outputTypes'] = array_merge(
             array(
@@ -183,10 +207,22 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
         );
 
         $this->tpl_data['numOutputTypes'] = count($outputTypes);
-        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
+        $this->addBasicText(
+            'keyword', 
+            'Search keyword in Comments', 
+            array("size"=>10,"maxlength"=>25)
+        );
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
+
+    /**
+     * Setup table rows for the template
+     *
+     * @param int $count number
+     *
+     * @return null
+     */
 
     function _setDataTableRows($count)
     {
@@ -199,7 +235,7 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
             //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
-                if($key == 'sessionID') {
+                if ($key == 'sessionID') {
                     $this->tpl_data['items'][$x]['sessionID'] = $val;
                     continue;
                 }
@@ -212,15 +248,24 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
         $this->tpl_data['numTimepoints'] = $x;
         return true;
     }
-    function _addValidFilters($prepared_key, $field, $val){
+    /**
+     * Overwrites the function to add a customized filter
+     * for Pending and New
+     *
+     * @param string $prepared_key filter key
+     * @param string $field        filter field
+     * @param string $val          filter value
+     *
+     * @return null
+     */
+    function _addValidFilters($prepared_key, $field, $val)
+    {
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if ($field != 'pending') {
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
-                } 
-                // special rule for dropdowns where value is numeric    
-                elseif (strtolower(substr($field, -8)) == 'centerid'
+                } elseif (strtolower(substr($field, -8)) == 'centerid'
                         || strtolower(substr($field, -10)) == 'categoryid'
                         || strtolower(substr($field, -6)) == 'gender'
                         || (isset($this->EqualityFilters)
@@ -228,25 +273,25 @@ class NDB_Menu_Filter_imaging_browser extends NDB_Menu_Filter
                         ) {
                     $query .= " AND $field = :v_$prepared_key";
                     // $qparams["v_$prepared_key"] = $val;
-                } 
-                else {
-                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, \
-'%') ";
-                   //$qparams["v_$prepared_key"] = $val;
+                } else {
+                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
                 }
-            }
-            else {
+            } else {
                 switch ($val) {
-                    case "P":
-                        $query .= " AND s.MRIQCPending='Y'"; break;
-                    case "N":
-                        $query .= " AND (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; break;
-                    case "PN":
-                        $query .= " AND s.MRIQCPending='Y' OR (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; break;
+                case "P":
+                    $query .= " AND s.MRIQCPending='Y'"; 
+                    break;
+                case "N":
+                    $query .= " AND (s.MRIQCStatus='' 
+                        OR fqc.QCFirstChangeTime IS NULL)"; 
+                    break;
+                case "PN":
+                    $query .= " AND s.MRIQCPending='Y' 
+                        OR (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
+                    break;
                 }
-                 
             }
         }
         return $query;
-     }
+    }
 }
