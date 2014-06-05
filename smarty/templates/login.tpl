@@ -149,6 +149,11 @@ BrowserDetect.init();
 		  		<br><br><br><br>
 		  		</div>
 		  		<div class="col-xs-12">
+		  			<font color="red" align="middle">
+		  			{$error_message}
+		  		</font>
+		  		<div>
+		  		<div class="col-xs-12">
 		  		<form action="{$action}" method="post">
 		  			<div class="form-group">
 		  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
