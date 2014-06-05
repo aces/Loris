@@ -67,6 +67,13 @@ if (strpos($File, ".") === false) {
 // Find the extension
 $path_parts = pathinfo($File);
 $FileExt = $path_parts['extension'];
+
+//make sure that we have a .nii.gz image if FileExt equal gz 
+if(strcmp($FileExt,"gz") == 0){
+     if(strcmp(pathinfo($path_parts['filename'])['extension'],"nii")==0){
+         $FileExt = "nii.gz";
+     }
+}
 unset($path_parts);
 
 // Make sure that the user isn't trying to break out of the $path by
@@ -83,6 +90,16 @@ switch($FileExt) {
 case 'mnc':
     $FullPath = $mincPath . '/' . $File;
     $MimeType = "application/x-minc";
+    $DownloadFilename = basename($File);
+    break;
+case 'nii':
+    $FullPath = $mincPath . '/' . $File;
+    $MimeType = "application/x-nifti";
+    $DownloadFilename = basename($File);
+    break;
+case 'nii.gz':
+    $FullPath = $mincPath . '/' . $File;
+    $MimeType = "application/x-nifti-gz";
     $DownloadFilename = basename($File);
     break;
 case 'png':
