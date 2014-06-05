@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once "../php/libraries/NDB_Client.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";

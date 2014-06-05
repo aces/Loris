@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @package main
  * @subpackage query_gui
