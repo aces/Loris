@@ -109,9 +109,6 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             'v.Series_Description',
 	    'v.SeriesUID'
         );
-//	if (isset($_REQUEST['SeriesUID'])) {	
-  //          $this->tpl_data['series'] = $_REQUEST['SeriesUID'];
-//	} 
         return true;
     }
 
