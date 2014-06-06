@@ -180,7 +180,7 @@ class NDB_Menu_Filter extends NDB_Menu
             // erase filter data from the session
             $_SESSION['State']->setProperty('filter', NULL);
         } elseif (isset($_REQUEST['filter'])) {
-	    // get the form's filters
+            // get the form's filters
             foreach ($this->formToFilter as $key => $val) {
                 if (is_array($val)) {
                     foreach ($val as $key2 => $val2) {

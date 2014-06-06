@@ -24,7 +24,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
+class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
 {
     /**
      * Check if user should be allowed to see this page.
@@ -63,7 +63,7 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             'v.MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
             'v.Problem',
-	    'v.SeriesUID'
+            'v.SeriesUID'
         );
 
         $this->query = " FROM (
@@ -99,7 +99,7 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                 'ProblemType' => 'v.Problem',
                 'Filename' => 'v.MincFile',
                 'Description' => 'v.Series_Description',
-		'SeriesUID' => 'v.SeriesUID'
+                'SeriesUID' => 'v.SeriesUID'
         );
         $this->validFilters = array(
             'v.PatientName',
@@ -107,7 +107,7 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             'v.MincFile',
             'v.Problem',
             'v.Series_Description',
-	    'v.SeriesUID'
+            'v.SeriesUID'
         );
         return true;
     }
@@ -129,8 +129,8 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicText('TimeRun', 'Time Run');
         $this->addBasicText('Filename', 'File name');
-	$this->addBasicText('SeriesUID', 'Series UID');
-	$this->addSelect(
+        $this->addBasicText('SeriesUID', 'Series UID');
+        $this->addSelect(
             "ProblemType",
             "Type of problem",
             array(
@@ -163,15 +163,15 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
             foreach ($item as $key => $val) {
-	    	if ($key === 'PatientName') {
+                if ($key === 'PatientName') {
                     $this->tpl_data['items'][$x]['PatientName'] = $val;
                 }
-		if ($key === 'SeriesUID') {
+                if ($key === 'SeriesUID') {
                     $this->tpl_data['series'] = $val;
-	        } else {		 
+                } else {		 
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
-		}            
+                }            
                 $i++;
             }
             $x++;
@@ -188,17 +188,17 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
      */
     function _setupFilters()
     {
-	// create user object
+        // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         // manipulate the filters
         if (isset($_REQUEST['reset'])) {
             // erase filter data from the session
-            $_SESSION['State']->setProperty('filter', NULL);
-	    } elseif (isset($_REQUEST['filter'])) {
+            $_SESSION['State']->setProperty('filter', null);
+        } elseif (isset($_REQUEST['filter'])) {
             // get the form's filters
             foreach ($this->formToFilter as $key => $val) {
                 if (is_array($val)) {
@@ -214,7 +214,9 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                 }
             }
             // get the ordering
-            if (is_array($_REQUEST['filter']) && in_array($_REQUEST['filter']['order']['field'], $this->headers)) {
+            if (is_array($_REQUEST['filter']) && in_array(
+                $_REQUEST['filter']['order']['field'], $this->headers
+            )) {
                 $formFilters['order'] = $_REQUEST['filter']['order'];
             }
 
@@ -231,7 +233,7 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
          *       - Dave
          */
         // build the array of defaults
-	 foreach ($this->formToFilter as $key => $val) {
+        foreach ($this->formToFilter as $key => $val) {
             if (is_array($filter) && count($filter) > 0) {
                 if (is_array($val)) {
                     foreach ($val as $key2 => $val2) {
@@ -240,7 +242,7 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
                     $defaults[] = "'$key' => array(".implode(', ', $sub).")";
                     unset($sub);
                 } else {
-                    if(isset($filter[$val])) {
+                    if (isset($filter[$val])) {
                         $defaults[] = "'$key' => '".$filter[$val]."'";
                     } else {
                         $defaults[] = "'$key' => ''";
@@ -253,19 +255,23 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
             }
 
             // set the filter form's defaults
-            if(!empty($defaults)) {
-                eval("\$this->form->setDefaults(array(".implode(', ', $defaults)."));");
+            if (!empty($defaults)) {
+                eval("\$this->form->setDefaults(
+                    array(".implode(', ', $defaults)."));"
+                );
             }
         }
 
-	  // set only the valid filters
+        // set only the valid filters
         foreach ($this->validFilters as $value) {
-            // if no filter was defined (i.e. first hit) limit listing to the user's site
+            // if no filter was defined (i.e. first hit) 
+            //limit listing to the user's site
             if (is_array($filter) && count($filter) > 0) {
-                // If it's an aggregate, don't add it to the where clause filters. Add it to the
+                // If it's an aggregate, don't add it to the 
+                // where clause filters. Add it to the
                 // having clause filters
-                if(isset($filter[$value])) {
-                    if( in_array($value, $this->validHavingFilters)) {
+                if (isset($filter[$value])) {
+                    if (in_array($value, $this->validHavingFilters)) {
                         $this->having[$value] = $filter[$value];
                     } else {
                         $this->filter[$value] = $filter[$value];
@@ -279,7 +285,9 @@ class NDB_Menu_Filter_mri_violations extends NDB_Menu_Filter
         }
 
         // set the ordering
-        if (isset($filter['order']) && in_array($filter['order']['field'], $this->headers)) {
+        if (isset($filter['order']) && in_array(
+            $filter['order']['field'], $this->headers
+        )) {
             $this->filter['order'] = $filter['order'];
         }
     }

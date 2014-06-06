@@ -105,6 +105,7 @@
     <tr>
     <!-- print out data rows -->
     {section name=piece loop=$items[item]}
+
        	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
 	  		{$items[item][piece].value}
 		</td>

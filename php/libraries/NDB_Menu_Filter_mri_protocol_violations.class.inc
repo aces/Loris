@@ -27,7 +27,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @link     https://www.github.com/aces/Loris-Trunk/
  * 
  */
-class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
+class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
 {
     /**
      * Tie the access to a new violated_scans permission, with a separate
@@ -87,8 +87,8 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->validFilters = array(
             'mpv.CandID',
             'mpv.PSCID',
-	    'mpv.PatientName',
-	    'mpv.SeriesUID',
+            'mpv.PatientName',
+            'mpv.SeriesUID',
             'mpv.series_description',
             'mpv.time_run'
         );
@@ -97,8 +97,8 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->formToFilter = array(
                 'CandID' => 'mpv.CandID',
                 'PSCID' => 'mpv.PSCID',
-		'PatientName' => 'mpv.PatientName',
-		'SeriesUID' => 'mpv.SeriesUID',
+                'PatientName' => 'mpv.PatientName',
+                'SeriesUID' => 'mpv.SeriesUID',
                 'SeriesDescription' => 'mpv.series_description',
                 'TimeRun' => 'mpv.time_run'
                 );
