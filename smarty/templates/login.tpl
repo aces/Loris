@@ -146,8 +146,8 @@ BrowserDetect.init();
 		  		</center>
 		  		</div>
 		  		<br><br><br><br><br>
-		  		<div class="hidden-xs">
-		  		<br><br><br><br>
+		  		<div class="hidden-xs hidden-sm">
+		  			<br><br><br><br>
 		  		</div>
 		  		<div class="col-xs-12">
 		  			<font color="red" align="middle">
