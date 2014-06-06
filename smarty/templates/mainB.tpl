@@ -3,7 +3,7 @@
     <head>
 
 
-        <!-- <link rel="stylesheet" href="{$css}" type="text/css" /> -->
+        <link rel="stylesheet" href="{$css}" type="text/css" />
         {if $test_name_css}
             <link rel="stylesheet" href="css/instruments/{$test_name_css}" type="text/css" />
         {/if}
