@@ -106,7 +106,7 @@
                     <button type="button" class="navbar-toggle" data-toggle="collapse" 
                         data-target="#example-navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
-                        <span class="glyphicon glyphicon-chevron-down"></span>
+                        <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
                     </button>
 
                     <!-- toggle sidebar in mobile view -->

@@ -20,6 +20,28 @@ padding-left: 0;
 display: inline;
 list-style-type: none;
 }
+.button
+{
+   font-size:13.5px;
+   font-family:Verdana,sans-serif;
+   color:white;
+   background-color:#064785;
+   margin-top: 3px;
+   border-style:ridge;
+   border-color:#FFFFFF;
+   border-width:1px;
+   border-radius: 10px;
+   -webkit-border-radius: 4px;
+   -moz-border-radius: 4px;
+   cursor: pointer;
+}
+.button:hover {
+    background: grey; /*opacity: 0.5;*/
+    border: 1px solid black;
+}
+.navbar-header>.navbar-brand:hover{
+    background-color: #778
+}
 
 /*!
  * Bootswatch v3.1.1
@@ -4192,7 +4214,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
     margin-bottom: 8px;
     background-color: transparent;
     background-image: none;
-    border: 1px solid transparent;
+    border: none;
     border-radius: 4px
 }
 
@@ -4435,7 +4457,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 }
 
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-    background-color: #178acc
+    background-color: #778
 }
 
 .navbar-default .navbar-toggle .icon-bar {
@@ -4443,7 +4465,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 }
 
 .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-    border-color: #1995dc
+    border-color: none
 }
 
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover,
@@ -4458,7 +4480,7 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 
     .navbar-default .navbar-nav .open .dropdown-menu>li>a:hover, .navbar-default .navbar-nav .open .dropdown-menu>li>a:focus {
         color: #ffffff;
-        background-color: #178acc
+        background-color: #778
     }
 
     .navbar-default .navbar-nav .open .dropdown-menu>.active>a, .navbar-default .navbar-nav .open .dropdown-menu>.active>a:hover,
