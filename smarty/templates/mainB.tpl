@@ -116,7 +116,7 @@
                         </a>
                     {/if}
 
-                    <a class="navbar-brand" href="mainB.php">LORIS</a>
+                    <a class="navbar-brand" href="main.php">LORIS</a>
                     <a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;" class="navbar-brand pull-right">
                         <img width=17 src=images/help.gif>
                     </a>
