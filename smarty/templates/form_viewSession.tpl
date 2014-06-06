@@ -127,15 +127,15 @@
 {* RIGHT SUBTABLE*}
     <td>
         <table class="table-mri-right-and-center" id='table-mri-righttable'>
-	{if $files[file].Pipeline != ""}<tr><th>Pipeline</th><td>{$files[file].Pipeline}</td></tr>{/if}
+        {if $files[file].Pipeline != ""}<tr><th>Pipeline</th><td>{$files[file].Pipeline}</td></tr>{/if}
         {if $files[file].OutputType != ""}<tr><th>Output Type</th><td>{$files[file].OutputType}</td></tr>{/if}
         {if $files[file].AcquisitionProtocol != "NA"}<tr><th>Protocol</th><td>{$files[file].AcquisitionProtocol}</td></tr>{/if}
-  	{if $files[file].CoordinateSpace != ""}<tr><th>Space</th><td>{$files[file].CoordinateSpace}</td></tr>{/if}
+        {if $files[file].CoordinateSpace != ""}<tr><th>Space</th><td>{$files[file].CoordinateSpace}</td></tr>{/if}
         {if $files[file].Algorithm != ""}<tr><th>Algorithm</th><td>{$files[file].Algorithm}</td></tr>{/if}
 
-	{if $files[file].AcquisitionDate>0}<tr><th>Acq Date</th><td>{$files[file].AcquisitionDate|date_format}</td></tr>{/if}
+        {if $files[file].AcquisitionDate>0}<tr><th>Acq Date</th><td>{$files[file].AcquisitionDate|date_format}</td></tr>{/if}
         <tr><th>Inserted</th><td>{if $files[file].FileInsertDate>0}{$files[file].FileInsertDate|date_format}{elseif $smarty.section.file.index==0}Insert date{else}&nbsp;{/if}</td></tr>
-
+ 
         {if $files[file].SeriesDescription != ""}<tr><th>SerDesc</th><td>{$files[file].SeriesDescription}</td></tr>{/if}
         {if $files[file].SeriesNumber != ""}<tr><th>Ser Num</th><td>{$files[file].SeriesNumber}</td></tr>{/if}
         {if $files[file].EchoTime != "" && $files[file].EchoTime != "0.00"}<tr><th>Echo Time</th><td>{$files[file].EchoTime} ms</td></tr>{/if}
@@ -143,8 +143,8 @@
         {if $files[file].SliceThickness != ""&& $files[file].SliceThickness != "0.00"}<tr><th>Slice Thick</th><td>{$files[file].SliceThickness} mm</td></tr>{/if}
         {if $files[file].Time != "" && $files[file].Time != "0.00"}<tr><th>Nb of vol.</th><td>{$files[file].Time} volumes</td></tr>{/if}
         {if $files[file].Comment != ""}<tr><th>Comment</th><td>{$files[file].Comment}</td></tr>{/if}
-	{if $files[file].ProcessingPipeline != ""}<tr><th>Processing pipeline</th><td>{$files[file].ProcessingPipeline}</td></tr>{/if}
-	{if $files[file].TotalRejected != ""}<tr><th>Nb of rejected directions</th><td>{$files[file].TotalRejected}</td></tr>{/if}
+        {if $files[file].ProcessingPipeline != ""}<tr><th>Processing pipeline</th><td>{$files[file].ProcessingPipeline}</td></tr>{/if}
+        {if $files[file].TotalRejected != ""}<tr><th>Nb of rejected directions</th><td>{$files[file].TotalRejected}</td></tr>{/if}
         {if $files[file].SlicewiseRejected != ""}<tr><th>Slicewise correlations (Nb)</th><td>{$files[file].SlicewiseRejected}</td></tr>{/if}
         {if $files[file].InterlaceRejected != ""}<tr><th>Interlace correlations (Nb)</th><td>{$files[file].InterlaceRejected}</td></tr>{/if}
         {if $files[file].IntergradientRejected != ""}<tr><th>Gradient-wise correlations (Nb)</th><td>{$files[file].IntergradientRejected}</td></tr>{/if}
