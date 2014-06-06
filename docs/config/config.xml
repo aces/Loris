@@ -47,6 +47,8 @@
 <dicom_archive>
     <patientIDRegex>/./</patientIDRegex>
     <patientNameRegex>/./i</patientNameRegex>
+    <LegoPhantomRegex>/./i</LegoPhantomRegex>
+    <LivingPhantomRegex>/./i</LivingPhantomRegex>
     <showTransferStatus>false</showTransferStatus>
 </dicom_archive>
 <!-- Following links will appear on the footer of the home page of loris installation -->

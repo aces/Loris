@@ -174,6 +174,20 @@ return true;
                 {if $files[fIdx].qcStatus != ""}{$files[fIdx].qcStatus}{else}&nbsp;{/if}
             {/if}
             </td></tr>
+            {if $files[fIdx].fileID} 
+                <tr><th>Caveat Emptor</th></tr>
+                <tr><td>
+                {if $has_permission}
+                    {if $files[fIdx].Caveat}
+                    <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[fIdx].SeriesUID}&filter=true">Caveat List</a>
+                    {/if}
+                    {html_options options=$caveat_options selected=$files[fIdx].Caveat tabindex=5 name=caveat[`$files[fIdx].fileID`]}
+                {else}
+                {if $files[fIdx].Caveat}<a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[fIdx].SeriesUID}&filter=true">Caveats</a>
+                {else}No caveats{/if}
+                    {/if}
+                </td></tr>
+            {/if}
             <tr><td>&nbsp;</td></tr>
 {* LINK TO COMMENTS *}
             <tr><td>
@@ -181,6 +195,7 @@ return true;
             onClick='javascript:window.open("feedback_mri_popup.php?fileID={$files[fIdx].fileID}", "feedback_mri", 
             "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>Link to comments</a><br>{else}&nbsp;{/if}
             </td></tr>
+
         </table>
         </td>
 {* ----------------- This is the end of the first section ---------------- *}    

@@ -65,10 +65,9 @@ if (strpos($File, ".") === false) {
 }
 
 // Find the extension
-$pieces  = preg_split('/\./', basename($File));
-array_shift($pieces);
-$FileExt = join(".", $pieces);
-unset($pieces);
+$path_parts = pathinfo($File);
+$FileExt = $path_parts['extension'];
+unset($path_parts);
 
 // Make sure that the user isn't trying to break out of the $path by
 // using a relative filename.
