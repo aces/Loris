@@ -229,7 +229,6 @@ class NDB_Form_conflicts_resolve extends NDB_Form
 	}
 
 	foreach($resolved_conflicts AS $resolved_conflict) {
-            $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
             $hash = 'conflict_' . $resolved_conflict['hash'];
             $dccid = substr($resolved_conflict['CommentId1'],0,6);
             $ssid = substr($resolved_conflict['CommentId1'],6,7);
