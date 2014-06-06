@@ -137,7 +137,7 @@ BrowserDetect.init();
 	 		</a>
 	 	</div>
  	</div>
- 	<div class="panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+ 	<div class="panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
@@ -156,7 +156,7 @@ BrowserDetect.init();
 		  		<div class="col-xs-12">
 		  		<form action="{$action}" method="post">
 		  			<div class="form-group">
-		  				<input name="username" class="form-control" type="email" value="{$username}" placeholder="User"/>
+		  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
 		  			</div>
 		  			<div class="form-group">
 		  				<input name="password" class="form-control" type="password" placeholder="Password"/>
