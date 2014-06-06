@@ -237,6 +237,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             foreach ($item as $key => $val) {
                 if ($key == 'sessionID') {
                     $this->tpl_data['items'][$x]['sessionID'] = $val;
+		    $filtered_sessionIDs[] = $val;
                     continue;
                 }
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
@@ -246,6 +247,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $x++;
         }
         $this->tpl_data['numTimepoints'] = $x;
+	$_SESSION['State']->setProperty(
+	    'mriSessionsListed', $filtered_sessionIDs
+        );
         return true;
     }
     /**
