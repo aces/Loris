@@ -109,9 +109,14 @@ class NDB_Page extends PEAR
     function createDate($field, $label, $dateOptions=null) {
         return $this->form->createElement("date", $field, $label, $dateOptions);
     }
-    function createCheckbox($field, $label, $options=null){
-        $html = '<label><input type=\'checkbox\'>'.$label.'</label>';
-        return $this->form->createElement('static', null, null, $html);
+    function createCheckbox($field, $label, $options=null, $closer='</label>'){
+        $group = array();
+        $group[] = $this->form->createElement('static', null, null, '<label>');
+        // $html = '<label><input type=\'checkbox\'> '.$label.'</label>';
+        $group[] = $this->form->createElement('advcheckbox', $field, null, null, $options);
+        $group[] = $this->form->createElement('static', null, null, $label.$closer);
+        return $group;
+        // return $this->form->createElement('static', null, null, $html);
     }
     function createPassword($field, $label=null, $attr=array('class' => 'form-control input-sm')){
         return $this->form->createElement('password', $field, $label, $attr);
