@@ -36,21 +36,31 @@ $(document).ready(function() {
         <li>The password and the email address must not be the same</li>
 	</ul>
 	<h3>Add/Edit User</h3>
-	{foreach from=$form.errors item=error}
+	<!-- {foreach from=$form.errors item=error key=k}
 	    <ul>
-	        <li class="error">{$error}</li>
+	        <li class="error">{$k}: k{$error}</li>
 	    </ul>
-    {/foreach}
-    <div class="row">
-    	<div class="form-group form-inline form-inline">
-	    	<label class="col-sm-12 col-sm-2">
+    {/foreach} -->
+    <!-- <div class="row""> -->
+        {if $form.errors.UserID_Group}
+    	<div class="row form-group form-inline form-inline has-error">
+        {else}
+        <div class="row form-group form-inline form-inline">
+        {/if}
+	    	<label class="col-sm-12 col-sm-2 form-label">
                    {$form.UserID_Group.label}
             </label>
 	    	<div class="col-sm-10">
 	    		{$form.UserID_Group.html}
 	    	</div>
+            {if $form.errors.UserID_Group}
+                <div class="col-sm-offset-2 col-xs-12">
+                    <font class="form-error">{$form.errors.UserID_Group}</font>
+                </div>
+            {/if}
 	    </div>
-    </div>
+        
+    <!-- </div> -->
     <br>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
@@ -61,13 +71,22 @@ $(document).ready(function() {
     	</div>
     </div>
     <br>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
+    {if $form.errors.Password_Group}
+    <div class="row form-group form-inline form-inline has-error">
+    {else}
+    <div class="row form-group form-inline form-inline">
+    {/if}
+    	<label class="col-sm-2 form-label">
     		{$form.Password_Group.label}
     	</label>
     	<div class="col-sm-10">
     		{$form.Password_Group.html}
     	</div>
+        {if $form.errors.Password_Group}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.Password_Group}</font>
+            </div>
+        {/if}
     </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
@@ -77,29 +96,47 @@ $(document).ready(function() {
     		{$form.__Confirm.html}
     	</div>
     </div>
-    <div class="row form-group form-inline">
+    <!-- <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Real_name.label}
     	</label>
     	<div class="col-sm-10">
     		{$form.Real_name.html}
     	</div>
-    </div>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
+    </div> -->
+    {if $form.errors.First_name}
+    <div class="row form-group form-inline form-inline has-error">
+    {else}
+    <div class="row form-group form-inline form-inline">
+    {/if}
+    	<label class="col-sm-2 form-label">
     		{$form.First_name.label}
     	</label>
     	<div class="col-sm-10">
     		{$form.First_name.html}
     	</div>
+        {if $form.errors.First_name}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.First_name}</font>
+            </div>
+        {/if}
     </div>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
+    {if $form.errors.Last_name}
+    <div class="row form-group form-inline form-inline has-error">
+    {else}
+    <div class="row form-group form-inline form-inline">
+    {/if}
+    	<label class="col-sm-2 form-label">
     		{$form.Last_name.label}
     	</label>
     	<div class="col-sm-10">
     		{$form.Last_name.html}
     	</div>
+        {if $form.errors.Last_name}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.Last_name}</font>
+            </div>
+        {/if}
     </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
@@ -181,13 +218,22 @@ $(document).ready(function() {
     		{$form.Fax.html}
     	</div>
     </div>
+    {if $form.errors.Email_Group}
+    <div class="row form-group form-inline form-inline has-error">
+    {else}
     <div class="row form-group form-inline form-inline">
-    	<label class="col-sm-2">
+    {/if}
+    	<label class="col-sm-2 form-label">
     		{$form.Email_Group.label}
     	</label>
     	<div class="col-sm-10">
     		{$form.Email_Group.html}
     	</div>
+        {if $form.errors.Email_Group}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.Email_Group}</font>
+            </div>
+        {/if}
     </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
@@ -225,7 +271,7 @@ $(document).ready(function() {
     	<label class="col-sm-2">
     		{$form.PermID_Group.label}
     	</label>
-    	<div class="col-sm-10">
+    	<div class="col-sm-10 col-xs-12">
     		<div>
     		{$form.PermID_Group.html}
     		</div>
