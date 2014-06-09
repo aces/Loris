@@ -283,8 +283,8 @@ class NDB_Form_user_accounts extends NDB_Form
         if (empty($this->identifier)) {
             // user name
             $group[] = $this->createText('UserID', 'User name');
-            $group[] = $this->form->createElement('advcheckbox', 'NA_UserID', null, 'Make user name match email address');
-            $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
+            $group[] = $this->createCheckbox('NA_UserID', '&nbsp;Make user name match email address');
+            $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter . $this->_GUIDelimiter, FALSE);
             unset($group);
 
             // user name rules - only required if user name is user-defined
@@ -302,10 +302,10 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         // password
-        $group[] = $this->form->createElement('password', 'Password_md5');
-        $group[] = $this->form->createElement('advcheckbox', 'NA_Password', null, 'Generate new password');
-        $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
-        $this->form->addElement('password', '__Confirm', 'Confirm Password');
+        $group[] = $this->createPassword('Password_md5');
+        $group[] = $this->createCheckbox('NA_Password', '&nbsp;Generate new password');
+        $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter . $this->_GUIDelimiter, FALSE);
+        $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
 
         // it is a new user
@@ -349,7 +349,7 @@ class NDB_Form_user_accounts extends NDB_Form
         
         // email address
         $group[] = $this->createText('Email');
-        $group[] = $this->form->createElement('checkbox', 'SendEmail', null, 'Send email to user');
+        $group[] = $this->createCheckbox('SendEmail', '&nbsp;Send email to user');
         $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
 
@@ -394,7 +394,7 @@ class NDB_Form_user_accounts extends NDB_Form
                         "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>' 
                         . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">");
             }
-            $group[] = $this->form->createElement('advcheckbox', 'permID['.$row['permID'].']', null, $row['description'], "class=\"perm_$lastRole\"");
+            $group[] = $this->createCheckbox('permID['.$row['permID'].']', '&nbsp;'.$row['description'], "class=\"perm_$lastRole\"");
         }
         $this->addGroup($group, 'PermID_Group', 'Permissions', "<br />\n", FALSE);
         unset($group);

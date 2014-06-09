@@ -42,7 +42,7 @@ $(document).ready(function() {
 	    </ul>
     {/foreach}
     <div class="row">
-    	<div class="form-group">
+    	<div class="form-group form-inline form-inline">
 	    	<label class="col-sm-12 col-sm-2">
                    {$form.UserID_Group.label}
             </label>
@@ -52,7 +52,7 @@ $(document).ready(function() {
 	    </div>
     </div>
     <br>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		NOTE:
     	</label>
@@ -61,7 +61,7 @@ $(document).ready(function() {
     	</div>
     </div>
     <br>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Password_Group.label}
     	</label>
@@ -69,7 +69,7 @@ $(document).ready(function() {
     		{$form.Password_Group.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.__Confirm.label}
     	</label>
@@ -77,7 +77,7 @@ $(document).ready(function() {
     		{$form.__Confirm.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Real_name.label}
     	</label>
@@ -85,7 +85,7 @@ $(document).ready(function() {
     		{$form.Real_name.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.First_name.label}
     	</label>
@@ -93,7 +93,7 @@ $(document).ready(function() {
     		{$form.First_name.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Last_name.label}
     	</label>
@@ -101,7 +101,7 @@ $(document).ready(function() {
     		{$form.Last_name.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Degree.label}
     	</label>
@@ -109,7 +109,7 @@ $(document).ready(function() {
     		{$form.Degree.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Position_title.label}
     	</label>
@@ -117,7 +117,7 @@ $(document).ready(function() {
     		{$form.Position_title.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Institution.label}
     	</label>
@@ -125,7 +125,7 @@ $(document).ready(function() {
     		{$form.Institution.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Department.label}
     	</label>
@@ -133,7 +133,7 @@ $(document).ready(function() {
     		{$form.Department.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Address.label}
     	</label>
@@ -141,7 +141,7 @@ $(document).ready(function() {
     		{$form.Address.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.City.label}
     	</label>
@@ -149,7 +149,7 @@ $(document).ready(function() {
     		{$form.City.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.State.label}
     	</label>
@@ -157,7 +157,7 @@ $(document).ready(function() {
     		{$form.State.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Zip_code.label}
     	</label>
@@ -165,7 +165,7 @@ $(document).ready(function() {
     		{$form.Zip_code.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Country.label}
     	</label>
@@ -173,7 +173,7 @@ $(document).ready(function() {
     		{$form.Country.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Fax.label}
     	</label>
@@ -181,7 +181,7 @@ $(document).ready(function() {
     		{$form.Fax.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline form-inline">
     	<label class="col-sm-2">
     		{$form.Email_Group.label}
     	</label>
@@ -189,7 +189,7 @@ $(document).ready(function() {
     		{$form.Email_Group.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.CenterID.label}
     	</label>	
@@ -197,7 +197,7 @@ $(document).ready(function() {
     		{$form.CenterID.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Active.label}
     	</label>
@@ -205,7 +205,7 @@ $(document).ready(function() {
     		{$form.Active.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Pending_approval.label}
     	</label>
@@ -213,7 +213,7 @@ $(document).ready(function() {
     		{$form.Pending_approval.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Examiner.label}
     	</label>
@@ -221,7 +221,7 @@ $(document).ready(function() {
     		{$form.Examiner.html}
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.PermID_Group.label}
     	</label>
@@ -231,7 +231,7 @@ $(document).ready(function() {
     		</div>
     	</div>
     </div>
-    <div class="row form-group">
+    <div class="row form-group form-inline">
     	<div class="col-sm-2">
     		<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
     	</div>
