@@ -1,4 +1,4 @@
-<table class="outer-table">
+<table class="details-outer-table">
 	<tr><th width="11%">Acquisition ID</th><td width="89%"><a href="main.php?test_name=mri_violations&PatientName={$archive.PatientName}&filter=true">{$archive.DicomArchiveID}</a></td></tr>
 	<tr><th>Patient ID</th><td{if $archive.patientIDValid == 0} class="error"{/if}>{$archive.PatientID}</td></tr>
 	<tr><th>Patient Name</th><td{if $archive.patientNameValid == 0} class="error"{/if}>{$archive.PatientName}</td></tr>

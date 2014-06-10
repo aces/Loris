@@ -41,7 +41,7 @@
 {$numTimepoints} study dicom archive(s) selected.<br>
 {/if}
 
-<table class="fancytable" width="100%" border="1">
+<table class="fancytable">
     <tr>
 	<th>No.</th>
 {section name=header loop=$headers}
