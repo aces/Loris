@@ -2,6 +2,7 @@
 require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/Array.php';
 require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 include_once ('HTML/QuickForm/Renderer/Default.php');
 
@@ -362,23 +363,31 @@ class NDB_BVL_Instrument extends NDB_Page
         // display the HTML_Quickform object
         // return $this->form->toHTML();
         
-        $renderer = new HTML_QuickForm_Renderer_Default();
-        if(isset($this->testName)) {
-            $renderer->setFormTemplate("<form{attributes}>{content}</form>");
-        } else {
-            $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</form>");
-        }
- 
-        $renderer->setElementTemplate("<div class=\"form-group col-sm-12\"><lable class=\"lab col-sm-4\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}   </lable><div class=\"col-sm-8\">{element}</div></div>");
-        $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
-        $renderer->setHeaderTemplate("<h3>{header}</h3>");
-
-        // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
-        // so that we can have instructions/labels in the direct data entry instruments that span into
-        // the column for data entry.
-        $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
+        $smarty = new Smarty_neurodb;
+        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
         $this->form->accept($renderer);
-        return $renderer->toHtml();
+        $smarty->assign('form', $renderer->toArray());
+        // $smarty->assign($this->tpl_data);
+        $html = $smarty->fetch("instrument_html.tpl");
+        return $html;
+
+        // $renderer = new HTML_QuickForm_Renderer_Default();
+        // if(isset($this->testName)) {
+        //     $renderer->setFormTemplate("<form{attributes}>{content}</form>");
+        // } else {
+        //     $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</form>");
+        // }
+ 
+        // $renderer->setElementTemplate("<div class=\"form-group col-sm-12\"><lable class=\"lab col-sm-4\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}   </lable><div class=\"col-sm-8\">{element}</div></div>");
+        // // $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
+        // $renderer->setHeaderTemplate("<h3>{header}</h3>");
+
+        // // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
+        // // so that we can have instructions/labels in the direct data entry instruments that span into
+        // // the column for data entry.
+        // $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
+        // $this->form->accept($renderer);
+        // return $renderer->toHtml();
     }
     
     /**
