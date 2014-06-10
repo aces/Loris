@@ -7,7 +7,7 @@
  * @category   Behavioural
  * @package    Main
  * @subpackage Imaging
- * @author     Loris team <info-loris.mni@mcgill.ca>
+ * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
  * @license    Loris License
  * @link       https://github.com/aces/Loris-Trunk
 */
@@ -22,7 +22,7 @@ require_once 'NDB_Form.class.inc';
  * @category   Behavioural
  * @package    Main
  * @subpackage Imaging
- * @author     Loris team <info-loris.mni@mcgill.ca>
+ * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
  * @license    Loris License
  * @link       https://github.com/aces/Loris-Trunk
 */
@@ -37,25 +37,37 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     function viewDetails()
     {
         $this->DB = Database::singleton();
-        if(Utility::isErrorX($DB)) {
+        if (Utility::isErrorX($DB)) {
             print "Could not connect to database: ".$DB->getMessage()."<br>\n";
             die();
         }
 
         if (!empty($_REQUEST['tarchiveID'])) {
             $tarchiveID = $_REQUEST['tarchiveID'];
-            $this->tpl_data['archive'] = $this->_getTarchiveData($tarchiveID, 'tarchive');
-            $this->tpl_data['archive_series'] 
-                = $this->_getTarchiveData($tarchiveID, 'tarchive_series', 'TarchiveSeriesID');
-            $this->tpl_data['archive_files'] 
-                = $this->_getTarchiveData($tarchiveID, 'tarchive_files', 'TarchiveFileID');
+            $this->tpl_data['archive'] = $this->_getTarchiveData(
+                $tarchiveID, 'tarchive'
+            );
+            $this->tpl_data['archive_series'] = $this->_getTarchiveData(
+                $tarchiveID, 'tarchive_series', 'TarchiveSeriesID'
+            );
+            $this->tpl_data['archive_files'] = $this->_getTarchiveData(
+                $tarchiveID, 'tarchive_files', 'TarchiveFileID'
+            );
 
             $this->_validateNamesIDs();
-         
         }
     }
-    
-    function _getTarchiveData($tarchiveID, $table, $order) {
+    /**
+    * Retrieves data for the template from the database
+    * 
+    * @param int    $tarchiveID tarchiveID
+    * @param string $table      name of the table to retrieve the data from
+    * @param string $order      column by which to order the query
+    * 
+    * @return array $array contains all data
+    */
+    function _getTarchiveData($tarchiveID, $table, $order) 
+    {
         if ($order) {    	     				   
             $query = "SELECT * FROM $table WHERE TarchiveID ='$tarchiveID'
             ORDER BY $order";
@@ -72,7 +84,14 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             return $array;
         }
     }
-    function _validateNamesIds() {
+    /**
+    * Validates PatientName and PatientID,
+    * sets INVALID-HIDDEN if not validated.
+    *
+    * @return null
+    */
+    function _validateNamesIds() 
+    {
         $config =& NDB_Config::singleton();
         $dicomArchiveSettings = $config->getSetting('dicom_archive');
         
@@ -90,10 +109,10 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             $dicomArchiveSettings['patientIDRegex'],
             $this->tpl_data['archive']['PatientID']
         )) {
-       	    $this->tpl_data['archive']['patientIDValid'] = 1;
-       	} else {
-	    $this->tpl_data['archive']['patientIDValid'] = 0;
-       	    $this->tpl_data['archive']['PatientID'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['patientIDValid'] = 1;
+        } else {
+            $this->tpl_data['archive']['patientIDValid'] = 0;
+            $this->tpl_data['archive']['PatientID'] = "INVALID - HIDDEN";
         }
     }
 }

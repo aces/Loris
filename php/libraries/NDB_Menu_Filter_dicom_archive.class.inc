@@ -6,12 +6,12 @@
  *
  * PHP Version 5
  *
- * @category Behavioural
- * @package Main
+ * @category   Behavioural
+ * @package    Main
  * @subpackage Imaging
- * @author Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license Loris license
- * @link https://www.github.com/olgatsib/Loris-Trunk/
+ * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
+ * @license    Loris license
+ * @link       https://www.github.com/olgatsib/Loris-Trunk/
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -19,12 +19,12 @@ require_once 'NDB_Menu_Filter.class.inc';
 /**
  * Provides the PHP code for the menu filter for the dicom archive
  *
- * @category Behavioural
- * @package Main
+ * @category   Behavioural
+ * @package    Main
  * @subpackage Imaging
- * @author Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license Loris license
- * @link https://www.github.com/olgatsib/Loris-Trunk/
+ * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
+ * @license    Loris license
+ * @link       https://www.github.com/olgatsib/Loris-Trunk/
  */
 class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
 {
@@ -54,13 +54,13 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     {
         $this->_setDicomArchiveSettings();
         $TransferStatus = $this->_getTransferStatusFromQuery();
-	        
+        
         $this->query = " FROM session s 
             JOIN candidate c ON (c.CandID=s.CandID)
             JOIN tarchive t ON (s.ID=t.SessionID)";
 
         $this->columns = array(
-	    't.TarchiveID as TarchiveID',
+            't.TarchiveID as TarchiveID',
             's.ID as SessionID',    	 
             "$TransferStatus as Transfer_Status",
             't.PatientID as Patient_ID', 
@@ -80,7 +80,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             array(
                 'Transfer_Status',
                 'Patient_ID',
-	        'Patient_Name',
+                'Patient_Name',
                 'Gender',
                 'Date_of_birth',
                 'Acquisition',
@@ -126,7 +126,8 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     * 
     * @return null
     */ 
-    function _setDicomArchiveSettings() {
+    function _setDicomArchiveSettings() 
+    {
         $config =& NDB_Config::singleton();
         $this->dicomArchiveSettings = $config->getSetting('dicom_archive');
     }
@@ -138,7 +139,8 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     *
     * @return string $query with a status string
     */
-    function _getTransferStatusFromQuery() {
+    function _getTransferStatusFromQuery() 
+    {
         if ($this->dicomArchiveSettings['showTransferStatus'] == 'true') { 
             $query = "IF(
                 t.PendingTransfer, 
@@ -167,32 +169,38 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
         if (Utility::isErrorX($sitesList)) {
             return PEAR::raiseError("DB Error: ".$sitesList->getMessage());
         }
+
         foreach ($sitesList as $key=>$value) {
-	    $list_of_sites[$key]= $value;
-	}
+            $list_of_sites[$key]= $value;
+        }
         ksort($list_of_sites);
 
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addBasicText(
             'PatientID', 'PatientID', array('size' => 10, 'maxlength' => 25)
-	);
+        );
         $this->addBasicText(
             'Gender', 'Gender', array('size' => 10, "maxlength" => 25)
         );
-        $this->addBasicText('Acquisition', 'Acquisition Date', array(
-            'size' => 10, "maxlength" => 25
-        ));
-        $this->addBasicText('PatientName', 'Patient Name', array(
-            'size' => 10, "maxlength" => 25
-        )); 	
+        $this->addBasicText(
+            'Acquisition', 
+            'Acquisition Date', 
+            array('size' => 10, "maxlength" => 25)
+        );
+        $this->addBasicText(
+            'PatientName', 
+            'Patient Name', 
+            array('size' => 10, "maxlength" => 25)
+        ); 	
         $this->addBasicText(
             'DoB', 'Date of Birth', array('size' => 10, "maxlength" => 25)
         );
-	$this->addBasicText(
-            'Location', 'Archive Location', array(
-                'size' => 10, "maxlength" => 25
-	));
-        	
+        $this->addBasicText(
+            'Location', 
+            'Archive Location', 
+            array('size' => 10, "maxlength" => 25)
+        );
+        
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
 
@@ -229,15 +237,15 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                     switch ($val) {
                     case 'Queued':
                         $this->tpl_data['items'][$x][$i]['class'] 
-                        = "tarchivePendingTransfer";
+                            = "tarchivePendingTransfer";
                         break;
                     case 'Not Transferred':
                         $this->tpl_data['items'][$x][$i]['class'] 
-                        = "tarchiveNotTransferred";
+                            = "tarchiveNotTransferred";
                         break;
                     default:    
                         $this->tpl_data['items'][$x][$i]['class'] 
-                        = "tarchiveTransferred";
+                            = "tarchiveTransferred";
                     } 
                 }
                 if ($key == 'Metadata') {
@@ -255,27 +263,25 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                 if ($key == 'Patient_Name') {
                     $regex = 'patientNameRegex';
                 }
-               	if ($key == 'Patient_ID' || $key == 'Patient_Name') {
+                if ($key == 'Patient_ID' || $key == 'Patient_Name') {
                     if (! preg_match($this->dicomArchiveSettings[$regex], $val)) {
                         $this->tpl_data['items'][$x][$i]['class'] = "error";
-                        $this->tpl_data['items'][$x][$i]['value'] = "INVALID - HIDDEN";    
-                    }       
-                    else {
+                        $this->tpl_data['items'][$x][$i]['value'] 
+                            = "INVALID - HIDDEN";    
+                    } else {
                         $this->tpl_data['items'][$x][$i]['value'] = $val;
                     }
                 } elseif ($key == 'Gender') {
                     if ($val != 'M' && $val != 'F') {
                         $this->tpl_data['items'][$x][$i]['value'] = 'N/A';
-                    }
-                    else {
+                    } else {
                         $this->tpl_data['items'][$x][$i]['value'] = $val;
                     }
-                }                 
-                else {
-	            $this->tpl_data['items'][$x][$i]['value'] = $val;
+                } else {
+                    $this->tpl_data['items'][$x][$i]['value'] = $val;
                 }
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
-	        $i++;
+                $i++;
             }
             $x++;
         }
