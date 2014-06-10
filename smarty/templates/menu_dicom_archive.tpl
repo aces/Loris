@@ -54,9 +54,7 @@
 {section name=item loop=$items}
 {section name=piece loop=$items[item]}
     <td{if $items[item][piece].name == "Transfer_Status"} class="{$items[item][piece].class}"{elseif $items[item][piece].class == "error"} class="{$items[item][piece].class}"{/if}>
-        {if $items[item][piece].name == "Acquisition" || $items[item][piece].name == "Date_of_birth"}
-            {$items[item][piece].value|date_format}
-        {elseif $items[item][piece].name == "Metadata"}
+        {if $items[item][piece].name == "Metadata"}
         <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].tarchiveID}&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>
         {elseif $items[item][piece].name == "MRI_Browser"}
             {if $items[item][piece].sessionID != ""}
