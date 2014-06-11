@@ -56,10 +56,10 @@
         
     </table>
     <table>
-        <td id='hide' style="font-weight: bold" >
+        <td id='hide' style="font-weight: bold; display: block;" >
         	-Hide log file
         </td> 
-        <td id='show' style="font-weight: bold" >
+        <td id='show' style="font-weight: bold; display: none;" >
         	+Show log file
         </td> 
         <!--td nowrap="nowrap" colspan="2"><input class="textarea" id/></td-->
