@@ -186,9 +186,9 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         // Filter selection elements
         $this->addSelect('site', 'Site:', $sites);
         $this->addSelect('Instrument', 'Instrument:', $instruments);
-        $this->addBasicText('Question', 'Question:', '');
-        $this->addBasicText('CandID', 'DCCID:', '');
-        $this->addBasicText('PSCID', 'PSCID:', '');
+        $this->addBasicText('Question', 'Question:');
+        $this->addBasicText('CandID', 'DCCID:');
+        $this->addBasicText('PSCID', 'PSCID:');
 
         //This condition is commmented out because the $_REQUEST['site'] will always be empty (All) by default (which will show all the sites)
         //if(!empty($_REQUEST['site'])) {

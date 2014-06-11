@@ -210,19 +210,23 @@ $(function(){
     <div class="hidden-xs">
         <br><br><br>
     </div>
-    <form name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
-        <div class="row">
-            <label class="col-sm-5">
+    <form class="form-horizontal" name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
+        <div class="form-group">
+            <label class="col-sm-5 control-label">
                 DCC-ID:            
             </label>
-            <input tabindex="2" size="10" maxlength="12" type=text name="candID" class="col-sm-7">
+            <div class="col-sm-7">
+                <input tabindex="2" size="10" maxlength="12" type=text name="candID" class="form-control">
+            </div>
         </div>
         <br>
-        <div class="row">
-            <label class="col-sm-5">
+        <div class="form-group">
+            <label class="col-sm-5 control-label">
                 PSC-ID:           
             </label>
-            <input tabindex="2" size="10" maxlength="12" type=text name="PSCID" class="col-sm-7">
+            <div class="col-sm-7">
+                <input tabindex="2" size="10" maxlength="12" type=text name="PSCID" class="form-control">
+            </div>
         </div>
         <br>
         <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-sm-12 col-md-offset-8">

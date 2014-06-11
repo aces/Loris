@@ -95,22 +95,22 @@ $(document).ready(function() {
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-12 col-md-4">{$form.ProjectID.label}</label>
-                        <div class="col-sm-12 col-md-8">{$form.ProjectID.html}</div>
-                    </div>
-                    <div class="form-group col-sm-6">
                         <label class="col-sm-12 col-md-4">{$form.Gender.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Gender.html}</div>
                     </div>
-                </div>    
-                <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-sm-12 col-md-4">{$form.Visit_label.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Visit_label.html}</div>
                     </div>
+                </div>    
+                <div class="row">
                     <div class="form-group col-sm-6">
-                        <label class="col-sm-12 col-md-4">{$form.Invalid.label}</label>
+                        <label class="col-sm-12 col-md-4 label-control">{$form.Invalid.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Invalid.html}</div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.ProjectID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.ProjectID.html}</div>
                     </div>
                 </div>
 
@@ -156,6 +156,7 @@ $(document).ready(function() {
                         <label class="col-sm-12 col-md-4">{$form.Cand1PSCID.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Cand1PSCID.html}</div>
                     </div>
+                    <br>
                     <div class="row">
                         <label class="col-sm-12 col-md-4">{$form.Cand1Visit_label.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Cand1Visit_label.html}</div>
@@ -165,20 +166,23 @@ $(document).ready(function() {
                         <label class="col-sm-12 col-md-4">{$form.Cand2PSCID.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Cand2PSCID.html}</div>
                     </div>
+                    <br>
                     <div class="row">
                         <label class="col-sm-12 col-md-4">{$form.Cand2Visit_label.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Cand2Visit_label.html}</div>
                     </div>
+                    <br>
                     <div class="row">
                         <label class="col-sm-12 col-md-4">{$form.SwapInstrument.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.SwapInstrument.html}</div>
                     </div>
+                    <br>
                     <div class="row">
                         <div class="visible-xs visible-sm col-xs-12"> </div>
                         <div class="visible-xs visible-sm col-xs-12"> </div>
                         <div class="visible-xs visible-sm col-xs-12"> </div>
                         <div class="visible-xs visible-sm col-xs-12"> </div>
-                        <div class="col-md-5 col-xs-12 col-md-offset-6">
+                        <div class="col-md-6 col-xs-12 col-md-offset-6">
                             <input type="submit" name="swap" value="Swap Candidates" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                     </div>

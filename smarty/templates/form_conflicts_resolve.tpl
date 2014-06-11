@@ -8,7 +8,7 @@
 </script>
 {/literal}
 
-<div class="col-md-6 col-sm-8">
+<div class="col-md-8 col-sm-8">
     <form>
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
@@ -20,25 +20,25 @@
                 <div class="row">
                     <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">{$form.Instrument.label}</label>
-                        <div class="col-sm-12 col-md-8">{$form.Instrument.html}</div>
+                        <div class="col-sm-12 col-md-9">{$form.Instrument.html}</div>
                     </div>
                 </div>
                 <div class="row">    
-                    <div class="form-group col-sm-5">
-                        <label class="col-sm-12 col-md-4">{$form.PSCID.label}</label>
-                        <div class="col-sm-12 col-md-8">{$form.PSCID.html}</div>
-                    </div>
-                    <div class="form-group col-sm-4 col-sm-offset-2">
-                        <label class="col-sm-12 col-md-3">{$form.site.label}</label>
-                        <div class="col-sm-12 col-md-8">{$form.site.html}</div>
+                    <div class="form-group col-sm-12">
+                        <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
+                    <!-- </div> -->
+                    <!-- <div class="form-group col-sm-4 col-sm-offset-2"> -->
+                        <label class="col-sm-12 col-md-1">{$form.site.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.site.html}</div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-sm-5">
-                        <label class="col-sm-12 col-md-4">{$form.CandID.label}</label>
-                        <div class="col-sm-12 col-md-8">{$form.CandID.html}</div>
+                    <div class="form-group col-sm-12">
+                        <label class="col-sm-12 col-md-2">{$form.CandID.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.CandID.html}</div>
                     </div>
-                    <div class="form-group col-sm-6 col-sm-offset-1 hidden-sm">
+                    <div class="form-group col-sm-6 col-sm-offset-5 hidden-sm">
                         <div class="col-sm-6 col-xs-12">
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
