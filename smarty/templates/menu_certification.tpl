@@ -8,7 +8,7 @@
 </script>
 {/literal}
 
-<div class="col-md-7 col-sm-10 col-lg-6">
+<div class="col-md-8 col-sm-10">
     <form method="post" action="main.php?test_name=certification">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
@@ -18,15 +18,15 @@
             </div>
             <div class="panel-body" id="panel-body">
                 <div class="row">
-                    <div class="form-group col-sm-2">
+                    <div class="form-group col-sm-3">
                         <label class="col-sm-12">{$form.centerID.label}</label>
                         <div class="col-sm-12">{$form.centerID.html}</div>
                     </div>
-                    <div class="form-group col-sm-5">
+                    <div class="form-group col-sm-4">
                         <label class="col-sm-12">{$form.full_name.label}</label>
                         <div class="col-sm-12">{$form.full_name.html}</div>
                     </div>
-                    <div class="form-group col-sm-5">
+                    <div class="form-group col-sm-4">
                         <label class="col-sm-12">{$form.measure.label}</label>
                         <div class="col-sm-12">{$form.measure.html}</div>
                     </div>
