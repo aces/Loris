@@ -95,8 +95,8 @@ class NDB_Page extends PEAR
         $this->form->addElement('password', $field, $label, $attr);
     }
 
-    function createSelect($field, $label, $options=null) {
-	   return $this->form->createElement("select", $field, $label, $options);
+    function createSelect($field, $label, $options=null, $attr=array('class' => 'form-control input-sm')) {
+	   return $this->form->createElement("select", $field, $label, $options, $attr);
     }
 
     function createText($field, $label=null, $attr=array('class' => 'form-control input-sm')) {
@@ -106,8 +106,8 @@ class NDB_Page extends PEAR
     function createTextArea($field, $label=null) {
        return $this->form->createElement("textarea", $field, $label);
     } 
-    function createDate($field, $label, $dateOptions=null) {
-        return $this->form->createElement("date", $field, $label, $dateOptions);
+    function createDate($field, $label, $dateOptions=null, $attr=array('class' => 'form-control input-sm', 'style' => 'max-width:33%; display:inline-block;')) {
+        return $this->form->createElement("date", $field, $label, $dateOptions, $attr);
     }
     function createCheckbox($field, $label, $options=null, $closer='</label>'){
         $group = array();
