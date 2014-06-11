@@ -8,7 +8,7 @@
 </script>
 {/literal}
 
-<div class="col-md-5 col-sm-8">
+<div class="col-md-12 col-sm-8">
 	<form method="post" name="edit_user" id="edit_user">
 		<div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
@@ -24,8 +24,8 @@
 			    {/foreach}
 			    <div class="row">
 			    	<div class="form-group col-sm-12">
-						<label class="col-xs-12 col-sm-3">{$form.examinerID.label}</label>
-						<div class="col-xs-12 col-sm-9">{$form.examinerID.html}</div>
+						<label class="col-xs-12 col-md-1 col-sm-2">{$form.examinerID.label}</label>
+						<div class="col-xs-12 col-md-4 col-sm-8">{$form.examinerID.html}</div>
 					</div>
 				</div>
 
@@ -44,33 +44,36 @@
 					</tr>
 				-->
 				{foreach from=$form.pass item=item key=key}
-					<div class="row">
-			    		<div class="form-group col-sm-12">
-							<label class="col-sm-12 col-md-2">{$form.pass[$key].label}</label>
-							<div class="col-sm-12 col-md-10">{$form.pass[$key].html}</div>
-						</div>
-						<div class="form-group col-sm-12">
-							<label class="col-sm-12 col-md-2">{$form.date_cert[$key].label}</label>
-							<div class="col-sm-12 col-md-10">{$form.date_cert[$key].html}
-							Comment {$form.comment[$key].html}</div>
-						</div>
+					<div class="form-group">
+			    		<!-- <div class="form-group col-sm-4"> -->
+							<label class="col-sm-12 col-md-1">{$form.pass[$key].label}</label>
+							<div class="col-sm-12 col-md-2">{$form.pass[$key].html}</div>
+						<!-- </div> -->
+						<!-- <div class="form-group col-sm-12"> -->
+							<label class="col-sm-12 col-md-1">{$form.date_cert[$key].label}</label>
+							<div class="col-sm-12 col-md-3 form-inline">{$form.date_cert[$key].html}</div>
+							<label class="col-sm-12 col-md-1">{$form.comment[$key].label}</label>
+							<div class="col-sm-12 col-md-3">{$form.comment[$key].html}</div>
 					</div>
+					<br>
+					<!-- </div> -->
 				{/foreach}
+
 					<div class="row">
 					    {if not $success}
-					    	<div class="form-group col-sm- col-sm-offset-4">
-					    		<div class="visible-xs col-xs-12"> </div>
-		                        <div class="visible-xs col-xs-12"> </div>
-		                        <div class="visible-xs col-xs-12"> </div>
-		                        <div class="visible-xs col-xs-12"> </div>
-					    		<div class="col-sm-4 col-xs-12">
+					    	<div class="form-group col-xs-12">
+					    		<div class="visible-xs visible-sm col-xs-12"> </div>
+		                        <div class="visible-xs visible-sm col-xs-12"> </div>
+		                        <div class="visible-xs visible-sm col-xs-12"> </div>
+		                        <div class="visible-xs visible-sm col-xs-12"> </div>
+					    		<div class="col-sm-6 col-md-3 col-xs-12 col-md-offset-5">
 						        	<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
 						        </div>
 						        <div class="visible-xs col-xs-12"> </div>
 		                        <div class="visible-xs col-xs-12"> </div>
 		                        <div class="visible-xs col-xs-12"> </div>
 		                        <div class="visible-xs col-xs-12"> </div>
-						        <div class="col-sm-4 col-xs-12">
+						        <div class="col-sm-6 col-md-3 col-xs-12">
 						        	<input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
 						        </div>
 						    </div>

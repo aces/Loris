@@ -267,10 +267,10 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         );
 
         $this->addBasicText(
-            'dicomid', 'DICOM ID:', array("size"=>9, "maxlength"=>20)
+            'dicomid', 'DICOM ID:', array("size"=>9, "maxlength"=>20, 'class' => 'form-control input-sm')
         );
-        $this->addBasicText('pscid', 'PSCID:', array("size"=>9, "maxlength"=>11));
-        $this->addBasicText('dccid', 'DCCID:', array("size"=>9, "maxlength"=>6));
+        $this->addBasicText('pscid', 'PSCID:', array("size"=>9, "maxlength"=>11, 'class' => 'form-control input-sm'));
+        $this->addBasicText('dccid', 'DCCID:', array("size"=>9, "maxlength"=>6, 'class' => 'form-control input-sm'));
         $this->addSelect('Visit_label', 'Visit Label:', $list_of_visit_labels);
         $this->addSelect('site', 'Site', $list_of_sites);
         $this->addSelect('Review_done', 'Review Done:', $options_boolean);
@@ -293,7 +293,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean);
         $this->addSelect('Project', 'Project', $list_of_projects);
-        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
+        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25, 'class' => 'form-control input-sm'));
     }
 
 
