@@ -59,11 +59,11 @@ class NDB_Page extends PEAR
         $this->form->addElement('text', $field, $label, $options);
     }
 
-    function addBasicTextArea($field, $label, $specifications=array()) {
+    function addBasicTextArea($field, $label, $specifications=array('class' => 'form-control input-sm')) {
         $this->form->addElement('textarea', $field, $label, $specifications);
     }
 
-    function addBasicDate($field, $label, $options=array(), $attr=array('class' => 'form-control input-sm')) {
+    function addBasicDate($field, $label, $options=array(), $attr=array('class' => 'form-control input-sm', 'style' => 'max-width:33%; display:inline-block;')) {
         $this->form->addElement('date', $field, $label, $options, $attr);
     }
  
