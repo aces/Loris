@@ -455,14 +455,16 @@ class NDB_BVL_Instrument extends NDB_Page
                 
                 // the form WAS submitted but validate() failed...
                 // main error message
-                 print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 // print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 $this->form->addElement('static', 'mainError');
+                 $this->form->setElementError('mainError', "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n");
                  //print all the field error messages in one block
                 foreach(array_keys($submittedData) AS $key) {
                     $error = $this->form->getElementError($key);
                     if(!empty($error)) {
                         $element = $this->form->getElement($key);
                         if(method_exists($element, "getLabel")){
-                            print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                            // print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
                         }
                     }
                 }
@@ -1292,7 +1294,7 @@ class NDB_BVL_Instrument extends NDB_Page
     
 
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
+        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4, 'class' => 'form-control'));
         $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
