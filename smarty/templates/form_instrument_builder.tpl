@@ -23,6 +23,21 @@
         $("#down-rule").toggle();
         $("#up-rule").toggle();
     }
+    $(document).ready(function() {
+        $tabs = $(".table-responsive");
+        
+        $( "tbody#workspace" )
+            .sortable({
+                connectWith: ".connectedSortable",
+                items: "> tr:not(:first)",
+                appendTo: $tabs,
+                helper:"clone",
+                zIndex: 999990,
+                start: function(){ $tabs.addClass("dragging") },
+                stop: function(){ $tabs.removeClass("dragging") }
+            })
+            .disableSelection();
+    });
 </script>
 {/literal}
 
@@ -187,13 +202,15 @@
         
     </form>
     <div class="table-responsive">
-        <table id="workspace" border="1" class="table table-hover table-primary table-bordered">
+        <table border="1" class="table table-hover table-primary table-bordered">
             <tr class="info">
                 <th>Database Name (DB)</th>
                 <th>Type</th>
                 <th>Question Display (Front End)</th>
                 <th>Options</th>
             </tr>
+            <tbody id="workspace">
+            </tbody>
         </table>
     </div>
 
