@@ -1,3 +1,11 @@
+{literal}
+<script type="text/javascript">
+	$( document ).ready(function() {
+ 		$(".element").children().addClass("form-control input-sm");
+ 		$(".button").removeClass("form-control");
+	});
+</script>
+{/literal}
 <form {$form.attributes}>
 	{$form.hidden}
 	{$form.errors.mainError}
@@ -17,7 +25,7 @@
 						{$element.label}  
 					</lable>
 					<div class="col-sm-8">
-						<div class="col-xs-12">
+						<div class="col-xs-12 element">
 							{if $element.type eq "group"}
 								{foreach key=gkey item=gitem from=$element.elements}
 									{$gitem.html}
