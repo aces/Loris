@@ -7,7 +7,7 @@
 {else}
 
 <br />
-<form method="post" name="new_profile" id="new_profile">
+<form method="post" name="new_profile" id="new_profile" class="form-inline">
 
     {foreach from=$form.errors item=error}
     <div class="col-sm-12">
@@ -19,32 +19,37 @@
 		<label class="col-sm-2">{$form.dob1.label}</label>
 		<div class="col-sm-10">{$form.dob1.html}</div>
 	</div>
+	<br><br>
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.dob2.label}</label>
 		<div class="col-sm-10">{$form.dob2.html}</div>
 	</div>
-
+	
     {if $form.edc1.html != ""}
+    <br><br>
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.edc1.label}</label>
 		<div class="col-sm-10">{$form.edc1.html}</div>
 	</div>
+	<br><br>
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">$form.edc2.label}</label>
 		<div class="col-sm-10">{$form.edc2.html}</div>
 	</div>
-    {/if}
 
+    {/if}
+	<br><br>
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.gender.label}</label>
 		<div class="col-sm-10">{$form.gender.html}</div>
 	</div>
-
+	<br><br>
     {if $form.PSCID.html != ""}
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.PSCID.label}</label>
 		<div class="col-sm-10">{$form.PSCID.html}</div>
 	</div>
+	<br><br>
     {/if}
 
     {if $form.ProjectID.html != ""}
@@ -52,6 +57,7 @@
         <label class="col-sm-2">{$form.ProjectID.label}</label>
         <div class="col-sm-10">{$form.ProjectID.html}</div>
     </div>
+    <br><br>
     {/if}
 
 	<div class="form-group col-sm-12">

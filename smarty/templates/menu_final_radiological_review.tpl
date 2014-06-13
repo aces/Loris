@@ -28,8 +28,8 @@
                         <div class="col-sm-12 col-md-4">{$form.Conflict.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.keyword.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.keyword.html}</div>
+                        <label class="col-sm-12 col-md-6">{$form.keyword.label}</label>
+                        <div class="col-sm-12 col-md-6">{$form.keyword.html}</div>
                     </div>
                 </div>
                 <div class="row">
@@ -42,8 +42,8 @@
                         <div class="col-sm-12 col-md-4">{$form.Visit_label.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.pscid.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.pscid.html}</div>
+                        <label class="col-sm-12 col-md-6">{$form.pscid.label}</label>
+                        <div class="col-sm-12 col-md-6">{$form.pscid.html}</div>
                     </div>
                 </div>
                 <div class="row">
@@ -56,8 +56,8 @@
                         <div class="col-sm-12 col-md-8">{$form.Project.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.dccid.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.dccid.html}</div>
+                        <label class="col-sm-12 col-md-6">{$form.dccid.label}</label>
+                        <div class="col-sm-12 col-md-6">{$form.dccid.html}</div>
                     </div>
                 </div>
                 <div class="row">

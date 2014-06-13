@@ -2,8 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%; background:transparent">
     {if $dynamictabs neq "dynamictabs"}
     <head>
-
-
         <link rel="stylesheet" href="{$css}" type="text/css" />
         {if $test_name_css}
             <link rel="stylesheet" href="css/instruments/{$test_name_css}" type="text/css" />
@@ -90,8 +88,7 @@
         <script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
         <link href="css/simple-sidebar.css" rel="stylesheet">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     </head>
     {/if}
     <body {if $PopUpFeedbackBVL && ($user.permissions.superuser==true 
