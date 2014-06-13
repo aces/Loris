@@ -129,7 +129,7 @@
                         {foreach from=$tabs item=tab}
                             {if $tab.visible == 1}
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <a href="#" class="dropdown-toggle">
                                         {$tab.label} <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
