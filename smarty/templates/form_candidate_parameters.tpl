@@ -75,6 +75,7 @@
     <div class="panel-heading">
         Participant Status
     </div>
+    <div class="table-responsive">
     <table class="table">
         <thead>
             <tr>
@@ -96,6 +97,7 @@
         </tbody>
         
     </table>
+    </div>
     <div class="panel-body">
         <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='main.php?test_name=candidate_parameters&subtest=update_participant_status&candID={$candID}&identifier={$candID}'" value="Update Participant Status" type="button" />
     </div>
@@ -103,6 +105,7 @@
         <div class="panel-heading">
             Participation Consent Status
         </div>
+        <div class="table-responsive">
         <table class="table">
             {foreach from=$consent_list item=list}
                 {foreach from=$list item=consent key=listname}
@@ -123,6 +126,7 @@
                 {/foreach}
             {/foreach}
         </table>
+        </div>
         <div class="panel-body">
             {if $form.$row.error}
                 <span class="error">{$form.$row.error}</span>
