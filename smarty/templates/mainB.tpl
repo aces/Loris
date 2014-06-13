@@ -79,6 +79,9 @@
                         e.preventDefault();
                         $("#wrapper").toggleClass("active");
                     });
+                    $(".dropdown").hover(function(){
+                        $(this).toggleClass('open');
+                    });
                 });
 
                 
