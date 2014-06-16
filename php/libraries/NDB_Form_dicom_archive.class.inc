@@ -71,10 +71,10 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         if ($order) {    	     				   
             $query = "SELECT * FROM $table WHERE TarchiveID ='$tarchiveID'
             ORDER BY $order";
-            $this->DB->select($query, $array);
+            $array = $this->DB->pselect($query, array());
         } else {
             $query = "SELECT * FROM $table WHERE TarchiveID ='$tarchiveID'";
-            $this->DB->selectRow($query, $array);
+            $array = $this->DB->pselectRow($query, array());
         }
         
         if (Utility::isErrorX($array)) { 
