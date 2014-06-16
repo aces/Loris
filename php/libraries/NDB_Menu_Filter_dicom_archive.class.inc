@@ -68,7 +68,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
 
         $colsFirst = array_merge($colsFirst, $arrayTransfer);
         
-        $colLast = array(
+        $colsLast = array(
             't.PatientID as Patient_ID',
             't.PatientName as Patient_Name',
             't.PatientGender as Gender',
@@ -79,7 +79,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             "'View Images' as MRI_Browser"
         );
 
-        $this->columns = array_merge($colsFirst, $colLast);
+        $this->columns = array_merge($colsFirst, $colsLast);
 
         $this->order_by = 't.DateAcquired';
                 
