@@ -1,5 +1,6 @@
 <?php
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+ini_set('default_charset', 'utf-8');
 /**
  * @package mri
  */
