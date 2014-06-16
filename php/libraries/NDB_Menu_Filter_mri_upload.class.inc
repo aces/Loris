@@ -56,7 +56,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        
         // set the class variables
         $this->columns = array('UploadID','s.CandID','s.visit_label',
         'SourceLocation','UploadDate','UploadedBy',
@@ -86,6 +85,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
         ///////////////////////////////////////////////////////////////////////
+        
         $this->addFile('mri_file', 'File to Upload');
         $this->addScoreColumn('File_name', 'File name');
         $this->addScoreColumn('status', 'Status');
@@ -111,16 +111,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
         $new_files = array(null=>'Any') + $new_files;
         $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
-        
+       /*
         if (empty($_FILES) 
             && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
-            $upload_max_size = ini_get('upload_max_filesiqze');
+            $upload_max_size = ini_get('upload_max_filesize');
             echo "<p style=\"color: #F00;\">\nPlease make sure files are
             not larger than {$upload_max_size} <br></p>";
             // echo out error and solutions...
         }
+*/
         return true;
     }
 
@@ -134,8 +135,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
+        print_r ($_REQUEST);
         if ($this->_saveFile($values)) {
-
+            print "ok</br>";
+       
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
             ///////////////////////////////////////////////////////////////////
@@ -291,9 +294,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
        */
     function _saveFile($values)
     {
-
+        print "Start saveFile()</br>";
         include_once "File_Upload.class.inc";
-
+        
         //get the stored-file path
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
@@ -301,7 +304,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //print $stored_file_path;
         $file=new File_Upload;
-
+    
         $file->overwriteMode="reject";
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
@@ -309,7 +312,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("mri_file", $this);
-
+	print " setfileHandler----------<BR>";
         //Set the target directory that you want files moved
         //into once they are validated and processed.
         $file->setBaseUploadDirectory($stored_file_path);
@@ -324,7 +327,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file->setHandlerArgs(array("values"=>$values));
 
         //proccesses them (including verify, move, and import steps)
+print "entering";
+
         $file->processFiles();
+print "exiting";
         //echo error messages
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
@@ -335,6 +341,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
             return false;
         }
+print "done saving file";
         return true;
     }
     /**
@@ -359,8 +366,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         
         
         $temp_file = $file->fileInfo['tmp_name'];
+        print "Temp file: $temp_file";
         $temp_dir = $this->tempdir(true);
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
+        print "New temp file: $new_temp_file"; 
         if (!copy($temp_file, '/tmp/new_compressed')) {
             echo "failed to copy $temp_file...\n";
         }
@@ -526,6 +535,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     }
                 }
             }
+exit(-1);
             if ($files_not_dicom > 0) {
                 $errors[]=" There are  $files_not_dicom files detected which ".
                       "are not of type DICOM";
