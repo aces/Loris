@@ -82,7 +82,7 @@ print "checking validity";
                     //class.
                     $fileVerified=$this->callFileHandler($field, 'verify');
 print "isValid";
-exit(-1);
+
                     if (is_array($fileVerified)) {
                         $this->setError($field, $fileVerified);
                         continue;
@@ -140,25 +140,17 @@ exit(-1);
     function preProcessFile()
     {
         if (!$this->isCLImport) {
-            print_r ($_FILES);
             $this->file =& $this->form->getElement($this->fieldName);
-            print_r (get_class_methods($this->file));
-            print_r ($this->file->getAttributes());
-            print "Class: " . get_class($this->file); 
             if (!method_exists($this->file, "isUploadedFile")) {
-                print "1";
                 return false;
             }
             if ($this->file->isUploadedFile()) {
-                print "2";
                 $this->fileInfo = $this->file->getValue();
                 return true;
             } else {
-                print "3";
                 return false;
             }
         } else {
-            print "4";
             $this->file=$this->CLFiles[$this->fieldName];
             $this->fileInfo=$this->file['info'];
             return true;
@@ -190,9 +182,12 @@ exit(-1);
         //Call the method
         $func = array($class, $method);
         $args = array($this, $args);
-print "before";
-exit(-1);
+print "\nFunction\n";
+print_r ($func);
+print "\nArgs\n";
+print_r ($args);
         $output=call_user_func_array($func, $args);
+exit(-1);
         return $output;
     }
     

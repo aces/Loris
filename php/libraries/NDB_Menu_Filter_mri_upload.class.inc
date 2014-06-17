@@ -68,7 +68,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
            JOIN session s ON (s.ID = mu.SessionID)
             WHERE 1=1 ";
         $this->formToFilter = array();
-        $this->log= new Log("MRI_upload", "/data/gusto/data/logs/");
+        $this->log= new Log("MRI_upload", "/data/sandbox/data/logs");
 
         return true;
     }
@@ -135,9 +135,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        print_r ($_REQUEST);
+        //print_r ($_REQUEST);
         if ($this->_saveFile($values)) {
-            print "ok</br>";
+            print "File saved</br>";
        
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
@@ -294,7 +294,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
        */
     function _saveFile($values)
     {
-        print "Start saveFile()</br>";
         include_once "File_Upload.class.inc";
         
         //get the stored-file path
@@ -302,7 +301,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $paths = $config->getSetting('paths');
         $stored_file_path = $paths['IncomingPath'];
 
-        //print $stored_file_path;
         $file=new File_Upload;
     
         $file->overwriteMode="reject";
@@ -312,8 +310,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("mri_file", $this);
-	print " setfileHandler----------<BR>";
-        //Set the target directory that you want files moved
+	//Set the target directory that you want files moved
         //into once they are validated and processed.
         $file->setBaseUploadDirectory($stored_file_path);
         $user =& User::singleton();
@@ -327,10 +324,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file->setHandlerArgs(array("values"=>$values));
 
         //proccesses them (including verify, move, and import steps)
-print "entering";
-
+print "entering processFiles()\n";
         $file->processFiles();
-print "exiting";
         //echo error messages
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
@@ -364,12 +359,10 @@ print "done saving file";
          * 
         */
         
-        
+        print "IN isValid()<br>";
         $temp_file = $file->fileInfo['tmp_name'];
-        print "Temp file: $temp_file";
         $temp_dir = $this->tempdir(true);
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
-        print "New temp file: $new_temp_file"; 
         if (!copy($temp_file, '/tmp/new_compressed')) {
             echo "failed to copy $temp_file...\n";
         }
