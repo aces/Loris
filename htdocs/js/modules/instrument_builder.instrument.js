@@ -141,7 +141,6 @@ var Instrument = {
                 addStatus = false;
                 break;
             case 'page-break':
-                console.log("here");
                 content += 'page';
                 break;
             case 'scored':
