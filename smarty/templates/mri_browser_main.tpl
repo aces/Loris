@@ -3,6 +3,7 @@
 <html>
 <div id="page">
 <head>
+<meta charset="utf-8"/>
 <LINK REL=StyleSheet HREF="{$css}" TYPE="text/css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />

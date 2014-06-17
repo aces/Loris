@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="{$css}" type="text/css"/ >
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
 <head>
+<meta charset="utf-8"/>
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <!-- page title -->

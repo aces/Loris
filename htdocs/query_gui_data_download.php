@@ -11,6 +11,7 @@
  */
 
 // load the client
+ini_set('default_charset', 'utf-8');
 require_once 'NDB_Client.class.inc';
 $client = new NDB_Client;
 
