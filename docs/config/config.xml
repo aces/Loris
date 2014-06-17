@@ -246,6 +246,11 @@
     </study>
 <!-- end of study definition -->
 
+<!-- Conflict Resolver default max display settings -->
+    <ConflictResolver>
+         <MaxConflicts>50</MaxConflicts>
+    </ConflictResolver>
+
 <!-- Statistics options -->
     <statistics>
         <excludedMeasures>radiology_review</excludedMeasures>
