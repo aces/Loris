@@ -117,6 +117,16 @@ case 'raw_byte.gz':
     $FullPath = $imagePath . '/' . $File;
     $MimeType = 'application/octet-stream';
     break;
+case 'xml':
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'application/xml';
+    $DownloadFilename = basename($File);
+    break;
+case 'nrrd':
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
+    break;
 default:
     $FullPath = $DownloadPath . '/' . $File;
     $MimeType = 'application/octet-stream';
