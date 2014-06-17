@@ -1,0 +1,48 @@
+.details-outer-table {
+  margin: 1em 1em 1em 0;
+  background: #FF;
+  border-collapse: collapse;
+  text-align: left;
+  width: 100%;
+}
+.details-outer-table tr:hover {
+   background: snow !important;
+}
+.details-outer-table th, .details-outer-table td {
+  border: 1px silver solid;
+  padding: 0.3em;
+}
+.details-outer-table th {
+  background: #999999;
+  text-align: left;
+}
+.details-outer-table caption {
+  margin-left: inherit;
+  margin-right: inherit;
+}
+
+.inner-series-table {
+  width: 100%;
+  border: 1px;
+  cellpadding: 5px; 
+}
+
+.inner-files-table {
+  width: 10%;
+  border: 1px;
+  cellpadding: 5px;
+}
+#filesBlock {
+  display: none;
+}
+#metadataBlock {
+  display: none;
+}
+.valign-top {
+  vertical-align: text-top;
+}
+
+.fancytable {
+  width: 100%;
+  border: 1px;
+}
