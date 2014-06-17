@@ -1,4 +1,4 @@
-<?
+<?php
 set_time_limit(0);
 /**
  * QUAT uses the parameter_type table to determine the list of

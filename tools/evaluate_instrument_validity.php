@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?
+<?php
 /**
  * @package behavioural
  */
