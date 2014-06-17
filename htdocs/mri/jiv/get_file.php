@@ -70,9 +70,10 @@ $FileExt = $path_parts['extension'];
 
 //make sure that we have a .nii.gz image if FileExt equal gz 
 if(strcmp($FileExt,"gz") == 0){
-     if(strcmp(pathinfo($path_parts['filename'])['extension'],"nii")==0){
-         $FileExt = "nii.gz";
-     }
+    $path_subparts = pathinfo($path_parts['filename']);
+    if(strcmp($path_subparts['extension'],"nii")==0){
+       $FileExt = "nii.gz";
+    }
 }
 unset($path_parts);
 
