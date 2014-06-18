@@ -187,6 +187,9 @@ class NDB_Caller extends PEAR
             return PEAR::raiseError($form->getMessage());
         }
     
+        if(method_exists($form, 'getControlPanel')) {
+            $this->controlPanel = $form->getControlPanel();
+        }
         $success = $form->save();
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("NDB_Caller::loadForm() save: ".$success->getMessage());

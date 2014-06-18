@@ -1,4 +1,4 @@
-<?
+<?php
 set_time_limit(0);
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 /**

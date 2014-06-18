@@ -67,6 +67,14 @@ if (strpos($File, ".") === false) {
 // Find the extension
 $path_parts = pathinfo($File);
 $FileExt = $path_parts['extension'];
+
+//make sure that we have a .nii.gz image if FileExt equal gz 
+if(strcmp($FileExt,"gz") == 0){
+    $path_subparts = pathinfo($path_parts['filename']);
+    if(strcmp($path_subparts['extension'],"nii")==0){
+       $FileExt = "nii.gz";
+    }
+}
 unset($path_parts);
 
 // Make sure that the user isn't trying to break out of the $path by
@@ -85,6 +93,16 @@ case 'mnc':
     $MimeType = "application/x-minc";
     $DownloadFilename = basename($File);
     break;
+case 'nii':
+    $FullPath = $mincPath . '/' . $File;
+    $MimeType = "application/x-nifti";
+    $DownloadFilename = basename($File);
+    break;
+case 'nii.gz':
+    $FullPath = $mincPath . '/' . $File;
+    $MimeType = "application/x-nifti-gz";
+    $DownloadFilename = basename($File);
+    break;
 case 'png':
     $FullPath = $imagePath . '/' . $File;
     $MimeType = "image/png";
@@ -99,6 +117,16 @@ case 'raw_byte.gz':
     // And they don't have a real mime type.
     $FullPath = $imagePath . '/' . $File;
     $MimeType = 'application/octet-stream';
+    break;
+case 'xml':
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'application/xml';
+    $DownloadFilename = basename($File);
+    break;
+case 'nrrd':
+    $FullPath = $imagePath . '/' . $File;
+    $MimeType = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
     break;
 default:
     $FullPath = $DownloadPath . '/' . $File;

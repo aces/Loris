@@ -1,32 +1,4 @@
-{literal}
-<script type="text/javascript">
-<!--
-function toggleLayer(whichLayer)
-{
-if (document.getElementById)
-{
-// this is the way the standards work
-var style2 = document.getElementById(whichLayer).style;
-style2.display = style2.display == "block" ? "none":"block";
-}
-else if (document.all)
-{
-// this is the way old msie versions work
-var style2 = document.all[whichLayer].style;
-style2.display = style2.display == "block" ? "none":"block";
-}
-else if (document.layers)
-{
-// this is the way nn4 works
-var style2 = document.layers[whichLayer].style;
-style2.display = style2.display == "block" ? "none":"block";
-}
-}
-// -->
-</script>
-{/literal}
-
-<table class="fancytableleft" width="100%" >
+<table class="details-outer-table">
 	<tr><th width="11%">Acquisition ID</th><td width="89%"><a href="main.php?test_name=mri_violations&PatientName={$archive.PatientName}&filter=true">{$archive.DicomArchiveID}</a></td></tr>
 	<tr><th>Patient ID</th><td{if $archive.patientIDValid == 0} class="error"{/if}>{$archive.PatientID}</td></tr>
 	<tr><th>Patient Name</th><td{if $archive.patientNameValid == 0} class="error"{/if}>{$archive.PatientName}</td></tr>
@@ -43,8 +15,8 @@ style2.display = style2.display == "block" ? "none":"block";
 	<tr><th>Archiving log</th><td><pre>{$archive.CreateInfo}</pre></td></tr>
 	<tr><th>md5sum of Archive</th><td><pre><br><b>{$archive.md5sumArchive}</pre></b></td></tr>
 	<tr><th>md5sum of Dicom unzipped</th><td><br><b><pre>{$archive.md5sumDicomOnly}</pre></b></td></tr>
-    <tr><th valign="top">Series</th><td>
-        <table width="100%" border="1px" cellpadding="5px">
+    <tr><th class="valign-top">Series</th><td>
+        <table class="inner-series-table">
         <tr>
             <th>Series Number</th>
             <th>Series Description</th>
@@ -73,8 +45,8 @@ style2.display = style2.display == "block" ? "none":"block";
 {/section}
         </table>
     </td></tr>
-    <tr><th valign="top">Files</th><td><a href="javascript:toggleLayer('filesBlock');">Show/Hide files</a><br><div id="filesBlock" style="display: none;">
-    <table width="10%" border="1px" cellpadding="5px">    
+    <tr><th class="valign-top">Files</th><td><a href="javascript:toggleLayer('filesBlock');">Show/Hide files</a><br><div id="filesBlock">
+    <table class="inner-files-table">    
     <tr>
         <th>SeriesNumber</th>
         <th>FileNumber</th>
@@ -95,5 +67,5 @@ style2.display = style2.display == "block" ? "none":"block";
 {/section}
     </table></div>
     </td></tr>
-	<tr><th valign="top">Metadata</th><td><a href="javascript:toggleLayer('metadataBlock');">Show/Hide metadata</a><br><div id="metadataBlock" style="display: none;"><pre>{$archive.AcquisitionMetadata}</pre></div></td></tr>
+	<tr><th class="valign-top">Metadata</th><td><a href="javascript:toggleLayer('metadataBlock');">Show/Hide metadata</a><br><div id="metadataBlock"><pre>{$archive.AcquisitionMetadata}</pre></div></td></tr>
 </table>
