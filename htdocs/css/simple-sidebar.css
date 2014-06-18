@@ -1,13 +1,18 @@
+#sidebar-content{
+  padding-left: 10px;
+}
+
 #wrapper {
   padding-left: 150px;
   transition: all 0.4s ease 0s;
 }
 
 #sidebar-wrapper {
-  margin-left: -150px;
-  left: 150px;
-  width: 150px;
-  background: #2FA4E7;
+  margin-left: -250px;
+  margin-top: 50px;
+  left: 250px;
+  width: 250px;
+  background: #064785;
   position: fixed;
   height: 100%;
   overflow-y: auto;

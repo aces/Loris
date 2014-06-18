@@ -1,5 +1,4 @@
 <!-- Control Panel -->
-<div class='div-cpanel'>
     {if $subject.backURL!=""}<h3>Navigation</h3>{/if}
     <ul>{if $subject.backURL != ""}
         <li><a href="{$subject.backURL}"><img class='img-navigation-array' src="images/left.gif" alt="Back"><img class='img-navigation-array' src="images/left.gif" alt="Back">&nbsp;Back to list</a></li>{/if}
@@ -34,10 +33,10 @@
         <dt>QC Status</dt>
        	<dt class='dt-qc-status'>{if $subject.has_permission}{html_options options=$subject.status_options selected=$subject.mriqcstatus name=visit_status tabindex=1}{else}{$subject.mriqcstatus}{/if}</dt>
        	<dt>QC Pending</dt>
-       	<dt>{if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2}{else}{if $subject.mriqcpending=='Y'}<img src='images/check_blue.gif class='img-pending' />{else}&ndbp;{/if}{/if}</dt>
+       	<dt>{if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2}{else}{if $subject.mriqcpending=='Y'}<img src='images/check_blue.gif' class='img-pending' />{else}&ndbp;{/if}{/if}</dt>
     </dl>
     {if $subject.has_permission}<input class="button" type="submit" accesskey="s" value="Save" name="save_changes">{/if}
-</div></div>
+</div>
 </td>
 <td class='td-cpanel-fake'><table class='table-cpanel-fake'></table>
 <!-- /Control Panel -->
