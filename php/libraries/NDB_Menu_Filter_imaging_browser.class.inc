@@ -174,12 +174,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         $DB = Database::singleton();
         $allAr = array('' => 'All');
-        $this->addBasicText('pscid', 'PSCID', array("size"=>10,"maxlength"=>25));
+        $this->addBasicText('pscid', 'PSCID', array("size"=>10,"maxlength"=>25, 'class' => 'form-control input-sm'));
         $this->addBasicText(
-            'VL', 'Visit Label', array('size' => "10", "maxlength"=>"25")
+            'VL', 'Visit Label', array('size' => "10", "maxlength"=>"25", 'class' => 'form-control input-sm')
         );
         $this->addBasicText(
-            'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
+            'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25, 'class' => 'form-control input-sm')
         );
         $this->addSelect('ProjectID', 'Project', $allAr + Utility::getProjectList());
         $this->addSelect('SiteID', 'Site', $allAr + Utility::getSiteList());
