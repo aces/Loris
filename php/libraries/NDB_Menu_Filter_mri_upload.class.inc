@@ -135,9 +135,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        //print_r ($_REQUEST);
         if ($this->_saveFile($values)) {
-            print "File saved</br>";
+            print "File saved, processing...\n";
        
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
@@ -182,7 +181,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             $decomp = new File_Decompress($source_location, $mri_incoming_path);
             $decompressed_folder = $decomp->decompressFile();
-            $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
+            
+            // Olga: remove "/" between $mri_incoming and $decompressed
+            $decompressed_folder = $mri_incoming_path . $decompressed_folder;
             if (!($decompressed_folder)) { //decompress the file
                 $this->log->addLog(
                     "The File $source_location is now".
@@ -324,7 +325,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file->setHandlerArgs(array("values"=>$values));
 
         //proccesses them (including verify, move, and import steps)
-print "entering processFiles()\n";
         $file->processFiles();
         //echo error messages
         if (!empty($file->errorLog)) {
@@ -336,7 +336,6 @@ print "entering processFiles()\n";
             }
             return false;
         }
-print "done saving file";
         return true;
     }
     /**
@@ -359,7 +358,6 @@ print "done saving file";
          * 
         */
         
-        print "IN isValid()<br>";
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir = $this->tempdir(true);
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
@@ -377,8 +375,8 @@ print "done saving file";
         $files_not_readable = 0;
         $file_not_matching_patient_name = 0;
         $header_patient_name = array();
-        $hader_patient_name;
-
+        //$hader_patient_name;
+        
         ///////////////////////////////////////////////////////////////////////
         //////////////Make sure the extension is valid/////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -472,12 +470,17 @@ print "done saving file";
             ///////////////////////////////////////////////////////////////////
             //////////////////iterate through the folder///////////////////////
             ///////////////////////////////////////////////////////////////////
-            $objects = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($temp_dir),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
+            // $objects = new RecursiveIteratorIterator(
+             //   new RecursiveDirectoryIterator($temp_dir),
+              //  RecursiveIteratorIterator::SELF_FIRST
+            // );
+          
+            // Olga: instead of using recursion, since it doesn't work
+            $arr = explode(".", $file->fileInfo['name'], 2);
+            $first = $arr[0];
+            $dir = $temp_dir . '/' . $first;
+            $objects = scandir($dir);
             foreach ($objects as $name => $file) {
-
                 if (is_file($file)) {
                     ///////////////////////////////////////////////////////////
                     ///////////////determin the file-type//////////////////////
@@ -492,7 +495,6 @@ print "done saving file";
                         continue;
                     }
                     
-
                     
                     ///////////////////////////////////////////////////////////
                     ///////////////if the file is not a dicom//////////////////
@@ -528,7 +530,7 @@ print "done saving file";
                     }
                 }
             }
-exit(-1);
+
             if ($files_not_dicom > 0) {
                 $errors[]=" There are  $files_not_dicom files detected which ".
                       "are not of type DICOM";
@@ -678,13 +680,15 @@ exit(-1);
     function sourceEnvironment($mri_code_path,$mri_user) 
     {
 
-        $path = $mri_code_path. ":". getenv('PATH');
+        $path = getenv('PATH') . ":" . $mri_code_path . ":" .  $mri_code_path. "uploadNeuroDB";
         putenv("PATH=$path");
+
+//	echo "path is " . $path . "<BR>";
         $loris_config = $mri_code_path . "dicom-archive";
         putenv("LORIS_CONFIG=$loris_config");
-        $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
-        putenv("PERL5LIB=$path");
-        
+       // $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB'). ":" . "/usr/share/perl/";
+        putenv("PERL5LIB=/usr/share/perl/:$mri_code_path:$mri_code_path/dicom-archive");
+        print "perl path" . getenv('PERL5LIB') . "<BR>";
         $tempdir = getenv('TMPDIR');
         //Set the TMPDIR path only if it's not already set
         if (!isset($tempdir)) {
@@ -717,12 +721,15 @@ exit(-1);
         ///////////////////////////////////////////////////////////////////////
         //////////////////Run the dicom_tar////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $cmd = "perl $DICOMTAR $decompressed_folder $tarchive_location"
-        .  " -clobber -database -profile prod";
+        $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
+        .  " -clobber -database -profile prod 2>&1";
+        print "\nBefore executing script" . date("m/d/Y h:i:s a", time()); 
+
         $output = shell_exec($cmd);
+        print "\nAfter executing script" . date("m/d/Y h:i:s a", time());
         if ($this->show_queries) {
             print "cmd : $cmd \n";
-            print $output;
+            print "Output: $output end\n";
         }
 
         ///////////////////////////////////////////////////////////////////////

@@ -20,34 +20,25 @@ function change () {
 }
 
 function showProgress (perc) {
-   // $("#upload").click(function(e) {
-     //   e.preventDefault();
-     //   $("#progress").append('<div id="progressbar"><div class="progress-label">Loading...</div></div>');
-        var progressbar = $("#progressbar"),
-        progressLabel = $(".progress-label");
-        progressbar.progressbar({
-            value: perc,
-            change: function() {
-                progressLabel.text(progressbar.progressbar("value") + "%");
-            },
-            complete: function() {
-                progressLabel.text("Complete!");
-                setTimeout(remove, 1000);            
-            }
-        });
-        function progress() {
-            var val = perc || 0; 
-            progressbar.progressbar("value", val);
-           // if (val < 99) {
-              //  setTimeout(progress, 100 );
-           // }
+    var progressbar = $("#progressbar"),
+    progressLabel = $(".progress-label");
+    progressbar.progressbar({
+        value: perc,
+        change: function() {
+            progressLabel.text(progressbar.progressbar("value") + "%");
+        },
+        complete: function() {
+            progressLabel.text("Complete!");
+            setTimeout(remove, 1000);            
         }
-        function remove() {
-            $("#progress").hide();
-        }
-       // setTimeout(progress, 3000);
-//});
-   
+    });
+    function progress() {
+        var val = perc || 0; 
+        progressbar.progressbar("value", val);
+    }
+    function remove() {
+        $("#progress").hide();
+    }
 }
 
 function changeProgress(val) {
@@ -66,11 +57,9 @@ function sendFile() {
         $.ajax({
             xhr: function(){
                 var xhr = new window.XMLHttpRequest();
-                //Upload progress
                 xhr.upload.addEventListener("progress", function(evt){
                     if (evt.lengthComputable) {
                         var percentComplete = Math.floor((evt.loaded / evt.total)*100);
-                        console.log(percentComplete);
                         showProgress(percentComplete);
                     }
                 }, false);
@@ -79,7 +68,7 @@ function sendFile() {
             url: formURL,
             type: 'POST',
             data:  formData,
-            mimeType:"multipart/form-data",
+            mimeType: "multipart/form-data",
             contentType: false,
             cache: false,
             processData: false,
@@ -99,6 +88,5 @@ $(function () {
    change();
    $("#progressbar").hide();
    sendFile();
-   //showProgress();
 });
 

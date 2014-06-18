@@ -81,9 +81,8 @@ print "checking validity";
                     //Validate the file using the isValid method of the handler
                     //class.
                     $fileVerified=$this->callFileHandler($field, 'verify');
-print "isValid";
-
                     if (is_array($fileVerified)) {
+                        print "File verified\n"; print_r ($fileVerified);
                         $this->setError($field, $fileVerified);
                         continue;
                     }
@@ -182,12 +181,13 @@ print "isValid";
         //Call the method
         $func = array($class, $method);
         $args = array($this, $args);
-print "\nFunction\n";
-print_r ($func);
-print "\nArgs\n";
-print_r ($args);
+//print "\nFunction\n";
+//print_r ($func);
+//print "\nArgs\n";
+//print_r ($args);
+
         $output=call_user_func_array($func, $args);
-exit(-1);
+
         return $output;
     }
     
@@ -233,7 +233,8 @@ exit(-1);
      */
     function getNewDirectory($destination_dir="")
     {
-        $dest_dir=$this->baseUploadDirectory.$destination_dir;
+        $dest_dir=$this->baseUploadDirectory; //.$destination_dir;
+        
         //Make sure the dir ends with a trailing slash
         if (substr($dest_dir, -1, 1) != "/") {
             $dest_dir.="/";
@@ -290,6 +291,7 @@ exit(-1);
         //If there is already a file with this name in the target directory either
         //overwrite, rename, or reject.
         if (file_exists($dest_dir.$safe_name)) {
+            print "File: " . $dest_dir . ", " . $safe_name;
             switch($this->overwriteMode){
             case "rename":
                 if ($this->renameMode=="incremental") {
