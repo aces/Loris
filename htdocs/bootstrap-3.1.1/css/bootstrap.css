@@ -1,6 +1,9 @@
 /* 
  * CSS not implemented in bootstrap
 */
+#workspace {
+    position: relative;
+}
 .LoginFooter {
     bottom:0;
     clear: both;
@@ -5347,11 +5350,12 @@ a.list-group-item-danger.active:focus {
     border: 1px solid transparent;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05)
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .panel-body {
-    padding: 15px
+    padding: 15px;
+    overflow-y: auto;
 }
 
 .panel-heading {

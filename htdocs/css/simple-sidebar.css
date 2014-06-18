@@ -1,3 +1,7 @@
+#sidebar-content{
+  padding-left: 10px;
+}
+
 #wrapper {
   padding-left: 250px;
   transition: all 0.4s ease 0s;
@@ -5,6 +9,7 @@
 
 #sidebar-wrapper {
   margin-left: -250px;
+  margin-top: 50px;
   left: 250px;
   width: 250px;
   background: #064785;

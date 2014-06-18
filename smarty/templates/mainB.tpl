@@ -186,8 +186,9 @@
                 <!-- Sidebar -->
             
                     <div id="sidebar-wrapper" class="sidebar-div">
-                        <br><br>
-                        {$control_panel}
+                        <div id="sidebar-content">
+                            {$control_panel}
+                        </div>
                     </div>
             
         <!--    Want to wrap page content only when sidebar is in view
@@ -449,7 +450,7 @@
                                     {/if}
                                 {/if}
 
-                                <div>
+                                <div id="workspace">
                                     {$workspace}
                                 </div>  
                             {/if}
