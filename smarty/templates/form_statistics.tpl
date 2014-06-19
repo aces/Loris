@@ -89,7 +89,6 @@ function CreateScatterplot() {
         $('.ui-state-default').removeClass('ui-tabs-active');
         $('.ui-tabs-nav').removeClass('ui-widget-header');
         $(".tab-option").click(function(event){
-            // alert(event.target);
             location.hash = event.target.id;
         });
         var element = document.getElementById(location.hash.replace('#', ''));
