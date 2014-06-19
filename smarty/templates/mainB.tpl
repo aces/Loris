@@ -100,6 +100,7 @@
                     onload="feedback_bvl_popup();" 
             {/if}
     >
+    <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
             <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
                <div class="navbar-header">
@@ -198,28 +199,28 @@
             {if $dynamictabs neq "dynamictabs"}
                 <br><br><br>
             <div class="page-content inset">
-                <div class="panel panel-primary">
+                <!-- <div class="panel panel-primary"> -->
                     
                     {if $crumbs != ""}
-                        <div class="panel-heading">
+                        <div class="alert alert-info alert-sm">
                             {section name=crumb loop=$crumbs}
                                 {if $test_name == "conflicts_resolve"}
                                     <a href="main.php/{$crumbs[crumb].query}" class="text-default" style="color: white">
-                                        Conflicts Resolver
+                                        <label>Conflicts Resolver</label>
                                     </a> 
                                     {if not $smarty.section.crumb.last}
                                         &gt; 
                                     {/if}
                                 {elseif $test_name == "statistics_dd_site"}
                                     <a href="main.php/{$crumbs[crumb].query}" class="text-default">
-                                        Double Data Entry Site Statistics
+                                        <label>Double Data Entry Site Statistics</label>
                                     </a> 
                                     {if not $smarty.section.crumb.last}
                                         &gt; 
                                     {/if}
                                 {else}
                                     <a href="main.php?{$crumbs[crumb].query}" style="color: white">
-                                        {$crumbs[crumb].text}
+                                        <label>{$crumbs[crumb].text}</label>
                                     </a> 
                                     {if not $smarty.section.crumb.last}
                                         &gt; 
@@ -228,7 +229,7 @@
                             {/section}
                         </div>
                     {/if}
-                        <div class="panel-body">
+                        <div>
                             {if $error_message != ""}
                                 <p>
                                     The following errors occured while attempting to display this page:
@@ -455,43 +456,43 @@
                                 </div>  
                             {/if}
                         </div>
-                        <div class="panel-footer">
-                                        
-                                                        <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" align="center">
-                                                            <li id="active">
-                                                                |
-                                                            </li>
-                                                            {foreach from=$links item=link}
-                                                                <li>  
-                                                                    <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
-                                                                        {$link.label}
-                                                                    </a> 
-                                                                    |
-                                                                </li>
-                                                            {/foreach}
-                                                        </ul>
-                                                   
-                                            
-                                                    <div align="center" colspan="1" style="color:#808080" >
-                                                        Powered by LORIS &copy; 2013. All rights reserved.
-                                                    </div>
-                                                    <div align="center" colspan="1">
-                                                        <a href="http://cbrain.mcgill.ca" style="color: #2FA4E7" target="_blank">
-                                                            Created by ACElab
-                                                        </a>
-                                                    <div>
-                        </div>  
+                         
                         
                     </div>              
                 
                 
 
                    
-                </div>
+                <!-- </div> -->
             </div>
             {else}
                 {$workspace}
             {/if}
+        </div>
+        </div>
+        </div>
+        <div id="footer" class="footer navbar-bottom">
+            <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" align="center">
+                <li id="active">
+                    |
+                </li>
+                {foreach from=$links item=link}
+                        <li>  
+                            <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
+                                {$link.label}
+                            </a> 
+                            |
+                        </li>
+                {/foreach}
+            </ul>
+            <div align="center" colspan="1" style="color:#808080" >
+                Powered by LORIS &copy; 2013. All rights reserved.
+            </div>
+            <div align="center" colspan="1">
+                <a href="http://cbrain.mcgill.ca" style="color: #2FA4E7" target="_blank">
+                    Created by ACElab
+                </a>
+            </div>
         </div>
     </body>
 </html>
