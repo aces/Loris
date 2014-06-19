@@ -87,7 +87,7 @@
                 <div class="visible-xs visible-sm col-xs-12"> </div>
                 <div class="visible-xs visible-sm col-xs-12"> </div>
                 <div class="visible-xs visible-sm col-xs-12"> </div>
-                <div class="visible-xs visible-sm col-xs-12"> </div>ß
+                <div class="visible-xs visible-sm col-xs-12"> </div>
                 <div class="form-group col-md-2">
                     <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=dicom_archive&reset=true'">
                 </div>

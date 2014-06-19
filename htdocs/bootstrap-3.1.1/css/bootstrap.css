@@ -1,6 +1,17 @@
 /* 
  * CSS not implemented in bootstrap
 */
+html, body {height: 100%;}
+#wrap {min-height: 100%;}
+
+#page {overflow:auto;
+    padding-bottom: 100px;}  /* must be same height as the footer */
+
+#footer {position: relative;
+    margin-top: -100px; /* negative value of footer height */
+    height: 100px;
+    clear:both;} 
+
 #workspace {
     position: relative;
 }
@@ -4953,7 +4964,8 @@ a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
 }
 
 .alert {
-    padding: 15px;
+    padding: 5px;
+    padding-left: 15px;
     margin-bottom: 20px;
     border: 1px solid transparent;
     border-radius: 4px
@@ -5002,7 +5014,7 @@ a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
 }
 
 .alert-info {
-    background-color: #d9edf7;
+    background-color: #064785;
     border-color: #bce8f1;
     color: #3a87ad
 }
