@@ -114,7 +114,7 @@ class NDB_Page extends PEAR
         $group[] = $this->form->createElement('static', null, null, '<label>');
         // $html = '<label><input type=\'checkbox\'> '.$label.'</label>';
         $group[] = $this->form->createElement('advcheckbox', $field, null, null, $options);
-        $group[] = $this->form->createElement('static', null, null, $label.$closer);
+        $group[] = $this->form->createElement('static', 'checkLabel', null, $label.$closer);
         return $group;
         // return $this->form->createElement('static', null, null, $html);
     }

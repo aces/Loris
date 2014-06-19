@@ -80,7 +80,9 @@ $(document).ready(function() {
     		{$form.Password_Group.label}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Password_Group.html}
+    		{$form.Password_Group.NA_Password.html} {$form.Password_Group.checkLabel.html}
+            <br>
+            {$form.Password_Group.Password_md5.html}
     	</div>
         {if $form.errors.Password_Group}
             <div class="col-sm-offset-2 col-xs-12">
