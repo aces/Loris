@@ -450,7 +450,7 @@
                                     {/if}
                                 {/if}
 
-                                <div id="workspace">
+                                <div id="kgkjgkjg">
                                     {$workspace}
                                 </div>  
                             {/if}
