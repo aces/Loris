@@ -41,13 +41,14 @@ function showProgress (perc) {
     }
 }
 
-function changeProgress(val) {
+/*function changeProgress(val) {
     var widthBar = val*$("#progressbar").width()/100;
     $("#progressbar").width(widthBar).html(val + "%");
-}
+}*/
 
 function sendFile() {
     $("#mri_upload").submit(function(e) {
+        ajax_stream();
         $("#progressbar").show();
         var formObj = $(this);
         var formURL = "main.php?test_name=mri_upload";
@@ -80,8 +81,45 @@ function sendFile() {
             {
             }         
         });
-        e.preventDefault(); //Prevent Default action.
+        e.preventDefault(); 
     });
+}
+
+function log_message(message) {
+    var previous = $("#log_box").html();
+    var next = previous + message;
+    $("#log_box").html(next + "<br>");
+}
+
+function ajax_stream() {
+    if (!window.XMLHttpRequest) {
+        log_message("Your browser does not support the native XMLHttpRequest object.");
+        return;
+    }
+         
+    try {
+        var xhr = new XMLHttpRequest(); 
+        xhr.previous_text = '';
+             
+        //xhr.onload = function() { log_message("[XHR] Done. responseText: <i>" + xhr.responseText + "</i>"); };
+        xhr.onerror = function() { log_message("[XHR] Fatal Error."); };
+        xhr.onreadystatechange = function() {
+            try {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var result = xhr.responseText;
+                    log_message(result);
+                   // setTimeout(ajax_stream, 3000);
+                }  
+            } catch (e) {
+                    log_message("<b>[XHR] Exception: " + e + "</b>");
+            }
+        };
+     
+        xhr.open("GET", "read_log.php", true);
+        xhr.send();     
+    } catch (e) {
+        log_message("<b>[XHR] Exception: " + e + "</b>");
+    }
 }
 
 $(function () {

@@ -32,13 +32,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
   
     var $show_queries = true;
-
+    
     /**
      * _has_access returns true
      * if the user has the specific permission
      *
      * @return boolean
-     */
+     */ 
     function _hasAccess()
     {
         // create user object
@@ -136,8 +136,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function _process($values)
     {
         if ($this->_saveFile($values)) {
-            print "File saved, processing...\n";
-       
+                   
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
             ///////////////////////////////////////////////////////////////////
@@ -683,12 +682,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $path = getenv('PATH') . ":" . $mri_code_path . ":" .  $mri_code_path. "uploadNeuroDB";
         putenv("PATH=$path");
 
-//	echo "path is " . $path . "<BR>";
         $loris_config = $mri_code_path . "dicom-archive";
         putenv("LORIS_CONFIG=$loris_config");
-       // $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB'). ":" . "/usr/share/perl/";
+
         putenv("PERL5LIB=/usr/share/perl/:$mri_code_path:$mri_code_path/dicom-archive");
-        print "perl path" . getenv('PERL5LIB') . "<BR>";
         $tempdir = getenv('TMPDIR');
         //Set the TMPDIR path only if it's not already set
         if (!isset($tempdir)) {
@@ -697,6 +694,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
+exit(-1);        
     }
 
     /**
@@ -723,10 +721,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
         .  " -clobber -database -profile prod 2>&1";
-        print "\nBefore executing script" . date("m/d/Y h:i:s a", time()); 
-
+        
         $output = shell_exec($cmd);
-        print "\nAfter executing script" . date("m/d/Y h:i:s a", time());
         if ($this->show_queries) {
             print "cmd : $cmd \n";
             print "Output: $output end\n";

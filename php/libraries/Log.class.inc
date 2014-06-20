@@ -75,6 +75,7 @@ class Log extends PEAR
     */
     function addLog($message,$use_date=true) 
     {
+        include('../../htdocs/read_log.php');
         $now_array = getdate();
         if ($use_date) {
             $now_string = sprintf(
@@ -83,6 +84,7 @@ class Log extends PEAR
                 $now_array['minutes'], $now_array['seconds']
             );
             error_log("[$now_string] $message\n", 3, $this->GENERAL_ERROR_DIR);
+            newEvent(true);
         }
         else {
             error_log("$message\n", 3, $this->GENERAL_ERROR_DIR);

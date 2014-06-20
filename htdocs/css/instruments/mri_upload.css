@@ -1,7 +1,9 @@
 #log_box {
-  width: 400px;
+  width: 600px;
   height: 200px;
-  border: 2px solid #064785;  
+  border: 2px solid #064785;
+  overflow: auto;
+  padding: 5px; 
 }
 
 #progressbar {

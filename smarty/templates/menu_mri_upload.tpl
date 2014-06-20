@@ -70,8 +70,7 @@
         <!--td nowrap="nowrap" colspan="2"><input class="textarea" id/></td-->
         <tr>
             <td>
-                <div id="log_box" overflow-y: scroll overflow: auto>
-                </div>
+                <div id="log_box"></div>
             </td> 
         </tr>
          <!--tr> <td><textarea id="log_box" type="text" rows="4" cols="50" readonly></textarea></td> <tr-->

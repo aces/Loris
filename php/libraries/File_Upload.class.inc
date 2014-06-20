@@ -73,7 +73,7 @@ class File_Upload extends PEAR
                 ); 
                 continue;
             }
-print "checking validity";
+
             //Test the handler to ensure it exists and all methods are intact
             if ($this->isValidFileHandler($field)) {
                 //Verify the file
@@ -82,7 +82,6 @@ print "checking validity";
                     //class.
                     $fileVerified=$this->callFileHandler($field, 'verify');
                     if (is_array($fileVerified)) {
-                        print "File verified\n"; print_r ($fileVerified);
                         $this->setError($field, $fileVerified);
                         continue;
                     }
@@ -181,10 +180,6 @@ print "checking validity";
         //Call the method
         $func = array($class, $method);
         $args = array($this, $args);
-//print "\nFunction\n";
-//print_r ($func);
-//print "\nArgs\n";
-//print_r ($args);
 
         $output=call_user_func_array($func, $args);
 
@@ -291,7 +286,6 @@ print "checking validity";
         //If there is already a file with this name in the target directory either
         //overwrite, rename, or reject.
         if (file_exists($dest_dir.$safe_name)) {
-            print "File: " . $dest_dir . ", " . $safe_name;
             switch($this->overwriteMode){
             case "rename":
                 if ($this->renameMode=="incremental") {
