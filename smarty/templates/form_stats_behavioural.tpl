@@ -14,6 +14,11 @@
         $('#' + id).attr('onClick', 'showStats(this)');
         $('#' + id).removeClass('stats-active');
     }
+    $(window).resize(function(){
+        if($(window).width() < 500){
+            $('.table-div').addClass('table-responsive');
+        }       
+    });
 </script>
 {/literal}
 
@@ -24,14 +29,15 @@
 <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
 <br><br>
 
-<!-- <div class="table-responsive">
+<div class="table-div">
     <table class="table table-primary table-bordered">
         <thead>
             <tr class="info">
                 <th rowspan="2">Visit</th>
                 {foreach from=$Centers item=center key=centername}
-                    <th colspan="3" id='{$center.LongName}'>
-                        {$center.LongName}
+                    <th id='{$center.LongName}' onclick="showStats(this)">
+                        {$center.LongName}  
+                        <a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>(Per instrument stats)</a>
                     </th>
                 {/foreach}
                 <th colspan="3" id='total'>Total</th>
@@ -39,8 +45,8 @@
             </tr>
             <tr class="info">
                 {foreach from=$Centers item=center}
-                 <th class='{$center.LongName}'>Completed</th>
-                 <th class='{$center.LongName}'>Created</th>
+                 <th class='{$center.LongName}' style="display:none">Completed</th>
+                 <th class='{$center.LongName}' style="display:none">Created</th>
                  <th>% Completion</th>
                 {/foreach}
                  {* Total isn't in the visits array, so we need to manually add its header *}
@@ -54,8 +60,8 @@
                 <tr>
                     <td>{$visit|upper}</td>
                     {foreach from=$Centers item=center key=centername}
-                        <td>{$behaviour[$center.ID][$visit].complete|default:"0"}</td>
-                        <td>{$behaviour[$center.ID][$visit].total|default:"0"}</td>
+                        <td class='{$center.LongName}' style="display:none">{$behaviour[$center.ID][$visit].complete|default:"0"}</td>
+                        <td class='{$center.LongName}' style="display:none">{$behaviour[$center.ID][$visit].total|default:"0"}</td>
                         <td>{$behaviour[$center.ID][$visit].percent|default:"0"}%</td>
                     {/foreach}
                     <td class="total">{$behaviour[$center.ID].all.complete|default:"0"}</td>
@@ -64,19 +70,12 @@
                     <td> <a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a></td>
                  </tr>
             {/foreach}
-<<<<<<< HEAD
-        </tbody>
-    </table>
-</div> -->
-
-
-<div class="table-responsive">
-    <table class="table table-primary table-bordered">
-        <thead>
-            <tr class="info">
-                <th rowspan="2">Site</th>
-                {foreach from=$Visits item=visit}
-                    <th id="{$visit}" onclick="showStats(this)">{$visit|upper}</th>
+            <tr>
+                <td>Total</td>
+                {foreach from=$Centers item=center key=centername}
+                    <td class='{$center.LongName}' style="display:none">{$behaviour[$center.ID].all.complete|default:"0"}</td>
+                    <td class='{$center.LongName}' style="display:none">{$behaviour[$center.ID].all.total|default:"0"}</td>
+                    <td class="total">{$behaviour[$center.ID].all.percent|default:"0"}%</td>
                 {/foreach}
                 <th class="stats-active" colspan="3" id="total" onclick="hideStats(this)">Total</th>
                 <th rowspan="2">Per instrument stats</th>
