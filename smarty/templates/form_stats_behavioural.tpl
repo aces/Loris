@@ -17,7 +17,7 @@
     $(window).resize(function(){
         if($(window).width() < 500){
             $('.table-div').addClass('table-responsive');
-        }       
+        } 
     });
 </script>
 {/literal}
