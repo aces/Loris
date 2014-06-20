@@ -185,28 +185,28 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
 
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addBasicText(
-            'PatientID', 'PatientID', array('size' => 10, 'maxlength' => 25)
+            'PatientID', 'PatientID', array('size' => 10, 'maxlength' => 25, 'class' => 'form-control input-sm')
         );
         $this->addBasicText(
-            'Gender', 'Gender', array('size' => 10, "maxlength" => 25)
+            'Gender', 'Gender', array('size' => 10, "maxlength" => 25, 'class' => 'form-control input-sm')
         );
         $this->addBasicText(
             'Acquisition', 
             'Acquisition Date', 
-            array('size' => 10, "maxlength" => 25)
+            array('size' => 10, "maxlength" => 25, 'class' => 'form-control input-sm')
         );
         $this->addBasicText(
             'PatientName', 
             'Patient Name', 
-            array('size' => 10, "maxlength" => 25)
+            array('size' => 10, "maxlength" => 25, 'class' => 'form-control input-sm')
         ); 	
         $this->addBasicText(
-            'DoB', 'Date of Birth', array('size' => 10, "maxlength" => 25)
+            'DoB', 'Date of Birth', array('size' => 10, "maxlength" => 25, 'class' => 'form-control input-sm')
         );
         $this->addBasicText(
             'Location', 
             'Archive Location', 
-            array('size' => 10, "maxlength" => 25)
+            array('size' => 10, "maxlength" => 25, 'class' => 'form-control input-sm')
         );
         
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
