@@ -1,5 +1,6 @@
 <?php
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+ini_set('default_charset', 'utf-8');
 /**
  * @package mri
  */
@@ -23,6 +24,8 @@ if(Utility::isErrorX($DB)) {
 // check for valid user login
 
 $user =& User::singleton();
+$site =& Site::singleton($user->getData('CenterID'));
+
 if(Utility::isErrorX($user)) {
     die("Error creating user object: ".$user->getMessage());
 }
@@ -34,12 +37,14 @@ $tpl_data['css']=$config->getSetting('css');
 $tpl_data['user_full_name']=$user->getData('Real_name');
 $tpl_data['user_site_name']=$user->getData('Site');
 
+$tpl_data['user'] = $user->getData();
 $tpl_data['TarchiveID'] = $_REQUEST['TarchiveID'];
 // the the list of tabs, their links and perms
 $mainMenuTabs = $config->getSetting('main_menu_tabs');
 
 foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
     $tpl_data['tabs'][]=$myTab;
+
     foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
     {
         // skip if inactive
@@ -104,7 +109,10 @@ if(!empty($_REQUEST['TarchiveID'])) {
     if(Utility::isErrorX($detail_tpl_data['archive'])) print $detail_tpl_data['archive']->getMessage()."<br>\n";
 
     // determine if the patient name is valid
-    if(preg_match($dicom_archive_settings['patientNameRegex'], $detail_tpl_data['archive']['PatientName']))
+    if ((preg_match($dicom_archive_settings['patientNameRegex'], $detail_tpl_data['archive']['PatientName'])) 
+      || (preg_match($dicom_archive_settings['LegoPhantomRegex'], $detail_tpl_data['archive']['PatientName'])) 
+      || (preg_match($dicom_archive_settings['LivingPhantomRegex'], $detail_tpl_data['archive']['PatientName']))) 
+    
        $detail_tpl_data['archive']['patientNameValid']=1;
     else {
        $detail_tpl_data['archive']['patientNameValid']=0;

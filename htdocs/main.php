@@ -3,6 +3,7 @@
  * @package main
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
 // start benchmarking
 require_once 'Benchmark/Timer.php';
@@ -15,9 +16,6 @@ $client = new NDB_Client;
 $client->initialize();
 
 // require additional libraries
-require_once 'TimePoint_List_ControlPanel.class.inc';
-require_once 'Instrument_List_ControlPanel.class.inc';
-require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 require_once 'NDB_Breadcrumb.class.inc';
 
 $TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : '';
@@ -138,75 +136,16 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
 
 //--------------------------------------------------
 
-/**
- * Control Panel
- */
 $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
     if(file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
         $tpl_data['test_name_js'] = "js/modules/$TestName.js";
     }
-    if (!empty($_REQUEST['commentID'])) {
-        // make the control panel object for the current instrument
-        $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
-        $success = $controlPanel->select($_REQUEST['commentID']);
-        if (Utility::isErrorX($success)) {
-              $tpl_data['error_message'][] = $success->getMessage();
-        } else {
-            if (empty($subtest)) {
-                // check if the file/class exists
-                if (file_exists($paths['base']."project/instruments/NDB_BVL_Instrument_$TestName.class.inc") || file_exists($paths['base']."project/instruments/$TestName.linst")) {
-                    // save possible changes from the control panel...
-                    $success = $controlPanel->save();
-                    if (Utility::isErrorX($success)) {
-                        $tpl_data['error_message'][] = $success->getMessage();
-                    }
-                }
-            }                
-
-            // display the control panel
-            $html = $controlPanel->display();
-            if (Utility::isErrorX($html)) {
-                $tpl_data['error_message'][] = $html->getMessage();
-            } else {
-                $tpl_data['control_panel'] = $html;
-            }
-        }
-
-    } elseif (!empty($_REQUEST['sessionID'])) {
-        
-        // make the control panel object for the current timepoint
-        $controlPanel = new Instrument_List_ControlPanel($_REQUEST['sessionID']);
-        if (Utility::isErrorX($controlPanel)) {
-             $tpl_data['error_message'][] = $controlPanel->getMessage();
-        } else {
-            // save possible changes from the control panel...
-            $success = $controlPanel->save();
-            if (Utility::isErrorX($success)) {
-                $tpl_data['error_message'][] = $success->getMessage();
-            }
-        
-            // display the control panel
-            $html = $controlPanel->display();
-            if (Utility::isErrorX($html)) {
-                $tpl_data['error_message'][] = $html->getMessage();
-            } else {
-                $tpl_data['control_panel'] = $html;
-            }
-            // reload timeponit object
-            $timePoint->select($_REQUEST['sessionID']);
-        }
-
-    } elseif (!empty($_REQUEST['candID'])) {
-    	// make the control panel object for the current candidate
-    	$controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
-    	// display the control panel
-    	$tpl_data['control_panel'] = $controlPanel->display();
+    if(file_exists("css/instruments/$TestName.css")) { 
+       $tpl_data['test_name_css'] = "$TestName.css";
     }
 }
-
-$timer->setMarker('Drew the control panel');
 
 //--------------------------------------------------
 
@@ -250,7 +189,11 @@ function HandleError($error) {
     }
 }
 $caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
-$workspace = $caller->load($TestName, $subtest, $controlPanel);
+$workspace = $caller->load($TestName, $subtest);
+if(isset($caller->controlPanel)) {
+    $tpl_data['control_panel'] = $caller->controlPanel;
+
+}
 if (Utility::isErrorX($workspace)) {
     $tpl_data['error_message'][] = $workspace->getMessage();
 } else {

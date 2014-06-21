@@ -26,7 +26,7 @@
     <tr>
 
         <td colspan="6" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=document_repository&reset=true'" /></td>
-	    <td align="right"><button id = "upload" name = "upload" class = "button" style = "background-color: #696">Upload File</button></td>
+	    <td align="right"><button id = "upload" name = "upload" class = "button" style = "background-color: #1C70B6">Upload File</button></td>
     </tr>
 </table>
 </form>

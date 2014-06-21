@@ -1,3 +1,15 @@
+
+{if $InstrumentResetting }
+<h3 class="controlPanelSection">Clear Instrument</h3>
+<ul class="controlPanel">
+    <li><form method="post"><input class="button" type="submit" value="Delete instrument data" /> 
+        <input type="hidden" name="ClearInstrument" value="1">
+        <input type="checkbox" name="deleteconfirm" />
+        <input type="checkbox" name="deleteconfirm2" />
+        </form>
+    </li>
+</ul>
+{/if}
 <h3 class="controlPanelSection">Administration</h3>
 <ul class="controlPanel">
 {section name=item loop=$administration}

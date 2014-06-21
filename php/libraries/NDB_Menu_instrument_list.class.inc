@@ -1,5 +1,6 @@
 <?php
 require_once 'NDB_Menu.class.inc';
+require_once 'Instrument_List_ControlPanel.class.inc';
 
 /**
  * The timepoint details menu
@@ -30,6 +31,30 @@ class NDB_Menu_instrument_list extends NDB_Menu
     	return ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID') || $user->getData('CenterID') == $timePoint->getData('CenterID'));
     }
 
+    function getControlPanel() {
+        $controlPanel = new Instrument_List_ControlPanel($_REQUEST['sessionID']);
+        if (Utility::isErrorX($controlPanel)) {
+            $tpl_data['error_message'][] = $controlPanel->getMessage();
+        } else {
+            // save possible changes from the control panel...
+            $success = $controlPanel->save();
+            if (Utility::isErrorX($success)) {
+                return $success;
+            }
+
+            // display the control panel
+            $html = $controlPanel->display();
+            if (Utility::isErrorX($html)) {
+                return $html;
+            }
+            // I don't know why this is here, but it
+            // was in main.php, so moved it to be safe.
+            $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+            $timePoint->select($_REQUEST['sessionID']);
+            return $html;
+        }
+
+    }
     function setup()
     {
         // set template data
@@ -97,6 +122,7 @@ class NDB_Menu_instrument_list extends NDB_Menu
                 $this->tpl_data['instruments'][$x][$i]['isDdeEnabled'] = NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument($instrument['Test_name']);
                 $this->tpl_data['instruments'][$x][$i]['ddeCommentID'] = $instrument['DDECommentID'];
                 $this->tpl_data['instruments'][$x][$i]['ddeDataEntryStatus'] = $ddeStatus->getDataEntryStatus();
+                $this->tpl_data['instruments'][$x][$i]['isDirectEntry'] = $instrument['isDirectEntry'];
                 		
                 // create feedback object for the time point
                 $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);

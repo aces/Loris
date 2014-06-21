@@ -15,17 +15,22 @@ require_once "Archive/Tar.php";
 
 //Configuration variables for this script, possibly installation dependent.
 //$dataDir = "dataDump" . date("dMy");
-$dumpName = "IBISdataDump" . date("dMy"); // label for dump
+$dumpName = "dataDump" . date("dMy"); // label for dump
 $dataDir = $config['paths']['base'] . "tools/$dumpName/"; //temporary working directory
 $destinationDir = $config['paths']['base'] . "htdocs/dataDumps"; //temporary working directory
 
 /*
-* Prepare output directory, if needed.
+* Prepare output/tmp directories, if needed.
 */
 //Create
 if(!file_exists($dataDir)) {
 	mkdir($dataDir);
 }
+//Create
+if(!file_exists($destinationDir)) {
+        mkdir($destinationDir);
+}
+
 //Delete all previous files.
 $d = dir($dataDir);
 while($entry = $d->read()) {
@@ -68,7 +73,7 @@ foreach ($instruments as $instrument) {
     if($Test_name == 'prefrontal_task') {
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, 'See validity_of_data field' as Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
     } else if ($Test_name == 'radiology_review') {
-        $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, 'Site review:', i.*, 'Final Review:', COALESCE(fr.Review_Done, 0) as Review_Done, fr.Final_Review_Results, fr.Final_Exclusionary, fr.SAS, fr.PVS, fr.Final_Incidental_Findings, fre.full_name as Final_Examiner_Name, fr.Final_Review_Results2, fre2.full_name as Final_Examiner2_Name, fr.Final_Exclusionary2, COALESCE(fr.Review_Done2, 0) as Review_Done2, fr.SAS2, fr.PVS2, fr.Final_Incidental_Findings2, fr.Finalized from candidate c, session s, flag f, $Test_name i left join final_radiological_review fr ON (fr.CommentID=i.CommentID) left outer join examiners e on (i.Examiner = e.examinerID) left join examiners fre ON (fr.Final_Examiner=fre.examinerID) left join examiners fre2 ON (fre2.examinerID=fr.Final_Examiner2) where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
+        $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, 'Site review:', i.*, 'Final Review:', COALESCE(fr.Review_Done, 0) as Review_Done, fr.Final_Review_Results, fr.Final_Exclusionary, fr.Final_Incidental_Findings, fre.full_name as Final_Examiner_Name, fr.Final_Review_Results2, fre2.full_name as Final_Examiner2_Name, fr.Final_Exclusionary2, COALESCE(fr.Review_Done2, 0) as Review_Done2, fr.Final_Incidental_Findings2, fr.Finalized from candidate c, session s, flag f, $Test_name i left join final_radiological_review fr ON (fr.CommentID=i.CommentID) left outer join examiners e on (i.Examiner = e.examinerID) left join examiners fre ON (fr.Final_Examiner=fre.examinerID) left join examiners fre2 ON (fre2.examinerID=fr.Final_Examiner2) where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
     } else {
         if (is_file("../project/instruments/NDB_BVL_Instrument_$Test_name.class.inc")) {
             $instrument =& NDB_BVL_Instrument::factory($Test_name, '', false);
@@ -94,15 +99,20 @@ foreach ($instruments as $instrument) {
 /*
 * Special figs_year3_relatives query
 */
-$Test_name = "figs_year3_relatives";
-$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
-$DB->select($query, $instrument_table);
-if(PEAR::isError($instrument_table)) {
-	print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";
-	die();
+//check if figs table exists
+$query = "SHOW TABLES LIKE 'figs_year3_relatives'";
+$DB->select($query,$result);
+if (count($result) > 0) {
+	$Test_name = "figs_year3_relatives";
+	$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
+	$DB->select($query, $instrument_table);
+	if(PEAR::isError($instrument_table)) {
+		print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";
+		die();
+	}
+	MapSubprojectID($instrument_table);
+	writeExcel($Test_name, $instrument_table, $dataDir);
 }
-MapSubprojectID($instrument_table);
-writeExcel($Test_name, $instrument_table, $dataDir);
 
 /*
 * Candidate Information query
@@ -123,7 +133,7 @@ writeExcel($Test_name, $results, $dataDir);
 * Data Dictionary construction
 * This relies on the quickform_parser and data_dictionary_builder having being recently run
 */
-$Test_name = "IBISDataDictionary";
+$Test_name = "DataDictionary";
 $query = "select Name, Type, Description, SourceField, SourceFrom from parameter_type where SourceField is not null order by SourceFrom";
 $DB->select($query, $dictionary);
 if (PEAR::isError($dictionary)) {

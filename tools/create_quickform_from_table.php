@@ -1,4 +1,4 @@
-<?
+<?php
 // create an NDB client
 require_once "../php/libraries/NDB_Client.class.inc";
 $client = new NDB_Client;

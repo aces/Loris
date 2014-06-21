@@ -1,15 +1,14 @@
 <?php
+ini_set('default_charset', 'utf-8');
 require_once "../tools/generic_includes.php";
 require_once "Utility.class.inc";
 
 $headers = array();
-$file_names = array();
 
 $query = "select File from files where FileID = :MincID";
 $minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
-
-
 $minc_file = getMincLocation() . $minc_file;
+
 
 $header = $_REQUEST['minc_headers'];
 $header_data = $_REQUEST['raw_data'];

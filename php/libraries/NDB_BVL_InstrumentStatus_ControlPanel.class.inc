@@ -1,4 +1,5 @@
 <?php
+require_once 'NDB_BVL_InstrumentStatus.class.inc';
 /**
  * Behavioural instrument status control panel class
  *
@@ -96,6 +97,12 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 }
             }
 
+            if($config->getSetting('InstrumentResetting') && $this->getDataEntryStatus() != 'Complete') {
+                $user = User::singleton();
+                if($user->hasPermission('send_to_dcc')) {
+                    $this->tpl_data['InstrumentResetting'] = true;
+                }
+            }
             /*
             // generate the exclusion flag buttons
             $this->tpl_data['access']['exclusion'] = $this->_displayExclusion();
@@ -129,6 +136,24 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             return false;
         }
         
+        if(isset($_POST['ClearInstrument'])) {
+            if(isset($_POST['deleteconfirm']) && isset($_POST['deleteconfirm2']) ) {
+                $user = User::singleton();
+                if($user->hasPermission('send_to_dcc')) {
+                    $instrument =& NDB_BVL_Instrument::factory($_REQUEST['test_name'], $_REQUEST['commentID'], $_REQUEST['subtest']);
+                    $instrument->clearInstrument();
+                    return false;
+
+                } else {
+                    return false;
+                    //print "No permissions to delete";
+                }
+            } else {
+                return false;
+                //print "Delete not confirmed.";
+            }
+            return false;
+        }
         // get control panel selections from _REQUEST
         $possibleFlags = array('setDataEntry', 'setAdministration', 'setValidity');
         $flagsToSave = array_intersect($possibleFlags, array_keys($_REQUEST));

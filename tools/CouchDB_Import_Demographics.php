@@ -1,4 +1,4 @@
-<?
+<?php
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
@@ -97,8 +97,10 @@ class CouchDBDemographicsImporter {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
             unset($demographics['SubprojectID']);
-            $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
-            unset($demographics['ProjectID']);
+            if(isset($demographics['ProjectID'])) {
+                $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
+                unset($demographics['ProjectID']);
+            }
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
                 'identifier' => array($demographics['PSCID'], $demographics['Visit_label'])

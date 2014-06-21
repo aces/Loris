@@ -204,6 +204,7 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to flag: $testName");
         }
+        return $commentID;
         
     } // end addInstrument()
     
@@ -289,7 +290,7 @@ class NDB_BVL_Battery extends PEAR
         if($this->isError($error)) return $error;
         
         // craft the select query
-        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group FROM flag AS f, test_names as t, test_subgroups as ts ";
+        $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group, t.isDirectEntry FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
 
         if(!is_null($stage)) {
@@ -406,6 +407,16 @@ class NDB_BVL_Battery extends PEAR
                     array_push($tests, $row['Test_name']);   
                 }     
             }
+            //also remove instruments that should not be part of the first visit
+            $query_notfirstVisit = "SELECT  DISTINCT Test_name FROM test_battery WHERE firstVisit=:FV 
+                                 AND SubprojectID=:subID";
+            $where = array('FV'=>'N','subID'=>$SubprojectID);
+            $rows_notfirstVisit = $DB->pselect($query_notfirstVisit,$where);
+            foreach($rows_notfirstVisit as $row) {
+                if(($key = array_search($row['Test_name'], $tests)) !== FALSE){ 
+                    unset($tests[$key]); //remove the instrument from showing up on the first visit
+                }
+            }
 
         }        
         // return an array of test names
@@ -441,27 +452,40 @@ class NDB_BVL_Battery extends PEAR
         if(Utility::isErrorX($candidate)) 
             return $this->raiseError("Could not create candidate object: ".$candidate->getMessage());
 
-        // get test_names.ID
-        $query = "SELECT ID FROM test_names WHERE Test_name=:TN";
-        $row = $DB->pselectRow($query, array('TN' => $testName));
-        if(Utility::isErrorX($row)) {
-            return $this->raiseError("DB Error: ".$row->getMessage());
-        }
-        $testID = $row['ID'];
-
-        // formula for CommentID = concat(session.CandID,
-        // session.PSCID, session.ID, session.SubprojectId, test_names.ID, timestamp)
-        $commentID = $candidate->getCandID()
-            . $candidate->getPSCID()
-            . $timepoint->getSessionID()
-            . $timepoint->getSubprojectID()
-            . $testID
-            . time();
-
-        return $commentID;
-        
-    } // end _createCommentID()
+        return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
+    }
     
+    /**
+     * Generates a CommentID of the appropriate format given a SessionID and a Test name
+     *
+     * @return string A Validly formatted CommentID
+     */
+    static function generateCommentID($SessionID, $Test_name) {
+        $DB = Database::singleton();
+        
+        $TestID = $DB->pselectOne(
+            "SELECT ID FROM test_names WHERE Test_name=:TN",
+            array('TN' => $Test_name)
+        );
+
+
+        $OtherInfo = $DB->pselectRow(
+            "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
+                    JOIN candidate c USING (CandID)
+                WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
+            array('SID' => $SessionID)
+        );
+
+        if (empty($TestID) || empty($OtherInfo)) {
+            return null;
+        }
+        return $OtherInfo['CandID'] 
+            . $OtherInfo['PSCID'] 
+            . $SessionID 
+            . $OtherInfo['SubprojectID'] 
+            . $TestID 
+            . time();
+    }
     /**
      * asserts that the current battery object corresponds to a
      * specific visit (in other words, asserts that selectBattery has

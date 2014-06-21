@@ -104,17 +104,10 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['BehaviouralSite'] == $row['NumericID']) {
+            if($_REQUEST['site'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
             }
 
-        }
-        if(isset($_REQUEST['BehaviouralSite']) && $_REQUEST['BehaviouralSite'] != '') {
-            foreach ($centers as $row) {
-                if($_REQUEST['BehaviouralSite'] == $row['NumericID']) {
-                    $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
-                }
-            }
         }
 
         if(isset($_REQUEST['BehaviouralProject']) && $_REQUEST['BehaviouralProject'] != '') {
@@ -615,7 +608,7 @@ class NDB_Form_statistics extends NDB_Form
             FROM candidate as c LEFT JOIN session s ON (s.CandID=c.CandID) 
             WHERE s.active='Y' AND s.CenterID <> '1'        
             AND c.Active='Y'
-            AND (s.Current_stage IN ('Visit', 'Screening')) 
+            AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')) 
             AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
             AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
             $ExtraSite_Criteria $ExtraProject_Criteria
@@ -716,6 +709,7 @@ class NDB_Form_statistics extends NDB_Form
                 c.CenterID <> '1' AND f.Data_entry='Complete' AND
                 f.Administration='All' AND
                 f.CommentID NOT LIKE 'DDE%'
+                $ExtraProject_Criteria
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
                 UNION
                 SELECT count(*) as val, 'Incomplete' as Subcat, 
@@ -726,6 +720,7 @@ class NDB_Form_statistics extends NDB_Form
                 JOIN flag f ON (f.SessionID=s.ID) 
                 JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
                 WHERE s.Active='Y' and s.CenterID <> 1
+                $ExtraProject_Criteria
                 AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
                 ", $result);
@@ -739,7 +734,7 @@ class NDB_Form_statistics extends NDB_Form
                 count(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID) 
                 WHERE s.active='Y' AND s.CenterID <> '1'
-                AND (s.Current_stage IN ('Visit', 'Screening')
+                AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
                 AND s.SubprojectID IN ($subprojList))  
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')

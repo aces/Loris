@@ -1,13 +1,15 @@
 var Rules = {
-    render: function() {
-        var content = new BlobBuilder();
-        var rules = document.getElementById("rules_workspace")
-        var Rule;
-        var row;
-        var fs;
-        var operator;
-        var value;
-         for(var i=1; i < rules.rows.length; i++) {
+    render: function () {
+        var content = '',
+            rules = document.getElementById("rules_workspace"),
+            Rule,
+            row,
+            fs,
+            operator,
+            value,
+            i;
+
+         for(i=1; i < rules.rows.length; i++) {
             row = rules.rows[i]
             Rule = new Array();
             Rule.push(row.firstChild.innerText); // Question
@@ -22,8 +24,8 @@ var Rules = {
                 operator = '{@}=~{@}';
             }
             Rule.push(row.firstChild.nextSibling.innerText + operator + value);
-            content.append(Rule.join("{-}"))
-            content.append("\n");
+            content += Rule.join("{-}")
+            content += "\n";
         }
          return content;
     },

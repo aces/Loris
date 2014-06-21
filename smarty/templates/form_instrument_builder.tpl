@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta charset="utf-8"/>
 <title>Loris Form Builder</title>
 <style>
 {literal}
@@ -9,7 +10,8 @@
 {/literal}
 </style>
 
-<script type="application/ecmascript" src="js/BlobBuilder.min.js"></script>
+<script type="application/javascript" src="js/modules/instrument_builder.instrument.js"></script>
+<script type="application/javascript" src="js/modules/instrument_builder.rules.js"></script>
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
 </head>
 <body>
@@ -113,6 +115,7 @@
     </div>
     <h2>Rules (Optional)</h2>
     <div>
+        <p>NOTE THAT THE RULES PORTION OF THE INSTRUMENT BUILDER IS STILL A WORK IN PROGRESS. DO NOT USE THESE UNLESS YOU KNOW WHAT YOU'RE DOING</p>
         <dl>
             <dt>Question</dt>
             <dd><select id="rule_q"></select></dd>

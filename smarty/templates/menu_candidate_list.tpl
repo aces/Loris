@@ -1,7 +1,7 @@
 {literal}
-<script src="js/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 
-<script type="text/javascript" src="js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="js/advancedMenu.js">
 </script>
 <script language="javascript" type="text/javascript">
@@ -144,7 +144,7 @@ $(function(){
     {section name=piece loop=$items[item]}
         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
 		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-		    {assign var="PSCID" value=`$items[item][piece].value`}
+		    {assign var="PSCID" value="$items[item][piece].value"}
 		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
 		    	
 		{elseif $items[item][piece].name == "scan_Done"}

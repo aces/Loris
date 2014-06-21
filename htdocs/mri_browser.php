@@ -1,5 +1,6 @@
 <?php
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+ini_set('default_charset', 'utf-8');
 /**
  * @package mri
  */
@@ -147,7 +148,11 @@ if(!empty($_REQUEST['sessionID']) && is_numeric($_REQUEST['sessionID'])) {
     $tpl_data['files'] = $page->GetFileData($selectedTypeID);
 
     $tpl_data['showFloatJIV'] = True;
-
+    $file = $DB->pselectOne("SELECT File FROM files f JOIN session s ON (s.ID=f.SessionID) WHERE s.ID=:sidi
+                             AND FileType='obj'", array('sid' =>$_REQUEST['sessionID']));
+    if(!empty($file)) {
+        $tpl_data['show3DViewer'] = True;    
+    }
 } else {
     // this happens in the main window. before you select a candidate and the corresponding volumes
     $filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : null;

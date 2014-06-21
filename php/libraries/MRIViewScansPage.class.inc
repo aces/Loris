@@ -50,7 +50,41 @@ class MRIViewScansPage {
                 }
             }
         }
+        if (is_array($values['caveat'])) {
+            $user = User::singleton();
+            $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+            $candid = $timePoint->getCandID();
+            $visit_label = $timePoint->getData('Visit_label');
+
+            foreach ($values['caveat'] as $curFileID => $curCaveat) {
+                if ($curCaveat === '') {
+                    $curCaveat = null;
+                }
+                $this->DB->update(
+                    "files",
+                    array('Caveat' => $curCaveat),
+                    array('FileID' => $curFileID)
+                );
+
+                if($curCaveat == true) {
+                    $file = new MRIFile($curFileID);
+                    $insertSet['SeriesUID'] = $file->getParameter('series_instance_uid');
+                    $insertSet['TarchiveID'] = $file->getParameter('TarchiveSource');
+                    $insertSet['MincFile'] = $file->getParameter('File');
+                    $insertSet['PatientName'] = $file->getParameter('patient_name');
+                    $insertSet['CandID'] = $candid;
+                    $insertSet['Visit_label'] = $visit_label;
+                    $insertSet['CheckID'] = null;
+                    $insertSet['Severity'] = 'warning';
+                    $insertSet['Header'] = 'Manual Caveat Set by ' . $user->getUsername();
+
+                    $this->DB->insert("mri_violations_log", $insertSet);
+
+                }
+            }
+        }
     }
+
     function _updateSelected($selectedTypeID) {
         // update selected's
         if (is_array($_POST['selectedvol'])) {
@@ -164,6 +198,11 @@ class MRIViewScansPage {
                 "SELECT CommentID FROM flag WHERE Test_name='mri_parameter_form' AND SessionID=:SID", 
                 array('SID' => $_REQUEST['sessionID'])
             );
+            $subjectData['RadiologyReviewCommentID'] = $this->DB->pselectOne(
+                    "SELECT CommentID FROM flag WHERE Test_name='radiology_review' AND SessionID=:SID",
+                    array('SID' => $_REQUEST['sessionID'])
+                    );
+
             $subjectData['tarchiveids'] = $tarchiveIDs;
         }
 
@@ -219,6 +258,35 @@ class MRIViewScansPage {
             $fileData[$fIdx]['fileID'] = $fileID['FileID'];
             $fileData[$fIdx]['acquisitionProtocol'] = $file->getAcquisitionProtocol();
             $fileData[$fIdx]['coordinateSpace'] = $file->getParameter('CoordinateSpace');
+            $fileData[$fIdx]['processingPipeline'] = $file->getParameter('processing:pipeline');
+            $fileData[$fIdx]['slicewiseRejected'] = $file->getParameter('processing:slicewise_rejected');
+            $fileData[$fIdx]['interlaceRejected'] = $file->getParameter('processing:interlace_rejected');
+            $fileData[$fIdx]['intergradientRejected'] = $file->getParameter('processing:intergradient_rejected');
+            $fileData[$fIdx]['sourceFile'] = basename($file->getParameter('processing:sourceFile'));
+            $fileData[$fIdx]['Tool'] = $file->getParameter('Tool');
+            // Order rejected directions by DTIPrep for display
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:slicewise_rejected'), $sliceRej)) {
+                $dirList = preg_split('/\,/', $sliceRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                }
+                $fileData[$fIdx]['slicewiseRejected'] = "Directions " . join(", ", $dirList) . " " . $sliceRej[3]; 
+            }
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:interlace_rejected'), $laceRej)) {
+                $dirList = preg_split('/\,/', $laceRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                } 
+                $fileData[$fIdx]['interlaceRejected'] = "Directions " . join(", ", $dirList) . " " . $laceRej[3];    
+            }
+            if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter('processing:intergradient_rejected'), $interRej)) {
+                $dirList = preg_split('/\,/', $interRej[2]);
+                if (count($dirList) > 1) {
+                    sort($dirList);
+                } 
+                $fileData[$fIdx]['intergradientRejected'] = "Directions " . join(", ", $dirList) . " " . $interRej[3];    
+            }
+            $fileData[$fIdx]['totalRejected'] = $file->getParameter('processing:total_rejected');
             $fileData[$fIdx]['Algorithm'] = $file->getParameter('Algorithm');
             $fileData[$fIdx]['outputType'] = $file->getParameter('OutputType');
             $fileData[$fIdx]['selected'] = $file->getParameter('Selected');
@@ -230,8 +298,13 @@ class MRIViewScansPage {
             if(preg_match("/(\d{4})-?(\d{2})-?(\d{2})/", $file->getParameter('acquisition_date'), $acqDate)) {
                 $fileData[$fIdx]['acquisitionDate'] = mktime(12, 0, 0, $acqDate[2], $acqDate[3], $acqDate[1]);
             }
+            if(preg_match("/(\d{4})?(\d{2})?(\d{2})/", $file->getParameter('processing:processing_date'), $procDate)) {
+                $fileData[$fIdx]['procDate'] = mktime(12, 0, 0, $procDate[2], $procDate[3], $procDate[1]);
+            }
+            //$fileData[$fIdx]['procDate'] = $file->getParameter('processing:processing_date');
             $fileData[$fIdx]['fileInsertDate'] = $file->getParameter('InsertTime');
             $fileData[$fIdx]['filename'] = basename($file->getParameter('File'));
+            $fileData[$fIdx]['fullFilename'] = $file->getParameter('File');
             $fileData[$fIdx]['seriesDescription'] = $file->getParameter('series_description');
             $fileData[$fIdx]['seriesNumber'] = $file->getParameter('series_number');
             $fileData[$fIdx]['echoTime'] = number_format($file->getParameter('echo_time')*1000, 2);
@@ -243,11 +316,17 @@ class MRIViewScansPage {
             $fileData[$fIdx]['zstep'] = number_format($file->getParameter('zstep'), 2);
             $fileData[$fIdx]['Pipeline'] = $file->getParameter('Pipeline');
             $fileData[$fIdx]['Comment'] = $file->getParameter('Comment');
+            $fileData[$fIdx]['Caveat'] = $file->getParameter('Caveat');
+            $fileData[$fIdx]['SeriesUID'] = $file->getParameter('SeriesUID');
             // this has been changed for more security
-            $fileData[$fIdx]['checkpicFilename'] = "/mri/jiv/get_file.php?file=" .'pic/'. $file->getParameter('check_pic_filename');
+            $fileData[$fIdx]['checkpicFilename'] = "mri/jiv/get_file.php?file=" .'pic/'. $file->getParameter('check_pic_filename');
+            $fileData[$fIdx]['XMLreport'] = $file->getParameter('processing:DTIPrepXmlReport');
+            $fileData[$fIdx]['XMLprotocol'] = $file->getParameter('ProtocolFile');
+            $fileData[$fIdx]['NrrdFile'] = $file->getParameter('processing:nrrd_file');
             // the jivs
             $fileData[$fIdx]['jivFilename'] = basename($file->getParameter('File'));
             $fileData[$fIdx]['jivAddress'] = str_replace('_check.jpg', '', $file->getParameter('check_pic_filename'));
+            $fileData[$fIdx]['FileType'] = $file->getParameter('FileType');
 
             $fIdx++;
         }
@@ -264,6 +343,7 @@ class MRIViewScansPage {
         $fileData = $this->GetFileData($selectedTypeID);
         $file_tpl_data['outputType'] = $this->_getOutputType();
         $file_tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
+        $file_tpl_data['caveat_options'] = array (''=>'&nbsp;', true=>'True', false=>'False');
         //$file_tpl_data['pending_options'] = array ('Y'=>'Yes', 'N'=>'No');
 
         $file_tpl_data['selected_options'] = array(''=>'&nbsp;');
