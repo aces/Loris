@@ -308,30 +308,6 @@ table.fancytable caption, table.listColorCoded caption {
   margin-right: inherit;
 }
 
-/* fancy table with ALIGN LEFT  */
-table.fancytableleft {
-  margin: 1em 1em 1em 0;
-  background: #FF;
-  border-collapse: collapse;
-  text-align: left;
-}
-table.fancytableleft tr:hover {
-   background: snow !important;
-}
-table.fancytableleft th, table.fancytableleft td {
-  border: 1px silver solid;
-  padding: 0.3em;
-}
-table.fancytableleft th {
-  background: #999999;
-  text-align: left;
-}
-table.fancytableleft caption {
-  margin-left: inherit;
-  margin-right: inherit;
-}
-
-
 /* form elements */
 
 .button
