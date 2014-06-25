@@ -197,15 +197,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'TotalRejected' => $FileObj->getParameter(
                     'processing:total_rejected'
                 ),
-             /*   'SlicewiseRejected' => $FileObj->getParameter(
-                    'processing:slicewise_rejected'
-                ),
-                'InterlaceRejected' => $FileObj->getParameter(
-                    'processing:interlace_rejected'
-                ),
-                'IntegradientRejected' => $FileObj->getParameter(
-                    'processing:integradient_rejected'
-                ),*/
                 'SourceFile' => basename($FileObj->getParameter('processing:sourceFile')),
                 'Tool' => $FileObj->getParameter('Tool'),
                 'SlicewiseRejected' => $this->_getRejected($FileObj, 'slicewise', $sliceRej),
