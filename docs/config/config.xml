@@ -384,7 +384,7 @@
         </subtab>
         <subtab>
             <parent>Imaging</parent>
-            <link>dicom_archive.php?</link>
+            <link>main.php?test_name=dicom_archive</link>
             <label>Dicom Archive</label>
             <access>all</access>
             <permissions>
@@ -393,7 +393,7 @@
         </subtab>
         <subtab>
             <parent>Imaging</parent>
-            <link>mri_browser.php?</link>
+            <link>main.php?test_name=imaging_browser</link>
             <label>MRI Browser</label>
             <access>all</access>
             <permissions>
