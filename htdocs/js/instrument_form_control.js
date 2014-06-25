@@ -1,7 +1,7 @@
 $( document ).ready(function() {
-		$(".element").children().addClass("form-control input-sm");
-		$(".button").removeClass("form-control");
-		var naList = document.getElementsByClassName('not-answered');
+	$(".element").children().addClass("form-control input-sm");
+	$(".button").removeClass("form-control");
+	var naList = document.getElementsByClassName('not-answered');
 	for(var i=0;i<naList.length;i++)
 	{
 		var name = $(naList[i]).attr('name');
