@@ -1830,7 +1830,7 @@ table td[class*="col-"], table th[class*="col-"] {
     background-color: #ebcccc
 }
 
-@media (max-width:1000px){.table-responsive {
+@media (max-width:5000px){.table-responsive {
         width: 100%;
         margin-bottom: 15px;
         overflow-y: hidden;
@@ -1871,6 +1871,7 @@ table td[class*="col-"], table th[class*="col-"] {
         border-bottom: 0
     }
 }
+
 
 fieldset {
     padding: 0;
@@ -6165,7 +6166,7 @@ button.close {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 15%;
+    width: 50px;
     opacity: 0.5;
     filter: alpha(opacity=50);
     font-size: 20px;
