@@ -57,6 +57,7 @@
                 {/if}
                 </td>
 
+<<<<<<< HEAD
                 <td>
                 {if $timePoints[timepoint].Scan_done != ""}
                            {if $timePoints[timepoint].Scan_done == 'Y'}
@@ -70,7 +71,7 @@
                     <img alt="Data Missing" src="images/help2.gif" border=0>
                 {/if}
                 </td>
-
+       
                 <td bgColor="{$timePoints[timepoint].feedbackColor}">
                 {if $timePoints[timepoint].feedbackCount}
                     {$timePoints[timepoint].feedbackStatus}
