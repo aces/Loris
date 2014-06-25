@@ -56,7 +56,7 @@ class File_Decompress extends PEAR
      * @return File_Decompress
      */
 
-    function File_Decompress($file_name, $destination_path) 
+    function File_Decompress(&$file_name, &$destination_path) 
     {
         $this->file_name = $file_name;
         $this->dest_path = $destination_path;
@@ -98,7 +98,7 @@ class File_Decompress extends PEAR
         $decompressed_folder = null;
         $p = new PharData($this->file_name);
         $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
-        $is_extracted = $p->extractTo($this->dest_path);
+        $is_extracted = $p->extractTo($this->dest_path,null,true);
         return $decompressed_folder;
     }
     
