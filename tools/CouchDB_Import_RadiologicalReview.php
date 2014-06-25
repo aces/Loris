@@ -14,7 +14,7 @@ class CouchDBRadiologicalReviewImporter {
         ),  
         'FinalReview_Done' => array(
             'Description' => 'Final review done',
-            'Type' => 'tinyint(1)'
+            'Type' => "enum('No','Yes')"
         ),  
         'FinalReview_Results' => array(
             'Description' => 'Results of the final radiology review',
@@ -26,19 +26,19 @@ class CouchDBRadiologicalReviewImporter {
         ),  
         'FinalReview_SAS' => array(
             'Description' => 'Final review subarachnoid space',
-            'Type' => 'int(11)'
+            'Type' => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')"
         ),  
         'FinalReview_PVS' => array(
             'Description' => 'Final review perivascular space',
-            'Type' => 'int(11)',
+            'Type' => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
         ),  
         'FinalReview_Comment' => array(
             'Description' => 'Current stage of visit',
             'Type' => 'text'
         ),  
         'FinalReview_Finalized' =>  array(
-            'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
-            'Type' => "tinyint(1)",
+            'Description' => 'Final review finalized',
+            'Type' => "enum('No','Yes')",
         ),
         'ExtraReview_Radiologist' => array(
             'Description' => 'Radiologist/Reviewer doing the extra review',
@@ -46,7 +46,7 @@ class CouchDBRadiologicalReviewImporter {
         ),  
         'ExtraReview_Done' => array(
             'Description' => 'Extra review done',
-            'Type' => 'tinyint(1)'
+            'Type' => "enum('No','Yes')"
         ),  
         'ExtraReview_Results' => array(
             'Description' => 'Results of the extra radiology review',
@@ -58,11 +58,11 @@ class CouchDBRadiologicalReviewImporter {
         ),  
         'ExtraReview_SAS' => array(
             'Description' => 'Extra review subarachnoid space',
-            'Type' => 'int(11)'
+            'Type' => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')"
         ),  
         'ExtraReview_PVS' => array(
             'Description' => 'Extra review perivascular space',
-            'Type' => 'int(11)',
+            'Type' => "enum('None', 'Minimal', 'Mild', 'Moderate', 'Marker')",
         ),  
         'ExtraReview_Comment' => array(
             'Description' => 'Current stage of visit',
@@ -74,7 +74,7 @@ class CouchDBRadiologicalReviewImporter {
         ),  
         'SiteReview_Done' => array(
             'Description' => 'Project Candidate Identifier',
-            'Type' => 'varchar(255)'
+            'Type' => "enum('no','yes','not_answered')"
         ),  
         'SiteReview_Results' => array(
             'Description' => 'Results of the final radiology review',
@@ -116,7 +116,8 @@ class CouchDBRadiologicalReviewImporter {
             CASE WHEN frr.PVS=0 THEN 'None' WHEN frr.PVS=1 THEN 'Minimal' 
             WHEN frr.PVS=2 THEN 'Mild' WHEN frr.PVS=3 THEN 'Moderate' 
             WHEN frr.PVS=4 THEN 'Marker' END as FinalReview_PVS, 
-            frr.Final_Incidental_Findings AS FinalReview_Comment, 
+            frr.Final_Incidental_Findings AS FinalReview_Comment, CASE WHEN frr.Finalized=0 
+            THEN 'No' WHEN frr.Finalized=1 THEN 'Yes' END as FinalReview_Finalized,
             eExtra.full_name AS ExtraReview_Radiologist, CASE WHEN frr.Review_Done2=0 THEN 'No' 
             WHEN frr.Review_Done2=1 THEN 'Yes' END as ExtraReview_Done, 
             frr.Final_Review_Results2 AS ExtraReview_Results, CASE WHEN frr.SAS2=0 THEN 'None' 
