@@ -74,7 +74,7 @@ class NDB_Page extends PEAR
     function addTextAreaGroup($field, $label,$not_answered_options=array('' =>'', 'not_answered' => 'Not Answered')) {
         $group = array();
         $group[] = $this->createTextArea($field, '');
-        $group[] = $this->createSelect($field . '_status', '', $not_answered_options);
+        $group[] = $this->createSelect($field . '_status', '', $not_answered_options, array('class' => 'form-control input-sm not-answered'));
 
         $this->addGroup($group, $field . '_group', $label, null, false); 
 
