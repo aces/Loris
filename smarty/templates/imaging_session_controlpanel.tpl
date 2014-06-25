@@ -17,7 +17,7 @@
         <li><a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}">MRI Parameter Form</a></li>
         <li><a href="main.php?test_name=radiology_review&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.RadiologyReviewCommentID}">Radiology Review</a></li>
         {foreach from=$subject.tarchiveids item=tarchive}
-        <li><a href="dicom_archive.php?TarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive(s) {$tarchive.TarchiveID}</a></li>{/foreach}
+        <li><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive(s) {$tarchive.TarchiveID}</a></li>{/foreach}
         <li><a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a></li>
     </ul>
 
