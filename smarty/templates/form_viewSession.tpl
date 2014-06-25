@@ -86,7 +86,7 @@
             <thead>
                 <tr>
                     <th>Filename</th>
-                    <td>{if $files[file].Filename != ""}{$files[file].Filename}
+                    <td colspan='2'>{if $files[file].Filename != ""}{$files[file].Filename}
 		    	{else}&nbsp;{/if}</td>
 		    <td{if $files[file].QCStatus != ""} class="image{$files[file].QCStatus}"{/if}>{$files[file].QCStatus}</td>
                 </tr>

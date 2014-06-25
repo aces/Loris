@@ -7,16 +7,26 @@
 .table-mri-right-and-center {
     border-collapse: collapse;
     margin: 1em 1em 1em 0;
+    background: #FF;
     text-align: left;
 }
 
+.table-mri-right-and-center tr:hover {
+    background: snow !important;
+}
+
+.table-mri-right-and-center th, .table-mri-right-and-center td {
+    border: 1px silver solid;
+    padding: 0.3em;
+}
 .table-mri-right-and-center th {
-    background: none repeat scroll 0 0 #999999;
+    background: #999999;
     text-align: left;
 }
-.table-mri-right-and-center th, .mri-subtable td {
-    border: 1px solid #C0C0C0;
-    padding: 0.3em;
+
+.table-mri-right-and-center caption {
+    margin-left: inherit;
+    margin-right: inherit;
 }
 
 .td-mri-lefttable {
