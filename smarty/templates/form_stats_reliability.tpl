@@ -10,7 +10,7 @@
             <button onClick="updateReliabilityTab()" class="btn btn-primary btn-small">Submit Query</button>
 
     <br><br>
-    <div class="table-responsive visible-xs">
+    <div class="table-responsive col-sm-6">
         <table class="table table-primary table-bordered">
             <thead>
                 <tr class="info">
