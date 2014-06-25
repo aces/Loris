@@ -58,9 +58,8 @@
 </Studylinks>
 
 <links>
-    <link url='dicom_archive.php?' args=''>DICOM Archive</link>
-    <link url='mri_browser.php?' args='MRIBrowser'>MRI Browser</link>
-    <link url='query_gui.php?' args=''>Data Query Tool</link>
+    <link url='http://www.loris.ca'>Loris Website</link>
+    <link url='http://www.github.com'>GitHub</link>
 </links>
 
 <!-- mail settings -->
