@@ -66,6 +66,20 @@ $(document).ready(function() {
 
         return false;
     });
+
+    $tabs = $(".table-responsive");
+        
+        $( "tbody#workspace" )
+            .sortable({
+                connectWith: ".connectedSortable",
+                items: "> tr",
+                appendTo: $tabs,
+                helper:"clone",
+                zIndex: 999990,
+                start: function(){ $tabs.addClass("dragging") },
+                stop: function(){ $tabs.removeClass("dragging") }
+            })
+            .disableSelection();
 });
 
 
@@ -326,3 +340,14 @@ $('[contenteditable]').on('focus', function() {
     }
     return $this;
 });
+
+function hideLoad(){
+    $("#panel-load").toggle();
+    $("#down-load").toggle();
+    $("#up-load").toggle();
+}
+function hideRule(){
+    $("#panel-rule").toggle();
+    $("#down-rule").toggle();
+    $("#up-rule").toggle();
+}

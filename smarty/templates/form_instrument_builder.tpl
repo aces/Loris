@@ -7,38 +7,6 @@
     background: none;
 }
 </style>
-<script language="javascript" type="text/javascript">
-    // $(document).ready(function(){
-    //     $(".panel-header").click(function(e) {
-    //         alert(e);
-    //     });
-    // });
-    function hideLoad(){
-        $("#panel-load").toggle();
-        $("#down-load").toggle();
-        $("#up-load").toggle();
-    }
-    function hideRule(){
-        $("#panel-rule").toggle();
-        $("#down-rule").toggle();
-        $("#up-rule").toggle();
-    }
-    $(document).ready(function() {
-        $tabs = $(".table-responsive");
-        
-        $( "tbody#workspace" )
-            .sortable({
-                connectWith: ".connectedSortable",
-                items: "> tr:not(:first)",
-                appendTo: $tabs,
-                helper:"clone",
-                zIndex: 999990,
-                start: function(){ $tabs.addClass("dragging") },
-                stop: function(){ $tabs.removeClass("dragging") }
-            })
-            .disableSelection();
-    });
-</script>
 {/literal}
 
 <script type="application/javascript" src="js/modules/instrument_builder.instrument.js"></script>

@@ -1,12 +1,4 @@
-{literal}   
-<script language="javascript" type="text/javascript">
-    function hideFilter(){
-        $("#panel-body").toggle();
-        $("#down").toggle();
-        $("#up").toggle();
-    }
-</script>
-{/literal}
+<script type="text/javascript" src="js/filterControl.js"></script>
 
 <div class="col-xs-12">
     <!-- start the selection table -->

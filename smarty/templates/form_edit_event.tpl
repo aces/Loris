@@ -1,12 +1,4 @@
-{literal}   
-<script language="javascript" type="text/javascript">
-    function hideFilter(){
-        $("#panel-body").toggle();
-        $("#down").toggle();
-        $("#up").toggle();
-    }
-</script>
-{/literal}
+<script src="js/filterControl.js" type="text/javascript"></script>
 
 <div class="col-md-12 col-sm-8">
 	<form method="post" name="edit_user" id="edit_user">
@@ -28,21 +20,6 @@
 						<div class="col-xs-12 col-md-4 col-sm-8">{$form.examinerID.html}</div>
 					</div>
 				</div>
-
-				<!--		<td nowrap="nowrap" align="right">Date of testing</td>
-						<td nowrap="nowrap">{$form.date_cert.html}</td>
-					</tr>
-
-				<tr>
-						<td nowrap="nowrap" align="right">DCCID</td>
-						<td nowrap="nowrap">{$form.cert_candID.html}</td>
-					</tr>
-
-					<tr>
-						<td nowrap="nowrap" align="right">Visit label</td>
-						<td nowrap="nowrap">{$form.cert_visit_label.html}</td>
-					</tr>
-				-->
 				{foreach from=$form.pass item=item key=key}
 					<div class="form-group">
 			    		<!-- <div class="form-group col-sm-4"> -->

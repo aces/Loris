@@ -1,12 +1,4 @@
-{literal}   
-<script language="javascript" type="text/javascript">
-    function hideFilter(){
-        $("#panel-body").toggle();
-        $("#down").toggle();
-        $("#up").toggle();
-    }
-</script>
-{/literal}
+<script src="js/filterControl.js" type="text/javascript"></script>
 
 <div class="col-md-8 col-sm-8">
     <form>
