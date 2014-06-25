@@ -173,6 +173,10 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     "/(\d{4})-?(\d{2})-?(\d{2})/", 
                     $FileObj->getParameter('acquisition_date'), $acqDate
                 )) ? (mktime(12, 0, 0, $acqDate[2], $acqDate[3], $acqDate[1])) : "",
+                'ProcDate' => (preg_match(
+                    "/(\d{4})?(\d{2})?(\d{2})/", 
+                    $FileObj->getParameter('processing:processing_date'), $procDate
+                )) ? (mktime(12, 0, 0, $procDate[2], $procDate[3], $procDate[1])) : "",
                 'FileInsertDate' => $FileObj->getParameter('InsertTime'),
                 'SeriesDescription' => $FileObj->getParameter('series_description'),
                 'SeriesNumber' => $FileObj->getParameter('series_number'),
@@ -193,7 +197,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'TotalRejected' => $FileObj->getParameter(
                     'processing:total_rejected'
                 ),
-                'SlicewiseRejected' => $FileObj->getParameter(
+             /*   'SlicewiseRejected' => $FileObj->getParameter(
                     'processing:slicewise_rejected'
                 ),
                 'InterlaceRejected' => $FileObj->getParameter(
@@ -201,7 +205,12 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 ),
                 'IntegradientRejected' => $FileObj->getParameter(
                     'processing:integradient_rejected'
-                ),
+                ),*/
+                'SourceFile' => basename($FileObj->getParameter('processing:sourceFile')),
+                'Tool' => $FileObj->getParameter('Tool'),
+                'SlicewiseRejected' => $this->_getRejected($FileObj, 'slicewise', $sliceRej),
+                'InterlaceRejected' => $this->_getRejected($FileObj, 'interlace', $laceRej),
+                'IntergradientRejected' => $this->_getRejected($FileObj, 'intergradient', $interRej), 
                 'Xstep' => number_format($FileObj->getParameter('xstep'), 2),
                 'Ystep' => number_format($FileObj->getParameter('ystep'), 2),
                 'Zstep' => number_format($FileObj->getParameter('zstep'), 2),
@@ -209,9 +218,31 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'QCStatus' => $FileObj->getParameter('QCStatus'),
                 'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
                 'Caveat' => $FileObj->getParameter('Caveat'),
-                'SeriesUID' => $FileObj->getParameter('SeriesUID')
+                'SeriesUID' => $FileObj->getParameter('SeriesUID'),
+                'XMLreport' => $FileObj->getParameter('processing:DTIPrepXmlReport'),
+                'XMLprotocol' => $FileObj->getParameter('ProtocolFile'),
+                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file')
             );
             $this->tpl_data['files'][] = $file;
+        }
+    }
+    /**
+    * Gets a rejected parameter according to its type 
+    *
+    */
+    function _getRejected($file, $type, $array) 
+    {
+        $parameter = 'processing:' . $type . '_rejected';
+        if (preg_match(
+            "/(Directions)([^\(]+)(\(\d+\))/", $file->getParameter($parameter), $array
+        )) {
+            $dirList = preg_split('/\,/', $array[2]);
+            if (count($dirList) > 1) {
+                sort($dirList);
+            }
+            return "Directions " . join(", ", $dirList) . " " . $array[3]; 
+        } else {
+            return $file->getParameter($parameter);
         }
     }
     /**
