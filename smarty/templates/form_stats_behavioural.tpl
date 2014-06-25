@@ -6,6 +6,7 @@
         $('#' + id).attr('colspan', '3');
         $('#' + id).attr('onClick', 'hideStats(this)');
         $('#' + id).addClass('stats-active');
+        checkOverflow();
     }
     function hideStats(clicked){
         var id = clicked.id;
@@ -13,11 +14,13 @@
         $('#' + id).attr('colspan', '1');
         $('#' + id).attr('onClick', 'showStats(this)');
         $('#' + id).removeClass('stats-active');
+        checkOverflow();
     }
     $(window).resize(function(){
         if($(window).width() < 500){
             $('.table-div').addClass('table-responsive');
         } 
+        checkOverflow();
     });
     var step = 25;
     var scrolling = false;
@@ -36,7 +39,6 @@
     });
     $("#scrollLeft").bind("click", function(event) {
         event.preventDefault();
-        console.log("EHRHEHR");
         // Animates the scrollTop property by the specified
         // step.
         $("#content").animate({
@@ -57,6 +59,21 @@
                 scrollContent(direction);
             }
         });
+    }
+    function checkOverflow(){
+        var element = document.querySelector('#content');
+        if( (element.offsetHeight < element.scrollHeight) || (element.offsetWidth < element.scrollWidth)){
+            // your element have overflow
+            $("#content").addClass("col-xs-10 col-xs-offset-1");
+            $("#scrollLeft").show();
+            $("#scrollRight").show();
+        }
+        else{
+            //your element don't have overflow
+            $("#content").removeClass("col-xs-10 col-xs-offset-1");
+            $("#scrollLeft").hide();
+            $("#scrollRight").hide();
+        }
     }
 </script>
 {/literal}
