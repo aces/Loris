@@ -71,6 +71,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             WHERE 1=1 ";
         $this->formToFilter = array();
 
+	 /*****
+            Extract info from the config file
+
+         ****/
+        $config =& NDB_Config::singleton();
+        $paths = $config->getSetting('paths');
+        $error_log =  $paths['data'] . "logs";
+        $this->log= new Log("MRI_upload", $error_log);
+
         $config =& NDB_Config::singleton();
         $location = $config->getSetting('mincPath') . "logs";
         $this->log= new Log("MRI_upload", $location);
@@ -546,7 +555,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $patient_name_string = shell_exec($cmd);
                     preg_match("^\[(.*?)\]^", $patient_name_string, $fields);
                     $patient_name_from_header = $fields[1];
-    
+
+		    ///////////////////////////////////////////////////////////
+		    /////////////remove the spaces in the string///////////////
+            	    ///////////////////////////////////////////////////////////
+	            $patient_name_from_header = str_replace(' ', '', $patient_name_from_header);
+                    $patient_name = str_replace(' ', '', $patient_name);
+ 
                     ///////////////////////////////////////////////////////////
                     //if the patient-name doesn't match the header/////////////
                     ///////////////////////////////////////////////////////////
@@ -717,17 +732,31 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function sourceEnvironment($mri_code_path, $mri_user) 
     {
+<<<<<<< HEAD:modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
         $path = getenv('PATH') . ":" . $mri_code_path . ":" .  
             $mri_code_path. "uploadNeuroDB";
+=======
+
+        $path = $mri_code_path . ":" . $mri_code_path."/uploadNeuroDB/". ":".
+		$mri_code_path."/uploadNeuroDB/bin/". ":". getenv('PATH');
+
+>>>>>>> 1) create the log file using the specific configuration, 2) remove the spaces in the patient_name, 3) modify the environment PATH variable:php/libraries/NDB_Menu_Filter_mri_upload.class.inc
         putenv("PATH=$path");
 
         $loris_config = $mri_code_path . "dicom-archive";
         putenv("LORIS_CONFIG=$loris_config");
+<<<<<<< HEAD:modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
 
         putenv(
             "PERL5LIB=/usr/share/perl/:" . 
             "$mri_code_path:$mri_code_path/dicom-archive"
         );
+=======
+        $path .= getenv('PERL5LIB');
+
+        putenv("PERL5LIB=$path");
+        
+>>>>>>> 1) create the log file using the specific configuration, 2) remove the spaces in the patient_name, 3) modify the environment PATH variable:php/libraries/NDB_Menu_Filter_mri_upload.class.inc
         $tempdir = getenv('TMPDIR');
         //Set the TMPDIR path only if it's not already set
         if (!isset($tempdir)) {
