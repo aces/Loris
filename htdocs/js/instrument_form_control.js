@@ -39,7 +39,7 @@ function notAnswered(){
 		else{
 			$('.' + name ).prop('disabled', true);
 			$(this).parent().addClass('has-warning');
-			$(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any inputed data will not save</div>");
+			$(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any entered data will not be saved</div>");
 		}
 	}
 	else{
@@ -52,7 +52,7 @@ function notAnswered(){
 			$('[name=' + name + ']' ).prop('disabled', true);
 			console.log($('[name=' + name + ']' ));
 			$(this).parent().addClass('has-warning');
-			$(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any inputed data will not save</div>");
+			$(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any entered data will not be saved</div>");
 		}
 	}
 }
