@@ -151,11 +151,11 @@ function FeedbackButtonClicked() {
  <a href="#" onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">Visit-level feedback</a>
 <!-- table with candidate profile info -->
 {if $has_permission}<form action="" method="post">{/if}
-<p>QC Status<br>   {if $has_permission}{html_options options=$status_options selected=$subject.mriqcstatus name=visit_status tabindex=1>}
+<p>QC Status<br>   {if $has_permission}{html_options options=$status_options selected=$subject.mriqcstatus name="visit_status" tabindex="1"}
                {else}{$subject.mriqcstatus}
                {/if}
 </p>
-<p>QC Pending<br>  {if $has_permission}{html_options options=$pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2}
+<p>QC Pending<br>  {if $has_permission}{html_options options=$pending_options selected=$subject.mriqcpending name="visit_pending" tabindex=2}
                {else}{if $subject.mriqcpending=="Y"}<img src="images/check_blue.gif" width="12" height="12">{else}&nbsp;{/if}
                {/if}
 </p>

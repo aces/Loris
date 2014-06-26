@@ -158,8 +158,8 @@ Class TimePoint_Flag extends TimePoint
     function getTypeColor($type)
     {
         $smarty = new Smarty_neurodb;
-        $smarty->config_load('default.conf', 'timepoint_flag');
-        return $smarty->get_config_vars($type);
+        $smarty->ConfigLoad('default.conf', 'timepoint_flag');
+        return $smarty->getConfigVars($type);
     }
 
     /**
