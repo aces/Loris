@@ -16,6 +16,7 @@ function showStats(clicked){
     var id = clicked.id;
     $('.' + id).show();
     $('#' + id).attr('colspan', '3');
+    $('#' + id + "PIS").attr('colspan', '3');
     $('#' + id).attr('onClick', 'hideStats(this)');
     $('#' + id).addClass('stats-active');
     checkOverflow();
@@ -24,6 +25,7 @@ function hideStats(clicked){
     var id = clicked.id;
     $('.' + id).hide();
     $('#' + id).attr('colspan', '1');
+    $('#' + id + "PIS").attr('colspan', '1');
     $('#' + id).attr('onClick', 'showStats(this)');
     $('#' + id).removeClass('stats-active');
     checkOverflow();
