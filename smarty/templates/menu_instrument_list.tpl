@@ -4,7 +4,7 @@
 
 <!-- table with list of instruments and links to open them -->
 <div class="table-responsive">
-<table class="table table-hover" cellpadding="2">
+<table class="table table-hover table-bordered" cellpadding="2">
 {section name=group loop=$instruments}
     <!-- print the sub group header row -->
     <thead>
