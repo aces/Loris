@@ -47,6 +47,8 @@ CREATE TABLE `candidate` (
   `flagged_other_status` enum('not_answered') default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Entity_type` enum('Human','Scanner') NOT NULL default 'Human',
+  `ProbandGender` enum('Male','Female') DEFAULT NULL,
+  `ProbandDoB` date DEFAULT NULL,
   PRIMARY KEY  (`CandID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
