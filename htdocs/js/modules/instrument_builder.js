@@ -67,19 +67,19 @@ $(document).ready(function() {
         return false;
     });
 
-    $tabs = $(".table-responsive");
+    // $tabs = $(".table-responsive");
         
-        $( "tbody#workspace" )
-            .sortable({
-                connectWith: ".connectedSortable",
-                items: "> tr",
-                appendTo: $tabs,
-                helper:"clone",
-                zIndex: 999990,
-                start: function(){ $tabs.addClass("dragging") },
-                stop: function(){ $tabs.removeClass("dragging") }
-            })
-            .disableSelection();
+    //     $( "tbody#workspace" )
+    //         .sortable({
+    //             connectWith: ".connectedSortable",
+    //             items: "> tr",
+    //             appendTo: $tabs,
+    //             helper:"clone",
+    //             zIndex: 999990,
+    //             start: function(){ $tabs.addClass("dragging") },
+    //             stop: function(){ $tabs.removeClass("dragging") }
+    //         })
+    //         .disableSelection();
 });
 
 
