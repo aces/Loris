@@ -111,6 +111,7 @@ class CouchDBDemographicsImporter {
         $config = NDB_Config::singleton();
         $fieldsInQuery = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, c.EDC as EDC, c.flagged_caveatemptor as CEF, c.flagged_caveatemptor as CEF, c_o.Description as CEF_reason, c.flagged_other as CEF_comment, pc_comment.Value as Comment, pso.Description as Status, ps.participant_suboptions as Status_reason, ps.reason_specify as Status_comments";
         $tablesToJoin = " FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)";
+        // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
             $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference, c.Sibling1 as Sibling_ID, f.Relationship_type as Relationship_to_sibling";
             $fieldsInQuery .= $probandFields;
@@ -141,6 +142,7 @@ class CouchDBDemographicsImporter {
                 'Type' => "enum('half_sibling','full_sibling','1st_cousin')",
             )
         );
+        // If proband fields are being used, update the data dictionaru
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary = array_merge($this->Dictionary, $Proband);
         }
