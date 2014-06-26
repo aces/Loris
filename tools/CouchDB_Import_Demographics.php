@@ -46,10 +46,6 @@ class CouchDBDemographicsImporter {
             'Description' => 'Project for which the candidate belongs',
             'Type' => "enum('IBIS1','IBIS2','Fragile X', 'EARLI Collaboration')",
         ),
-        'EDC' => array(
-            'Description' => 'Expected Date of Confinement (Due Date)',
-            'Type' => "varchar(255)",
-        ),
         'CEF' => array(
             'Description' => 'Caveat Emptor flag',
             'Type' => "enum('true','false')",
@@ -109,43 +105,74 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = NDB_Config::singleton();
-        $fieldsInQuery = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, c.EDC as EDC, c.flagged_caveatemptor as CEF, c.flagged_caveatemptor as CEF, c_o.Description as CEF_reason, c.flagged_other as CEF_comment, pc_comment.Value as Comment, pso.Description as Status, ps.participant_suboptions as Status_reason, ps.reason_specify as Status_comments";
+        $fieldsInQuery = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, c.flagged_caveatemptor as CEF, c.flagged_caveatemptor as CEF, c_o.Description as CEF_reason, c.flagged_other as CEF_comment, pc_comment.Value as Comment, pso.Description as Status, ps.participant_suboptions as Status_reason, ps.reason_specify as Status_comments";
         $tablesToJoin = " FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)";
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference, c.Sibling1 as Sibling_ID, f.Relationship_type as Relationship_to_sibling";
+            $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
-            $probandTables = " LEFT JOIN family f ON (f.CandID=c.CandID)";
-            $tablesToJoin = $tablesToJoin . $probandTables;
+        }
+        // If family fields are being used, add family information into the query
+        if ($config->getSetting("useFamilyID") === "true") {
+            $familyFields = ", c.Sibling1 as Sibling_ID, f.Relationship_type as Relationship_to_sibling";
+            $fieldsInQuery .= $familyFields;
+            $familyTables = " LEFT JOIN family f ON (f.CandID=c.CandID)";
+            $tablesToJoin .= $familyTables;
+        }
+        // If expected date of confinement is being used, add EDC information into the query
+        if ($config->getSetting("useEDC") === "true") {
+            $EDCFields = ", c.EDC as EDC";
+            $fieldsInQuery .= $EDCFields;
         }
         $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL AND c.PSCID <> 'scanner'";
+        print($concatQuery);
         return $concatQuery;
     }
 
     function _updateDataDict() {
         $config = NDB_Config::singleton();
-        $Proband = array(
-            'Gender_proband' => array(
-                'Description' => 'Proband\'s gender',
-                'Type' => "",
-            ),
-            'Age_difference' => array(
-                'Description' => 'Age difference between the candidate and the proband',
-                'Type' => "",
-            ),
-            'Sibling_ID' => array(
-                'Description' => 'ID of the candidate\'s sibling',
-                'Type' => "int(6)",
-            ),
-            'Relationship_to_sibling' => array(
-                'Description' => 'Candidate\'s relationship to their sibling',
-                'Type' => "enum('half_sibling','full_sibling','1st_cousin')",
-            )
-        );
-        // If proband fields are being used, update the data dictionaru
+        // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
-            $this->Dictionary = array_merge($this->Dictionary, $Proband);
+            $this->Dictionary["Gender_proband"] = array(
+                'Description' => 'Proband\'s gender',
+                'Type' => "enum('Male','Female')"
+            );
+            $this->Dictionary["Age_difference"] = array(
+                'Description' => 'Age difference between the candidate and the proband',
+                'Type' => "int"
+            );
         }
+        // If family fields are being used, update the data dictionary
+        if ($config->getSetting("useFamilyID") === "true") {
+            $this->Dictionary["Sibling_ID"] = array(
+                'Description' => 'ID of the candidate\'s sibling',
+                'Type' => "int(6)"
+            );
+            $this->Dictionary["Relationship_to_sibling"] = array(
+                'Description' => 'Candidate\'s relationship to their sibling',
+                'Type' => "enum('half_sibling','full_sibling','1st_cousin')"
+            );
+        }
+        // If expected date of confinement is being used, update the data dictionary
+        if ($config->getSetting("useEDC") === "true") {
+            $this->Dictionary["Relationship_to_sibling"] = array(
+                'Description' => 'Expected Date of Confinement (Due Date)',
+                'Type' => "varchar(255)"
+            );
+        }
+        /*
+        // Add any candidate parameter fields to the data dictionary
+        $parameterCandidateFields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom='parameter_candidate' AND Queryable=1",
+            array());
+        foreach($parameterCandidateFields as $field) {
+            if(isset($field['Name'])) {
+                $fname = $field['Name'];
+                $Dict[$fname] = array();
+                $Dict[$fname]['Description'] = $field['Description'];
+                $Dict[$fname]['Type'] = $field['Type'];
+            }
+        }
+        */
     }
 
     function run() {
