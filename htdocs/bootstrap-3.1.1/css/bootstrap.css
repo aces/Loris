@@ -4404,7 +4404,12 @@ select[multiple].input-group-sm>.input-group-addon, select[multiple].input-group
 .navbar-nav>li>.dropdown-menu {
     margin-top: 0;
     border-top-right-radius: 0;
-    border-top-left-radius: 0
+    border-top-left-radius: 0;
+    background-color: #064785
+}
+
+.navbar-nav>li>.dropdown-menu>li>a {
+    color: white;
 }
 
 .navbar-fixed-bottom .navbar-nav>li>.dropdown-menu {

@@ -169,7 +169,7 @@
                             </p>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
                                 {$user.Real_name} <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
