@@ -41,6 +41,8 @@ CREATE TABLE `candidate` (
   `RegisteredBy` varchar(255) default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Date_registered` date default NULL,
+  `ProbandGender` enum('Male','Female') DEFAULT NULL,
+  `ProbandDoB` date DEFAULT NULL,
   `flagged_caveatemptor` enum('true','false') default 'false',
   `flagged_reason` int(6),
   `flagged_other` varchar(255) default NULL,
