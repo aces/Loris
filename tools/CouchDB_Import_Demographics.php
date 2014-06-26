@@ -83,7 +83,6 @@ class CouchDBDemographicsImporter {
     function __construct() {
         $this->SQLDB = Database::singleton();
         $this->CouchDB = CouchDB::singleton();
-        $this->config = NDB_Config::singleton();
     }
 
     function _getSubproject($id) {
