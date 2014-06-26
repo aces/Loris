@@ -103,6 +103,16 @@
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
                     </button>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" 
+                        data-target="#example-navbar-collapse" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;">
+                        <span class="sr-only">Toggle navigation</span>
+                        <img width=17 src=images/help.gif>
+                    </button>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" 
+                        data-target="#example-navbar-collapse" >
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="glyphicon glyphicon-edit" style="color:white"></span>
+                    </button>
 
                     <!-- toggle sidebar in mobile view -->
                     {if $control_panel}
@@ -112,12 +122,6 @@
                     {/if}
 
                     <a class="navbar-brand" href="main.php">LORIS</a>
-                    <a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;" class="navbar-brand pull-right">
-                        <img width=17 src=images/help.gif>
-                    </a>
-                    <a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right">
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </a>
                </div>
                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <ul class="nav navbar-nav">
@@ -149,6 +153,16 @@
                         {/foreach}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        <li class="hidden-xs hidden-sm">
+                            <a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </li>
+                        <li class="hidden-xs hidden-sm">
+                            <a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;" class="navbar-brand pull-right">
+                                <img width=17 src=images/help.gif>
+                            </a>
+                        </li>
                         <li>
                             <p class="navbar-text">
                                 &nbsp;&nbsp;  Site: {$user.Site} &nbsp;
