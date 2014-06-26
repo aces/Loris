@@ -1755,7 +1755,7 @@ table th{
 }
 
 .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
-    background-color: #f5f5f5
+    background-color: #bbb;
 }
 
 table col[class*="col-"] {
@@ -1803,7 +1803,10 @@ table td[class*="col-"], table th[class*="col-"] {
 
 .table-hover>tbody>tr>td.info:hover, .table-hover>tbody>tr>th.info:hover,
 .table-hover>tbody>tr.info:hover>td, .table-hover>tbody>tr.info:hover>th {
-    background-color: #c4e3f3
+    background-color: #989
+}
+.table-hover>thead>tr.info>th:hover {
+    background-color: grey
 }
 
 .table>thead>tr>td.warning, .table>tbody>tr>td.warning, .table>tfoot>tr>td.warning,

@@ -114,31 +114,33 @@
 <!-- start data table -->
 <div id="datatable" class="table-responsive">
     <table border="0" class="table table-hover table-primary table-bordered">
-        <tr class="info">
-            <th>No.</th>
-            <!-- print out column headings - quick & dirty hack -->
-            {section name=header loop=$headers}
-                <th><a href="main.php?test_name=final_radiological_review&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+        <thead>
+            <tr class="info">
+                <th>No.</th>
+                <!-- print out column headings - quick & dirty hack -->
+                {section name=header loop=$headers}
+                    <th><a href="main.php?test_name=final_radiological_review&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                {/section}
+            </tr>
+        </thead>
+        <tbody>
+            {section name=item loop=$items}
+                <tr>
+                <!-- print out data rows -->
+                {section name=piece loop=$items[item]}
+                <td>
+                    {if $items[item][piece].name == "PSCID"}
+                        <a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review&identifier={$items[item][piece].CommentID}">{$items[item][piece].value}</a>
+                    {else}
+                        {$items[item][piece].value}
+                    {/if}
+                </td>
+                {/section}
+                </tr>           
+            {sectionelse}
+                <tr><td colspan="8">Nothing found</td></tr>
             {/section}
-        </tr>
-
-        {section name=item loop=$items}
-            <tr>
-            <!-- print out data rows -->
-            {section name=piece loop=$items[item]}
-            <td>
-                {if $items[item][piece].name == "PSCID"}
-                    <a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review&identifier={$items[item][piece].CommentID}">{$items[item][piece].value}</a>
-                {else}
-                    {$items[item][piece].value}
-                {/if}
-            </td>
-            {/section}
-            </tr>           
-        {sectionelse}
-            <tr><td colspan="8">Nothing found</td></tr>
-        {/section}
-                        
+        </tbody>        
     <!-- end data table -->
     </table>
 </div>

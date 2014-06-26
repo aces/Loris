@@ -232,7 +232,11 @@
         <tr>
         <!-- print out data rows -->
         {section name=piece loop=$items[item]}
-            <td bgcolor="{$items[item][piece].bgcolor}">
+            {if $items[item][piece].bgcolor != ''}
+                <td style="background-color:{$items[item][piece].bgcolor}">
+            {else}
+                <td>
+            {/if}
     		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
     		    {assign var="PSCID" value="$items[item][piece].value"}
     		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>

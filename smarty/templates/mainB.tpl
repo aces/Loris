@@ -17,14 +17,8 @@
         <link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
         <!-- <link rel="stylesheet" href="bootstrap-3.1.1/css/magic-bootstrap.css"> -->
 
-        <!-- Optional theme -->
-        <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css" rel="stylesheet">
-
         <!-- Latest compiled and minified JavaScript -->
         <script src="bootstrap-3.1.1/js/bootstrap.min.js"></script>
-
-
-
         <title>
             {$study_title}
         </title>
@@ -264,7 +258,7 @@
                                 {if $candID != ""}
                                     <!-- table with candidate profile info -->
                                     <div class="table-responsive">
-                                        <table cellpadding="2" class="table table-hover table-primary table-bordered" style="max-width:auto">
+                                        <table cellpadding="2" class="table table-info table-bordered" style="max-width:auto">
                                             <!-- column headings -->
                                             <thead>
                                                 <tr class="info">
@@ -396,7 +390,7 @@
 
                                     {if $sessionID != ""}
                                         <div class="table-responsive">
-                                            <table class="table table-hover table-bordered">
+                                            <table class="table table-bordered">
                                                 <!-- visit statuses -->
                                                 <thead>
                                                     <tr class="info">
@@ -450,8 +444,7 @@
                                         </div>
                                     {/if}
                                 {/if}
-
-                                <div id="workspace">
+                                <div id="kgkjgkjg">
                                     {$workspace}
                                 </div>  
                             {/if}
@@ -496,9 +489,3 @@
         </div>
     </body>
 </html>
-
-
-
-
-
-

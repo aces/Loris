@@ -37,7 +37,7 @@ function notAnswered(){
 			$("#" + name).remove();
 		}
 		else{
-			$('.' + name ).propprop('disabled', true);
+			$('.' + name ).prop('disabled', true);
 			$(this).parent().addClass('has-warning');
 			$(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any inputed data will not save</div>");
 		}

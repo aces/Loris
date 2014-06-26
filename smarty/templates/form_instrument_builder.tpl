@@ -1,6 +1,5 @@
 <meta charset="utf-8"/>
-<title>Loris Form Builder</title>
-<style>
+
 {literal}
 <style>
 .selected {

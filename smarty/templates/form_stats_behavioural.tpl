@@ -67,6 +67,7 @@
     </a>
   </div>
 </div>
+
 <b><a href='main.php?test_name=statistics_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
