@@ -58,15 +58,13 @@ function hideStats(clicked) {
     $('#' + id).removeClass('stats-active');
     checkOverflow();
 }
-$(document).ready(function () {
-    'use strict';
+$(document).ready(function(){
+    console.log($(".centers").height());
+    $(".spacer").height($(".centers").height());
     checkOverflow();
 });
-$(window).resize(function () {
-    'use strict';
-    if ($(window).width() < 500) {
-        $('.table-div').addClass('table-responsive');
-    }
+$(window).resize(function(){
+    $(".spacer").height($(".centers").height());
     checkOverflow();
 });
 var step = 100;
@@ -149,4 +147,34 @@ function scrollContent(direction, elem) {
             scrollContent(direction, elem);
         }
     });
+}
+function checkOverflow(){
+    var element = document.querySelector('#content');
+    if( (element.offsetHeight < element.scrollHeight) || (element.offsetWidth < element.scrollWidth)){
+        // your element have overflow
+        $(".table-scroll").addClass("scrollable");
+        $(".headcol").addClass("colm-static");
+        $("#scrollLeft").show();
+        $("#scrollRight").show();
+    }
+    else{
+        //your element don't have overflow
+        $(".table-scroll").removeClass("scrollable");
+        $(".headcol").removeClass("colm-static");
+        $("#scrollLeft").hide();
+        $("#scrollRight").hide();
+    }
+    element = document.querySelector('#contentDD');
+    if( (element.offsetHeight < element.scrollHeight) || (element.offsetWidth < element.scrollWidth)){
+        // your element have overflow
+        $("#contentDD").addClass("col-xs-10 col-xs-offset-1");
+        $("#scrollLeftDD").show();
+        $("#scrollRightDD").show();
+    }
+    else{
+        //your element don't have overflow
+        $("#contentDD").removeClass("col-xs-10 col-xs-offset-1");
+        $("#scrollLeftDD").hide();
+        $("#scrollRightDD").hide();
+    }
 }
