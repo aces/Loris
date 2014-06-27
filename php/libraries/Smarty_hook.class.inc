@@ -21,8 +21,20 @@ class Smarty_neurodb extends Smarty {
         $this->default_resource_type="neurodb";
         $this->assign('app_name','NeuroDB');
 
-        $this->addConfigDir($this->template_dir);
-        $this->addConfigDir($this->project_template_dir);
+        $currentDir = $this->getConfigDir();
+        $newdir = array_merge(
+            $currentDir, 
+            array(
+                'template' => $this->template_dir,
+                'project'  => $this->project_template_dir
+            )
+        );
+        $this->setConfigDir($newdir);
+
+        // addConfigDir seems to only be in smarty3.1+, but Ubuntu 
+        // 12.04 has 3.0, so we need to use setConfigDir instead
+        //$this->addConfigDir($this->template_dir);
+        //$this->addConfigDir($this->project_template_dir);
     }
 }
 

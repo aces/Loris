@@ -8,7 +8,7 @@
  * @package behavioural 
  * @version $Id: NDB_BVL_Feedback.class.inc,v 3.16 2007/03/02 21:16:28 sebas Exp $
  */
-require_once 'smarty3/SmartyBC.class.php';
+require_once 'smarty3/Smarty.class.php';
 require_once 'User.class.inc';
 require_once 'Database.class.inc';
 
