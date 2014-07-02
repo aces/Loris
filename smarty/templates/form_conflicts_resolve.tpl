@@ -29,6 +29,8 @@
                     <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">{$form.CandID.label}</label>
                         <div class="col-sm-12 col-md-4">{$form.CandID.html}</div>
+                        <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
                     </div>
                     <div class="form-group col-sm-6 col-sm-offset-5 hidden-sm">
                         <div class="col-sm-6 col-xs-12">
