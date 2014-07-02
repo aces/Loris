@@ -19,6 +19,7 @@ function showStats(clicked){
     $('#' + id + "PIS").attr('colspan', '3');
     $('#' + id).attr('onClick', 'hideStats(this)');
     $('#' + id).addClass('stats-active');
+    $('#' + id).attr('data-original-title', 'Click to minimize');
     checkOverflow();
 }
 function hideStats(clicked){
@@ -28,6 +29,7 @@ function hideStats(clicked){
     $('#' + id + "PIS").attr('colspan', '1');
     $('#' + id).attr('onClick', 'showStats(this)');
     $('#' + id).removeClass('stats-active');
+    $('#' + id).attr('data-original-title', 'Click to maximize');
     checkOverflow();
 }
 $(document).ready(function(){
@@ -137,3 +139,7 @@ function checkOverflow(){
         $("#scrollRightDD").hide();
     }
 }
+
+$(function(){
+        $(".tip").tooltip();
+    });
