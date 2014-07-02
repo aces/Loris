@@ -125,7 +125,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                     if($Instrument != null) {
                         $Instrument->score();
                         // Score runs the update statements to update the scored columns. There's no need to save,
-                        // (and save() doesn't work) because it calles $this->form->getSubmittedValues(), and at
+                        // (and save() doesn't work) because it calls $this->form->getSubmittedValues(), and at
                         // this point we're submitting the conflict resolver, not the instrument
                         //$Instrument->save();
                     }
