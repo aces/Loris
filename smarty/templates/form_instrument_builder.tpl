@@ -12,10 +12,7 @@
 <script type="application/javascript" src="js/modules/instrument_builder.rules.js"></script>
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
 
-<!-- </head>
-<body> -->
 <div id="message" class="error">&nbsp;</div>
-<!-- <div id="elements"> -->
 <div class="col-sm-4 hidden-xs">
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideLoad();">
@@ -37,7 +34,6 @@
             <label for="selected-input" class="col-sm-2 control-label">Question Type:</label>
             <div class="col-sm-4">
                 <div class="btn-group">
-                    <!-- <dt>Information</dt> -->
                     <button id="selected-input" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         <span id="search_concept">Select One </span>
                         <span class="caret"></span>
@@ -89,7 +85,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="col-xs-12 form-group"> -->
             <div class="form-group">
                 <label class="col-sm-2 control-label">Question Name: </label>
                 <div class="col-sm-6">
@@ -158,7 +153,6 @@
                     <input class="form-control" type="number" id="numericmax">
                 </div>
             </div>
-        <!-- </div> -->
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <input class="btn btn-default" type="button" value="Add Row" onClick="addQuestion();" />
@@ -186,7 +180,6 @@
         <input class="btn btn-default" type="button" id="preview" value="Preview">
     </form>
     <h2>Save Instrument</h2>
-    <!-- <div> -->
 
         <form class="form-horizontal" role="form" name="saveform" id="saveform">
             <div class="form-group">
@@ -202,7 +195,6 @@
                 <input class="btn btn-default" type="submit" value="Save" />
             </div>
         </form>
-    <!-- </div> -->
 
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideRule();">
@@ -264,5 +256,3 @@
         </div>
     </div>
 </div>
-<!-- </body>
-</html> -->
