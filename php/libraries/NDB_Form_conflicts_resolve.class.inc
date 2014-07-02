@@ -36,6 +36,9 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         if(isset($_REQUEST['site'])) {
             $defaults['site'] = $_REQUEST['site'];
         }
+        if(isset($_REQUEST['visit'])) {
+            $defaults['visit'] = $_REQUEST['visit'];
+        }
         if(isset($_REQUEST['Instrument'])) {
             $defaults['Instrument'] = $_REQUEST['Instrument'];
         }
