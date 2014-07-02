@@ -27,13 +27,6 @@ function isElementSet() {
     return set;
 }
 
-
-// function toggleMe() {
-//     "use strict";
-//     $("#advanced-label").toggle(); 
-// }
-
-
 function showAdvancedOptionsCheck() {
 
     "use strict";
