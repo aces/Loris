@@ -159,7 +159,6 @@ class NDB_BVL_Instrument extends NDB_Page
             if($instrument == 'instrument_preview') {
                 require_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
                 $obj = new NDB_BVL_Instrument_instrument_preview();
-                $obj->preview = true;
             } else {
                 $obj = new NDB_BVL_Instrument();
             }
@@ -1538,6 +1537,10 @@ class NDB_BVL_Instrument extends NDB_Page
                 'Delimiter' => $this->_GUIDelimiter
             );
 
+            if($this->preview === true){
+                $pageCount = 1;
+            }
+
             while(($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
 
@@ -1557,9 +1560,21 @@ class NDB_BVL_Instrument extends NDB_Page
                     case 'page':
                         $parsingPage = trim($pieces[2]);
                         $pageName = $db->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:testinst AND Description=:parsing", array("testinst" => $this->testName, "parsing" => $parsingPage));
-                        if($currentPage == $pageName) {
+                        if($this->preview === true){
                             $addElements = true;
-                        } else {
+                            if($pageCount == 1){
+                                $this->form->addElement('html', '<p>This preview mode is currently under construction.  For the time
+                                    being, all instrument pages and fields will be displayed here in a
+                                    single screen for preview purposes, separated by a horizontal line.
+                                    Note that in the actual instrument forms (once they are added in
+                                    Loris) the Save Data button will appear at the bottom of each page.</p><hr>');
+                            }
+                            $pageCount++;
+                            $this->form->addElement('header', 'v', '<hr>' . $pieces[2]);
+                        } else if($currentPage == $pageName) {
+                            $addElements = true;
+                        }
+                         else {
                             $addElements = false;
                         }
                         $firstSelectOfPage = true;

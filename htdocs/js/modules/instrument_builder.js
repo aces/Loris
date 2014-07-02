@@ -86,14 +86,14 @@ function addQuestion() {
     questionText = document.getElementById("questionText");
     questionName = document.getElementById("questionName");
     if(questionText.value == '' && selected != 'line') {
-        if(selected == 'page') {
+        if(selected == 'page-break') {
             alert("Must use question text as page header");
         } else {
             alert("No question text specified");
         }
         return;
     } 
-    if(questionName.value == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page') {
+    if(questionName.value == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
         alert("Must specifiy name for database to save value into");
         return;
     }
@@ -107,7 +107,7 @@ function addQuestion() {
         q  = addDropdownQuestion(question);
     } else if(selected == 'multiselect') {
         q  = addDropdownQuestion(question, 'multi');
-    } else if(selected == "scored" || selected == "header" || selected == "label" || selected == "page") {
+    } else if(selected == "scored" || selected == "header" || selected == "label" || selected == "page-break") {
         q = addStaticQuestion(selected, question);
     } else if (selected == "date") {
         min = parseInt(document.getElementById('datemin').value, 10);
@@ -130,7 +130,7 @@ function addQuestion() {
     row = document.createElement("tr");
     $(row).addClass("_moveable");
     dbname = document.createElement("td");
-    if(selected != "header" && selected != "label" && selected != "line" && selected != "page") {
+    if(selected != "header" && selected != "label" && selected != "line" && selected != "page-break") {
         dbname.innerHTML = questionName.value;
         dbname.setAttribute("contenteditable", "true");
         $(dbname).bind("change", function() { Rules.rebuildMenu("rule_q", "workspace"); Rules.rebuildMenu("rule_depends", "workspace", { dropdownOnly: true }); });

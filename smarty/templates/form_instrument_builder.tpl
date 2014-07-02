@@ -43,7 +43,7 @@
             <dt>Formatting</dt>
             <dd>
             <button id="line" class="option" title="Empty line">Blank Line</button>
-            <button id="page" class="option" title="Start a new page">Page Break</button>
+            <button id="page-break" class="option" title="Start a new page">Page Break</button>
             </dd>
         </dl>
         <div>

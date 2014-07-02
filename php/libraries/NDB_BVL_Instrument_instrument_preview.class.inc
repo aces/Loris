@@ -11,6 +11,7 @@ class NDB_BVL_Instrument_instrument_preview extends NDB_BVL_Instrument
 
     function NDB_BVL_Instrument_instrument_preview()
     {
+        $this->preview = true;
         $this->loadInstrumentFile("data:text/plain;base64," . base64_encode($_REQUEST['instrumentdata']), true);
         $this->form->addElement('hidden', 'instrumentdata', $_REQUEST['instrumentdata']);
         if($_REQUEST['instrumentrules']) {
