@@ -219,6 +219,26 @@ class NDB_Config
     	 // no nodes found - returning null
     	return null;
     }
+
+    static function GetMenuTabs($parent = null) {
+        $DB = Database::singleton();
+        if($parent === null) {
+            $thisLevel = $DB->pselect("SELECT Label, 1 as Visible, Link, ID FROM LorisMenu WHERE Parent IS NULL", array());
+        } else {
+            $thisLevel = $DB->pselect("SELECT Label, 1 as Visible, Link, ID FROM LorisMenu WHERE Parent=:ParentID ", array('ParentID' => $parent));
+            return $thisLevel;
+        }
+
+        foreach($thisLevel as &$thisRow) {
+            $nextLevel = NDB_Config::GetMenuTabs($thisRow['ID']);
+
+            if(!empty($nextLevel)) {
+                $thisRow['subtabs'] = $nextLevel;
+            }
+        }
+
+        return $thisLevel;
+    }
   
 }
 ?>
