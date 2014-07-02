@@ -5,6 +5,8 @@
 <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
 <br><br>
 
+<a class="tip" data-toggle="tooltip" data-placement="right" href="#" id="item1" title="Hello World!">Home</a>
+
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
@@ -14,7 +16,7 @@
               <tr class="info">
                   <th class="headcol spacer"> </th>
                   {foreach from=$Centers item=center key=centername}
-                      <th id='{$center.LongName}' class="centers" colspan="3" onclick="hideStats(this)">
+                      <th id='{$center.LongName}' class="centers tip" colspan="3" onclick="hideStats(this)" data-toggle="tooltip" data-placement="bottom" data-container="body" title="Click to minimize">
                           {$center.LongName}
                       </th>
                   {/foreach}

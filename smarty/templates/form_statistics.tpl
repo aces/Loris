@@ -4,8 +4,8 @@
 <script type="text/javascript" src="js/jquery.csv.js"></script>
 <!-- highcharts graphing library -->
 <script type="text/javascript" src="js/Highcharts/js/highcharts.src.js"></script>
-<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<!-- <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script> -->
+<!-- <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script> -->
 <script type="text/javascript" src="js/LorisGraph.js"></script>
 <script language="javascript" type="text/javascript">
 var graph;
