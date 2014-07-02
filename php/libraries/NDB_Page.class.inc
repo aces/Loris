@@ -55,7 +55,8 @@ class NDB_Page extends PEAR
     }
 
 
-    function addBasicText($field, $label, $options=array('class' => 'form-control input-sm')) {
+    function addBasicText($field, $label, $options=null) {
+        $options = array_merge(array('class' => 'form-control input-sm'), $options);
         $this->form->addElement('text', $field, $label, $options);
     }
 
