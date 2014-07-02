@@ -2,6 +2,7 @@
 /**
     Ajax Streaming 
 */
+
 //('../php/libraries/NDB_Menu_Filter_mri_upload.class.inc');
 //require_once ('../php/libraries/Log.class.inc'); 
 header('Content-Type: text/octet-stream');
@@ -9,6 +10,7 @@ header('Cache-Control: no-cache');
 /**
     
 */
+
 function send_message($message)
 {
 //    $d = array('message' => $message);

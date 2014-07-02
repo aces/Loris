@@ -678,7 +678,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function sourceEnvironment($mri_code_path,$mri_user) 
     {
-
         $path = getenv('PATH') . ":" . $mri_code_path . ":" .  $mri_code_path. "uploadNeuroDB";
         putenv("PATH=$path");
 
@@ -694,7 +693,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
+        
 exit(-1);        
+       
     }
 
     /**
