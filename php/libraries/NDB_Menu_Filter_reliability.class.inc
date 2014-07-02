@@ -190,8 +190,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->addSelect('Objective', 'Objective:', $subproject_options);
         $this->addSelect('CenterID', 'Site:', $list_of_sites);
         $this->addSelect('reliability_center_id', 'Site of Reliability:', $list_of_sites);
-        $this->addBasicText('DCCID', 'DCCID::', array("size"=>9, "maxlength"=>6, 'class' => 'form-control input-sm'));
-        $this->addBasicText('PSCID', 'PSCID:', array("size"=>9, "maxlength"=>7, 'class' => 'form-control input-sm'));
+        $this->addBasicText('DCCID', 'DCCID::', array("size"=>9, "maxlength"=>6));
+        $this->addBasicText('PSCID', 'PSCID:', array("size"=>9, "maxlength"=>7));
         $this->addSelect('Gender', 'Gender:', $gender_options);
         $this->addSelect('Visit_label', 'Visit Label:', $list_of_visit_labels);
         $this->addSelect('Instrument', 'Instrument:', $list_of_instruments);
