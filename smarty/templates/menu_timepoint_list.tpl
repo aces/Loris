@@ -56,8 +56,6 @@
             	    -
                 {/if}
                 </td>
-
-<<<<<<< HEAD
                 <td>
                 {if $timePoints[timepoint].Scan_done != ""}
                            {if $timePoints[timepoint].Scan_done == 'Y'}

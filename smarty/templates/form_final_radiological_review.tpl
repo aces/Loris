@@ -6,8 +6,6 @@
         {/foreach}
     </ul>
     {/if}
-
-<<<<<<< HEAD
     <h1>General Information</h1>
     <div class="col-sm-8 col-md-6 col-xs-12">
         <div class="col-xs-12">
