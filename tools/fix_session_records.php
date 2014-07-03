@@ -1,4 +1,4 @@
-<?
+<?php
 #!/data/web/neurodb/software/bin/php
 /**
  * this script fixed the invalid records in the session table

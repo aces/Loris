@@ -103,7 +103,7 @@ class NDB_Form_new_profile extends NDB_Form
             foreach($projects as $projectID => $projectName) {
                 $projList[$projectID] = $projectName;
             }
-            $this->form->addElement("select", 'ProjectID', 'Project', $projList);
+            $this->addSelect('ProjectID', 'Project', $projList);
         }
 
         // add gender

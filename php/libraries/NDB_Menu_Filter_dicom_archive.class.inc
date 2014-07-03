@@ -53,28 +53,36 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     function _setupVariables()
     {
         $this->_setDicomArchiveSettings();
-        $TransferStatus = $this->_getTransferStatusFromQuery();
-        
+                
         $this->query = " FROM session s 
             JOIN candidate c ON (c.CandID=s.CandID)
             JOIN tarchive t ON (s.ID=t.SessionID)";
 
-        $this->columns = array(
+        $colsFirst = array(
             't.TarchiveID as TarchiveID',
-            's.ID as SessionID',    	 
-            "$TransferStatus as Transfer_Status",
-            't.PatientID as Patient_ID', 
+            's.ID as SessionID'
+        );
+        
+        $TransferStatus = $this->_getTransferStatusFromQuery();
+        $arrayTransfer = array($TransferStatus . " as Transfer_Status");         
+
+        $colsFirst = array_merge($colsFirst, $arrayTransfer);
+        
+        $colsLast = array(
+            't.PatientID as Patient_ID',
             't.PatientName as Patient_Name',
             't.PatientGender as Gender',
             't.PatientDoB as Date_of_birth',
             't.DateAcquired as Acquisition',
             't.ArchiveLocation as Archive_Location',
             "'View Details' as Metadata",
-            "'View Images' as MRI_Browser" 
+            "'View Images' as MRI_Browser"
         );
+
+        $this->columns = array_merge($colsFirst, $colsLast);
+
         $this->order_by = 't.DateAcquired';
-        
-        
+                
         $this->headers 
             = ($this->dicomArchiveSettings['showTransferStatus'] == 'true') ? 
             array(

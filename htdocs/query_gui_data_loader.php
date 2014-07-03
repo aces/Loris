@@ -11,6 +11,7 @@
  * @package main
  * @subpackage query_gui
  */
+ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
 
 

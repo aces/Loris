@@ -71,10 +71,10 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         if ($order) {    	     				   
             $query = "SELECT * FROM $table WHERE TarchiveID ='$tarchiveID'
             ORDER BY $order";
-            $this->DB->select($query, $array);
+            $array = $this->DB->pselect($query, array());
         } else {
             $query = "SELECT * FROM $table WHERE TarchiveID ='$tarchiveID'";
-            $this->DB->selectRow($query, $array);
+            $array = $this->DB->pselectRow($query, array());
         }
         
         if (Utility::isErrorX($array)) { 
@@ -95,10 +95,16 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         $config =& NDB_Config::singleton();
         $dicomArchiveSettings = $config->getSetting('dicom_archive');
         
-        if (preg_match(
+        if ((preg_match(
             $dicomArchiveSettings['patientNameRegex'], 
             $this->tpl_data['archive']['PatientName']
-        )) {
+        )) || (preg_match(
+            $dicomArchiveSettings['LegoPhantomRegex'],
+            $this->tpl_data['archive']['PatientName']
+        )) || (preg_match(
+            $dicomArchiveSettings['LivingPhantomRegex'],
+            $this->tpl_data['archive']['PatientName']
+        ))) {
             $this->tpl_data['archive']['patientNameValid'] = 1;
         } else {
             $this->tpl_data['archive']['patientNameValid'] = 0;

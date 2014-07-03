@@ -58,7 +58,7 @@
     {section name=piece loop=$items[item]}
     <td nowrap="nowrap">
         {if $items[item][piece].name== "PatientName"}
-            <a href="dicom_archive.php?TarchiveID={$items[item].TarchiveID}">{$items[item][piece].value}</a>
+            <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item].TarchiveID}">{$items[item][piece].value}</a>
         {else}
             {$items[item][piece].value}
         {/if}

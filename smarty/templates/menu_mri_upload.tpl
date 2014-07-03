@@ -92,12 +92,12 @@
                 <!-- print out data rows -->
                 {section name=piece loop=$items[item]}
                     {if $items[item][piece].name eq 'Tarchive_Info'}
-                        <td nowrap="nowrap"><a href="dicom_archive.php?TarchiveID={$items[item][piece].value}">
+                        <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
                         View Details</a></td>
                     {elseif $items[item][piece].name eq 'MRI_Browser'}     
                         {if $items[item][piece].value neq '0'}
                             <td nowrap="nowrap">
-                                <a href="mri_browser.php?filter%5BcandID%5D={$items[item][2].value}">
+                                <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
                                     View Images
                                 </a>
                             </td>

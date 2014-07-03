@@ -31,11 +31,27 @@ class MRIFile
         foreach($parameterRaw AS $row) {
             $this->parameters[$row['Name']] = $row['Value'];
         }
+        $query = "SELECT * FROM files_intermediary WHERE Output_FileID=:FID";
+        $intermFile = $db->pselectRow($query, $params);
+        if(!empty($intermFile)) {
+            foreach($intermFile AS $key=>$value) {
+                $this->intermFiles[$key] = $value;
+            }
+        }
+        $query = "SELECT ProtocolFile from files as f, mri_processing_protocol as mpp WHERE f.ProcessProtocolID=mpp.ProcessProtocolID AND FileID=:FID";
+        $protFile = $db->pselectRow($query, $params);
+        if(!empty($protFile)) {
+            foreach($protFile AS $key=>$value) {
+                $this->protFiles[$key] = $value;
+            }
+        }
     }
     
     function getParameter($parameterName)
     {
         if(isset($this->QCData[$parameterName]))       return $this->QCData[$parameterName];
+        if(isset($this->intermFiles[$parameterName])) return $this->intermFiles[$parameterName];
+        if(isset($this->protFiles[$parameterName])) return $this->protFiles[$parameterName];
         if(isset($this->fileData[$parameterName]))       return $this->fileData[$parameterName];
         elseif(isset($this->parameters[$parameterName])) return $this->parameters[$parameterName];
         else return null;

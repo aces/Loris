@@ -58,9 +58,8 @@
 </Studylinks>
 
 <links>
-    <link url='dicom_archive.php?' args=''>DICOM Archive</link>
-    <link url='mri_browser.php?' args='MRIBrowser'>MRI Browser</link>
-    <link url='query_gui.php?' args=''>Data Query Tool</link>
+    <link url='http://www.loris.ca'>Loris Website</link>
+    <link url='http://www.github.com'>GitHub</link>
 </links>
 
 <!-- mail settings -->
@@ -246,6 +245,11 @@
     </study>
 <!-- end of study definition -->
 
+<!-- Conflict Resolver default max display settings -->
+    <ConflictResolver>
+         <MaxConflicts>50</MaxConflicts>
+    </ConflictResolver>
+
 <!-- Statistics options -->
     <statistics>
         <excludedMeasures>radiology_review</excludedMeasures>
@@ -379,7 +383,7 @@
         </subtab>
         <subtab>
             <parent>Imaging</parent>
-            <link>dicom_archive.php?</link>
+            <link>main.php?test_name=dicom_archive</link>
             <label>Dicom Archive</label>
             <access>all</access>
             <permissions>
@@ -388,7 +392,7 @@
         </subtab>
         <subtab>
             <parent>Imaging</parent>
-            <link>mri_browser.php?</link>
+            <link>main.php?test_name=imaging_browser</link>
             <label>MRI Browser</label>
             <access>all</access>
             <permissions>

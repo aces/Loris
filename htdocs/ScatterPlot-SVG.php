@@ -1,4 +1,6 @@
 <?php
+ini_set('default_charset', 'utf-8');
+
 require_once "Database.class.inc";
 require_once 'NDB_Config.class.inc';
 require_once 'NDB_Client.class.inc';

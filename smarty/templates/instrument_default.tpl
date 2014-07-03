@@ -50,7 +50,7 @@
                         {if $element.required}<font color="red">*</font>{/if}<b>{$element.label}:</b></td>
                     <td>
                 {/if} 
-                    {if $element.error}<font color="red">{$element.error}</font><br />{/if}
+                    {*{if $element.error}<font color="red">{$element.error}</font><br />{/if}*}
                     {if $element.type eq "group"}
                         {foreach key=gkey item=gitem from=$element.elements}
                             {$gitem.label}

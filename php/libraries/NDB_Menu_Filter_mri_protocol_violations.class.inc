@@ -27,7 +27,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @link     https://www.github.com/aces/Loris-Trunk/
  * 
  */
-class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
+class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
 {
     /**
      * Tie the access to a new violated_scans permission, with a separate
@@ -87,6 +87,8 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->validFilters = array(
             'mpv.CandID',
             'mpv.PSCID',
+            'mpv.PatientName',
+            'mpv.SeriesUID',
             'mpv.series_description',
             'mpv.time_run'
         );
@@ -95,6 +97,8 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
         $this->formToFilter = array(
                 'CandID' => 'mpv.CandID',
                 'PSCID' => 'mpv.PSCID',
+                'PatientName' => 'mpv.PatientName',
+                'SeriesUID' => 'mpv.SeriesUID',
                 'SeriesDescription' => 'mpv.series_description',
                 'TimeRun' => 'mpv.time_run'
                 );
@@ -129,8 +133,22 @@ class NDB_Menu_mri_protocol_violations extends NDB_Menu_Filter
     function getMRIProtocolData()
     {
         $db =& Database::singleton();
-        // select all except Objective from mri_protocol and add Scan_type from mri_scan_type to mri_protocol's Scan_type
-        $mri_protocols = $db->pselect("SELECT p.ID, Center_name, ScannerID, CONCAT(p.Scan_type, IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')) as Scan_type, TR_range, TE_range, TI_range, slice_thickness_range, FoV_x_range, FoV_y_range, xspace_range, yspace_range, zspace_range, xstep_range, ystep_range, zstep_range, time_range, series_description_regex FROM mri_protocol as p LEFT JOIN mri_scan_type as s ON p.Scan_type=s.ID", array());
+        // select all except Objective from mri_protocol 
+        // and add Scan_type from mri_scan_type 
+        // to mri_protocol's Scan_type
+        $mri_protocols = $db->pselect(
+            "SELECT p.ID, Center_name, ScannerID, CONCAT(
+                p.Scan_type, 
+                IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')
+            ) as Scan_type, TR_range, TE_range, TI_range, 
+            slice_thickness_range, FoV_x_range, FoV_y_range, 
+            xspace_range, yspace_range, zspace_range, 
+            xstep_range, ystep_range, zstep_range, 
+            time_range, series_description_regex 
+            FROM mri_protocol as p 
+            LEFT JOIN mri_scan_type as s 
+            ON p.Scan_type=s.ID", array()
+        );
         return $mri_protocols;
     }
 }
