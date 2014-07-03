@@ -10,8 +10,8 @@ function isElementSet() {
     ///if any of the dropdown is not equal to 'All' then set the variable set to true
     options.each(function () {
         var value = $(this).text();
-        if (value !=='All') {
-            set =1;
+        if (value !== 'All') {
+            set = 1;
             return;
         }
     });
@@ -20,20 +20,12 @@ function isElementSet() {
     texts.each(function () {
         var value = $(this).val();
         if (value !== '') {
-            set =1;
+            set = 1;
             return;
         }
     });
     return set;
 }
-
-
-function toggleMe() {
-    "use strict";
-    $("#basicSelector").toggle();  
-    $(".advancedOptions").toggle();
-}
-
 
 function showAdvancedOptionsCheck() {
 

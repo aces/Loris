@@ -2,6 +2,7 @@
 require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/Array.php';
 require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 include_once ('HTML/QuickForm/Renderer/Default.php');
 
@@ -357,28 +358,13 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults = $this->localDefaults;
         }
         $this->form->setDefaults($defaults);
-
         
-        // display the HTML_Quickform object
-        // return $this->form->toHTML();
-        
-        $renderer = new HTML_QuickForm_Renderer_Default();
-        if(isset($this->testName)) {
-            $renderer->setFormTemplate("<form{attributes}><table id=\"instrument_" . $this->testName . "\" class=\"instrument\">{content}</table></form>");
-        } else {
-            $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
-        }
- 
-        $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
-        $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
-        $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
-
-        // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
-        // so that we can have instructions/labels in the direct data entry instruments that span into
-        // the column for data entry.
-        $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
+        $smarty = new Smarty_neurodb;
+        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
         $this->form->accept($renderer);
-        return $renderer->toHtml();
+        $smarty->assign('form', $renderer->toArray());
+        $html = $smarty->fetch("instrument_html.tpl");
+        return $html;
     }
     
     /**
@@ -446,14 +432,16 @@ class NDB_BVL_Instrument extends NDB_Page
                 
                 // the form WAS submitted but validate() failed...
                 // main error message
-                 print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 // print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 $this->form->addElement('static', 'mainError');
+                 $this->form->setElementError('mainError', "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n");
                  //print all the field error messages in one block
                 foreach(array_keys($submittedData) AS $key) {
                     $error = $this->form->getElementError($key);
                     if(!empty($error)) {
                         $element = $this->form->getElement($key);
                         if(method_exists($element, "getLabel")){
-                            print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                            // print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
                         }
                     }
                 }
@@ -1253,7 +1241,7 @@ class NDB_BVL_Instrument extends NDB_Page
     */
     function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
         $group[]=&$this->createText($field);
-        $group[]=&$this->createSelect($field."_status", "", $refusals);
+        $group[]=&$this->createSelect($field."_status", "", $refusals, array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
@@ -1283,8 +1271,8 @@ class NDB_BVL_Instrument extends NDB_Page
     
 
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4, 'class' => 'form-control'));
+        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'), array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
@@ -1323,12 +1311,12 @@ class NDB_BVL_Instrument extends NDB_Page
             $options = $this->dateOptions;
         }
 
-        $group [] = $this->createDate($name . "_date", null, $options);
+        $group [] = $this->createDate($name . "_date", null, $options, $attr=array('class' => 'form-control input-sm '.$name."_date", 'style' => 'max-width:33%; display:inline-block;'));
         if (!in_array($name . "_date", $this->dateTimeFields)) {
             $this->dateTimeFields[] = $name . "_date"; 
         }
 
-        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"), array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
@@ -1375,7 +1363,7 @@ class NDB_BVL_Instrument extends NDB_Page
     */
     function addNumericElement($field, $label, $options = null) {
         $group [] = $this->createText($field, $label);
-        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"), array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
@@ -1389,7 +1377,7 @@ class NDB_BVL_Instrument extends NDB_Page
     
     function addNumericElementRD($field, $label) {
         $group [] = $this->createText($field, $label);
-        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"), array('class' => 'form-control input-sm not-answered'));    
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));

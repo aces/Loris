@@ -50,9 +50,9 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 		// list of feedback statuses
 		$instruments = Utility::getAllInstruments();
 		$instruments = array_merge(array('' => 'All Instruments'), $instruments);
-		$this->form->addElement('select','sourceFrom', 'Instruments', $instruments);
-		$this->form->addElement('select','Description', 'Description', array('' => 'All', 'empty'=>'Empty','modified'=>'Modified','unmodified'=>'Unmodified'));
-        $this->form->addElement('text', 'keyword', 'Search keyword');		
+		$this->addSelect('sourceFrom', 'Instruments', $instruments);
+		$this->addSelect('Description', 'Description', array('' => 'All', 'empty'=>'Empty','modified'=>'Modified','unmodified'=>'Unmodified'));
+        $this->addBasicText('keyword', 'Search keyword');		
 		return true;
 	}
 
