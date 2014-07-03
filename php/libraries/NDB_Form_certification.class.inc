@@ -327,7 +327,7 @@ class NDB_Form_certification extends NDB_Form
             if (preg_match("/Mullen/", $value)) {
                 $v = explode(' ', $value);
                 $value = $v[0];
-                $this->form->addSelect('pass['.$key.'_3_9]', $value . " 3-9mo", $statusOptions);
+                $this->addSelect('pass['.$key.'_3_9]', $value . " 3-9mo", $statusOptions);
                 $this->form->addElement('text', 'comment['.$key.'_3_9]', 'Comment');
                 $this->form->addElement('date', 'date_cert['.$key.'_3_9]', 'Date', $dateOptions);
                 $this->form->addElement('select', 'pass['.$key.'_12_15]', $value . " 12-15mo", $statusOptions);
