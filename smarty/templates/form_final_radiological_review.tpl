@@ -7,6 +7,7 @@
     </ul>
     {/if}
 
+<<<<<<< HEAD
     <h1>General Information</h1>
     <div class="col-sm-8 col-md-6 col-xs-12">
         <div class="col-xs-12">
@@ -28,7 +29,7 @@
         <div class="col-xs-12">
             <label class="col-xs-6">Go to:</label>
             <div class="col-xs-6">
-                <a href="mri_browser.php?sessionID={$form.SessionID.html}" target="_blank">MRI Browser</a>
+                <a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$form.SessionID.html}" target="_blank">Imaging Browser</a>
             </div>
             <div class="col-xs-6 col-xs-offset-6">
                 <a href="main.php?test_name=radiology_review&candID={$form.CandID.html}&sessionID={$form.SessionID.html}&commentID={$form.CommentID.html}" target="_blank">Original Radiology Review</a>

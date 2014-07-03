@@ -57,11 +57,12 @@
                 {/if}
                 </td>
 
+<<<<<<< HEAD
                 <td>
                 {if $timePoints[timepoint].Scan_done != ""}
                            {if $timePoints[timepoint].Scan_done == 'Y'}
                 					{assign var="scan_done" value="Yes"}
-                					<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+                					<a href="main.php?test_name=imaging_browser&pscid={$PSCID}&filter=true">{$scan_done}</a>
         						{else}
         							{assign var="scan_done" value="No"}
         							{$scan_done}
@@ -70,7 +71,7 @@
                     <img alt="Data Missing" src="images/help2.gif" border=0>
                 {/if}
                 </td>
-
+       
                 <td bgColor="{$timePoints[timepoint].feedbackColor}">
                 {if $timePoints[timepoint].feedbackCount}
                     {$timePoints[timepoint].feedbackStatus}

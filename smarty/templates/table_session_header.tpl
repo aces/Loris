@@ -1,4 +1,4 @@
-<table class="fancytableleft" id='table-header-left'>
+<table class="table-mri-right-and-center" id='table-header-left'>
     <tbody>
         <tr>
             <th>QC Status</th><td>{$subject.mriqcstatus}</td>

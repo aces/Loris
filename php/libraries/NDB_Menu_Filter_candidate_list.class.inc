@@ -186,6 +186,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
                     $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
                 }
+                $this->tpl_data['items'][$x][$i]['PSCID'] = $item['PSCID']; 
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
                 // get feedback information for each displayed candidate record

@@ -169,10 +169,12 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'AcquisitionProtocol' => $FileObj->getAcquisitionProtocol(),
                 'CoordinateSpace' => $FileObj->getParameter('CoordinateSpace'),
                 'Algorithm' => $FileObj->getParameter('Algorithm'),
-                'AcquisitionDate' => (preg_match(
-                    "/(\d{4})-?(\d{2})-?(\d{2})/", 
-                    $FileObj->getParameter('acquisition_date'), $acqDate
-                )) ? (mktime(12, 0, 0, $acqDate[2], $acqDate[3], $acqDate[1])) : "",
+                'AcquisitionDate' => $this->_getDate(
+                    $FileObj, 'acquisition_date', $acqDate
+                ), 
+                'ProcDate' => $this->_getDate(
+                    $FileObj, 'processing:processing_date', $procDate
+                ),
                 'FileInsertDate' => $FileObj->getParameter('InsertTime'),
                 'SeriesDescription' => $FileObj->getParameter('series_description'),
                 'SeriesNumber' => $FileObj->getParameter('series_number'),
@@ -193,15 +195,19 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'TotalRejected' => $FileObj->getParameter(
                     'processing:total_rejected'
                 ),
-                'SlicewiseRejected' => $FileObj->getParameter(
-                    'processing:slicewise_rejected'
+                'SourceFile' => basename(
+                    $FileObj->getParameter('processing:sourceFile')
                 ),
-                'InterlaceRejected' => $FileObj->getParameter(
-                    'processing:interlace_rejected'
+                'Tool' => $FileObj->getParameter('Tool'),
+                'SlicewiseRejected' => $this->_getRejected(
+                    $FileObj, 'slicewise', $sliceRej
                 ),
-                'IntegradientRejected' => $FileObj->getParameter(
-                    'processing:integradient_rejected'
+                'InterlaceRejected' => $this->_getRejected(
+                    $FileObj, 'interlace', $laceRej
                 ),
+                'IntergradientRejected' => $this->_getRejected(
+                    $FileObj, 'intergradient', $interRej
+                ), 
                 'Xstep' => number_format($FileObj->getParameter('xstep'), 2),
                 'Ystep' => number_format($FileObj->getParameter('ystep'), 2),
                 'Zstep' => number_format($FileObj->getParameter('zstep'), 2),
@@ -209,10 +215,58 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'QCStatus' => $FileObj->getParameter('QCStatus'),
                 'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
                 'Caveat' => $FileObj->getParameter('Caveat'),
-                'SeriesUID' => $FileObj->getParameter('SeriesUID')
+                'SeriesUID' => $FileObj->getParameter('SeriesUID'),
+                'XMLreport' => $FileObj->getParameter('processing:DTIPrepXmlReport'),
+                'XMLprotocol' => $FileObj->getParameter('ProtocolFile'),
+                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file')
             );
             $this->tpl_data['files'][] = $file;
         }
+    }
+    /**
+    * Gets a rejected parameter according to its type
+    * 
+    * @param MRIFile $file  file object 
+    * @param string  $type  type of the rejected
+    * @param array   $array array containing rejected
+    *
+    * @return parameter of the rejected
+    */
+    function _getRejected($file, $type, $array) 
+    {
+        $parameter = 'processing:' . $type . '_rejected';
+        if (preg_match(
+            "/(Directions)([^\(]+)(\(\d+\))/", 
+            $file->getParameter($parameter), $array
+        )) {
+            $dirList = preg_split('/\,/', $array[2]);
+            if (count($dirList) > 1) {
+                sort($dirList);
+            }
+            return "Directions " . join(", ", $dirList) . " " . $array[3]; 
+        } else {
+            return $file->getParameter($parameter);
+        }
+    }
+    /**
+    * Gets the date according to the type
+    * 
+    * @param MRIFile $file  file object 
+    * @param string  $type  type of the date
+    * @param array   $array array containing the date
+    *
+    * @return date if exists, if not an empty string
+    */
+    function _getDate($file, $type, $array)
+    {
+        if (preg_match(
+            "/(\d{4})-?(\d{2})-?(\d{2})/", 
+            $file->getParameter($type), $array
+        )) {
+            return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
+        } else {
+            return "";
+        } 
     }
     /**
     * Updates QCStatus in the form
