@@ -41,18 +41,12 @@ function showProgress (perc) {
     }
 }
 
-/*function changeProgress(val) {
-    var widthBar = val*$("#progressbar").width()/100;
-    $("#progressbar").width(widthBar).html(val + "%");
-}*/
-
 function sendFile() {
-    $("#mri_upload").submit(function(e) {
-        ajax_stream();
+    $("#upload").click(function(e) {
         $("#progressbar").show();
-        var formObj = $(this);
+        var formObj = $("#mri_upload")[0];
         var formURL = "main.php?test_name=mri_upload";
-        var formData = new FormData(this);
+        var formData = new FormData(formObj);
         var file = $('#file input')[0].files[0];
         formData.append('file', file.name);
         $.ajax({
@@ -81,7 +75,8 @@ function sendFile() {
             {
             }         
         });
-        e.preventDefault(); 
+        e.preventDefault();
+        ajax_stream(); 
     });
 }
 
@@ -122,9 +117,30 @@ function ajax_stream() {
     }
 }
 
+
+function SSE() {
+    
+    var source = new EventSource("main.php?test_name=mri_upload");
+    source.addEventListener('message', function(e) {
+        $("#log_box").html(e.data + "<br>");
+    }, false);
+    source.addEventListener('open', function(e) {
+        $("#log_box").html('connection opened<br />');
+    }, false);
+    source.addEventListener('error', function(e) {
+        $("#log_box").html('error');
+    }, false);
+    //source.onmessage = function(event) {
+    //    $("#log_box").html(event.data + "<br>");
+    //};
+}
+
 $(function () {
    change();
    $("#progressbar").hide();
    sendFile();
+  // $("#upload").click(function(e) {
+    //   SSE();
+   //});
 });
 

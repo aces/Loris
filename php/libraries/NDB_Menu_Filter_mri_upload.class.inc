@@ -169,9 +169,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
             $file_name = pathinfo($source_location, PATHINFO_FILENAME);
             if ($this->show_queries) {
-                print "file-name : $file_name, and sourcelocation".
+                print "file-name : $file_name, and sourcelocation ".
                        $source_location;
-                print "visitlabel $visit_label pscid: $pscid and candid:".
+                print " visitlabel $visit_label pscid: $pscid and candid: ".
                        $candid;
             }
 
@@ -693,11 +693,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
-        
+        $this->_sendMessage();
 exit(-1);        
        
     }
-
+    function _sendMessage() 
+    {
+        header('Content-Type:text/event-stream');
+        header('Cache-Control: no-cache');
+        echo "data: Hi, I am checking SSE\n\n";
+        flush();
+    }
     /**
      * Runs the dicomTar.pl and will return true if the dicom is inserted,
      * ,tarchiveid, and archivelocation
