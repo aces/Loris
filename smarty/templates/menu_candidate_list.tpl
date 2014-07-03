@@ -216,7 +216,6 @@
 <!-- </table> -->
 <!-- </form> -->
 <!-- start data table -->
-<<<<<<< HEAD
 <div class="table-responsive">
 <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
     <thead>
