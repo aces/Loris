@@ -36,6 +36,9 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         if(isset($_REQUEST['site'])) {
             $defaults['site'] = $_REQUEST['site'];
         }
+        if(isset($_REQUEST['visit'])) {
+            $defaults['visit'] = $_REQUEST['visit'];
+        }
         if(isset($_REQUEST['Instrument'])) {
             $defaults['Instrument'] = $_REQUEST['Instrument'];
         }
@@ -122,7 +125,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                     if($Instrument != null) {
                         $Instrument->score();
                         // Score runs the update statements to update the scored columns. There's no need to save,
-                        // (and save() doesn't work) because it calles $this->form->getSubmittedValues(), and at
+                        // (and save() doesn't work) because it calls $this->form->getSubmittedValues(), and at
                         // this point we're submitting the conflict resolver, not the instrument
                         //$Instrument->save();
                     }
@@ -168,11 +171,11 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
-
-        
-        
         
         $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
+        
+        $visits = Utility::getVisitList();
+        $visits = array_merge(array('' => 'All'), $visits);
 
         
         $extra_where = '';
@@ -186,6 +189,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         // Filter selection elements
         $this->addSelect('site', 'Site:', $sites);
         $this->addSelect('Instrument', 'Instrument:', $instruments);
+        $this->addSelect('visit', 'Visit label:', $visits);
         $this->addBasicText('Question', 'Question:');
         $this->addBasicText('CandID', 'DCCID:');
         $this->addBasicText('PSCID', 'PSCID:');
@@ -205,6 +209,8 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             $extra_where .= AddWhere("s.CandID", 'CandID');
             $extra_where .= AddWhere("ca.PSCID", 'PSCID');
             $extra_where .= AddWhere("s.CenterID", 'site');
+            $extra_where .= AddWhere("s.Visit_label", 'visit');
+
 
             // The 1=1 condition is just so that we can AND all the conditions together without worrying about whether or not
             // it's the first condition to be added.
