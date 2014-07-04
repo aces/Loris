@@ -3,7 +3,7 @@
     Ajax Streaming 
 */
 
-//('../php/libraries/NDB_Menu_Filter_mri_upload.class.inc');
+require_once('NDB_Menu_Filter_mri_upload.class.inc');
 //require_once ('../php/libraries/Log.class.inc'); 
 header('Content-Type: text/octet-stream');
 header('Cache-Control: no-cache');
@@ -11,7 +11,10 @@ header('Cache-Control: no-cache');
     
 */
 
-function send_message($message)
+//sendMessage($this->string);
+sendMessage("Hello World");
+
+function sendMessage($message)
 {
 //    $d = array('message' => $message);
   //  echo json_encode($d) . PHP_EOL;
@@ -33,7 +36,7 @@ function getLogName() {
     return $log;
 }
 
-$logfile = getLogName(); 
+/*$logfile = getLogName(); 
 
 if (! file_exists($logfile))
     $newfile = true;
@@ -59,7 +62,7 @@ else {
     }
     parse($new_portion)
 }
-
+*/
 function parse($text)
 {
     $lines = explode("\n", $text);
@@ -81,7 +84,7 @@ function parse($text)
             continue;
         }
     }   
-    send_message($message); 
+    sendMessage($message); 
 }
 
 function getUpdates($text)
