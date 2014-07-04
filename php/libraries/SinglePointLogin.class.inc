@@ -52,6 +52,7 @@ class SinglePointLogin extends PEAR
         $tpl_data['error_message'] = $this->_lastError;
         $study_links = $config->getSetting('Studylinks');// print_r($study_links);
         foreach(Utility::toArray($study_links['link']) AS $link){
+            $LinkArgs = '';
             $BaseURL = $link['@']['url'];
             if(isset($link['@']['args'])) {
                 $LinkArgs = $link_args[$link['@']['args']];
