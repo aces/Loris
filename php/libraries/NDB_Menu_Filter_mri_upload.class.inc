@@ -16,7 +16,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
 require_once 'Log.class.inc';
 require_once "Archive/Tar.php";
 require_once "File_Decompress.class.inc";
-
+require_once 'MessageQueue.class.inc';
 /**
  * Log Class
  *
@@ -32,7 +32,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
   
     var $show_queries = true;
+    static $queue;
     
+
+    //public function __construct() {
+      //  $this->queue = new SplQueue();
+  //  }
+    public function getQueue() {
+        print gettype($this->queue);
+        return $this->queue;
+    }
+
     /**
      * _has_access returns true
      * if the user has the specific permission
@@ -69,7 +79,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             WHERE 1=1 ";
         $this->formToFilter = array();
         $this->log= new Log("MRI_upload", "/data/sandbox/data/logs");
-
+        self::$queue = new SplQueue();
         return true;
     }
 
@@ -693,18 +703,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
-        $this->_sendMessage();
+        print gettype(self::$queue);
+        self::$queue->enqueue("Hello World!");
+            
 exit(-1);        
        
     }
-    function _sendMessage() 
-    {
-        header('Content-Type:text/event-stream');
-        header('Cache-Control: no-cache');
-        echo "data: Hi, I am checking SSE\n\n";
-        flush();
-    }
-    /**
+     /**
      * Runs the dicomTar.pl and will return true if the dicom is inserted,
      * ,tarchiveid, and archivelocation
      *

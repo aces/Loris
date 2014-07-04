@@ -2,8 +2,11 @@
 /**
     Ajax Streaming 
 */
+set_include_path(
+    get_include_path() . ":../../../project/libraries:../../../php/libraries"
+);
 
-require_once('NDB_Menu_Filter_mri_upload.class.inc');
+require_once 'NDB_Menu_Filter_mri_upload.class.inc';
 //require_once ('../php/libraries/Log.class.inc'); 
 header('Content-Type: text/octet-stream');
 header('Cache-Control: no-cache');
@@ -11,8 +14,10 @@ header('Cache-Control: no-cache');
     
 */
 
-//sendMessage($this->string);
-sendMessage("Hello World");
+$q = NDB_Menu_Filter_Mri_Upload::$queue;
+
+sendMessage(gettype($q));
+
 
 function sendMessage($message)
 {
@@ -22,6 +27,8 @@ function sendMessage($message)
       ob_flush();
       flush();
 }
+
+
 
 // need a better way to get the file name,
 // not to call this function every second.
@@ -65,13 +72,14 @@ else {
 */
 function parse($text)
 {
+    $message = "";
     $lines = explode("\n", $text);
     $nbLines = count($lines);
     for ($i = 0; $i < $nbLines; $i++) {
         if ($lines[$i] != '') {
             // need only text, without time
-            $first = strpos($lines[$i], ']' + 2)
-            $message += substr($lines[$i], $first) + "\n";
+            $first = strpos($lines[$i], ']' + 2);
+            $message .= substr($lines[$i], $first) . "\n";
          
             // get the last update time and save it
             if ($i = $nbLines - 1) { 

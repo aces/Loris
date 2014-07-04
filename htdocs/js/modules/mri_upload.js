@@ -43,6 +43,7 @@ function showProgress (perc) {
 
 function sendFile() {
     $("#upload").click(function(e) {
+        ajax_stream();
         $("#progressbar").show();
         var formObj = $("#mri_upload")[0];
         var formURL = "main.php?test_name=mri_upload";
@@ -76,7 +77,7 @@ function sendFile() {
             }         
         });
         e.preventDefault();
-        ajax_stream(); 
+ 
     });
 }
 
@@ -139,6 +140,9 @@ $(function () {
    change();
    $("#progressbar").hide();
    sendFile();
+  // $("#upload").click(function(e) {
+   //    ajax_stream();
+  // });
   // $("#upload").click(function(e) {
     //   SSE();
    //});
