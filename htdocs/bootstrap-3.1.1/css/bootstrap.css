@@ -1,7 +1,7 @@
 /* 
  * CSS not implemented in bootstrap
 */
-.headcol.pis{
+.static-col.pis{
     padding-bottom: 71px;
 }
 .pis {
@@ -20,7 +20,7 @@
     margin-right: 50px;
     margin-left:10em;
 }
-.headcol {
+.static-col {
     position:absolute; 
     width:7em; 
     left:0;

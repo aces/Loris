@@ -66,7 +66,7 @@ $(document).ready(function(){
             Table.setup("content", "scrollRight", "scrollLeft");
             Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
             Table.setup("contentDD", "scrollRightDD", "scrollLeftDD");
-            Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD");
+            Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
         });
     
     $(".spacer").height($(".centers").height());
@@ -74,7 +74,7 @@ $(document).ready(function(){
 });
 $(window).resize(function(){
     $(".spacer").height($(".centers").height());
-    Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD");
+    Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
     Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
     // checkOverflow();
 });
