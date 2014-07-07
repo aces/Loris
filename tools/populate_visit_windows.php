@@ -65,11 +65,10 @@ class VisitWindowPopulator
             array('VL' => $visit)
         );
         if ($verify === 'x') {
-            print "$visit already inserted!\n";
             return;
         }
         print "Inserting $visit\n";
-        $this->DB->insert("Visit_Windows", array('Visit_label' => $visit));
+        $x = $this->DB->insert("Visit_Windows", array('Visit_label' => $visit));
     }
 
     /**
@@ -85,7 +84,6 @@ class VisitWindowPopulator
             foreach (Utility::toArray($visits['labelSet']['item']) as $item) {
                 $visit = $item['@']['value'];
                 if (!empty($visit)) {
-                    print "Inserting $visit\n";
                     $this->insertIfMissing($visit);
                 }
 
