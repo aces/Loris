@@ -8,6 +8,10 @@
     height: 80px;
 }
 .table-scroll { 
+    overflow-x:auto;
+    padding-bottom:1px;
+}
+.table-scroll-static { 
     overflow-x:auto;  
     margin-left:7em;
     padding-bottom:1px;
