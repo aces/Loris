@@ -7,26 +7,26 @@ SITE.fileInputs = function() {
       newVal = valArray[valArray.length-1],
       $button = $this.siblings('.button-file'),
       $fakeFile = $this.siblings('.file-holder');
-  if(newVal !== '') {
+  
+  if (newVal !== '') {
     $button.text('File Chosen');
-    if($fakeFile.length === 0) {
+    if ($fakeFile.length === 0) {
 	if (newVal.length >= 15)
 		newVal = (newVal.substr(0,10)).concat("..."); 
-      $button.after('' + newVal + '');
+	$('.fileName').text(newVal);
     } else {
-      $fakeFile.text(newVal);
+	$fakeFile.text(newVal);
     }
   }
 };
 
 
-function getParameterByName(name)
-{
+function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regexS = "[\\?&]" + name + "=([^&#]*)";
     var regex = new RegExp(regexS);
     var results = regex.exec(window.location.search);
-    if(results == null)
+    if (results == null)
         return "";
     else
         return decodeURIComponent(results[1].replace(/\+/g, " "));
@@ -34,20 +34,49 @@ function getParameterByName(name)
 
 var filtered;
 
+function editCategory() {
+
+    $('.categorycomments').
+            bind('blur',function(event){
+                event.stopImmediatePropagation();
+                id = event.target.id;
+                value = $("#" + id) .text();
+		$.get("DocumentRepository/categoryEdit.php?id=" + id + "&comments=" + value, function(data) {});
+            }
+    ).keypress(function(e) {
+        if(e.which === 13) { // Determine if the user pressed the enter button
+            $(this).blur();
+        }
+    });
+}
+
 $(document).ready(function() {
+
+   $(function() {
+     $("div.accordion").accordion({
+       autoHeight: false,
+       collapsible: true,
+       active: false,
+     });
+   });
+
+   $(function() {
+    editCategory();
+   });
 
     //Hide error and success messages on load
     $('.upload-success').hide();
     $('.delete-success').hide();
+    $('.add-success').hide();
     $('.edit-success').hide();
     $('.upload-error').hide();
     $('.file-error').hide();
     $('.no-files').hide();
 
     var uploadSuccess = getParameterByName('uploadSuccess');
-    if (uploadSuccess){
+    if (uploadSuccess) {
 	    $('.upload-success').show();
-	    setTimeout( "$('.upload-success').hide();", 5000 );
+	    setTimeout("$('.upload-success').hide();", 3000);
     }
 
 
@@ -73,7 +102,7 @@ $(document).ready(function() {
                     success: function(){
                         $("#"+id).parent().parent().remove();
 			            $('.delete-success').show();
-			            setTimeout( "$('.delete-success').hide();", 5000 );
+			            setTimeout("$('.delete-success').hide();", 3000);
                     },
                     error:function(jqXHR, textStatus, errorThrown){
                         console.log("Error: " + textStatus + " " +errorThrown);
@@ -86,32 +115,64 @@ $(document).ready(function() {
          }  
     });
 
+    //Add category dialog
+    $('.addCategory').dialog({ autoOpen: false });
+    $('#addCategory').click(function(){
+        $('.addCategory').dialog('open');
+    });
+
+    $(".addCategory").dialog({
+	buttons : {
+	     "Cancel" : function() {
+                 $(this).dialog("close");
+             },
+             "Add" : function() {
+                 $.ajax({
+                    url: "DocumentRepository/addCategory.php",
+                    type: "POST",
+		    data: $("#addCategoryForm").serialize(),
+                    success: function(){
+                                 $('.add-success').show();
+                                 setTimeout("$('.add-success').hide();", 3000);
+				 setTimeout("location.reload();",3000);
+                    },
+                    error:function(jqXHR, textStatus, errorThrown){
+                        console.log("Error: " + textStatus + " " +errorThrown);
+                    }
+                });
+
+                $(this).dialog("close");
+                        return false;
+                }
+         }
+    });
+
     //Upload dialog
     //File input wrapper
-    $('.file-wrapper input[type=file]').bind('change focus click', SITE.fileInputs);
+    $('.file-wrapper input[type=file]').bind('change', SITE.fileInputs);
 
-    $( ".dialog-form" ).dialog({
+    $(".dialog-form").dialog({
         autoOpen: false,
         height: 500,
-        width: 400,
+        width: 449,
         modal: true
      });
 
     $("#cancelButton").click(function() {
-        $( ".dialog-form" ).dialog( "close" );
+        $(".dialog-form").dialog("close");
     });
 
-    $( "#upload" ).click(function() {
-        $( ".dialog-form" ).dialog( "open" );
+    $("#upload").click(function() {
+        $(".dialog-form").dialog("open");
         return false;
     });
 
 
     //Edit dialog    
-    $( ".dialog-form-edit" ).dialog({
+    $(".dialog-form-edit").dialog({
         autoOpen: false,
-        height: 300,
-        width: 400,
+        height: 500,
+        width: 449,
         modal: true,
         cache: false,
        // close: function() {
@@ -126,7 +187,7 @@ $(document).ready(function() {
                 idEdit:id,
                 categoryEdit:$(categoryEdit).val(),
                 siteEdit:$(siteEdit).val(),
-              	instrumentEdit:$(nameEdit).val(),
+              	instrumentEdit:$(instrumentEdit).val(),
                 pscidEdit:$(pscidEdit).val(),
                 visitEdit:$(visitEdit).val(),
                 commentsEdit:$(commentsEdit).val(),
@@ -141,22 +202,22 @@ $(document).ready(function() {
                 data: data,
  	            success: function(){    
                     $('.edit-success').show();
-                    setTimeout(function() { location.reload() }, 5000);
+                    setTimeout(function() { location.reload() }, 3000);
                 }
              });
 
-             $( ".dialog-form-edit" ).dialog( "close" );
+             $(".dialog-form-edit").dialog("close");
 	    }	
 	}
     });
 
     $("#cancelEditButton").click(function() {
-        $( ".dialog-form-edit"  ).dialog( "close" );
+        $(".dialog-form-edit").dialog("close");
     });
 		
     //The Edit file function
-    $( ".theeditlink" ).click(function() {
-        $( ".dialog-form-edit" ).dialog( "open" );
+    $(".theeditlink").click(function() {
+        $(".dialog-form-edit").dialog("open");
         id = this.id;
 
 	    $.ajax({
@@ -166,11 +227,11 @@ $(document).ready(function() {
             async: false,
 	        dataType: "json",
 	        success: function(data){
-		
+
 	        //Pre-populate the form with the existing values		 
                 SelectElement("categoryEdit", data.File_category);
 	            SelectElement("siteEdit", data.For_site);
-                SelectElement("nameEdit", data.File_name);
+                SelectElement("instrumentEdit", data.Instrument);
 		        SelectElement("pscidEdit", data.PSCID);
 	            SelectElement("visitEdit", data.visitLabel);
 	            SelectElement("commentsEdit", data.comments);
@@ -204,8 +265,7 @@ $(document).ready(function() {
 
 	    if (section_el.is(':visible')) {
             return true;
-	    }
-	    else {
+	    } else {
 	        return false;
 	    }
     }
@@ -222,14 +282,14 @@ $(document).ready(function() {
 	        if (isOpen) {
 	            $(".accordionHeaders").show();
 		        $(this).addClass('selected');
-                count++;
+                    count++;
 	        }    
 	    });
 
-	    if(count<1) { 
+	    if (count<1) { 
 	        $(".accordionHeaders").hide();
 		    $('.no-files').show();
-		    setTimeout( "$('.no-files').hide();", 5000 );
+		    setTimeout("$('.no-files').hide();", 3000);
 	    }
     }
 
@@ -248,14 +308,14 @@ $(document).ready(function() {
 
 
     function toggleGroup(group) {
-        if(group) {
+        if (group) {
 
             // id is the header that was clicked
             id = group.target.id;
 
             // chop off header_ to get section name
             section = id.substring(7);
-            
+
             // hide (or show) the appropriate div for that section
             section_el = $(".categories_" + section);
             section_el.toggle();
@@ -264,8 +324,7 @@ $(document).ready(function() {
 	        if(section_el.is(':visible')) {
     	        $(".accordionHeaders").show();
 	            $(this).addClass('selected');
-	        }
-	        else {
+	        } else {
 	    	    $(this).removeClass('selected');
 
 		        $(".categories_header").each(function(idx, el) {
@@ -275,7 +334,7 @@ $(document).ready(function() {
 		            }
 		        });
 		        if (count<1) {
-    	            $(".accordionHeaders").hide();
+    	   		        $(".accordionHeaders").hide();
 		        }
 	        }		
 	    }
@@ -304,10 +363,9 @@ function isEmpty(element) {
 	    element.addClass('missing');
 	    $(".upload-error").show();
 	    return true;
-    }
-
-    else
+    } else {
 	    return false;
+    }
 }
 
 //Checks that file has been selected for upload
@@ -315,14 +373,12 @@ function isFileEmpty(element) {
     if (element.length == 0) {
 	    $(".file-error").show();	
 	    return true;
-    }
-	
-    else
+    } else {
 	    return false;
+    }
 }
 
 //Pre-populates the Edit form with fields already associated with that file
-function SelectElement(element, valueToSelect)
-{    
-    $("#" + element + "").val(valueToSelect);
+function SelectElement(element, valueToSelect) {
+	$("#" + element + "").val(valueToSelect);
 }
