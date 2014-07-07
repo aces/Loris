@@ -10,7 +10,7 @@
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
-    <div class="table-scroll" id="content">
+    <div class="table-scroll-static" id="content">
       <table class="table table-primary table-bordered">
           <thead>
               <tr class="info">
@@ -85,7 +85,7 @@
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
-    <div class="table-scroll" id="contentDD">
+    <div class="table-scroll-static" id="contentDD">
       <table class="table table-primary table-bordered">
         <thead>
               <tr class="info">
