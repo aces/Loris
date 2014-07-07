@@ -69,7 +69,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
            JOIN session s ON (s.ID = mu.SessionID)
             WHERE 1=1 ";
         $this->formToFilter = array();
-        $this->log= new Log("MRI_upload", "/data/gusto/data/logs/");
+	 /*****
+            Extract info from the config file
+
+         ****/
+        $config =& NDB_Config::singleton();
+        $paths = $config->getSetting('paths');
+        $error_log =  $paths['data'] . "logs";
+        $this->log= new Log("MRI_upload", $error_log);
 
         return true;
     }
@@ -517,7 +524,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $patient_name_string = shell_exec($cmd);
                     preg_match("^\[(.*?)\]^", $patient_name_string, $fields);
                     $patient_name_from_header = $fields[1];
-    
+
+		    ///////////////////////////////////////////////////////////
+		    /////////////remove the spaces in the string///////////////
+            	    ///////////////////////////////////////////////////////////
+	            $patient_name_from_header = str_replace(' ', '', $patient_name_from_header);
+                    $patient_name = str_replace(' ', '', $patient_name);
+ 
                     ///////////////////////////////////////////////////////////
                     //if the patient-name doesn't match the header/////////////
                     ///////////////////////////////////////////////////////////
@@ -675,11 +688,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function sourceEnvironment($mri_code_path,$mri_user) 
     {
 
-        $path = $mri_code_path. ":". getenv('PATH');
+        $path = $mri_code_path . ":" . $mri_code_path."/uploadNeuroDB/". ":".
+		$mri_code_path."/uploadNeuroDB/bin/". ":". getenv('PATH');
+
         putenv("PATH=$path");
         $loris_config = $mri_code_path . "dicom-archive";
         putenv("LORIS_CONFIG=$loris_config");
-        $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
+        $path .= getenv('PERL5LIB');
+
         putenv("PERL5LIB=$path");
         
         $tempdir = getenv('TMPDIR');
