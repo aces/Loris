@@ -41,7 +41,7 @@ function editCategory() {
                 event.stopImmediatePropagation();
                 id = event.target.id;
                 value = $("#" + id) .text();
-		$.get("DocumentRepository/categoryEdit.php?id=" + id + "&comments=" + value, function(data) {});
+                $.get("DocumentRepository/categoryEdit.php?id=" + id + "&comments=" + value, function(data) {});
             }
     ).keypress(function(e) {
         if(e.which === 13) { // Determine if the user pressed the enter button
@@ -93,7 +93,7 @@ $(document).ready(function() {
         buttons : {
             "Cancel" : function() {
                  $(this).dialog("close");
-             },
+            },
              "Yes" : function() {
                  $.ajax({
                     url: "DocumentRepository/documentDelete.php", 
@@ -123,18 +123,18 @@ $(document).ready(function() {
 
     $(".addCategory").dialog({
 	buttons : {
-	     "Cancel" : function() {
+             "Cancel" : function() {
                  $(this).dialog("close");
              },
              "Add" : function() {
                  $.ajax({
                     url: "DocumentRepository/addCategory.php",
                     type: "POST",
-		    data: $("#addCategoryForm").serialize(),
+                    data: $("#addCategoryForm").serialize(),
                     success: function(){
                                  $('.add-success').show();
                                  setTimeout("$('.add-success').hide();", 3000);
-				 setTimeout("location.reload();",3000);
+                                 setTimeout("location.reload();",3000);
                     },
                     error:function(jqXHR, textStatus, errorThrown){
                         console.log("Error: " + textStatus + " " +errorThrown);
@@ -187,7 +187,7 @@ $(document).ready(function() {
                 idEdit:id,
                 categoryEdit:$(categoryEdit).val(),
                 siteEdit:$(siteEdit).val(),
-              	instrumentEdit:$(instrumentEdit).val(),
+                instrumentEdit:$(instrumentEdit).val(),
                 pscidEdit:$(pscidEdit).val(),
                 visitEdit:$(visitEdit).val(),
                 commentsEdit:$(commentsEdit).val(),
@@ -225,19 +225,19 @@ $(document).ready(function() {
   	        url: "DocumentRepository/getFileData.php",
             data: {id:id}, 
             async: false,
-	        dataType: "json",
-	        success: function(data){
+                dataType: "json",
+                success: function(data){
 
-	        //Pre-populate the form with the existing values		 
-                SelectElement("categoryEdit", data.File_category);
-	            SelectElement("siteEdit", data.For_site);
-                SelectElement("instrumentEdit", data.Instrument);
-		        SelectElement("pscidEdit", data.PSCID);
-	            SelectElement("visitEdit", data.visitLabel);
-	            SelectElement("commentsEdit", data.comments);
-	            SelectElement("versionEdit", data.version);
+                   //Pre-populate the form with the existing values
+                   SelectElement("categoryEdit", data.File_category);
+                   SelectElement("siteEdit", data.For_site);
+                   SelectElement("instrumentEdit", data.Instrument);
+                   SelectElement("pscidEdit", data.PSCID);
+                   SelectElement("visitEdit", data.visitLabel);
+                   SelectElement("commentsEdit", data.comments);
+                   SelectElement("versionEdit", data.version);
 
-	        }   
+                }   
 	});
 
         return false;
@@ -280,16 +280,16 @@ $(document).ready(function() {
 	    $(".categories_header").each(function(idx, el) { 
 	        isOpen = openSection(idx, el);
 	        if (isOpen) {
-	            $(".accordionHeaders").show();
-		        $(this).addClass('selected');
+                    $(".accordionHeaders").show();
+		    $(this).addClass('selected');
                     count++;
 	        }    
 	    });
 
 	    if (count<1) { 
-	        $(".accordionHeaders").hide();
-		    $('.no-files').show();
-		    setTimeout("$('.no-files').hide();", 3000);
+                    $(".accordionHeaders").hide();
+                    $('.no-files').show();
+                    setTimeout("$('.no-files').hide();", 3000);
 	    }
     }
 
@@ -327,14 +327,14 @@ $(document).ready(function() {
 	        } else {
 	    	    $(this).removeClass('selected');
 
-		        $(".categories_header").each(function(idx, el) {
-	    	        isOpen = openSection(idx, el);
-	    	        if (isOpen) {
+                        $(".categories_header").each(function(idx, el) {
+                          isOpen = openSection(idx, el);
+                          if (isOpen) {
 		                count++;
-		            }
-		        });
+                          }
+                        });
 		        if (count<1) {
-    	   		        $(".accordionHeaders").hide();
+                            $(".accordionHeaders").hide();
 		        }
 	        }		
 	    }
