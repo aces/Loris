@@ -43,7 +43,7 @@ function showProgress (perc) {
 
 function sendFile() {
     $("#upload").click(function(e) {
-        ajax_stream();
+        getMessage();
         $("#progressbar").show();
         var formObj = $("#mri_upload")[0];
         var formURL = "main.php?test_name=mri_upload";
@@ -86,6 +86,28 @@ function log_message(message) {
     var next = previous + message;
     $("#log_box").html(next + "<br>");
 }
+
+function getMessage(timestamp)
+{
+    var queryString = {'timestamp' : timestamp};
+
+    $.ajax(
+        {
+            type: 'GET',
+            url: 'read_log.php',
+            data: queryString,
+            success: function(data){
+                // put result data into "obj"
+                var obj = jQuery.parseJSON(data);
+                // put the data_from_file into #response
+                log_message(obj.data_from_file);
+                // call the function again, this time with the timestamp we just got from server.php
+                getMessage(obj.timestamp);
+            }
+        }
+    );
+}
+
 
 function ajax_stream() {
     if (!window.XMLHttpRequest) {

@@ -16,7 +16,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
 require_once 'Log.class.inc';
 require_once "Archive/Tar.php";
 require_once "File_Decompress.class.inc";
-require_once 'MessageQueue.class.inc';
+
 /**
  * Log Class
  *
@@ -32,17 +32,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
   
     var $show_queries = true;
-    static $queue;
-    
-
-    //public function __construct() {
-      //  $this->queue = new SplQueue();
-  //  }
-    public function getQueue() {
-        print gettype($this->queue);
-        return $this->queue;
-    }
-
+   
     /**
      * _has_access returns true
      * if the user has the specific permission
@@ -79,7 +69,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             WHERE 1=1 ";
         $this->formToFilter = array();
         $this->log= new Log("MRI_upload", "/data/sandbox/data/logs");
-        self::$queue = new SplQueue();
+        $this->queue = new Log("Log", "/data/sandbox/data/logs");
         return true;
     }
 
@@ -198,6 +188,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     "The File $source_location is now".
                     "untarred into $mri_incoming_path \n <BR>"
                 );
+                $this->queue->addLog(
+                     "The File $source_location is now" .
+                     "untarred into $mri_incoming_path \n"
+                ); 
             }
 
             ///////////////////////////////////////////////////////////////////
@@ -283,6 +277,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         $this->log->addLog(
                             "The minc file for patient-name $patient_name is now".
                             "inserted into the db \n <BR>" 
+                        );
+                        $this->queue->addLog(
+                            "The minc file for patient-name $patient_name is now" .                             "inserted into db \n"
                         );
                         $this->tpl_data['minc_success'] = true;
                     }
@@ -479,30 +476,41 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             //////////////////iterate through the folder///////////////////////
             ///////////////////////////////////////////////////////////////////
-            // $objects = new RecursiveIteratorIterator(
-             //   new RecursiveDirectoryIterator($temp_dir),
-              //  RecursiveIteratorIterator::SELF_FIRST
-            // );
-          
+            $objects = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($temp_dir),
+                RecursiveIteratorIterator::SELF_FIRST
+             );
+          print "temp dir is $temp_dir";
+          print_r ($objects);
             // Olga: instead of using recursion, since it doesn't work
+/*
             $arr = explode(".", $file->fileInfo['name'], 2);
             $first = $arr[0];
             $dir = $temp_dir . '/' . $first;
+
             $objects = scandir($dir);
+*/
+print_r ($objects);
             foreach ($objects as $name => $file) {
-                if (is_file($file)) {
+
+		 //echo  $objects->getDepth() . " " . $file->getFilename() . "<br/>";
+		 echo  $objects->getDepth() .  "<br/>";
+                //if (is_file($file)) {
+                  exit;
+                  if (pathinfo($file)['extension'] == "dcm") { 
+                   
+
                     ///////////////////////////////////////////////////////////
                     ///////////////determin the file-type//////////////////////
                     ///////////////////////////////////////////////////////////
                     $file_type = shell_exec("file $file");
-                    
-                    ///////////////////////////////////////////////////////////
+                     ///////////////////////////////////////////////////////////
                     /////////////// check if it's readable/////////////////////
                     ///////////////////////////////////////////////////////////
-                    if (!is_readable($file)) {
-                        $files_not_readable++;
-                        continue;
-                    }
+ //                   if (!is_readable($file)) {
+   //                     $files_not_readable++;
+     //                   continue;
+       //             }
                     
                     
                     ///////////////////////////////////////////////////////////
@@ -703,11 +711,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
-        print gettype(self::$queue);
-        self::$queue->enqueue("Hello World!");
-            
-exit(-1);        
-       
+        $this->queue->addLog("The Environment Variables are now set \n");
+               
     }
      /**
      * Runs the dicomTar.pl and will return true if the dicom is inserted,
@@ -752,7 +757,9 @@ exit(-1);
         $this->log->addLog(
             "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
         );
-
+        $this->queue->addLog(
+            "The DICOM file is now tarred into $ArchiveLocation \n"
+        );  
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
 

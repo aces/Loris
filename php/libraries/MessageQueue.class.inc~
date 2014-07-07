@@ -1,0 +1,11 @@
+class MessageQueue extends SqlQueue
+{
+    public static function Instance()
+    {
+        static $queue = null;
+        if ($queue === null) {
+            $queue = new SqlQueue();
+        } 
+        return $queue; 
+    }
+}
