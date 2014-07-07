@@ -281,7 +281,7 @@ $(document).ready(function() {
 	        isOpen = openSection(idx, el);
 	        if (isOpen) {
                     $(".accordionHeaders").show();
-		    $(this).addClass('selected');
+                    $(this).addClass('selected');
                     count++;
 	        }    
 	    });
