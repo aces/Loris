@@ -84,7 +84,7 @@ CREATE TABLE `document_repository` (
   `multipart` enum('Yes','No') DEFAULT NULL,
   `EARLI` tinyint(1) DEFAULT '0',
   `hide_video` tinyint(1) DEFAULT '0',
-  `File_category` enum('abstract','audio_visual','image','instrument','manual','minutes','paper','presentation','protocol','spreadsheet_table','other') DEFAULT NULL,
+  `File_category` int(3) DEFAULT NULL,
   PRIMARY KEY (`record_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
