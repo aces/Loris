@@ -175,6 +175,8 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
 
         $IDCategories = $DB->pselect("SELECT id,category_name,parent_id,comments FROM document_repository_categories order by parent_id", array());	
         $tmpIDCategories = $IDCategories;
+
+        //$tree is an object with references, so here we are encoding it as json and then decoding it into a php associative array
         $tmpIDCategories = json_decode(json_encode($tree), true);
         $categoryOrdering = $this->parseTree($tmpIDCategories); 
 
