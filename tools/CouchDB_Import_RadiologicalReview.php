@@ -67,26 +67,6 @@ class CouchDBRadiologicalReviewImporter {
         'ExtraReview_Comment' => array(
             'Description' => 'Current stage of visit',
             'Type' => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')"
-        ),  
-        'SiteReview_Radiologist' => array(
-            'Description' => 'Radiologist/Reviewer doing the final review',
-            'Type' => 'varchar(255)'
-        ),  
-        'SiteReview_Done' => array(
-            'Description' => 'Project Candidate Identifier',
-            'Type' => "enum('no','yes','not_answered')"
-        ),  
-        'SiteReview_Results' => array(
-            'Description' => 'Results of the final radiology review',
-            'Type' => 'varchar(255)'
-        ),  
-        'SiteReview_ExclusionaryStatus' => array(
-            'Description' => 'Final review exclusionary status',
-            'Type' => 'varchar(255)'
-        ),   
-        'SiteReview_Comment' => array(
-            'Description' => 'Current stage of visit',
-            'Type' => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')"
         )
     );
 
@@ -126,19 +106,13 @@ class CouchDBRadiologicalReviewImporter {
             CASE WHEN frr.PVS2=0 THEN 'None' WHEN frr.PVS2=1 THEN 'Minimal' 
             WHEN frr.PVS2=2 THEN 'Mild' WHEN frr.PVS2=3 THEN 'Moderate' 
             WHEN frr.PVS2=4 THEN 'Marker' END as ExtraReview_PVS, 
-            frr.Final_Incidental_Findings2 AS ExtraReview_Comment, 
-            eSite.full_name AS SiteReview_Radiologist, rr.Scan_done AS SiteReview_Done, 
-            rr.Review_results AS SiteReview_Results, 
-            rr.abnormal_atypical_exculsionary AS SiteReview_ExclusionaryStatus, 
-            rr.Incidental_findings AS SiteReview_Comment
+            frr.Final_Incidental_Findings2 AS ExtraReview_Comment
             FROM final_radiological_review frr
             LEFT JOIN flag f ON (f.CommentID=frr.CommentID) 
             LEFT JOIN session s ON (s.ID=f.SessionID) 
             LEFT JOIN candidate c ON (c.CandID=s.CandID)
-            LEFT JOIN radiology_review rr ON (rr.CommentID=f.CommentID)
             LEFT JOIN examiners eFinal ON (eFinal.ExaminerID=frr.Final_Examiner)
-            LEFT JOIN examiners eExtra ON (eExtra.ExaminerID=frr.Final_Examiner2)
-            LEFT JOIN examiners eSite ON (eSite.ExaminerID=rr.Examiner)", array());
+            LEFT JOIN examiners eExtra ON (eExtra.ExaminerID=frr.Final_Examiner2)", array());
         
         // Adding the data to CouchDB documents
         foreach($finalradiologicalreview as $review) {
