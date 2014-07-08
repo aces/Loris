@@ -1,4 +1,15 @@
 <?php
+/**
+ * Script for handling (sub)category comments in the Document Repository
+ *
+ * PHP Version 5
+ *
+ * @category Documentation
+ * @package  Main
+ * @author   Justin Kat <justinkat@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/Jkat/Loris-Trunk/
+ */
 set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
@@ -26,9 +37,11 @@ if (Utility::isErrorX($user)) {
 
 //if user has document repository permission
 if ($user->hasPermission('file_upload')) {
-    $DB->update('document_repository_categories',
-         array('comments'=>$comments),
-         array('id'=>$_REQUEST['id']));
+    $DB->update(
+        'document_repository_categories',
+        array('comments'=>$comments),
+        array('id'=>$_REQUEST['id'])
+    );
 }
 
 ?>
