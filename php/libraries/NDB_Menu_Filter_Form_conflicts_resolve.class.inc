@@ -24,13 +24,13 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @package  Main 
  * @author   Tara Campbell
  * @license  Loris License
- * @link     https://github.com/aces/Loris-Trunk	
+ * @link     https://github.com/aces/Loris-Trunk    
 */
 
 class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 {
 
-	function _hasAccess()
+    function _hasAccess()
     {    
         // create user object
         $user =& User::singleton();
@@ -40,40 +40,10 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
         return ($user->hasPermission('conflict_resolver'));
     }
 
-    function _getDefaults()
-    {
-  		$DB =& Database::singleton();
-        //Get the default values
-        $value_results = $DB->pselect("SELECT ParameterTypeID, Value 
-            FROM parameter_candidate WHERE CandID=:CaID",
-            array('CaID' => $this->identifier)
-        );
-        $defaults = array();
-        foreach($value_results AS $vresult){
-        	$defaults["PTID_".$vresult['ParameterTypeID']]=$vresult['Value'];
-        }
-        if(isset($_REQUEST['site'])) {
-            $defaults['site'] = $_REQUEST['site'];
-        }
-        if(isset($_REQUEST['visit'])) {
-            $defaults['visit'] = $_REQUEST['visit'];
-        }
-        if(isset($_REQUEST['Instrument'])) {
-            $defaults['Instrument'] = $_REQUEST['Instrument'];
-        }
-        if(isset($_REQUEST['CandID'])) {
-            $defaults['CandID'] = $_REQUEST['CandID'];
-        }
-        if(isset($_REQUEST['PSCID'])) {
-            $defaults['PSCID'] = $_REQUEST['PSCID'];
-        }
-        return $defaults;
-    }
-
-    function _process($values)
+    /*function _process($values)
     {
         if(!is_array($values) || count($values) ==0) {
-        	return true;
+            return true;
         }
         
         $DB =& Database::singleton();
@@ -157,11 +127,11 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
         }
 
         $this->tpl_data['success'] = true;
-    }
+    }*/
 
-    function _setupVariables()
+    /*function _setupVariables()
     {
-    	// set the class variables
+        // set the class variables
         $this->columns = array('c.TableName', 'c.ExtraKeyColumn', 'c.ExtraKey1', 'c.ExtraKey2', 'c.FieldName', 'c.CommentId1', 'c.CommentId2', 'c.Value1', 'c.Value2', 's.Visit_label', 's.CandID AS DCCID', 'ca.PSCID', 's.CenterID AS Site');
         $this->query = " FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID)";
         $this->group_by = '';
@@ -184,18 +154,18 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                                     // 'Lock_record' => 'session.Lock_record'
                                     );
         return true;
-    }
+    }*/
 
-    function _setFilterForm()
+    /*function _setFilterForm()
     {
-    	// Create user object
-    	$user =& User::singleton();
+        // Create user object
+        $user =& User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
         // Get instruments
-    	$instruments = Utility::getAllInstruments();
+        $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
         
         // Get visits
@@ -210,7 +180,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                 return PEAR::raiseError("DB Error: ". $sites->getMessage());
             }
             if(is_array($sites)) {
-            	$sites = array('' => 'All') + $sites;
+                $sites = array('' => 'All') + $sites;
             }
         }
         else {
@@ -233,12 +203,74 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
         $this->addBasicText('PSCID', 'PSCID:', '');
 
         return true;
-    }
+    }*/
 
-    function _setDataTableRows($count)
+    /*function _setDataTableRows($count)
     {
+        // print out
+        $x = 0;
+        foreach ($this->list as $item) {
+            //count column
+            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
 
-    }
+            //print out data rows
+            $i = 1;
+            // $identifier = $item['Tracking_log_ID'];
+            $comment_id = $item['CommentID'];
+            $site_id = $item['Site'];
+            $current_stage = $item['Current_stage'];
+            $invalid = $item['invalid'];
+            $manual= $item['Manual_Swap'];
+            if($item['Manual_Swap'] == 'yes' && $item['invalid'] == 'yes') {
+                continue;
+            }
+            foreach ($item as $key => $val) {
+
+                // Confused about this line
+                if ($key =='Tracking_log_ID') continue;
+                if ($key == 'CommentID') continue;
+                if ($key == 'Current_stage') continue;
+                if ($key == 'invalid') continue;
+                if ($key == 'Manual_Swap') continue;
+                // {
+                //                    $this->tpl_data['items'][$x][$i]['CommentID'] = $item['CommentID'];
+                //               $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
+                //                   }
+                $this->tpl_data['items'][$x][$i]['name'] = $key;
+                $this->tpl_data['items'][$x][$i]['value'] = $val;
+                if ($key == 'PSCID'){
+                   $this->tpl_data['items'][$x][$i]['CommentID'] = $comment_id;
+                   $this->tpl_data['items'][$x][$i]['SiteID'] = $item['Site'];
+                   $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
+                   $this->tpl_data['items'][$x][$i]['Current_stage'] = $current_stage;
+                   $this->tpl_data['items'][$x][$i]['invalid'] = $invalid;
+                   $this->tpl_data['items'][$x][$i]['manual'] = $manual;
+                }
+                elseif ($key == 'Site')
+                {
+                   $this->tpl_data['items'][$x][$i]['value'] = $this->centerIDMap[$item['Site']];
+                }
+                elseif ($key=='Project') {
+                    $this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
+                }
+                elseif($key == 'Reliability_score'){
+                  $this->tpl_data['items'][$x][$i+1]['name'] = 'Reliability';
+                  if(is_null($val))
+                    $reliable = null;
+                  else if($val >= $threshold[$item['Instrument']])
+                    $reliable = 'Yes';
+                  else
+                    $reliable = 'No';
+                  $this->tpl_data['items'][$x][$i+1]['value'] = $reliable;
+                }
+                
+               $i++;
+            }
+            $x++;
+        }
+
+        return true;
+    }*/
 
 }
 ?>
