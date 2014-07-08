@@ -479,7 +479,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // document repository notifications
         $doc_Repo_Notifications_Options = array('N' => 'No', 'Y' => 'Yes');
-        $this->form->addElement('select', 'Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options);
+        $this->addSelect('Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options); 
 
         //------------------------------------------------------------
 
