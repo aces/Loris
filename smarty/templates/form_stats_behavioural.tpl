@@ -5,8 +5,6 @@
 <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
 <br><br>
 
-<a class="tip" data-toggle="tooltip" data-placement="right" href="#" id="item1" title="Hello World!">Home</a>
-
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
