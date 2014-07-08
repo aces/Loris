@@ -86,25 +86,37 @@ class CouchDBRadiologicalReviewImporter {
         
         // Query to retrieve radiological review data
         $finalradiologicalreview = $this->SQLDB->pselect("SELECT c.PSCID, s.Visit_label,
-            eFinal.full_name AS FinalReview_Radiologist, CASE WHEN frr.Review_Done=0 
-            THEN 'No' WHEN frr.Review_Done=1 THEN 'Yes' END as FinalReview_Done, 
+            eFinal.full_name AS FinalReview_Radiologist, 
+            CASE WHEN frr.Review_Done=0 THEN 'No' 
+            WHEN frr.Review_Done=1 THEN 'Yes' END as FinalReview_Done, 
             frr.Final_Review_Results AS FinalReview_Results, 
             frr.Final_Exclusionary AS FinalReview_ExclusionaryStatus, 
-            CASE WHEN frr.SAS=0 THEN 'None' WHEN frr.SAS=1 THEN 'Minimal' 
-            WHEN frr.SAS=2 THEN 'Mild' WHEN frr.SAS=3 THEN 'Moderate' 
+            CASE WHEN frr.SAS=0 THEN 'None' 
+            WHEN frr.SAS=1 THEN 'Minimal' 
+            WHEN frr.SAS=2 THEN 'Mild' 
+            WHEN frr.SAS=3 THEN 'Moderate' 
             WHEN frr.SAS=4 THEN 'Marker' END as FinalReview_SAS, 
-            CASE WHEN frr.PVS=0 THEN 'None' WHEN frr.PVS=1 THEN 'Minimal' 
-            WHEN frr.PVS=2 THEN 'Mild' WHEN frr.PVS=3 THEN 'Moderate' 
+            CASE WHEN frr.PVS=0 THEN 'None' 
+            WHEN frr.PVS=1 THEN 'Minimal' 
+            WHEN frr.PVS=2 THEN 'Mild' 
+            WHEN frr.PVS=3 THEN 'Moderate' 
             WHEN frr.PVS=4 THEN 'Marker' END as FinalReview_PVS, 
-            frr.Final_Incidental_Findings AS FinalReview_Comment, CASE WHEN frr.Finalized=0 
-            THEN 'No' WHEN frr.Finalized=1 THEN 'Yes' END as FinalReview_Finalized,
-            eExtra.full_name AS ExtraReview_Radiologist, CASE WHEN frr.Review_Done2=0 THEN 'No' 
+            frr.Final_Incidental_Findings AS FinalReview_Comment, 
+            CASE WHEN frr.Finalized=0 THEN 'No' 
+            WHEN frr.Finalized=1 THEN 'Yes' END as FinalReview_Finalized,
+            eExtra.full_name AS ExtraReview_Radiologist, 
+            CASE WHEN frr.Review_Done2=0 THEN 'No' 
             WHEN frr.Review_Done2=1 THEN 'Yes' END as ExtraReview_Done, 
-            frr.Final_Review_Results2 AS ExtraReview_Results, CASE WHEN frr.SAS2=0 THEN 'None' 
-            WHEN frr.SAS2=1 THEN 'Minimal' WHEN frr.SAS2=2 THEN 'Mild' 
-            WHEN frr.SAS2=3 THEN 'Moderate' WHEN frr.SAS2=4 THEN 'Marker' END as ExtraReview_SAS, 
-            CASE WHEN frr.PVS2=0 THEN 'None' WHEN frr.PVS2=1 THEN 'Minimal' 
-            WHEN frr.PVS2=2 THEN 'Mild' WHEN frr.PVS2=3 THEN 'Moderate' 
+            frr.Final_Review_Results2 AS ExtraReview_Results, 
+            CASE WHEN frr.SAS2=0 THEN 'None' 
+            WHEN frr.SAS2=1 THEN 'Minimal' 
+            WHEN frr.SAS2=2 THEN 'Mild' 
+            WHEN frr.SAS2=3 THEN 'Moderate' 
+            WHEN frr.SAS2=4 THEN 'Marker' END as ExtraReview_SAS, 
+            CASE WHEN frr.PVS2=0 THEN 'None' 
+            WHEN frr.PVS2=1 THEN 'Minimal' 
+            WHEN frr.PVS2=2 THEN 'Mild' 
+            WHEN frr.PVS2=3 THEN 'Moderate' 
             WHEN frr.PVS2=4 THEN 'Marker' END as ExtraReview_PVS, 
             frr.Final_Incidental_Findings2 AS ExtraReview_Comment
             FROM final_radiological_review frr
