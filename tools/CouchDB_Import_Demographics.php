@@ -125,7 +125,6 @@ class CouchDBDemographicsImporter {
             $fieldsInQuery .= $EDCFields;
         }
         $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL AND c.PSCID <> 'scanner'";
-        print($concatQuery);
         return $concatQuery;
     }
 
