@@ -142,7 +142,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addBasicText('DCCID', 'DCCID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addSelect('gender', 'Gender:', array('' => 'All', 'Male' => 'Male', 'Female' => 'Female'));
-        $this->addSelect('SubprojectID', 'Suproject:', array('' => 'All') + $list_of_subprojects);
+        $this->addSelect('SubprojectID', 'Subproject:', array('' => 'All') + $list_of_subprojects);
         $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
@@ -186,6 +186,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
                     $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
                 }
+                $this->tpl_data['items'][$x][$i]['PSCID'] = $item['PSCID']; 
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
                 // get feedback information for each displayed candidate record

@@ -122,8 +122,8 @@ bb-tabs bb-tabs-nav li {
 }
 
 .ui-corner-all {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
+  /*border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;*/
 }
 
 .notop-margin {

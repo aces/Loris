@@ -40,7 +40,7 @@ class NDB_Form_certification extends NDB_Form
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-        $DB->select('SELECT userID, changeDate, old, old_date, Full_name as Measure, visit_label, primaryVals, new, new_date FROM certification_history JOIN test_names on certification_history.testID = test_names.ID WHERE primaryVals=' . $DB->quote($this->identifier) . ' ORDER BY changeDate DESC', &$certification_history );
+        $DB->select('SELECT userID, changeDate, old, old_date, Full_name as Measure, visit_label, primaryVals, new, new_date FROM certification_history JOIN test_names on certification_history.testID = test_names.ID WHERE primaryVals=' . $DB->quote($this->identifier) . ' ORDER BY changeDate DESC', $certification_history );
 
         foreach($certification_history as &$history_item)
         {
@@ -288,7 +288,7 @@ class NDB_Form_certification extends NDB_Form
         $visits = Utility::getVisitList();
 
         // examiner
-        $this->form->addElement('select', 'examinerID', 'Examiner', $examinerOptions);
+        $this->addSelect('examinerID', 'Examiner', $examinerOptions);
         $this->form->addRule('examinerID', 'Examiner is required', 'required');
         $this->form->addElement('static', 'certification_history', '', '');
 
@@ -327,7 +327,7 @@ class NDB_Form_certification extends NDB_Form
             if (preg_match("/Mullen/", $value)) {
                 $v = explode(' ', $value);
                 $value = $v[0];
-                $this->form->addElement('select', 'pass['.$key.'_3_9]', $value . " 3-9mo", $statusOptions);
+                $this->addSelect('pass['.$key.'_3_9]', $value . " 3-9mo", $statusOptions);
                 $this->form->addElement('text', 'comment['.$key.'_3_9]', 'Comment');
                 $this->form->addElement('date', 'date_cert['.$key.'_3_9]', 'Date', $dateOptions);
                 $this->form->addElement('select', 'pass['.$key.'_12_15]', $value . " 12-15mo", $statusOptions);
@@ -338,9 +338,9 @@ class NDB_Form_certification extends NDB_Form
                 $this->form->addElement('date', 'date_cert['.$key.'_24_36]', 'Date', $dateOptions);
             }
             else {
-                $this->form->addElement('select', 'pass['.$key.']', $value, $statusOptions);
-                $this->form->addElement('text', 'comment['.$key.']', 'Comment');
-                $this->form->addElement('date', 'date_cert['.$key.']', 'Date', $dateOptions);
+                $this->addSelect('pass['.$key.']', $value, $statusOptions);
+                $this->addBasicText('comment['.$key.']', 'Comment');
+                $this->addBasicDate('date_cert['.$key.']', 'Date', $dateOptions);
             }
         }
         $this->form->addFormRule(array(&$this, '_validate'));

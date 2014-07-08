@@ -1,0 +1,143 @@
+.table-mri {
+    width: 80%;
+    border: 0;
+    border-collapse: collapse;
+}
+
+.table-mri-right-and-center {
+    border-collapse: collapse;
+    margin: 1em 1em 1em 0;
+    background: #FF;
+    text-align: left;
+}
+
+.table-mri-right-and-center tr:hover {
+    background: snow !important;
+}
+
+.table-mri-right-and-center th, .table-mri-right-and-center td {
+    border: 1px silver solid;
+    padding: 0.3em;
+}
+.table-mri-right-and-center th {
+    background: #999999;
+    text-align: left;
+}
+
+.table-mri-right-and-center caption {
+    margin-left: inherit;
+    margin-right: inherit;
+}
+
+.td-mri-lefttable {
+    text-align: center;
+}
+
+.table-mri-lefttable {
+    height: 260px;
+    background-color: #efefef;
+    border: 2px solid #064785;
+    margin: 20px 0;
+    margin: auto;
+}
+
+.table-mri-lefttable td {
+    font-weight: normal;
+}   
+
+.table-mri-lefttable th {
+    height: 20px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-style: outset;
+    font-weight: bold;
+    padding: 3px;
+    background-color: #064785;
+    color: #FFFFFF;
+}
+
+#table-mri-righttable {
+    width: 300px;
+    height: 260px;
+}
+
+#table-mri-righttable>tbody>tr>th {
+    width: 100px;
+}
+
+.td-mri-lefttable-select {
+    height: 20px;
+    padding-bottom: 10px;
+}
+.img-checkpic {
+    height: 180px;
+    border: 0;
+}
+
+/******* Control Panel *******/
+.div-cpanel {
+    position: fixed;
+    width: 180px;
+    border: 0;
+}
+
+td.sidenav {
+    border-right: 0;
+}
+
+.td-cpanel-fake {
+    border-right: solid #6183b3 2px;
+}
+
+.table-cpanel-fake {
+    width: 160px;
+}
+
+ul {
+    margin: 0px;
+    padding-left: 12px;
+    list-style-type: none;
+}
+
+dl {
+    margin-top: 0px;
+    margin-bottom: 8px;
+    padding-top: 5px;
+    
+}
+.img-navigation-array {
+    border: 0;
+    width: 12px;
+    height: 12px;
+    vertical-align: text-top;
+}
+
+.img-pending {
+    width: 12px;
+    height: 12px;
+}
+
+.div-controlpanel-bottom {
+    margin-left: 12px;
+}
+
+.dt-qc-status {
+    margin-bottom: 12px;
+}
+
+/***** Header table *******/
+.table-header-right {
+    float: left;
+    margin: 3em 0;
+}
+#table-header-left {
+    float: left;
+}
+
+h3 {
+    margin-top: 25px;
+}
+
+.newdata {
+    color: red;
+}

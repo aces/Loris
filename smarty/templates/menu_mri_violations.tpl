@@ -23,8 +23,8 @@
    </tr>
    
     <tr>
-        <td>Actions:</td>
-        <td>&nbsp;</td>
+        <td nowrap="nowrap">{$form.SeriesUID.label}</td>
+        <td nowrap="nowrap">{$form.SeriesUID.html}</td>
         <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=mri_violations&reset=true'"/></td>
     </tr>
 <table>
@@ -48,27 +48,29 @@
 <tr>
  <th nowrap="nowrap">No.</th>
     {section name=header loop=$headers}
-        <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+    {if $headers[header].name ne 'SeriesUID'}
+       <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>{/if}
     {/section}
 </tr>
 {section name=item loop=$items}
     <tr>
     <!-- print out data rows -->
     {section name=piece loop=$items[item]}
+    {if $items[item][piece]}
         {if $items[item][piece].value eq 'Could not identify scan type'}
-    
-       	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-	  		<a href="main.php?test_name=mri_protocol_violations&PatientName={$items[item].PatientName}">{$items[item][piece].value}</a>
+      	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
+            <a href="main.php?test_name=mri_protocol_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
         </td>
         {elseif $items[item][piece].value eq 'Protocol Violation'}
        	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-            <a href="main.php?test_name=mri_protocol_check_violations&PatientName={$items[item].PatientName}">{$items[item][piece].value}</a>
+            <a href="main.php?test_name=mri_protocol_check_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
         </td>
         {else}
-       	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
             {$items[item][piece].value}
         </td>
         {/if}
+    {/if}
     {/section}
     </tr>           
 {sectionelse}

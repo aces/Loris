@@ -135,7 +135,7 @@ class NDB_Form_create_timepoint extends NDB_Form
     {
         $config =& NDB_Config::singleton();
         $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach($visitLabelSettings AS $visitLabel){
+        foreach(Utility::toArray($visitLabelSettings) AS $visitLabel){
             if($visitLabel['@']['subprojectID']==$values['subprojectID']){
                 $visitLabelSettings=$visitLabel;
                 break;

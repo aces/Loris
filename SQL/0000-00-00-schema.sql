@@ -24,7 +24,7 @@ CREATE TABLE `candidate` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `CandID` int(6) NOT NULL default '0',
   `PSCID` varchar(255) NOT NULL default '',
-  `ExternalID` varchar(255) NOT NULL default '',
+  `ExternalID` varchar(255) default NULL,
   `DoB` date default NULL,
   `EDC` date default NULL,
   `Gender` enum('Male','Female') default NULL,
@@ -41,8 +41,14 @@ CREATE TABLE `candidate` (
   `RegisteredBy` varchar(255) default NULL,
   `UserID` varchar(255) NOT NULL default '',
   `Date_registered` date default NULL,
+  `flagged_caveatemptor` enum('true','false') default 'false',
+  `flagged_reason` int(6),
+  `flagged_other` varchar(255) default NULL,
+  `flagged_other_status` enum('not_answered') default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Entity_type` enum('Human','Scanner') NOT NULL default 'Human',
+  `ProbandGender` enum('Male','Female') DEFAULT NULL,
+  `ProbandDoB` date DEFAULT NULL,
   PRIMARY KEY  (`CandID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
@@ -230,8 +236,32 @@ CREATE TABLE `feedback_mri_comment_types` (
 
 LOCK TABLES `feedback_mri_comment_types` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comment_types` DISABLE KEYS */;
-INSERT INTO `feedback_mri_comment_types` VALUES (1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(2,'Intensity','volume','a:2:{s:5:\"field\";s:9:\"Intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),(6,'Overall','volume',''),(7,'Subject','visit','');
+INSERT INTO `feedback_mri_comment_types` VALUES (1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(2,'Intensity','volume','a:2:{s:5:\"field\";s:9:\"Intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),(6,'Overall','volume',''),(7,'Subject','visit',''),(8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),(9,'Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
 /*!40000 ALTER TABLE `feedback_mri_comment_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `feedback_mri_predefined_comments`
+--
+
+DROP TABLE IF EXISTS `feedback_mri_predefined_comments`;
+CREATE TABLE `feedback_mri_predefined_comments` (
+  `PredefinedCommentID` int(11) unsigned NOT NULL auto_increment,
+  `CommentTypeID` int(11) unsigned NOT NULL default '0',
+  `Comment` text NOT NULL,
+  PRIMARY KEY  (`PredefinedCommentID`),
+  KEY `CommentType` (`CommentTypeID`),
+  CONSTRAINT `FK_feedback_mri_predefined_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `feedback_mri_predefined_comments`
+--
+
+LOCK TABLES `feedback_mri_predefined_comments` WRITE;
+/*!40000 ALTER TABLE `feedback_mri_predefined_comments` DISABLE KEYS */;
+INSERT INTO `feedback_mri_predefined_comments` VALUES (1,2,'missing slices'),(2,2,'reduced dynamic range due to bright artifact/pixel'),(3,2,'slice to slice intensity differences'),(4,2,'noisy scan'),(5,2,'susceptibilty artifact above the ear canals.'),(6,2,'susceptibilty artifact due to dental work'),(7,2,'sagittal ghosts'),(8,3,'slight ringing artefacts'),(9,3,'severe ringing artefacts'),(10,3,'movement artefact due to eyes'),(11,3,'movement artefact due to carotid flow'),(12,4,'slight movement between packets'),(13,4,'large movement between packets'),(14,5,'Large AP wrap around, affecting brain'),(15,5,'Medium AP wrap around, no affect on brain'),(16,5,'Small AP wrap around, no affect on brain'),(17,5,'Too tight LR, cutting into scalp'),(18,5,'Too tight LR, affecting brain'),(19,5,'Top of scalp cut off'),(20,5,'Top of brain cut off'),(21,5,'Base of cerebellum cut off'),(22,5,'missing top third - minc conversion?'),(23,6,'copy of prev data'),(24,2,"checkerboard artifact"),(25,2,"horizontal intensity striping (Venetian blind effect, DWI ONLY)"),(26,2,"diagonal striping (NRRD artifact, DWI ONLY)"),(27,2,"high intensity in direction of acquisition"),(28,2,"signal loss (dark patches)"),(29,8,"red artifact"),(30,8,"green artifact"),(31,8,"blue artifact"),(32,6,"Too few remaining gradients (DWI ONLY)"),(33,6,"No b0 remaining after DWIPrep (DWI ONLY)"),(34,6,"No gradient information available from scanner (DWI ONLY)"),(35,6,"Incorrect diffusion direction (DWI ONLY)"),(36,6,"Duplicate series"),(37,3,"slice wise artifact (DWI ONLY)"),(38,3,"gradient wise artifact (DWI ONLY)");
+/*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -276,30 +306,6 @@ LOCK TABLES `feedback_mri_comments` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `feedback_mri_predefined_comments`
---
-
-DROP TABLE IF EXISTS `feedback_mri_predefined_comments`;
-CREATE TABLE `feedback_mri_predefined_comments` (
-  `PredefinedCommentID` int(11) unsigned NOT NULL auto_increment,
-  `CommentTypeID` int(11) unsigned NOT NULL default '0',
-  `Comment` text NOT NULL,
-  PRIMARY KEY  (`PredefinedCommentID`),
-  KEY `CommentType` (`CommentTypeID`),
-  CONSTRAINT `FK_feedback_mri_predefined_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `feedback_mri_predefined_comments`
---
-
-LOCK TABLES `feedback_mri_predefined_comments` WRITE;
-/*!40000 ALTER TABLE `feedback_mri_predefined_comments` DISABLE KEYS */;
-INSERT INTO `feedback_mri_predefined_comments` VALUES (1,2,'missing slices'),(2,2,'reduced dynamic range due to bright artifact/pixel'),(3,2,'slice to slice intensity differences'),(4,2,'noisy scan'),(5,2,'susceptibilty artifact above the ear canals.'),(6,2,'susceptibilty artifact due to dental work'),(7,2,'sagittal ghosts'),(8,3,'slight ringing artefacts'),(9,3,'severe ringing artefacts'),(10,3,'movement artefact due to eyes'),(11,3,'movement artefact due to carotid flow'),(12,4,'slight movement between packets'),(13,4,'large movement between packets'),(14,5,'Large AP wrap around, affecting brain'),(15,5,'Medium AP wrap around, no affect on brain'),(16,5,'Small AP wrap around, no affect on brain'),(17,5,'Too tight LR, cutting into scalp'),(18,5,'Too tight LR, affecting brain'),(19,5,'Top of scalp cut off'),(20,5,'Top of brain cut off'),(21,5,'Base of cerebellum cut off'),(22,5,'missing top third - minc conversion?'),(23,6,'copy of prev data');
-/*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 --
 -- Table structure for table `mri_processing_protocol`
@@ -335,7 +341,7 @@ CREATE TABLE `files` (
   `ClassifyAlgorithm` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
-  `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat','xml','txt') default NULL,
+  `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat','xml','txt','nii','nii.gz') default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
@@ -742,7 +748,7 @@ CREATE TABLE `parameter_type` (
 
 LOCK TABLES `parameter_type` WRITE;
 /*!40000 ALTER TABLE `parameter_type` DISABLE KEYS */;
-INSERT INTO `parameter_type` VALUES (1,'Selected','varchar(10)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),(2,'Geometric_intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(3,'Intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1,0);
+INSERT INTO `parameter_type` VALUES (1,'Selected','varchar(10)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),(2,'Geometric_intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(3,'Intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1,0),(8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0);
 /*!40000 ALTER TABLE `parameter_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1144,7 +1150,7 @@ CREATE TABLE `test_battery` (
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
-  `firstVisit` enum('Y','N') NOT NULL default 'N',
+  `firstVisit` enum('Y','N') default NULL,
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1515,10 +1521,11 @@ CREATE TABLE participant_status_options (
         ID int(10) unsigned NOT NULL auto_increment,
         Description varchar(255) default NULL,
         Required boolean default NULL,
+        parentID int(10) default NULL,
         PRIMARY KEY  (ID),
         UNIQUE KEY ID (ID) 
 );
-INSERT INTO participant_status_options (Description, Required) VALUES ('active', false), ('ineligible', true), ('withdrawal', true), ('death', false), ('other', true);
+INSERT INTO `participant_status_options` VALUES (1,'Active',0,NULL),(2,'Refused/Not Enrolled',0,NULL),(3,'Ineligible',0,NULL),(4,'Excluded',0,NULL),(5,'Inactive',1,NULL),(6,'Incomplete',1,NULL),(7,'Complete',0,NULL),(8,'Unsure',NULL,5),(9,'Requiring Further Investigation',NULL,5),(10,'Not Responding',NULL,5),(11,'Death',NULL,6),(12,'Lost to Followup',NULL,6);
 
 CREATE TABLE participant_status (
         ID int(10) unsigned NOT NULL auto_increment,
@@ -1528,11 +1535,12 @@ CREATE TABLE participant_status (
         entry_staff varchar(255) default NULL,
         data_entry_date timestamp NOT NULL,
         participant_status integer DEFAULT NULL REFERENCES participant_status_options(ID),
+        participant_suboptions integer DEFAULT NULL REFERENCES participant_status_options(ID),
         reason_specify text default NULL,
         reason_specify_status enum('dnk','not_applicable','refusal','not_answered') default NULL,
-        withdrawal_reasons enum('1_voluntary_withdrawal','2_lost_follow_up','3_other') default NULL,
-        withdrawal_reasons_other_specify text default NULL,
-        withdrawal_reasons_other_specify_status enum('dnk','not_applicable','refusal','not_answered') default NULL,
+        study_consent enum('yes','no','not_answered') default NULL,
+        study_consent_date date default NULL,
+        study_consent_withdrawal date default NULL,
         PRIMARY KEY  (ID),
         UNIQUE KEY ID (ID) 
 );
@@ -1704,3 +1712,33 @@ CREATE TABLE participant_emails(
     Test_name varchar(255) NOT NULL PRIMARY KEY REFERENCES test_names(Test_name),
     DefaultEmail TEXT NULL
 );
+CREATE TABLE `family` (
+        `ID` int(10) NOT NULL AUTO_INCREMENT,
+        `FamilyID` int(6) NOT NULL,
+        `CandID` int(6) NOT NULL,
+        `Relationship_type` enum('half_sibling','full_sibling','1st_cousin') DEFAULT NULL,
+        PRIMARY KEY (`ID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `participant_status_history` (
+        `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+        `CandID` int(6) NOT NULL DEFAULT 0,
+        `entry_staff` varchar(255) DEFAULT NULL,
+        `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        `participant_status` int(11) DEFAULT NULL,
+        `reason_specify` varchar(255),
+        `reason_specify_status` enum('not_answered') DEFAULT NULL,
+        `participant_subOptions` int(11) DEFAULT NULL,
+        PRIMARY KEY (`ID`),
+        UNIQUE KEY `ID` (`ID`)
+        );
+CREATE TABLE `consent_info_history` (
+        `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+        `CandID` int(6) NOT NULL DEFAULT 0,
+        `entry_staff` varchar(255) DEFAULT NULL,
+        `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
+        `study_consent_date` date DEFAULT NULL,
+        `study_consent_withdrawal` date DEFAULT NULL,
+        PRIMARY KEY (`ID`),
+        UNIQUE KEY `ID` (`ID`)
+        ) ;

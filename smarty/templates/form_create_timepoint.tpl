@@ -7,34 +7,32 @@
 <p>The suggested visit label appears in the field!</p>
 
 <form method="post" name="create_timepoint" id="create_timepoint">
-<table class="std">
-    <!-- table title -->
-    <tr><th colspan="2">Create Time Point</th></tr>
+
+    <h3>Create Time Point</h3>
+    <br>
 
     {foreach from=$form.errors item=error}
-    <tr>
-        <td nowrap="nowrap" colspan="2" class="error">{$error}</td>
-    </tr>
+    <div class="col-sm-12">
+        <label class="error col-sm-12">{$error}</label>
+    </div>
     {/foreach}
 
-	<tr>
-		<td nowrap="nowrap">DCCID</td>
-		<td nowrap="nowrap">{$candID}</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">Subproject</td>
-		<td nowrap="nowrap">{$form.subprojectID.html}</td>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">DCCID</label>
+		<div class="col-sm-10">{$candID}</div>
+	</div>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">{$form.subprojectID.label}</label>
+		<div class="col-sm-10">{$form.subprojectID.html}</div>
+	</div>
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">{$form.visitLabel.label}</label>
+		<div class="col-sm-10">{$form.visitLabel.html}</div>
+	</div>
 
-	</tr>
-	<tr>
-		<td nowrap="nowrap">Visit label</td>
-		<td nowrap="nowrap">{$form.visitLabel.html}</td>
-
-	</tr>
-
-	<tr>
-		<td nowrap="nowrap" colspan="2"><input class="button" name="fire_away" value="Create Time Point" type="submit" /></td>
-	</tr>
+	<div class="form-group col-sm-12">
+		<div class="col-sm-12"><input class="btn btn-primary col-sm-offset-1 col-sm-3" name="fire_away" value="Create Time Point" type="submit" /></div>
+	</div>
 </table>
 {$form.hidden}
 </form>

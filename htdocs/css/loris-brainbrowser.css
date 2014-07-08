@@ -1,3 +1,20 @@
+html {
+    overflow: scroll;
+    overflow: auto;
+    -moz-scrollbars-vertical !important;
+    min-height: 100%; margin-bottom: 1px; 
+    overflow-y: scroll 30%  !important;
+}
+    
+body {
+    background: #e2e2e2 !important;
+}
+
+#brainbrowser-wrapper {
+    margin-top: 0px !important;
+/*    background: white;*/
+}
+
 #volume-viewer {
     margin-top: 10px;
     margin-left: 20px;
@@ -10,6 +27,11 @@
     width: 230px;
 }
 
+#capture-slices, #sync-volumes {
+    font-size: 12px;
+}
+
+
 .slice-display {
 /*    height: 220px;*/
 }
@@ -20,7 +42,18 @@
 }
 
 .volume-viewer-controls {
-    width: 600px;
+    height: 320px !important; 
+}
+
+.blend-div {
+    padding-top: 40px;
+}
+
+#blend-slider {
+}
+
+.control-heading {
+    font-weight: normal !important;
 }
 
 .control-inputs {
@@ -29,19 +62,30 @@
     -moz-border-radius: 3px; 
     -webkit-border-radius: 3px; 
     border-radius: 3px; 
+    background: #c1c1c1;
 }
 
 .thresh-input-left {
-    width:30px;
     margin-right:270px;
 }
 
-.thresh-input-right {
+.thresh-input-right, .thresh-input-left, .time-inputs, .blend-inputs{
     width:30px;
+}
+
+.ui-slider {
+    width: 174px;
+    margin-right: 38px;
 }
 
 #slice-series-heading0 {
     display: none;
+}
+
+.slice-series-button {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
 }
 
 #slice-series-buttons0 {
@@ -63,6 +107,31 @@
     width: 210px;
 }
 
-html {
-    overflow-y: scroll;
+#global-controls {
+    padding: 5px;
+    background: #555555;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+#app-name {
+    border:0;
+    background: #064785;
+    z-index: 999
+    display: block;
+}
+
+.app-label {
+    position: inherit;
+    text-align: center;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1px;
+    margin-bottom: 25px;
+}
+
+.filename {
+    font-weight: bold;
+    color: #BBFF00;
 }

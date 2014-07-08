@@ -2,6 +2,8 @@
 require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/Array.php';
+require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 include_once ('HTML/QuickForm/Renderer/Default.php');
 
 /**
@@ -356,28 +358,13 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults = $this->localDefaults;
         }
         $this->form->setDefaults($defaults);
-
         
-        // display the HTML_Quickform object
-        // return $this->form->toHTML();
-        
-        $renderer = new HTML_QuickForm_Renderer_Default();
-        if(isset($this->testName)) {
-            $renderer->setFormTemplate("<form{attributes}><table id=\"instrument_" . $this->testName . "\" class=\"instrument\">{content}</table></form>");
-        } else {
-            $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
-        }
- 
-        $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
-        $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
-        $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
-
-        // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
-        // so that we can have instructions/labels in the direct data entry instruments that span into
-        // the column for data entry.
-        $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
+        $smarty = new Smarty_neurodb;
+        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
         $this->form->accept($renderer);
-        return $renderer->toHtml();
+        $smarty->assign('form', $renderer->toArray());
+        $html = $smarty->fetch("instrument_html.tpl");
+        return $html;
     }
     
     /**
@@ -447,14 +434,16 @@ class NDB_BVL_Instrument extends NDB_Page
                 
                 // the form WAS submitted but validate() failed...
                 // main error message
-                 print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 // print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 $this->form->addElement('static', 'mainError');
+                 $this->form->setElementError('mainError', "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n");
                  //print all the field error messages in one block
                 foreach(array_keys($submittedData) AS $key) {
                     $error = $this->form->getElementError($key);
                     if(!empty($error)) {
                         $element = $this->form->getElement($key);
                         if(method_exists($element, "getLabel")){
-                            print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                            // print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
                         }
                     }
                 }
@@ -1283,7 +1272,7 @@ class NDB_BVL_Instrument extends NDB_Page
     */
     function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
         $group[]=&$this->createText($field);
-        $group[]=&$this->createSelect($field."_status", "", $refusals);
+        $group[]=&$this->createSelect($field."_status", "", $refusals, array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
@@ -1313,8 +1302,8 @@ class NDB_BVL_Instrument extends NDB_Page
     
 
     function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4, 'class' => 'form-control'));
+        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'), array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
@@ -1353,12 +1342,12 @@ class NDB_BVL_Instrument extends NDB_Page
             $options = $this->dateOptions;
         }
 
-        $group [] = $this->createDate($name . "_date", null, $options);
+        $group [] = $this->createDate($name . "_date", null, $options, $attr=array('class' => 'form-control input-sm '.$name."_date", 'style' => 'max-width:33%; display:inline-block;'));
         if (!in_array($name . "_date", $this->dateTimeFields)) {
             $this->dateTimeFields[] = $name . "_date"; 
         }
 
-        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"), array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
         unset($group);
         $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
@@ -1405,7 +1394,7 @@ class NDB_BVL_Instrument extends NDB_Page
     */
     function addNumericElement($field, $label, $options = null) {
         $group [] = $this->createText($field, $label);
-        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"), array('class' => 'form-control input-sm not-answered'));
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
@@ -1419,7 +1408,7 @@ class NDB_BVL_Instrument extends NDB_Page
     
     function addNumericElementRD($field, $label) {
         $group [] = $this->createText($field, $label);
-        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
+        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"), array('class' => 'form-control input-sm not-answered'));    
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
@@ -1537,8 +1526,23 @@ class NDB_BVL_Instrument extends NDB_Page
         $db->execute($prepQ, array('CID' => $this->commentID));
     }
 
-    function loadInstrumentFile($filename, $base64 = false) {
-        if(file_exists($filename) || $base64 === true) {
+    /**
+     * This does the work of parsing a Loris Instrument (.linst) file and
+     * calling all the appropriate addElement functions to build the instrument
+     * page for user data entry.
+     *
+     * @param string  $filename The filename to be loaded, or a base64 encoded
+     *                          string of a .linst file to be interpreted.
+     * @param boolean $base64   If true, read the filename as a base64 encoded
+     *                          string of the file content, used for preview
+     *                          when no file has yet been saved to the 
+     *                          instruments/ directory
+     * 
+     * @return none, but as a side effect displays the Instrument page
+     */
+    function loadInstrumentFile($filename, $base64 = false)
+    {
+        if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
             $db = Database::singleton();
             $this->dateTimeFields = array("Date_taken");
@@ -1546,11 +1550,11 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->formType='XIN';
             $this->form->addFormRule(array(&$this,'XINValidate'));
             $fp = fopen($filename, "r");
-            // Add elements is only true if we're parsing the current page, otherwise
-            // we don't.. but even on other pages, we need to parse the whole file for
-            // table{@} and other meta elements
+            // Add elements is only true if we're parsing the current page,
+            // otherwise we don't.. but even on other pages, we need to 
+            // parse the whole file for table{@} and other meta elements
             $addElements = true;
-            if(isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
+            if (isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
                 $currentPage = $_REQUEST['subtest'];
                 $addElements = false;
             } else {
@@ -1567,15 +1571,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 'Delimiter' => $this->_GUIDelimiter
             );
 
-            while(($line = fgets($fp, 4096)) !== false) {
+            while (($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
 
                 $type = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
-                if(strpos($fieldname, "_status") !== FALSE) {
+                if (strpos($fieldname, "_status") !== false) {
                     continue;
                 }
-                if($fieldname == 'Date_taken' 
+                if ($fieldname == 'Date_taken' 
                     || $fieldname == "Candidate_Age"
                     || $fieldname == "Window_Difference"
                     || $fieldname == "Examiner"
@@ -1583,219 +1587,262 @@ class NDB_BVL_Instrument extends NDB_Page
                     continue;
                 }
                 switch($type) {
-                    case 'page':
-                        $parsingPage = trim($pieces[2]);
-                        $pageName = $db->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:testinst AND Description=:parsing", array("testinst" => $this->testName, "parsing" => $parsingPage));
-                        if($currentPage == $pageName) {
-                            $addElements = true;
+                case 'page':
+                    $parsingPage = trim($pieces[2]);
+                    $pageName = $db->pselectOne(
+                        "SELECT Subtest_name 
+                        FROM instrument_subtests 
+                        WHERE Test_name=:testinst AND Description=:parsing",
+                        array(
+                            'testinst' => $this->testName,
+                            'parsing' => $parsingPage
+                        )
+                    );
+                    if ($currentPage == $pageName) {
+                        $addElements = true;
+                    } else {
+                        $addElements = false;
+                    }
+                    $firstSelectOfPage = true;
+                    break;
+                case 'table':
+                    $this->testName = trim($pieces[1]);
+                    $this->table = trim($pieces[1]);
+                    break;
+                case 'title':
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'header',
+                            'instrument_title',
+                            $pieces[1]
+                        );
+                        $this->_addMetadataFields();
+                    }
+                    break;
+                case 'begingroup':
+                    if ($addElements) {
+                        $Group['Name'] = $pieces[1] . '_group';
+                        $Group['Delimiter'] = trim($pieces[2]);
+                        if (empty($Group['Delimiter'])) {
+                            $Group['Delimiter'] = $this->_GUIDelimiter;
+                        }
+                    }
+                    break;
+                case 'endgroup':
+                    if ($addElements) {
+                        $groupLabel = $pieces[2];
+                        $this->addGroup(
+                            $Group['Elements'],
+                            $Group['Name'],
+                            $groupLabel, 
+                            $Group['Delimiter'],
+                            false
+                        );
+
+                        $Group['Name'] = null;
+                        $Group['Elements'] = array();
+                    }
+                    break;
+
+                case 'begintable':
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'static',
+                            null,
+                            "</td></tr></table><table><tr><td>&nbsp;",
+                            ""
+                        );
+                    }
+                case 'endtable':
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'static',
+                            null,
+                            "</td></tr></table><table><tr><td>&nbsp;",
+                            ""
+                        );
+                    }
+                    break;
+                case 'text':
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            $Group['Elements'][] = $this->createText(
+                                $pieces[1],
+                                $pieces[2]
+                            );
+
                         } else {
-                            $addElements = false;
+                            $this->addTextElement($pieces[1], $pieces[2]);
                         }
-                        $firstSelectOfPage = true;
-                        break;
-                    case 'table':
-                        $this->testName = trim($pieces[1]);
-                        $this->table = trim($pieces[1]);
-                        break;
-                    case 'title':
-                        if($addElements) {
-                            $this->form->addElement('header', 'instrument_title', $pieces[1]);
-                            $this->_addMetadataFields();
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
+                    break;
+                case 'textarea':
+                    $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            $Group['Elements'][] = $this->createTextArea(
+                                $pieces[1],
+                                $pieces[2]
+                            );
+                        } else {
+                            $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
-                        break;
-                    case 'begingroup':
-                        if($addElements) {
-                            $Group['Name'] = $pieces[1] . '_group';
-                            $Group['Delimiter'] = trim($pieces[2]);
-                            if(empty($Group['Delimiter'])) {
-                                $Group['Delimiter'] = $this->_GUIDelimiter;
-                            }
-                        }
-                        break;
-                    case 'endgroup':
-                        if($addElements) {
-                            $groupLabel = $pieces[2];
-                            $this->addGroup(
-                                $Group['Elements'],
-                                $Group['Name'],
-                                $groupLabel, 
-                                $Group['Delimiter'], false);
-
-                            $Group['Name'] = null;
-                            $Group['Elements'] = array();
-                        }
-                        break;
-
-                    case 'begintable':
-                        if($addElements) {
-                            $this->form->addElement(
-                                'static',
-                                null,
-                                "</td></tr></table><table><tr><td>&nbsp;",
-                                ""
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
+                    break;
+                case 'date':
+                    if (strpos($pieces[1], "_date") !== false) {
+                        $pieces[1] = substr(
+                            $pieces[1],
+                            0,
+                            strpos($pieces[1], "_date")
+                        );
+                    }
+                    if ($addElements) {
+                        if ($pieces[3] == 1900 && $pieces[4] == 2100) {
+                            $dateOptions = null;
+                        } else {
+                            $dateOptions = array(
+                                'language' => 'en',
+                                'format'   => 'YMd',
+                                'minYear'  => $pieces[3],
+                                'maxYear'  => $pieces[4],
+                                'addEmptyOption' => true,
+                                'emptyOptionValue' => null
                             );
                         }
-                    case 'endtable':
-                        if($addElements) {
-                            $this->form->addElement(
-                                'static',
-                                null,
-                                "</td></tr></table><table><tr><td>&nbsp;",
-                                ""
+
+                        $pieces[5] = trim($pieces[5]);
+                        if ($pieces[5] === 'MonthYear') {
+                            $this->addMonthYear(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
+                            );
+                        } else {
+                            $this->addDateElement(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
                             );
                         }
-                        break;
-                    case 'text':
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                $Group['Elements'][] = 
-                                    $this->createText(
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
+                    break;
+                case 'numeric':
+                    if ($addElements) {
+                        $options = array();
+                        if (!empty($pieces[3])) {
+                            $options['min'] = $pieces[3];
+                        }
+                        if (!empty($pieces[4])) {
+                            $options['max'] = $pieces[4];
+                        }
+                        $this->addNumericElement($pieces[1], $pieces[2], $options);
+                    }
+                    $this->LinstQuestions[$pieces[1]] 
+                        = array('type' => 'numeric', 'options' => $options);
+                    break;
+
+                case 'selectmultiple':
+                    $type = 'multiple';
+                    $this->_selectMultipleElements[] = $pieces[1];
+                    // fall through and also execute select code below
+                case 'select':
+
+                    $options = preg_split("/{-}/", trim($pieces[3]));
+                    $opt = array();
+                    foreach ($options as $o) {
+                        $arr = explode("=>", $o);
+                        $key = $arr[0];
+                        $val = $arr[1];
+                        if ($key[0] == "'" && $key[strlen($key)-1] == "'") {
+                            $key = substr($key, 1, -1);
+                        } else if ($key == 'NULL') {
+                            $key ='';
+                        }
+                        if ($val[0] == "'" && $val[strlen($val)-1] == "'") {
+                            $val= substr($val, 1, -1);
+                        } 
+                        $opt[$key] = $val;
+                    }
+
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            if ($type == 'multiple') {
+                                $Group['Elements'][]
+                                    = $this->form->createElement(
+                                        'select',
                                         $pieces[1],
-                                        $pieces[2]
+                                        $pieces[2],
+                                        $opt,
+                                        "multiple"
                                     );
-
                             } else {
-                                $this->addTextElement($pieces[1], $pieces[2]);
-                                                            }
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
-                        break;
-                    case 'textarea':
-                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                $Group['Elements'][] = 
-                                    $this->createTextArea($pieces[1], $pieces[2]);
-                            } else {
-                                $this->addTextAreaElement($pieces[1], $pieces[2]);
+                                $Group['Elements'][]  
+                                    = $this->form->createElement(
+                                        'select',
+                                        $pieces[1],
+                                        $pieces[2],
+                                        $opt
+                                    );
                             }
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
-                        break;
-                    case 'date':
-                        if(strpos($pieces[1], "_date") !== FALSE) {
-                            $pieces[1] = substr($pieces[1], 0, strpos($pieces[1], "_date"));
-                        }
-                        if($addElements) {
-                            if($pieces[3] == 1900 && $pieces[4] == 2100) {
-                                $dateOptions = null;
+                        } else {
+                            if ($type == 'multiple') {
+                                $this->form->addElement(
+                                    'select',
+                                    $pieces[1],
+                                    $pieces[2],
+                                    $opt,
+                                    "multiple"
+                                );
                             } else {
-                                $dateOptions = array(
-                                     'language' => 'en',
-                                     'format'   => 'YMd',
-                                     'minYear'  => $pieces[3],
-                                     'maxYear'  => $pieces[4],
-                                     'addEmptyOption' => true,
-                                     'emptyOptionValue' => null
+                                $this->form->addElement(
+                                    'select',
+                                    $pieces[1],
+                                    $pieces[2],
+                                    $opt
                                 );
                             }
 
-                            $pieces[5] = trim($pieces[5]);
-                            if($pieces[5] === 'MonthYear') {
-                                $this->addMonthYear($pieces[1], $pieces[2], $dateOptions);
-                            } else {
-                                $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
-                            }
                         }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
-                        break;
-                    case 'numeric':
-                        if ($addElements) {
-                            $options = array();
-                            if (!empty($pieces[3])) {
-                                $options['min'] = $pieces[3];
-                            }
-                            if (!empty($pieces[4])) {
-                                $options['max'] = $pieces[4];
-                            }
-                            $this->addNumericElement($pieces[1], $pieces[2], $options);
+                    }
+                    if ($firstSelectOfPage) {
+                        $this->_requiredElements[] = $pieces[1];
+                        $firstSelectOfPage = false;
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'select');
+                    break;
+                case 'header':
+                    if ($addElements) {
+                        $this->form->addElement('header', null, "$pieces[2]");
+                    }
+                    break;
+                case 'static':
+                    $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            print "Creating $pieces[1] with label: $pieces[2]";
+                            $Group['Elements'][] 
+                                = $this->form->createElement(
+                                    'static',
+                                    $pieces[1],
+                                    null,
+                                    $pieces[2]
+                                );
+                        } else {
+                            $this->form->addElement(
+                                'static',
+                                $pieces[1],
+                                $pieces[2]
+                            );
                         }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'numeric', 'options' => $options);
-                        break;
-
-                    case 'selectmultiple':
-                        $type = 'multiple';
-                        $this->_selectMultipleElements[] = $pieces[1];
-                        // fall through and also execute select code below
-                    case 'select':
-
-                        $options = preg_split("/{-}/", trim($pieces[3]));
-                        $opt = array();
-                        foreach($options as $o) {
-                            $arr = explode("=>", $o);
-                            $key = $arr[0];
-                            $val = $arr[1];
-                            if($key[0] == "'" && $key[strlen($key)-1] == "'") {
-                                $key = substr($key, 1, -1);
-                            } else if($key == 'NULL') {
-                                $key ='';
-                            }
-                            if($val[0] == "'" && $val[strlen($val)-1] == "'") {
-                                $val= substr($val, 1, -1);
-                            } 
-                            $opt[$key] = $val;
-                        }
-
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                if($type == 'multiple') {
-                                    $Group['Elements'][] = 
-                                        $this->form->createElement(
-                                            'select',
-                                            $pieces[1],
-                                            $pieces[2],
-                                            $opt,
-                                            "multiple"
-                                        );
-                                } else {
-                                    $Group['Elements'][] = 
-                                        $this->form->createElement(
-                                            'select',
-                                            $pieces[1],
-                                            $pieces[2],
-                                            $opt
-                                        );
-                                }
-                            } else {
-                                if($type == 'multiple') {
-                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
-                                } else {
-                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
-                                }
-
-                            }
-                        }
-                        if ($firstSelectOfPage) {
-                            $this->_requiredElements[] = $pieces[1];
-                            $firstSelectOfPage = false;
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'select');
-                        break;
-                    case 'header':
-                        if($addElements) {
-                            $this->form->addElement('header', null, "$pieces[2]");
-                        }
-                        break;
-                    case 'static':
-                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                print "Creating $pieces[1] with label: $pieces[2]";
-                                $Group['Elements'][] = 
-                                    $this->form->createElement(
-                                        'static',
-                                        $pieces[1],
-                                        null,
-                                        $pieces[2]
-                                    );
-                            } else {
-                                $this->form->addElement('static', $pieces[1], $pieces[2]);
-                            }
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
-                        break;
-                    default: 
-                        break;
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
+                    break;
+                default: 
+                    break;
                 }
             }
             fclose($fp);
@@ -1813,7 +1860,6 @@ class NDB_BVL_Instrument extends NDB_Page
      * For example:
      *
      * family_other{-}Required if family_member is other{-}family_member{@}=={@}other
-     *
      *
      * @param string $filename Either the path to a file, or a base64 encoded
      *                         string which can be interpreted as a file by
@@ -1871,7 +1917,54 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 
-    function getReview() {
+    function getControlPanel()
+    {
+        if (!empty($_REQUEST['commentID'])) {
+            // make the control panel object for the current instrument
+            $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
+            $success = $controlPanel->select($_REQUEST['commentID']);
+            if (Utility::isErrorX($success)) {
+                $tpl_data['error_message'][] = $success->getMessage();
+            } else {
+                $config = NDB_Config::singleton();
+                $paths = $config->getSetting('paths');
+                if (empty($subtest)) {
+                    // check if the file/class exists
+                    $BasePath = $paths['base'] . 'project/instruments/';
+                    $TestName = $this->testName;
+                    if (file_exists(
+                        $BasePath 
+                        . "NDB_BVL_Instrument_$TestName.class.inc"
+                    )
+                        || file_exists($BasePath . "$TestName.linst")
+                    ) {
+                        // save possible changes from the control panel...
+                        $success = $controlPanel->save();
+                        if (Utility::isErrorX($success)) {
+                            $tpl_data['error_message'][] = $success->getMessage();
+                        }
+                    }
+                }
+
+                // display the control panel
+                $html = $controlPanel->display();
+                return $html;
+
+            }
+        }
+    }
+
+    /**
+     * Return the HTML for the review section of the survey module
+     * By default, this will show every question from the parameter_type
+     * table for this instrument, but it can be overridden/customized by
+     * a instrument if that isn't the desired behaviour.
+     *
+     * @return string The HTML to be inserted into the review section of
+     *                the final page of the survey module for this instrument.
+     */
+    function getReview()
+    {
         $DB = Database::singleton();
         $smarty = new Smarty_neurodb();
         $tpl_data = array();
@@ -1915,13 +2008,21 @@ function _checkDateTakenFuture($dateElement) {
     return ($diff->format("%r") === '');
 }
 
-function _checkDateTaken($dateElement) {
-    // if all three elements are empty, return true b/c it'll save the NULL in date field
-    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+function _checkDateTaken($dateElement)
+{
+    // if all three elements are empty,
+    // return true b/c it'll save the NULL in date field
+    if (empty($dateElement['M']) 
+        && empty($dateElement['d']) 
+        && empty($dateElement['Y'])
+    ) {
         return true;
-    }
-    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
-    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
+    } elseif (empty($dateElement['M']) 
+        || empty($dateElement['d']) 
+        || empty($dateElement['Y'])
+    ) {
+        // otherwise, if any of the three elements are empty, 
+        // return false b/c date entry has been attempted
         return false;
     }
     // else, check the date
@@ -1937,16 +2038,25 @@ function _checkDateTaken($dateElement) {
         } */
     }
 }
+
 /// _checkDate. This is used by create timepoint and start timepoint pages, 
 // so it probably shouldn't be in the instrument class.
-function _checkDate($dateElement) {
-    // if all three elements are empty, return true b/c it'll save the NULL in date field
-    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+function _checkDate($dateElement)
+{
+    if (empty($dateElement['M']) 
+        && empty($dateElement['d']) 
+        && empty($dateElement['Y'])
+    ) {
+        // if all three elements are empty, return true b/c it'll 
+        // save the NULL in date field
         return true;
-    }
-    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
-    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
-        return false;
+    } elseif (empty($dateElement['M']) 
+        || empty($dateElement['d']) 
+        || empty($dateElement['Y'])
+    ) {
+            // otherwise, if any of the three elements are empty, return 
+            // false b/c date entry has been attempted
+            return false;
     }
     return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }

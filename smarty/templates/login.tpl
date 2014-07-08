@@ -1,9 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<link rel="stylesheet" href="{$css}" type="text/css"/ >
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
 <head>
+<meta charset="utf-8"/>
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
 <!-- page title -->
 <title>{$title}</title>
 
@@ -121,62 +122,57 @@ BrowserDetect.init();
 </script>
 
 {/literal}
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
 </head>
-<body background="images/LORIS_v2.grey.clear.png" class="LoginBackground">
-<div class ="logo">
+<body background="" class="LoginBackground">
+	<div class ="logo">
 
-</div>
-<form action="{$action}" method="post">
+	</div>
+	
+ 	<div class="navbar navbar-default" role="navigation" style="height:90px">
+ 		<div class="container">
+	 		<a class="navbar-brand" href="#" style="align:center;">
+		 		<img src="{$study_logo}" border="0" width="64" height="57" />
+		 		{$study_title}
+	 		</a>
+	 	</div>
+ 	</div>
+ 	<div class="panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+		  <div class="panel-body">
+		  		<div class="col-xs-12">
+		  			<center>
+		  			<img src="images/LORIS_v2.grey.clear.png" class="img-responsive" alt="Responsive image" align="middle">
+		  		</center>
+		  		</div>
+		  		<br><br><br><br><br>
+		  		<div class="hidden-xs hidden-sm">
+		  			<br><br><br><br>
+		  		</div>
+		  		<div class="col-xs-12">
+		  			<font color="red" align="middle">
+		  			{$error_message}
+		  		</font>
+		  		<div>
+		  		<div class="col-xs-12">
+		  		<form action="{$action}" method="post">
+		  			<div class="form-group">
+		  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
+		  			</div>
+		  			<div class="form-group">
+		  				<input name="password" class="form-control" type="password" placeholder="Password"/>
+		  			</div>
+		  			<input class="btn btn-primary col-xs-12" name="login" type="submit" value="login" />
+		  			<br><br><br>
+		  			<a href="lost_password.php"><center>Forgot your password?</center></a>
+		  		</form>
+		  		</div>
+		  		
+		  </div>
+	</div>
 
 
 
-<!--<table align="center" bgcolor="#D3DCE3" "#ededed" border="0" cellpadding="2" cellspacing="0">-->
-<table align="center" border="0" cellpadding="2" cellspacing="0" width="100%" style="height:100%" > 
-<tr>
-<!--td style="padding:0px"><img src="images/neuro_logo_blue.gif" alt="Montreal Neurological Institute" border="0" width="64" height="57" /></td-->
-<th align="center" class="loginheader" colspan="3" style="padding:5px;"  background="images/title_background.jpg">
-<img src="{$study_logo}" border="0" width="64" height="57" />{$study_title}
-</br>
-<!--</th>
-</tr>
-<tr>
-<th align="left" class="banner login" colspan="3" style="padding:2px;" background="images/title_background.jpg">-->
-</th>
-<!--td style="padding:0px;"><img src="images/mni_logo_blue.gif" alt="Montreal Neurological Institute" border="0" width="64" height="57" /></td-->
-
-</tr>
-<td align="center" colspan="2">{$error_message}&nbsp;</td>
-</tr>
-</table>
-<br>
-<table align="center" bgcolor="#D3DCE3" border="0" cellpadding="2" cellspacing="0">
-    <tr>
-        <th align="left" class="banner" colspan="2" >
-            LORIS Login
-        </th>
-    </tr>
-    <tr>
-        <td>
-            <table border="0" cellpadding="2" cellspacing="2" style="background-color:transparent;">
-                <tr>
-                    <td align="center" colspan="2">{$error_message}&nbsp;</td>
-                </tr>
-                <tr>
-                    <th align="center">User:</th>
-                    <td align="left"><input name="username" size="40" tabindex="1" type="text" value="{$username}" /></td>
-                    <td align="center" rowspan="2" valign="center"><input class="button" name="login" type="submit" value="login" /></td>
-                </tr>
-                <tr>
-                    <th align="right">Password:</th>
-                    <td align="left"><input name="password" size="40" tabindex="2" type="password" /></td>
-                </tr>
-                <tr>
-                    <td align="center" colspan="2"><a href="lost_password.php">Forgot your password?</a></td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
 <!-- old study web links positioning
 <table class="StudyWeblinks" align="center">
 <tr>
@@ -199,6 +195,7 @@ BrowserDetect.init();
 <!--img src="images/mni_logo.png" class="watermark" alt="Montreal Neurological Institute" border="0" width="100" height="83"-->
 <table class="LoginFooter" align="center">
 <tr>
+<hr width = 70%>
 <td width="100%">
 <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
@@ -214,16 +211,16 @@ BrowserDetect.init();
 <!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
 </tr>       
 <tr>
-<td align="center" colspan="1" style="color:#fff" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
+<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
 </tr>	
 <tr>
-<td align="center" colspan="1" style="color:#fff" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
 </tr>	
 <tr>
-<td align="center" colspan="1"style="color: #fff">Created by <a href="http://cbrain.mcgill.ca" style="color: #348b8d;" target="_blank"> ACElab</a></td>
+<td align="center" colspan="1"style="color: #808080">Created by <a href="http://cbrain.mcgill.ca" style="color: #064785" target="_blank"> ACElab</a></td>
 </tr>
 <tr>
-<td align="center" colspan="1" style="color: #fff"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #348b8d;" target="_blank">Montreal Neurological Institute and Hospital</a></td>
+<td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
 
 </tr>
 </table>

@@ -1,6 +1,6 @@
 {literal}
-<script language="javascript" type="text/javascript" src="../../js/jquery/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="../../js/jquery/jquery-ui-1.8.10.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="../../js/jquery/jquery-1.11.0.min.js"></script>
+<script language="javascript" type="text/javascript" src="../../js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script language="javascript" type="text/javascript" src="../flexigrid-1.1/js/flexigrid.pack.js"></script>
 {/literal}
 <div clcass-"flexigrid">
@@ -28,7 +28,7 @@
       {foreach from=$AllVisits item=visit name=VisitLoop}
       <td>{foreach from=$data[item].incompletes[$visit] item=Candidate name=CandLoop}
             {if $Candidate.test_url == "PF_Missing"}
-                <a href="mri_browser.php?sessionID={$Candidate.SessionID}">
+                <a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$Candidate.SessionID}">
             {else}
             <a href="main.php?test_name=mri_parameter_form&candID={$Candidate.CandID}&sessionID={$Candidate.SessionID}&commentID={$Candidate.CommentID}">
             {/if}

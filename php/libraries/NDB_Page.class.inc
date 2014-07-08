@@ -13,6 +13,14 @@ class NDB_Page extends PEAR
         $this->identifier = $identifier;
         $this->commentID = $commentID;
     }
+    
+    
+    /**
+    * Wrapper to create a file element
+    */
+    function addFile($name, $label) {
+        $this->form->addElement('file', $name, $label);
+    }
 
      /**
     * Wrapper to create a header
@@ -26,7 +34,7 @@ class NDB_Page extends PEAR
     * Wrapper to create a select drop-down list
     */
 
-    function addSelect($name, $label, $options, $optional=null) {
+    function addSelect($name, $label, $options, $optional=array('class' => 'form-control input-sm')) {
         $this->form->addElement('select', $name, $label, $options, $optional);
     }
 
@@ -47,16 +55,17 @@ class NDB_Page extends PEAR
     }
 
 
-    function addBasicText($field, $label, $options=array()) {
+    function addBasicText($field, $label, $options=null) {
+        $options = array_merge(array('class' => 'form-control input-sm'), $options);
         $this->form->addElement('text', $field, $label, $options);
     }
 
-    function addBasicTextArea($field, $label, $specifications=array()) {
+    function addBasicTextArea($field, $label, $specifications=array('class' => 'form-control input-sm')) {
         $this->form->addElement('textarea', $field, $label, $specifications);
     }
 
-    function addBasicDate($field, $label, $options=array()) {
-        $this->form->addElement('date', $field, $label, $options);
+    function addBasicDate($field, $label, $options=array(), $attr=array('class' => 'form-control input-sm', 'style' => 'max-width:33%; display:inline-block;')) {
+        $this->form->addElement('date', $field, $label, $options, $attr);
     }
  
     function addHidden($label, $attributes=null) {
@@ -66,7 +75,7 @@ class NDB_Page extends PEAR
     function addTextAreaGroup($field, $label,$not_answered_options=array('' =>'', 'not_answered' => 'Not Answered')) {
         $group = array();
         $group[] = $this->createTextArea($field, '');
-        $group[] = $this->createSelect($field . '_status', '', $not_answered_options);
+        $group[] = $this->createSelect($field . '_status', '', $not_answered_options, array('class' => 'form-control input-sm not-answered'));
 
         $this->addGroup($group, $field . '_group', $label, null, false); 
 
@@ -83,22 +92,36 @@ class NDB_Page extends PEAR
     function addGroup($elements, $name, $label, $separator, $appendName=null) {
         $this->form->addGroup($elements, $name, $label, $separator, $appendName);
     }
-
-    function createSelect($field, $label, $options=null) {
-	return $this->form->createElement("select", $field, $label, $options);
+    function addPassword($field, $label=null, $attr=array('class' => 'form-control input-sm')){
+        $this->form->addElement('password', $field, $label, $attr);
     }
 
-    function createText($field, $label=null) {
-       return $this->form->createElement("text", $field, $label);
+    function createSelect($field, $label, $options=null, $attr=array('class' => 'form-control input-sm')) {
+	   return $this->form->createElement("select", $field, $label, $options, $attr);
+    }
+
+    function createText($field, $label=null, $attr=array('class' => 'form-control input-sm')) {
+       return $this->form->createElement("text", $field, $label, $attr);
     } 
 
     function createTextArea($field, $label=null) {
        return $this->form->createElement("textarea", $field, $label);
     } 
-    function createDate($field, $label, $dateOptions=null) {
-        return $this->form->createElement("date", $field, $label, $dateOptions);
+    function createDate($field, $label, $dateOptions=null, $attr=array('class' => 'form-control input-sm', 'style' => 'max-width:33%; display:inline-block;')) {
+        return $this->form->createElement("date", $field, $label, $dateOptions, $attr);
     }
-  
+    function createCheckbox($field, $label, $options=null, $closer='</label>'){
+        $group = array();
+        $group[] = $this->form->createElement('static', null, null, '<label>');
+        // $html = '<label><input type=\'checkbox\'> '.$label.'</label>';
+        $group[] = $this->form->createElement('advcheckbox', $field, null, null, $options);
+        $group[] = $this->form->createElement('static', 'checkLabel', null, $label.$closer);
+        return $group;
+        // return $this->form->createElement('static', null, null, $html);
+    }
+    function createPassword($field, $label=null, $attr=array('class' => 'form-control input-sm')){
+        return $this->form->createElement('password', $field, $label, $attr);
+    }
 
     /**
      * Displays the form

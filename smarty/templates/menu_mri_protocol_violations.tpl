@@ -28,6 +28,11 @@
       <td nowrap="nowrap">{$form.SeriesDescription.label}</td>
       <td nowrap="nowrap">{$form.SeriesDescription.html}</td>
    </tr>
+   <tr>
+      <td nowrap="nowrap">{$form.TimeRun.label}</td>
+      <td nowrap="nowrap">{$form.TimeRun.html}</td>
+   </tr>
+
     <tr>
     <tr>
     
@@ -100,7 +105,7 @@
     <tr>
     <!-- print out data rows -->
     {section name=piece loop=$items[item]}
-    
+   
        	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
 	  		{$items[item][piece].value}
 		</td>

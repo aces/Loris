@@ -21,6 +21,7 @@ require_once "NDB_BVL_Instrument.class.inc";
 require_once "User.class.inc";
 require_once "Utility.class.inc";
 require_once "NDB_Client.class.inc";
+require_once "TimePoint.class.inc";
 
 /// User prompt
  
@@ -72,7 +73,7 @@ if (array_key_exists('c', $opts)) {
 if (array_key_exists('m', $opts)) {
     $change_all = true;
 }
-
+  
 if ($change && $change_all) {
     $die("Choose either Change (-c) or remove and re-insert all conflicts (-m)");
 }
@@ -100,6 +101,9 @@ if (($instrument=='all') ||($instrument=='All')) {
 }
 foreach ($instruments as $instrument) {
     if (isset($instrument)) {
+        
+        include_once $paths['base'].
+        "project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
         print  "instrument is $instrument \n";
 
         //Run the script for all the instruments

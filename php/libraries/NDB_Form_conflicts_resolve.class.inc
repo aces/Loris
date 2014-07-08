@@ -36,6 +36,9 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         if(isset($_REQUEST['site'])) {
             $defaults['site'] = $_REQUEST['site'];
         }
+        if(isset($_REQUEST['visit'])) {
+            $defaults['visit'] = $_REQUEST['visit'];
+        }
         if(isset($_REQUEST['Instrument'])) {
             $defaults['Instrument'] = $_REQUEST['Instrument'];
         }
@@ -122,7 +125,7 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                     if($Instrument != null) {
                         $Instrument->score();
                         // Score runs the update statements to update the scored columns. There's no need to save,
-                        // (and save() doesn't work) because it calles $this->form->getSubmittedValues(), and at
+                        // (and save() doesn't work) because it calls $this->form->getSubmittedValues(), and at
                         // this point we're submitting the conflict resolver, not the instrument
                         //$Instrument->save();
                     }
@@ -168,11 +171,11 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
-
-        
-        
         
         $sites = array_flip(array_merge(array('All'=>''), array_flip(Utility::getSiteList())));
+        
+        $visits = Utility::getVisitList();
+        $visits = array_merge(array('' => 'All'), $visits);
 
         
         $extra_where = '';
@@ -186,9 +189,10 @@ class NDB_Form_conflicts_resolve extends NDB_Form
         // Filter selection elements
         $this->addSelect('site', 'Site:', $sites);
         $this->addSelect('Instrument', 'Instrument:', $instruments);
-        $this->addBasicText('Question', 'Question:', '');
-        $this->addBasicText('CandID', 'DCCID:', '');
-        $this->addBasicText('PSCID', 'PSCID:', '');
+        $this->addSelect('visit', 'Visit label:', $visits);
+        $this->addBasicText('Question', 'Question:');
+        $this->addBasicText('CandID', 'DCCID:');
+        $this->addBasicText('PSCID', 'PSCID:');
 
         //This condition is commmented out because the $_REQUEST['site'] will always be empty (All) by default (which will show all the sites)
         //if(!empty($_REQUEST['site'])) {
@@ -205,6 +209,8 @@ class NDB_Form_conflicts_resolve extends NDB_Form
             $extra_where .= AddWhere("s.CandID", 'CandID');
             $extra_where .= AddWhere("ca.PSCID", 'PSCID');
             $extra_where .= AddWhere("s.CenterID", 'site');
+            $extra_where .= AddWhere("s.Visit_label", 'visit');
+
 
             // The 1=1 condition is just so that we can AND all the conditions together without worrying about whether or not
             // it's the first condition to be added.
@@ -217,6 +223,38 @@ class NDB_Form_conflicts_resolve extends NDB_Form
                 $DB->selectRow("SELECT COUNT(*) as total FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", $conflicts_num);
                 $this->addScoreColumn('total', 'Showing ' . count($conflicts) . ' of ' . $conflicts_num['total'] . ' conflicts matching filter.');
             }
+
+	// Show conflicts resolved
+	$resolved_conflicts = $DB->pselect("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Visit_label, OldValue1, OldValue2, NewValue, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, OldValue1, OldValue2, NewValue)) AS hash FROM conflicts_resolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where LIMIT $MaxConflicts", array());
+	if (empty($resolved_conflicts)) {
+		$this->addScoreColumn("resolved_status", "No resolved conflicts matching criteria found.");
+		return;
+	} else {
+		$resolved_conflicts_num = $DB->pselectRow("SELECT COUNT(*) as resolved_total FROM conflicts_resolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where", array());
+		$this->addScoreColumn('resolved_total', 'Showing ' . count($resolved_conflicts) . ' of ' . $resolved_conflicts_num['resolved_total'] . ' resolved conflicts matching filter.');
+	}
+
+	foreach($resolved_conflicts AS $resolved_conflict) {
+            $hash = 'conflict_' . $resolved_conflict['hash'];
+            $dccid = substr($resolved_conflict['CommentId1'],0,6);
+            $ssid = substr($resolved_conflict['CommentId1'],6,7);
+            if ($resolved_conflict['NewValue'] == 1) {
+		$NewValue = $resolved_conflict['OldValue1'];
+            } elseif ($resolved_conflict['NewValue'] == 2) {
+                $NewValue = $resolved_conflict['OldValue2'];
+            }
+            $resolved_conflict_array = array(
+                'name' => 'conflict_' . $resolved_conflict['hash'],
+                'instrument' => $resolved_conflict['TableName'],
+                'dccid' => $dccid,
+                'pscid' => $ssid,
+                'field' => $resolved_conflict['FieldName'],
+                'visit_label' => $resolved_conflict['Visit_label'],
+                'new_value' => $NewValue
+            );
+            $this->tpl_data['resolved_elements_list_names'][]= $hash;
+            $this->tpl_data['resolved_elements_array'][$hash] = $resolved_conflict_array;
+	}
 
         //Loop through the conflicts and add a row per
         foreach($conflicts AS $conflict) {

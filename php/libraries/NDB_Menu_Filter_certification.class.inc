@@ -83,10 +83,10 @@ class NDB_Menu_Filter_certification extends NDB_Menu_Filter
         }
 
         // add form elements
-        $this->form->addElement('select', 'centerID', 'Site:', $list_of_sites);
-        $this->form->addElement('text', 'full_name', 'Examiner full name:');
-        $this->form->addElement('text', 'date_cert', 'Date:');
-        $this->form->addElement('text', 'measure', 'Measure:');
+        $this->addSelect('centerID', 'Site:', $list_of_sites);
+        $this->addBasicText('full_name', 'Examiner full name:');
+        $this->addBasicText('date_cert', 'Date:');
+        $this->addBasicText('measure', 'Measure:');
 
         return true;
     }
