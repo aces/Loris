@@ -51,7 +51,7 @@
 			<span class="tip">...
                         {foreach from=$File_comments item=val2 key=k2}
                                 {if $k == $k2}
-					<span id={$k} class="categorycomments" name="headercomment_{$val|replace:' ':'_'|replace:'>':'_'}" contenteditable="true">{$val2}</span>
+					<span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$val|replace:' ':'_'|replace:'>':'_'}" contenteditable="true">{$val2}</span>
                                 {/if}
                         {/foreach}
 			</span>

@@ -40,7 +40,8 @@ function editCategory() {
             bind('blur',function(event){
                 event.stopImmediatePropagation();
                 id = event.target.id;
-                value = $("#" + id) .text();
+                value = $("#" + id) . text();
+                id = id.replace("categorycomment", "");
                 $.get("DocumentRepository/categoryEdit.php?id=" + id + "&comments=" + value, function(data) {});
             }
     ).keypress(function(e) {
@@ -56,7 +57,7 @@ $(document).ready(function() {
      $("div.accordion").accordion({
        autoHeight: false,
        collapsible: true,
-       active: false,
+      active: false,
      });
    });
 
