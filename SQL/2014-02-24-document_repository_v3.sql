@@ -8,4 +8,4 @@ CREATE TABLE `document_repository_categories` (
   `parent_id` int(3) DEFAULT '0',
   `comments` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
