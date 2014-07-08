@@ -24,6 +24,7 @@ if ($_POST['parent_id'] !== '') {
         error_log("Invalid parent id!");
         die();
     }
+}
 if ($_POST['comments'] !== '') {
     $comments = $_POST['comments'];
 }
