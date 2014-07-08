@@ -1,6 +1,40 @@
 /* 
  * CSS not implemented in bootstrap
 */
+.static-col.pis{
+    padding-bottom: 71px;
+}
+.pis {
+    height: 80px;
+}
+.table-scroll { 
+    overflow-x:auto;
+    padding-bottom:1px;
+}
+.table-scroll-static { 
+    overflow-x:auto;  
+    margin-left:7em;
+    padding-bottom:1px;
+}
+.scrollable {
+    margin-right: 50px;
+    margin-left:50px;
+}
+.scrollableStat {
+    margin-right: 50px;
+    margin-left:10em;
+}
+.static-col {
+    position:absolute; 
+    width:7em; 
+    left:0;
+    top:auto;
+    border-right: 0px none black; 
+    border-top-width:3px; /*only relevant for first row*/
+}
+.colm-static{
+    left: 3em;
+}
 html, body {height: 100%;}
 #wrap {min-height: 100%;}
 

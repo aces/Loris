@@ -7,13 +7,14 @@
 
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
-    <div class="col-xs-10 col-xs-offset-1" id="content" style="overflow-y:auto">
+    <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
+    <div class="table-scroll-static" id="content">
       <table class="table table-primary table-bordered">
           <thead>
               <tr class="info">
-                  <th rowspan="2">Visit</th>
+                  <th class="static-col headcol spacer"> </th>
                   {foreach from=$Centers item=center key=centername}
-                      <th id='{$center.LongName}' colspan="3" onclick="hideStats(this)">
+                      <th id='{$center.LongName}' class="centers tip" colspan="3" onclick="hideStats(this)" data-toggle="tooltip" data-placement="bottom" data-container="body" title="Click to minimize">
                           {$center.LongName}
                       </th>
                   {/foreach}
@@ -21,10 +22,11 @@
                   <th rowspan="2"></th> -->
               </tr>
               <tr class="info">
+                <th class="static-col headcol">Visit</th>
                   {foreach from=$Centers item=center}
                    <th class='{$center.LongName}'>Completed</th>
                    <th class='{$center.LongName}'>Created</th>
-                   <th>% Completion</th>
+                   <th nowrap="nowrap">% Completion</th>
                   {/foreach}
                    {* Total isn't in the visits array, so we need to manually add its header *}
                    <!-- <th class='total'>Completed</th>
@@ -35,7 +37,7 @@
           <tbody>
               {foreach from=$Visits item=visit}
                   <tr>
-                      <td>{$visit|upper}</td>
+                      <td class="static-col headcol">{$visit|upper}</td>
                       {foreach from=$Centers item=center key=centername}
                           <td class='{$center.LongName}'>{$behaviour[$center.ID][$visit].complete|default:"0"}</td>
                           <td class='{$center.LongName}'>{$behaviour[$center.ID][$visit].total|default:"0"}</td>
@@ -48,7 +50,7 @@
                    </tr>
               {/foreach}
               <tr>
-                  <td>Total</td>
+                  <td class="static-col headcol">Total</td>
                   {foreach from=$Centers item=center key=centername}
                       <td class='{$center.LongName}'>{$behaviour[$center.ID].all.complete|default:"0"}</td>
                       <td class='{$center.LongName}'>{$behaviour[$center.ID].all.total|default:"0"}</td>
@@ -56,16 +58,17 @@
                   {/foreach}
               </tr>
               <tr>
-                  <td>Per Instrument Stats</td>
+                  <td class="static-col headcol pis">Per Instrument Stats</td>
                   {foreach from=$Centers item=center key=centername}
-                      <td id='{$center.LongName}PIS' colspan="3">
+                      <td id='{$center.LongName}PIS' class="pis" colspan="3">
                           <a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
                       </td>
                   {/foreach}
               </tr>
           </tbody>
       </table>
-    </div>
+      </div>
+    <!-- </div> -->
     <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
       <span class="glyphicon glyphicon-chevron-left"></span>
     </a>
@@ -80,13 +83,13 @@
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
-    <div class="col-xs-10 col-xs-offset-1" id="contentDD" style="overflow-y:auto">
+    <div class="table-scroll-static" id="contentDD">
       <table class="table table-primary table-bordered">
         <thead>
               <tr class="info">
-                  <th rowspan="2">Visit</th>
+                  <td class="static-col headcolDD spacer"> </td>
                   {foreach from=$Centers item=center key=centername}
-                      <th id='{$center.LongName}DD' colspan="3" onclick="hideStats(this)">
+                      <th id='{$center.LongName}DD' class="centers tip" colspan="3" onclick="hideStats(this)">
                           {$center.LongName}
                       </th>
                   {/foreach}
@@ -94,10 +97,11 @@
                   <th rowspan="2"></th> -->
               </tr>
               <tr class="info">
+                  <th class="static-col headcolDD">Visit</th>
                   {foreach from=$Centers item=center}
                    <th class='{$center.LongName}DD'>Completed</th>
                    <th class='{$center.LongName}DD'>Created</th>
-                   <th>% Completion</th>
+                   <th nowrap="nowrap">% Completion</th>
                   {/foreach}
                    {* Total isn't in the visits array, so we need to manually add its header *}
                    <!-- <th class='total'>Completed</th>
@@ -108,7 +112,7 @@
         <tbody>
               {foreach from=$Visits item=visit}
                   <tr>
-                      <td>{$visit|upper}</td>
+                      <td class="static-col headcolDD">{$visit|upper}</td>
                       {foreach from=$Centers item=center key=centername}
                           <td class='{$center.LongName}DD'>{$dde[$center.ID][$visit].complete|default:"0"}</td>
                           <td class='{$center.LongName}DD'>{$dde[$center.ID][$visit].total|default:"0"}</td>
@@ -121,7 +125,7 @@
                    </tr>
               {/foreach}
               <tr>
-                  <td>Total</td>
+                  <td class="static-col headcolDD">Total</td>
                   {foreach from=$Centers item=center key=centername}
                       <td class='{$center.LongName}DD'>{$dde[$center.ID].all.complete|default:"0"}</td>
                       <td class='{$center.LongName}DD'>{$dde[$center.ID].all.total|default:"0"}</td>
@@ -129,9 +133,9 @@
                   {/foreach}
               </tr>
               <tr>
-                  <td>Per Instrument Stats</td>
+                  <td class="static-col headcolDD pis">Per Instrument Stats</td>
                   {foreach from=$Centers item=center key=centername}
-                      <td id='{$center.LongName}DDPIS' colspan="3">
+                      <td id='{$center.LongName}DDPIS' class="pis" colspan="3">
                           <a href='main.php?test_name=statistics_dd_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
                       </td>
                   {/foreach}

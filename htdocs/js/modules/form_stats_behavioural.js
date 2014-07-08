@@ -46,6 +46,7 @@ function showStats(clicked) {
     $('#' + id + "PIS").attr('colspan', '3');
     $('#' + id).attr('onClick', 'hideStats(this)');
     $('#' + id).addClass('stats-active');
+    $('#' + id).attr('data-original-title', 'Click to minimize');
     checkOverflow();
 }
 function hideStats(clicked) {
@@ -56,97 +57,27 @@ function hideStats(clicked) {
     $('#' + id + "PIS").attr('colspan', '1');
     $('#' + id).attr('onClick', 'showStats(this)');
     $('#' + id).removeClass('stats-active');
+    $('#' + id).attr('data-original-title', 'Click to maximize');
     checkOverflow();
 }
-$(document).ready(function () {
-    'use strict';
-    checkOverflow();
+$(document).ready(function(){
+    $.getScript("js/modules/dynamic_table.table.js")
+        .done(function(){
+            Table.setup("content", "scrollRight", "scrollLeft");
+            Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
+            Table.setup("contentDD", "scrollRightDD", "scrollLeftDD");
+            Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
+        });
+    
+    $(".spacer").height($(".centers").height());
+    // checkOverflow();
 });
-$(window).resize(function () {
-    'use strict';
-    if ($(window).width() < 500) {
-        $('.table-div').addClass('table-responsive');
-    }
-    checkOverflow();
+$(window).resize(function(){
+    $(".spacer").height($(".centers").height());
+    Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
+    Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
+    // checkOverflow();
 });
-var step = 100;
-var scrolling = false;
-$("#scrollRight").bind("click", function (event) {
-    'use strict';
-    event.preventDefault();
-    // Animates the scrollTop property by the specified
-    // step.
-    scrolling = false;
-    $("#content").animate({
-        scrollLeft: $("#content").scrollLeft() + step
+$(function(){
+        $(".tip").tooltip();
     });
-}).bind("mouseover", function () {
-    'use strict';
-    scrolling = true;
-    scrollContent("right", "#content");
-}).bind("mouseout", function () {
-    'use strict';
-    scrolling = false;
-});
-$("#scrollLeft").bind("click", function (event) {
-    'use strict';
-    event.preventDefault();
-    // Animates the scrollTop property by the specified
-    // step.
-    scrolling = false;
-    $("#content").animate({
-        scrollLeft: $("#content").scrollLeft() - step
-    });
-}).bind("mouseover", function () {
-    'use strict';
-    scrolling = true;
-    scrollContent("left", "#content");
-}).bind("mouseout", function () {
-    'use strict';
-    scrolling = false;
-});
-$("#scrollRightDD").bind("click", function (event) {
-    'use strict';
-    event.preventDefault();
-    // Animates the scrollTop property by the specified
-    // step.
-    scrolling = false;
-    $("#contentDD").animate({
-        scrollLeft: $("#contentDD").scrollLeft() + step
-    });
-}).bind("mouseover", function () {
-    'use strict';
-    scrolling = true;
-    scrollContent("right", "#contentDD");
-}).bind("mouseout", function () {
-    'use strict';
-    scrolling = false;
-});
-$("#scrollLeftDD").bind("click", function (event) {
-    'use strict';
-    event.preventDefault();
-    // Animates the scrollTop property by the specified
-    // step.
-    scrolling = false;
-    $("#contentDD").animate({
-        scrollLeft: $("#contentDD").scrollLeft() - step
-    });
-}).bind("mouseover", function () {
-    'use strict';
-    scrolling = true;
-    scrollContent("left", "#contentDD");
-}).bind("mouseout", function () {
-    'use strict';
-    scrolling = false;
-});
-function scrollContent(direction, elem) {
-    'use strict';
-    var amount = (direction === "left" ? -3 : 3);
-    $(elem).animate({
-        scrollLeft: $(elem).scrollLeft() + amount
-    }, 1, function () {
-        if (scrolling) {
-            scrollContent(direction, elem);
-        }
-    });
-}
