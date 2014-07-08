@@ -230,6 +230,7 @@ $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 //Display the links, as specified in the config file
 $links=$config->getSetting('links');
 foreach(Utility::toArray($links['link']) AS $link){
+    $LinkArgs = '';
     $BaseURL = $link['@']['url'];
     if(isset($link['@']['args'])) {
         $LinkArgs = $link_args[$link['@']['args']];
