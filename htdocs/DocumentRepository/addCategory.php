@@ -10,7 +10,7 @@ $config = NDB_Config::singleton();
 
 // create Database object
 $DB =& Database::singleton();
-if (PEAR::isError($DB)) {
+if (Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die();
 }
 
