@@ -8,7 +8,7 @@
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter();">
         Selection Filter  
-        <label id="advanced-label" style="display:none">(Advanced Options)</label>
+        <label class="advancedOptions" id="advanced-label" style="display:none">(Advanced Options)</label>
         <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
         <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
     </div>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div id="advanced-options" style="display:none">
+            <div class="advancedOptions" id="advanced-options" style="display:none">
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-sm-12 col-md-4">
