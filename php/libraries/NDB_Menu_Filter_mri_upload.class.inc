@@ -69,7 +69,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             WHERE 1=1 ";
         $this->formToFilter = array();
         $this->log= new Log("MRI_upload", "/data/sandbox/data/logs");
-        $this->queue = new Log("Log", "/data/sandbox/data/logs");
+        $this->queue = new Log(".log");
         return true;
     }
 
@@ -136,7 +136,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function _process($values)
     {
         if ($this->_saveFile($values)) {
-                   
+             $this->queue->addLog("-- Setting up variables \n <br>", false);              
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
             ///////////////////////////////////////////////////////////////////
@@ -180,17 +180,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             $decomp = new File_Decompress($source_location, $mri_incoming_path);
             $decompressed_folder = $decomp->decompressFile();
-            
-            // Olga: remove "/" between $mri_incoming and $decompressed
-            $decompressed_folder = $mri_incoming_path . $decompressed_folder;
+            $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
             if (!($decompressed_folder)) { //decompress the file
                 $this->log->addLog(
                     "The File $source_location is now".
                     "untarred into $mri_incoming_path \n <BR>"
                 );
                 $this->queue->addLog(
-                     "The File $source_location is now" .
-                     "untarred into $mri_incoming_path \n"
+                     "-- The File $source_location is now" .
+                     "untarred into $mri_incoming_path \n <br>", false
                 ); 
             }
 
@@ -208,6 +206,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 && (!empty($pscid)) 
                 && (!empty($visit_label))
             ) {
+                
                 $result 
                     = $this->insertDicom(
                         $DICOMTAR, $file_name, $decompressed_folder, 
@@ -217,6 +216,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $dicom_created = $result[0];
                 $tarchive_id = $result[1];
                 $ArchiveLocation = $result[2];
+                
             }
 
             ///////////////////////////////////////////////////////////////////
@@ -249,8 +249,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 //get the path to the error_log
                 $tarchive_file_log  = $tarchive_log->getLogPath();
                 
-                $command = "cd $mri_code_path; perl $bach_upload_script".
+                $command = "cd $mri_code_path; perl $bach_upload_script ".
                            "< $tarchive_file_log";
+                
                 $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
                          "JOIN files f ON (f.sessionID = mu.SessionID) ".
                          "JOIN session s ON (s.ID = f.sessionID) ".
@@ -264,22 +265,24 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ////Run the minc-insertion pipeline////////////////////////////
                 ///////////////////////////////////////////////////////////////
                 if ($count==0) {
+                    $this->queue->addLog("-- Inserting MINC into the files table \n <br>", false); 
                     $output = shell_exec($command);
                     if ($this->show_queries) {
                         print "command is $command";
                         print $output;
                     }
+        
                     ////////////////////TODO://////////////////////////////////
                     //extra checks can be added to make sure that the//////////
                     /// mincs are created, before the minc-inserted is set/////
                     /////////// to true////////////////////////////////////////
                     if ($output==0) {
                         $this->log->addLog(
-                            "The minc file for patient-name $patient_name is now".
+                            "The minc file for patient-name $patient_name is now ".
                             "inserted into the db \n <BR>" 
                         );
                         $this->queue->addLog(
-                            "The minc file for patient-name $patient_name is now" .                             "inserted into db \n"
+                            "-- The minc file for patient-name $patient_name is now " .                                             "inserted into db \n <br>", false
                         );
                         $this->tpl_data['minc_success'] = true;
                     }
@@ -302,7 +305,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function _saveFile($values)
     {
         include_once "File_Upload.class.inc";
-        
+
         //get the stored-file path
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
@@ -381,8 +384,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $files_not_readable = 0;
         $file_not_matching_patient_name = 0;
         $header_patient_name = array();
-        //$hader_patient_name;
-        
+                
         ///////////////////////////////////////////////////////////////////////
         //////////////Make sure the extension is valid/////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -479,45 +481,34 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $objects = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($temp_dir),
                 RecursiveIteratorIterator::SELF_FIRST
-             );
-          print "temp dir is $temp_dir";
-          print_r ($objects);
-            // Olga: instead of using recursion, since it doesn't work
-/*
-            $arr = explode(".", $file->fileInfo['name'], 2);
-            $first = $arr[0];
-            $dir = $temp_dir . '/' . $first;
+            );
+                       
+            $this->queue->addLog("-- Processing files \n <br>", false); 
 
-            $objects = scandir($dir);
-*/
-print_r ($objects);
+            $count = 0; 
             foreach ($objects as $name => $file) {
-
-		 //echo  $objects->getDepth() . " " . $file->getFilename() . "<br/>";
-		 echo  $objects->getDepth() .  "<br/>";
-                //if (is_file($file)) {
-                  exit;
-                  if (pathinfo($file)['extension'] == "dcm") { 
-                   
-
-                    ///////////////////////////////////////////////////////////
+               	 
+                 if (is_file($file)) { 
+                  
+                     ///////////////////////////////////////////////////////////
                     ///////////////determin the file-type//////////////////////
                     ///////////////////////////////////////////////////////////
                     $file_type = shell_exec("file $file");
+                    
                      ///////////////////////////////////////////////////////////
                     /////////////// check if it's readable/////////////////////
                     ///////////////////////////////////////////////////////////
- //                   if (!is_readable($file)) {
-   //                     $files_not_readable++;
-     //                   continue;
-       //             }
+                    if (!is_readable($file)) {
+                        $files_not_readable++;
+                        continue;
+                       }
                     
                     
                     ///////////////////////////////////////////////////////////
                     ///////////////if the file is not a dicom//////////////////
                     ///////////////////////////////////////////////////////////
                     if (!(preg_match("/DICOM/", $file_type))) {
-    
+                          
                         ///////////////////////////////////////////////////////
                         /////////////if it's not of type archive or gzip///////
                         ///////////////////////////////////////////////////////
@@ -534,7 +525,8 @@ print_r ($objects);
                     ///////////////if it's dicom///////////////////////////////
                     ///////////////////////////////////////////////////////////
     
-                    $cmd = "dcmdump $file | grep -ri patientname";
+                    $cmd = "dcmdump $file | grep -i patientname";
+                    
                     $patient_name_string = shell_exec($cmd);
                     preg_match("^\[(.*?)\]^", $patient_name_string, $fields);
                     $patient_name_from_header = $fields[1];
@@ -545,7 +537,10 @@ print_r ($objects);
                     if (!($patient_name == $patient_name_from_header)) {
                         $file_not_matching_patient_name++;
                     }
-                }
+                    $count++;
+                    if ($count % 200 == 0) 
+                       $this->queue->addLog("-- $count files have been processed \n <br>", false);
+                 }
             }
 
             if ($files_not_dicom > 0) {
@@ -586,10 +581,12 @@ print_r ($objects);
             }
         } else {
             $errors[]=" Please make sure CandID, PSCID and VisitLabel are".
-                      "filled out";
+                      " filled out";
         }
         
         if (count($errors) > 0) {
+            foreach ($errors as $error)
+                $this->queue->addLog("-- " . $error . "<br>");
             return $errors;
         }
         return true;
@@ -711,7 +708,7 @@ print_r ($objects);
 
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
-        $this->queue->addLog("The Environment Variables are now set \n");
+        $this->queue->addLog("-- The Environment Variables are now set \n <br>", false);
                
     }
      /**
@@ -739,12 +736,14 @@ print_r ($objects);
         $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
         .  " -clobber -database -profile prod 2>&1";
         
+        $this->queue->addLog("-- Running DICOM \n <br>", false);
         $output = shell_exec($cmd);
+                
         if ($this->show_queries) {
             print "cmd : $cmd \n";
             print "Output: $output end\n";
         }
-
+        
         ///////////////////////////////////////////////////////////////////////
         //////////////////Get the ArchiveLocation//////////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -758,7 +757,7 @@ print_r ($objects);
             "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
         );
         $this->queue->addLog(
-            "The DICOM file is now tarred into $ArchiveLocation \n"
+            "-- The DICOM file is now tarred into $ArchiveLocation \n <br>", false
         );  
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
@@ -770,7 +769,7 @@ print_r ($objects);
         if (($tarchive_file_created)
             && ($tarchive_id!=null)
         ) {
-            $dicom_inserted  =true;
+            $dicom_inserted = true;
         }
 
            $result[] = $dicom_inserted;

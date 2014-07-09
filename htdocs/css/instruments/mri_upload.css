@@ -18,3 +18,7 @@
   font-weight: bold;
   text-shadow: 1px 1px 0 #fff;
 }
+
+.ui-progressbar .ui-progressbar-value {
+  height: 110% !important;
+}
