@@ -264,7 +264,6 @@ echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --pas
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
 	while true; do
-		echo $MySQLError
 		echo "Could not connect to database with the root user provided. Please try again.";
 	        read -p "Existing root MySQL username: " mysqlrootuser
 		echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
@@ -295,7 +294,6 @@ echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'loca
 echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
-    echo $MySQLError
     echo "Could not connect to database with the root user provided.";
     exit 1;
 fi
