@@ -107,14 +107,16 @@ Please answer the following questions. You'll be asked:
 
   1) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
-     This database will be created later on.
+     This database will be created later on so please make sure
+     a database with the same name does not already exist.
 
   2) The hostname for the machine where the MySQL server will run on
      (this is where we'll create the database).
 
   3) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
-     created later on.
+     created later on so please make sure a user with the same name
+     does not already exist.
 
   4) The password for this username (it will be set later on).
 
@@ -214,21 +216,21 @@ done;
 
 stty echo ; echo ""
 
-while [ "$mysqlrootuser" == "" ]; do 
+while [ "$mysqlrootuser" == "" ]; do
        	read -p "Existing root MySQL username: " mysqlrootuser
 	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
        	case $mysqlrootuser in
                	"" )
                        	read -p "Existing root MySQL username: " mysqlrootuser
                        	continue;;
-                * ) 
+                * )
        	                break;;
        	esac
 done;
 
 stty -echo
 
-while true; do 
+while true; do
         read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         echo ""
         read -p "Re-enter the password to check for accuracy " mysqlrootpass2
@@ -242,14 +244,14 @@ done;
 stty echo
 echo ""
 
-while [ "$projectname" == "" ]; do 
+while [ "$projectname" == "" ]; do
         read -p "Enter project name: " projectname
 	echo $projectname | tee -a $LOGFILE > /dev/null
        	case $projectname in
                	"" )
                        	read -p "Enter project name: " projectname
                        	continue;;
-                * ) 
+                * )
        	                break;;
        	esac
 done;
@@ -262,6 +264,7 @@ echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --pas
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
 	while true; do
+		echo $MySQLError
 		echo "Could not connect to database with the root user provided. Please try again.";
 	        read -p "Existing root MySQL username: " mysqlrootuser
 		echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
@@ -292,6 +295,7 @@ echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'loca
 echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
+    echo $MySQLError
     echo "Could not connect to database with the root user provided.";
     exit 1;
 fi
