@@ -34,7 +34,8 @@ class NDB_Page extends PEAR
     * Wrapper to create a select drop-down list
     */
 
-    function addSelect($name, $label, $options, $optional=array('class' => 'form-control input-sm')) {
+    function addSelect($name, $label, $options, $optional=array()) {
+        $optional = array_merge(array('class' => 'form-control input-sm'), $optional);
         $this->form->addElement('select', $name, $label, $options, $optional);
     }
 
@@ -55,7 +56,7 @@ class NDB_Page extends PEAR
     }
 
 
-    function addBasicText($field, $label, $options=null) {
+    function addBasicText($field, $label, $options=array()) {
         $options = array_merge(array('class' => 'form-control input-sm'), $options);
         $this->form->addElement('text', $field, $label, $options);
     }
