@@ -501,7 +501,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     if (!is_readable($file)) {
                         $files_not_readable++;
                         continue;
-                       }
+                    }
                     
                     
                     ///////////////////////////////////////////////////////////
@@ -734,7 +734,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////////////////Run the dicom_tar////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
-        .  " -clobber -database -profile prod 2>&1";
+        .  " -clobber -database -profile prod";
         
         $this->queue->addLog("-- Running DICOM \n <br>", false);
         $output = shell_exec($cmd);

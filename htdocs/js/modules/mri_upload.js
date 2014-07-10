@@ -43,6 +43,7 @@ function showProgress (perc) {
 
 function sendFile() {
     $("#progressbar").show();
+    getMessage();
     var formObj = $("#mri_upload")[0];
     var formURL = "main.php?test_name=mri_upload";
     var formData = new FormData(formObj);
@@ -78,7 +79,6 @@ function log_message(message) {
 function getMessage(timestamp)
 {
     var queryString = {'timestamp' : timestamp};
-
     $.ajax(
         {
             type: 'GET',
@@ -102,7 +102,6 @@ $(function () {
    $("#progressbar").hide();
    $("#upload").click(function(e) {
        sendFile();
-       getMessage();
        e.preventDefault();
    }); 
 });

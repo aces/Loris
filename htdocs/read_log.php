@@ -13,7 +13,7 @@ while (true) {
 
     if ($last_ajax_call == null || $last_change_in_data_file > $last_ajax_call) {
         if (filesize($data_source_file) == 0) {
-            sleep(3);
+            sleep(1);
             continue;
         }
         
@@ -31,7 +31,7 @@ while (true) {
         echo $json;
         break;
     } else {
-        sleep(3);
+        sleep(1);
         continue;
     }
 }
