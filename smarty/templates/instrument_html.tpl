@@ -3,7 +3,11 @@
 	{$form.hidden}
 	{$form.errors.mainError}
 	{foreach from=$form.sections item=section}
-		<h5>{$section.header}</h5>
+		<div class="col-sm-12">
+			<div class="col-sm-8">
+				<h5 align="center">{$section.header}</h5>
+			</div>
+		</div>
 		{foreach from=$section.elements item=element}
 			{if $element.name neq mainError}
 				{if $element.name eq lorisSubHeader}
