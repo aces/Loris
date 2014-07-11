@@ -16,7 +16,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
 require_once 'Log.class.inc';
 require_once "Archive/Tar.php";
 require_once "File_Decompress.class.inc";
-
+require_once "Message.class.inc";
 /**
  * Log Class
  *
@@ -55,7 +55,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * @return boolean
      */
     function _setupVariables()
-    {
+    {   
         // set the class variables
         $this->columns = array('UploadID','s.CandID','s.visit_label',
         'SourceLocation','UploadDate','UploadedBy',
@@ -69,7 +69,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             WHERE 1=1 ";
         $this->formToFilter = array();
         $this->log= new Log("MRI_upload", "/data/sandbox/data/logs");
-        $this->queue = new Log(".log");
+        $this->queue = new Message();
+        $this->queue->addLog("-- Uploading finished \n <br>", false);        
         return true;
     }
 
@@ -80,7 +81,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-
         // create user object
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
@@ -110,8 +110,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $new_files[$file['SourceLocation']] =$file['SourceLocation'];
         }
         $new_files = array(null=>'Any') + $new_files;
+
         $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
-       /*
+       
         if (empty($_FILES) 
             && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
@@ -121,7 +122,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             not larger than {$upload_max_size} <br></p>";
             // echo out error and solutions...
         }
-*/
+        
         return true;
     }
 
@@ -305,7 +306,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function _saveFile($values)
     {
         include_once "File_Upload.class.inc";
-
+        
         //get the stored-file path
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
@@ -538,9 +539,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         $file_not_matching_patient_name++;
                     }
                     $count++;
-                    if ($count % 200 == 0) 
+                    if ($count % 500 == 0) { 
                        $this->queue->addLog("-- $count files have been processed \n <br>", false);
-                 }
+                    }
+                }
             }
 
             if ($files_not_dicom > 0) {
@@ -586,7 +588,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         
         if (count($errors) > 0) {
             foreach ($errors as $error)
-                $this->queue->addLog("-- " . $error . "<br>");
+                $this->queue->addLog("-- " . $error . "<br>", false);
             return $errors;
         }
         return true;
@@ -756,9 +758,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->log->addLog(
             "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
         );
-        $this->queue->addLog(
-            "-- The DICOM file is now tarred into $ArchiveLocation \n <br>", false
-        );  
+          
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
 

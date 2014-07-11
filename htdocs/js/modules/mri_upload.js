@@ -28,8 +28,10 @@ function showProgress (perc) {
             progressLabel.text(progressbar.progressbar("value") + "%");
         },
         complete: function() {
-            progressLabel.text("Complete!");
-            setTimeout(remove, 1000);
+            if ($("#progress").is(":visible")) {
+                $(".progress-label").text("Complete!");
+                setTimeout(remove, 1000);
+            }
         }
     });
     function progress() {
@@ -39,6 +41,7 @@ function showProgress (perc) {
     function remove() {
         $("#progress").hide();
     }
+
 }
 
 function sendFile() {
@@ -66,7 +69,11 @@ function sendFile() {
         mimeType: "multipart/form-data",
         contentType: false,
         cache: false,
-        processData: false         
+        processData: false,
+        success: function(data, textStatus, jqXHR)
+        {
+        }
+                 
     });
 }
 
@@ -76,33 +83,43 @@ function log_message(message) {
     $("#log_box").html(next);
 }
 
-function getMessage(timestamp)
+function getMessage()
 {
-    var queryString = {'timestamp' : timestamp};
     $.ajax(
         {
             type: 'GET',
             url: 'read_log.php',
-            data: queryString,
             success: function(data){
-                // put result data into "obj"
-                var obj = jQuery.parseJSON(data);
-                // put the data_from_file into #response
-                log_message(obj.data_from_file);
-                // call the function again, this time with the timestamp we just got from server.php
-                getMessage(obj.timestamp);
+                if (data.indexOf("Uploading") > -1) {
+                    // for Firefox, which waits for the response from the server
+                    // when file is uploaded
+                    if ($("#progress").is(":visible")) 
+                        completeTransfer();
+                }
+                log_message(data);
+                // call it again, long-polling
+                getMessage();
+                
             }
         }
     );
+    function completeTransfer() {
+        $(".progress-label").text("Complete!");
+        setTimeout(remove, 1000);
+    }
+    function remove() {
+        $("#progress").hide();
+    }
 }
 
 
 $(function () {
-   change();
-   $("#progressbar").hide();
-   $("#upload").click(function(e) {
-       sendFile();
-       e.preventDefault();
-   }); 
+    change();
+    $("#progressbar").hide();
+    $("#upload").click(function(e) {
+        $("#log_box").html("-- Preparing to process files <br>");
+        sendFile();
+        e.preventDefault();
+    }); 
 });
 
