@@ -68,7 +68,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
            JOIN session s ON (s.ID = mu.SessionID)
             WHERE 1=1 ";
         $this->formToFilter = array();
-        $this->log= new Log("MRI_upload", "/data/sandbox/data/logs");
+
+        $config =& NDB_Config::singleton();
+        $location = $config->getSetting('mincPaths') . "logs";
+        $this->log= new Log("MRI_upload", location);
         $this->queue = new Message();
         $this->queue->addLog("-- Uploading finished \n <br>", false);        
         return true;
