@@ -22,18 +22,24 @@ while (true) {
         sleep(3);
         continue;
     }
-    $file = fopen($data_source_file, "r+");
-    flock($file, LOCK_EX); 
-    $data = file_get_contents($data_source_file);
-    ftruncate($file, 0);
-    flock($file, LOCK_UN);
-    fclose($file);
-            
+    try {
+        $file = fopen($data_source_file, "r+");
+        if (! $file) {
+            throw new Exception("Could not open the log file!");
+        } else {
+            flock($file, LOCK_EX); 
+            $data = file_get_contents($data_source_file);
+            ftruncate($file, 0);
+            flock($file, LOCK_UN);
+            fclose($file);
+                   
+        }
+    } catch(Exceptiom $e) {
+        $data = "Error: " . $e->getMessage();
+    }   
     echo $data;
     ob_flush();
     flush();
     break;
-                
-  
 }
 ?>

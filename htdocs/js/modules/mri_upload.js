@@ -68,7 +68,7 @@ function getMessage() {
                         setTimeout(remove, 1000);                
                     }
                 }
-                if (data.indexOf("completed") > -1) {
+                if (data.indexOf("completed") > -1 || data.indexOf("Error") > -1) {
                     log_message(data);
                     return;
                 }
