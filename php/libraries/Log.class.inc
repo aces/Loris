@@ -38,7 +38,7 @@ class Log extends PEAR
      * @return Log
      */
     function Log($file_name,$location=null)
-    {   
+    {
         $today= getdate();
         $date = sprintf(
             "%04d-%02d-%02d", $today['year'], 
