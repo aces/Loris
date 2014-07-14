@@ -142,6 +142,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         $this->queue->addLog("-- Uploading finished \n <br>", false);
         if ($this->_saveFile($values)) {
+
             $this->queue->addLog(
                 "-- Setting up variables \n <br>", false
             );              
@@ -318,6 +319,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
        */
     function _saveFile($values)
     {
+
         include_once "File_Upload.class.inc";
         
         //get the stored-file path
@@ -326,7 +328,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $stored_file_path = $paths['IncomingPath'];
 
         $file=new File_Upload;
-    
+
         $file->overwriteMode="reject";
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
@@ -334,8 +336,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("mri_file", $this);
-        // Set the target directory that you want files moved
-        // into once they are validated and processed.
+        //Set the target directory that you want files moved
+        //into once they are validated and processed.
         $file->setBaseUploadDirectory($stored_file_path);
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
@@ -380,7 +382,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
          * 3) Make sure the file is not corrupted..
          * 
         */
-        
+
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir = $this->tempdir(true);
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
@@ -398,7 +400,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $files_not_readable = 0;
         $file_not_matching_patient_name = 0;
         $header_patient_name = array();
-                
+
         ///////////////////////////////////////////////////////////////////////
         //////////////Make sure the extension is valid/////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -501,14 +503,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
             $count = 0; 
             foreach ($objects as $name => $file) {
+
                 if (is_file($file)) { 
              
-                     ///////////////////////////////////////////////////////////
+                    ///////////////////////////////////////////////////////////
                     ///////////////determin the file-type//////////////////////
                     ///////////////////////////////////////////////////////////
                     $file_type = shell_exec("file $file");
                     
-                     ///////////////////////////////////////////////////////////
+                    ///////////////////////////////////////////////////////////
                     /////////////// check if it's readable/////////////////////
                     ///////////////////////////////////////////////////////////
                     if (!is_readable($file)) {
@@ -521,7 +524,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////if the file is not a dicom//////////////////
                     ///////////////////////////////////////////////////////////
                     if (!(preg_match("/DICOM/", $file_type))) {
-                          
+
                         ///////////////////////////////////////////////////////
                         /////////////if it's not of type archive or gzip///////
                         ///////////////////////////////////////////////////////
@@ -733,6 +736,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->log->addLog("The Environment Variables are now set \n");
                       
     }
+
      /**
      * Runs the dicomTar.pl and will return true if the dicom is inserted,
      * ,tarchiveid, and archivelocation
@@ -755,7 +759,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         //////////////////Run the dicom_tar////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $cmd = "/usr/bin/perl $DICOMTAR $decompressed_folder $tarchive_location"
+        $cmd = "perl $DICOMTAR $decompressed_folder $tarchive_location"
         .  " -clobber -database -profile prod";
         
         $this->queue->addLog("-- Running DICOM \n <br>", false);
@@ -763,9 +767,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 
         if ($this->show_queries) {
             print "cmd : $cmd \n";
-            print "Output: $output end\n";
+            print $output;
         }
-        
+
         ///////////////////////////////////////////////////////////////////////
         //////////////////Get the ArchiveLocation//////////////////////////////
         ///////////////////////////////////////////////////////////////////////
