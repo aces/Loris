@@ -1,12 +1,25 @@
 <?php
 
+/**
+ * script to read messages written by mri_upload
+ *
+ * PHP version 5
+ *
+ * @category Behavioural
+ * @package  Main
+ * @author   Olga Tsibulevskaya  <olgatsib@gmail.com>
+ * @license  Loris License
+ * @link     https://github.com/mohadesz/Loris-Trunk
+*/
+
+
 header("Cache-Control: no-store, no-cache, must-revalidate");
 $data_source_file = "/data/.log";
 
 while (true) {
     clearstatcache();
-    if (file_get_contents($data_source_file) == '') {
-        sleep(1);
+    if (file_get_contents($data_source_file) === '') {
+        sleep(3);
         continue;
     }
     $file = fopen($data_source_file, "r+");
@@ -16,7 +29,6 @@ while (true) {
     flock($file, LOCK_UN);
     fclose($file);
             
-             
     echo $data;
     ob_flush();
     flush();
