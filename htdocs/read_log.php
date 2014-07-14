@@ -34,8 +34,8 @@ while (true) {
             fclose($file);
                    
         }
-    } catch(Exceptiom $e) {
-        $data = "Error: " . $e->getMessage();
+    } catch(Exception $e) {
+        $data = "-- Error: " . $e->getMessage();
     }   
     echo $data;
     ob_flush();
