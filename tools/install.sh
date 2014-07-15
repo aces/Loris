@@ -126,7 +126,7 @@ Please answer the following questions. You'll be asked:
   6) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
      populate the default tables, and to grant privileges to the
-     newly created MySQL user in part c).
+     newly created MySQL user in part 3).
 
   7) Your project name. This should be an alphanumeric name.
      It will be used to modify the paths for MRI in the generated
