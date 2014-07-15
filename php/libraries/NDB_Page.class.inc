@@ -106,7 +106,7 @@ class NDB_Page extends PEAR
     } 
 
     function createTextArea($field, $label=null) {
-       return $this->form->createElement("textarea", $field, $label);
+       return $this->form->createElement("textarea", $field, $label, array('class' => 'form-control input-sm'));
     } 
     function createDate($field, $label, $dateOptions=null, $attr=array('class' => 'form-control input-sm', 'style' => 'max-width:33%; display:inline-block;')) {
         return $this->form->createElement("date", $field, $label, $dateOptions, $attr);
