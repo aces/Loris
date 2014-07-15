@@ -15,7 +15,7 @@
         {/if}
         <div class="row">
             <label class="col-sm-2">{$form.pscid.label}</label>
-            <div class="col-sm-10">
+            <div class="col-sm-10" id="pscid">
                 {$pscid}
             </div>
         </div>
