@@ -115,7 +115,6 @@
                                 {section name=item loop=$items}
                                 <tr>
                                     {section name=piece loop=$items[item]}
-                                        </br>
                                         {if $items[item][piece].name != "hash"}
                                             <td>{$items[item][piece].value}</td>
                                         {else}
