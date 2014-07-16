@@ -47,6 +47,8 @@ class NDB_Menu extends NDB_Page
             $class = "NDB_Menu_$menu";
         } elseif (class_exists("NDB_Menu_Filter_$menu")) {
             $class = "NDB_Menu_Filter_$menu";
+        } elseif (class_exists("NDB_Menu_Filter_Form_$menu")) {
+            $class = "NDB_Menu_Filter_Form_$menu";
         } else {
             return PEAR::raiseError("The menu class ($menu) is not defined.");
         }
