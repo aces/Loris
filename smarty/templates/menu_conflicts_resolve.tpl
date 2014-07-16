@@ -116,10 +116,13 @@
                                 <tr>
                                     {section name=piece loop=$items[item]}
                                         {if $items[item][piece].name != "hash"}
-                                            <td>{$items[item][piece].value}</td>
+                                            <td>
+                                                {$items[item][piece].value}
+                                            </td>
                                         {else}
                                             <td nowrap="nowrap" align="right">
-                                            {$form.$items[item][piece].value.html}</td>
+                                                {$form[$items[item][piece].value].html}
+                                            </td>
                                         {/if}
                                     {/section}
                                 </tr>
@@ -142,35 +145,40 @@
                 </div>
             </div>
             <div class="tab-pane" id="ResolvedConflicts">
-                <table class="fancytable" border="0">
-                    {if $form.resolved_total}
-                        <tr class="nohover">
-                            <td colspan="5" align="right" style="border: none;" class="nohover">{$form.resolved_total.label}</td>
+                <table class="table table-hover table-primary table-bordered" border="0">
+                    <thead>
+                        <!--{$items|print_r}-->
+                        {if $form.resolved_total}
+                            <tr class="nohover">
+                                <td colspan="5" align="right" style="border: none;" class="nohover">{$form.resolved_total.label}</td>
+                            </tr>
+                        {/if}
+                        
+                        <tr class="info">
+                            <th>Instrument</th>
+                            <th>DCCID</th>
+                            <th>PSCID</th>
+                            <th>Visit Label</th>
+                            <th>Question</th>
+                            <th>Corrected Answer</th>
                         </tr>
-                    {/if}
-                    <tr>
-                        <th>Instrument</th>
-                        <th>DCCID</th>
-                        <th>PSCID</th>
-                        <th>Visit Label</th>
-                        <th>Question</th>
-                        <th>Corrected Answer</th>
-                    </tr>
-
-                    {foreach from=$resolved_elements_list_names item=resolved_element}
-                        <tr>
-                            <td>{$resolved_elements_array[$resolved_element].instrument}</td>
-                            <td>{$resolved_elements_array[$resolved_element].dccid}</td>
-                            <td>{$resolved_elements_array[$resolved_element].pscid}</td>
-                            <td>{$resolved_elements_array[$resolved_element].visit_label}</td>
-                            <td>{$resolved_elements_array[$resolved_element].field}</td>
-                            <td nowrap="nowrap" align="right">{$resolved_elements_array[$resolved_element].new_value}</td>
-                        </tr>
-                    {foreachelse}
-                        <tr>
-                            <td colspan="6"><b>{$form.resolved_status.label}</b></td>
-                        </tr>
-                    {/foreach}
+                    </thead>
+                    <tbody>
+                        {foreach from=$resolved_elements_list_names item=resolved_element}
+                            <tr>
+                                <td>{$resolved_elements_array[$resolved_element].instrument}</td>
+                                <td>{$resolved_elements_array[$resolved_element].dccid}</td>
+                                <td>{$resolved_elements_array[$resolved_element].pscid}</td>
+                                <td>{$resolved_elements_array[$resolved_element].visit_label}</td>
+                                <td>{$resolved_elements_array[$resolved_element].field}</td>
+                                <td nowrap="nowrap" align="right">{$resolved_elements_array[$resolved_element].new_value}</td>
+                            </tr>
+                        {foreachelse}
+                            <tr>
+                                <td colspan="6"><b>{$form.resolved_status.label}</b></td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
                 </table>
             </div>
         </div>
