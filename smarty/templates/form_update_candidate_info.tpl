@@ -15,7 +15,7 @@
         {/foreach}
         <div class="row">
             <label class="col-sm-2">{$form.pscid.label}</label>
-            <div class="col-sm-4">
+            <div class="col-sm-4" id="pscid">
                 {$pscid}
             </div>
         </div>
