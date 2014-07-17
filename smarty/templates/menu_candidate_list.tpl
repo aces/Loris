@@ -195,25 +195,16 @@
         <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-sm-12 col-md-offset-8">
     </form>
 </div>
-<div class="hidden-xs">
-    <br><br><br><br><br><br><br><br><br><br><br>
-</div>
-<div class="col-xs-12">
-    <div class="pull-right">
-        {$page_links}
-    </div>
-</div>
-<br>
 <!-- <table> -->
 <!--  title table with pagination -->
-<!-- <table border="0" valign="bottom" width="100%"> -->
-<!-- <tr> -->
+<table border="0" valign="bottom" width="100%">
+<tr>
     <!-- title -->
-    <!-- <td class="controlPanelSection"></td> -->
+    <td class="controlPanelSection"></td>
     <!-- display pagination links -->
-    <!-- <td align="right">{$page_links}</td> -->
-<!-- </tr> -->
-<!-- </table> -->
+    <td align="right">{$page_links}</td>
+</tr>
+</table>
 <!-- </form> -->
 <!-- start data table -->
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
