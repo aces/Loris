@@ -228,8 +228,8 @@ class File_Upload extends PEAR
      */
     function getNewDirectory($destination_dir="")
     {
-        $dest_dir=$this->baseUploadDirectory; //.$destination_dir;
-        
+        $dest_dir=$this->baseUploadDirectory.$destination_dir;
+
         //Make sure the dir ends with a trailing slash
         if (substr($dest_dir, -1, 1) != "/") {
             $dest_dir.="/";

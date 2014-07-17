@@ -73,7 +73,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $config =& NDB_Config::singleton();
         $location = $config->getSetting('mincPath') . "logs";
         $this->log= new Log("MRI_upload", $location);
-        $this->queue = new Message();
+        $this->message = new Message("/data/.log");
       
         return true;
     }
@@ -140,12 +140,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        $this->queue->addLog("-- Uploading finished \n <br>", false);
         if ($this->_saveFile($values)) {
 
-            $this->queue->addLog(
-                "-- Setting up variables \n <br>", false
-            );              
+            $this->message->addMessage("Setting up variables \n");
+              
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
             ///////////////////////////////////////////////////////////////////
@@ -167,7 +165,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $DICOMTAR = $mri_code_path. "dicom-archive/dicomTar.pl";
             //$update_header = $mri_code_path."dicom-archive/updateHeaders.pl";
             $tarchive_location =  $paths['data'] . "tarchive";
-            $bach_upload_script  = $mri_code_path . "batch_uploads_tarchive";
+            $batch_upload_script  = $mri_code_path . "batch_uploads_tarchive";
             $candid = $values['CandID'];
             $pscid = $values['PSCID'];
             $visit_label = $values['VisitLabel'];
@@ -193,11 +191,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             if (!($decompressed_folder)) { //decompress the file
                 $this->log->addLog(
                     "The File $source_location is now".
-                    "untarred into $mri_incoming_path \n <BR>"
+                    "untarred into $mri_incoming_path \n"
                 );
-                $this->queue->addLog(
-                    "-- The File $source_location is now" .
-                    "untarred into $mri_incoming_path \n <br>", false
+                $this->message->addMessage(
+                    "The File $source_location is now" .
+                    "untarred into $mri_incoming_path \n"
                 ); 
             }
 
@@ -225,7 +223,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $dicom_created = $result[0];
                 $tarchive_id = $result[1];
                 $ArchiveLocation = $result[2];
-                
             }
 
             ///////////////////////////////////////////////////////////////////
@@ -258,8 +255,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 //get the path to the error_log
                 $tarchive_file_log  = $tarchive_log->getLogPath();
                 
-                $command = "cd $mri_code_path; perl $bach_upload_script ".
-                           "< $tarchive_file_log";
+                $command = "cd $mri_code_path; perl $batch_upload_script ".
+                           "< $tarchive_file_log 2>&1";
                 
                 $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
                          "JOIN files f ON (f.sessionID = mu.SessionID) ".
@@ -268,14 +265,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $count = $db->pselectOne(
                     $query, array('cid'=>$candid, 'vlabel'=>$visit_label)
                 );
-
+                  
                 ///////////////////////////////////////////////////////////////
                 //if the minc is not inserted into the files table/////////////
                 ////Run the minc-insertion pipeline////////////////////////////
                 ///////////////////////////////////////////////////////////////
+                
                 if ($count==0) {
-                    $this->queue->addLog(
-                        "-- Inserting MINC into the files table \n <br>", false
+                    $this->message->addMessage(
+                        "Inserting MINC into the files table \n"
                     ); 
                     $output = shell_exec($command);
                     if ($this->show_queries) {
@@ -290,14 +288,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     if ($output==0) {
                         $this->log->addLog(
                             "The minc file for patient-name $patient_name is now ".
-                            "inserted into the db \n <BR>" 
+                            "inserted into the db \n" 
                         );
-                        $this->queue->addLog(
-                            "-- The minc file for patient-name $patient_name " . 
-                            "is now inserted into db \n <br>", false
+                        $this->message->addMessage(
+                            "The minc file for patient-name $patient_name " . 
+                            "is now inserted into db \n"
                         );
-                        $this->queue->addLog(
-                            "-- The process completed successfully \n <br>", false
+                        $this->message->addMessage(
+                            "The process completed successfully \n"
                         );
                         $this->tpl_data['minc_success'] = true;
                     }
@@ -321,7 +319,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         include_once "File_Upload.class.inc";
-        
+        $this->message->addMessage("Uploading finished \n");
+   
         //get the stored-file path
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
@@ -499,7 +498,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 RecursiveIteratorIterator::SELF_FIRST
             );
                        
-            $this->queue->addLog("-- Processing files \n <br>", false); 
+            $this->message->addMessage("Processing files \n"); 
 
             $count = 0; 
             foreach ($objects as $name => $file) {
@@ -555,8 +554,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     }
                     $count++;
                     if ($count % 500 == 0) { 
-                        $this->queue->addLog(
-                            "-- $count files have been processed \n <br>", false
+                        $this->message->addMessage(
+                            "$count files have been processed \n"
                         );
                     }
                 }
@@ -605,9 +604,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         
         if (count($errors) > 0) {
             foreach ($errors as $error) {
-                $this->queue->addLog("-- " . $error . "<br>", false);
+                $this->message->addMessage("$error");
             }
-            $this->queue->addLog("-- The process completed with errors <br>", false); 
+            $this->message->addMessage("The process completed with errors \n"); 
             return $errors;
         }
         return true;
@@ -760,9 +759,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////////////////Run the dicom_tar////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $cmd = "perl $DICOMTAR $decompressed_folder $tarchive_location"
-        .  " -clobber -database -profile prod";
+        .  " -clobber -database -profile prod 2>&1";
         
-        $this->queue->addLog("-- Running DICOM \n <br>", false);
+        $this->message->addMessage("Running DICOM \n");
         $output = shell_exec($cmd);
                 
         if ($this->show_queries) {
@@ -780,7 +779,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $ArchiveLocation = $row['ArchiveLocation'];
         $tarchive_id = $row['TarchiveID'];
         $this->log->addLog(
-            "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
+            "The DICOM file is now tarred into $ArchiveLocation \n"
         );
           
         ///////////////////FIX THIS////////////////////////////////////////////

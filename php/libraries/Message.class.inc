@@ -26,16 +26,16 @@
 */
 class Message
 {
-    var $MESSAGE_FILE;
+    var $messageFile;
 
     /**
      * Constructor
      *
      * @return Message
      */
-    function Message()
+    function __construct($path)
     {   
-        $this->MESSAGE_FILE = "/data/.log";
+        $this->messageFile = $path;
     }
     /**
     * Adds error message to the file
@@ -45,7 +45,7 @@ class Message
     * 
     * @return null
     */
-    function addLog($message, $use_date=true) 
+    function addMessage($message, $use_date=true) 
     {
         $now_array = getdate();
         if ($use_date) {
@@ -56,7 +56,7 @@ class Message
             );
             $message = "[" . $now_string . "] " . $message . "\n";
        } 
-       $file = fopen($this->MESSAGE_FILE, "a");
+       $file = fopen($this->messageFile, "a");
 
        flock($file, LOCK_EX);
        fwrite($file, "$message\n");
@@ -68,13 +68,13 @@ class Message
     }
     
     /**
-    * returns the path to the error_log
+    * returns the path to the log
     *
-    * @return String Path to the error_log
+    * @return String Path to the log
     */
     function getMessagePath() 
     {
-        return $this->MESSAGE_FILE;
+        return $this->messageFile;
     }
 }
 ?>

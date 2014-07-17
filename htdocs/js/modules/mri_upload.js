@@ -68,13 +68,19 @@ function getMessage() {
                         setTimeout(remove, 1000);                
                     }
                 }
-                if (data.indexOf("completed") > -1 || data.indexOf("Error") > -1) {
+                if (data.indexOf("completed") > -1 || data.indexOf("with errors") > -1) {
+                    if (data.indexOf("\n") > -1) {
+                        data = data.replace("\n", "<br />");
+                    }
                     log_message(data);
                     return;
                 }
+                if (data.indexOf("\n") > -1) {
+                    data = data.replace("\n", "<br />");
+                }
                 log_message(data);
                 // call it again, long-polling
-                getMessage();
+                setTimeout(getMessage, 500);
             }
         }
     );
@@ -106,8 +112,25 @@ function sendFile() {
         mimeType: "multipart/form-data",
         contentType: false,
         cache: false,
-        processData: false
+        processData: false,
+        success: function(data, textStatus, jqXHR)
+        {
+            console.log(data);
+        }
     });
+}
+
+function getCurrentTime() {
+    "use strict";
+    var date = new Date(),
+        day = ("0" + date.getDate()).slice(-2),
+        month = ("0" + (date.getMonth() + 1)).slice(-2),
+        hours = ("0" + date.getHours()).slice(-2),
+        minutes = ("0" + date.getMinutes()).slice(-2),
+        seconds = ("0" + date.getSeconds()).slice(-2),
+        result = "[" + date.getFullYear() + "-" + month + "-" 
+            + day + " " + hours + ":" + minutes + ":" + seconds + "]";
+    return result;
 }
 
 $(function () {
@@ -115,7 +138,8 @@ $(function () {
     change();
     $("#progressbar").hide();
     $("#upload").click(function (e) {
-        $("#log_box").html("-- Preparing to process files <br>");
+        var time = getCurrentTime(); 
+        $("#log_box").html(time + " Preparing to process files <br>");
         sendFile();
         e.preventDefault();
     });
