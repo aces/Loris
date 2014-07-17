@@ -423,7 +423,6 @@
             <visible>1</visible>
         </subtab>
     </tab>
-
     <tab>
         <label>Tools</label>
         <visible>1</visible>
@@ -464,7 +463,6 @@
             <visible>1</visible>
         </subtab>
     </tab>
-
     <tab>
         <label>Admin</label>
         <visible>1</visible>
