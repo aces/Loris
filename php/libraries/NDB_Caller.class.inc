@@ -67,26 +67,33 @@ class NDB_Caller extends PEAR
         $config =& NDB_Config::singleton();
         $base = $config->getSetting('base');
 
-        if(is_dir($base . "modules/$test_name")) {
+        if (is_dir($base . "modules/$test_name")) {
             // New module style
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
-            set_include_path($base . "modules/$test_name:" . get_include_path() );
+            set_include_path($base . "modules/$test_name:" . get_include_path());
             
             $submenu = null;
-            if(!empty($_REQUEST['submenu'])) {
+            if (!empty($_REQUEST['submenu'])) {
                 $submenu = $_REQUEST['submenu'];
                 $subtest = $submenu;
             }
-            if(
-                (empty($subtest) && $submenu === null && $this->existsAndRequire($base."modules/$test_name/php/NDB_Menu_Filter_$test_name.class.inc")) 
-                || ($submenu !== null && $this->existsAndRequire($base."modules/$test_name/php/NDB_Menu_Filter_$submenu.class.inc"))
+            if ((empty($subtest) 
+                && $submenu === null 
+                && $this->existsAndRequire(
+                    $base
+                    . "modules/$test_name/php/NDB_Menu_Filter_$test_name.class.inc"
+                )) 
+                || ($submenu !== null 
+                && $this->existsAndRequire(
+                    $base."modules/$test_name/php/NDB_Menu_Filter_$submenu.class.inc"
+                ))
             ) {
                 // No subtest, load the menu
 
  
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
-                if($submenu !== null) {
+                if ($submenu !== null) {
                     $html = $this->loadMenu($submenu, $mode);
                 } else {
                     $html = $this->loadMenu($test_name, $mode);
@@ -97,8 +104,12 @@ class NDB_Caller extends PEAR
 
                 $this->type = 'menu';
                 return $html;
-            } else if ($this->existsAndRequire($base."modules/$test_name/php/NDB_Form_$test_name.class.inc")) {
-                $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
+            } else if ($this->existsAndRequire(
+                $base."modules/$test_name/php/NDB_Form_$test_name.class.inc"
+            )) {
+                $identifier = isset($_REQUEST['identifier']) 
+                    ? $_REQUEST['identifier'] 
+                    : '';
                 $html = $this->loadForm($test_name, $subtest, $identifier);
 
                 if (Utility::isErrorX($html)) {
@@ -108,8 +119,9 @@ class NDB_Caller extends PEAR
                 $this->type = 'form';
                 return $html;
             }
-            // Exit to make sure we don't accidentally mix old style and new style. If something is a module, it
-            // should remain a module.
+            // Exit to make sure we don't accidentally mix old style and 
+            // new style. If something is a module, it should remain a 
+            // module.
             exit(-1);
         } else {
             // Old precedence style for "modules"
