@@ -42,6 +42,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
+        error_log("HERE");
         if(!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -56,7 +57,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
         foreach($values AS $key=>$val) {
             if($val != 'none') {
-                $hash = substr($key, 9);
+                $hash = $key;
                 $row = $DB->pselectRow(
                     "SELECT * FROM conflicts_unresolved 
                     WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash", 
@@ -132,18 +133,18 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array('c.TableName', 's.CandID AS DCCID', 'ca.PSCID', 's.Visit_label', 'c.FieldName', "MD5(CONCAT_WS(':',c.TableName, c.ExtraKeyColumn, ExtraKey1, ExtraKey2, c.FieldName, CommentId1, CommentId2)) AS hash", 'c.ExtraKeyColumn', 'c.ExtraKey1', 'c.ExtraKey2', 'c.CommentId1', 'c.CommentId2', 'c.Value1', 'c.Value2', 's.CenterID AS Site');
+        $this->columns = array('c.TableName', 's.CandID', 'ca.PSCID', 's.Visit_label', 'c.FieldName', "MD5(CONCAT_WS(':',c.TableName, c.ExtraKeyColumn, ExtraKey1, ExtraKey2, c.FieldName, CommentId1, CommentId2)) AS hash", 'c.ExtraKeyColumn', 'c.ExtraKey1', 'c.ExtraKey2', 'c.CommentId1', 'c.CommentId2', 'c.Value1', 'c.Value2', 's.CenterID');
         $this->query = " FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID)";
         $this->group_by = '';
         $this->order_by = 'TableName, s.Visit_label';
-        $this->validFilters = array('TableName', 'Site', 'Visit_label', 'PSCID', 'DCCID');
-        $this->headers = array('TableName', 'DCCID', 'PSCID', 'Visit_label', 'FieldName');
+        $this->validFilters = array('TableName', 'CenterID', 'Visit_label', 'PSCID', 'CandID');
+        $this->headers = array('TableName', 'CandID', 'PSCID', 'Visit_label', 'FieldName');
         $this->formToFilter = array(
-                                    'Instrument' => 'TableName',
-                                    'site' => 'Site',
-                                    'visit' => 's.Visit_label',
-                                    'CandID' => 'DCCID',
-                                    'PSCID' => 'ca.PSCID'
+                                    'Instrument' => 'c.TableName',
+                                    'site' => 'CenterID',
+                                    'visit' => 'Visit_label',
+                                    'CandID' => 'CandID',
+                                    'PSCID' => 'PSCID'
                                     );
         return true;
     }
@@ -198,6 +199,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
     function _setDataTableRows($count)
     {
+        $DB =& Database::singleton();
         $x = 0;
         foreach ($this->list as $item) {
             //count column
@@ -206,7 +208,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
             //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
-                if ($key=='TableName' || $key=='DCCID' || $key=='PSCID' || $key=='Visit_label' || $key=='FieldName' || $key=='hash') {
+                if ($key=='TableName' || $key=='CandID' || $key=='PSCID' || $key=='Visit_label' || $key=='FieldName' || $key=='hash') {
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
                 }
@@ -246,5 +248,50 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
         return true;
     }
+
+    /*function conflicts_resolve()
+    {
+        $DB =& Database::singleton();
+        $config =& NDB_Config::singleton();
+ 
+        $extra_where = '';
+        $user = User::singleton();
+        if(!$user->hasPermission('access_all_profiles')) {
+            // Only show current site in the filter
+            $sites = array('' => '', $user->getCenterID() => $user->getSiteName());
+            // And update the query to only select the current site
+            $extra_where .= "AND s.CenterID = " . $DB->quote($user->getCenterID());
+        }
+        // Filter selection elements
+
+        // Show conflicts resolved
+        $resolved_conflicts = $DB->pselect("SELECT TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, Visit_label, OldValue1, OldValue2, NewValue, MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2, OldValue1, OldValue2, NewValue)) AS hash FROM conflicts_resolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID) WHERE 1=1 $extra_where LIMIT $MaxConflicts", array());
+        if (empty($resolved_conflicts)) {
+            $this->addScoreColumn("resolved_status", "No resolved conflicts matching criteria found.");
+            return;
+        }
+
+        foreach($resolved_conflicts AS $resolved_conflict) {
+            $hash = $resolved_conflict['hash'];
+            $dccid = substr($resolved_conflict['CommentId1'],0,6);
+            $ssid = substr($resolved_conflict['CommentId1'],6,7);
+            if ($resolved_conflict['NewValue'] == 1) {
+                $NewValue = $resolved_conflict['OldValue1'];
+            } elseif ($resolved_conflict['NewValue'] == 2) {
+                $NewValue = $resolved_conflict['OldValue2'];
+            }
+            $resolved_conflict_array = array(
+                'name' => 'conflict_' . $resolved_conflict['hash'],
+                'instrument' => $resolved_conflict['TableName'],
+                'dccid' => $dccid,
+                'pscid' => $ssid,
+                'field' => $resolved_conflict['FieldName'],
+                'visit_label' => $resolved_conflict['Visit_label'],
+                'new_value' => $NewValue
+            );
+            $this->tpl_data['resolved_elements_list_names'][]= $hash;
+            $this->tpl_data['resolved_elements_array'][$hash] = $resolved_conflict_array;
+        }
+    }*/
 }
 ?>
