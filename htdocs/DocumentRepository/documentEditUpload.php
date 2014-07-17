@@ -52,8 +52,8 @@ if ($userSingleton->hasPermission('file_upload')) {
             $www = $config->getSetting('www');
             $msg_data['newDocument'] = $www['url'] . "/main.php?test_name=document_repository";
             $msg_data['document'] = $fileName;
-            $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y'";
-            $Doc_Repo_Notification_Emails = $DB->pselect($query_Doc_Repo_Notification_Emails, array());
+            $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
+            $Doc_Repo_Notification_Emails = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid"=>$user->getUsername()));
             foreach ($Doc_Repo_Notification_Emails as $email) {
                 Email::send($email['Email'], 'document_repository.tpl', $msg_data);
             }
@@ -80,8 +80,8 @@ if ($userSingleton->hasPermission('file_upload')) {
         $www = $config->getSetting('www');
         $msg_data['updatedDocument'] = $www['url'] . "/main.php?test_name=document_repository";
         $msg_data['document'] = $fileName;
-        $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y'";
-        $Doc_Repo_Notification_Emails = $DB->pselect($query_Doc_Repo_Notification_Emails, array());
+        $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
+        $Doc_Repo_Notification_Emails = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid"=>$user->getUsername()));
         foreach ($Doc_Repo_Notification_Emails as $email) {
             Email::send($email['Email'], 'document_repository.tpl', $msg_data);
         }
