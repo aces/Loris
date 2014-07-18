@@ -109,13 +109,14 @@ function uploadFile() {
     var formObj = $("#mri_upload")[0],
         formURL = "main.php?test_name=mri_upload",
         formData = new FormData(formObj),
-        file = $('#file input')[0].files[0];
+        file = $('#file input')[0].files[0],
+        ajax = new XMLHttpRequest();
+    
     formData.append('file', file.name);
-    var ajax = new XMLHttpRequest();
+    
     ajax.upload.addEventListener("progress", progressHandler, false);
     ajax.open("POST", formURL);
     ajax.send(formData);
-    
 }
 
 /*

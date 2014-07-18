@@ -30,6 +30,8 @@ class Message
 
     /**
      * Constructor
+     * 
+     * @param string $path path to the file
      *
      * @return Message
      */
@@ -55,15 +57,15 @@ class Message
                 $now_array['minutes'], $now_array['seconds']
             );
             $message = "[" . $now_string . "] " . $message . "\n";
-       } 
-       $file = fopen($this->messageFile, "a");
+        } 
+        $file = fopen($this->messageFile, "a");
 
-       flock($file, LOCK_EX);
-       fwrite($file, "$message\n");
-       fflush($file);
-       flock($file, LOCK_UN);
+        flock($file, LOCK_EX);
+        fwrite($file, "$message\n");
+        fflush($file);
+        flock($file, LOCK_UN);
           
-       fclose($file);
+        fclose($file);
              
     }
     
