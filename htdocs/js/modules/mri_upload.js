@@ -50,6 +50,7 @@ function log_message(message) {
 
 function getMessage() {
     "use strict";
+    var noMessage;
 
     function remove() {
         $("#progress").hide();
@@ -60,27 +61,33 @@ function getMessage() {
             type: 'GET',
             url: 'read_log.php',
             success: function (data) {
-                // for Firefox, which waits for the response from the server                    
+                // for Firefox, which waits for the response from the server 
                 // when file is uploaded                                    
                 if (data.indexOf("Uploading") > -1) {
                     if ($("#progress").is(":visible")) {
                         $(".progress-label").text("Complete!");
-                        setTimeout(remove, 1000);                
+                        setTimeout(remove, 500);
                     }
+                    noMessage = true;
                 }
-                if (data.indexOf("completed") > -1 || data.indexOf("with errors") > -1) {
-                    if (data.indexOf("\n") > -1) {
-                        data = data.replace("\n", "<br />");
+                else {
+                    if (data.indexOf("completed") > -1 || data.indexOf("with errors") > -1) {
+                        if (data.indexOf("\n") > -1) {
+                            data = data.replace("\n", "<br />");
+                        }
+                        log_message(data);
+                        return;
                     }
-                    log_message(data);
-                    return;
                 }
                 if (data.indexOf("\n") > -1) {
                     data = data.replace("\n", "<br />");
                 }
-                log_message(data);
+                if (! noMessage) {
+                    log_message(data);
+                }
                 // call it again, long-polling
-                setTimeout(getMessage, 500);
+                setTimeout(getMessage, 1000);
+                
             }
         }
     );
@@ -139,7 +146,7 @@ $(function () {
     $("#progressbar").hide();
     $("#upload").click(function (e) {
         var time = getCurrentTime(); 
-        $("#log_box").html(time + " Preparing to process files <br>");
+        $("#log_box").html(time + " Preparing... <br>");
         sendFile();
         e.preventDefault();
     });

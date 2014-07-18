@@ -5,11 +5,11 @@
  *
  * PHP version 5
  *
- * @category Behavioural
+ * @category Script
  * @package  Main
  * @author   Olga Tsibulevskaya  <olgatsib@gmail.com>
  * @license  Loris License
- * @link     https://github.com/mohadesz/Loris-Trunk
+ * @link     https://github.com/aces/Loris-Trunk
 */
 
 

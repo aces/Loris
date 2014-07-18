@@ -33,13 +33,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
   
     var $show_queries = true;
-   
+
     /**
      * _has_access returns true
      * if the user has the specific permission
      *
      * @return boolean
-     */ 
+     */
     function _hasAccess()
     {
         // create user object
@@ -56,7 +56,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * @return boolean
      */
     function _setupVariables()
-    {   
+    {
+
         // set the class variables
         $this->columns = array('UploadID','s.CandID','s.visit_label',
         'SourceLocation','UploadDate','UploadedBy',
@@ -85,6 +86,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
+
         // create user object
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
@@ -116,7 +118,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $new_files = array(null=>'Any') + $new_files;
 
         $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
-       
+
         if (empty($_FILES) 
             && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
@@ -140,6 +142,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
+        $this->message->addMessage("Uploading finished \n");
         if ($this->_saveFile($values)) {
 
             $this->message->addMessage("Setting up variables \n");
@@ -256,7 +259,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $tarchive_file_log  = $tarchive_log->getLogPath();
                 
                 $command = "cd $mri_code_path; perl $batch_upload_script ".
-                           "< $tarchive_file_log 2>&1";
+                           "< $tarchive_file_log";
                 
                 $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
                          "JOIN files f ON (f.sessionID = mu.SessionID) ".
@@ -265,7 +268,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $count = $db->pselectOne(
                     $query, array('cid'=>$candid, 'vlabel'=>$visit_label)
                 );
-                  
+
                 ///////////////////////////////////////////////////////////////
                 //if the minc is not inserted into the files table/////////////
                 ////Run the minc-insertion pipeline////////////////////////////
@@ -280,7 +283,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         print "command is $command";
                         print $output;
                     }
-        
                     ////////////////////TODO://////////////////////////////////
                     //extra checks can be added to make sure that the//////////
                     /// mincs are created, before the minc-inserted is set/////
@@ -319,8 +321,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         include_once "File_Upload.class.inc";
-        $this->message->addMessage("Uploading finished \n");
-   
+                   
         //get the stored-file path
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
@@ -335,6 +336,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("mri_file", $this);
+
         //Set the target directory that you want files moved
         //into once they are validated and processed.
         $file->setBaseUploadDirectory($stored_file_path);
@@ -382,6 +384,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
          * 
         */
 
+        
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir = $this->tempdir(true);
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
@@ -503,8 +506,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $count = 0; 
             foreach ($objects as $name => $file) {
 
-                if (is_file($file)) { 
-             
+                if (is_file($file)) {
                     ///////////////////////////////////////////////////////////
                     ///////////////determin the file-type//////////////////////
                     ///////////////////////////////////////////////////////////
@@ -517,8 +519,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         $files_not_readable++;
                         continue;
                     }
-                    
-                    
+
+
                     ///////////////////////////////////////////////////////////
                     ///////////////if the file is not a dicom//////////////////
                     ///////////////////////////////////////////////////////////
@@ -759,7 +761,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////////////////Run the dicom_tar////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $cmd = "perl $DICOMTAR $decompressed_folder $tarchive_location"
-        .  " -clobber -database -profile prod 2>&1";
+        .  " -clobber -database -profile prod";
         
         $this->message->addMessage("Running DICOM \n");
         $output = shell_exec($cmd);
@@ -781,7 +783,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->log->addLog(
             "The DICOM file is now tarred into $ArchiveLocation \n"
         );
-          
+
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
 
