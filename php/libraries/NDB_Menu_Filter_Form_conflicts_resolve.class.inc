@@ -42,7 +42,6 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        error_log("HERE");
         if(!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -133,19 +132,46 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array('c.TableName', 's.CandID', 'ca.PSCID', 's.Visit_label', 'c.FieldName', "MD5(CONCAT_WS(':',c.TableName, c.ExtraKeyColumn, ExtraKey1, ExtraKey2, c.FieldName, CommentId1, CommentId2)) AS hash", 'c.ExtraKeyColumn', 'c.ExtraKey1', 'c.ExtraKey2', 'c.CommentId1', 'c.CommentId2', 'c.Value1', 'c.Value2', 's.CenterID');
-        $this->query = " FROM conflicts_unresolved c LEFT JOIN flag f ON (c.CommentId1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) LEFT JOIN candidate ca ON (ca.CandID=s.CandID)";
+        $this->columns = array(
+                                'conflicts_unresolved.TableName', 
+                                'session.CandID', 
+                                'candidate.PSCID', 
+                                'session.Visit_label', 
+                                'conflicts_unresolved.FieldName', 
+                                "MD5(CONCAT_WS(':',conflicts_unresolved.TableName, conflicts_unresolved.ExtraKeyColumn, conflicts_unresolved.ExtraKey1, conflicts_unresolved.ExtraKey2, conflicts_unresolved.FieldName, conflicts_unresolved.CommentId1, conflicts_unresolved.CommentId2)) AS hash", 
+                                'conflicts_unresolved.ExtraKeyColumn', 
+                                'conflicts_unresolved.ExtraKey1', 
+                                'conflicts_unresolved.ExtraKey2', 
+                                'conflicts_unresolved.CommentId1', 
+                                'conflicts_unresolved.CommentId2', 
+                                'conflicts_unresolved.Value1', 
+                                'conflicts_unresolved.Value2', 
+                                'session.CenterID'
+        );
+        $this->query = " FROM conflicts_unresolved LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID) LEFT JOIN session ON (flag.SessionID=session.ID) LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
         $this->group_by = '';
-        $this->order_by = 'TableName, s.Visit_label';
-        $this->validFilters = array('TableName', 'CenterID', 'Visit_label', 'PSCID', 'CandID');
-        $this->headers = array('TableName', 'CandID', 'PSCID', 'Visit_label', 'FieldName');
+        $this->order_by = 'conflicts_unresolved.TableName, session.Visit_label';
+        $this->validFilters = array(
+                                    'conflicts_unresolved.TableName', 
+                                    'session.CenterID', 
+                                    'session.Visit_label', 
+                                    'candidate.PSCID', 
+                                    'session.CandID'
+        );
+        $this->headers = array(
+                                'TableName', 
+                                'CandID', 
+                                'PSCID', 
+                                'Visit_label', 
+                                'FieldName'
+        );
         $this->formToFilter = array(
-                                    'Instrument' => 'c.TableName',
-                                    'site' => 'CenterID',
-                                    'visit' => 'Visit_label',
-                                    'CandID' => 'CandID',
-                                    'PSCID' => 'PSCID'
-                                    );
+                                    'Instrument' => 'conflicts_unresolved.TableName',
+                                    'site' => 'session.CenterID',
+                                    'visit' => 'session.Visit_label',
+                                    'CandID' => 'session.CandID',
+                                    'PSCID' => 'candidate.PSCID'
+        );
         return true;
     }
 

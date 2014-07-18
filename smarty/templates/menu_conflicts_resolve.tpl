@@ -18,18 +18,16 @@
                     </div>
                     <div class="row">    
                         <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
-                        <!-- </div> -->
-                        <!-- <div class="form-group col-sm-4 col-sm-offset-2"> -->
+                            <label class="col-sm-12 col-md-2">{$form.CandID.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.CandID.html}</div>
                             <label class="col-sm-12 col-md-1">{$form.site.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.site.html}</div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-2">{$form.CandID.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.CandID.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
                             <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
                         </div>
@@ -82,12 +80,6 @@
                     <form method="post" name="conflicts_resolve" id="conflicts_resolve">
                         <table class="table table-hover table-primary table-bordered" border="0">
                             <thead>
-                                <!--{$items|print_r}-->
-                                {if $form.total}
-                                    <tr class="nohover">
-                                        <td colspan="6" align="right" class="nohover">{$form.total.label}</td>
-                                    </tr>
-                                {/if}
 
                                 {foreach from=$form.errors item=error}
                                 <tr>
@@ -101,6 +93,8 @@
                                             <th><a href="main.php?test_name=conflicts_resolve&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                                             {if $headers[header].displayName == "TableName"}
                                                 Instrument
+                                            {else if $headers[header].displayName == "CandID"}
+                                                DCCID
                                             {else if $headers[header].displayName == "FieldName"}
                                                 Questsion
                                             {else}
@@ -140,7 +134,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        {$form.hidden}
                     </form>
                 </div>
             </div>
