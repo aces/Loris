@@ -19,7 +19,7 @@ $data_source_file = "/data/.log";
 while (true) {
     clearstatcache();
     if (file_get_contents($data_source_file) === '') {
-        sleep(3);
+        sleep(1);
         continue;
     }
     try {
@@ -32,10 +32,9 @@ while (true) {
             ftruncate($file, 0);
             flock($file, LOCK_UN);
             fclose($file);
-                   
         }
     } catch(Exception $e) {
-        $data = "-- Error: " . $e->getMessage();
+        $data = "Error: " . $e->getMessage();
     }   
     echo $data;
     ob_flush();

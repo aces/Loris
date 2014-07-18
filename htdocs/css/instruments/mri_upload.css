@@ -6,19 +6,37 @@
   padding: 5px; 
 }
 
-#progressbar {
-  position: relative;
+progress {
+  /*position: relative;*/
   width: 400px;
+  height: 20px;
+  color: #064785;
+  border-style: none;
+  border-radius: 10px;
 } 
 
-.progress-label {
-  position: absolute;
-  left: 45%;
-  top: 4px;
-  font-weight: bold;
-  text-shadow: 1px 1px 0 #fff;
+/* Firefox */
+progress::-moz-progress-bar { 
+  background: #064785;
+  border-radius: 10px;
 }
 
-.ui-progressbar .ui-progressbar-value {
-  height: 110% !important;
+/* Chrome */
+progress::-webkit-progress-value {
+  background: #064785;
+  border-radius: 10px;
+}
+
+/* Polyfill */
+progress[aria-valuenow]:before  {
+  background: #064785;
+  border-radius: 10px;
+}
+
+#progresslabel {
+  position: relative;
+  left: -205px;
+  top: -4px;
+  font-weight: bold;
+  color: #FFF;
 }

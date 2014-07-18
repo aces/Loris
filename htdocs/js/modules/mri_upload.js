@@ -18,115 +18,50 @@ function change() {
         $('#hide').show();
     });
 }
-
-function showProgress(perc) {
-    "use strict";
-    var progressbar = $("#progressbar"),
-        progressLabel = $(".progress-label");
-
-    function remove() {
-        $("#progress").hide();
-    }
-
-    progressbar.progressbar({
-        value: perc,
-        change: function () {
-            progressLabel.text(progressbar.progressbar("value") + "%");
-        },
-        complete: function () {
-            if ($("#progress").is(":visible")) {
-                progressLabel.text("Complete!");
-                setTimeout(remove, 1000);
-            }
-        }
-    });
-}
-function log_message(message) {
+/*
+   Prints messages into the log box.
+*/
+function printMessage(message) {
     "use strict";
     var previous = $("#log_box").html(),
         next = previous + message;
     $("#log_box").html(next);
 }
 
+/* 
+   Function sends requests to the server (read_log.php script) 
+   and receives messages as strings, which it sends to printMessage. 
+*/
 function getMessage() {
     "use strict";
-    var noMessage;
-
-    function remove() {
-        $("#progress").hide();
-    }
-    
     $.ajax(
         {
             type: 'GET',
             url: 'read_log.php',
             success: function (data) {
-                // for Firefox, which waits for the response from the server 
-                // when file is uploaded                                    
-                if (data.indexOf("Uploading") > -1) {
-                    if ($("#progress").is(":visible")) {
-                        $(".progress-label").text("Complete!");
-                        setTimeout(remove, 500);
+                if (data.indexOf("completed") > -1 || data.indexOf("Error") > -1) {
+                    if (data.indexOf("\n") > -1) {
+                        data = data.replace("\n", "<br />");
                     }
-                    noMessage = true;
-                }
-                else {
-                    if (data.indexOf("completed") > -1 || data.indexOf("with errors") > -1) {
-                        if (data.indexOf("\n") > -1) {
-                            data = data.replace("\n", "<br />");
-                        }
-                        log_message(data);
-                        return;
-                    }
+                    printMessage(data);
+                    return;
                 }
                 if (data.indexOf("\n") > -1) {
                     data = data.replace("\n", "<br />");
                 }
-                if (! noMessage) {
-                    log_message(data);
-                }
+                printMessage(data);
                 // call it again, long-polling
-                setTimeout(getMessage, 1000);
-                
+                setTimeout(getMessage, 1000);                
             }
         }
     );
 }
 
-function sendFile() {
-    "use strict";
-    $("#progressbar").show();
-    getMessage();
-    var formObj = $("#mri_upload")[0],
-        formURL = "main.php?test_name=mri_upload",
-        formData = new FormData(formObj),
-        file = $('#file input')[0].files[0];
-    formData.append('file', file.name);
-    $.ajax({
-        xhr: function () {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function (evt) {
-                if (evt.lengthComputable) {
-                    var percentComplete = Math.floor((evt.loaded / evt.total) * 100);
-                    showProgress(percentComplete);
-                }
-            }, false);
-            return xhr;
-        },
-        url: formURL,
-        type: 'POST',
-        data: formData,
-        mimeType: "multipart/form-data",
-        contentType: false,
-        cache: false,
-        processData: false,
-        success: function(data, textStatus, jqXHR)
-        {
-            console.log(data);
-        }
-    });
-}
-
+/*
+   Forms a date and time string to be printed
+   with the first default message to be consistent
+   with the fromat of messages received from the server
+*/
 function getCurrentTime() {
     "use strict";
     var date = new Date(),
@@ -140,6 +75,52 @@ function getCurrentTime() {
     return result;
 }
 
+/*
+   Updates progress bar value and label
+*/
+function progressHandler(event) {
+    "use strict";
+    var progressbar = $("#progressbar"),
+        progresslabel = $("#progresslabel"),
+        percent = Math.round((event.loaded / event.total) * 100); 
+    progressbar.attr('value', percent); 
+    progresslabel.text(percent + "%");   
+
+    function remove() {
+        $("#progressbar").hide();
+        $("#progresslabel").hide();
+    }
+    
+    if (percent === 100) {
+        progresslabel.text("Complete!");
+        progresslabel.css('left', '-230px');
+        setTimeout(remove, 200);
+    }
+}
+
+/*
+   Uploads file to the server, listening to the progress
+   in order to get the percentage uploaded as value for the progress bar 
+*/
+function uploadFile() {
+    "use strict";
+    getMessage();
+    $("#progressbar").show();
+    var formObj = $("#mri_upload")[0],
+        formURL = "main.php?test_name=mri_upload",
+        formData = new FormData(formObj),
+        file = $('#file input')[0].files[0];
+    formData.append('file', file.name);
+    var ajax = new XMLHttpRequest();
+    ajax.upload.addEventListener("progress", progressHandler, false);
+    ajax.open("POST", formURL);
+    ajax.send(formData);
+    
+}
+
+/*
+   Main function
+*/
 $(function () {
     "use strict";
     change();
@@ -147,8 +128,7 @@ $(function () {
     $("#upload").click(function (e) {
         var time = getCurrentTime(); 
         $("#log_box").html(time + " Preparing... <br>");
-        sendFile();
+        uploadFile();
         e.preventDefault();
     });
 });
-

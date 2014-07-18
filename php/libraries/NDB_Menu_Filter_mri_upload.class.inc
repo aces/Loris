@@ -142,7 +142,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        $this->message->addMessage("Uploading finished \n");
         if ($this->_saveFile($values)) {
 
             $this->message->addMessage("Setting up variables \n");
@@ -608,7 +607,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             foreach ($errors as $error) {
                 $this->message->addMessage("$error");
             }
-            $this->message->addMessage("The process completed with errors \n"); 
+            $this->message->addMessage("Error: the process completed with errors \n"); 
             return $errors;
         }
         return true;
