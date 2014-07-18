@@ -155,7 +155,7 @@ $(document).ready(function() {
     $(".dialog-form").dialog({
         autoOpen: false,
         height: 500,
-        width: 449,
+        width: 666,
         modal: true
      });
 
@@ -173,7 +173,7 @@ $(document).ready(function() {
     $(".dialog-form-edit").dialog({
         autoOpen: false,
         height: 500,
-        width: 449,
+        width: 666,
         modal: true,
         cache: false,
        // close: function() {
