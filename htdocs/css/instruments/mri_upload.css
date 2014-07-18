@@ -10,26 +10,26 @@ progress {
   /*position: relative;*/
   width: 400px;
   height: 20px;
-  color: #064785;
+  color: #1C70B6;
   border-style: none;
   border-radius: 10px;
 } 
 
 /* Firefox */
 progress::-moz-progress-bar { 
-  background: #064785;
+  background: #1C70B6;
   border-radius: 10px;
 }
 
 /* Chrome */
 progress::-webkit-progress-value {
-  background: #064785;
+  background: #1C70B6;
   border-radius: 10px;
 }
 
 /* Polyfill */
 progress[aria-valuenow]:before  {
-  background: #064785;
+  background: #1C70B6;
   border-radius: 10px;
 }
 
@@ -38,5 +38,5 @@ progress[aria-valuenow]:before  {
   left: -205px;
   top: -4px;
   font-weight: bold;
-  color: #FFF;
+  color: black;
 }
