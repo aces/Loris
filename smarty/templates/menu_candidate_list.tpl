@@ -3,6 +3,26 @@
 
 <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="js/advancedMenu.js"></script>
+{literal}
+<script type="text/javascript">
+    $(document).ready(function(){
+        var colm_static = false;
+        $(".table-scroll").scroll(function(){
+            if(colm_static === true){
+                if($(".colm-site").offset().left >= 30){
+                    console.log("JHSFJFS");
+                    $(".colm-pscid").removeClass("static-col colm-static");
+                    colm_static = false;
+                }
+            } else if($(".colm-pscid").offset().left <= 35){
+                $(".colm-pscid").addClass("static-col colm-static");
+                colm_static = true;
+            }
+        });
+        alert($("#number").offset().left);
+    });
+</script>
+{/literal}
 
 <div class="col-sm-9">
 <div class="panel panel-primary">
@@ -223,10 +243,17 @@
             <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
                 <thead>
                     <tr class="info">
-                     <th>No.</th>
+                     <th id="number">No.</th>
                         <!-- print out column headings - quick & dirty hack -->
                         {section name=header loop=$headers}
-                            <th><a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                            {if $headers[header].displayName == "PSCID"}
+                                <th class="colm-pscid">
+                            {else if $headers[header].displayName == "Site"}
+                                <th class="colm-site">
+                            {else}
+                                <th>
+                            {/if}
+                            <a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                         {/section}
                     </tr>
                 </thead>
@@ -237,6 +264,10 @@
                         {section name=piece loop=$items[item]}
                             {if $items[item][piece].bgcolor != ''}
                                 <td style="background-color:{$items[item][piece].bgcolor}">
+                            {else if $items[item][piece].name == "PSCID"}
+                                <td class="colm-pscid">
+                            {else if $headers[header].displayName == "Site"}
+                                <td class="colm-site">
                             {else}
                                 <td>
                             {/if}
