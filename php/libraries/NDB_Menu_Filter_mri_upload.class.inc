@@ -332,6 +332,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
         $file->registerForm($this->form);
+
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("mri_file", $this);
 
