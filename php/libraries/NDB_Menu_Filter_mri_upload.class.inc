@@ -332,7 +332,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
         $file->registerForm($this->form);
-
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("mri_file", $this);
 
@@ -449,7 +448,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
             //////check to se if visit_label exists////////////////////////////
             if ($db->pselectOne(
-                "SELECT COUNT(*) FROM session WHERE Visit_label = :vlabel",
+                "SELECT COUNT(*) FROM Visit_Windows WHERE Visit_label = :vlabel",
                 array('vlabel'=>$visit_label)
             )==0) {
                 $errors[] = "The VisitLabel: $visit_label Doesn't exist";
