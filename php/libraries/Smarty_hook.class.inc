@@ -4,7 +4,7 @@
  */
 require_once('smarty3/Smarty.class.php');
 class Smarty_neurodb extends Smarty {
-    var $template_dir;
+    var $loristemplate_dir;
     var $project_template_dir;
     var $modules_dir;
 
@@ -17,7 +17,7 @@ class Smarty_neurodb extends Smarty {
         // multiple template directories
         //$this->addPluginsDir($paths['base']."php/libraries/smarty/plugins");
 
-        $this->template_dir = $paths['base']."smarty/templates/";
+        $this->loristemplate_dir = $paths['base']."smarty/templates/";
         $this->project_template_dir = $paths['base']."project/templates/";
         $this->modules_dir = $paths['base'] . 'modules/' . $moduleName;
 
@@ -35,13 +35,18 @@ class Smarty_neurodb extends Smarty {
         // templates
         $this->addTemplateDir($this->project_template_dir);
         $this->addTemplateDir($this->modules_dir . "/templates");
-        $this->addTemplateDir($this->template_dir);
+        $this->addTemplateDir($this->loristemplate_dir);
 
         $currentDir = $this->getConfigDir();
+
+        if (!is_array($currentDir)) {
+            $currentDir = array('base' => $this->loristemplate_dir);
+        }
+
         $newdir = array_merge(
             $currentDir, 
             array(
-                'template' => $this->template_dir,
+                'template' => $this->loristemplate_dir,
                 'project'  => $this->project_template_dir
             )
         );
