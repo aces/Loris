@@ -1,7 +1,6 @@
-
 <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 
-<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script> -->
+<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="js/advancedMenu.js"></script>
 {literal}
 <script type="text/javascript">
