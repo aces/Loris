@@ -5,7 +5,6 @@
     });
 </script>
 {/literal}
-
 <div class="col-sm-9">
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter();">
@@ -211,8 +210,6 @@
     <td align="right">{$page_links}</td>
 </tr>
 </table>
-
-
 <table id="cand" class ="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
     <thead>
         <tr class="info">
