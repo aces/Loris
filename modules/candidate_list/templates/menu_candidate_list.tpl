@@ -1,4 +1,28 @@
-<div class="row">
+<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<script type="text/javascript" src="js/advancedMenu.js"></script>
+{literal}
+<script type="text/javascript">
+    $(document).ready(function(){
+        var colm_static = false;
+        $(".table-scroll").scroll(function(){
+            if(colm_static === true){
+                if($(".colm-site").offset().left >= 30){
+                    console.log("JHSFJFS");
+                    $(".colm-pscid").removeClass("static-col colm-static");
+                    colm_static = false;
+                }
+            } else if($(".colm-pscid").offset().left <= 35){
+                $(".colm-pscid").addClass("static-col colm-static");
+                colm_static = true;
+            }
+        });
+        alert($("#number").offset().left);
+    });
+</script>
+{/literal}
+
 <div class="col-sm-9">
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter();">
@@ -204,46 +228,76 @@
     <td align="right">{$page_links}</td>
 </tr>
 </table>
-<table class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
-    <thead>
-        <tr class="info">
-         <th>No.</th>
-            <!-- print out column headings - quick & dirty hack -->
-            {section name=header loop=$headers}
-                <th><a href="{$baseurl}/main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-            {/section}
-        </tr>
-    </thead>
-    <tbody>
-        {section name=item loop=$items}
-            <tr>
-            {section name=piece loop=$items[item]}
-                {if $items[item][piece].bgcolor != ''}
-                    <td style="background-color:{$items[item][piece].bgcolor}">
-                {else}
-                    <td>
-                {/if}
-                {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-                    {assign var="PSCID" value=$items[item][piece].value}
-                    <a href="{$baseurl}/main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-
-                {elseif $items[item][piece].name == "scan_Done"}
-                    {if $items[item][piece].value == 'Y'}
-                        {assign var="scan_done" value="Yes"}
-                        {* PSCID will have been assigned on previous iteration of loop, since Scan_done is after PSCID in the table *}
-                        <a href="#" class="scanDoneLink" data-pscid="{$PSCID}">{$scan_done}</a>
-                    {else}
-                        {assign var="scan_done" value="No"}
-                        {$scan_done}
-                    {/if}
-                {else}
-                    {$items[item][piece].value}
-                {/if}
-                </td>
-            {/section}
-            </tr>
-        {sectionelse}
-            <tr><td colspan="12">No candidates found</td></tr>
-        {/section}
-    </tbody>
-</table>
+    <!-- <td align="right">{$page_links}</td> -->
+<!-- </tr> -->
+<!-- </table> -->
+<!-- </form> -->
+<!-- start data table -->
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
+        <div class="table-scroll" id="content">
+            <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
+                <thead>
+                    <tr class="info">
+                     <th id="number">No.</th>
+                        <!-- print out column headings - quick & dirty hack -->
+                        {section name=header loop=$headers}
+                            {if $headers[header].displayName == "PSCID"}
+                                <th class="colm-pscid">
+                            {else if $headers[header].displayName == "Site"}
+                                <th class="colm-site">
+                            {else}
+                                <th>
+                            {/if}
+                            <a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                        {/section}
+                    </tr>
+                </thead>
+                <tbody>
+                    {section name=item loop=$items}
+                        <tr>
+                        <!-- print out data rows -->
+                        {section name=piece loop=$items[item]}
+                            {if $items[item][piece].bgcolor != ''}
+                                <td style="background-color:{$items[item][piece].bgcolor}">
+                            {else if $items[item][piece].name == "PSCID"}
+                                <td class="colm-pscid">
+                            {else if $headers[header].displayName == "Site"}
+                                <td class="colm-site">
+                            {else}
+                                <td>
+                            {/if}
+                    		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
+                    		    {assign var="PSCID" value="$items[item][piece].value"}
+                    		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+                    		    	
+                    		{elseif $items[item][piece].name == "scan_Done"}
+                            	{if $items[item][piece].value == 'Y'}
+                            		{assign var="scan_done" value="Yes"}
+                            		<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+                                {else}
+                                    {assign var="scan_done" value="No"}
+                                    {$scan_done}
+                                {/if}
+                            {else}
+                                {$items[item][piece].value}
+                            {/if}
+                    		</td>
+                        {/section}
+                        </tr>           
+                    {sectionelse}
+                        <tr><td colspan="12">No candidates found</td></tr>
+                    {/section}
+                </tbody>                   
+            <!-- end data table -->
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>
