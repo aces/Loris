@@ -1,7 +1,7 @@
 <?php
 /**
- * This class over-rides the NDB_Menu_Filter class by including the functionality 
- * of saving/processing the form.
+ * This class provides the php code to create the menu filter form that
+ * allows unresolved conflicts to processed as part of the conflict resolver
  *
  * PHP Version 5
  * 
@@ -15,10 +15,10 @@
 require_once 'NDB_Menu_Filter_Form.class.inc';
 
 /**
- * Menu_Filter_Form_conflicts_resolve Class
+ * Menu_Filter_Form_unresolved_conflicts Class
  *
- * This class over-rides the NDB_Menu_Filter class by including the functionality 
- * to save/process the form.
+ * This class provides the php code to create the menu filter form that
+ * allows unresolved conflicts to processed as part of the conflict resolver
  * 
  * @category Behavioural
  * @package  Main 
@@ -27,7 +27,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
  * @link     https://github.com/aces/Loris-Trunk    
 */
 
-class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
+class NDB_Menu_Filter_Form_unresolved_conflicts extends NDB_Menu_Filter_Form
 {
 
     function _hasAccess()

@@ -1,7 +1,7 @@
 <?php
 /**
- * This class over-rides the NDB_Menu_Filter class by including the functionality 
- * of saving/processing the form.
+ * This class provides the php code to create the menu filter to display resolved 
+ * conflicts as part of the conflict resolver
  *
  * PHP Version 5
  * 
@@ -15,10 +15,10 @@
 require_once 'NDB_Menu_Filter.class.inc';
 
 /**
- * Menu_Filter_Form_conflicts_resolve Class
+ * Menu_Filter_Form_resolved_conflicts Class
  *
- * This class over-rides the NDB_Menu_Filter class by including the functionality 
- * to save/process the form.
+ * This class provides the php code to create the menu filter to display resolved 
+ * conflicts as part of the conflict resolver
  * 
  * @category Behavioural
  * @package  Main 
@@ -58,26 +58,26 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         $this->group_by = '';
         $this->order_by = 'conflicts_resolved.TableName, session.Visit_label';
         $this->validFilters = array(
-                                    'conflicts_resolved.TableName', 
-                                    'session.CenterID', 
-                                    'session.Visit_label', 
-                                    'candidate.PSCID', 
-                                    'session.CandID'
+            'conflicts_resolved.TableName', 
+            'session.CenterID', 
+            'session.Visit_label', 
+            'candidate.PSCID', 
+            'session.CandID'
         );
         $this->headers = array(
-                                'TableName', 
-                                'CandID', 
-                                'PSCID', 
-                                'Visit_label',
-                                'FieldName', 
-                                'NewValue'
+            'TableName', 
+            'CandID', 
+            'PSCID', 
+            'Visit_label',
+            'FieldName', 
+            'NewValue'
         );
         $this->formToFilter = array(
-                                    'Instrument' => 'conflicts_resolved.TableName',
-                                    'site' => 'session.CenterID',
-                                    'visit' => 'session.Visit_label',
-                                    'CandID' => 'session.CandID',
-                                    'PSCID' => 'candidate.PSCID'
+            'Instrument' => 'conflicts_resolved.TableName',
+            'site' => 'session.CenterID',
+            'visit' => 'session.Visit_label',
+            'CandID' => 'session.CandID',
+            'PSCID' => 'candidate.PSCID'
         );
         return true;
     }
