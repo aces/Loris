@@ -256,44 +256,56 @@ done;
 
 
 echo ""
-while true; do
-    echo "Attempting to connect to the database '$mysqldb' ..."
-    mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A -e "exit";
-    MySQLError=$?;
-    if [ $MySQLError -ne 0 ] ; then   
-    	echo "Could not connect to database with the root user provided. Please try again.";
-	read -p "Existing root MySQL username: " mysqlrootuser
-	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-	stty -echo
-	while true; do
+echo "Attempting to connect to the database '$mysqldb' ..."
+mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A -e "exit" > /dev/null 2>&1
+MySQLError=$?;
+if [ $MySQLError -ne 0 ] ; then
+    while true; do   
+        echo "Could not connect to database with the root user provided. Please try again.";
+        read -p "Existing root MySQL username: " mysqlrootuser
+        echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+        stty -echo
+        while true; do
             read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
             echo ""
             read -p "Re-enter the password to check for accuracy " mysqlrootpass2
             if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
-            	break;
+                break;
 	    fi
 	    echo ""
 	    echo "Passwords did not match. Please try again.";
-	done;
-	stty echo
-    else
+        done;
+        stty echo
+        echo "Attempting to create the MySQL database '$mysqldb' ..."
+        mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A-e "exit" > /dev/null 2>&1
+        MySQLError=$?;
+        if [ $MySQLError -ne 0 ] ; then
+            continue;
+        fi
         break;
-    fi
-done
+    done;
+fi
+
 
 echo ""
-while true; do
-    echo "Attempting to connect to the database '$mysqldb' ..."
-    echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1;
-    MySQLError=$?;
-    if [ $MySQLError -ne 0 ] ; then   
+echo "Attempting to connect to the database '$mysqldb' ..."
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A /dev/null 2>&1
+MySQLError=$?;
+if [ $MySQLError -ne 0 ] ; then
+    while true; do   
         echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
         read -p "Database name: " mysqldb
         echo $mysqldb | tee -a $LOGFILE > /dev/null
-    else
+        echo "Attempting to connect to the database '$mysqldb' ..."
+        echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A /dev/null 2>&1
+        MySQLError=$?;
+        if [ $MySQLError -ne 0 ] ; then
+            continue;
+        fi
         break;
-    fi
-done
+    done  
+fi
+
 
 echo ""
 echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'localhost' ..."
