@@ -163,8 +163,6 @@ mkdir -p ../../$projectname/project ../../$projectname/project/libraries ../../$
 # Setting 777 permissions for templates_c
 chmod 777 ../../$projectname/smarty/templates_c
 
-echo ""
-
 while [ "$mysqldb" == "" ]; do
 	read -p "What is the database name? " mysqldb
 	echo $mysqldb | tee -a $LOGFILE > /dev/null
