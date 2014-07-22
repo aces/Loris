@@ -267,6 +267,7 @@ while true; do
 	stty -echo
 	while true; do
             read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
+            echo ""
             read -p "Re-enter the password to check for accuracy " mysqlrootpass2
             if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
             	break;
