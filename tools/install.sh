@@ -66,23 +66,6 @@ if ! [ $BASH ] ; then
     exit 2
 fi
 
-if [ -f ../project/config.xml ]; then
-    echo "Loris appears to already be installed. Aborting."
-    exit 2;
-fi
-
-# Check that we're running in the proper directory structure.
-if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
-    echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
-    exit 2
-fi
-
-# Create some subdirectories, if needed.
-mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
-
-# Setting 777 permissions for templates_c
-chmod 777 ../smarty/templates_c
-
 if [[ -n $(which php) ]]; then
     echo ""
     echo "PHP appears to be installed."
@@ -105,33 +88,33 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-  1) A name for the MySQL Database. This should be
+  1) Your project name. This should be an alphanumeric name.
+     It will be used to modify the paths for MRI in the generated
+     config.xml file for LORIS. It may also be used to automatically
+     create/install apache config files.
+
+  2) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
      This database will be created later on so please make sure
      a database with the same name does not already exist.
 
-  2) The hostname for the machine where the MySQL server will run on
+  3) The hostname for the machine where the MySQL server will run on
      (this is where we'll create the database).
 
-  3) The MySQL username that the Loris system will use to connect
+  4) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
      created later on so please make sure a user with the same name
      does not already exist.
 
-  4) The password for this username (it will be set later on).
+  5) The password for this username (it will be set later on).
 
-  5) Another password for the 'admin' account of the Loris DB
+  6) Another password for the 'admin' account of the Loris DB
      (it will also be set later on).
 
-  6) Credentials of an existing root MySQL account to install the
+  7) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
      populate the default tables, and to grant privileges to the
      newly created MySQL user in part 3).
-
-  7) Your project name. This should be an alphanumeric name.
-     It will be used to modify the paths for MRI in the generated
-     config.xml file for LORIS. It may also be used to automatically
-     create/install apache config files.
 
 QUESTIONS
 
@@ -148,6 +131,37 @@ while true; do
              * ) echo "Please enter y or n"
         esac
 done;
+
+echo ""
+
+while [ "$projectname" == "" ]; do
+        read -p "Enter project name: " projectname
+        echo $projectname | tee -a $LOGFILE > /dev/null
+        case $projectname in
+                "" )
+                        read -p "Enter project name: " projectname
+                        continue;;
+                * )
+                        break;;
+        esac
+done;
+
+if [ -f ../../$projectname/project/config.xml ]; then
+    echo "Loris appears to already be installed. Aborting."
+    exit 2;
+fi
+
+# Check that we're running in the proper directory structure.
+if [ ! -f ../../$projectname/SQL/0000-00-00-schema.sql ] ; then
+    echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
+    exit 2
+fi
+
+# Create some subdirectories, if needed.
+mkdir -p ../../$projectname/project ../../$projectname/project/libraries ../../$projectname/project/instruments ../../$projectname/project/templates ../../$projectname/project/tables_sql ../../$projectname/smarty/templates_c
+
+# Setting 777 permissions for templates_c
+chmod 777 ../../$projectname/smarty/templates_c
 
 echo ""
 
@@ -242,21 +256,6 @@ while true; do
 done;
 
 stty echo
-echo ""
-
-while [ "$projectname" == "" ]; do
-        read -p "Enter project name: " projectname
-	echo $projectname | tee -a $LOGFILE > /dev/null
-       	case $projectname in
-               	"" )
-                       	read -p "Enter project name: " projectname
-                       	continue;;
-                * )
-       	                break;;
-       	esac
-done;
-
-
 
 echo ""
 echo "Attempting to create the MySQL database '$mysqldb' ..."
