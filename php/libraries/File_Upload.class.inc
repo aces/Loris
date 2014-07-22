@@ -73,6 +73,7 @@ class File_Upload extends PEAR
                 ); 
                 continue;
             }
+
             //Test the handler to ensure it exists and all methods are intact
             if ($this->isValidFileHandler($field)) {
                 //Verify the file
@@ -170,6 +171,7 @@ class File_Upload extends PEAR
         $class=$this->fileHandlers[$field]['class'];
         $method=$this->fileHandlers[$field]['methods'][$action];
         $args=array();
+   
         //If handlerArgs are being passed, include them
         if (is_array($this->handlerArgs)) {
             $args=array_merge($args, $this->handlerArgs);
@@ -177,8 +179,10 @@ class File_Upload extends PEAR
         
         //Call the method
         $func = array($class, $method);
-        $args = array(&$this, $args);
-        $output=call_user_func_array(&$func, &$args);
+        $args = array($this, $args);
+
+        $output=call_user_func_array($func, $args);
+
         return $output;
     }
     
@@ -225,6 +229,7 @@ class File_Upload extends PEAR
     function getNewDirectory($destination_dir="")
     {
         $dest_dir=$this->baseUploadDirectory.$destination_dir;
+
         //Make sure the dir ends with a trailing slash
         if (substr($dest_dir, -1, 1) != "/") {
             $dest_dir.="/";

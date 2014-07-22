@@ -1,3 +1,54 @@
+button#upload {
+background: rgb(255,140,25); /* Old browsers */
+background: -moz-linear-gradient(-45deg,  rgba(255,140,25,1) 0%, rgba(207,4,4,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(255,140,25,1)), color-stop(100%,rgba(207,4,4,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(-45deg,  rgba(255,140,25,1) 0%,rgba(207,4,4,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(-45deg,  rgba(255,140,25,1) 0%,rgba(207,4,4,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(-45deg,  rgba(255,140,25,1) 0%,rgba(207,4,4,1) 100%); /* IE10+ */
+background: linear-gradient(135deg,  rgba(255,140,25,1) 0%,rgba(207,4,4,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff8c19', endColorstr='#cf0404',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+border:1px solid;
+border-color:#000;
+}
+
+button#addCategory {
+background: rgb(149,149,149); /* Old browsers */
+background: -moz-linear-gradient(-45deg,  rgba(149,149,149,1) 0%, rgba(13,13,13,1) 46%, rgba(1,1,1,1) 50%, rgba(10,10,10,1) 53%, rgba(78,78,78,1) 76%, rgba(56,56,56,1) 87%, rgba(27,27,27,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(149,149,149,1)), color-stop(46%,rgba(13,13,13,1)), color-stop(50%,rgba(1,1,1,1)), color-stop(53%,rgba(10,10,10,1)), color-stop(76%,rgba(78,78,78,1)), color-stop(87%,rgba(56,56,56,1)), color-stop(100%,rgba(27,27,27,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(-45deg,  rgba(149,149,149,1) 0%,rgba(13,13,13,1) 46%,rgba(1,1,1,1) 50%,rgba(10,10,10,1) 53%,rgba(78,78,78,1) 76%,rgba(56,56,56,1) 87%,rgba(27,27,27,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(-45deg,  rgba(149,149,149,1) 0%,rgba(13,13,13,1) 46%,rgba(1,1,1,1) 50%,rgba(10,10,10,1) 53%,rgba(78,78,78,1) 76%,rgba(56,56,56,1) 87%,rgba(27,27,27,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(-45deg,  rgba(149,149,149,1) 0%,rgba(13,13,13,1) 46%,rgba(1,1,1,1) 50%,rgba(10,10,10,1) 53%,rgba(78,78,78,1) 76%,rgba(56,56,56,1) 87%,rgba(27,27,27,1) 100%); /* IE10+ */
+background: linear-gradient(135deg,  rgba(149,149,149,1) 0%,rgba(13,13,13,1) 46%,rgba(1,1,1,1) 50%,rgba(10,10,10,1) 53%,rgba(78,78,78,1) 76%,rgba(56,56,56,1) 87%,rgba(27,27,27,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#959595', endColorstr='#1b1b1b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+border:1px solid;
+border-color:#000;
+}
+
+SPAN.tip {
+    TEXT-DECORATION: none
+}
+SPAN.tip:hover {
+    POSITION: relative
+}
+SPAN.tip SPAN {
+    DISPLAY: none
+}
+SPAN.tip:hover SPAN , SPAN.tip.SPAN:hover {
+    POSITION: absolute;
+    top: -4px;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    padding: 4px;
+    DISPLAY: block;
+    Z-INDEX: 100;
+    BACKGROUND-color: white;
+    border: 1px solid black !important;
+    TEXT-DECORATION: none
+    font-size: 10pt;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+}
+
 
 TD.tip {
     TEXT-DECORATION: none
@@ -10,13 +61,15 @@ TD.tip SPAN {
 }
 TD.tip:hover SPAN {
     POSITION: absolute;
+    top: -4px;
     border-radius: 4px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     padding: 4px;
     DISPLAY: block;
     Z-INDEX: 100;
-    BACKGROUND-color: #816e91;
+    BACKGROUND-color: #fff;
+    border: 1px solid black !important;
     TEXT-DECORATION: none
     font-size: 10pt;
     filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
@@ -26,16 +79,14 @@ TD.tip:hover SPAN {
     float:right;
     size:40;
 }
-
 .fieldset {
     outline-style: none !important;
 
 }
 
 .selected {
-    background: #5f5964 !important;
+    background: white !important;
     color: #fff;
-    border: 1px solid #7e7783 !important;
 }
 
 .missing {
@@ -78,23 +129,19 @@ label em {
 .upload-success {
     font-weight: bold;
     size: 1.1em;
-    color: #696;
 }
 
 .edit-success {
     font-weight: bold;
     size: 1.1em;
-    color: #696;
 }
 
 .delete-success {
     font-weight: bold;
     size: 1.1em;
-    color: #696;
 }
 
 .no-files {
     font-weight: bold;
     size: 1.1em;
-    color: #696;
 }

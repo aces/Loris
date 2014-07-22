@@ -16,6 +16,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
 require_once 'Log.class.inc';
 require_once "Archive/Tar.php";
 require_once "File_Decompress.class.inc";
+require_once "Message.class.inc";
 
 /**
  * Log Class
@@ -56,7 +57,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        
+
         // set the class variables
         $this->columns = array('UploadID','s.CandID','s.visit_label',
         'SourceLocation','UploadDate','UploadedBy',
@@ -69,8 +70,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
            JOIN session s ON (s.ID = mu.SessionID)
             WHERE 1=1 ";
         $this->formToFilter = array();
-        $this->log= new Log("MRI_upload", "/data/gusto/data/logs/");
 
+        $config =& NDB_Config::singleton();
+        $location = $config->getSetting('mincPath') . "logs";
+        $this->log= new Log("MRI_upload", $location);
+        $this->message = new Message("/data/.log");
+      
         return true;
     }
 
@@ -86,6 +91,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
         ///////////////////////////////////////////////////////////////////////
+        
         $this->addFile('mri_file', 'File to Upload');
         $this->addScoreColumn('File_name', 'File name');
         $this->addScoreColumn('status', 'Status');
@@ -110,17 +116,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $new_files[$file['SourceLocation']] =$file['SourceLocation'];
         }
         $new_files = array(null=>'Any') + $new_files;
+
         $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
-        
+
         if (empty($_FILES) 
             && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
-            $upload_max_size = ini_get('upload_max_filesiqze');
+            $upload_max_size = ini_get('upload_max_filesize');
             echo "<p style=\"color: #F00;\">\nPlease make sure files are
             not larger than {$upload_max_size} <br></p>";
             // echo out error and solutions...
         }
+        
         return true;
     }
 
@@ -136,6 +144,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         if ($this->_saveFile($values)) {
 
+            $this->message->addMessage("Setting up variables \n");
+              
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
             ///////////////////////////////////////////////////////////////////
@@ -157,7 +167,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $DICOMTAR = $mri_code_path. "dicom-archive/dicomTar.pl";
             //$update_header = $mri_code_path."dicom-archive/updateHeaders.pl";
             $tarchive_location =  $paths['data'] . "tarchive";
-            $bach_upload_script  = $mri_code_path . "batch_uploads_tarchive";
+            $batch_upload_script  = $mri_code_path . "batch_uploads_tarchive";
             $candid = $values['CandID'];
             $pscid = $values['PSCID'];
             $visit_label = $values['VisitLabel'];
@@ -168,9 +178,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
             $file_name = pathinfo($source_location, PATHINFO_FILENAME);
             if ($this->show_queries) {
-                print "file-name : $file_name, and sourcelocation".
+                print "file-name : $file_name, and sourcelocation ".
                        $source_location;
-                print "visitlabel $visit_label pscid: $pscid and candid:".
+                print " visitlabel $visit_label pscid: $pscid and candid: ".
                        $candid;
             }
 
@@ -183,14 +193,18 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             if (!($decompressed_folder)) { //decompress the file
                 $this->log->addLog(
                     "The File $source_location is now".
-                    "untarred into $mri_incoming_path \n <BR>"
+                    "untarred into $mri_incoming_path \n"
                 );
+                $this->message->addMessage(
+                    "The File $source_location is now" .
+                    "untarred into $mri_incoming_path \n"
+                ); 
             }
 
             ///////////////////////////////////////////////////////////////////
             /////Source Environment Variables//////////////////////////////////
             ///////////////////////////////////////////////////////////////////
-            $this->sourceEnvironment($mri_code_path,$mri_user);
+            $this->sourceEnvironment($mri_code_path, $mri_user);
 
             ///////////////////////////////////////////////////////////////////
             //////////////////////run dicomtar for the DICOM file//////////////
@@ -201,6 +215,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 && (!empty($pscid)) 
                 && (!empty($visit_label))
             ) {
+                
                 $result 
                     = $this->insertDicom(
                         $DICOMTAR, $file_name, $decompressed_folder, 
@@ -242,8 +257,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 //get the path to the error_log
                 $tarchive_file_log  = $tarchive_log->getLogPath();
                 
-                $command = "cd $mri_code_path; perl $bach_upload_script".
+                $command = "cd $mri_code_path; perl $batch_upload_script ".
                            "< $tarchive_file_log";
+                
                 $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
                          "JOIN files f ON (f.sessionID = mu.SessionID) ".
                          "JOIN session s ON (s.ID = f.sessionID) ".
@@ -256,7 +272,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 //if the minc is not inserted into the files table/////////////
                 ////Run the minc-insertion pipeline////////////////////////////
                 ///////////////////////////////////////////////////////////////
+                
                 if ($count==0) {
+                    $this->message->addMessage(
+                        "Inserting MINC into the files table \n"
+                    ); 
                     $output = shell_exec($command);
                     if ($this->show_queries) {
                         print "command is $command";
@@ -268,8 +288,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     /////////// to true////////////////////////////////////////
                     if ($output==0) {
                         $this->log->addLog(
-                            "The minc file for patient-name $patient_name is now".
-                            "inserted into the db \n <BR>" 
+                            "The minc file for patient-name $patient_name is now ".
+                            "inserted into the db \n" 
+                        );
+                        $this->message->addMessage(
+                            "The minc file for patient-name $patient_name " . 
+                            "is now inserted into db \n"
+                        );
+                        $this->message->addMessage(
+                            "The process completed successfully \n"
                         );
                         $this->tpl_data['minc_success'] = true;
                     }
@@ -293,13 +320,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         include_once "File_Upload.class.inc";
-
+                   
         //get the stored-file path
         $config =& NDB_Config::singleton();
         $paths = $config->getSetting('paths');
         $stored_file_path = $paths['IncomingPath'];
 
-        //print $stored_file_path;
         $file=new File_Upload;
 
         $file->overwriteMode="reject";
@@ -356,7 +382,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
          * 3) Make sure the file is not corrupted..
          * 
         */
-        
+
         
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir = $this->tempdir(true);
@@ -375,7 +401,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $files_not_readable = 0;
         $file_not_matching_patient_name = 0;
         $header_patient_name = array();
-        $hader_patient_name;
 
         ///////////////////////////////////////////////////////////////////////
         //////////////Make sure the extension is valid/////////////////////////
@@ -474,6 +499,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 new RecursiveDirectoryIterator($temp_dir),
                 RecursiveIteratorIterator::SELF_FIRST
             );
+                       
+            $this->message->addMessage("Processing files \n"); 
+
+            $count = 0; 
             foreach ($objects as $name => $file) {
 
                 if (is_file($file)) {
@@ -489,14 +518,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         $files_not_readable++;
                         continue;
                     }
-                    
 
-                    
+
                     ///////////////////////////////////////////////////////////
                     ///////////////if the file is not a dicom//////////////////
                     ///////////////////////////////////////////////////////////
                     if (!(preg_match("/DICOM/", $file_type))) {
-    
+
                         ///////////////////////////////////////////////////////
                         /////////////if it's not of type archive or gzip///////
                         ///////////////////////////////////////////////////////
@@ -513,7 +541,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////if it's dicom///////////////////////////////
                     ///////////////////////////////////////////////////////////
     
-                    $cmd = "dcmdump $file | grep -ri patientname";
+                    $cmd = "dcmdump $file | grep -i patientname";
+                    
                     $patient_name_string = shell_exec($cmd);
                     preg_match("^\[(.*?)\]^", $patient_name_string, $fields);
                     $patient_name_from_header = $fields[1];
@@ -524,8 +553,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     if (!($patient_name == $patient_name_from_header)) {
                         $file_not_matching_patient_name++;
                     }
+                    $count++;
+                    if ($count % 500 == 0) { 
+                        $this->message->addMessage(
+                            "$count files have been processed \n"
+                        );
+                    }
                 }
             }
+            
             if ($files_not_dicom > 0) {
                 $errors[]=" There are  $files_not_dicom files detected which ".
                       "are not of type DICOM";
@@ -533,8 +569,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             
             if ($files_not_readable > 0) {
                 $errors[]=" There are  $files_not_readable files which are not ".
-               "readable by the browser. Please make sure that the files have ".
-               "the right permission";
+                "readable by the browser. Please make sure that the files have ".
+                "the right permission";
             }
             
 
@@ -564,10 +600,16 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
         } else {
             $errors[]=" Please make sure CandID, PSCID and VisitLabel are".
-                      "filled out";
+                      " filled out";
         }
         
         if (count($errors) > 0) {
+            foreach ($errors as $error) {
+                $this->message->addMessage("$error");
+            }
+            $this->message->addMessage(
+                "Error: the process completed with errors \n"
+            ); 
             return $errors;
         }
         return true;
@@ -669,19 +711,23 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * source the environment variable
      *
      * @param String $mri_code_path Path to the MRI-Code
+     * @param string $mri_user      user
      * 
      * @return NULL
      */
-    function sourceEnvironment($mri_code_path,$mri_user) 
+    function sourceEnvironment($mri_code_path, $mri_user) 
     {
-
-        $path = $mri_code_path. ":". getenv('PATH');
+        $path = getenv('PATH') . ":" . $mri_code_path . ":" .  
+            $mri_code_path. "uploadNeuroDB";
         putenv("PATH=$path");
+
         $loris_config = $mri_code_path . "dicom-archive";
         putenv("LORIS_CONFIG=$loris_config");
-        $path = $mri_code_path. "uploadNeuroDB:". getenv('PERL5LIB');
-        putenv("PERL5LIB=$path");
-        
+
+        putenv(
+            "PERL5LIB=/usr/share/perl/:" . 
+            "$mri_code_path:$mri_code_path/dicom-archive"
+        );
         $tempdir = getenv('TMPDIR');
         //Set the TMPDIR path only if it's not already set
         if (!isset($tempdir)) {
@@ -690,9 +736,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         putenv("USER=$mri_user");
         $this->log->addLog("The Environment Variables are now set \n");
+                      
     }
 
-    /**
+     /**
      * Runs the dicomTar.pl and will return true if the dicom is inserted,
      * ,tarchiveid, and archivelocation
      *
@@ -716,7 +763,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $cmd = "perl $DICOMTAR $decompressed_folder $tarchive_location"
         .  " -clobber -database -profile prod";
+        
+        $this->message->addMessage("Running DICOM \n");
         $output = shell_exec($cmd);
+                
         if ($this->show_queries) {
             print "cmd : $cmd \n";
             print $output;
@@ -732,7 +782,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $ArchiveLocation = $row['ArchiveLocation'];
         $tarchive_id = $row['TarchiveID'];
         $this->log->addLog(
-            "The DICOM file is now tarred into $ArchiveLocation \n <BR>"
+            "The DICOM file is now tarred into $ArchiveLocation \n"
         );
 
         ///////////////////FIX THIS////////////////////////////////////////////
@@ -745,7 +795,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (($tarchive_file_created)
             && ($tarchive_id!=null)
         ) {
-            $dicom_inserted  =true;
+            $dicom_inserted = true;
         }
 
            $result[] = $dicom_inserted;

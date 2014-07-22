@@ -1,0 +1,42 @@
+#log_box {
+  width: 600px;
+  height: 200px;
+  border: 2px solid #064785;
+  overflow: auto;
+  padding: 5px; 
+}
+
+progress {
+  /*position: relative;*/
+  width: 400px;
+  height: 20px;
+  color: #1C70B6;
+  border-style: none;
+  border-radius: 10px;
+} 
+
+/* Firefox */
+progress::-moz-progress-bar { 
+  background: #1C70B6;
+  border-radius: 10px;
+}
+
+/* Chrome */
+progress::-webkit-progress-value {
+  background: #1C70B6;
+  border-radius: 10px;
+}
+
+/* Polyfill */
+progress[aria-valuenow]:before  {
+  background: #1C70B6;
+  border-radius: 10px;
+}
+
+#progresslabel {
+  position: relative;
+  left: -205px;
+  top: -4px;
+  font-weight: bold;
+  color: black;
+}
