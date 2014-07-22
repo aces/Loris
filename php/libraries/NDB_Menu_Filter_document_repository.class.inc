@@ -125,13 +125,6 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
 
         $DB = Database::singleton();
         
-        //weird way to get a 'list' of instruments
-        //$list_of_instruments_q = $DB->pselect("SELECT DISTINCT Instrument FROM document_repository", array());
-        //$list_of_instruments = array(null => 'Any');
-        //foreach ($list_of_instruments_q as $instrument) {
-        //    $list_of_instruments[$instrument['Instrument']] = $instrument['Instrument'];
-        //}
-
         $fileNames = $DB->pselect("Select File_name from document_repository", array());
         $fileTypes = array();
         $fileT = array();
