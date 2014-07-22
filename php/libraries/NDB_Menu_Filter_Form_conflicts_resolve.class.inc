@@ -15,7 +15,7 @@
 require_once 'NDB_Menu_Filter_Form.class.inc';
 
 /**
- * Menu_Filter_Form_unresolved_conflicts Class
+ * Menu_Filter_Form_conflicts_resolve Class
  *
  * This class provides the php code to create the menu filter form that
  * allows unresolved conflicts to processed as part of the conflict resolver
@@ -27,7 +27,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
  * @link     https://github.com/aces/Loris-Trunk    
 */
 
-class NDB_Menu_Filter_Form_unresolved_conflicts extends NDB_Menu_Filter_Form
+class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 {
 
     function _hasAccess()

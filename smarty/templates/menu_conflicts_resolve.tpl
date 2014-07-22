@@ -40,7 +40,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=unresolved_conflicts&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -49,10 +49,10 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=unresolved_conflicts&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve&reset=true'">
                         </div>
                     </div>
-                    <input type="hidden" name="test_name" value="unresolved_conflicts" />
+                    <input type="hidden" name="test_name" value="conflicts_resolve" />
                 </div>
             </div>
         </form>
@@ -69,7 +69,7 @@
 </table>
 
 <div class="table-responsive">
-    <form method="post" name="unresolved_conflicts" id="unresolved_conflicts">
+    <form method="post" name="conflicts_resolve" id="conflicts_resolve">
         <table class="table table-hover table-primary table-bordered" border="0">
             <thead>
 
@@ -82,7 +82,7 @@
                 <tr class="info">
                     <th>No.</th>
                         {section name=header loop=$headers}
-                            <th><a href="main.php?test_name=unresolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                            <th><a href="main.php?test_name=conflicts_resolve&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                             {if $headers[header].displayName == "TableName"}
                                 Instrument
                             {else if $headers[header].displayName == "CandID"}
