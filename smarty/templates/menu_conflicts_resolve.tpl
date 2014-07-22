@@ -40,7 +40,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve&reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="conflicts_resolve" />
@@ -96,7 +96,7 @@
                                             {else if $headers[header].displayName == "CandID"}
                                                 DCCID
                                             {else if $headers[header].displayName == "FieldName"}
-                                                Questsion
+                                                Question
                                             {else}
                                                 {$headers[header].displayName}
                                             {/if}
@@ -138,41 +138,7 @@
                 </div>
             </div>
             <div class="tab-pane" id="ResolvedConflicts">
-                <table class="table table-hover table-primary table-bordered" border="0">
-                    <thead>
-                        <!--{$items|print_r}-->
-                        {if $form.resolved_total}
-                            <tr class="nohover">
-                                <td colspan="5" align="right" style="border: none;" class="nohover">{$form.resolved_total.label}</td>
-                            </tr>
-                        {/if}
-                        
-                        <tr class="info">
-                            <th>Instrument</th>
-                            <th>DCCID</th>
-                            <th>PSCID</th>
-                            <th>Visit Label</th>
-                            <th>Question</th>
-                            <th>Corrected Answer</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {foreach from=$resolved_elements_list_names item=resolved_element}
-                            <tr>
-                                <td>{$resolved_elements_array[$resolved_element].instrument}</td>
-                                <td>{$resolved_elements_array[$resolved_element].dccid}</td>
-                                <td>{$resolved_elements_array[$resolved_element].pscid}</td>
-                                <td>{$resolved_elements_array[$resolved_element].visit_label}</td>
-                                <td>{$resolved_elements_array[$resolved_element].field}</td>
-                                <td nowrap="nowrap" align="right">{$resolved_elements_array[$resolved_element].new_value}</td>
-                            </tr>
-                        {foreachelse}
-                            <tr>
-                                <td colspan="6"><b>{$form.resolved_status.label}</b></td>
-                            </tr>
-                        {/foreach}
-                    </tbody>
-                </table>
+                
             </div>
         </div>
     </div>
