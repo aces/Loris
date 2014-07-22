@@ -139,7 +139,7 @@ $timer->setMarker('Configured browser arguments for the MRI browser');
 $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
-    if (file_exists($paths['base'] . "/modules/$TestName/js/$TestName.js")) {
+    if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
         $tpl_data['test_name_js'] = "GetJS.php?Module=$TestName";
     } elseif (file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
         // Old style, this should be removed after all modules are modularized.
