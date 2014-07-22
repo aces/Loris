@@ -199,7 +199,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                 return PEAR::raiseError("DB Error: ". $sites->getMessage());
             }
             if(is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
+                $sites = array_merge(array('' => 'All'), $sites);
             }
         }
         else {

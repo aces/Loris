@@ -57,8 +57,10 @@
             </div>
         </form>
     </div>
+    <div class="col-md-4 col-sm-4">
+        <a class="btn btn-default" href="main.php?test_name=resolved_conflicts" role="button">See resolved conflicts</a>
+    </div>
 </div>
-
 
 <!--  title table with pagination -->
 <table id="LogEntries" border="0" valign="bottom" width="100%">

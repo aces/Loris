@@ -69,8 +69,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             'CandID', 
             'PSCID', 
             'Visit_label',
-            'FieldName', 
-            'NewValue'
+            'FieldName'
         );
         $this->formToFilter = array(
             'Instrument' => 'conflicts_resolved.TableName',
@@ -106,7 +105,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
                 return PEAR::raiseError("DB Error: ". $sites->getMessage());
             }
             if(is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
+                $sites = array_merge(array('' => 'All'), $sites);
             }
         }
         else {

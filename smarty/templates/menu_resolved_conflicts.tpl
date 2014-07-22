@@ -57,6 +57,9 @@
             </div>
         </form>
     </div>
+    <div class="col-md-4 col-sm-4">
+        <a class="btn btn-default" href="main.php?test_name=conflicts_resolve" role="button">See unresolved conflicts</a>
+    </div>
 </div>
 
 <table id="LogEntries" border="0" valign="bottom" width="100%">
@@ -76,21 +79,20 @@
         
         <tr class="info">
             <th>No.</th>
-                {section name=header loop=$headers}
-                    <th><a href="main.php?test_name=resolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                    {if $headers[header].displayName == "TableName"}
-                        Instrument
-                    {else if $headers[header].displayName == "CandID"}
-                        DCCID
-                    {else if $headers[header].displayName == "FieldName"}
-                        Question
-                    {else if $headers[header].displayName == "NewValue"}
-                        Corrected Answer
-                    {else}
-                        {$headers[header].displayName}
-                    {/if}
-                    </a></th>
-                {/section}
+            {section name=header loop=$headers}
+            <th><a href="main.php?test_name=resolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+            {if $headers[header].displayName == "TableName"}
+                Instrument
+            {else if $headers[header].displayName == "CandID"}
+                DCCID
+            {else if $headers[header].displayName == "FieldName"}
+                Question                    
+            {else}
+                {$headers[header].displayName}
+            {/if}
+            </a></th>
+            {/section}
+            <th>Corrected Answer</th>
         </tr>
     </thead>
     <tbody>
