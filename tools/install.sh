@@ -284,7 +284,7 @@ while true; do
     else
         break;
     fi
-done
+done;
 
 
 
