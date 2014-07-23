@@ -2,9 +2,9 @@
 
 #
 # This will:
-# 1. Install PEAR libraries
-# 2. Set up the Loris DB schema
-# 3. Log the installation in the logs directory
+#   1. Install PEAR libraries
+#   2. Set up the Loris DB schema
+#   3. Log the installation in the logs directory
 # This will only install the database components and Loris config file.
 #
 
@@ -36,7 +36,7 @@ if [ ! -w $LOGDIR ] ; then
         echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
         while true; do
                 read -p "Do you still want to continue? [yn] " yn
-echo $yn | tee -a $LOGFILE > /dev/null
+		echo $yn | tee -a $LOGFILE > /dev/null
                 case $yn in
                         [Yy]* )
                                 break;;
@@ -47,7 +47,7 @@ echo $yn | tee -a $LOGFILE > /dev/null
                 esac
         done;
 else
-echo "The log for this session will be stored in file $CWD/$LOGFILE"
+	echo "The log for this session will be stored in file $CWD/$LOGFILE"
 fi
 
 
@@ -55,7 +55,7 @@ fi
 cat <<BANNER
 
 ---------------------------------------------------------------------
-LORIS Installation Script
+                   LORIS Installation Script
 ---------------------------------------------------------------------
 
 BANNER
@@ -105,45 +105,43 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-1) A name for the MySQL Database. This should be
-a simple identifier such as "Loris" or "Abc_Def".
-This database will be created later on so please make sure
-a database with the same name does not already exist.
+  1) A name for the MySQL Database. This should be
+     a simple identifier such as "Loris" or "Abc_Def".
+     This database will be created later on.
 
-2) The hostname for the machine where the MySQL server will run on
-(this is where we'll create the database).
+  2) The hostname for the machine where the MySQL server will run on
+     (this is where we'll create the database).
 
-3) The MySQL username that the Loris system will use to connect
-to this server and database; this MySQL account will be
-created later on so please make sure a user with the same name
-does not already exist.
+  3) The MySQL username that the Loris system will use to connect
+     to this server and database; this MySQL account will be
+     created later on.
 
-4) The password for this username (it will be set later on).
+  4) The password for this username (it will be set later on).
 
-5) Another password for the 'admin' account of the Loris DB
-(it will also be set later on).
+  5) Another password for the 'admin' account of the Loris DB
+     (it will also be set later on).
 
-6) Credentials of an existing root MySQL account to install the
-default schema. This will only be used once, to create and
-populate the default tables, and to grant privileges to the
-newly created MySQL user in part 3).
+  6) Credentials of an existing root MySQL account to install the
+     default schema. This will only be used once, to create and
+     populate the default tables, and to grant privileges to the
+     newly created MySQL user in part c).
 
-7) Your project name. This should be an alphanumeric name.
-It will be used to modify the paths for MRI in the generated
-config.xml file for LORIS. It may also be used to automatically
-create/install apache config files.
+  7) Your project name. This should be an alphanumeric name.
+     It will be used to modify the paths for MRI in the generated
+     config.xml file for LORIS. It may also be used to automatically
+     create/install apache config files.
 
 QUESTIONS
 
 
 while true; do
         read -p "Ready to continue? [yn] " yn
-echo $yn | tee -a $LOGFILE > /dev/null
+	echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
                 break;;
             [Nn]* )
-echo "Exiting."
+		echo "Exiting."
                 exit 1;;
              * ) echo "Please enter y or n"
         esac
@@ -152,52 +150,52 @@ done;
 echo ""
 
 while [ "$mysqldb" == "" ]; do
-read -p "What is the database name? " mysqldb
-echo $mysqldb | tee -a $LOGFILE > /dev/null
-case $mysqldb in
-"" )
-read -p "What is the database name? " mysqldb
-continue;;
-* )
-break;;
-esac
+	read -p "What is the database name? " mysqldb
+	echo $mysqldb | tee -a $LOGFILE > /dev/null
+	case $mysqldb in
+		"" )
+			read -p "What is the database name? " mysqldb
+			continue;;
+		* )
+			break;;
+	esac
 done;
 
 while [ "$mysqlhost" == "" ]; do
         read -p "Database host? " mysqlhost
-echo $mysqlhost | tee -a $LOGFILE > /dev/null
-        case $mysqlhost in
-                "" )
-                        read -p "Database host? " mysqlhost
-                        continue;;
+	echo $mysqlhost | tee -a $LOGFILE > /dev/null
+       	case $mysqlhost in
+               	"" )
+                       	read -p "Database host? " mysqlhost
+                       	continue;;
                 * )
-        break;;
+       	                break;;
         esac
 done;
 
 while [ "$mysqluser" == "" ]; do
         read -p "What MySQL user will Loris connect as? " mysqluser
-echo $mysqluser | tee -a $LOGFILE > /dev/null
-        case $mysqluser in
-                "" )
-                        read -p "What MySQL user will Loris connect as? " mysqluser
-                        continue;;
+	echo $mysqluser | tee -a $LOGFILE > /dev/null
+       	case $mysqluser in
+               	"" )
+                       	read -p "What MySQL user will Loris connect as? " mysqluser
+                       	continue;;
                 * )
-        break;;
-        esac
+       	                break;;
+       	esac
 done;
 
 stty -echo
 
 while true; do
         read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
-echo ""
+	echo ""
         read -p "Re-enter the password to check for accuracy " mysqlpass2
-if [[ "$mysqlpass" == "$mysqlpass2" ]] ; then
-break;
-fi
-echo ""
-echo "Passwords did not match. Please try again.";
+	if [[ "$mysqlpass" == "$mysqlpass2" ]] ; then
+	        break;
+	fi
+	echo ""
+	echo "Passwords did not match. Please try again.";
 done;
 
 stty echo ; echo ""
@@ -210,50 +208,50 @@ while true; do
         if [[ "$lorispass" == "$lorispass2" ]] ; then
                 break;
         fi
-echo ""
-echo "Passwords did not match. Please try again.";
+	echo ""
+	echo "Passwords did not match. Please try again.";
 done;
 
 stty echo ; echo ""
 
-while [ "$mysqlrootuser" == "" ]; do
-        read -p "Existing root MySQL username: " mysqlrootuser
-echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-        case $mysqlrootuser in
-                "" )
-                        read -p "Existing root MySQL username: " mysqlrootuser
-                        continue;;
-                * )
-        break;;
-        esac
+while [ "$mysqlrootuser" == "" ]; do 
+       	read -p "Existing root MySQL username: " mysqlrootuser
+	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+       	case $mysqlrootuser in
+               	"" )
+                       	read -p "Existing root MySQL username: " mysqlrootuser
+                       	continue;;
+                * ) 
+       	                break;;
+       	esac
 done;
 
 stty -echo
 
-while true; do
+while true; do 
         read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         echo ""
         read -p "Re-enter the password to check for accuracy " mysqlrootpass2
         if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
                 break;
         fi
-echo ""
-echo "Passwords did not match. Please try again.";
+	echo ""
+	echo "Passwords did not match. Please try again.";
 done;
 
 stty echo
 echo ""
 
-while [ "$projectname" == "" ]; do
+while [ "$projectname" == "" ]; do 
         read -p "Enter project name: " projectname
-echo $projectname | tee -a $LOGFILE > /dev/null
-        case $projectname in
-                "" )
-                        read -p "Enter project name: " projectname
-                        continue;;
-                * )
-        break;;
-        esac
+	echo $projectname | tee -a $LOGFILE > /dev/null
+       	case $projectname in
+               	"" )
+                       	read -p "Enter project name: " projectname
+                       	continue;;
+                * ) 
+       	                break;;
+       	esac
 done;
 
 
@@ -263,29 +261,29 @@ echo "Attempting to create the MySQL database '$mysqldb' ..."
 echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
-while true; do
-echo "Could not connect to database with the root user provided. Please try again.";
-read -p "Existing root MySQL username: " mysqlrootuser
-echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-stty -echo
-while true; do
-         read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
-         read -p "Re-enter the password to check for accuracy " mysqlrootpass2
-         if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
-                 break;
-fi
-echo ""
-echo "Passwords did not match. Please try again.";
-done;
-stty echo
-echo "Attempting to create the MySQL database '$mysqldb' ..."
-echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
-MySQLError=$?;
-if [ $MySQLError -ne 0 ] ; then
-continue;
-fi
-break;
-done;
+	while true; do
+		echo "Could not connect to database with the root user provided. Please try again.";
+	        read -p "Existing root MySQL username: " mysqlrootuser
+		echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+		stty -echo
+		while true; do
+        		read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
+        		read -p "Re-enter the password to check for accuracy " mysqlrootpass2
+        		if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
+                		break;
+		        fi
+			echo ""
+			echo "Passwords did not match. Please try again.";
+		done;
+		stty echo
+		echo "Attempting to create the MySQL database '$mysqldb' ..."
+		echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+		MySQLError=$?;
+		if [ $MySQLError -ne 0 ] ; then
+			continue;
+		fi
+		break;
+	done;
 fi
 
 
@@ -398,4 +396,5 @@ while true; do
 done;
 
 echo "Installation complete."
-EOF
+
+
