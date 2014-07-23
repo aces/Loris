@@ -207,6 +207,15 @@
             {if $dynamictabs neq "dynamictabs"}
                 <br><br><br>
             <div class="page-content inset">
+                {if $console}
+                    <div class="alert alert-warning" role="alert">
+                        <h3>Console Output</h3>
+                        <div>
+                        <pre>{$console}</pre>
+                        </div>
+                    </div>
+
+                {/if}
                 <!-- <div class="panel panel-primary"> -->
                     
                     {if $crumbs != ""}
