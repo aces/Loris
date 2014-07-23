@@ -107,14 +107,16 @@ Please answer the following questions. You'll be asked:
 
   1) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
-     This database will be created later on.
+     This database will be created later on so please make sure
+     a database with the same name does not already exist.
 
   2) The hostname for the machine where the MySQL server will run on
      (this is where we'll create the database).
 
   3) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
-     created later on.
+     created later on so please make sure a user with the same name
+     does not already exist.
 
   4) The password for this username (it will be set later on).
 
@@ -124,7 +126,7 @@ Please answer the following questions. You'll be asked:
   6) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
      populate the default tables, and to grant privileges to the
-     newly created MySQL user in part c).
+     newly created MySQL user in part 3).
 
   7) Your project name. This should be an alphanumeric name.
      It will be used to modify the paths for MRI in the generated
@@ -214,21 +216,21 @@ done;
 
 stty echo ; echo ""
 
-while [ "$mysqlrootuser" == "" ]; do 
+while [ "$mysqlrootuser" == "" ]; do
        	read -p "Existing root MySQL username: " mysqlrootuser
 	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
        	case $mysqlrootuser in
                	"" )
                        	read -p "Existing root MySQL username: " mysqlrootuser
                        	continue;;
-                * ) 
+                * )
        	                break;;
        	esac
 done;
 
 stty -echo
 
-while true; do 
+while true; do
         read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         echo ""
         read -p "Re-enter the password to check for accuracy " mysqlrootpass2
@@ -242,90 +244,49 @@ done;
 stty echo
 echo ""
 
-while [ "$projectname" == "" ]; do 
+while [ "$projectname" == "" ]; do
         read -p "Enter project name: " projectname
 	echo $projectname | tee -a $LOGFILE > /dev/null
        	case $projectname in
                	"" )
                        	read -p "Enter project name: " projectname
                        	continue;;
-                * ) 
+                * )
        	                break;;
        	esac
 done;
 
 
-<<EOF COMMENT
-while true; do
-    echo ""
-    echo "Attempting to connect to the database '$mysqldb' ..."
-    mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A -e "exit" > /dev/null 2>&1
-    MySQLError=$?;
-    if [ $MySQLError -ne 0 ] ; then
-        echo "Could not connect to database with the root user provided. Please try again.";
-        read -p "Existing root MySQL username: " mysqlrootuser
-        echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-        stty -echo
-        while true; do
-            read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
-            echo ""
-            read -p "Re-enter the password to check for accuracy: " mysqlrootpass2
-            if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
-                break;
-	    fi
-	    echo ""
-	    echo "Passwords did not match. Please try again.";
-        done;
-        stty echo
-    else    
-        break;
-    fi
-done;
 
-
-while true; do
-    echo ""
-    echo "Attempting to create the MySQL database '$mysqldb' ..."
-    echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
-    MySQLError=$?;
-    if [ $MySQLError -ne 0 ] ; then
-        echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
-        read -p "Database name: " mysqldb
-        echo $mysqldb | tee -a $LOGFILE > /dev/null
-    else
-        break;
-    fi
-done;
-EOF
-
-while true; do
-    echo ""
-    echo "Attempting to create the MySQL database '$mysqldb' ..."
-    result=$(echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1);
-    if [[ $result == *denied* ]] ; then
-        echo "Could not connect to database with the root user provided. Please try again.";
-        read -p "Existing root MySQL username: " mysqlrootuser
-        echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-        stty -echo
-        while true; do
-            read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
-            echo ""
-            read -p "Re-enter the password to check for accuracy " mysqlrootpass2
-            if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
-                break;
-            fi
-            echo ""
-            echo "Passwords did not match. Please try again.";
-         done;
-         stty echo
-    elif [[ $result == *database* ]] ; then
-        echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
-        read -p "Database name: " mysqldb
-    else
-        break;
-    fi
-done
-
+echo ""
+echo "Attempting to create the MySQL database '$mysqldb' ..."
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+MySQLError=$?;
+if [ $MySQLError -ne 0 ] ; then
+	while true; do
+		echo "Could not connect to database with the root user provided. Please try again.";
+	        read -p "Existing root MySQL username: " mysqlrootuser
+		echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+		stty -echo
+		while true; do
+        		read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
+        		read -p "Re-enter the password to check for accuracy " mysqlrootpass2
+        		if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
+                		break;
+		        fi
+			echo ""
+			echo "Passwords did not match. Please try again.";
+		done;
+		stty echo
+		echo "Attempting to create the MySQL database '$mysqldb' ..."
+		echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+		MySQLError=$?;
+		if [ $MySQLError -ne 0 ] ; then
+			continue;
+		fi
+		break;
+	done;
+fi
 
 
 echo ""
