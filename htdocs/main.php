@@ -5,6 +5,9 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
+// Create an output buffer to capture console output, separately from the 
+// gzip handler.
+ob_start();
 // start benchmarking
 require_once 'Benchmark/Timer.php';
 $timer = new Benchmark_Timer;
@@ -249,17 +252,10 @@ foreach(Utility::toArray($links['link']) AS $link){
 
 
 
-// ob_get_contents will get any contents that were printed
-// to the console while running LORIS on the page. We assign
-// it to a smarty variable so that the output can be properly
-// inserted into the HTML instead of printed to the screen
-// before the (valid?) HTML.
+// Assign the console output to a variable, then stop
+// capturing output so that smarty can render
 $tpl_data['console'] = ob_get_contents();
-// End the buffer and throw away the contents that we captured
-// to a variable, then restart the buffer so that the ob_end_flush
-// below works.
 ob_end_clean();
-ob_start();
 
 
 //Output template using Smarty
