@@ -276,7 +276,7 @@ if [ $MySQLError -ne 0 ] ; then
 	    echo "Passwords did not match. Please try again.";
         done;
         stty echo
-        echo "Attempting to create the MySQL database '$mysqldb' ..."
+        echo "Attempting to connect to the database '$mysqldb' ..."
         mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A-e "exit" > /dev/null 2>&1
         MySQLError=$?;
         if [ $MySQLError -ne 0 ] ; then
@@ -288,8 +288,8 @@ fi
 
 
 echo ""
-echo "Attempting to connect to the database '$mysqldb' ..."
-echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A /dev/null 2>&1
+echo "Attempting to create the MySQL database '$mysqldb' ..."
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
     while true; do   
@@ -297,13 +297,13 @@ if [ $MySQLError -ne 0 ] ; then
         read -p "Database name: " mysqldb
         echo $mysqldb | tee -a $LOGFILE > /dev/null
         echo "Attempting to connect to the database '$mysqldb' ..."
-        echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A /dev/null 2>&1
+        echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
         MySQLError=$?;
         if [ $MySQLError -ne 0 ] ; then
             continue;
         fi
         break;
-    done  
+    done;  
 fi
 
 
