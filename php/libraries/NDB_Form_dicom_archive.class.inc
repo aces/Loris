@@ -68,13 +68,26 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     */
     function _getTarchiveData($tarchiveID, $table, $order) 
     {
-        if ($order) {    	     				   
-            $query = "SELECT * FROM $table WHERE TarchiveID ='$tarchiveID'
+        switch ($table) {
+        case "tarchive":
+            $query = "SELECT * FROM $table WHERE TarchiveID =:ID";
+            $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
+            break;
+        case "tarchive_series":
+            $query = "SELECT ts.SeriesNumber, ts.SeriesDescription, ts.SequenceName,
+                ts.EchoTime, ts.RepetitionTime, ts.InversionTime, ts.SliceThickness,
+                ts.PhaseEncoding, ts.NumberOfFiles, ts.SeriesUID,
+                mst.Scan_type as ProtocolName FROM tarchive_series ts
+                LEFT JOIN files f ON ts.SeriesUID=f.SeriesUID
+                LEFT JOIN mri_scan_type mst ON f.AcquisitionProtocolID=mst.ID
+                WHERE ts.TarchiveID=:tID ORDER BY $order";
+            $array = $this->DB->pselect($query, array('tID' => $tarchiveID));
+            break;
+        case "tarchive_files":
+            $query = "SELECT * FROM $table WHERE TarchiveID =:ID
             ORDER BY $order";
-            $array = $this->DB->pselect($query, array());
-        } else {
-            $query = "SELECT * FROM $table WHERE TarchiveID ='$tarchiveID'";
-            $array = $this->DB->pselectRow($query, array());
+            $array = $this->DB->pselect($query, array('ID' => $tarchiveID));
+            break;
         }
         
         if (Utility::isErrorX($array)) { 
