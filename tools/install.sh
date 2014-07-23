@@ -255,7 +255,7 @@ while [ "$projectname" == "" ]; do
 done;
 
 
-
+<<EOF COMMENT
 while true; do
     echo ""
     echo "Attempting to connect to the database '$mysqldb' ..."
@@ -296,6 +296,36 @@ while true; do
         break;
     fi
 done;
+EOF
+
+while true; do
+    echo ""
+    echo "Attempting to create the MySQL database '$mysqldb' ..."
+    result=$(echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1);
+    if [[ $result == *denied* ]] ; then
+        echo "Could not connect to database with the root user provided. Please try again.";
+        read -p "Existing root MySQL username: " mysqlrootuser
+        echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+        stty -echo
+        while true; do
+            read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
+            echo ""
+            read -p "Re-enter the password to check for accuracy " mysqlrootpass2
+            if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
+                break;
+            fi
+            echo ""
+            echo "Passwords did not match. Please try again.";
+         done;
+         stty echo
+    elif [[ $result == *database* ]] ; then
+        echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
+        read -p "Database name: " mysqldb
+    else
+        break;
+    fi
+done
+
 
 
 echo ""
