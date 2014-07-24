@@ -220,20 +220,46 @@ class NDB_Config
     	return null;
     }
 
+    static function CheckMenuPermission($menuID) {
+        $DB = Database::singleton();
+        $user = User::singleton();
+
+        $perms = $DB->pselect(
+            "SELECT code FROM LorisMenuPermissions 
+                JOIN permissions using (permID) WHERE MenuID=:MID",
+            array('MID' => $menuID)
+        );
+
+        if(empty($perms)) {
+            return true;
+        }
+
+        foreach($perms as $perm) {
+            if ($user->hasPermission($perm['code'])) {
+                return true;
+            }
+        }
+        return false;
+    }
     static function GetMenuTabs($parent = null) {
         $DB = Database::singleton();
         if($parent === null) {
             $thisLevel = $DB->pselect("SELECT Label, 1 as Visible, Link, ID FROM LorisMenu WHERE Parent IS NULL", array());
         } else {
             $thisLevel = $DB->pselect("SELECT Label, 1 as Visible, Link, ID FROM LorisMenu WHERE Parent=:ParentID ", array('ParentID' => $parent));
-            return $thisLevel;
+            if(NDB_Config::CheckMenuPermission($thisLevel[0]['ID'])) {
+                return $thisLevel;
+            }
+            return;
         }
 
         foreach($thisLevel as &$thisRow) {
             $nextLevel = NDB_Config::GetMenuTabs($thisRow['ID']);
 
             if(!empty($nextLevel)) {
-                $thisRow['subtabs'] = $nextLevel;
+                if(NDB_Config::CheckMenuPermission($nextLevel[0]['ID'])) {
+                    $thisRow['subtabs'] = $nextLevel;
+                }
             }
         }
 
