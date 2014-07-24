@@ -693,7 +693,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
         if ($CertificationEnabled && in_array($project, $CertificationProjects)
-            && in_array($this->testName, $CertificationInstruments)) { print "Im here";
+            && in_array($this->testName, $CertificationInstruments)) { 
             $test_id = $db->pselectOne("SELECT ID from test_names where Test_name =:tst_name", array('tst_name'=>$this->testName));
             $results = $db->pselect("SELECT certification.examinerID, full_name FROM certification JOIN examiners ON certification.examinerID = examiners.examinerID WHERE testID =:tid AND pass =:cert_id AND centerID =:cid ORDER BY full_name",array('tid'=>$test_id,'cert_id'=>'certified','cid'=>$centerID));
             if($db->isError($results)) {
