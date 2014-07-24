@@ -424,6 +424,46 @@
         </subtab>
     </tab>
     <tab>
+        <label>Tools</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=datadict</link>
+            <label>Data Dictionary</label>
+            <access>all</access>
+            <permissions>
+                <perm>data_dict</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=document_repository</link>
+            <label>Document Repository</label>
+            <access>all</access>
+            <permissions>
+                <perm>file_upload</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=data_team_helper</link>
+            <label>Data Team Helper</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=instrument_builder</link>
+            <label>Instrument Builder</label>
+            <access>all</access>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
         <label>Admin</label>
         <visible>1</visible>
         <subtab>
@@ -434,13 +474,6 @@
             <permissions>
                 <perm>user_accounts</perm>
             </permissions>
-            <visible>1</visible>
-        </subtab>
-            <subtab>
-            <parent>Admin</parent>
-            <link>main.php?test_name=instrument_builder</link>
-            <label>Instrument Builder</label>
-            <access>all</access>
             <visible>1</visible>
         </subtab>
     </tab>
