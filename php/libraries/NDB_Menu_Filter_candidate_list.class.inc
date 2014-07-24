@@ -34,7 +34,6 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
     {
         $this->tpl_data['toggled_visible']=false;
         // set the class variables
-        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID', 'COALESCE (participant_status_options.ID,1) as Participant_Status', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
