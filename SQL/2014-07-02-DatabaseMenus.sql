@@ -30,3 +30,8 @@ INSERT INTO LorisMenu (Label, Link, Parent) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent) VALUES 
     ('User Accounts', 'main.php?test_name=user_accounts', 5),
     ('Instrument Builder', 'main.php?test_name=instrument_builder', 5);
+
+CREATE TABLE LorisMenuPermissions (
+    MenuID integer unsigned REFERENCES LorisMenu(ID),
+    PermID integer unsigned REFERENCES permissions(ID)
+) COMMENT="If a user has ANY of the permissions for a module it will show up in their menu bar";
