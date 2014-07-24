@@ -93,23 +93,28 @@ class NDB_Form_create_timepoint extends NDB_Form
         
         // visit label
         $visitLabelSettings = $config->getSetting('visitLabel');
+        $visitLabelAdded = false;
 
         foreach(Utility::toArray($visitLabelSettings) AS $visitLabel){
             if($visitLabel['@']['subprojectID']==$this->subprojectID){
                 if ($visitLabel['generation'] == 'user') {
                     $this->addBasicText('visitLabel', 'Visit label', array('size' => $visitLabel['length'] + 1, 'maxlength' => $visitLabel['length']));
+                    $visitLabelAdded = true;
                 } elseif ($visitLabel['generation'] == 'sequence') {
                     $labelOptions[''] = null;
                     foreach (Utility::toArray($visitLabel['labelSet']['item']) AS $item) {
                         $labelOptions[$item['@']['value']] = $item['#'];
                     }
                     $this->addSelect('visitLabel', 'Visit label', $labelOptions);
+                    $visitLabelAdded = true;
                 }
             }
         }
     
         // label rules
-        $this->addRule('visitLabel', 'Visit label is required', 'required');
+        if ($visitLabelAdded) {
+            $this->addRule('visitLabel', 'Visit label is required', 'required');
+        }
 
         $this->form->addFormRule(array(&$this, '_validate'));
     }
