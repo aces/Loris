@@ -55,41 +55,28 @@
                     window.open(helpurl);
                 }
 
-</head>
-<body 
-{if $PopUpFeedbackBVL && ($user.permissions.superuser==true || $user.permissions.access_all_profiles==true || $user.user_from_study_site==true)}
-onload="feedback_bvl_popup();" 
-{/if}
->
-<div id="page">
-{if $dynamictabs neq "dynamictabs"}
-<table width="100%" class="header">
-<tr>
-<th align="left" id="jsheader">
-<div id="slidemenu" class="jqueryslidemenu">
-<ul>
-<li><a href="main.php"><img width=20 src=images/home-icon.png></a></li>
-{foreach from=$tabs item=tab}
-<li><a href="#">{$tab.Label}</a>
-    {if $tab.subtabs}
-    <ul width="250">
-        {foreach from=$tab.subtabs item=subtab}
-            <li><a href="{$subtab.Link}">{$subtab.Label}</a></li>
-        {/foreach}
-    </ul>
-    {/if}
-</li> 
-{/foreach}
-</ul>
-<ul style="float:right">
-<li><a href="#">{$user.Real_name}</a>
-<ul>
-<li><a href="main.php?test_name=user_accounts&subtest=my_preferences">My Preferences</a></li>
-<li><a href="main.php?logout=true">Log Out</a></li>
-</ul>
-</li>
-</ul>
-</div>
+                function getCookie(c_name) {
+                    "use strict";
+                    var cookies = document.cookie.split("; "),
+                        i,
+                        cookie;
+                    for (i = 0; i < cookies.length; i += 1) {
+                        cookie = cookies[i].split("=");
+                        if (cookie[0] === c_name) {
+                            return cookie[1];
+                        }
+                    }
+                    return undefined;
+                }
+                $(document).ready(function(){
+                    $("#menu-toggle").click(function(e) {
+                        e.preventDefault();
+                        $(".wrapper").toggleClass("active");
+                    });
+                    $(".dropdown").hover(function(){
+                        $(this).toggleClass('open');
+                    });
+                });
 
                 
             </script>
@@ -137,25 +124,17 @@ onload="feedback_bvl_popup();"
                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <ul class="nav navbar-nav">
                         {foreach from=$tabs item=tab}
-                            {if $tab.visible == 1}
+                            {if $tab.Visible == 1}
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle">
-                                        {$tab.label} <b class="caret"></b>
+                                        {$tab.Label} <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        {foreach from=$subtab item=mySubtab}
+                                        {foreach from=$tab.subtabs item=mySubtab}
                                             <li>
-                                                {if $tab.label == $mySubtab.parent}
-                                                    {if $mySubtab.label == "Data Query Tool"}
-                                                        <a href="{$mySubtab.link}" target="_blank">
-                                                            {$mySubtab.label}
+                                                        <a href="{$mySubtab.Link}">
+                                                            {$mySubtab.Label}
                                                         </a>
-                                                    {else}
-                                                        <a href="{$mySubtab.link}">
-                                                            {$mySubtab.label}
-                                                        </a>
-                                                    {/if}
-                                                {/if}
                                             </li>
                                         {/foreach}
                                     </ul>
