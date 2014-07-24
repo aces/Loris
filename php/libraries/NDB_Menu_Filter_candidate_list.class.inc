@@ -27,7 +27,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             return PEAR::raiseError("DB Error: ".$site->getMessage());
         }
         
-        return ($user->hasPermission('access_all_profiles') || ($site->isStudySite() && $user->hasPermission('data_entry'));
+        return ($user->hasPermission('access_all_profiles') || ($site->isStudySite() && $user->hasPermission('data_entry')));
     }
 
     function _setupVariables()
