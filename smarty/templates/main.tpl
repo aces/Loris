@@ -121,7 +121,7 @@
                         </a>
                     {/if}
 
-                    <a class="navbar-brand" href="main.php">LORIS</a>
+                    <a class="navbar-brand" href="main.php">LORIS{if $sandbox}: DEV{/if}</a>
                </div>
                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <ul class="nav navbar-nav">

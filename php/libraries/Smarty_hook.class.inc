@@ -28,6 +28,12 @@ class Smarty_neurodb extends Smarty {
         $this->config_dir = $paths['base']."smarty/configs/";
         $this->cache_dir = $paths['base']."smarty/cache/";
 
+        $sandbox = $config->getSetting("sandbox");
+
+        if($sandbox === '1') {
+            $this->force_compile = true;
+        }
+
         $this->assign('app_name','NeuroDB');
 
         // Set the template directories. First check for project overrides,

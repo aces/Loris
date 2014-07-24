@@ -251,6 +251,9 @@ foreach(Utility::toArray($links['link']) AS $link){
 }
 
 
+if ($config->getSetting("sandbox") === '1') {
+    $tpl_data['sandbox'] = true;
+}
 
 // Assign the console output to a variable, then stop
 // capturing output so that smarty can render
@@ -260,6 +263,7 @@ ob_end_clean();
 
 //Output template using Smarty
 $tpl_data['css'] = $config->getSetting('css');
+
 $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
 $smarty->display('main.tpl');
