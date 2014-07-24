@@ -30,7 +30,7 @@ if ($_POST['category_name'] !== '') {
     $category_name = $_POST['category_name'];
 }
 if ($_POST['parent_id'] !== '') {
-    if (is_numeric($_POST['parent_id']) || isset($_POST['parent_id'])) {
+    if (isset($_POST['parent_id']) || is_numeric($_POST['parent_id'])) {
         $parent_id = $_POST['parent_id'];
     } else {
         error_log("Invalid parent id!");
