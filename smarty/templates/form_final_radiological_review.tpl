@@ -35,10 +35,15 @@
         </div>
     </div>
 
-    <div class="col-xs-12">
-        <h1>Review Values</h1>
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Review Values</h1>
+        </div>
     </div>
-    <div class="table-responsive">
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
+        <div class="table-scroll" id="content">
         <table width="80%" class="table table-hover table-primary table-bordered">
             <thead>
                 <tr class="info">
@@ -105,25 +110,46 @@
             </tbody>
         </table>
     </div>
+    <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>
     <input type="submit" class="btn btn-sm btn-primary col-xs-4 col-sm-2" name="fire_away" value="Save" />
     {$form.hidden}
 </form>
-<div class="col-xs-12">
-    <h1>Change Log</h1>
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Change Log</h1>
+    </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-primary table-bordered">
-        <thead>
-            <tr class="info">
-                <th>Time</th>
-                <th>User</th>
-                <th>Field</th>
-                <th>Old Value</th>
-                <th>New Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            {$form.history.html}
-        </tbody>
-    </table>
-</div>
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
+        <div class="table-scroll" id="content2">
+            <table class="table table-hover table-primary table-bordered">
+                <thead>
+                    <tr class="info">
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Field</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {$form.history.html}
+                </tbody>
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft2" href="#carousel-example-generic">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight2" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div> 
