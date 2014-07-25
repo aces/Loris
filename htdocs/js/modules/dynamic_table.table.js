@@ -57,6 +57,15 @@ var Table = {
 	checkOverflow: function (tableID, rightID, leftID, headCol) {
 		var staticCol = headCol === undefined ? false : true;
 	    var element = document.querySelector('#' + tableID);
+	    $("." + headCol).each(function(){
+	    	var height = $(this).height();
+	    	var rowHeight = $(this).next().height();
+	    	if(height < rowHeight){
+	    		$(this).height(rowHeight);
+	    	} else{
+	    		$(this).next().height(height);
+	    	}
+	    });
 	    if( (element.offsetHeight < element.scrollHeight) || (element.offsetWidth < element.scrollWidth)){
 	        // your element have overflow
 	        if(staticCol){
