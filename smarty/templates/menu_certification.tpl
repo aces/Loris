@@ -1,54 +1,56 @@
 <script type="text/javascript" src="js/filterControl.js"></script>
 
-<div class="col-md-8 col-sm-10">
-    <form method="post" action="main.php?test_name=certification">
-        <div class="panel panel-primary">
-            <div class="panel-heading" onclick="hideFilter();">
-                Selection Filter
-                <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
-                <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
-            </div>
-            <div class="panel-body" id="panel-body">
-                <div class="row">
-                    <div class="form-group col-sm-3">
-                        <label class="col-sm-12">{$form.centerID.label}</label>
-                        <div class="col-sm-12">{$form.centerID.html}</div>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label class="col-sm-12">{$form.full_name.label}</label>
-                        <div class="col-sm-12">{$form.full_name.html}</div>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label class="col-sm-12">{$form.measure.label}</label>
-                        <div class="col-sm-12">{$form.measure.html}</div>
-                    </div>
-            <!--        <td nowrap="nowrap">Date:</td>
-                    <td nowrap="nowrap">{$form.date_cert.html}</td>
-                    <td nowrap="nowrap">DCCID:</td>
-                    <td nowrap="nowrap">{$form.subject.html}</td>-->
+<div class="row">
+    <div class="col-md-8 col-sm-10">
+        <form method="post" action="main.php?test_name=certification">
+            <div class="panel panel-primary">
+                <div class="panel-heading" onclick="hideFilter();">
+                    Selection Filter
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
                 </div>
-                <div class="row">
-                    <div class="col-sm-4 col-xs-12">
-                        <input type="button" name="button" value="Add Certification" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=certification&subtest=edit_event'" />
+                <div class="panel-body" id="panel-body">
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label class="col-sm-12">{$form.centerID.label}</label>
+                            <div class="col-sm-12">{$form.centerID.html}</div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12">{$form.full_name.label}</label>
+                            <div class="col-sm-12">{$form.full_name.html}</div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12">{$form.measure.label}</label>
+                            <div class="col-sm-12">{$form.measure.html}</div>
+                        </div>
+                <!--        <td nowrap="nowrap">Date:</td>
+                        <td nowrap="nowrap">{$form.date_cert.html}</td>
+                        <td nowrap="nowrap">DCCID:</td>
+                        <td nowrap="nowrap">{$form.subject.html}</td>-->
                     </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="col-sm-3 col-xs-12">
-                        <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
-                    </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="visible-xs col-xs-12"> </div>
-                    <div class="col-sm-3 col-xs-12">
-                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=certification&reset=true'" />
+                    <div class="row">
+                        <div class="col-sm-4 col-xs-12">
+                            <input type="button" name="button" value="Add Certification" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=certification&subtest=edit_event'" />
+                        </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                        </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="visible-xs col-xs-12"> </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=certification&reset=true'" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <!--  title table with pagination -->
