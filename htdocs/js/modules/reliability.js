@@ -34,4 +34,13 @@ $(document).ready(function() {
     // Hide the tab by default
     toggleTable('swapcandidates');
     toggleTable('addcandidate');
+    $.getScript("js/modules/dynamic_table.table.js")
+        .done(function(){
+            Table.setup("content", "scrollRight", "scrollLeft");
+            Table.checkOverflow("content", "scrollRight", "scrollLeft");
+        });
+});
+$(window).resize(function(){
+    Table.checkOverflow("content", "scrollRight", "scrollLeft");
+    // checkOverflow();
 });
