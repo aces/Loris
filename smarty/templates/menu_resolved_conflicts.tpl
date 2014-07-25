@@ -57,57 +57,64 @@
             </div>
         </form>
     </div>
-    <div class="col-md-4 col-sm-4">
-        <a class="btn btn-default" href="main.php?test_name=conflicts_resolve" role="button">See unresolved conflicts</a>
-    </div>
 </div>
 
-<table id="LogEntries" border="0" valign="bottom" width="100%">
-    <tr>
-        <!-- display pagination links -->
-        <td align="right">{$page_links}</td>
-    </tr>
-</table>
-<table class="table table-hover table-primary table-bordered" border="0">
-    <thead>
+<div id="tabs" style="background: white">
+    <ul class="nav nav-tabs">
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=conflicts_resolve">Unresolved Conflicts</a></li>
+        <li class="statsTab active"><a class="statsTabLink">Resolved Conflicts</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active">
+            <table id="LogEntries" border="0" valign="bottom" width="100%">
+                <tr>
+                    <!-- display pagination links -->
+                    <td align="right">{$page_links}</td>
+                </tr>
+            </table>
+            <table class="table table-hover table-primary table-bordered" border="0">
+                <thead>
 
-        {foreach from=$form.errors item=error}
-        <tr>
-            <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
-        </tr>
-        {/foreach}
-        
-        <tr class="info">
-            <th>No.</th>
-            {section name=header loop=$headers}
-            <th><a href="main.php?test_name=resolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-            {if $headers[header].displayName == "TableName"}
-                Instrument
-            {else if $headers[header].displayName == "CandID"}
-                DCCID
-            {else if $headers[header].displayName == "FieldName"}
-                Question                    
-            {else}
-                {$headers[header].displayName}
-            {/if}
-            </a></th>
-            {/section}
-            <th>Corrected Answer</th>
-        </tr>
-    </thead>
-    <tbody>
-        {section name=item loop=$items}
-        <tr>
-            {section name=piece loop=$items[item]}
-                <td>
-                    {$items[item][piece].value}
-                </td>
-            {/section}
-        </tr>
-        {sectionelse}
-            <tr>
-                <tr><td colspan="7">No resolved conflicts found.</td></tr>
-            </tr>
-        {/section}
-    </tbody>
-</table>
+                    {foreach from=$form.errors item=error}
+                    <tr>
+                        <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
+                    </tr>
+                    {/foreach}
+                    
+                    <tr class="info">
+                        <th>No.</th>
+                        {section name=header loop=$headers}
+                        <th><a href="main.php?test_name=resolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                        {if $headers[header].displayName == "TableName"}
+                            Instrument
+                        {else if $headers[header].displayName == "CandID"}
+                            DCCID
+                        {else if $headers[header].displayName == "FieldName"}
+                            Question                    
+                        {else}
+                            {$headers[header].displayName}
+                        {/if}
+                        </a></th>
+                        {/section}
+                        <th>Corrected Answer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {section name=item loop=$items}
+                    <tr>
+                        {section name=piece loop=$items[item]}
+                            <td>
+                                {$items[item][piece].value}
+                            </td>
+                        {/section}
+                    </tr>
+                    {sectionelse}
+                        <tr>
+                            <tr><td colspan="7">No resolved conflicts found.</td></tr>
+                        </tr>
+                    {/section}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
