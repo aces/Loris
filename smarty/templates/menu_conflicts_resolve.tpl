@@ -57,76 +57,83 @@
             </div>
         </form>
     </div>
-    <div class="col-md-4 col-sm-4">
-        <a class="btn btn-default" href="main.php?test_name=resolved_conflicts" role="button">See resolved conflicts</a>
-    </div>
 </div>
 
-<!--  title table with pagination -->
-<table id="LogEntries" border="0" valign="bottom" width="100%">
-    <tr>
-        <!-- display pagination links -->
-        <td align="right">{$page_links}</td>
-    </tr>
-</table>
+<div id="tabs" style="background: white">
+    <ul class="nav nav-tabs ">
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad">Unresolved Conflicts</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=resolved_conflicts">Resolved Conflicts</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active">
+            <!--  title table with pagination -->
+            <table id="LogEntries" border="0" valign="bottom" width="100%">
+                <tr>
+                    <!-- display pagination links -->
+                    <td align="right">{$page_links}</td>
+                </tr>
+            </table>
 
-<div class="table-responsive">
-    <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
-        <table class="table table-hover table-primary table-bordered" border="0">
-            <thead>
+            <div class="table-responsive">
+                <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
+                    <table class="table table-hover table-primary table-bordered" border="0">
+                        <thead>
 
-                {foreach from=$form.errors item=error}
-                <tr>
-                    <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
-                </tr>
-                {/foreach}
-                
-                <tr class="info">
-                    <th>No.</th>
-                        {section name=header loop=$headers}
-                            <th><a href="main.php?test_name=conflicts_resolve&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                            {if $headers[header].displayName == "TableName"}
-                                Instrument
-                            {else if $headers[header].displayName == "CandID"}
-                                DCCID
-                            {else if $headers[header].displayName == "FieldName"}
-                                Question
-                            {else}
-                                {$headers[header].displayName}
-                            {/if}
-                            </a></th>
-                        {/section}
-                    <th>Correct Answer</th>
-                </tr>
-            </thead>
-            <tbody>
-                {section name=item loop=$items}
-                <tr>
-                    {section name=piece loop=$items[item]}
-                        {if $items[item][piece].name != "hash"}
-                            <td>
-                                {$items[item][piece].value}
-                            </td>
-                        {else}
-                            <td nowrap="nowrap" align="right">
-                                {$form[$items[item][piece].value].html}
-                            </td>
-                        {/if}
-                    {/section}
-                </tr>
-                {sectionelse}
-                    <tr>
-                        <tr><td colspan="7">No unresolved conflicts found.</td></tr>
-                    </tr>
-                {/section}
-                <tr>
-                    <td nowrap="nowrap" colspan="6">&nbsp;</td>
-                    <td nowrap="nowrap">
-                        <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
-                        <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
+                            {foreach from=$form.errors item=error}
+                            <tr>
+                                <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
+                            </tr>
+                            {/foreach}
+                            
+                            <tr class="info">
+                                <th>No.</th>
+                                    {section name=header loop=$headers}
+                                        <th><a href="main.php?test_name=conflicts_resolve&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                                        {if $headers[header].displayName == "TableName"}
+                                            Instrument
+                                        {else if $headers[header].displayName == "CandID"}
+                                            DCCID
+                                        {else if $headers[header].displayName == "FieldName"}
+                                            Question
+                                        {else}
+                                            {$headers[header].displayName}
+                                        {/if}
+                                        </a></th>
+                                    {/section}
+                                <th>Correct Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {section name=item loop=$items}
+                            <tr>
+                                {section name=piece loop=$items[item]}
+                                    {if $items[item][piece].name != "hash"}
+                                        <td>
+                                            {$items[item][piece].value}
+                                        </td>
+                                    {else}
+                                        <td nowrap="nowrap" align="right">
+                                            {$form[$items[item][piece].value].html}
+                                        </td>
+                                    {/if}
+                                {/section}
+                            </tr>
+                            {sectionelse}
+                                <tr>
+                                    <tr><td colspan="7">No unresolved conflicts found.</td></tr>
+                                </tr>
+                            {/section}
+                            <tr>
+                                <td nowrap="nowrap" colspan="6">&nbsp;</td>
+                                <td nowrap="nowrap">
+                                    <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
+                                    <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
