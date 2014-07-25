@@ -71,7 +71,7 @@
 </table>
 
 <div class="table-responsive">
-    <form method="post" name="conflicts_resolve" id="conflicts_resolve">
+    <form method="post" name="conflicts_resolve" id="conflicts_resolve" action="main.php?test_name=conflicts_resolve">
         <table class="table table-hover table-primary table-bordered" border="0">
             <thead>
 
