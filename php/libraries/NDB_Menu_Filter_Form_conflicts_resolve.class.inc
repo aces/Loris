@@ -1,13 +1,13 @@
 <?php
 /**
  * This class provides the php code to create the menu filter form that
- * allows unresolved conflicts to processed as part of the conflict resolver
+ * allows unresolved conflicts to be processed as part of the conflict resolver
  *
  * PHP Version 5
  * 
  * @category Behavioural
  * @package  Main 
- * @author   Tara Campbell
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
  */
@@ -18,11 +18,11 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
  * Menu_Filter_Form_conflicts_resolve Class
  *
  * This class provides the php code to create the menu filter form that
- * allows unresolved conflicts to processed as part of the conflict resolver
+ * allows unresolved conflicts to be processed as part of the conflict resolver
  * 
  * @category Behavioural
  * @package  Main 
- * @author   Tara Campbell
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk    
 */
@@ -42,33 +42,36 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        if(!is_array($values) || count($values) ==0) {
+        if (!is_array($values) || count($values) ==0) {
             return true;
         }
         
         $DB =& Database::singleton();
         
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
+        if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
 
-        foreach($values AS $key=>$val) {
-            if($val != 'none') {
+        foreach ($values AS $key=>$val) {
+            if ($val != 'none') {
                 $hash = $key;
                 $row = $DB->pselectRow(
                     "SELECT * FROM conflicts_unresolved 
-                    WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash", 
+                    WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, 
+                        ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash", 
                     array('hash' => $hash)
                 );
-                if(!empty($row)) {
+                if (!empty($row)) {
                    
                     // insert into conflicts_resolved
-                    $user1 = $DB->pselectOne("SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                    $user1 = $DB->pselectOne(
+                        "SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
                         array('CID' => $row['CommentId1'])
                     );
-                    $user2 = $DB->pselectOne("SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                    $user2 = $DB->pselectOne(
+                        "SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
                         array('CID' => $row['CommentId2'])
                     );
                     $resolutionLog=array(
@@ -95,7 +98,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                     $setArray = array($row['FieldName'] => ($val == '1' ? $row['Value1'] : $row['Value2']));
                     $whereArray1 = array('CommentID'=>$row['CommentId1']);
                     $whereArray2 = array('CommentID'=>$row['CommentId2']);
-                    if($row['ExtraKeyColumn'] != null) {
+                    if ($row['ExtraKeyColumn'] != null) {
                         $whereArray1[$row['ExtraKeyColumn']] = $row['ExtraKey1'];
                         $whereArray2[$row['ExtraKeyColumn']] = $row['ExtraKey2'];
                     }
@@ -105,13 +108,9 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                     // delete from conflics_unresolved
                     $DB->run("DELETE FROM conflicts_unresolved WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = '$hash'");
 
-                    // Load the instrument and save it to force the score 
-                    // function to run.
-                    // Wrapped in a try/catch block in case the table doesn't have its own
-                    // instrument (ie. figs_year3_relative)
                     $TableName = $row['TableName'];
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId1'], '', false);
-                    if($Instrument != null) {
+                    if ($Instrument != null) {
                         $Instrument->score();
                         // Score runs the update statements to update the scored columns. There's no need to save,
                         // (and save() doesn't work) because it calls $this->form->getSubmittedValues(), and at
@@ -119,7 +118,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                     }
 
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId2'], '', false);
-                    if($Instrument != null) {
+                    if ($Instrument != null) {
                         $Instrument->score();
                     }
                 }
@@ -195,14 +194,13 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites =& Utility::getSiteList();
-            if(Utility::isErrorX($sites)) {
+            if (Utility::isErrorX($sites)) {
                 return PEAR::raiseError("DB Error: ". $sites->getMessage());
             }
-            if(is_array($sites)) {
+            if (is_array($sites)) {
                 $sites = array_merge(array('' => 'All'), $sites);
             }
-        }
-        else {
+        } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if (Utility::isErrorX($site)) {
@@ -242,23 +240,25 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                 $i++;
             }
 
-            if($item['FieldName'] == 'Examiner') {
+            if ($item['FieldName'] == 'Examiner') {
                 $name1 = $item['Value1'];
                 $name2 = $item['Value2'];
-                if($item['Value1'] != '') {
-                    $name1 = $DB->pselectOne("SELECT Full_Name FROM examiners WHERE examinerID=:EID",
+                if ($item['Value1'] != '') {
+                    $name1 = $DB->pselectOne(
+                        "SELECT Full_Name FROM examiners WHERE examinerID=:EID",
                         array('EID' =>$item['Value1'])
                     );
-                    if(Utility::isErrorX($name1)) {
+                    if (Utility::isErrorX($name1)) {
                         $name1 = $item['Value1'];
                     }
                 }
 
-                if($item['Value2'] != '') {
-                    $name2 = $DB->pselectOne("SELECT Full_Name FROM examiners WHERE examinerID=:EID",
+                if ($item['Value2'] != '') {
+                    $name2 = $DB->pselectOne(
+                        "SELECT Full_Name FROM examiners WHERE examinerID=:EID",
                         array('EID' => $item['Value2'])
                     );
-                    if(Utility::isErrorX($name2)) {
+                    if (Utility::isErrorX($name2)) {
                         $name2 = $item['Value2'];
                     }
                 }
