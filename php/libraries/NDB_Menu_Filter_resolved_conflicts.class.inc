@@ -7,7 +7,7 @@
  * 
  * @category Behavioural
  * @package  Main 
- * @author   Tara Campbell
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
  */
@@ -22,7 +22,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * 
  * @category Behavioural
  * @package  Main 
- * @author   Tara Campbell
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk    
 */
@@ -101,14 +101,13 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites =& Utility::getSiteList();
-            if(Utility::isErrorX($sites)) {
+            if (Utility::isErrorX($sites)) {
                 return PEAR::raiseError("DB Error: ". $sites->getMessage());
             }
-            if(is_array($sites)) {
+            if (is_array($sites)) {
                 $sites = array_merge(array('' => 'All'), $sites);
             }
-        }
-        else {
+        } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if (Utility::isErrorX($site)) {
@@ -143,12 +142,10 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
                 if ($key=='TableName' || $key=='CandID' || $key=='PSCID' || $key=='Visit_label' || $key=='FieldName') {
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }
-                else if ($key=='NewValue') {
+                } else if ($key=='NewValue') {
                     if ($item['NewValue'] == 1) {
                         $NewValue = $item['OldValue1'];
-                    } 
-                    elseif ($item['NewValue'] == 2) {
+                    } elseif ($item['NewValue'] == 2) {
                         $NewValue = $item['OldValue2'];
                     }
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
