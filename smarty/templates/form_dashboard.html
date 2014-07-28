@@ -1,0 +1,131 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+
+        	<!-- Welcome panel -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                	<h2>Welcome, {$username}.</h2>
+                	<p>{$project_description}</p>
+                </div>
+	            <div class="panel-footer">| 
+	            	{foreach from=$dashboard_links item=link}
+						<a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
+					{/foreach}
+				</div>
+        	</div>
+
+        	<!-- Recruitment -->
+        	<div class="panel panel-default">
+                <div class="panel-heading">
+                    Recruitment
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                Actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="#">View site breakdown</a></li>
+                                <li><a href="#">View project breakdown</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-female progress-bar-striped" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
+                            <p>
+                            {$female_percent}%
+                            </br>
+                            Female
+                            </p>
+                        </div>
+                        <div class="progress-bar progress-bar-male progress-bar-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
+                            <p>
+                            {$male_percent}%
+                            </br>
+                            Male
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="panel panel-default">
+            	<div class="panel-heading">
+                    Study Progression
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Other charts
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <li><a href="#">Recruitment</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <canvas id="myChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="col-lg-12">
+                <a href="#">
+                    <div class="panel panel-blue">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-9 text-left">
+                                    <div class="huge">12</div>
+                                    New Scans
+                                </div>
+                                <div class="col-xs-3 text-right alert-chevron">
+                                    <span class="glyphicon glyphicon-chevron-right huge"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-12">
+                <a href="#">
+                    <div class="panel panel-blue">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-9 text-left">
+                                    <div class="huge">23</div>
+                                    New Conflicts
+                                </div>
+                                <div class="col-xs-3 text-right alert-chevron">
+                                    <span class="glyphicon glyphicon-chevron-right huge"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-12">
+                <a href="#">
+                    <div class="panel panel-blue">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-9 text-left">
+                                    <div class="huge">10</div>
+                                    Uncompleted Forms
+                                </div>
+                                <div class="col-xs-3 text-right alert-chevron">
+                                    <span class="glyphicon glyphicon-chevron-right huge"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

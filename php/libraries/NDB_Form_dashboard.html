@@ -1,0 +1,70 @@
+<?php
+/**
+ * This file contains code to create the Dashboard
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+
+require_once "NDB_Form.class.inc";
+require_once "Utility.class.inc";
+
+/**
+ * This file contains code to create the Dashboard
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+
+class NDB_Form_dashboard extends NDB_Form {
+
+	function dashboard() {
+		$tpl_data = array();
+		$config =& NDB_Config::singleton();
+
+		// Welcome panel
+		$tpl_data['username'] = "Tara"; //figure out how to get user name
+		$tpl_data['project_description'] = $config->getSetting('projectDescription');
+		$dashboard_links = $config->getSetting('dashboardLinks');
+        foreach (Utility::toArray($dashboard_links['link']) AS $link) {
+            $LinkArgs = '';
+            $BaseURL = $link['@']['url'];
+            if (isset($link['@']['args'])) {
+                $LinkArgs = $link_args[$link['@']['args']];
+            }
+            $LinkLabel = $link['#'];
+            $WindowName = md5($link['@']['url']);
+            $tpl_data['dashboard_links'][] = array(
+                    'url'        => $BaseURL . $LinkArgs,
+                    'label'      => $LinkLabel,
+                    'windowName' => $WindowName
+            );
+        }
+
+        // Recruitment totals
+        $recruitmentTarget = $config->getSetting('recruitmentTarget');
+        $totalFemales = getTotalSex("female");
+        $tpl_data['female_total'] = $totalFemales;
+        $tpl_data['female_percent'] = $totalFemales/$recruitmentTarget;
+        $totalMales = getTotalSex("male");
+        $tpl_data['male_total'] = $totalMales;
+        $tpl_data['male_percent'] = $totalMales/$recruitmentTarget;
+	}
+
+	function getTotalSex($sex) {
+		$DB =& Database::singleton();
+        $total = $DB->pselectOne(
+                    "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=$sex", array()
+        );
+        return $total;
+	}
+	
+}
