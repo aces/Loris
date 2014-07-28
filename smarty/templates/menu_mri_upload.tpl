@@ -11,7 +11,7 @@
 {/if}
 
 <br />
-<form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data">
+<form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data"> 
     <table class="std zia">
         <!-- table title -->
         <tr>
@@ -25,7 +25,7 @@
         
                 <tr>
               		<td nowrap="nowrap">{$form.mri_file.label}</td>
-              		<td nowrap="nowrap">{$form.mri_file.html}</td>
+              		<td id='file' nowrap="nowrap">{$form.mri_file.html}</td>
               	</tr>
               	
               	<tr>
@@ -55,21 +55,24 @@
       	</tr>
         
     </table>
+   
+    <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
+    
     <table>
-        <td id='hide' style="font-weight: bold" >
+        <tr>
+        <td id='hide' style="font-weight: bold; display: block;" >
         	-Hide log file
         </td> 
-        <td id='show' style="font-weight: bold" >
+        <td id='show' style="font-weight: bold; display: none;" >
         	+Show log file
-        </td> 
-        <!--td nowrap="nowrap" colspan="2"><input class="textarea" id/></td-->
+        </td>
+        </tr> 
+
         <tr>
             <td>
-                <div id="log_box" overflow-y: scroll overflow: auto>
-                </div>
+                <div id="log_box"></div>
             </td> 
         </tr>
-         <!--tr> <td><textarea id="log_box" type="text" rows="4" cols="50" readonly></textarea></td> <tr-->
     
     </table>
     

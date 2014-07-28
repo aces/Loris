@@ -17,7 +17,7 @@
         {/foreach}
         <div class="row">
             <label class="col-sm-2">{$form.pscid.label}</label>
-            <div class="col-sm-10">
+            <div class="col-sm-10" id="pscid">
                 {$pscid}
             </div>
         </div>
@@ -44,4 +44,3 @@
         <input class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}'" value="Return to Candidate Info" type="button" />
     </div>
 </div>
-

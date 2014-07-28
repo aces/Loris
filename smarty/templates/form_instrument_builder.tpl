@@ -80,7 +80,7 @@
                             <a id="line" class="option" title="Empty line">Blank Line</a>
                         </li>
                         <li>
-                            <a id="page" class="option" title="Start a new page">Page Break</a>
+                            <a id="page-break" class="option" title="Start a new page">Page Break</a>
                         </li>
                 </div>
             </div>

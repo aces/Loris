@@ -8,7 +8,7 @@
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter();">
         Selection Filter  
-        <label id="advanced-label" style="display:none">(Advanced Options)</label>
+        <label class="advancedOptions" id="advanced-label" style="display:none">(Advanced Options)</label>
         <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
         <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
     </div>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div id="advanced-options" style="display:none">
+            <div class="advancedOptions" id="advanced-options" style="display:none">
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-sm-12 col-md-4">
@@ -195,71 +195,72 @@
         <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-sm-12 col-md-offset-8">
     </form>
 </div>
-<div class="hidden-xs">
-    <br><br><br><br><br><br><br><br><br><br><br>
-</div>
-<div class="col-xs-12">
-    <div class="pull-right">
-        {$page_links}
-    </div>
-</div>
-<br>
 <!-- <table> -->
 <!--  title table with pagination -->
-<!-- <table border="0" valign="bottom" width="100%"> -->
-<!-- <tr> -->
+<table border="0" valign="bottom" width="100%">
+<tr>
     <!-- title -->
-    <!-- <td class="controlPanelSection"></td> -->
+    <td class="controlPanelSection"></td>
     <!-- display pagination links -->
-    <!-- <td align="right">{$page_links}</td> -->
-<!-- </tr> -->
-<!-- </table> -->
+    <td align="right">{$page_links}</td>
+</tr>
+</table>
 <!-- </form> -->
 <!-- start data table -->
-<div class="table-responsive">
-<table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
-    <thead>
-        <tr class="info">
-         <th>No.</th>
-            <!-- print out column headings - quick & dirty hack -->
-            {section name=header loop=$headers}
-                <th><a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-            {/section}
-        </tr>
-    </thead>
-    <tbody>
-    {section name=item loop=$items}
-        <tr>
-        <!-- print out data rows -->
-        {section name=piece loop=$items[item]}
-            {if $items[item][piece].bgcolor != ''}
-                <td style="background-color:{$items[item][piece].bgcolor}">
-            {else}
-                <td>
-            {/if}
-    		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-    		    {assign var="PSCID" value="$items[item][piece].value"}
-    		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-    		    	
-    		{elseif $items[item][piece].name == "scan_Done"}
-            	{if $items[item][piece].value == 'Y'}
-            		{assign var="scan_done" value="Yes"}
-           		<a href="main.php?test_name=imaging_browser&pscid={$items[item][piece].PSCID}&filter=true">{$scan_done}</a>
-                {else}
-                    {assign var="scan_done" value="No"}
-                    {$scan_done}
-                {/if}
-            {else}
-                {$items[item][piece].value}
-            {/if}
-    		</td>
-        {/section}
-        </tr>           
-    {sectionelse}
-        <tr><td colspan="12">No candidates found</td></tr>
-    {/section}
-</tbody>
-                    
-<!-- end data table -->
-</table>
-
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
+        <div class="table-scroll" id="content">
+            <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
+                <thead>
+                    <tr class="info">
+                     <th>No.</th>
+                        <!-- print out column headings - quick & dirty hack -->
+                        {section name=header loop=$headers}
+                            <th><a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                        {/section}
+                    </tr>
+                </thead>
+                <tbody>
+                    {section name=item loop=$items}
+                        <tr>
+                        <!-- print out data rows -->
+                        {section name=piece loop=$items[item]}
+                            {if $items[item][piece].bgcolor != ''}
+                                <td style="background-color:{$items[item][piece].bgcolor}">
+                            {else}
+                                <td>
+                            {/if}
+                    		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
+                    		    {assign var="PSCID" value="$items[item][piece].value"}
+                    		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+                    		    	
+                    		{elseif $items[item][piece].name == "scan_Done"}
+                            	{if $items[item][piece].value == 'Y'}
+                            		{assign var="scan_done" value="Yes"}
+                            		<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+                                {else}
+                                    {assign var="scan_done" value="No"}
+                                    {$scan_done}
+                                {/if}
+                            {else}
+                                {$items[item][piece].value}
+                            {/if}
+                    		</td>
+                        {/section}
+                        </tr>           
+                    {sectionelse}
+                        <tr><td colspan="12">No candidates found</td></tr>
+                    {/section}
+                </tbody>                   
+            <!-- end data table -->
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>

@@ -27,14 +27,13 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             return PEAR::raiseError("DB Error: ".$site->getMessage());
         }
         
-        return ($user->hasPermission('access_all_profiles') ||  $site->isStudySite());
+        return ($user->hasPermission('access_all_profiles') || ($site->isStudySite() && $user->hasPermission('data_entry')));
     }
 
     function _setupVariables()
     {
         $this->tpl_data['toggled_visible']=false;
         // set the class variables
-        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID','participant_status_options.ID as Participant_Status', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
@@ -42,7 +41,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             'candidate.CandID AS DCCID',
             'candidate.PSCID',
             'candidate.Gender',
-            'participant_status_options.ID AS Participant_Status',
+            'COALESCE(participant_status_options.ID,1) AS Participant_Status',
         );
         if ($useProjects === "true") {
             $this->columns[] = 'min(candidate.ProjectID) as Project';

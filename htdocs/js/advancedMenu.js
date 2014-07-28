@@ -34,7 +34,7 @@ function showAdvancedOptionsCheck() {
         set = isElementSet();
     if (set) {
         els.show();
-        $("#basicSelector").hide();
+        $("#advanced-buttons").hide();
     } else {
         els.hide();
     }

@@ -71,7 +71,7 @@
                 $(document).ready(function(){
                     $("#menu-toggle").click(function(e) {
                         e.preventDefault();
-                        $("#wrapper").toggleClass("active");
+                        $(".wrapper").toggleClass("active");
                     });
                     $(".dropdown").hover(function(){
                         $(this).toggleClass('open');
@@ -191,7 +191,7 @@
         {/if}
         <div id="page" class="container-fluid">
             {if $control_panel}
-                <div id="wrapper">
+                <div class="wrapper">
                 <!-- Sidebar -->
             
                     <div id="sidebar-wrapper" class="sidebar-div">
@@ -207,6 +207,15 @@
             {if $dynamictabs neq "dynamictabs"}
                 <br><br><br>
             <div class="page-content inset">
+                {if $console}
+                    <div class="alert alert-warning" role="alert">
+                        <h3>Console Output</h3>
+                        <div>
+                        <pre>{$console}</pre>
+                        </div>
+                    </div>
+
+                {/if}
                 <!-- <div class="panel panel-primary"> -->
                     
                     {if $crumbs != ""}
@@ -479,7 +488,11 @@
         </div>
         </div>
         {if $dynamictabs neq "dynamictabs"}
+            {if $control_panel}
+            <div id="footer" class="footer navbar-bottom wrapper">
+            {else}
             <div id="footer" class="footer navbar-bottom">
+            {/if}
                 <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" align="center">
                     <li id="active">
                         |

@@ -54,9 +54,9 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     {
         $this->_setDicomArchiveSettings();
                 
-        $this->query = " FROM session s 
-            JOIN candidate c ON (c.CandID=s.CandID)
-            JOIN tarchive t ON (s.ID=t.SessionID)";
+        $this->query = " FROM tarchive t
+            LEFT JOIN session s ON (s.ID=t.SessionID)
+            LEFT JOIN candidate c ON (c.CandID=s.CandID)";
 
         $colsFirst = array(
             't.TarchiveID as TarchiveID',
