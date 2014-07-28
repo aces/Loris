@@ -690,7 +690,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CertificationEnabled = $CertificationConfig['EnableCertification'];
         if($CertificationEnabled) {
             $CertificationProjects = array();
-            foreach(Utility::toArray($CertificationConfig['CertificationProjects']) as $key => $value) {
+            foreach(Utility::asArray($CertificationConfig['CertificationProjects']) as $key => $value) {
                 foreach($value as $k=>$projID) {
                     $CertificationProjects[$projID] = $projID;
                 }
