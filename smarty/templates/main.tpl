@@ -204,7 +204,19 @@
                 if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
+            {if $dynamictabs eq "dynamictabs"}
+                {if $console}
+                    <div class="alert alert-warning" role="alert">
+                        <h3>Console Output</h3>
+                        <div>
+                        <pre>{$console}</pre>
+                        </div>
+                    </div>
+                {/if}
+
+            {/if}
             {if $dynamictabs neq "dynamictabs"}
+            {* Add enough spacing to get below the menu *}
                 <br><br><br>
             <div class="page-content inset">
                 {if $console}
