@@ -190,17 +190,16 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
         $visits = Utility::getVisitList();
         $visits = array_merge(array('' => 'All'), $visits);
 
-        // Get sites that the user has access to
+        // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites =& Utility::getSiteList();
-            if (Utility::isErrorX($sites)) {
-                return PEAR::raiseError("DB Error: ". $sites->getMessage());
+            if(Utility::isErrorX($sites)) {
+                return PEAR::raiseError("DB Error: ".$sites->getMessage());
             }
-            if (is_array($sites)) {
-                $sites = array_merge(array('' => 'All'), $sites);
-            }
-        } else {
+            if(is_array($sites)) $sites = array('' => 'All') + $sites;
+        }
+        else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if (Utility::isErrorX($site)) {
@@ -209,7 +208,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
             if ($site->isStudySite()) {
                 $sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
-        }
+        }   
 
         // Add form elements
         $this->addSelect('site', 'Site:', $sites);
