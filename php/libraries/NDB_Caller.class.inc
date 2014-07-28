@@ -56,8 +56,14 @@ class NDB_Caller extends PEAR
     */
     function load($test_name, $subtest, $CommentID = '', $nextpage=null)
     {
-        // if no first argument, return
+        // if no first argument, load the dashboard
         if (empty($test_name)) {
+            /*$html = $this->loadDashboard();
+            if (Utility::isErrorX($html)) {
+                return PEAR::raiseError($html->getMessage());
+            }
+            $this->type = 'dashboard';
+            return $html;*/
             return;
         }
         if(empty($CommentID)) {
