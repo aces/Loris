@@ -20,6 +20,7 @@
         <tr>
             <th>Series Number</th>
             <th>Series Description</th>
+            <th>Protocol Name</th>
             <th>Sequence Name</th>
             <th>Echo Time</th>
             <th>Repetition Time</th>
@@ -33,6 +34,7 @@
         <tr>
             <td>{$archive_series[record].SeriesNumber}</td>
             <td>{$archive_series[record].SeriesDescription}</td>
+            <td>{if $archive_series[record].ProtocolName != ''}{$archive_series[record].ProtocolName}{else}Unknown{/if}</td>
             <td>{$archive_series[record].SequenceName}</td>
             <td>{$archive_series[record].EchoTime}</td>
             <td>{$archive_series[record].RepetitionTime}</td>
