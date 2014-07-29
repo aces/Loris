@@ -106,7 +106,6 @@ class NDB_Form_participant_accounts extends NDB_Form
 			return array(
 		           'Test_name' => "Instrument ". $values['Test_name']." already exists for given candidate for visit ". $values['VL']
 			 );
-                         break;
 		}
 	}
         if($_REQUEST['fire_away'] !== 'Create survey') {
