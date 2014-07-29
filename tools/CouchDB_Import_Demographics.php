@@ -200,6 +200,9 @@ class CouchDBDemographicsImporter {
         
         // Run query
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
+
+        $this->CouchDB->beginBulkTransaction();
+
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
@@ -216,6 +219,9 @@ class CouchDBDemographicsImporter {
             ));
             print "$id: $success\n";
         }
+
+        print $this->CouchDB->commitBulkTransaction();
+
     }
 }
 

@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 require_once "../php/libraries/NDB_Client.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
@@ -11,7 +12,8 @@ $config = NDB_Config::singleton();
 $db = Database::singleton();
 
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-$ddeInstruments = array('figs_year3');
+//$ddeInstruments = array('figs_year3');
+$ddeInstruments = array('head_measurements_subject');
 
 $allInstruments = $db->pselect("SELECT CommentID, Test_name, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag join session s ON (s.ID=flag.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE Test_name=:testname AND CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'");
 foreach($allInstruments as $instrument) {
