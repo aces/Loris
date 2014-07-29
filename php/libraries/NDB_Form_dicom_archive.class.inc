@@ -29,6 +29,7 @@ require_once 'NDB_Form.class.inc';
 
 class NDB_Form_Dicom_Archive extends NDB_Form
 {
+    var $protocols;
     /**
     * Sets up main parameters
     *
@@ -74,24 +75,37 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
             break;
         case "tarchive_series":
-            $query = "SELECT ts.SeriesNumber, ts.SeriesDescription, ts.SequenceName,
-                ts.EchoTime, ts.RepetitionTime, ts.InversionTime, ts.SliceThickness,
-                ts.PhaseEncoding, ts.NumberOfFiles, ts.SeriesUID,
-                mst.Scan_type as ProtocolName FROM tarchive_series ts
-                LEFT JOIN files f ON ts.SeriesUID=f.SeriesUID
-                LEFT JOIN mri_scan_type mst ON f.AcquisitionProtocolID=mst.ID
-                WHERE ts.TarchiveID=:tID ORDER BY $order";
-            $array = $this->DB->pselect($query, array('tID' => $tarchiveID));
+            $query = "SELECT * FROM $table WHERE TarchiveID =:ID 
+                ORDER BY $order";
+            $array = $this->DB->pselect($query, array('ID' => $tarchiveID));
+            
+            if ($this->_setProtocols()) {
+                $previousSerieDescription = '';
+                $previousProtocolName = '';
+                foreach ($array as &$serie) {
+                    $serieDescription = $serie['SeriesDescription'];
+                    // if the same serie, do not compute the protocol name again,
+                    // use the previous one
+                    if ($previousSerieDescription === $serieDescription) {
+                        $serie['ProtocolName'] = $previousProtocolName;
+                    } else {
+                        $protocolName = $this->_getProtocolName($serie);
+                        $serie['ProtocolName'] = $protocolName;
+                        $previousSerieDescription = $serieDescription;
+                        $previousProtocolName = $protocolName;
+                    }
+                }
+            }
             break;
         case "tarchive_files":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID
-            ORDER BY $order";
+                ORDER BY $order";
             $array = $this->DB->pselect($query, array('ID' => $tarchiveID));
             break;
         }
         
         if (Utility::isErrorX($array)) { 
-            print $array->getMessage()."<br>\n";
+            print $array->getMessage()."\n";
             return null;
         } else {
             return $array;
@@ -132,6 +146,80 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         } else {
             $this->tpl_data['archive']['patientIDValid'] = 0;
             $this->tpl_data['archive']['PatientID'] = "INVALID - HIDDEN";
+        }
+    }
+
+    function _setProtocols() {
+        $query = "SELECT Scan_type, TR_range, TE_range, TI_range, 
+            slice_thickness_range FROM mri_protocol";
+        $this->protocols = $this->DB->pselect($query);
+        if (Utility::isErrorX($this->protocols)) { 
+            print $array->getMessage()."\n";
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    function _getProtocolName($serie)
+    {
+        $tr = $serie['RepetitionTime'];
+        $te = $serie['EchoTime'];
+        $ti = $serie['InversionTime'];
+        $sliceThickness = $serie['SliceThickness'];
+
+        foreach ($this->protocols as $protocol) {
+            if (
+                (! $protocol['TR_range'] || $this->_inRange($tr, $protocol['TR_range']))
+                && (! $protocol['TE_range'] || $this->_inRange($te, $protocol['TE_range']))
+                && (! $protocol['TI_range'] || $this->_inRange($ti, $protocol['TI_range']))
+                && (
+                    ! $protocol['slice_thickness_range'] 
+                    || $this->_inRange($sliceThickness, $protocol['slice_thickness_range'])
+                )
+            ) {
+                return $this->_getProtocolNameFromID($protocol['Scan_type']);
+            } 
+        }
+        return "Unknown"; 
+    }
+
+    function _inRange($serieRange, $protocolRange) {
+        if (! isset($serieRange)) {
+            return 0;
+        } else if (! isset($protocolRange)) {
+            return 0;
+        } else {
+            $serieRangeTrimmed = (int)trim($serieRange);
+            $protocolRanges = split(",", $protocolRange);
+            
+            foreach ($protocolRanges as $range) {
+                $rangeTrimmed = trim($range);
+                if (strpos($rangeTrimmed, "-")) { // range X-Y
+                    $array = split("-", $rangeTrimmed);
+                    $left = (int)trim($array[0]);
+                    $right = (int)trim($array[1]);
+                    if ($left <= $serieRangeTrimmed && $serieRangeTrimmed <= $right) {
+                        return 1;
+                    }
+                } else { // single value element
+                    if ($serieRangeTrimmed === (int)$rangeTrimmed) {
+                        return 1;
+                    }                                                                                 
+                }
+            }
+            return 0;
+        }
+    }
+
+    function _getProtocolNameFromID($id) {
+        $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
+        $array = $this->DB->pselectRow($query, array('ID' => $id));
+        if (Utility::isErrorX($array)) {
+            print $array->getMessage()."\n";
+            return "Unknown";
+        } else {
+            return $array['Scan_type'];
         }
     }
 }
