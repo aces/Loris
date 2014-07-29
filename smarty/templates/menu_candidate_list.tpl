@@ -147,7 +147,6 @@
                             <div class="col-sm-4 col-md-3 col-xs-12 col-md-offset-3">
                                 <input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
-
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
@@ -169,33 +168,36 @@
     </div>
 </div>
 </div>
-<div class="col-sm-3">
-    <div class="hidden-xs">
+
+<div class="col-md-3 col-sm-12">
+    <div class="hidden-xs hidden-sm">
         <br><br><br>
     </div>
-    <form class="form-horizontal" name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
-        <div class="form-group">
-            <label class="col-sm-5 control-label">
+    <form name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
+        <input type="hidden" name="test_name" value="timepoint_list">
+        <div class="form-group row">
+            <label class="col-md-5 col-sm-2 control-label">
                 DCC-ID:            
             </label>
-            <div class="col-sm-7">
+            <div class="col-md-7 col-sm-2">
                 <input tabindex="2" size="10" maxlength="12" type=text name="candID" class="form-control">
             </div>
         </div>
         <br>
-        <div class="form-group">
-            <label class="col-sm-5 control-label">
+        <div class="form-group row">
+            <label class="col-md-5 col-sm-2 control-label">
                 PSC-ID:           
             </label>
-            <div class="col-sm-7">
+            <div class="col-md-7 col-sm-2">
                 <input tabindex="2" size="10" maxlength="12" type=text name="PSCID" class="form-control">
             </div>
         </div>
         <br>
-        <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-sm-12 col-md-offset-8">
+        <div class="row">
+            <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-md-offset-8">
+        </div>
     </form>
 </div>
-<!-- <table> -->
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
