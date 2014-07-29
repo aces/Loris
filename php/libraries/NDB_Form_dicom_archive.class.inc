@@ -29,6 +29,9 @@ require_once 'NDB_Form.class.inc';
 
 class NDB_Form_Dicom_Archive extends NDB_Form
 {
+    /**
+     * Keeps array of protocols from mri_protocol
+     */
     var $protocols;
     /**
     * Sets up main parameters
@@ -149,18 +152,32 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         }
     }
 
-    function _setProtocols() {
+    /**
+     * Gets protocol data from mri_protocol table and 
+     * registers it into class variable $protocols.
+     *
+     * @return bool false if couldn't retrieve data from the table, else true
+     */
+    function _setProtocols() 
+    {
         $query = "SELECT Scan_type, TR_range, TE_range, TI_range, 
             slice_thickness_range FROM mri_protocol";
         $this->protocols = $this->DB->pselect($query);
         if (Utility::isErrorX($this->protocols)) { 
             print $array->getMessage()."\n";
-            return 0;
+            return false;
         } else {
-            return 1;
+            return true;
         }
     }
-
+    /**
+     * Finds the protocol name by comparing parameters of a serie.
+     * 
+     * @param array $serie serie for which the protocol is to be found
+     *
+     * @return string name of the protocol, "Unknown" if protocol for
+     *         serie's parameters doesn't exist
+     */
     function _getProtocolName($serie)
     {
         $tr = $serie['RepetitionTime'];
@@ -169,26 +186,38 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         $sliceThickness = $serie['SliceThickness'];
 
         foreach ($this->protocols as $protocol) {
-            if (
-                (! $protocol['TR_range'] || $this->_inRange($tr, $protocol['TR_range']))
-                && (! $protocol['TE_range'] || $this->_inRange($te, $protocol['TE_range']))
-                && (! $protocol['TI_range'] || $this->_inRange($ti, $protocol['TI_range']))
-                && (
-                    ! $protocol['slice_thickness_range'] 
-                    || $this->_inRange($sliceThickness, $protocol['slice_thickness_range'])
-                )
-            ) {
+            if ((! $protocol['TR_range'] 
+                || $this->_inRange($tr, $protocol['TR_range']))
+                && (! $protocol['TE_range'] 
+                || $this->_inRange($te, $protocol['TE_range']))
+                && (! $protocol['TI_range'] 
+                || $this->_inRange($ti, $protocol['TI_range']))
+                && (! $protocol['slice_thickness_range'] 
+                || $this->_inRange(
+                    $sliceThickness, $protocol['slice_thickness_range']
+                ))) {
                 return $this->_getProtocolNameFromID($protocol['Scan_type']);
             } 
         }
         return "Unknown"; 
     }
 
-    function _inRange($serieRange, $protocolRange) {
+    /**
+     * Compares parameters of a serie and of the protocols
+     * 
+     * @param string $serieRange    serie's parameter to be compared
+     * @param string $protocolRange protocol's parameter 
+     *        to be compared with
+     *
+     * @return bool true if serie's parameter is in range with 
+     *         the protocol's one, false otherwise
+     */
+    function _inRange($serieRange, $protocolRange) 
+    {
         if (! isset($serieRange)) {
-            return 0;
+            return false;
         } else if (! isset($protocolRange)) {
-            return 0;
+            return false;
         } else {
             $serieRangeTrimmed = (int)trim($serieRange);
             $protocolRanges = split(",", $protocolRange);
@@ -199,20 +228,31 @@ class NDB_Form_Dicom_Archive extends NDB_Form
                     $array = split("-", $rangeTrimmed);
                     $left = (int)trim($array[0]);
                     $right = (int)trim($array[1]);
-                    if ($left <= $serieRangeTrimmed && $serieRangeTrimmed <= $right) {
-                        return 1;
+                    if ($left <= $serieRangeTrimmed 
+                        && $serieRangeTrimmed <= $right
+                    ) {
+                        return true;
                     }
                 } else { // single value element
                     if ($serieRangeTrimmed === (int)$rangeTrimmed) {
-                        return 1;
-                    }                                                                                 
+                        return true;
+                    }
                 }
             }
-            return 0;
+            return false;
         }
     }
-
-    function _getProtocolNameFromID($id) {
+    /**
+     * Retrieves the protocol name given the protocol ID
+     * from mri_scan_table table
+     *
+     * @param string $id id of the protocol
+     *
+     * @return string name of the protocol, "Unknown" if 
+     *         protocol with the given id doesn't exist.
+     */
+    function _getProtocolNameFromID($id) 
+    {
         $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
         $array = $this->DB->pselectRow($query, array('ID' => $id));
         if (Utility::isErrorX($array)) {
