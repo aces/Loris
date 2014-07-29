@@ -1,0 +1,4 @@
+The data dictionary module is used for viewing and modifying the parameter_type
+table which contains LORIS's data dictionary. If the user has the data_dict_edit
+permission, they are able to override the description to customize the data
+dictionary

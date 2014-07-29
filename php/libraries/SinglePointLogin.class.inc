@@ -52,6 +52,7 @@ class SinglePointLogin extends PEAR
         $tpl_data['error_message'] = $this->_lastError;
         $study_links = $config->getSetting('Studylinks');// print_r($study_links);
         foreach(Utility::toArray($study_links['link']) AS $link){
+            $LinkArgs = '';
             $BaseURL = $link['@']['url'];
             if(isset($link['@']['args'])) {
                 $LinkArgs = $link_args[$link['@']['args']];
@@ -229,6 +230,20 @@ class SinglePointLogin extends PEAR
     function authenticate()
     {
         $this->_lastError = '';
+         
+         ///////////////////////////
+         ///initialization/////
+         //////////////////////////
+         $this->_username = $_POST['username'];
+         $setArray = array(
+             'userID'=> $this->_username,
+             'Success' => 'Y',
+             'Failcode' => null,
+             'Login_timestamp' => date('Y-m-d H:i:s'),
+             'IP_address' => $_SERVER['REMOTE_ADDR'],
+             'Page_requested' => $_SERVER['REQUEST_URI']
+         );
+
 
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
@@ -248,10 +263,12 @@ class SinglePointLogin extends PEAR
         }
         if (empty($_POST['username'])) {
             $this->_lastError = 'Please enter a username';
+            $this->insertFailedDetail($this->_lastError, $setArray);///insert failed_detail into user_login_history
             return false;
         }
         if (empty($_POST['password'])) {
             $this->_lastError = 'Please enter a password';
+            $this->insertFailedDetail($this->_lastError, $setArray);///insert failed_detail into user_login_history
             return false;
         }
 
@@ -274,6 +291,8 @@ class SinglePointLogin extends PEAR
                 // check that the user is active
                 if ($row['Active'] == 'N') {
                     $this->_lastError = "Your account has been deactivated.  Please contact your project administrator to reactivate this account.";
+                    $this->insertFailedDetail("user account not active", $setArray);///insert failed_detail into user_login_history
+
                     return false;
                 }
 
@@ -285,12 +304,15 @@ class SinglePointLogin extends PEAR
 
                 // user is valid
                 $this->_username = $_POST['username'];
+                // insert the user into the user_login_history table
+                $result =  $DB->insert('user_login_history', $setArray);
                 return true;
             }
             // bad usename or password
         }
 
         $this->_lastError = "Incorrect username or password";
+        $this->insertFailedDetail($this->_lastError, $setArray);///insert failed_detail into user_login_history
         return false;
     }
 
@@ -331,5 +353,29 @@ class SinglePointLogin extends PEAR
 
         $_SESSION['State']->setUsername(null);
     }
+
+     /**
+     * Inserts the login (or failed-login) detail into the user_login_history
+     *
+     * @param String $description description for the failed-login 
+     * @param Array  $setArray    contains data to be inserted
+     * 
+     * @return null
+      */
+     function insertFailedDetail($description, $setArray)
+     {
+         // create DB object
+         $DB =& Database::singleton();
+         if (Utility::isErrorX($DB)) {
+             return PEAR::raiseError(
+                 "Could not connect to database: ".$DB->getMessage()
+             );
+         }
+         $setArray['Success'] = 'N';
+         $setArray['Fail_detail'] = $description;
+         // in future, add mapping of error message to Failcode field enum
+         $result =  $DB->insert('user_login_history', $setArray);
+     }
+
 }
 ?>

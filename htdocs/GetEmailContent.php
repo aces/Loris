@@ -13,6 +13,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+ini_set('default_charset', 'utf-8');
 
 require_once "Database.class.inc";
 require_once 'NDB_Config.class.inc';

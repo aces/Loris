@@ -27,14 +27,13 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
             return PEAR::raiseError("DB Error: ".$site->getMessage());
         }
         
-        return ($user->hasPermission('access_all_profiles') ||  $site->isStudySite());
+        return ($user->hasPermission('access_all_profiles') || ($site->isStudySite() && $user->hasPermission('data_entry')));
     }
 
     function _setupVariables()
     {
         $this->tpl_data['toggled_visible']=false;
         // set the class variables
-        $this->columns = array('psc.Name AS PSC', 'candidate.CandID AS DCCID', 'COALESCE (participant_status_options.ID,1) as Participant_Status', 'candidate.PSCID', 'candidate.Gender', 'min(candidate.ProjectID) as Project', 'min(session.SubprojectID) as Subproject', 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB');
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
@@ -142,7 +141,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addBasicText('DCCID', 'DCCID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addSelect('gender', 'Gender:', array('' => 'All', 'Male' => 'Male', 'Female' => 'Female'));
-        $this->addSelect('SubprojectID', 'Suproject:', array('' => 'All') + $list_of_subprojects);
+        $this->addSelect('SubprojectID', 'Subproject:', array('' => 'All') + $list_of_subprojects);
         $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
@@ -186,6 +185,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
                 if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
                     $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
                 }
+                $this->tpl_data['items'][$x][$i]['PSCID'] = $item['PSCID']; 
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
                 // get feedback information for each displayed candidate record

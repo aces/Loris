@@ -2,6 +2,8 @@
 require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/Array.php';
+require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 include_once ('HTML/QuickForm/Renderer/Default.php');
 
 /**
@@ -356,28 +358,13 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults = $this->localDefaults;
         }
         $this->form->setDefaults($defaults);
-
         
-        // display the HTML_Quickform object
-        // return $this->form->toHTML();
-        
-        $renderer = new HTML_QuickForm_Renderer_Default();
-        if(isset($this->testName)) {
-            $renderer->setFormTemplate("<form{attributes}><table id=\"instrument_" . $this->testName . "\" class=\"instrument\">{content}</table></form>");
-        } else {
-            $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
-        }
- 
-        $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
-        $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
-        $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
-
-        // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
-        // so that we can have instructions/labels in the direct data entry instruments that span into
-        // the column for data entry.
-        $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
+        $smarty = new Smarty_neurodb;
+        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
         $this->form->accept($renderer);
-        return $renderer->toHtml();
+        $smarty->assign('form', $renderer->toArray());
+        $html = $smarty->fetch("instrument_html.tpl");
+        return $html;
     }
     
     /**
@@ -447,14 +434,16 @@ class NDB_BVL_Instrument extends NDB_Page
                 
                 // the form WAS submitted but validate() failed...
                 // main error message
-                 print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 // print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
+                 $this->form->addElement('static', 'mainError');
+                 $this->form->setElementError('mainError', "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n");
                  //print all the field error messages in one block
                 foreach(array_keys($submittedData) AS $key) {
                     $error = $this->form->getElementError($key);
                     if(!empty($error)) {
                         $element = $this->form->getElement($key);
                         if(method_exists($element, "getLabel")){
-                            print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                            // print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
                         }
                     }
                 }
@@ -690,7 +679,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CertificationEnabled = $CertificationConfig['EnableCertification'];
         if($CertificationEnabled) {
             $CertificationProjects = array();
-            foreach(Utility::toArray($CertificationConfig['CertificationProjects']) as $key => $value) {
+            foreach(Utility::asArray($CertificationConfig['CertificationProjects']) as $key => $value) {
                 foreach($value as $k=>$projID) {
                     $CertificationProjects[$projID] = $projID;
                 }
@@ -1146,31 +1135,54 @@ class NDB_BVL_Instrument extends NDB_Page
         return $errors;
     }
     
-    function XINRunRuleFunction($controller, $values, $operator){
+    function XINRunRuleFunction($controller, $values, $operator)
+    {
         $is_required=true;
-        //Loop through the conditions to test against (for most rules it will only be one value)
-        //If all of the conditions are true (ie: all conditions are met to pop a required rule)
+        //Loop through the conditions to test against (for most rules it
+        //will only be one value)
+        //If all of the conditions are true (ie: all conditions are met 
+        //to pop a required rule)
         $valFlag=array();
-        foreach($values AS $value){
-            $compareFunction = create_function('$a, $b', "return (\$a $operator \$b);");
-            if($this->XINDebug){echo "'$controller' $operator '$value'<br>";} //debugging code
-            if(!$compareFunction($controller, $value)) {
-                $valFlag[]=false;  //IF one of the conditions is not met then this rule does not need to be run.
+        foreach ($values AS $value) {
+            $compareFunction = create_function(
+                '$a, $b',
+                "return (\$a $operator \$b);"
+            );
+            if ($this->XINDebug) {
+                //debugging code
+                echo "'$controller' $operator '$value'<br>";
+            }
+            if (!$compareFunction($controller, $value)) {
+                // IF one of the conditions is not  met then this rule 
+                // does not need to be run.
+                $valFlag[]=false;
             }
         }
         //For conditions
-        if(count($valFlag)==count($values)){
+        if (count($valFlag)==count($values)) {
             $is_required=false;
         }
         return $is_required;
     }
 
   
-     //Get a the value of $field from the instrument table.  Used specifically by electronic instruments to check if file is already uploaded.
+    /**
+     * Get a the value of $field from the instrument table.
+     * Used specifically by electronic instruments to check if file
+     * is already uploaded.
+     *
+     * @param string $field The field to get from this instrument
+     *
+     * @return The value of the field, or false if it's empty.
+     */
     function getFieldValue($field)
     {
         $DB =& Database::singleton();
-        if(Utility::isErrorX($DB)) return PEAR::raiseError("Could not connect to database: ".$DB->getMessage()."<br>\n");
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()."<br>\n"
+            );
+        }
 
         $query = "SELECT $field FROM $this->table WHERE CommentID = :CID";
         $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
@@ -1184,8 +1196,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * gets the sessionID for the timepoint to which this instrument pertains
-     * @return int  the sessionID
-     * @access public
+     *
+     * @return Integer The sessionID
      */
     function getSessionID()
     {
@@ -1201,73 +1213,129 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-    * determines what the data entry status flag should be set to
-    * @return string   either 'Complete' or 'Incomplete'
-    * @access private
+    * Determines what the data entry status flag should be set to
+    *
+    * @return string  Either 'Complete' or 'Incomplete'
     */
     function _determineDataEntryCompletionStatus()
     {
         // don't bother checking anything if the required elements array is empty
-        if(empty($this->_requiredElements)) return 'Complete';
+        if (empty($this->_requiredElements)) {
+            return 'Complete';
+        }
 
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()."<br>\n"
+            );
+        }
 
-        $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID=:CID";
-        $dataFields = $db->pselectRow($query, array('CID' => $this->getCommentID()));
-        foreach($dataFields as $field) {
-            // this shouldn't be just empty() b/c 0 is a valid value for some required fields
-            if(is_null($field) || $field === "") return 'Incomplete';
+        $query = "SELECT " . join(',', $this->_requiredElements)
+            . " FROM $this->table WHERE CommentID=:CID";
+        $dataFields = $db->pselectRow(
+            $query,
+            array('CID' => $this->getCommentID())
+        );
+        foreach ($dataFields as $field) {
+            // this shouldn't be just empty() b/c 0 is a valid
+            // value for some required fields
+            if (is_null($field) || $field === "") {
+                return 'Incomplete';
+            }
         }
         return 'Complete';
     }
 
 
     /**
-    * gets the data entry completion status
-    * @return string   either 'Complete' or 'Incomplete'
-    * @access public
+     * Gets the data entry completion status for this instrument
+     *
+    * @return string Either 'Complete' or 'Incomplete'
     */
     function getDataEntryCompletionStatus()
     {
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: "
+                .$db->getMessage()."<br>\n"
+            );
+        }
 
-        $query = "SELECT Data_entry_completion_status FROM $this->table WHERE CommentID=:CID";
+        $query = "SELECT Data_entry_completion_status
+            FROM $this->table WHERE CommentID=:CID";
         return $db->pselectOne($query, array('CID' => $this->getCommentID()));
     }
 
 
     /**
-    * sets the data entry completion status
-    * @params string   $status     the status - either 'Complete' or 'Incomplete'
-    * @access private
-    * @return void
+    * Sets the data entry completion status
+    *
+    * @param string $status The status - either 'Complete' 
+    *                       or 'Incomplete'
+    *
+    * @return none
     */
     function _setDataEntryCompletionStatus($status)
     {
-        if(!in_array($status, array('Complete', 'Incomplete'))) return PEAR::raiseError("Invalid status passed to _setDataEntryCompletionStatus - '$status' should have been either 'Complete' or 'Incomplete'<br>\n");
+        if (!in_array($status, array('Complete', 'Incomplete'))) {
+            return PEAR::raiseError(
+                "Invalid status passed to _setDataEntryCompletionStatus - "
+                . "'$status' should have been either "
+                . "'Complete' or 'Incomplete'<br>\n"
+            );
+        }
 
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()."<br>\n"
+            );
+        }
 
-        $success = $db->update($this->table,
-        array('Data_entry_completion_status'=>$status),
-        array('CommentID'=>$this->getCommentID())
+        $success = $db->update(
+            $this->table,
+            array('Data_entry_completion_status'=>$status),
+            array('CommentID'=>$this->getCommentID())
         );
 
-        if(Utility::isErrorX($success)) return PEAR::raiseError("Could not update status: ".$success->getMessage()."<br>\n");
+        if (Utility::isErrorX($success)) {
+            return PEAR::raiseError(
+                "Could not update status: ".$success->getMessage()."<br>\n"
+            );
+        }
     }
 
     /**
-    * Wrapper to auto-create a simple Yes, No, Null, Not Answered type of question
-    * @param    string    $field    The database field in which the response will be stored
-    * @param    string    $label    The question text to display
-    * @param    array    $rules    {@} delimited rules
-    * @param    string    $rule_message    rule message to display
-    */
-    function addYesNoElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $this->addSelect($field, $label, array(NULL=>'', 'yes'=>'Yes', 'no'=>'No','not_answered'=>'Not Answered'));
+     * Wrapper to auto-create a simple Yes, No, Null, Not Answered type
+     * of question
+     *
+     * @param string $field        The database field in which the response
+     *                             will be stored
+     * @param string $label        The question text to display
+     * @param array  $rules        {@} delimited rules
+     * @param string $rule_message rule message to display
+     *
+     * @return none
+     */
+    function addYesNoElement(
+        $field,
+        $label,
+        $rules=array(),
+        $rule_message='This field is required.'
+    ) {
+        $this->addSelect(
+            $field,
+            $label,
+            array(
+                null => '',
+                'yes'=>'Yes',
+                'no'=>'No',
+                'not_answered'=>'Not Answered'
+            )
+        );
+
         if (!empty($rules)) {
             $this->XINRegisterRule($field, $rules, $rule_message);        
         }
@@ -1275,15 +1343,37 @@ class NDB_BVL_Instrument extends NDB_Page
     
     /**
     * Wrapper to create a text field with an accompanying status field.
-    * @param    string    $field    The database field in which the response will be stored
-    * @param    string    $label    The question text to display
-    * @param    array    $rules    rules with values and comparisson operators {@} seperated.  Example: array('q_40{@}=={@}1_yes','q_40_b{@}=={@}1_yes')
-    * @param    string    $rule_message    rule message to display
-    * @param    array   $refusals   options in the refusal select (ie. Refusal, Unknown, Not Answered).
+    *
+    * @param string $field        The database field in which the response
+    *                             will be stored
+    * @param string $label        The question text to display
+    * @param array  $rules        rules with values and comparisson operators
+    *                             {@} seperated. 
+    *                             Example: array(
+    *                                 'q_40{@}=={@}1_yes',
+    *                                 'q_40_b{@}=={@}1_yes'
+    *                                 )
+    * @param string $rule_message rule message to display
+    * @param array  $refusals     options in the refusal select (ie. Refusal,
+    *                             Unknown, Not Answered).
+    *
+    * @return none
     */
-    function addTextElement($field, $label, $rules=array(), $rule_message='This field is required.', $refusals=array(''=>'', 'not_answered'=>'Not Answered')){
-        $group[]=&$this->createText($field);
-        $group[]=&$this->createSelect($field."_status", "", $refusals);
+    function addTextElement(
+        $field,
+        $label,
+        $rules=array(),
+        $rule_message='This field is required.',
+        $refusals=array(''=>'', 'not_answered'=>'Not Answered')
+    ) {
+        $group[] =& $this->createText($field);
+        $group[] =& $this->createSelect(
+            $field."_status",
+            "",
+            $refusals,
+            array('class' => 'form-control input-sm not-answered')
+        );
+
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
         $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
@@ -1291,48 +1381,130 @@ class NDB_BVL_Instrument extends NDB_Page
     }
      
     /**
-     * Wrapper to create a text area field for questions that require Refused and Don't know options
+     * Wrapper to create a text area field for questions that require
+     * Refused and Don't know options
+     *
+     * @param string $field        The database name for this field
+     * @param string $label        The question text
+     * @param array  $rules        XINRules for this question
+     * @param string $rule_message The error message if rules are violated
+     *
+     * @return none
+     * @note This was only ever used by the EARLI instrument and should be moved
+     *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
-     
-    function addTextAreaElementRD($field, $label, $rules=array(), $rule_message='You must specify or select from the drop-down'){
-        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'',"88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>'Not Answered'));
+    function addTextAreaElementRD($field,
+        $label,
+        $rules=array(),
+        $rule_message='You must specify or select from the drop-down'
+    ) {
+        $group[] =& $this->form->createElement(
+            "textarea",
+            $field,
+            null,
+            array('cols'=>25, 'rows'=>4)
+        );
+        $group[] =& $this->createSelect(
+            $field."_status",
+            "",
+            array(
+                null => '',
+                "88_refused"=>"88 Refused",
+                "99_do_not_know"=>"99 Do not know",
+                'not_answered'=>'Not Answered'
+            )
+        );
+
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
-        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
+        $rules_array=array_merge(array($field.'_status{@}=={@}'), $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
     }
     
     /**
     * Wrapper to create a text area field, with an accompanying status field.
-    * @param    string    $field    The database field in which the response will be stored
-    * @param    string    $label    The question text to display
-    * @param    array    $rules    {@} delimited rules
-    * @param    string    $rule_message    rule message to display upon rule violation
+    *
+    * @param string $field        The database field in which the response
+    *                             will be stored
+    * @param string $label        The question text to display
+    * @param array  $rules        {@} delimited rules
+    * @param string $rule_message rule message to display upon rule violation
+    *
+    * @return none
     */
-    
-
-    function addTextAreaElement($field, $label, $rules=array(), $rule_message='This field is required.'){
-        $group[]=&$this->form->createElement("textarea", $field, null, array('cols'=>25, 'rows'=>4));
-        $group[]=&$this->createSelect($field."_status", "", array(NULL=>'', 'not_answered'=>'Not Answered'));
+    function addTextAreaElement(
+        $field,
+        $label,
+        $rules=array(),
+        $rule_message='This field is required.'
+    ) {
+        $group[] =& $this->form->createElement(
+            "textarea",
+            $field,
+            null,
+            array('cols'=>25, 'rows'=>4, 'class' => 'form-control')
+        );
+        $group[] =& $this->createSelect(
+            $field."_status",
+            "",
+            array(
+                null           => '',
+                'not_answered' => 'Not Answered'
+            ),
+            array('class' => 'form-control input-sm not-answered')
+        );
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
-        $rules_array=array_merge(array($field.'_status{@}=={@}'),$rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+        $rules_array = array_merge(array($field.'_status{@}=={@}'), $rules);
+        $this->XINRegisterRule(
+            $field,
+            $rules_array,
+            $rule_message,
+            $field.'_group'
+        );
     }
     
     /**
     * Wrapper to create an Hour/Minute field, with an accompanying status field.
-    * @param     string    $field    Name given to the HTML QuickForm Element being created
-    * @param     string    $label    The question text to display
-    * @param     array    $rules    Additional rules to apply to the element being added,{@} delimited
-    * @param     string    $rule_message    message to display upon rule violation.
+    *
+    * @param string $field        Name given to the HTML QuickForm Element
+    *                             being created
+    * @param string $label        The question text to display
+    * @param array  $rules        Additional rules to apply to the element
+    *                             being added,{@} delimited
+    * @param string $rule_message Message to display upon rule violation.
+    *
+    * @return none
+    * @note only used by EARLI? What is "dnk"? This should be cleaned up to use
     */
-    function addHourMinElement($field, $label, $rules=array(), $rule_message="You are required to select a status if you want to leave this time blank.") {
-        $group[]=&$this->createDate($field, null, array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true));
-        $group[]=&$this->createSelect($field . "_status", "", array(NULL=>'', "dnk"=>"DNK", "refusal"=>"Refusal", 'not_answered'=>'Not Answered'));
+    function addHourMinElement(
+        $field,
+        $label,
+        $rules=array(),
+        $rule_message="You are required to select a status if you want to leave this time blank."
+    ) {
+        $group[] =& $this->createDate(
+            $field,
+            null,
+            array('language'=>'en', 'format'=>'H:i', 'addEmptyOption'=>true)
+        );
+        $group[] =& $this->createSelect(
+            $field . "_status",
+            "",
+            array(
+                null =>'',
+                "dnk"=>"DNK",
+                "refusal"=>"Refusal",
+                'not_answered'=>'Not Answered'
+            )
+        );
         $this->addGroup($group, $field . "_group", $label, null, false);
-        $this->XINRegisterRule($field, array_merge($rules, array($field . '_status{@}=={@}')), $rule_message, $field . '_group');
+        $this->XINRegisterRule(
+            $field,
+            array_merge($rules, array($field . '_status{@}=={@}')),
+            $rule_message,
+            $field . '_group'
+        );
         unset($group);
     }
 
@@ -1353,28 +1525,62 @@ class NDB_BVL_Instrument extends NDB_Page
             $options = $this->dateOptions;
         }
 
-        $group [] = $this->createDate($name . "_date", null, $options);
+        $group [] = $this->createDate(
+            $name . "_date",
+            null,
+            $options,
+            array(
+                'class' => 'form-control input-sm '.$name."_date",
+                'style' => 'max-width:33%; display:inline-block;'
+            )
+        );
         if (!in_array($name . "_date", $this->dateTimeFields)) {
             $this->dateTimeFields[] = $name . "_date"; 
         }
 
-        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
-        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $group [] = $this->createSelect(
+            $name . "_date_status",
+            null,
+            array(
+                null =>"",
+                'not_answered'=>"Not Answered"
+            ),
+            array('class' => 'form-control input-sm not-answered')
+        );
+
+        $this->addGroup(
+            $group,
+            $name . "_date_group",
+            $label,
+            $this->_GUIDelimiter,
+            false
+        );
+
         unset($group);
-        $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "A Date, or Not Answered is required.", $name . "_date_group");
+        $this->XINRegisterRule(
+            $name . "_date",
+            array($name . "_date_status{@}=={@}"),
+            "A Date, or Not Answered is required.",
+            $name . "_date_group"
+        );
     }
 
     /** 
      * Wrapper to create a month year date field
-     * Adding this to Instrument class instead of NDB_Page is because we need this for saveValues function
-     * @param string $field Name of the field
-     * @param string $label Element label
-     * @param array $options optional override of class's dateOptions
+     *
+     * This is only used in instruments and not in NDB_Page because
+     * special logic is needed in the _saveValues to deal with the
+     * monthYear fields.
+     *
+     * @param string $field   Name of the field
+     * @param string $label   Element label
+     * @param array  $options optional override of class's dateOptions
      *
      * @return none
     */
-    function addMonthYear($field, $label, $options=array()) {
-        if(is_array($options)) {
+    function addMonthYear($field, $label, $options=array())
+    {
+        if (is_array($options)) {
             $options['format'] = 'YM';
         }
         $this->form->addElement('date', $field, $label, $options);
@@ -1384,61 +1590,151 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /** 
     * Wrapper with a user-created date group, a status box and appropriate rule
+    *
+    * @param string $name      The database name to add to the form
+    * @param string $label     The question text
+    * @param array  $dateArray QuickForm date options to use
+    *
+    * @return none
+    * @note This was only ever used by the EARLI instrument and should be moved
+    *       out of the NDB_BVL_Instrument into an EARLI base class.
     */
-    function addCustomDateElement($name, $label, $dateArray){
+    function addCustomDateElement($name, $label, $dateArray)
+    {
         $group [] = $this->createDate($name . "_date", null, $dateArray);
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
-        $group [] = $this->createSelect($name . "_date_status", null, array(NULL=>"", '88_refused'=>"88 Refused", '99_do_not_know'=>"99 Do not know", 'not_answered'=>"Not Answered"));
-        $this->addGroup($group, $name . "_date_group", $label, $this->_GUIDelimiter, FALSE);
+        $group [] = $this->createSelect(
+            $name . "_date_status",
+            null,
+            array(
+                null => "",
+                '88_refused'=>"88 Refused",
+                '99_do_not_know'=>"99 Do not know",
+                'not_answered'=>"Not Answered"
+            )
+        );
+        $this->addGroup(
+            $group,
+            $name . "_date_group",
+            $label,
+            $this->_GUIDelimiter,
+            false
+        );
         unset($group);
-        $this->XINRegisterRule($name . "_date", array($name . "_date_status{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
-        $this->XINRegisterRule($name . "_date_status", array($name . "_date{@}=={@}"), "You must specify or select from the drop-down", $name . "_date_group");
+        $this->XINRegisterRule(
+            $name . "_date",
+            array($name . "_date_status{@}=={@}"),
+            "You must specify or select from the drop-down",
+            $name . "_date_group"
+        );
+        $this->XINRegisterRule(
+            $name . "_date_status",
+            array($name . "_date{@}=={@}"),
+            "You must specify or select from the drop-down",
+            $name . "_date_group"
+        );
 
     }
 
 
 
     /**
-    * Wrapper to create a field that only accepts a number, with an accompanying status field.
-    * @param    string    $field    The database field in which the response will be stored
-    * @param    string    $label    The question text to display
-    */
-    function addNumericElement($field, $label, $options = null) {
+     * Wrapper to create a field that only accepts a number, with an
+     * accompanying status field.
+     *
+     * @param string  $field   The database field in which the response
+     *                         will be stored
+     * @param string  $label   The question text to display
+     * @param unknown $options Does not appear to be used?
+     *
+     * @return none
+     */
+    function addNumericElement($field, $label, $options = null)
+    {
         $group [] = $this->createText($field, $label);
-        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", 'not_answered'=>"Not Answered"));
+        $group [] = $this->createSelect(
+            $field . "_status",
+            null,
+            array(
+                null => "",
+                'not_answered'=>"Not Answered"
+            ),
+            array('class' => 'form-control input-sm not-answered')
+        );
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
-        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
+        $this->addGroupRule(
+            $field . "_group",
+            array(array(array("Value must be numeric.", 'numeric')))
+        );
+        $this->XINRegisterRule(
+            $field,
+            array($field . '_status{@}=={@}'),
+            'This field is required',
+            $field . '_group'
+        );
     }
 
     /**
-    * Wrapper to create a field that only accepts a number, for questions that require refused and don't know options
+     * Wrapper to create a field that only accepts a number, for questions that
+     * require refused and don't know options
+     *
+     * @param string $field The database name to add
+     * @param string $label The user friendly label to display
+     *
+     * @return none
+     *
+     * @note This was only ever used by the EARLI instrument and should be moved
+     *       out of the NDB_BVL_Instrument into an EARLI base class.
+     *
+     */
+    function addNumericElementRD($field, $label)
+    {
+        $group [] = $this->createText($field, $label);
+        $group [] = $this->createSelect(
+            $field . "_status",
+            null,
+            array(
+                null => "",
+                "88_refused"=>"88 Refused",
+                "99_do_not_know"=>"99 Do not know",
+                'not_answered'=>"Not Answered"
+            ),
+            array('class' => 'form-control input-sm not-answered')
+        );
+        $this->addGroup($group, $field . "_group", $label, null, false);
+        unset($group);
+        $this->addGroupRule(
+            $field . "_group",
+            array(array(array("Numbers only, please", 'numeric')))
+        );
+        $this->XINRegisterRule(
+            $field,
+            array($field . '_status{@}=={@}'),
+            'This field is required',
+            $field . '_group'
+        );
+    }
+
+
+    /**
+     * Nulls all scores for the record identified by CommentID. This should
+     * be done at the start of any scoring run to ensure that old data is
+     * nulled before the current score run, in case a change in the data
+     * affected which scores are calculated so that the old (incorrect) data
+     * doesn't remain.
     *
-    */
-    
-    function addNumericElementRD($field, $label) {
-        $group [] = $this->createText($field, $label);
-        $group [] = $this->createSelect($field . "_status", null, array(NULL=>"", "88_refused"=>"88 Refused", "99_do_not_know"=>"99 Do not know", 'not_answered'=>"Not Answered"));    
-        $this->addGroup($group, $field . "_group", $label, null, false);
-        unset($group);
-        $this->addGroupRule($field . "_group", array(array(array("Numbers only, please", 'numeric'))));
-        $this->XINRegisterRule($field, array($field . '_status{@}=={@}'), 'This field is required', $field . '_group');
-    }
-
-
-    /**
-    * nulls all scores for the record identified by CommentID
-    * @param array list of scoring fields to null
-    * @see $this->getCommentID()
-    * @return mixed
-    * @throws PEAR::error
+    * @param array $scoreCols list of scoring fields to null
+    *
+    * @return none
     */
     function _nullScores($scoreCols)
     {
         $db=& Database::singleton();
         if (Utility::isErrorX($db)) {
-            return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."\n");
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()."\n"
+            );
         }
         
         // set the scoring cols to NULL
@@ -1447,23 +1743,41 @@ class NDB_BVL_Instrument extends NDB_Page
             // $scoreCols of the form column => description, others 
             // use a non-associative array. So if the key is numeric,
             // and we need to make sure we use the column name
-            if(is_numeric($key))
+            if (is_numeric($key)) {
                 $scores[$val]=null; //null array
-            else 
+            } else {
                 $scores[$key]=null;
+            }
 
         }
         
         // update the scores
-        $success = $db->update($this->table,$scores,array('CommentID'=>$this->getCommentID()));
+        $success = $db->update(
+            $this->table,
+            $scores,
+            array('CommentID'=>$this->getCommentID())
+        );
+
         if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error, fail null the scores:\n".$success->getMessage()."\n");
+            return PEAR::raiseError(
+                "DB Error, fail null the scores:\n".$success->getMessage()."\n"
+            );
         }
         return;
     }
 
-    // Computes the difference between two instances of an instrument
-    function diff($otherInstrument) {
+    /**
+     * Computes the difference between two instances of this instrument.
+     *
+     * @param NDB_BVL_Instrument $otherInstrument The instrument to compare
+     *                                            the currently instantiated
+     *                                            instrument again.
+     *
+     * @return array The keys which are not shared between the passed instrument
+     *         and the current one.
+     */
+    function diff($otherInstrument)
+    {
         // Load this instance data
         $thisData = NDB_BVL_Instrument::loadInstanceData($this);
         
@@ -1474,10 +1788,20 @@ class NDB_BVL_Instrument extends NDB_Page
         $diff = array();
 
         // Loop over this instance data
-        foreach($thisData AS $key=>$value) {
-            if(!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
-                if($otherData[$key] != $value) {
-                    $diff[] = array('TableName'=>$this->table, 'ExtraKeyColumn'=>null, 'ExtraKey1'=>' ', 'ExtraKey2'=>' ', 'FieldName'=>$key, 'CommentId1'=>$this->getCommentID(), 'Value1'=>$value, 'CommentId2'=>$otherInstrument->getCommentID(), 'Value2'=>$otherData[$key]);
+        foreach ($thisData AS $key=>$value) {
+            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
+                if ($otherData[$key] != $value) {
+                    $diff[] = array(
+                        'TableName'      => $this->table,
+                        'ExtraKeyColumn' => null,
+                        'ExtraKey1'      =>' ',
+                        'ExtraKey2'      =>' ',
+                        'FieldName'      => $key,
+                        'CommentId1'     => $this->getCommentID(),
+                        'Value1'         => $value,
+                        'CommentId2'     => $otherInstrument->getCommentID(),
+                        'Value2'         => $otherData[$key]
+                    );
                 }
             }
         }
@@ -1486,21 +1810,48 @@ class NDB_BVL_Instrument extends NDB_Page
         return $diff;
     }
     
-    function loadInstanceData($instrumentInstance) {
+    /**
+     * Gets the data from an instrument out of the database and returns it
+     * as an array.
+     *
+     * @param NDB_BVL_Instrument $instrumentInstance The object whose data is
+     *                                               to be retrieved.
+     *
+     * @return Array containing the data for each field in this instrument
+     */
+    static function loadInstanceData($instrumentInstance)
+    {
         $db =& Database::singleton();
-        $defaults = $db->pselect("SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID", 
-            array('CID' => $instrumentInstance->getCommentID()));
-        if($instrumentInstance->isError($defaults)) {
-            return $instrumentInstance->raiseError('Could not get default values for form');
+        $defaults = $db->pselect(
+            "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID", 
+            array('CID' => $instrumentInstance->getCommentID())
+        );
+        if ($instrumentInstance->isError($defaults)) {
+            return $instrumentInstance->raiseError(
+                'Could not get default values for form'
+            );
         }
         
         return $defaults[0];
     }
 
-    // The Date_taken can be manually passed in. This is the case when
-    // calculating the age while updating the Date_taken in _saveValues, 
-    //since we want to use the new value, not the old value
-    function getCandidateAge($Date_taken=FALSE) {
+    /**
+     * Calculates the candidate's age at the time of this instrument.
+     * If Date_taken was based in, it will calculate the age as of
+     * the date passed as a parameter (this is used, for instance, in
+     * _saveValues when we want to calculate the age based on the new
+     * value and not based on the age saved in the database), otherwise
+     * it will calculate based on the date saved into the Date_taken
+     * field from the database.
+     *
+     * @param array $Date_taken (optional) The date that the age is to
+     *                          be calculated based on.
+     *
+     * @return The age of the candidate in an array containing years, months
+     *         and days.
+     */
+    function getCandidateAge($Date_taken = false)
+    {
         $db =& Database::singleton();
         $CommentID = $this->getCommentID();
         if(strrpos($this->testName, "_proband") !== FALSE) {
@@ -1509,7 +1860,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $dates = $db->pselectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID=:CID", array('CID' => $CommentID));
         }
 
-        if($Date_taken==FALSE) {
+        if ($Date_taken == false) {
             $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
         } else {
             $age = Utility::calculateAge($dates['DoB'], $Date_taken);
@@ -1520,25 +1871,56 @@ class NDB_BVL_Instrument extends NDB_Page
         return;
     }
 
-    function clearInstrument() {
+    /**
+     * Clears all the data saved into this instrument instance
+     *
+     * @return none
+     */
+    function clearInstrument()
+    {
         $config = NDB_Config::singleton();
         $dbconfig = $config->getSetting('database');
         $db = Database::singleton();
-        $columns = $db->pselect("select COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db", array('table' => $this->table, 'db' => $dbconfig['database'] ));
+        $columns = $db->pselect(
+            "SELECT COLUMN_NAME FROM information_schema.columns 
+            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
+            array('table' => $this->table, 'db' => $dbconfig['database'] )
+        );
+
         $values = array();
         foreach ($columns as $row) {
-            if($row['COLUMN_NAME'] == 'CommentID' || $row['COLUMN_NAME'] == 'UserID') {
+            if ($row['COLUMN_NAME'] == 'CommentID' 
+                || $row['COLUMN_NAME'] == 'UserID'
+            ) {
                 continue;
             }
-            $values[$row['COLUMN_NAME']] = NULL;
+            $values[$row['COLUMN_NAME']] = null;
         }
         $db->update($this->table, $values, array('CommentID' => $this->commentID));
-        $prepQ = $db->prepare("DELETE FROM conflicts_unresolved WHERE (CommentId1=:CID OR CommentId2=:CID)");
+        $prepQ = $db->prepare(
+            "DELETE FROM conflicts_unresolved
+             WHERE (CommentId1=:CID OR CommentId2=:CID)"
+        );
         $db->execute($prepQ, array('CID' => $this->commentID));
     }
 
-    function loadInstrumentFile($filename, $base64 = false) {
-        if(file_exists($filename) || $base64 === true) {
+    /**
+     * This does the work of parsing a Loris Instrument (.linst) file and
+     * calling all the appropriate addElement functions to build the instrument
+     * page for user data entry.
+     *
+     * @param string  $filename The filename to be loaded, or a base64 encoded
+     *                          string of a .linst file to be interpreted.
+     * @param boolean $base64   If true, read the filename as a base64 encoded
+     *                          string of the file content, used for preview
+     *                          when no file has yet been saved to the 
+     *                          instruments/ directory
+     * 
+     * @return none, but as a side effect displays the Instrument page
+     */
+    function loadInstrumentFile($filename, $base64 = false)
+    {
+        if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
             $db = Database::singleton();
             $this->dateTimeFields = array("Date_taken");
@@ -1546,11 +1928,11 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->formType='XIN';
             $this->form->addFormRule(array(&$this,'XINValidate'));
             $fp = fopen($filename, "r");
-            // Add elements is only true if we're parsing the current page, otherwise
-            // we don't.. but even on other pages, we need to parse the whole file for
-            // table{@} and other meta elements
+            // Add elements is only true if we're parsing the current page,
+            // otherwise we don't.. but even on other pages, we need to 
+            // parse the whole file for table{@} and other meta elements
             $addElements = true;
-            if(isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
+            if (isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
                 $currentPage = $_REQUEST['subtest'];
                 $addElements = false;
             } else {
@@ -1567,15 +1949,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 'Delimiter' => $this->_GUIDelimiter
             );
 
-            while(($line = fgets($fp, 4096)) !== false) {
+            while (($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
 
                 $type = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
-                if(strpos($fieldname, "_status") !== FALSE) {
+                if (strpos($fieldname, "_status") !== false) {
                     continue;
                 }
-                if($fieldname == 'Date_taken' 
+                if ($fieldname == 'Date_taken' 
                     || $fieldname == "Candidate_Age"
                     || $fieldname == "Window_Difference"
                     || $fieldname == "Examiner"
@@ -1583,219 +1965,262 @@ class NDB_BVL_Instrument extends NDB_Page
                     continue;
                 }
                 switch($type) {
-                    case 'page':
-                        $parsingPage = trim($pieces[2]);
-                        $pageName = $db->pselectOne("SELECT Subtest_name FROM instrument_subtests WHERE Test_name=:testinst AND Description=:parsing", array("testinst" => $this->testName, "parsing" => $parsingPage));
-                        if($currentPage == $pageName) {
-                            $addElements = true;
+                case 'page':
+                    $parsingPage = trim($pieces[2]);
+                    $pageName = $db->pselectOne(
+                        "SELECT Subtest_name 
+                        FROM instrument_subtests 
+                        WHERE Test_name=:testinst AND Description=:parsing",
+                        array(
+                            'testinst' => $this->testName,
+                            'parsing' => $parsingPage
+                        )
+                    );
+                    if ($currentPage == $pageName) {
+                        $addElements = true;
+                    } else {
+                        $addElements = false;
+                    }
+                    $firstSelectOfPage = true;
+                    break;
+                case 'table':
+                    $this->testName = trim($pieces[1]);
+                    $this->table = trim($pieces[1]);
+                    break;
+                case 'title':
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'header',
+                            'instrument_title',
+                            $pieces[1]
+                        );
+                        $this->_addMetadataFields();
+                    }
+                    break;
+                case 'begingroup':
+                    if ($addElements) {
+                        $Group['Name'] = $pieces[1] . '_group';
+                        $Group['Delimiter'] = trim($pieces[2]);
+                        if (empty($Group['Delimiter'])) {
+                            $Group['Delimiter'] = $this->_GUIDelimiter;
+                        }
+                    }
+                    break;
+                case 'endgroup':
+                    if ($addElements) {
+                        $groupLabel = $pieces[2];
+                        $this->addGroup(
+                            $Group['Elements'],
+                            $Group['Name'],
+                            $groupLabel, 
+                            $Group['Delimiter'],
+                            false
+                        );
+
+                        $Group['Name'] = null;
+                        $Group['Elements'] = array();
+                    }
+                    break;
+
+                case 'begintable':
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'static',
+                            null,
+                            "</td></tr></table><table><tr><td>&nbsp;",
+                            ""
+                        );
+                    }
+                case 'endtable':
+                    if ($addElements) {
+                        $this->form->addElement(
+                            'static',
+                            null,
+                            "</td></tr></table><table><tr><td>&nbsp;",
+                            ""
+                        );
+                    }
+                    break;
+                case 'text':
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            $Group['Elements'][] = $this->createText(
+                                $pieces[1],
+                                $pieces[2]
+                            );
+
                         } else {
-                            $addElements = false;
+                            $this->addTextElement($pieces[1], $pieces[2]);
                         }
-                        $firstSelectOfPage = true;
-                        break;
-                    case 'table':
-                        $this->testName = trim($pieces[1]);
-                        $this->table = trim($pieces[1]);
-                        break;
-                    case 'title':
-                        if($addElements) {
-                            $this->form->addElement('header', 'instrument_title', $pieces[1]);
-                            $this->_addMetadataFields();
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
+                    break;
+                case 'textarea':
+                    $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            $Group['Elements'][] = $this->createTextArea(
+                                $pieces[1],
+                                $pieces[2]
+                            );
+                        } else {
+                            $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
-                        break;
-                    case 'begingroup':
-                        if($addElements) {
-                            $Group['Name'] = $pieces[1] . '_group';
-                            $Group['Delimiter'] = trim($pieces[2]);
-                            if(empty($Group['Delimiter'])) {
-                                $Group['Delimiter'] = $this->_GUIDelimiter;
-                            }
-                        }
-                        break;
-                    case 'endgroup':
-                        if($addElements) {
-                            $groupLabel = $pieces[2];
-                            $this->addGroup(
-                                $Group['Elements'],
-                                $Group['Name'],
-                                $groupLabel, 
-                                $Group['Delimiter'], false);
-
-                            $Group['Name'] = null;
-                            $Group['Elements'] = array();
-                        }
-                        break;
-
-                    case 'begintable':
-                        if($addElements) {
-                            $this->form->addElement(
-                                'static',
-                                null,
-                                "</td></tr></table><table><tr><td>&nbsp;",
-                                ""
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
+                    break;
+                case 'date':
+                    if (strpos($pieces[1], "_date") !== false) {
+                        $pieces[1] = substr(
+                            $pieces[1],
+                            0,
+                            strpos($pieces[1], "_date")
+                        );
+                    }
+                    if ($addElements) {
+                        if ($pieces[3] == 1900 && $pieces[4] == 2100) {
+                            $dateOptions = null;
+                        } else {
+                            $dateOptions = array(
+                                'language' => 'en',
+                                'format'   => 'YMd',
+                                'minYear'  => $pieces[3],
+                                'maxYear'  => $pieces[4],
+                                'addEmptyOption' => true,
+                                'emptyOptionValue' => null
                             );
                         }
-                    case 'endtable':
-                        if($addElements) {
-                            $this->form->addElement(
-                                'static',
-                                null,
-                                "</td></tr></table><table><tr><td>&nbsp;",
-                                ""
+
+                        $pieces[5] = trim($pieces[5]);
+                        if ($pieces[5] === 'MonthYear') {
+                            $this->addMonthYear(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
+                            );
+                        } else {
+                            $this->addDateElement(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
                             );
                         }
-                        break;
-                    case 'text':
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                $Group['Elements'][] = 
-                                    $this->createText(
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
+                    break;
+                case 'numeric':
+                    if ($addElements) {
+                        $options = array();
+                        if (!empty($pieces[3])) {
+                            $options['min'] = $pieces[3];
+                        }
+                        if (!empty($pieces[4])) {
+                            $options['max'] = $pieces[4];
+                        }
+                        $this->addNumericElement($pieces[1], $pieces[2], $options);
+                    }
+                    $this->LinstQuestions[$pieces[1]] 
+                        = array('type' => 'numeric', 'options' => $options);
+                    break;
+
+                case 'selectmultiple':
+                    $type = 'multiple';
+                    $this->_selectMultipleElements[] = $pieces[1];
+                    // fall through and also execute select code below
+                case 'select':
+
+                    $options = preg_split("/{-}/", trim($pieces[3]));
+                    $opt = array();
+                    foreach ($options as $o) {
+                        $arr = explode("=>", $o);
+                        $key = $arr[0];
+                        $val = $arr[1];
+                        if ($key[0] == "'" && $key[strlen($key)-1] == "'") {
+                            $key = substr($key, 1, -1);
+                        } else if ($key == 'NULL') {
+                            $key ='';
+                        }
+                        if ($val[0] == "'" && $val[strlen($val)-1] == "'") {
+                            $val= substr($val, 1, -1);
+                        } 
+                        $opt[$key] = $val;
+                    }
+
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            if ($type == 'multiple') {
+                                $Group['Elements'][]
+                                    = $this->form->createElement(
+                                        'select',
                                         $pieces[1],
-                                        $pieces[2]
+                                        $pieces[2],
+                                        $opt,
+                                        "multiple"
                                     );
-
                             } else {
-                                $this->addTextElement($pieces[1], $pieces[2]);
-                                                            }
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
-                        break;
-                    case 'textarea':
-                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                $Group['Elements'][] = 
-                                    $this->createTextArea($pieces[1], $pieces[2]);
-                            } else {
-                                $this->addTextAreaElement($pieces[1], $pieces[2]);
+                                $Group['Elements'][]  
+                                    = $this->form->createElement(
+                                        'select',
+                                        $pieces[1],
+                                        $pieces[2],
+                                        $opt
+                                    );
                             }
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
-                        break;
-                    case 'date':
-                        if(strpos($pieces[1], "_date") !== FALSE) {
-                            $pieces[1] = substr($pieces[1], 0, strpos($pieces[1], "_date"));
-                        }
-                        if($addElements) {
-                            if($pieces[3] == 1900 && $pieces[4] == 2100) {
-                                $dateOptions = null;
+                        } else {
+                            if ($type == 'multiple') {
+                                $this->form->addElement(
+                                    'select',
+                                    $pieces[1],
+                                    $pieces[2],
+                                    $opt,
+                                    "multiple"
+                                );
                             } else {
-                                $dateOptions = array(
-                                     'language' => 'en',
-                                     'format'   => 'YMd',
-                                     'minYear'  => $pieces[3],
-                                     'maxYear'  => $pieces[4],
-                                     'addEmptyOption' => true,
-                                     'emptyOptionValue' => null
+                                $this->form->addElement(
+                                    'select',
+                                    $pieces[1],
+                                    $pieces[2],
+                                    $opt
                                 );
                             }
 
-                            $pieces[5] = trim($pieces[5]);
-                            if($pieces[5] === 'MonthYear') {
-                                $this->addMonthYear($pieces[1], $pieces[2], $dateOptions);
-                            } else {
-                                $this->addDateElement($pieces[1], $pieces[2], $dateOptions);
-                            }
                         }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
-                        break;
-                    case 'numeric':
-                        if ($addElements) {
-                            $options = array();
-                            if (!empty($pieces[3])) {
-                                $options['min'] = $pieces[3];
-                            }
-                            if (!empty($pieces[4])) {
-                                $options['max'] = $pieces[4];
-                            }
-                            $this->addNumericElement($pieces[1], $pieces[2], $options);
+                    }
+                    if ($firstSelectOfPage) {
+                        $this->_requiredElements[] = $pieces[1];
+                        $firstSelectOfPage = false;
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'select');
+                    break;
+                case 'header':
+                    if ($addElements) {
+                        $this->form->addElement('header', null, "$pieces[2]");
+                    }
+                    break;
+                case 'static':
+                    $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
+                    if ($addElements) {
+                        if ($Group['Name'] != null) {
+                            print "Creating $pieces[1] with label: $pieces[2]";
+                            $Group['Elements'][] 
+                                = $this->form->createElement(
+                                    'static',
+                                    $pieces[1],
+                                    null,
+                                    $pieces[2]
+                                );
+                        } else {
+                            $this->form->addElement(
+                                'static',
+                                $pieces[1],
+                                $pieces[2]
+                            );
                         }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'numeric', 'options' => $options);
-                        break;
-
-                    case 'selectmultiple':
-                        $type = 'multiple';
-                        $this->_selectMultipleElements[] = $pieces[1];
-                        // fall through and also execute select code below
-                    case 'select':
-
-                        $options = preg_split("/{-}/", trim($pieces[3]));
-                        $opt = array();
-                        foreach($options as $o) {
-                            $arr = explode("=>", $o);
-                            $key = $arr[0];
-                            $val = $arr[1];
-                            if($key[0] == "'" && $key[strlen($key)-1] == "'") {
-                                $key = substr($key, 1, -1);
-                            } else if($key == 'NULL') {
-                                $key ='';
-                            }
-                            if($val[0] == "'" && $val[strlen($val)-1] == "'") {
-                                $val= substr($val, 1, -1);
-                            } 
-                            $opt[$key] = $val;
-                        }
-
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                if($type == 'multiple') {
-                                    $Group['Elements'][] = 
-                                        $this->form->createElement(
-                                            'select',
-                                            $pieces[1],
-                                            $pieces[2],
-                                            $opt,
-                                            "multiple"
-                                        );
-                                } else {
-                                    $Group['Elements'][] = 
-                                        $this->form->createElement(
-                                            'select',
-                                            $pieces[1],
-                                            $pieces[2],
-                                            $opt
-                                        );
-                                }
-                            } else {
-                                if($type == 'multiple') {
-                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt, "multiple");
-                                } else {
-                                    $this->form->addElement('select', $pieces[1], $pieces[2], $opt);
-                                }
-
-                            }
-                        }
-                        if ($firstSelectOfPage) {
-                            $this->_requiredElements[] = $pieces[1];
-                            $firstSelectOfPage = false;
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'select');
-                        break;
-                    case 'header':
-                        if($addElements) {
-                            $this->form->addElement('header', null, "$pieces[2]");
-                        }
-                        break;
-                    case 'static':
-                        $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
-                        if($addElements) {
-                            if($Group['Name'] != null) {
-                                print "Creating $pieces[1] with label: $pieces[2]";
-                                $Group['Elements'][] = 
-                                    $this->form->createElement(
-                                        'static',
-                                        $pieces[1],
-                                        null,
-                                        $pieces[2]
-                                    );
-                            } else {
-                                $this->form->addElement('static', $pieces[1], $pieces[2]);
-                            }
-                        }
-                        $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
-                        break;
-                    default: 
-                        break;
+                    }
+                    $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
+                    break;
+                default: 
+                    break;
                 }
             }
             fclose($fp);
@@ -1813,7 +2238,6 @@ class NDB_BVL_Instrument extends NDB_Page
      * For example:
      *
      * family_other{-}Required if family_member is other{-}family_member{@}=={@}other
-     *
      *
      * @param string $filename Either the path to a file, or a base64 encoded
      *                         string which can be interpreted as a file by
@@ -1871,7 +2295,59 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 
-    function getReview() {
+    /**
+     * Renders the HTML for the control panel for this instrument.
+     *
+     * @return string The HTML for the control panel
+     */
+    function getControlPanel()
+    {
+        if (!empty($_REQUEST['commentID'])) {
+            // make the control panel object for the current instrument
+            $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
+            $success = $controlPanel->select($_REQUEST['commentID']);
+            if (Utility::isErrorX($success)) {
+                $tpl_data['error_message'][] = $success->getMessage();
+            } else {
+                $config = NDB_Config::singleton();
+                $paths = $config->getSetting('paths');
+                if (empty($subtest)) {
+                    // check if the file/class exists
+                    $BasePath = $paths['base'] . 'project/instruments/';
+                    $TestName = $this->testName;
+                    if (file_exists(
+                        $BasePath 
+                        . "NDB_BVL_Instrument_$TestName.class.inc"
+                    )
+                        || file_exists($BasePath . "$TestName.linst")
+                    ) {
+                        // save possible changes from the control panel...
+                        $success = $controlPanel->save();
+                        if (Utility::isErrorX($success)) {
+                            $tpl_data['error_message'][] = $success->getMessage();
+                        }
+                    }
+                }
+
+                // display the control panel
+                $html = $controlPanel->display();
+                return $html;
+
+            }
+        }
+    }
+
+    /**
+     * Return the HTML for the review section of the survey module
+     * By default, this will show every question from the parameter_type
+     * table for this instrument, but it can be overridden/customized by
+     * a instrument if that isn't the desired behaviour.
+     *
+     * @return string The HTML to be inserted into the review section of
+     *                the final page of the survey module for this instrument.
+     */
+    function getReview()
+    {
         $DB = Database::singleton();
         $smarty = new Smarty_neurodb();
         $tpl_data = array();
@@ -1915,13 +2391,21 @@ function _checkDateTakenFuture($dateElement) {
     return ($diff->format("%r") === '');
 }
 
-function _checkDateTaken($dateElement) {
-    // if all three elements are empty, return true b/c it'll save the NULL in date field
-    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+function _checkDateTaken($dateElement)
+{
+    // if all three elements are empty,
+    // return true b/c it'll save the NULL in date field
+    if (empty($dateElement['M']) 
+        && empty($dateElement['d']) 
+        && empty($dateElement['Y'])
+    ) {
         return true;
-    }
-    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
-    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
+    } elseif (empty($dateElement['M']) 
+        || empty($dateElement['d']) 
+        || empty($dateElement['Y'])
+    ) {
+        // otherwise, if any of the three elements are empty, 
+        // return false b/c date entry has been attempted
         return false;
     }
     // else, check the date
@@ -1937,16 +2421,25 @@ function _checkDateTaken($dateElement) {
         } */
     }
 }
+
 /// _checkDate. This is used by create timepoint and start timepoint pages, 
 // so it probably shouldn't be in the instrument class.
-function _checkDate($dateElement) {
-    // if all three elements are empty, return true b/c it'll save the NULL in date field
-    if (empty($dateElement['M']) && empty($dateElement['d']) && empty($dateElement['Y'])) {
+function _checkDate($dateElement)
+{
+    if (empty($dateElement['M']) 
+        && empty($dateElement['d']) 
+        && empty($dateElement['Y'])
+    ) {
+        // if all three elements are empty, return true b/c it'll 
+        // save the NULL in date field
         return true;
-    }
-    // otherwise, if any of the three elements are empty, return false b/c date entry has been attempted
-    elseif (empty($dateElement['M']) || empty($dateElement['d']) || empty($dateElement['Y'])) {
-        return false;
+    } elseif (empty($dateElement['M']) 
+        || empty($dateElement['d']) 
+        || empty($dateElement['Y'])
+    ) {
+            // otherwise, if any of the three elements are empty, return 
+            // false b/c date entry has been attempted
+            return false;
     }
     return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }

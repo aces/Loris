@@ -8,6 +8,7 @@ $(document).ready(function() {
         $(this).addClass("selected");
         id = $(this).attr("id");
         $("#" + id + "options").toggle();
+        $('#search_concept').text($(this).text());
     });
     $("#textboxoptions").hide();
     $("#dropdownoptions").hide();
@@ -58,25 +59,27 @@ $(document).ready(function() {
         var instloaded = false;
         var rulesloaded = false;
         var that = this;
-        instrument_reader.onload = function() {
-            instloaded = true;
-            document.getElementById("instrumentdata").value = this.result;
-            if(instloaded && rulesloaded) {
-                document.getElementById("preview").form.submit();
-            }
-        }
-        instrument_reader.readAsText(instrument.getBlob());
 
-        rules_reader.onload = function() {
-            rulesloaded = true;
-            document.getElementById("instrumentrules").value = this.result;
-            if(instloaded && rulesloaded) {
-                document.getElementById("preview").form.submit();
-            }
-        }
-        rules_reader.readAsText(rules.getBlob());
+        document.getElementById("instrumentdata").value = instrument;
+        document.getElementById("instrumentrules").value = rules;
+        document.getElementById("preview").form.submit();
+
         return false;
     });
+
+    // $tabs = $(".table-responsive");
+        
+    //     $( "tbody#workspace" )
+    //         .sortable({
+    //             connectWith: ".connectedSortable",
+    //             items: "> tr",
+    //             appendTo: $tabs,
+    //             helper:"clone",
+    //             zIndex: 999990,
+    //             start: function(){ $tabs.addClass("dragging") },
+    //             stop: function(){ $tabs.removeClass("dragging") }
+    //         })
+    //         .disableSelection();
 });
 
 
@@ -98,14 +101,14 @@ function addQuestion() {
     questionName = document.getElementById("questionName");
 
     if(questionText.value == '' && selected != 'line') {
-        if(selected == 'page') {
+        if(selected == 'page-break') {
             alert("Must use question text as page header");
         } else {
             alert("No question text specified");
         }
         return;
     } 
-    if(questionName.value == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page') {
+    if(questionName.value == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
         alert("Must specifiy name for database to save value into");
         return;
     }
@@ -119,7 +122,7 @@ function addQuestion() {
         q  = addDropdownQuestion(question);
     } else if(selected == 'multiselect') {
         q  = addDropdownQuestion(question, 'multi');
-    } else if(selected == "scored" || selected == "header" || selected == "label" || selected == "page") {
+    } else if(selected == "scored" || selected == "header" || selected == "label" || selected == "page-break") {
         q = addStaticQuestion(selected, question);
     } else if (selected == "date") {
         min = parseInt(document.getElementById('datemin').value, 10);
@@ -142,7 +145,7 @@ function addQuestion() {
     row = document.createElement("tr");
     $(row).addClass("_moveable");
     dbname = document.createElement("td");
-    if(selected != "header" && selected != "label" && selected != "line" && selected != "page") {
+    if(selected != "header" && selected != "label" && selected != "line" && selected != "page-break") {
         dbname.innerHTML = questionName.value;
         dbname.setAttribute("contenteditable", "true");
         $(dbname).bind("change", function() { Rules.rebuildMenu("rule_q", "workspace"); Rules.rebuildMenu("rule_depends", "workspace", { dropdownOnly: true }); });
@@ -151,7 +154,7 @@ function addQuestion() {
     dbtype.innerHTML = selected;
 
     actions = document.createElement("td");
-    actions.innerHTML = '(<a onclick="return moveUp(this);" href="javascript:return 0;">up</a>) (<a onclick="return moveDown(this);" href="javascript:return 0;">down</a>) (<a onclick="remove(this);" href="javascript:return 0;">delete</a>)';
+    actions.innerHTML = '(<a onclick="return moveUp(this);" href="javascript:return 0;">up</a>) (<a onclick="return moveDown(this);" href="javascript:return 0;">down</a>) (<a onclick="removeRow(this);" href="javascript:return 0;">delete</a>)';
 
     row.appendChild(dbname);
     row.appendChild(dbtype);
@@ -292,10 +295,11 @@ function clearDropdownOption(type) {
 }
 
 /* Controls for rows */
-function remove(aEl) {
-    table = document.getElementById("workspace");
+function removeRow(aEl) {
+    var table = document.getElementById("workspace"),
+        i;
     for (i in table.rows) {
-        if(aEl.parentNode.parentNode == table.rows[i]) {
+        if (aEl.parentNode.parentNode == table.rows[i]) {
             table.deleteRow(i);
             return false;
         }
@@ -320,15 +324,15 @@ function Enumize(option) {
     var enum_option = option.replace(/ /g, "_");
     enum_option = enum_option.replace(/\./, "");
     enum_option = enum_option.toLowerCase();
-    return enum_option
+    return enum_option;
 }
 
 // from http://stackoverflow.com/questions/1391278/contenteditable-change-events
-$('[contenteditable]').live('focus', function() {
+$('[contenteditable]').on('focus', function() {
     var $this = $(this);
     $this.data('before', $this.html());
     return $this;
-}).live('blur paste', function() {
+}).on('blur paste', function() {
     var $this = $(this);
     if ($this.data('before') !== $this.html()) {
         $this.data('before', $this.html());
@@ -336,3 +340,14 @@ $('[contenteditable]').live('focus', function() {
     }
     return $this;
 });
+
+function hideLoad(){
+    $("#panel-load").toggle();
+    $("#down-load").toggle();
+    $("#up-load").toggle();
+}
+function hideRule(){
+    $("#panel-rule").toggle();
+    $("#down-rule").toggle();
+    $("#up-rule").toggle();
+}

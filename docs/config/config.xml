@@ -28,6 +28,9 @@
     <mincPath>/data/%PROJECTNAME%/data/</mincPath>
     <DownloadPath>%LORISROOT%</DownloadPath>
     <log>tools/logs/</log>
+    <IncomingPath>/data/incoming/</IncomingPath>
+    <MRICodePath>data/%PROJECTNAME%/bin/mri/</MRICodePath>
+
 </paths>
 
 <!-- database settings -->
@@ -44,6 +47,8 @@
 <dicom_archive>
     <patientIDRegex>/./</patientIDRegex>
     <patientNameRegex>/./i</patientNameRegex>
+    <LegoPhantomRegex>/./i</LegoPhantomRegex>
+    <LivingPhantomRegex>/./i</LivingPhantomRegex>
     <showTransferStatus>false</showTransferStatus>
 </dicom_archive>
 <!-- Following links will appear on the footer of the home page of loris installation -->
@@ -53,9 +58,8 @@
 </Studylinks>
 
 <links>
-    <link url='dicom_archive.php?' args=''>DICOM Archive</link>
-    <link url='mri_browser.php?' args='MRIBrowser'>MRI Browser</link>
-    <link url='query_gui.php?' args=''>Data Query Tool</link>
+    <link url='http://www.loris.ca'>Loris Website</link>
+    <link url='http://www.github.com'>GitHub</link>
 </links>
 
 <!-- mail settings -->
@@ -79,7 +83,7 @@
         <!--display additional user fields in User Accounts page e.g. Institution-->
         <additional_user_info>1</additional_user_info>        
         <!-- Descriptive study title, appears on top of the screen-->
-        <title>Example Study</title>a
+        <title>Example Study</title>
         <!-- Logo of the study, appears on the left of the title on the top of the screen -->
         <studylogo>images/neuro_logo_blue.gif</studylogo>
         <!---number of columns the quat table will contain  -->
@@ -116,6 +120,8 @@
           </structure>
         </ExternalID>
         <!--useProject field is false unless study involves more than one project where each project has multiple cohorts/subprojects-->
+
+        <useProband>false</useProband>
         <useProjects>false</useProjects>
         <Projects>
             <project>
@@ -212,15 +218,7 @@
     <excluded_instruments>
         <instrument></instrument>
     </excluded_instruments>
-     <!-- consent module parameters--> 
-     <ConsentModule>
-           <useConsent>false</useConsent>
-           <Consent>
-               <name></name>
-               <label></label>
-           </Consent>
-       </ConsentModule>
-    <!-- certification module -->
+     <!-- certification module -->
       <Certification>
             <EnableCertification>0</EnableCertification>
             <CertificationProjects>
@@ -236,8 +234,21 @@
     <!-- Add instruments for which Double Data entry should be enabled -->
     <DoubleDataEntryInstruments></DoubleDataEntryInstruments>
 
+    <!-- Consent module allows addition of consent information in the candidate information page-->
+     <ConsentModule>
+           <useConsent>false</useConsent>
+           <Consent>
+               <name>study_consent</name>
+               <label>Consent to Study</label>
+           </Consent>
+      </ConsentModule>
     </study>
 <!-- end of study definition -->
+
+<!-- Conflict Resolver default max display settings -->
+    <ConflictResolver>
+         <MaxConflicts>50</MaxConflicts>
+    </ConflictResolver>
 
 <!-- Statistics options -->
     <statistics>
@@ -372,7 +383,7 @@
         </subtab>
         <subtab>
             <parent>Imaging</parent>
-            <link>dicom_archive.php?</link>
+            <link>main.php?test_name=dicom_archive</link>
             <label>Dicom Archive</label>
             <access>all</access>
             <permissions>
@@ -381,7 +392,7 @@
         </subtab>
         <subtab>
             <parent>Imaging</parent>
-            <link>mri_browser.php?</link>
+            <link>main.php?test_name=imaging_browser</link>
             <label>MRI Browser</label>
             <access>all</access>
             <permissions>
@@ -413,6 +424,46 @@
         </subtab>
     </tab>
     <tab>
+        <label>Tools</label>
+        <visible>1</visible>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=datadict</link>
+            <label>Data Dictionary</label>
+            <access>all</access>
+            <permissions>
+                <perm>data_dict</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=document_repository</link>
+            <label>Document Repository</label>
+            <access>all</access>
+            <permissions>
+                <perm>file_upload</perm>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=data_team_helper</link>
+            <label>Data Team Helper</label>
+            <access>all</access>
+            <permissions>
+            </permissions>
+            <visible>1</visible>
+        </subtab>
+        <subtab>
+            <parent>Tools</parent>
+            <link>main.php?test_name=instrument_builder</link>
+            <label>Instrument Builder</label>
+            <access>all</access>
+            <visible>1</visible>
+        </subtab>
+    </tab>
+    <tab>
         <label>Admin</label>
         <visible>1</visible>
         <subtab>
@@ -423,13 +474,6 @@
             <permissions>
                 <perm>user_accounts</perm>
             </permissions>
-            <visible>1</visible>
-        </subtab>
-            <subtab>
-            <parent>Admin</parent>
-            <link>main.php?test_name=instrument_builder</link>
-            <label>Instrument Builder</label>
-            <access>all</access>
             <visible>1</visible>
         </subtab>
     </tab>

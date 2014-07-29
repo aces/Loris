@@ -68,19 +68,34 @@ class Log extends PEAR
     /**
     * Adds error message to the file
     *
-    * @param String $message The content of the message inserted into the log file
+    * @param String  $message  The content of the message inserted into the log file
+    * @param Boolean $use_date It will insert the current date if true
     * 
     * @return null
     */
-    function addLog($message) 
+    function addLog($message,$use_date=true) 
     {
         $now_array = getdate();
-        $now_string = sprintf(
-            "%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'], 
-            $now_array['mon'], $now_array['mday'], $now_array['hours'], 
-            $now_array['minutes'], $now_array['seconds']
-        );
-        error_log("[$now_string] $message\n", 3, $this->GENERAL_ERROR_DIR);
+        if ($use_date) {
+            $now_string = sprintf(
+                "%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'], 
+                $now_array['mon'], $now_array['mday'], $now_array['hours'], 
+                $now_array['minutes'], $now_array['seconds']
+            );
+            error_log("[$now_string] $message\n", 3, $this->GENERAL_ERROR_DIR);
+        }
+        else {
+            error_log("$message\n", 3, $this->GENERAL_ERROR_DIR);
+        }
+    }
+    
+     /**
+    * returns the path to the error_log
+    *
+    * @return String Path to the error_log
+    */
+    function getLogPath(){
+        return $this->GENERAL_ERROR_DIR;
     }
 }
 ?>

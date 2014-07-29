@@ -40,7 +40,7 @@ class NDB_Menu extends NDB_Page
      * @throws PEAR_Error
      * @access public
      */
-    function &factory($menu, $mode, $controlPanel)
+    function &factory($menu, $mode)
     {
         // get the name of the class
         if (class_exists("NDB_Menu_$menu")) {
@@ -57,7 +57,6 @@ class NDB_Menu extends NDB_Page
         // set the local variables
         $obj->menu = $menu;
         $obj->mode = $mode;        
-        $obj->controlPanel = $controlPanel;
         $access = $obj->_hasAccess();
         if (Utility::isErrorX($access)) {
             return PEAR::raiseError("NDB_Menu::factory(): ".$access->getMessage());
@@ -118,10 +117,10 @@ class NDB_Menu extends NDB_Page
     function display()
     {
         // dump the html for the menu
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_neurodb($this->menu);
+        $smarty->ModuleName = $this->menu;
         $smarty->assign('mode', $this->mode);
         $smarty->assign($this->tpl_data);
-        $smarty->assign('controlPanel', $this->controlPanel);
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
     }

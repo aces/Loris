@@ -37,9 +37,10 @@
     <tr>
         <th rowspan="2">Timepoint</th>
             {foreach key=proj item=name from=$Subprojects}
-            <th colspan="{php}print count($this->get_template_vars("Subcategories"))+1;{/php}">{$name|capitalize}</th>
+            {assign var='colspan' value=count($Subcategories)+1}
+            <th colspan="{$colspan}">{$name|capitalize}</th>
             {/foreach}
-        <th colspan="{php}print count($this->get_template_vars("Subcategories"))+1;{/php}">Total</th>
+        <th colspan="{$colspan}">Total</th>
     </tr>
     <tr>
         {foreach key=proj item=name from=$Subprojects}
@@ -65,40 +66,34 @@
             (number of subcategories + 1 for percent)
             +1 for timepoint list
    *}
-   <th colspan="{php}print (count($this->get_template_vars("Subcategories"))+1)*(count($this->get_template_vars("Subprojects"))+1)+1;{/php}" width="50%">{$center.LongName}<br></th></tr>
+   {assign var='colspan' value=(count($Subcategories)+1)*(count($Subprojects)+1)+1}
+   <th colspan="{$colspan}" width="50%">{$center.LongName}<br></th></tr>
         {foreach item=visit from=$Visits key=title}
-            {assign var="rowtotal" value="0}
+            {assign var="rowtotal" value="0"}
 
             {if $visit neq 'v06'}
             <tr>
             {/if}
                 <td>{$title}</td>
-                {foreach key=proj item=value from=$Subprojects}
-                    {* Special case. proj=2 means its a 12 month visit.
-                     * and it's impossible to have a 6 month visit for
-                     * a 12 month recruit. *}
+                {foreach key="proj" item="value" from=$Subprojects}
                 {assign var="subtotal" value="0" }
                 {foreach key=sub item=subcat from=$Subcategories}
                     {if $visit eq 'v06' and $proj eq 2}
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">NA</td>
                     {else}
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">{$data[$proj][$center.ID][$visit][$subcat]|default:"0"}</td>
-                        {assign var="subtotal" value=`$subtotal+$data[$proj][$center.ID][$visit][$subcat]` }
-                        {assign var="rowtotal" value=`$rowtotal+$data[$proj][$center.ID][$visit][$subcat]` }
+                        {assign var="subtotal" value=$subtotal+$data[$proj][$center.ID][$visit][$subcat] }
+                        {assign var="rowtotal" value=$rowtotal+$data[$proj][$center.ID][$visit][$subcat] }
                     {/if}
                 {/foreach}
                 <td class="subtotal">
-                    {assign var="Numerator" value=`$data[$proj][$center.ID][$visit][$Subcategories.0]`}
-                    {php}
-                        $Numerator = $this->get_template_vars("Numerator");
-                        $Denominator = $this->get_template_vars("subtotal");
-                        if($Denominator > 0) {
-                            print round($Numerator*100/$Denominator);
-                            print "%";
-                        } else {
-                            print "0%";
-                        }
-                    {/php}
+                    {assign var="Numerator" value=$data[$proj][$center.ID][$visit][$Subcategories.0]}
+                    {if $subtotal > 0}
+                        {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
+                    {else}
+                        {assign var="percent" value='0'}
+                    {/if}
+                    {$percent}%
                 </td>
                 {/foreach}
                 {* Totals for row *}
@@ -106,17 +101,13 @@
                     <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$center.ID][$visit][$subcat]|default:"0"}</td>
                 {/foreach}
                 <td class="total">
-                    {assign var="Numerator" value=`$data[$center.ID][$visit][$Subcategories.0]`}
-                    {php}
-                        $Numerator = $this->get_template_vars("Numerator");
-                        $Denominator = $this->get_template_vars("rowtotal");
-                        if($Denominator > 0) {
-                            print round($Numerator*100/$Denominator);
-                            print "%";
-                        } else {
-                            print "0%";
-                        }
-                    {/php}
+                    {assign var="Numerator" value=$data[$center.ID][$visit][$Subcategories.0]}
+                    {if $rowtotal > 0}
+                        {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$rowtotal format="%.0f"}}
+                    {else}
+                        {assign var="percent" value='0'}
+                    {/if}
+                    {$percent}%
                 </td>
             </tr>
             {/foreach}
@@ -127,23 +118,19 @@
                 {assign var="sitetotal" value="0"}
                 {foreach key=sub item=subcat from=$Subcategories}
                 <td class="{$subcat|lower|regex_replace:"/ /":"_"} subtotal">
-                    {assign var="sitetotal" value=`$sitetotal+$data[$proj][$center.ID][$subcat]` }
+                    {assign var="sitetotal" value=$sitetotal+$data[$proj][$center.ID][$subcat] }
                     {$data[$proj][$center.ID][$subcat]|default:"0"}
                 </td>
                 {/foreach}
                 <td class="subtotal">
-                    {assign var="totalsitetotal" value=`$totalsitetotal+$sitetotal` }
-                    {assign var="Numerator" value=`$data[$proj][$center.ID][$Subcategories.0]`}
-                    {php}
-                        $Numerator = $this->get_template_vars("Numerator");
-                        $Denominator = $this->get_template_vars("sitetotal");
-                        if($Denominator > 0) {
-                            print round($Numerator*100/$Denominator);
-                            print "%";
-                        } else {
-                            print "0%";
-                        }
-                    {/php}
+                    {assign var="totalsitetotal" value=$totalsitetotal+$sitetotal }
+                    {assign var="Numerator" value=$data[$proj][$center.ID][$Subcategories.0]}
+                    {if $sitetotal > 0}
+                        {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$sitetotal format="%.0f"}}
+                    {else}
+                        {assign var="percent" value='0'}
+                    {/if}
+                    {$percent}%
                 </td>
             {/foreach}
             {foreach key=sub item=subcat from=$Subcategories}
@@ -152,24 +139,21 @@
                 </td>
             {/foreach}
             <td class="total">
-                {assign var="Numerator" value=`$data[$center.ID][$Subcategories.0]`}
-                {php}
-                    $Numerator = $this->get_template_vars("Numerator");
-                    $Denominator = $this->get_template_vars("totalsitetotal");
-                    if($Denominator > 0) {
-                        print round($Numerator*100/$Denominator);
-                        print "%";
-                    } else {
-                        print "0%";
-                    }
-                {/php}
+                {assign var="Numerator" value=$data[$center.ID][$Subcategories.0]}
+                {if $totalsitetotal > 0}
+                        {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$totalsitetotal format="%.0f"}}
+                    {else}
+                        {assign var="percent" value='0'}
+                    {/if}
+                    {$percent}%
             </td>
 
             </tr>
       {/foreach}
       {* Totals at the bottom *}
 	<tr>
-       <th colspan="{php}print (count($this->get_template_vars("Subcategories"))+1)*(count($this->get_template_vars("Subprojects"))+1)+1;{/php}" width="50%">Total</th>
+        {assign var='colspan' value=(count($Subcategories)+1)*(count($Subprojects)+1)+1}
+       <th colspan="{$colspan}" width="50%">Total</th>
     </tr>
 	<tr>
         {foreach from=$Visits item=visit key=title}
@@ -185,40 +169,32 @@
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">NA</td>
                     {else}
                         <td class="{$subcat|lower|regex_replace:"/ /":"_"}">{$data[$proj][$visit][$subcat]|default:"0"}</td>
-                        {assign var="subtotal" value=`$subtotal+$data[$proj][$visit][$subcat]` }
+                        {assign var="subtotal" value=$subtotal+$data[$proj][$visit][$subcat] }
                     {/if}
                 {/foreach}
                 <td class="subtotal">
-                    {assign var="Numerator" value=`$data[$proj][$visit][$Subcategories.0]`}
-                    {php}
-                        $Numerator = $this->get_template_vars("Numerator");
-                        $Denominator = $this->get_template_vars("subtotal");
-                        if($Denominator > 0) {
-                            print round($Numerator*100/$Denominator);
-                            print "%";
-                        } else {
-                            print "0%";
-                        }
-                    {/php}
+                    {assign var="Numerator" value=$data[$proj][$visit][$Subcategories.0]}
+                    {if $subtotal > 0}
+                        {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
+                    {else}
+                        {assign var="percent" value='0'}
+                    {/if}
+                    {$percent}%
                 </td>
             {/foreach}
             {assign var="finaltotal" value="0" }
             {foreach key=sub item=subcat from=$Subcategories}
                 <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$visit][$subcat]|default:"0"}</td>
-                {assign var="finaltotal" value=`$finaltotal+$data[$visit][$subcat]` }
+                {assign var="finaltotal" value=$finaltotal+$data[$visit][$subcat] }
             {/foreach}
             <td class="total">
-                {assign var="Numerator" value=`$data[$visit][$Subcategories.0]`}
-                    {php}
-                        $Numerator = $this->get_template_vars("Numerator");
-                        $Denominator = $this->get_template_vars("finaltotal");
-                        if($Denominator > 0) {
-                            print round($Numerator*100/$Denominator);
-                            print "%";
-                        } else {
-                            print "0%";
-                        }
-                    {/php}
+                {assign var="Numerator" value=$data[$visit][$Subcategories.0]}
+                {if $finaltotal > 0}
+                        {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$finaltotal format="%.0f"}}
+                    {else}
+                        {assign var="percent" value='0'}
+                    {/if}
+                    {$percent}%
             </td>
             </tr>
         {/foreach}
@@ -230,47 +206,35 @@
                    being excluded from stats *}
                 {assign var="total" value="0"}
                 {foreach key=sub item=subcat from=$Subcategories}
-                    {assign var="total" value=`$total+$data[$proj][$subcat]`}
+                    {assign var="total" value=$total+$data[$proj][$subcat]}
                     <td class="total" >{$data[$proj][$subcat]|default:"0"}</td>
                 {/foreach}
                 <td class="total">
-                    {assign var="Numerator" value=`$data[$proj][$Subcategories.0]`}
-                    {php}
-                        $Numerator = $this->get_template_vars("Numerator");
-                        $Denominator= $this->get_template_vars("total");
-                        if($Denominator != 0) {
-                            print round($Numerator*100 / $Denominator);
-                            print "%";
-                        }
-                {/php}
+                    {assign var="Numerator" value=$data[$proj][$Subcategories.0]}
+                    {if $total > 0}
+                        {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$total format="%.0f"}}
+                    {else}
+                        {assign var="percent" value='0%'}
+                    {/if}
+                    {$percent}%
                 (Total: {$total})
                 </td>
             {/foreach}
             {* Totals for grand total *}
             {foreach key=sub item=subcat from=$Subcategories}
                 
-                <td class="total">{php}
-                    $data = $this->get_template_vars("data");
-                    $subcat= $this->get_template_vars("subcat");
-                    if($data["Cat" . $subcat]) {
-                        print $data["Cat" . $subcat];
-                    } else {
-                        print "0";
-                    }
-                {/php}
+                <td class="total">
+                    {if {$data.{'Cat'|cat: $subcat}}}
+                        {$data.{'Cat'|cat: $subcat}}
+                    {else}
+                        0
+                    {/if}
                 </td>
             {/foreach}
             <td class="total">
-                {php}
-                    $Subcats = $this->get_template_vars("Subcategories");
-                    $data = $this->get_template_vars("data");
-                    $Numerator = $data["Cat" . $Subcats[0]];
-                    $Denominator = $data['total'];
-                    if($Denominator != 0) {
-                        print round($Numerator*100 / $Denominator);
-                        print "%";
-                    }
-                {/php}
+                {if $data.total != 0}
+                    {math equation="x*y/z" x=$data.{'Cat'|cat: $Subcategories[0]} y=100 z=$data.total format="%.0f"}%
+                {/if}
                 (Total: {$data.total})
             </td>
         </tr>
