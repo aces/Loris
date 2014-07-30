@@ -6636,3 +6636,64 @@ button.close {
     position: fixed
 }
 
+
+/*
+ * Tara's login CSS
+ */
+.navbar-static-top {
+  margin-bottom: 19px;
+}
+
+.huge {
+    font-size: 40px;
+}
+
+.progress {
+    height: 40px;
+}
+.alert-chevron {
+    margin-top: 17px;
+}
+.panel-blue {
+  border-color: #1C70B6;
+}
+.panel-blue > .panel-heading {
+  color: #fff;
+  background-color: #1C70B6;
+  border-color: #1C70B6;
+}
+.panel-blue > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #1C70B6;
+}
+.panel-blue > .panel-heading .badge {
+  color: #1C70B6;
+  background-color: #fff;
+}
+.panel-blue > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #1C70B6;
+}
+.panel-blue:hover {
+    border-color: #338CD6;
+}
+.panel-blue:hover > .panel-heading {
+  color: #fff;
+  background-color: #338CD6;
+  border-color: #338CD6;
+}
+.panel-blue:hover > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #338CD6;
+}
+.panel-blue:hover > .panel-heading .badge {
+  color: #338CD6;
+  background-color: #fff;
+}
+.panel-blue:hover > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #338CD6;
+}
+.progress-bar-female {
+  background-color: #91C342;
+}
+.progress-bar-male {
+  background-color: #6B358D;
+}
+
