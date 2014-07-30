@@ -1,5 +1,6 @@
 <script type="text/javascript" src="js/filterControl.js"></script>
 
+<div class="row">
 <div class="col-sm-10 col-md-10">
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideFilter();">
@@ -38,6 +39,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 
 

@@ -138,12 +138,12 @@ BrowserDetect.init();
 	 		</a>
 	 	</div>
  	</div>
- 	<div class="panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+ 	<div class="row panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
-		  			<img src="images/LORIS_v2.grey.clear.png" class="img-responsive" alt="Responsive image" align="middle">
-		  		</center>
+		  				<img src="images/LORIS_v2.grey.clear.png" class="img-responsive" alt="Responsive image" align="middle">
+		  			</center>
 		  		</div>
 		  		<br><br><br><br><br>
 		  		<div class="hidden-xs hidden-sm">
@@ -151,23 +151,57 @@ BrowserDetect.init();
 		  		</div>
 		  		<div class="col-xs-12">
 		  			<font color="red" align="middle">
-		  			{$error_message}
-		  		</font>
-		  		<div>
-		  		<div class="col-xs-12">
-		  		<form action="{$action}" method="post">
-		  			<div class="form-group">
-		  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
-		  			</div>
-		  			<div class="form-group">
-		  				<input name="password" class="form-control" type="password" placeholder="Password"/>
-		  			</div>
-		  			<input class="btn btn-primary col-xs-12" name="login" type="submit" value="login" />
-		  			<br><br><br>
-		  			<a href="lost_password.php"><center>Forgot your password?</center></a>
-		  		</form>
+		  				{$error_message}
+		  			</font>
 		  		</div>
-		  		
+		  		<div class="row">
+			  		<div class="col-xs-12">
+				  		<form action="{$action}" method="post">
+				  			<div class="form-group">
+				  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
+				  			</div>
+				  			<div class="form-group">
+				  				<input name="password" class="form-control" type="password" placeholder="Password"/>
+				  			</div>
+				  			<input class="btn btn-primary col-xs-12" name="login" type="submit" value="login" />
+				  			<br><br><br>
+				  			<a href="lost_password.php"><center>Forgot your password?</center></a>
+				  		</form>
+			  		</div>
+			  	</div>	
+		  		<div class="row">
+		  		<table class="LoginFooter" align="center">
+					<tr>
+					<hr width = 70%>
+					<td width="100%">
+					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
+
+					<li id="active">|</li>
+					{foreach from=$studylinks item=link}
+					<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
+					{/foreach}
+
+					</ul>
+					</td>
+					</tr>
+					<tr>
+					<!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
+					</tr>       
+					<tr>
+					<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
+					</tr>	
+					<tr>
+					<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+					</tr>	
+					<tr>
+					<td align="center" colspan="1"style="color: #808080">Created by <a href="http://cbrain.mcgill.ca" style="color: #064785" target="_blank"> ACElab</a></td>
+					</tr>
+					<tr>
+					<td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
+
+					</tr>
+				</table>
+				</div>
 		  </div>
 	</div>
 
@@ -193,37 +227,7 @@ BrowserDetect.init();
 </table>
 -->
 <!--img src="images/mni_logo.png" class="watermark" alt="Montreal Neurological Institute" border="0" width="100" height="83"-->
-<table class="LoginFooter" align="center">
-<tr>
-<hr width = 70%>
-<td width="100%">
-<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
-<li id="active">|</li>
-{foreach from=$studylinks item=link}
-<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
-{/foreach}
-
-</ul>
-</td>
-</tr>
-<tr>
-<!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
-</tr>       
-<tr>
-<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
-</tr>	
-<tr>
-<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
-</tr>	
-<tr>
-<td align="center" colspan="1"style="color: #808080">Created by <a href="http://cbrain.mcgill.ca" style="color: #064785" target="_blank"> ACElab</a></td>
-</tr>
-<tr>
-<td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
-
-</tr>
-</table>
 
 {literal}
 <script type='text/javascript'>
