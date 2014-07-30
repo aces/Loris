@@ -175,6 +175,7 @@
         <br><br><br>
     </div>
     <form class="form-horizontal" name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
+        <input type="hidden" name="test_name" value="timepoint_list">
         <div class="form-group">
             <label class="col-sm-5 control-label">
                 DCC-ID:            
