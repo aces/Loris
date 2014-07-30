@@ -79,8 +79,10 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             break;
         case "tarchive_series":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID 
-                ORDER BY $order";
-            $array = $this->DB->pselect($query, array('ID' => $tarchiveID));
+                ORDER BY :OField";
+            $array = $this->DB->pselect(
+                $query, array('ID' => $tarchiveID, "OField" => $order)
+            );
             
             if ($this->_setProtocols()) {
                 $previousSerieDescription = '';
@@ -102,13 +104,14 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             break;
         case "tarchive_files":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID
-                ORDER BY $order";
-            $array = $this->DB->pselect($query, array('ID' => $tarchiveID));
+                ORDER BY :OField";
+            $array = $this->DB->pselect(
+                $query, array('ID' => $tarchiveID, 'OField' => $order)
+            );
             break;
         }
         
         if (Utility::isErrorX($array)) { 
-            print $array->getMessage()."\n";
             return null;
         } else {
             return $array;
@@ -162,9 +165,8 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     {
         $query = "SELECT Scan_type, TR_range, TE_range, TI_range, 
             slice_thickness_range FROM mri_protocol";
-        $this->protocols = $this->DB->pselect($query);
+        $this->protocols = $this->DB->pselect($query, array());
         if (Utility::isErrorX($this->protocols)) { 
-            print $array->getMessage()."\n";
             return false;
         } else {
             return true;
@@ -219,22 +221,22 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         } else if (! isset($protocolRange)) {
             return false;
         } else {
-            $serieRangeTrimmed = (int)trim($serieRange);
+            $serieRangeTrimmed = (float)trim($serieRange);
             $protocolRanges = split(",", $protocolRange);
             
             foreach ($protocolRanges as $range) {
                 $rangeTrimmed = trim($range);
                 if (strpos($rangeTrimmed, "-")) { // range X-Y
                     $array = split("-", $rangeTrimmed);
-                    $left = (int)trim($array[0]);
-                    $right = (int)trim($array[1]);
+                    $left = (float)trim($array[0]);
+                    $right = (float)trim($array[1]);
                     if ($left <= $serieRangeTrimmed 
                         && $serieRangeTrimmed <= $right
                     ) {
                         return true;
                     }
                 } else { // single value element
-                    if ($serieRangeTrimmed === (int)$rangeTrimmed) {
+                    if ($serieRangeTrimmed === (float)$rangeTrimmed) {
                         return true;
                     }
                 }
@@ -256,7 +258,6 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
         $array = $this->DB->pselectRow($query, array('ID' => $id));
         if (Utility::isErrorX($array)) {
-            print $array->getMessage()."\n";
             return "Unknown";
         } else {
             return $array['Scan_type'];

@@ -34,7 +34,7 @@
         <tr>
             <td>{$archive_series[record].SeriesNumber}</td>
             <td>{$archive_series[record].SeriesDescription}</td>
-            <td>{if $archive_series[record].ProtocolName != ''}{$archive_series[record].ProtocolName}{else}Unknown{/if}</td>
+            <td>{$archive_series[record].ProtocolName|default:"Unknown"}</td>
             <td>{$archive_series[record].SequenceName}</td>
             <td>{$archive_series[record].EchoTime}</td>
             <td>{$archive_series[record].RepetitionTime}</td>
