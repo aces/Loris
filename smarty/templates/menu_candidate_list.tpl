@@ -4,6 +4,7 @@
 <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="js/advancedMenu.js"></script>
 
+<div class="row">
 <div class="col-sm-9">
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter();">
@@ -195,8 +196,10 @@
         <input tabindex="3" rowspan="2" type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-sm-12 col-md-offset-8">
     </form>
 </div>
+</div>
 <!-- <table> -->
 <!--  title table with pagination -->
+<div class="row">
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
@@ -263,4 +266,5 @@
             <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     </div>
+</div>
 </div>
