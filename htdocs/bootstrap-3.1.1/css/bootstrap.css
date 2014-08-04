@@ -6650,6 +6650,7 @@ button.close {
 
 .progress {
     height: 40px;
+    margin-bottom: 0px;
 }
 .alert-chevron {
     margin-top: 17px;
@@ -6691,9 +6692,41 @@ button.close {
   border-bottom-color: #338CD6;
 }
 .progress-bar-female {
-  background-color: #5EAFF2;
+  background-color: #2FA4E7;
 }
 .progress-bar-male {
   background-color: #1C70B6;
 }
+.line-legend {
+    list-style: none;
+    padding-left: 0px;
+}
+.line-legend li {
+  float: left; margin-right: 10px;
+}
+.line-legend span {
+  float: left; width: 15px; height: 15px; margin: 2px;
+}
 
+.pie-legend {
+    list-style: none;
+    padding-left: 0px;
+    margin-left: 0px;
+}
+.pie-legend li {
+  float: left; margin-right: 10px;
+}
+.pie-legend span {
+  float: left; width: 15px; height: 15px; margin: 2px;
+}
+
+.bar-legend {
+    list-style: none;
+    padding-left: 0px;
+}
+.bar-legend li {
+  float: left; margin-right: 10px;
+}
+.bar-legend span {
+  float: left; width: 15px; height: 15px; margin: 2px;
+}

@@ -158,6 +158,8 @@ class NDB_Form_dashboard extends NDB_Form {
 
 		// Welcome panel
 		$this->tpl_data['username'] = $user->getFullname();
+        $userID = $user->getUsername();
+        $this->tpl_data['last_login'] = $DB->pselectOne("SELECT max(Login_timestamp) FROM user_login_history WHERE userID='$userID' AND Success='Y'", array());
 		$this->tpl_data['project_description'] = $config->getSetting('projectDescription');
 		$dashboard_links = $config->getSetting('dashboardLinks');
         foreach (Utility::toArray($dashboard_links['link']) AS $link) {

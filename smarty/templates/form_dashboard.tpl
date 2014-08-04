@@ -8,6 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                 	<h2>Welcome, {$username}.</h2>
+                    <p><em>Last login: {$last_login}</em></p>
                 	<p>{$project_description}</p>
                 </div>
 	            <div class="panel-footer">| 
@@ -55,12 +56,18 @@
                     </div>
                     <div class="recruitment-panel" id="recruitment-site-breakdown">
                         <div class="col-lg-4">
-                            <h5 class="chart-title">Total recruitment per site</h5>
-                            <canvas id="snapshotRecruitment" width="150" height="190"></canvas>
+                            <div>
+                                <h5 class="chart-title">Total recruitment per site</h5>
+                                <canvas id="snapshotRecruitment" width="163" height="190"></canvas>
+                                <div id="pie-legend"></div>
+                            </div>
                         </div>
                         <div class="col-lg-8">
-                            <h5 class="chart-title">Gender breakdown by site</h5>
-                            <canvas id="snapshotRecruitmentGender" width="350" height="190"></canvas>
+                            <div>
+                                <h5 class="chart-title">Gender breakdown by site</h5>
+                                <canvas id="snapshotRecruitmentGender" width="350" height="190"></canvas>
+                                <div id="bar-legend"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -87,10 +94,12 @@
                     <div id="scans-line-chart-panel">
                         <h5 class="chart-title">Scans per site</h5>
                         <canvas id="scanChart" width="400" height="190"></canvas>
+                        <div id="scan-line-legend"></div>
                     </div>
                     <div id="recruitment-line-chart-panel">
                         <h5 class="chart-title">Recruitment per site</h5>
                         <canvas id="recruitmentChart" width="400" height="190"></canvas>
+                        <div id="recruitment-line-legend"></div>
                     </div>
                 </div>
             </div>
@@ -292,10 +301,10 @@
         var dataArray = [
             {
                 label: "Female",
-                fillColor: "rgba(94,175,242,0.6)",
-                strokeColor: "rgba(94,175,242,1)",
-                highlightFill: "rgba(94,175,242,1)",
-                highlightStroke: "rgba(94,175,242,1)",
+                fillColor: "rgba(47,164,231,0.6)",
+                strokeColor: "rgba(47,164,231,1)",
+                highlightFill: "rgba(47,164,231,1)",
+                highlightStroke: "rgba(47,164,231,1)",
                 data : chartData['datasets']['female']
             },
             {
@@ -311,7 +320,6 @@
             labels: ["DCC", "AAA", "BBB"],
             datasets: dataArray
         }
-        console.log(data);
         return data;
     }
     {ldelim}
@@ -336,6 +344,7 @@
         datasetFill : true,
     };
     var pieOptions = {
+        responsive: true,
         segmentShowStroke : true,
         segmentStrokeColor : "#fff",
         segmentStrokeWidth : 2,
@@ -346,6 +355,7 @@
         animateScale : false
     };
     var barOptions = {
+        responsive: true,
         scaleBeginAtZero : true,
         scaleShowGridLines : true,
         scaleGridLineColor : "rgba(0,0,0,.05)",
@@ -357,15 +367,19 @@
     }
     var scanctx = $("#scanChart").get(0).getContext("2d");
     var scanLineChart = new Chart(scanctx).Line(scandata, lineOptions);
+    document.getElementById('scan-line-legend').innerHTML = scanLineChart.generateLegend();
 
     var recruitmentctx = $("#recruitmentChart").get(0).getContext("2d");
     var recruitmentLineChart = new Chart(recruitmentctx).Line(recruitmentdata, lineOptions);
+    document.getElementById('recruitment-line-legend').innerHTML = recruitmentLineChart.generateLegend();
 
     var recruitmentPiectx = $("#snapshotRecruitment").get(0).getContext("2d");
-    var recruitmentPiechart = new Chart(recruitmentPiectx).Pie(recruitmentPieData,pieOptions);
+    var recruitmentPieChart = new Chart(recruitmentPiectx).Pie(recruitmentPieData,pieOptions);
+    document.getElementById('pie-legend').innerHTML = recruitmentPieChart.generateLegend();
 
     var recruitmentBarctx = $("#snapshotRecruitmentGender").get(0).getContext("2d");
     var recruitmentBarChart = new Chart(recruitmentBarctx).Bar(recruitmentBarData, barOptions);
+    document.getElementById('bar-legend').innerHTML = recruitmentBarChart.generateLegend();
 
 </script>
 <script>
