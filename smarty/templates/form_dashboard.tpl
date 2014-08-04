@@ -28,27 +28,39 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
-                                <li><a href="#">View site breakdown</a></li>
-                                <li><a href="#">View project breakdown</a></li>
+                                <li class="active"><a href="#" id="overall-recruitment-dropdown">View overall recruitment</a></li>
+                                <li><a href="#" id="recruitment-breakdown-dropdown">View site breakdown</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
-                            <p>
-                            {$female_percent}%
-                            </br>
-                            Female
-                            </p>
+                    <div class="recruitment-panel" id="overall-recruitment">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
+                                <p>
+                                {$female_percent}%
+                                </br>
+                                Female
+                                </p>
+                            </div>
+                            <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
+                                <p>
+                                {$male_percent}%
+                                </br>
+                                Male
+                                </p>
+                            </div>
                         </div>
-                        <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
-                            <p>
-                            {$male_percent}%
-                            </br>
-                            Male
-                            </p>
+                    </div>
+                    <div class="recruitment-panel" id="recruitment-site-breakdown">
+                        <div class="col-lg-4">
+                            <h5 class="chart-title">Total recruitment per site</h5>
+                            <canvas id="snapshotRecruitment" width="150" height="190"></canvas>
+                        </div>
+                        <div class="col-lg-8">
+                            <h5 class="chart-title">Gender breakdown by site</h5>
+                            <canvas id="snapshotRecruitmentGender" width="350" height="190"></canvas>
                         </div>
                     </div>
                 </div>
@@ -65,21 +77,28 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
-                                <li><a href="#">View recruitment chart</a>
-                                </li>
+                                <li class="active"><a href="#" id="scan-chart-dropdown">View scans per site</a></li>
+                                <li><a href="#" id="recruitment-chart-dropdown">View recruitment per site</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="panel-body">
-                    <canvas id="myChart" width="400" height="170"></canvas>
+                    <div id="scans-line-chart-panel">
+                        <h5 class="chart-title">Scans per site</h5>
+                        <canvas id="scanChart" width="400" height="190"></canvas>
+                    </div>
+                    <div id="recruitment-line-chart-panel">
+                        <h5 class="chart-title">Recruitment per site</h5>
+                        <canvas id="recruitmentChart" width="400" height="190"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4">
             <div class="col-lg-12">
-                <a href="#">
+                <a href="main.php?test_name=imaging_browser">
                     <div class="panel panel-blue">
                         <div class="panel-heading">
                             <div class="row">
@@ -96,13 +115,13 @@
                 </a>
             </div>
             <div class="col-lg-12">
-                <a href="#">
+                <a href="main.php?test_name=conflicts_resolve">
                     <div class="panel panel-blue">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-9 text-left">
                                     <div class="huge">{$conflicts}</div>
-                                    Conflicts
+                                    Data Entry Conflicts
                                 </div>
                                 <div class="col-xs-3 text-right alert-chevron">
                                     <span class="glyphicon glyphicon-chevron-right huge"></span>
@@ -113,13 +132,13 @@
                 </a>
             </div>
             <div class="col-lg-12">
-                <a href="#">
+                <a href="main.php?test_name=statistics_site&CenterID=2&ProjectID=">
                     <div class="panel panel-blue">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-9 text-left">
-                                    <div class="huge">{$uncompleted_forms}</div>
-                                    Uncompleted Forms
+                                    <div class="huge">{$incomplete_forms}</div>
+                                    Incomplete Forms
                                 </div>
                                 <div class="col-xs-3 text-right alert-chevron">
                                     <span class="glyphicon glyphicon-chevron-right huge"></span>
@@ -129,6 +148,66 @@
                     </div>
                 </a>
             </div>
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                    Document Repository Notifications
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                New Document
+                                <span class="pull-right text-muted small"><em>4 minutes ago</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Deleted Document
+                                <span class="pull-right text-muted small"><em>12 minutes ago</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Updated Document
+                                <span class="pull-right text-muted small"><em>27 minutes ago</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Updated Document
+                                <span class="pull-right text-muted small"><em>43 minutes ago</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Updated Document
+                                <span class="pull-right text-muted small"><em>11:32 AM</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Updated Document
+                                <span class="pull-right text-muted small"><em>11:13 AM</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Updated Document
+                                <span class="pull-right text-muted small"><em>10:57 AM</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Updated Document
+                                <span class="pull-right text-muted small"><em>9:49 AM</em>
+                                </span>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                Updated Document
+                                <span class="pull-right text-muted small"><em>Yesterday</em>
+                                </span>
+                            </a>
+                        </div>
+                        <!-- /.list-group -->
+                        <a href="#" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+            </div>
 
         </div>
     </div>
@@ -136,77 +215,158 @@
 
 <script src="js/Chart.min.js"></script>
 <script language="JavaScript" type="text/javascript">
+    $(document).ready(function() {
+        $("#recruitment-line-chart-panel").addClass("hidden");
+        $("#recruitment-site-breakdown").addClass("hidden");
+
+        $("#recruitment-breakdown-dropdown").click(function() {
+            $("#overall-recruitment").addClass("hidden");
+            $("#recruitment-site-breakdown").removeClass("hidden");
+            $("#overall-recruitment-dropdown").parent().removeClass("active");
+            $("#recruitment-breakdown-dropdown").parent().addClass("active");
+        })
+        $("#overall-recruitment-dropdown").click(function() {
+            $("#recruitment-site-breakdown").addClass("hidden");
+            $("#overall-recruitment").removeClass("hidden");
+            $("#recruitment-breakdown-dropdown").parent().removeClass("active");
+            $("#overall-recruitment-dropdown").parent().addClass("active");
+        })
+
+        $("#recruitment-chart-dropdown").click(function() {
+            $("#scans-line-chart-panel").addClass("hidden");
+            $("#recruitment-line-chart-panel").removeClass("hidden");
+            $("#scan-chart-dropdown").parent().removeClass("active");
+            $("#recruitment-chart-dropdown").parent().addClass("active");
+        })
+        $("#scan-chart-dropdown").click(function() {
+            $("#recruitment-line-chart-panel").addClass("hidden");
+            $("#scans-line-chart-panel").removeClass("hidden");
+            $("#recruitment-chart-dropdown").parent().removeClass("active");
+            $("#scan-chart-dropdown").parent().addClass("active");
+        })
+    });
+    var colours = ["121,209,207", "245,147,34", "214,51,192", "54,209,57", "245,229,56"]
     function updateChart(chartData) {
-        var dataArray = getDatasets(chartData.datasets);
+        var dataArray = getLineData(chartData.datasets);
         var data = {
             labels: chartData.labels,
             datasets: dataArray
         };
         return data;
     }
-    function getDatasets(datasets) {
+    function getLineData(datasets) {
         var processedDatasets = new Array();
         for (var i in datasets) {
-            console.log(datasets[i]);
+            var lightColour = "rgba(" + colours[i] + ",0.4)";
+            var darkColour = "rgba(" + colours[i] + ",1)";
             var currentDataset = {
                 label: datasets[i].name,
-                fillColor: "rgba(121,209,207,0.4)",
-                strokeColor: "rgba(121,209,207,1)",
-                pointColor: "rgba(121,209,207,1)",
+                fillColor: lightColour,
+                strokeColor: darkColour,
+                pointColor: darkColour,
                 pointStrokeColor: "#fff",
                 pointHightlightFill: "#fff",
-                pointHighlightStroke: "rgba(121,209,207,1)",
+                pointHighlightStroke: darkColour,
                 data: datasets[i].data
             };
             processedDatasets.push(currentDataset);
         }
         return processedDatasets;
     }
+    function getPieData(chartData) {
+        var processedData = new Array();
+        for (var i in chartData) {
+            var lightColour = "rgba(" + colours[i] + ",0.6)";
+            var darkColour = "rgba(" + colours[i] + ",1)";
+            var currentSite = {
+                value: parseInt(chartData[i].total),
+                color: darkColour,
+                highlight: lightColour,
+                label: chartData[i].label
+            }
+            processedData.push(currentSite);
+        }
+        return processedData;
+    }
+    function getBarData(chartData) {
+        var dataArray = [
+            {
+                label: "Female",
+                fillColor: "rgba(94,175,242,0.6)",
+                strokeColor: "rgba(94,175,242,1)",
+                highlightFill: "rgba(94,175,242,1)",
+                highlightStroke: "rgba(94,175,242,1)",
+                data : chartData['datasets']['female']
+            },
+            {
+                label: "Male",
+                fillColor: "rgba(28,112,182,0.6)",
+                strokeColor: "rgba(28,112,182,1)",
+                highlightFill: "rgba(28,112,182,1)",
+                highlightStroke: "rgba(28,112,182,1)",
+                data : chartData['datasets']['male']
+            }
+        ]
+        var data = {
+            labels: ["DCC", "AAA", "BBB"],
+            datasets: dataArray
+        }
+        console.log(data);
+        return data;
+    }
     {ldelim}
-    var data = updateChart({$recruitment_chart});
+    var recruitmentPieData = getPieData({$pie_chart});
+    var recruitmentBarData = getBarData({$bar_chart});
+    var scandata = updateChart({$scan_chart});
+    var recruitmentdata = updateChart({$recruitment_chart});
     {rdelim}
-    var options = {
+    var lineOptions = {
         responsive: true,
-        ///Boolean - Whether grid lines are shown across the chart
         scaleShowGridLines : true,
-
-        //String - Colour of the grid lines
         scaleGridLineColor : "rgba(0,0,0,.05)",
-
-        //Number - Width of the grid lines
         scaleGridLineWidth : 1,
-
-        //Boolean - Whether the line is curved between points
         bezierCurve : true,
-
-        //Number - Tension of the bezier curve between points
         bezierCurveTension : 0.4,
-
-        //Boolean - Whether to show a dot for each point
         pointDot : true,
-
-        //Number - Radius of each point dot in pixels
         pointDotRadius : 4,
-
-        //Number - Pixel width of point dot stroke
         pointDotStrokeWidth : 1,
-
-        //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
         pointHitDetectionRadius : 20,
-
-        //Boolean - Whether to show a stroke for datasets
         datasetStroke : true,
-
-        //Number - Pixel width of dataset stroke
         datasetStrokeWidth : 2,
-
-        //Boolean - Whether to fill the dataset with a colour
         datasetFill : true,
     };
-    // Get context with jQuery - using jQuery's .get() method.
-    var ctx = $("#myChart").get(0).getContext("2d");
-    // This will get the first returned node in the jQuery collection.
-    var myNewChart = new Chart(ctx).Line(data, options);;
+    var pieOptions = {
+        segmentShowStroke : true,
+        segmentStrokeColor : "#fff",
+        segmentStrokeWidth : 2,
+        percentageInnerCutout : 0, // This is 0 for Pie charts
+        animationSteps : 100,
+        animationEasing : "easeOutBounce",
+        animateRotate : true,
+        animateScale : false
+    };
+    var barOptions = {
+        scaleBeginAtZero : true,
+        scaleShowGridLines : true,
+        scaleGridLineColor : "rgba(0,0,0,.05)",
+        scaleGridLineWidth : 1,
+        barShowStroke : true,
+        barStrokeWidth : 2,
+        barValueSpacing : 5,
+        barDatasetSpacing : 1
+    }
+    var scanctx = $("#scanChart").get(0).getContext("2d");
+    var scanLineChart = new Chart(scanctx).Line(scandata, lineOptions);
+
+    var recruitmentctx = $("#recruitmentChart").get(0).getContext("2d");
+    var recruitmentLineChart = new Chart(recruitmentctx).Line(recruitmentdata, lineOptions);
+
+    var recruitmentPiectx = $("#snapshotRecruitment").get(0).getContext("2d");
+    var recruitmentPiechart = new Chart(recruitmentPiectx).Pie(recruitmentPieData,pieOptions);
+
+    var recruitmentBarctx = $("#snapshotRecruitmentGender").get(0).getContext("2d");
+    var recruitmentBarChart = new Chart(recruitmentBarctx).Bar(recruitmentBarData, barOptions);
+
 </script>
 <script>
     $('.progress-bar').tooltip();

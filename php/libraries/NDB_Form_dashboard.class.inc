@@ -27,11 +27,40 @@ require_once "Utility.class.inc";
 class NDB_Form_dashboard extends NDB_Form {
 
     function _getTotalGender($gender) {
-       $DB =& Database::singleton(); 
+        $DB =& Database::singleton(); 
         $total = $DB->pselectOne(
                     "SELECT count(c.CandID) FROM candidate c WHERE c.Gender='$gender'", array()
         );
         return $total;
+    }
+
+    function _getRecruitmentTotalsBySite() {
+        $DB =& Database::singleton();
+        $recruitmentBySiteData = array();
+        $list_of_sites =& Utility::getSiteList();
+        foreach ($list_of_sites as $site) {
+            $recruitmentBySiteData[] = array(
+                "label" => $site,
+                "total" => $DB->pselectOne("SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE psc.Name='$site'", array())
+            );
+        }
+        return json_encode($recruitmentBySiteData);
+    }
+
+    function _getGenderTotalsBySite() {
+        $DB =& Database::singleton();
+        $genderData = array(); 
+        $list_of_sites =& Utility::getSiteList();
+        $genderData['labels'] = $list_of_sites;
+        foreach ($list_of_sites as $site) {
+            $genderData['datasets']['female'][] = $DB->pselectOne(
+                    "SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE c.Gender='female' AND psc.Name='$site'", array()
+            );
+            $genderData['datasets']['male'][] = $DB->pselectOne(
+                    "SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE c.Gender='male' AND psc.Name='$site'", array()
+            );
+        }
+        return json_encode($genderData);
     }
 
     function _recruitmentBySite() {
@@ -84,7 +113,6 @@ class NDB_Form_dashboard extends NDB_Form {
             );
         }
         $scanDataJSON = json_encode($scanData);
-        print_r($scanDataJSON);
         return $scanDataJSON;
     }
 
@@ -157,14 +185,15 @@ class NDB_Form_dashboard extends NDB_Form {
         $this->tpl_data['male_percent'] = $totalMales/$recruitmentTarget*100;
 
         // Charts
+        $this->tpl_data['pie_chart'] = $this->_getRecruitmentTotalsBySite();
+        $this->tpl_data['bar_chart'] = $this->_getGenderTotalsBySite();
         $this->tpl_data['recruitment_chart'] = $this->_recruitmentBySite();
         $this->tpl_data['scan_chart'] = $this->_scansBySite();
 
         // Tasks
-        $this->tpl_data['new_scans'] = 10;
+        $this->tpl_data['new_scans'] = $DB->pselectOne("SELECT count(*) FROM files f LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) WHERE fqc.QCStatus IS NULL", array());
         $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved", array());
-        $this->tpl_data['uncompleted_forms'] = 10;
+        $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
 	}
-	
 }
 ?>
