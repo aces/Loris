@@ -155,6 +155,8 @@ class NDB_Form_dashboard extends NDB_Form {
         $user =& User::singleton();
 		$this->tpl_data = array();
 		$config =& NDB_Config::singleton();
+        $site = $user->getSiteName();
+        $this->tpl_data['user_site'] = $DB->pselectOne("SELECT CenterID FROM psc WHERE Name=$site");
 
 		// Welcome panel
 		$this->tpl_data['username'] = $user->getFullname();
@@ -196,6 +198,9 @@ class NDB_Form_dashboard extends NDB_Form {
         $this->tpl_data['new_scans'] = $DB->pselectOne("SELECT count(*) FROM files f LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) WHERE fqc.QCStatus IS NULL", array());
         $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved", array());
         $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
+
+        // Document Repository
+        $this->tpl_data['document_repository_notifications'] = $DB->pselect("SELECT File_name, Date_uploaded FROM document_repository ORDER BY Date_uploaded DESC LIMIT 7", array());
 	}
 }
 ?>

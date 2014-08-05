@@ -1,5 +1,3 @@
-
-
 <div class="container">
     <div class="row">
         <div class="col-lg-8">
@@ -8,7 +6,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                 	<h2>Welcome, {$username}.</h2>
-                    <p><em>Last login: {$last_login}</em></p>
+                    <p class="small">Last login: {$last_login}</p>
                 	<p>{$project_description}</p>
                 </div>
 	            <div class="panel-footer">| 
@@ -29,8 +27,8 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
-                                <li class="active"><a href="#" id="overall-recruitment-dropdown">View overall recruitment</a></li>
-                                <li><a href="#" id="recruitment-breakdown-dropdown">View site breakdown</a></li>
+                                <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
+                                <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
                             </ul>
                         </div>
                     </div>
@@ -84,8 +82,8 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
-                                <li class="active"><a href="#" id="scan-chart-dropdown">View scans per site</a></li>
-                                <li><a href="#" id="recruitment-chart-dropdown">View recruitment per site</a></li>
+                                <li class="active"><a data-target="scans-line-chart-panel">View scans per site</a></li>
+                                <li><a data-target="recruitment-line-chart-panel">View recruitment per site</a></li>
                             </ul>
                         </div>
                     </div>
@@ -141,7 +139,7 @@
                 </a>
             </div>
             <div class="col-lg-12">
-                <a href="main.php?test_name=statistics_site&CenterID=2&ProjectID=">
+                <a href="main.php?test_name=statistics_site">
                     <div class="panel panel-blue">
                         <div class="panel-heading">
                             <div class="row">
@@ -165,54 +163,15 @@
                     <!-- /.panel-heading -->
                     <div class="panel-body">
                         <div class="list-group">
+                            {foreach from=$document_repository_notifications item=link}
                             <a href="#" class="list-group-item">
-                                New Document
-                                <span class="pull-right text-muted small"><em>4 minutes ago</em>
-                                </span>
+                                <span class="pull-right text-muted small">{$link.Date_uploaded}</span>
+                                {$link.File_name}
                             </a>
-                            <a href="#" class="list-group-item">
-                                Deleted Document
-                                <span class="pull-right text-muted small"><em>12 minutes ago</em>
-                                </span>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                Updated Document
-                                <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                                </span>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                Updated Document
-                                <span class="pull-right text-muted small"><em>43 minutes ago</em>
-                                </span>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                Updated Document
-                                <span class="pull-right text-muted small"><em>11:32 AM</em>
-                                </span>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                Updated Document
-                                <span class="pull-right text-muted small"><em>11:13 AM</em>
-                                </span>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                Updated Document
-                                <span class="pull-right text-muted small"><em>10:57 AM</em>
-                                </span>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                Updated Document
-                                <span class="pull-right text-muted small"><em>9:49 AM</em>
-                                </span>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                Updated Document
-                                <span class="pull-right text-muted small"><em>Yesterday</em>
-                                </span>
-                            </a>
+                            {/foreach}
                         </div>
                         <!-- /.list-group -->
-                        <a href="#" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
+                        <a href="main.php?test_name=document_repository" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
                     </div>
                     <!-- /.panel-body -->
                 </div>
@@ -228,31 +187,14 @@
         $("#recruitment-line-chart-panel").addClass("hidden");
         $("#recruitment-site-breakdown").addClass("hidden");
 
-        $("#recruitment-breakdown-dropdown").click(function() {
-            $("#overall-recruitment").addClass("hidden");
-            $("#recruitment-site-breakdown").removeClass("hidden");
-            $("#overall-recruitment-dropdown").parent().removeClass("active");
-            $("#recruitment-breakdown-dropdown").parent().addClass("active");
-        })
-        $("#overall-recruitment-dropdown").click(function() {
-            $("#recruitment-site-breakdown").addClass("hidden");
-            $("#overall-recruitment").removeClass("hidden");
-            $("#recruitment-breakdown-dropdown").parent().removeClass("active");
-            $("#overall-recruitment-dropdown").parent().addClass("active");
-        })
-
-        $("#recruitment-chart-dropdown").click(function() {
-            $("#scans-line-chart-panel").addClass("hidden");
-            $("#recruitment-line-chart-panel").removeClass("hidden");
-            $("#scan-chart-dropdown").parent().removeClass("active");
-            $("#recruitment-chart-dropdown").parent().addClass("active");
-        })
-        $("#scan-chart-dropdown").click(function() {
-            $("#recruitment-line-chart-panel").addClass("hidden");
-            $("#scans-line-chart-panel").removeClass("hidden");
-            $("#recruitment-chart-dropdown").parent().removeClass("active");
-            $("#scan-chart-dropdown").parent().addClass("active");
-        })
+        $(".dropdown-menu a").click(function() {
+            $(this).parent().siblings().removeClass("active");
+            $(this).parent().addClass("active");
+            $($(this).parent().siblings().children("a")).each(function(i) {
+                $(document.getElementById(this.getAttribute('data-target'))).addClass("hidden");
+            });
+            $(document.getElementById(this.getAttribute('data-target'))).removeClass("hidden");
+        });
     });
     var colours = ["121,209,207", "245,147,34", "214,51,192", "54,209,57", "245,229,56"]
     function updateChart(chartData) {
