@@ -51,8 +51,8 @@ class NDB_Form_dashboard extends NDB_Form {
         $DB =& Database::singleton();
         $genderData = array(); 
         $list_of_sites =& Utility::getSiteList();
-        $genderData['labels'] = $list_of_sites;
         foreach ($list_of_sites as $site) {
+            $genderData['labels'][] = $site;
             $genderData['datasets']['female'][] = $DB->pselectOne(
                     "SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE c.Gender='female' AND psc.Name='$site'", array()
             );

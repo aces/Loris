@@ -317,7 +317,7 @@
             }
         ]
         var data = {
-            labels: ["DCC", "AAA", "BBB"],
+            labels: chartData.labels,
             datasets: dataArray
         }
         return data;
