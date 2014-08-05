@@ -87,15 +87,15 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             if ($this->_setProtocols()) {
                 $previousSeriesDescription = '';
                 $previousProtocolName = '';
-                foreach ($array as &$item) {
-                    $seriesDescription = $item['SeriesDescription'];
-                    // if the same serie, do not compute the protocol name again,
+                foreach ($array as &$series) {
+                    $seriesDescription = $series['SeriesDescription'];
+                    // if the same series, do not compute the protocol name again,
                     // use the previous one
                     if ($previousSeriesDescription === $seriesDescription) {
-                        $item['ProtocolName'] = $previousProtocolName;
+                        $series['ProtocolName'] = $previousProtocolName;
                     } else {
-                        $protocolName = $this->_getProtocolName($item);
-                        $item['ProtocolName'] = $protocolName;
+                        $protocolName = $this->_getProtocolName($series);
+                        $series['ProtocolName'] = $protocolName;
                         $previousSeriesDescription = $seriesDescription;
                         $previousProtocolName = $protocolName;
                     }
