@@ -93,7 +93,21 @@ class NDB_Form_participant_accounts extends NDB_Form
                 'VL' => "Visit ". $values['VL']." does not exist for given candidate"
             );
         }
-
+        $instrument_list = $db->pselect( 
+            "SELECT f.Test_name FROM flag f
+             JOIN session s on s.ID = f.SessionID
+             WHERE s.CandID=:v_CandID  
+             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             AND s.Active='Y'",
+             array('v_CandID' => $values['CandID'], 'v_VL' => $values['VL'])
+        );
+	foreach($instrument_list as $instrument) {
+		if($values['Test_name'] == $instrument['Test_name']) {
+			return array(
+		           'Test_name' => "Instrument ". $values['Test_name']." already exists for given candidate for visit ". $values['VL']
+			 );
+		}
+	}
         if($_REQUEST['fire_away'] !== 'Create survey') {
             if (!filter_var(
                 $values['Email'],

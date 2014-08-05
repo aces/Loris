@@ -1,5 +1,6 @@
 <script type="text/javascript" src="js/filterControl.js"></script>
 
+<div class="row">
 <div class="col-xs-12">
     <!-- start the selection table -->
     <form method="post" action="main.php?test_name=final_radiological_review">
@@ -93,6 +94,7 @@
             </div>
         </div>
     </form>
+</div>
 </div>
 
 <!--  title table with pagination -->
