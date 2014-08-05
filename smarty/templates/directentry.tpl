@@ -60,7 +60,7 @@
 {if $finalpage} 
 {$workspace}
 <h1 align="center">Review Page</h1>
-<p>Please review the data entered below. Unanwered questions are highlighted in red. Please use the back button to go access the previous pages and enter any data that is missing.</p>
+<p>Please review the data entered below. Unanswered questions are highlighted in red. Please use the back button to go access the previous pages and enter any data that is missing.</p>
 <p>Unanswered questions are highlighted in red.</p>
 {if $review}
 <hr>
