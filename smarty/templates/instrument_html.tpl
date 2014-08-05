@@ -19,8 +19,7 @@
 				</div>
 				<br><br><br><br>
 			{elseif $element.type eq "group"}
-				{assign var='colspan' value=count($element.elements)}
-				{if $colspan <= 2}
+				{if substr_count($element.elements[1].name, '_status')}
 					{if $inTable eq "TRUE"}
 						{assign var="inTable" value="FALSE"}
 						</table>
@@ -65,6 +64,8 @@
 							{foreach key=gkey item=gitem from=$element.elements}
 								{if $gitem.type == 'date'}
 									<td class="element form-inline">{$gitem.html}</td>
+								{elseif $gitem.type == 'checkbox'}
+									<td class="form-inline">{$gitem.html}</td>
 								{else}
 									<td class="element">{$gitem.html}</td>
 								{/if}
@@ -116,8 +117,7 @@
 					</div>
 					<br><br><br><br>
 				{elseif $element.type eq "group"}
-					{assign var='colspan' value=count($element.elements)}
-					{if $colspan <= 2}
+					{if substr_count($element.elements[1].name, '_status')}
 						{if $inTable eq "TRUE"}
 							{assign var="inTable" value="FALSE"}
 							</table>
@@ -162,6 +162,8 @@
 								{foreach key=gkey item=gitem from=$element.elements}
 									{if $gitem.type == 'date'}
 										<td class="element form-inline">{$gitem.html}</td>
+									{elseif $gitem.type == 'checkbox'}
+										<td class="form-inline">{$gitem.html}</td>
 									{else}
 										<td class="element">{$gitem.html}</td>
 									{/if}
