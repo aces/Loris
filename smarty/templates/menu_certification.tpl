@@ -1,5 +1,6 @@
 <script type="text/javascript" src="js/filterControl.js"></script>
 
+<div class="row">
 <div class="col-md-8 col-sm-10">
     <form method="post" action="main.php?test_name=certification">
         <div class="panel panel-primary">
@@ -49,6 +50,7 @@
             </div>
         </div>
     </form>
+</div>
 </div>
 
 <!--  title table with pagination -->

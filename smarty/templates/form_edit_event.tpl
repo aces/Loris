@@ -1,5 +1,6 @@
 <script src="js/filterControl.js" type="text/javascript"></script>
 
+<div class="row">
 <div class="col-md-12 col-sm-8">
 	<form method="post" name="edit_user" id="edit_user">
 		<div class="panel panel-primary">
@@ -61,6 +62,7 @@
             </div>
 		</div>
 	</form>
+</div>
 </div>
 
 <div class="col-xs-12">
