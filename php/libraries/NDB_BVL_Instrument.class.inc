@@ -357,14 +357,36 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             $defaults = $this->localDefaults;
         }
+
         $this->form->setDefaults($defaults);
+
+        if($this->DataEntryType == 'DirectEntry') {
+            $renderer = new HTML_QuickForm_Renderer_Default();
+            if(isset($this->testName)) {
+                $renderer->setFormTemplate("<form{attributes}><table id=\"instrument_" . $this->testName . "\" class=\"instrument\">{content}</table></form>");
+            } else {
+                $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
+            }
+     
+            $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
+            $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
+            $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
+
+            // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
+            // so that we can have instructions/labels in the direct data entry instruments that span into
+            // the column for data entry.
+            $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
+            $this->form->accept($renderer);
+            $html = $renderer->toHtml();
+        } else {
+            $smarty = new Smarty_neurodb;
+            $renderer = new HTML_QuickForm_Renderer_Array($smarty);
+            $this->form->accept($renderer);
+            $smarty->assign('form', $renderer->toArray());
+            $html = $smarty->fetch("instrument_html.tpl");
+        }
         
-        $smarty = new Smarty_neurodb;
-        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
-        $this->form->accept($renderer);
-        $smarty->assign('form', $renderer->toArray());
-        $html = $smarty->fetch("instrument_html.tpl");
-        return $html;
+        return $html; 
     }
     
     /**
