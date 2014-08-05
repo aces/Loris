@@ -85,18 +85,18 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             );
             
             if ($this->_setProtocols()) {
-                $previousSerieDescription = '';
+                $previousSeriesDescription = '';
                 $previousProtocolName = '';
-                foreach ($array as &$serie) {
-                    $serieDescription = $serie['SeriesDescription'];
+                foreach ($array as &$item) {
+                    $seriesDescription = $item['SeriesDescription'];
                     // if the same serie, do not compute the protocol name again,
                     // use the previous one
-                    if ($previousSerieDescription === $serieDescription) {
-                        $serie['ProtocolName'] = $previousProtocolName;
+                    if ($previousSeriesDescription === $seriesDescription) {
+                        $item['ProtocolName'] = $previousProtocolName;
                     } else {
-                        $protocolName = $this->_getProtocolName($serie);
-                        $serie['ProtocolName'] = $protocolName;
-                        $previousSerieDescription = $serieDescription;
+                        $protocolName = $this->_getProtocolName($item);
+                        $item['ProtocolName'] = $protocolName;
+                        $previousSeriesDescription = $seriesDescription;
                         $previousProtocolName = $protocolName;
                     }
                 }
@@ -173,19 +173,19 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         }
     }
     /**
-     * Finds the protocol name by comparing parameters of a serie.
+     * Finds the protocol name by comparing parameters of a series.
      * 
-     * @param array $serie serie for which the protocol is to be found
+     * @param array $series series for which the protocol is to be found
      *
      * @return string name of the protocol, "Unknown" if protocol for
-     *         serie's parameters doesn't exist
+     *         series parameters doesn't exist
      */
-    function _getProtocolName($serie)
+    function _getProtocolName($series)
     {
-        $tr = $serie['RepetitionTime'];
-        $te = $serie['EchoTime'];
-        $ti = $serie['InversionTime'];
-        $sliceThickness = $serie['SliceThickness'];
+        $tr = $series['RepetitionTime'];
+        $te = $series['EchoTime'];
+        $ti = $series['InversionTime'];
+        $sliceThickness = $series['SliceThickness'];
 
         foreach ($this->protocols as $protocol) {
             if ((! $protocol['TR_range'] 
@@ -205,23 +205,23 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     }
 
     /**
-     * Compares parameters of a serie and of the protocols
+     * Compares parameters of a series and of the protocols
      * 
-     * @param string $serieRange    serie's parameter to be compared
+     * @param string $seriesRange    series parameter to be compared
      * @param string $protocolRange protocol's parameter 
      *        to be compared with
      *
-     * @return bool true if serie's parameter is in range with 
+     * @return bool true if series parameter is in range with 
      *         the protocol's one, false otherwise
      */
-    function _inRange($serieRange, $protocolRange) 
+    function _inRange($seriesRange, $protocolRange) 
     {
-        if (! isset($serieRange)) {
+        if (! isset($seriesRange)) {
             return false;
         } else if (! isset($protocolRange)) {
             return false;
         } else {
-            $serieRangeTrimmed = (float)trim($serieRange);
+            $seriesRangeTrimmed = (float)trim($seriesRange);
             $protocolRanges = split(",", $protocolRange);
             
             foreach ($protocolRanges as $range) {
@@ -230,13 +230,13 @@ class NDB_Form_Dicom_Archive extends NDB_Form
                     $array = split("-", $rangeTrimmed);
                     $left = (float)trim($array[0]);
                     $right = (float)trim($array[1]);
-                    if ($left <= $serieRangeTrimmed 
-                        && $serieRangeTrimmed <= $right
+                    if ($left <= $seriesRangeTrimmed 
+                        && $seriesRangeTrimmed <= $right
                     ) {
                         return true;
                     }
                 } else { // single value element
-                    if ($serieRangeTrimmed === (float)$rangeTrimmed) {
+                    if ($seriesRangeTrimmed === (float)$rangeTrimmed) {
                         return true;
                     }
                 }
