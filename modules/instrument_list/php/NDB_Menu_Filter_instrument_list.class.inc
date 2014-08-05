@@ -61,6 +61,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $this->tpl_data['candID'] = $_REQUEST['candID'];
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
 
+        $this->_setupPage(null, null, null, null, 'filter');
         // get behavioral battery for this visit (time point)
         $battery = new NDB_BVL_Battery;
         if (Utility::isErrorX($battery)) {
