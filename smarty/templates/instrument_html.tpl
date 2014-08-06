@@ -53,14 +53,14 @@
 						{assign var="inTable" value="TRUE"}
 						<table class="table table-instrument">
 							<tr>
-								<th>{$element.label}</th>
+								<th colspan="2">{$element.label}</th>
 								{foreach key=gkey item=gitem from=$element.elements}
 									<th>{$gitem.html}</th>
 								{/foreach}
 							</tr>
 					{else}
 						<tr>
-							<td>{$element.label}</td>
+							<td colspan="2">{$element.label}</td>
 							{foreach key=gkey item=gitem from=$element.elements}
 								{if $gitem.type == 'date'}
 									<td class="element form-inline">{$gitem.html}</td>
@@ -151,14 +151,14 @@
 							{assign var="inTable" value="TRUE"}
 							<table class="table table-instrument">
 								<tr>
-									<th>{$element.label}</th>
+									<th colspan="2">{$element.label}</th>
 									{foreach key=gkey item=gitem from=$element.elements}
 										<th>{$gitem.html}</th>
 									{/foreach}
 								</tr>
 						{else}
 							<tr>
-								<td>{$element.label}</td>
+								<td colspan="2">{$element.label}</td>
 								{foreach key=gkey item=gitem from=$element.elements}
 									{if $gitem.type == 'date'}
 										<td class="element form-inline">{$gitem.html}</td>
@@ -206,4 +206,8 @@
 			</table>
 		{/if}
 	{/foreach}
+	{if $inTable eq "TRUE"}
+		{assign var="inTable" value="FALSE"}
+		</table>
+	{/if}
 </form>
