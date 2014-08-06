@@ -90,7 +90,7 @@ var Instrument = {
 
         table = document.getElementById("workspace");
         rows = table.rows;
-        for (i = 1; i < rows.length; i += 1) {
+        for (i = 0; i < rows.length; i += 1) {
             row = rows[i];
             if (row.children.length < 3) {
                 continue;
