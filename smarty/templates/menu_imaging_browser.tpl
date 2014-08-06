@@ -10,6 +10,7 @@
     </script>
 {/literal}
 
+<div class="row">
 <div class="col-sm-9">
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter();">
@@ -96,6 +97,7 @@
 {if $numTimepoints}
   {$numTimepoints} subject timepoint(s) selected.<br><br>
 {/if}
+</div>
 </div>
 
 <div class="table-responsive">
