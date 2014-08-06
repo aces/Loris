@@ -141,6 +141,7 @@ class NDB_Menu_Filter extends NDB_Menu
         
         // start the filter form
         $this->_setupPage(null, null, null, null, 'filter');
+        $this->_setupPage(null, null, null, null, 'keyword');
         // $this->form = new HTML_QuickForm('filter');
 
         // set the filters
@@ -195,11 +196,16 @@ class NDB_Menu_Filter extends NDB_Menu
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
+print "OLD vals:";
+$r = $_SESSION['State'];
+print_r($r);
 
         // manipulate the filters
         if (isset($_REQUEST['reset'])) {
             // erase filter data from the session
             $_SESSION['State']->setProperty('filter', null);
+            $_SESSION['State']->setProperty('keyword', null);
+           
         } elseif (isset($_REQUEST['filter'])) {
             // get the form's filters
             foreach ($this->formToFilter as $key => $val) {
@@ -235,11 +241,20 @@ class NDB_Menu_Filter extends NDB_Menu
             }
             $_SESSION['State']->setProperty('filter', $formFilters);
         }
+        if(isset($_REQUEST['keyword'])) {
+           $search['keyword'] = $_REQUEST['keyword'];
+           $oldSearch = $_SESSION['State']->getProperty('keyword');
+           if(is_array($oldSearch)) {
+               $search = array_merge($oldSearch, $search);
+           }
+           $_SESSION['State']->setProperty('keyword', $search);
+
+
+        }
 
         $filter = $_SESSION['State']->getProperty('filter');
 
-        /**
-         * TODO: I don't know why this is written this way.
+        /*this->searchKeyworthis->searchKeyworddon't know why this is written this way.
          *       It should be rewritten both to fix references
          *       to undefined indexes and because it definitely
          *       shouldn't be using eval for security reasons.
@@ -274,7 +289,20 @@ class NDB_Menu_Filter extends NDB_Menu
                 );");
             }
         }
+        $keyword = $_SESSION['State']->getProperty('keyword');
+        foreach($keyword as $key=>$val) {
+            $defaults[] = "'$key'=>'$val'";
+            $this->searchKey[$key] = $val;
+             // set the filter form's defaults
+            if (!empty($defaults)) {
+                eval("\$this->form->setDefaults(
+                    array(".implode(', ', $defaults).")
+                );");
+            }
 
+
+        }
+       
         // set only the valid filters
         foreach ($this->validFilters as $value) {
             // if no filter was defined (i.e. first hit) 
@@ -441,8 +469,15 @@ class NDB_Menu_Filter extends NDB_Menu
                 }
             }
         }
-
-        if (isset($this->searchKeyword) && isset($_REQUEST['keyword'])) {
+       // if (isset($this->searchKeyword) && isset($_REQUEST['keyword'])) {
+         /*  
+           $search['keyword'] = $_REQUEST['keyword'];
+           $oldSearch = $_SESSION['State']->getProperty('keyword');
+           if(is_array($oldSearch)) {
+               $search = array_merge($oldSearch, $search);
+           }
+           $_SESSION['State']->setProperty('keyword', $search);
+*/
             $query .= " AND (";
             $fields = array();
             foreach ($this->searchKeyword as $field) {
@@ -450,10 +485,16 @@ class NDB_Menu_Filter extends NDB_Menu
                 $fields[] =" $field LIKE CONCAT('%', :v_searchkey, '%')"; 
             }
             $query .= join(" OR ", $fields);
-                $qparams['v_searchkey'] = $_REQUEST['keyword'];
+                $qparams['v_searchkey'] = $this->searchKey['keyword'];
             $query .= ")";
-        }
-
+            $search = array();
+           /* 
+            foreach($this->searchKeyword as $key){
+                $search[$key] = $_REQUEST['keyword'];
+           }
+           */
+          
+       // }
         // add GROUP BY if applicable
         if (!empty($this->group_by)) {
             $query .= " GROUP BY $this->group_by ";
