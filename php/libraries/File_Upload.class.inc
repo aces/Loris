@@ -179,7 +179,7 @@ class File_Upload extends PEAR
         
         //Call the method
         $func = array($class, $method);
-        $args = array($this, $args);
+        $args = array(&$this, $args);
 
         $output=call_user_func_array($func, $args);
 
