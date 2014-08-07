@@ -164,29 +164,41 @@ class NDB_Form_dashboard extends NDB_Form {
         $this->tpl_data['last_login'] = $DB->pselectOne("SELECT max(Login_timestamp) FROM user_login_history WHERE userID='$userID' AND Success='Y'", array());
 		$this->tpl_data['project_description'] = $config->getSetting('projectDescription');
 		$dashboard_links = $config->getSetting('dashboardLinks');
-        foreach (Utility::toArray($dashboard_links['link']) AS $link) {
-            $LinkArgs = '';
-            $BaseURL = $link['@']['url'];
-            if (isset($link['@']['args'])) {
-                $LinkArgs = $link_args[$link['@']['args']];
+        if (!empty($dashboard_links)) {
+            foreach (Utility::toArray($dashboard_links['link']) AS $link) {
+                $LinkArgs = '';
+                $BaseURL = $link['@']['url'];
+                if (isset($link['@']['args'])) {
+                    $LinkArgs = $link_args[$link['@']['args']];
+                }
+                $LinkLabel = $link['#'];
+                $WindowName = md5($link['@']['url']);
+                $this->tpl_data['dashboard_links'][] = array(
+                        'url'        => $BaseURL . $LinkArgs,
+                        'label'      => $LinkLabel,
+                        'windowName' => $WindowName
+                );
             }
-            $LinkLabel = $link['#'];
-            $WindowName = md5($link['@']['url']);
-            $this->tpl_data['dashboard_links'][] = array(
-                    'url'        => $BaseURL . $LinkArgs,
-                    'label'      => $LinkLabel,
-                    'windowName' => $WindowName
-            );
         }
 
         // Recruitment totals - need to have case where total is greater than target
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
-        $totalFemales = $this->_getTotalGender("female");
-        $this->tpl_data['female_total'] = $totalFemales;
-        $this->tpl_data['female_percent'] = $totalFemales/$recruitmentTarget*100;
-        $totalMales = $this->_getTotalGender("male");
-        $this->tpl_data['male_total'] = $totalMales;
-        $this->tpl_data['male_percent'] = $totalMales/$recruitmentTarget*100;
+        if (!empty($dashboard_links)) {
+            $this->tpl_data['recruitment_target'] = $recruitmentTarget;
+            $totalFemales = $this->_getTotalGender("female");
+            $this->tpl_data['female_total'] = $totalFemales;
+            $this->tpl_data['female_percent'] = round($totalFemales/$recruitmentTarget*100);
+            $totalMales = $this->_getTotalGender("male");
+            $this->tpl_data['male_total'] = $totalMales;
+            $this->tpl_data['male_percent'] = round($totalMales/$recruitmentTarget*100);
+            $totalRecruitment = $totalFemales + $totalMales;
+            if ($totalRecruitment > $recruitmentTarget) {
+                $this->tpl_data['surpassed_recruitment'] = "true";
+                $this->tpl_data['total_recruitment'] = $totalRecruitment;
+                $this->tpl_data['female_full_percent'] = round($totalFemales/$totalRecruitment*100);
+                $this->tpl_data['male_full_percent'] = round($totalMales/$totalRecruitment*100);
+            }
+        }
 
         // Charts
         $this->tpl_data['pie_chart'] = $this->_getRecruitmentTotalsBySite();
@@ -195,12 +207,23 @@ class NDB_Form_dashboard extends NDB_Form {
         $this->tpl_data['scan_chart'] = $this->_scansBySite();
 
         // Tasks
-        $this->tpl_data['new_scans'] = $DB->pselectOne("SELECT count(*) FROM files f LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) WHERE fqc.QCStatus IS NULL", array());
-        $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved", array());
-        $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
+        if ($user->hasPermission('data_team_helper')) {
 
+            $this->tpl_data['new_scans'] = $DB->pselectOne("SELECT count(*) FROM files f LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) WHERE fqc.QCStatus IS NULL", array());
+        }
+        if ($user->hasPermission('conflict_resolver')) {
+            $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved WHERE 1=1", array());
+        }
+        if ($user->hasPermission('data_entry')) {
+            $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
+        }
+        if ($user->hasPermission('edit_final_radiological_review')) {
+            $this->tpl_data['radiology_review'] = 10;
+        }
         // Document Repository
-        $this->tpl_data['document_repository_notifications'] = $DB->pselect("SELECT File_name, Date_uploaded FROM document_repository ORDER BY Date_uploaded DESC LIMIT 7", array());
+        if ($user->hasPermission('file_upload')) {
+            $this->tpl_data['document_repository_notifications'] = $DB->pselect("SELECT File_name, Date_uploaded FROM document_repository ORDER BY Date_uploaded DESC LIMIT 5", array());
+        }
 	}
 }
 ?>

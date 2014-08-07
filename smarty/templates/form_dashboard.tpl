@@ -5,15 +5,18 @@
         	<!-- Welcome panel -->
             <div class="panel panel-default">
                 <div class="panel-body">
-                	<h2>Welcome, {$username}.</h2>
-                    <p class="small">Last login: {$last_login}</p>
-                	<p>{$project_description}</p>
+                	<h2 class="welcome">Welcome, {$username}.</h2>
+                    <p class="pull-right small login-time">Last login: {$last_login}</p>
+                	<p class="project-description">{$project_description}</p>
                 </div>
-	            <div class="panel-footer">| 
-	            	{foreach from=$dashboard_links item=link}
-						<a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
-					{/foreach}
-				</div>
+                <!-- Only add the welcome panel footer if there are links -->
+                {if $dashboard_links neq ""}
+    	            <div class="panel-footer">| 
+    	            	{foreach from=$dashboard_links item=link}
+    						<a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
+    					{/foreach}
+    				</div>
+                {/if}
         	</div>
 
         	<!-- Recruitment -->
@@ -28,29 +31,57 @@
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
                                 <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
-                                <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
+                                <li><a id="recruitment-breakdown-dropdown" data-target="recruitment-site-breakdown">View site breakdown</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="recruitment-panel" id="overall-recruitment">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
-                                <p>
-                                {$female_percent}%
-                                </br>
-                                Female
-                                </p>
-                            </div>
-                            <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
-                                <p>
-                                {$male_percent}%
-                                </br>
-                                Male
-                                </p>
-                            </div>
-                        </div>
+                        {if $recruitment_target neq ""}
+                            {if $surpassed_recruitment eq "true"}
+                                The recruitment target has been passed.
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_full_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
+                                        <p>
+                                        {$female_full_percent}%
+                                        </br>
+                                        Female
+                                        </p>
+                                    </div>
+                                    <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_full_percent}%"  title="{$male_total} Males">
+                                        <p>
+                                        {$male_full_percent}%
+                                        </br>
+                                        Male
+                                        </p>
+                                    </div>
+                                    <p class="pull-right small target">Target: {$recruitment_target}</p>
+                                </div>
+
+                            {else}
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
+                                        <p>
+                                        {$female_percent}%
+                                        </br>
+                                        Female
+                                        </p>
+                                    </div>
+                                    <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
+                                        <p>
+                                        {$male_percent}%
+                                        </br>
+                                        Male
+                                        </p>
+                                    </div>
+                                    <p class="pull-right small target">Target: {$recruitment_target}</p>
+                                </div>
+                            {/if}
+                            
+                        {else}
+                            Please add a recruitment target to the config file to see recruiment progression.
+                        {/if}
                     </div>
                     <div class="recruitment-panel" id="recruitment-site-breakdown">
                         <div class="col-lg-4">
@@ -104,78 +135,100 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="col-lg-12">
-                <a href="main.php?test_name=imaging_browser">
-                    <div class="panel panel-blue">
+
+            <!-- My Tasks -->
+            {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq ""}
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
                         <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-9 text-left">
-                                    <div class="huge">{$new_scans}</div>
-                                    New Scans
-                                </div>
-                                <div class="col-xs-3 text-right alert-chevron">
-                                    <span class="glyphicon glyphicon-chevron-right huge"></span>
-                                </div>
-                            </div>
+                        My Tasks
                         </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-12">
-                <a href="main.php?test_name=conflicts_resolve">
-                    <div class="panel panel-blue">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-9 text-left">
-                                    <div class="huge">{$conflicts}</div>
-                                    Data Entry Conflicts
-                                </div>
-                                <div class="col-xs-3 text-right alert-chevron">
-                                    <span class="glyphicon glyphicon-chevron-right huge"></span>
-                                </div>
-                            </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="list-group tasks">
+                                {if $new_scans neq ""}
+                                    <a href="main.php?test_name=imaging_browser" class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-xs-9 text-left">
+                                                <div class="huge">{$new_scans}</div>
+                                                New Scans
+                                            </div>
+                                            <div class="col-xs-3 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {/if}
+                                {if $conflicts neq ""}
+                                <a href="main.php?test_name=conflicts_resolve" class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-xs-9 text-left">
+                                            <div class="huge">{$conflicts}</div>
+                                            Data Entry Conflicts
+                                        </div>
+                                        <div class="col-xs-3 text-right alert-chevron">
+                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                        </div>
+                                    </div>
+                                </a>
+                                {/if}
+                                {if $incomplete_forms neq ""}
+                                <a href="main.php?test_name=statistics_site" class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-xs-9 text-left">
+                                            <div class="huge">{$incomplete_forms}</div>
+                                            Incomplete Forms
+                                        </div>
+                                        <div class="col-xs-3 text-right alert-chevron">
+                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                        </div>
+                                    </div>
+                                </a>
+                                {/if}
+                                {if $radiology_review neq ""}
+                                <a href="main.php?test_name=statistics_site" class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-xs-9 text-left">
+                                            <div class="huge">{$radiology_review}</div>
+                                            Radiology Review
+                                        </div>
+                                        <div class="col-xs-3 text-right alert-chevron">
+                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                        </div>
+                                    </div>
+                                </a>
+                                {/if}
+                            </div>  
                         </div>
+                        <!-- /.panel-body -->
                     </div>
-                </a>
-            </div>
-            <div class="col-lg-12">
-                <a href="main.php?test_name=statistics_site">
-                    <div class="panel panel-blue">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-9 text-left">
-                                    <div class="huge">{$incomplete_forms}</div>
-                                    Incomplete Forms
-                                </div>
-                                <div class="col-xs-3 text-right alert-chevron">
-                                    <span class="glyphicon glyphicon-chevron-right huge"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                    Document Repository Notifications
-                    </div>
-                    <!-- /.panel-heading -->
-                    <div class="panel-body">
-                        <div class="list-group">
-                            {foreach from=$document_repository_notifications item=link}
-                            <a href="#" class="list-group-item">
-                                <span class="pull-right text-muted small">{$link.Date_uploaded}</span>
-                                {$link.File_name}
-                            </a>
-                            {/foreach}
-                        </div>
-                        <!-- /.list-group -->
-                        <a href="main.php?test_name=document_repository" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
-                    <!-- /.panel-body -->
                 </div>
-            </div>
+            {/if}
+
+            <!-- Document Repository -->
+            {if $document_repository_notifications neq ""}
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                        Document Repository Notifications
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="list-group">
+                                {foreach from=$document_repository_notifications item=link}
+                                <a href="#" class="list-group-item">
+                                    <span class="pull-right text-muted small">Uploaded: {$link.Date_uploaded}</span>
+                                    {$link.File_name}
+                                </a>
+                                {/foreach}
+                            </div>
+                            <!-- /.list-group -->
+                            <a href="main.php?test_name=document_repository" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            {/if}
 
         </div>
     </div>
@@ -184,9 +237,10 @@
 <script src="js/Chart.min.js"></script>
 <script language="JavaScript" type="text/javascript">
     $(document).ready(function() {
-        $("#recruitment-line-chart-panel").addClass("hidden");
+        
         $("#recruitment-site-breakdown").addClass("hidden");
-
+        $("#recruitment-line-chart-panel").addClass("hidden");
+        
         $(".dropdown-menu a").click(function() {
             $(this).parent().siblings().removeClass("active");
             $(this).parent().addClass("active");

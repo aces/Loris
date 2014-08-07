@@ -6638,14 +6638,17 @@ button.close {
 
 
 /*
- * Tara's login CSS
+ * Tara's Dashboard CSS
  */
 .navbar-static-top {
   margin-bottom: 19px;
 }
 
 .huge {
-    font-size: 40px;
+    font-size: 30px;
+}
+.medium {
+    font-size: 20px;
 }
 
 .progress {
@@ -6653,7 +6656,7 @@ button.close {
     margin-bottom: 0px;
 }
 .alert-chevron {
-    margin-top: 17px;
+    margin-top: 20px;
 }
 .panel-blue {
   border-color: #1C70B6;
@@ -6729,4 +6732,18 @@ button.close {
 }
 .bar-legend span {
   float: left; width: 15px; height: 15px; margin: 2px;
+}
+.target {
+    padding-top: 13px;
+    padding-right: 3px;
+}
+.tasks {
+    margin-bottom: 0px;
+}
+.welcome {
+    margin-top: 10px;
+    float: left;
+}
+.project-description {
+    clear: left;
 }
