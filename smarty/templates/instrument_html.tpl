@@ -29,12 +29,12 @@
 			        {else}
 			        <div class="row form-group form-inline form-inline">
 			        {/if}
-						<lable class="lab col-sm-4 col-xs-12">
+						<label class="lab col-sm-4 col-xs-12">
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}
 							{$element.label}  
-						</lable>
+						</label>
 						<div class="col-sm-8">
 							<div class="col-xs-12 element">
 								{foreach key=gkey item=gitem from=$element.elements}
@@ -83,12 +83,12 @@
 		        {else}
 		        <div class="row form-group form-inline form-inline">
 		        {/if}
-		        	<lable class="lab col-sm-4 col-xs-12">
+		        	<label class="lab col-sm-4 col-xs-12">
 						{if $element.required}
 							<span style="color: #ff0000">*</span>
 						{/if}
 						{$element.label}  
-					</lable>
+					</label>
 					<div class="col-sm-8">
 						<div class="col-xs-12 element">
 							{$element.html}
@@ -127,12 +127,12 @@
 				        {else}
 				        <div class="row form-group form-inline form-inline">
 				        {/if}
-							<lable class="lab col-sm-4 col-xs-12">
+							<label class="lab col-sm-4 col-xs-12">
 								{if $element.required}
 									<span style="color: #ff0000">*</span>
 								{/if}
 								{$element.label}  
-							</lable>
+							</label>
 							<div class="col-sm-8">
 								<div class="col-xs-12 element">
 									{foreach key=gkey item=gitem from=$element.elements}
@@ -181,12 +181,12 @@
 			        {else}
 			        <div class="row form-group form-inline">
 			        {/if}
-			        	<lable class="lab col-sm-4 col-xs-12">
+			        	<label class="lab col-sm-4 col-xs-12">
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}
 							{$element.label}  
-						</lable>
+						</label>
 						<div class="col-sm-8">
 							<div class="col-xs-12 element">
 								{$element.html}
