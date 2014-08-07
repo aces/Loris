@@ -1,12 +1,12 @@
 <?php
-require_once 'NDB_Menu.class.inc';
+require_once 'NDB_Menu_Filter.class.inc';
 require_once 'Instrument_List_ControlPanel.class.inc';
 
 /**
  * The timepoint details menu
  * @package behavioural
  */
-class NDB_Menu_instrument_list extends NDB_Menu
+class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 {
     function _hasAccess()
     {
@@ -61,6 +61,7 @@ class NDB_Menu_instrument_list extends NDB_Menu
         $this->tpl_data['candID'] = $_REQUEST['candID'];
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
 
+        $this->_setupPage(null, null, null, null, 'filter');
         // get behavioral battery for this visit (time point)
         $battery = new NDB_BVL_Battery;
         if (Utility::isErrorX($battery)) {

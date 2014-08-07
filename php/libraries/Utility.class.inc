@@ -637,6 +637,7 @@ class Utility extends PEAR
      * single time. By calling toArray, you ensure that the value you're working
      * with is an array and don't need to determine if it's an array or a scalar.
      * Note: This does not change a string into an array with one string element
+     * Note: This function should be used for tags with attributes
      *
      * @param mixed $var The variable to be converted to an array.
      *
@@ -653,6 +654,7 @@ class Utility extends PEAR
     /**
      * asArray ensures that $var is a collection elements, not just a single element
      * Not the same as toArray, apparently.
+     * Note: This function should be used for tags without attributes
      *
      * @param mixed $var The variable to be converted to an array.
      *

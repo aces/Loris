@@ -155,7 +155,7 @@ $(document).ready(function() {
     $(".dialog-form").dialog({
         autoOpen: false,
         height: 500,
-        width: 449,
+        width: 666,
         modal: true
      });
 
@@ -173,7 +173,7 @@ $(document).ready(function() {
     $(".dialog-form-edit").dialog({
         autoOpen: false,
         height: 500,
-        width: 449,
+        width: 666,
         modal: true,
         cache: false,
        // close: function() {
@@ -296,15 +296,14 @@ $(document).ready(function() {
 
     //If using table header filters, open divs with appropriate results
     if ($('#accordionTable').attr('data-open') == "true") {
-	    $(".accordionHeaders").show();
+        $(".accordionHeaders").show();
         $(".categories").show();
-
-	    $(".categories_header").each(function(idx, el) { 
-	        isOpen = openSection(idx, el);
-	        if (isOpen) {
-		        $(this).addClass('selected');
-	        }    
-	    });
+        $(".categories_header").each(function(idx, el) { 
+            isOpen = openSection(idx, el);
+            if (isOpen) {
+                $(this).addClass('selected');
+            }    
+        });
     }
 
 

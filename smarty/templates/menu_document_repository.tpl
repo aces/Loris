@@ -35,9 +35,13 @@
 <tr>
     {section name=header loop=$headers}
         <th nowrap="nowrap" class="accordionHeaders">
-           <a href="main.php?openAccordion=true&test_name=document_repository&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
-              {$headers[header].displayName}
-           </a>
+            {if $headers[header].displayName == "Edit" || $headers[header].displayName == "Delete"}
+                {$headers[header].displayName}
+            {else}
+                <a href="main.php?openAccordion=true&test_name=document_repository&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
+                    {$headers[header].displayName}
+                </a>
+            {/if}
         </th>
     {/section}
 </tr>
@@ -154,8 +158,14 @@
 	    {/foreach}
 	</select>
 	</br></br>
-	<label for="name">Instrument name</label>
-	<input type="text" size = "27" name="instrument" id="instrument" class="ui-corner-all form-fields" /></br></br>
+        <label for="instrument">Instrument<font color="red"><sup> *</sup></font></label>
+        <select name="instrument" id = "instrument" class = "form-fields">
+        <option value=""> </option>
+            {foreach from = $Instruments item=val key=k}
+                <option value={$k}>{$val}</option>
+            {/foreach}
+        </select>
+        </br></br>
 	<label for="pscid">PSCID</label>
 	<input type="text" size = "27" name="pscid" id="pscid" class="ui-corner-all form-fields" /></br></br>
 	<label for="visit">Visit label</label>
@@ -208,8 +218,14 @@
 	    {/foreach}
 	</select>
 	</br></br>
-        <label for="name">Instrument name</label>
-        <input type="text" size = "27" name="name" id="instrumentEdit" class="ui-corner-all form-fields" /></br></br>
+        <label for="instrument">Instrument<font color="red"><sup> *</sup></font></label>
+        <select name="instrument" id = "instrumentEdit" class = "form-fields">
+        <option value=""> </option>
+            {foreach from = $Instruments item=val key=k}
+                <option value={$k}>{$val}</option>
+            {/foreach}
+        </select>
+        </br></br>
         <label for="pscid">PSCID</label>
         <input type="text" size = "27" name="pscid" id="pscidEdit" class="ui-corner-all form-fields" /></br></br>
         <label for="visit">Visit label</label>

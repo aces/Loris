@@ -64,7 +64,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             return PEAR::raiseError("Instrument_List_ControlPanel: ".$success->getMessage());
         }
         
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_neurodb("instrument_list");
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("instrument_list_controlpanel.tpl");
         return $html;
