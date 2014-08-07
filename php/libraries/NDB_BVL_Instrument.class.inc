@@ -358,6 +358,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults = $this->localDefaults;
         }
 
+        $this->form->setDefaults($defaults);
+
         if($this->DataEntryType == 'DirectEntry') {
             $renderer = new HTML_QuickForm_Renderer_Default();
             if(isset($this->testName)) {
@@ -377,7 +379,6 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->form->accept($renderer);
             $html = $renderer->toHtml();
         } else {
-            $this->form->setDefaults($defaults);
             $smarty = new Smarty_neurodb;
             $renderer = new HTML_QuickForm_Renderer_Array($smarty);
             $this->form->accept($renderer);
