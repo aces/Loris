@@ -62,6 +62,19 @@
     <link url='http://www.github.com'>GitHub</link>
 </links>
 
+<dashboard>
+    <!-- The project description will be displayed in the top panel of the Dashboard. -->
+    <projectDescription>
+        This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.
+    </projectDescription>
+    <!-- The dashboard links will appear just below the project description on the Dashboard. -->
+    <dashboardLinks>
+        <link url='http://www.loris.ca'>Important Website</link>
+    </dashboardLinks>
+    <!-- The target number of participants is used to generate a chart showing how recruitment is progressing towards its goal. -->
+    <recruitmentTarget></recruitmentTarget>
+</dashboard>
+
 <!-- mail settings -->
     <mail>
         <headers>
