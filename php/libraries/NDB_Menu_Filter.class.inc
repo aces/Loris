@@ -249,8 +249,8 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         $filter = $_SESSION['State']->getProperty('filter');
-
-        /*TODO; I don't know why this is written this way.
+        /**
+         *  TODO; I don't know why this is written this way.
          *       It should be rewritten both to fix references
          *       to undefined indexes and because it definitely
          *       shouldn't be using eval for security reasons.
