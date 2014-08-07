@@ -33,7 +33,7 @@
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}
-							{$element.label}  
+							{$element.label}
 						</label>
 						<div class="col-sm-8">
 							<div class="col-xs-12 element">
@@ -87,7 +87,7 @@
 						{if $element.required}
 							<span style="color: #ff0000">*</span>
 						{/if}
-						{$element.label}  
+						{$element.label}
 					</label>
 					<div class="col-sm-8">
 						<div class="col-xs-12 element">
@@ -131,7 +131,7 @@
 								{if $element.required}
 									<span style="color: #ff0000">*</span>
 								{/if}
-								{$element.label}  
+								{$element.label}
 							</label>
 							<div class="col-sm-8">
 								<div class="col-xs-12 element">
