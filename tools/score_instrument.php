@@ -151,7 +151,7 @@ foreach($result as $test) {
 
         // print out candidate/session info
         fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: ($record[PSCID])\n");
-        fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
+        //fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
 
         // call the score function
         $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $oldRecord);

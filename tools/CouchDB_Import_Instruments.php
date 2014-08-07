@@ -95,7 +95,6 @@ class CouchDBInstrumentImporter {
             }
 
             $result = $this->CouchDB->commitBulkTransaction();
-            
         }
         return $results;
     }

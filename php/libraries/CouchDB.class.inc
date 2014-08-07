@@ -241,7 +241,10 @@ class CouchDB
         $handler->setPort($couchconfig['port']);
         $handler->open();
 
-        $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n\r\n");
+        $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
+        $handler->write("Authorization: Basic " . base64_encode($couchconfig['admin'] . ":" . $couchconfig['adminpass']) . "\r\n");
+
+        $handler->write("\r\n");
 
         $response = '';
         while (!$handler->eof()) {
@@ -276,6 +279,9 @@ class CouchDB
         $handler->write($url . " HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n");
         $handler->write("Content-type: application/json\r\n");
+
+        $handler->write("Authorization: Basic " . base64_encode($couchconfig['admin'] . ":" . $couchconfig['adminpass']) . "\r\n");
+        
         foreach($headers as $key => $value) {
             $handler->write($key . ':' . $value . "\r\n");
         }
