@@ -287,18 +287,14 @@ class NDB_Menu_Filter extends NDB_Menu
         }
         $keyword = $_SESSION['State']->getProperty('keyword');
         foreach($keyword as $key=>$val) {
-            $defaults[] = "'$key'=>'$val'";
+           // $defaults[] = "'$key'=>'$val'";
+            $defaults[$key] = $val;
             $this->searchKey[$key] = $val;
-             // set the filter form's defaults
-            if (!empty($defaults)) {
-                eval("\$this->form->setDefaults(
-                    array(".implode(', ', $defaults).")
-                );");
-            }
-
-
         }
-       
+        // set the filter form's defaults
+        $this->form->setDefaults($defaults);
+
+      
         // set only the valid filters
         foreach ($this->validFilters as $value) {
             // if no filter was defined (i.e. first hit) 
