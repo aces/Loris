@@ -6638,11 +6638,8 @@ button.close {
 
 
 /*
- * Tara's Dashboard CSS
+ * Dashboard CSS
  */
-.navbar-static-top {
-  margin-bottom: 19px;
-}
 
 .huge {
     font-size: 30px;
@@ -6657,42 +6654,6 @@ button.close {
 }
 .alert-chevron {
     margin-top: 20px;
-}
-.panel-blue {
-  border-color: #1C70B6;
-}
-.panel-blue > .panel-heading {
-  color: #fff;
-  background-color: #1C70B6;
-  border-color: #1C70B6;
-}
-.panel-blue > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #1C70B6;
-}
-.panel-blue > .panel-heading .badge {
-  color: #1C70B6;
-  background-color: #fff;
-}
-.panel-blue > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #1C70B6;
-}
-.panel-blue:hover {
-    border-color: #338CD6;
-}
-.panel-blue:hover > .panel-heading {
-  color: #fff;
-  background-color: #338CD6;
-  border-color: #338CD6;
-}
-.panel-blue:hover > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #338CD6;
-}
-.panel-blue:hover > .panel-heading .badge {
-  color: #338CD6;
-  background-color: #fff;
-}
-.panel-blue:hover > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #338CD6;
 }
 .progress-bar-female {
   background-color: #2FA4E7;
@@ -6710,7 +6671,6 @@ button.close {
 .line-legend span {
   float: left; width: 15px; height: 15px; margin: 2px;
 }
-
 .pie-legend {
     list-style: none;
     padding-left: 0px;
@@ -6722,7 +6682,6 @@ button.close {
 .pie-legend span {
   float: left; width: 15px; height: 15px; margin: 2px;
 }
-
 .bar-legend {
     list-style: none;
     padding-left: 0px;
