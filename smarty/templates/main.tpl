@@ -103,13 +103,11 @@
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
                     </button>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" 
-                        data-target="#example-navbar-collapse" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;">
+                    <button type="button" class="navbar-toggle" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;">
                         <span class="sr-only">Toggle navigation</span>
                         <img width=17 src=images/help.gif>
                     </button>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" 
-                        data-target="#example-navbar-collapse" >
+                    <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-edit" style="color:white"></span>
                     </button>
