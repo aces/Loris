@@ -236,13 +236,13 @@
                                 <td>
                             {/if}
                     		{if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-                    		    {assign var="PSCID" value="$items[item][piece].value"}
+                    		    {assign var="PSCID" value=$items[item][piece].value}
                     		    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
                     		    	
                     		{elseif $items[item][piece].name == "scan_Done"}
                             	{if $items[item][piece].value == 'Y'}
                             		{assign var="scan_done" value="Yes"}
-                            		<a href="mri_browser.php?filter%5BpscID%5D={$PSCID}">{$scan_done}</a>
+                            		<a href="main.php?test_name=imaging_browser&pscid={$PSCID}&filter=Show%20Data">{$scan_done}</a>
                                 {else}
                                     {assign var="scan_done" value="No"}
                                     {$scan_done}
