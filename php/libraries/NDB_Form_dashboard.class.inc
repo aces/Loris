@@ -207,7 +207,7 @@ class NDB_Form_dashboard extends NDB_Form {
         $this->tpl_data['scan_chart'] = $this->_scansBySite();
 
         // Tasks
-        if ($user->hasPermission('data_team_helper')) {
+        if ($user->hasPermission('mri_feedback')) {
             $this->tpl_data['new_scans'] = $DB->pselectOne("SELECT count(*) FROM files f LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) WHERE fqc.QCStatus IS NULL", array());
         }
         if ($user->hasPermission('conflict_resolver')) {
