@@ -62,7 +62,8 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             'session.CenterID', 
             'session.Visit_label', 
             'candidate.PSCID', 
-            'session.CandID'
+            'session.CandID',
+            'conflicts_unresolved.Fieldname'
         );
         $this->headers = array(
             'TableName', 
@@ -76,7 +77,8 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             'site' => 'session.CenterID',
             'visit' => 'session.Visit_label',
             'CandID' => 'session.CandID',
-            'PSCID' => 'candidate.PSCID'
+            'PSCID' => 'candidate.PSCID',
+            'Question' => 'conflicts_unresolved.Fieldname'
         );
         return true;
     }
@@ -123,6 +125,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         $this->addSelect('visit', 'Visit label:', $visits);
         $this->addBasicText('CandID', 'DCCID:', array("size"=>9, "maxlength"=>6));
         $this->addBasicText('PSCID', 'PSCID:', array("size"=>9, "maxlength"=>7));
+        $this->addBasicText('Question', 'Question:');
 
         return true;
     }

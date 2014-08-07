@@ -31,15 +31,23 @@
                             <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
                         </div>
-                        <div class="form-group col-sm-6 col-sm-offset-5 hidden-sm">
-                            <div class="col-sm-6 col-xs-12">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Question.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Question.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6 col-sm-offset-6 hidden-sm">
+                            <div class="col-sm-5 col-xs-12">
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-6 col-xs-12">
+                            <div class="col-sm-5 col-xs-12">
                                 <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=resolved_conflicts&reset=true'">
                             </div>
                         </div>
