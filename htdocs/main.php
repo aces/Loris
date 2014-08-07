@@ -40,8 +40,9 @@ function tplFromRequest($param) {
     }
 }
 
-tplFromRequest('test_name');
-tplFromRequest('subtest');
+$tpl_data['test_name'] = $TestName;
+$tpl_data['subtest']   = $subtest;
+
 tplFromRequest('candID');
 tplFromRequest('sessionID');
 tplFromRequest('commentID');
