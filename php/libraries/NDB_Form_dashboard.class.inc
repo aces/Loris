@@ -208,17 +208,16 @@ class NDB_Form_dashboard extends NDB_Form {
 
         // Tasks
         if ($user->hasPermission('data_team_helper')) {
-
             $this->tpl_data['new_scans'] = $DB->pselectOne("SELECT count(*) FROM files f LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) WHERE fqc.QCStatus IS NULL", array());
         }
         if ($user->hasPermission('conflict_resolver')) {
-            $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved WHERE 1=1", array());
+            $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved", array());
         }
         if ($user->hasPermission('data_entry')) {
             $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
         }
         if ($user->hasPermission('edit_final_radiological_review')) {
-            $this->tpl_data['radiology_review'] = 10;
+            $this->tpl_data['radiology_review'] = $DB->pselectOne("SELECT count(*) FROM final_radiological_review f WHERE Review_Done IS NULL", array());
         }
         // Document Repository
         if ($user->hasPermission('file_upload')) {

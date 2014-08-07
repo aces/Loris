@@ -186,7 +186,7 @@
                                 </a>
                                 {/if}
                                 {if $radiology_review neq ""}
-                                <a href="main.php?test_name=statistics_site" class="list-group-item">
+                                <a href="main.php?test_name=final_radiological_review" class="list-group-item">
                                     <div class="row">
                                         <div class="col-xs-9 text-left">
                                             <div class="huge">{$radiology_review}</div>
