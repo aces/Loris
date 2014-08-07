@@ -104,6 +104,15 @@
 {/if}
 </div>
 
+<table border="0" valign="bottom" width="100%">
+<tr>
+    <!-- title -->
+    <td class="controlPanelSection"></td>
+    <!-- display pagination links -->
+    <td align="right">{$page_links}</td>
+</tr>
+</table>
+
 <div class="table-responsive">
 <table class="table table-hover table-primary table-bordered">
     <thead>
