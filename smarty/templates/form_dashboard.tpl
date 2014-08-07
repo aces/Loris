@@ -147,11 +147,11 @@
                         <div class="panel-body">
                             <div class="list-group tasks">
                                 {if $new_scans neq ""}
-                                    <a href="main.php?test_name=imaging_browser" class="list-group-item">
+                                    <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
                                         <div class="row">
                                             <div class="col-xs-9 text-left">
                                                 <div class="huge">{$new_scans}</div>
-                                                New Scans
+                                                New Scan{if $new_scans neq 1}s{/if}
                                             </div>
                                             <div class="col-xs-3 text-right alert-chevron">
                                                 <span class="glyphicon glyphicon-chevron-right medium"></span>
@@ -164,7 +164,7 @@
                                     <div class="row">
                                         <div class="col-xs-9 text-left">
                                             <div class="huge">{$conflicts}</div>
-                                            Data Entry Conflicts
+                                            Data Entry Conflict{if $conflicts neq 1}s{/if}
                                         </div>
                                         <div class="col-xs-3 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
@@ -177,7 +177,7 @@
                                     <div class="row">
                                         <div class="col-xs-9 text-left">
                                             <div class="huge">{$incomplete_forms}</div>
-                                            Incomplete Forms
+                                            Incomplete Form{if $incomplete_forms neq 1}s{/if}
                                         </div>
                                         <div class="col-xs-3 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
@@ -186,11 +186,11 @@
                                 </a>
                                 {/if}
                                 {if $radiology_review neq ""}
-                                <a href="main.php?test_name=final_radiological_review" class="list-group-item">
+                                <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
                                     <div class="row">
                                         <div class="col-xs-9 text-left">
                                             <div class="huge">{$radiology_review}</div>
-                                            Radiology Review
+                                            Final radiological review{if $radiology_review neq 1}s{/if}
                                         </div>
                                         <div class="col-xs-3 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
