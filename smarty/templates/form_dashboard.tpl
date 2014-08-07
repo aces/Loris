@@ -216,7 +216,7 @@
                         <div class="panel-body">
                             <div class="list-group">
                                 {foreach from=$document_repository_notifications item=link}
-                                <a href="#" class="list-group-item">
+                                <a href="document_repository/admin/{$link.File_name}" class="list-group-item">
                                     <span class="pull-right text-muted small">Uploaded: {$link.Date_uploaded}</span>
                                     {$link.File_name}
                                 </a>
