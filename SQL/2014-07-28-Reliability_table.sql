@@ -8,4 +8,4 @@ CREATE TABLE `reliability` (
   `Manual_Swap` enum('no','yes') DEFAULT 'no',
   `EARLI_Candidate` enum('no','yes') DEFAULT 'no',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET = utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
