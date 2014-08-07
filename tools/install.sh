@@ -3,8 +3,9 @@
 #
 # This will:
 #   1. Install PEAR libraries
-#   2. Set up the Loris DB schema
-#   3. Log the installation in the logs directory
+#   2. Install Smarty 3
+#   3. Set up the Loris DB schema
+#   4. Log the installation in the logs directory
 # This will only install the database components and Loris config file.
 #
 
@@ -371,6 +372,20 @@ while true; do
    esac
 done;
 
+while true; do
+    read -p "Would you like to automatically install Smarty 3? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
+    case $yn in
+        [Yy]* )
+            echo "Installing Smarty 3 (may prompt for sudo password)."
+            sudo apt-get install smarty3
+            break;;
+        [Nn]* )
+            echo "Not installing Smarty 3."
+            break;;
+        * ) echo "Please enter 'y' or 'n'."
+   esac
+done;
 
 while true; do
     read -p "Would you like to automatically create/install apache config files? [yn] " yn
