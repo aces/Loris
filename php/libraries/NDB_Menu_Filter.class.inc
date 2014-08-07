@@ -141,7 +141,6 @@ class NDB_Menu_Filter extends NDB_Menu
         
         // start the filter form
         $this->_setupPage(null, null, null, null, 'filter');
-        $this->_setupPage(null, null, null, null, 'keyword');
         // $this->form = new HTML_QuickForm('filter');
 
         // set the filters
@@ -196,9 +195,6 @@ class NDB_Menu_Filter extends NDB_Menu
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-print "OLD vals:";
-$r = $_SESSION['State'];
-print_r($r);
 
         // manipulate the filters
         if (isset($_REQUEST['reset'])) {
@@ -254,7 +250,7 @@ print_r($r);
 
         $filter = $_SESSION['State']->getProperty('filter');
 
-        /*this->searchKeyworthis->searchKeyworddon't know why this is written this way.
+        /*TODO; I don't know why this is written this way.
          *       It should be rewritten both to fix references
          *       to undefined indexes and because it definitely
          *       shouldn't be using eval for security reasons.
@@ -469,15 +465,8 @@ print_r($r);
                 }
             }
         }
-       // if (isset($this->searchKeyword) && isset($_REQUEST['keyword'])) {
-         /*  
-           $search['keyword'] = $_REQUEST['keyword'];
-           $oldSearch = $_SESSION['State']->getProperty('keyword');
-           if(is_array($oldSearch)) {
-               $search = array_merge($oldSearch, $search);
-           }
-           $_SESSION['State']->setProperty('keyword', $search);
-*/
+       
+         if(is_array($this->searchKey) && count($this->searchKey) > 0) {
             $query .= " AND (";
             $fields = array();
             foreach ($this->searchKeyword as $field) {
@@ -487,14 +476,9 @@ print_r($r);
             $query .= join(" OR ", $fields);
                 $qparams['v_searchkey'] = $this->searchKey['keyword'];
             $query .= ")";
-            $search = array();
-           /* 
-            foreach($this->searchKeyword as $key){
-                $search[$key] = $_REQUEST['keyword'];
-           }
-           */
-          
-       // }
+
+          }
+           
         // add GROUP BY if applicable
         if (!empty($this->group_by)) {
             $query .= " GROUP BY $this->group_by ";
