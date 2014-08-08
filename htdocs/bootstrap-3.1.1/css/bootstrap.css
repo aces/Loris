@@ -6706,3 +6706,7 @@ button.close {
 .project-description {
     clear: left;
 }
+.task-site {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}

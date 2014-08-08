@@ -209,15 +209,29 @@ class NDB_Form_dashboard extends NDB_Form {
         // Tasks
         if ($user->hasPermission('mri_feedback')) {
             $this->tpl_data['new_scans'] = $DB->pselectOne("SELECT count(*) FROM files f LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) WHERE fqc.QCStatus IS NULL", array());
+            $this->tpl_data['new_scans_site'] = 'Site: all';
         }
         if ($user->hasPermission('conflict_resolver')) {
-            $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved", array());
+            if ($user->hasPermission('access_all_profiles')) {
+                $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved", array());
+                $this->tpl_data['conflicts_site'] = 'Site: all';
+            } else {
+                $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved cu LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) LEFT JOIN session s ON (flag.SessionID=s.ID) LEFT JOIN psc ON (psc.CenterID=s.CenterID) WHERE psc.Name='$site'", array());
+                $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
+            }
         }
         if ($user->hasPermission('data_entry')) {
-            $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
+            if ($user->hasPermission('access_all_profiles')) {
+                $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
+                $this->tpl_data['incomplete_forms_site'] = 'Site: all';
+            } else {
+                $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag LEFT JOIN session s ON (flag.SessionID=s.ID) LEFT JOIN psc ON (psc.CenterID=s.CenterID) WHERE Data_entry='In Progress' AND psc.Name='$site'", array());
+                $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
+            }
         }
         if ($user->hasPermission('edit_final_radiological_review')) {
             $this->tpl_data['radiology_review'] = $DB->pselectOne("SELECT count(*) FROM final_radiological_review f WHERE Review_Done IS NULL", array());
+            $this->tpl_data['radiology_review_site'] = 'Site: all';
         }
         // Document Repository
         if ($user->hasPermission('file_upload')) {

@@ -149,12 +149,13 @@
                                 {if $new_scans neq ""}
                                     <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
                                         <div class="row">
-                                            <div class="col-xs-9 text-left">
+                                            <div class="col-xs-8 text-left">
                                                 <div class="huge">{$new_scans}</div>
                                                 New Scan{if $new_scans neq 1}s{/if}
                                             </div>
-                                            <div class="col-xs-3 text-right alert-chevron">
+                                            <div class="col-xs-4 text-right alert-chevron">
                                                 <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$new_scans_site}</p>
                                             </div>
                                         </div>
                                     </a>
@@ -162,12 +163,13 @@
                                 {if $conflicts neq ""}
                                 <a href="main.php?test_name=conflicts_resolve" class="list-group-item">
                                     <div class="row">
-                                        <div class="col-xs-9 text-left">
+                                        <div class="col-xs-8 text-left">
                                             <div class="huge">{$conflicts}</div>
                                             Data Entry Conflict{if $conflicts neq 1}s{/if}
                                         </div>
-                                        <div class="col-xs-3 text-right alert-chevron">
+                                        <div class="col-xs-4 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                            <p class="small task-site">{$conflicts_site}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -175,12 +177,13 @@
                                 {if $incomplete_forms neq ""}
                                 <a href="main.php?test_name=statistics_site" class="list-group-item">
                                     <div class="row">
-                                        <div class="col-xs-9 text-left">
+                                        <div class="col-xs-8 text-left">
                                             <div class="huge">{$incomplete_forms}</div>
                                             Incomplete Form{if $incomplete_forms neq 1}s{/if}
                                         </div>
-                                        <div class="col-xs-3 text-right alert-chevron">
+                                        <div class="col-xs-4 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                            <p class="small task-site">{$incomplete_forms_site}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -194,6 +197,7 @@
                                         </div>
                                         <div class="col-xs-3 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                            <p class="small task-site">{$radiology_review_site}</p>
                                         </div>
                                     </div>
                                 </a>
