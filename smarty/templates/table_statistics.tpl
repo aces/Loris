@@ -33,8 +33,12 @@
 
 
 </h2>
-<table class="data" width="80%">
-    <tr>
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
+        <div class="table-scroll" id="content">
+<table class="table table-hover table-primary table-bordered" width="80%">
+    <tr class="info">
         <th rowspan="2">Timepoint</th>
             {foreach key=proj item=name from=$Subprojects}
             {assign var='colspan' value=count($Subcategories)+1}
@@ -42,7 +46,7 @@
             {/foreach}
         <th colspan="{$colspan}">Total</th>
     </tr>
-    <tr>
+    <tr class="info">
         {foreach key=proj item=name from=$Subprojects}
         {* Go through each category once, and add the total
            for each cohort *}
@@ -67,7 +71,7 @@
             +1 for timepoint list
    *}
    {assign var='colspan' value=(count($Subcategories)+1)*(count($Subprojects)+1)+1}
-   <th colspan="{$colspan}" width="50%">{$center.LongName}<br></th></tr>
+   <th class="info" colspan="{$colspan}" width="50%">{$center.LongName}<br></th></tr>
         {foreach item=visit from=$Visits key=title}
             {assign var="rowtotal" value="0"}
 
@@ -153,7 +157,7 @@
       {* Totals at the bottom *}
 	<tr>
         {assign var='colspan' value=(count($Subcategories)+1)*(count($Subprojects)+1)+1}
-       <th colspan="{$colspan}" width="50%">Total</th>
+       <th class="info" colspan="{$colspan}" width="50%">Total</th>
     </tr>
 	<tr>
         {foreach from=$Visits item=visit key=title}
@@ -198,7 +202,7 @@
             </td>
             </tr>
         {/foreach}
-        <tr>
+        <tr class="success">
             <td class="total">Grand Total</td>
             {foreach key=proj item=name from=$Subprojects}
                 {* Calculate the total instead of just looking it up, because of the potential
@@ -239,3 +243,13 @@
             </td>
         </tr>
     </table>
+</div>
+        <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>
+</div>
