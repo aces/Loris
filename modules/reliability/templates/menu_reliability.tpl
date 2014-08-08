@@ -1,3 +1,4 @@
+<div class="row">
 <div class="col-sm-8">
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideFilter();">
@@ -180,6 +181,7 @@
     </table>
 </form>
 {/if}
+</div>
 <!-- <h2><font color="red">Note: Phase 2 reliability forms are unavailable at the moment as the system is being upgraded.</font></h2> -->
 
 <!--  title table with pagination -->
