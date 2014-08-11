@@ -145,7 +145,3 @@
         </div>
     </div>
 </div>
-
-<script language="JavaScript" type="text/javascript">
-
-</script>
