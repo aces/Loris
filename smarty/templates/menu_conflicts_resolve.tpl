@@ -84,7 +84,7 @@
 
             <div class="table-responsive">
                 <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
-                    <table class="table table-hover table-primary table-bordered" border="0">
+                    <table class="table table-hover table-primary table-bordered table-unresolved-conflicts" border="0">
                         <thead>
 
                             {foreach from=$form.errors item=error}
@@ -132,7 +132,9 @@
                                 </tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="6"></td>
+                                <td nowrap="nowrap" colspan="6" id="message-area">
+                                    
+                                </td>
                                 <td nowrap="nowrap">
                                     <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
