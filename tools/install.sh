@@ -157,22 +157,22 @@ if [ ! "/var/www/$projectname/tools" == $CWD ]; then
     exit 2;
 fi
 
-if [ -f ../../$projectname/project/config.xml ]; then
+if [ -f ../project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
     exit 2;
 fi
 
 # Check that we're running in the proper directory structure.
-if [ ! -f ../../$projectname/SQL/0000-00-00-schema.sql ] ; then
+if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
     echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
     exit 2
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p ../../$projectname/project ../../$projectname/project/libraries ../../$projectname/project/instruments ../../$projectname/project/templates ../../$projectname/project/tables_sql ../../$projectname/smarty/templates_c
+mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
-chmod 777 ../../$projectname/smarty/templates_c
+chmod 777 ../smarty/templates_c
 
 while [ "$mysqldb" == "" ]; do
 	read -p "What is the database name? " mysqldb
