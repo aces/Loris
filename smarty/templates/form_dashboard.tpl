@@ -396,8 +396,7 @@
     var recruitmentBarctx = $("#snapshotRecruitmentGender").get(0).getContext("2d");
     var recruitmentBarChart = new Chart(recruitmentBarctx).Bar(recruitmentBarData, barOptions);
     document.getElementById('bar-legend').innerHTML = recruitmentBarChart.generateLegend();
-    }
-
+    
 </script>
 <script>
     $('.progress-bar').tooltip();
