@@ -322,12 +322,8 @@
         }
         return data;
     }
-    {ldelim}
-    var recruitmentPieData = getPieData({$pie_chart});
-    var recruitmentBarData = getBarData({$bar_chart});
-    var scandata = updateChart({$scan_chart});
-    var recruitmentdata = updateChart({$recruitment_chart});
-    {rdelim}
+
+    // Chart options
     var lineOptions = {
         responsive: true,
         scaleShowGridLines : true,
@@ -365,13 +361,33 @@
         barValueSpacing : 5,
         barDatasetSpacing : 1
     }
-    var scanctx = $("#scanChart").get(0).getContext("2d");
-    var scanLineChart = new Chart(scanctx).Line(scandata, lineOptions);
-    document.getElementById('scan-line-legend').innerHTML = scanLineChart.generateLegend();
 
-    var recruitmentctx = $("#recruitmentChart").get(0).getContext("2d");
-    var recruitmentLineChart = new Chart(recruitmentctx).Line(recruitmentdata, lineOptions);
-    document.getElementById('recruitment-line-legend').innerHTML = recruitmentLineChart.generateLegend();
+    // Get the data for the chart, in the appropriate form
+    {ldelim}
+    var recruitmentPieData = getPieData({$pie_chart});
+    var recruitmentBarData = getBarData({$bar_chart});
+    var scanData = updateChart({$scan_chart});
+    var recruitmentData = updateChart({$recruitment_chart});
+    {rdelim}
+
+    // Create the charts and their asoiciated legends
+    if (scanData.labels.length > 1) {
+        var scanctx = $("#scanChart").get(0).getContext("2d");
+        var scanLineChart = new Chart(scanctx).Line(scanData, lineOptions);
+        document.getElementById('scan-line-legend').innerHTML = scanLineChart.generateLegend();
+    }
+    else {
+        document.getElementById('scans-line-chart-panel').innerHTML = "Not enough data to generate a chart.";
+    }
+        
+    if (recruitmentData.labels.length > 1) {
+        var recruitmentctx = $("#recruitmentChart").get(0).getContext("2d");
+        var recruitmentLineChart = new Chart(recruitmentctx).Line(recruitmentData, lineOptions);
+        document.getElementById('recruitment-line-legend').innerHTML = recruitmentLineChart.generateLegend();
+    }
+    else {
+        document.getElementById('recruitment-line-chart-panel').innerHTML = "Not enough data to generate a chart.";
+    }
 
     var recruitmentPiectx = $("#snapshotRecruitment").get(0).getContext("2d");
     var recruitmentPieChart = new Chart(recruitmentPiectx).Pie(recruitmentPieData,pieOptions);
@@ -380,6 +396,7 @@
     var recruitmentBarctx = $("#snapshotRecruitmentGender").get(0).getContext("2d");
     var recruitmentBarChart = new Chart(recruitmentBarctx).Bar(recruitmentBarData, barOptions);
     document.getElementById('bar-legend').innerHTML = recruitmentBarChart.generateLegend();
+    }
 
 </script>
 <script>
