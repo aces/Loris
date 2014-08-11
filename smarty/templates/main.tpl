@@ -103,13 +103,11 @@
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
                     </button>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" 
-                        data-target="#example-navbar-collapse" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;">
+                    <button type="button" class="navbar-toggle" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;">
                         <span class="sr-only">Toggle navigation</span>
                         <img width=17 src=images/help.gif>
                     </button>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" 
-                        data-target="#example-navbar-collapse" >
+                    <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-edit" style="color:white"></span>
                     </button>
@@ -121,7 +119,7 @@
                         </a>
                     {/if}
 
-                    <a class="navbar-brand" href="main.php">LORIS</a>
+                    <a class="navbar-brand" href="main.php">LORIS{if $sandbox}: DEV{/if}</a>
                </div>
                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <ul class="nav navbar-nav">
@@ -204,7 +202,19 @@
                 if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
+            {if $dynamictabs eq "dynamictabs"}
+                {if $console}
+                    <div class="alert alert-warning" role="alert">
+                        <h3>Console Output</h3>
+                        <div>
+                        <pre>{$console}</pre>
+                        </div>
+                    </div>
+                {/if}
+
+            {/if}
             {if $dynamictabs neq "dynamictabs"}
+            {* Add enough spacing to get below the menu *}
                 <br><br><br>
             <div class="page-content inset">
                 {if $console}
@@ -493,19 +503,21 @@
             {else}
             <div id="footer" class="footer navbar-bottom">
             {/if}
-                <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" align="center">
-                    <li id="active">
-                        |
-                    </li>
-                    {foreach from=$links item=link}
-                            <li>  
-                                <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
-                                    {$link.label}
-                                </a> 
-                                |
-                            </li>
-                    {/foreach}
-                </ul>
+                <center>
+                    <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
+                        <li id="active">
+                            |
+                        </li>
+                        {foreach from=$links item=link}
+                                <li>  
+                                    <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
+                                        {$link.label}
+                                    </a> 
+                                    |
+                                </li>
+                        {/foreach}
+                    </ul>    
+                </center>
                 <div align="center" colspan="1" style="color:#808080" >
                     Powered by LORIS &copy; 2013. All rights reserved.
                 </div>

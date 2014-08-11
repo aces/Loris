@@ -116,18 +116,15 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                 $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
         }
+
+        $list_of_instruments = Utility::getAllInstruments();
         
         $list_of_visit_labels = array_merge(array(null=>"Any") + Utility::getVisitList());
         $subproject_options = Utility::getSubprojectList();
         $subproject_options = array(null=>'Any') + $subproject_options;
 
         $DB = Database::singleton();
-        $list_of_instruments_q = $DB->pselect("SELECT DISTINCT Instrument FROM document_repository", array());
-        $list_of_instruments = array(null => 'Any');
-        foreach ($list_of_instruments_q as $instrument) {
-            $list_of_instruments[$instrument['Instrument']] = $instrument['Instrument'];
-        }
-
+        
         $fileNames = $DB->pselect("Select File_name from document_repository", array());
         $fileTypes = array();
         $fileT = array();
@@ -194,9 +191,10 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         $this->tpl_data['File_categories'] = $fileCategories;
         $this->tpl_data['File_comments'] = $fileComments;
         $this->tpl_data['Sites'] = $list_of_sites;
+        $this->tpl_data['Instruments'] = $list_of_instruments;
         $user =& User::singleton();
         $userID = $user->getData('UserID');
-        $this->tpl_data['User'] = $userID; 
+        $this->tpl_data['User'] = $userID;
         $this->addSelect('For_site', 'For Site:', $list_of_sites);
         $this->addBasicText('uploaded_by', 'Uploaded By:');
        

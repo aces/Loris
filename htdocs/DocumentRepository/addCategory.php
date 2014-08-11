@@ -30,7 +30,7 @@ if ($_POST['category_name'] !== '') {
     $category_name = $_POST['category_name'];
 }
 if ($_POST['parent_id'] !== '') {
-    if (is_numeric($_POST['parent_id'])) {
+    if (isset($_POST['parent_id']) || is_numeric($_POST['parent_id'])) {
         $parent_id = $_POST['parent_id'];
     } else {
         error_log("Invalid parent id!");
@@ -62,8 +62,8 @@ if ($user->hasPermission('file_upload')) {
     $msg_data['category']    = $category_name;
 
     $Doc_Repo_Notification_Emails = $DB->pselect(
-        "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y'",
-        array()
+        "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid",
+        array("uid"=>$user->getUsername())
     );
     foreach ($Doc_Repo_Notification_Emails as $email) {
         Email::send($email['Email'], 'document_repository.tpl', $msg_data);
