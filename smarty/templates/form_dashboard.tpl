@@ -326,7 +326,6 @@
     var recruitmentPieData = getPieData({$pie_chart});
     var recruitmentBarData = getBarData({$bar_chart});
     var scandata = updateChart({$scan_chart});
-    console.log(scandata);
     var recruitmentdata = updateChart({$recruitment_chart});
     {rdelim}
     var lineOptions = {
