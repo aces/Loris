@@ -63,7 +63,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             'session.Visit_label', 
             'candidate.PSCID', 
             'session.CandID',
-            'conflicts_unresolved.Fieldname'
+            'conflicts_resolved.Fieldname'
         );
         $this->headers = array(
             'TableName', 
@@ -78,7 +78,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             'visit' => 'session.Visit_label',
             'CandID' => 'session.CandID',
             'PSCID' => 'candidate.PSCID',
-            'Question' => 'conflicts_unresolved.Fieldname'
+            'Question' => 'conflicts_resolved.Fieldname'
         );
         return true;
     }
