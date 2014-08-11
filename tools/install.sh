@@ -88,10 +88,11 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-  1) Your project name. This should be an alphanumeric name.
-     It will be used to modify the paths for MRI in the generated
-     config.xml file for LORIS. It may also be used to automatically
-     create/install apache config files.
+  1) Your project directory name, which was created under /var/www/
+     following section A) of the Installation Guide.
+     (Will be used to modify the paths for Imaging data in the generated
+     config.xml file for LORIS, and may also be used to automatically
+     create/install apache config files.)
 
   2) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
@@ -145,6 +146,16 @@ while [ "$projectname" == "" ]; do
                         break;;
         esac
 done;
+
+if [ ! -d /var/www/$projectname ]; then
+    echo "Aborting, /var/www/$projectname does not exist. Please see LORIS Installation Guide."
+    exit 2;
+fi
+
+if [ ! "/var/www/$projectname/tools" == $CWD ]; then
+    echo "Aborting, current directory is not /var/www/$projectname/tools. Please see LORIS Installation Guide."
+    exit 2;
+fi
 
 if [ -f ../../$projectname/project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
