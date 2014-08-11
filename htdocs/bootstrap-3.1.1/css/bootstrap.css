@@ -6710,3 +6710,6 @@ button.close {
     margin-top: 10px;
     margin-bottom: 0px;
 }
+.document-repository-item {
+    word-wrap: break-word;
+}
