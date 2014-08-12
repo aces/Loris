@@ -381,7 +381,7 @@
         document.getElementById('scan-line-legend').innerHTML = scanLineChart.generateLegend();
     }
     else {
-        $(document.getElementById('scans-line-chart-panel')).append("<p>Not enough data to generate a chart.</p>");
+        document.getElementById('scans-line-chart-panel').innerHTML = "<h5 class="chart-title">Scans per site</h5><p>Not enough data to generate a chart.</p>";
     }
         
     if (recruitmentData.labels.length > 1) {
@@ -390,7 +390,7 @@
         document.getElementById('recruitment-line-legend').innerHTML = recruitmentLineChart.generateLegend();
     }
     else {
-        $(document.getElementById('recruitment-line-chart-panel')).append("<p>Not enough data to generate a chart.</p>");
+        document.getElementById('recruitment-line-chart-panel').innerHTML = "<h5 class="chart-title">Recruiment per site</h5><p>Not enough data to generate a chart.</p>";
     }
 
     var recruitmentPiectx = $("#snapshotRecruitment").get(0).getContext("2d");
