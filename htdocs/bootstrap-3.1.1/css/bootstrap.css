@@ -6654,6 +6654,9 @@ button.close {
 .bar-legend span {
     float: left; width: 15px; height: 15px; margin: 2px;
 }
+.clickable {
+    cursor: pointer;
+}
 .document-repository-item {
     word-wrap: break-word;
 }
@@ -6714,6 +6717,10 @@ button.close {
 .task-site {
     margin-top: 10px;
     margin-bottom: 0px;
+}
+.views {
+    margin-right: 10px;
+    margin-top: -2px;
 }
 .welcome {
     margin-top: 10px;

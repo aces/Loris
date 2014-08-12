@@ -23,8 +23,9 @@
         	<div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Recruitment</h3>
+                    <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
                     <div class="pull-right">
-                        <div class="btn-group">
+                        <div class="btn-group views">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                 Views
                                 <span class="caret"></span>
@@ -106,8 +107,9 @@
             <div class="panel panel-default">
             	<div class="panel-heading">
                     <h3 class="panel-title">Study Progression</h3>
+                    <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
                     <div class="pull-right">
-                        <div class="btn-group">
+                        <div class="btn-group views">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                 Views
                                 <span class="caret"></span>
@@ -142,6 +144,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">My Tasks</h3>
+                            <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -215,6 +218,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">Document Repository Notifications</h3>
+                            <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -400,4 +404,19 @@
 </script>
 <script>
     $('.progress-bar').tooltip();
+
+    $('.panel-heading span.clickable').on("click", function (e) {
+        if ($(this).hasClass('panel-collapsed')) {
+            // expand the panel
+            $(this).parents('.panel').find('.panel-body').slideDown();
+            $(this).removeClass('panel-collapsed');
+            $(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        }
+        else {
+            // collapse the panel
+            $(this).parents('.panel').find('.panel-body').slideUp();
+            $(this).addClass('panel-collapsed');
+            $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        }
+    });
 </script>
