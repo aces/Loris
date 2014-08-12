@@ -9,7 +9,9 @@
 
 <tr>
     <td>
+    <div class="row">
     {$headerTable}
+    </div>
     <table class='table-header-right'>
 	<tr><td>{if $files|@count}{$files|@count} file(s) displayed.</td></tr>
         <tr><td><div id="jivApplet">&nbsp;</div></td></tr>
