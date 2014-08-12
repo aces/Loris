@@ -6,7 +6,7 @@
 </br>
 {/if}
 </tr>
-
+<div class="row">
 <tr>
     <td>
     <div class="row">
@@ -19,6 +19,7 @@
     </td>
 </tr>
 </table>
+</div>
 {* MAIN MRI TABLE *}
 <table class='table-mri'>
 {section name=file loop=$files}
