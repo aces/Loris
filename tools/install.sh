@@ -88,8 +88,7 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-  1) Your project directory name, which was created under /var/www/
-     following section A) of the Installation Guide.
+  1) Your project directory name from section A) of the Installation Guide.
      (Will be used to modify the paths for Imaging data in the generated
      config.xml file for LORIS, and may also be used to automatically
      create/install apache config files.)
