@@ -5,7 +5,7 @@
         	<!-- Welcome panel -->
             <div class="panel panel-default">
                 <div class="panel-body">
-                	<h2 class="welcome">Welcome, {$username}.</h2>
+                	<h3 class="welcome">Welcome, {$username}.</h3>
                     <p class="pull-right small login-time">Last login: {$last_login}</p>
                 	<p class="project-description">{$project_description}</p>
                 </div>
@@ -22,11 +22,11 @@
         	<!-- Recruitment -->
         	<div class="panel panel-default">
                 <div class="panel-heading">
-                    Recruitment
+                    <h3 class="panel-title">Recruitment</h3>
                     <div class="pull-right">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                Actions
+                                Views
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
@@ -105,11 +105,11 @@
             <!-- Charts -->
             <div class="panel panel-default">
             	<div class="panel-heading">
-                    Study Progression
+                    <h3 class="panel-title">Study Progression</h3>
                     <div class="pull-right">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                Actions
+                                Views
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
@@ -141,7 +141,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                        My Tasks
+                            <h3 class="panel-title">My Tasks</h3>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -214,7 +214,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                        Document Repository Notifications
+                            <h3 class="panel-title">Document Repository Notifications</h3>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
