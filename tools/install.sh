@@ -147,16 +147,6 @@ while [ "$projectname" == "" ]; do
         esac
 done;
 
-if [ ! -d /var/www/$projectname ]; then
-    echo "Aborting, /var/www/$projectname does not exist. Please see LORIS Installation Guide."
-    exit 2;
-fi
-
-if [ ! "/var/www/$projectname/tools" == $CWD ]; then
-    echo "Aborting, current directory is not /var/www/$projectname/tools. Please see LORIS Installation Guide."
-    exit 2;
-fi
-
 if [ -f ../project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
     exit 2;
