@@ -125,7 +125,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         $this->addSelect('visit', 'Visit label:', $visits);
         $this->addBasicText('CandID', 'DCCID:', array("size"=>9, "maxlength"=>6));
         $this->addBasicText('PSCID', 'PSCID:', array("size"=>9, "maxlength"=>7));
-        $this->addBasicText('Question', 'Question:');
+        $this->addBasicText('Question', 'Search keyword:');
 
         return true;
     }
