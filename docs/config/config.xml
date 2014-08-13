@@ -33,6 +33,9 @@
 
 </paths>
 
+<!-- set to 0 if production -->
+<sandbox>1</sandbox>
+
 <!-- database settings -->
 <database>
     <host>%HOSTNAME%</host>

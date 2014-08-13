@@ -1,0 +1,39 @@
+.plus .minus {
+   cursor: pointer;
+}
+
+li.plus {
+   list-style-image: url('../../images/plus.gif');
+}
+
+li.minus {
+   list-style-image: url('../../images/minus.gif');
+}
+
+ul.config {
+   list-style-position: inside;
+   padding: 0;
+   margin-left: 10px;
+}
+.collapsable {
+   margin-left: -20px;
+   padding-left: 20px;
+   cursor: pointer;
+}
+
+div.form {
+   background-color: #064785;
+   color: green;
+   display: none;
+   position: absolute;
+   top: 160px;
+   left: 400px;
+   width: 340px;
+   height: 100px;
+   text-align: center;
+}
+
+.form input {
+   width: 300px;
+    
+}
