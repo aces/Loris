@@ -18,10 +18,10 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
         bboptions = {};
 
-    viewer.addEventListener("ready", function () {
-        $(".button").button();
-        // This part is stolen from the BrainBrowser demo
-        // *********************
+    BrainBrowser.events.addEventListener("ready", function () {
+      $(".button").button();
+      // This part is stolen from the BrainBrowser demo
+      // *********************
 
       // Should cursors in all panels be synchronized?
       $("#sync-volumes").change(function() {
@@ -366,7 +366,7 @@ $(".time-div").each(function() {
 
     // Update coordinate display as slices are updated
     // by the user.
-    viewer.addEventListener("sliceupdate", function() {
+    BrainBrowser.events.addEventListener("sliceupdate", function() {
       viewer.volumes.forEach(function(volume, vol_id) {
         var world_coords = volume.getWorldCoords();
         var voxel_coords = volume.getVoxelCoords();
@@ -652,7 +652,7 @@ $(".time-div").each(function() {
 
     // Update coordinate display as slices are updated
     // by the user.
-    viewer.addEventListener("sliceupdate", function() {
+    BrainBrowser.events.addEventListener("sliceupdate", function() {
       viewer.volumes.forEach(function(volume, vol_id) {
         var world_coords = volume.getWorldCoords();
         var voxel_coords = volume.getVoxelCoords();
@@ -694,7 +694,7 @@ $(".time-div").each(function() {
 
 
         minc_filenames.push(filename);
-        viewer.addEventListener("ready", function () {
+        BrainBrowser.events.addEventListener("ready", function () {
             viewer.setFileNames(minc_filenames);
         });
 
@@ -720,7 +720,7 @@ $(".time-div").each(function() {
 
     bboptions.volumes = minc_volumes;
 
-    viewer.addEventListener("ready", function() {
+    BrainBrowser.events.addEventListener("ready", function() {
         var i = 0, volumes = this.volumes, el, width = 0;
         for(i = 0; i < volumes.length; i += 1) {
             if(volumes[i].header.time) {
@@ -759,5 +759,7 @@ $(".time-div").each(function() {
        }
     }
 
+    viewer.loadDefaultColorMapFromURL("color_maps/gray_scale.txt", "#FF0000");
+    viewer.render();
     viewer.loadVolumes(bboptions);
 });
