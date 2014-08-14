@@ -1,11 +1,4 @@
 <?php
-// ----------------------------------------- 
-//  The Web Help .com
-// ----------------------------------------- 
-// remember to replace your@email.com with your own email address lower in this code.
-
-// load the variables form address bar
-
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
