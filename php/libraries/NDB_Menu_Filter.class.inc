@@ -200,6 +200,8 @@ class NDB_Menu_Filter extends NDB_Menu
         if (isset($_REQUEST['reset'])) {
             // erase filter data from the session
             $_SESSION['State']->setProperty('filter', null);
+            $_SESSION['State']->setProperty('keyword', null);
+           
         } elseif (isset($_REQUEST['filter'])) {
             // get the form's filters
             foreach ($this->formToFilter as $key => $val) {
@@ -235,9 +237,18 @@ class NDB_Menu_Filter extends NDB_Menu
             }
             $_SESSION['State']->setProperty('filter', $formFilters);
         }
+        if(isset($_REQUEST['keyword'])) {
+           $search['keyword'] = $_REQUEST['keyword'];
+           $oldSearch = $_SESSION['State']->getProperty('keyword');
+           if(is_array($oldSearch)) {
+               $search = array_merge($oldSearch, $search);
+           }
+           $_SESSION['State']->setProperty('keyword', $search);
+
+
+        }
 
         $filter = $_SESSION['State']->getProperty('filter');
-
         /**
          * TODO: I don't know why this is written this way.
          *       It should be rewritten both to fix references
@@ -274,7 +285,16 @@ class NDB_Menu_Filter extends NDB_Menu
                 );");
             }
         }
+        $keyword = $_SESSION['State']->getProperty('keyword');
+        foreach($keyword as $key=>$val) {
+           // $defaults[] = "'$key'=>'$val'";
+            $defaults[$key] = $val;
+            $this->searchKey[$key] = $val;
+        }
+        // set the filter form's defaults
+        $this->form->setDefaults($defaults);
 
+      
         // set only the valid filters
         foreach ($this->validFilters as $value) {
             // if no filter was defined (i.e. first hit) 
@@ -441,8 +461,8 @@ class NDB_Menu_Filter extends NDB_Menu
                 }
             }
         }
-
-        if (isset($this->searchKeyword) && isset($_REQUEST['keyword'])) {
+       
+         if(is_array($this->searchKey) && count($this->searchKey) > 0) {
             $query .= " AND (";
             $fields = array();
             foreach ($this->searchKeyword as $field) {
@@ -450,10 +470,11 @@ class NDB_Menu_Filter extends NDB_Menu
                 $fields[] =" $field LIKE CONCAT('%', :v_searchkey, '%')"; 
             }
             $query .= join(" OR ", $fields);
-                $qparams['v_searchkey'] = $_REQUEST['keyword'];
+                $qparams['v_searchkey'] = $this->searchKey['keyword'];
             $query .= ")";
-        }
 
+          }
+           
         // add GROUP BY if applicable
         if (!empty($this->group_by)) {
             $query .= " GROUP BY $this->group_by ";
