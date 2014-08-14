@@ -144,7 +144,7 @@ class NDB_Form_dashboard extends NDB_Form {
             $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
             $endMonth = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
             for ($month = $startMonth; $month <= $endMonth; $month++) {
-                $labels[] = $month . "/" . $year;
+                $labels[] = $month . "-" . $year;
             }
         }
         return $labels;

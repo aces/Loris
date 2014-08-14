@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="css/c3.css">
+
 <div class="container">
     <div class="row">
         <div class="col-lg-8">
@@ -84,7 +86,7 @@
                             Please add a recruitment target to the config file to see recruiment progression.
                         {/if}
                     </div>
-                    <div class="recruitment-panel" id="recruitment-site-breakdown">
+                    <div class="recruitment-panel hidden" id="recruitment-site-breakdown">
                         <div class="col-lg-4">
                             <div>
                                 <h5 class="chart-title">Total recruitment per site</h5>
@@ -124,13 +126,11 @@
                 <div class="panel-body">
                     <div id="scans-line-chart-panel">
                         <h5 class="chart-title">Scans per site</h5>
-                        <canvas id="scanChart" width="400" height="190"></canvas>
-                        <div id="scan-line-legend"></div>
+                        <div id="scanChart"></div>
                     </div>
-                    <div id="recruitment-line-chart-panel">
+                    <div id="recruitment-line-chart-panel" class="hidden">
                         <h5 class="chart-title">Recruitment per site</h5>
-                        <canvas id="recruitmentChart" width="400" height="190"></canvas>
-                        <div id="recruitment-line-legend"></div>
+                        <div id="recruitmentChart"></div>
                     </div>
                 </div>
             </div>
@@ -242,22 +242,11 @@
     </div>
 </div>
 
-<script src="js/Chart.min.js"></script>
-<script language="JavaScript" type="text/javascript">
-    $(document).ready(function() {
-        
-        $("#recruitment-site-breakdown").addClass("hidden");
-        $("#recruitment-line-chart-panel").addClass("hidden");
-        
-        $(".dropdown-menu a").click(function() {
-            $(this).parent().siblings().removeClass("active");
-            $(this).parent().addClass("active");
-            $($(this).parent().siblings().children("a")).each(function(i) {
-                $(document.getElementById(this.getAttribute('data-target'))).addClass("hidden");
-            });
-            $(document.getElementById(this.getAttribute('data-target'))).removeClass("hidden");
-        });
-    });
+<!--<script src="js/Chart.min.js"></script>-->
+<!-- Load d3.js and c3.js -->
+<script src="js/d3.min.js" charset="utf-8"></script>
+<script src="js/c3.min.js"></script>
+<!--<script language="JavaScript" type="text/javascript">
     var colours = ["121,209,207", "245,147,34", "214,51,192", "54,209,57", "245,229,56"]
     function updateChart(chartData) {
         var dataArray = getLineData(chartData.datasets);
@@ -401,7 +390,7 @@
     var recruitmentBarChart = new Chart(recruitmentBarctx).Bar(recruitmentBarData, barOptions);
     document.getElementById('bar-legend').innerHTML = recruitmentBarChart.generateLegend();
     
-</script>
+</script>-->
 <script>
     $('.progress-bar').tooltip();
 
@@ -417,6 +406,94 @@
             $(this).parents('.panel').find('.panel-body').slideUp();
             $(this).addClass('panel-collapsed');
             $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        }
+    });
+    
+    $(".dropdown-menu a").click(function() {
+        $(this).parent().siblings().removeClass("active");
+        $(this).parent().addClass("active");
+        $($(this).parent().siblings().children("a")).each(function(i) {
+            $(document.getElementById(this.getAttribute('data-target'))).addClass("hidden");
+        });
+        $(document.getElementById(this.getAttribute('data-target'))).removeClass("hidden");
+    });
+</script>
+<script>
+    var colours = ['#48D2B1', '#3E468A', '#2DC3D0', '#FFDA05', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
+
+    function formatLineData(data) {
+        var processedData = new Array();
+        var labels = new Array();
+        labels.push('x');
+        for (var i in data.labels) {
+            labels.push(data.labels[i]);
+        }
+        processedData.push(labels);
+        for (var i in data.datasets) {
+            dataset = new Array();
+            dataset.push(data.datasets[i].name);
+            processedData.push(dataset.concat(data.datasets[i].data));
+        }
+        console.log(processedData);
+        return processedData;
+    }
+    
+    {ldelim}
+    var scanData = formatLineData({$scan_chart});
+    var recruitmentData = formatLineData({$recruitment_chart});
+    {rdelim}
+
+    var recruitmentPieChart = c3.generate({
+        data: {
+            columns: [
+                ['data1', 30],
+                ['data2', 120],
+            ],
+            type : 'pie',
+        }
+    });
+    var scanLineChart = c3.generate({
+        bindto: '#scanChart',
+        data: {
+            x: 'x',
+            x_format: '%m-%Y',
+            columns: scanData
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%m-%Y'
+                }
+            }
+        },
+        zoom: {
+            enabled: true
+        },
+        color: {
+            pattern: colours
+        }
+    });
+    var recruitmentLineChart = c3.generate({
+        bindto: '#recruitmentChart',
+        data: {
+            x: 'x',
+            x_format: '%m-%Y',
+            columns: recruitmentData
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%m-%Y'
+                }
+            }
+        },
+        zoom: {
+            enabled: true
+        },
+        color: {
+            pattern: colours
         }
     });
 </script>
