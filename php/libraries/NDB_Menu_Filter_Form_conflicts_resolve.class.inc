@@ -109,8 +109,16 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
                     $DB->run("DELETE FROM conflicts_unresolved WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = '$hash'");
 
                     $TableName = $row['TableName'];
+                    $date = explode('-', $setArray['Date_taken']);
+                    $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
+
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId1'], '', false);
                     if ($Instrument != null) {
+                           //calculate candidate age if Date_taken was changed
+                          if($row['FieldName'] == 'Date_taken') {
+                            $Instrument->_saveValues(array('Date_taken' => $dateArray));
+                        }
+
                         $Instrument->score();
                         // Score runs the update statements to update the scored columns. There's no need to save,
                         // (and save() doesn't work) because it calls $this->form->getSubmittedValues(), and at
@@ -119,6 +127,11 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId2'], '', false);
                     if ($Instrument != null) {
+                           //calculate candidate age if Date_taken was changed
+                          if($row['FieldName'] == 'Date_taken') {
+                            $Instrument->_saveValues(array('Date_taken' => $dateArray));
+                        }
+
                         $Instrument->score();
                     }
                 }
