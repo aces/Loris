@@ -62,7 +62,8 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             'session.CenterID', 
             'session.Visit_label', 
             'candidate.PSCID', 
-            'session.CandID'
+            'session.CandID',
+            'conflicts_resolved.Fieldname'
         );
         $this->headers = array(
             'TableName', 
@@ -76,7 +77,8 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             'site' => 'session.CenterID',
             'visit' => 'session.Visit_label',
             'CandID' => 'session.CandID',
-            'PSCID' => 'candidate.PSCID'
+            'PSCID' => 'candidate.PSCID',
+            'Question' => 'conflicts_resolved.Fieldname'
         );
         return true;
     }
@@ -97,17 +99,16 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         $visits = Utility::getVisitList();
         $visits = array_merge(array('' => 'All'), $visits);
 
-        // Get sites that the user has access to
+        // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites =& Utility::getSiteList();
-            if (Utility::isErrorX($sites)) {
-                return PEAR::raiseError("DB Error: ". $sites->getMessage());
+            if(Utility::isErrorX($sites)) {
+                return PEAR::raiseError("DB Error: ".$sites->getMessage());
             }
-            if (is_array($sites)) {
-                $sites = array_merge(array('' => 'All'), $sites);
-            }
-        } else {
+            if(is_array($sites)) $sites = array('' => 'All') + $sites;
+        }
+        else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if (Utility::isErrorX($site)) {
@@ -124,6 +125,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         $this->addSelect('visit', 'Visit label:', $visits);
         $this->addBasicText('CandID', 'DCCID:', array("size"=>9, "maxlength"=>6));
         $this->addBasicText('PSCID', 'PSCID:', array("size"=>9, "maxlength"=>7));
+        $this->addBasicText('Question', 'Search keyword:');
 
         return true;
     }

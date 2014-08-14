@@ -2,7 +2,7 @@
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form>
+        <form method="post" action="main.php?test_name=conflicts_resolve">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -31,15 +31,23 @@
                             <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
                         </div>
-                        <div class="form-group col-sm-6 col-sm-offset-5 hidden-sm">
-                            <div class="col-sm-6 col-xs-12">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Question.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Question.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6 col-sm-offset-6 hidden-sm">
+                            <div class="col-sm-5 col-xs-12">
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-6 col-xs-12">
+                            <div class="col-sm-5 col-xs-12">
                                 <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve&reset=true'">
                             </div>
                         </div>
@@ -61,8 +69,8 @@
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs ">
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad">Unresolved Conflicts</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=resolved_conflicts">Resolved Conflicts</a></li>
+        <li class="active"><a id="onLoad">Unresolved Conflicts</a></li>
+        <li><a href="main.php?test_name=resolved_conflicts">Resolved Conflicts</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
@@ -76,7 +84,7 @@
 
             <div class="table-responsive">
                 <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
-                    <table class="table table-hover table-primary table-bordered" border="0">
+                    <table class="table table-hover table-primary table-bordered table-unresolved-conflicts" border="0">
                         <thead>
 
                             {foreach from=$form.errors item=error}
@@ -124,7 +132,9 @@
                                 </tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="6">&nbsp;</td>
+                                <td nowrap="nowrap" colspan="6" id="message-area">
+                                    
+                                </td>
                                 <td nowrap="nowrap">
                                     <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
