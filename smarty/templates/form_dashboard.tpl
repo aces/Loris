@@ -149,20 +149,6 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="list-group tasks">
-                                {if $new_scans neq ""}
-                                    <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-xs-8 text-left">
-                                                <div class="huge">{$new_scans}</div>
-                                                New Scan{if $new_scans neq 1}s{/if}
-                                            </div>
-                                            <div class="col-xs-4 text-right alert-chevron">
-                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                                <p class="small task-site">{$new_scans_site}</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                {/if}
                                 {if $conflicts neq ""}
                                 <a href="main.php?test_name=conflicts_resolve" class="list-group-item">
                                     <div class="row">
@@ -191,6 +177,21 @@
                                     </div>
                                 </a>
                                 {/if}
+                                {if $new_scans neq ""}
+                                    <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$new_scans}</div>
+                                                New Scan{if $new_scans neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$new_scans_site}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {/if}
+                                
                                 {if $radiology_review neq ""}
                                 <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
                                     <div class="row">
@@ -201,6 +202,20 @@
                                         <div class="col-xs-3 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
                                             <p class="small task-site">{$radiology_review_site}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                {/if}
+                                {if $pending_users neq ""}
+                                <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-xs-9 text-left">
+                                            <div class="huge">{$pending_users}</div>
+                                            User account{if $pending_users neq 1}s{/if} pending approval
+                                        </div>
+                                        <div class="col-xs-3 text-right alert-chevron">
+                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                            <p class="small task-site">{$pending_users_site}</p>
                                         </div>
                                     </div>
                                 </a>

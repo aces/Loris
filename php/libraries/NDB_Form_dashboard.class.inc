@@ -234,6 +234,16 @@ class NDB_Form_dashboard extends NDB_Form {
             $this->tpl_data['radiology_review'] = $DB->pselectOne("SELECT count(*) FROM final_radiological_review f WHERE Review_Done IS NULL", array());
             $this->tpl_data['radiology_review_site'] = 'Site: all';
         }
+
+        if ($user->hasPermission('user_accounts')) {
+            $this->tpl_data['pending_accounts'] = $DB->pselectOne("SELECT count(*) FROM users WHERE Pending_approval=1", array());
+            $this->tpl_data['radiology_review_site'] = 'Site: all';
+        }
+
+        /*if ($user->hasPermission) {
+
+        }*/
+
         // Document Repository
         if ($user->hasPermission('file_upload')) {
             $document_repository = $DB->pselect("SELECT File_name, Date_uploaded FROM document_repository ORDER BY Date_uploaded DESC LIMIT 5", array());
@@ -244,7 +254,6 @@ class NDB_Form_dashboard extends NDB_Form {
                     $document_repository[$i]['new'] = 0;
                 }
             }
-            print_r($document_repository);
             $this->tpl_data['document_repository_notifications'] = $document_repository;
         }
 	}
