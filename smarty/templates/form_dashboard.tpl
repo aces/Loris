@@ -225,6 +225,9 @@
                             <div class="list-group document-repository-item">
                                 {foreach from=$document_repository_notifications item=link}
                                 <a href="document_repository/admin/{$link.File_name}" class="list-group-item">
+                                    {if $link.new eq 1}
+                                        <span class="pull-left new-flag">NEW</span>
+                                    {/if}
                                     <span class="pull-right text-muted small">Uploaded: {$link.Date_uploaded}</span>
                                     {$link.File_name}
                                 </a>

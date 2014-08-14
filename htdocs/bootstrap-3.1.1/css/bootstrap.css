@@ -6676,6 +6676,10 @@ button.close {
 .medium {
     font-size: 20px;
 }
+.new-flag {
+    color: red;
+    font-size: 80%;
+}
 .panel-title {
     display: inline;
     margin-top: 0;

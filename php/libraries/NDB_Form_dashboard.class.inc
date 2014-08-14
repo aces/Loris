@@ -156,12 +156,13 @@ class NDB_Form_dashboard extends NDB_Form {
 		$this->tpl_data = array();
 		$config =& NDB_Config::singleton();
         $site = $user->getSiteName();
+        $last_login = $DB->pselectOne("SELECT max(Login_timestamp) FROM user_login_history WHERE userID='$userID' AND Success='Y'", array());
         $this->tpl_data['user_site'] = $DB->pselectOne("SELECT CenterID FROM psc WHERE Name=$site");
 
 		// Welcome panel
 		$this->tpl_data['username'] = $user->getFullname();
         $userID = $user->getUsername();
-        $this->tpl_data['last_login'] = $DB->pselectOne("SELECT max(Login_timestamp) FROM user_login_history WHERE userID='$userID' AND Success='Y'", array());
+        $this->tpl_data['last_login'] = $last_login;
 		$this->tpl_data['project_description'] = $config->getSetting('projectDescription');
 		$dashboard_links = $config->getSetting('dashboardLinks');
         if (!empty($dashboard_links)) {
@@ -235,7 +236,16 @@ class NDB_Form_dashboard extends NDB_Form {
         }
         // Document Repository
         if ($user->hasPermission('file_upload')) {
-            $this->tpl_data['document_repository_notifications'] = $DB->pselect("SELECT File_name, Date_uploaded FROM document_repository ORDER BY Date_uploaded DESC LIMIT 5", array());
+            $document_repository = $DB->pselect("SELECT File_name, Date_uploaded FROM document_repository ORDER BY Date_uploaded DESC LIMIT 5", array());
+            for ($i=0; $i < sizeof($document_repository); $i++) {
+                if ($document['Date_uploaded'] > $last_login) {
+                    $document_repository[$i]['new'] = 1;
+                } else {
+                    $document_repository[$i]['new'] = 0;
+                }
+            }
+            print_r($document_repository);
+            $this->tpl_data['document_repository_notifications'] = $document_repository;
         }
 	}
 }
