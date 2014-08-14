@@ -128,7 +128,9 @@ class NDB_Caller extends PEAR
             if (empty($subtest) && ($this->existsAndRequire($base."project/libraries/NDB_Menu_$test_name.class.inc") 
                 || $this->existsAndRequire($base."php/libraries/NDB_Menu_$test_name.class.inc") 
                 || $this->existsAndRequire($base."project/libraries/NDB_Menu_Filter_$test_name.class.inc")
-                || $this->existsAndRequire($base."php/libraries/NDB_Menu_Filter_$test_name.class.inc"))
+                || $this->existsAndRequire($base."php/libraries/NDB_Menu_Filter_$test_name.class.inc")
+                || $this->existsAndRequire($base."project/libraries/NDB_Menu_Filter_Form_$test_name.class.inc")
+                || $this->existsAndRequire($base."php/libraries/NDB_Menu_Filter_Form_$test_name.class.inc"))
             ) {
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
@@ -139,7 +141,6 @@ class NDB_Caller extends PEAR
 
                 $this->type = 'menu';
                 return $html;
-
             }
 
             // it is a form
