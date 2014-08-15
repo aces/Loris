@@ -7,7 +7,7 @@
  * 
  * @category Behavioural
  * @package  Main 
- * @author   Loris team <info-loris.mni@mcgill.ca> 
+ * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -15,13 +15,13 @@
 require_once 'NDB_Form.class.inc';
 
 /**
- * Log Class
+ * Admin_Config Class
  *
- * This class is to configure the system
+ * This class is to configure the system settings
  * 
  * @category Behavioural
  * @package  Main 
- * @author   Loris team <info-loris.mni@mcgill.ca> 
+ * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -53,7 +53,9 @@ class NDB_Form_Admin_Config extends NDB_Form
     {
         $this->DB = Database::singleton();
         if (Utility::isErrorX($this->DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
             die();
         }
 
@@ -84,37 +86,11 @@ class NDB_Form_Admin_Config extends NDB_Form
             $tree[$node['Parent']]['Children'][] = &$node;
         }
         
-        //print_r ($tree['']['Children']);  
         // need a subtree with root = NULL only, others are repeating branches
         $this->tpl_data['configs'] = $tree['']['Children'];
         $this->tpl_data['options'] = array('0'=>'0', '1'=>'1');
-        foreach ($configs as &$tag) {
-            //print_r ($tag['Value']);
-            if ($tag['Type'] == "bool") { 
-                $this->tpl_data['dropdown'][$tag['ID']]['options'] = array('0'=>'0', '1'=>'1');
-                //$this->addSelect($tag['ID'], $tag['Name'], array('0' => '0', '1' => '1'));
-                $this->tpl_data['dropdown'][$tag['ID']]['ID'] = $tag['ID'];
-                $this->tpl_data['dropdown'][$tag['ID']]['Description'] = $tag['Description'];
-                // how to get values out of array? how to print several forms?
-                $this->tpl_data['dropdown'][$tag['ID']]['Value'] = $tag['Value'];
-            } else if ($tag['Type'] == "text") {
-                //$this->addBasicText($tag['ID'], $tag['Name']);
-                $this->tpl_data['text'][$tag['ID']]['ID'] = $tag['ID'];
-                $this->tpl_data['text'][$tag['ID']]['Description'] = $tag['Description'];
-                $this->tpl_data['text'][$tag['ID']]['Value'] = $tag['Value'];
-            }
-        }
     }
-  
-    /**
-     * Sets up the Filter Form
-     *
-     * @return boolean
-     */
-    function _setFilterForm()
-    {
-           
-    } 
+
     /**
      * process the form
      *
@@ -125,10 +101,45 @@ class NDB_Form_Admin_Config extends NDB_Form
 
     function _process($values)
     {
-        
-    }
-
+        ksort($values);
+        foreach ($values as $key => $value) {
+            /*
+               In the sorted array the first value is the name of the button.
+               In 'Remove' array the key is of the form: "remove-id".
+               In case of 'Save' can be two possibilities: update and add new
+             */
+            if ($value === "Remove") {
+                $id = split("-", $key);
+                $this->DB->delete('Config', array('ID' => $id[1]));
+                break;
+            } else { // 'Save'
+                if ($value === "Save") {
+                    continue;
+                } else { 
+                    /*
+                       If 'Update', the key is the id of the value,
+                       if 'Add new', the key is "id-index" 
+                       where 'id' is the id of the tag. 
+                     */ 
+                    if (is_numeric($key)) { //update
+                        $this->DB->update(
+                            'Config', 
+                            array('Value' => $value), 
+                            array('ID' => $key)
+                        );
     
+                    } else { //add new
+                        $id = split("-", $key);
+                        $this->DB->insert(
+                            'Config', 
+                            array('ConfigID' => $id[0], 'Value' => $value)
+                        );
+                    }
+                }
+            } //end of if 'Action'
+        } //end of foreach
+        $this->admin_config();
+    }
 }
 
 ?>

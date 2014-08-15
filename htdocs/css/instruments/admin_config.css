@@ -1,39 +1,56 @@
-.plus .minus {
-   cursor: pointer;
+div.tree {
+   font-size: 16px;
 }
-
-li.plus {
-   list-style-image: url('../../images/plus.gif');
-}
-
-li.minus {
-   list-style-image: url('../../images/minus.gif');
-}
-
 ul.config {
+   list-style-type: none;
    list-style-position: inside;
    padding: 0;
    margin-left: 10px;
 }
+
 .collapsable {
    margin-left: -20px;
    padding-left: 20px;
+   margin-right: -100%;
+   padding-right: 100%;
    cursor: pointer;
 }
 
 div.form {
    background-color: #064785;
-   color: green;
+   color: #fff;
    display: none;
-   position: absolute;
-   top: 160px;
-   left: 400px;
-   width: 340px;
-   height: 100px;
+   position: fixed;
+   top: 20%;
+   left: 40%;
+   width: auto;
+   height: auto;
    text-align: center;
+   vertical-align: middle;
+   border-radius: 10px;
+   padding: 15px 25px;
 }
 
-.form input {
-   width: 300px;
-    
+.input-group {
+   margin-top: 10px;
+   margin-bottom: 16px;
 }
+
+.btn-default {
+   width: 70px;
+}
+
+.form-label {
+   font-size: 16px;
+}
+
+.list-group-item-success {
+   background-color: #DDE4E5 !important;
+   color: #555 !important;
+}
+
+.list-group-item-info {
+   background-color: #FCFCFC !important;
+   color: #555 !important;
+}
+ 
