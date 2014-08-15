@@ -478,8 +478,11 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // document repository notifications
-        $doc_Repo_Notifications_Options = array('N' => 'No', 'Y' => 'Yes');
-        $this->addSelect('Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options); 
+        $editor =& User::singleton();
+        if ($editor->hasPermission('file_upload')) {
+                $doc_Repo_Notifications_Options = array('N' => 'No', 'Y' => 'Yes');
+                $this->addSelect('Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options); 
+        }
 
         //------------------------------------------------------------
 
