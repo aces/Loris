@@ -79,7 +79,7 @@
                     <th>No.</th>
                     {section name=header loop=$headers}
                         {if $headers[header].name ne 'SeriesUID'}
-                            <th><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                            <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                         {/if}
                     {/section}
                 </tr>
