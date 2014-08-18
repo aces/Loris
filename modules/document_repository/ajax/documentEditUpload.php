@@ -41,18 +41,20 @@ if ($userSingleton->hasPermission('file_upload')) {
         // document_repository module directory, and use a
         // user_uploads directory as a base for user uploads
         $base_path = __DIR__ . "/../user_uploads/";
+        $fileBase = $user . "/" . $fileName;
 
         if (!file_exists($base_path . $user)) {
             mkdir($base_path . $user, 0777);
         }
 
-        $target_path = $base_path  . $user . "/" . $fileName;
+
+        $target_path = $base_path  . $fileBase;
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
             $success = $DB->insert('document_repository',
                             array('File_category'=>$category, 'For_site'=>$site,
                                   'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName,
-                                  'File_size'=>$fileSize, 'Data_dir'=>$target_path, 'uploaded_by'=>$user,
+                                  'File_size'=>$fileSize, 'Data_dir'=>$fileBase, 'uploaded_by'=>$user,
                                   'Instrument'=>$instrument, 'PSCID'=>$pscid, 'visitLabel'=>$visit));
             $www = $config->getSetting('www');
             $msg_data['newDocument'] = $www['url'] . "/main.php?test_name=document_repository";
