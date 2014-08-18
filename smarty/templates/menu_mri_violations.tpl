@@ -72,44 +72,42 @@
 </table>
 
 <div class="table-responsive">
-    <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
-        <table class="table table-hover table-primary table-bordered table-unresolved-conflicts" border="0">
-            <thead>
-                <tr class="info">
-                    <th>No.</th>
-                    {section name=header loop=$headers}
-                        {if $headers[header].name ne 'SeriesUID'}
-                            <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                        {/if}
-                    {/section}
-                </tr>
-            </thead>
-            <tbody>
-                {section name=item loop=$items}
-                    <tr>
-                    <!-- print out data rows -->
-                    {section name=piece loop=$items[item]}
-                    {if $items[item][piece]}
-                        {if $items[item][piece].value eq 'Could not identify scan type'}
-                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-                                <a href="main.php?test_name=mri_protocol_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
-                            </td>
-                        {elseif $items[item][piece].value eq 'Protocol Violation'}
-                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                            <a href="main.php?test_name=mri_protocol_check_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
-                        </td>
-                        {else}
-                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                {$items[item][piece].value}
-                            </td>
-                        {/if}
+    <table class="table table-hover table-primary table-bordered" border="0">
+        <thead>
+            <tr class="info">
+                <th>No.</th>
+                {section name=header loop=$headers}
+                    {if $headers[header].name ne 'SeriesUID'}
+                        <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                     {/if}
-                    {/section}
-                    </tr>           
-                {sectionelse}
-                    <tr><td colspan="12">No data found</td></tr>
                 {/section}
-            </tbody>
-        </table>
-    </form>
+            </tr>
+        </thead>
+        <tbody>
+            {section name=item loop=$items}
+                <tr>
+                <!-- print out data rows -->
+                {section name=piece loop=$items[item]}
+                {if $items[item][piece]}
+                    {if $items[item][piece].value eq 'Could not identify scan type'}
+                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
+                            <a href="main.php?test_name=mri_protocol_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
+                        </td>
+                    {elseif $items[item][piece].value eq 'Protocol Violation'}
+                    <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                        <a href="main.php?test_name=mri_protocol_check_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
+                    </td>
+                    {else}
+                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                            {$items[item][piece].value}
+                        </td>
+                    {/if}
+                {/if}
+                {/section}
+                </tr>           
+            {sectionelse}
+                <tr><td colspan="12">No data found</td></tr>
+            {/section}
+        </tbody>
+    </table>
 </div>

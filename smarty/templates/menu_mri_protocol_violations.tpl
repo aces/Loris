@@ -72,54 +72,42 @@
   <span class="glyphicon glyphicon-plus"></span> Show mri-protocol Table
 </div> 
 
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-  <div class="carousel-inner">
-    <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
-    <div class="table-scroll-static" id="content">
-    <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
-        <table class="table table-hover table-primary table-bordered table-unresolved-conflicts" border="0">
-            <thead>
-                <tr class="info">
-                    {assign var=count value=0}
-                    {foreach from=$mri_protocol_header item=mp}
-                        <th id="header_{$count}">
-                           {$mp}
-                        </th>
-                        {assign var=count value=$count+1}
-                    {/foreach}
-                </tr>
-            </thead>
-            <tbody>
-                {foreach from=$mri_protocol_data item=mp}
-                  {assign var=ccount value=0}
-                  
-                    <tr>
-                      {foreach from=$mp item=row}
-                        {if $violated_scans_modifications}
-                           <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
-                        {else}
-                           <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
-                        {/if}  
-                                {$row}
-                            {$k}
-                                   </td>
-                        {assign var=ccount value=$ccount+1}
-                      {/foreach}
-                    </tr>
+<div class="table-responsive">
+    <table class="table table-hover table-primary table-bordered" border="0">
+        <thead>
+            <tr class="info">
+                {assign var=count value=0}
+                {foreach from=$mri_protocol_header item=mp}
+                    <th id="header_{$count}">
+                       {$mp}
+                    </th>
+                    {assign var=count value=$count+1}
                 {/foreach}
-            </tbody>
-        </table>
-    </form>
-    </div>
-    <!-- </div> -->
-    <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
-      <span class="glyphicon glyphicon-chevron-left"></span>
-    </a>
-    <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
-      <span class="glyphicon glyphicon-chevron-right"></span>
-    </a>
-  </div>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$mri_protocol_data item=mp}
+              {assign var=ccount value=0}
+              
+                <tr>
+                  {foreach from=$mp item=row}
+                    {if $violated_scans_modifications}
+                       <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
+                    {else}
+                       <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
+                    {/if}  
+                            {$row}
+                        {$k}
+                               </td>
+                    {assign var=ccount value=$ccount+1}
+                  {/foreach}
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
 </div>
+
+</br></br>
 
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
@@ -129,33 +117,31 @@
 </tr>
 </table>
 <div class="table-responsive">
-    <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
-        <table class="table table-hover table-primary table-bordered table-unresolved-conflicts" border="0">
-            <thead>
-                <tr class="info">
-                    <th nowrap="nowrap">No.</th>
-                        {section name=header loop=$headers}
-                            <th nowrap="nowrap"><a href="main.php?test_name=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
-                        {/section}
-                </tr>
-            </thead>
-            <tbody>
-                {section name=item loop=$items}
-                    <tr>
-                    <!-- print out data rows -->
-                    {section name=piece loop=$items[item]}
-                   
-                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-                        {$items[item][piece].value}
-                    </td>
-
+    <table class="table table-hover table-primary table-bordered" border="0">
+        <thead>
+            <tr class="info">
+                <th nowrap="nowrap">No.</th>
+                    {section name=header loop=$headers}
+                        <th nowrap="nowrap"><a href="main.php?test_name=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
                     {/section}
-                    </tr>           
-                {sectionelse}
+            </tr>
+        </thead>
+        <tbody>
+            {section name=item loop=$items}
+                <tr>
+                <!-- print out data rows -->
+                {section name=piece loop=$items[item]}
+               
+                    <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
+                    {$items[item][piece].value}
+                </td>
 
-                  <tr><td colspan="12">No data found</td></tr>
                 {/section}
-            </tbody>
-        </table>
-    </form>
+                </tr>           
+            {sectionelse}
+
+              <tr><td colspan="12">No data found</td></tr>
+            {/section}
+        </tbody>
+    </table>
 </div>
