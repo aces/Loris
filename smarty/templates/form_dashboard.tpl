@@ -154,7 +154,7 @@
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$conflicts}</div>
-                                            Data Entry Conflict{if $conflicts neq 1}s{/if}
+                                            Data entry conflict{if $conflicts neq 1}s{/if}
                                         </div>
                                         <div class="col-xs-4 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
@@ -168,7 +168,7 @@
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$incomplete_forms}</div>
-                                            Incomplete Form{if $incomplete_forms neq 1}s{/if}
+                                            Incomplete form{if $incomplete_forms neq 1}s{/if}
                                         </div>
                                         <div class="col-xs-4 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
@@ -182,7 +182,7 @@
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$new_scans}</div>
-                                                New Scan{if $new_scans neq 1}s{/if}
+                                                New scan{if $new_scans neq 1}s{/if}
                                             </div>
                                             <div class="col-xs-4 text-right alert-chevron">
                                                 <span class="glyphicon glyphicon-chevron-right medium"></span>
@@ -191,7 +191,20 @@
                                         </div>
                                     </a>
                                 {/if}
-                                
+                                {if $violated_scans neq ""}
+                                    <a href="main.php?test_name=mri_violations" class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$violated_scans}</div>
+                                                Violated scan{if $violated_scans neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$violated_scans_site}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {/if}
                                 {if $radiology_review neq ""}
                                 <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
                                     <div class="row">

@@ -240,9 +240,10 @@ class NDB_Form_dashboard extends NDB_Form {
             $this->tpl_data['radiology_review_site'] = 'Site: all';
         }
 
-        /*if ($user->hasPermission) {
-
-        }*/
+        if ($user->hasPermission('violated_scans')) {
+            $this->tpl_data['violated_scans'] = $DB->pselectOne("SELECT count(*) FROM mri_violations_log", array());
+            $this->tpl_data['violated_scans_site'] = 'Site: all';
+        }
 
         // Document Repository
         if ($user->hasPermission('file_upload')) {
