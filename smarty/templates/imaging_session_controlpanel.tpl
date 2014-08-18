@@ -8,8 +8,8 @@
     {if $prevTimepoint.URL!="" && $nextTimepoint.URL!=""}<br><br>{/if}
     <h3>3D Panel Viewing</h3>
     <ul>
-       	<li><input type="button" class="button" accesskey="c" value="3D+Overlay"></li>
-       	<li><input type="button" class="button" accesskey="d" value="3D Only"></li>
+       	<li><input id="bboverlay" type="button" class="button" accesskey="c" value="3D+Overlay"></li>
+       	<li><input id="bbonly" type="button" class="button" accesskey="d" value="3D Only"></li>
     </ul>
 
     <h3>Links</h3>

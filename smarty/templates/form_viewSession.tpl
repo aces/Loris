@@ -1,4 +1,5 @@
 <!-- Main table -->
+<script src="js/mribrowser.js"></script>
 {* Olga: show3DViewer not tested *}
 {if $show3DViewer}
 {*<td nowrap="nowrap">the first opening td already opened in main.tpl *}<input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
@@ -27,7 +28,7 @@
 {* LEFT SUBTABLE (SELECTIONS) *}
         <table class='table-mri-lefttable'>
     	<tr>
-	    <td class='td-mri-lefttable-select'>Add panel<input class='mripanel' data-file-id='{$files[file].fileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
+	    <td class='td-mri-lefttable-select'>Add panel<input class='mripanel' data-file-id='{$files[file].FileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
     	</tr>
 {* SELECTED DROPDOWN only for native images *}
 {if $files[file].OutputType == "native"}
