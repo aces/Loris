@@ -35,6 +35,11 @@ if ($userSingleton->hasPermission('file_upload')) {
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
+
+        // __DIR__ is the document_repository ajax directory
+        // when this script is executing. Go up a level to the
+        // document_repository module directory, and use a
+        // user_uploads directory as a base for user uploads
         $base_path = __DIR__ . "/../user_uploads/";
 
         if (!file_exists($base_path . $user)) {
