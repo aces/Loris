@@ -1,35 +1,67 @@
-<form method="post" action="main.php?test_name=mri_violations">
-<table border="0" valign="top" class="std">
-    <tr>
-        <th nowrap="nowrap" colspan=4>Selection Filter</th>
-    </tr>
-    
-    <tr>
-      <td nowrap="nowrap">{$form.PatientName.label}</td>
-      <td nowrap="nowrap">{$form.PatientName.html}</td>
-      <td nowrap="nowrap">{$form.TimeRun.label}</td>
-      <td nowrap="nowrap">{$form.TimeRun.html}</td>
-   </tr>
-   
-   <tr>
-      <td nowrap="nowrap">{$form.Filename.label}</td>
-      <td nowrap="nowrap">{$form.Filename.html}</td>
-      <td nowrap="nowrap">{$form.ProblemType.label}</td>
-      <td nowrap="nowrap">{$form.ProblemType.html}</td>
-   </tr>
-   <tr>
-      <td nowrap="nowrap">{$form.Description.label}</td>
-      <td nowrap="nowrap">{$form.Description.html}</td>
-   </tr>
-   
-    <tr>
-        <td nowrap="nowrap">{$form.SeriesUID.label}</td>
-        <td nowrap="nowrap">{$form.SeriesUID.html}</td>
-        <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=mri_violations&reset=true'"/></td>
-    </tr>
-<table>
-</form>
+<script src="js/filterControl.js" type="text/javascript"></script>
 
+<div class="col-sm-12">
+    <div class="col-md-8 col-sm-8">
+        <form method="post" action="main.php?test_name=mri_violations">
+            <div class="panel panel-primary">
+                <div class="panel-heading" onclick="hideFilter();">
+                    Selection Filter
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                </div>
+                <div class="panel-body" id="panel-body">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.PatientName.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.PatientName.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.TimeRun.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.TimeRun.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">    
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Filename.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Filename.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.ProblemType.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.ProblemType.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Description.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Description.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.SeriesUID.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.SeriesUID.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-5 col-sm-offset-7 hidden-sm">
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&reset=true'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row visible-sm">
+                        <div class="col-sm-6">
+                            <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&reset=true'">
+                        </div>
+                    </div>
+                    <input type="hidden" name="test_name" value="mri_violations" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 </div> 
 
