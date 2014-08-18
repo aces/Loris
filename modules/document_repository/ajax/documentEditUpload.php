@@ -35,7 +35,7 @@ if ($userSingleton->hasPermission('file_upload')) {
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
-        $base_path = "../document_repository/";
+        $base_path = __DIR__ . "/../user_uploads/";
 
         if (!file_exists($base_path . $user)) {
             mkdir($base_path . $user, 0777);
