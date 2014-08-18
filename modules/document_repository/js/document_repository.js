@@ -129,7 +129,7 @@ $(document).ready(function() {
              },
              "Add" : function() {
                  $.ajax({
-                    url: "DocumentRepository/addCategory.php",
+                    url: "AjaxHelper.php?Module=document_repository&script=addCategory.php",
                     type: "POST",
                     data: $("#addCategoryForm").serialize(),
                     success: function(){
@@ -199,7 +199,7 @@ $(document).ready(function() {
 
              $.ajax({
                 type: "POST",
-                url: "DocumentRepository/documentEditUpload.php",
+                url: "AjaxHelper.php?Module=document_repository&script=documentEditUpload.php",
                 data: data,
  	            success: function(){    
                     $('.edit-success').show();
@@ -223,7 +223,7 @@ $(document).ready(function() {
 
 	    $.ajax({
      	    type: "GET",
-  	        url: "DocumentRepository/getFileData.php",
+  	        url: "AjaxHelper.php?module=document_repository&script=getFileData.php",
             data: {id:id}, 
             async: false,
                 dataType: "json",

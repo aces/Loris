@@ -1,6 +1,3 @@
-<link rel="stylesheet" type="text/css" href="documentRepository.css"/>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-
 <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
 <table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
     <tr>
@@ -95,7 +92,7 @@
 </div>
 
 
-<form id="addCategory" action="DocumentRepository/addCategory.php" method="POST">
+<form id="addCategory" action="AjaxHelper.php?Module=document_repository&script=addCategory.php" method="POST">
 <div class = "addCategory" title="Add Category">
     <p>
         What category would you like to add?
@@ -122,7 +119,7 @@
 
 
 <div id="uploadArea" class = "dialog-form" style = "border-style: solid; border-color: #7c7781; border-width:1px; margin: 1em !important; width:390px !important; height:auto !important;" title="Upload new file">
-<form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action = "DocumentRepository/documentEditUpload.php">
+<form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=document_repository&script=documentEditUpload.php">
 <div class = "upload-error">
     <p style = "color: #f33;">
 	    <span class="ui-icon ui-icon-alert" style = "float:left;"></span>
