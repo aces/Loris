@@ -244,9 +244,9 @@ class NDB_Config
     static function GetMenuTabs($parent = null) {
         $DB = Database::singleton();
         if($parent === null) {
-            $thisLevel = $DB->pselect("SELECT Label, 1 as Visible, Link, ID FROM LorisMenu WHERE Parent IS NULL", array());
+            $thisLevel = $DB->pselect("SELECT Label, CASE Visible WHEN 'false' THEN 0 ELSE 1 END as Visible, Link, ID FROM LorisMenu WHERE Parent IS NULL", array());
         } else {
-            $thisLevel = $DB->pselect("SELECT Label, 1 as Visible, Link, ID FROM LorisMenu WHERE Parent=:ParentID ", array('ParentID' => $parent));
+            $thisLevel = $DB->pselect("SELECT Label, CASE Visible WHEN 'false' THEN 0 ELSE 1 END as Visible, Link, ID FROM LorisMenu WHERE Parent=:ParentID ", array('ParentID' => $parent));
             if(NDB_Config::CheckMenuPermission($thisLevel[0]['ID'])) {
                 return $thisLevel;
             }
