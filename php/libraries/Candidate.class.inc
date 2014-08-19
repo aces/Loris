@@ -400,7 +400,7 @@ class Candidate
     function getProjectTitle()
     {
         $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()];
+        return isset($ProjectList[$this->getProjectID()]) ? $ProjectList[$this->getProjectID()] : null;
     }
 
     /**

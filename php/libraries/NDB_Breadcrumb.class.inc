@@ -97,13 +97,13 @@ class NDB_Breadcrumb extends PEAR
     {
         // set the parameters array
         $this->_parameters = array(
-                                   'test_name' => $_REQUEST['test_name'],
-                                   'subtest' => $_REQUEST['subtest'],
-                                   'candID' => $_REQUEST['candID'],
-                                   'sessionID' => $_REQUEST['sessionID'],
-                                   'commentID' => $_REQUEST['commentID'],
-                                   'identifier' => $_REQUEST['identifier']
-                                   );
+            'test_name' => isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : null,
+            'subtest' => isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : null,
+            'candID' => isset($_REQUEST['candID']) ? $_REQUEST['candID'] : null,
+            'sessionID' => isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : null,
+            'commentID' => isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : null,
+            'identifier' => isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : null
+        );
 
         // check if test name is empty
         if (empty($this->_parameters['test_name'])) {
@@ -179,7 +179,8 @@ class NDB_Breadcrumb extends PEAR
                                                         'unset' => 'sessionID'),
                             'timepoint_list'   => array('next'  => 'candidate_list',
                                                         'unset' => 'candID'),
-                            'candidate_list'   => array('next'  => '')
+                            'candidate_list'   => array('next'  => '',
+                                                        'unset' => '' )
                             );
 
         // loop through the crumbs according to the order above, or just make one crumb

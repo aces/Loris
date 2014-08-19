@@ -348,8 +348,10 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             // set the defaults (call private method _setDefaultsArray
             // which could be overridden if necessary)
-            $defaults = $this->_setDefaultsArray($defaults[0]);
-
+            $defaults = NULL;
+            if (isset($defaults[0])) {
+                $defaults = $this->_setDefaultsArray($defaults[0]);
+            }
             // merge in the localDefaults property so that simple
             // additions to the defaults array no longer requires
             // overriding the _setDefaultsArray method
@@ -686,6 +688,8 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         }
+        $CertificationProjects = isset($CertificationProjects) ? $CertificationProjects : null;
+        $CertificationInstruments = isset($CertificationInstruments) ? $CertificationInstruments : null;
         return array($CertificationEnabled, $CertificationProjects, $CertificationInstruments);
     }
 

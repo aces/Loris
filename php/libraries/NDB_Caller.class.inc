@@ -60,7 +60,7 @@ class NDB_Caller extends PEAR
             return;
         }
         if(empty($CommentID)) {
-            $CommentID = $_REQUEST['commentID'];
+            $CommentID = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : null;
         }
         // get the files path, aka the base directory
         $config =& NDB_Config::singleton();
@@ -134,7 +134,7 @@ class NDB_Caller extends PEAR
             ) {
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
-                $html = $this->loadMenu($test_name, $mode, $controlPanel);
+                $html = $this->loadMenu($test_name, $mode);
                 if (Utility::isErrorX($html)) {
                     return PEAR::raiseError($html->getMessage());
                 }
