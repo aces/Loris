@@ -28,7 +28,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         // the base query
         $query = " FROM users LEFT JOIN psc ON (psc.CenterID = users.CenterID) WHERE 1=1 ";
         if (!$user->hasPermission('user_accounts_multisite')) {
-            $query .= " WHERE users.CenterID = '" . $user->getData('CenterID') . "' ";
+            $query .= " AND users.CenterID = '" . $user->getData('CenterID') . "' ";
         }
 
         // set the class variables
