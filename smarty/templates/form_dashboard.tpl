@@ -240,155 +240,8 @@
     </div>
 </div>
 
-<!--<script src="js/Chart.min.js"></script>-->
-<!-- Load d3.js and c3.js -->
 <script src="js/d3.min.js" charset="utf-8"></script>
 <script src="js/c3.min.js"></script>
-<!--<script language="JavaScript" type="text/javascript">
-    var colours = ["121,209,207", "245,147,34", "214,51,192", "54,209,57", "245,229,56"]
-    function updateChart(chartData) {
-        var dataArray = getLineData(chartData.datasets);
-        var data = {
-            labels: chartData.labels,
-            datasets: dataArray
-        };
-        return data;
-    }
-    function getLineData(datasets) {
-        var processedDatasets = new Array();
-        for (var i in datasets) {
-            var lightColour = "rgba(" + colours[i] + ",0.4)";
-            var darkColour = "rgba(" + colours[i] + ",1)";
-            var currentDataset = {
-                label: datasets[i].name,
-                fillColor: lightColour,
-                strokeColor: darkColour,
-                pointColor: darkColour,
-                pointStrokeColor: "#fff",
-                pointHightlightFill: "#fff",
-                pointHighlightStroke: darkColour,
-                data: datasets[i].data
-            };
-            processedDatasets.push(currentDataset);
-        }
-        return processedDatasets;
-    }
-    function getPieData(chartData) {
-        var processedData = new Array();
-        for (var i in chartData) {
-            var lightColour = "rgba(" + colours[i] + ",0.6)";
-            var darkColour = "rgba(" + colours[i] + ",1)";
-            var currentSite = {
-                value: parseInt(chartData[i].total),
-                color: darkColour,
-                highlight: lightColour,
-                label: chartData[i].label
-            }
-            processedData.push(currentSite);
-        }
-        return processedData;
-    }
-    function getBarData(chartData) {
-        var dataArray = [
-            {
-                label: "Female",
-                fillColor: "rgba(47,164,231,0.6)",
-                strokeColor: "rgba(47,164,231,1)",
-                highlightFill: "rgba(47,164,231,1)",
-                highlightStroke: "rgba(47,164,231,1)",
-                data : chartData['datasets']['female']
-            },
-            {
-                label: "Male",
-                fillColor: "rgba(28,112,182,0.6)",
-                strokeColor: "rgba(28,112,182,1)",
-                highlightFill: "rgba(28,112,182,1)",
-                highlightStroke: "rgba(28,112,182,1)",
-                data : chartData['datasets']['male']
-            }
-        ]
-        var data = {
-            labels: chartData.labels,
-            datasets: dataArray
-        }
-        return data;
-    }
-
-    // Chart options
-    var lineOptions = {
-        responsive: true,
-        scaleShowGridLines : true,
-        scaleGridLineColor : "rgba(0,0,0,.05)",
-        scaleGridLineWidth : 1,
-        bezierCurve : true,
-        bezierCurveTension : 0.4,
-        pointDot : true,
-        pointDotRadius : 4,
-        pointDotStrokeWidth : 1,
-        pointHitDetectionRadius : 20,
-        datasetStroke : true,
-        datasetStrokeWidth : 2,
-        datasetFill : true,
-    };
-    var pieOptions = {
-        responsive: true,
-        segmentShowStroke : true,
-        segmentStrokeColor : "#fff",
-        segmentStrokeWidth : 2,
-        percentageInnerCutout : 0, // This is 0 for Pie charts
-        animationSteps : 100,
-        animationEasing : "easeOutBounce",
-        animateRotate : true,
-        animateScale : false
-    };
-    var barOptions = {
-        responsive: true,
-        scaleBeginAtZero : true,
-        scaleShowGridLines : true,
-        scaleGridLineColor : "rgba(0,0,0,.05)",
-        scaleGridLineWidth : 1,
-        barShowStroke : true,
-        barStrokeWidth : 2,
-        barValueSpacing : 5,
-        barDatasetSpacing : 1
-    }
-
-    // Get the data for the chart, in the appropriate form
-    {ldelim}
-    var recruitmentPieData = getPieData({$pie_chart});
-    var recruitmentBarData = getBarData({$bar_chart});
-    var scanData = updateChart({$scan_chart});
-    var recruitmentData = updateChart({$recruitment_chart});
-    {rdelim}
-
-    // Create the charts and their asoiciated legends
-    if (scanData.labels.length > 1) {
-        var scanctx = $("#scanChart").get(0).getContext("2d");
-        var scanLineChart = new Chart(scanctx).Line(scanData, lineOptions);
-        document.getElementById('scan-line-legend').innerHTML = scanLineChart.generateLegend();
-    }
-    else {
-        document.getElementById('scans-line-chart-panel').innerHTML = "<h5 class='chart-title'>Scans per site</h5><p>Not enough data to generate a chart.</p>";
-    }
-        
-    if (recruitmentData.labels.length > 1) {
-        var recruitmentctx = $("#recruitmentChart").get(0).getContext("2d");
-        var recruitmentLineChart = new Chart(recruitmentctx).Line(recruitmentData, lineOptions);
-        document.getElementById('recruitment-line-legend').innerHTML = recruitmentLineChart.generateLegend();
-    }
-    else {
-        document.getElementById('recruitment-line-chart-panel').innerHTML = "<h5 class='chart-title'>Recruiment per site</h5><p>Not enough data to generate a chart.</p>";
-    }
-
-    var recruitmentPiectx = $("#snapshotRecruitment").get(0).getContext("2d");
-    var recruitmentPieChart = new Chart(recruitmentPiectx).Pie(recruitmentPieData,pieOptions);
-    document.getElementById('pie-legend').innerHTML = recruitmentPieChart.generateLegend();
-
-    var recruitmentBarctx = $("#snapshotRecruitmentGender").get(0).getContext("2d");
-    var recruitmentBarChart = new Chart(recruitmentBarctx).Bar(recruitmentBarData, barOptions);
-    document.getElementById('bar-legend').innerHTML = recruitmentBarChart.generateLegend();
-    
-</script>-->
 
 <script>
     // Turn on the tooltip for the progress bar - shows total male and female registered candidates
@@ -431,8 +284,19 @@
             var siteData = [data[i].label, data[i].total];
             processedData.push(siteData);
         }
+        return processedData;
+    }
+    function formatBarData(data) {
+        var processedData = new Array();
+        females = ['Female'];
+        processedData.push(females.concat(data.datasets.female));
+        males = ['Male'];
+        processedData.push(males.concat(data.datasets.male));
         console.log(processedData);
         return processedData;
+    }
+    function getBarLabels(data) {
+        return data.labels;
     }
     function formatLineData(data) {
         var processedData = new Array();
@@ -451,9 +315,12 @@
     }
     
     {ldelim}
+    console.log({$bar_chart});
+    var recruitmentPieData = formatPieData({$pie_chart});
+    var recruitmentBarData = formatBarData({$bar_chart});
+    var recruitmentBarLabels = getBarLabels({$bar_chart});
     var scanLineData = formatLineData({$scan_chart});
     var recruitmentLineData = formatLineData({$recruitment_chart});
-    var recruitmentPieData = formatPieData({$pie_chart});
     {rdelim}
 
     var recruitmentPieChart = c3.generate({
@@ -469,18 +336,14 @@
     var recruitmentBarChart = c3.generate({
         bindto: '#recruitmentBarChart',
         data: {
-            columns: [
-                ['data1', 30, 200, 100],
-                ['data2', 130, 100, 140],
-            ],
+            columns: recruitmentBarData,
             type: 'bar'
         },
-        bar: {
-            width: {
-                ratio: 1 // this makes bar width 50% of length between ticks
+        axis: {
+            x: {
+                type : 'categorized',
+                categories: recruitmentBarLabels
             }
-            // or
-            //width: 100 // this makes bar width 100px
         },
         color: {
             pattern: genderColours
