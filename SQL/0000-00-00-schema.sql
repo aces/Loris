@@ -1276,7 +1276,7 @@ CREATE TABLE `users` (
   `Examiner` enum('Y','N') NOT NULL default 'N',
   `Password_md5` varchar(34) default NULL,
   `Password_expiry` date NOT NULL default '0000-00-00',
-  `Pending_approval` tinyint(1) default NULL,
+  `Pending_approval` enum('Y','N') default 'Y',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),

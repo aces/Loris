@@ -7,6 +7,10 @@ $(document).ready(function () {
                 FileIDs = [];
             console.log(checked);
 
+            if (extraparam === undefined) {
+                extraparam = '';
+            }
+
             for (i = 0; i < checked.length; i += 1) {
                 console.log(checked[i]);
                 FileIDs.push(checked[i].dataset.fileId);

@@ -39,10 +39,8 @@ class NDB_Form_user_accounts extends NDB_Form
             if(Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
             }
-
             // get the user defaults
 	        $defaults = $user->getData();
-
      	    // remove the password hash
 	        unset($defaults['Password_md5']);
 
@@ -381,7 +379,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // active and examiner
     	$this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-	    $this->addSelect('Pending_approval', 'Pending approval', array('1' => 'Yes', '0' => 'No'));
+	    $this->addSelect('Pending_approval', 'Pending approval', array('Y' => 'Yes', 'N' => 'No'));
 	    $this->addSelect('Examiner', 'Examiner', array('N' => 'No', 'Y' => 'Yes'));
 
         //------------------------------------------------------------
@@ -478,8 +476,11 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // document repository notifications
-        $doc_Repo_Notifications_Options = array('N' => 'No', 'Y' => 'Yes');
-        $this->addSelect('Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options); 
+        $editor =& User::singleton();
+        if ($editor->hasPermission('file_upload')) {
+                $doc_Repo_Notifications_Options = array('N' => 'No', 'Y' => 'Yes');
+                $this->addSelect('Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options); 
+        }
 
         //------------------------------------------------------------
 
