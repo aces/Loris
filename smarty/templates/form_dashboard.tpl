@@ -90,15 +90,13 @@
                         <div class="col-lg-4">
                             <div>
                                 <h5 class="chart-title">Total recruitment per site</h5>
-                                <canvas id="snapshotRecruitment" width="163" height="190"></canvas>
-                                <div id="pie-legend"></div>
+                                <div id="recruitmentPieChart"></div>
                             </div>
                         </div>
                         <div class="col-lg-8">
                             <div>
                                 <h5 class="chart-title">Gender breakdown by site</h5>
-                                <canvas id="snapshotRecruitmentGender" width="350" height="190"></canvas>
-                                <div id="bar-legend"></div>
+                                <div id="recruitmentBarChart"></div>
                             </div>
                         </div>
                     </div>
@@ -391,9 +389,12 @@
     document.getElementById('bar-legend').innerHTML = recruitmentBarChart.generateLegend();
     
 </script>-->
+
 <script>
+    // Turn on the tooltip for the progress bar - shows total male and female registered candidates
     $('.progress-bar').tooltip();
 
+    // Make dashboard panels collapsible
     $('.panel-heading span.clickable').on("click", function (e) {
         if ($(this).hasClass('panel-collapsed')) {
             // expand the panel
@@ -409,6 +410,7 @@
         }
     });
     
+    // Open the appropriate charts from the "views" dropdown menus
     $(".dropdown-menu a").click(function() {
         $(this).parent().siblings().removeClass("active");
         $(this).parent().addClass("active");
@@ -416,11 +418,22 @@
             $(document.getElementById(this.getAttribute('data-target'))).addClass("hidden");
         });
         $(document.getElementById(this.getAttribute('data-target'))).removeClass("hidden");
+        recruitmentPieChart.resize();
+        recruitmentBarChart.resize();
+        recruitmentLineChart.resize();
     });
-</script>
-<script>
-    var colours = ['#48D2B1', '#3E468A', '#2DC3D0', '#FFDA05', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
+    var siteColours = ['#F0CC00', '#27328C', '#2DC3D0', '#4AE8C2', '#D90074', '#7900DB', '#FF8000', '#0FB500', '#CC0000', '#DB9CFF', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
+    var genderColours = ['#2FA4E7', '#1C70B6'];
 
+    function formatPieData(data) {
+        var processedData = new Array();
+        for (var i in data) {
+            var siteData = [data[i].label, data[i].total];
+            processedData.push(siteData);
+        }
+        console.log(processedData);
+        return processedData;
+    }
     function formatLineData(data) {
         var processedData = new Array();
         var labels = new Array();
@@ -434,22 +447,43 @@
             dataset.push(data.datasets[i].name);
             processedData.push(dataset.concat(data.datasets[i].data));
         }
-        console.log(processedData);
         return processedData;
     }
     
     {ldelim}
-    var scanData = formatLineData({$scan_chart});
-    var recruitmentData = formatLineData({$recruitment_chart});
+    var scanLineData = formatLineData({$scan_chart});
+    var recruitmentLineData = formatLineData({$recruitment_chart});
+    var recruitmentPieData = formatPieData({$pie_chart});
     {rdelim}
 
     var recruitmentPieChart = c3.generate({
+        bindto: '#recruitmentPieChart',
+        data: {
+            columns: recruitmentPieData,
+            type : 'pie'
+        },
+        color: {
+            pattern: siteColours
+        }
+    });
+    var recruitmentBarChart = c3.generate({
+        bindto: '#recruitmentBarChart',
         data: {
             columns: [
-                ['data1', 30],
-                ['data2', 120],
+                ['data1', 30, 200, 100],
+                ['data2', 130, 100, 140],
             ],
-            type : 'pie',
+            type: 'bar'
+        },
+        bar: {
+            width: {
+                ratio: 1 // this makes bar width 50% of length between ticks
+            }
+            // or
+            //width: 100 // this makes bar width 100px
+        },
+        color: {
+            pattern: genderColours
         }
     });
     var scanLineChart = c3.generate({
@@ -457,7 +491,7 @@
         data: {
             x: 'x',
             x_format: '%m-%Y',
-            columns: scanData
+            columns: scanLineData
         },
         axis: {
             x: {
@@ -471,7 +505,7 @@
             enabled: true
         },
         color: {
-            pattern: colours
+            pattern: siteColours
         }
     });
     var recruitmentLineChart = c3.generate({
@@ -479,7 +513,7 @@
         data: {
             x: 'x',
             x_format: '%m-%Y',
-            columns: recruitmentData
+            columns: recruitmentLineData
         },
         axis: {
             x: {
@@ -493,7 +527,7 @@
             enabled: true
         },
         color: {
-            pattern: colours
+            pattern: siteColours
         }
     });
 </script>
