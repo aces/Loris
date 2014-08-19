@@ -26,13 +26,13 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         }
 
         // the base query
-        $query = " FROM users, psc WHERE users.CenterID = psc.CenterID ";
+        $query = " FROM users LEFT JOIN psc ON (psc.CenterID = users.CenterID) WHERE 1=1 ";
         if (!$user->hasPermission('user_accounts_multisite')) {
-            $query .= " AND users.CenterID = '" . $user->getData('CenterID') . "' ";
+            $query .= " WHERE users.CenterID = '" . $user->getData('CenterID') . "' ";
         }
 
         // set the class variables
-        $this->columns = array('Name AS PSC', 'UserID AS Username', 'Real_name AS Full_name', 'Email', 'Active', 'Examiner', 'Pending_approval');
+        $this->columns = array("COALESCE(psc.Name,'Not Assigned') AS PSC", 'UserID AS Username', 'Real_name AS Full_name', 'Email', 'Active', 'Examiner', 'Pending_approval');
         $this->query = $query;
         $this->order_by = 'Username';
         $this->validFilters = array('users.CenterID', 'users.UserID', 'users.Real_name', 'users.Email', 'users.Active', 'users.Examiner', 'users.Pending_approval');
@@ -64,8 +64,8 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
             $list_of_sites =& Utility::getSiteList(false);
             if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
-            }
-            if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
+            } 
+            if(is_array($list_of_sites)) $list_of_sites = array('' => 'All',0=>'Not Assigned') + $list_of_sites;
         }
         else {
             // allow only to view own site data
@@ -83,7 +83,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         $this->addBasicText('userID', 'Username:');
         $this->addBasicText('real_name', 'Full name:');
         $this->addBasicText('email', 'Email:');
-        $this->addSelect('pending', 'Pending Approval:', array(''=>'All', '0'=>'N', '1'=>'Y'));
+        $this->addSelect('pending', 'Pending Approval:', array(''=>'All', 'N'=>'N', 'Y'=>'Y'));
 
         return true;
     }
