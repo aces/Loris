@@ -1,13 +1,8 @@
-{if $success}
-<p>Your request for an account has been received successfully.<br /></p>
-<br />
-{/if}
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="{$css}" type="text/css" />
-<link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
+<link rel="stylesheet" href="../bootstrap-3.1.1/css/bootstrap.css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <!-- page title -->
@@ -16,6 +11,7 @@
 </head>
 
 <body>
+{if not $success}
 <div class="col-xs-12">
 {if $error_message != ""}
             <p>The following errors have occured while submitting form :
@@ -54,21 +50,17 @@
 <label class="col-sm-2 control-label">Type verification image:</label>
  <div class="col-sm-6">
 <input name="verif_box" type="text" id="verif_box" />
-<img src="verificationimage.php?{$rand}" alt="verification image, type it in the box" width="50" height="24" align="absbottom" /><br />
+<img src="verificationimage.php?num={$rand}" alt="verification image, type it in the box" width="50" height="24" align="absbottom" /><br />
 </div>
 </div>
-<!-- if the variable "wrong_code" is sent from previous page then display the error field -->
-{if $wrong_code}
-<div style="border:1px solid #990000; background-color:#D70000; color:#FFFFFF; padding:4px; padding-left:6px;width:295px;">Wrong verification code</div><br />
-{/if}
-  <div class="form-group">
+<div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <input name="Submit" class="btn btn-default" type="submit" value="Submit"/>
             </div>
-        </div>
+</div>
 
 </form>
 </div>
-
+{/if}
 </body>
 </html>
