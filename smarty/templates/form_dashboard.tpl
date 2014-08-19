@@ -385,7 +385,8 @@
         data: {
             x: 'x',
             x_format: '%m-%Y',
-            columns: scanLineData
+            columns: scanLineData,
+            type: 'area-spline'
         },
         axis: {
             x: {
@@ -407,7 +408,8 @@
         data: {
             x: 'x',
             x_format: '%m-%Y',
-            columns: recruitmentLineData
+            columns: recruitmentLineData,
+            type: 'area-spline'
         },
         axis: {
             x: {
