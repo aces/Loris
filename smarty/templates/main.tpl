@@ -131,11 +131,13 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         {foreach from=$tab.subtabs item=mySubtab}
+                                            {if $mySubtab.Visible == 1}
                                             <li>
                                                         <a href="{$mySubtab.Link}">
                                                             {$mySubtab.Label}
                                                         </a>
                                             </li>
+                                            {/if}
                                         {/foreach}
                                     </ul>
                                 </li> 
