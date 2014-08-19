@@ -27,7 +27,7 @@
 <h2>Request LORIS Account</h2>
 <h3>Please fill in the form below. We will contact you once your account has been approved.</h3>
 
-<form action="process_new_account.php" method="post" name="form1" id="form1" class="form-horizontal" onsubmit="MM_validateForm('from','','RisEmail','subject','','R','verif_box','','R','message','','R');return document.MM_returnValue">
+<form action="process_new_account.php" method="post" name="form1" id="form1" class="form-horizontal" onsubmit="MM_validateForm('from','','RisEmail','verif_box','','R');return document.MM_returnValue">
 <div class="form-group">
     <label  class="col-sm-2 control-label" size="75">First Name:</label>
     <div class="col-sm-6">
