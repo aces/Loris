@@ -33,7 +33,7 @@
 	</div>
 	<br><br>
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">$form.edc2.label}</label>
+		<label class="col-sm-2">{$form.edc2.label}</label>
 		<div class="col-sm-10">{$form.edc2.html}</div>
 	</div>
 
