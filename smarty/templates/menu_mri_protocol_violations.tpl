@@ -72,39 +72,49 @@
   <span class="glyphicon glyphicon-plus"></span> Show mri-protocol Table
 </div> 
 
-<div class="table-responsive">
-    <table class="table table-hover table-primary table-bordered" border="0">
-        <thead>
-            <tr class="info">
-                {assign var=count value=0}
-                {foreach from=$mri_protocol_header item=mp}
-                    <th id="header_{$count}">
-                       {$mp}
-                    </th>
-                    {assign var=count value=$count+1}
-                {/foreach}
-            </tr>
-        </thead>
-        <tbody>
-            {foreach from=$mri_protocol_data item=mp}
-              {assign var=ccount value=0}
-              
-                <tr>
-                  {foreach from=$mp item=row}
-                    {if $violated_scans_modifications}
-                       <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
-                    {else}
-                       <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
-                    {/if}  
-                            {$row}
-                        {$k}
-                               </td>
-                    {assign var=ccount value=$ccount+1}
-                  {/foreach}
-                </tr>
-            {/foreach}
-        </tbody>
-    </table>
+<div id="mri-protocol" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="table-scroll" id="content">
+            <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
+                <thead>
+                    <tr class="info">
+                        {assign var=count value=0}
+                        {foreach from=$mri_protocol_header item=mp}
+                            <th id="header_{$count}">
+                               {$mp}
+                            </th>
+                            {assign var=count value=$count+1}
+                        {/foreach}
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$mri_protocol_data item=mp}
+                      {assign var=ccount value=0}
+                      
+                        <tr>
+                          {foreach from=$mp item=row}
+                            {if $violated_scans_modifications}
+                               <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
+                            {else}
+                               <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
+                            {/if}  
+                                    {$row}
+                                {$k}
+                                       </td>
+                            {assign var=ccount value=$ccount+1}
+                          {/foreach}
+                        </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft" href="#mri-protocol">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#mri-protocol" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
 </div>
 
 </br></br>
@@ -116,32 +126,40 @@
     <td align="right">{$page_links}</td>
 </tr>
 </table>
-<div class="table-responsive">
-    <table class="table table-hover table-primary table-bordered" border="0">
-        <thead>
-            <tr class="info">
-                <th nowrap="nowrap">No.</th>
-                    {section name=header loop=$headers}
-                        <th nowrap="nowrap"><a href="main.php?test_name=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
+
+<div id="results" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="table-scroll" id="content">
+            <table class="table table-hover table-primary table-bordered" border="0" width="100%">
+                <thead>
+                    <tr class="info">
+                        <th nowrap="nowrap">No.</th>
+                            {section name=header loop=$headers}
+                                <th nowrap="nowrap"><a href="main.php?test_name=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
+                            {/section}
+                    </tr>
+                </thead>
+                <tbody>
+                    {section name=item loop=$items}
+                        <tr>
+                        <!-- print out data rows -->
+                        {section name=piece loop=$items[item]}
+                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
+                                {$items[item][piece].value}
+                            </td>
+                        {/section}
+                        </tr>           
+                    {sectionelse}
+                        <tr><td colspan="19">No data found</td></tr>
                     {/section}
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items}
-                <tr>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]}
-               
-                    <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-                    {$items[item][piece].value}
-                </td>
-
-                {/section}
-                </tr>           
-            {sectionelse}
-
-              <tr><td colspan="12">No data found</td></tr>
-            {/section}
-        </tbody>
-    </table>
+                </tbody>
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft" href="#results">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#results" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
 </div>
