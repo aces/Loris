@@ -462,7 +462,7 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
        
-         if(is_array($this->searchKey) && count($this->searchKey) > 0) {
+         if(is_array($this->searchKey) && count($this->searchKey) > 0 && $this->searchKey['keyword'] !== '') {
             $query .= " AND (";
             $fields = array();
             foreach ($this->searchKeyword as $field) {
