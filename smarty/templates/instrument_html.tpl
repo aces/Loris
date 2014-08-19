@@ -9,8 +9,9 @@
 </style>
 <form {$form.attributes}>
 	{$form.hidden}
-	{$form.errors.mainError}
+	{if isset ($form.errors.mainError)}{$form.errors.mainError}{/if}
 	{assign var="inTable" value="FALSE"}
+        {if isset($form.elements)}
 	{foreach from=$form.elements item=element}
 		{if $element.name neq mainError}
 			{if $element.name eq lorisSubHeader}
@@ -103,12 +104,14 @@
 			{/if}
 		{/if}
 	{/foreach}
+        {/if}
 	{foreach from=$form.sections item=section}
 		<div class="col-sm-12">
 			<div class="col-sm-8">
 				<h5 align="center">{$section.header}</h5>
 			</div>
 		</div>
+                {if isset($section.elements)}
 		{foreach from=$section.elements item=element}
 			{if $element.name neq mainError}
 				{if $element.name eq lorisSubHeader}
@@ -117,7 +120,7 @@
 					</div>
 					<br><br><br><br>
 				{elseif $element.type eq "group"}
-					{if substr_count($element.elements[1].name, '_status')}
+					{if isset($element.elements[1].name) && substr_count($element.elements[1].name, '_status')}
 						{if $inTable eq "TRUE"}
 							{assign var="inTable" value="FALSE"}
 							</table>
@@ -201,6 +204,7 @@
 				{/if}
 			{/if}
 		{/foreach}
+                {/if} 
 		{if $inTable eq "TRUE"}
 			{assign var="inTable" value="FALSE"}
 			</table>

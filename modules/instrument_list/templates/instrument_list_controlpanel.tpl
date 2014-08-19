@@ -12,16 +12,17 @@
 
 	<h3 class="controlPanelSection">Stage: {$current_stage}</h3>
 	<ul class="controlPanel">
+                {if isset($status)}
 		{section name=item loop=$status}
 		<li>
-			{if $access.status and $status[item].showlink}
+			{if $access.status and isset($status[item].showlink)}
                         	<img src="images/{$status[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setStageUpdate={$status[item].label}">{$status[item].label}</a>
 			{else}
                         	<img src="images/{$status[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;{$status[item].label}
 			{/if}
 		</li>
 		{/section}
-
+                {/if}
 	</ul>
 
 	<h3 class="controlPanelSection">Send Time Point</h3>
@@ -44,7 +45,7 @@
 	<ul class="controlPanel">
 		<li>
 			<img src="images/{$bvl_qc_type_none.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-			{if $bvl_qc_type_none.showlink}
+			{if isset($bvl_qc_type_none.showlink)}
                         	<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCType=">Not Done</a>
 			{else}
                                                 Not Done
@@ -73,7 +74,7 @@
 	<ul class="controlPanel">
 		<li>
 			<img src="images/{$bvl_qc_status_none.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-			{if $bvl_qc_status_none.showlink}
+			{if isset($bvl_qc_status_none.showlink)}
                         	<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=">Not Done</a>
 			{else}
                                                 Not Done
@@ -82,7 +83,7 @@
 		
 		<li>
                 	<img src="images/{$bvl_qc_status_complete.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-			{if $bvl_qc_status_complete.showlink}
+			{if isset ($bvl_qc_status_complete.showlink)}
                         	<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=Complete">Complete</a>
 			{else}
                                                 Complete
@@ -101,6 +102,7 @@
                     </td>
                 </tr>
                 <tr><td class="controlPanelSection">Stage: {$current_stage}</td></tr>
+{if isset($status)}
 {section name=item loop=$status}
                 <tr>
                     <td class="controlPanelItem">
@@ -112,6 +114,7 @@
                     </td>
                 </tr>
 {/section}
+{/if}
                 <tr><td class="controlPanelSection">Send Time Point</td></tr>
                 <tr>
                     <td class="controlPanelItem">
@@ -131,7 +134,7 @@
                 <tr>
                     <td class="controlPanelItem">
                     <img src="images/{$bvl_qc_type_none.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-{if $bvl_qc_type_none.showlink}
+{if isset($bvl_qc_type_none.showlink)}
                         <a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCType=">Not Done</a>
 {else}
 						Not Done
@@ -141,7 +144,7 @@
                 <tr>
                     <td class="controlPanelItem">
                     <img src="images/{$bvl_qc_type_visual.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-{if $bvl_qc_type_visual.showlink}
+{if isset($bvl_qc_type_visual.showlink)}
                         <a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCType=Visual">Visual</a>
 {else}
 						Visual
@@ -151,7 +154,7 @@
                 <tr>
                     <td class="controlPanelItem">
                     <img src="images/{$bvl_qc_type_hardcopy.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-{if $bvl_qc_type_hardcopy.showlink}
+{if isset($bvl_qc_type_hardcopy.showlink)}
                         <a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCType=Hardcopy">Hardcopy</a>
 {else}
 						Hardcopy
@@ -163,7 +166,7 @@
                 <tr>
                     <td class="controlPanelItem">
                     <img src="images/{$bvl_qc_status_none.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-{if $bvl_qc_status_none.showlink}
+{if isset($bvl_qc_status_none.showlink)}
                         <a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=">Not Done</a>
 {else}
 						Not Done
@@ -173,7 +176,7 @@
                 <tr>
                     <td class="controlPanelItem">
                     <img src="images/{$bvl_qc_status_complete.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
-{if $bvl_qc_status_complete.showlink}
+{if isset($bvl_qc_status_complete.showlink)}
                         <a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=Complete">Complete</a>
 {else}
 						Complete

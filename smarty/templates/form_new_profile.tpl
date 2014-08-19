@@ -1,4 +1,4 @@
-{if $success}
+{if isset($success)}
 
 <p>New candidate created. DCCID: {$candID} PSCID: {$PSCID}<br />
 <a href="main.php?test_name=timepoint_list&candID={$candID}">Access this candidate</a><br />
@@ -25,7 +25,7 @@
 		<div class="col-sm-10">{$form.dob2.html}</div>
 	</div>
 	
-    {if $form.edc1.html != ""}
+    {if isset($form.edc1.html) && $form.edc1.html != ""}
     <br><br>
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.edc1.label}</label>

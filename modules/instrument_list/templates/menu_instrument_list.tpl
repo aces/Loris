@@ -30,7 +30,7 @@
 	            {$instruments[group][instrument].fullName}</a></td>
 	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
 	    	<td>{$instruments[group][instrument].administrationStatus}</td>
-	    	<td bgcolor="{$instruments[group][instrument].feedbackColor}">
+	    	<td bgcolor="{if isset($instruments[group][instrument].feedbackColor)}{$instruments[group][instrument].feedbackColor}"{else}"{/if}>
 		    	{$instruments[group][instrument].feedbackStatus}
 	        </td>
 			<td>

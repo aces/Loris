@@ -41,7 +41,7 @@
 
                 <td>{$timePoints[timepoint].SubprojectTitle}</td>
 
-                {if $timePoints[timepoint].staticStage != "" || $timePoints[timepoint].Current_stage == "Not Started"}
+                {if isset($timePoints[timepoint].staticStage) && ($timePoints[timepoint].staticStage != "" || $timePoints[timepoint].Current_stage == "Not Started")}
                 <td colspan="3">{$timePoints[timepoint].Current_stage}</td>
                 {else}
                 <td>{$timePoints[timepoint].Current_stage}</td>
@@ -108,7 +108,7 @@
         </tbody>
     </table>
 <br />
-{if $isNIHPD}
+{if isset($isNIHPD)}
 <!--  show future time points  -->
 {if $SubprojectID == 2}
 <!--  need to add Obj2 time window handler -->

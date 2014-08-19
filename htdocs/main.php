@@ -87,7 +87,7 @@ foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
         if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
 
             // if there are no permissions, allow access to the tab
-            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
+            if (!isset($mySubtab['permissions']) || !is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
 
                 $tpl_data['subtab'][]=$mySubtab;
 

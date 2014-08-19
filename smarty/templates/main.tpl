@@ -3,7 +3,7 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$css}" type="text/css" />
-        {if $test_name_css}
+        {if isset($test_name_css)}
             <link rel="stylesheet" href="css/instruments/{$test_name_css}" type="text/css" />
         {/if}
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
@@ -23,7 +23,7 @@
             {$study_title}
         </title>
 
-        {if $test_name_js}
+        {if isset($test_name_js)}
             <script type="text/javascript" src="{$test_name_js}"></script>
         {/if}
 
@@ -113,7 +113,7 @@
                     </button>
 
                     <!-- toggle sidebar in mobile view -->
-                    {if $control_panel}
+                    {if isset($control_panel)}
                         <a id="menu-toggle" href="#" class="navbar-brand">
                             <span class="glyphicon glyphicon-th-list"></span>
                         </a>
@@ -188,7 +188,7 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-            {if $control_panel}
+            {if isset($control_panel)}
                 <div class="wrapper">
                 <!-- Sidebar -->
             
@@ -257,7 +257,7 @@
                         </div>
                     {/if}
                         <div>
-                            {if $error_message != ""}
+                            {if isset($error_message) && $error_message != ""}
                                 <p>
                                     The following errors occured while attempting to display this page:
                                     <ul>
@@ -311,11 +311,13 @@
                                                                 Project
                                                             </th>
                                                         {/if}
+                                                        {if isset($candidate.DisplayParameters)} 
                                                         {foreach from=$candidate.DisplayParameters item=value key=name}
                                                             <th>
                                                                 {$name}
                                                             </th>
                                                         {/foreach}
+                                                        {/if}  
                                                         {if $sessionID != ""}
                                                             <th>
                                                                 Visit Label
@@ -340,7 +342,7 @@
                                                             <th>
                                                                 Within Permitted
                                                             </th>
-                                                            {if $SupplementalSessionStatuses }
+                                                            {if isset($SupplementalSessionStatuses) }
                                                                 {foreach from=$timePoint.status item=status key=name}
                                                                     <th>
                                                                         {$name}
@@ -369,12 +371,13 @@
                                                                 {$candidate.ProjectTitle}
                                                             </td>
                                                         {/if}
+                                                        {if isset($candidate.DisplayParameters)} 
                                                         {foreach from=$candidate.DisplayParameters item=value key=name}
                                                             <td>
                                                                 {$value}
                                                             </td>
                                                         {/foreach}
-
+                                                        {/if}
                                                         {if $sessionID != ""}
                                                             <!-- timepoint data -->
                                                             <td>
@@ -395,20 +398,20 @@
                                                                 </td> 
                                                             *}
                                                             <td>
-                                                                {if $timePoint.WindowInfo.Optimum}
+                                                                {if isset($timePoint.WindowInfo.Optimum)}
                                                                     Yes
                                                                 {else}
                                                                     No
                                                                 {/if}
                                                             </td>
-                                                            <td {if not $timePoint.WindowInfo.Optimum}class="error"{/if}>
-                                                                {if $timePoint.WindowInfo.Permitted}
+                                                            <td {if !isset($timePoint.WindowInfo.Optimum)}class="error"{/if}>
+                                                                {if isset($timePoint.WindowInfo.Permitted)}
                                                                     Yes
                                                                 {else}
                                                                     No
                                                                 {/if}
                                                             </td>
-                                                            {if $SupplementalSessionStatuses }
+                                                            {if isset($SupplementalSessionStatuses) }
                                                                 {foreach from=$timePoint.status item=status}
                                                                     <td>
                                                                         {$status}
@@ -498,7 +501,7 @@
         </div>
         </div>
         {if $dynamictabs neq "dynamictabs"}
-            {if $control_panel}
+            {if isset($control_panel)}
             <div id="footer" class="footer navbar-bottom wrapper">
             {else}
             <div id="footer" class="footer navbar-bottom">
