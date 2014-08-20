@@ -1,23 +1,27 @@
-div.tree {
-   font-size: 16px;
-}
 ul.config {
    list-style-type: none;
    list-style-position: inside;
-   padding: 0;
-   margin-left: 10px;
 }
 
 .collapsable {
    margin-left: -20px;
    padding-left: 20px;
-   margin-right: -94%;
-   padding-right: 94%;
    cursor: pointer;
 }
 
+.form {
+   margin-top: -8px;
+}
+
+.form-control {
+   display: inline;
+}
+
+.btn {
+   padding: 11px 12px !important;
+}
 div.form {
-   background-color: #064785;
+ /*  background-color: #064785;
    color: #fff;
    display: none;
    position: fixed;
@@ -28,21 +32,21 @@ div.form {
    text-align: center;
    vertical-align: middle;
    border-radius: 10px;
-   padding: 15px 25px;
+   padding: 15px 25px;*/
 }
 
 .input-group {
-   margin-top: 10px;
-   margin-bottom: 16px;
+   /*margin-top: 10px;
+   margin-bottom: 16px;*/
 }
 
-.btn-default {
+/*.btn-default {
    width: 70px;
 }
 
 .form-label {
    font-size: 16px;
-}
+}*/
 
 .list-group-item-success {
    background-color: #CFE7EB !important;

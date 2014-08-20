@@ -25,7 +25,7 @@ require_once 'NDB_Form.class.inc';
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
 */
-class NDB_Form_Admin_Config extends NDB_Form
+class NDB_Form_Database_Configuration_Module extends NDB_Form
 {
     /**
      * _has_access returns true
@@ -40,7 +40,7 @@ class NDB_Form_Admin_Config extends NDB_Form
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        return true;
+        return $user->hasPermission('config');
     }
 
     /**
@@ -49,7 +49,7 @@ class NDB_Form_Admin_Config extends NDB_Form
      * @return null
      */
 
-    function admin_config()
+    function database_configuration_module()
     {
         $this->DB = Database::singleton();
         if (Utility::isErrorX($this->DB)) {
@@ -101,44 +101,27 @@ class NDB_Form_Admin_Config extends NDB_Form
 
     function _process($values)
     {
-        ksort($values);
+        print_r($values);
         foreach ($values as $key => $value) {
-            /*
-               In the sorted array the first value is the name of the button.
-               In 'Remove' array the key is of the form: "remove-id".
-               In case of 'Save' can be two possibilities: update and add new
-             */
-            if ($value === "Remove") {
+            if (is_numeric($key)) { //update
+                $this->DB->update(
+                    'Config', 
+                    array('Value' => $value), 
+                    array('ID' => $key)
+                );
+            } else { //add new or remove
                 $id = split("-", $key);
-                $this->DB->delete('Config', array('ID' => $id[1]));
-                break;
-            } else { // 'Save'
-                if ($value === "Save") {
-                    continue;
-                } else { 
-                    /*
-                       If 'Update', the key is the id of the value,
-                       if 'Add new', the key is "id-index" 
-                       where 'id' is the id of the tag. 
-                     */ 
-                    if (is_numeric($key)) { //update
-                        $this->DB->update(
-                            'Config', 
-                            array('Value' => $value), 
-                            array('ID' => $key)
-                        );
-    
-                    } else { //add new
-                        $id = split("-", $key);
-                        $this->DB->insert(
-                            'Config', 
-                            array('ConfigID' => $id[0], 'Value' => $value)
-                        );
-                    }
+                if ($id[0] === "add") {
+                    $this->DB->insert(
+                        'Config', 
+                        array('ConfigID' => $id[1], 'Value' => $value)
+                    );
+                } elseif ($id[0] === "remove") {
+                    $this->DB->delete('Config', array('ID' => $id[1]));
                 }
-            } //end of if 'Action'
+            } 
         } //end of foreach
-        $this->admin_config();
+        $this->database_configuration_module();
     }
 }
 
