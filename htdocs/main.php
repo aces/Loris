@@ -27,7 +27,6 @@ $subtest = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
 $config =& NDB_Config::singleton();
 
 $timer->setMarker('Loaded client');
-
 //--------------------------------------------------
 
 // set URL params
@@ -39,7 +38,7 @@ function tplFromRequest($param) {
         $tpl_data[$param] = '';
     }
 }
-
+$tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name'] = $TestName;
 $tpl_data['subtest']   = $subtest;
 

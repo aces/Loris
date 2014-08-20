@@ -38,6 +38,7 @@ class SinglePointLogin extends PEAR
             $tpl_data['username'] = '';
         }
 
+        $tpl_data['currentyear'] = date('Y'); 
 
 
         // remove logout from request

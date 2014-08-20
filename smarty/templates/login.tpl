@@ -191,7 +191,7 @@ BrowserDetect.init();
 					<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
 					</tr>	
 					<tr>
-					<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+					<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
 					</tr>	
 					<tr>
 					<td align="center" colspan="1"style="color: #808080">Created by <a href="http://cbrain.mcgill.ca" style="color: #064785" target="_blank"> ACElab</a></td>
