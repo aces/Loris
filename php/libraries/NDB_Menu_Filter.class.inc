@@ -546,11 +546,15 @@ class NDB_Menu_Filter extends NDB_Menu
 
     function _getNumberPages($query) {
         $wheredetails = $this->_getBaseFilter();
-        $query = "SELECT COUNT(*) " . $this->query . $wheredetails['clause'];
-
         $db = Database::singleton();
+        if(empty($this->group_by)) {
+            $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
+        } else if (!empty($this->group_by)) {
+            $query = "SELECT COUNT(*) FROM ($query) as tmptable";
 
+        }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
+
     }
 
     /**
