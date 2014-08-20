@@ -137,7 +137,7 @@
         <div class="col-lg-4">
 
             <!-- My Tasks -->
-            {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq ""}
+            {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq "" or $violated_scans neq "" or $pending_users neq ""}
                 <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -147,7 +147,7 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="list-group tasks">
-                                {if $conflicts neq ""}
+                                {if $conflicts neq "" and $conflicts neq 0}
                                 <a href="main.php?test_name=conflicts_resolve" class="list-group-item">
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
@@ -161,7 +161,7 @@
                                     </div>
                                 </a>
                                 {/if}
-                                {if $incomplete_forms neq ""}
+                                {if $incomplete_forms neq "" and $incomplete_forms neq 0}
                                 <a href="main.php?test_name=statistics_site" class="list-group-item">
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
@@ -175,7 +175,7 @@
                                     </div>
                                 </a>
                                 {/if}
-                                {if $new_scans neq ""}
+                                {if $new_scans neq "" and $new_scans neq 0}
                                     <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
@@ -189,7 +189,7 @@
                                         </div>
                                     </a>
                                 {/if}
-                                {if $violated_scans neq ""}
+                                {if $violated_scans neq "" and $violated_scans neq 0}
                                     <a href="main.php?test_name=mri_violations" class="list-group-item">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
@@ -203,7 +203,7 @@
                                         </div>
                                     </a>
                                 {/if}
-                                {if $radiology_review neq ""}
+                                {if $radiology_review neq "" and $radiology_review neq 0}
                                 <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
                                     <div class="row">
                                         <div class="col-xs-9 text-left">
@@ -217,7 +217,7 @@
                                     </div>
                                 </a>
                                 {/if}
-                                {if $pending_users neq ""}
+                                {if $pending_users neq "" and $pending_users neq 0}
                                 <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
                                     <div class="row">
                                         <div class="col-xs-9 text-left">
