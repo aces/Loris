@@ -246,7 +246,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             }
             $x++;
         }
-        $this->tpl_data['numTimepoints'] = $x;
+        $this->tpl_data['numTimepoints'] = $this->TotalItems; //$x;
 	$_SESSION['State']->setProperty(
 	    'mriSessionsListed', $filtered_sessionIDs
         );
