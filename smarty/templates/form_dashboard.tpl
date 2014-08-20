@@ -373,6 +373,9 @@
             x: {
                 type : 'categorized',
                 categories: recruitmentBarLabels
+            },
+            y: {
+                label: 'Candidates registered'
             }
         },
         color: {
@@ -393,6 +396,9 @@
                 tick: {
                     format: '%m-%Y'
                 }
+            },
+            y: {
+                label: 'Scans'
             }
         },
         zoom: {
@@ -416,6 +422,9 @@
                 tick: {
                     format: '%m-%Y'
                 }
+            },
+            y: {
+                label: 'Candidates registered'
             }
         },
         zoom: {
