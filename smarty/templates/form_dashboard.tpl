@@ -147,7 +147,6 @@
         </div>
 
         <div class="col-lg-4">
-
             <!-- My Tasks -->
             {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq "" or $violated_scans neq "" or $pending_users neq ""}
                 <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
@@ -174,18 +173,22 @@
                                 </a>
                                 {/if}
                                 {if $incomplete_forms neq "" and $incomplete_forms neq 0}
-                                <a href="main.php?test_name=statistics_site" class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-xs-8 text-left">
-                                            <div class="huge">{$incomplete_forms}</div>
-                                            Incomplete form{if $incomplete_forms neq 1}s{/if}
+                                    {if $incomplete_forms_site eq "All"}
+                                    <a href="main.php?test_name=statistics_site" class="list-group-item">
+                                    {else}
+                                    <a href="main.php?test_name=statistics_site&CenterId={$user_site}&ProjectID=" class="list-group-item">
+                                    {/if}
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$incomplete_forms}</div>
+                                                Incomplete form{if $incomplete_forms neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$incomplete_forms_site}</p>
+                                            </div>
                                         </div>
-                                        <div class="col-xs-4 text-right alert-chevron">
-                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                            <p class="small task-site">{$incomplete_forms_site}</p>
-                                        </div>
-                                    </div>
-                                </a>
+                                    </a>
                                 {/if}
                                 {if $new_scans neq "" and $new_scans neq 0}
                                     <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
@@ -218,11 +221,11 @@
                                 {if $radiology_review neq "" and $radiology_review neq 0}
                                 <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
                                     <div class="row">
-                                        <div class="col-xs-9 text-left">
+                                        <div class="col-xs-8 text-left">
                                             <div class="huge">{$radiology_review}</div>
                                             Final radiological review{if $radiology_review neq 1}s{/if}
                                         </div>
-                                        <div class="col-xs-3 text-right alert-chevron">
+                                        <div class="col-xs-4 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
                                             <p class="small task-site">{$radiology_review_site}</p>
                                         </div>
@@ -230,13 +233,13 @@
                                 </a>
                                 {/if}
                                 {if $pending_users neq "" and $pending_users neq 0}
-                                <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
+                                <a href="main.php?test_name=user_accounts&pending=1&filter=Show%20Data" class="list-group-item">
                                     <div class="row">
-                                        <div class="col-xs-9 text-left">
+                                        <div class="col-xs-8 text-left">
                                             <div class="huge">{$pending_users}</div>
-                                            User account{if $pending_users neq 1}s{/if} pending approval
+                                            Account{if $pending_users neq 1}s{/if} pending approval
                                         </div>
-                                        <div class="col-xs-3 text-right alert-chevron">
+                                        <div class="col-xs-4 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
                                             <p class="small task-site">{$pending_users_site}</p>
                                         </div>

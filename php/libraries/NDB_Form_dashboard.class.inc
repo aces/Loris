@@ -156,9 +156,10 @@ class NDB_Form_dashboard extends NDB_Form {
 		$this->tpl_data = array();
 		$config =& NDB_Config::singleton();
         $site = $user->getSiteName();
+        $siteID = $DB->pselectOne("SELECT CenterID FROM psc WHERE Name='$site'");
         $userID = $user->getUsername();
         $last_login = $DB->pselectOne("SELECT max(Login_timestamp) FROM user_login_history WHERE userID='$userID' AND Success='Y'", array());
-        $this->tpl_data['user_site'] = $DB->pselectOne("SELECT CenterID FROM psc WHERE Name=$site");
+        $this->tpl_data['user_site'] = $siteID;
 
 		// Welcome panel
 		$this->tpl_data['username'] = $user->getFullname();
@@ -236,9 +237,13 @@ class NDB_Form_dashboard extends NDB_Form {
             $this->tpl_data['radiology_review_site'] = 'Site: all';
         }
 
-        if ($user->hasPermission('user_accounts')) {
-            $this->tpl_data['pending_accounts'] = $DB->pselectOne("SELECT count(*) FROM users WHERE Pending_approval=1", array());
-            $this->tpl_data['radiology_review_site'] = 'Site: all';
+        if ($user->hasPermission('user_accounts_multisite')) {
+            $this->tpl_data['pending_users'] = $DB->pselectOne("SELECT count(*) FROM users WHERE Pending_approval=1", array());
+            $this->tpl_data['pending_users_site'] = 'Site: all';
+        }
+        elseif ($user->hasPermission('user_accounts')) {
+            $this->tpl_data['pending_users'] = $DB->pselectOne("SELECT count(*) FROM users WHERE Pending_approval=1 AND CenterID=$siteID", array());
+            $this->tpl_data['pending_users_site'] = 'Site: ' . $site;
         }
 
         if ($user->hasPermission('violated_scans')) {
