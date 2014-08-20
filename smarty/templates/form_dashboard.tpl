@@ -87,13 +87,13 @@
                         {/if}
                     </div>
                     <div class="recruitment-panel hidden" id="recruitment-site-breakdown">
-                        <div class="col-lg-4">
+                        <div class="col-lg-4 col-md-4 col-sm-4">
                             <div>
                                 <h5 class="chart-title">Total recruitment per site</h5>
                                 <div id="recruitmentPieChart"></div>
                             </div>
                         </div>
-                        <div class="col-lg-8">
+                        <div class="col-lg-8 col-md-8 col-sm-8">
                             <div>
                                 <h5 class="chart-title">Gender breakdown by site</h5>
                                 <div id="recruitmentBarChart"></div>
@@ -138,7 +138,7 @@
 
             <!-- My Tasks -->
             {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq ""}
-                <div class="col-lg-12">
+                <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">My Tasks</h3>
@@ -240,7 +240,7 @@
 
             <!-- Document Repository -->
             {if $document_repository_notifications neq ""}
-                <div class="col-lg-12">
+                <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">Document Repository Notifications</h3>
@@ -346,7 +346,6 @@
     }
     
     {ldelim}
-    console.log({$bar_chart});
     var recruitmentPieData = formatPieData({$pie_chart});
     var recruitmentBarData = formatBarData({$bar_chart});
     var recruitmentBarLabels = getBarLabels({$bar_chart});
