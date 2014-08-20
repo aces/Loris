@@ -87,18 +87,22 @@
                         {/if}
                     </div>
                     <div class="recruitment-panel hidden" id="recruitment-site-breakdown">
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            <div>
-                                <h5 class="chart-title">Total recruitment per site</h5>
-                                <div id="recruitmentPieChart"></div>
+                        {if $total_recruitment neq 0}
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div>
+                                    <h5 class="chart-title">Total recruitment per site</h5>
+                                    <div id="recruitmentPieChart"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-8 col-md-8 col-sm-8">
-                            <div>
-                                <h5 class="chart-title">Gender breakdown by site</h5>
-                                <div id="recruitmentBarChart"></div>
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                <div>
+                                    <h5 class="chart-title">Gender breakdown by site</h5>
+                                    <div id="recruitmentBarChart"></div>
+                                </div>
                             </div>
-                        </div>
+                        {else}
+                            <p>There have been no candidates registered yet.</p>
+                        {/if}
                     </div>
                 </div>
             </div>
@@ -122,13 +126,21 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div id="scans-line-chart-panel">
-                        <h5 class="chart-title">Scans per site</h5>
-                        <div id="scanChart"></div>
-                    </div>
+                        <div id="scans-line-chart-panel">
+                            <h5 class="chart-title">Scans per site</h5>
+                            {if $total_scans neq 0}
+                                <div id="scanChart"></div>
+                            {else}
+                                <p>There have been no scans yet.</p>
+                            {/if}
+                        </div>
                     <div id="recruitment-line-chart-panel" class="hidden">
                         <h5 class="chart-title">Recruitment per site</h5>
-                        <div id="recruitmentChart"></div>
+                        {if $total_recruitment neq 0}
+                            <div id="recruitmentChart"></div>
+                        {else}
+                            <p>There have been no candidates registered yet.</p>
+                        {/if}
                     </div>
                 </div>
             </div>

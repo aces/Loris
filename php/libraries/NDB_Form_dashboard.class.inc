@@ -193,15 +193,16 @@ class NDB_Form_dashboard extends NDB_Form {
             $this->tpl_data['male_total'] = $totalMales;
             $this->tpl_data['male_percent'] = round($totalMales/$recruitmentTarget*100);
             $totalRecruitment = $totalFemales + $totalMales;
+            $this->tpl_data['total_recruitment'] = $totalRecruitment;
             if ($totalRecruitment > $recruitmentTarget) {
                 $this->tpl_data['surpassed_recruitment'] = "true";
-                $this->tpl_data['total_recruitment'] = $totalRecruitment;
                 $this->tpl_data['female_full_percent'] = round($totalFemales/$totalRecruitment*100);
                 $this->tpl_data['male_full_percent'] = round($totalMales/$totalRecruitment*100);
             }
         }
 
         // Charts
+        $this->tpl_data['total_scans'] = $DB->pselectOne("SELECT count(*) FROM files f", array());
         $this->tpl_data['pie_chart'] = $this->_getRecruitmentTotalsBySite();
         $this->tpl_data['bar_chart'] = $this->_getGenderTotalsBySite();
         $this->tpl_data['recruitment_chart'] = $this->_recruitmentBySite();
