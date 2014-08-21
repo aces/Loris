@@ -288,8 +288,9 @@
 
 <script src="js/d3.min.js" charset="utf-8"></script>
 <script src="js/c3.min.js"></script>
-
 <script>
+    /*global $ */
+
     // Turn on the tooltip for the progress bar - shows total male and female registered candidates
     $('.progress-bar').tooltip();
 
@@ -300,15 +301,14 @@
             $(this).parents('.panel').find('.panel-body').slideDown();
             $(this).removeClass('panel-collapsed');
             $(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-        }
-        else {
+        } else {
             // collapse the panel
             $(this).parents('.panel').find('.panel-body').slideUp();
             $(this).addClass('panel-collapsed');
             $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
         }
     });
-    
+
     // Open the appropriate charts from the "views" dropdown menus
     $(".dropdown-menu a").click(function() {
         $(this).parent().siblings().removeClass("active");
@@ -338,7 +338,6 @@
         processedData.push(females.concat(data.datasets.female));
         males = ['Male'];
         processedData.push(males.concat(data.datasets.male));
-        console.log(processedData);
         return processedData;
     }
     function getBarLabels(data) {
@@ -359,7 +358,7 @@
         }
         return processedData;
     }
-    
+
     {ldelim}
     var recruitmentPieData = formatPieData({$pie_chart});
     var recruitmentBarData = formatBarData({$bar_chart});
