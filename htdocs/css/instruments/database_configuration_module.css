@@ -20,33 +20,6 @@ ul.config {
 .btn {
    padding: 11px 12px !important;
 }
-div.form {
- /*  background-color: #064785;
-   color: #fff;
-   display: none;
-   position: fixed;
-   top: 20%;
-   left: 40%;
-   width: auto;
-   height: auto;
-   text-align: center;
-   vertical-align: middle;
-   border-radius: 10px;
-   padding: 15px 25px;*/
-}
-
-.input-group {
-   /*margin-top: 10px;
-   margin-bottom: 16px;*/
-}
-
-/*.btn-default {
-   width: 70px;
-}
-
-.form-label {
-   font-size: 16px;
-}*/
 
 .list-group-item-success {
    background-color: #CFE7EB !important;

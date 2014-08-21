@@ -10,23 +10,14 @@ $(function () {
         $(this).toggle();
     });
 
-    /*$(".list-group-item-info").click(function () {
-        var id = $(this).attr('id');
-        $("#" + id + ".form").toggle();
-    });*/
-    $(".cancel").click(function () {
-        var id = $(this).attr('id');
-        $("#" + id + ".form").hide();
-    });
     var count = 0;
-
     $(".add").click(function () {
         count = count + 1;
         var id = $(this).attr('id'),
             new_id = id + "-" + count,
             name = $("#" + id + ".name").html(),
             parent = $(this).attr("name");
-alert(parent);
+
         $("#"+id+".row").after('<div class="row" style="margin-left:0px;margin-right:0px;">'
                 + '<li class="list-group-item list-group-item-info" id="' + new_id + '">'
                 + '<span class="collapsable" id="' + new_id + '">'

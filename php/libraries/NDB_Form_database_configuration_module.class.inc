@@ -89,6 +89,17 @@ class NDB_Form_Database_Configuration_Module extends NDB_Form
         // need a subtree with root = NULL only, others are repeating branches
         $this->tpl_data['configs'] = $tree['']['Children'];
         $this->tpl_data['options'] = array('0'=>'0', '1'=>'1');
+
+        // most likely instruments will be treated in a special way, 
+        // so they have their tree for the template
+        $instrumentArray = $this->DB->pselectRow(
+            "SELECT Parent 
+            FROM ConfigSettings 
+            WHERE Name='Instrument'", 
+            array()
+        );
+        $instrumentID = $instrumentArray['Parent'];
+        $this->tpl_data['instruments'] = $tree[$instrumentID]['Children'];
     }
 
     /**
