@@ -18,7 +18,7 @@ $(function () {
             name = $("#" + id + ".name").html(),
             parent = $(this).attr("name");
 
-        $("#"+id+".row").after('<div class="row" style="margin-left:0px;margin-right:0px;">'
+        $("#"+id+".row").after('<div class="row" id="' + new_id +'" style="margin-left:0px;margin-right:0px;">'
                 + '<li class="list-group-item list-group-item-info" id="' + new_id + '">'
                 + '<span class="collapsable" id="' + new_id + '">'
                 + '<div class="col-md-8"><span class="name" id="' + new_id + '">' + name + '</span></div>'
@@ -29,10 +29,8 @@ $(function () {
                 + '<input class="form-control" type="text" id="' + new_id + '" value="" name="' + parent + '">'
                 + '</form>'
                 + '<div class="input-group-btn">'
-                + '<form method="POST" action="">'
-                + '<button class="btn btn-default remove" id="' + new_id +'" type="submit" name="remove-' + new_id + '"><i class="glyphicon glyphicon-remove"></i></button>'
+                + '<button class="btn btn-default remove-new" id="' + new_id +'" type="button"><i class="glyphicon glyphicon-remove"></i></button>'
                 + '<button class="btn btn-default add" id="' + new_id +'" type="button"><i class="glyphicon glyphicon-plus"></i></button>'
-                + '</form>'
                 + '</div>'
                 + '</div>'
                 + '</div>'
@@ -42,9 +40,9 @@ $(function () {
         );
     });
 
-    $("form").on("click", ".remove", function () {
-        var id = $(this).attr('id');
-        $("#" + id + ".input-group").remove();
+    $("ul.list-group").on("click", ".remove-new", function () {
+        var id = $(".remove-new").attr('id');
+        $("#" + id + ".row").remove();
     });
 
     

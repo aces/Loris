@@ -4,27 +4,8 @@
     {foreach $items as $item}
         {if isset($item['Children']) && $item['Children']}
 {*SPECIAL CASE FOR INSTRUMENTS, SINCE THEY ARE MULTIPLE PARENT*}
-            {if $item['Name'] == 'Instrument'}
-                {foreach $instruments as $instrument}
-                    {foreach $instrument['Children'] as $child}
-                        <div class="tree"><ul class="list-group">  
-                        <li class="list-group-item list-group-item-success" id="{$item['ID']}">
-                            <span class="collapsable" id="{$item['ID']}">
-                                <span class="glyphicon glyphicon-chevron-down" id="{$item['ID']}"> {$item['Description']}
-                                    <div class="input-group-btn pull-right">
-                                        <button class="btn btn-default remove" id="" type="submit" name="remove-"><i class="glyphicon glyphicon-remove"></i></button>
-                                        <button class="btn btn-default add" id="" type="button" name="add-{$item['ID']}"><i class="glyphicon glyphicon-plus"></i></button>
-                                    </div>
-                                </span>
-                            </span>
-                            <div class="tree">
-                                <ul class="list-group">
-                                    {call name=printLeaves node=$child}</ul></div>
-                                </ul>
-                            </div>
-                        </li> 
-                    {/foreach} 
-                {/foreach}
+            {if $item['Name'] == 'ReliabilityInstruments'}
+                {* SORRY, IT'S NOT IMPLEMENTED *}
             {else}
                 <li class="list-group-item list-group-item-success" id="{$item['ID']}">
                     <span class="collapsable" id="{$item['ID']}">

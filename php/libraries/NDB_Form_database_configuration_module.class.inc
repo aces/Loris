@@ -112,9 +112,9 @@ class NDB_Form_Database_Configuration_Module extends NDB_Form
 
     function _process($values)
     {
-        print_r($values);
         foreach ($values as $key => $value) {
             if (is_numeric($key)) { //update
+                print "$key";
                 $this->DB->update(
                     'Config', 
                     array('Value' => $value), 
@@ -131,7 +131,8 @@ class NDB_Form_Database_Configuration_Module extends NDB_Form
                     $this->DB->delete('Config', array('ID' => $id[1]));
                 }
             } 
-        } //end of foreach
+        } 
+        
         $this->database_configuration_module();
     }
 }
