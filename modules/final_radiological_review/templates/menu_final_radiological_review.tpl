@@ -45,8 +45,8 @@
                         <div class="col-sm-12 col-md-4">{$form.Review_done.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-4">{$form.Project.label}</label>
-                        <div class="col-sm-12 col-md-8">{$form.Project.html}</div>
+                        <label class="col-sm-12 col-md-8">{$form.Project.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-6">{$form.dccid.label}</label>
@@ -107,7 +107,7 @@
     <td class="controlPanelSection"><a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review">Create new review</a></td>
     *}
     <!-- display pagination links -->
-    <td align="left">{$page_links}</td>
+    <td align="right">{$page_links}</td>
 </tr>
 </table>
 </div>

@@ -19,7 +19,7 @@
                     <div class="form-group col-sm-6">
                     {* OBJECTIVE IS NIHPD SPECIFIC - BUT WE ARE TOO LAZY TO CHANGE THIS TODAY *}
                         <label class="col-sm-12 col-md-4">Subproject:</label>{* Changin this to {$form.CommentID.label} changes the label *}
-                        <div class="col-sm-12 col-md-8">{$form.CommentID.html}</div>
+                        <div class="col-sm-12 col-md-8">{$form.SubprojectID.html}</div>
                     </div>
                     <div class="form-group col-sm-6">
                         <label class="col-sm-12 col-md-4">{$form.DCCID.label}</label>
