@@ -124,26 +124,20 @@
                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <ul class="nav navbar-nav">
                         {foreach from=$tabs item=tab}
-                            {if $tab.visible == 1}
+                            {if $tab.Visible == 1 && $tab.subtabs}
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle">
-                                        {$tab.label} <b class="caret"></b>
+                                        {$tab.Label} <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        {foreach from=$subtab item=mySubtab}
+                                        {foreach from=$tab.subtabs item=mySubtab}
+                                            {if $mySubtab.Visible == 1}
                                             <li>
-                                                {if $tab.label == $mySubtab.parent}
-                                                    {if $mySubtab.label == "Data Query Tool"}
-                                                        <a href="{$mySubtab.link}" target="_blank">
-                                                            {$mySubtab.label}
+                                                        <a href="{$mySubtab.Link}">
+                                                            {$mySubtab.Label}
                                                         </a>
-                                                    {else}
-                                                        <a href="{$mySubtab.link}">
-                                                            {$mySubtab.label}
-                                                        </a>
-                                                    {/if}
-                                                {/if}
                                             </li>
+                                            {/if}
                                         {/foreach}
                                     </ul>
                                 </li> 

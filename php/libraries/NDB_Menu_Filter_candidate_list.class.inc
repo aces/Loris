@@ -78,7 +78,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
         $this->validFilters = array('participant_status_options.ID','candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)','session.Scan_done');
         $this->validHavingFilters = array('count(DISTINCT session.Visit_label)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
-		
+	$this->EqualityFilters = array('session.SubprojectID');	
         $this->formToFilter = array(
                                     'centerID' => 'candidate.CenterID',
                                     'DCCID' => 'candidate.CandID',
