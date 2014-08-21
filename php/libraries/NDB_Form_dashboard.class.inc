@@ -247,7 +247,7 @@ class NDB_Form_dashboard extends NDB_Form {
         }
 
         if ($user->hasPermission('violated_scans')) {
-            $this->tpl_data['violated_scans'] = $DB->pselectOne("SELECT count(*) FROM mri_violations_log", array());
+            $this->tpl_data['violated_scans'] = $DB->pselectOne("SELECT count(*) FROM mri_protocol_violated_scans", array());
             $this->tpl_data['violated_scans_site'] = 'Site: all';
         }
 
