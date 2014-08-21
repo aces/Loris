@@ -66,40 +66,50 @@
     </table>
 </div>
 
-<div class="table-responsive" id="datatable">
-    <table class="table table-hover table-primary table-bordered" border="0">
-        <thead>
-            <tr class="info">
-                <th nowrap="nowrap">No.</th>
-                {section name=header loop=$headers}
-                    <th nowrap="nowrap">
-                        <a href="main.php?test_name=mri_protocol_check_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
-                    </th>
-                {/section}
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items}
-                <tr
-                {if $items[item].severity == "exclude"}
-                    class="error"
-                {elseif $items[item].severity == "warning"}
-                    class="warn"
-                    {/if}>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]}
-                <td nowrap="nowrap">
-                    {if $items[item][piece].name== "PatientName"}
-                        <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item].TarchiveID}">{$items[item][piece].value}</a>
-                    {else}
-                        {$items[item][piece].value}
-                    {/if}
-                </td>
-                {/section}
-                </tr>
-            {sectionelse}
-                <tr><td colspan="8">Nothing found</td></tr>
-            {/section}
-        </tbody>
-    </table>
+<div id="results" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="table-scroll" id="content">
+            <table class="table table-hover table-primary table-bordered" border="0">
+                <thead>
+                    <tr class="info">
+                        <th nowrap="nowrap">No.</th>
+                        {section name=header loop=$headers}
+                            <th nowrap="nowrap">
+                                <a href="main.php?test_name=mri_protocol_check_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
+                            </th>
+                        {/section}
+                    </tr>
+                </thead>
+                <tbody>
+                    {section name=item loop=$items}
+                        <tr
+                        {if $items[item].severity == "exclude"}
+                            class="error"
+                        {elseif $items[item].severity == "warning"}
+                            class="warn"
+                            {/if}>
+                        <!-- print out data rows -->
+                        {section name=piece loop=$items[item]}
+                        <td nowrap="nowrap">
+                            {if $items[item][piece].name== "PatientName"}
+                                <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item].TarchiveID}">{$items[item][piece].value}</a>
+                            {else}
+                                {$items[item][piece].value}
+                            {/if}
+                        </td>
+                        {/section}
+                        </tr>
+                    {sectionelse}
+                        <tr><td colspan="8">Nothing found</td></tr>
+                    {/section}
+                </tbody>
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft" href="#results">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#results" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
 </div>
