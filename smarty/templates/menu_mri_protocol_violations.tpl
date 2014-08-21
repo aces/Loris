@@ -74,7 +74,7 @@
 
 <div id="mri-protocol" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
-        <div class="table-scroll" id="content">
+        <div class="table-scroll" id="mri-protocol-content">
             <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
                 <thead>
                     <tr class="info">
@@ -108,10 +108,10 @@
                 </tbody>
             </table>
         </div>
-        <a class="left carousel-control"  id="scrollLeft" href="#mri-protocol">
+        <a class="left carousel-control"  id="protocolScrollLeft" href="#mri-protocol">
             <span class="glyphicon glyphicon-chevron-left"></span>
         </a>
-        <a class="right carousel-control" id="scrollRight" href="#mri-protocol" data-slide="next">
+        <a class="right carousel-control" id="protocolScrollRight" href="#mri-protocol" data-slide="next">
             <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     </div>

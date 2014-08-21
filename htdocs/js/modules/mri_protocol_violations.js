@@ -66,12 +66,14 @@ $(function () {
 $(document).ready(function(){
     $.getScript("js/modules/dynamic_table.table.js")
         .done(function(){
+            Table.setup("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
+            Table.checkOverflow("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
             Table.setup("content", "scrollRight", "scrollLeft");
-            Table.checkOverflow("content", "scrollRight", "scrollLeft");
+            Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
         });
-    // checkOverflow();
 });
 $(window).resize(function(){
+    Table.checkOverflow("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
     Table.checkOverflow("content", "scrollRight", "scrollLeft");
     // checkOverflow();
 });
