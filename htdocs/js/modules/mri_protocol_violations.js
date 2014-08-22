@@ -3,16 +3,16 @@ function change() {
     "use strict";
     $('#hide').show();
     $('#show').hide();
-    $('#tbl').show();
+    $('#mri-protocol').show();
     $('#show').bind('click', function () {
-        $('#tbl').show('slow', function () {});
+        $('#mri-protocol').show('slow', function () {});
         $('#hide').show();
         $('#show').hide();
     });
 
     //To hide : table hides...and the show shows...
     $('#hide').bind('click', function () {
-        $('#tbl').hide('slow', function () {});
+        $('#mri-protocol').hide('slow', function () {});
         $('#show').show();
         $('#hide').hide();
     });
