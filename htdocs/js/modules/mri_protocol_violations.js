@@ -69,7 +69,7 @@ $(document).ready(function(){
             Table.setup("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
             Table.checkOverflow("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
             Table.setup("content", "scrollRight", "scrollLeft");
-            Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
+            Table.checkOverflow("content", "scrollRight", "scrollLeft");
         });
 });
 $(window).resize(function(){

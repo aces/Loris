@@ -119,10 +119,8 @@
 
 </br></br>
 
-<!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
-    <!-- title -->
     <td align="right">{$page_links}</td>
 </tr>
 </table>
