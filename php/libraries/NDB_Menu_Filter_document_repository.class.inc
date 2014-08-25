@@ -246,6 +246,10 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             $tree = null;
             foreach ($results as $result) {
                 $thisref = &$refs->{$result['id']};
+                if(empty($thisref)) {
+                    $thisref = new stdClass();
+                    $refs->{$result['id']} =& $thisref;
+                }
                 foreach ($result as $k => $v) {
                         $thisref->{$k} = $v;
                 }
