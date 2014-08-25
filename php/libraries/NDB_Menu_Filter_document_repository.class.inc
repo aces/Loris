@@ -59,7 +59,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         }
         
         $query = " FROM document_repository v"; 
-        $query .= " WHERE (v.hide_video=false OR v.hide_video IS NULL)";
+        $query .= " WHERE COALESCE(v.hide_video, false)=false";
 
         // set the class variables
         $this->columns = array('v.record_id', 'v.File_name', 'v.version', 'v.File_size', 'v.File_category',
@@ -125,71 +125,21 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
 
         $DB = Database::singleton();
         
-        $fileNames = $DB->pselect("Select File_name from document_repository", array());
+        //There's no dropdown filter for file names?
+        //$fileNames = $DB->pselect("Select File_name from document_repository", array());
         $fileTypes = array();
-        $fileT = array();
-        foreach ($fileNames as $name) {
-            $fileExt[$name['File_name']] = $name['File_name'];
-        }
-
-        if (is_array($fileExt)) {
-            foreach ($fileExt as $field=>$value) {
-                    $parts = pathinfo($value);
-                    $extension = $parts['extension'];
-                    $DB->update("document_repository", array("File_type"=>$extension), array('File_name'=>$value));
-                    $fileT = $DB->pselect("SELECT DISTINCT File_type FROM document_repository order by File_type", array());
-            }
-        }
-
+        $fileT = $DB->pselect("SELECT DISTINCT File_type FROM document_repository ORDER BY File_type", array());
         foreach ($fileT as $fileType) {
             $fileTypes[$fileType['File_type']] = $fileType['File_type'];
         }
-
         $fileTypes = array_merge(array(null=>'Any') + $fileTypes);
 
         // Form Elements
         $this->addBasicText('File_name', 'File name:'); 
         $this->addBasicText('version', 'Version:'); 
 
-        $results = array();
-        $dbresult= $DB->pselect("SELECT * FROM document_repository_categories order by parent_id asc", array());
-        foreach ($dbresult as $row) {
-            $results[]=$row;
-            $tree = null;
-            foreach ($results as $result) {
-                $thisref = &$refs->{$result['id']};
-                foreach ($result as $k => $v) {
-                        $thisref->{$k} = $v;
-                }
-                if ($result['parent_id'] == 0) {
-                    $tree->{$result['id']} = &$thisref;
-                } else {
-                    $refs->{$result['parent_id']}->children->{$result['id']} = &$thisref;
-                }
-            }
-            $tree; // contains the newly sorted tree.
-        }
-
-        $IDCategories = $DB->pselect("SELECT id,category_name,parent_id,comments FROM document_repository_categories order by parent_id", array());	
-        $tmpIDCategories = $IDCategories;
-
-        //$tree is an object with references, so here we are encoding it as json and then decoding it into a php associative array
-        $tmpIDCategories = json_decode(json_encode($tree), true);
-        $categoryOrdering = $this->parseTree($tmpIDCategories); 
-
-        foreach ($categoryOrdering as $order) {
-            foreach ($IDCategories as $key=>$value) {
-                if ($value['id'] == $order) {
-                    $fileCategories[$value['id']] = $this->parseCategory($value);
-                    $fileComments[$value['id']] = $value['comments'];
-                }
-            }
-        }
-
         $this->addSelect('File_type', 'File type:', $fileTypes); 
         $this->addSelect('File_category', 'File category:', $fileCategories); 
-        $this->tpl_data['File_categories'] = $fileCategories;
-        $this->tpl_data['File_comments'] = $fileComments;
         $this->tpl_data['Sites'] = $list_of_sites;
         $this->tpl_data['Instruments'] = $list_of_instruments;
         $user =& User::singleton();
@@ -239,6 +189,47 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
     }
 
     /**
+     * Works the same as NDB_Menu_Filter but doesn't include limit.
+     * The document_repository is not paginated
+     */
+    function _getPreparedQuery() 
+    {
+        $DB = Database::singleton();
+      // create DB object
+        $DB =& Database::singleton();
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
+        }
+
+        $qparams = array();
+        // add the base query
+        $query = '';
+        $query .= $this->_getBaseQuery();
+
+        $filterdetails = $this->_getBaseFilter();
+        $query .= $filterdetails['clause'];
+        $qparams = $filterdetails['params'];
+        // apply ORDER BY filters
+        $query .= " ORDER BY ";
+        if (!empty($this->filter['order'])) {
+            $query .= $this->filter['order']['field']
+                ." ".$this->filter['order']['fieldOrder'].", ";
+        }
+        $query .= $this->order_by;
+
+        return array('query' => $query, 'params' => $qparams);
+    }
+    /**
+     * Overwritten because the document repository isn't really a menu filter table, it doesn't
+     * use pagination
+     */
+    function _getList() {
+        return;
+    }
+
+    /**
      * Sets the template data for the list of candidates, users, etc.
      *
      * @return void
@@ -247,23 +238,54 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
      */
     function _setDataTable()
     {
+        $DB = Database::singleton();
+        $results = array();
+        $dbresult= $DB->pselect("SELECT * FROM document_repository_categories ORDER BY parent_id ASC", array());
+        foreach ($dbresult as $row) {
+            $results[]=$row;
+            $tree = null;
+            foreach ($results as $result) {
+                $thisref = &$refs->{$result['id']};
+                foreach ($result as $k => $v) {
+                        $thisref->{$k} = $v;
+                }
+                if ($result['parent_id'] == 0) {
+                    $tree->{$result['id']} = &$thisref;
+                } else {
+                    $refs->{$result['parent_id']}->children->{$result['id']} = &$thisref;
+                }
+            }
+            $tree; // contains the newly sorted tree.
+        }
+
+        $IDCategories = $DB->pselect("SELECT id,category_name,parent_id,comments FROM document_repository_categories ORDER BY parent_id", array());	
+        $tmpIDCategories = $IDCategories;
+
+        //$tree is an object with references, so here we are encoding it as json and then decoding it into a php associative array
+        $tmpIDCategories = json_decode(json_encode($tree), true);
+        $categoryOrdering = $this->parseTree($tmpIDCategories); 
+
+        foreach ($categoryOrdering as $order) {
+            foreach ($IDCategories as $key=>$value) {
+                $CategoryID = $value['id'];
+                if ($CategoryID == $order) {
+                    $fileCategories[$CategoryID] = array(
+                        'CategoryName' => $this->parseCategory($value),
+                        'Comment'      => $value['comments'],
+                        'Files'        => array()
+                    );
+                }
+            }
+        }
+
+        $this->tpl_data['File_categories'] = $fileCategories;
+
         // create instance of config object
         $config =& NDB_Config::singleton();
 
         // overriding pagination
         $DB = Database::singleton();
-        $perpage = $DB->pselectOne("SELECT count(*) FROM document_repository", array());
-        // configure the page pagination
-        $params = array(
-            'mode'       => 'Sliding',
-            'perPage'    => $perpage,
-            'delta'      => 3,
-            'itemData'   => $this->list
-        );
-        $pager = Pager::factory($params);
-        $this->list = $pager->getPageData();
-        $links = $pager->getLinks();
-        $this->tpl_data['page_links'] = $links['all'];
+
 
         // print out column headings
         $i = 0;
@@ -279,77 +301,37 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         }
 
         // get the template data for the table rows
-        if (is_array($this->list) && !empty($this->list)) {
-            // print out data rows
-            $count = $pager->getOffsetByPageId();
-            $success = $this->_setDataTableRows($count[0]);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("NDB_Filter::_setDataTable(): ".$success->getMessage());
-            }
-        }
+
+        $this->_setDataTableRows(-1);
     }
 
 
 
     function _setDataTableRows($count)
     {
-        // This is a hack. It shouldn't be required, and it certainly shouldn't be here.
-        $user =& User::singleton();
-        $this->tpl_data['Normal_Perm'] = ($user->hasPermission('file_upload') || $user->hasPermission('data_entry'));
-        // end hack
+        $DB = Database::singleton();
+        $query = $this->_getPreparedQuery();
+        $prepared = $DB->prepare($query['query']);
+        $prepared->execute($query['params']);
 
-        $site_names = Utility::getSiteList(true, false); 
+        $site_names = Utility::getSiteList(true); 
         // print out
         $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
+        while($item = $prepared->fetch(PDO::FETCH_ASSOC)) {
+            $FileCategory =& $this->tpl_data['File_categories'][$item['File_category']];
+            $DisplayItem = $item;
+            $DisplayItem['File_size'] = $this->format_size($item['File_size']);
+            $DisplayItem['For_site']  = $site_names[$item['For_site']];
 
-            //print out data rows
-            $i = 1;
-            $Data_dir = $item['Data_dir'];
-            $record_id = $item['record_id'];
-            $File_size = $item['File_size'];
-            $File_category = $item['File_category'];
-            foreach ($item as $key => $val) {
-
-                // Confused about this line
-                if ($key == 'Data_dir') continue;
-                if ($key == 'record_id') continue;
-                if ($key == 'File_size') continue;
-
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-
-
-                if ($key == 'For_site') {
-                    $this->tpl_data['items'][$x][$i]['value'] = $site_names[$val];
-                } else {
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }
-
-                if ($key == 'File_name') {
-                    $this->tpl_data['items'][$x][$i]['Data_dir'] = $Data_dir;
-                    $this->tpl_data['items'][$x][$i]['File_size'] = $this->format_size($File_size);
-                }
-                
-                if ($key == 'Date_uploaded') {
-                    $this->tpl_data['items'][$x][$i+1]['name'] = 'record_id';
-                    $this->tpl_data['items'][$x][$i+1]['value'] = $record_id;
-                    $this->tpl_data['items'][$x][$i+2]['name'] = 'record_id_delete';
-                    $this->tpl_data['items'][$x][$i+2]['value'] = $record_id;
-                }
-
-                if ($key == 'File_category') {
-                    $this->tpl_data['items'][$x][$i]['File_category'] = $File_category;
-                }                
-
-
-                $i++;
+            if(is_array($FileCategory['Files'])) {
+                array_push($FileCategory['Files'], $DisplayItem);
             }
-            $x++;
+
         }
+
         return true;
     }
+
     
     function format_size($value)
     {
