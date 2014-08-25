@@ -12,7 +12,8 @@
      - Visits (the visits to display)
      - Data (the data that populates the table)
  *}
-<script type="text/javascript" src="GetJS.php?Module=statistics&file=table_statistics.js"></script>
+<style type="text/css" src="main.css"></style>
+<script type="text/javascript" src="js/modules/table_statistics.js"></script>
 
 <h2 class="statsH2">{$Header}</h2>
 
@@ -52,7 +53,7 @@
     <div class="carousel-inner">
         <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
         <div class="table-scroll" id="content">
-<table class="table table-hover table-primary table-bordered" width="80%">
+<table class="table table-hover table-primary table-bordered data" width="80%">
     <tr class="info">
         <th rowspan="2">Timepoint</th>
             {foreach key=proj item=name from=$Subprojects}
@@ -97,20 +98,15 @@
                 {foreach key="proj" item="value" from=$Subprojects}
                 {assign var="subtotal" value="0" }
                 {foreach key=sub item=subcat from=$Subcategories}
-                    {if $subcat|lower|regex_replace:"/ /":"_" eq "male"}
-                        {assign var='classID' value='active'}
-                    {else}
-                        {assign var='classID' value='danger'}
-                    {/if}
                     {if $visit eq 'v06' and $proj eq 2}
-                        <td class="{$classID}">NA</td>
+                        <td class="{$subcat|lower|regex_replace:"/ /":"_"}">NA</td>
                     {else}
-                        <td class="{$classID}">{$data[$proj][$center.ID][$visit][$subcat]|default:"0"}</td>
+                        <td class="{$subcat|lower|regex_replace:"/ /":"_"}">{$data[$proj][$center.ID][$visit][$subcat]|default:"0"}</td>
                         {assign var="subtotal" value=$subtotal+$data[$proj][$center.ID][$visit][$subcat] }
                         {assign var="rowtotal" value=$rowtotal+$data[$proj][$center.ID][$visit][$subcat] }
                     {/if}
                 {/foreach}
-                <td class="subtotal success">
+                <td class="subtotal">
                     {assign var="Numerator" value=$data[$proj][$center.ID][$visit][$Subcategories.0]}
                     {if $subtotal > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
@@ -122,14 +118,9 @@
                 {/foreach}
                 {* Totals for row *}
                 {foreach key=sub item=subcat from=$Subcategories}
-                    {if $subcat|lower|regex_replace:"/ /":"_" eq "male"}
-                        {assign var='classID' value='active'}
-                    {else}
-                        {assign var='classID' value='danger'}
-                    {/if}
-                    <td class="{$classID} total">{$data[$center.ID][$visit][$subcat]|default:"0"}</td>
+                    <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$center.ID][$visit][$subcat]|default:"0"}</td>
                 {/foreach}
-                <td class="success total">
+                <td class="total">
                     {assign var="Numerator" value=$data[$center.ID][$visit][$Subcategories.0]}
                     {if $rowtotal > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$rowtotal format="%.0f"}}
@@ -141,17 +132,17 @@
             </tr>
             {/foreach}
             <tr>
-            <td class="success">Site Total</td>
+            <td>Site Total</td>
             {assign var="totalsitetotal" value="0"}
             {foreach key=proj item=value from=$Subprojects}
                 {assign var="sitetotal" value="0"}
                 {foreach key=sub item=subcat from=$Subcategories}
-                <td class="{$subcat|lower|regex_replace:"/ /":"_"} subtotal success">
+                <td class="{$subcat|lower|regex_replace:"/ /":"_"} subtotal">
                     {assign var="sitetotal" value=$sitetotal+$data[$proj][$center.ID][$subcat] }
                     {$data[$proj][$center.ID][$subcat]|default:"0"}
                 </td>
                 {/foreach}
-                <td class="subtotal success">
+                <td class="subtotal">
                     {assign var="totalsitetotal" value=$totalsitetotal+$sitetotal }
                     {assign var="Numerator" value=$data[$proj][$center.ID][$Subcategories.0]}
                     {if $sitetotal > 0}
@@ -163,11 +154,11 @@
                 </td>
             {/foreach}
             {foreach key=sub item=subcat from=$Subcategories}
-                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total success">
+                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">
                     {$data[$center.ID][$subcat]|default:"0"}
                 </td>
             {/foreach}
-            <td class="total success">
+            <td class="total">
                 {assign var="Numerator" value=$data[$center.ID][$Subcategories.0]}
                 {if $totalsitetotal > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$totalsitetotal format="%.0f"}}
@@ -194,19 +185,14 @@
             {foreach from=$Subprojects key=proj item=value}
                 {assign var="subtotal" value="0" }
                 {foreach key=sub item=subcat from=$Subcategories}
-                    {if $subcat|lower|regex_replace:"/ /":"_" eq "male"}
-                        {assign var='classID' value='active'}
-                    {else}
-                        {assign var='classID' value='danger'}
-                    {/if}
                     {if $visit eq 'v06' and $proj eq 2}
-                        <td class="{$classID}">NA</td>
+                        <td class="{$subcat|lower|regex_replace:"/ /":"_"}">NA</td>
                     {else}
-                        <td class="{$classID}">{$data[$proj][$visit][$subcat]|default:"0"}</td>
+                        <td class="{$subcat|lower|regex_replace:"/ /":"_"}">{$data[$proj][$visit][$subcat]|default:"0"}</td>
                         {assign var="subtotal" value=$subtotal+$data[$proj][$visit][$subcat] }
                     {/if}
                 {/foreach}
-                <td class="subtotal success">
+                <td class="subtotal">
                     {assign var="Numerator" value=$data[$proj][$visit][$Subcategories.0]}
                     {if $subtotal > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
@@ -218,15 +204,10 @@
             {/foreach}
             {assign var="finaltotal" value="0" }
             {foreach key=sub item=subcat from=$Subcategories}
-                {if $subcat|lower|regex_replace:"/ /":"_" eq "male"}
-                    {assign var='classID' value='active'}
-                {else}
-                    {assign var='classID' value='danger'}
-                {/if}
-                <td class="{$classID} total">{$data[$visit][$subcat]|default:"0"}</td>
+                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$visit][$subcat]|default:"0"}</td>
                 {assign var="finaltotal" value=$finaltotal+$data[$visit][$subcat] }
             {/foreach}
-            <td class="total success">
+            <td class="total">
                 {assign var="Numerator" value=$data[$visit][$Subcategories.0]}
                 {if $finaltotal > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$finaltotal format="%.0f"}}
@@ -237,7 +218,7 @@
             </td>
             </tr>
         {/foreach}
-        <tr class="success">
+        <tr>
             <td class="total">Grand Total</td>
             {foreach key=proj item=name from=$Subprojects}
                 {* Calculate the total instead of just looking it up, because of the potential
