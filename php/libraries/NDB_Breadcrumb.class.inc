@@ -86,6 +86,12 @@ class NDB_Breadcrumb extends PEAR
         }
     }
 
+    function _getRequest($name) {
+        if(isset($_REQUEST[$name])) {
+            return $_REQUEST[$name];
+        }
+        return null;
+    }
     /**
      * Makes a breadcrumb
      *
@@ -97,12 +103,12 @@ class NDB_Breadcrumb extends PEAR
     {
         // set the parameters array
         $this->_parameters = array(
-                                   'test_name' => $_REQUEST['test_name'],
-                                   'subtest' => $_REQUEST['subtest'],
-                                   'candID' => $_REQUEST['candID'],
-                                   'sessionID' => $_REQUEST['sessionID'],
-                                   'commentID' => $_REQUEST['commentID'],
-                                   'identifier' => $_REQUEST['identifier']
+                                   'test_name' => $this->_getRequest('test_name'),
+                                   'subtest' => $this->_getRequest('subtest'),
+                                   'candID' => $this->_getRequest('candID'),
+                                   'sessionID' => $this->_getRequest('sessionID'),
+                                   'commentID' => $this->_getRequest('commentID'),
+                                   'identifier' => $this->_getRequest('identifier')
                                    );
 
         // check if test name is empty

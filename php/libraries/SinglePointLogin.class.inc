@@ -234,7 +234,7 @@ class SinglePointLogin extends PEAR
          ///////////////////////////
          ///initialization/////
          //////////////////////////
-         $this->_username = $_POST['username'];
+         $this->_username = isset($_POST['username']) ? $_POST['username'] : 'Unknown';
          $setArray = array(
              'userID'=> $this->_username,
              'Success' => 'Y',
