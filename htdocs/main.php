@@ -216,7 +216,7 @@ if ($config->getSetting("sandbox") === '1') {
 
 // Assign the console output to a variable, then stop
 // capturing output so that smarty can render
-$tpl_data['console'] = ob_get_contents();
+$tpl_data['console'] = htmlspecialchars(ob_get_contents());
 ob_end_clean();
 
 
