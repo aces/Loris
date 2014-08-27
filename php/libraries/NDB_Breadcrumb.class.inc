@@ -185,12 +185,14 @@ class NDB_Breadcrumb extends PEAR
                                                         'unset' => 'sessionID'),
                             'timepoint_list'   => array('next'  => 'candidate_list',
                                                         'unset' => 'candID'),
-                            'candidate_list'   => array('next'  => '')
+                            'candidate_list'   => array('next'  => '',
+                                                        'unset' => '')
                             );
 
         // loop through the crumbs according to the order above, or just make one crumb
         if (array_key_exists($this->_parameters['test_name'], $crumbOrder)) {
             while (!empty($this->_parameters['test_name'])) {
+
                 $this->_addCrumb($crumbOrder[$this->_parameters['test_name']]['next'], $crumbOrder[$this->_parameters['test_name']]['unset']);
             }
         } else {
