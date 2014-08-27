@@ -1,0 +1,29 @@
+table#instrument_dna_tracking {
+ border-collapse:collapse;
+ border-color: gray;
+}
+table#instrument_dna_tracking tr {
+     background:none;
+}
+table#instrument_dna_tracking td {
+     padding:7px; border:gray 1px solid;
+}
+table#instrument_dna_tracking tr td:nth-child(odd){
+      background:none;
+ }
+table#instrument_dna_tracking tr td:nth-child(even){
+      background: #dae5f4;
+}
+.oneselect {
+ width: 100%;
+ }
+.dna_heading {
+font-weight:bold;
+}
+.ele {
+font-weight:bold;
+
+}
+.blankline {
+background:grey;
+}

@@ -694,7 +694,11 @@ class Database extends PEAR
 
                 $prim_vals = join(",", $primaryValues);
                 $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
-                $this->_preparedStoreHistory->bindParam(":primaryVals", $prim_vals);
+                $primaryVal_str = join(",", $primaryValues);
+                $this->_preparedStoreHistory->bindParam(
+                    ":primaryVals",
+                    $primaryVal_str
+                );
                 $this->_preparedStoreHistory->execute();
             }
         } else if ($type == 'U' || $type == 'D') {
@@ -761,7 +765,9 @@ class Database extends PEAR
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        print "$this->_databaseName: $query<br>\n";
+        print "$this->_databaseName:" 
+            . date("j-M-Y G:i:s", time()) 
+            .": $query<br>\n";
     }
 
     /**

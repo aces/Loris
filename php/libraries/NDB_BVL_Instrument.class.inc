@@ -411,7 +411,9 @@ class NDB_BVL_Instrument extends NDB_Page
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
 
-        if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0) {
+        // Windows don't apply to probands, but otherwise if it's outside of the window highlight
+        // it as an error
+        if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0 && strrpos($this->testName, '_proband') === FALSE) {
             $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>';
         }
         //Convert select multiple elements into a quickform array
@@ -489,6 +491,11 @@ class NDB_BVL_Instrument extends NDB_Page
                 $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
                 // 1 Decimal.
                 $agemonths = (round($agemonths*10) / 10.0);
+                $config = NDB_Config::singleton();
+
+                $timepoint = TimePoint::singleton($this->getSessionID());
+                $windowDifferenceType = $timepoint->getWindowDifferenceType();
+
                 if(!empty($age)) {
                     $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
                     $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
@@ -509,14 +516,29 @@ class NDB_BVL_Instrument extends NDB_Page
                                 if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
                                     $values['Window_Difference'] = 0-abs($delta);
                                 }
-                            }
-                            if($agedays > $window['AgeMaxDays']) {
-                                $delta = $agedays - $window['AgeMaxDays'];
-                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
-                                    $values['Window_Difference'] = abs($delta);
+                                if($agedays > $window['AgeMaxDays']) {
+                                    $delta = $agedays - $window['AgeMaxDays'];
+                                    if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                        $values['Window_Difference'] = abs($delta);
+                                    }
                                 }
                             }
                         }
+                    } elseif($windowDifferenceType === 'permitted' || $windowDifferenceType === 'optimal') {
+                        if($windowDifferenceType === 'permitted') {
+                            $window = $DB->pselectRow('SELECT WindowMinDays as Min, WindowMaxDays as Max FROM Visit_Windows WHERE UPPER(Visit_label)=UPPER(:VL)', array('VL' => $timepoint->getVisitLabel()));
+                        } elseif($windowDifferenceType === 'optimal') {
+                            $window = $DB->pselectRow('SELECT OptimumMinDays as Min, OptimumMaxDays as Max FROM Visit_Windows WHERE UPPER(Visit_label)=UPPER(:VL)', array('VL' => $timepoint->getVisitLabel()));
+                        }
+
+                        if($agedays < $window['Min'] ) {
+                            $values['Window_Difference'] = $window['Min'] - $agedays;
+                        }
+                        if($agedays > $window['Max'] ) {
+                            $values['Window_Difference'] = $agedays - $window['Max'];
+                        }
+                    } else {
+                        // disabled, do nothing
                     }
                 }
             }
@@ -644,6 +666,9 @@ class NDB_BVL_Instrument extends NDB_Page
         if(strrpos($this->testName, '_proband') === FALSE) {
             $this->addScoreColumn('Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
             $this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
+        } else {
+            $this->addScoreColumn('Candidate_Age', 'Proband Age (Months)', 'Please enter date of administration and press Save');
+            //$this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
         }
         $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
@@ -653,7 +678,9 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
         
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->form->registerRule('checkdatefuture', 'callback', '_checkDateTakenFuture');
+        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+        $this->form->addRule('Date_taken', 'Date of Administration is in the future', 'checkdatefuture');
         
         $this->addRule('Examiner', 'Examiner is required', 'required');
     }
@@ -674,7 +701,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $CertificationEnabled = $CertificationConfig['EnableCertification'];
         if($CertificationEnabled) {
             $CertificationProjects = array();
-            foreach(Utility::toArray($CertificationConfig['CertificationProjects']) as $key => $value) {
+            foreach(Utility::asArray($CertificationConfig['CertificationProjects']) as $key => $value) {
                 foreach($value as $k=>$projID) {
                     $CertificationProjects[$projID] = $projID;
                 }
@@ -837,6 +864,10 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _getDatabaseDate($formDateValue){
         if(!empty($formDateValue)){
+            // check if it's already formatted correctly
+            if(is_string($formDateValue) && preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $formDateValue)) {
+                return $formDateValue;
+            }
             if(count($formDateValue)==2){
                 $databaseValue = "$formDateValue[H]:$formDateValue[i]";  //handle time (HH:MM:SS)
             } else {
@@ -1845,21 +1876,19 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $db =& Database::singleton();
         $CommentID = $this->getCommentID();
-        $dates = $db->pselectRow(
-            "SELECT i.Date_taken, c.DoB FROM $this->testName i 
-            JOIN flag f USING (CommentID) 
-            JOIN session s ON (f.SessionID=s.ID) 
-            JOIN candidate c USING (CandID) 
-            WHERE f.CommentID=:CID", array('CID' => $CommentID)
-        );
+        if(strrpos($this->testName, "_proband") !== FALSE) {
+            $dates = $db->pselectRow("SELECT i.Date_taken, c.ProbandDoB as DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID=:CID", array('CID' => $CommentID));
+        } else {
+            $dates = $db->pselectRow("SELECT i.Date_taken, c.DoB FROM $this->testName i JOIN flag f USING (CommentID) JOIN session s ON (f.SessionID=s.ID) JOIN candidate c USING (CandID) WHERE f.CommentID=:CID", array('CID' => $CommentID));
+        }
 
         if ($Date_taken == false) {
             $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
         } else {
             $age = Utility::calculateAge($dates['DoB'], $Date_taken);
         }
-        if (!empty($age)) {
-            return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
+        if(!empty($age)) {
+            return $age;
         }
         return;
     }
@@ -2255,7 +2284,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 if (isset($this->LinstQuestions[$question])) {
                     $q =& $this->LinstQuestions[$question];
 
-                    if ($q['UserRules'] !== true) {
+                    if (!isset($q['UserRules']) || $q['UserRules'] !== true) {
                         // Unregister the rules that were added by the wrapper
                         // for the group, because otherwise that'll override the
                         // user specified rules from the .rules file
@@ -2350,10 +2379,10 @@ class NDB_BVL_Instrument extends NDB_Page
             SourceField FROM parameter_type 
             WHERE SourceFrom=:TN AND 
             SourceField NOT IN ('Validity', 'Administration')",
-            array(
-                'TN' => $this->testName 
-            )
-        );
+                array(
+                    'TN' => $this->testName 
+                )
+            );
 
         $Responses = $DB->pselectRow(
             "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
@@ -2372,6 +2401,18 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 }
 
+function _checkDateTakenFuture($dateElement) {
+    $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+    if($checked === false) {
+        return false;
+    }
+    $formatted = date_create();
+    $formatted->setDate($dateElement['Y'], $dateElement['M'], $dateElement['d']);
+    $now = date_create(); #getdate(); #date("Y-m-d", getdate());
+    $diff = date_diff($formatted, $now);
+    return ($diff->format("%r") === '');
+}
+
 function _checkDateTaken($dateElement)
 {
     // if all three elements are empty,
@@ -2388,29 +2429,18 @@ function _checkDateTaken($dateElement)
         // otherwise, if any of the three elements are empty, 
         // return false b/c date entry has been attempted
         return false;
-    } else {
-        // else, check the date
-        $checked = checkdate(
-            $dateElement['M'],
-            $dateElement['d'],
-            $dateElement['Y']
-        );
-        if (version_compare(phpversion(), '5.3.0', '>=')) {
-            if ($checked === false) {
+    }
+    // else, check the date
+    else {
+        $checked = checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+        return $checked;/*
+        if(version_compare(phpversion(), '5.3.0', '>=')) {
+            if($checked === false) {
                 return false;
             }
-            $formatted = date_create();
-            $formatted->setDate(
-                $dateElement['Y'],
-                $dateElement['M'],
-                $dateElement['d']
-            );
-            $now = date_create();
-            $diff = date_diff($formatted, $now);
-            return ($diff->format("%r") === '');
         } else {
             return $checked;
-        }
+        } */
     }
 }
 
@@ -2435,4 +2465,5 @@ function _checkDate($dateElement)
     }
     return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }
+// }}}
 ?>

@@ -290,8 +290,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                         OR fqc.QCFirstChangeTime IS NULL)"; 
                     break;
                 case "PN":
-                    $query .= " AND s.MRIQCPending='Y' 
-                        OR (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
+                    $query .= " AND (s.MRIQCPending='Y' 
+                        OR s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
                     break;
                 }
             }

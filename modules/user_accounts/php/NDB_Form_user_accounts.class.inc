@@ -58,6 +58,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
     function _process($values)
     {
+        $config =& NDB_Config::singleton();
     	// build the "real name"
     	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
     	
@@ -188,7 +189,6 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         // get config options relating to proftpd
-        $config =& NDB_Config::singleton();
         $ftpSettings = $config->getSetting("proftpd");
         
         // if proftpd stuff is enabled:

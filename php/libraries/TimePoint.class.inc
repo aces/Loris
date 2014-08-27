@@ -599,12 +599,30 @@ Class TimePoint
     function getEffectiveDateOfBirth(){
     	$config=NDB_Config::singleton();
     	$candidate=Candidate::singleton($this->getCandID());
+        if(PEAR::isError($candidate)) {
+            return $candidate;
+        }
+
     	$settings=$config->getSubprojectSettings($this->getSubprojectID());
     	if($settings['options']['useEDC']=="true"){
     		return $candidate->getCandidateEDC();
     	}
     	
     	return $candidate->getCandidateDoB();
+    }
+
+    /**
+     * Returns whether this timepoint window difference should be calculated based on the
+     * test battery, based on the optimal window, or based on the permitted window
+     */
+    function getWindowDifferenceType() {
+        $config=NDB_Config::singleton();
+        $settings=$config->getSubprojectSettings($this->getSubprojectID());
+
+        if($settings['options']['WindowDifference']) {
+            return $settings['options']['WindowDifference'];
+        }
+        return "disabled";
     }
     
 } // end class

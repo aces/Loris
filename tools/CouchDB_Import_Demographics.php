@@ -76,6 +76,18 @@ class CouchDBDemographicsImporter {
         )
 
     );
+
+    var $Config = array(
+        'Meta' => array(
+            'DocType' => 'ServerConfig'
+        ),
+        'Config' => array(
+            'GroupString'  => 'How to arrange data: ',
+            'GroupOptions' => 
+                array('Cross-sectional', 'Longitudinal')
+        )
+    );
+
     function __construct() {
         $this->SQLDB = Database::singleton();
         $this->CouchDB = CouchDB::singleton();
@@ -175,6 +187,8 @@ class CouchDBDemographicsImporter {
     }
 
     function run() {
+        $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
+        print "Updating Config:BaseConfig: $config";
 
         $this->_updateDataDict();
 
@@ -186,6 +200,9 @@ class CouchDBDemographicsImporter {
         
         // Run query
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
+
+        $this->CouchDB->beginBulkTransaction();
+
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
@@ -202,6 +219,9 @@ class CouchDBDemographicsImporter {
             ));
             print "$id: $success\n";
         }
+
+        print $this->CouchDB->commitBulkTransaction();
+
     }
 }
 

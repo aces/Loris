@@ -15,11 +15,11 @@ $client->initialize();
 header("Content-type: image/svg+xml");
 print '<?xml version="1.0" standalone="no"?>';
 $DB = Database::singleton();
-if(isset($_REQUEST['Instrument'])) {
-    $Instrument = $_REQUEST['Instrument'];
+if(isset($_REQUEST['InstrumentY'])) {
+    $Instrument = $_REQUEST['InstrumentY'];
 }
-if(isset($_REQUEST['Field']) && !empty($_REQUEST['Field'])) {
-    $Field = $_REQUEST['Field'];
+if(isset($_REQUEST['FieldY']) && !empty($_REQUEST['FieldY'])) {
+    $Field = $_REQUEST['FieldY'];
 } else {
     $Field = "Candidate_Age";
 }
@@ -46,6 +46,11 @@ $DB->selectRow("SELECT MIN(DATEDIFF(i.Date_taken,c.DoB)) as Min, MAX(DATEDIFF(i.
 $MinDays = $minmax['Min'];
 $MaxDays = $minmax['Max'];
 
+$XMin = $MinDays;
+$XMax = $MaxDays;
+$YMin = $Min;
+$YMax = $Max;
+
 $DB->select("SELECT SubprojectID, AgeMinDays, AgeMaxDays FROM test_battery WHERE Active='Y' AND Test_name='$Instrument'", $ValidDays);
 function CheckValidity($SubprojectID, $AgeDays) {
     global $ValidDays;
@@ -57,6 +62,21 @@ function CheckValidity($SubprojectID, $AgeDays) {
     }
     return 0;
 }
+function PlaceMarker($X, $Y, $params) {
+    global $XMin, $XMax, $YMin, $YMax, $Instrument;
+    $PercentOfY = ($Y-$YMin) / ($YMax-$YMin);
+    $yval = 90 - 80*$PercentOfY;
+    $PercentOfX= ($X - $XMin) / ($XMax-$XMin);
+    $xval = 5 + 90*$PercentOfX;
+
+    if(isset($params['colour'])) {
+        $colour = $params['colour'];
+    } else {
+        $colour = "green";
+    }
+    print "<a xlink:href=\"/main.php?test_name=$Instrument&amp;commentID=$params[CommentID]&amp;sessionID=$params[SessionID]&amp;candID=$params[CandID]\" xlink:title=\"$params[PSCID] (Value: $Y, Age: $X )\">" . '<circle fill="' . $colour . '" cx="' . $xval . '%" cy="' . $yval . '%" r="3" />' . "</a>\n";
+}
+
 ?>
 
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
@@ -128,18 +148,19 @@ if($TwoSigma >= $Min) {
 
     foreach($Info as $value) {
         $InARange = CheckValidity($value['SubprojectID'], $value['AgeDays']);
-        $val = $value[$Field];
-        $PercentOfMinMax = ($val-$Min) / ($Max-$Min);
-        $yval = 90 - 80*$PercentOfMinMax;
-        $PercentOfDays = ($value['AgeDays'] - $MinDays) / ($MaxDays-$MinDays);
-        $xval = 5 + 90*$PercentOfDays;
+
         if($InARange != 1) {
-            $color = 'red';
+            $colour = 'red';
         } else {
-            $color = 'green';
+            $colour = 'green';
         }
+
+        // New way:
+        PlaceMarker($value['AgeDays'], $value[$Field], array_merge($value, 
+            array('Instrument' => $Instrument, 
+            'colour' => $colour))
+        ); 
     
-        print "<a xlink:href=\"/main.php?test_name=$Instrument&amp;commentID=$value[CommentID]&amp;sessionID=$value[SessionID]&amp;candID=$value[CandID]\" xlink:title=\"$value[PSCID] (Value: $val, Age: $value[AgeDays] )\">" . '<circle fill="' . $color . '" cx="' . $xval . '%" cy="' . $yval . '%" r="3" />' . "</a>\n";
     }
 ?>
 </g>
