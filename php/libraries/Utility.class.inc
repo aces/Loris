@@ -314,7 +314,7 @@ class Utility extends PEAR
      *
      * @return associative array of the form VisitLabel => Visit_label
      */
-    function getVisitList()
+    static function getVisitList()
     {
         $DB =& Database::singleton();
 

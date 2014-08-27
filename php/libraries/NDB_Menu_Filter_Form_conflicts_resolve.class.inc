@@ -208,7 +208,7 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites =& Utility::getSiteList();
+            $sites = Utility::getSiteList();
             if(Utility::isErrorX($sites)) {
                 return PEAR::raiseError("DB Error: ".$sites->getMessage());
             }
