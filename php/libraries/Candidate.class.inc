@@ -604,6 +604,7 @@ class Candidate
      */
     function getNextVisitLabel()
     {
+        $nextVisitLabel = null;
         $config =& NDB_Config::singleton();
         $visitLabelSettings = $config->getSetting('visitLabels');
         

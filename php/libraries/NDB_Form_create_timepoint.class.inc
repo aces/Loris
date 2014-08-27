@@ -7,6 +7,11 @@ require_once "NDB_Form.class.inc";
  */
 class NDB_Form_create_timepoint extends NDB_Form
 {
+    /**
+     * The subprojectID being created
+     */
+    var $subprojectID;
+
     function _hasAccess()
     {
         // create user object
