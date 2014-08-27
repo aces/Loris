@@ -123,6 +123,12 @@ class NDB_Menu_Filter extends NDB_Menu
     var $CheckboxFilters = array();
 
     /**
+     * A list of fields which are to be searched if the
+     * search keyword is used.
+     */
+    var $searchKey = array();
+
+    /**
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
