@@ -142,7 +142,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addSelect('gender', 'Gender:', array('' => 'All', 'Male' => 'Male', 'Female' => 'Female'));
         $this->addSelect('SubprojectID', 'Subproject:', array('' => 'All') + $list_of_subprojects);
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength=10'));
+        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
@@ -153,7 +153,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
            $this->addSelect('ProjectID', 'Project:', array('' => 'All') + $list_of_projects);
         }
         if($config->getSetting("useEDC")=="true"){
-            $this->addBasicText('edc', 'EDC:', array('maxlength=10'));
+            $this->addBasicText('edc', 'EDC:', array('maxlength' => 10));
             $this->tpl_data['useEDC']="true";
         }
         $this->addSelect('feedback', 'Feedback Status:', array_merge(array('' => 'All'), $feedback_status_options));
