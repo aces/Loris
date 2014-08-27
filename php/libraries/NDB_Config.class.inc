@@ -216,7 +216,11 @@ class NDB_Config
                     "SELECT Value FROM Config WHERE ConfigID=:CID", 
                     array('CID' => $configSetting['ParentID'])
                 );
-                return null;
+                $ret = array();
+                foreach($val as $item) {
+                    $ret[] = $item['Value'];
+                }
+                return $ret;
             }
         } else if(count($configSetting) > 1) {
             // This was a parent element, so construct the children.
