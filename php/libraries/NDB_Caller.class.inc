@@ -134,7 +134,7 @@ class NDB_Caller extends PEAR
             ) {
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
-                $html = $this->loadMenu($test_name, $mode, $controlPanel);
+                $html = $this->loadMenu($test_name, $mode);
                 if (Utility::isErrorX($html)) {
                     return PEAR::raiseError($html->getMessage());
                 }
