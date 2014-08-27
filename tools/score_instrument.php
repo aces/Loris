@@ -74,11 +74,18 @@ function log_msg($message) {
 
 // include instrument class
 if($test_name != 'all') {
-    if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
+     if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
+            && !is_file("../project/instruments/$test_name.linst")) {
         fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
         return false;
     }
-    require_once "../project/instruments/NDB_BVL_Instrument_$test_name.class.inc";
+    if(is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
+     require_once "../project/instruments/NDB_BVL_Instrument_$test_name.class.inc";
+    }
+    if(is_file("../project/instruments/$test_name.linst")) {
+     require_once "../project/instruments/$test_name.linst";
+    }
+
 }
 
 $db =& Database::singleton();
