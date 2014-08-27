@@ -115,6 +115,14 @@ class NDB_Menu_Filter extends NDB_Menu
     var $list;
 
     /**
+     * List of filters which are checkboxes so that
+     * it can be determined if it was checked or not.
+     * (Note that HTTP sends nothing if a checkbox is
+     * unchecked.)
+     */
+    var $CheckboxFilters = array();
+
+    /**
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
