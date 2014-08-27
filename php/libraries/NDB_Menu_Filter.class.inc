@@ -286,10 +286,13 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
         $keyword = $_SESSION['State']->getProperty('keyword');
-        foreach($keyword as $key=>$val) {
-           // $defaults[] = "'$key'=>'$val'";
-            $defaults[$key] = $val;
-            $this->searchKey[$key] = $val;
+
+        if(is_array($keyword)) {
+            foreach ($keyword as $key=>$val) {
+                // $defaults[] = "'$key'=>'$val'";
+                $defaults[$key] = $val;
+                $this->searchKey[$key] = $val;
+            }
         }
         // set the filter form's defaults
         $this->form->setDefaults($defaults);
