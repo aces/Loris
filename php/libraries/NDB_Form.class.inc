@@ -11,27 +11,6 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 class NDB_Form extends NDB_Page
 {
     /**
-     * Class name
-     * @var    string
-     * @access private
-     */
-    var $name;
-
-    /**
-     * Page name
-     * @var    string
-     * @access private
-     */
-    var $page;
- 
-    /**
-     * Stores the form data
-     * @var    HTML_QuickForm 
-     * @access private
-     */
-    var $form;
- 
-    /**
      * Stores the template
      * @var    string 
      * @access private
@@ -39,25 +18,11 @@ class NDB_Form extends NDB_Page
     var $template;
  
     /**
-     * Identifies the item to edit
-     * @var    string 
-     * @access private
-     */
-    var $identifier;
-
-    /**
      * Redirect URL
      * @var    string 
      * @access private
      */
     var $redirect;
-
-    /**
-     * Form defaults
-     * @var    array 
-     * @access private
-     */
-    var $defaults = array();
 
     /**
      * Separates the group elements
