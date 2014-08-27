@@ -320,7 +320,7 @@ class NDB_BVL_Battery extends PEAR
         return $rows;
     } // end getBatteryVerbose()
 
-    function isDoubleDataEntryEnabledForInstrument($instrumentName)
+    static function isDoubleDataEntryEnabledForInstrument($instrumentName)
     {
         
         $config =& NDB_Config::singleton();
