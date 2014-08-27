@@ -359,7 +359,7 @@ class Utility extends PEAR
      * @return array an associative array("projectID" => "project title")
      * @access public
      */
-    function getProjectList()
+    static function getProjectList()
     {
         $config =& NDB_Config::singleton();
 

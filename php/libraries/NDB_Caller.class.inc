@@ -59,7 +59,7 @@ class NDB_Caller extends PEAR
         if (empty($test_name)) {
             return;
         }
-        if(empty($CommentID)) {
+        if(empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
         }
         // get the files path, aka the base directory
