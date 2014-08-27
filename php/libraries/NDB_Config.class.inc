@@ -170,6 +170,68 @@ class NDB_Config
         }
     }
 
+    function getSettingFromDB($name, $id=null) {
+        // These should never come from the DB
+        switch($name) {
+        case 'database':
+        case 'sandbox':
+        case 'showDatabaseQueries':
+            return null;
+        }
+
+        if(!class_exists("Database")) {
+            return null;
+        }
+
+        $db = Database::singleton();
+        if (Utility::isErrorX($db) || $db->isConnected() !== true) {
+            // no database connection, fall back on config.xml
+            return PEAR::raiseError("No connection to database while trying to get setting $name");
+        }
+
+        // If 1 row is returned, there are no children so we just want to get the value
+        // from the database.
+        // If multiple rows are returned, it means that there are children for this element,
+        // so we need to build the tree to be consistent with what would have come from the
+        // config.xml.
+        if($id === null) {
+            $configSetting = $db->pselect("SELECT cs.ID as ParentID, child.ID as ChildID, cs.AllowMultiple, child.Name FROM ConfigSettings cs LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID) WHERE cs.Name=:nm", array("nm" => $name));
+        } else {
+            $configSetting = $db->pselect("SELECT cs.ID as ParentID, child.ID as ChildID, cs.AllowMultiple, child.Name FROM ConfigSettings cs LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID) WHERE cs.ID=:nm", array("nm" => $id));
+        }
+
+        if(count($configSetting) === 1) {
+            // Trying to get a single value from the database.
+            $configSetting = $configSetting[0];
+            if($configSetting['AllowMultiple'] == '0') {
+                $val = $db->pselectOne(
+                    "SELECT Value FROM Config WHERE ConfigID=:CID", 
+                    array('CID' => $configSetting['ParentID'])
+                );
+                return $val;
+            } else {
+                // Allows multiple, but has no child elements. Was called
+                // as ie. $config->getSetting("DoubleDataEntryInstruments")
+                $val = $db->pselect(
+                    "SELECT Value FROM Config WHERE ConfigID=:CID", 
+                    array('CID' => $configSetting['ParentID'])
+                );
+                return null;
+            }
+        } else if(count($configSetting) > 1) {
+            // This was a parent element, so construct the children.
+            $tree = array();
+            foreach($configSetting as $childSetting) {
+                $childName = $childSetting['Name'];
+                $childID   = $childSetting['ChildID'];
+                $childValue = $this->getSettingFromDB($childName, $childID);
+                $tree[$childName] = $childValue;
+            }
+            return $tree;
+        }
+        return null;
+    }
+
     /**
     * gets a setting by node name (top level only!)
     * @return mixed     the contents of the node identified by $name
@@ -177,18 +239,30 @@ class NDB_Config
     */
     function getSetting($name)
     {
+        $DBValue = $this->getSettingFromDB($name);
+
+        if($DBValue !== null) {
+            return $DBValue;
+        }
         
+        /*
         if(class_exists("Database")) {
             $db = Database::singleton();
             
-            if(!PEAR::isError($db) && $db->isConnected() === true) {
+            if(!Utility::isErrorX($db) && $db->isConnected() === true) {
+                $configSetting = $this->getSettingFromDB($name);
 
-                $dbval = $db->pselect("SELECT c.Value FROM ConfigSettings cs LEFT JOIN Config c ON (cs.ID=c.ConfigID) WHERE Name=:nm", array("nm" => $name));
-                if(count($dbval) > 0) {
+                $configSetting = $db->pselect("SELECT cs.ID, cs.AllowMultiple FROM ConfigSettings cs WHERE Name=:nm", array("nm" => $name));
+
+                if(count($configSettings) > 1) {
+                    // It is a parent with child elements.
                     return $dbval[0]['Value'];
+                } else if (count($configSettings) == 1) {
+                    // It is all alone.
                 }
             } 
         }
+         */
 
         // nothing in the database, so get the value from config.xml
 
