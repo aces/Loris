@@ -72,7 +72,6 @@ if ($opts['r']!=null) {
 $config = NDB_Config::singleton();
 $db = Database::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-$config = NDB_Config::singleton();
 $db_config = $config->getSetting('database');
 $dataDir = "logs";
 $diff = null;
