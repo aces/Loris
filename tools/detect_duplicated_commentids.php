@@ -70,7 +70,6 @@ if ($opts['r']!=null) {
  * Initialization
  */
 $config = NDB_Config::singleton();
-$db = Database::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 $dataDir = "logs";
 $diff = null;
