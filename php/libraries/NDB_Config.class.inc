@@ -160,9 +160,15 @@ class NDB_Config
         } else {
             $user =& User::singleton($username);
             $siteName = Utility::getCleanString($user->getSiteName());
-            if(isset($this->_settings['sites'][$siteName]) && is_array($this->_settings['sites'][$siteName])) {
+            if(isset($this->_settings['sites'][$siteName]) 
+                && is_array($this->_settings['sites'][$siteName])
+            ) {
                 $this->_siteSettings = $this->_settings;
-                $this->_siteSettings['study'] = Utility::array_merge_recursive_overwriting($this->_settings['study'], $this->_settings['sites'][$siteName]);
+                $this->_siteSettings['study'] 
+                    = Utility::array_merge_recursive_overwriting(
+                        $this->_settings['study'],
+                        $this->_settings['sites'][$siteName]
+                    );
                 unset($this->_siteSettings['sites']);
             } else {
                 $this->_siteSettings =& $this->_settings;
@@ -170,7 +176,17 @@ class NDB_Config
         }
     }
 
-    function getSettingFromDB($name, $id=null) {
+    /**
+     * Gets a setting from the database config tables
+     *
+     * @param string  $name The name of the config setting to get
+     * @param integer $id   (optional) The ID of the config setting we're
+     *                      getting to avoid ambiguity.
+     *
+     * @return string The value from the database, or null if nothing found.
+     */
+    function getSettingFromDB($name, $id=null)
+    {
         // These should never come from the DB
         switch($name) {
         case 'database':
@@ -179,31 +195,49 @@ class NDB_Config
             return null;
         }
 
-        if(!class_exists("Database")) {
+        if (!class_exists("Database")) {
             return null;
         }
 
         $db = Database::singleton();
         if (Utility::isErrorX($db) || $db->isConnected() !== true) {
             // no database connection, fall back on config.xml
-            return PEAR::raiseError("No connection to database while trying to get setting $name");
+            return PEAR::raiseError(
+                "No connection to database while trying to get setting $name"
+            );
         }
 
-        // If 1 row is returned, there are no children so we just want to get the value
-        // from the database.
-        // If multiple rows are returned, it means that there are children for this element,
-        // so we need to build the tree to be consistent with what would have come from the
-        // config.xml.
-        if($id === null) {
-            $configSetting = $db->pselect("SELECT cs.ID as ParentID, child.ID as ChildID, cs.AllowMultiple, child.Name FROM ConfigSettings cs LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID) WHERE cs.Name=:nm", array("nm" => $name));
+        // Get the config setting data, either by ID or by Name depending
+        // on what was passed
+        if ($id === null) {
+            $configSetting = $db->pselect(
+                "SELECT cs.ID as ParentID, child.ID as ChildID, 
+                        cs.AllowMultiple, child.Name 
+                FROM ConfigSettings cs 
+                    LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
+                WHERE cs.Name=:nm",
+                array("nm" => $name)
+            );
         } else {
-            $configSetting = $db->pselect("SELECT cs.ID as ParentID, child.ID as ChildID, cs.AllowMultiple, child.Name FROM ConfigSettings cs LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID) WHERE cs.ID=:nm", array("nm" => $id));
+            $configSetting = $db->pselect(
+                "SELECT cs.ID as ParentID, child.ID as ChildID,
+                        cs.AllowMultiple, child.Name
+                FROM ConfigSettings cs 
+                    LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
+                WHERE cs.ID=:nm",
+                array("nm" => $id)
+            );
         }
 
-        if(count($configSetting) === 1) {
+        // If 1 row is returned, there are no children so we just want to
+        // get the value from the database.
+        // If multiple rows are returned, it means that there are children
+        // for this element, so we need to build the tree to be consistent
+        // with what would have come from the config.xml.
+        if (count($configSetting) === 1) {
             // Trying to get a single value from the database.
             $configSetting = $configSetting[0];
-            if($configSetting['AllowMultiple'] == '0') {
+            if ($configSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
                     "SELECT Value FROM Config WHERE ConfigID=:CID", 
                     array('CID' => $configSetting['ParentID'])
@@ -217,15 +251,15 @@ class NDB_Config
                     array('CID' => $configSetting['ParentID'])
                 );
                 $ret = array();
-                foreach($val as $item) {
+                foreach ($val as $item) {
                     $ret[] = $item['Value'];
                 }
                 return $ret;
             }
-        } else if(count($configSetting) > 1) {
+        } else if (count($configSetting) > 1) {
             // This was a parent element, so construct the children.
             $tree = array();
-            foreach($configSetting as $childSetting) {
+            foreach ($configSetting as $childSetting) {
                 $childName = $childSetting['Name'];
                 $childID   = $childSetting['ChildID'];
                 $childValue = $this->getSettingFromDB($childName, $childID);
@@ -237,42 +271,17 @@ class NDB_Config
     }
 
     /**
-    * gets a setting by node name (top level only!)
-    * @return mixed     the contents of the node identified by $name
-    * @param string $name   the name of the node
-    */
-    function getSetting($name)
+     * Gets a config setting from the config.xml, bypassing
+     * the database Config tables.
+     *
+     * @param string $name The name of the XML node to retrieve.
+     *
+     * @return string The value from the config.xml
+     */
+    function getSettingFromXML($name)
     {
-        $DBValue = $this->getSettingFromDB($name);
-
-        if($DBValue !== null) {
-            return $DBValue;
-        }
-        
-        /*
-        if(class_exists("Database")) {
-            $db = Database::singleton();
-            
-            if(!Utility::isErrorX($db) && $db->isConnected() === true) {
-                $configSetting = $this->getSettingFromDB($name);
-
-                $configSetting = $db->pselect("SELECT cs.ID, cs.AllowMultiple FROM ConfigSettings cs WHERE Name=:nm", array("nm" => $name));
-
-                if(count($configSettings) > 1) {
-                    // It is a parent with child elements.
-                    return $dbval[0]['Value'];
-                } else if (count($configSettings) == 1) {
-                    // It is all alone.
-                }
-            } 
-        }
-         */
-
-        // nothing in the database, so get the value from config.xml
-
-        // if we know the user
-        if(class_exists("User") && isset($_SESSION['State'])) {
-            if(empty($this->_siteSettings)) {
+        if (class_exists("User") && isset($_SESSION['State'])) {
+            if (empty($this->_siteSettings)) {
                 // merge site and study settings
                 $this->mergeSettings();
             }
@@ -283,18 +292,37 @@ class NDB_Config
             // by default, look at the raw settings
             $settingsArray =& $this->_settings;
         }
-        
+
         // loop over the settings, and find the node
-        foreach($settingsArray AS $key=>$value) {
+        foreach ($settingsArray AS $key=>$value) {
             // see if they want the top level node
-            if($key == $name) return $value;
-            
+            if ($key == $name) {
+                return $value;
+            }
+
             // look inside the top level node
-            if(isset($value[$name])) return $value[$name];
+            if (isset($value[$name])) {
+                return $value[$name];
+            }
         }
-        
-        // no nodes found - returning null
-        return null;
+    }
+
+    /**
+    * Gets a setting by name
+    *
+    * @param string $name The name of the setting to retrieve
+    *
+    * @return mixed The contents of the node identified by $name
+    */
+    function getSetting($name)
+    {
+        $DBValue = $this->getSettingFromDB($name);
+
+        if($DBValue !== null) {
+            return $DBValue;
+        }
+        // nothing in the database, so get the value from config.xml
+        return $this->getSettingFromXML($name);
     }
     
     function getSubprojectSettings($subprojectID){
