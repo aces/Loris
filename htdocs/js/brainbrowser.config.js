@@ -43,60 +43,41 @@
 (function() {
   "use strict";
   
-  BrainBrowser.config = {
+  // REQUIRED (for surface viewer) 
+  BrainBrowser.config.set("worker_dir", "js/brainbrowser/workers/");
 
-    surface_viewer: {
+  // Custom configuration for the Surface Viewer demo app.
+  BrainBrowser.config.set("model_types.freesurferasc.format_hint", 'You can use <a href="http://surfer.nmr.mgh.harvard.edu/fswiki/mris_convert" target="_blank">mris_convert</a> to convert your binary surface files into .asc format.');
+  BrainBrowser.config.set("intensity_data_types.freesurferasc.format_hint", 'You can use <a href="http://surfer.nmr.mgh.harvard.edu/fswiki/mris_convert" target="_blank">mris_convert</a> to convert your binary surface files into .asc format.');
 
-      filetypes: {
-        MNIObject: {
-          worker: "js/brainbrowser/workers/mniobj.worker.js",
-        },
-        WavefrontObj: {
-          worker: "js/brainbrowser/workers/wavefront_obj.worker.js"
-        },
-        FreeSurferAsc: {
-          worker: "js/brainbrowser/workers/freesurfer_asc.worker.js",
-          format_hint: 'You can use <a href="http://surfer.nmr.mgh.harvard.edu/fswiki/mris_convert" target="_blank">mris_convert</a> to convert your binary surface files into .asc format.'
-        }
-      },
-
-      data : {
-        worker: "js/brainbrowser/workers/data.worker.js"
-      }
-
+  // Color maps
+  BrainBrowser.config.set("color_maps", [
+    {
+      name: "Gray",
+      url: "../color_maps/gray_scale.txt",
+      cursor_color: "#FF0000"
     },
-
-    volume_viewer: {
-      color_maps: [
-        {
-          name: "Spectral",
-          url: "../color_maps/spectral.txt",
-          cursor_color: "#FFFFFF"
-        },
-        {
-          name: "Thermal",
-          url: "../color_maps/thermal.txt",
-          cursor_color: "#FFFFFF"
-        },
-        {
-          name: "Gray",
-          url: "../color_maps/gray_scale.txt",
-          cursor_color: "#FF0000"
-        },
-        {
-          name: "Blue",
-          url: "../color_maps/blue.txt",
-          cursor_color: "#FFFFFF"
-        },
-        {
-          name: "Green",
-          url: "../color_maps/green.txt",
-          cursor_color: "#FF0000"
-        }
-      ]
+    {
+      name: "Spectral",
+      url: "../color_maps/spectral.txt",
+      cursor_color: "#FFFFFF"
+    },
+    {
+      name: "Thermal",
+      url: "../color_maps/thermal.txt",
+      cursor_color: "#FFFFFF"
+    },
+    {
+      name: "Blue",
+      url: "../color_maps/blue.txt",
+      cursor_color: "#FFFFFF"
+    },
+    {
+      name: "Green",
+      url: "../color_maps/green.txt",
+      cursor_color: "#FF0000"
     }
-    
-  }
+  ]);
 })();
 
 
