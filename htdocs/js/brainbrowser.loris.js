@@ -18,7 +18,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
     bboptions = {};
 
-//    BrainBrowser.events.addEventListener("ready", function () {
     $(".button").button();
     // This part is stolen from the BrainBrowser demo
     // *********************
@@ -237,9 +236,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         var div = $(this);
         var volume = viewer.volumes[vol_id];
         
-//        if (volume.data.time === undefined) {
-//            return;
-//        }
         if (volume.data.time) {
           div.show();
         } else {
@@ -410,17 +406,13 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     });
 
 
-// === seems to be part of the loadVolume function now.
-      //loading_div.hide();
-      $("#brainbrowser-wrapper").slideDown({duration: 600});
+    $("#brainbrowser-wrapper").slideDown({duration: 600});
         // End part stolen from BrainBrowser demo
         // *********************
-   // });
 
     // Update coordinate display as slices are updated
     // by the user.
     BrainBrowser.events.addEventListener("sliceupdate", function(vol_id) {
-//      viewer.volumes.forEach(function(volume, vol_id) {
       var volume = viewer.volumes[vol_id];
       var world_coords = volume.getWorldCoords();
       var voxel_coords = volume.getVoxelCoords();
@@ -437,7 +429,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         $("#time-slider-" + vol_id).slider("option", "value", volume.current_time);
         $("#time-val-" + vol_id).val(volume.current_time);
       }
-//      });
     });      // Should cursors in all panels be synchronized?
 
 
