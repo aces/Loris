@@ -56,6 +56,11 @@ class NDB_Menu extends NDB_Page
         // create a new menu object
         $obj = new $class;
 
+        if(isset($_REQUEST['test_name'])) {
+            $obj->Module = $_REQUEST['test_name'];
+        } else {
+            $obj->Module = $menu;
+        }
         // set the local variables
         $obj->menu = $menu;
         $obj->mode = $mode;        
@@ -119,8 +124,7 @@ class NDB_Menu extends NDB_Page
     function display()
     {
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->menu);
-        $smarty->ModuleName = $this->menu;
+        $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("menu_$this->menu.tpl");
