@@ -277,7 +277,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                     } else {
                         $this->tpl_data['items'][$x][$i]['value'] = $val;
                     }
-                } elseif($key == 'Patient_Name'){ 
+                } elseif ($key == 'Patient_Name'){ 
                    if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val) &&
                        !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val) &&
                        !preg_match($this->dicomArchiveSettings['LivingPhantomRegex'], $val)) {
@@ -288,7 +288,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                         $this->tpl_data['items'][$x][$i]['value'] = $val;
                     }
 
-                }elseif ($key == 'Gender') {
+                } elseif ($key == 'Gender') {
                     if ($val != 'M' && $val != 'F') {
                         $this->tpl_data['items'][$x][$i]['value'] = 'N/A';
                     } else {
