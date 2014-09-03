@@ -701,8 +701,8 @@ class Database extends PEAR
                     $primaryValues[] = $set[$key];
                 }
 
-                if($usePDOID) {
-                    if(is_array($this->lastInsertID)) {
+                if ($usePDOID) {
+                    if (is_array($this->lastInsertID)) {
                         $primaryValues = $this->lastInsertID;
                     } else {
                         $primaryValues = array($this->lastInsertID);
