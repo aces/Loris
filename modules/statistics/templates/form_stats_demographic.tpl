@@ -5,7 +5,7 @@
 {html_options id="DemographicSite" options=$Sites name="DemographicSite" selected=$CurrentSite.ID}
 {html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID}
 
-<script type="text/javascript" src="js/modules/form_stats_demographic.js"></script>
+<script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_demographic.js"></script>
 <button  onClick="updateDemographicTab()">Submit Query</button>
 <table class="data generalStats">
 <thead>

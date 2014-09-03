@@ -31,7 +31,7 @@ class NDB_Form_statistics extends NDB_Form
         $tpl_data['test_name'] = $_REQUEST['test_name'];
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits'] = $visits;
-        $smarty = new Smarty_neurodb();
+        $smarty = new Smarty_neurodb("statistics");
         $tpl_data['Header'] = $header;
         $tpl_data['Subcategories'] = $subcats;
         $tpl_data['Subprojects'] = Utility::getSubprojectsForProject($projectID);

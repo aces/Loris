@@ -1,7 +1,7 @@
 <div id="mri">
 <h2 class="statsH2">General Statistics with QC Status for {$mri_center_name} {$mri_project_name}</h2>
-    <script type="text/javascript" src="js/modules/table_statistics.js"></script>
-    <script type="text/javascript" src="js/modules/form_stats_MRI.js"></script>
+    <script type="text/javascript" src="GetJS.php?Module=statistics&file=table_statistics.js"></script>
+    <script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_MRI.js"></script>
     <div class="col-sm-2">
         {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$mri_center class="form-control"}
     </div>
