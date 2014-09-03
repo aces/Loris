@@ -98,7 +98,7 @@
                 <td>{$mri_errors[$center.NumericID].no_parameter}</td>
                 <td>{$mri_errors[$center.NumericID].no_browser}</td>
                 <td>{$mri_errors[$center.NumericID].no_tarchive}</td>
-                <td><a href="?test_name=statistics_mri_site&CenterID={$mri_center}&ProjectID={$mri_project}">Click Here for breakdown per participant</a></td>
+                <td><a href="?test_name=statistics&submenu=statistics_mri_site&CenterID={$mri_center}&ProjectID={$mri_project}">Click Here for breakdown per participant</a></td>
           </tr>
           {/foreach}
         </tbody>

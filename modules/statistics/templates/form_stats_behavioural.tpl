@@ -61,7 +61,7 @@
                   <td class="static-col headcol pis">Per Instrument Stats</td>
                   {foreach from=$Centers item=center key=centername}
                       <td id='{$center.LongName}PIS' class="pis" colspan="3">
-                          <a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
+                          <a href='main.php?test_name=statistics&submenu=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
                       </td>
                   {/foreach}
               </tr>
@@ -78,7 +78,7 @@
   </div>
 </div>
 
-<b><a href='main.php?test_name=statistics_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
+<b><a href='main.php?test_name=statistics&submenu=statistics_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
@@ -136,7 +136,7 @@
                   <td class="static-col headcolDD pis">Per Instrument Stats</td>
                   {foreach from=$Centers item=center key=centername}
                       <td id='{$center.LongName}DDPIS' class="pis" colspan="3">
-                          <a href='main.php?test_name=statistics_dd_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
+                          <a href='main.php?test_name=statistics&submenu=statistics_dd_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
                       </td>
                   {/foreach}
               </tr>
@@ -155,7 +155,7 @@
 <br />
 </div>
 
-<b><a href='main.php?test_name=statistics_dd_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant for {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
+<b><a href='main.php?test_name=statistics&submenu=statistics_dd_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant for {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
 
 <br />
         {$InstrumentsTable}
