@@ -70,7 +70,10 @@ class NDB_Caller extends PEAR
             // New module style
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
-            set_include_path($base . "modules/$test_name:" . get_include_path());
+            set_include_path($base . "project/libraries:" 
+                . $base . "modules/$test_name:" 
+                . $base . "modules/$test_name/php:" 
+                . get_include_path());
             
             $submenu = null;
             if (!empty($_REQUEST['submenu'])) {
@@ -79,14 +82,10 @@ class NDB_Caller extends PEAR
             }
             if ((empty($subtest) 
                 && $submenu === null 
-                && $this->existsAndRequire(
-                    $base
-                    . "modules/$test_name/php/NDB_Menu_Filter_$test_name.class.inc"
-                )) 
+                && $this->existsAndRequire("NDB_Menu_Filter_$test_name.class.inc")
+                ) 
                 || ($submenu !== null 
-                && $this->existsAndRequire(
-                    $base."modules/$test_name/php/NDB_Menu_Filter_$submenu.class.inc"
-                ))
+                && $this->existsAndRequire("NDB_Menu_Filter_$submenu.class.inc"))
             ) {
                 // No subtest, load the menu
 
@@ -103,9 +102,7 @@ class NDB_Caller extends PEAR
 
                 $this->type = 'menu';
                 return $html;
-            } else if ($this->existsAndRequire(
-                $base."modules/$test_name/php/NDB_Form_$test_name.class.inc"
-            )) {
+            } else if ($this->existsAndRequire("NDB_Form_$test_name.class.inc")) {
                 $identifier = isset($_REQUEST['identifier']) 
                     ? $_REQUEST['identifier'] 
                     : '';
@@ -367,7 +364,7 @@ class NDB_Caller extends PEAR
      * @return bool     true if file exists, otherwise false
      */
     function existsAndRequire($library) {
-        if (file_exists($library)) {
+        if (stream_resolve_include_path($library) !== FALSE) {
             require_once $library;
             return true;
         }

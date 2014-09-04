@@ -7,6 +7,7 @@ class Smarty_neurodb extends Smarty {
     var $loristemplate_dir;
     var $project_template_dir;
     var $modules_dir;
+    var $ModuleName;
 
     function Smarty_neurodb($moduleName = null) {
         $config =& NDB_Config::singleton();
