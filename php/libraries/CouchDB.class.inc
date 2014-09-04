@@ -219,6 +219,9 @@ class CouchDB
         $handler->open();
 
         $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n\r\n");
+        $handler->write("Authorization: Basic " . base64_encode($couchconfig['admin'] . ":" . $couchconfig['adminpass']) . "\r\n");
+
+        $handler->write("\r\n");
 
         $response = '';
         while (!$handler->eof()) {
@@ -299,7 +302,9 @@ class CouchDB
      */
     function deleteDoc($id)
     {
-        $json = $this->_getRelativeURL($id, "DELETE");
+        $getjson = $this->_getRelativeURL($id);
+        $getdata = json_decode($getjson, true);
+        $json = $this->_getRelativeURL($id . "?rev=" . $getdata['_rev'], "DELETE");
         $data = json_decode($json, true);
 
         if (!isset($data['ok'])) {
