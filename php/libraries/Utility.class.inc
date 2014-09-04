@@ -314,7 +314,7 @@ class Utility extends PEAR
      *
      * @return associative array of the form VisitLabel => Visit_label
      */
-    function getVisitList()
+    static function getVisitList()
     {
         $DB =& Database::singleton();
 
@@ -359,7 +359,7 @@ class Utility extends PEAR
      * @return array an associative array("projectID" => "project title")
      * @access public
      */
-    function getProjectList()
+    static function getProjectList()
     {
         $config =& NDB_Config::singleton();
 

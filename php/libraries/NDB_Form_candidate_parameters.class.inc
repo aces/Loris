@@ -476,7 +476,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         
         //Loop through the fields and add them appropriately
         foreach ($field_results AS $fresult) {
-            $this->form->addElement('static', "PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
+            $this->addScoreColumn("PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
         }
         
         $this->addScoreColumn('ProbandGUID', 'Proband GUID:');

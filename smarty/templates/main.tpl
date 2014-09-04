@@ -4,7 +4,7 @@
     <head>
         <link rel="stylesheet" href="{$css}" type="text/css" />
         {if $test_name_css}
-            <link rel="stylesheet" href="css/instruments/{$test_name_css}" type="text/css" />
+            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
         {/if}
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
@@ -513,7 +513,7 @@
                     </ul>    
                 </center>
                 <div align="center" colspan="1" style="color:#808080" >
-                    Powered by LORIS &copy; 2013. All rights reserved.
+                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
                 <div align="center" colspan="1">
                     <a href="http://cbrain.mcgill.ca" style="color: #2FA4E7" target="_blank">

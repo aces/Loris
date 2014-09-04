@@ -7,6 +7,7 @@ class Smarty_neurodb extends Smarty {
     var $loristemplate_dir;
     var $project_template_dir;
     var $modules_dir;
+    var $ModuleName;
 
     function Smarty_neurodb($moduleName = null) {
         $config =& NDB_Config::singleton();
@@ -28,6 +29,11 @@ class Smarty_neurodb extends Smarty {
         $this->config_dir = $paths['base']."smarty/configs/";
         $this->cache_dir = $paths['base']."smarty/cache/";
 
+        // Behave like smarty2 used to. This should be
+        // removed after all the warnings/notices from the PHP 
+        // side of Loris are fixed, and then the templates can be
+        // updated..
+        $this->error_reporting = E_ALL & ~E_NOTICE;
         $sandbox = $config->getSetting("sandbox");
 
         if($sandbox === '1') {

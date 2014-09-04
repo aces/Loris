@@ -40,7 +40,7 @@ class NDB_Menu extends NDB_Page
      * @throws PEAR_Error
      * @access public
      */
-    function &factory($menu, $mode)
+    static function &factory($menu, $mode)
     {
         // get the name of the class
         if (class_exists("NDB_Menu_$menu")) {

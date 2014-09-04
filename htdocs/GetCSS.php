@@ -1,6 +1,6 @@
 <?php
 /**
- * Controls access to a module's javascript files on the filesystem. This script
+ * Controls access to a module's javascript CSS styles on the filesystem. This script
  * should ensure that only files relative to module's path specified are
  * accessible.
  * By calling new NDB_Client(), it also makes sure that the user is logged in to 
@@ -48,20 +48,11 @@ if (empty($basePath)) {
 
 // Now get the file and do file validation
 $Module = $_GET['Module'];
-if (!isset($_GET['file']) || empty($_GET['file'])) {
-    $File = $Module . ".js";
-} else {
-    $File = $_GET['file'];
-}
-if (empty($Module) || empty($File)) {
-    error_log("Missing required parameters for request");
-    header("HTTP/1.1 400 Bad Request");
-    exit(2);
-}
+$File = $Module . ".css";
 
 // File validation
-if (strpos($File, ".js") === false) {
-    error_log("ERROR: Not a javascript file.");
+if (strpos($File, ".css") === false) {
+    error_log("ERROR: Not a CSS file.");
     header("HTTP/1.1 400 Bad Request");
     exit(3);
 }
@@ -76,7 +67,7 @@ if (strpos("..", $File) !== false) {
 }
 
 
-$FullPath = $basePath . "/modules/$Module/js/$File";
+$FullPath = $basePath . "/modules/$Module/css/$File";
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");
@@ -84,7 +75,7 @@ if (!file_exists($FullPath)) {
     exit(5);
 }
 
-$MimeType = "application/javascript";
+$MimeType = "text/css";
 header("Content-type: $MimeType");
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);

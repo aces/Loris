@@ -24,8 +24,8 @@ function hideFilter() {
 function toggleMe() {
     "use strict";
     $("#advanced-label").toggle();
-    $("#advanced-options").toggle();
-    $("#advanced-buttons").toggle();
+    $(".advancedOptions").toggle();
+    $(".advanced-buttons").toggle();
 }
 
 $(function(){
