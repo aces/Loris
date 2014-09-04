@@ -103,7 +103,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $this->headers[] = 'Project';
         }
         $this->headers=array_merge($this->headers,array('Instrument', 'reliability_score', 'Reliable'));
-        $this->validFilters = array('reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid');
+        $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid');
 
         $this->formToFilter = array(
                                     'SubprojectID' => 'session.SubprojectID',
