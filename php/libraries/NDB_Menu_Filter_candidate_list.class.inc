@@ -1,6 +1,6 @@
 <?php
 require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Form_participant_status.class.inc';
+require_once 'NDB_Form_candidate_parameters.class.inc';
 /**
 * The candidate list menu
  * @package main
@@ -134,7 +134,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $latest_visit_status_options = array(null => 'All', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
-        $participant_status_options=   array(null=>'All') +  NDB_Form_participant_status::getParticipantStatusOptions();
+        $participant_status_options=   array(null=>'All') +  NDB_Form_candidate_parameters::getParticipantStatusOptions();
         $scan_options = array(null=>'All','Y'=>'Yes','N'=>'No');
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
@@ -171,7 +171,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         }
 		$subprojectlist=Utility::getSubprojectList();
         $projectlist=Utility::getProjectList();
-        $participantOptions= NDB_Form_participant_status::getParticipantStatusOptions();
+        $participantOptions= NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {
