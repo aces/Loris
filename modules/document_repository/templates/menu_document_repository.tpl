@@ -106,7 +106,7 @@
         <option value=" "> </option>
             {foreach from = $File_categories item=val key=k}
                 {if $val != "Any"}
-                        <option value={$k}>{$val}</option>
+                        <option value={$k}>{$val.CategoryName}</option>
                     {/if}
             {/foreach}
         </select>
