@@ -79,12 +79,11 @@ if($test_name != 'all') {
         fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
         return false;
     }
+/*
     if(is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
      require_once "../project/instruments/NDB_BVL_Instrument_$test_name.class.inc";
     }
-    if(is_file("../project/instruments/$test_name.linst")) {
-     require_once "../project/instruments/$test_name.linst";
-    }
+  */ 
 
 }
 
@@ -124,7 +123,7 @@ foreach($result as $test) {
     $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID, c.PSCID
         FROM candidate as c, session as s, flag as f, $test_name as t
         WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
-        AND s.Active = 'Y' AND c.Active='Y' AND c.PSCID NOT LIKE 'dcc%'
+        AND s.Active = 'Y' AND c.Active='Y' 
         AND f.Test_name = '$test_name' AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
     if ($action=='one') {
         $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";
