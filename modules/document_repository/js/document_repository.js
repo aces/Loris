@@ -42,7 +42,7 @@ function editCategory() {
                 id = event.target.id;
                 value = $("#" + id) . text();
                 id = id.replace("categorycomment", "");
-                $.get("DocumentRepository/categoryEdit.php?id=" + id + "&comments=" + value, function(data) {});
+                $.get("AjaxHelper.php?Module=document_repository&script=categoryEdit.php&id=" + id + "&comments=" + value, function(data) {});
             }
     ).keypress(function(e) {
         if(e.which === 13) { // Determine if the user pressed the enter button
@@ -97,7 +97,7 @@ $(document).ready(function() {
             },
              "Yes" : function() {
                  $.ajax({
-                    url: "DocumentRepository/documentDelete.php", 
+                    url: "AjaxHelper.php?Module=document_repository&script=documentDelete.php", 
                     type: "POST",
                     data: {id:id}, 
                     success: function(){
@@ -129,7 +129,7 @@ $(document).ready(function() {
              },
              "Add" : function() {
                  $.ajax({
-                    url: "DocumentRepository/addCategory.php",
+                    url: "AjaxHelper.php?Module=document_repository&script=addCategory.php",
                     type: "POST",
                     data: $("#addCategoryForm").serialize(),
                     success: function(){
@@ -199,7 +199,7 @@ $(document).ready(function() {
 
              $.ajax({
                 type: "POST",
-                url: "DocumentRepository/documentEditUpload.php",
+                url: "AjaxHelper.php?Module=document_repository&script=documentEditUpload.php",
                 data: data,
  	            success: function(){    
                     $('.edit-success').show();
@@ -223,7 +223,7 @@ $(document).ready(function() {
 
 	    $.ajax({
      	    type: "GET",
-  	        url: "DocumentRepository/getFileData.php",
+  	        url: "AjaxHelper.php?Module=document_repository&script=getFileData.php",
             data: {id:id}, 
             async: false,
                 dataType: "json",

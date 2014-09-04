@@ -1,6 +1,3 @@
-<link rel="stylesheet" type="text/css" href="documentRepository.css"/>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-
 <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
 <table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
     <tr>
@@ -50,40 +47,37 @@
 <div id="accordion" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons" role="tablist">
 {foreach from=$File_categories item=val key=k}
     {if $val != "Any"}
-	<tr>
-        	<td nowrap="nowrap" colspan = "11"><h3 id = "header_{$val|replace:' ':'_'|replace:'>':'_'}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px; color:black;" align="left">{$val}
-			<span class="tip">...
-                        {foreach from=$File_comments item=val2 key=k2}
-                                {if $k == $k2}
-					<span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$val|replace:' ':'_'|replace:'>':'_'}" contenteditable="true">{$val2}</span>
-                                {/if}
-                        {/foreach}
-			</span>
-		</h3>
-	</tr>
-
-{section name=item loop=$items}
-    {section name=piece loop=$items[item]}
-	{if $items[item][piece].File_category == $k}
-	<tr class="categories_{$val|replace:' ':'_'|replace:'>':'_'} categories ui-accordion ui-widget ui-helper-reset ui-accordion-icons" id = "{$smarty.section.item.index}" style="display:yes">
-	    {section name=piece loop=$items[item]}
-		{if $items[item][piece].name == "File_name"}
-		    <td nowrap = "nowrap" class = "{$items[item][piece].name}"><a href="{$items[item][piece].Data_dir}" target="_blank">{$items[item][piece].value}</a> {if !empty($items[item][piece].File_size)}({$items[item][piece].File_size}){/if}</td>
-   		{elseif $items[item][piece].name == "record_id"}	
-		    <td nowrap = "nowrap"><a href = "#" id = "{$items[item][piece].value}" class="theeditlink">Edit</a></td>
-		{elseif $items[item][piece].name == "record_id_delete"}
-		    <td nowrap = "nowrap"><a href="#" id = "{$items[item][piece].value}" class="thedeletelink">Delete</a></td>
-		{elseif $items[item][piece].name == "comments" && $items[item][piece].value !==" " && $items[item][piece].value !=="" && $items[item][piece].value|strlen > 14}
-		    <td nowrap = "nowrap" class = "tip">{$items[item][piece].value|substr:0:14}...<span>{$items[item][piece].value}</span>&nbsp;</td> 
-		{elseif $items[item][piece].name != "File_category" && $items[item][piece].name != ""}
-		    <td nowrap = "nowrap">{$items[item][piece].value}</td>
-		{/if}
-	    {/section}
-	</tr>
-	{/if}
-    {/section}
-{/section}
-    </tr>
+        <tr>
+                <td nowrap="nowrap" colspan = "11">
+                    <h3 id = "header_{$val|replace:' ':'_'|replace:'>':'_'}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px; color:black;" align="left">{$File_categories[$k].CategoryName}
+                        <span class="tip">
+                            <span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$val|replace:' ':'_'|replace:'>':'_'}" contentedit  able="true">
+                                {$File_categories[$k].Comment}
+                            </span>
+                </span>
+            </h3>
+        </tr>
+        {section name=file loop=$File_categories[$k].Files}
+            {assign var="FileDetails" value=$File_categories[$k].Files[file]}
+            <tr class="categories ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+                <td class="File_name" nowrap="nowrap">
+                    <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$FileDetails.Data_dir}" target="_blank" download="{$FileDetails.File_name}">{$FileDetails.File_name}</a> ({$FileDetails.File_size})
+                </td>
+                <td class="version" nowrap="nowrap">{$FileDetails.version}</td>
+                <td class="File_type" nowrap="nowrap">{$FileDetails.File_type}</td>
+                <td class="Instrument" nowrap="nowrap">{$FileDetails.Instrument}</td>
+                <td class="uploaded_by" nowrap="nowrap">{$FileDetails.uploaded_by}</td>
+                <td class="For_site" nowrap="nowrap">{$FileDetails.For_site}</td>
+                <td class="comments" nowrap="nowrap">{$FileDetails.comments}</td>
+                <td class="Date_uploaded" nowrap="nowrap">{$FileDetails.Date_uploaded}</td>
+                <td nowrap="nowrap">
+                    <a href="#" id="{$FileDetails.record_id}" class="theeditlink">Edit</a>
+                </td>
+                <td nowrap="nowrap">
+                    <a href="#" id="{$FileDetails.record_id}" class="thedeletelink">Delete</a>
+                </td>
+            </tr>
+        {/section}
     {/if}
 {/foreach}
 </div> <!--end of toggle div-->
@@ -98,7 +92,7 @@
 </div>
 
 
-<form id="addCategory" action="DocumentRepository/addCategory.php" method="POST">
+<form id="addCategory" action="AjaxHelper.php?Module=document_repository&script=addCategory.php" method="POST">
 <div class = "addCategory" title="Add Category">
     <p>
         What category would you like to add?
@@ -125,7 +119,7 @@
 
 
 <div id="uploadArea" class = "dialog-form" style = "border-style: solid; border-color: #7c7781; border-width:1px; margin: 1em !important; width:390px !important; height:auto !important;" title="Upload new file">
-<form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action = "DocumentRepository/documentEditUpload.php">
+<form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=document_repository&script=documentEditUpload.php">
 <div class = "upload-error">
     <p style = "color: #f33;">
 	    <span class="ui-icon ui-icon-alert" style = "float:left;"></span>
@@ -145,7 +139,7 @@
 	<option value=" "> </option>
 	    {foreach from = $File_categories item=val key=k}
 	        {if $val != "Any"}
- 		        <option value={$k}>{$val}</option>
+ 		        <option value={$k}>{$val.CategoryName}</option>
 		{/if}
 	    {/foreach}
 	</select>
@@ -205,7 +199,7 @@
 	<option value=""> </option>
 	    {foreach from = $File_categories item=val key=k}
             {if $val != "Any"}
-        	    <option value={$k}>{$val}</option>
+        	    <option value={$k}>{$val.CategoryName}</option>
         	{/if}
 	    {/foreach}
 	</select>
