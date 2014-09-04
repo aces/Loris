@@ -29,7 +29,7 @@ class NDB_Form_dashboard extends NDB_Form {
     function _getTotalGender($gender) {
         $DB =& Database::singleton(); 
         $total = $DB->pselectOne(
-                    "SELECT count(c.CandID) FROM candidate c WHERE c.Gender='$gender'", array()
+                    "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender", array('Gender' => $gender)
         );
         return $total;
     }
@@ -41,23 +41,23 @@ class NDB_Form_dashboard extends NDB_Form {
         foreach ($list_of_sites as $site) {
             $recruitmentBySiteData[] = array(
                 "label" => $site,
-                "total" => $DB->pselectOne("SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE psc.Name='$site'", array())
-            );
+                "total" => $DB->pselectOne("SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE psc.Name=:Site", array('Site' => $site)
+            ));
         }
         return json_encode($recruitmentBySiteData);
     }
 
     function _getGenderTotalsBySite() {
         $DB =& Database::singleton();
-        $genderData = array(); 
+        $genderData = array();
         $list_of_sites =& Utility::getSiteList();
         foreach ($list_of_sites as $site) {
             $genderData['labels'][] = $site;
             $genderData['datasets']['female'][] = $DB->pselectOne(
-                    "SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE c.Gender='female' AND psc.Name='$site'", array()
+                    "SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE c.Gender='female' AND psc.Name=:Site", array('Site' => $site)
             );
             $genderData['datasets']['male'][] = $DB->pselectOne(
-                    "SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE c.Gender='male' AND psc.Name='$site'", array()
+                    "SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE c.Gender='male' AND psc.Name=:Site", array('Site' => $site)
             );
         }
         return json_encode($genderData);
@@ -90,7 +90,7 @@ class NDB_Form_dashboard extends NDB_Form {
         foreach ($labels as $label) {
             $month = (strlen($label) == 6) ? substr($label, 0, 1) : substr($label, 0, 2);
             $year = substr($label, -4, 4);
-            $data[]= $DB->pselectOne("SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE psc.Name='$dataset' AND MONTH(Date_registered)=$month AND YEAR(Date_registered)=$year", array());
+            $data[]= $DB->pselectOne("SELECT count(c.CandID) FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) WHERE psc.Name=:Dataset AND MONTH(Date_registered)=$month AND YEAR(Date_registered)=:Year", array('Dataset' => $dataset, 'Year' => $year));
         }
         return $data;
     }
@@ -128,8 +128,8 @@ class NDB_Form_dashboard extends NDB_Form {
                 LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
                 LEFT JOIN session s ON (s.ID=f.SessionID) 
                 LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                WHERE psc.Name='$dataset' 
-                AND MONTH(mad.AcquisitionDate)=$month AND YEAR(mad.AcquisitionDate)=$year", array());
+                WHERE psc.Name=:Dataset 
+                AND MONTH(mad.AcquisitionDate)=:Month AND YEAR(mad.AcquisitionDate)=:Year", array('Dataset' => $dataset, 'Month' => $month, 'Year' => $year));
         }
         return $data;
     }
@@ -156,9 +156,9 @@ class NDB_Form_dashboard extends NDB_Form {
 		$this->tpl_data = array();
 		$config =& NDB_Config::singleton();
         $site = $user->getSiteName();
-        $siteID = $DB->pselectOne("SELECT CenterID FROM psc WHERE Name='$site'");
+        $siteID = $DB->pselectOne("SELECT CenterID FROM psc WHERE Name=:Site", array('Site' => $site));
         $userID = $user->getUsername();
-        $last_login = $DB->pselectOne("SELECT max(Login_timestamp) FROM user_login_history WHERE userID='$userID' AND Success='Y'", array());
+        $last_login = $DB->pselectOne("SELECT max(Login_timestamp) FROM user_login_history WHERE userID=:UserID AND Success='Y'", array('UserID' => $userID));
         $this->tpl_data['user_site'] = $siteID;
 
 		// Welcome panel
@@ -183,7 +183,7 @@ class NDB_Form_dashboard extends NDB_Form {
             }
         }
 
-        // Recruitment totals - need to have case where total is greater than target
+        // Recruitment totals
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
         if (!empty($dashboard_links)) {
             $this->tpl_data['recruitment_target'] = $recruitmentTarget;
@@ -219,7 +219,7 @@ class NDB_Form_dashboard extends NDB_Form {
                 $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved", array());
                 $this->tpl_data['conflicts_site'] = 'Site: all';
             } else {
-                $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved cu LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) LEFT JOIN session s ON (flag.SessionID=s.ID) LEFT JOIN psc ON (psc.CenterID=s.CenterID) WHERE psc.Name='$site'", array());
+                $this->tpl_data['conflicts'] = $DB->pselectOne("SELECT count(*) FROM conflicts_unresolved cu LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) LEFT JOIN session s ON (flag.SessionID=s.ID) LEFT JOIN psc ON (psc.CenterID=s.CenterID) WHERE psc.Name=:Site", array('Site' => $site));
                 $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
             }
         }
@@ -228,7 +228,7 @@ class NDB_Form_dashboard extends NDB_Form {
                 $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag WHERE Data_entry='In Progress'", array());
                 $this->tpl_data['incomplete_forms_site'] = 'Site: all';
             } else {
-                $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag LEFT JOIN session s ON (flag.SessionID=s.ID) LEFT JOIN psc ON (psc.CenterID=s.CenterID) WHERE Data_entry='In Progress' AND psc.Name='$site'", array());
+                $this->tpl_data['incomplete_forms'] = $DB->pselectOne("SELECT count(*) FROM flag LEFT JOIN session s ON (flag.SessionID=s.ID) LEFT JOIN psc ON (psc.CenterID=s.CenterID) WHERE Data_entry='In Progress' AND psc.Name=:Site", array('Site' => $site));
                 $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
             }
         }
