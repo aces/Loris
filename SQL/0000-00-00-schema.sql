@@ -1798,7 +1798,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
     ('DICOM Archive', 'main.php?test_name=dicom_archive', 3, 2),
-    ('Imaging Browser', 'main.php?test_name=imaging_browser', 3, 3);
+    ('Imaging Browser', 'main.php?test_name=imaging_browser', 3, 3),
+    ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', 'main.php?test_name=statistics', 4, 1),
@@ -1811,7 +1812,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Instrument Builder', 'main.php?test_name=instrument_builder', 5, 4);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('User Accounts', 'main.php?test_name=user_accounts', 6, 1);
+    ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
+    ('Survey Module', 'main.php?test_name=participant_accounts', 6,2);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -1871,3 +1873,6 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- User Accounts
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT 21, PermID FROM permissions WHERE code='user_accounts';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
+
