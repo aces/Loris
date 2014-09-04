@@ -137,7 +137,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     function _setDicomArchiveSettings() 
     {
         $config =& NDB_Config::singleton();
-        $this->dicomArchiveSettings = $config->getSetting('dicom_archive');
+        $this->dicomArchiveSettings = $config->getSetting('dicom_archive'); 
     }
     
     /**
@@ -268,10 +268,8 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                 if ($key == 'Patient_ID') {
                     $regex = 'patientIDRegex';
                 } 
-                if ($key == 'Patient_Name') {
-                    $regex = 'patientNameRegex';
-                }
-                if ($key == 'Patient_ID' || $key == 'Patient_Name') {
+              
+                if ($key == 'Patient_ID') {
                     if (! preg_match($this->dicomArchiveSettings[$regex], $val)) {
                         $this->tpl_data['items'][$x][$i]['class'] = "error";
                         $this->tpl_data['items'][$x][$i]['value'] 
@@ -279,6 +277,17 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                     } else {
                         $this->tpl_data['items'][$x][$i]['value'] = $val;
                     }
+                } elseif ($key == 'Patient_Name'){ 
+                   if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val) &&
+                       !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val) &&
+                       !preg_match($this->dicomArchiveSettings['LivingPhantomRegex'], $val)) {
+                        $this->tpl_data['items'][$x][$i]['class'] = "error";
+                        $this->tpl_data['items'][$x][$i]['value']
+                            = "INVALID - HIDDEN";
+                    } else {
+                        $this->tpl_data['items'][$x][$i]['value'] = $val;
+                    }
+
                 } elseif ($key == 'Gender') {
                     if ($val != 'M' && $val != 'F') {
                         $this->tpl_data['items'][$x][$i]['value'] = 'N/A';
