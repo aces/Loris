@@ -146,8 +146,7 @@ class Imaging_Session_ControlPanel
     {
         $this->tpl_data['subject'] = $this->getData();
 
-        $smarty = new Smarty_neurodb;
-        $smarty->ModuleName = "imaging_browser";
+        $smarty = new Smarty_neurodb("imaging_browser");
    
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("imaging_session_controlpanel.tpl");
