@@ -111,6 +111,7 @@ class Imaging_Session_ControlPanel
         
         $config =& NDB_Config::singleton();
         
+        $this->tpl_data['mantis'] = $config->getSetting('mantis_url');
         $subjectData['mantis'] = $config->getSetting('mantis_url');
         $subjectData['has_permission'] = $this->_hasAccess();
         $subjectData['status_options'] = array (
