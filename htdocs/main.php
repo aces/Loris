@@ -106,8 +106,16 @@ if (!empty($TestName)) {
         // Old style, this should be removed after all modules are modularized.
         $tpl_data['test_name_js'] = "js/modules/$TestName.js";
     }
-    if(file_exists("css/instruments/$TestName.css")) { 
-       $tpl_data['test_name_css'] = "$TestName.css";
+
+    // Get CSS for a module
+    if (file_exists($paths['base'] . "modules/$TestName/css/$TestName.css")) {
+        $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
+    }
+
+    // Used for CSS for a specific instrument. This should eventually be
+    // rolled into the GetCSS wrapper
+    if (file_exists("css/instruments/$TestName.css")) { 
+        $tpl_data['test_name_css'] = "css/instruments/$TestName.css";
     }
 }
 
