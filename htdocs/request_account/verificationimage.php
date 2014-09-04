@@ -1,6 +1,6 @@
 <?php
 /**
- * This file verification image with random numbers for 
+ * This file generates verification image with random numbers for 
  * Request Account form
  *
  * PHP Version 5
