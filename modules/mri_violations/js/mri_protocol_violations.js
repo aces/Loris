@@ -42,7 +42,7 @@ function save() {
                 position: [800, 120],
                 buttons: {
                     Yes: function () {
-                        $.get("UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value, function () {});
+                        $.get("AjaxHelper.php?Module=mri_violations&script=UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value, function () {});
                         $(this).dialog("close");
                     },
                     close: function () {

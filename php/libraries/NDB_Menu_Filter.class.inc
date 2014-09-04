@@ -659,7 +659,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function display()
     {
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->menu);
+        $smarty = new Smarty_neurodb($this->Module);
         $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
         $this->form->accept($renderer);
         $smarty->assign('mode', $this->mode);
