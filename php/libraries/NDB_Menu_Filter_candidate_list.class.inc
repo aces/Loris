@@ -108,7 +108,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         // PSC
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites =& Utility::getSiteList();
+            $list_of_sites = Utility::getSiteList();
             if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
@@ -126,8 +126,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         }
 
         // SubprojectID
-        $list_of_subprojects =& Utility::getSubprojectList();
-        $list_of_projects =& Utility::getProjectList();
+        $list_of_subprojects = Utility::getSubprojectList();
+        $list_of_projects = Utility::getProjectList();
 
         // list of feedback statuses
         $feedback_status_options = array(null => 'All','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');

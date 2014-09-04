@@ -59,7 +59,7 @@ class NDB_Caller extends PEAR
         if (empty($test_name)) {
             return;
         }
-        if(empty($CommentID)) {
+        if(empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
         }
         // get the files path, aka the base directory
@@ -134,7 +134,7 @@ class NDB_Caller extends PEAR
             ) {
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
-                $html = $this->loadMenu($test_name, $mode, $controlPanel);
+                $html = $this->loadMenu($test_name, $mode);
                 if (Utility::isErrorX($html)) {
                     return PEAR::raiseError($html->getMessage());
                 }

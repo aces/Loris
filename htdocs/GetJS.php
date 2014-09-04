@@ -48,9 +48,10 @@ if (empty($basePath)) {
 
 // Now get the file and do file validation
 $Module = $_GET['Module'];
-$File = $_GET['file'];
-if (empty($File)) {
+if (!isset($_GET['file']) || empty($_GET['file'])) {
     $File = $Module . ".js";
+} else {
+    $File = $_GET['file'];
 }
 if (empty($Module) || empty($File)) {
     error_log("Missing required parameters for request");

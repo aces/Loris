@@ -116,6 +116,20 @@ class NDB_Menu_Filter extends NDB_Menu
     var $list;
 
     /**
+     * List of filters which are checkboxes so that
+     * it can be determined if it was checked or not.
+     * (Note that HTTP sends nothing if a checkbox is
+     * unchecked.)
+     */
+    var $CheckboxFilters = array();
+
+    /**
+     * A list of fields which are to be searched if the
+     * search keyword is used.
+     */
+    var $searchKey = array();
+
+    /**
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
@@ -287,10 +301,13 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
         $keyword = $_SESSION['State']->getProperty('keyword');
-        foreach($keyword as $key=>$val) {
-           // $defaults[] = "'$key'=>'$val'";
-            $defaults[$key] = $val;
-            $this->searchKey[$key] = $val;
+
+        if(is_array($keyword)) {
+            foreach ($keyword as $key=>$val) {
+                // $defaults[] = "'$key'=>'$val'";
+                $defaults[$key] = $val;
+                $this->searchKey[$key] = $val;
+            }
         }
         // set the filter form's defaults
         $this->form->setDefaults($defaults);

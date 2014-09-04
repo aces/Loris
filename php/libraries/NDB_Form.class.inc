@@ -84,7 +84,7 @@ class NDB_Form extends NDB_Page
      * @throws PEAR_Error
      * @access public
      */
-    function &factory($name, $page, $identifier)
+    static function &factory($name, $page, $identifier)
     {
         // check that the form class exists
         if (class_exists("NDB_Form_$name")) {
