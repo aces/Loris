@@ -60,13 +60,6 @@ class NDB_Menu_Filter extends NDB_Menu
     var $order_by = '1';
 
     /**
-     * Stores the filter form data, or other form data
-     * @var    HTML_QuickForm 
-     * @access private
-     */
-    var $form;
-
-    /**
      * Items selected from the GUI selection form
      * @var    array
      * @access private
@@ -295,7 +288,7 @@ class NDB_Menu_Filter extends NDB_Menu
            
             // set the filter form's defaults
             if (!empty($defaults)) {
-                eval("\$this->form->setDefaults(
+                eval("\$this->_setDefaults(
                     array(".implode(', ', $defaults).")
                 );");
             }
@@ -310,7 +303,7 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
         // set the filter form's defaults
-        $this->form->setDefaults($defaults);
+        $this->_setDefaults($defaults);
 
       
         // set only the valid filters
