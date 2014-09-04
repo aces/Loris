@@ -1,4 +1,16 @@
 <?php
+/**
+ * This file contains code to process user input from 
+ * Request Account form
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Rathi Gnanasekaran <sekaranrathi@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 /**

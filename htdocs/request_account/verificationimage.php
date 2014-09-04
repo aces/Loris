@@ -1,9 +1,17 @@
 <?php
 /**
- * Creates verification image
- * @package main
+ * This file verification image with random numbers for 
+ * Request Account form
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Rathi Gnanasekaran <sekaranrathi@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
-//start session
+
 session_start();
 header('Content-type: image/jpeg');
 
