@@ -513,7 +513,7 @@
                     </ul>    
                 </center>
                 <div align="center" colspan="1" style="color:#808080" >
-                    Powered by LORIS &copy; 2013. All rights reserved.
+                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
                 <div align="center" colspan="1">
                     <a href="http://cbrain.mcgill.ca" style="color: #2FA4E7" target="_blank">
