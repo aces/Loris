@@ -143,6 +143,11 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
 
     function _setupVariables()
     {
+        $user =& User::singleton();
+        if(Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+
         // set the class variables
         $this->columns = array(
             'conflicts_unresolved.TableName', 
@@ -161,6 +166,10 @@ class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
             'session.CenterID'
         );
         $this->query = " FROM conflicts_unresolved LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID) LEFT JOIN session ON (flag.SessionID=session.ID) LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
+        if (!$user->hasPermission('access_all_profiles')) {
+            $query .= " AND session.CenterID = '" . $user->getData('CenterID') . "' ";
+        }
+
         $this->group_by = '';
         $this->order_by = 'conflicts_unresolved.TableName, session.Visit_label';
         $this->validFilters = array(
