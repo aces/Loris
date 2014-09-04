@@ -192,7 +192,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addSelect(
             'Pending',
             'Pending and New',
-            array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pendng or New')
+            array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pending or New')
         ); 
         $outputTypes = $DB->pselect(
             "SELECT DISTINCT OutputType AS outputType 
@@ -290,8 +290,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                         OR fqc.QCFirstChangeTime IS NULL)"; 
                     break;
                 case "PN":
-                    $query .= " AND s.MRIQCPending='Y' 
-                        OR (s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
+                    $query .= " AND (s.MRIQCPending='Y' 
+                        OR s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
                     break;
                 }
             }
