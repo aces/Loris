@@ -321,13 +321,13 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         $site_names = Utility::getSiteList(true); 
         // print out
         $x = 0;
-        while($item = $prepared->fetch(PDO::FETCH_ASSOC)) {
+        while ($item = $prepared->fetch(PDO::FETCH_ASSOC)) {
             $FileCategory =& $this->tpl_data['File_categories'][$item['File_category']];
             $DisplayItem = $item;
             $DisplayItem['File_size'] = $this->format_size($item['File_size']);
             $DisplayItem['For_site']  = $site_names[$item['For_site']];
 
-            if(is_array($FileCategory['Files'])) {
+            if (is_array($FileCategory['Files'])) {
                 array_push($FileCategory['Files'], $DisplayItem);
             }
 
