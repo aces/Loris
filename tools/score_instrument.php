@@ -114,7 +114,7 @@ foreach($result as $test) {
     log_msg("Running scoring for $test_name");
     log_msg("------------------------------");
 
-    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID,
+    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID,c.PSCID
         FROM candidate as c, session as s, flag as f, $test_name as t
         WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
         AND s.Active = 'Y' AND c.Active='Y' 
