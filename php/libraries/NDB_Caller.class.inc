@@ -83,9 +83,12 @@ class NDB_Caller extends PEAR
             if ((empty($subtest) 
                 && $submenu === null 
                 && $this->existsAndRequire("NDB_Menu_Filter_$test_name.class.inc")
-                ) 
+                )
                 || ($submenu !== null 
                 && $this->existsAndRequire("NDB_Menu_Filter_$submenu.class.inc"))
+                || ($submenu !== null
+                && $this->existsAndRequire("NDB_Menu_$submenu.class.inc")
+                )
             ) {
                 // No subtest, load the menu
 

@@ -1,6 +1,6 @@
 <div id="data_entry">
 <h2 class="statsH2">Data Entry Statistics  {if $CurrentProject} for {$CurrentProject.Name} {/if}</h2>
-<script type="text/javascript" src="js/modules/form_stats_behavioural.js"></script>
+<script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_behavioural.js"></script>
 {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID}
 <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
 <br><br>
@@ -61,7 +61,7 @@
                   <td class="static-col headcol pis">Per Instrument Stats</td>
                   {foreach from=$Centers item=center key=centername}
                       <td id='{$center.LongName}PIS' class="pis" colspan="3">
-                          <a href='main.php?test_name=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
+                          <a href='main.php?test_name=statistics&submenu=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
                       </td>
                   {/foreach}
               </tr>
@@ -78,7 +78,7 @@
   </div>
 </div>
 
-<b><a href='main.php?test_name=statistics_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
+<b><a href='main.php?test_name=statistics&submenu=statistics_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
 
 <h2 class="statsH2">Double Data Entry Statistics:</h2>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
@@ -136,7 +136,7 @@
                   <td class="static-col headcolDD pis">Per Instrument Stats</td>
                   {foreach from=$Centers item=center key=centername}
                       <td id='{$center.LongName}DDPIS' class="pis" colspan="3">
-                          <a href='main.php?test_name=statistics_dd_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
+                          <a href='main.php?test_name=statistics&submenu=statistics_dd_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
                       </td>
                   {/foreach}
               </tr>
@@ -155,7 +155,7 @@
 <br />
 </div>
 
-<b><a href='main.php?test_name=statistics_dd_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant for {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
+<b><a href='main.php?test_name=statistics&submenu=statistics_dd_site&CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}'>Click here for breakdown per participant for {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} {$CurrentProject.Name} {/if}</a></b>
 
 <br />
         {$InstrumentsTable}
