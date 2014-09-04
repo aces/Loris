@@ -79,12 +79,6 @@ if($test_name != 'all') {
         fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
         return false;
     }
-/*
-    if(is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
-     require_once "../project/instruments/NDB_BVL_Instrument_$test_name.class.inc";
-    }
-  */ 
-
 }
 
 $db =& Database::singleton();
