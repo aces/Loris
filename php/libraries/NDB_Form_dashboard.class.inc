@@ -225,8 +225,14 @@ class NDB_Form_dashboard extends NDB_Form
         }
 
         // Recruitment totals
+        $totalRecruitment = $DB->pselectOne(
+            "SELECT count(*) FROM candidate c", array()
+        );
+        $this->tpl_data['total_recruitment'] = $totalRecruitment;
+
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
-        if (!empty($dashboard_links)) {
+
+        if (!empty($recruitmentTarget)) {
             $this->tpl_data['recruitment_target'] = $recruitmentTarget;
             $totalFemales = $this->_getTotalGender("female");
             $this->tpl_data['female_total'] = $totalFemales;
@@ -236,8 +242,6 @@ class NDB_Form_dashboard extends NDB_Form
             $this->tpl_data['male_total'] = $totalMales;
             $this->tpl_data['male_percent'] 
                 = round($totalMales/$recruitmentTarget*100);
-            $totalRecruitment = $totalFemales + $totalMales;
-            $this->tpl_data['total_recruitment'] = $totalRecruitment;
             if ($totalRecruitment > $recruitmentTarget) {
                 $this->tpl_data['surpassed_recruitment'] = "true";
                 $this->tpl_data['female_full_percent'] 
