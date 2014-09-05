@@ -83,7 +83,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $config =& NDB_Config::singleton();
         $location = $config->getSetting('mincPath') . "logs";
         $this->log= new Log("MRI_upload", $location);
-        $this->message = new Message("/data/.log");
+        $this->message = new Message("/data/loris/data/logs/mri.log");
       
         return true;
     }
@@ -199,7 +199,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $decomp = new File_Decompress($source_location, $mri_incoming_path);
             $decompressed_folder = $decomp->decompressFile();
             $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
-            if (!($decompressed_folder)) { //decompress the file
+            if ($decompressed_folder) { //decompress the file
                 $this->log->addLog(
                     "The File $source_location is now".
                     "untarred into $mri_incoming_path \n"
@@ -810,9 +810,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         );
         $ArchiveLocation = $row['ArchiveLocation'];
         $tarchive_id = $row['TarchiveID'];
-        $this->log->addLog(
-            "The DICOM file is now tarred into $ArchiveLocation \n"
-        );
+  
+        ///////////////////////////////////////////////////////////////////////
+        //////display the log only if the tarchives are created correctly//////
+        ///////////////////////////////////////////////////////////////////////
+        if (isset($ArchiveLocation) && isset($tarchive_id)) {
+        	$this->log->addLog(
+            	"The DICOM file is now tarred into $ArchiveLocation \n"
+        	);
+        }
 
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
