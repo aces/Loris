@@ -14,7 +14,7 @@
 
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
-$data_source_file = "/data/.log";
+$data_source_file = "/data/loris/data/logs/mri.log";
 
 while (true) {
     clearstatcache();
