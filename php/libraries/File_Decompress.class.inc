@@ -150,9 +150,11 @@ class File_Decompress extends PEAR
         $result = $zip->open($this->file_name);
         if ($result === true) {
             $zip->extractTo($this->dest_path);
+            $file_name = $zip->getNameIndex(0);
             $zip->close();
         }
-        return $result;
+  	    
+        return $file_name;
     }
 }
 ?>
