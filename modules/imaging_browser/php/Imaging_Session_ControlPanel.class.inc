@@ -111,6 +111,7 @@ class Imaging_Session_ControlPanel
         
         $config =& NDB_Config::singleton();
         
+        $this->tpl_data['mantis'] = $config->getSetting('mantis_url');
         $subjectData['mantis'] = $config->getSetting('mantis_url');
         $subjectData['has_permission'] = $this->_hasAccess();
         $subjectData['status_options'] = array (
@@ -145,8 +146,7 @@ class Imaging_Session_ControlPanel
     {
         $this->tpl_data['subject'] = $this->getData();
 
-        $smarty = new Smarty_neurodb;
-        $smarty->ModuleName = "imaging_browser";
+        $smarty = new Smarty_neurodb("imaging_browser");
    
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("imaging_session_controlpanel.tpl");

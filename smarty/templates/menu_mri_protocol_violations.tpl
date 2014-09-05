@@ -1,121 +1,163 @@
+<script src="js/filterControl.js" type="text/javascript"></script>
 
-<form method="post" action="main.php?test_name=mri_protocol_violations">
-<table border="0" valign="top" class="std">
-    <tr>
-        <th nowrap="nowrap" colspan=4>Selection Filter</th>
-    </tr>
-    
-    <tr>
-      <td nowrap="nowrap">{$form.CandID.label}</td>
-      <td nowrap="nowrap">{$form.CandID.html}</td>
-   </tr>
-   
-   <tr>
-      <td nowrap="nowrap">{$form.PSCID.label}</td>
-      <td nowrap="nowrap">{$form.PSCID.html}</td>
-   </tr>
-   
-   <tr>
-      <td nowrap="nowrap">{$form.PatientName.label}</td>
-      <td nowrap="nowrap">{$form.PatientName.html}</td>
-   </tr>
-   
-   <tr>
-      <td nowrap="nowrap">{$form.SeriesUID.label}</td>
-      <td nowrap="nowrap">{$form.SeriesUID.html}</td>
-   </tr>
-   <tr>
-      <td nowrap="nowrap">{$form.SeriesDescription.label}</td>
-      <td nowrap="nowrap">{$form.SeriesDescription.html}</td>
-   </tr>
-   <tr>
-      <td nowrap="nowrap">{$form.TimeRun.label}</td>
-      <td nowrap="nowrap">{$form.TimeRun.html}</td>
-   </tr>
-
-    <tr>
-    <tr>
-    
-        <td>Actions:</td>
-        <td>&nbsp;</td>
-        <td colspan="2" align="center"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=mri_protocol_violations&reset=true'"/></td>
-    </tr>
-<table>
-</form>
-
+<div class="col-sm-12">
+    <div class="col-md-8 col-sm-8">
+        <form method="post" action="main.php?test_name=mri_protocol_violations">
+            <div class="panel panel-primary">
+                <div class="panel-heading" onclick="hideFilter();">
+                    Selection Filter
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                </div>
+                <div class="panel-body" id="panel-body">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.CandID.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.CandID.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">    
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.PatientName.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.PatientName.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.SeriesUID.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.SeriesUID.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.SeriesDescription.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.SeriesDescription.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.TimeRun.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.TimeRun.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-5 col-sm-offset-7 hidden-sm">
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_protocol_violations&reset=true'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row visible-sm">
+                        <div class="col-sm-6">
+                            <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_protocol_violations&reset=true'">
+                        </div>
+                    </div>
+                    <input type="hidden" name="test_name" value="mri_protocol_violations" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Mri- protocol table  -->
 <div id='hide' style="font-weight: bold" class="toggle_mri_tbl">
-	-Hide mri-protocol Table
+  <span class="glyphicon glyphicon-minus"></span> Hide mri-protocol Table
 </div> 
 
 <div id='show' style="font-weight: bold" class="toggle_mri_tbl">
-	+Show mri-protocol Table
+  <span class="glyphicon glyphicon-plus"></span> Show mri-protocol Table
 </div> 
 
-<table class ="fancytable" id="tbl" border="0" width="100%" class="listColorCoded">
-	<tr>
-	{assign var=count value=0}
-	{foreach from=$mri_protocol_header item=mp}
-		    <th id="header_{$count}">
-		       {$mp}
-		    </th>
-	  	   {assign var=count value=$count+1}
-	{/foreach}
-	</tr>
+<div id="mri-protocol" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="table-scroll" id="mri-protocol-content">
+            <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
+                <thead>
+                    <tr class="info">
+                        {assign var=count value=0}
+                        {foreach from=$mri_protocol_header item=mp}
+                            <th id="header_{$count}">
+                               {$mp}
+                            </th>
+                            {assign var=count value=$count+1}
+                        {/foreach}
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$mri_protocol_data item=mp}
+                      {assign var=ccount value=0}
+                      
+                        <tr>
+                          {foreach from=$mp item=row}
+                            {if $violated_scans_modifications}
+                               <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
+                            {else}
+                               <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
+                            {/if}  
+                                    {$row}
+                                {$k}
+                                       </td>
+                            {assign var=ccount value=$ccount+1}
+                          {/foreach}
+                        </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+        <a class="left carousel-control"  id="protocolScrollLeft" href="#mri-protocol">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="protocolScrollRight" href="#mri-protocol" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>
 
-	{foreach from=$mri_protocol_data item=mp}
-		{assign var=ccount value=0}
-		
-		  <tr>
-			  {foreach from=$mp item=row}
-				  {if $violated_scans_modifications}
-					   <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
-				  {else}
-					   <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
-				  {/if}  
-  			      		{$row}
-				  		{$k}
-	                   </td>
-				  {assign var=ccount value=$ccount+1}
-			  {/foreach}
-		  </tr>
-	{/foreach}
-</table>
-<br>
-<br>
+</br></br>
 
-<!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
-    <!-- title -->
     <td align="right">{$page_links}</td>
 </tr>
 </table>
 
-<!-- start data table -->
-<table  class ="fancytable" border="0" width="100%" class="listColorCoded">
-<tr>
- <th nowrap="nowrap">No.</th>
-    {section name=header loop=$headers}
-        <th nowrap="nowrap"><a href="main.php?test_name=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
-    {/section}
-</tr>
-{section name=item loop=$items}
-    <tr>
-    <!-- print out data rows -->
-    {section name=piece loop=$items[item]}
-   
-       	<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-	  		{$items[item][piece].value}
-		</td>
-
-    {/section}
-    </tr>           
-{sectionelse}
-
-	<tr><td colspan="12">No data found</td></tr>
-{/section}
-                    
-<!-- end data table -->
-</table>
+<div id="results" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="table-scroll" id="content">
+            <table class="table table-hover table-primary table-bordered" border="0" width="100%">
+                <thead>
+                    <tr class="info">
+                        <th nowrap="nowrap">No.</th>
+                            {section name=header loop=$headers}
+                                <th nowrap="nowrap"><a href="main.php?test_name=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
+                            {/section}
+                    </tr>
+                </thead>
+                <tbody>
+                    {section name=item loop=$items}
+                        <tr>
+                        <!-- print out data rows -->
+                        {section name=piece loop=$items[item]}
+                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
+                                {$items[item][piece].value}
+                            </td>
+                        {/section}
+                        </tr>           
+                    {sectionelse}
+                        <tr><td colspan="19">No data found</td></tr>
+                    {/section}
+                </tbody>
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft" href="#results">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#results" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>

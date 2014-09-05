@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/modules/form_stats_reliability.js"></script>
+<script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_reliability.js"></script>
 <div id="reliability">
     <h2 class="statsH2">Reliability Statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
         <div class="col-sm-2">

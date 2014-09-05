@@ -339,7 +339,9 @@ class CouchDB
      */
     function deleteDoc($id)
     {
-        $json = $this->_getRelativeURL($id, "DELETE");
+        $getjson = $this->_getRelativeURL($id);
+        $getdata = json_decode($getjson, true);
+        $json = $this->_getRelativeURL($id . "?rev=" . $getdata['_rev'], "DELETE");
         $data = json_decode($json, true);
 
         if (!isset($data['ok'])) {

@@ -106,7 +106,8 @@
 	{foreach from=$form.sections item=section}
 		<div class="col-sm-12">
 			<div class="col-sm-8">
-				<h5 align="center">{$section.header}</h5>
+				<h3 align="center">{$section.header}</h3>
+				<br>
 			</div>
 		</div>
 		{foreach from=$section.elements item=element}

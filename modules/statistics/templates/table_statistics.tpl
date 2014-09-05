@@ -12,7 +12,7 @@
      - Visits (the visits to display)
      - Data (the data that populates the table)
  *}
-<script type="text/javascript" src="js/modules/table_statistics.js"></script>
+<script type="text/javascript" src="GetJS.php?Module=statistics&file=table_statistics.js"></script>
 
 <h2 class="statsH2">{$Header}</h2>
 

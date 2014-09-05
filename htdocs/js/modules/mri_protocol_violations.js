@@ -3,16 +3,16 @@ function change() {
     "use strict";
     $('#hide').show();
     $('#show').hide();
-    $('#tbl').show();
+    $('#mri-protocol').show();
     $('#show').bind('click', function () {
-        $('#tbl').show('slow', function () {});
+        $('#mri-protocol').show('slow', function () {});
         $('#hide').show();
         $('#show').hide();
     });
 
     //To hide : table hides...and the show shows...
     $('#hide').bind('click', function () {
-        $('#tbl').hide('slow', function () {});
+        $('#mri-protocol').hide('slow', function () {});
         $('#show').show();
         $('#hide').hide();
     });
@@ -62,4 +62,18 @@ $(function () {
     "use strict";
     change();
     save();
+});
+$(document).ready(function(){
+    $.getScript("js/modules/dynamic_table.table.js")
+        .done(function(){
+            Table.setup("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
+            Table.checkOverflow("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
+            Table.setup("content", "scrollRight", "scrollLeft");
+            Table.checkOverflow("content", "scrollRight", "scrollLeft");
+        });
+});
+$(window).resize(function(){
+    Table.checkOverflow("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
+    Table.checkOverflow("content", "scrollRight", "scrollLeft");
+    // checkOverflow();
 });

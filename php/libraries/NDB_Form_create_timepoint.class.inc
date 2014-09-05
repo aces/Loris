@@ -7,6 +7,11 @@ require_once "NDB_Form.class.inc";
  */
 class NDB_Form_create_timepoint extends NDB_Form
 {
+    /**
+     * The subprojectID being created
+     */
+    var $subprojectID;
+
     function _hasAccess()
     {
         // create user object
@@ -100,8 +105,8 @@ class NDB_Form_create_timepoint extends NDB_Form
             $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value");
         }
 
-        $this->form->addElement('select', 'subprojectID', 'Subproject', $sp_labelOptions, $attributes);
-        $this->form->setDefaults(array("subprojectID"=>$this->subprojectID));
+        $this->addSelect('select', 'subprojectID', 'Subproject', $sp_labelOptions, $attributes);
+        $this->_setDefaults(array("subprojectID"=>$this->subprojectID));
         
         
         // visit label
