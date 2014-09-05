@@ -70,7 +70,7 @@
     </div>
 </div>
 </div>
-   
+  
     <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
     
     <table>
