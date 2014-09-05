@@ -1,27 +1,63 @@
-<form method="post" action="main.php?test_name=participant_accounts">
-<!-- start the selection table -->
-<table border="0" valign="top" class="std">
-    <tr>
-        <th nowrap="nowrap" colspan="8">Selection Filter</th>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.PSCID.label}</td>
-        <td nowrap="nowrap">{$form.PSCID.html}</td>
-        <td nowrap="nowrap">{$form.VisitLabel.label}</td>
-        <td nowrap="nowrap">{$form.VisitLabel.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap">{$form.Email.label}</td>
-        <td nowrap="nowrap">{$form.Email.html}</td>
-        <td nowrap="nowrap">{$form.Instrument.label}</td>
-        <td nowrap="nowrap">{$form.Instrument.html}</td>
-    </tr>
-    <tr>
-        <td nowrap="nowrap"><input type="button" name="button" value="Add Survey" class="button" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'" /></td>
-        <td colspan="7" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=participant_accounts&reset=true'" /></td>
-    </tr>
-<table>
-</form>
+<div class="col-sm-12">
+    <div class="col-md-8 col-sm-8">
+        <form method="post" action="main.php?test_name=participant_accounts">
+            <div class="panel panel-primary">
+                <div class="panel-heading" onclick="hideFilter();">
+                    Selection Filter
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                </div>
+                <div class="panel-body" id="panel-body">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.VisitLabel.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.VisitLabel.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Email.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Email.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.Instrument.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Instrument.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-2 hidden-sm">
+                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'"/>
+                        </div>
+                        <div class="form-group col-sm-5 col-sm-offset-5 hidden-sm">
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=participant_accounts&reset=true'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row visible-sm">
+                        <div cladd="col-sm-4">
+                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                        </div>
+                        <div class="col-sm-4 col-xs-12">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=participant_accounts&reset=true'">
+                        </div>
+                    </div>
+                    <input type="hidden" name="test_name" value="participant_accounts"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
