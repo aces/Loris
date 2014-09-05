@@ -1,3 +1,5 @@
+<script src="js/filterControl.js" type="text/javascript"></script>
+
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
         <form method="post" action="main.php?test_name=participant_accounts">
