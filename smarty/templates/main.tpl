@@ -83,9 +83,16 @@
                         {literal}
                         $.get("help.php", getParams, function (content) {
                         console.log(content);
-                                var div = document.createElement("pre");
+                                var div = document.createElement("div"),
+                                    pre = document.createElement("pre"),
+                                    footer = document.createElement("div");
+
                                 modalParams.title = "Help: " + content.topic;
-                                div.innerHTML = content.content;
+                                pre.innerHTML = content.content;
+                                footer.innerHTML = "<hr>Last updated: " + content.updated;
+                                div.appendChild(pre);
+                                div.appendChild(footer);
+
                                 $(div).dialog(modalParams);
                         }, "json");
                         e.preventDefault();
