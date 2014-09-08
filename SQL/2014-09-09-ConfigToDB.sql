@@ -114,6 +114,54 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) V
 -- endYear
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('endYear', "project's end year", 1, 0, 5);
 
+-- useProband
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useProband', "true/false - displays the proband field in the candidate profile", 1, 0, 5);
+
+-- useScreening
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useScreening', "", 1, 0, 5);
+
+-- ReliabilityInstruments
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('ReliabilityInstruments', "Instruments for relability module", 1, 0, 5);
+
+-- Instrument
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('Instrument', "Instrument for reliability module", 1, 1, REPLACE);
+
+-- Testname
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('Testname', "Instrument for reliability module", 1, 0, REPLACE);
+
+-- Threshold
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('Threshold', "Threshold for the instrument in the reliability module", 1, 0, REPLACE);
+
+-- Displayname
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('Displayname', "Display name for the intrument in the reliability module", 1, 0, REPLACE);
+
+-- excluded_instruments
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('excluded_instruments', "Define a list of instruments to be skipped by quickform_parser.php. These instruments will not be available in Data Dictionary module", 1, 0, 5);
+
+-- instrument
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('instrument', "Instrument to be skipped by quickform_parser.php.", 1, 1, REPLACE);
+
+-- DoubleDataEntryInstruments
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('DoubleDataEntryInstruments', "Add instruments for which Double Data entry should be enabled", 1, 0, 5);
+
+-- instrument
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('instrument', "Instrument for which Double Data entry should be enabled", 1, 1, REPLACE);
+
+-- ConsentModule
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('ConsentModule', "Consent module allows addition of consent information in the candidate information page", 1, 0, 5);
+
+-- useConsent
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useConsent', "Enable the consent section in candidate information page", 1, 0, REPLACE);
+
+-- Consent
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('Consent', "", 1, 1, REPLACE);
+
+-- name
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('name', "", 1, 0, REPLACE);
+
+-- label
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('label', "", 1, 0, REPLACE);
+
 --
 -- statistics children
 --
