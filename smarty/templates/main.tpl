@@ -50,12 +50,6 @@
                     window.open(myUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
                     }
                 }
-                function open_help_section(){
-                    {/literal}
-                    var helpurl = "context_help_popup.php?test_name={$test_name}";
-                    {literal}
-                    window.open(helpurl);
-                }
 
                 function getCookie(c_name) {
                     "use strict";
@@ -77,6 +71,24 @@
                     });
                     $(".dropdown").hover(function(){
                         $(this).toggleClass('open');
+                    });
+                    $(".help-button").click(function(e) {
+                        var wPixels = $(window).width() * 0.8,
+                            getParams = {},
+                            modalParams = { width: wPixels };
+                        {/literal}
+                        {if $test_name}
+                            getParams.test_name = "{$test_name|escape:"javascript"}";
+                        {/if}
+                        {literal}
+                        $.get("help.php", getParams, function (content) {
+                        console.log(content);
+                                var div = document.createElement("pre");
+                                modalParams.title = "Help: " + content.topic;
+                                div.innerHTML = content.content;
+                                $(div).dialog(modalParams);
+                        }, "json");
+                        e.preventDefault();
                     });
                 });
 
@@ -105,7 +117,7 @@
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
                     </button>
-                    <button type="button" class="navbar-toggle" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;">
+                    <button type="button" class="navbar-toggle help-button">
                         <span class="sr-only">Toggle navigation</span>
                         <img width=17 src=images/help.gif>
                     </button>
@@ -153,7 +165,7 @@
                             </a>
                         </li>
                         <li class="hidden-xs hidden-sm">
-                            <a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;" class="navbar-brand pull-right">
+                            <a href="#" class="navbar-brand pull-right help-button">
                                 <img width=17 src=images/help.gif>
                             </a>
                         </li>
