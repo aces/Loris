@@ -2,7 +2,7 @@
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=conflicts_resolve">
+        <form method="post" action="main.php?test_name=conflict_resolver">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -48,7 +48,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-5 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflict_resolver&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -57,10 +57,10 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflicts_resolve&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflict_resolver&reset=true'">
                         </div>
                     </div>
-                    <input type="hidden" name="test_name" value="conflicts_resolve" />
+                    <input type="hidden" name="test_name" value="conflict_resolver" />
                 </div>
             </div>
         </form>
@@ -70,7 +70,7 @@
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs ">
         <li class="active"><a id="onLoad">Unresolved Conflicts</a></li>
-        <li><a href="main.php?test_name=resolved_conflicts">Resolved Conflicts</a></li>
+        <li><a href="main.php?test_name=conflict_resolver&submenu=resolved_conflicts">Resolved Conflicts</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
@@ -83,7 +83,7 @@
             </table>
 
             <div class="table-responsive">
-                <form method="post" action="main.php?test_name=conflicts_resolve" name="conflicts_resolve" id="conflicts_resolve">
+                <form method="post" action="main.php?test_name=conflict_resolver" name="conflict_resolver" id="conflict_resolver">
                     <table class="table table-hover table-primary table-bordered table-unresolved-conflicts" border="0">
                         <thead>
 
@@ -96,7 +96,7 @@
                             <tr class="info">
                                 <th>No.</th>
                                     {section name=header loop=$headers}
-                                        <th><a href="main.php?test_name=conflicts_resolve&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                                        <th><a href="main.php?test_name=conflict_resolver&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                                         {if $headers[header].displayName == "TableName"}
                                             Instrument
                                         {else if $headers[header].displayName == "CandID"}
