@@ -40,7 +40,7 @@ $tpl_data = array();
 
 // create an instance of the config object
 $config              =& NDB_Config::singleton();
-$tpl_data['css']     = $config->getSetting('css');
+$tpl_data['css']     = "../".$config->getSetting('css');
 $tpl_data['rand']    = rand(0, 9999);
 $tpl_data['success'] = false;
 $err                 = array();
