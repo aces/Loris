@@ -3,7 +3,6 @@
 <head>
       <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
       <title>Thank you!</title>
-      <link rel="STYLESHEET" type="text/css" href="contact.css">
 </head>
 <body>
 <p>Your request for an account has been received successfully.</p>
