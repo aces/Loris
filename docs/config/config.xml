@@ -110,17 +110,17 @@
         <ageMin>8</ageMin>
         <!-- max subject age in years -->
         <ageMax>11</ageMax>
-	<!-- true/false - more than one site in the project? -->
+    <!-- true/false - more than one site in the project? -->
         <multipleSites>true</multipleSites>
         <!-- true/false - use family ID -->
         <useFamilyID>false</useFamilyID>
-	<!-- project's start year -->
+    <!-- project's start year -->
         <startYear>2004</startYear>
-	<!-- project's end year -->
+    <!-- project's end year -->
         <endYear>2014</endYear>
 
         <PSCID>
-	  <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
+      <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
           <generation>user</generation>
           <structure>
             <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
@@ -156,25 +156,25 @@
 <!--HeaderTable>
      <parameter_candidate>candidate_comment</parameter_candidate>
 </HeaderTable-->
-	<!-- number of subprojects in the project - corresponds to the list of subpojects below -->
-	<!-- max number of timepoints per subject (integer)-->
-	<useScreening>false</useScreening>
-	<subprojects>
-	    <subproject>
+    <!-- number of subprojects in the project - corresponds to the list of subpojects below -->
+    <!-- max number of timepoints per subject (integer)-->
+    <useScreening>false</useScreening>
+    <subprojects>
+        <subproject>
                 <id>1</id>
-		<title>MRI session</title>
-		<options>
-		    <useEDC>false</useEDC>
-		</options>
-	    </subproject>
-	    <subproject>
-	        <id>2</id>
-		<title>Instrument Data</title>
-		<options>
-		    <useEDC>false</useEDC>
-		</options>
-	    </subproject>
-	</subprojects>
+        <title>MRI session</title>
+        <options>
+            <useEDC>false</useEDC>
+        </options>
+        </subproject>
+        <subproject>
+            <id>2</id>
+        <title>Instrument Data</title>
+        <options>
+            <useEDC>false</useEDC>
+        </options>
+        </subproject>
+    </subprojects>
 
     <!-- defines how visit labels are assigned -->
     <visitLabel subprojectID="1">
