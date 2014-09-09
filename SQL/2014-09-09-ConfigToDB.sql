@@ -24,19 +24,19 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('
 --
 
 -- patientIDRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientIDRegex', 'Settings related to the DICOM archive', 1, 0, 1);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientIDRegex', "", 1, 0, 1);
 
 -- patientNameRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientNameRegex', 'Settings related to the DICOM archive', 1, 0, 1);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientNameRegex', '', 1, 0, 1);
 
 -- LegoPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LegoPhantomRegex', 'Settings related to the DICOM archive', 1, 0, 1);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LegoPhantomRegex', '', 1, 0, 1);
 
 -- LivingPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LivingPhantomRegex', 'Settings related to the DICOM archive', 1, 0, 1);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LivingPhantomRegex', '', 1, 0, 1);
 
 -- showTransferStatus
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('showTransferStatus', 'Settings related to the DICOM archive', 1, 0, 1);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('showTransferStatus', '', 1, 0, 1);
 
 --
 -- dashboard children
