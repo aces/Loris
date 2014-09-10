@@ -314,13 +314,13 @@ class NDB_Form_dashboard extends NDB_Form
 
         if ($user->hasPermission('user_accounts_multisite')) {
             $this->tpl_data['pending_users'] = $DB->pselectOne(
-                "SELECT count(*) FROM users WHERE Pending_approval=1", array()
+                "SELECT count(*) FROM users WHERE Pending_approval='Y'", array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
         } elseif ($user->hasPermission('user_accounts')) {
             $this->tpl_data['pending_users'] = $DB->pselectOne(
                 "SELECT count(*) FROM users 
-                WHERE Pending_approval=1 AND CenterID=$siteID", array()
+                WHERE Pending_approval='Y' AND CenterID=$siteID", array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: ' . $site;
         }
