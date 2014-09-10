@@ -37,7 +37,6 @@ class Message
      */
     function __construct($file_name,$location=null)
     {   
-    	print "file-name is $file_name <BR>";
     	///Create the proper file-name
     	$today= getdate();
         $date = sprintf(
