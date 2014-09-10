@@ -57,6 +57,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
+    	print "HOLAAAAAAAAAAAAAAA";
 
         // set the class variables
         $this->columns = array('UploadID','s.CandID','s.visit_label',
@@ -70,13 +71,21 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
            JOIN session s ON (s.ID = mu.SessionID)
             WHERE 1=1 ";
         $this->formToFilter = array();
-
-	 /*****
-            Extract info from the config file
-
+	 	
+        /*****
+            Extract info from the config file and create the log file
          ****/
-       $this->message = new Message("MRI_upload");
-      
+        $config =& NDB_Config::singleton();
+        $log_location = $config->getSetting("log");
+        $paths = $config->getSetting('base');
+	    $log_directory = $paths['base'] ."/". $config->getSetting('log');
+        $this->message = new Message("MRI_upload", $log_directory);
+        $log_path = $this->message->getMessagePath();
+        if (chmod($log_path , 0664)) {
+        	print "file permission changed";
+        }
+		print "log_path is " . $log_path . "<BR>";
+        
         return true;
     }
 
@@ -192,6 +201,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $decompressed_folder = $decomp->decompressFile();
             $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
             if ($decompressed_folder) { //decompress the file
+
                 $this->message->addMessage(
                     "The File $source_location is now" .
                     "untarred into $mri_incoming_path \n"
@@ -247,7 +257,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 
                 //create a new log file for the tarchive_file
                 $tarchive_log= new Log(
-                    $patient_name. "_tarchive_file"
+                    $patient_name. "_tarchive_file", $paths['data'] . "logs/"
                 );
                 $tarchive_log->addLog($ArchiveLocation, false);
                 
@@ -284,6 +294,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     /// mincs are created, before the minc-inserted is set/////
                     /////////// to true////////////////////////////////////////
                     if ($output==0) {
+                        
                         $this->message->addMessage(
                             "The minc file for patient-name $patient_name " . 
                             "is now inserted into db \n"
@@ -724,8 +735,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         $loris_config = $mri_code_path . "dicom-archive";
         putenv("LORIS_CONFIG=$loris_config");
+<<<<<<< HEAD:modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
 
         $path .= getenv('PERL5LIB');
+=======
+        
+        $perlib = getenv('PERL5LIB');
+        if (isset($perlib)) {
+        	$path .= getenv('PERL5LIB');                    
+        }
+        else {
+        	$path .= '/usr/lib/perl5/';
+        }
+>>>>>>> Bug fixes:php/libraries/NDB_Menu_Filter_mri_upload.class.inc
 
         putenv("PERL5LIB=$path");
         
@@ -736,7 +758,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
 
         putenv("USER=$mri_user");
-
         $this->message->addMessage("The Environment Variables are now set \n");
                       
     }
@@ -771,6 +792,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 
         if ($this->show_queries) {
             print "cmd : $cmd \n";
+            $this->message->addMessage($output);
             print $output;
         }
 
@@ -779,7 +801,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $row = $db->pselectRow(
             "Select ArchiveLocation,TarchiveID FROM tarchive".
-            " ORDER BY Lastupdate DESC"
+            " ORDER BY Lastupdate DESC",array()
         );
         $ArchiveLocation = $row['ArchiveLocation'];
         $tarchive_id = $row['TarchiveID'];
@@ -788,10 +810,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////display the log only if the tarchives are created correctly//////
         ///////////////////////////////////////////////////////////////////////
         if (isset($ArchiveLocation) && isset($tarchive_id)) {
-         	$this->message->addMessage(
+        	$this->message->addMessage(
             	"The DICOM file is now tarred into $ArchiveLocation \n"
         	);
-
         }
 
         ///////////////////FIX THIS////////////////////////////////////////////
