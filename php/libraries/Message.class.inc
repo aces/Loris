@@ -24,6 +24,8 @@
  * @license  Loris License
  * @link     https://github.com/aces/IBIS
 */
+require_once 'NDB_Config.class.inc';
+
 class Message
 {
     var $messageFile;
@@ -33,9 +35,36 @@ class Message
      *
      * @param string $path path to the file
      */
-    function __construct($path)
-    {
-        $this->messageFile = $path;
+    function __construct($file_name,$location=null)
+    {   
+    	print "file-name is $file_name <BR>";
+    	///Create the proper file-name
+    	$today= getdate();
+        $date = sprintf(
+            "%04d-%02d-%02d", $today['year'], 
+            $today['mon'], $today['mday']
+        );
+        $config=&NDB_Config::singleton();
+        $log_location = $config->getSetting("log");
+        $base_location = $config->getSetting("base");
+
+        if ($log_location[0] !== '/') { // It's not an absolute path (i.e logs/tools)
+            //append log_location to base_location
+            //if base_location is /var/www/
+            if ($base_location[strlen($base_location)-1]== '/') { 
+                $log_location = $base_location . $log_location;
+            } else {   // else if base location is /var/www/
+                $log_location = $base_location . "/" . $log_location;
+            }
+        }
+        if (($location == null) || ($location == '')) {
+            $this->messageFile  = $log_location . "/" . $file_name . 
+            "." .  $date . ".log";
+        } else {
+            $this->messageFile  = $location . "/" . $file_name 
+            . "." . $date . ".log";
+        }
+        
     }
 
     /**
