@@ -12,9 +12,9 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
-
+require_once 'NDB_Config.class.inc';
 header("Cache-Control: no-store, no-cache, must-revalidate");
-$data_source_file = "/data/loris/data/logs/mri.log";
+$data_source_file = getTheLoGfile();  //get the latest log file
 
 while (true) {
     clearstatcache();
@@ -41,4 +41,18 @@ while (true) {
     flush();
     break;
 }
+
+function getTheLoGfile() {
+	
+	$config =& NDB_Config::singleton();
+	$log_location = $config->getSetting('log');
+	$base_path = $config->getSetting('base');
+        $log_path = $base_path . "/" . $log_location;
+	$files = glob($log_path. "/MRI_upload*");
+	$files = array_combine($files, array_map("filemtime", $files));
+	arsort($files);
+	$data_source_file = key($files);
+	return $data_source_file;
+}	
+
 ?>
