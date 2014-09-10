@@ -37,7 +37,7 @@ function getMessage() {
     $.ajax(
         {
             type: 'GET',
-            url: 'read_log.php',
+            url: '../ajax/read_log.php',
             success: function (data) {
                 if (data.indexOf("completed") > -1 || data.indexOf("Error") > -1) {
                     if (data.indexOf("\n") > -1) {
