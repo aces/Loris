@@ -56,7 +56,7 @@ function getLatestLogFile() {
 		print "config setting is missing";
     	error_log("ERROR: Config settings are missing");
 	}
-	$log_directory = $paths['base'] . "/" . $config->getSetting('log');
+	$log_directory = $paths['base'] . "/" . $config->getSetting('log')."/MRI_upload";
 	print "log directory is " . $log_directory . "<BR>";
 	//get the last file modified
 	$files = glob($log_directory."/*MRI_upload*");
