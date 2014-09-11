@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    $.getScript("js/modules/instrument_builder.instrument.js");
-    $.getScript("js/modules/instrument_builder.rules.js");
+    $.getScript("AjaxHelper.php?Module=instrument_builder&script=instrument_builder.instrument.js");
+    $.getScript("AjaxHelper.php?Module=instrument_builder&script=instrument_builder.rules.js");
     $(".options").hide();
     $(".option").click(function() {
         $(".options").hide();
