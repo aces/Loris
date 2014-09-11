@@ -522,7 +522,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $config                         =& NDB_Config::singleton();
         $consent                        = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
-            foreach (Utility::asArray($consent['Consent']) as $question) {
+            foreach (Utility::toArray($consent['Consent']) as $question) {
                 $consentQuestion = array($question['name']=> $question['label'],
                                          $question['name'] . '_date' => "Date of <BR> $question[label]",
                                          $question['name'] . '_withdrawal' => "Date of withdrawal <BR> of $question[label]",
