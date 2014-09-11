@@ -25,7 +25,7 @@ require_once "Email.class.inc";
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Form_participant_accounts extends NDB_Form
+class NDB_Form_survey_accounts extends NDB_Form
 {
     /**
      * Determine whether the logged in user has access to this page.

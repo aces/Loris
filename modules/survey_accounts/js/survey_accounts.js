@@ -50,11 +50,10 @@ $(document).ready(function () {
     $("select[name=Test_name]").change(function (e) {
         var testname = $(this).val();
 
-        $.get("GetEmailContent.php", {
+        $.get("AjaxHelper.php?Module=survey_accounts&script=GetEmailContent.php", {
             test_name: testname
         },
         function(content) {
-            console.log(content);
             $("#email_dialog textarea").val(content);
         }
         );
