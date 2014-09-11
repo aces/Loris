@@ -5,7 +5,7 @@
 <br />
 
 <div class="col-md-8">
-<form method="post" name="participant_accounts" id="participant_accounts_form">
+<form method="post" name="survey_accounts" id="participant_accounts_form">
     {if not $success}
     <table class="table table-primary table-bordered" border="0">
         <!-- table title -->
