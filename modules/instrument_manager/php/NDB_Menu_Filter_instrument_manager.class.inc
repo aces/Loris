@@ -27,6 +27,13 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
         $this->validFilters = array('');
         $this->formToFilter = array (
         );
+
+        if(!is_writeable($this->path . "project/instruments")) {
+            $this->tpl_data['writeable'] = false;
+        } else {
+            $this->tpl_data['writeable'] = true;
+        }
+            
         if($_POST['install'] == 'Install Instrument') {
             $db = Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
@@ -70,9 +77,9 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 if($key == 'Instrument_Type') {
                     if(file_exists($this->path . "/project/instruments/" . $this->tpl_data['items'][$x]['instrument_name'] . ".linst")) {
-                        $this->tpl_data['items'][$x][$i]['value'] = "New";
+                        $this->tpl_data['items'][$x][$i]['value'] = "Instrument Builder";
                     } else if(file_exists($this->path . "project/instruments/NDB_BVL_Instrument_" . $this->tpl_data['items'][$x]['instrument_name'] . ".class.inc")) {
-                        $this->tpl_data['items'][$x][$i]['value'] = "Old";
+                        $this->tpl_data['items'][$x][$i]['value'] = "PHP";
                     } else {
                         $this->tpl_data['items'][$x][$i]['value'] = "Missing";
                     }
