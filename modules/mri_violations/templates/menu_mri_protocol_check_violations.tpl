@@ -2,7 +2,7 @@
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=mri_protocol_check_violations">
+        <form method="post" action="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -36,7 +36,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_protocol_check_violations&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -45,10 +45,11 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_protocol_check_violations&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&reset=true'">
                         </div>
                     </div>
-                    <input type="hidden" name="test_name" value="mri_protocol_check_violations" />
+                    <input type="hidden" name="test_name" value="mri_violations" />
+                    <input type="hidden" name="submenu" value="mri_protocol_check_violations" />
                 </div>
             </div>
         </form>
@@ -75,7 +76,7 @@
                         <th nowrap="nowrap">No.</th>
                         {section name=header loop=$headers}
                             <th nowrap="nowrap">
-                                <a href="main.php?test_name=mri_protocol_check_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
+                                <a href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
                             </th>
                         {/section}
                     </tr>
