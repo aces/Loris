@@ -1,5 +1,5 @@
 <!-- start the selection table -->
-<form method="post" action="main.php?test_name=instrument_installer" enctype="multipart/form-data">
+<form method="post" action="main.php?test_name=instrument_manager" enctype="multipart/form-data">
 <table border="0" valign="top" class="std">
     <tr>
         <th nowrap="nowrap" colspan="4">Selection Filter</th>

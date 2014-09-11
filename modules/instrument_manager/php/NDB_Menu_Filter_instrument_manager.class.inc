@@ -1,7 +1,7 @@
 <?php
 require_once 'NDB_Menu_Filter.class.inc';
 
-class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
+class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
 {
     function _hasAccess()
     {
@@ -9,7 +9,6 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
         if (PEAR::isError($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return true;
         return $user->hasPermission('superuser');
     }
 
