@@ -27,7 +27,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
  * @link     https://github.com/aces/Loris-Trunk    
 */
 
-class NDB_Menu_Filter_Form_conflicts_resolve extends NDB_Menu_Filter_Form
+class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 {
 
     function _hasAccess()
