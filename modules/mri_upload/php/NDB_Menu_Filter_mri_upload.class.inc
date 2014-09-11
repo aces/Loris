@@ -71,32 +71,31 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             WHERE 1=1 ";
         $this->formToFilter = array();
 	 	
-        $log_location = $config->getSetting("log");
-        $paths = $config->getSetting('base');
-	    $log_directory = $paths['base'] ."/". $config->getSetting('log');
-	    
-	    ////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////
         ////Create the log directory////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////
-        	
-    	// Extract info from the config file and create the log file
+        
+        // Extract info from the config file and create the log file
 	    $config =& NDB_Config::singleton();
-    	$log_location = $config->getSetting("log");
+        $log_location = $config->getSetting("log");
         $paths = $config->getSetting('paths');
-	    $log_directory = $paths['base'] ."/". $config->getSetting('log') . "/MRI_upload";
+        //////////////////////log directory//////////////////////////////////
+	    $log_directory = $paths['base'] ."/". $config->getSetting('log')
+	     . "/MRI_upload";
 	    	
-	    // Create an MRI_upload directory in the tools/logs
-	    if(!file_exists($log_directory)) {
+	    /////////////////////////////////////////////////////////////////////
+	    // Create an MRI_upload directory in the tools/logs//////////////////
+	    /////////////////////////////////////////////////////////////////////
+	    if (!file_exists($log_directory)) {
 			if (!mkdir($log_directory)) {
  				print('Failed to create mri folder');
  				error_log("Log file cannot be created");
- 				
 		    }
 		}
 	    
-        ////////////////////////////////////////////////////////////////////
-        ////Create the log file////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        ////Create the log file////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         
         $this->message = new Message("MRI_upload", $log_directory);
         $log_path = $this->message->getMessagePath();
