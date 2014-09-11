@@ -1,6 +1,3 @@
-<link rel="stylesheet" type="text/css" href="documentRepository.css"/>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-
 <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
 <table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
     <tr>
@@ -52,9 +49,9 @@
     {if $val != "Any"}
         <tr>
                 <td nowrap="nowrap" colspan = "11">
-                    <h3 id = "header_{$val|replace:' ':'_'|replace:'>':'_'}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px; color:black;" align="left">{$File_categories[$k].CategoryName}
-                        <span class="tip">
-                            <span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$val|replace:' ':'_'|replace:'>':'_'}" contentedit  able="true">
+                    <h3 id = "header_{$File_categories[$k].CategoryName|replace:' ':'_'|replace:'>':'_'}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px; color:black;" align="left">{$File_categories[$k].CategoryName}
+                        <span class="tip">...
+                            <span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$File_categories[$k].CategoryName|replace:' ':'_'|replace:'>':'_'}" contenteditable="true">
                                 {$File_categories[$k].Comment}
                             </span>
                 </span>
@@ -64,7 +61,7 @@
             {assign var="FileDetails" value=$File_categories[$k].Files[file]}
             <tr class="categories ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
                 <td class="File_name" nowrap="nowrap">
-                    <a href="{$FileDetails.Data_dir}" target="_blank">{$FileDetails.File_name}</a> ({$FileDetails.File_size})
+                    <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$FileDetails.Data_dir}" target="_blank" download="{$FileDetails.File_name}">{$FileDetails.File_name}</a> ({$FileDetails.File_size})
                 </td>
                 <td class="version" nowrap="nowrap">{$FileDetails.version}</td>
                 <td class="File_type" nowrap="nowrap">{$FileDetails.File_type}</td>
@@ -95,7 +92,7 @@
 </div>
 
 
-<form id="addCategory" action="DocumentRepository/addCategory.php" method="POST">
+<form id="addCategory" action="AjaxHelper.php?Module=document_repository&script=addCategory.php" method="POST">
 <div class = "addCategory" title="Add Category">
     <p>
         What category would you like to add?
@@ -109,7 +106,7 @@
         <option value=" "> </option>
             {foreach from = $File_categories item=val key=k}
                 {if $val != "Any"}
-                        <option value={$k}>{$val}</option>
+                        <option value={$k}>{$val.CategoryName}</option>
                     {/if}
             {/foreach}
         </select>
@@ -122,7 +119,7 @@
 
 
 <div id="uploadArea" class = "dialog-form" style = "border-style: solid; border-color: #7c7781; border-width:1px; margin: 1em !important; width:390px !important; height:auto !important;" title="Upload new file">
-<form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action = "DocumentRepository/documentEditUpload.php">
+<form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=document_repository&script=documentEditUpload.php">
 <div class = "upload-error">
     <p style = "color: #f33;">
 	    <span class="ui-icon ui-icon-alert" style = "float:left;"></span>
