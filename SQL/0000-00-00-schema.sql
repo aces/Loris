@@ -509,7 +509,6 @@ CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Center_name` varchar(4) NOT NULL default '',
   `ScannerID` int(10) unsigned NOT NULL default '0',
-  `Objective` tinyint(1) unsigned default NULL,
   `Scan_type` int(10) unsigned NOT NULL default '0',
   `TR_range` varchar(255) default NULL,
   `TE_range` varchar(255) default NULL,
@@ -1792,7 +1791,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
-    ('Conflicts Resolver', 'main.php?test_name=conflicts_resolve', 2, 2),
+    ('Conflicts Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
     ('Certification', 'main.php?test_name=certification', 2, 3);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
@@ -1876,3 +1875,21 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
 
+
+CREATE TABLE `ConfigSettings` (
+    `ID` int(11) NOT NULL AUTO_INCREMENT,
+    `Name` varchar(255) NOT NULL,
+    `Description` varchar(255) DEFAULT NULL,
+    `Visible` tinyint(1) DEFAULT '0',
+    `AllowMultiple` tinyint(1) DEFAULT '0',
+    `Parent` int(11) DEFAULT NULL,
+    PRIMARY KEY (`ID`),
+    UNIQUE KEY `Name` (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Config` (
+    `ID` int(11) NOT NULL AUTO_INCREMENT,
+    `ConfigID` int(11) DEFAULT NULL,
+    `Value` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
