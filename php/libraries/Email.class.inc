@@ -15,7 +15,6 @@
  * @author   Alex Zijdenbos <zijdenbos@example.com>
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
- *
  */
 
 require_once "PEAR.php";

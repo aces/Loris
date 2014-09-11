@@ -479,7 +479,7 @@ class Candidate
     /**
      * Return the candidate's ethnicity
      *
-     * @return string The ethnicity of candidate
+     * @return     string The ethnicity of candidate
      * @deprecated
      */
     function getCandidateEthnicity()
@@ -555,9 +555,9 @@ class Candidate
      * return the next visit number for the time point you are
      * trying to register can be called statically
      *
-     * @return integer Next visit number for candidate
+     * @return     integer Next visit number for candidate
      * @deprecated
-     *@throws PEAR:Error
+     *@throws     PEAR:Error
      */
     function getNextVisitNo()
     {
