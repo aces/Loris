@@ -13,12 +13,12 @@ function getQueryVariable(variable) {
     }
 }
 function loadDefaultStatus() {
-    "use strict";
+    "use strict"; 
     if (document.getElementById('pscid') !== undefined) {
         var pscid = document.getElementById('pscid'),
-            pscid_value = pscid.textContent,
+            pscid_value = pscid.textContent.replace(/ /g,''),
             default_vals;
-        $.get("GetParticipant_suboptions.php?pscid=" + pscid_value,
+        $.get("AjaxHelper.php?Module=candidate_parameters&script=GetParticipant_suboptions.php&pscid=" + pscid_value,
                 function (data) {
                 default_vals = data.split(";");
                 $('#participant_statusID').val(default_vals[0]);
@@ -33,7 +33,7 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
     var pstatus_sub = document.getElementById('participant_suboptions'),
         options,
         dropdown_value = defaultPstat_sub;
-    $.get("GetParticipant_suboptions.php?p_status=" + defaultPstat,
+    $.get("AjaxHelper.php?Module=candidate_parameters&script=GetParticipant_suboptions.php&p_status=" + defaultPstat,
             function (data) {
             options = data.split("\n");
 
@@ -67,7 +67,7 @@ function changeParticipantStatus() {
     if (dropdown_value !== undefined) {
                 dropdown_value = dropdown_value.replace(/\+/g, ' ');
     }
-    $.get("GetParticipant_suboptions.php?p_status=" + status_value+"&pscid="+pscid_value,
+    $.get("AjaxHelper.php?Module=candidate_parameters&script=GetParticipant_suboptions.php&p_status=" + status_value+"&pscid="+pscid_value,
             function (data) {
             options = data.split("\n");
 

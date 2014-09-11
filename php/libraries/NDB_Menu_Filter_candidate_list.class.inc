@@ -1,6 +1,6 @@
 <?php
 require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Form_candidate_parameters.class.inc';
+require_once '../modules/candidate_parameters/php/NDB_Form_candidate_parameters.class.inc';
 /**
 * The candidate list menu
  * @package main
