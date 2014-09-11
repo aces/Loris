@@ -8,10 +8,6 @@
     
     
     <tr>    
-        {php}
-        	$selected =  $_REQUEST['visit_label'];
-    	   $this->assign('visit_label_selected',$selected);
-        {/php}
         <td>
             Visit_labels
         </td>
@@ -19,7 +15,7 @@
 	        <div>
             <select name="visit_label" onchange="changefieldOptions()" id="visit_label">
                 {foreach from=$visitLabels item=name key=val}
-			 	   {if $name eq $visit_label_selected}
+			 	   {if $name eq $visit_label}
 					   <option value="{$name}" selected="selected"> {$name}</option>
 				    {else}
 	       				<option value="{$name}"> {$name}</option>
