@@ -123,6 +123,8 @@
                         }, "json");
                         e.preventDefault();
                     });
+
+                    $(".dynamictable").DynamicTable();
                 });
 
                 
