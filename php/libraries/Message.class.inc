@@ -44,7 +44,7 @@ class Message
             $today['mon'], $today['mday']
         );
         $config=&NDB_Config::singleton();
-        $log_location = $config->getSetting("log");
+        $log_location =  $config->getSetting("log");
         $base_location = $config->getSetting("base");
 
         if ($log_location[0] !== '/') { // It's not an absolute path (i.e logs/tools)
@@ -100,7 +100,21 @@ class Message
         fclose($file);
 
     }
-
+    /**
+    * Changes the name of the current log file
+    *
+    * @param String  $log_name  The Name of the new log-file
+    * 
+    * @return null
+    */
+    function changeLogName($log_name) {
+    	$path_parts = pathinfo($this->messageFile);
+    	$new_name = $path_parts['dirname'] . "/" .$log_name;
+    	//renames the file-name
+    	rename($this->messageFile,$new_name);
+    	$this->messageFile = $new_name;
+    }
+    
     /**
     * Returns the path to the log
     *
