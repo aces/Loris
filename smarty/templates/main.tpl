@@ -82,18 +82,26 @@
                         {/if}
                         {literal}
                         $.get("help.php", getParams, function (content) {
-                        console.log(content);
                                 var div = document.createElement("div"),
                                     pre = document.createElement("pre"),
-                                    footer = document.createElement("div");
+                                    btn = document.createElement("BUTTON"),
+                                    button = document.createTextNode("Close");
 
-                                modalParams.title = "Help: " + content.topic;
-                                pre.innerHTML = content.content;
-                                footer.innerHTML = "<hr>Last updated: " + content.updated;
+                                pre.innerHTML = "<h3>" + content.topic + "</h3>";
+                                pre.innerHTML += content.content;
+                                pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated;
+                                btn.appendChild(button);
+                                btn.className="btn btn-default";
                                 div.appendChild(pre);
-                                div.appendChild(footer);
-
-                                $(div).dialog(modalParams);
+                            
+                                div.appendChild(btn);
+                               // div.appendChild(footer);
+                                document.getElementById('page').appendChild(div);
+                                div.setAttribute("class", "help-content");
+                                btn.addEventListener("click", function(e) {
+                                    $(div).hide();      
+                                    e.preventDefault(); 
+                                }) ;
                         }, "json");
                         e.preventDefault();
                     });
