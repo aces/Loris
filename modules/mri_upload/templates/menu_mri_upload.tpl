@@ -11,50 +11,65 @@
 {/if}
 
 <br />
-<form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data"> 
-    <table class="std zia">
-        <!-- table title -->
-        <tr>
-            <td>
-                <tr><th colspan="6">Upload a New File</th></tr>
-                {foreach from=$form.errors item=error}
-                <tr>
-                    <td nowrap="nowrap" colspan="2" class="error">{$error}</td>
-                </tr>
-                {/foreach}
-        
-                <tr>
-              		<td nowrap="nowrap">{$form.mri_file.label}</td>
-              		<td id='file' nowrap="nowrap">{$form.mri_file.html}</td>
-              	</tr>
-              	
-              	<tr>
-                   <td colspan="2">
-                     Note: file name should be of type .tgz or tar.gz or .zip
-                   </td>
-                </tr>
-           </td>
-           <td>
-                <tr>
-                    <td nowrap="nowrap">{$form.CandID.label}</td>
-                    <td nowrap="nowrap">{$form.CandID.html}</td>
-                    <td nowrap="nowrap">{$form.PSCID.label}</td>
-                    <td nowrap="nowrap">{$form.PSCID.html}</td>
-                    <td nowrap="nowrap">{$form.VisitLabel.label}</td>
-                    <td nowrap="nowrap">{$form.VisitLabel.html}</td>
-                </tr>
-            </td>
-        </tr>
-      	<tr>
-      		<td nowrap="nowrap" colspan="2">
-      		    <input class="button" name="fire_away" id="upload" value="Upload" type="submit" />
-      		</td>
-      		<td align="center">
-      		    <input type="submit" name="filter" id="filter" value="Show Data" class="button" />&nbsp;
-      		</td>
-      	</tr>
-        
-    </table>
+
+<div class="row">
+<div class="col-sm-10 col-md-8">
+    <div class="panel panel-primary">
+        <div class="panel-heading" onclick="hideFilter();">
+            Upload a New File
+        </div>
+        <div class="panel-body" id="panel-body">
+            <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data"> 
+                <div class="row">
+                    {foreach from=$form.errors item=error}
+                        <div class="col-xs-12">
+                            <label class="col-sm-12 error">{$error}<br><br></label>
+                        </div>
+                    {/foreach}
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        <label class="col-sm-12 col-md-4">{$form.mri_file.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.mri_file.html}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="col-sm-12">Note: file name should be of type .tgz or tar.gz or .zip<br><br></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.CandID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.CandID.html}</div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.PSCID.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.PSCID.html}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label class="col-sm-12 col-md-4">{$form.VisitLabel.label}</label>
+                        <div class="col-sm-12 col-md-8">{$form.VisitLabel.html}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6 col-sm-offset-6">
+                        <div class="col-sm-6">
+                            <input name="fire_away" id="upload" value="Upload" type="submit" class="btn btn-sm btn-primary col-xs-12" />
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                        </div>
+                    </div>
+                </div>
+                {$form.hidden}
+            </form>
+        </div>
+    </div>
+</div>
+</div>
    
     <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
     
@@ -75,48 +90,63 @@
         </tr>
     
     </table>
-    
-    <table  class ="fancytable" border="0" width="100%" class="listColorCoded">
-        <tr>
-             <th nowrap="nowrap">No.</th>
-                {section name=header loop=$headers}
-                    <th nowrap="nowrap">
-                        <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}
-                        </a>
-                    </th>
-                {/section}
-        </tr>
-        {section name=item loop=$items}
-            <tr>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]}
-                    {if $items[item][piece].name eq 'Tarchive_Info'}
-                        <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
-                        View Details</a></td>
-                    {elseif $items[item][piece].name eq 'MRI_Browser'}     
-                        {if $items[item][piece].value neq '0'}
-                            <td nowrap="nowrap">
-                                <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
-                                    View Images
+
+<div class="row">
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="table-scroll" id="content">
+            <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
+                <thead>
+                <tr class="info">
+                     <th nowrap="nowrap">No.</th>
+                        {section name=header loop=$headers}
+                            <th nowrap="nowrap">
+                                <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}
                                 </a>
-                            </td>
-                        {/if}
-                    {else}
-                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                {$items[item][piece].value} 
-                        </td>
-                    {/if}
+                            </th>
+                        {/section}
+                </tr>
+                </thead>
+                <tbody>
+                {section name=item loop=$items}
+                    <tr>
+                        <!-- print out data rows -->
+                        {section name=piece loop=$items[item]}
+                            {if $items[item][piece].name eq 'Tarchive_Info'}
+                                <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
+                                View Details</a></td>
+                            {elseif $items[item][piece].name eq 'MRI_Browser'}     
+                                {if $items[item][piece].value neq '0'}
+                                    <td nowrap="nowrap">
+                                        <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
+                                            View Images
+                                        </a>
+                                    </td>
+                                {/if}
+                            {else}
+                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                        {$items[item][piece].value} 
+                                </td>
+                            {/if}
+                        {/section}
+                   </tr>
+                {sectionelse}
+                
+                <tr>
+                    <td colspan="12">No data found</td>
+                </tr>
+                
                 {/section}
-           </tr>
-        {sectionelse}
-        
-        <tr>
-            <td colspan="12">No data found</td>
-        </tr>
-        
-        {/section}
-        <!-- end data table -->
-    </table>
-    
-    {$form.hidden}
-</form>
+                </tbody>
+                <!-- end data table -->
+            </table>
+        </div>
+        <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>
+</div>
