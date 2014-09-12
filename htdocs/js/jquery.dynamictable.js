@@ -45,8 +45,7 @@
             $(this).wrap("<div class=\"carousel slide\" data-ride=\"carousel\"></div>");
             $(this).wrap("<div class=\"carousel-inner\"></div>");
             $(this).wrap("<div class=\"dynamicContentWrapper table-scroll\" style=\"overflow-x: auto\"></div>");
-            $(this).after('<a class="left carousel-control" href="#carousel-example-generic"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#carousel-example-generic" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
-            //console.log(link);
+            $(this).after('<a class="left carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
             var left = this.nextSibling;
             var right = left.nextSibling;
             var table = Setup( this.parentElement, right, left);
