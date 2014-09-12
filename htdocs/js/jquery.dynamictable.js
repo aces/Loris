@@ -42,7 +42,11 @@
  
     $.fn.DynamicTable = function(rightID, leftID) {
         this.filter("table").each(function() {
+            $(this).wrap("<div class=\"carousel slide\" data-ride=\"carousel\"></div>");
+            $(this).wrap("<div class=\"carousel-inner\"></div>");
             $(this).wrap("<div class=\"dynamicContentWrapper\" style=\"overflow-x: auto\"></div>");
+            $(this).after('<a class="left carousel-control" id="scrollLeft" href="#carousel-example-generic"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
+            //console.log(link);
             var table = Setup( this.parentElement, rightID, leftID );
         })
         return this;
