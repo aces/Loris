@@ -70,7 +70,6 @@
     </div>
 </div>
 </div>
-  
     <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
     
     <table>
@@ -102,7 +101,7 @@
                         {section name=header loop=$headers}
                             <th nowrap="nowrap">
                                 <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}
-                               </a>
+                                </a>
                             </th>
                         {/section}
                 </tr>
