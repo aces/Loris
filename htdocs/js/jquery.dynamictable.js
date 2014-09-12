@@ -1,16 +1,16 @@
 (function ($ ) {
-    var Setup = function(tableID, rightID, leftID) {
+    var Setup = function(wrapper, rightID, leftID) {
            $('#' + rightID).bind("click", function(event) {
             event.preventDefault();
             // Animates the scrollTop property by the specified
             // step.
             scrolling = false;
-            $('#' + tableID).animate({
-                scrollLeft: $('#' + tableID).scrollLeft() + step
+            $(wrapper).animate({
+                scrollLeft: $(wrapper).scrollLeft() + step
             });
         }).bind("mouseover", function(event) {
             scrolling = true;
-            scrollContent("right", tableID);
+            scrollContent("right", wrapper);
         }).bind("mouseout", function(event) {
             scrolling = false;
         });
@@ -19,19 +19,19 @@
             // Animates the scrollTop property by the specified
             // step.
             scrolling = false;
-            $('#' + tableID).animate({
-                scrollLeft: $('#' + tableID).scrollLeft() - step
+            $(wrapper).animate({
+                scrollLeft: $(wrapper).scrollLeft() - step
             });
         }).bind("mouseover", function(event) {
             scrolling = true;
-            scrollContent("left", tableID);
+            scrollContent("left", wrapper);
         }).bind("mouseout", function(event) {
             scrolling = false;
         });
         var scrollContent = function (direction, elem) {
             var amount = (direction === "left" ? -3 : 3);
-            $('#' + elem).animate({
-                scrollLeft: $('#' + elem).scrollLeft() + amount
+            $(elem).animate({
+                scrollLeft: $(elem).scrollLeft() + amount
             }, 1, function() {
                 if (scrolling) {
                     scrollContent(direction, elem);
@@ -40,9 +40,9 @@
         }
     };
  
-    $.fn.DynamicTable = function(tableID, rightID, leftID) {
+    $.fn.DynamicTable = function(wrapperID, rightID, leftID) {
         this.filter("table").each(function() {
-            var table = Setup( tableID, rightID, leftID );
+            var table = Setup( $("#" + wrapperID), rightID, leftID );
         })
         return this;
     }
