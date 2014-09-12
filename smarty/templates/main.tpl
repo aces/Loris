@@ -89,7 +89,7 @@
 
                                 pre.innerHTML = "<h3>" + content.topic + "</h3>";
                                 pre.innerHTML += content.content;
-                                pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated;
+                               // pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated;
                                 btn.appendChild(button);
                                 btn.className="btn btn-default";
                                 div.appendChild(pre);
