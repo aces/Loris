@@ -70,7 +70,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
            JOIN session s ON (s.ID = mu.SessionID)
             WHERE 1=1 ";
         $this->formToFilter = array();
-	 	
         ////////////////////////////////////////////////////////////////////
         ////Create the log directory////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////
@@ -102,7 +101,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (chmod($log_path , 0664)) {
         	print "file permission changed";
         }
-		print "log_path is " . $log_path . "<BR>";
         
         return true;
     }
@@ -172,6 +170,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         if ($this->_saveFile($values)) {
 
+        	
             $this->message->addMessage("Setting up variables \n");
               
             ///////////////////////////////////////////////////////////////////
@@ -200,6 +199,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $pscid = $values['PSCID'];
             $visit_label = $values['VisitLabel'];
             $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
+            
+            ///////////////////////////////////////////////////////////////////
+            //////////////////////////////changes the file-name////////////////
+            ///////////////////////////////////////////////////////////////////
+            $today= getdate();
+        	$date = sprintf(
+    	        "%04d-%02d-%02d", $today['year'], 
+        	    $today['mon'], $today['mday']
+	        );
+            $this->message->changeLogName('MRI_upload_'. $patient_name 
+            	. "." .$date. ".log");
             $this->tpl_data['minc_success'] = false;
             $dicom_created = false;
             
