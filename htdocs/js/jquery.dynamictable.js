@@ -40,9 +40,10 @@
         }
     };
  
-    $.fn.DynamicTable = function(wrapperID, rightID, leftID) {
+    $.fn.DynamicTable = function(rightID, leftID) {
         this.filter("table").each(function() {
-            var table = Setup( $("#" + wrapperID), rightID, leftID );
+            $(this).wrap("<div class=\"dynamicContentWrapper\" style=\"overflow-x: auto\"></div>");
+            var table = Setup( this.parentElement, rightID, leftID );
         })
         return this;
     }
