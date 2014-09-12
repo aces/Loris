@@ -175,6 +175,9 @@ class Database extends PEAR
     function isConnected()
     {
         try { 
+            if(!$this->_PDO) {
+                return false;
+            }
             $this->_PDO->query("SELECT 'x'");
             return true;
         } catch(Exception $e) {

@@ -80,16 +80,20 @@ class NDB_Caller extends PEAR
                 $submenu = $_REQUEST['submenu'];
                 $subtest = $submenu;
             }
-            if ((empty($subtest) 
-                && $submenu === null 
-                && $this->existsAndRequire("NDB_Menu_Filter_$test_name.class.inc")
+            if (((empty($subtest) 
+                && $submenu === null
                 )
-                || ($submenu !== null 
-                && $this->existsAndRequire("NDB_Menu_Filter_$submenu.class.inc"))
-                || ($submenu !== null
-                && $this->existsAndRequire("NDB_Menu_$submenu.class.inc")
+                // Top level test_name set and nothing else
+                // load the menu filter, menu filter form, or menu
+                && ($this->existsAndRequire("NDB_Menu_Filter_$test_name.class.inc")
+                || $this->existsAndRequire("NDB_Menu_Filter_Form_$test_name.class.inc")
+                || $this->existsAndRequire("NDB_Menu_$test_name.class.inc")
+            )) || ($submenu !== null && 
+                ($this->existsAndRequire("NDB_Menu_Filter_$submenu.class.inc")
+                || $this->existsAndRequire("NDB_Menu_$submenu.class.inc")
+                || $this->existsAndRequire("NDB_Menu_Filter_Form_$submenu.class.inc")
                 )
-            ) {
+            )) {
                 // No subtest, load the menu
 
  
@@ -121,6 +125,7 @@ class NDB_Caller extends PEAR
             // Exit to make sure we don't accidentally mix old style and 
             // new style. If something is a module, it should remain a 
             // module.
+            error_log("Could not load Loris module $test_name.");
             exit(-1);
         } else {
             // Old precedence style for "modules"
