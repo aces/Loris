@@ -1,6 +1,6 @@
 (function ($ ) {
-    var Setup = function(wrapper, rightID, leftID) {
-           $('#' + rightID).bind("click", function(event) {
+    var Setup = function(wrapper, rightLink, leftLink) {
+        $(rightLink).bind("click", function(event) {
             event.preventDefault();
             // Animates the scrollTop property by the specified
             // step.
@@ -14,7 +14,7 @@
         }).bind("mouseout", function(event) {
             scrolling = false;
         });
-        $('#' + leftID).bind("click", function(event) {
+        $(leftLink).bind("click", function(event) {
             event.preventDefault();
             // Animates the scrollTop property by the specified
             // step.
@@ -40,14 +40,16 @@
         }
     };
  
-    $.fn.DynamicTable = function(rightID, leftID) {
+    $.fn.DynamicTable = function() {
         this.filter("table").each(function() {
             $(this).wrap("<div class=\"carousel slide\" data-ride=\"carousel\"></div>");
             $(this).wrap("<div class=\"carousel-inner\"></div>");
-            $(this).wrap("<div class=\"dynamicContentWrapper\" style=\"overflow-x: auto\"></div>");
-            $(this).after('<a class="left carousel-control" id="scrollLeft" href="#carousel-example-generic"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
+            $(this).wrap("<div class=\"dynamicContentWrapper table-scroll\" style=\"overflow-x: auto\"></div>");
+            $(this).after('<a class="left carousel-control" href="#carousel-example-generic"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#carousel-example-generic" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
             //console.log(link);
-            var table = Setup( this.parentElement, rightID, leftID );
+            var left = this.nextSibling;
+            var right = left.nextSibling;
+            var table = Setup( this.parentElement, right, left);
         })
         return this;
     }
