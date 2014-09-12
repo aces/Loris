@@ -38,11 +38,44 @@
                 }
             });
         }
+    }, checkOverflow = function(wrapper, rightLink, leftLink, headCol) {
+        var staticCol = headCol === undefined ? false : true;
+        var element = wrapper;
+
+        if( (element.offsetHeight < element.scrollHeight) || (element.offsetWidth < element.scrollWidth)) {
+            // Your element has overflow
+            if(staticCol) {
+                if(headCol) {
+                    $("." + headCol).addClass("colm-static");
+                }
+                $(wrapper).addClass("scrollableStat");
+            } else {
+                $(wrapper).addClass("scrollable");
+            }
+            $(leftLink).show();
+            $(rightLink).show();
+
+        } else {
+            // Your element has no overflow
+            if(staticCol){
+                if(headCol) {
+                    $("." + headCol).removeClass("colm-static");
+                }
+                $(wrapper).removeClass("scrollableStat");
+            }
+            else{
+                $(wrapper).removeClass("scrollable");
+            }
+            $(leftLink).hide();
+            $(rightLink).hide();
+        }
+
+
     };
  
     $.fn.DynamicTable = function() {
         this.filter("table").each(function() {
-            var leftLink, rightLink;
+            var leftLink, rightLink, table = this;
             // Add wrapper code necessary for bootstrap carousel
             $(this).wrap("<div class=\"carousel slide\" data-ride=\"carousel\"></div>");
             $(this).wrap("<div class=\"carousel-inner\"></div>");
@@ -55,10 +88,14 @@
 
             // Get references to links to pass to Setup and checkOverflow
             leftLink = this.nextSibling;
-            rightLink = left.nextSibling;
+            rightLink = leftLink.nextSibling;
 
             Setup( this.parentElement, rightLink, leftLink);
+            checkOverflow( this.parentElement, rightLink, leftLink);
 
+            window.addEventListener("resize", function() {
+                checkOverflow( table.parentElement, rightLink, leftLink);
+            });
 
             return this;
         })
