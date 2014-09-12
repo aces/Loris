@@ -42,13 +42,25 @@
  
     $.fn.DynamicTable = function() {
         this.filter("table").each(function() {
+            var leftLink, rightLink;
+            // Add wrapper code necessary for bootstrap carousel
             $(this).wrap("<div class=\"carousel slide\" data-ride=\"carousel\"></div>");
             $(this).wrap("<div class=\"carousel-inner\"></div>");
+
+            // Add wrapper necessary for dynamictable code
             $(this).wrap("<div class=\"dynamicContentWrapper table-scroll\" style=\"overflow-x: auto\"></div>");
+
+            // Add links for carousel
             $(this).after('<a class="left carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
-            var left = this.nextSibling;
-            var right = left.nextSibling;
-            var table = Setup( this.parentElement, right, left);
+
+            // Get references to links to pass to Setup and checkOverflow
+            leftLink = this.nextSibling;
+            rightLink = left.nextSibling;
+
+            Setup( this.parentElement, rightLink, leftLink);
+
+
+            return this;
         })
         return this;
     }
