@@ -220,6 +220,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                        $source_location;
                 print " visitlabel $visit_label pscid: $pscid and candid: ".
                        $candid;
+                       
+            ///////////////////////////////////////////////////////////////////           
+            /////////////////log message///////////////////////////////////////                       
+         	///////////////////////////////////////////////////////////////////           
+            	$this->message->addMessage("file-name : $file_name, ".
+                	"and sourcelocation". $source_location);       
+            	$this->message->addMessage(" visitlabel $visit_label pscid: $pscid".
+            		"and candid: ".$candid);
+            
             }
 
             ///////////////////////////////////////////////////////////////////
@@ -315,7 +324,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     $output = shell_exec($command);
                     if ($this->show_queries) {
                         print "command is $command";
+                        $this->message->addMessage("command is $command");
                         print $output;
+                        $this->message->addMessage($output);
                     }
                     ////////////////////TODO://////////////////////////////////
                     //extra checks can be added to make sure that the//////////
@@ -763,10 +774,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         $loris_config = $mri_code_path . "dicom-archive";
         putenv("LORIS_CONFIG=$loris_config");
-<<<<<<< HEAD:modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
-
-        $path .= getenv('PERL5LIB');
-=======
         
         $perlib = getenv('PERL5LIB');
         if (isset($perlib)) {
@@ -775,7 +782,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         else {
         	$path .= '/usr/lib/perl5/';
         }
->>>>>>> Bug fixes:php/libraries/NDB_Menu_Filter_mri_upload.class.inc
 
         putenv("PERL5LIB=$path");
         
@@ -820,8 +826,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 
         if ($this->show_queries) {
             print "cmd : $cmd \n";
-            $this->message->addMessage($output);
             print $output;
+            $this->message->addMessage("cmd : $cmd \n");
+            $this->message->addMessage($output);
         }
 
         ///////////////////////////////////////////////////////////////////////
