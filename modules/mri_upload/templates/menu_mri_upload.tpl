@@ -114,7 +114,7 @@
                             {if $items[item][piece].name eq 'Tarchive_Info'}
                                 <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
                                 View Details</a></td>
-                            {elseif $items[item][piece].name eq 'MRI_Browser'}     
+                            {elseif $items[item][piece].name eq 'number_of_mincInserted'}     
                                 {if $items[item][piece].value neq '0'}
                                     <td nowrap="nowrap">
                                         <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
