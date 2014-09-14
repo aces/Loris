@@ -294,7 +294,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 
                 //create a new log file for the tarchive_file
                 $tarchive_log= new Log(
-                    $patient_name. "_tarchive_file", $paths['data'] . "logs/"
+                    $patient_name. "_tarchive_file"
                 );
                 $tarchive_log->addLog($ArchiveLocation, false);
                 
