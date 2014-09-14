@@ -648,7 +648,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $errors[]=" The file-name $file_name has already been uploaded";
             }
         } else {
-            $errors[]=" Please make sure CandID, PSCID and VisitLabel are".
+			$errors[]=" Please make sure CandID, PSCID and VisitLabel are".
                       " filled out";
         }
         
