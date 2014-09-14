@@ -590,10 +590,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     preg_match("^\[(.*?)\]^", $patient_name_string, $fields);
                     $patient_name_from_header = $fields[1];
 
-		    ///////////////////////////////////////////////////////////
-		    /////////////remove the spaces in the string///////////////
+		    		///////////////////////////////////////////////////////////
+		    		/////////////remove the spaces in the string///////////////
             	    ///////////////////////////////////////////////////////////
-	            $patient_name_from_header = str_replace(' ', '', $patient_name_from_header);
+	            	$patient_name_from_header = str_replace(' ', '', $patient_name_from_header);
                     $patient_name = str_replace(' ', '', $patient_name);
  
                     ///////////////////////////////////////////////////////////
@@ -646,15 +646,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 array('pname'=>$patient_name)
             ))>0) {
                 $errors[]=" The file-name $file_name has already been uploaded";
-            }
-        } else {
-			$errors[]=" Please make sure CandID, PSCID and VisitLabel are".
-                      " filled out";
-        }
+            } else {
+				$errors[]=" Please make sure CandID, PSCID and VisitLabel are".
+                      	" filled out";
+        	}	
         
-        if (count($errors) > 0) {
-            foreach ($errors as $error) {
-                $this->message->addMessage("$error");
+        	if (count($errors) > 0) {
+            	foreach ($errors as $error) {
+                	$this->message->addMessage("$error");
+            	}
             }
             $this->message->addMessage(
                 "Error: the process completed with errors \n"
