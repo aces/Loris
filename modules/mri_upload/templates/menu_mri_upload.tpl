@@ -89,52 +89,37 @@
         </tr>
     
     </table>
-
-<div class="row">
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="table-scroll" id="content">
-            <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
-                <thead>
-                <tr class="info">
-                     <th nowrap="nowrap">No.</th>
-                        {section name=header loop=$headers}
-                            <th nowrap="nowrap">
-                                <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}
+    
+    <table  class ="fancytable" border="0" width="100%" class="listColorCoded">
+        <tr>
+             <th nowrap="nowrap">No.</th>
+                {section name=header loop=$headers}
+                    <th nowrap="nowrap">
+                        <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}
+                        </a>
+                    </th>
+                {/section}
+        </tr>
+        {section name=item loop=$items}
+            <tr>
+                <!-- print out data rows -->
+                {section name=piece loop=$items[item]}
+                    {if $items[item][piece].name eq 'Tarchive_Info'}
+                        <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
+                        View Details</a></td>
+                    {elseif $items[item][piece].name eq 'number_of_mincInserted'}     
+                        {if $items[item][piece].value neq '0'}
+                            <td nowrap="nowrap">
+                                <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
+                                    View Images
                                 </a>
-                            </th>
-                        {/section}
-                </tr>
-                </thead>
-                <tbody>
-                {section name=item loop=$items}
-                    <tr>
-                        <!-- print out data rows -->
-                        {section name=piece loop=$items[item]}
-                            {if $items[item][piece].name eq 'Tarchive_Info'}
-                                <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
-                                View Details</a></td>
-                            {elseif $items[item][piece].name eq 'number_of_mincInserted'}     
-                                {if $items[item][piece].value neq '0'}
-                                    <td nowrap="nowrap">
-                                        <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
-                                            View Images
-                                        </a>
-                                    </td>
-                                {/if}
-                            {else}
-                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                        {$items[item][piece].value} 
-                                </td>
-                            {/if}
-                        {/section}
-                   </tr>
-                {sectionelse}
-                
-                <tr>
-                    <td colspan="12">No data found</td>
-                </tr>
-                
+                            </td>
+                        {/if}
+                    {else}
+                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                {$items[item][piece].value} 
+                        </td>
+                    {/if}
                 {/section}
                 </tbody>
                 <!-- end data table -->
@@ -149,3 +134,4 @@
     </div>
 </div>
 </div>
+
