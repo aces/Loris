@@ -15,11 +15,13 @@
 
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
-print get_include_path();
 require_once "../tools/generic_includes.php";
+
+
 ///get the log file-name
 
 $data_source_file = getLatestLogFile();
+
 while (true) {
     clearstatcache();
     if (file_get_contents($data_source_file) === '') {
@@ -49,15 +51,17 @@ while (true) {
 
 function getLatestLogFile() {
 	
-	//get the path from the config file
-	$config =& NDB_Config::singleton();
+	$config = NDB_Config::singleton();
 	$paths = $config->getSetting('paths');
+
+	//get the path from the config file
 	if (empty($paths)) {
 		print "config setting is missing";
     	error_log("ERROR: Config settings are missing");
 	}
-	$log_directory = $paths['base'] . "/" . $config->getSetting('log')."/MRI_upload";
-	print "log directory is " . $log_directory . "<BR>";
+	
+	$log_directory = $paths['base'] . "/" . $paths['log']."/MRI_upload";
+	//print "log directory " . $log_directory . "<BR>";
 	//get the last file modified
 	$files = glob($log_directory."/*MRI_upload*");
 	$files = array_combine($files, array_map("filemtime", $files));
@@ -66,7 +70,6 @@ function getLatestLogFile() {
 	if (!file_exists($data_source_file)) {
 		print "File doesn't exist";
 	}
-	print "data source file is" . $data_source_file;
 	return $data_source_file;
 }
 ?>
