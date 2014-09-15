@@ -599,7 +599,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////////////////////////////////////////////////
                     //if the patient-name doesn't match the header/////////////
                     ///////////////////////////////////////////////////////////
-                    if (!($patient_name == $patient_name_from_header)) {
+                    if (strcmp($patient_name, $patient_name_from_header) !== 0) {
+                    //if (!($patient_name == $patient_name_from_header)) {
                         $file_not_matching_patient_name++;
                     }
                     $count++;
@@ -639,6 +640,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             //Check to see if the file has already been uploaded or not////////
             ///////////////////////////////////////////////////////////////////
+            print "patient-name is " . $patient_name . "<BR>";
             if (($db->pselectOne(
                 "SELECT COUNT(*) FROM mri_upload mu ".
                 "JOIN tarchive t on (t.TarchiveID = mu.TarchiveID) ".
