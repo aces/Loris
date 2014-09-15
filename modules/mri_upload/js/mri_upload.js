@@ -111,7 +111,6 @@ function uploadFile() {
         formData = new FormData(formObj),
         file = $('#file input')[0].files[0],
         ajax = new XMLHttpRequest();
-    
     formData.append('file', file.name);
     
     ajax.upload.addEventListener("progress", progressHandler, false);
@@ -133,17 +132,3 @@ $(function () {
         e.preventDefault();
     });
 });
-/*
-$(document).ready(function(){
-    $.getScript("js/modules/dynamic_table.table.js")
-        .done(function(){
-            Table.setup("content", "scrollRight", "scrollLeft");
-            Table.checkOverflow("content", "scrollRight", "scrollLeft");
-        });
-    // checkOverflow();
-});
-$(window).resize(function(){
-    Table.checkOverflow("content", "scrollRight", "scrollLeft");
-    // checkOverflow();
-});
-*/
