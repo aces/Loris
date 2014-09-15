@@ -323,6 +323,7 @@
     var genderColours = ['#2FA4E7', '#1C70B6'];
 
     function formatPieData(data) {
+        console.log('here');
         var processedData = new Array();
         for (var i in data) {
             var siteData = [data[i].label, data[i].total];
@@ -337,9 +338,6 @@
         males = ['Male'];
         processedData.push(males.concat(data.datasets.male));
         return processedData;
-    }
-    function getBarLabels(data) {
-        return data.labels;
     }
     function formatLineData(data) {
         var processedData = new Array();
@@ -357,43 +355,68 @@
         return processedData;
     }
 
+    // AJAX to get pie chart data
+    $.ajax({
+        url: 'AjaxHelper.php?Module=dashboard&script=get_recruitment_pie_data.php',
+        type: 'post',
+        success: function(data) {
+            var recruitmentPieData = formatPieData(data);
+            var recruitmentPieChart = c3.generate({
+                bindto: '#recruitmentPieChart',
+                data: {
+                    columns: recruitmentPieData,
+                    type : 'pie'
+                },
+                color: {
+                    pattern: siteColours
+                }
+            });
+        },
+        error: function(xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    });
+
+    // AJAX to get bar chart data
+    $.ajax({
+        url: 'AjaxHelper.php?Module=dashboard&script=get_recruitment_bar_data.php',
+        type: 'post',
+        success: function(data) {
+            var recruitmentBarData = formatBarData(data);
+            var recruitmentBarLabels = data.labels;
+            var recruitmentBarChart = c3.generate({
+                bindto: '#recruitmentBarChart',
+                data: {
+                    columns: recruitmentBarData,
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type : 'categorized',
+                        categories: recruitmentBarLabels
+                    },
+                    y: {
+                        label: 'Candidates registered'
+                    }
+                },
+                color: {
+                    pattern: genderColours
+                }
+            });
+        },
+        error: function(xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    });
+
     {ldelim}
-    var recruitmentPieData = formatPieData({$pie_chart});
-    var recruitmentBarData = formatBarData({$bar_chart});
-    var recruitmentBarLabels = getBarLabels({$bar_chart});
     var scanLineData = formatLineData({$scan_chart});
     var recruitmentLineData = formatLineData({$recruitment_chart});
     {rdelim}
 
-    var recruitmentPieChart = c3.generate({
-        bindto: '#recruitmentPieChart',
-        data: {
-            columns: recruitmentPieData,
-            type : 'pie'
-        },
-        color: {
-            pattern: siteColours
-        }
-    });
-    var recruitmentBarChart = c3.generate({
-        bindto: '#recruitmentBarChart',
-        data: {
-            columns: recruitmentBarData,
-            type: 'bar'
-        },
-        axis: {
-            x: {
-                type : 'categorized',
-                categories: recruitmentBarLabels
-            },
-            y: {
-                label: 'Candidates registered'
-            }
-        },
-        color: {
-            pattern: genderColours
-        }
-    });
+    
     var scanLineChart = c3.generate({
         bindto: '#scanChart',
         data: {

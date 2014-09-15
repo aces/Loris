@@ -37,45 +37,6 @@ class NDB_Form_dashboard extends NDB_Form
         return $total;
     }
 
-    function _getRecruitmentTotalsBySite()
-    {
-        $DB =& Database::singleton();
-        $recruitmentBySiteData = array();
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $site) {
-            $recruitmentBySiteData[] = array(
-                "label" => $site,
-                "total" => $DB->pselectOne(
-                    "SELECT count(c.CandID) 
-                    FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                    WHERE psc.Name=:Site", array('Site' => $site)
-                )
-            );
-        }
-        return json_encode($recruitmentBySiteData);
-    }
-
-    function _getGenderTotalsBySite()
-    {
-        $DB =& Database::singleton();
-        $genderData = array();
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $site) {
-            $genderData['labels'][] = $site;
-            $genderData['datasets']['female'][] = $DB->pselectOne(
-                "SELECT count(c.CandID) FROM candidate c 
-                LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                WHERE c.Gender='female' AND psc.Name=:Site", array('Site' => $site)
-            );
-            $genderData['datasets']['male'][] = $DB->pselectOne(
-                "SELECT count(c.CandID) FROM candidate c 
-                LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                WHERE c.Gender='male' AND psc.Name=:Site", array('Site' => $site)
-            );
-        }
-        return json_encode($genderData);
-    }
-
     function _recruitmentBySite()
     {
         $DB =& Database::singleton();
@@ -255,8 +216,6 @@ class NDB_Form_dashboard extends NDB_Form
         $this->tpl_data['total_scans'] = $DB->pselectOne(
             "SELECT count(*) FROM files f", array()
         );
-        $this->tpl_data['pie_chart'] = $this->_getRecruitmentTotalsBySite();
-        $this->tpl_data['bar_chart'] = $this->_getGenderTotalsBySite();
         $this->tpl_data['recruitment_chart'] = $this->_recruitmentBySite();
         $this->tpl_data['scan_chart'] = $this->_scansBySite();
 
