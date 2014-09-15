@@ -224,6 +224,7 @@ class NDB_Config
         switch($name) {
         case 'database':
         case 'sandbox':
+      	case 'extLibs':
         case 'showDatabaseQueries':
             return null;
         }
