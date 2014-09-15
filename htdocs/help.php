@@ -27,5 +27,11 @@ if(!empty($_REQUEST['helpID'])){
 $help_file =& HelpFile::factory($helpID);
 $data = $help_file->toArray();
 $data['content'] = trim($data['content']);
+if(empty($data['content'])) {
+    $data['content'] = 'Under Construction';
+}
+if(empty($data['updated'])) {
+    $data['updated'] = '-';   
+}
 print json_encode($data);
 ob_end_flush();

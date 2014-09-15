@@ -73,9 +73,7 @@
                         $(this).toggleClass('open');
                     });
                     $(".help-button").click(function(e) {
-                        var wPixels = $(window).width() * 0.8,
-                            getParams = {},
-                            modalParams = { width: wPixels };
+                        var getParams = {};
                         {/literal}
                         {if $test_name}
                             getParams.test_name = "{$test_name|escape:"javascript"}";
@@ -85,21 +83,34 @@
                                 var div = document.createElement("div"),
                                     pre = document.createElement("pre"),
                                     btn = document.createElement("BUTTON"),
+                                    edit = document.createElement("BUTTON"),
+                                    text = document.createTextNode("Edit"),
                                     button = document.createTextNode("Close");
 
                                 pre.innerHTML = "<h3>" + content.topic + "</h3>";
                                 pre.innerHTML += content.content;
-                               // pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated;
+                                pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated ;
                                 btn.appendChild(button);
                                 btn.className="btn btn-default";
+                                btn.setAttribute("id","helpclose");
+                                edit.appendChild(text);
+                                edit.className="btn btn-default";
+                                edit.setAttribute("id", "helpedit");
                                 div.appendChild(pre);
-                            
                                 div.appendChild(btn);
-                               // div.appendChild(footer);
+                                {/literal}
+                                {if $hadEditPermission}
+                                    div.appendChild(edit);
+                                {/if}
+                                {literal}
                                 document.getElementById('page').appendChild(div);
                                 div.setAttribute("class", "help-content");
                                 btn.addEventListener("click", function(e) {
                                     $(div).hide();      
+                                    e.preventDefault(); 
+                                }) ;
+                                edit.addEventListener("click", function(e) {
+                                    window.open("main.php?test_name=help_editor&subtest=edit_help_content&section="+getParams.test_name, "_self");      
                                     e.preventDefault(); 
                                 }) ;
                         }, "json");

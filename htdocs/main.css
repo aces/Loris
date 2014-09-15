@@ -688,14 +688,26 @@ tr.directentry {
     color: #FFFFFF;
 
 }
-.help-content button {
+#helpclose {
    position: absolute;
    right:    0;
    top:   20px;
    margin-right : 5px;
+}
+#helpedit {
+   position: absolute;
+   right:    0;
+   top:   20px;
+   margin-right : 75px;
 }
 
 .help-content h3 {
     color: #FFFFFF;
 }
 
+.help-content a {
+   position: absolute;
+   right:    0;
+   bottom: 20px;
+   color: #FFFFFF;
+}

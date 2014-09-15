@@ -41,7 +41,6 @@ function tplFromRequest($param) {
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name'] = $TestName;
 $tpl_data['subtest']   = $subtest;
-
 tplFromRequest('candID');
 tplFromRequest('sessionID');
 tplFromRequest('commentID');
@@ -59,7 +58,7 @@ if (Utility::isErrorX($user)) {
     $tpl_data['user'] = $user->getData();
     $tpl_data['user']['permissions'] = $user->getPermissions();
 }
-
+$tpl_data['hadEditPermission'] = $user->hasPermission('context_help');
 $site =& Site::singleton($user->getData('CenterID'));
 if (Utility::isErrorX($site)) {
     $tpl_data['error_message'][] = "Site Error: ".$site->getMessage();
