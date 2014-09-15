@@ -133,7 +133,7 @@ $(function () {
         e.preventDefault();
     });
 });
-
+/*
 $(document).ready(function(){
     $.getScript("js/modules/dynamic_table.table.js")
         .done(function(){
@@ -146,3 +146,4 @@ $(window).resize(function(){
     Table.checkOverflow("content", "scrollRight", "scrollLeft");
     // checkOverflow();
 });
+*/
