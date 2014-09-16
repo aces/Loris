@@ -45,7 +45,7 @@ class Smarty_neurodb extends Smarty {
         // Set the template directories. First check for project overrides,
         // then check for modules, then check for old Loris jumbled together
         // templates
-        $this->addTemplateDir($this->project_template_dir);
+        $this->setTemplateDir($this->project_template_dir);
         $this->addTemplateDir($this->modules_dir . "/templates");
         $this->addTemplateDir($this->loristemplate_dir);
 
