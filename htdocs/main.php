@@ -59,6 +59,7 @@ if (Utility::isErrorX($user)) {
     $tpl_data['user']['permissions'] = $user->getPermissions();
 }
 $tpl_data['hadEditPermission'] = $user->hasPermission('context_help');
+
 $site =& Site::singleton($user->getData('CenterID'));
 if (Utility::isErrorX($site)) {
     $tpl_data['error_message'][] = "Site Error: ".$site->getMessage();

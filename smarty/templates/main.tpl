@@ -78,7 +78,11 @@
                         {if $test_name}
                             getParams.test_name = "{$test_name|escape:"javascript"}";
                         {/if}
+                        {if $subtest}
+                            getParams.subtest = "{$subtest|escape:"javascript"}";
+                        {/if}
                         {literal}
+                        document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
                         $.get("help.php", getParams, function (content) {
                                 var div = document.createElement("div"),
                                     pre = document.createElement("pre"),
@@ -110,7 +114,9 @@
                                     e.preventDefault(); 
                                 }) ;
                                 edit.addEventListener("click", function(e) {
-                                    window.open("main.php?test_name=help_editor&subtest=edit_help_content&section="+getParams.test_name, "_self");      
+                                    document.cookie = "LastUrl = " + document.location.toString();
+                                    window.open("main.php?test_name=help_editor&subtest=edit_help_content&section="
+                                    +getParams.test_name+"&subsection="+getParams.subtest, "_self");      
                                     e.preventDefault(); 
                                 }) ;
                         }, "json");
