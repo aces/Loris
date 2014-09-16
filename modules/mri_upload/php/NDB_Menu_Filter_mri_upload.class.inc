@@ -198,7 +198,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $pscid = $values['PSCID'];
             $visit_label = $values['VisitLabel'];
             $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
-            
+            $log_directory = $paths['base'] ."/". $config->getSetting('log')
+            . "/MRI_upload";
             ///////////////////////////////////////////////////////////////////
             //////////////////////////////changes the file-name////////////////
             ///////////////////////////////////////////////////////////////////
@@ -293,7 +294,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 
                 //create a new log file for the tarchive_file
                 $tarchive_log= new Log(
-                    $patient_name. "_tarchive_file"
+                    $patient_name. "_tarchive_file",$log_directory
                 );
                 $tarchive_log->addLog($ArchiveLocation, false);
                 
