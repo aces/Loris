@@ -111,7 +111,7 @@
                         {if $items[item][piece].value neq '0'}
                             <td nowrap="nowrap">
                                 <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
-                                    View Images
+                                {$items[item][piece].value}
                                 </a>
                             </td>
                         {/if}
