@@ -169,7 +169,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function _process($values)
     {
         if ($this->_saveFile($values)) {
-
         	
             $this->message->addMessage("Setting up variables \n");
               
@@ -448,9 +447,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         //////////////Make sure the extension is valid/////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if (!(preg_match("/.zip/i", $file->fileInfo['name']))
-            && (!(preg_match("/.tgz/i", $file->fileInfo['name'])))
-            && (!(preg_match("/.tar.gz/i", $file->fileInfo['name'])))
+        if (!(preg_match("/.zip/i", $file_name))
+            && (!(preg_match("/.tgz/i", $file_name)))
+            && (!(preg_match("/.tar.gz/i", $file_name)))
         ) {
             $errors[]="Incorrect File-name extention, The file-name
             should either of type '.gz', '.zip' or 'tgz' ";
@@ -648,21 +647,20 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 array('pname'=>$patient_name)
             ))>0) {
                 $errors[]=" The file-name $file_name has already been uploaded";
-            } else {
-				$errors[]=" Please make sure CandID, PSCID and VisitLabel are".
-                      	" filled out";
-        	}	
-        
+            } 
+            
         	if (count($errors) > 0) {
+        		print_r($errors);
             	foreach ($errors as $error) {
                 	$this->message->addMessage("$error");
             	}
-            }
-            $this->message->addMessage(
-                "Error: the process completed with errors \n"
-            ); 
-            return $errors;
+            
+            	$this->message->addMessage(
+                "Error: the process completed with errors \n");
+                return $errors;
+        	}
         }
+        	
         return true;
     }
 
