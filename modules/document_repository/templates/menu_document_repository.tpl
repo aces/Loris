@@ -1,67 +1,94 @@
-<div class="row">
-<div class="col-sm-12">
-    <div class="col-xs-12">
-        <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
-            <div class="panel panel-primary">
-                <div class="panel-heading" onclick="hideFilter();">
-                    Selection Filter
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
-                </div>
-                <div class="panel-body" id="panel-body">
-                    <div class="row">
-                        <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-1">{$form.File_name.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.File_name.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.version.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.version.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.uploaded_by.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.uploaded_by.html}</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-1">{$form.File_type.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.File_type.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.For_site.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.For_site.html}</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="col-sm-2 col-sm-offset-4">
-                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
-                            </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-2">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=document_repository&reset=true'" />
-                            </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-2">
-                                <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
-                            </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-2">
-                                <button type="button" name = "addCategory" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-</div>
-                
+{literal}
+<script type="text/javascript" src="js/modules/mustache.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var fileDir = {/literal}{$File_categories|json_encode}{literal}
+    for(var i in fileDir){
+        if(fileDir[i]){
+            var dir = fileDir[i];
+            var path = dir.CategoryName.split(">");
+            var depth = path.length;
+            var elm = document.createElement("li");
+            elm.innerHTML = "<span class='glyphicon glyphicon-folder-close'> " + path[depth - 1] + "</span>";
+            elm.setAttribute("id", path[depth - 1]);
+            if(depth == 1) {
+                $("#home-dir").append(elm);
+            } else {
+                elm.setAttribute("style", "display: none;");
+                $("#" + path[depth - 2] + "First").before(elm);
+            }
+            var children = document.createElement("ul");
+            children.setAttribute("id", path[depth - 1] + "Children");
+            elm.appendChild(children);
+            var files = fileDir[i].Files;
+            for(var ii in files) {
+                var child = document.createElement("li");
+                child.innerHTML = files[ii].File_name;
+                child.setAttribute("style", "display: none;");
+                $("#" + path[depth - 1] + "Children").append(child);
+                if(ii == 0) {
+                    child.setAttribute("id", path[depth - 1] + "First");
+                }
+            }
+            var template = $('#template').html();
+              Mustache.parse(template);   // optional, speeds up future uses
+              var rendered = Mustache.render(template, {name: "Luke"});
+              $('#target').html(rendered);
+        }
+    }
+});
+$(function () {
+    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+    $('.tree li.parent_li > span').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+            $(this).addClass('glyphicon-folder-close').removeClass('glyphicon-folder-open');
+        } else {
+            children.show('fast');
+            $(this).addClass('glyphicon-folder-open').removeClass('glyphicon-folder-close');
+        }
+        e.stopPropagation();
+    });
+});
+</script>
+{/literal}
+
+<div id="target">Loading...</div>
+
+<form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
+<table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
+    <tr>
+        <th nowrap="nowrap" colspan="8">Selection Filter</th>
+    </tr>
+    <tr>
+        <td>{$form.File_name.label}</td>
+        <td>{$form.File_name.html}</td>
+        <td>{$form.version.label}</td>
+        <td>{$form.version.html}</td>
+        <td>{$form.uploaded_by.label}</td>
+        <td>{$form.uploaded_by.html}</td>
+    </tr>
+    <tr>
+        <td>{$form.File_type.label}</td>
+        <td>{$form.File_type.html}</td>
+        <td>{$form.For_site.label}</td>
+        <td>{$form.For_site.html}</td>
+    </tr>
+    <tr>
+
+        <td colspan="6" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=document_repository&reset=true'" /></td>
+        <td align="right"><button id = "upload" name = "upload" class = "button">Upload File</button></td>
+        <td align="right"><button id = "addCategory" name = "addCategory" class = "button" onclick="return false;">Add Category</button></td>
+    </tr>
+</table>
+</form>
+
+{literal}
+<script id="template" type="x-tmpl-mustache">
+Hello {{ name }}!
+</script>
+{/literal}
 <div class = "ui-accordion ui-widget ui-helper-reset">
 <table border="0" width="80%" id = "accordionTable" class="docRepository" data-open = "{$openAccordion}">
 <tr>
@@ -80,6 +107,13 @@
 
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
+
+<div class="tree well">
+    <ul id="home-dir">
+
+    </ul>
+</div>
+
 <div id="accordion" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons" role="tablist">
 {foreach from=$File_categories item=val key=k}
     {if $val != "Any"}
