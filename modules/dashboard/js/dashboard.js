@@ -51,9 +51,9 @@ function formatPieData(data) {
 function formatBarData(data) {
 	"use strict";
     var processedData = new Array();
-    females = ['Female'];
+    var females = ['Female'];
     processedData.push(females.concat(data.datasets.female));
-    males = ['Male'];
+    var males = ['Male'];
     processedData.push(males.concat(data.datasets.male));
     return processedData;
 }
