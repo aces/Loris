@@ -26,6 +26,8 @@ foreach ($list_of_sites as $site) {
         )
     );
 }
-print json_encode($recruitmentBySiteData);
+echo json_encode($recruitmentBySiteData);
+
+exit();
 
 ?>
