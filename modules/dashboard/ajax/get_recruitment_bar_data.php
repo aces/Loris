@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is used by the Dashboard to get the data for
- * the recruitment pie chart via AJAX
+ * the recruitment bar chart via AJAX
  */
 
 header("content-type:application/json");
