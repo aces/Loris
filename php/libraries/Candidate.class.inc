@@ -96,7 +96,7 @@ class Candidate
 
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
-            p.Name AS PSC, c.Ethnicity, c.ZIP, c.Sibling1, c.Sibling2, c.Sibling3,
+            p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID 
             FROM candidate as c 
             LEFT JOIN psc as p USING (CenterID) 
@@ -485,17 +485,6 @@ class Candidate
     function getCandidateEthnicity()
     {
         return $this->candidateInfo["Ethnicity"];
-    }
-
-    /**
-     * Return the candidate's zip code
-     *
-     * @return string The zip code of the candidate
-     * @deprecated
-     */
-    function getCandidateZIP()
-    {
-        return $this->candidateInfo["ZIP"];
     }
 
     /**
