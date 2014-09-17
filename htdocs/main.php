@@ -21,13 +21,12 @@ $client->initialize();
 // require additional libraries
 require_once 'NDB_Breadcrumb.class.inc';
 
-$TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : '';
+$TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : 'dashboard';
 $subtest = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
 // make local instances of objects
 $config =& NDB_Config::singleton();
 
 $timer->setMarker('Loaded client');
-
 //--------------------------------------------------
 
 // set URL params
@@ -39,7 +38,7 @@ function tplFromRequest($param) {
         $tpl_data[$param] = '';
     }
 }
-
+$tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name'] = $TestName;
 $tpl_data['subtest']   = $subtest;
 
@@ -71,49 +70,7 @@ if (Utility::isErrorX($site)) {
 
 
 // the the list of tabs, their links and perms
-$mainMenuTabs = $config->getSetting('main_menu_tabs');
-
-foreach(Utility::toArray($mainMenuTabs['tab']) AS $myTab){
-    $tpl_data['tabs'][]=$myTab;
-    foreach(Utility::toArray($myTab['subtab']) AS $mySubtab)
-    {
-        // skip if inactive
-        if ($mySubtab['visible']==0) continue;
-
-        // replace spec chars
-        $mySubtab['link'] = str_replace("%26","&",$mySubtab['link']);
-        
-        // check for the restricted site access
-        if (isset($site) && ($mySubtab['access']=='all' || $mySubtab['access']=='site' && $site->isStudySite())) {
-
-            // if there are no permissions, allow access to the tab
-            if (!is_array($mySubtab['permissions']) || count($mySubtab['permissions'])==0) {
-
-                $tpl_data['subtab'][]=$mySubtab;
-
-            } else {
-
-                // if any one permission returns true, allow access to the tab
-                foreach ($mySubtab["permissions"] as $permissions) {
-    
-                    // turn into an array
-                    if (!is_array($permissions)) $permissions = array($permissions);
-
-                    // test and grant access to button with 1st permission
-                    foreach ($permissions as $permission) {
-                        if ($user->hasPermission($permission)) {
-                            $tpl_data['subtab'][]=$mySubtab;
-                            break 2;
-                        }
-                        unset($permission);
-                    }
-                    unset($permissions);
-                }
-            }
-        }
-        unset($mySubtab);
-    } // end foreach
-}
+$tpl_data['tabs'] = NDB_Config::GetMenuTabs();
 $timer->setMarker('Drew user information');
 
 //--------------------------------------------------
@@ -149,8 +106,16 @@ if (!empty($TestName)) {
         // Old style, this should be removed after all modules are modularized.
         $tpl_data['test_name_js'] = "js/modules/$TestName.js";
     }
-    if(file_exists("css/instruments/$TestName.css")) { 
-       $tpl_data['test_name_css'] = "$TestName.css";
+
+    // Get CSS for a module
+    if (file_exists($paths['base'] . "modules/$TestName/css/$TestName.css")) {
+        $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
+    }
+
+    // Used for CSS for a specific instrument. This should eventually be
+    // rolled into the GetCSS wrapper
+    if (file_exists("css/instruments/$TestName.css")) { 
+        $tpl_data['test_name_css'] = "css/instruments/$TestName.css";
     }
 }
 
@@ -258,7 +223,7 @@ if ($config->getSetting("sandbox") === '1') {
 
 // Assign the console output to a variable, then stop
 // capturing output so that smarty can render
-$tpl_data['console'] = ob_get_contents();
+$tpl_data['console'] = htmlspecialchars(ob_get_contents());
 ob_end_clean();
 
 

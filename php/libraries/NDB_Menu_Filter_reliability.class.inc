@@ -89,7 +89,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
-        $this->columns = array('reliability.CommentID', 'candidate.PSCID', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
+        $this->columns = array('candidate.PSCID', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
         if ($useProjects === "true") {
             $this->columns[] = 'candidate.ProjectID as Project';
         }
@@ -103,11 +103,10 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $this->headers[] = 'Project';
         }
         $this->headers=array_merge($this->headers,array('Instrument', 'reliability_score', 'Reliable'));
-        $this->validFilters = array('reliability.CommentID', 'reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid');
+        $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid');
 
         $this->formToFilter = array(
-                                    'CommentID' => 'reliability.CommentID',
-                                    'Cohort' => 'session.SubprojectID',
+                                    'SubprojectID' => 'session.SubprojectID',
                                     'CenterID' => 'candidate.CenterID',
                                     'reliability_center_id'=> 'reliability.reliability_center_id',
                                     'DCCID' => 'candidate.CandID',
@@ -171,8 +170,9 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         foreach($projects as $key=>$value){
              $list_of_projects[$key]= $value;
         }
-        $subproject_options = Utility::getSubprojectList();
-        $subproject_options = array(null=>'All') + $subproject_options;
+        $subproject_options = Utility::getSubprojectList(); 
+
+        $subproject_options = array(''=>'All') + $subproject_options;
         $gender_options = array(null=>'All', 'Male'=>'Male', 'Female'=>'Female');
         $list_of_instruments = array(null=>'All');
         $config =& NDB_Config::singleton();
@@ -186,8 +186,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $lock_options = array(null=>'','Locked'=>'Locked','Unlocked'=>'Unlocked');
 
         // Form Elements
-        $this->addSelect('CommentID', 'CommentID:', $subproject_options);
-        $this->addSelect('Objective', 'Objective:', $subproject_options);
+        $this->addSelect('SubprojectID','Subproject:', $subproject_options);
         $this->addSelect('CenterID', 'Site:', $list_of_sites);
         $this->addSelect('reliability_center_id', 'Site of Reliability:', $list_of_sites);
         $this->addBasicText('DCCID', 'DCCID::', array("size"=>9, "maxlength"=>6));

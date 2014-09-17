@@ -59,7 +59,7 @@ class NDB_Caller extends PEAR
         if (empty($test_name)) {
             return;
         }
-        if(empty($CommentID)) {
+        if(empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
         }
         // get the files path, aka the base directory
@@ -70,24 +70,30 @@ class NDB_Caller extends PEAR
             // New module style
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
-            set_include_path($base . "modules/$test_name:" . get_include_path());
+            set_include_path($base . "project/libraries:" 
+                . $base . "modules/$test_name:" 
+                . $base . "modules/$test_name/php:" 
+                . get_include_path());
             
             $submenu = null;
             if (!empty($_REQUEST['submenu'])) {
                 $submenu = $_REQUEST['submenu'];
                 $subtest = $submenu;
             }
-            if ((empty($subtest) 
-                && $submenu === null 
-                && $this->existsAndRequire(
-                    $base
-                    . "modules/$test_name/php/NDB_Menu_Filter_$test_name.class.inc"
-                )) 
-                || ($submenu !== null 
-                && $this->existsAndRequire(
-                    $base."modules/$test_name/php/NDB_Menu_Filter_$submenu.class.inc"
-                ))
-            ) {
+            if (((empty($subtest) 
+                && $submenu === null
+                )
+                // Top level test_name set and nothing else
+                // load the menu filter, menu filter form, or menu
+                && ($this->existsAndRequire("NDB_Menu_Filter_$test_name.class.inc")
+                || $this->existsAndRequire("NDB_Menu_Filter_Form_$test_name.class.inc")
+                || $this->existsAndRequire("NDB_Menu_$test_name.class.inc")
+            )) || ($submenu !== null && 
+                ($this->existsAndRequire("NDB_Menu_Filter_$submenu.class.inc")
+                || $this->existsAndRequire("NDB_Menu_$submenu.class.inc")
+                || $this->existsAndRequire("NDB_Menu_Filter_Form_$submenu.class.inc")
+                )
+            )) {
                 // No subtest, load the menu
 
  
@@ -103,9 +109,7 @@ class NDB_Caller extends PEAR
 
                 $this->type = 'menu';
                 return $html;
-            } else if ($this->existsAndRequire(
-                $base."modules/$test_name/php/NDB_Form_$test_name.class.inc"
-            )) {
+            } else if ($this->existsAndRequire("NDB_Form_$test_name.class.inc")) {
                 $identifier = isset($_REQUEST['identifier']) 
                     ? $_REQUEST['identifier'] 
                     : '';
@@ -121,6 +125,7 @@ class NDB_Caller extends PEAR
             // Exit to make sure we don't accidentally mix old style and 
             // new style. If something is a module, it should remain a 
             // module.
+            error_log("Could not load Loris module $test_name.");
             exit(-1);
         } else {
             // Old precedence style for "modules"
@@ -128,18 +133,19 @@ class NDB_Caller extends PEAR
             if (empty($subtest) && ($this->existsAndRequire($base."project/libraries/NDB_Menu_$test_name.class.inc") 
                 || $this->existsAndRequire($base."php/libraries/NDB_Menu_$test_name.class.inc") 
                 || $this->existsAndRequire($base."project/libraries/NDB_Menu_Filter_$test_name.class.inc")
-                || $this->existsAndRequire($base."php/libraries/NDB_Menu_Filter_$test_name.class.inc"))
+                || $this->existsAndRequire($base."php/libraries/NDB_Menu_Filter_$test_name.class.inc")
+                || $this->existsAndRequire($base."project/libraries/NDB_Menu_Filter_Form_$test_name.class.inc")
+                || $this->existsAndRequire($base."php/libraries/NDB_Menu_Filter_Form_$test_name.class.inc"))
             ) {
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
-                $html = $this->loadMenu($test_name, $mode, $controlPanel);
+                $html = $this->loadMenu($test_name, $mode);
                 if (Utility::isErrorX($html)) {
                     return PEAR::raiseError($html->getMessage());
                 }
 
                 $this->type = 'menu';
                 return $html;
-
             }
 
             // it is a form
@@ -366,7 +372,7 @@ class NDB_Caller extends PEAR
      * @return bool     true if file exists, otherwise false
      */
     function existsAndRequire($library) {
-        if (file_exists($library)) {
+        if (stream_resolve_include_path($library) !== FALSE) {
             require_once $library;
             return true;
         }

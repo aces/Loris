@@ -38,6 +38,7 @@ class SinglePointLogin extends PEAR
             $tpl_data['username'] = '';
         }
 
+        $tpl_data['currentyear'] = date('Y'); 
 
 
         // remove logout from request
@@ -234,7 +235,7 @@ class SinglePointLogin extends PEAR
          ///////////////////////////
          ///initialization/////
          //////////////////////////
-         $this->_username = $_POST['username'];
+         $this->_username = isset($_POST['username']) ? $_POST['username'] : 'Unknown';
          $setArray = array(
              'userID'=> $this->_username,
              'Success' => 'Y',
@@ -279,7 +280,7 @@ class SinglePointLogin extends PEAR
         }
 
         // check users table to see if we have a valid user
-        $query = "SELECT COUNT(*) AS User_count, Password_md5, Password_expiry, Active FROM users WHERE UserID = :username GROUP BY UserID";
+        $query = "SELECT COUNT(*) AS User_count, Password_md5, Password_expiry, Active, Pending_approval FROM users WHERE UserID = :username GROUP BY UserID";
         $row = $DB->pselectRow($query, array('username' => $_POST['username']));
         if (Utility::isErrorX($row)) {
             return PEAR::raiseError("DB Error: ".$row->getMessage());
@@ -293,6 +294,12 @@ class SinglePointLogin extends PEAR
                     $this->_lastError = "Your account has been deactivated.  Please contact your project administrator to reactivate this account.";
                     $this->insertFailedDetail("user account not active", $setArray);///insert failed_detail into user_login_history
 
+                    return false;
+                }
+
+                if ($row['Pending_approval'] == '1') {
+                    $this->_lastError = "Your account has not yet been activated.  Please contact your project administrator to activate this account.";
+                    $this->insertFailedDetail("user account pending", $setArray);
                     return false;
                 }
 

@@ -509,7 +509,6 @@ CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Center_name` varchar(4) NOT NULL default '',
   `ScannerID` int(10) unsigned NOT NULL default '0',
-  `Objective` tinyint(1) unsigned default NULL,
   `Scan_type` int(10) unsigned NOT NULL default '0',
   `TR_range` varchar(255) default NULL,
   `TE_range` varchar(255) default NULL,
@@ -833,7 +832,7 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2'),(19,'violated_scans','Violated Scans','2'),(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),(21,'data_integrity_flag','Data Integrity Flag','2');
+INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2'),(19,'violated_scans','Violated Scans','2'),(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),(21,'data_integrity_flag','Data Integrity Flag','2'),(22,'config','Edit configuration settings','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1276,7 +1275,7 @@ CREATE TABLE `users` (
   `Examiner` enum('Y','N') NOT NULL default 'N',
   `Password_md5` varchar(34) default NULL,
   `Password_expiry` date NOT NULL default '0000-00-00',
-  `Pending_approval` tinyint(1) default NULL,
+  `Pending_approval` enum('Y','N') default 'Y',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
@@ -1775,3 +1774,122 @@ CREATE TABLE `reliability` (
 
 
 
+CREATE TABLE LorisMenu (
+    ID integer unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Parent integer unsigned REFERENCES LorisMenu(ID),
+    Label varchar(255),
+    Link varchar(255),
+    Visible enum('true', 'false'),
+    OrderNumber integer
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO LorisMenu (Label, OrderNumber) VALUES ('Candidate', 1), ('Clinical', 2), ('Imaging', 3), ('Reports', 4), ('Tools', 5), ('Admin', 6);
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
+    ('New Profile', 'main.php?test_name=new_profile', 1, 1),
+    ('Access Profile', 'main.php?test_name=candidate_list', 1, 2);
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
+    ('Reliability', 'main.php?test_name=reliability', 2, 1),
+    ('Conflicts Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
+    ('Certification', 'main.php?test_name=certification', 2, 3);
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
+    ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
+    ('DICOM Archive', 'main.php?test_name=dicom_archive', 3, 2),
+    ('Imaging Browser', 'main.php?test_name=imaging_browser', 3, 3),
+    ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4);
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
+    ('Statistics', 'main.php?test_name=statistics', 4, 1),
+    ('Data Query Tool', '/dqt/', 4, 2);
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
+    ('Data Dictionary', 'main.php?test_name=datadict', 5, 1),
+    ('Document Repository', 'main.php?test_name=document_repository', 5, 2),
+    ('Data Team Helper', 'main.php?test_name=data_team_helper', 5, 3),
+    ('Instrument Builder', 'main.php?test_name=instrument_builder', 5, 4);
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
+    ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
+    ('Survey Module', 'main.php?test_name=participant_accounts', 6,2);
+
+CREATE TABLE LorisMenuPermissions (
+    MenuID integer unsigned REFERENCES LorisMenu(ID),
+    PermID integer unsigned REFERENCES permissions(ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT="If a user has ANY of the permissions for a module it will show up in their menu bar";
+
+-- New Profile permission
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 7, PermID FROM permissions WHERE code='data_entry';
+
+-- Access Profile 
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 8, PermID FROM permissions WHERE code='data_entry';
+
+-- Reliability
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 9, PermID FROM permissions WHERE code='user_accounts';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 9, PermID FROM permissions WHERE code='reliability_edit_all';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 9, PermID FROM permissions WHERE code='access_all_profiles';
+
+-- Conflicts Resolver
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 10, PermID FROM permissions WHERE code='data_entry';
+
+-- Certification
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 11, PermID FROM permissions WHERE code='certification';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 11, PermID FROM permissions WHERE code='certification_multisite';
+
+-- Radiological Reviews
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 12, PermID FROM permissions WHERE code='edit_final_radiological_review';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 12, PermID FROM permissions WHERE code='view_final_radiological_review';
+
+-- DICOM Archive -- Config file currently does not require any permission
+-- Imaging Browser -- Config file currently does not require any permission
+-- Statistics -- Config file currently does not require any permission 
+
+-- Data Query Tool
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 16, PermID FROM permissions WHERE code='data_dict';
+
+-- Data Dictionary
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 17, PermID FROM permissions WHERE code='data_dict';
+-- Document Repository
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 18, PermID FROM permissions WHERE code='file_upload';
+
+-- Data Team Helper -- Config file currently does not require any permission
+-- Instrument Builder -- Config file currently does not require any permission
+
+-- User Accounts
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT 21, PermID FROM permissions WHERE code='user_accounts';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
+
+
+CREATE TABLE `ConfigSettings` (
+    `ID` int(11) NOT NULL AUTO_INCREMENT,
+    `Name` varchar(255) NOT NULL,
+    `Description` varchar(255) DEFAULT NULL,
+    `Visible` tinyint(1) DEFAULT '0',
+    `AllowMultiple` tinyint(1) DEFAULT '0',
+    `Parent` int(11) DEFAULT NULL,
+    PRIMARY KEY (`ID`),
+    UNIQUE KEY `Name` (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Config` (
+    `ID` int(11) NOT NULL AUTO_INCREMENT,
+    `ConfigID` int(11) DEFAULT NULL,
+    `Value` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

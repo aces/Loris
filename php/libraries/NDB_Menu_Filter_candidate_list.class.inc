@@ -1,6 +1,6 @@
 <?php
 require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Form_participant_status.class.inc';
+require_once '../modules/candidate_parameters/php/NDB_Form_candidate_parameters.class.inc';
 /**
 * The candidate list menu
  * @package main
@@ -78,7 +78,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->order_by = 'psc.Name, candidate.CandID DESC, session.VisitNo';
         $this->validFilters = array('participant_status_options.ID','candidate.CenterID', 'candidate.CandID', 'candidate.PSCID', 'candidate.Gender', 'candidate.ProjectID', 'session.SubprojectID', 'candidate.DoB', 'count(DISTINCT session.Visit_label)', 'max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)','session.Scan_done');
         $this->validHavingFilters = array('count(DISTINCT session.Visit_label)','max(session.Current_stage)', 'coalesce(min(feedback_bvl_thread.Status+1), 1)');
-		
+	$this->EqualityFilters = array('session.SubprojectID');	
         $this->formToFilter = array(
                                     'centerID' => 'candidate.CenterID',
                                     'DCCID' => 'candidate.CandID',
@@ -108,7 +108,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         // PSC
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites =& Utility::getSiteList();
+            $list_of_sites = Utility::getSiteList();
             if(Utility::isErrorX($list_of_sites)) {
                 return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
             }
@@ -126,15 +126,15 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         }
 
         // SubprojectID
-        $list_of_subprojects =& Utility::getSubprojectList();
-        $list_of_projects =& Utility::getProjectList();
+        $list_of_subprojects = Utility::getSubprojectList();
+        $list_of_projects = Utility::getProjectList();
 
         // list of feedback statuses
         $feedback_status_options = array(null => 'All','1' => 'None', '2'=>'opened','3'=>'answered','4'=>'closed','5'=>'comment');
         $latest_visit_status_options = array(null => 'All', 'Not Started' => 'Not Started', 'Screening' => 'Screening', 'Visit' => 'Visit', 'Approval' => 'Approval',
                                             /* 'Subject' => 'Subject', */'Recycling Bin' => 'Recycling Bin');
     
-        $participant_status_options=   array(null=>'All') +  NDB_Form_participant_status::getParticipantStatusOptions();
+        $participant_status_options=   array(null=>'All') +  NDB_Form_candidate_parameters::getParticipantStatusOptions();
         $scan_options = array(null=>'All','Y'=>'Yes','N'=>'No');
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
@@ -142,7 +142,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addSelect('gender', 'Gender:', array('' => 'All', 'Male' => 'Male', 'Female' => 'Female'));
         $this->addSelect('SubprojectID', 'Subproject:', array('' => 'All') + $list_of_subprojects);
-        $this->addBasicText('dob', 'Date of Birth:', 'maxlength=10');
+        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
         $this->addBasicText('Visit_Count','Number of Visits:');
         $this->addSelect('Latest_Visit_Status','Latest Visit Status:', $latest_visit_status_options);
         $this->addSelect('Feedback','Feedback:', $feedback_status_options);
@@ -153,8 +153,8 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
            $this->addSelect('ProjectID', 'Project:', array('' => 'All') + $list_of_projects);
         }
         if($config->getSetting("useEDC")=="true"){
-        	$this->addBasicText('edc', 'EDC:', 'maxlength=10');
-        	$this->tpl_data['useEDC']="true";
+            $this->addBasicText('edc', 'EDC:', array('maxlength' => 10));
+            $this->tpl_data['useEDC']="true";
         }
         $this->addSelect('feedback', 'Feedback Status:', array_merge(array('' => 'All'), $feedback_status_options));
 
@@ -171,7 +171,7 @@ class NDB_Menu_Filter_candidate_list extends NDB_Menu_Filter
         }
 		$subprojectlist=Utility::getSubprojectList();
         $projectlist=Utility::getProjectList();
-        $participantOptions= NDB_Form_participant_status::getParticipantStatusOptions();
+        $participantOptions= NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {

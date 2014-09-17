@@ -88,10 +88,10 @@ cat <<QUESTIONS
 
 Please answer the following questions. You'll be asked:
 
-  1) Your project name. This should be an alphanumeric name.
-     It will be used to modify the paths for MRI in the generated
-     config.xml file for LORIS. It may also be used to automatically
-     create/install apache config files.
+  1) Your project directory name from section A) of the Installation Guide.
+     (Will be used to modify the paths for Imaging data in the generated
+     config.xml file for LORIS, and may also be used to automatically
+     create/install apache config files.)
 
   2) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
@@ -146,22 +146,22 @@ while [ "$projectname" == "" ]; do
         esac
 done;
 
-if [ -f ../../$projectname/project/config.xml ]; then
+if [ -f ../project/config.xml ]; then
     echo "Loris appears to already be installed. Aborting."
     exit 2;
 fi
 
 # Check that we're running in the proper directory structure.
-if [ ! -f ../../$projectname/SQL/0000-00-00-schema.sql ] ; then
+if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
     echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
     exit 2
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p ../../$projectname/project ../../$projectname/project/libraries ../../$projectname/project/instruments ../../$projectname/project/templates ../../$projectname/project/tables_sql ../../$projectname/smarty/templates_c
+mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
-chmod 777 ../../$projectname/smarty/templates_c
+chmod 777 ../smarty/templates_c
 
 while [ "$mysqldb" == "" ]; do
 	read -p "What is the database name? " mysqldb
@@ -304,7 +304,7 @@ echo "Creating database tables from schema."
 echo ""
 mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
 echo "Updating Loris admin user's password."
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')) WHERE ID=1"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Pending_approval='N' WHERE ID=1"
 
 
 

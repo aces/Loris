@@ -4,7 +4,7 @@
     <head>
         <link rel="stylesheet" href="{$css}" type="text/css" />
         {if $test_name_css}
-            <link rel="stylesheet" href="css/instruments/{$test_name_css}" type="text/css" />
+            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
         {/if}
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
@@ -124,26 +124,20 @@
                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <ul class="nav navbar-nav">
                         {foreach from=$tabs item=tab}
-                            {if $tab.visible == 1}
+                            {if $tab.Visible == 1 && $tab.subtabs}
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle">
-                                        {$tab.label} <b class="caret"></b>
+                                        {$tab.Label} <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        {foreach from=$subtab item=mySubtab}
+                                        {foreach from=$tab.subtabs item=mySubtab}
+                                            {if $mySubtab.Visible == 1}
                                             <li>
-                                                {if $tab.label == $mySubtab.parent}
-                                                    {if $mySubtab.label == "Data Query Tool"}
-                                                        <a href="{$mySubtab.link}" target="_blank">
-                                                            {$mySubtab.label}
+                                                        <a href="{$mySubtab.Link}">
+                                                            {$mySubtab.Label}
                                                         </a>
-                                                    {else}
-                                                        <a href="{$mySubtab.link}">
-                                                            {$mySubtab.label}
-                                                        </a>
-                                                    {/if}
-                                                {/if}
                                             </li>
+                                            {/if}
                                         {/foreach}
                                     </ul>
                                 </li> 
@@ -519,7 +513,7 @@
                     </ul>    
                 </center>
                 <div align="center" colspan="1" style="color:#808080" >
-                    Powered by LORIS &copy; 2013. All rights reserved.
+                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
                 <div align="center" colspan="1">
                     <a href="http://cbrain.mcgill.ca" style="color: #2FA4E7" target="_blank">

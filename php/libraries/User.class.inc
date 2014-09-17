@@ -68,7 +68,7 @@ class User extends UserPermissions
 
         // get user data from database
         $query = "SELECT users.*, psc.Name AS Site FROM users 
-            JOIN psc ON (users.centerID=psc.CenterID)
+            LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
