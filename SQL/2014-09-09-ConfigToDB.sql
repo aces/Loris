@@ -1,8 +1,26 @@
--- 1. paths
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('paths', 'path settings', 1, 0);
-
--- 2. dicom_archive
+-- 1. dicom_archive
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('dicom_archive', 'DICOM archive settings', 1, 0);
+
+--
+-- dicom_archive children
+--
+
+-- 2. patientIDRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientIDRegex', 'regex for the patient ID', 1, 0, 1);
+
+-- 3. patientNameRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientNameRegex', 'regex for the patient name', 1, 0, 1);
+
+-- 4. LegoPhantomRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LegoPhantomRegex', 'regex to be used on a Lego Phantom scan', 1, 0, 1);
+
+-- 5. LivingPhantomRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LivingPhantomRegex', 'regex to be used on Living Phantom scan', 1, 0, 1);
+
+-- 6. showTransferStatus
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('showTransferStatus', 'show transfer status in the DICOM archive table', 1, 0, 1);
+
+
 
 -- 3. dashboard
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('dashboard', 'dashboard settings', 1, 0);
@@ -53,9 +71,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) V
 -- 17. MRICodePath
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('MRICodePath', "NOT SURE", 1, 0, 1);
 
---
--- dicom_archive children
---
+
 
 -- 18. patientIDRegex
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientIDRegex', 'regex for the patient ID', 1, 0, 2);
