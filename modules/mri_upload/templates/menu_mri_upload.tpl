@@ -57,7 +57,7 @@
                 <div class="row">
                     <div class="form-group col-sm-6 col-sm-offset-6">
                         <div class="col-sm-6">
-                            <input name="fire_away" id="upload" value="Upload" type="submit" class="btn btn-sm btn-primary col-xs-12" />
+                            <input type="submit" name="fire_away" id="upload" value="Upload" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                         <div class="col-sm-6">
                             <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
@@ -113,13 +113,41 @@
                                 <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
                                 {$items[item][piece].value}
                                 </a>
-                            </td>
-                        {/if}
-                    {else}
-                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                {$items[item][piece].value} 
-                        </td>
-                    {/if}
+                            </th>
+                        {/section}
+                </tr>
+                </thead>
+                <tbody>
+                {section name=item loop=$items}
+                    <tr>
+                        <!-- print out data rows -->
+                        {section name=piece loop=$items[item]}
+                        
+                            {if $items[item][piece].name eq 'Tarchive_Info'}
+                                <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
+                                View Details</a></td>
+                            {elseif $items[item][piece].name eq 'number_of_mincInserted'}     
+                            
+                                {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}
+                                    <td nowrap="nowrap">
+                                        <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
+                                        {$items[item][piece].value}
+                                        </a>
+                                    </td>
+                                {/if}
+                            {else}
+                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                        {$items[item][piece].value} 
+                                </td>
+                            {/if}
+                        {/section}
+                   </tr>
+                {sectionelse}
+                
+                <tr>
+                    <td colspan="12">No data found</td>
+                </tr>
+                
                 {/section}
                 </tbody>
                 <!-- end data table -->
