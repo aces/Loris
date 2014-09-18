@@ -1,12 +1,12 @@
 <?php
 
 /**
- * mri_upload class file
+ * Mri_upload class file
  *
  * PHP version 5
  * 
  * @category Behavioural
- * @package  Main 
+ * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  Loris License
  * @link     https://github.com/mohadesz/Loris-Trunk
@@ -24,7 +24,7 @@ require_once "Message.class.inc";
  * This class is MRI_upload Filter Menu
  * 
  * @category Behavioural
- * @package  Main 
+ * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  Loris License
  * @link     https://github.com/mohadesz/Loris-Trunk
@@ -35,7 +35,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     var $show_queries = true;
 
     /**
-     * _has_access returns true
+     * The _has_access returns true
      * if the user has the specific permission
      *
      * @return boolean
@@ -126,13 +126,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $this->addBasicText('CandID', 'CandID:');
         $this->addBasicText('PSCID', 'PSCID:');
-        $visitlabels = array_merge(array(null=>''), 
-            Utility::getExistingVisitLabels());
+        $visitlabels = array_merge(
+            array(null=>''), Utility::getExistingVisitLabels()
+        );
         $this->addSelect('VisitLabel', 'VisitLabel:', $visitlabels);
         $new_files = array();
         $DB        =& Database::singleton();
-        $files     =  $DB->pselect("SELECT distinct SourceLocation".
-           " FROM mri_upload", array());
+        $files     =  $DB->pselect(
+            "SELECT distinct SourceLocation"." FROM mri_upload", array()
+        );
 
         foreach ($files as $file) {
             $new_files[$file['SourceLocation']] =$file['SourceLocation'];
@@ -142,10 +144,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
 
         if (empty($_FILES) && empty($_POST)
-        && ($_SERVER['REQUEST_METHOD']=='POST')
+            && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
             $upload_max_size = ini_get('upload_max_filesize');
-            echo "<p style=\"color: #F00;\">\nPlease make sure files are
+            echo "<p style=\"color: #F00;\">\nPlease make sure files areasdfasfsafsas
             not larger than {$upload_max_size} <br></p>";
             // echo out error and solutions...
         }
@@ -153,13 +155,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
     /**
-     * process the form
+     * Process the form
      *
      * @param Array $values the array of values from the form
      * 
      * @return NULL
      */
-
     function _process($values)
     {
         if ($this->_saveFile($values)) {
@@ -197,10 +198,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             //////////////////////////////changes the file-name////////////////
             ///////////////////////////////////////////////////////////////////
             $today = getdate();
-            $date  = sprintf("%04d-%02d-%02d", $today['year'],
-                               $today['mon'], $today['mday']);
-            $this->message->changeLogName('MRI_upload_'. $patient_name
-            . "." .$date. ".log");
+            $date  = sprintf(
+                "%04d-%02d-%02d", $today['year'],
+                $today['mon'], $today['mday']
+            );
+            $this->message->changeLogName(
+                'MRI_upload_'. $patient_name . "." .$date. ".log"
+            );
             $this->tpl_data['minc_success'] = false;
             $dicom_created                  = false;
 
@@ -214,10 +218,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ///////////////////////////////////////////////////////////////////
                 /////////////////log message///////////////////////////////////////
                 ///////////////////////////////////////////////////////////////////
-                $this->message->addMessage("file-name : $file_name, ".
-                "and sourcelocation". $source_location);
-                $this->message->addMessage(" visitlabel $visit_label pscid: $pscid".
-                "and candid: ".$candid);
+                $this->message->addMessage(
+                    "file-name : $file_name, ". "and sourcelocation". 
+                    $source_location
+                );
+                $this->message->addMessage(
+                    " visitlabel $visit_label pscid: $pscid"."and candid: ".
+                    $candid
+                );
             }
 
             ///////////////////////////////////////////////////////////////////
@@ -714,7 +722,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
 
-
     /**
     * getTargetDirectory retrieves info about where the file should be stored.
     *
@@ -868,5 +875,5 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
 }
-
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 ?>
