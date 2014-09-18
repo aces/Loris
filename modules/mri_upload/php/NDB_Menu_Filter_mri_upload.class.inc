@@ -43,7 +43,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
@@ -74,7 +74,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ////////////////////////////////////////////////////////////////////
 
         // Extract info from the config file and create the log file
-        $config       =& NDB_Config::singleton();
+        $config       = NDB_Config::singleton();
         $log_location = $config->getSetting("log");
         $paths        = $config->getSetting('paths');
         //////////////////////log directory//////////////////////////////////
@@ -131,7 +131,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         );
         $this->addSelect('VisitLabel', 'VisitLabel:', $visitlabels);
         $new_files = array();
-        $DB        =& Database::singleton();
+        $DB        =  Database::singleton();
         $files     =  $DB->pselect(
             "SELECT distinct SourceLocation"." FROM mri_upload", array()
         );
@@ -147,7 +147,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
             $upload_max_size = ini_get('upload_max_filesize');
-            echo "<p style=\"color: #F00;\">\nPlease make sure files areasdfasfsafsas
+            echo "<p style=\"color: #F00;\">\nPlease make sure files are
             not larger than {$upload_max_size} <br></p>";
             // echo out error and solutions...
         }
@@ -170,7 +170,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             ////////////////////////initialization/////////////////////////////
             ///////////////////////////////////////////////////////////////////
-            $db =&Database::singleton();
+            $db = Database::singleton();
             /////get the location of the last uploaded folder//////////////////
             $query = "SELECT  SourceLocation,UploadedBy FROM mri_upload".
             " WHERE TarchiveID IS NULL ORDER BY UploadID DESC";
@@ -178,7 +178,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $upload_info            = $db->pselectRow($query, array());
             $source_location        = $upload_info['SourceLocation'];
             $mri_user               = $upload_info['UploadedBy'];
-            $config                 =& NDB_Config::singleton();
+            $config                 = NDB_Config::singleton();
             $paths                  = $config->getSetting('paths');
             $dicom_archive_settings = $config->getSetting('dicom_archive');
             $mri_code_path          = $paths['MRICodePath'];
@@ -351,7 +351,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         include_once "File_Upload.class.inc";
 
         //get the stored-file path
-        $config           =& NDB_Config::singleton();
+        $config           = NDB_Config::singleton();
         $paths            = $config->getSetting('paths');
         $stored_file_path = $paths['IncomingPath'];
 
@@ -368,7 +368,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //Set the target directory that you want files moved
         //into once they are validated and processed.
         $file->setBaseUploadDirectory($stored_file_path);
-        $user =& User::singleton();
+        $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".
              $user->getMessage());
@@ -418,9 +418,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (!copy($temp_file, '/tmp/new_compressed')) {
             echo "failed to copy $temp_file...\n";
         }
-        $db                             =& Database::singleton();
+        $db                             = Database::singleton();
         $errors                         = array();
-        $config                         =&NDB_Config::singleton();
+        $config                         = NDB_Config::singleton();
         $dicom_archive_settings         = 
         $config->getSetting('dicom_archive');
         $corect_name                    = 
@@ -663,7 +663,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         $userid = $args['user_id'];
         $feedbacks = array();
-        $db=& Database::singleton();
+        $db= Database::singleton();
 
         ///////////////////////////////////////////////////////////////////////
         ////////// create user object//////////////////////////////////////////
@@ -673,7 +673,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $user_name = $args['user_id'];
         if (($user_name==null) || (!(isset($user_name)))) {
-            $user =& User::singleton();
+            $user = User::singleton();
             if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error: ".$user->getMessage());
             }
@@ -686,7 +686,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
 
         //////////get the stored-file path/////////////////////////////////////
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $paths = $config->getSetting('paths');
         $stored_file_path = $paths['IncomingPath'];
         $file_name = $stored_file_path . $file->fileInfo['name'];
@@ -797,7 +797,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function insertDicom($DICOMTAR,$file_name,$decompressed_folder,
     $tarchive_location
     ) {
-        $db=& Database::singleton();
+        $db= Database::singleton();
         $dicom_inserted = false;
 
         ///////////////////////////////////////////////////////////////////////
@@ -875,5 +875,4 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
 }
-iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 ?>
