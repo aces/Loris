@@ -77,20 +77,23 @@ class NDB_Form_help_editor extends NDB_Form
             $defaults['title']   = $data['topic'];
             $defaults['content'] = trim($data['content']);
             if (isset($_REQUEST['helpID'])) {
-                $defaults['module_name'] = "Help Editor";
+                $this->tpl_data['module_name'] = "Help Editor";
+            } else {
+                $this->tpl_data['module_name'] = $defaults['title'];
             }
 
-        }
-        if (empty($defaults['title'])) {
+        } 
+        // case where no help content exists
+        if (empty($defaults['title'])) { 
             if (!empty($_REQUEST['section'])) {
                 $defaults['title'] = str_replace("_", " ", $_REQUEST['section']);
             }
             // if not module and not instrument, should be a subtest
-            if (empty($label) && $_REQUEST['subsection'] != 'undefined') { 
+            if ( $_REQUEST['subsection'] != 'undefined') { 
                 $defaults['title'] = str_replace("_", " ", $_REQUEST['subsection']); 
             }
+            $this->tpl_data['module_name'] = $defaults['title'];
         }
-        $this->tpl_data['module_name'] = $defaults['title'];
         if (empty($defaults['content'])) {
             $defaults['content'] = 'Under Construction';
         }
