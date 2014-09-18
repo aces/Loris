@@ -163,16 +163,6 @@ mkdir -p ../project ../project/libraries ../project/instruments ../project/templ
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
 
-# set the group user to www-data for tools/logs directory:
-if [ -d logs ]; then
-	chgrp www-data logs
-	# set the proper permission for the tools/logs directory:
-	chmod 770 logs 
-fi
-
-
-
-
 while [ "$mysqldb" == "" ]; do
 	read -p "What is the database name? " mysqldb
 	echo $mysqldb | tee -a $LOGFILE > /dev/null
