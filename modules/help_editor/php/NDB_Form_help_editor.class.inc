@@ -28,7 +28,7 @@ require_once "HelpFile.class.inc";
 
 class NDB_Form_help_editor extends NDB_Form
 {
-    var $indent       = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
      /**
      * Determine if user has permission to access this page
      *
@@ -55,8 +55,9 @@ class NDB_Form_help_editor extends NDB_Form
     {
         $DB =& Database::singleton();
         //Get the default values
-        if(PEAR::isError($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        if (PEAR::isError($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".
+                                     $DB->getMessage());
         } 
         if (isset($_REQUEST['helpID'])) {
             $helpID = $_REQUEST['helpID'];
@@ -64,36 +65,37 @@ class NDB_Form_help_editor extends NDB_Form
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
         } 
-        if(!empty($_REQUEST['section']) && $_REQUEST['subsection'] != 'undefined' ) {
+        if (!empty($_REQUEST['section']) 
+            && $_REQUEST['subsection'] != 'undefined' ) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
         }
-        $this->tpl_data['section'] =$_REQUEST['section'] ;
-        $this->tpl_data['subsection'] =$_REQUEST['subsection'] ;
-        if(!empty($helpID)) {
-            $help_file =& HelpFile::factory($helpID);
-            $data = $help_file->toArray(); 
-            $defaults['title'] = $data['topic'];
+        $this->tpl_data['section']    = $_REQUEST['section'] ;
+        $this->tpl_data['subsection'] = $_REQUEST['subsection'] ;
+        if (!empty($helpID)) {
+            $help_file           =& HelpFile::factory($helpID);
+            $data                = $help_file->toArray(); 
+            $defaults['title']   = $data['topic'];
             $defaults['content'] = trim($data['content']);
             if (isset($_REQUEST['helpID'])) {
-               $defaults['module_name'] = "Help Editor";
+                $defaults['module_name'] = "Help Editor";
             }
 
         }
-        if(empty($defaults['title'])) {
-            if(!empty($_REQUEST['section'])) {
+        if (empty($defaults['title'])) {
+            if (!empty($_REQUEST['section'])) {
                 $defaults['title'] = str_replace("_", " ", $_REQUEST['section']);
             }
             // if not module and not instrument, should be a subtest
-            if(empty($label) && $_REQUEST['subsection'] != 'undefined') { 
+            if (empty($label) && $_REQUEST['subsection'] != 'undefined') { 
                 $defaults['title'] = str_replace("_", " ", $_REQUEST['subsection']); 
             }
         }
         $this->tpl_data['module_name'] = $defaults['title'];
-        if(empty($defaults['content'])) {
+        if (empty($defaults['content'])) {
             $defaults['content'] = 'Under Construction';
         }
 
-        if(isset($_COOKIE["LastUrl"]) ) { 
+        if (isset($_COOKIE["LastUrl"]) ) { 
             $this->tpl_data['url'] = $_COOKIE["LastUrl"];
         }
         return $defaults;
@@ -103,8 +105,9 @@ class NDB_Form_help_editor extends NDB_Form
     { 
         $DB =& Database::singleton();
         //Get the default values
-        if(PEAR::isError($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        if (PEAR::isError($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".
+                                     $DB->getMessage());
         }
         if (isset($_REQUEST['helpID'])) {
             $helpID = $_REQUEST['helpID'];
@@ -116,11 +119,12 @@ class NDB_Form_help_editor extends NDB_Form
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
-        if (!empty($_REQUEST['section']) && $_REQUEST['subsection'] != 'undefined' ) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
+        if (!empty($_REQUEST['section']) 
+            && $_REQUEST['subsection'] != 'undefined' ) {
+            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
             $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
         } 
-        if(!empty($helpID)) {
+        if (!empty($helpID)) {
             $help_file =& HelpFile::factory($helpID);
             // update the help file
             $success = $help_file->update(array(
@@ -132,10 +136,10 @@ class NDB_Form_help_editor extends NDB_Form
                 $this->tpl_data['error_message'][] = $success->getMessage();
             }
         } else {
-          //content does not exist insert the help file
-           
-            if(!empty($_REQUEST['section']) && $_REQUEST['subsection'] != 'undefined'
-                    && empty($parentID)) { 
+            //content does not exist insert the help file
+            if (!empty($_REQUEST['section']) 
+                && $_REQUEST['subsection'] != 'undefined'
+                && empty($parentID)) { 
                 //create parent help section first
                 $parentID = HelpFile::insert(array(
                             'hash' => md5($_REQUEST['section']),
@@ -149,8 +153,9 @@ class NDB_Form_help_editor extends NDB_Form
                 }
 
             }
-            if(!empty($_REQUEST['section']) && $_REQUEST['subsection'] != 'undefined'
-                    && !empty($parentID)) { 
+            if (!empty($_REQUEST['section']) 
+                && $_REQUEST['subsection'] != 'undefined'
+                && !empty($parentID)) { 
  
                 // insert the help file
                 $helpID = HelpFile::insert(array(
@@ -165,7 +170,8 @@ class NDB_Form_help_editor extends NDB_Form
                 if (PEAR::isError($helpID)) {
                     $this->tpl_data['error_message'][] = $helpID->getMessage();
                 }
-            } else if( !empty($_REQUEST['section']) && $_REQUEST['subsection'] == 'undefined') { 
+            } else if ( !empty($_REQUEST['section']) 
+                        && $_REQUEST['subsection'] == 'undefined') { 
                 //default case
                 $helpID = HelpFile::insert(array(
                             'hash' => md5($_REQUEST['section']),
@@ -184,16 +190,11 @@ class NDB_Form_help_editor extends NDB_Form
         $this->tpl_data['success'] =  true;
 
     } 
-/*
-    function help_editor() 
-    { 
-      $this->addBasicText('title', 'Title');
-      $this->addBasicTextArea('content','Content',array('cols'=>140, 'rows'=>30));
-    }*/
+
     function edit_help_content()
     {  
-      $this->addBasicText('title', 'Title');
-      $this->addBasicTextArea('content','Content',array('cols'=>140, 'rows'=>30));
+        $this->addBasicText('title', 'Title');
+        $this->addBasicTextArea('content', 'Content', array('cols'=>140, 'rows'=>30));
         
     }
 
