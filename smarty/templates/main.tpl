@@ -83,7 +83,7 @@
                         {/if}
                         {literal}
                         document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-                        $.get("help.php", getParams, function (content) {
+                        $.get("AjaxHelper.php?Module=help_editor&script=help.php", getParams, function (content) {
                                 var div = document.createElement("div"),
                                     pre = document.createElement("pre"),
                                     btn = document.createElement("BUTTON"),
