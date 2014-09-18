@@ -1,11 +1,11 @@
 {if $success}
-<p>Survey was added successfully.<br/> Click here to go back to view the list of survey's created : <a href=main.php?test_name=participant_accounts> Participant Survey List</a><br /></p>
+<p>Survey was added successfully.<br/> Click here to go back to view the list of survey's created : <a href=main.php?test_name=survey_accounts> Survey List</a><br /></p>
 <br />
 {/if}
 <br />
 
 <div class="col-md-8">
-<form method="post" name="participant_accounts" id="participant_accounts_form">
+<form method="post" name="survey_accounts" id="participant_accounts_form">
     {if not $success}
     <table class="table table-primary table-bordered" border="0">
         <!-- table title -->
