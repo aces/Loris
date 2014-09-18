@@ -11,24 +11,44 @@ $(document).ready(function() {
             var elm = document.createElement("li");
             elm.innerHTML = "<span class='glyphicon glyphicon-folder-close'> " + path[depth - 1] + "</span>";
             elm.setAttribute("id", path[depth - 1]);
+
+            //new table layout
+            var directory = $('#dir').html();
+            Mustache.parse(directory);
+            var dirData = {
+                name: path[depth - 1],
+                indent: function(){
+                    return (depth - 1)*15;
+                }
+            }
+            var renderDir = Mustache.render(directory, dirData);
+
             if(depth == 1) {
                 $("#home-dir").append(elm);
+                //new table layout
+                $("#dir-tree").append(renderDir);
             } else {
                 elm.setAttribute("style", "display: none;");
                 $("#" + path[depth - 2] + "First").before(elm);
+                //new table layout
+                $("#" + path[depth - 2] + "a").after(renderDir);
             }
             var children = document.createElement("ul");
             children.setAttribute("id", path[depth - 1] + "Children");
             elm.appendChild(children);
             var files = fileDir[i].Files;
             for(var ii in files) {
-                if(ii == 0){
-                    console.log(files[ii]);
-                }
                 var template = $('#template').html();
                 Mustache.parse(template);   // optional, speeds up future uses
                 var rendered = Mustache.render(template, files[ii]);
                 $("#" + path[depth - 1] + "Children").append(rendered);
+
+                //new table layout
+                var file = $('#file').html();
+                Mustache.parse(file);   // optional, speeds up future uses
+                files[ii].indent = (depth)*30;
+                var renderedFile = Mustache.render(file, files[ii]);
+                $("#" + path[depth - 1] + "a").after(renderedFile);
             }
             if($("#" + path[depth - 1] + "Children").children().first().html()) {
                 $("#" + path[depth - 1] + "Children").children().first().attr("id", path[depth - 1] + "First")
@@ -51,6 +71,51 @@ $(function () {
     });
 });
 </script>
+<script id="dir" type="x-tmpl-mustache">
+    <tr id="{{ name }}a">
+        <td style="text-indent: {{ indent }}px;">
+            <span class='glyphicon glyphicon-folder-close'>
+                {{ name }}
+            </span>
+        </td>
+        <td colspan="9"></td>
+    </tr>
+</script>
+<script id="file" type="x-tmpl-mustache">
+    <tr>
+        <td style="padding-left: {{ indent }}px;">
+            {{ File_name }} ({{ File_size }})
+        </td>
+        <td>
+            {{ version }}
+        </td>
+        <td>
+            {{ File_type }}
+        </td>
+        <td>
+            {{ instrument }}
+        </td>
+        <td>
+            {{ uploaded_by }}
+        </td>
+        <td>
+            {{ For_site }}
+        </td>
+        <td>
+            {{ comments }}
+        </td>
+        <td>
+            {{ Date_uploaded }}
+        </td>
+        <td>
+            Edit
+        </td>
+        <td>
+            Delete
+        </td>
+    </tr>
+</script>
+
 <script id="template" type="x-tmpl-mustache">
     <li style="display: none;">
         <div class="row">
@@ -137,6 +202,12 @@ $(function () {
 
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
+
+<table class="table table-striped">
+    <tbody id="dir-tree">
+
+    </tbody>
+</table>
 
 <div class="tree well">
     <ul id="home-dir">
