@@ -111,6 +111,7 @@ function uploadFile() {
         formData = new FormData(formObj),
         file = $('#file input')[0].files[0],
         ajax = new XMLHttpRequest();
+        
     formData.append('file', file.name);
     
     ajax.upload.addEventListener("progress", progressHandler, false);
