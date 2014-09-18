@@ -22,18 +22,17 @@ $(document).ready(function() {
             elm.appendChild(children);
             var files = fileDir[i].Files;
             for(var ii in files) {
-                var child = document.createElement("li");
-                child.innerHTML = files[ii].File_name;
-                child.setAttribute("style", "display: none;");
-                $("#" + path[depth - 1] + "Children").append(child);
-                if(ii == 0) {
-                    child.setAttribute("id", path[depth - 1] + "First");
+                if(ii == 0){
+                    console.log(files[ii]);
                 }
+                var template = $('#template').html();
+                Mustache.parse(template);   // optional, speeds up future uses
+                var rendered = Mustache.render(template, files[ii]);
+                $("#" + path[depth - 1] + "Children").append(rendered);
             }
-            var template = $('#template').html();
-              Mustache.parse(template);   // optional, speeds up future uses
-              var rendered = Mustache.render(template, {name: "Luke"});
-              $('#target').html(rendered);
+            if($("#" + path[depth - 1] + "Children").children().first().html()) {
+                $("#" + path[depth - 1] + "Children").children().first().attr("id", path[depth - 1] + "First")
+            }
         }
     }
 });
@@ -52,9 +51,45 @@ $(function () {
     });
 });
 </script>
+<script id="template" type="x-tmpl-mustache">
+    <li style="display: none;">
+        <div class="row">
+            <div class="col-xs-3">
+                {{ File_name }} ({{ File_size }})
+            </div>
+            <div class="col-xs-1">
+                {{ version }}
+            </div>
+            <div class="col-xs-1">
+                {{ File_type }}
+            </div>
+            <div class="col-xs-1">
+                {{ instrument }}
+            </div>
+            <div class="col-xs-1">
+                {{ uploaded_by }}
+            </div>
+            <div class="col-xs-1">
+                {{ For_site }}
+            </div>
+            <div class="col-xs-1">
+                {{ comments }}
+            </div>
+            <div class="col-xs-2">
+                {{ Date_uploaded }}
+            </div>
+            <div class="col-xs-1">
+                <div class="col-xs-6">
+                    Edit
+                </div>
+                <div class="col-xs-6">
+                    Delete
+                </div>
+            </div>
+        </div>
+    </li>
+</script>
 {/literal}
-
-<div id="target">Loading...</div>
 
 <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
 <table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
@@ -84,11 +119,6 @@ $(function () {
 </table>
 </form>
 
-{literal}
-<script id="template" type="x-tmpl-mustache">
-Hello {{ name }}!
-</script>
-{/literal}
 <div class = "ui-accordion ui-widget ui-helper-reset">
 <table border="0" width="80%" id = "accordionTable" class="docRepository" data-open = "{$openAccordion}">
 <tr>
