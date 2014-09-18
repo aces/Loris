@@ -104,7 +104,7 @@
             
             {***********************field name************}
             {assign var="source_field" value=$elements_array[$element][$visit_label].sourcefield}
-            <td nowrap="nowrap" valign="top"> <a href="get_csv.php?instrument={$elements_array[$element][$visit_label].sourcefrom}&sourcefield={$elements_array[$element][$visit_label].sourcefield}&completion_status={$completion_status}&sent_to_dcc_status={$sent_to_dcc_status}" target="_blank"> <span title = '{$elements_array[$element][$visit_label].Description}'> {$element}</span></a></td>
+            <td nowrap="nowrap" valign="top"> <a href="AjaxHelper.php?Module=data_team_helper&script=get_csv.php&instrument={$elements_array[$element][$visit_label].sourcefrom}&sourcefield={$elements_array[$element][$visit_label].sourcefield}&completion_status={$completion_status}&sent_to_dcc_status={$sent_to_dcc_status}" target="_blank"> <span title = '{$elements_array[$element][$visit_label].Description}'> {$element}</span></a></td>
             
             
             {***********************Feedbacklist************}
