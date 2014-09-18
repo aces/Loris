@@ -39,10 +39,28 @@ session_start();
 $tpl_data = array();
 
 // create an instance of the config object
-$config              =& NDB_Config::singleton();
-$tpl_data['css']     = "../".$config->getSetting('css');
-$tpl_data['rand']    = rand(0, 9999);
-$tpl_data['success'] = false;
+$config                  =& NDB_Config::singleton();
+$tpl_data['css']         = "../".$config->getSetting('css');
+$tpl_data['rand']        = rand(0, 9999);
+$tpl_data['success']     = false;
+$tpl_data['study_title'] = $config->getSetting('title');
+$tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+$study_links = $config->getSetting('Studylinks');// print_r($study_links);
+foreach(Utility::toArray($study_links['link']) AS $link){
+    $LinkArgs = '';
+    $BaseURL = $link['@']['url'];
+    if(isset($link['@']['args'])) {
+        $LinkArgs = $link_args[$link['@']['args']];
+    }
+    $LinkLabel = $link['#'];
+    $WindowName = md5($link['@']['url']);
+    $tpl_data['studylinks'][]=array(
+            'url'        => $BaseURL . $LinkArgs,
+            'label'      => $LinkLabel,
+            'windowName' => $WindowName
+            );
+}
+
 $err                 = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (!checkLen('name')) {
