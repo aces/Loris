@@ -26,7 +26,7 @@ class NDB_Reliability extends NDB_Form
      * @throws PEAR_Error
      * @access public
      */
-    function &factory($name, $page, $identifier, $reliability_center_id)
+    static function &factory($name, $page, $identifier, $reliability_center_id)
     {
         // check that the form class exists
         if (class_exists("NDB_Reliability_$name")) {
