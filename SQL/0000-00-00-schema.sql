@@ -60,6 +60,10 @@ LOCK TABLES `candidate` WRITE;
 /*!40000 ALTER TABLE `candidate` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Table structure for table `document_repository`
+--
+
 DROP TABLE IF EXISTS `document_repository`;
 CREATE TABLE `document_repository` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -82,6 +86,33 @@ CREATE TABLE `document_repository` (
   `File_category` int(3) DEFAULT NULL,
   PRIMARY KEY (`record_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `document_repository`
+--
+
+LOCK TABLES `document_repository` WRITE;
+/*!40000 ALTER TABLE `document_repository` DISABLE KEYS */;
+/*!40000 ALTER TABLE `document_repository` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `document_repository_categories`
+--
+
+DROP TABLE IF EXISTS `document_repository_categories`;
+CREATE TABLE `document_repository_categories` (
+  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) DEFAULT NULL,
+  `parent_id` int(3) DEFAULT '0',
+  `comments` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+LOCK TABLES `document_repository_categories` WRITE;
+/*!40000 ALTER TABLE `document_repository_categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `document_repository_categories` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `examiners`
@@ -1264,13 +1295,14 @@ CREATE TABLE `users` (
   `Email` varchar(255) NOT NULL default '',
   `CenterID` tinyint(2) unsigned NOT NULL default '0',
   `Privilege` tinyint(1) NOT NULL default '0',
-  `PSCPI` enum('N','Y') NOT NULL default 'N',
+  `PSCPI` enum('Y','N') NOT NULL default 'N',
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Examiner` enum('Y','N') NOT NULL default 'N',
   `Password_md5` varchar(34) default NULL,
   `Password_expiry` date NOT NULL default '0000-00-00',
   `Pending_approval` enum('Y','N') default 'Y',
+  `Doc_Repo_Notifications` enum('Y','N') default 'N',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
