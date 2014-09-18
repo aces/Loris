@@ -38,7 +38,7 @@ class NDB_Form_help_editor extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
@@ -53,9 +53,9 @@ class NDB_Form_help_editor extends NDB_Form
       */
     function _getDefaults()
     {
-        $DB =& Database::singleton();
+        $DB = Database::singleton();
         //Get the default values
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".
                                      $DB->getMessage());
         } 
@@ -72,7 +72,7 @@ class NDB_Form_help_editor extends NDB_Form
         $this->tpl_data['section']    = $_REQUEST['section'] ;
         $this->tpl_data['subsection'] = $_REQUEST['subsection'] ;
         if (!empty($helpID)) {
-            $help_file           =& HelpFile::factory($helpID);
+            $help_file           = HelpFile::factory($helpID);
             $data                = $help_file->toArray(); 
             $defaults['title']   = $data['topic'];
             $defaults['content'] = trim($data['content']);
@@ -106,9 +106,9 @@ class NDB_Form_help_editor extends NDB_Form
 
     function _process($values)
     { 
-        $DB =& Database::singleton();
+        $DB = Database::singleton();
         //Get the default values
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".
                                      $DB->getMessage());
         }
@@ -128,14 +128,14 @@ class NDB_Form_help_editor extends NDB_Form
             $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
         } 
         if (!empty($helpID)) {
-            $help_file =& HelpFile::factory($helpID);
+            $help_file = HelpFile::factory($helpID);
             // update the help file
             $success = $help_file->update(array(
                         'topic' => $values['title'],
                         'content' => $values['content'],
                         'updated' => date('Y-m-d h:i:s', time())
                         ));
-            if (PEAR::isError($success)) {
+            if (Utility::isErrorX($success)) {
                 $this->tpl_data['error_message'][] = $success->getMessage();
             }
         } else {
@@ -151,7 +151,7 @@ class NDB_Form_help_editor extends NDB_Form
                             'created' => date('Y-m-d h:i:s', time())
                             ));
                  // check errors
-                if (PEAR::isError($parentID)) {
+                if (Utility::isErrorX($parentID)) {
                     $this->tpl_data['error_message'][] = $parentID->getMessage();
                 }
 
@@ -170,7 +170,7 @@ class NDB_Form_help_editor extends NDB_Form
                             ));
 
                 // check errors
-                if (PEAR::isError($helpID)) {
+                if (Utility::isErrorX($helpID)) {
                     $this->tpl_data['error_message'][] = $helpID->getMessage();
                 }
             } else if ( !empty($_REQUEST['section']) 
@@ -184,7 +184,7 @@ class NDB_Form_help_editor extends NDB_Form
                             ));
 
                 // check errors
-                if (PEAR::isError($helpID)) {
+                if (Utility::isErrorX($helpID)) {
                     $this->tpl_data['error_message'][] = $helpID->getMessage();
                 }
             }

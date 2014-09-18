@@ -31,7 +31,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
@@ -41,7 +41,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
 
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
@@ -80,9 +80,9 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
 
     function _setDataTableRows($count)
     {
-        $DB =& Database::singleton();
+        $DB = Database::singleton();
         //Get the default values
-        if (PEAR::isError($DB)) {
+        if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".
                                      $DB->getMessage());
         }
