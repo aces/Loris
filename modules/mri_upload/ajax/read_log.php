@@ -29,7 +29,6 @@ while (true) {
         continue;
     }
     try {
-    	print "data-source-file" . $data_source_file . "<BR>";
         $file = fopen($data_source_file, "r+");
         if (!$file) {
             throw new Exception("Could not open the log file!");
