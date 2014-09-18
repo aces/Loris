@@ -3,9 +3,6 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$css}" type="text/css" />
-        {if $test_name_css}
-            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
-        {/if}
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
@@ -16,6 +13,11 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
         <!-- <link rel="stylesheet" href="bootstrap-3.1.1/css/magic-bootstrap.css"> -->
+
+        <!-- Module-specific CSS -->
+        {if $test_name_css}
+            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
+        {/if}
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="bootstrap-3.1.1/js/bootstrap.min.js"></script>
