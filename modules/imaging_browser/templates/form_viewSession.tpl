@@ -8,7 +8,6 @@
 {/if}
 </tr>
 
-<div class="row">
 <tr>
     <td>
     <div class="row">
@@ -178,7 +177,6 @@
 </tr>
 {/section}
 </table>
-</div>
 {else}
     <p>No data selected</p>
 {/if}
