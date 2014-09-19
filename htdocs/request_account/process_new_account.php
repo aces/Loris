@@ -31,7 +31,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 
-$DB =& Database::singleton();
+$DB = Database::singleton();
 if (Utility::isErrorX($DB)) {
      return("Could not connect to database: ".$DB->getMessage());
 }
