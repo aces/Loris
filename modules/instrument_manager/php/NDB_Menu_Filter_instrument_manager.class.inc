@@ -138,7 +138,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
         $db = Database::singleton();
 
         while(($line = fgets($fp, 4096)) !== false) {
-            $pieces = split("{@}", $line);
+            $pieces = explode("{@}", $line);
             $type = $pieces[0];
             $name = $pieces[1];
             if($name == 'Examiner') {
@@ -171,7 +171,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
             case 'select':
                 // Enums can't just check the type, they also need to
                 // check the values in the enum
-                $enums = split("{-}", $pieces[3]);
+                $enums = explode("{-}", $pieces[3]);
                 $db_enum = $db->pselectOne("SELECT COLUMN_TYPE FROM information_schema.columns WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename AND COLUMN_NAME=:columnname AND DATA_TYPE='enum'", array(
                     'dbname' => 'loris',
                     'columnname' => $name,
@@ -179,7 +179,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
                 ));
                 $options = array();
                 foreach($enums as $enum) {
-                    $enum_split = split("=>", $enum);
+                    $enum_split = explode("=>", $enum);
                     $key = $enum_split[0];
                     $val = $enum_split[1];
                     if($key == 'NULL') {
@@ -204,7 +204,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
         $db = Database::singleton();
 
         while(($line = fgets($fp, 4096)) !== false) {
-            $pieces = split("{@}", $line);
+            $pieces = explode("{@}", $line);
             $type = $pieces[0];
             $name = $pieces[1];
             switch($type) {
