@@ -22,7 +22,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_participant_accounts extends NDB_Menu_Filter
+class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
 {
     /**
      * Determine if user has permission to access this page

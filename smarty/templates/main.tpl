@@ -3,9 +3,6 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$css}" type="text/css" />
-        {if $test_name_css}
-            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
-        {/if}
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
@@ -16,6 +13,11 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
         <!-- <link rel="stylesheet" href="bootstrap-3.1.1/css/magic-bootstrap.css"> -->
+
+        <!-- Module-specific CSS -->
+        {if $test_name_css}
+            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
+        {/if}
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="bootstrap-3.1.1/js/bootstrap.min.js"></script>
@@ -48,12 +50,6 @@
                     window.open(myUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
                     }
                 }
-                function open_help_section(){
-                    {/literal}
-                    var helpurl = "context_help_popup.php?test_name={$test_name}";
-                    {literal}
-                    window.open(helpurl);
-                }
 
                 function getCookie(c_name) {
                     "use strict";
@@ -75,6 +71,56 @@
                     });
                     $(".dropdown").hover(function(){
                         $(this).toggleClass('open');
+                    });
+                    $(".help-button").click(function(e) {
+                        var getParams = {};
+                        {/literal}
+                        {if $test_name}
+                            getParams.test_name = "{$test_name|escape:"javascript"}";
+                        {/if}
+                        {if $subtest}
+                            getParams.subtest = "{$subtest|escape:"javascript"}";
+                        {/if}
+                        {literal}
+                        document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+                        $.get("AjaxHelper.php?Module=help_editor&script=help.php", getParams, function (content) {
+                                var div = document.createElement("div"),
+                                    pre = document.createElement("pre"),
+                                    btn = document.createElement("BUTTON"),
+                                    edit = document.createElement("BUTTON"),
+                                    text = document.createTextNode("Edit"),
+                                    button = document.createTextNode("Close");
+
+                                pre.innerHTML = "<h3>" + content.topic + "</h3>";
+                                pre.innerHTML += content.content;
+                                pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated ;
+                                btn.appendChild(button);
+                                btn.className="btn btn-default";
+                                btn.setAttribute("id","helpclose");
+                                edit.appendChild(text);
+                                edit.className="btn btn-default";
+                                edit.setAttribute("id", "helpedit");
+                                div.appendChild(pre);
+                                div.appendChild(btn);
+                                {/literal}
+                                {if $hasHelpEditPermission}
+                                    div.appendChild(edit);
+                                {/if}
+                                {literal}
+                                document.getElementById('page').appendChild(div);
+                                div.setAttribute("class", "help-content");
+                                btn.addEventListener("click", function(e) {
+                                    $(div).hide();      
+                                    e.preventDefault(); 
+                                }) ;
+                                edit.addEventListener("click", function(e) {
+                                    document.cookie = "LastUrl = " + document.location.toString();
+                                    window.open("main.php?test_name=help_editor&subtest=edit_help_content&section="
+                                    +getParams.test_name+"&subsection="+getParams.subtest, "_self");      
+                                    e.preventDefault(); 
+                                }) ;
+                        }, "json");
+                        e.preventDefault();
                     });
                 });
 
@@ -103,7 +149,7 @@
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
                     </button>
-                    <button type="button" class="navbar-toggle" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;">
+                    <button type="button" class="navbar-toggle help-button">
                         <span class="sr-only">Toggle navigation</span>
                         <img width=17 src=images/help.gif>
                     </button>
@@ -151,7 +197,7 @@
                             </a>
                         </li>
                         <li class="hidden-xs hidden-sm">
-                            <a href="#" onClick="MyWindow=window.open('context_help_popup.php?test_name={$test_name}','MyWindow','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=800,height=400'); return false;" class="navbar-brand pull-right">
+                            <a href="#" class="navbar-brand pull-right help-button">
                                 <img width=17 src=images/help.gif>
                             </a>
                         </li>

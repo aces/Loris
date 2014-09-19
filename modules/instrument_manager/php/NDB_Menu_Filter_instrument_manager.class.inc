@@ -1,7 +1,7 @@
 <?php
 require_once 'NDB_Menu_Filter.class.inc';
 
-class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
+class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
 {
     function _hasAccess()
     {
@@ -9,7 +9,6 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
         if (PEAR::isError($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return true;
         return $user->hasPermission('superuser');
     }
 
@@ -28,6 +27,13 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
         $this->validFilters = array('');
         $this->formToFilter = array (
         );
+
+        if(!is_writeable($this->path . "project/instruments")) {
+            $this->tpl_data['writeable'] = false;
+        } else {
+            $this->tpl_data['writeable'] = true;
+        }
+            
         if($_POST['install'] == 'Install Instrument') {
             $db = Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
@@ -71,9 +77,9 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 if($key == 'Instrument_Type') {
                     if(file_exists($this->path . "/project/instruments/" . $this->tpl_data['items'][$x]['instrument_name'] . ".linst")) {
-                        $this->tpl_data['items'][$x][$i]['value'] = "New";
+                        $this->tpl_data['items'][$x][$i]['value'] = "Instrument Builder";
                     } else if(file_exists($this->path . "project/instruments/NDB_BVL_Instrument_" . $this->tpl_data['items'][$x]['instrument_name'] . ".class.inc")) {
-                        $this->tpl_data['items'][$x][$i]['value'] = "Old";
+                        $this->tpl_data['items'][$x][$i]['value'] = "PHP";
                     } else {
                         $this->tpl_data['items'][$x][$i]['value'] = "Missing";
                     }
@@ -132,7 +138,7 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
         $db = Database::singleton();
 
         while(($line = fgets($fp, 4096)) !== false) {
-            $pieces = split("{@}", $line);
+            $pieces = explode("{@}", $line);
             $type = $pieces[0];
             $name = $pieces[1];
             if($name == 'Examiner') {
@@ -165,7 +171,7 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
             case 'select':
                 // Enums can't just check the type, they also need to
                 // check the values in the enum
-                $enums = split("{-}", $pieces[3]);
+                $enums = explode("{-}", $pieces[3]);
                 $db_enum = $db->pselectOne("SELECT COLUMN_TYPE FROM information_schema.columns WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename AND COLUMN_NAME=:columnname AND DATA_TYPE='enum'", array(
                     'dbname' => 'loris',
                     'columnname' => $name,
@@ -173,7 +179,7 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
                 ));
                 $options = array();
                 foreach($enums as $enum) {
-                    $enum_split = split("=>", $enum);
+                    $enum_split = explode("=>", $enum);
                     $key = $enum_split[0];
                     $val = $enum_split[1];
                     if($key == 'NULL') {
@@ -198,7 +204,7 @@ class NDB_Menu_Filter_instrument_installer extends NDB_Menu_Filter
         $db = Database::singleton();
 
         while(($line = fgets($fp, 4096)) !== false) {
-            $pieces = split("{@}", $line);
+            $pieces = explode("{@}", $line);
             $type = $pieces[0];
             $name = $pieces[1];
             switch($type) {

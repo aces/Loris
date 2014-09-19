@@ -72,7 +72,8 @@ class NDB_Config
         //unset($configObj, $root);
     }
 
-    static function ConvertToArray(SimpleXMLElement $xml) {
+    static function ConvertToArray(SimpleXMLElement $xml) 
+    {
         $retVal = array();
         $children = $xml->children();
         if(count($children) > 0) {
@@ -325,22 +326,24 @@ class NDB_Config
         return $this->getSettingFromXML($name);
     }
     
-    function getSubprojectSettings($subprojectID){
-    	// Sub Project
-    	$subprojectSettings=$this->getSetting('subprojects');
+    function getSubprojectSettings($subprojectID)
+    {
+        // Sub Project
+        $subprojectSettings=$this->getSetting('subprojects');
 
-    	//Loop through the subprojects to get an id out and to create the subproject drop down.
-    	foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-    		if($subproject['id']==$subprojectID){
-    			return $subproject;
-    		}
+        //Loop through the subprojects to get an id out and to create the subproject drop down.
+    	   foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
+    		      if($subproject['id']==$subprojectID) {
+                return $subproject;
+            }
     		
-    	}
-    	 // no nodes found - returning null
-    	return null;
+        }
+        // no nodes found - returning null
+        return null;
     }
 
-    static function CheckMenuPermission($menuID) {
+    static function CheckMenuPermission($menuID) 
+    {
         $DB = Database::singleton();
         $user = User::singleton();
 
@@ -361,7 +364,8 @@ class NDB_Config
         }
         return false;
     }
-    static function GetMenuTabs($parent = null) {
+    static function GetMenuTabs($parent = null) 
+    {
         $DB = Database::singleton();
         if($parent === null) {
             $thisLevel = $DB->pselect("SELECT Label, CASE Visible WHEN 'false' THEN 0 ELSE 1 END as Visible, Link, ID FROM LorisMenu WHERE Parent IS NULL", array());

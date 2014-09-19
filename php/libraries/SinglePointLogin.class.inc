@@ -7,6 +7,7 @@ require_once 'PEAR.php';
  * This class provides a single-point user login to the NeuroDB GUIs
  * Its public functions can be used to display a login window at the
  * current location while preserving the current state of the GUI.
+ *
  * @package main
  */
 class SinglePointLogin extends PEAR
@@ -154,7 +155,7 @@ class SinglePointLogin extends PEAR
         
         // make the set
         $set = array(
-                     'Password' => NULL, 
+                     'Password' => null,
                      'Password_md5' => User::md5_salt($_POST['password']), 
                      'Password_expiry' => date('Y-m-d', mktime(0, 0, 0, date('n') + 6, date('j'), date('Y')))
                      );
@@ -174,7 +175,7 @@ class SinglePointLogin extends PEAR
             
             // connect to proftpd database
             $ftpdb = new Database();
-	    $success = $ftpdb->connect($ftpSettings['database'], $ftpSettings['username'], $ftpSettings['password'], $ftpSettings['host'], false);
+            $success = $ftpdb->connect($ftpSettings['database'], $ftpSettings['username'], $ftpSettings['password'], $ftpSettings['host'], false);
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("Could not connect to database: ".$success->getMessage());
             }
@@ -369,20 +370,20 @@ class SinglePointLogin extends PEAR
      * 
      * @return null
       */
-     function insertFailedDetail($description, $setArray)
-     {
-         // create DB object
-         $DB =& Database::singleton();
-         if (Utility::isErrorX($DB)) {
-             return PEAR::raiseError(
-                 "Could not connect to database: ".$DB->getMessage()
-             );
-         }
-         $setArray['Success'] = 'N';
-         $setArray['Fail_detail'] = $description;
-         // in future, add mapping of error message to Failcode field enum
-         $result =  $DB->insert('user_login_history', $setArray);
-     }
+    function insertFailedDetail($description, $setArray)
+    {
+        // create DB object
+        $DB =& Database::singleton();
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
+        }
+        $setArray['Success'] = 'N';
+        $setArray['Fail_detail'] = $description;
+        // in future, add mapping of error message to Failcode field enum
+        $result =  $DB->insert('user_login_history', $setArray);
+    }
 
 }
 ?>

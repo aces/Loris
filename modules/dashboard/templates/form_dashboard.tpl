@@ -63,14 +63,14 @@
 
                         {else}
                             <div class="progress">
-                                <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
+                                <div class="progress-bar progress-bar-female" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
                                     <p>
                                     {$female_percent}%
                                     </br>
                                     Female
                                     </p>
                                 </div>
-                                <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
+                                <div class="progress-bar progress-bar-male" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
                                     <p>
                                     {$male_percent}%
                                     </br>

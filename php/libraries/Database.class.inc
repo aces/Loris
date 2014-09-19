@@ -373,8 +373,8 @@ class Database extends PEAR
      * @param array  &$result an array into which the results of the select 
      *                        will be stored - this array gets overwritten completely
      * 
-     * @return none
-     * @access public
+     * @return     none
+     * @access     public
      * @deprecated Use pselect wrappers instead
      */
     function select($query, &$result)
@@ -423,8 +423,8 @@ class Database extends PEAR
      * @param array  &$result an array into which the results of the select will 
      *                        be stored - this array gets overwritten completely
      *
-     * @return none
-     * @access public
+     * @return     none
+     * @access     public
      * @deprecated Use pselect wrappers instead
      */
     function selectRow($query, &$result)
@@ -442,8 +442,8 @@ class Database extends PEAR
      *
      * @param string $query The SQL string which defines the SELECT query.
      *
-     * @return string
-     * @access public
+     * @return     string
+     * @access     public
      * @deprecated Use pselect wrappers instead
      */
     function selectOne($query)

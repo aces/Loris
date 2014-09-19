@@ -8,8 +8,6 @@
 </style>
 {/literal}
 
-<script type="application/javascript" src="js/modules/instrument_builder.instrument.js"></script>
-<script type="application/javascript" src="js/modules/instrument_builder.rules.js"></script>
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
 
 <div id="message" class="error">&nbsp;</div>

@@ -174,7 +174,7 @@ class User extends UserPermissions
      *
      * @param string $var Name of variable to get
      *
-     * @note          Call without any parameters to get the entire user data array
+     * @note   Call without any parameters to get the entire user data array
      * @return mixed
      * @access public
      */
@@ -387,18 +387,19 @@ class User extends UserPermissions
     /**
      * Check if user belongs to DCC
      *
-     *
      * @return boolean
      * @access public
      */
 
-     function isUserDCC() {
-      //DCC site = 1 by LORIS convention
-      return ($this->userInfo['CenterID']== 1);     
-     }
+    function isUserDCC()
+    {
+        //DCC site = 1 by LORIS convention
+        return ($this->userInfo['CenterID']== 1);
+    }
 
 
-    function updateCouchUser($password) {
+    function updateCouchUser($password)
+    {
         $factory = NDB_Factory::singleton();
         $cdb = $factory->CouchDB();
         $config = $factory->Config();
@@ -425,8 +426,10 @@ class User extends UserPermissions
         $userobj['password'] = $password;
 
 
-        $response = $cdb->_postURL("PUT /_users/org.couchdb.user:" . $username,
-            json_encode($userobj)
+        $response = $cdb->_postURL(
+            "PUT /_users/org.couchdb.user:" . $username,
+            json_encode($userobj),
+            $auth
         );
     }
 }

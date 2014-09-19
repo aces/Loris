@@ -31,11 +31,6 @@ CREATE TABLE `candidate` (
   `CenterID` tinyint(2) unsigned NOT NULL default '0',
   `ProjectID` int(11) default NULL,
   `Ethnicity` varchar(255) default NULL,
-  `ZIP` varchar(12) default NULL,
-  `FamilyID` int(6) default NULL,
-  `Sibling1` int(6) default NULL,
-  `Sibling2` int(6) default NULL,
-  `Sibling3` int(6) default NULL,
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Date_active` date default NULL,
   `RegisteredBy` varchar(255) default NULL,
@@ -65,6 +60,10 @@ LOCK TABLES `candidate` WRITE;
 /*!40000 ALTER TABLE `candidate` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Table structure for table `document_repository`
+--
+
 DROP TABLE IF EXISTS `document_repository`;
 CREATE TABLE `document_repository` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -87,6 +86,33 @@ CREATE TABLE `document_repository` (
   `File_category` int(3) DEFAULT NULL,
   PRIMARY KEY (`record_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `document_repository`
+--
+
+LOCK TABLES `document_repository` WRITE;
+/*!40000 ALTER TABLE `document_repository` DISABLE KEYS */;
+/*!40000 ALTER TABLE `document_repository` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `document_repository_categories`
+--
+
+DROP TABLE IF EXISTS `document_repository_categories`;
+CREATE TABLE `document_repository_categories` (
+  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) DEFAULT NULL,
+  `parent_id` int(3) DEFAULT '0',
+  `comments` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+LOCK TABLES `document_repository_categories` WRITE;
+/*!40000 ALTER TABLE `document_repository_categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `document_repository_categories` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `examiners`
@@ -1269,13 +1295,14 @@ CREATE TABLE `users` (
   `Email` varchar(255) NOT NULL default '',
   `CenterID` tinyint(2) unsigned NOT NULL default '0',
   `Privilege` tinyint(1) NOT NULL default '0',
-  `PSCPI` enum('N','Y') NOT NULL default 'N',
+  `PSCPI` enum('Y','N') NOT NULL default 'N',
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Examiner` enum('Y','N') NOT NULL default 'N',
   `Password_md5` varchar(34) default NULL,
   `Password_expiry` date NOT NULL default '0000-00-00',
   `Pending_approval` enum('Y','N') default 'Y',
+  `Doc_Repo_Notifications` enum('Y','N') default 'N',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
@@ -1289,7 +1316,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Examiner,Password_md5,Password_expiry) VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2006-11-27');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Examiner,Password_md5,Password_expiry) VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1812,7 +1839,9 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
-    ('Survey Module', 'main.php?test_name=participant_accounts', 6,2);
+    ('Survey Module', 'main.php?test_name=survey_accounts', 6,2);
+    ('Survey Module', 'main.php?test_name=participant_accounts', 6,2),
+    ('Help Editor', 'main.php?test_name=help_editor', 6,3);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -1874,6 +1903,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT 21, PermID FROM permissions WHERE code='user_accounts';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
 
 
 CREATE TABLE `ConfigSettings` (

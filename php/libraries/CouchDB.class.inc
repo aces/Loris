@@ -199,7 +199,8 @@ class CouchDB
      *
      * @return string A string representation of the JSON returned by CouchDB
      */
-    function _getURL($url, $op = 'GET', $headers = array()) {
+    function _getURL($url, $op = 'GET', $headers = array())
+    {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
@@ -261,14 +262,15 @@ class CouchDB
      * for posting to other CouchDB databases on the same server (ie. the users
      * database.)
      *
-     * @param string $url  The URL relative to the server to make a POST request to.
-     * @param array  $data Associative array representing the JSON document to POST.
-     * @param string $op   HTTP verb to use for the request
-     * @param array  $headers  The extra HTTP headers to send with the request
+     * @param string $url     The URL relative to the server to make a POST request to.
+     * @param array  $data    Associative array representing the JSON document to POST.
+     * @param string $op      HTTP verb to use for the request
+     * @param array  $headers The extra HTTP headers to send with the request
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $headers = array()) {
+    function _postURL($url, $data, $headers = array())
+    {
         $config = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
         $handler = $this->SocketHandler;
@@ -296,7 +298,8 @@ class CouchDB
         return trim($response_split[1]);
     }
 
-    function _postRelativeURL($url, $data, $op = 'POST') {
+    function _postRelativeURL($url, $data, $op = 'POST')
+    {
         return $this->_postURL($this->_constructURL($op, $url), $data);
     }
 
@@ -385,7 +388,8 @@ class CouchDB
      *
      * @return string the JSON string returned by the CouchDB server
      */
-    function postDoc($doc) {
+    function postDoc($doc)
+    {
         $json = $this->_postRelativeURL("", json_encode($doc), 'POST');
         return $json;
     }

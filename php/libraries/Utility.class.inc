@@ -90,7 +90,7 @@ class Utility extends PEAR
      *
      * @param array $array The multi-dimensional array
      *
-     * @return string
+     * @return  string
      * @cleanup Determine if this is still used.
      */
     function reduce($array)
@@ -108,7 +108,7 @@ class Utility extends PEAR
      *
      * @note If any element of the array contains a backtick, you'll run into trouble
      *
-     * @return string
+     * @return  string
      * @cleanup Determine if this is still used.
      */
     function crunch($x, $y)
@@ -175,11 +175,11 @@ class Utility extends PEAR
     /**
      * Returns a list of available ethnicities that can be assigned to subjects
      *
-     * @return array       an associative array("ethnicity" => "ethnicity")
-     * @throws PEAR_Error
-     * @access public
+     * @return  array       an associative array("ethnicity" => "ethnicity")
+     * @throws  PEAR_Error
+     * @access  public
      * @static
-     * @note This is no longer used and should be removed
+     * @note    This is no longer used and should be removed
      * @cleanup
      */
     function getEthnicityList()
@@ -206,11 +206,11 @@ class Utility extends PEAR
     /**
      * Returns a list of existing ethnicities of all candidates
      *
-     * @return array       an associative array("ethnicity" => "ethnicity")
-     * @throws PEAR_Error
-     * @access public
+     * @return  array       an associative array("ethnicity" => "ethnicity")
+     * @throws  PEAR_Error
+     * @access  public
      * @static
-     * @note This is no longer used and should be removed
+     * @note    This is no longer used and should be removed
      * @cleanup
      */
     function getListOfSubjectEthnicities()
@@ -421,8 +421,8 @@ class Utility extends PEAR
      * @param string $commentID A CommentID for which you would like
      *                          to know the test_name
      *
-     * @return string The test name this commentID is a part of
-     * @note This should be moved to whatever module uses it, or perhaps
+     * @return  string The test name this commentID is a part of
+     * @note    This should be moved to whatever module uses it, or perhaps
      *       NDB_BVL_Instrument
      * @cleanup
      */
@@ -472,7 +472,7 @@ class Utility extends PEAR
      *
      * @return string the regex pattern
      *
-     * @note This should probably be moved to the Candidate class, since it's 
+     * @note    This should probably be moved to the Candidate class, since it's 
      *       only used there to validate the PSCID
      * @cleanup
      */
@@ -551,8 +551,8 @@ class Utility extends PEAR
      * a set of 2 or more sibling elements with the same name, then
      * the entire set will be replaced rather than recursively merged.
      *
-     * @param array  $array1        The first array to be merged
-     * @param array  $array2        The second array to be merged
+     * @param array $array1 The first array to be merged
+     * @param array $array2 The second array to be merged
      * @param array& &$merged_array A reference to an array to merge
      *                              the parameters into. If not specified,
      *                              a new array will be created
@@ -658,7 +658,7 @@ class Utility extends PEAR
      *
      * @param mixed $var The variable to be converted to an array.
      *
-     * @return array If $var is an array, var, otherwise an array containing $var
+     * @return  array If $var is an array, var, otherwise an array containing $var
      * @cleanup This should be removed and all uses converted to toArray
      *          (or vice versa, but toArray seems to be more common in the code)
      */
@@ -680,7 +680,7 @@ class Utility extends PEAR
      *
      * @return unknown
      *
-     * @note Don't know what the above function comment is supposed to mean, 
+     * @note    Don't know what the above function comment is supposed to mean, 
      *       so just preserving it for now. Appears to only be used 
      *       by NDB_Form_candidate_parameters and if so, should be moved there.
      * @cleanup
@@ -721,9 +721,9 @@ class Utility extends PEAR
      *
      * From php.net    
      *
-     * @return The parameters passed all merged together, with keys preserved?
-     * @note Function comment written by Dave, not the author of this function.
-     * @note This function does not appear to be used anymore.
+     * @return  The parameters passed all merged together, with keys preserved?
+     * @note    Function comment written by Dave, not the author of this function.
+     * @note    This function does not appear to be used anymore.
      * @cleanup
      */
     function arrayMergeKeepKeys()
@@ -772,9 +772,9 @@ class Utility extends PEAR
      * @param string $item  The needle to search for
      * @param array  $array The array to search for $item
      *
-     * @return True iff $item is in $array without regard to case
-     * @note Function comment written by Dave, not the author of this function.
-     * @note This does not appear to be used. If not, it should be removed,
+     * @return  True iff $item is in $array without regard to case
+     * @note    Function comment written by Dave, not the author of this function.
+     * @note    This does not appear to be used. If not, it should be removed,
      * @cleanup ?
      */
     function in_array_insensitive($item, $array)
@@ -804,8 +804,8 @@ class Utility extends PEAR
      * 
      * @param array $Arr A row from an associative array based by array_map
      *
-     * @return The name from the given array row.
-     * @note Function should be removed and code using it cleaned up.
+     * @return  The name from the given array row.
+     * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
     function flatten($Arr)
@@ -829,8 +829,8 @@ class Utility extends PEAR
      * 
      * @param array $Arr A row from an associative array based by array_map
      *
-     * @return The name from the given array row.
-     * @note Function should be removed and code using it cleaned up.
+     * @return  The name from the given array row.
+     * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
     function flattenFull($Arr)
@@ -842,7 +842,7 @@ class Utility extends PEAR
      * Get a list of instruments installed in Loris.
      *
      * @return Associative array of the form Test_name => Full Description
-     * @note Arguably, this should be a static function in NDB_BVL_Instrument
+     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
      */
     static function getAllInstruments()
     {
@@ -939,8 +939,8 @@ class Utility extends PEAR
      * overflow into a new table. This information comes from the config.xml.
      *
      * @return integer Column threshold from config file
-     * @note Function should be either removed or moved to NDB_Config
-     * @note Function comment written by Dave, who can't remember if he's
+     * @note   Function should be either removed or moved to NDB_Config
+     * @note   Function comment written by Dave, who can't remember if he's
      *       the author of this function.
      *
      * @cleanup
@@ -960,10 +960,10 @@ class Utility extends PEAR
      * @param string $test_name The table to check for a column.
      * @param string $column    The column name to check the table for.
      *
-     * @return boolean true if the table has a the given column
-     * @note This should be moved to the Database class and references to it
+     * @return  boolean true if the table has a the given column
+     * @note    This should be moved to the Database class and references to it
      *       updated.
-     * @note Function comment written by Dave, not the author of this function.
+     * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
     static function columnExists($test_name,$column)
@@ -995,9 +995,9 @@ class Utility extends PEAR
      * @return Array of the form array(0 => array('Visit_label' => VL))
      *         where VL is the value returned from the database.
      *
-     * @note This should be moved out of the Utility class into whatever
+     * @note    This should be moved out of the Utility class into whatever
      *       module uses it. (Data team helper?)
-     * @note Function comment written by Dave, not the author of this function.
+     * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
     static function getVisitLabelUsingTestName($test_name)
@@ -1023,10 +1023,10 @@ class Utility extends PEAR
      *
      * @param string $fullname Descriptive name to be looked up
      *
-     * @return Non-associative array of the form array(Test1, Test2, ..)
-     * @note This should be moved out of the Utility class into whatever
+     * @return  Non-associative array of the form array(Test1, Test2, ..)
+     * @note    This should be moved out of the Utility class into whatever
      *       module uses it. (Data team helper?)
-     * @note Function comment written by Dave, not the author of this function.
+     * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
     static function getTestNameUsingFullName($fullname)
@@ -1048,10 +1048,10 @@ class Utility extends PEAR
      * Get all the sourcefrom instruments from parameter_type (which 
      * exist in the data_integrity flag table)
      *
-     * @return Associative array of the form array('Full Name' => 'Full Name')
-     * @note This should be moved out of the Utility class into whatever
+     * @return  Associative array of the form array('Full Name' => 'Full Name')
+     * @note    This should be moved out of the Utility class into whatever
      *       module uses it. (Data team helper?)
-     * @note Function comment written by Dave, not the author of this function.
+     * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
     static function getSourcefrom()
@@ -1085,16 +1085,16 @@ class Utility extends PEAR
      * @param string $name       If specified, return fields for this
      *                           parameter_type name
      *
-     * @return Array of the form array(
+     * @return  Array of the form array(
      *              0 => array(
      *                   'SourceField' => value
      *                   'Name'        => name
      *
      *              )
      *         )
-     * @note This should be moved out of the Utility class into whatever
+     * @note    This should be moved out of the Utility class into whatever
      *       module uses it. (Data team helper?)
-     * @note Function comment written by Dave, not the author of this function.
+     * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
     static function getSourcefields($instrument=null,$commentID=null,$name=null)
@@ -1137,9 +1137,9 @@ class Utility extends PEAR
      * @return An associated array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
-     * @note THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN SQL STATEMENT.
+     * @note       THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN SQL STATEMENT.
      *       IT IS VULNERABLE TO AN SQL INJECTION ATTACK.
-     * @note Function comment written by Dave, not the author of this function.
+     * @note       Function comment written by Dave, not the author of this function.
      * @vulnerable
      * @cleanup
      */
@@ -1180,7 +1180,7 @@ class Utility extends PEAR
      *               array is of the form
      *               array(0 => array('Test_name_display' => $TestName))?
      *
-     * @note Function comment written by Dave, not the author of this function.
+     * @note    Function comment written by Dave, not the author of this function.
      *       The return value format seems weird. Where is this used?
      * @cleanup
      */

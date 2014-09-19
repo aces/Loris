@@ -57,12 +57,12 @@
 <!-- Following links will appear on the footer of the home page of loris installation -->
 <Studylinks>
     <link url='http://www.loris.ca'>Loris Website</link>
-    <link url='http://www.github.com'>GitHub</link>
+    <link url='https://github.com/aces'>GitHub</link>
 </Studylinks>
 
 <links>
     <link url='http://www.loris.ca'>Loris Website</link>
-    <link url='http://www.github.com'>GitHub</link>
+    <link url='https://github.com/aces'>GitHub</link>
 </links>
 
 <dashboard>

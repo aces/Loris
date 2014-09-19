@@ -2,7 +2,7 @@
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=participant_accounts">
+        <form method="post" action="main.php?test_name=survey_accounts">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -28,7 +28,7 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-2 hidden-sm">
-                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'"/>
+                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=survey_accounts&subtest=add_survey'"/>
                         </div>
                         <div class="form-group col-sm-5 col-sm-offset-5 hidden-sm">
                             <div class="col-sm-6 col-xs-12">
@@ -39,22 +39,22 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=participant_accounts&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=survey_accounts&reset=true'">
                             </div>
                         </div>
                     </div>
                     <div class="row visible-sm">
                         <div cladd="col-sm-4">
-                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=participant_accounts&subtest=add_survey'"/>
+                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=survey_accounts&subtest=add_survey'"/>
                         </div>
                         <div class="col-sm-4">
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-4 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=participant_accounts&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=survey_accounts&reset=true'">
                         </div>
                     </div>
-                    <input type="hidden" name="test_name" value="participant_accounts"/>
+                    <input type="hidden" name="test_name" value="survey_accounts"/>
                 </div>
             </div>
         </form>
@@ -81,7 +81,7 @@
                          <th nowrap="nowrap">No.</th>
                         <!-- print out column headings - quick & dirty hack -->
                         {section name=header loop=$headers}
-                            <th nowrap="nowrap"><a href="main.php?test_name=participant_accounts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                            <th nowrap="nowrap"><a href="main.php?test_name=survey_accounts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                         {/section}
                     </tr>
                 </thead>
