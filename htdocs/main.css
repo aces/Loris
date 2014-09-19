@@ -669,3 +669,45 @@ vertical-align: bottom;
 tr.directentry {
     background: #BDDDBD;
 }
+.help-content {
+    max-height: 100%;
+    width: 600px;
+    height: auto;
+    position: fixed;
+    top: 50px;
+    right: 0px;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: all 0.6s ease 0s;        
+}
+
+.help-content pre {
+    background: #064785;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #FFFFFF;
+
+}
+#helpclose {
+   position: absolute;
+   right:    0;
+   top:   20px;
+   margin-right : 5px;
+}
+#helpedit {
+   position: absolute;
+   right:    0;
+   top:   20px;
+   margin-right : 75px;
+}
+
+.help-content h3 {
+    color: #FFFFFF;
+}
+
+.help-content a {
+   position: absolute;
+   right:    0;
+   bottom: 20px;
+   color: #FFFFFF;
+}

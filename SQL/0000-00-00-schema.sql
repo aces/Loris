@@ -1840,6 +1840,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
     ('Survey Module', 'main.php?test_name=survey_accounts', 6,2);
+    ('Survey Module', 'main.php?test_name=participant_accounts', 6,2),
+    ('Help Editor', 'main.php?test_name=help_editor', 6,3);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -1901,6 +1903,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT 21, PermID FROM permissions WHERE code='user_accounts';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
 
 
 CREATE TABLE `ConfigSettings` (
