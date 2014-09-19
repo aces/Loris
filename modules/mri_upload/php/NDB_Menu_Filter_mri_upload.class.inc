@@ -1,3 +1,4 @@
+ll
 <?php
 
 /**
@@ -59,15 +60,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         // set the class variables
-        $this->columns = array('UploadID','s.CandID','s.visit_label',
+        $this->columns = array('UploadID','s.CandID','c.PSCID','s.visit_label',
         'SourceLocation','UploadDate','UploadedBy',
-        'TarchiveID AS Tarchive_Info','number_of_mincInserted',
-        'number_of_mincCreated');
-        //'MincInserted AS MRI_Browser' );
-
+        'TarchiveID AS Tarchive_Info','number_of_mincCreated',
+        'number_of_mincInserted',"'ViolatedScans' as ViolatedScans"
+        );
+        
         $this->validFilters = array();
         $this->query        = " FROM mri_upload mu JOIN session ".
-        "s ON (s.ID = mu.SessionID) WHERE 1=1 ";
+        "s ON (s.ID = mu.SessionID)
+        JOIN candidate c on (c.CandID = s.CandID)
+         WHERE 1=1 ";
         $this->formToFilter = array();
         ////////////////////////////////////////////////////////////////////
         ////Create the log directory////////////////////////////////////////
@@ -283,7 +286,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             if ($dicom_created) {
 
-                //create a new log file for the tarchive_file
                 $tarchive_log = new Log($patient_name. "_tarchive_file",
                 $log_directory);
                 $tarchive_log->addLog($ArchiveLocation, false);
@@ -584,8 +586,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////////////////////////////////////////////////
                     //if the patient-name doesn't match the header/////////////
                     ///////////////////////////////////////////////////////////
-                    if (strcmp($patient_name, $patient_name_from_header) !== 0) {
-                        //if (!($patient_name == $patient_name_from_header)) {
+                    if (!($patient_name == $patient_name_from_header)) {
                         $file_not_matching_patient_name++;
                     }
                     $count++;
@@ -854,6 +855,30 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return $result;
     }
 
+    function getViolatedScans($patient_name) {
+        
+        print "patient_name is "  . $patient_name . "<BR>";
+        $db= Database::singleton();
+        $query = "SELECT COUNT(*) FROM (".
+            "SELECT PatientName as PatientName, ".
+             "time_run as TimeRun,".
+             "minc_location as MincFile, ".
+             "series_description as Series_Description, ".
+             "'Could not identify scan type' as Problem, ".
+		     "SeriesUID ".
+             "FROM mri_protocol_violated_scans  UNION SELECT PatientName, ".
+             " TimeRun, MincFile, mri_scan_type.Scan_type,'Protocol Violation' ".
+             " ,SeriesUID FROM mri_violations_log ".
+             "LEFT JOIN mri_scan_type ".
+             "ON (mri_scan_type.ID=mri_violations_log.Scan_type) ".
+             "UNION SELECT PatientName, TimeRun, MincFile, null, Reason, ".
+             "SeriesUID FROM MRICandidateErrors) as v WHERE 1=1 AND ".
+             " v.PatientName LIKE CONCAT('%', :pname, '%') ";
+        $count= $db->pselectOne($query,array('pname'=>$patient_name));
+        print "count is $count ------------------<BR>";
+        
+        return $count;
+    }
     /**
      * Creates a temporairy file or directory
      *
@@ -873,6 +898,44 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
+    
+    
+    
+    function _setDataTableRows($count)
+    {
+        
+        $db= Database::singleton();
+		$x = 0;
+	
+		foreach ($this->list as $item) {
+		    
+			$this->tpl_data['items'][$x][0]['value'] = $x + $count;
+			$i = 1;
+			foreach ($item as $key => $val) {
+			    
+			    //Construct the patient_name
+			    $patient_name = $item['PSCID']."_".
+                        $item['CandID']. "_". $item['visit_label'];
+                        
+			    if (isset($key)) {
+			        ///Set the violated scans 
+                    if ($key =='ViolatedScans'){
+                        $val = $this->getViolatedScans($patient_name);
+                    }
+				    $this->tpl_data['items'][$x][$i]['name']  = $key;
+				    $this->tpl_data['items'][$x][$i]['value'] = $val;
+			    }
+			    $i++;
+			}
+			
+		   ///includes the patient-name for the given row of the data
+	       $this->tpl_data['items'][$x][$i]['patient_name'] = $patient_name;
+			$x++;
+		}
+		
+		return true;
+    }
+    
 
 }
 ?>
