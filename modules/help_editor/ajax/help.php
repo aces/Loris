@@ -1,6 +1,6 @@
 <?php
 /**
- * This file retrives content for specific help section
+ * This file retrieves content for specific help section
  * and returns a json object 
  *
  * PHP Version 5
