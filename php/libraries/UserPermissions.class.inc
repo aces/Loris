@@ -4,7 +4,7 @@ require_once 'PEAR.php';
 /**
  * Manages user permissions
  *
- * @access public
+ * @access  public
  * @package main
  */
 class UserPermissions
@@ -50,8 +50,8 @@ class UserPermissions
             return PEAR::raiseError("DB Error: ".$this->userID->getMessage());
         }
 
-    	// load the user's permissions
-	    $success = $this->setPermissions();
+        // load the user's permissions
+        $success = $this->setPermissions();
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("UserPermissions::select(): ".$success->getMessage());
         }
@@ -99,8 +99,7 @@ class UserPermissions
      *
      * @param  string  The permission code
      * @return bool
-     * @access public
-     * 
+     * @access 
      */
     function hasPermission($code)
     {
@@ -132,8 +131,8 @@ class UserPermissions
     /**
      * Add permissions to a user
      *
-     * @note               If saving permissions, remove all permissions first
-     * @param array        Array of permission IDs to add
+     * @note   If saving permissions, remove all permissions first
+     * @param  array        Array of permission IDs to add
      * @return void
      * @throws PEAR_Error
      * @access public
@@ -155,7 +154,7 @@ class UserPermissions
         }
 
         // refresh the user permissions
-	    $success = $this->setPermissions();
+        $success = $this->setPermissions();
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("UserPermissions::addPermissions(): ".$success->getMessage());
         }
@@ -167,8 +166,8 @@ class UserPermissions
     /**
      * Removes permissions from a user
      *
-     * @note               Passing no arguments deletes all permissions
-     * @param array        Array of permission IDs to remove
+     * @note   Passing no arguments deletes all permissions
+     * @param  array        Array of permission IDs to remove
      * @return void
      * @throws PEAR_Error
      * @access public
@@ -199,7 +198,7 @@ class UserPermissions
         }
 
         // refresh the user permissions
-	    $success = $this->setPermissions();
+        $success = $this->setPermissions();
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("UserPermissions::removePermissions(): ".$success->getMessage());
         }
@@ -217,7 +216,7 @@ class UserPermissions
      */
     function getPermissionIDs()
     {
-	// create DB object
+        // create DB object
         $DB =& Database::singleton();
         if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
@@ -261,8 +260,8 @@ class UserPermissions
     /**
      * Inserts the user modifications into the user_account_history
      *
-     * @param Integer $PermID            The ID of the permission
-     * @param String  $permAction        The Type of user-modification ('D' or 'I')
+     * @param Integer $PermID     The ID of the permission
+     * @param String  $permAction The Type of user-modification ('D' or 'I')
      * 
      * @return null
      */

@@ -94,7 +94,8 @@ class Log extends PEAR
     *
     * @return String Path to the error_log
     */
-    function getLogPath(){
+    function getLogPath()
+    {
         return $this->GENERAL_ERROR_DIR;
     }
 }
