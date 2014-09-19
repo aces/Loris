@@ -39,29 +39,29 @@ session_start();
 $tpl_data = array();
 
 // create an instance of the config object
-$config                  =& NDB_Config::singleton();
+$config                  = NDB_Config::singleton();
 $tpl_data['css']         = "../".$config->getSetting('css');
 $tpl_data['rand']        = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
-$study_links = $config->getSetting('Studylinks');// print_r($study_links);
-foreach(Utility::toArray($study_links['link']) AS $link){
+$study_links             = $config->getSetting('Studylinks');// print_r($study_links);
+foreach (Utility::toArray($study_links['link']) AS $link) {
     $LinkArgs = '';
-    $BaseURL = $link['@']['url'];
-    if(isset($link['@']['args'])) {
+    $BaseURL  = $link['@']['url'];
+    if (isset($link['@']['args'])) {
         $LinkArgs = $link_args[$link['@']['args']];
     }
-    $LinkLabel = $link['#'];
-    $WindowName = md5($link['@']['url']);
-    $tpl_data['studylinks'][]=array(
+    $LinkLabel                = $link['#'];
+    $WindowName               = md5($link['@']['url']);
+    $tpl_data['studylinks'][] = array(
             'url'        => $BaseURL . $LinkArgs,
             'label'      => $LinkLabel,
             'windowName' => $WindowName
             );
 }
 
-$err                 = array();
+$err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (!checkLen('name')) {
         $err[] = 'The First Name field is empty!';
@@ -88,38 +88,40 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $from      = $_REQUEST["from"];
         $verif_box = $_REQUEST["verif_box"];
 
-	 // check to see if verificaton code was correct
-	 // if verification code was correct send the message and show this page
-	 $fullname  = $name." ".$lastname;
-	 $vals      = array('UserID'=>$from, 'Real_name'=>$fullname, 'First_name'=>$name, 
-                      'Last_name'=>$lastname,'Pending_approval'=>'Y','Email'=>$from);
-	 // check email address' uniqueness
-	 $result    = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail",
-			    array('VEmail' => $from));
-	 if (Utility::isErrorX($result)) {
-	     return PEAR::raiseError("DB Error: ".$result->getMessage());
-	 }
+        // check to see if verificaton code was correct
+        // if verification code was correct send the message and show this page
+        $fullname = $name." ".$lastname;
+        $vals     = array('UserID'=>$from, 'Real_name'=>$fullname, 
+                          'First_name'=>$name, 'Last_name'=>$lastname,
+                          'Pending_approval'=>'Y', 'Email'=>$from);
+        // check email address' uniqueness
+        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail",
+                                      array('VEmail' => $from));
+        if (Utility::isErrorX($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
+        }
 
-	 if ($result > 0) { 
-	     $tpl_data['error_message'] = 'The email address already exists';
-	     exit;
-	 } else {
-             $success = $DB->insert('users', $vals);
-             if (Utility::isErrorX($success)) {
-                 return PEAR::raiseError("DB Error: ".$success->getMessage());
-             } 
-             //$tpl_data['success'] = true;
-             unset($_SESSION['tntcon']); 
-             //redirect to a new page
-             header("Location: thank-you.php", true, 301);
-             exit();
-	 }
+        if ($result > 0) { 
+            $tpl_data['error_message'] = 'The email address already exists';
+            exit;
+        } else {
+            $success = $DB->insert('users', $vals);
+            if (Utility::isErrorX($success)) {
+                return PEAR::raiseError("DB Error: ".$success->getMessage());
+            } 
+            //$tpl_data['success'] = true;
+            unset($_SESSION['tntcon']); 
+            //redirect to a new page
+            header("Location: thank-you.php", true, 301);
+            exit();
+        }
 
     }
 }
 function checkLen($str, $len=2) 
 {
-    return isset($_REQUEST[$str]) && mb_strlen(strip_tags($_REQUEST[$str]),"utf-8") > $len;
+    return isset($_REQUEST[$str]) 
+           && mb_strlen(strip_tags($_REQUEST[$str]), "utf-8") > $len;
 }
 
 

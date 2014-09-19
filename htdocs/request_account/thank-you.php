@@ -3,10 +3,12 @@
 <head>
       <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
       <title>Thank you!</title>
+      <link rel="stylesheet" href="../bootstrap-3.1.1/css/bootstrap.css">
 </head>
 <body>
+<div class="panel-body">
 <p>Your request for an account has been received successfully.</p>
-<?php $url = $_SERVER['HTTP_HOST'] ?>
-<a href="<?php echo "http://".$url; ?>">Go back to Login page </a>
+<input class="btn btn-sm btn-primary" onclick="location.href='/'" value="Return to Login Page" type="button" />
+</div>
 </body>
 </html>
