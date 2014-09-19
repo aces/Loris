@@ -957,6 +957,7 @@ class NDB_Form_statistics extends NDB_Form
         // type of thing Tanya wants stats for here separately
 
         // Thresholds was copy/pasted from 
+        require_once __DIR__ . "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
         $thresholds = NDB_Menu_Filter_Reliability::getThreshholds();
         
         $tests = array(
