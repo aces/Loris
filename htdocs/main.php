@@ -58,7 +58,7 @@ if (Utility::isErrorX($user)) {
     $tpl_data['user'] = $user->getData();
     $tpl_data['user']['permissions'] = $user->getPermissions();
 }
-$tpl_data['hadEditPermission'] = $user->hasPermission('context_help');
+$tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
 
 $site =& Site::singleton($user->getData('CenterID'));
 if (Utility::isErrorX($site)) {

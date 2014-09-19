@@ -103,7 +103,7 @@
                                 div.appendChild(pre);
                                 div.appendChild(btn);
                                 {/literal}
-                                {if $hadEditPermission}
+                                {if $hasHelpEditPermission}
                                     div.appendChild(edit);
                                 {/if}
                                 {literal}
