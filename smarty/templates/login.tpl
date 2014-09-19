@@ -166,6 +166,7 @@ BrowserDetect.init();
 				  			<input class="btn btn-primary col-xs-12" name="login" type="submit" value="login" />
 				  			<br><br><br>
 				  			<a href="lost_password.php"><center>Forgot your password?</center></a>
+				  			<a href="request_account/process_new_account.php"><center>Request Account</center></a>
 				  		</form>
 			  		</div>
 			  	</div>	
