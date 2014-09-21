@@ -18,50 +18,78 @@ header("Cache-Control: no-store, no-cache, must-revalidate");
 require_once "../tools/generic_includes.php";
 
 
-///get the log file-name
-
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////get the log file-name////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 $data_source_file = getLatestLogFile();
-
 while (true) {
     clearstatcache();
-    if (file_get_contents($data_source_file) === '') {
-        sleep(1);
-        continue;
-    }
-    try {
-        $file = fopen($data_source_file, "r+");
-        if (!$file) {
-            throw new Exception("Could not open the log file!");
-        } else {
-            flock($file, LOCK_EX); 
-            $data = file_get_contents($data_source_file);
-            ftruncate($file, 0);
-            flock($file, LOCK_UN);
-            fclose($file);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    //////////////////check to make sure the file is not empty/////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    if ($data_source_file) {
+        
+        ///////////////////////////////////////////////////////////////////////
+        //////////////////get the file content/////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        if (file_get_contents($data_source_file) === '') {
+            sleep(1);
+            continue;
         }
-    } catch(Exception $e) {
-        $data = "Error: " . $e->getMessage();
-    }   
-    echo $data;
-    ob_flush();
-    flush();
-    break;
+        try {
+            $file = fopen($data_source_file, "r+");
+            if (!$file) {
+                throw new Exception("Could not open the log file!");
+            } else {
+                flock($file, LOCK_EX); 
+                $data = file_get_contents($data_source_file);
+                ftruncate($file, 0);
+                flock($file, LOCK_UN);
+                fclose($file);
+            }
+        } catch(Exception $e) {
+            $data = "Error: " . $e->getMessage();
+        }   
+        echo $data;
+        ob_flush();
+        flush();
+        break;
+    }
+    else {
+         print "file doesn't exist";
+         throw new Exception("Could not open the log file!");
+    }
 }
+/**
+ * get the last changed log file using in the 
+ * $paths['base'] . "/" . $paths['log']."/MRI_upload" directory
+ *
+ * @return String latest log file
+ */
 
 function getLatestLogFile() {
 	
 	$config = NDB_Config::singleton();
 	$paths = $config->getSetting('paths');
-
-	//get the path from the config file
+    ///////////////////////////////////////////////////////////////////////////
+	///////////////////get the path from the config file///////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	if (empty($paths)) {
 		print "config setting is missing";
     	error_log("ERROR: Config settings are missing");
 	}
 	
+	///////////////////////////////////////////////////////////////////////////
+	//////////////////////Get the directory name///////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	$log_directory = $paths['base'] . "/" . $paths['log']."/MRI_upload";
 	//print "log directory " . $log_directory . "<BR>";
+	
 	//get the last file modified
+	///////////////////////////////////////////////////////////////////////////
+	////////////////find the file last changed/////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	$files = glob($log_directory."/*MRI_upload*");
 	$files = array_combine($files, array_map("filemtime", $files));
 	arsort($files);
