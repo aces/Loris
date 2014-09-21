@@ -63,6 +63,8 @@ class Message
             $this->messageFile  = $location . "/" . $file_name 
             . "." . $date . ".log";
         }
+        ///create an empty file
+        touch($this->messageFile);
         
     }
 
