@@ -106,13 +106,13 @@ function uploadFile() {
     "use strict";
     getMessage();
     $("#progressbar").show();
-    var formObj = $("#mri_upload")[0],
+    var formObj = document.getElementById("mri_upload"),
         formURL = "main.php?test_name=mri_upload",
         formData = new FormData(formObj),
-        file = $('#file input')[0].files[0],
+        file = formObj[0].files,
         ajax = new XMLHttpRequest();
-        
     formData.append('file', file.name);
+    console.log(formData);
     
     ajax.upload.addEventListener("progress", progressHandler, false);
     ajax.open("POST", formURL);
@@ -126,10 +126,12 @@ $(function () {
     "use strict";
     change();
     $("#progressbar").hide();
+    
     $("#upload").click(function (e) {
         var time = getCurrentTime(); 
         $("#log_box").html(time + " Preparing... <br>");
         uploadFile();
         e.preventDefault();
     });
+    
 });
