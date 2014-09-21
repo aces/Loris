@@ -107,11 +107,12 @@
                     </thead>
                     <tbody>
                     {section name=item loop=$items}
-                    
+                   
                         <tr>
                             <!-- print out data rows -->
                             
                             {section name=piece loop=$items[item]}
+                          
                                 {if $items[item][piece].name eq 'Tarchive_Info'}
                                     <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&
                                     tarchiveID={$items[item][piece].value}">
@@ -129,15 +130,15 @@
                                          <td nowrap="nowrap"> </td>
                                     {/if}
                                     
-                                {elseif $items[item][piece].name eq 'ViolatedScans'}     
+                                {*****elseif $items[item][piece].name eq 'ViolatedScans'}     
+         
                                     {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}
                                         <td nowrap="nowrap">
-                                            <a href="main.php?test_name=mri_violations&PatientName={$items[item][piece].patient_name}
-                                            &filter=true">
+                                            <a href="main.php?test_name=mri_violations&PatientName={$items[item][piece].patient_name}&filter=true">
                                             View Violated Scans
                                             </a>
                                         </td>
-                                    {/if}    
+                                    {/if*****}    
                                 {else}
                                     <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                             {$items[item][piece].value} 
