@@ -1,4 +1,3 @@
-ll
 <?php
 
 /**
@@ -88,22 +87,33 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         // Create an MRI_upload directory in the tools/logs//////////////////
         /////////////////////////////////////////////////////////////////////
         if (!file_exists($log_directory)) {
-            if (!mkdir($log_directory)) {
+            if (mkdir($log_directory)) {
+                
+                 ////////////////////////////////////////////////////////////
+                 ////change the directory permission/////////////////////////          
+                 ////////////////////////////////////////////////////////////
+                 if (!(chmod($log_directory, 0774))) {
+                     print('Cannot change the permission of the folder');
+                     error_log("Cannot change the permission of the folder");
+                 }
+            }
+            else {
                 print('Failed to create mri folder');
                 error_log("Log file cannot be created");
             }
+            
         }
 
         ///////////////////////////////////////////////////////////////////////
         ////Create the log file////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-
         $this->message = new Message("MRI_upload", $log_directory);
         $log_path      = $this->message->getMessagePath();
-        if (chmod($log_path, 0664)) {
-            print "file permission changed";
+        
+        if (!(chmod($log_path, 0770))) {
+            print "file permission cannot be changed";
+            error_log("file permission cannot be changed");
         }
-
         return true;
     }
 
@@ -167,7 +177,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function _process($values)
     {
         if ($this->_saveFile($values)) {
-
             $this->message->addMessage("Setting up variables \n");
 
             ///////////////////////////////////////////////////////////////////
@@ -280,7 +289,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             ///////////////////////////RUN the MINC Insertion//////////////////
             ///////////////////////////////////////////////////////////////////
-
             ///////////////////////////////////////////////////////////////////
             //////Set the file-path based on the patient_name//////////////////
             ///////////////////////////////////////////////////////////////////
@@ -854,7 +862,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $result[] = $ArchiveLocation;
         return $result;
     }
-
+/*
     function getViolatedScans($patient_name) {
         
         print "patient_name is "  . $patient_name . "<BR>";
@@ -879,6 +887,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         
         return $count;
     }
+    */
     /**
      * Creates a temporairy file or directory
      *
@@ -899,7 +908,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
     }
     
-    
+    /*
     
     function _setDataTableRows($count)
     {
@@ -936,6 +945,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 		return true;
     }
     
-
+*/
 }
 ?>
