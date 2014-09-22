@@ -81,9 +81,8 @@ class Candidate
      */
     function select($candID)
     {
-        $config = NDB_Config::singleton();
-        // right off, set the candID
-        $candID = trim($candID);
+        $config    = NDB_Config::singleton();
+        $candID    = trim($candID);
         $CandArray = array('Candidate' => $candID);
 
         // make a local reference to the Database object
@@ -102,7 +101,7 @@ class Candidate
             LEFT JOIN psc as p USING (CenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
             WHERE c.CandID=:Candidate AND c.Active = 'Y'";
-        $row = array();
+
         $row = $db->pselectRow($query, $CandArray);
 
         if (Utility::isErrorX($row)) {
@@ -130,7 +129,7 @@ class Candidate
             $params = array();
             $parameterCandSettings = $headerSetting['parameter_candidate'];
             if (!is_array($parameterCandSettings)) {
-                $parameterCandSettings= array($parameterCandSettings);
+                $parameterCandSettings = array($parameterCandSettings);
             }
             foreach ($parameterCandSettings as $parameter_type) {
                 $row = $db->pselectRow(
@@ -177,7 +176,7 @@ class Candidate
         $query = "SELECT s.ID FROM session as s
             WHERE s.CandID=:Candidate AND s.Active='Y'
             ORDER BY ID";
-        $row = $db->pselect($query, $CandArray);
+        $row   = $db->pselect($query, $CandArray);
 
         if (Utility::isErrorX($row)) {
             return PEAR::raiseError(
@@ -239,7 +238,7 @@ class Candidate
         }
 
         // figure out how to generate PSCID
-        $config =& NDB_Config::singleton();
+        $config        =& NDB_Config::singleton();
         $PSCIDSettings = $config->getSetting('PSCID');
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -528,7 +527,8 @@ class Candidate
         //make sure it returns an array
         $visitLabelArray = array();
 
-        $candID=$this->getCandID();
+        $candID = $this->getCandID();
+
         // make a local reference to the Database object
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
@@ -561,7 +561,8 @@ class Candidate
      */
     function getNextVisitNo()
     {
-        $candID=$this->getCandID();
+        $candID = $this->getCandID();
+
         // make a local reference to the Database object
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
@@ -593,11 +594,13 @@ class Candidate
      */
     function getNextVisitLabel()
     {
-        $nextVisitLabel = null;
         $config =& NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabels');
 
-        $candID=$this->getCandID();
+        $visitLabelSettings = $config->getSetting('visitLabels');
+        $nextVisitLabel     = null;
+
+        $candID = $this->getCandID();
+
         // make a local reference to the Database object
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
@@ -652,16 +655,18 @@ class Candidate
      */
     function getValidSubprojects()
     {
-        $projID = $this->getProjectID();
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
             return PEAR::raiseError(
                 "Could not connect to database: ".$db->getMessage()
             );
         }
-        $query  = "SELECT SubprojectID from project_rel where ProjectID = :prj";
-        $params = array('prj'=>$projID);
-        $subproj   = $db->pselect($query, $params);
+
+        $projID  = $this->getProjectID();
+        $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
+        $params  = array('prj'=>$projID);
+        $subproj = $db->pselect($query, $params);
+
         if (Utility::isErrorX($subproj)) {
             return PEAR::raiseError(
                 "Could not connect to database: ".$subproj->getMessage()
@@ -683,8 +688,10 @@ class Candidate
      */
     function getFirstVisit()
     {
-        $candID = $this->getCandID();
         $db =& Database::singleton();
+
+        $candID = $this->getCandID();
+
         if (Utility::isErrorX($db)) {
             return PEAR::raiseError(
                 "Could not connect to database: ".$db->getMessage()
@@ -752,8 +759,9 @@ class Candidate
         }
 
         $config =& NDB_Config::singleton();
+
         $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays = Candidate::generateArrays($PSCIDSettings, $prefix);
+        $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
 
         // run one first time, then loop until the pscid is not used
         do {
@@ -789,10 +797,12 @@ class Candidate
     function _generateExternalID()
     {
         $config =& NDB_Config::singleton();
+
         $ExternalIDSettings = $config->getSetting('ExternalID');
-        $ExternalIDArrays = Candidate::generateArrays($ExternalIDSettings);
+        $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
 
         $db =& Database::singleton();
+
         if (Utility::isErrorX($db)) {
             return $db;
         }
@@ -838,8 +848,9 @@ class Candidate
     static function validatePSCID($PSCID, $siteAbbrev=null)
     {
         $config =& NDB_Config::singleton();
+
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex = Utility::structureToPCRE(
+        $regex         = Utility::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev
         );
