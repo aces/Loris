@@ -51,10 +51,15 @@ class Message
         $now_array = getdate();
         if ($use_date) {
             $now_string = sprintf(
-                "%04d-%02d-%02d %02d:%02d:%02d", $now_array['year'],
-                $now_array['mon'], $now_array['mday'], $now_array['hours'],
-                $now_array['minutes'], $now_array['seconds']
+                "%04d-%02d-%02d %02d:%02d:%02d",
+                $now_array['year'],
+                $now_array['mon'],
+                $now_array['mday'],
+                $now_array['hours'],
+                $now_array['minutes'],
+                $now_array['seconds']
             );
+
             $message = "[" . $now_string . "] " . $message . "\n";
         }
         $file = fopen($this->messageFile, "a");
