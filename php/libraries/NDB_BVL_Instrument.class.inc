@@ -1,4 +1,15 @@
 <?php
+/**
+ * This file contains the base class for instruments in Loris
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Behavioural
+ * @author   Unknown <example@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
@@ -11,65 +22,68 @@ require_once 'HTML/QuickForm/Renderer/Default.php';
  *
  * Throws PEAR errors. Also requires PEAR HTML_Quickform.
  *
- * @package behavioural 
- * @access  public
+ * @category Main
+ * @package  Behavioural
+ * @author   Unknown <example@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Instrument extends NDB_Page
 {
 
     /**
-    * HTML_Quickform object
-    *
-    * @access private
-    */
+     * HTML_Quickform object
+     *
+     * @access private
+     */
     var $form;
 
     /**
-    * test name (short name), equivalent to test_names.Test_name
-    *
-    * @access private
-    */
+     * Test name (short name), equivalent to test_names.Test_name
+     *
+     * @access private
+     */
     var $testName;
 
     /**
-    * instrument instance CommentID
-    *
-    * @access private
-    */
+     * Instrument instance CommentID
+     *
+     * @access private
+     */
     var $commentID;
 
     /**
-    * database table containing data referenced by $this->commentID
-    *
-    * @access private
-    */
+     * Database table containing data referenced by $this->commentID
+     *
+     * @access private
+     */
     var $table;
 
     /**
-    * cache location for the date of administration
-    *
-    * @access private
-    */
+     * Cache location for the date of administration
+     *
+     * @access private
+     */
     var $dateOfAdministration;
 
     /**
-    * additional form defaults - should only be used for quickform
-    * static elements!
-    *
-    * @access private
-    */
+     * Additional form defaults - should only be used for quickform
+     * static elements!
+     *
+     * @access private
+     */
     var $localDefaults = array('emptyCell'=>'&nbsp;');
 
     /**
-    * string to separate the group elements
-    * @access private
-    */
+     * String to separate the group elements
+     * @access private
+     */
     var $_GUIDelimiter = "</td>\n<td>";
 
     /**
-    * commonly used level of indentation
-    * @access private
-    */
+     * Commonly used level of indentation
+     * @access private
+     */
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     /**
@@ -79,31 +93,45 @@ class NDB_BVL_Instrument extends NDB_Page
     var $InstrumentType = 'PHP';
 
     /**
-    * array of required fields to check
-    * @access private
-    */
+     * Array of required fields to check
+     * @access private
+     */
     var $_requiredElements = array();
 
     /**
-    * array of date fields to be processed into QuickForm dates
-    * NOTE: When abstracting the _saveValues() method in the child <instrument> class, add only the dates from the current page to the array using the instruments switch($page) otherwise you'll end up overwriting (NULLing) all other dates in the table that appear on other pages (if they are listed in the array of date fields) - note by Dario
-    */
+     * Array of date fields to be processed into QuickForm dates
+     * NOTE: When abstracting the _saveValues() method in the child <instrument>
+     * class, add only the dates from the current page to the array using the
+     * instruments switch($page) otherwise you'll end up overwriting (NULLing)
+     * all other dates in the table that appear on other pages (if they are
+     * listed in the array of date fields) - note by Dario
+     */
     var $dateTimeFields = array();
-    
+
     /**
-     * Array of date fields that contain only month year fields in frontend with a static value for the date
+     * Array of date fields that contain only month year fields in frontend with
+     * a static value for the date
      */
     var $monthYearFields = array();
     /**
-     * Array of column names to be ignored by the double data entry conflict detector.
+     * Array of column names to be ignored by the double data entry conflict
+     * detector.
      */
-    var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age','Data_entry_completion_status');
+    var $_doubleDataEntryDiffIgnoreColumns = array(
+        'CommentID',
+        'UserID',
+        'Testdate',
+        'Window_Difference',
+        'Candidate_Age',
+        'Data_entry_completion_status'
+    );
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
      * or not.
      * @access private
      */
+
     var $ValidityEnabled = true;
     /**
      * Whether the "Validity" field is required before flagging an instrument
@@ -127,38 +155,45 @@ class NDB_BVL_Instrument extends NDB_Page
     var $preview = false;
 
     /**
-    * factory generates a new instrument instance of type
-    * $instrument, and runs the setup() method on that new
-    * instrument.
-    *
-    * @param  string $instrument the name of the instrument to use
-    * @param  string $commentID  the CommentID identifying the data to load
-    * load
-    * @param  string $page       if a multipage form, the page to show
-    * @return object             the new object of $instrument type
-    * @throws PEAR:error
-    * @access public
-    */
+     * Factory generates a new instrument instance of type
+     * $instrument, and runs the setup() method on that new
+     * instrument.
+     *
+     * @param string  $instrument       The name of the instrument to use
+     * @param string  $commentID        The CommentID identifying the data to load
+     *                                  load
+     * @param string  $page             If a multipage form, the page to show
+     * @param boolean $guarantee_exists If true the factory will throw an
+     *                                  error if the file does not exist, otherwise
+     *                                  will silently return if the instrument is
+     *                                  missing.
+     *
+     * @return object the new object of $instrument type
+     * @throws PEAR:error
+     * @access public
+     */
     function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
         $class = "NDB_BVL_Instrument_$instrument";
-        
+
         // Make sure the instrument class has been included/required!
         $config =& NDB_Config::singleton();
         $base = $config->getSetting('base');
 
         // The conflict resolver doesn't care if the instrument exists or not, it
         // just tries to load, score, and save. If it doesn't exist, for instance
-        // in the case of figs_year3_relatives, we shouldn't require because it 
+        // in the case of figs_year3_relatives, we shouldn't require because it
         // isn't necessarily an error.
-        if(!file_exists($base."project/instruments/$class.class.inc") 
+        if (!file_exists($base."project/instruments/$class.class.inc")
             && !file_exists($base."project/instruments/$instrument.linst")
             && $guarantee_exists==false
-) {
+        ) {
             return;
         }
-        if(file_exists($base."project/instruments/$instrument.linst") || $instrument=='instrument_preview') {
-            if($instrument == 'instrument_preview') {
+        if (file_exists($base."project/instruments/$instrument.linst") 
+            || $instrument=='instrument_preview'
+        ) {
+            if ($instrument == 'instrument_preview') {
                 include_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
                 $obj = new NDB_BVL_Instrument_instrument_preview();
                 $obj->preview = true;
@@ -168,9 +203,13 @@ class NDB_BVL_Instrument extends NDB_Page
             //$obj->form = new HTML_Quickform('test_form');
             $obj->commentID = $commentID;
             $obj->page= $page;
-            $obj->loadInstrumentFile($base . "project/instruments/$instrument.linst");
-            if(file_exists($base."project/instruments/$instrument.rules")) {
-                $obj->loadInstrumentRules($base . "project/instruments/$instrument.rules");
+            $obj->loadInstrumentFile(
+                $base . "project/instruments/$instrument.linst"
+            );
+            if (file_exists($base."project/instruments/$instrument.rules")) {
+                $obj->loadInstrumentRules(
+                    $base . "project/instruments/$instrument.rules"
+                );
             }
         } else {
             include_once $base."project/instruments/$class.class.inc";
@@ -182,31 +221,38 @@ class NDB_BVL_Instrument extends NDB_Page
                 return PEAR::raiseError($success->getMessage());
             }
         }
-        
+
         $access = $obj->_hasAccess();
         if (Utility::isErrorX($access)) {
-            return PEAR::raiseError("NDB_Instrument::factory(): ".$access->getMessage());
+            return PEAR::raiseError(
+                "NDB_Instrument::factory(): ".$access->getMessage()
+            );
         }
 
         // check that user has access
         if ($access == false) {
-            return PEAR::raiseError("You do not have access to this page.");
+            return PEAR::raiseError(
+                "You do not have access to this page."
+            );
         }
 
         return $obj;
     }
 
-    
+
     /**
      * Checks if the user has permissions to view the instrument.
-     * 
+     *
      * Relies on <instrumentPermissions> settings in the config.xml file.
      *
      * This follows a permissive scheme.
-     * If the instrument is not listed in the instrumentPermissions section, access is granted.
-     * If the user has ANY of the permissions listed in the config.xml file for the instrument, access is granted.
-     * 
-     * Future improvement: call this function from display() rather than from factory()?
+     * If the instrument is not listed in the instrumentPermissions section,
+     * access is granted.
+     * If the user has ANY of the permissions listed in the config.xml file for
+     * the instrument, access is granted.
+     *
+     * Future improvement: call this function from display() rather than from
+     * factory()?
      *
      * @return bool
      * @access private
@@ -221,22 +267,21 @@ class NDB_BVL_Instrument extends NDB_Page
         if ($instrumentPermissions['useInstrumentPermissions'] == false) {
             //instrument permissions not used...
             return true; //default
-        }
-        else { //check if user has instrument's permissions
+        } else { //check if user has instrument's permissions
             $user =& User::singleton();
-            if(Utility::isErrorX($user)) {
+            if (Utility::isErrorX($user)) {
                 return PEAR::raiseError("User Error: ".$user->getMessage());
             }
 
             //is the instrument listed at all in instrumentPermissions?
             $instrumentListed = false;
-            foreach($instrumentPermissions["instrument"] as $instrument) {
+            foreach ($instrumentPermissions["instrument"] as $instrument) {
                 if ($instrument["Test_name"] == $this->testName) {
                     $instrumentListed = true;
                     $instrumentPerms = Utility::asArray($instrument["permission"]);
                 }
             }
-            
+
             //no permissions defined
             if (!$instrumentListed) {
                 return true;
@@ -244,61 +289,51 @@ class NDB_BVL_Instrument extends NDB_Page
 
             //check if user possesses ANY of the required permissions
             foreach ($instrumentPerms as $instrumentPerm) {
-                if($user->hasPermission($instrumentPerm)) { 
-                    return true; 
+                if ($user->hasPermission($instrumentPerm)) {
+                    return true;
                 }
             }
-            
+
             //no user permissions match required instrument permissions
             return PEAR::raiseError("You do not have access to this page.");
         }
     }
-    
+
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
-    *
-    * @param    string $commentID the CommentID identifying the data to load
-    * @param    string $page      if a multipage form, the page to show
-    * @return   void
-    * @access   public
-    * @abstract
-    */
+     * Sets up basic data, such as the HTML_Quickform object, and so on.
+     *
+     * @param string $commentID The CommentID identifying the data to load
+     * @param string $page      If a multipage form, the page to show
+     *
+     * @return   void
+     * @access   public
+     * @abstract
+     */
     function setup($commentID, $page)
-    { 
-        $this->_setupPage(null, $page, null, $commentID, 'test_form'); 
-        /**       
-        //   $this->form = new HTML_Quickform('test_form');
-        // $this->page = $page;            // page label (number or
-        // string - used by
-        // user-defined child classes)
-
-        // set the object properties
-        $this->testName = "";           // test_names.Test_name
-        $this->table = '';              // name of table containing
-        // data keyed by commentID
-        // $this->commentID = $commentID;
-
-        // required fields for data entry completion status
-        $this->_requiredElements = array();    */ 
+    {
+        $this->_setupPage(null, $page, null, $commentID, 'test_form');
     }
 
     /**
-    * method to compute scores - by default a null method, but any
+    * Method to compute scores - by default a null method, but any
     * instrument with a scoring algorithm to implement can override
     * it.
     *
-    * @return   void
-    * @access   public
-    * @abstract
+    * @return void
+    * @access public
     */
-    function score() 
+    function score()
     {
         $config = NDB_Config::singleton();
         $base = $config->getSetting('base');
         $scorer = $base . "project/instruments/" . $this->testName . ".score";
-        if(file_exists($scorer)) {
-            exec($scorer . " " . escapeshellarg($this->getCommentID()), $output, $retVal);
-            if($retVal != 0) {
+        if (file_exists($scorer)) {
+            exec(
+                $scorer . " " . escapeshellarg($this->getCommentID()),
+                $output,
+                $retVal
+            );
+            if ($retVal != 0) {
                 print "Error running scoring algorithm";
             }
         }
@@ -307,7 +342,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-    * method to display the form - usually not overridden as it
+    * Method to display the form - usually not overridden as it
     * includes all the base code that any instrument will require.
     *
     * @return void
@@ -317,14 +352,20 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         // ALWAYS INCLUDE THESE!
 
-        if(isset($_REQUEST['key'])) {
+        if (isset($_REQUEST['key'])) {
             $this->DataEntryType = 'DirectEntry';
         } else {
-            $this->DataEntryType = 'normal'; 
+            $this->DataEntryType = 'normal';
             // These are required for Save Data to work properly, but not when it's
             // a direct data entry page
-            $this->addHidden('candID', isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : '');
-            $this->addHidden('sessionID', isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : '');
+            $this->addHidden(
+                'candID',
+                isset($_REQUEST["candID"]) ? $_REQUEST['candID'] : ''
+            );
+            $this->addHidden(
+                'sessionID',
+                isset($_REQUEST["sessionID"]) ? $_REQUEST['sessionID'] : ''
+            );
         }
         $this->addHidden('commentID', $this->getCommentID());
         $this->addHidden('test_name', $this->testName);
@@ -334,19 +375,26 @@ class NDB_BVL_Instrument extends NDB_Page
         // Don't show save button for Direct Data entry type,
         // because that's part of the DirectEntry template
         // and has Save/Continue and go back buttons
-        if(!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
-            $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
+        if (!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
+            $buttons[] = $this->form->createElement(
+                'submit',
+                'fire_away',
+                'Save Data',
+                'class=button'
+            );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->addGroup($buttons, null, null, "&nbsp;");
         }
-        
- 
-        // get saved data to pre-populate form
 
-        $db =& Database::singleton();
-        if($this->preview !== true) {
-            $defaults = $db->pselect("SELECT * FROM $this->table WHERE CommentID=:CID", array('CID' => $this->getCommentID()));
-            if($this->isError($defaults)) {
+
+        // get saved data to pre-populate form
+        $db = Database::singleton();
+        if ($this->preview !== true) {
+            $defaults = $db->pselect(
+                "SELECT * FROM $this->table WHERE CommentID=:CID",
+                array('CID' => $this->getCommentID())
+            );
+            if ($this->isError($defaults)) {
                 return $this->raiseError('Could not get default values for form');
             }
             // set the defaults (call private method _setDefaultsArray
@@ -363,22 +411,65 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $this->form->setDefaults($defaults);
 
-        if($this->DataEntryType == 'DirectEntry') {
+        if ($this->DataEntryType == 'DirectEntry') {
             $renderer = new HTML_QuickForm_Renderer_Default();
-            if(isset($this->testName)) {
-                $renderer->setFormTemplate("<form{attributes}><table id=\"instrument_" . $this->testName . "\" class=\"instrument\">{content}</table></form>");
+            if (isset($this->testName)) {
+                $renderer->setFormTemplate(
+                    "<form{attributes}>
+                        <table id=\"instrument_" . $this->testName . "\"
+                          class=\"instrument\">
+                            {content}
+                        </table>
+                        </form>"
+                );
             } else {
-                $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
+                $renderer->setFormTemplate(
+                    "<form{attributes}>
+                        <table class=\"instrument\">{content}</table>
+                    </form>"
+                );
             }
-     
-            $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
-            $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
-            $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
 
-            // Any static element with the fieldname of "lorisSubHeader" will be shown with a colspan of 2
-            // so that we can have instructions/labels in the direct data entry instruments that span into
-            // the column for data entry.
-            $renderer->setElementTemplate("<tr><td colspan=\"2\"><br>{label}</td></tr>", 'lorisSubHeader');
+            $renderer->setElementTemplate(
+                "<tr>
+                    <td class=\"lab\">
+                        <!-- BEGIN required -->
+                        <span style=\"color: #ff0000\">*</span>
+                        <!-- END required -->{label}
+                    </td>
+                    <td class=\"ele\">
+                    <!-- BEGIN error -->
+                    <span style=\"color: #ff0000\">{error}</span>
+                    <br />
+                    <!-- END error -->{element}
+                    </td>
+                </tr>"
+            );
+            $renderer->setElementTemplate(
+                "<tr>
+                    <td class=\"lab\">
+                    <i>{label}</i>
+                    </td>
+                    <td class=\"ele\">\t<i>{element}</i></td>
+                </tr>",
+                "static"
+            );
+            $renderer->setHeaderTemplate(
+                "<tr>
+                    <th colspan=\"2\"><br><b>{header}</b></th>
+                 </tr>"
+            );
+
+            // Any static element with the fieldname of "lorisSubHeader" will
+            // be shown with a colspan of 2 so that we can have instructions/labels
+            // in the direct data entry instruments that span into the column for
+            // data entry.
+            $renderer->setElementTemplate(
+                "<tr>
+                    <td colspan=\"2\"><br>{label}</td>
+                </tr>",
+                'lorisSubHeader'
+            );
             $this->form->accept($renderer);
             $html = $renderer->toHtml();
         } else {
@@ -388,50 +479,56 @@ class NDB_BVL_Instrument extends NDB_Page
             $smarty->assign('form', $renderer->toArray());
             $html = $smarty->fetch("instrument_html.tpl");
         }
-        
-        return $html; 
+
+        return $html;
     }
-    
+
     /**
-     * accepts an array usable as input to HTML_Quickform::setDefaults()
+     * Accepts an array usable as input to HTML_Quickform::setDefaults()
      * and does any necessary preprocessing on that array.
      *
-     * @param  array $defaults the array to be passed on to HTML_Quickform::setDefaults()
-     * HTML_Quickform::setDefaults()
-     * @return array             the processed array ready for setDefaults()
+     * @param array $defaults the array to be passed on to
+     *                        HTML_Quickform::setDefaults()
+     *
+     * @return array the processed array ready for setDefaults()
      * @access private
      */
     function _setDefaultsArray($defaults)
     {
         //Convert date/time fields into quickform date/timestamps
-        if(empty($this->dateTimeFields)) {
+        if (empty($this->dateTimeFields)) {
             $this->dateTimeFields=array("Date_taken");
         }
-        foreach($this->dateTimeFields as $field){
+        foreach ($this->dateTimeFields as $field) {
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
-        foreach($this->monthYearFields as $field){
+        foreach ($this->monthYearFields as $field) {
             $defaults[$field]=$this->_getQuickformDate($defaults[$field]);
         }
 
-        if(isset($defaults['Window_Difference']) && $defaults['Window_Difference'] != 0) {
-            $defaults['Candidate_Age'] = '<span class="error">' . $defaults['Candidate_Age'] . '</span>';
+        if (isset($defaults['Window_Difference'])
+            && $defaults['Window_Difference'] != 0
+        ) {
+            $defaults['Candidate_Age']
+                = '<span class="error">' . $defaults['Candidate_Age'] . '</span>';
         }
         //Convert select multiple elements into a quickform array
-        if(!empty($this->_selectMultipleElements)) {
-            foreach($this->_selectMultipleElements AS $elname){
-                if(isset($defaults[$elname]) && stristr($defaults[$elname], "{@}")) {
+        if (!empty($this->_selectMultipleElements)) {
+            foreach ($this->_selectMultipleElements AS $elname) {
+                if (isset($defaults[$elname])
+                    && stristr($defaults[$elname], "{@}")
+                ) {
                     $defaults[$elname]=explode("{@}", $defaults[$elname]);
                 }
             }
         }
-        
+
         // return the defaults array ready for $form->setDefaults
         return $defaults;
     }
 
     /**
-     * attempts to validate the form (using the defined rules) and
+     * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
      * @return false if failure to save data
@@ -440,62 +537,86 @@ class NDB_BVL_Instrument extends NDB_Page
     function save()
     {
         $scoreResult = '';
-        if($this->form->validate()) {
+        if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
             $scoreResult = $this->score();
-            
-            // determine the data entry completion status, and store that in the database
-            $dataEntryCompletionStatus = $this->_determineDataEntryCompletionStatus();
-            if(Utility::isErrorX($dataEntryCompletionStatus)) {  print "Could not determine DECS: ".$dataEntryCompletionStatus->getMessage()."<br>\n"; 
+
+            // determine the data entry completion status, and store that in
+            // the database
+            $dataEntryCompletionStatus
+                = $this->_determineDataEntryCompletionStatus();
+            if (Utility::isErrorX($dataEntryCompletionStatus)) {
+                print "Could not determine DECS: "
+                    .  $dataEntryCompletionStatus->getMessage()
+                    ."<br>\n";
             }
-            $success = $this->_setDataEntryCompletionStatus($dataEntryCompletionStatus);
-            if(Utility::isErrorX($success)) {  print "Could not set DECS: ".$success->getMessage()."<br>\n"; 
+            $success = $this->_setDataEntryCompletionStatus(
+                $dataEntryCompletionStatus
+            );
+            if (Utility::isErrorX($success)) {
+                print "Could not set DECS: ".$success->getMessage()."<br>\n";
             }
-            
         } else {
             $submittedData = $this->form->getSubmitValues();
-            
-            if(count($submittedData)) {
-                
+
+            if (count($submittedData)) {
+
                 // the form WAS submitted but validate() failed...
                 // main error message
-                 // print "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n";
-                 $this->form->addElement('static', 'mainError');
-                 $this->form->setElementError('mainError', "<p><font color='red'>A data entry error has been detected so this data <b>WAS NOT SAVED</b></font></p>\n");
-                 //print all the field error messages in one block
-                foreach(array_keys($submittedData) AS $key) {
+                $this->form->addElement('static', 'mainError');
+                $this->form->setElementError(
+                    'mainError',
+                    "<p>
+                    <font color='red'>
+                        A data entry error has been detected so this data
+                        <b>WAS NOT SAVED</b>
+                    </font>
+                    </p>\n"
+                );
+                //print all the field error messages in one block
+                foreach (array_keys($submittedData) AS $key) {
                     $error = $this->form->getElementError($key);
-                    if(!empty($error)) {
+                    if (!empty($error)) {
+                        // FIXME: Why is this here? The body of this if
+                        // statement does nothing.. -- Dave
                         $element = $this->form->getElement($key);
-                        if(method_exists($element, "getLabel")) {
-                            // print "<font color='red'>".$element->getLabel().": $error</font><br>\n";
+                        if (method_exists($element, "getLabel")) {
+                            // print "<font color='red'>"
+                            // .$element->getLabel()
+                            // .": $error</font><br>\n";
                         }
                     }
                 }
                 return false;
             }
         }
-        
-        if($this->isError($scoreResult)) {
+
+        if ($this->isError($scoreResult)) {
             // since this error is not capture in main.php - temp display
-            print "<font color='red'>Encountered error while scoring the instrument:" . $scoreResult->getMessage() . "</font><br>\n";
-            print "This error will not prevent data from being saved, unless the data entry error is also displayed.<BR>Please inform DCC of this error<br>\n";
+            print "<font color='red'>
+                Encountered error while scoring the instrument:"
+                . $scoreResult->getMessage()
+                . "</font>
+                <br>\n";
+            print "This error will not prevent data from being saved, " .
+                "unless the data entry error is also displayed."
+                ."<BR>Please inform DCC of this error<br>\n";
             return PEAR::raiseError($scoreResult->getMessage());
         }
         return true;
     }
-    
-    function _saveCandidateAge(&$values) 
+
+    function _saveCandidateAge(&$values)
     {
-        if(!empty($values['Date_taken'])) {
+        if (!empty($values['Date_taken'])) {
             $DB = Database::singleton();
             $age = $this->getCandidateAge($values['Date_taken']);
-            if(!Utility::isErrorX($age)) {
+            if (!Utility::isErrorX($age)) {
                 $agedays = $age['year']*365 + $age['mon']*30 + $age['day'];
                 $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
                 // 1 Decimal.
                 $agemonths = (round($agemonths*10) / 10.0);
-                if(!empty($age)) {
+                if (!empty($age)) {
                     $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
                     $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
                     $values['Candidate_Age'] = $agemonths;
@@ -503,24 +624,28 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     // Age isn't valid, so find out how far out it is
 
-                    if($validage == 0) {
+                    if ($validage == 0) {
                         $Windows = $DB->pselect(
-                            "SELECT AgeMinDays, AgeMaxDays FROM test_battery tb 
-                            JOIN flag f USING(Test_name) 
-                            JOIN session s ON (s.ID=f.SessionID)  
-                            WHERE tb.Active='Y' and tb.Test_name=:TN 
+                            "SELECT AgeMinDays, AgeMaxDays FROM test_battery tb
+                            JOIN flag f USING(Test_name)
+                            JOIN session s ON (s.ID=f.SessionID)
+                            WHERE tb.Active='Y' and tb.Test_name=:TN
                             AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params
                         );
                         foreach ($Windows as $window) {
-                            if($agedays < $window['AgeMinDays']) {
+                            if ($agedays < $window['AgeMinDays']) {
                                 $delta = $window['AgeMinDays'] - $agedays;
-                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                if (abs($delta) < abs($values['Window_Difference'])
+                                    || $values['Window_Difference'] == 0
+                                ) {
                                     $values['Window_Difference'] = 0-abs($delta);
                                 }
                             }
-                            if($agedays > $window['AgeMaxDays']) {
+                            if ($agedays > $window['AgeMaxDays']) {
                                 $delta = $agedays - $window['AgeMaxDays'];
-                                if(abs($delta) < abs($values['Window_Difference']) || $values['Window_Difference'] == 0) {
+                                if (abs($delta) < abs($values['Window_Difference'])
+                                    || $values['Window_Difference'] == 0
+                                ) {
                                     $values['Window_Difference'] = abs($delta);
                                 }
                             }
@@ -2436,22 +2561,22 @@ function _checkDateTaken($dateElement)
     }
 }
 
-/// _checkDate. This is used by create timepoint and start timepoint pages, 
+/// _checkDate. This is used by create timepoint and start timepoint pages,
 // so it probably shouldn't be in the instrument class.
 function _checkDate($dateElement)
 {
-    if (empty($dateElement['M']) 
-        && empty($dateElement['d']) 
+    if (empty($dateElement['M'])
+        && empty($dateElement['d'])
         && empty($dateElement['Y'])
     ) {
-        // if all three elements are empty, return true b/c it'll 
+        // if all three elements are empty, return true b/c it'll
         // save the NULL in date field
         return true;
-    } elseif (empty($dateElement['M']) 
-        || empty($dateElement['d']) 
+    } elseif (empty($dateElement['M'])
+        || empty($dateElement['d'])
         || empty($dateElement['Y'])
     ) {
-            // otherwise, if any of the three elements are empty, return 
+            // otherwise, if any of the three elements are empty, return
             // false b/c date entry has been attempted
             return false;
     }
