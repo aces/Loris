@@ -1,174 +1,150 @@
--- default dicom_archive settings
-
--- patientIDRegex
-INSERT INTO Config (ConfigID, Value) VALUES (2, "/./");
-
--- patientNameRegex
-INSERT INTO Config (ConfigID, Value) VALUES (3, "/./i");
-
--- LegoPhantomRegex
-INSERT INTO Config (ConfigID, Value) VALUES (4, "/./i");
-
--- LivingPhantomRegex
-INSERT INTO Config (ConfigID, Value) VALUES (5, "/./i");
-
--- showTransferStatus
-INSERT INTO Config (ConfigID, Value) VALUES (6, "false");
-
--- default mail settings
-
--- From
-INSERT INTO Config (ConfigID, Value) VALUES (9, "nobody@example.com");
-
--- Reply-to
-INSERT INTO Config (ConfigID, Value) VALUES (10, "nobody@example.com");
-
--- X-MimeOLE
-INSERT INTO Config (ConfigID, Value) VALUES (11, "Produced by LorisDB");
-
-
--- default dashboard settings
-
-INSERT INTO Config (ConfigID, Value) VALUES (23, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.");
-
-
--- default www settings
-
--- host
-INSERT INTO Config (ConfigID, Value) VALUES (13, "localhost");
-
--- url
-INSERT INTO Config (ConfigID, Value) VALUES (14, "https://localhost/");
-
--- mantis_url
-INSERT INTO Config (ConfigID, Value) VALUES (15);
-
-
 -- default study variables
 
 -- additional_user_info
-INSERT INTO Config (ConfigID, Value) VALUES (17, 1);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 1 FROM ConfigSettings WHERE Name="additional_user_info";
 
 -- title
-INSERT INTO Config (ConfigID, Value) VALUES (18, "Example Study");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "Example Study" FROM ConfigSettings WHERE Name="title";
 
 -- studylogo
-INSERT INTO Config (ConfigID, Value) VALUES (19, "images/neuro_logo_blue.gif");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "images/neuro_logo_blue.gif" FROM ConfigSettings WHERE Name="studylogo";
 
 -- columnThreshold
-INSERT INTO Config (ConfigID, Value) VALUES (20, 250);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 250 FROM ConfigSettings WHERE Name="columnThreshold";
 
 -- useEDC
-INSERT INTO Config (ConfigID, Value) VALUES (21, "false");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useEDC";
 
 -- ageMin
-INSERT INTO Config (ConfigID, Value) VALUES (22, 8);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 8 FROM ConfigSettings WHERE Name="ageMind";
 
 -- ageMax
-INSERT INTO Config (ConfigID, Value) VALUES (23, 11);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 11 FROM ConfigSettings WHERE Name="ageMax";
 
 -- multipleSites
-INSERT INTO Config (ConfigID, Value) VALUES (24, "true");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="multipleSites";
 
 -- useFamilyID
-INSERT INTO Config (ConfigID, Value) VALUES (25, "false");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useFamilyID";
 
 -- startYear
-INSERT INTO Config (ConfigID, Value) VALUES (26, 2004);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 2004 FROM ConfigSettings WHERE Name="startYear";
 
 -- endYear
-INSERT INTO Config (ConfigID, Value) VALUES (27, 2014);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 2014 FROM ConfigSettings WHERE Name="endYear";
 
 -- useExternalID
-INSERT INTO Config (ConfigID, Value) VALUES (28, "false");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useExternalID";
 
 -- useProband
-INSERT INTO Config (ConfigID, Value) VALUES (29, "false");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useProband";
 
 -- useProjects
-INSERT INTO Config (ConfigID, Value) VALUES (30, "false");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useProjects";
 
 -- useScreening
-INSERT INTO Config (ConfigID, Value) VALUES (31, "false");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useScreening";
 
 -- instrument
-INSERT INTO Config (ConfigID, Value) VALUES (33);
+INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="instrument";
 
+-- DoubleDataEntryInstrument
+INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstrument";
 
--- default statistics settings
+-- default path settings
 
--- excludedMeasures
-INSERT INTO Config (ConfigID, Value) VALUES (35, "radiology_review");
+-- imagePath
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
 
--- excludedMeasures
-INSERT INTO Config (ConfigID, Value) VALUES (35, "mri_parameter_form");
+-- base
+INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSettings WHERE Name="base";
 
+-- data
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="data";
+
+-- extLibs
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/SMARTY/libs" FROM ConfigSettings WHERE Name="extLibs";
+
+-- mincPath
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="mincPath";
+
+-- DownloadPath
+INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSettings WHERE Name="DownloadPath";
+
+-- log
+INSERT INTO Config (ConfigID, Value) SELECT ID, "tools/logs/" FROM ConfigSettings WHERE Name="log";
+
+-- IncomingPath
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/incoming/" FROM ConfigSettings WHERE Name="IncomingPath";
+
+-- MRICodePath
+INSERT INTO Config (ConfigID, Value) SELECT ID, "data/%PROJECTNAME%/bin/mri/" FROM ConfigSettings WHERE Name="MRICodePath";
 
 -- default gui settings
 
 -- css
-INSERT INTO Config (ConfigID, Value) VALUES (37, "main.css");
+INSERT INTO Config (ConfigID, Value) SELECT ID, "main.css" FROM ConfigSettings WHERE Name="css";
 
 -- rowsPerPage
-INSERT INTO Config (ConfigID, Value) VALUES (38, 25);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 25 FROM ConfigSettings WHERE Name="rowsPerPage";
 
 -- showTiming
-INSERT INTO Config (ConfigID, Value) VALUES (39, 0);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="showTiming";
 
 -- showPearErrors
-INSERT INTO Config (ConfigID, Value) VALUES (40, 0);
+INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="showPearErrors";
 
--- showDatabaseQueries
-INSERT INTO Config (ConfigID, Value) VALUES (41, 0);
+-- default www settings
 
--- PopUpFeedbackBVL
-INSERT INTO Config (ConfigID, Value) VALUES (42, 1);
+-- host
+INSERT INTO Config (ConfigID, Value) SELECT ID, "localhost" FROM ConfigSettings WHERE Name="host";
 
+-- url
+INSERT INTO Config (ConfigID, Value) SELECT ID, "https://localhost/" FROM ConfigSettings WHERE Name="url";
 
-/*
--- Testname
-INSERT INTO Config (ConfigID, Value) VALUES (49, "aosi");
+-- mantis_url
+INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="mantis_url";
 
--- Threshold
-INSERT INTO Config (ConfigID, Value) VALUES (50, 0.5);
+-- default dashboard settings
 
--- Displayname
-INSERT INTO Config (ConfigID, Value) VALUES (51, "AOSI");
+-- projectDescription
+INSERT INTO Config (ConfigID, Value) SELECT ID, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun." FROM ConfigSettings WHERE Name="projectDescription";
 
--- Testname
-INSERT INTO Config (ConfigID, Value) VALUES (49, "adi_r_proband");
+-- recruitmentTarget
+INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="recruitmentTarget";
 
--- Threshold
-INSERT INTO Config (ConfigID, Value) VALUES (50, 89.5);
+-- default dicom_archive settings
 
--- Displayname
-INSERT INTO Config (ConfigID, Value) VALUES (51, "ADI-R (Proband)");
+-- patientIDRegex
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/./" FROM ConfigSettings WHERE Name="patientIDRegex";
 
--- Testname
-INSERT INTO Config (ConfigID, Value) VALUES (49, "adi_r_subject");
+-- patientNameRegex
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="patientNameRegex";
 
--- Threshold
-INSERT INTO Config (ConfigID, Value) VALUES (50, 89.5);
+-- LegoPhantomRegex
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
 
--- Displayname
-INSERT INTO Config (ConfigID, Value) VALUES (51, "ADI-R (Subject)");
+-- LivingPhantomRegex
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
 
--- Testname
-INSERT INTO Config (ConfigID, Value) VALUES (49, "csbs");
+-- showTransferStatus
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="showTransferStatus";
 
--- Threshold
-INSERT INTO Config (ConfigID, Value) VALUES (50, 79.5);
+-- default statistics settings
 
--- Displayname
-INSERT INTO Config (ConfigID, Value) VALUES (51, "CSBS");
+-- excludedMeasures
+INSERT INTO Config (ConfigID, Value) SELECT ID, "radiology_review" FROM ConfigSettings WHERE Name="excludedMeasures";
 
--- Testname
-INSERT INTO Config (ConfigID, Value) VALUES (49, "csbs");
+-- excludedMeasures
+INSERT INTO Config (ConfigID, Value) SELECT ID, "mri_parameter_form" FROM ConfigSettings WHERE Name="excludedMeasures";
 
--- Threshold
-INSERT INTO Config (ConfigID, Value) VALUES (50, 79.5);
+-- default mail settings
 
--- Displayname
-INSERT INTO Config (ConfigID, Value) VALUES (51, "CSBS");
+-- From
+INSERT INTO Config (ConfigID, Value) SELECT ID, "nobody@example.com" FROM ConfigSettings WHERE Name="From";
 
-*/
+-- Reply-to
+INSERT INTO Config (ConfigID, Value) SELECT ID, "nobody@example.com" FROM ConfigSettings WHERE Name="Reply-to";
+
+-- X-MimeOLE
+INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";
