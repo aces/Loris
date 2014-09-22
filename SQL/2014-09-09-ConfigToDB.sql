@@ -1,171 +1,199 @@
 --
--- dicom_archive
---
-
--- 1. dicom_archive
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('dicom_archive', 'DICOM archive settings', 1, 0);
-
--- 2. patientIDRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientIDRegex', 'regex for the patient ID', 1, 0, 1);
-
--- 3. patientNameRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('patientNameRegex', 'regex for the patient name', 1, 0, 1);
-
--- 4. LegoPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LegoPhantomRegex', 'regex to be used on a Lego Phantom scan', 1, 0, 1);
-
--- 5. LivingPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('LivingPhantomRegex', 'regex to be used on Living Phantom scan', 1, 0, 1);
-
--- 6. showTransferStatus
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('showTransferStatus', 'show transfer status in the DICOM archive table', 1, 0, 1);
-
---
--- mail
---
-
--- 7. mail
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('mail', 'mail settings', 1, 0);
-
--- 8. headers
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('headers', 'headers', 1, 0, 7);
-
--- 9. From
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('From', 'From', 1, 0, 8);
-
--- 10. Reply-to
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('Reply-to', 'Reply-to', 1, 0, 8);
-
--- 11. X-MimeOLE
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('X-MimeOLE', 'X-MimeOLE', 1, 0, 8);
-
---
--- www
---
-
--- 12. www
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('www', 'www settings', 1, 0);
-
--- 13. host
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('host', 'host', 1, 0, 12);
-
--- 14. url
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('url', 'main project URL', 1, 0, 12);
-
--- 15. mantis_url
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('mantis_url', 'bug tracker URL', 1, 0, 12);
-
---
 -- study
 --
 
--- 16. study
+-- study
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('study', 'study variables', 1, 0);
 
--- 17. additional_user_info
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('additional_user_info', 'display additional user fields in User Accounts page e.g. Institution', 1, 0, 16);
+-- additional_user_info
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'additional_user_info', 'display additional user fields in User Accounts page e.g. Institution', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 18. title
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('title', 'descriptive study title, appears on top of the screen', 1, 0, 16);
+-- title
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'title', 'descriptive study title, appears on top of the screen', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 19. studylogo
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('studylogo', 'logo of the study, appears on the left of the title on the top of the screen', 1, 0, 16);
+-- studylogo
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'studylogo', 'logo of the study, appears on the left of the title on the top of the screen', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 20. columnThreshold
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('columnThreshold', 'number of columns the quat table will contain', 1, 0, 16);
+-- columnThreshold
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'columnThreshold', 'number of columns the quat table will contain', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 21. useEDC
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useEDC', 'use EDC (Expected Date of Confinement) - false unless the study focuses on neonatals for birthdate estimations.', 1, 0, 16);
+-- useEDC
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useEDC', 'use EDC (Expected Date of Confinement) - false unless the study focuses on neonatals for birthdate estimations.', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 22. ageMin
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('ageMin', 'minimum candidate age in years (0+)', 1, 0, 16);
+-- ageMin
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'ageMin', 'minimum candidate age in years (0+)', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 23. ageMax
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('ageMax', 'maximum candidate age in years', 1, 0, 16);
+-- ageMax
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'ageMax', 'maximum candidate age in years', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 24. multipleSites
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('multipleSites', 'more than one site in the project', 1, 0, 16);
+-- multipleSites
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'multipleSites', 'more than one site in the project', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 25. useFamilyID
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useFamilyID', 'use family ID', 1, 0, 16);
+-- useFamilyID
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useFamilyID', 'use family ID', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 26. startYear
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('startYear', "project's start year", 1, 0, 16);
+-- startYear
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'startYear', "project's start year", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 27. endYear
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('endYear', "project's end year", 1, 0, 16);
+-- endYear
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'endYear', "project's end year", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 28. useExternalID
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useExternalID', "external ID field is false unless data is used for blind data distribution, or/from external data sources", 1, 0, 16);
+-- useExternalID
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useExternalID', "external ID field is false unless data is used for blind data distribution, or/from external data sources", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 29. useProband
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useProband', "show proband section on the candidate parameter page", 1, 0, 16);
+-- useProband
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useProband', "show proband section on the candidate parameter page", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 30. useProjects
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useProjects', "useProject field is false unless study involves more than one project where each project has multiple cohorts/subprojects", 1, 0, 16);
+-- useProjects
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useProjects', "useProject field is false unless study involves more than one project where each project has multiple cohorts/subprojects", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 31. useScreening
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('useScreening', "useScreening", 1, 0, 16);
+-- useScreening
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useScreening', "useScreening", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 32. excluded_instruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('excluded_instruments', "instruments to be excluded from the data dictionary and the data query tool", 1, 0, 16);
+-- excluded_instruments
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'excluded_instruments', "instruments to be excluded from the data dictionary and the data query tool", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
--- 33. instrument
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('instrument', "instrument to be excluded from the data dictionary and the data query tool", 1, 1, 32);
+-- instrument
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'instrument', "instrument to be excluded from the data dictionary and the data query tool", 1, 1, ID FROM ConfigSettings WHERE Name="excluded_instruments";
+
+-- DoubleDataEntryInstruments
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstruments', "instruments for which double data entry should be enabled", 1, 0, ID FROM ConfigSettings WHERE Name="study";
+
+-- DoubleDataEntryInstrument
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstrument', "instrument for which Double Data entry should be enabled", 1, 1, ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstruments";
 
 --
--- statistics
+-- paths
 --
 
--- 34. statistics
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('statistics', 'statistics settings', 1, 0);
+-- paths
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('paths', 'path settings', 1, 0);
 
--- 35. excludedMeasures
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('excludedMeasures', 'excludedMeasures', 1, 1, 34);
+-- imagePath
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'imagePath', 'path to images', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- base
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'base', 'base path', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- data
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'data', 'path to data', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- extLibs
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'extLibs', 'path to external libraries', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- mincPath
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'mincPath', 'path to MINC files', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- DownloadPath
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DownloadPath', 'where files are downloaded', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- log
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'log', 'path to logs', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- IncomingPath
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'IncomingPath', 'path for data transferred to the project server', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
+
+-- MRICodePath
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'MRICodePath', 'path to MRI code', 1, 0, ID FROM ConfigSettings WHERE Name="paths";
 
 --
 -- gui
 --
 
--- 36. gui
+-- gui
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('gui', 'GUI settings', 1, 0);
 
--- 37. css
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('css', 'name of the css file that will be used to render LORIS', 1, 0, 36);
+-- css
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'css', 'name of the css file that will be used to render LORIS', 1, 0, ID FROM ConfigSettings WHERE Name="gui";
 
--- 38. rowsPerPage
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('rowsPerPage', 'number of table rows to appear, per page', 1, 0, 36);
+-- rowsPerPage
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'rowsPerPage', 'number of table rows to appear, per page', 1, 0, ID FROM ConfigSettings WHERE Name="gui";
 
--- 39. showTiming
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('showTiming', 'show breakdown of timing information for page loading', 1, 0, 36);
+-- showTiming
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'showTiming', 'show breakdown of timing information for page loading', 1, 0, ID FROM ConfigSettings WHERE Name="gui";
 
--- 40. showPearErrors
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('showPearErrors', 'print PEAR errors', 1, 0, 36);
+-- showPearErrors
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'showPearErrors', 'print PEAR errors', 1, 0, ID FROM ConfigSettings WHERE Name="gui";
 
--- 41. showDatabaseQueries
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('showDatabaseQueries', 'print all the database queries required for page load to the in-page console ', 1, 0, 36);
+--
+-- www
+--
 
--- 42. PopUpFeedbackBVL
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('PopUpFeedbackBVL', 'show the behavioural feedback pop-up', 1, 0, 36);
+-- www
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('www', 'www settings', 1, 0);
 
+-- host
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'host', 'host', 1, 0, ID FROM ConfigSettings WHERE Name="www";
 
+-- url
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'url', 'main project URL', 1, 0, ID FROM ConfigSettings WHERE Name="www";
 
+-- mantis_url
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'mantis_url', 'bug tracker URL', 1, 0, ID FROM ConfigSettings WHERE Name="www";
 
-
-/*
 --
 -- dashboard
 --
 
--- 3. dashboard
+-- dashboard
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('dashboard', 'dashboard settings', 1, 0);
 
--- 23. projectDescription
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('projectDescription', 'description of the project that will be displayed in the top panel of the dashboard', 1, 0, 3);
+-- projectDescription
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'projectDescription', 'description of the project that will be displayed in the top panel of the dashboard', 1, 0, ID FROM ConfigSettings WHERE Name="dashboard";
 
--- 24. recruitmentTarget
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('recruitmentTarget', 'target number of participants for the study', 1, 0, 3);
-*/
+-- recruitmentTarget
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'recruitmentTarget', 'target number of participants for the study', 1, 0, ID FROM ConfigSettings WHERE Name="dashboard";
+
+--
+-- dicom_archive
+--
+
+-- dicom_archive
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('dicom_archive', 'DICOM archive settings', 1, 0);
+
+-- patientIDRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'patientIDRegex', 'regex for the patient ID', 1, 0, ID FROM ConfigSettings WHERE Name="dicom_archive";
+
+-- patientNameRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'patientNameRegex', 'regex for the patient name', 1, 0, ID FROM ConfigSettings WHERE Name="dicom_archive";
+
+-- LegoPhantomRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'LegoPhantomRegex', 'regex to be used on a Lego Phantom scan', 1, 0, ID FROM ConfigSettings WHERE Name="dicom_archive";
+
+-- LivingPhantomRegex
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'LivingPhantomRegex', 'regex to be used on Living Phantom scan', 1, 0, ID FROM ConfigSettings WHERE Name="dicom_archive";
+
+-- showTransferStatus
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'showTransferStatus', 'show transfer status in the DICOM archive table', 1, 0, ID FROM ConfigSettings WHERE Name="dicom_archive";
+
+--
+-- statistics
+--
+
+-- statistics
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('statistics', 'statistics settings', 1, 0);
+
+-- excludedMeasures
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'excludedMeasures', 'excludedMeasures', 1, 1, ID FROM ConfigSettings WHERE Name="statistics";
+
+--
+-- mail
+--
+
+-- mail
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('mail', 'mail settings', 1, 0);
+
+-- headers
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'headers', 'headers', 1, 0, ID FROM ConfigSettings WHERE Name="mail";
+
+-- From
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'From', 'From', 1, 0, ID FROM ConfigSettings WHERE Name="headers";
+
+-- Reply-to
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'Reply-to', 'Reply-to', 1, 0, ID FROM ConfigSettings WHERE Name="headers";
+
+-- X-MimeOLE
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'X-MimeOLE', 'X-MimeOLE', 1, 0, ID FROM ConfigSettings WHERE Name="headers";
 
 
 /*
@@ -201,12 +229,6 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) V
 
 -- 39. CertificationInstrument
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('CertificationInstrument', "instrument using certification", 1, 1, 38);
-
--- 40. DoubleDataEntryInstruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('DoubleDataEntryInstruments', "instruments for which double data entry should be enabled", 1, 0, 16);
-
--- 41. DoubleDataEntryInstrument
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('DoubleDataEntryInstrument', "instrument for which Double Data entry should be enabled", 1, 1, 40);
 
 -- 62. ConsentModule
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) VALUES ('ConsentModule', "consent module settings", 1, 0, 6);
