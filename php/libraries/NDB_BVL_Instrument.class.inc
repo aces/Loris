@@ -131,8 +131,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * or not.
      * @access private
      */
-
     var $ValidityEnabled = true;
+
     /**
      * Whether the "Validity" field is required before flagging an instrument
      * as complete or not.
@@ -606,6 +606,17 @@ class NDB_BVL_Instrument extends NDB_Page
         return true;
     }
 
+    /**
+     * This handles the saving of the Candidate_Age and Window_Difference columns
+     * to the database when the save function is called with a Date_taken.
+     *
+     * @param array &$values A reference to the values saved from QuickForm that
+     *                       will be passed to update. This will be modified to
+     *                       have Candidate_Age and Window_Difference if the
+     *                       Date_taken field is included.
+     *
+     * @return none, but as a side-effect modifies array that was passed.
+     */
     function _saveCandidateAge(&$values)
     {
         if (!empty($values['Date_taken'])) {
@@ -617,8 +628,21 @@ class NDB_BVL_Instrument extends NDB_Page
                 // 1 Decimal.
                 $agemonths = (round($agemonths*10) / 10.0);
                 if (!empty($age)) {
-                    $query_params = array('TN' => $this->testName, 'CID' => $this->getCommentID());
-                    $validage = $DB->pselectOne("SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays) FROM test_battery tb JOIN flag f USING(Test_name) JOIN session s ON (s.ID=f.SessionID)  WHERE tb.Active='Y' and tb.Test_name=:TN AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params);
+                    $query_params = array(
+                        'TN' => $this->testName,
+                        'CID' => $this->getCommentID()
+                    );
+                    $validage = $DB->pselectOne(
+                        "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
+                            FROM test_battery tb
+                                JOIN flag f USING(Test_name)
+                                JOIN session s ON (s.ID=f.SessionID)
+                            WHERE tb.Active='Y'
+                                AND tb.Test_name=:TN
+                                AND tb.SubprojectID=s.SubprojectID
+                                AND f.CommentID=:CID",
+                        $query_params
+                    );
                     $values['Candidate_Age'] = $agemonths;
                     $values['Window_Difference'] = 0;
 
@@ -626,11 +650,14 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     if ($validage == 0) {
                         $Windows = $DB->pselect(
-                            "SELECT AgeMinDays, AgeMaxDays FROM test_battery tb
-                            JOIN flag f USING(Test_name)
-                            JOIN session s ON (s.ID=f.SessionID)
-                            WHERE tb.Active='Y' and tb.Test_name=:TN
-                            AND tb.SubprojectID=s.SubprojectID and f.CommentID=:CID", $query_params
+                            "SELECT AgeMinDays, AgeMaxDays
+                            FROM test_battery tb
+                                JOIN flag f USING(Test_name)
+                                JOIN session s ON (s.ID=f.SessionID)
+                            WHERE tb.Active='Y' AND tb.Test_name=:TN
+                                AND tb.SubprojectID=s.SubprojectID
+                                AND f.CommentID=:CID",
+                            $query_params
                         );
                         foreach ($Windows as $window) {
                             if ($agedays < $window['AgeMinDays']) {
@@ -655,106 +682,136 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         }
     }
-    function _nullStatus(&$values) 
+
+    /**
+     * This removes all the value of any field which has its accompagning
+     * _status field set.
+     *
+     * @param array &$values A reference to the array which will be passed
+     *                       to $DB->update().
+     *
+     * @return none, but as a side-effect modifies &$values array
+     */
+    function _nullStatus(&$values)
     {
         //Remove the values of all fields who have had statuses assigned
-        foreach(array_keys($values) AS $field){
-            if(substr($field, -7)=="_status") {
-                if(!empty($values[$field])) {
+        foreach (array_keys($values) AS $field) {
+            if (substr($field, -7)=="_status") {
+                if (!empty($values[$field])) {
                     $baseField=substr($field, 0, (strlen($field)-7));
                     $values[$baseField]="";
                 }
             }
         }
     }
+
     /**
-     * preprocesses the array of values to be saved into the database
-     * (such as to rearrange date fields)
+     * Preprocesses the array of values to be saved into the database
+     * (such as to rearrange date fields or process uploaded files)
      *
-     * @param  array $values the array of values ready to be passed to an Database::update call as the set array
-     * an Database::update call as the set array
+     * @param array $values the array of values ready to be passed to
+     *                      an Database::update call as the set array
+     *
      * @return void
-     * @access private
      */
     function _saveValues($values)
     {
         //Convet date/timestamps into database format
-        if(empty($this->dateTimeFields)) {
+        if (empty($this->dateTimeFields)) {
             $this->dateTimeFields=array("Date_taken");
         }
-        
+
 
         //Convert date/time fields into database dates/times
         if (is_array($this->dateTimeFields) && count($this->dateTimeFields) > 0) {
-            foreach($this->dateTimeFields as $field){
-                if(isset($values[$field])) {  //Stops it from wiping dates already saved on other pages.
+            foreach ($this->dateTimeFields as $field) {
+                if (isset($values[$field])) {
+                    //Stops it from wiping dates already saved on other pages.
                     $values[$field]=$this->_getDatabaseDate($values[$field]);
                 }
             }
         }
 
         //Convert date/time fields into database dates/times
-        if (is_array($this->monthYearFields) && count($this->monthYearFields) > 0) {
-            foreach($this->monthYearFields as $field){
-                if(isset($values[$field])) {  //Stops it from wiping dates already saved on other pages.
+        if (is_array($this->monthYearFields)
+            && count($this->monthYearFields) > 0
+        ) {
+            foreach ($this->monthYearFields as $field) {
+                if (isset($values[$field])) {
+                    //Stops it from wiping dates already saved on other pages.
                     $values[$field]['d'] = 15;
                     $values[$field]=$this->_getDatabaseDate($values[$field]);
                 }
             }
         }
 
-        if(strrpos($this->testName, "_proband") === false) {
+        if (strrpos($this->testName, "_proband") === false) {
             $this->_saveCandidateAge($values);
         }
+
         //Convert select multiple elements into database storable values
-        if(!empty($this->_selectMultipleElements)) {
-            foreach($this->_selectMultipleElements AS $elname){
-                if(isset($values[$elname]) && is_array($values[$elname])) {
+        if (!empty($this->_selectMultipleElements)) {
+            foreach ($this->_selectMultipleElements AS $elname) {
+                if (isset($values[$elname]) && is_array($values[$elname])) {
                     $values[$elname]=implode("{@}", $values[$elname]);
                 }
             }
         }
-        
+
         //XIN specific functionality
-        if($this->formType=="XIN") {
+        if ($this->formType=="XIN") {
             $this->_nullStatus($values);
         }
-        
+
         // do not alter this when overwriting the method
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
+        unset(
+            $values['candID'],
+            $values['sessionID'],
+            $values['commentID'],
+            $values['test_name'],
+            $values['page'],
+            $values['fire_away'],
+            $values['subtest']
+        );
         // nor these -- these ones are for direct data entry
         unset($values['key'], $values['nextpage'], $values['pageNum']);
         $this->_save($values);
     }
-    
-    
+
+
     /**
-     * uses the array generated by _saveValues() and runs the
+     * Uses the array generated by _saveValues() and runs the
      * Database::update() call.
      *
-     * @param  array $values the array generated by _saveValues()
+     * @param array $values the array generated by _saveValues()
+     *
      * @return void
-     * @access private
      */
     function _save($values)
     {
         // clear any fields starting with __
-        foreach(array_keys($values) AS $key) {
-            if(strpos($key, '__') === 0) {
+        foreach (array_keys($values) AS $key) {
+            if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
         }
         $db =& Database::singleton();
-        $result = $db->update($this->table, $values, array('CommentID'=>$this->getCommentID()));
-        if($this->isError($result)) {
+        $result = $db->update(
+            $this->table,
+            $values,
+            array('CommentID'=>$this->getCommentID())
+        );
+        if ($this->isError($result)) {
             print "Error saving data: ".$result->getMessage()."<br>\n";
-            return $this->raiseError('Could not save to database' . $result->getMessage());
+            return $this->raiseError(
+                'Could not save to database' . $result->getMessage()
+            );
         }
     }
-    
-    
+
+
     /**
-     * adds metadata fields (such as Examiner and Date_taken) to the
+     * Adds metadata fields (such as Examiner and Date_taken) to the
      * current form
      *
      * @return void
@@ -774,119 +831,181 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->dateOptions = $dateOptions;
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
-        
-        if(strrpos($this->testName, '_proband') === false) {
-            $this->addScoreColumn('Candidate_Age', 'Candidate Age (Months)', 'Please enter date of administration and press Save');
-            $this->addScoreColumn('Window_Difference', 'Window Difference (+/- Days)', 'Please enter date of administration and press Save');
+
+        if (strrpos($this->testName, '_proband') === false) {
+            $this->addScoreColumn(
+                'Candidate_Age',
+                'Candidate Age (Months)',
+                'Please enter date of administration and press Save'
+            );
+            $this->addScoreColumn(
+                'Window_Difference',
+                'Window Difference (+/- Days)',
+                'Please enter date of administration and press Save'
+            );
         }
         $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
-        
-        //$this->form->addElement('text', 'Examiner', 'Examiner');
-        
-        $this->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
-        
+
+        $this->addGroupRule(
+            'Date_taken',
+            'Date of Administration is required',
+            'required'
+        );
+
         $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
-        
+        $this->addRule(
+            'Date_taken',
+            'Date of Administration is invalid',
+            'checkdate'
+        );
+
         $this->addRule('Examiner', 'Examiner is required', 'required');
     }
-    
-    //
-    // Process the Config file. This results in:
-    //     1. $CertificationEnabled being true or false,
-    //     2. $CertificationProjects being a list of projects which
-    //     use ceritification and,
-    //     3. $CertificationInstruments being a list of instruments
-    //     that use certification.
-    // This is put in a different function so that instruments that
-    // override getExaminerNames() can still easily get the config
-    // settings and don't need to parse the config file themselves.
-    function _getCertificationConfig() 
+
+    /**
+     * Process the Config file. This results in:
+     *     1. $CertificationEnabled being true or false,
+     *     2. $CertificationProjects being a list of projects which
+     *        use ceritification and,
+     *     3. $CertificationInstruments being a list of instruments
+     *        that use certification.
+     * This is put in a different function so that instruments that
+     * override getExaminerNames() can still easily get the config
+     * settings and don't need to parse the config file themselves.
+     *
+     * @return three element array.
+     */
+    function _getCertificationConfig()
     {
         $config =& NDB_Config::singleton();
         $CertificationConfig = $config->getSetting("Certification");
         $CertificationEnabled = $CertificationConfig['EnableCertification'];
-        if($CertificationEnabled) {
+        if ($CertificationEnabled) {
             $CertificationProjects = array();
-            foreach(Utility::toArray($CertificationConfig['CertificationProjects']) as $key => $value) {
-                foreach($value as $k=>$projID) {
+            foreach (
+                Utility::toArray($CertificationConfig['CertificationProjects'])
+                AS $key => $value
+            ) {
+                foreach ($value as $k=>$projID) {
                     $CertificationProjects[$projID] = $projID;
                 }
             }
             $CertificationInstruments = array();
-            foreach(Utility::toArray($CertificationConfig['CertificationInstruments']) as $instrument) {
-                foreach(Utility::toArray($instrument['test']) as $test) {
+            foreach (
+                Utility::toArray($CertificationConfig['CertificationInstruments'])
+                AS $instrument
+            ) {
+                foreach (Utility::toArray($instrument['test']) as $test) {
                     $CertificationInstruments[] = $test['@']['value'];
                 }
             }
         }
-        return array($CertificationEnabled, $CertificationProjects, $CertificationInstruments);
+        return array(
+            $CertificationEnabled,
+            $CertificationProjects,
+            $CertificationInstruments
+        );
     }
 
 
     /**
-     * gets the list of examiners for the current instrument site
+     * Gets the list of examiners for the site of the current instrument
      *
      * @return array
-     * @access private
      */
     function _getExaminerNames()
     {
         $db =& Database::singleton();
 
-        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));
-        if(is_array($centerID)) {
+        $centerID = $db->pselectOne(
+            "SELECT session.CenterID FROM session, flag
+            WHERE session.ID=flag.SessionID AND flag.CommentID=:cmnt_id",
+            array('cmnt_id'=>$this->getCommentID())
+        );
+        if (is_array($centerID)) {
             $centerID = null;
         }
 
         //get examiner certifications for profiles part of IBIS2
         $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
-        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=> $candID));
+        $project = $db->pselectOne(
+            "SELECT ProjectID from candidate where CandID =:cnd_id",
+            array('cnd_id'=> $candID)
+        );
 
-        list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
+        list(
+            $CertificationEnabled,
+            $CertificationProjects,
+            $CertificationInstruments
+        ) = $this->_getCertificationConfig();
         if ($CertificationEnabled && in_array($project, $CertificationProjects)
             && in_array($this->testName, $CertificationInstruments)
-) {
-            $test_id = $db->pselectOne("SELECT ID from test_names where Test_name =:tst_name", array('tst_name'=>$this->testName));
-            $results = $db->pselect("SELECT certification.examinerID, full_name FROM certification JOIN examiners ON certification.examinerID = examiners.examinerID WHERE testID =:tid AND pass =:cert_id AND centerID =:cid ORDER BY full_name", array('tid'=>$test_id,'cert_id'=>'certified','cid'=>$centerID));
-            if($db->isError($results)) {
-                return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+        ) {
+            $test_id = $db->pselectOne(
+                "SELECT ID FROM test_names WHERE Test_name=:tst_name",
+                array('tst_name'=>$this->testName)
+            );
+            $results = $db->pselect(
+                "SELECT certification.examinerID, full_name
+                 FROM certification
+                     JOIN examiners
+                         ON (certification.examinerID = examiners.examinerID)
+                 WHERE testID =:tid
+                    AND pass =:cert_id
+                    AND centerID =:cid
+                 ORDER BY full_name",
+                array('tid'=>$test_id,'cert_id'=>'certified','cid'=>$centerID)
+            );
+            if ($db->isError($results)) {
+                return $this->raiseError(
+                    "Could not get examiner names: " . $results->getMessage()
+                );
             }
         } else {
-            $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:centID ORDER BY full_name", array('centID' => $centerID));
-            if($db->isError($results)) {
-                return $this->raiseError("Could not get examiner names: ".$results->getMessage());
+            $results = $db->pselect(
+                "SELECT examinerID, full_name
+                     FROM examiners
+                 WHERE centerID=:centID
+                     ORDER BY full_name",
+                array('centID' => $centerID)
+            );
+            if ($db->isError($results)) {
+                return $this->raiseError(
+                    "Could not get examiner names: ".$results->getMessage()
+                );
             }
         }
-        
+
         $examiners = array(''=>'');
-        if(is_array($results) && !empty($results)) {
-            foreach($results AS $row) {
+        if (is_array($results) && !empty($results)) {
+            foreach ($results AS $row) {
                 $examiners[$row['examinerID']] = $row['full_name'];
             }
         }
         return $examiners;
     }
 
-    
+
     /**
-     * looks up the full name for the current instrument
+     * Looks up the full name for the current instrument
      *
-     * @return string        the full name of the instrument
-     * @access public
+     * @return string the full name of the instrument
      */
     function getFullName()
     {
         $db =& Database::singleton();
 
-        $success = $db->pselectOne("SELECT Full_name FROM test_names WHERE Test_name=:TN", array('TN' => $this->testName));
+        $success = $db->pselectOne(
+            "SELECT Full_name FROM test_names WHERE Test_name=:TN",
+            array('TN' => $this->testName)
+        );
         return $success;
     }
 
-    
+
     /**
-     * gets the current object instance CommentID
+     * Gets the current object instance CommentID
      *
      * @return string          the CommentID
      * @access public
@@ -895,10 +1014,10 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         return $this->commentID;
     }
-    
-    
+
+
     /**
-     * freezes the current form
+     * Freezes the current form
      *
      * @return void
      * @access public
@@ -907,30 +1026,36 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $this->form->freeze();
     }
-    
-    
+
+
     /**
-     * gets the date of administration of an instrument instance - caches to reduce DB hits
+     * Gets the date of administration of an instrument instance.
+     * Caches to reduce DB hits
      *
-     * @return mixed    $dateOfAdministration the date of administration from the DB, in the format "YYYY-MM-DD"
-     * @access private
+     * @return mixed $dateOfAdministration the date of administration from
+     *         the DB, in the format "YYYY-MM-DD"
      */
     function getDateOfAdministration()
     {
         $db =& Database::singleton();
-        $doa = $db->pselectOne("SELECT Date_taken FROM $this->table WHERE CommentID=:CID", array('CID' => $this->getCommentID()));
-        if($this->isError($doa)) {
-            return $this->raiseError("Could not get date of administration from $this->table");
+        $doa = $db->pselectOne(
+            "SELECT Date_taken FROM $this->table WHERE CommentID=:CID",
+            array('CID' => $this->getCommentID())
+        );
+        if ($this->isError($doa)) {
+            return $this->raiseError(
+                "Could not get date of administration from $this->table"
+            );
         } else {
             $this->dateOfAdministration = $doa;
         }
-        
+
         return $this->dateOfAdministration;
     }
-    
+
 
     /**
-     * gets a list of subtests of the current instrument
+     * Gets a list of subtests of the current instrument
      *
      * @return array
      * @throws PEAR::Error
@@ -939,88 +1064,121 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         // get a database connection
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {  return $db; 
+        if (Utility::isErrorX($db)) {
+            return $db;
         }
-        
-        $query = "SELECT Subtest_name AS Name, Description FROM instrument_subtests WHERE Test_name=:TN ORDER BY Order_number";
+
+        $query = "SELECT Subtest_name AS Name, Description
+            FROM instrument_subtests
+            WHERE Test_name=:TN
+                ORDER BY Order_number";
         $results = $db->pselect($query, array('TN' => $this->testName));
-        if(Utility::isErrorX($results)) {  return $results; 
+        if (Utility::isErrorX($results)) {
+            return $results;
         }
-        
+
         return $results;
     }
-    
-    
+
+
     /**
-     * marks an element in the quickform object as being required (for
+     * Marks an element in the quickform object as being required (for
      * use with the requiredIf rule)
      *
-     * @params string   $elementName     the element to add to the required list
+     * @param string $elementName the element to add to the required list
+     *
      * @return void
      */
     function setRequired($elementName)
     {
-        if(!in_array($elementName, $this->form->_required)) {
+        if (!in_array($elementName, $this->form->_required)) {
             $this->form->_required[] = $elementName;
         }
     }
-    
-    
+
+
     /**
-     * Convert a quickform date or timestamp into a database acceptable (and storable) date or time
+     * Convert a quickform date or timestamp into a database acceptable
+     * (and storable) date or time
      *
-     * @param  array $formDateValue the quickform date/timestamp array
-     * @return string  $databaseValue   the date or timestamp from the database
+     * @param array $formDateValue the quickform date/timestamp array
+     *
+     * @return string the date or timestamp from the database
      * @access private
      */
     function _getDatabaseDate($formDateValue)
     {
-        if(!empty($formDateValue)) {
-            if(count($formDateValue)==2) {
-                $databaseValue = "$formDateValue[H]:$formDateValue[i]";  //handle time (HH:MM:SS)
+        if (!empty($formDateValue)) {
+            if (count($formDateValue)==2) {
+                //handle time (HH:MM:SS)
+                $databaseValue = "$formDateValue[H]:$formDateValue[i]";
             } else {
-                $databaseValue = "$formDateValue[Y]-$formDateValue[M]-$formDateValue[d]";  //handle date (YYYY/MM/DD)
+                //handle date (YYYY/MM/DD)
+                $databaseValue = "$formDateValue[Y]-"
+                    . "$formDateValue[M]-"
+                    . "$formDateValue[d]";
             }
         }
         return $databaseValue;
     }
-    
-    
+
+
     /**
      * Convert a database date or timestamp into a QuickForm acceptable date or time
      *
-     * @param  string $databaseValue the date or timestamp from the database
-     * @return array   $formDateValue       the quickform date/timestamp array
-     * @access private
+     * @param string $databaseValue the date or timestamp from the database
+     *
+     * @return array the quickform date/timestamp array
      */
     function _getQuickformDate($databaseValue)
     {
         $formDateValue = null;
-        if(!empty($databaseValue)) {
-            if(strstr($databaseValue, ":")) {
+        if (!empty($databaseValue)) {
+            if (strstr($databaseValue, ":")) {
+                //handle time
                 $formDateValue=explode(":", $databaseValue);
-                $formDateValue=array("H"=>$formDateValue[0],"i"=>$formDateValue[1]);  //handle time
+                $formDateValue=array(
+                    "H"=>$formDateValue[0],
+                    "i"=>$formDateValue[1]
+                );
             } else {
+                //handle date
                 // split mysql Date_taken field into array
                 $formDateValue = explode('-', $databaseValue);
-                $formDateValue = array('Y'=>$formDateValue[0], 'M'=>$formDateValue[1], 'd'=>$formDateValue[2]);  //handle date
+                $formDateValue = array(
+                    'Y'=>$formDateValue[0],
+                    'M'=>$formDateValue[1],
+                    'd'=>$formDateValue[2]
+                );
             }
         }
         return $formDateValue;
     }
-    
-    
+
+
+    /**
+     * This runs the XIN rules on all the elements on the current page to ensure
+     * that no rules were violated.
+     *
+     * @param array $elements The value of all the elements on the current page
+     *                        to validate.
+     *
+     * @return associative array of errors (fieldname => errormessage) or true
+     *         if no errors.
+     */
     function XINValidate($elements)
     {
         unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug=false;  //Turn this on to see rules debuggin output
 
         $errors=array();
-        foreach($elements AS $elname=>$elvalue) {
-            //If the element is a group (and thus elvalue is an array) trigger the Null Value default rule if ANY of the values in the group are empty.
+        foreach ($elements AS $elname=>$elvalue) {
+            //If the element is a group (and thus elvalue is an array)
+            //trigger the Null Value default rule if ANY of the values
+            //in the group are empty.
             $flag=true;
-            if(is_array($elvalue)) {
-                foreach($elvalue AS $val){
+            if (is_array($elvalue)) {
+                foreach ($elvalue AS $val) {
                     if ($val=="") {
                         $flag=false;
                     }
@@ -1083,27 +1241,38 @@ class NDB_BVL_Instrument extends NDB_Page
                         }
                     }
                 }
-                if(!empty($this->XINRules[$elname])) {
+                if (!empty($this->XINRules[$elname])) {
                     $registered_rules = $this->XINRules[$elname];
-                    if($this->XINDebug) {echo "<p><b>$elname</b><br> ";
-                    } //debugging code
-                    foreach($registered_rules as $registered) {
+                    if ($this->XINDebug) {
+                        //debugging code
+                        echo "<p><b>$elname</b><br> ";
+                    }
+                    foreach ($registered_rules as $registered) {
 
                         $rules = $registered['rules'];
 
-                        foreach($rules as $rule) {
-                            //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-                            if(stristr(substr($rule, strpos($rule, "|")), "{@}")) {
+                        foreach ($rules as $rule) {
+                            //If this is an OR rule using two different controllers
+                            //explode it at the pipe.
+                            //ex: q_1{@}=={@}yes|q_2{@}=={@}yes
+                            if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
                                 $rules_array=explode("|", $rule);
-                            } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
+                            } else {
+                                //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                                 $rules_array[]=$rule;
                             }
-                            foreach($rules_array as $rule) {
+                            foreach ($rules_array as $rule) {
                                 $rule_array = explode("{@}", $rule);
-                                if($rule_array[0] == $elname) {
-                                    $result=$this->DINRunElementRules($elname, $elements, $registered);
-                                    if($result == false) {
-                                        $el=$registered['group']!="" ? $registered['group'] : $elname;
+                                if ($rule_array[0] == $elname) {
+                                    $result = $this->DINRunElementRules(
+                                        $elname,
+                                        $elements,
+                                        $registered
+                                    );
+                                    if ($result == false) {
+                                        $el = $registered['group'] != ""
+                                            ? $registered['group'] 
+                                            : $elname;
                                         $errors[$el]=$registered['message'];
                                     }
                                 }
@@ -1112,58 +1281,89 @@ class NDB_BVL_Instrument extends NDB_Page
                     }
                 }
             }
-            
-            //If the answer is empty (or its a group and one of answers in the group is empty) then run the rules
-            if($elvalue=="" || $flag==false) {
-                if($this->XINDebug) {echo "<p><b>$elname</b><br> ";
-                } //debugging code
-                if(!empty($this->XINRules[$elname])) {
-                    if($this->InstrumentType === 'LINST') {
+
+            //If the answer is empty (or its a group and one of answers in the
+            //group is empty) then run the rules
+            if ($elvalue=="" || $flag==false) {
+                if ($this->XINDebug) {
+                    //debugging code
+                    echo "<p><b>$elname</b><br> ";
+                }
+                if (!empty($this->XINRules[$elname])) {
+                    if ($this->InstrumentType === 'LINST') {
                         $registered_rules = $this->XINRules[$elname];
-                        foreach($registered_rules as $registered_rule) {
-                            $result=$this->XINRunElementRules($elname, $elements, $registered_rule);
-                            if(is_array($result)) {
-                                $errors+=$result;
+                        foreach ($registered_rules as $registered_rule) {
+                            $result = $this->XINRunElementRules(
+                                $elname,
+                                $elements,
+                                $registered_rule
+                            );
+                            if (is_array($result)) {
+                                $errors += $result;
                             }
                         }
                     } else {
-                        $result=$this->XINRunElementRules($elname, $elements, $this->XINRules[$elname]);
-                        if(is_array($result)) {
+                        $result = $this->XINRunElementRules(
+                            $elname,
+                            $elements,
+                            $this->XINRules[$elname]
+                        );
+                        if (is_array($result)) {
                             $errors+=$result;
                         }
                     }
-                } else if(substr($elname, -7)!="_status" && !in_array($elname, array("page","subtest"))) {
+                } else if (substr($elname, -7) != "_status"
+                    && !in_array($elname, array("page","subtest"))
+                ) {
                     $errors[$elname]="Required.";
-                    if($this->XINDebug) {echo "Required by default";
+                    if ($this->XINDebug) {
+                        echo "Required by default";
                     }
                 } else {
-                    if($this->XINDebug) {echo "Status' not required by default";
+                    if ($this->XINDebug) {
+                        echo "Status' not required by default";
                     }
                 }
             }
         }
-        if(!empty($errors)) {
+
+        if (!empty($errors)) {
             return $errors;
         }
         return true;
     }
-    
-    // Run registered rules for $elname
-    // Returns true if the element passes, false if the rule fails
-    function DINRunElementRules($elname, $elements, $registered) 
+
+    /**
+     * Run registered rules for $elname. Only used for instrument builder
+     * instruments.
+     *
+     * @param string  $elname     The element to be validate
+     * @param array   $elements   array of values from current page.
+     * @param boolean $registered Array of all rules which have been
+     *                            registered.
+     *
+     * @return boolean true if the element passes, false if it fails a rule.
+     */
+    function DINRunElementRules($elname, $elements, $registered)
     {
-        foreach($registered['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
+        foreach ($registered['rules'] AS $rule) {
+            //Loop through the assigned rules (which is the array of formatted
+            //statements passed in XINRegisterRule)
             $split = explode('{@}', $rule);
             $userval = $elements[$elname];
             $operator = $split[1];
             $comparevalue = $split[2];
-            // Special case for if the rule was registered as "q{@}=={@}NEVER_REQUIRED"
-            if($comparevalue == 'NEVER_REQUIRED' && $operator == '==') {
+            // Special case for if the rule was registered
+            // as "q{@}=={@}NEVER_REQUIRED"
+            if ($comparevalue == 'NEVER_REQUIRED' && $operator == '==') {
                 return true;
             }
-            $compareFunction = create_function('$a, $b', "return \$a $operator \$b;"); //(\$a $operator \$b);");
+            $compareFunction = create_function(
+                '$a, $b',
+                "return \$a $operator \$b;"
+            );
 
-            if(!($compareFunction($comparevalue, $userval)) ) {
+            if (!($compareFunction($comparevalue, $userval)) ) {
                 return false;
             }
         }
@@ -1175,34 +1375,45 @@ class NDB_BVL_Instrument extends NDB_Page
     * Attaches a user defined rule (conditions) to a form element (grouped or not).
     *
     * @param string $elname  Name of element registering the rule
-    * @param array  $rules   Array of rules to apply in an AND fashion.  Rules are written in rose ({@}) format (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').  ORs may be written within the same array value.
+    * @param array  $rules   Array of rules to apply in an AND fashion.
+    *                        Rules are written in rose ({@}) format
+    *                        (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').
+    *                        ORs may be written within the same array value.
     * @param string $message Message to print upon rule violation
-    * @param string $group   Empty if a non-grouped element is registering the rule.  Otherwise, name of the group registering the rule.    
+    * @param string $group   Empty if a non-grouped element is registering the rule.
+    *                        Otherwise, name of the group registering the rule.
+    *
+    * @return none
     */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {
         // I'm not sure if these are logically the same. I think they should be, but
-        // there was a bug introduced by the LINST changes to XINRules to old instruments
-        // so I'm making sure that the old code is followed exactly with this if block.
+        // there was a bug introduced by the LINST changes to XINRules to old
+        // instruments so I'm making sure that the old code is followed exactly
+        // with this if block.
         // After everything's working, review this to see if we can get rid of one of
         // the if statement and use the same logic for "old" instruments and "new"
         // instruments
         //  -- Dave
-        if($this->InstrumentType === 'LINST') {
-            if(!is_array($rules)) {
+        if ($this->InstrumentType === 'LINST') {
+            if (!is_array($rules)) {
                 $rules_array[]=$rules;
             } else {
                 $rules_array=$rules;
             }
-            $rule = array ('message' => $message, 'group' => $group, 'rules' => array());
+            $rule = array(
+                'message' => $message,
+                'group'   => $group,
+                'rules'   => array()
+            );
 
-            foreach($rules_array AS $rule_cmd){
+            foreach ($rules_array AS $rule_cmd) {
                 $rule['rules'][]=$rule_cmd;
             }
             $this->XINRules[$elname][] = $rule;
             return true;
         } else {
-            if(!is_array($rules)) {
+            if (!is_array($rules)) {
                 $rules_array[]=$rules;
             } else {
                 $rules_array=$rules;
@@ -1210,77 +1421,114 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->XINRules[$elname]['message']=$message;
             $this->XINRules[$elname]['group']=$group;
 
-            foreach($rules_array AS $rule){
+            foreach ($rules_array AS $rule) {
                 $this->XINRules[$elname]['rules'][]=$rule;
             }
             return true;
         }
     }
 
-    
-    //Run the rules and see if the required flag need be raised.  
-    //Assumes all conditions are met and then checks each of them, any condition not met will invalidate the rule, 
-    //meaning the answer is valid.
-    //DONT TOUCH THIS, EVER.
-    function XINRunElementRules($elname, $elements, $rules) 
+
+    /**
+     * Run XIN rules on element
+     *
+     * Run the rules and see if the required flag need be raised.
+     * Assumes all conditions are met and then checks each of them,
+     * any condition not met will invalidate the rule, meaning the answer
+     * is valid.
+     *
+     * **** DONT TOUCH THIS, EVER. ****
+     *
+     * @param string   $elname   The name of the element being validated
+     * @param elements $elements Array of values submitted on current page.
+     * @param array    $rules    Array of rules that have been registered.
+     *
+     * @return associative array of errors (fieldname => error message)
+     */
+    function XINRunElementRules($elname, $elements, $rules)
     {
         $errors = array();
-        $is_required=true; //Conditions for the rule to be true, and thus the element to be required.
-        foreach($rules['rules'] AS $rule){  //Loop through the assigned rules (which is the array of formatted statements passed in XINRegisterRule)
-            //If this is an OR rule using two different controllers explode it at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-            if(stristr(substr($rule, strpos($rule, "|")), "{@}")) {
+        //Conditions for the rule to be true, and thus the element to be required.
+        $is_required=true;
+
+        foreach ($rules['rules'] AS $rule) {
+            //Loop through the assigned rules (which is the array of formatted
+            //statements passed in XINRegisterRule)
+            //If this is an OR rule using two different controllers explode it
+            //at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
+            if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
                 $rules_array=explode("|", $rule);
             } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                 $rules_array[]=$rule;
             }
-            
+
             //Loop through the rules (will only be one rule if this is not an OR)
             $or_conditions=array();
-            for($i=0;$i<count($rules_array);$i++){ 
+            for ($i=0;$i<count($rules_array);$i++) {
                 $rule=explode("{@}", $rules_array[$i]);
                 //Some rules compare against multiple values, handle this here.
-                if(stristr($rule[2], "|")) {  //ex: q_1{@}=={@}yes|no
+                if (stristr($rule[2], "|")) {  //ex: q_1{@}=={@}yes|no
                     $values=explode("|", $rule[2]);
                 } else {  //ex: q_1{@}=={@}yes
                     $values=array($rule[2]);
                 }
+
                 //Test the condition
-                if($this->XINDebug) {echo "$rule[0] ";
-                } //debugging code
-                
+                if ($this->XINDebug) {
+                    //debugging code
+                    echo "$rule[0] ";
+                }
+
                 //Handle select multiples who's controllre values are arrays.
-                
+
                 //explicitly cast the controller value as an array
-                if(!is_array($elements[$rule[0]])) { 
+                if (!is_array($elements[$rule[0]])) {
                     $elements[$rule[0]]=array($elements[$rule[0]]);
                 }
                 //Foreach controller value run the rule.
                 $or_conditions=false;
-                foreach($elements[$rule[0]] as $controller_value){
-                    if($this->XINRunRuleFunction($controller_value, $values, $rule[1])) {
+                foreach ($elements[$rule[0]] as $controller_value) {
+                    $ElementResult = $this->XINRunRuleFunction(
+                        $controller_value,
+                        $values,
+                        $rule[1]
+                    );
+
+                    if ($ElementResult) {
                         $or_conditions=true; //If any of the OR rules is true
                     }
                 }
             }
+
             //If NONE of the or_conditions were true the field is NOT required.
-            if($or_conditions==false) {
+            if ($or_conditions==false) {
                 $is_required=false;
             }
         }
         //If all of the conditions were true then print the error message
-        if($is_required==true) {
+        if ($is_required==true) {
             $el=$rules['group']!="" ? $rules['group'] : $elname;
             $errors[$el]=$rules['message'];
         }
         return $errors;
     }
-    
+
+    /**
+     * Run a XIN rule on an individual element
+     *
+     * @param string $controller The element which affects the validity of this
+     *                           element
+     * @param array  $values     Array of values which will invalidate the rule.
+     * @param string $operator   The operator which is used to compare the rule.
+     *
+     * @return boolean true if element should be required, false otherwise.
+     */
     function XINRunRuleFunction($controller, $values, $operator)
     {
         $is_required=true;
         //Loop through the conditions to test against (for most rules it
         //will only be one value)
-        //If all of the conditions are true (ie: all conditions are met 
+        //If all of the conditions are true (ie: all conditions are met
         //to pop a required rule)
         $valFlag=array();
         foreach ($values AS $value) {
@@ -1293,7 +1541,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 echo "'$controller' $operator '$value'<br>";
             }
             if (!$compareFunction($controller, $value)) {
-                // IF one of the conditions is not  met then this rule 
+                // IF one of the conditions is not  met then this rule
                 // does not need to be run.
                 $valFlag[]=false;
             }
@@ -1335,7 +1583,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-     * gets the sessionID for the timepoint to which this instrument pertains
+     * Gets the sessionID for the timepoint to which this instrument pertains
      *
      * @return Integer The sessionID
      */
@@ -1344,7 +1592,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $db =& Database::singleton();
         $query = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
-        
+
         if (!empty($fieldValue) && !$db->isError($fieldValue)) {
             return $fieldValue;
         }
@@ -1603,7 +1851,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $field.'_group'
         );
     }
-    
+
     /**
     * Wrapper to create an Hour/Minute field, with an accompanying status field.
     *
@@ -2519,20 +2767,27 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 }
 
+/**
+ * Checks that the Date_taken element is a valid date
+ *
+ * @param array $dateElement The date element in QuickForm array format.
+ *
+ * @return True if the date is invalid, false if it's valid.
+ */
 function _checkDateTaken($dateElement)
 {
     // if all three elements are empty,
     // return true b/c it'll save the NULL in date field
-    if (empty($dateElement['M']) 
-        && empty($dateElement['d']) 
+    if (empty($dateElement['M'])
+        && empty($dateElement['d'])
         && empty($dateElement['Y'])
     ) {
         return true;
-    } elseif (empty($dateElement['M']) 
-        || empty($dateElement['d']) 
+    } elseif (empty($dateElement['M'])
+        || empty($dateElement['d'])
         || empty($dateElement['Y'])
     ) {
-        // otherwise, if any of the three elements are empty, 
+        // otherwise, if any of the three elements are empty,
         // return false b/c date entry has been attempted
         return false;
     } else {
@@ -2561,8 +2816,15 @@ function _checkDateTaken($dateElement)
     }
 }
 
-/// _checkDate. This is used by create timepoint and start timepoint pages,
-// so it probably shouldn't be in the instrument class.
+/**
+ * QuickForm rule to check that a date is valid.
+ * This is used by create timepoint and start timepoint pages,
+ * so it probably shouldn't be in the instrument class.
+ *
+ * @param array $dateElement The date element in QuickForm array format.
+ *
+ * @return True if the date is invalid, false if it's valid.
+ */
 function _checkDate($dateElement)
 {
     if (empty($dateElement['M'])
