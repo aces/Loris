@@ -123,13 +123,6 @@ class CouchDBDemographicsImporter {
             $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
         }
-        // If family fields are being used, add family information into the query
-        if ($config->getSetting("useFamilyID") === "true") {
-            $familyFields = ", c.Sibling1 as Sibling_ID, f.Relationship_type as Relationship_to_sibling";
-            $fieldsInQuery .= $familyFields;
-            $familyTables = " LEFT JOIN family f ON (f.CandID=c.CandID)";
-            $tablesToJoin .= $familyTables;
-        }
         // If expected date of confinement is being used, add EDC information into the query
         if ($config->getSetting("useEDC") === "true") {
             $EDCFields = ", c.EDC as EDC";
@@ -183,7 +176,7 @@ class CouchDBDemographicsImporter {
                   'DataDictionary' => array('demographics' => $this->Dictionary) 
             )
         );
-        
+
         // Run query
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
@@ -198,10 +191,13 @@ class CouchDBDemographicsImporter {
                 unset($demographics['ProjectID']);
             }
             if ($config->getSetting("useFamilyID") === "true") {
+                $familyID     = $this->SQLDB->pselectOne("SELECT FamilyID FROM family
+                                                          WHERE CandID=:cid",
+                                                          array('cid'=>$demographics['CandID']));
                 $familyFields = $this->SQLDB->pselect("SELECT candID as Sibling_ID,
                                                        f.Relationship_type as Relationship_to_sibling
-                                                       WHERE candID=:cid",
-                                                       array('cid'=>$demographics['CandID']));
+                                                       WHERE FamilyID=:fid AND CandID<>:cid",
+                                                       array('fid'=>$familyID, 'cid'=>$demographics['CandID']));
                $num_siblings = 1;
                if (!empty($familyFields)) {
                    foreach($familyFields as $row) {
@@ -214,7 +210,7 @@ class CouchDBDemographicsImporter {
                                'Description' => 'Relationship of candidate to Sibling'.$num_siblings,
                                'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
                                );
-                        $demographics['Sibling_ID'.$num_siblings] = $row['Sibling_ID'];
+                        $demographics['Sibling'.$num_siblings] = $row['Sibling_ID'];
                         $demographics['Relationship_type_Sibling'.$num_siblings] = $row['Relationship_to_sibling'];
                         $num_siblings += 1;
                    }
