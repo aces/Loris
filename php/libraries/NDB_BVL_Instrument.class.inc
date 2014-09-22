@@ -1868,9 +1868,14 @@ class NDB_BVL_Instrument extends NDB_Page
     function addHourMinElement(
         $field,
         $label,
-        $rules=array(),
-        $rule_message="You are required to select a status if you want to leave this time blank."
+        $rules = array(),
+        $rule_message = null
     ) {
+        if ($rule_message === null) {
+            $rule_message = "You are required to select a status "
+                . "if you want to leave this time blank."
+        }
+
         $group[] =& $this->createDate(
             $field,
             null,
