@@ -1873,7 +1873,7 @@ class NDB_BVL_Instrument extends NDB_Page
     ) {
         if ($rule_message === null) {
             $rule_message = "You are required to select a status "
-                . "if you want to leave this time blank."
+                . "if you want to leave this time blank.";
         }
 
         $group[] =& $this->createDate(
