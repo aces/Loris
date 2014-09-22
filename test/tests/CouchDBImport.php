@@ -216,6 +216,12 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import->SQLDB = $this->Factory->Database();
         $Import->CouchDB = new MockCouchDB();
 
+        /*
+        $Import->SQLDB->returnsAt(0, 'pselect',
+            array('hello' => 'I am a test',
+                  'hello2' => 'I am another test')
+        );
+         */
         $Import->SQLDB->returns('pselect', array(
             0 => array('ParameterTypeID' => 3,
                   'Name' => 'Hello',
@@ -271,12 +277,7 @@ class TestOfCouchDBImportDemographics extends UnitTestCase {
         $Import->CouchDB->expectAt(1, 'replaceDoc', array('DataDictionary:hello2',
             // Just make sure the first parameter is correct, since otherwise we need
             // to change all the Admin/Data_entry/Validity descriptions for this assertion
-            '*' /*
-            array('Meta' => array('DataDict' => true),
-                'DataDictionary' => array(
-                    'hello2' => $Dictionary
-                )
-            )*/
+            '*' 
         ));
         $Import->CouchDB->expectCallCount('replaceDoc', 2);
         $Import->UpdateDataDicts(array('hello' => 'hello', 'hello2' => 'hello2'));

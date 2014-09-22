@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Loris Scatterplot</title>
+		
+        <!-- jQuery, for ajax retrieval and CSV parsing -->
+		<script type="text/javascript" src="JS/jquery-1.4.2.min.js"></script>
+        <!-- jQuery CSV parser plugin, which handles escaping/quotes -->
+		<script type="text/javascript" src="JS/jquery.csv.js"></script>
+        <!-- highcharts graphing library -->
+		<script type="text/javascript" src="JS/Highcharts/js/highcharts.src.js"></script>
+        <script type="text/javascript" src="JS/LorisGraph.js"></script>
+		
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+                var GetCSVUrl = function() {
+                    return 'GetCSV.php?Instrument=adi_r_proband&FieldY=' + jQuery("#FieldY").val() + '&FieldX=' + jQuery("#FieldX").val() + '&Administration=All';
+                };
+                var graph = new ACES_Scatterplot();
+
+                graph.CSVUrl = GetCSVUrl();
+                graph.RenderChart();
+                jQuery("#FieldX").change(function() {
+                    graph.CSVUrl = GetCSVUrl();
+                    graph.UpdateXField($(this).val());
+                    graph.RenderChart()
+                });
+                jQuery("#FieldY").change(function() {
+                    graph.CSVUrl = GetCSVUrl();
+                    graph.UpdateYField($(this).val());
+                    graph.RenderChart()
+                });
+            });
+				
+		</script>
+		
+	</head>
+	<body>
+        X:
+        <select id="FieldX" name="FieldX">
+            <option>Total_A1</option>
+            <option>A_Total</option>
+            <option>Candidate_Age</option>
+        </select>
+        Y: <select id="FieldY" name="FieldY">
+            <option>Total_A1</option>
+            <option>A_Total</option>
+            <option>Candidate_Age</option>
+        </select>
+		
+		<div id="scatterplot" style="width: 800px; height: 600px; margin: 0 auto"></div>
+		
+				
+	</body>
+</html>

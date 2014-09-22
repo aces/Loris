@@ -11,7 +11,7 @@ if($argv[$argc-1] == '-xml') {
 }
  */
 $test = new TestSuite('CouchDB Database wrapper tests');
-$test->addFile('tests/CouchDBWrapper.php');
+$test->addFile('tests/CouchDB_test.php');
 $test->addFile('tests/CouchDBImport.php');
 // Autorun runs, no need to do it manually..
 //exit ($test->run($Reporter) ? 0 : 1);

@@ -91,7 +91,6 @@ function alert(msg) {
 
 
 function addQuestion() {
-
     selected = $(".selected").attr("id");
     if(!selected) {
         alert("No element type selected");
@@ -100,6 +99,7 @@ function addQuestion() {
 
     questionText = document.getElementById("questionText");
     questionName = document.getElementById("questionName");
+
     if(questionText.value == '' && selected != 'line') {
         if(selected == 'page-break') {
             alert("Must use question text as page header");

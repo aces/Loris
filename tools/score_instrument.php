@@ -117,7 +117,7 @@ foreach($result as $test) {
     $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID, c.PSCID
         FROM candidate as c, session as s, flag as f, $test_name as t
         WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
-        AND s.Active = 'Y' AND c.Active='Y' 
+        AND s.Active = 'Y' AND c.Active='Y' AND c.PSCID NOT LIKE 'dcc%'
         AND f.Test_name = '$test_name' AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
     if ($action=='one') {
         $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";

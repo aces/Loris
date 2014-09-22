@@ -383,6 +383,7 @@ class User extends UserPermissions
 
         return true;
     }
+
     /**
      * Check if user belongs to DCC
      *

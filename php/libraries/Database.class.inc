@@ -781,7 +781,9 @@ class Database extends PEAR
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        print "$this->_databaseName: $query<br>\n";
+        print "$this->_databaseName:" 
+            . date("j-M-Y G:i:s", time()) 
+            .": $query<br>\n";
     }
 
     /**

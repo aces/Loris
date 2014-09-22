@@ -319,6 +319,10 @@ tr.directentry {
     background: #BDDDBD;
 }
 
+table.instrument {
+   margin-left:auto; 
+   margin-right:auto;
+}
 table.instrument tbody tr:nth-child(even) {
     background: #BCC6CC;
    /* background: #E5E4E2; */

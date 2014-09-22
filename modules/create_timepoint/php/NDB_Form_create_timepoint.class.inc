@@ -62,6 +62,14 @@ class NDB_Form_create_timepoint extends NDB_Form
               
         if(!empty($_GET['subprojectID']) && is_numeric($_GET['subprojectID'])){
             $this->subprojectID=$_GET['subprojectID'];
+        } else {
+            $candidate =& Candidate::singleton($this->identifier);
+            $db = Database::singleton();
+            $subp = $db->pselectOne("SELECT SubprojectID from session WHERE CandID=:Candidate",
+                array('Candidate' => $candidate->getCandID()));
+            if(is_numeric($subp)) {
+                $this->subprojectID = $subp;
+            }
         }
 
         // cand ID
@@ -80,7 +88,7 @@ class NDB_Form_create_timepoint extends NDB_Form
         $subprojectSettings= $config->getSetting('subprojects');
         //Loop through the subprojects to get an id out and to create the subproject drop down.
         $sp_labelOptions = array(null => '');
-        foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
+        foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject) {
             if( ! empty($subprojList)){
                 if(in_array($subproject['id'], $subprojList)){
                     $sp_labelOptions[$subproject['id']] = $subproject['title'];
@@ -91,7 +99,12 @@ class NDB_Form_create_timepoint extends NDB_Form
                  }
         }
         
-        $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");
+        if($config->getSetting("WarnMultipleSubprojects") && !empty($this->subprojectID)) {
+            $attributes=array("onchange"=>"if(confirm(\"Are you sure you want to change the subprojectID? It should match the previously entered subprojectIDs.\")) { location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;} else { location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+" . $this->subprojectID . ";}");
+        } else {
+            $attributes=array("onchange"=>"location.href='main.php?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value");
+        }
+
         $this->addSelect('subprojectID', 'Subproject', $sp_labelOptions, $attributes);
         $this->_setDefaults(array("subprojectID"=>$this->subprojectID));
         

@@ -599,6 +599,21 @@ Class TimePoint
         return false;
     }
     
+
+    /**
+     * Returns whether this timepoint window difference should be calculated based on the
+     * test battery, based on the optimal window, or based on the permitted window
+     */
+    function getWindowDifferenceType() {
+        $config=NDB_Config::singleton();
+        $settings=$config->getSubprojectSettings($this->getSubprojectID());
+
+        if($settings['options']['WindowDifference']) {
+            return $settings['options']['WindowDifference'];
+        }
+        return "disabled";
+    }
+    
     /**
      * Returns either EDC or DOB depending on the settings of the subproject that this timepoint belongs to.
      *

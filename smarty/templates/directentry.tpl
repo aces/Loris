@@ -72,7 +72,7 @@
 <br>
 <br>
 <br>
-<h1>Survey Comments</h1>
+<h1 align="center">Survey Comments</h1>
 <br>
 <br>
 <table class="instrument">
@@ -94,13 +94,17 @@
             <b>Please note that once data is submitted you will not be able to modify it.</b>
         </td>
     </tr>
-</table>
-<input type="hidden" name="FinalPageSubmission" value="Yes">
+  <tr id="buttons">
+    <td><input type="hidden" name="FinalPageSubmission" value="Yes">
 <input type="button" onclick="location.href='survey.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
-<button id="complete" style="font-weight: bold;">
+   </td>
+   <td><button id="complete" style="font-weight: bold;">
 <span style="display: none" id="key">{$key}</span>
 Submit data
 </button>
+   </td>
+ </tr>
+</table>
 </form>
 {else}
 <table align="center">
