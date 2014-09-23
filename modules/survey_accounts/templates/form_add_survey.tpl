@@ -44,12 +44,16 @@
         </tr>
         <tr>
             <td nowrap="nowrap">{$form.Email.label}</td>
-            <td nowrap="nowrap">{$form.Email.html}</td>
+            <td nowrap="nowrap" id="Email">{$form.Email.html}</td>
+        </tr>
+       <tr>
+            <td nowrap="nowrap">{$form.Email2.label}</td>
+            <td nowrap="nowrap" id="Email2">{$form.Email2.html}</td>
         </tr>
         <tr>
             <td nowrap="nowrap" colspan="2">
-                <input class="btn btn-sm btn-primary" name="fire_away" value="Create survey" type="submit" />
-                <input class="btn btn-sm btn-primary email" name="fire_away" value="Create and email" type="submit">
+                <input class="btn btn-sm btn-primary" name="fire_away" value="Create survey" id="create_survey" type="submit" />
+                <input class="btn btn-sm btn-primary email" name="fire_away" value="Create and email" id="email_survey" type="submit">
         {/if}
             </td>
         </tr>
