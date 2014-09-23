@@ -5,7 +5,7 @@
  * missing error display row in each form (already working in cose/activate forms)
  * missing general error display and per thread(form)
  * need error trapping to prevent screen display in case of all failures
- * @package behavioural 
+ * @package behavioural
  * @version $Id: NDB_BVL_Feedback.class.inc,v 3.16 2007/03/02 21:16:28 sebas Exp $
  */
 require_once 'smarty3/Smarty.class.php';
@@ -15,29 +15,31 @@ require_once 'Database.class.inc';
 Class NDB_BVL_Feedback
 {
     // contains info necessary to structure the object
-    var $_feedbackObjectInfo='';
-    
+    var $_feedbackObjectInfo ='';
+
     // contains full candidate profile/timepoint/instrument info
-    var $_feedbackCandidateProfileInfo='';
+    var $_feedbackCandidateProfileInfo ='';
 
     // set of status options
-    var $_feedbackStatusOptions = array('opened','answered','closed','comment');
-    
-    var $_username='';
-    
-    var $_feedbackLevel='';
-    
+    var $_feedbackStatusOptions = array(
+                                   'opened','answered','closed','comment',
+                                  );
+
+    var $_username ='';
+
+    var $_feedbackLevel ='';
+
     static function &singleton($username, $candID=null, $sessionID=null, $commentID=null)
     {
         // at least one of the args have to be passed
         if (empty($candID) && empty($sessionID) && empty($commentID)) {
             return PEAR::raiseError("You need to pass at least one of the following when creating the Feedback Object: CandID, SessionID, or CommentID");
         }
-        
+
         static $feedbackList = array();
-        
+
         $objectName = md5(sprintf("c%ss%si%s", $candID, $sessionID, $commentID));
-        
+
         if (!isset($feedbackList[$objectName])) {
             $feedbackList[$objectName] = new NDB_BVL_Feedback();
             $error = $feedbackList[$objectName]->setup($username, $candID, $sessionID, $commentID);
@@ -46,7 +48,7 @@ Class NDB_BVL_Feedback
                 return PEAR::raiseError("Could not instantiate Feedback Object: ".$error->getMessage());
             }
         }
-        
+
         return $feedbackList[$objectName];
     }
 
@@ -64,16 +66,16 @@ Class NDB_BVL_Feedback
         } else {
             return PEAR::raiseError("You need to pass at least one of the following to setup the Feedback Object: CandID, SessionID, or CommentID");
         }
-        
+
         $this->_username = $username;
-        
+
         // get CandID (and SessionID)
         $success = $this->_setCandidateProfileInfo();
         if(Utility::isErrorX($success)) {
             return PEAR::raiseError ("Could not get candidate info: ".$success->getMessage());
         }
     }
-    
+
     /**
     * retrieves candidate profile info for the feedback object
     * when you pass SessionID and CommentID, you'll need additional profile info to be able to complete vairious queries.
@@ -87,24 +89,24 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         // SELECT section
         $query = "SELECT c.CandID";
         if(!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query .= ", SessionID";
         }
 
-        $query .= " FROM candidate as c";
+        $query  .= " FROM candidate as c";
         $qparams = array();
 
         if(!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= ", session as s, flag as f WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID = :ComID";
+            $query           .= ", session as s, flag as f WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID = :ComID";
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         } elseif(!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= ", session as s WHERE c.CandID=s.CandID AND s.ID = :SID";
+            $query         .= ", session as s WHERE c.CandID=s.CandID AND s.ID = :SID";
             $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " WHERE c.CandID = :CaID";
+            $query          .= " WHERE c.CandID = :CaID";
             $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
         } else {
              return PEAR::raiseError("You need to pass at least one of the following to setup the Feedback Object: CandID, SessionID, or CommentID");
@@ -115,22 +117,22 @@ Class NDB_BVL_Feedback
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
-        
+
         if (!is_array($result) || count($result) == 0) {
             return PEAR::raiseError("Error, unable to select data for the feedback object");
         }
-        
+
         $this->_feedbackCandidateProfileInfo['CandID'] = $result[0]['CandID'];
         if (isset($result[0]['SessionID'])) {
             $this->_feedbackCandidateProfileInfo['SessionID'] = $result[0]['SessionID'];
         }
     }
-    
+
     function getFeedbackLevel()
     {
         return $this->_feedbackLevel;
     }
-    
+
     /**
     * returns an array of feedback types array format: [Type][Name, Label]
     * @return array
@@ -143,20 +145,24 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         $query = "SELECT Feedback_type as Type, Name, Description FROM feedback_bvl_type";
-        
+
         $result = $db->pselect($query, array());
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
-        
+
         foreach ($result as $record) {
-            $list[$record['Type']] = array('Type'=>$record['Type'], 'Name'=>$record['Name'], 'Label'=>$record['Description']);
+            $list[$record['Type']] = array(
+                                      'Type'  => $record['Type'],
+                                      'Name'  => $record['Name'],
+                                      'Label' => $record['Description'],
+                                     );
         }
         return $list;
     }
-    
+
     /**
     * returns a type of the thread identified by the FeedbackID
     * @param int value from the table feedback_bvl_thread.FeedbackID
@@ -170,16 +176,16 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         $query = "SELECT Type FROM feedback_bvl_thread WHERE FeedbackID = :FID";
-        
+
         $result = $db->pselectOne($query, array('FID' => $feedbackID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
         return $result;
     }
-    
+
     /**
     * return the hex code of the status color defined in config.xml
      *
@@ -188,7 +194,8 @@ Class NDB_BVL_Feedback
     */
     static function getThreadColor($status)
     {
-        if(empty($status)) {  return ''; 
+        if(empty($status)) {
+            return '';
         }
 
         $smarty = new Smarty_neurodb;
@@ -196,7 +203,7 @@ Class NDB_BVL_Feedback
         $smarty->ConfigLoad('default.conf', 'bvlqc');
         return $smarty->getConfigVars($status);
     }
-    
+
     function getThreadStatus($feedbackID)
     {
         // new DB Object
@@ -204,16 +211,16 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = :FID";
-        
+
         $result = $db->pselectOne($query, array('FID' => $feedbackID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Db Error: " . $result->getMessage());
         }
         return $result;
     }
-    
+
     /**
     * this function returns the greatest type of active feedback for the candidate/timepoint/instrument
      *
@@ -232,28 +239,28 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
-        $query = "SELECT Status FROM feedback_bvl_thread WHERE";
+
+        $query   = "SELECT Status FROM feedback_bvl_thread WHERE";
         $qparams = array();
         if (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " CandID = :CID";
+            $query         .= " CandID = :CID";
             $qparams['CID'] = $this->_feedbackObjectInfo['CandID'];
         }
         if (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= " SessionID = :SID";
+            $query         .= " SessionID = :SID";
             $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         }
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " CommentID = :ComID";
+            $query           .= " CommentID = :ComID";
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         }
         if (empty($select_inactive_threads)) {
             $query .= " AND Active = 'Y'";
         }
-        
+
         $query .= " ORDER BY Status ASC";
         $result = $db->pselectOne($query, $qparams);
-        
+
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
@@ -262,7 +269,7 @@ Class NDB_BVL_Feedback
         }
         return null;
     }
-   
+
     /**
     * returns the thread count for candidate/timepoint/instrument
     * @return string thread count
@@ -275,32 +282,30 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
-        $query  = "SELECT count(*) FROM feedback_bvl_thread WHERE Active ='Y' AND Public = 'Y' AND Status <> 'closed'";
+
+        $query   = "SELECT count(*) FROM feedback_bvl_thread WHERE Active ='Y' AND Public = 'Y' AND Status <> 'closed'";
         $qparams = array();
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " AND CommentID = :ComID";
+            $query           .= " AND CommentID = :ComID";
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
-            $queryBy = " CommentID";
+            $queryBy          = " CommentID";
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= " AND SessionID = :SID";
+            $query         .= " AND SessionID = :SID";
             $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
-            $queryBy = " SessionID";
+            $queryBy        = " SessionID";
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " AND CandID = :CanID";
+            $query           .= " AND CandID = :CanID";
             $qparams['CanID'] = $this->_feedbackObjectInfo['CandID'];
-            $queryBy = " CandID";
-        } 
-        elseif (!empty($this->_feedbackObjectInfo['FieldName'])) {
-            $query .= 	" AND FieldName = :FName";
+            $queryBy          = " CandID";
+        } elseif (!empty($this->_feedbackObjectInfo['FieldName'])) {
+            $query           .= 	" AND FieldName = :FName";
             $qparams['FName'] = $this->_feedbackObjectInfo['FieldName'];
-            $queryBy = " FieldName";
-        }
-        else {
+            $queryBy          = " FieldName";
+        } else {
             return PEAR::raiseError("no CandID, SessionID, CommentID provided");
         }
         $query .= " GROUP BY $queryBy";
-        
+
         $success = $db->pselectOne($query, $qparams);
         if (Utility::isErrorX($success)) {
             return "DB Error: ".$success->getMessage();
@@ -319,24 +324,23 @@ Class NDB_BVL_Feedback
     function getSummaryOfThreads()
     {
         // new DB Object
-        
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         // get User object
         $user =& User::singleton($this->_username);
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError('unable to create user object: '.$user->getMessage());
         }
         $hasReadPermission = $user->hasPermission('access_all_profiles');
-        
-        $query  = "SELECT c.CandID as CandID, c.PSCID as PSCID, c.Ethnicity, c.Gender, s.ID as SessionID, s.Visit_label as Visit, ft.Feedback_level as QC_Class, count(ft.FeedbackID) as No_Threads";
+
+        $query = "SELECT c.CandID as CandID, c.PSCID as PSCID, c.Ethnicity, c.Gender, s.ID as SessionID, s.Visit_label as Visit, ft.Feedback_level as QC_Class, count(ft.FeedbackID) as No_Threads";
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", f.Test_name as Instrument, ft.CommentID";
         }
-        $query .= " FROM candidate as c, feedback_bvl_thread as ft LEFT JOIN session as s ON (s.ID = ft.SessionID)";
+        $query  .= " FROM candidate as c, feedback_bvl_thread as ft LEFT JOIN session as s ON (s.ID = ft.SessionID)";
         $qparams = array();
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
@@ -350,16 +354,16 @@ Class NDB_BVL_Feedback
 
         $query .= " AND Public = 'Y' AND Status <> 'closed'";
         if (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " AND ft.CandID = :CaID";
+            $query          .= " AND ft.CandID = :CaID";
             $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
         }
 
         if (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= " AND ft.SessionID = :SID";
+            $query         .= " AND ft.SessionID = :SID";
             $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         }
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " AND ft.SessionID = :CSID";
+            $query          .= " AND ft.SessionID = :CSID";
             $qparams['CSID'] = $this->_feedbackCandidateProfileInfo['SessionID'];
         }
         $query .= " GROUP BY ft.CandID, ft.Feedback_level, ft.SessionID";
@@ -369,13 +373,13 @@ Class NDB_BVL_Feedback
         $query .= " ORDER BY ft.CandID, ft.Feedback_level, ft.Status";
 
         $result = $db->pselect($query, $qparams);
-        
+
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
         return $result;
     }
-    
+
     /**
     * returns the list of feedback threads
     * @throws PEAR:Error
@@ -387,20 +391,20 @@ Class NDB_BVL_Feedback
     function getThreadList()
     {
         // new DB Object
-        
+
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         // create user object
         $user =& User::singleton($this->_username);
         if(Utility::isErrorX($user)) {
             return "Unable to create user object".$user->getMessage();
         }
         $hasReadPermission = $user->hasPermission('access_all_profiles');
-        
-        $query  = "SELECT c.CandID as CandID, c.PSCID as PSCID";
+
+        $query   = "SELECT c.CandID as CandID, c.PSCID as PSCID";
         $qparams = array();
         if (!empty($this->_feedbackObjectInfo['SessionID']) || !empty($this->_feedbackObjectInfo['CommentID'])) {
             $query .= ", s.VisitNo as Visit, s.SubprojectID, s.ID as SessionID";
@@ -414,43 +418,43 @@ Class NDB_BVL_Feedback
             $query .= ", flag as f";
         }
         $query .= " WHERE c.CandID = ft.CandID AND ftp.Feedback_type = ft.Feedback_type";
-        
+
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query .= " AND ft.SessionID = :SID";
-            $query .= " AND ft.CommentID = :ComID AND ft.CommentID = f.CommentID";
-            $qparams['SID'] = $this->_feedbackCandidateProfileInfo['SessionID'];
+            $query           .= " AND ft.SessionID = :SID";
+            $query           .= " AND ft.CommentID = :ComID AND ft.CommentID = f.CommentID";
+            $qparams['SID']   = $this->_feedbackCandidateProfileInfo['SessionID'];
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query .= " AND ft.SessionID = :SID AND ft.CommentID is null";
+            $query         .= " AND ft.SessionID = :SID AND ft.CommentID is null";
             $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query .= " AND ft.CandID = :CaID AND ft.SessionID is null AND ft.CommentID is null";
+            $query          .= " AND ft.CandID = :CaID AND ft.SessionID is null AND ft.CommentID is null";
             $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
         } else {
             return PEAR::raiseError("You need to pass at least one of the following to retrieve the list of thread: CandID, SessionID, or CommentID");
         }
 
-        
+
         // DCC users should be able to see THEIR OWN inactive threads, other users should see only active threads
         if ($user->isMultiSiteEnabled() || $hasReadPermission===true) {
             $query .= " AND (ft.Active='Y' OR (ft.Active='N' AND ft.UserID=:Username))";
             $qparams['Username'] = $this->_username;
         } else {
-            $query .= " AND ft.Active ='Y' AND c.CenterID=:CentID";
+            $query            .= " AND ft.Active ='Y' AND c.CenterID=:CentID";
             $qparams['CentID'] = $user->getCenterID();
         }
-        
+
         $query .= " ORDER BY ft.CandID, ft.Feedback_level, ft.Status, ft.Testdate DESC";
 
         $result = $db->pselect($query, $qparams);
-        
+
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
-        
+
         return $result;
     }
-    
+
     /**
     * returns the list of entries for the thread
     * @return array
@@ -460,33 +464,32 @@ Class NDB_BVL_Feedback
     function getThreadEntries($feedbackID)
     {
         // new DB Object
-        
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         //select the entries (details) for the thread
         $query  = "SELECT";
         $query .= " fe.ID as EntryID, fe.FeedbackID, fe.Comment, fe.UserID as UserID, DATE_FORMAT(fe.Testdate, '%Y-%m-%d') as Date";
         $query .= " FROM feedback_bvl_thread as ft, feedback_bvl_entry as fe, feedback_bvl_type as ftp";
         $query .= " WHERE ft.FeedbackID = :FID AND ft.FeedbackID = fe.FeedbackID AND ft.Feedback_type = ftp.Feedback_type";
         $query .= " ORDER BY ft.FeedbackID, fe.Testdate DESC";
-        
+
         $result = $db->pselect($query, array('FID' => $feedbackID));
-        
+
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("dbError: " . $result->getMessage());
         }
-        
+
         return $result;
     }
-    
+
     /**
     * @return void
     * @throws PEAR::Error
     */
-    
+
     function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
@@ -494,15 +497,15 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         // get the FeedbackID for the new thread
-        $query = "SELECT MAX(FeedbackID) + 1 AS FeedbackID FROM feedback_bvl_thread";
+        $query      = "SELECT MAX(FeedbackID) + 1 AS FeedbackID FROM feedback_bvl_thread";
         $feedbackID = $db->pselectOne($query, array());
         if (Utility::isErrorX($feedbackID)) {
             return PEAR::raiseError("dbError: " . $feedbackID->getMessage());
         }
         unset($query);
-        
+
         // public threads are inactive by default
         if ($public == 'Y') {
             //            $active = 'N'; // all new public threads need to be activated
@@ -515,12 +518,20 @@ Class NDB_BVL_Feedback
             return PEAR::raiseError("Please select a 'Required Action?' for the new feedback you want to create");
         }
         $today = date("Y-m-d");
-        
+
         // disabling post new feedback option, activate all threads
         $active = 'Y';
-        
+
         // create SET array for the INSERT into the feedback_bvl_thread table
-        $setArray = array('FeedbackID'=>null, 'Feedback_type'=>$type, 'Public'=>$public, 'Status'=>$status, 'Active'=>$active, 'Date_taken'=>$today, 'UserID'=>$this->_username);
+        $setArray = array(
+                     'FeedbackID'    => null,
+                     'Feedback_type' => $type,
+                     'Public'        => $public,
+                     'Status'        => $status,
+                     'Active'        => $active,
+                     'Date_taken'    => $today,
+                     'UserID'        => $this->_username,
+                    );
         if ($this->_feedbackLevel=='instrument') {
             $setArray = array_merge($setArray, array("CommentID" => $this->_feedbackObjectInfo['CommentID']));
             $setArray = array_merge($setArray, array("SessionID" => $this->_feedbackCandidateProfileInfo['SessionID']));
@@ -538,16 +549,16 @@ Class NDB_BVL_Feedback
         else {
             return PEAR::raiseError("NDB_BVL_Feedback::closeThread: Unsupported Feedback Level\n");
         }
-        
+
         $success = $db->insert('feedback_bvl_thread', $setArray);
-        
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
-        
+
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment);
-        
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Unable to add entry".$success->getMessage());
         }
@@ -565,17 +576,21 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         // create SET array for the INSERT
-        $setArray = array('FeedbackID'=>$feedbackID, 'Comment'=>$comment, 'UserID'=>$this->_username);
-        
+        $setArray = array(
+                     'FeedbackID' => $feedbackID,
+                     'Comment'    => $comment,
+                     'UserID'     => $this->_username,
+                    );
+
         $success = $db->insert('feedback_bvl_entry', $setArray);
-        
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
-    
+
     /**
     * and creates a new thread entry and (if allowed) updates the selected thread's type/status/public
     * @return void
@@ -600,13 +615,13 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($user)) {
             return "Unable to create user object".$user->getMessage();
         }
-        
+
         // create the new entry - every update need to be follow up with a comment
         $success = $this->createEntry($feedbackID, $comment);
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("Update thread, failed to create an entry: " . $success->getMessage());
         }
-        
+
         // force private threads to status='comment'
         if ($public=='N') {
             $status = 'comment';
@@ -617,29 +632,33 @@ Class NDB_BVL_Feedback
         }
         // needed to avoid php complaints
         $setArray = array();
-        if (!empty($status)) {  $setArray = array_merge($setArray, array("Status"=>$status)); 
+        if (!empty($status)) {
+            $setArray = array_merge($setArray, array("Status" => $status));
         }
-        if (!empty($type)) {    $setArray = array_merge($setArray, array("Feedback_type"=>$type)); 
+        if (!empty($type)) {
+            $setArray = array_merge($setArray, array("Feedback_type" => $type));
         }
-        if (!empty($public)) {  $setArray = array_merge($setArray, array("Public"=>$public)); 
+        if (!empty($public)) {
+            $setArray = array_merge($setArray, array("Public" => $public));
         }
-       	if (!empty($fieldname)) {  $setArray = array_merge($setArray, array("FieldName"=>$fieldname)); 
+        if (!empty($fieldname)) {
+            $setArray = array_merge($setArray, array("FieldName" => $fieldname));
         }
 
         // needed to avoid php complaints
-        $whereArray = array();       
+        $whereArray = array();
         $whereArray = array_merge($whereArray, array("FeedbackID" => $feedbackID));
 
         if (is_array($setArray) && count($setArray)>0) {
             // update the thread only if the form data was changed
             $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
         }
-        
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
-    
+
     /**
     * deleted a thread and its entries
     * @return void
@@ -652,22 +671,22 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         // DELETE the thread's entries
-        $success = $db->delete('feedback_bvl_entry', array("FeedbackID"=>'$feedbackID'));
-        
+        $success = $db->delete('feedback_bvl_entry', array("FeedbackID" => '$feedbackID'));
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
-        
+
         // DELETE the thread
-        $success = $db->delete('feedback_bvl_thread', array("FeedbackID"=>'$feedbackID'));
-        
+        $success = $db->delete('feedback_bvl_thread', array("FeedbackID" => '$feedbackID'));
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
-    
+
     /**
     * deletes one entry of a thread
     * @return void
@@ -681,15 +700,15 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        
+
         // DELETE the thread entries
-        $success = $db->delete('feedback_bvl_entry', array("ID"=>$entryID));
-        
+        $success = $db->delete('feedback_bvl_entry', array("ID" => $entryID));
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
-    
+
     /**
     * activates all selected threads, including all inactive threads of lower class
     * @return void
@@ -707,11 +726,14 @@ Class NDB_BVL_Feedback
         if(Utility::isErrorX($user)) {
             return "Unable to create user object in activate threads: ".$user->getMessage();
         }
-        
-        $setArray = array("Active"=>'Y', "Testdate"=>"NULL");
-        
+
+        $setArray = array(
+                     "Active"   => 'Y',
+                     "Testdate" => "NULL",
+                    );
+
         // only inactive threads can be activated
-        $whereArray = array("Active"=>'N');
+        $whereArray = array("Active" => 'N');
         if (!empty($feedbackID)) {
             // only one thread to be activated
             $whereArray = array_merge($whereArray, array("FeedbackID" => $feedbackID));
@@ -731,7 +753,7 @@ Class NDB_BVL_Feedback
 
         // DCC users are able to activate THEIR OWN inactive threads
         if (!$user->isMultiSiteEnabled()) {
-            $whereArray = array_merge($whereArray, array('UserID'=>$this->_username));
+            $whereArray = array_merge($whereArray, array('UserID' => $this->_username));
         }
 
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
@@ -740,7 +762,7 @@ Class NDB_BVL_Feedback
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
-    
+
     /**
     * closes all selected threads, including all active threads of lower class
     * @return void
@@ -757,16 +779,23 @@ Class NDB_BVL_Feedback
         if (!$user->isMultiSiteEnabled($this->_username)) {
             return PEAR::raiseError("User is not allowed to close threads");
         }
-        
+
         // new DB Object
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
 
-        $setArray = array("Status"=>'closed', "UserID"=>$this->_username, "Testdate"=>"NULL");
-        
-        $whereArray = array("Public"=>'Y', "Active"=>'Y');
+        $setArray = array(
+                     "Status"   => 'closed',
+                     "UserID"   => $this->_username,
+                     "Testdate" => "NULL",
+                    );
+
+        $whereArray = array(
+                       "Public" => 'Y',
+                       "Active" => 'Y',
+                      );
         if (!empty($feedbackID)) {
             // only one thread to be closed
             $whereArray = array_merge($whereArray, array("FeedbackID" => $feedbackID));
@@ -783,15 +812,15 @@ Class NDB_BVL_Feedback
             // at least one of the above has to be true
             return PEAR::raiseError("Error: No threads selected were selected to be closed");
         }
-        
+
         // close the threads - update feedback_bvl_thread table
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
-        
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
     }
-    
+
     /**
     * returns a [verbose] element name of the feedback_bvl_thread.Status field, i.e. feedback status
     * @param int a numerical index of the enum elements of the feedback_bvl_thread.Status field
@@ -801,23 +830,28 @@ Class NDB_BVL_Feedback
     */
     static function getFeedbackStatusVerbose($statusID)
     {
-        if (empty($statusID)) {  return PEAR::raiseError("NDB_BVL_Feedback::getFeedbackStatusVerbose  Error, empty status ID\n"); 
+        if (empty($statusID)) {
+            return PEAR::raiseError(
+                "NDB_BVL_Feedback::getFeedbackStatusVerbose  Error, empty status ID\n"
+            );
         }
         // new DB Object
         $db = Database::singleton();
         if(Utility::isErrorX($db)) {
             return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
         }
-        $record=array();
-        // StatusID is passed in as an integer, but the field in the database is an enum, 
+        $record =array();
+        // StatusID is passed in as an integer, but the field in the database is an enum,
         // so we need to do WHERE Status+0= .. to convert it to an int (of the index into
         // the enum) so that this query works.
         $query  = "SELECT Status FROM feedback_bvl_thread WHERE Status+0=:StatID";
-        $param = array('StatID' => $statusID);
-        $record = $db->pselectOne($query, $param ); 
+        $param  = array('StatID' => $statusID);
+        $record = $db->pselectOne($query, $param );
         if (Utility::isErrorX($record)) {
-        	
-            return PEAR::raiseError("DBError, failed to select Status from the feedback_bvl_thread for ID ($statusID)\n");
+            return PEAR::raiseError(
+                "DBError, failed to select Status from "
+                ."the feedback_bvl_thread for ID ($statusID)\n"
+            );
         }
         return $record;
     }
