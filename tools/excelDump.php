@@ -44,7 +44,9 @@ $d->close();
 function MapProjectID(&$results){
     $projects = Utility::getProjectList();
     for($i = 0; $i < count($results); $i++){
-        $results[$i]["ProjectID"] = $projects[$results[$i]["ProjectID"]];
+       if(!empty($results[$i])) {
+           $results[$i]["ProjectID"] = $projects[$results[$i]["ProjectID"]];
+       }
     }
     return $results;
 }
@@ -59,8 +61,10 @@ function MapSubprojectID(&$results) {
     }
 
     for ($i = 0; $i < count($results); $i++) {
+       if(!empty($results[$i])) {
 	    $results[$i]["SubprojectID"] = 
                 $subprojectLookup[$results[$i]["SubprojectID"]];
+       }
     }
     return $results;
 }
@@ -78,7 +82,7 @@ foreach ($instruments as $instrument) {
 	//Query to pull the data from the DB
 	$Test_name = $instrument['Test_name'];
     if($Test_name == 'prefrontal_task') {
-        
+
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, 'See validity_of_data field' as Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
 
     } else if ($Test_name == 'radiology_review') {
@@ -119,6 +123,7 @@ foreach ($instruments as $instrument) {
 * Special figs_year3_relatives query
 */
 //check if figs table exists
+/*
 $query = "SHOW TABLES LIKE 'figs_year3_relatives'";
 $DB->select($query,$result);
 if (count($result) > 0) {
@@ -132,18 +137,46 @@ if (count($result) > 0) {
 	MapSubprojectID($instrument_table);
 	writeExcel($Test_name, $instrument_table, $dataDir);
 }
-
+*/
 /*
 * Candidate Information query
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' ORDER BY c.PSCID";
+$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC, pc1.Value as Comments from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) LEFT JOIN parameter_candidate pc1 ON (c.CandID = pc1.CandID AND pc1.ParameterTypeID=7296) LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' AND (ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL) ORDER BY c.PSCID";
 $DB->select($query, $results);
-if (PEAR::isError($results)) {
-	PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
+if (Utility::isErrorX($results)) {
+    PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
 }
 
+foreach($results as &$result) {
+    for ($i = 1; $i<=3; $i++) {
+        $result['Sibling'.$i] = "";
+        $result['Relationship_type_Sibling'.$i] = "";
+    }
+    $familyID     = $DB->pselectOne("SELECT FamilyID FROM family
+                                     WHERE CandID=:cid",
+                                     array('cid'=>$result['CandID']));
+    if (Utility::isErrorX($familyID)) {
+        PEAR::raiseError("Couldn't get candidate info. " . $familyID->getMessage());
+    }
+    if (!empty($familyID)) { 
+        $familyFields = $DB->pselect("SELECT candID as Sibling_ID,
+                Relationship_type as Relationship_to_sibling
+                FROM family
+                WHERE FamilyID=:fid AND CandID<>:cid",
+                array('fid'=>$familyID, 'cid'=>$result['CandID']));
+        $num_siblings = 1;
+        if (!empty($familyFields)) {
+            foreach($familyFields as $row) {
+                //adding each sibling id and relationship to the file
+                $result['Sibling'.$num_siblings]                     = $row['Sibling_ID'];
+                $result['Relationship_type_Sibling'.$num_siblings]   = $row['Relationship_to_sibling'];
+                $num_siblings                                       += 1;
+            }
+        }
+    }
+}
 MapProjectID($results);
 MapSubprojectID($results);
 writeExcel($Test_name, $results, $dataDir);
@@ -209,7 +242,9 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 
 	//remove any undesired columns that came in from the DB query.
 	for ($i = 0; $i < count($instrument_table); $i++) {
-		$instrument_table[$i] = array_diff_key($instrument_table[$i], array_flip($junkCols));
+       if (is_array($instrument_table[$i])) {
+	       $instrument_table[$i] = array_diff_key($instrument_table[$i], array_flip($junkCols));
+       }
 	}
 
 	//Use Excel 97/2000 Binary File Format thereby allowing cells to contain more than 255 characters.
