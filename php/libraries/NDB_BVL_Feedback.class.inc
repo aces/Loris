@@ -660,27 +660,40 @@ Class NDB_BVL_Feedback
     }
 
     /**
-    * deleted a thread and its entries
-    * @return void
-    * @throws PEAR::Error
-    */
+     * Deleted a thread and its entries
+     *
+     * @param integer $feedbackID The ID of the feedback thread being closed
+     *
+     * @return void
+     * @throws PEAR::Error
+     * FIXME: deleteTread is spelled wrong. Find all references (none?) and
+     *        rename or delete this function if it's unused
+     */
     function deleteTread($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();
         if(Utility::isErrorX($db)) {
-            return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()
+            );
         }
 
         // DELETE the thread's entries
-        $success = $db->delete('feedback_bvl_entry', array("FeedbackID" => '$feedbackID'));
+        $success = $db->delete(
+            'feedback_bvl_entry',
+            array("FeedbackID" => '$feedbackID')
+        );
 
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
         }
 
         // DELETE the thread
-        $success = $db->delete('feedback_bvl_thread', array("FeedbackID" => '$feedbackID'));
+        $success = $db->delete(
+            'feedback_bvl_thread',
+            array("FeedbackID" => '$feedbackID')
+        );
 
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError("dbError: " . $success->getMessage());
@@ -688,17 +701,20 @@ Class NDB_BVL_Feedback
     }
 
     /**
-    * deletes one entry of a thread
-    * @return void
-    * @throws PEAR:Error
-    * @param string $entryID, feedback_bvl_entry.ID field
-    */
+     * Deletes one single entry of a thread
+     *
+     * @param string $entryID feedback_bvl_entry.ID field
+     *
+     * @return void
+     */
     function deleteEntry($entryID)
     {
         // new DB Object
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
-            return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()
+            );
         }
 
         // DELETE the thread entries
@@ -710,21 +726,26 @@ Class NDB_BVL_Feedback
     }
 
     /**
-    * activates all selected threads, including all inactive threads of lower class
-    * @return void
-    * @throws PEAR:Error
-    */
+     * Activates all selected threads, including all inactive threads of lower class
+     *
+     * @param integer $feedbackID The ID of the feedback thread being closed
+     *
+     * @return void
+     */
     function activateThread($feedbackID=null)
     {
         // new DB Object
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
-            return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()
+            );
         }
 
         $user =& User::singleton($this->_username);
-        if(Utility::isErrorX($user)) {
-            return "Unable to create user object in activate threads: ".$user->getMessage();
+        if (Utility::isErrorX($user)) {
+            return "Unable to create user object in activate threads: "
+                . $user->getMessage();
         }
 
         $setArray = array(
@@ -736,16 +757,28 @@ Class NDB_BVL_Feedback
         $whereArray = array("Active" => 'N');
         if (!empty($feedbackID)) {
             // only one thread to be activated
-            $whereArray = array_merge($whereArray, array("FeedbackID" => $feedbackID));
+            $whereArray = array_merge(
+                $whereArray,
+                array("FeedbackID" => $feedbackID)
+            );
         } elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
             // activate all thread for the instruments
-            $whereArray = array_merge($whereArray, array("CommentID" => $this->_feedbackObjectInfo['CommentID']));
+            $whereArray = array_merge(
+                $whereArray,
+                array("CommentID" => $this->_feedbackObjectInfo['CommentID'])
+            );
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             // activate all thread for the timepoint
-            $whereArray = array_merge($whereArray, array("SessionID" => $this->_feedbackObjectInfo['SessionID']));
-        } elseif  (!empty($this->_feedbackObjectInfo['CandID'])) {
+            $whereArray = array_merge(
+                $whereArray,
+                array("SessionID" => $this->_feedbackObjectInfo['SessionID'])
+            );
+        } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             // activate all thread for the candidate
-            $whereArray = array_merge($whereArray, array("CandID" => $this->_feedbackObjectInfo['CandID']));
+            $whereArray = array_merge(
+                $whereArray,
+                array("CandID" => $this->_feedbackObjectInfo['CandID'])
+            );
         } else {
             // at least one of the above has to be true
             return PEAR::raiseError("Error: No threads selected to activate");
@@ -753,7 +786,10 @@ Class NDB_BVL_Feedback
 
         // DCC users are able to activate THEIR OWN inactive threads
         if (!$user->isMultiSiteEnabled()) {
-            $whereArray = array_merge($whereArray, array('UserID' => $this->_username));
+            $whereArray = array_merge(
+                $whereArray,
+                array('UserID' => $this->_username)
+            );
         }
 
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
@@ -764,15 +800,19 @@ Class NDB_BVL_Feedback
     }
 
     /**
-    * closes all selected threads, including all active threads of lower class
-    * @return void
-    * @throws PEAR:Error
-    */
+     * Closes all selected threads, including all active threads of lower class
+     *
+     * @param integer $feedbackID The ID of the feedback thread being closed
+     *
+     * @return void
+     *  FIXME: This shares a lot of code from activateThread, it should be
+     *         refactored
+     */
     function closeThread($feedbackID=null)
     {
         // create user object
         $user =& User::singleton($this->_username);
-        if(Utility::isErrorX($user)) {
+        if (Utility::isErrorX($user)) {
             return "Unable to create user object".$user->getMessage();
         }
 
@@ -782,8 +822,10 @@ Class NDB_BVL_Feedback
 
         // new DB Object
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) {
-            return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()
+            );
         }
 
         $setArray = array(
@@ -798,19 +840,33 @@ Class NDB_BVL_Feedback
                       );
         if (!empty($feedbackID)) {
             // only one thread to be closed
-            $whereArray = array_merge($whereArray, array("FeedbackID" => $feedbackID));
-        }  elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
+            $whereArray = array_merge(
+                $whereArray,
+                array("FeedbackID" => $feedbackID)
+            );
+        } elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
             // close all threads for the instruments
-            $whereArray = array_merge($whereArray, array("CommentID" => $this->_feedbackObjectInfo['CommentID']));
+            $whereArray = array_merge(
+                $whereArray,
+                array("CommentID" => $this->_feedbackObjectInfo['CommentID'])
+            );
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             // close all threads for the timepoint
-            $whereArray = array_merge($whereArray, array("SessionID" => $this->_feedbackObjectInfo['SessionID']));
-        } elseif  (!empty($this->_feedbackObjectInfo['CandID'])) {
+            $whereArray = array_merge(
+                $whereArray,
+                array("SessionID" => $this->_feedbackObjectInfo['SessionID'])
+            );
+        } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             // close all threads for the candidate
-            $whereArray = array_merge($whereArray, array("CandID" => $this->_feedbackObjectInfo['CandID']));
+            $whereArray = array_merge(
+                $whereArray,
+                array("CandID" => $this->_feedbackObjectInfo['CandID'])
+            );
         } else {
             // at least one of the above has to be true
-            return PEAR::raiseError("Error: No threads selected were selected to be closed");
+            return PEAR::raiseError(
+                "Error: No threads selected were selected to be closed"
+            );
         }
 
         // close the threads - update feedback_bvl_thread table
@@ -822,31 +878,37 @@ Class NDB_BVL_Feedback
     }
 
     /**
-    * returns a [verbose] element name of the feedback_bvl_thread.Status field, i.e. feedback status
-    * @param int a numerical index of the enum elements of the feedback_bvl_thread.Status field
-    * @return string name of the status
-    * @throws PEAR error
-    * @access static
-    */
+     * Returns a [verbose] element name of the feedback_bvl_thread.
+     *
+     * Status field, i.e. feedback status
+     *
+     * @param integer $statusID a numerical index of the enum elements
+     *                          of the feedback_bvl_thread.Status field
+     *
+     * @return string name of the status
+     */
     static function getFeedbackStatusVerbose($statusID)
     {
         if (empty($statusID)) {
             return PEAR::raiseError(
-                "NDB_BVL_Feedback::getFeedbackStatusVerbose  Error, empty status ID\n"
+                "NDB_BVL_Feedback::getFeedbackStatusVerbose "
+                . "Error, empty status ID\n"
             );
         }
         // new DB Object
         $db = Database::singleton();
-        if(Utility::isErrorX($db)) {
-            return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
+        if (Utility::isErrorX($db)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$db->getMessage()
+            );
         }
         $record =array();
-        // StatusID is passed in as an integer, but the field in the database is an enum,
-        // so we need to do WHERE Status+0= .. to convert it to an int (of the index into
-        // the enum) so that this query works.
+        // StatusID is passed in as an integer, but the field in the database
+        // is an enum, so we need to do WHERE Status+0= .. to convert it to
+        // an int (of the index into the enum) so that this query works.
         $query  = "SELECT Status FROM feedback_bvl_thread WHERE Status+0=:StatID";
         $param  = array('StatID' => $statusID);
-        $record = $db->pselectOne($query, $param );
+        $record = $db->pselectOne($query, $param);
         if (Utility::isErrorX($record)) {
             return PEAR::raiseError(
                 "DBError, failed to select Status from "
