@@ -22,45 +22,47 @@ require_once "../tools/generic_includes.php";
 //////////////////////////////get the log file-name////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 $data_source_file = getLatestLogFile();
-while (true) {
-    clearstatcache();
-    
-    ///////////////////////////////////////////////////////////////////////////
-    //////////////////check to make sure the file is not empty/////////////////
-    ///////////////////////////////////////////////////////////////////////////
-    if ($data_source_file) {
-        
-        ///////////////////////////////////////////////////////////////////////
-        //////////////////get the file content/////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if (file_get_contents($data_source_file) === '') {
-            sleep(1);
-            continue;
+
+/**
+ * Create a temp file to avoid the original file to be truncated
+ * 
+ */
+$temp_data_source_file = $data_source_file . ".tmp";
+
+///file doesn't exist create it
+if (file_exists($temp_data_source_file)) {
+    if (!file_exists($temp_data_source_file)) {
+        if (!copy($data_source_file,$temp_data_source_file)) {
+            print "cannot be copied";
         }
-        try {
-            $file = fopen($data_source_file, "r+");
-            if (!$file) {
-                throw new Exception("Could not open the log file!");
-            } else {
-                flock($file, LOCK_EX); 
-                $data = file_get_contents($data_source_file);
-                ftruncate($file, 0);
-                flock($file, LOCK_UN);
-                fclose($file);
-            }
-        } catch(Exception $e) {
-            $data = "Error: " . $e->getMessage();
-        }   
-        echo $data;
-        ob_flush();
-        flush();
-        break;
-    }
-    else {
-         print "file doesn't exist";
-         throw new Exception("Could not open the log file!");
     }
 }
+
+
+clearstatcache();
+
+///create a new temp file for the info
+
+
+
+$file = fopen($temp_data_source_file, "r+");
+
+////if the file is opened
+if ($file) {
+    ////////Lock the file
+    if(flock($file, LOCK_EX)){
+        
+        $data = fread($file, filesize($temp_data_source_file));//get the data from the file
+        ftruncate($file, 0);//truncate the file
+        fflush($file); //writes the buffered output to the file
+        flock($file, LOCK_UN);  //locks the file
+        echo $data;
+    } else {
+        echo "could not lock file";
+    }
+}
+
+//}
 /**
  * get the last changed log file using in the 
  * $paths['base'] . "/" . $paths['log']."/MRI_upload" directory
