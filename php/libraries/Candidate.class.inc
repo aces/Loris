@@ -140,8 +140,8 @@ class Candidate
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
                     array(
-                        'Candidate' => $candID,
-                        'PTName' => $parameter_type
+                     'Candidate' => $candID,
+                     'PTName'    => $parameter_type,
                     )
                 );
                 if (!empty($row['Value'])) {
@@ -274,18 +274,19 @@ class Candidate
         }
 
         // insert the new candidate into the database
-        $setArray = array('CandID'       => $candID,
-            'CenterID'     => $centerID,
-            'PSCID'        => $PSCID,
-            'DoB'          => $dateOfBirth,
-            'EDC'          => $edc,
-            'Gender'       => $gender,
-            'Date_active'  => date('Y-m-d'),
-            'Date_registered' => date('Y-m-d'),
-            'Entity_type'  => 'Human',
-            'RegisteredBy' => $user->getUsername(),
-            'UserID'       => $user->getUsername(),
-        );
+        $setArray = array(
+                     'CandID'          => $candID,
+                     'CenterID'        => $centerID,
+                     'PSCID'           => $PSCID,
+                     'DoB'             => $dateOfBirth,
+                     'EDC'             => $edc,
+                     'Gender'          => $gender,
+                     'Date_active'     => date('Y-m-d'),
+                     'Date_registered' => date('Y-m-d'),
+                     'Entity_type'     => 'Human',
+                     'RegisteredBy'    => $user->getUsername(),
+                     'UserID'          => $user->getUsername(),
+                    );
 
         if ($config->getSetting('useExternalID') === 'true') {
             $externalID = Candidate::_generateExternalID();
@@ -351,7 +352,7 @@ class Candidate
     function setData($var, $value=null)
     {
         if (!is_array($var)) {
-            $setData = array($var=>$value);
+            $setData = array($var => $value);
         } else {
             $setData = $var;
         }
@@ -367,9 +368,7 @@ class Candidate
         $success = $db->update(
             'candidate',
             $setData,
-            array(
-                'CandID'=>$this->getData('CandID')
-            )
+            array('CandID' => $this->getData('CandID'))
         );
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError(
@@ -664,7 +663,7 @@ class Candidate
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
-        $params  = array('prj'=>$projID);
+        $params  = array('prj' => $projID);
         $subproj = $db->pselect($query, $params);
 
         if (Utility::isErrorX($subproj)) {
@@ -701,7 +700,7 @@ class Candidate
         $query  = "SELECT Visit_label
             FROM session s JOIN candidate c ON (c.CandID = s.CandID)
             WHERE c.CandID=:cid ORDER BY Date_Visit";
-        $where  = array('cid'=>$candID);
+        $where  = array('cid' => $candID);
         $vLabel = $db->pselectOne($query, $where);
         if (Utility::isErrorX($vLabel)) {
             return PEAR::raiseError(
