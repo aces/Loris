@@ -6,31 +6,30 @@ require_once 'Database.class.inc';
 $xml_file = "../project/config.xml";
 $iterator = new SimpleXmlIterator($xml_file, null, true);
 
-iterate($iterator);
+iterate($iterator, null);
 
 // iterate over the config xml
-function iterate($iterator) {
+function iterate($iterator, $parentKey) {
 	$db = Database::singleton();
 	for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
 		$current = $iterator->current();
+		$name  = $iterator->key();
 	    if ($iterator->hasChildren()) {
-	    	iterate($current);
+	    	iterate($current, $name);
 	    }
 	    // Else it is a leaf
 	    else {
-	    	$name  = $iterator->key();
 	    	// If a key by that name exists, get its ID
 	    	$configID = $db->pselectone("SELECT ID FROM ConfigSettings WHERE Name=:name", array('name' => $name));
 	    	
 	    	// If the key already exists
 	    	if (!empty($configID)) {
+				$dbParentKey = $db->pselectone("SELECT Name FROM ConfigSettings WHERE ID=(SELECT Parent FROM ConfigSettings WHERE Name=:name)", array('name' => $name));
+				if ($parentKey==$dbParentKey) {
 
-	    		/*parent
-	    		$parent = $current->xpath("parent::*");
-	    		print_r($parent);*/
-
-				// Insert into the DB
-		    	processLeaf($name, $current, $configID);
+					// Insert into the DB
+			    	processLeaf($name, $current, $configID);
+				}
 	    	}
 	    }
 	}
