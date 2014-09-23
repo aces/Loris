@@ -37,8 +37,10 @@ body {
 }
 
 .volume-container {
-    width: 300px;
+    width: 260px;
     padding-bottom: 10px;
+    display: inline-table;
+    margin: 0 auto;
 }
 
 .volume-viewer-controls {
@@ -109,9 +111,12 @@ body {
 
 #global-controls {
     padding: 5px;
-    background: #555555;
+/*    background: #555555; */
     border-radius: 4px;
     -webkit-border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+    width: 220px;
 }
 
 #app-name {
@@ -133,5 +138,5 @@ body {
 
 .filename {
     font-weight: bold;
-    color: #BBFF00;
+    color: #064785;
 }

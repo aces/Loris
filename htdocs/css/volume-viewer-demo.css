@@ -1,3 +1,29 @@
+/*
+* BrainBrowser: Web-based Neurological Visualization Tools
+* (https://brainbrowser.cbrain.mcgill.ca)
+*
+* Copyright (C) 2011 
+* The Royal Institution for the Advancement of Learning
+* McGill University
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as
+* published by the Free Software Foundation, either version 3 of the
+* License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*
+* Author: Tarek Sherif <tsherif@gmail.com> (http://tareksherif.ca/)
+* Author: Nicolas Kassis
+*/
+
 body {
   background-color: #000000;
 }
@@ -16,11 +42,12 @@ body {
 
 
 .volume-container {
-  display: table-cell;
+  display: block;
+  margin: 0 auto;
 }
 
 canvas.slice-display {
-  display: block;
+/*  display: block;*/
   margin: 3px 5px;
 }
 
@@ -28,8 +55,7 @@ canvas.slice-display {
   font-size: 12px;
   padding: 10px;
   margin: 3px 5px;
-  padding-bottom: 18px; 
-  background: #555555;
+  background: gray;
   color: #F0F0F0;
 }
 
@@ -39,13 +65,18 @@ canvas.slice-display {
 
 .volume-controls {
   width: 235px;
-  height: 350px;
+  height: 400px;
 }
 
 #global-controls {
   -moz-border-radius: 10px 10px 0 0;
   -webkit-border-radius: 10px 10px 0 0;
   border-radius: 10px 10px 0 0;
+  padding-bottom: 0;
+}
+
+#global-controls .instructions {
+  padding: 10px 0 5px 0;
 }
 
 .control-heading {
@@ -113,4 +144,20 @@ canvas.slice-display {
   font-size: 11px;
 }
 
+#volume-file {
+  margin-top: 12px;
+  margin-bottom: 10px;
+  display: none;
+}
 
+#volume-file-submit {
+  margin-top: 6px;
+}
+
+#volume-file-hint {
+  margin: 4px;
+}
+
+#volume-file-hint a {
+  color: orange;
+}

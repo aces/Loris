@@ -403,6 +403,17 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           viewer.redrawVolumes();
         });
       });
+    
+      $.ajax({
+          data: 'minc_id=' + minc_ids_arr[vol_id],
+          url: 'getMincName.php',
+          method: 'GET',
+          async: false,
+          success: function(data) {
+            $("#filename-"+vol_id).html(data);
+          }
+      });
+
     });
 
 
@@ -447,23 +458,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
-        var filename;
-        $.ajax({
-            data: 'minc_id=' + minc_ids_arr[i],
-            url: 'getMincName.php',
-            method: 'GET',
-            async: false,
-            success: function(data) {
-                filename = data;
-            }
-        });
-
-
-        minc_filenames.push(filename);
-        BrainBrowser.events.addEventListener("ready", function () {
-            viewer.setFileNames(minc_filenames);
-        });
-
         minc_volumes.push({
             type: 'minc',
             header_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
@@ -486,42 +480,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
     bboptions.volumes = minc_volumes;
 
-    BrainBrowser.events.addEventListener("ready", function() {
-        var i = 0, volumes = this.volumes, el, width = 0;
-        for(i = 0; i < volumes.length; i += 1) {
-            if(volumes[i].header.time) {
-                // 4d dataset, keep the Play button
-            } else {
-                // It's a 3d dataset, so hide the play
-                // button
-                el = document.getElementById("time-" + i);
-                $(el).hide();
-
-            }
-        }
-
-        // Get all the volumes and add their width together
-        // so that we can set the width of the wrapper
-        // dynamically based on the number of volumes loaded.
-        el = $(".volume-container");
-        for(i = 0; i < el.length; i += 1) {
-            width += $(el[i]).width();
-        }
-
-        //issue with non-consistent size - decrease manually
-        if (el.length == 1) {
-            width -=25;
-        } 
-        else if (el.length == 2 || el.length == 3) {
-            width -=30;
-        }
-
-        $("#brainbrowser-wrapper").width(width);
-    });
-
     viewer.setFileNames = function (filenames) {
         for (i=0; i < filenames.length; i += 1) {
-           $("#filename-"+i).html(filenames[i]);
        }
     }
 
