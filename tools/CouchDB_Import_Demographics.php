@@ -194,27 +194,30 @@ class CouchDBDemographicsImporter {
                 $familyID     = $this->SQLDB->pselectOne("SELECT FamilyID FROM family
                                                           WHERE CandID=:cid",
                                                           array('cid'=>$demographics['CandID']));
-                $familyFields = $this->SQLDB->pselect("SELECT candID as Family_ID,
-                                                       f.Relationship_type as Relationship_to_candidate
-                                                       WHERE FamilyID=:fid AND CandID<>:cid",
-                                                       array('fid'=>$familyID, 'cid'=>$demographics['CandID']));
-               $num_family = 1;
-               if (!empty($familyFields)) {
-                   foreach($familyFields as $row) {
-                       //adding each sibling id and relationship to the file
-                       $this->Dictionary["Family_ID".$num_family] = array(
-                               'Description' => 'CandID of Family Member '.$num_family,
-                               'Type'        => "varchar(255)",
-                               );
-                        $this->Dictionary["Relationship_type_FamilyMember".$num_family] = array(
-                               'Description' => 'Relationship of candidate to Family Member '.$num_family,
-                               'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
-                               );
-                        $demographics['Family_ID'.$num_family] = $row['Family_ID'];
-                        $demographics['Relationship_type_FamilyMember'.$num_family] = $row['Relationship_to_candidate'];
-                        $num_family += 1;
-                   }
-               }
+                if (!empty($familyID)) {
+                    $familyFields = $this->SQLDB->pselect("SELECT candID as Family_ID,
+                                    Relationship_type as Relationship_to_candidate
+                                    FROM family
+                                    WHERE FamilyID=:fid AND CandID<>:cid",
+                                    array('fid'=>$familyID, 'cid'=>$demographics['CandID']));
+                    $num_family = 1;
+                    if (!empty($familyFields)) {
+                        foreach($familyFields as $row) {
+                            //adding each sibling id and relationship to the file
+                            $this->Dictionary["Family_ID".$num_family] = array(
+                                    'Description' => 'CandID of Family Member '.$num_family,
+                                    'Type'        => "varchar(255)",
+                                    );
+                            $this->Dictionary["Relationship_type_FamilyMember".$num_family] = array(
+                                    'Description' => 'Relationship of candidate to Family Member '.$num_family,
+                                    'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
+                                    );
+                            $demographics['Family_ID'.$num_family]                      = $row['Family_ID'];
+                            $demographics['Relationship_type_FamilyMember'.$num_family] = $row['Relationship_to_candidate'];
+                            $num_family                                                += 1;
+                        }
+                    }
+                }
             }
 
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
