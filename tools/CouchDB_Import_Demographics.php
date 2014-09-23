@@ -194,25 +194,25 @@ class CouchDBDemographicsImporter {
                 $familyID     = $this->SQLDB->pselectOne("SELECT FamilyID FROM family
                                                           WHERE CandID=:cid",
                                                           array('cid'=>$demographics['CandID']));
-                $familyFields = $this->SQLDB->pselect("SELECT candID as Sibling_ID,
-                                                       f.Relationship_type as Relationship_to_sibling
+                $familyFields = $this->SQLDB->pselect("SELECT candID as Family_ID,
+                                                       f.Relationship_type as Relationship_to_candidate
                                                        WHERE FamilyID=:fid AND CandID<>:cid",
                                                        array('fid'=>$familyID, 'cid'=>$demographics['CandID']));
-               $num_siblings = 1;
+               $num_family = 1;
                if (!empty($familyFields)) {
                    foreach($familyFields as $row) {
                        //adding each sibling id and relationship to the file
-                       $this->Dictionary["Sibling".$num_siblings] = array(
-                               'Description' => 'CandID of Sibling'.$num_siblings,
+                       $this->Dictionary["Family_ID".$num_family] = array(
+                               'Description' => 'CandID of Family Member '.$num_family,
                                'Type'        => "varchar(255)",
                                );
-                        $this->Dictionary["Relationship_type_Sibling".$num_siblings] = array(
-                               'Description' => 'Relationship of candidate to Sibling'.$num_siblings,
+                        $this->Dictionary["Relationship_type_FamilyMember".$num_family] = array(
+                               'Description' => 'Relationship of candidate to Family Member '.$num_family,
                                'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
                                );
-                        $demographics['Sibling'.$num_siblings] = $row['Sibling_ID'];
-                        $demographics['Relationship_type_Sibling'.$num_siblings] = $row['Relationship_to_sibling'];
-                        $num_siblings += 1;
+                        $demographics['Family_ID'.$num_family] = $row['Family_ID'];
+                        $demographics['Relationship_type_FamilyMember'.$num_family] = $row['Relationship_to_candidate'];
+                        $num_family += 1;
                    }
                }
             }
