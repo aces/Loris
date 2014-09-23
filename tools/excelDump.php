@@ -123,7 +123,7 @@ foreach ($instruments as $instrument) {
 * Special figs_year3_relatives query
 */
 //check if figs table exists
-/*
+
 $query = "SHOW TABLES LIKE 'figs_year3_relatives'";
 $DB->select($query,$result);
 if (count($result) > 0) {
@@ -137,7 +137,7 @@ if (count($result) > 0) {
 	MapSubprojectID($instrument_table);
 	writeExcel($Test_name, $instrument_table, $dataDir);
 }
-*/
+
 /*
 * Candidate Information query
 */
