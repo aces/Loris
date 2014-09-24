@@ -53,7 +53,7 @@
         <tr>
             <td nowrap="nowrap" colspan="2">
                 <input class="btn btn-sm btn-primary" name="fire_away" value="Create survey" id="create_survey" type="submit" />
-                <input class="btn btn-sm btn-primary email" name="fire_away" value="Create and email" id="email_survey" type="submit">
+                <input class="btn btn-sm btn-primary email" name="fire_away" value="Email survey" id="email_survey" type="submit">
         {/if}
             </td>
         </tr>
