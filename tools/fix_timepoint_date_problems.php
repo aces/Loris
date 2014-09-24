@@ -47,7 +47,7 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 $configFile = "../project/config.xml";
 
 require_once "NDB_Client.class.inc";
-require_once "NDB_BVL_Battery_Manual.class.inc";
+require_once "NDB_BVL_Battery.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
@@ -276,7 +276,7 @@ function addInstrument($sessionID, $testName)
     }
     
     // create battery object
-    $battery =& new NDB_BVL_Battery_Manual();
+    $battery =& new NDB_BVL_Battery();
     if(PEAR::isError($battery)) {
         return PEAR::raiseError("Failed to create battery object: ".$battery->getMessage());
     }
@@ -557,7 +557,7 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
             fwrite(STDERR, "Age at $stage: $age [ $dateBirth $dateOfStage]\n");
 
             // create battery object
-            $battery =& new NDB_BVL_Battery_Manual();
+            $battery =& new NDB_BVL_Battery();
             if(PEAR::isError($battery)) {
                 return PEAR::raiseError("Failed to create battery object:\n".$battery->getMessage());
             }
