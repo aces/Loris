@@ -25,7 +25,7 @@ require_once 'NDB_Form.class.inc';
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
 */
-class NDB_Form_Database_Configuration_Module extends NDB_Form
+class NDB_Form_Configuration extends NDB_Form
 {
     /**
      * _has_access returns true
@@ -49,7 +49,7 @@ class NDB_Form_Database_Configuration_Module extends NDB_Form
      * @return null
      */
 
-    function database_configuration_module()
+    function configuration()
     {
         $this->DB = Database::singleton();
         if (Utility::isErrorX($this->DB)) {
