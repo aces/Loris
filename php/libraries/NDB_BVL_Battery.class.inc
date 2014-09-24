@@ -62,7 +62,7 @@ class NDB_BVL_Battery extends PEAR
      */
     function selectBattery($sessionID)
     {
-        $timepoint=TimePoint::singleton($sessionID);
+        $timepoint =TimePoint::singleton($sessionID);
         if (Utility::isErrorX($timepoint)) {
             return $this->raiseError("Invalid session ID");
         }
@@ -70,8 +70,8 @@ class NDB_BVL_Battery extends PEAR
         // set the battery
         $this->sessionID = $sessionID;
 
-        $timepointData=$timepoint->getData();
-        $dob = $timepoint->getEffectiveDateOfBirth();
+        $timepointData =$timepoint->getData();
+        $dob           = $timepoint->getEffectiveDateOfBirth();
 
         if ($timepointData['Date_visit'] == '0000-00-00'
             || empty($timepointData['Date_visit'])
@@ -90,7 +90,7 @@ class NDB_BVL_Battery extends PEAR
         // compute subject age
         if ((!is_null($testDate)) && (!is_null($dob))) {
             $ageArray = Utility::calculateAge($dob, $testDate);
-            $age = ($ageArray['year'] * 12 + $ageArray['mon'])
+            $age      = ($ageArray['year'] * 12 + $ageArray['mon'])
                     * 30
                     * + $ageArray['day'];
             //echo "age is:".$age."<BR>\n";
@@ -212,7 +212,7 @@ class NDB_BVL_Battery extends PEAR
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
-        $rows = $DB->pselect($query, array('SID' => $this->sessionID));
+        $rows  = $DB->pselect($query, array('SID' => $this->sessionID));
         if ($this->isError($rows) || count($rows)==0) {
             return $this->raiseError(
                 "Failed to get SessionID, and UserID when trying to add $testName"
@@ -229,7 +229,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // insert into the test table
-        $success = $DB->insert($testName, array('CommentID'=>$commentID));
+        $success = $DB->insert($testName, array('CommentID' => $commentID));
         if ($this->isError($success)) {
             return $this->raiseError(
                 "Unable to add storage record to $commentID $testName"
@@ -240,11 +240,11 @@ class NDB_BVL_Battery extends PEAR
         $success = $DB->insert(
             'flag',
             array(
-             'SessionID'=>$sessionData['SessionID'],
-             'Test_name'=>$testName,
-             'CommentID'=>$commentID,
-             'UserID'=>$sessionData['UserID'],
-             'Testdate'=>null
+             'SessionID' => $sessionData['SessionID'],
+             'Test_name' => $testName,
+             'CommentID' => $commentID,
+             'UserID'    => $sessionData['UserID'],
+             'Testdate'  => null,
             )
         );
 
@@ -258,7 +258,7 @@ class NDB_BVL_Battery extends PEAR
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-         $success = $DB->insert($testName, array('CommentID'=>$ddeCommentID));
+         $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
         if ($this->isError($success)) {
             return $this->raiseError(
                 "Unable to add storage record to $ddeCommentID $testName"
@@ -269,11 +269,11 @@ class NDB_BVL_Battery extends PEAR
         $success = $DB->insert(
             'flag',
             array(
-             'SessionID'=>$sessionData['SessionID'],
-             'Test_name'=>$testName,
-             'CommentID'=>$ddeCommentID,
-             'UserID'=>$sessionData['UserID'],
-             'Testdate'=>null
+             'SessionID' => $sessionData['SessionID'],
+             'Test_name' => $testName,
+             'CommentID' => $ddeCommentID,
+             'UserID'    => $sessionData['UserID'],
+             'Testdate'  => null,
             )
         );
 
@@ -336,13 +336,13 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // craft the select query
-        $query = "SELECT f.Test_name FROM flag f JOIN session s
+        $query   = "SELECT f.Test_name FROM flag f JOIN session s
             ON (s.ID=f.SessionID)
             JOIN candidate c ON (c.CandID=s.CandID)
             WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
                AND f.CommentID NOT LIKE 'DDE%'";
         $qparams = array('SID' => $this->sessionID);
-        $rows = $DB->pselect($query, $qparams);
+        $rows    = $DB->pselect($query, $qparams);
 
         if ($this->isError($rows)) {
             return $this->raiseError("Could not get battery from database");
@@ -380,7 +380,7 @@ class NDB_BVL_Battery extends PEAR
         }
 
         // craft the select query
-        $query = "SELECT f.Test_name,
+        $query   = "SELECT f.Test_name,
                     t.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
@@ -398,7 +398,7 @@ class NDB_BVL_Battery extends PEAR
             AND LEFT(f.CommentID, 3) != 'DDE'";
 
         if (!is_null($stage)) {
-            $query .= " AND t.Test_name=b.Test_name AND b.Stage=:stg";
+            $query         .= " AND t.Test_name=b.Test_name AND b.Stage=:stg";
             $qparams['stg'] = $stage;
 
             if (!is_null($SubprojectID)) {
@@ -454,7 +454,7 @@ class NDB_BVL_Battery extends PEAR
      */
     function getInstrumentNameForCommentId($commentId)
     {
-        $db =& Database::singleton();
+        $db    =& Database::singleton();
         $query = "SELECT Test_name FROM flag WHERE CommentID=:CID";
         $instrumentName = $db->pselectOne($query, array('CID' => $commentId));
         return $instrumentName;
