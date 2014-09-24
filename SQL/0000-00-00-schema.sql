@@ -1826,7 +1826,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
     ('DICOM Archive', 'main.php?test_name=dicom_archive', 3, 2),
     ('Imaging Browser', 'main.php?test_name=imaging_browser', 3, 3),
-    ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4);
+    ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4),
     ('MRI Upload', 'main.php?test_name=mri_upload', 3, 4);
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', 'main.php?test_name=statistics', 4, 1),
