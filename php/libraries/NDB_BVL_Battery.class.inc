@@ -9,7 +9,7 @@ require_once "PEAR.php";
  * visit unique identifier is equivalent to a battery unique
  * identifier.  Thus, we use the session table's ID column to identify
  * any battery.
- * @package behavioural  
+ * @package behavioural
  * @access public
  */
 
@@ -34,11 +34,11 @@ class NDB_BVL_Battery extends PEAR
     function NDB_BVL_Battery()
     {
         // assert that a global Database object exists
-        if(!isset($GLOBALS['DB']))
+        if (!isset($GLOBALS['DB']))
             return $this->raiseError("No Database object exists in global scope");
 
         // assert that the Database object is connected
-        if(!$GLOBALS['DB']->isConnected())
+        if (!$GLOBALS['DB']->isConnected())
             return $this->raiseError("Database object is not connected");
     }
 
@@ -53,27 +53,27 @@ class NDB_BVL_Battery extends PEAR
     function selectBattery($sessionID)
     {
         $timepoint=TimePoint::singleton($sessionID);
-        if(Utility::isErrorX($timepoint)){
+        if (Utility::isErrorX($timepoint)){
         	return $this->raiseError("Invalid session ID");
         }
-        
+
         // set the battery
         $this->sessionID = $sessionID;
-        
+
         $timepointData=$timepoint->getData();
         $dob = $timepoint->getEffectiveDateOfBirth();
-        
-        if($timepointData['Date_visit'] == '0000-00-00' || empty($timepointData['Date_visit'])) $dateField = 'Date_screening';
+
+        if ($timepointData['Date_visit'] == '0000-00-00' || empty($timepointData['Date_visit'])) $dateField = 'Date_screening';
         else $dateField = 'Date_visit';
 
-        if(!isset($timepointData[$dateField])) {
+        if (!isset($timepointData[$dateField])) {
             $testDate = null;
         } else {
             $testDate = $timepointData[$dateField];
         }
 
         // compute subject age
-        if((!is_null($testDate)) && (!is_null($dob))) {
+        if ((!is_null($testDate)) && (!is_null($dob))) {
             $ageArray = Utility::calculateAge($dob, $testDate);
             $age = ($ageArray['year'] * 12 + $ageArray['mon']) * 30 + $ageArray['day'];
             //echo "age is:".$age."<BR>\n";
@@ -106,22 +106,22 @@ class NDB_BVL_Battery extends PEAR
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if($this->isError($error)) return $error;
-        
+        if ($this->isError($error)) return $error;
+
         // get the current battery (center id is irrelevant here, as is stage probably)
         $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
-        if($this->isError($currentTests)) {
+        if ($this->isError($currentTests)) {
             return $this->raiseError("Could not get the current list of instruments, thus unable to assert that the battery is empty");
         }
 
         // assert that the current battery is empty
-        if(count($currentTests) > 0) {
+        if (count($currentTests) > 0) {
             return $this->raiseError("Battery is not empty - will not clobber an existing battery.");
         }
 
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery($this->age, $SubprojectID, $stage, $visit_label, $center_ID, $firstVisit);
-        if($this->isError($neededTests)) {
+        if ($this->isError($neededTests)) {
             return $this->raiseError("Could not lookup the battery for age $this->age and subprojectID ".$this->getSubprojectID());
         }
 
@@ -131,12 +131,12 @@ class NDB_BVL_Battery extends PEAR
             $success = $this->addInstrument($testName);
 
             // make sure that the addition succeeded
-            if($this->isError($success)) {
+            if ($this->isError($success)) {
                 return $this->raiseError("Failed to add instrument $testName to battery");
             }
         } // end looping over the list of instruments
     } // end createBattery()
-    
+
     /**
      * adds the specified instrument to the current battery, so long
      * as it is not already there (singleton model)
@@ -150,29 +150,29 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if($this->isError($error)) return $error;
-        
+        if ($this->isError($error)) return $error;
+
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-        if($this->isError($error)) return $error;
+        if ($this->isError($error)) return $error;
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
         $rows = $DB->pselect($query, array('SID' => $this->sessionID));
-        if($this->isError($rows) || count($rows)==0) {
+        if ($this->isError($rows) || count($rows)==0) {
             return $this->raiseError("Failed to get SessionID, and UserID when trying to add $testName");
         }
         $sessionData = $rows[0];
 
         // generate a commentID
         $commentID = $this->_createCommentID($testName);
-        if($this->isError($commentID)) {
+        if ($this->isError($commentID)) {
             return $this->raiseError("Unable to generate a valid CommentID when trying to add $testName");
         }
 
         // insert into the test table
         $success = $DB->insert($testName, array('CommentID'=>$commentID));
-        if($this->isError($success)) {
+        if ($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to $commentID $testName");
         }
 
@@ -182,16 +182,16 @@ class NDB_BVL_Battery extends PEAR
                                                         'CommentID'=>$commentID,
                                                         'UserID'=>$sessionData['UserID'],
                                                         'Testdate'=>null));
-        if($this->isError($success)) {
+        if ($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to flag: $testName");
         }
-        
+
         // generate the double data entry commentid
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
          $success = $DB->insert($testName, array('CommentID'=>$ddeCommentID));
-        if($this->isError($success)) {
+        if ($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to $ddeCommentID $testName");
         }
 
@@ -201,13 +201,13 @@ class NDB_BVL_Battery extends PEAR
                                                         'CommentID'=>$ddeCommentID,
                                                         'UserID'=>$sessionData['UserID'],
                                                         'Testdate'=>null));
-        if($this->isError($success)) {
+        if ($this->isError($success)) {
             return $this->raiseError("Unable to add storage record to flag: $testName");
         }
         return $commentID;
-        
+
     } // end addInstrument()
-    
+
     /**
      * removes the specified instrument from the current battery only
      * if it is part of the battery
@@ -221,15 +221,15 @@ class NDB_BVL_Battery extends PEAR
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if($this->isError($error)) return $error;
-        
+        if ($this->isError($error)) return $error;
+
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-        if($this->isError($error)) return $error;
+        if ($this->isError($error)) return $error;
 
-        
+
     } // end removeInstrument()
-    
+
     /**
      * gets the array of instruments which are members of the currently
      * selected session's battery
@@ -246,10 +246,10 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if($this->isError($error)) return $error;
-        
+        if ($this->isError($error)) return $error;
+
         // craft the select query
-        $query = "SELECT f.Test_name FROM flag f JOIN session s 
+        $query = "SELECT f.Test_name FROM flag f JOIN session s
             ON (s.ID=f.SessionID)
             JOIN candidate c ON (c.CandID=s.CandID)
             WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
@@ -257,7 +257,7 @@ class NDB_BVL_Battery extends PEAR
         $qparams = array('SID' => $this->sessionID);
         $rows = $DB->pselect($query, $qparams);
 
-        if($this->isError($rows)) {
+        if ($this->isError($rows)) {
             return $this->raiseError("Could not get battery from database");
         }
 
@@ -266,7 +266,7 @@ class NDB_BVL_Battery extends PEAR
         foreach($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
-   
+
         // return an array of test names
         return $tests;
     } // end getBattery()
@@ -287,22 +287,22 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if($this->isError($error)) return $error;
-        
+        if ($this->isError($error)) return $error;
+
         // craft the select query
         $query = "SELECT f.Test_name, t.Full_name, f.CommentID, CONCAT('DDE_', f.CommentID) AS DDECommentID, ts.Subgroup_name as Sub_group, t.isDirectEntry FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
 
-        if(!is_null($stage)) {
+        if (!is_null($stage)) {
             $query .= ", test_battery AS b";
         }
         $query .= " WHERE ts.ID = t.Sub_group AND f.Test_name=t.Test_name AND f.SessionID=:SID AND LEFT(f.CommentID, 3) != 'DDE'";
 
-        if(!is_null($stage)) {
+        if (!is_null($stage)) {
             $query .= " AND t.Test_name=b.Test_name AND b.Stage=:stg";
             $qparams['stg'] = $stage;
 
-            if(!is_null($SubprojectID)) {
+            if (!is_null($SubprojectID)) {
                 $query .= " AND (b.SubprojectID IS NULL OR b.SubprojectID=:SubprojID)";
                 $qparams['SubprojID'] = $SubprojectID;
             }
@@ -312,7 +312,7 @@ class NDB_BVL_Battery extends PEAR
 
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
-        if($this->isError($rows)) {
+        if ($this->isError($rows)) {
             return $this->raiseError("Could not get battery from database");
         }
 
@@ -322,7 +322,7 @@ class NDB_BVL_Battery extends PEAR
 
     static function isDoubleDataEntryEnabledForInstrument($instrumentName)
     {
-        
+
         $config =& NDB_Config::singleton();
         $doubleDataEntryInstruments= $config->getSetting("DoubleDataEntryInstruments");
 
@@ -353,33 +353,33 @@ class NDB_BVL_Battery extends PEAR
     function lookupBattery($age, $SubprojectID, $stage=null, $visit_label=null, $center_ID=null, $firstVisit=null)
     {
         $DB = Database::singleton();
-        if(empty($this->age)) {
+        if (empty($this->age)) {
             $this->age = $age;
         }
         $qparams = array(
             'vAge' => $this->age,
             'SubprojID' => $SubprojectID
         );
-        // The query to lookup the battery uses the min/max age ranges if they are not 0 
-        $query = "SELECT t.Test_name FROM test_battery AS b, test_names AS t WHERE t.Test_name=b.Test_name AND 
-            ((b.AgeMinDays=0 AND b.AgeMaxDays=0) OR (b.AgeMinDays<= :vAge AND b.AgeMaxDays >= :vAge)) 
+        // The query to lookup the battery uses the min/max age ranges if they are not 0
+        $query = "SELECT t.Test_name FROM test_battery AS b, test_names AS t WHERE t.Test_name=b.Test_name AND
+            ((b.AgeMinDays=0 AND b.AgeMaxDays=0) OR (b.AgeMinDays<= :vAge AND b.AgeMaxDays >= :vAge))
             AND b.Active='Y' AND (SubprojectID=:SubprojID OR SubprojectID IS NULL)";
 
-        if(!is_null($visit_label)) {
+        if (!is_null($visit_label)) {
             $VisitBatteryExists = $DB->pselectOne("SELECT count(*) FROM test_battery WHERE Visit_label =:VL AND SubprojectID=:SubID", array('VL' => $visit_label, 'SubID' => $SubprojectID));
-            if($VisitBatteryExists > 0) {
+            if ($VisitBatteryExists > 0) {
                 $query .= " AND b.Visit_label=:VL";
                 $qparams['VL'] = $visit_label;
             } else {
                 $query .= " AND b.Visit_label IS NULL";
             }
-        } 
-        if(!is_null($stage)) {
+        }
+        if (!is_null($stage)) {
             $query .= " AND b.Stage=:stg";
             $qparams['stg'] = $stage;
         }
 
-	if(!is_null($center_ID)) {  // return all instruments that match this center or all centers (null)
+	if (!is_null($center_ID)) {  // return all instruments that match this center or all centers (null)
             $query .= " AND (b.CenterID=:CID OR b.CenterID IS NULL)";
             $qparams['CID'] = $center_ID;
     } else {
@@ -388,7 +388,7 @@ class NDB_BVL_Battery extends PEAR
         // get the list of instruments
         $tests = array();
         $rows = $DB->pselect($query, $qparams);
-        if($this->isError($rows)) {
+        if ($this->isError($rows)) {
             return $this->raiseError("Could not lookup battery from database");
         }
 
@@ -397,32 +397,32 @@ class NDB_BVL_Battery extends PEAR
             $tests[] = $row['Test_name'];
         }
         // get the list of instruments that should be part of first visit
-        if($firstVisit) {
-            $query_firstVisit = "SELECT  DISTINCT Test_name FROM test_battery WHERE firstVisit=:FV 
+        if ($firstVisit) {
+            $query_firstVisit = "SELECT  DISTINCT Test_name FROM test_battery WHERE firstVisit=:FV
                                  AND SubprojectID=:subID";
             $where = array('FV'=>'Y','subID'=>$SubprojectID);
-            $rows_firstVisit = $DB->pselect($query_firstVisit,$where); 
+            $rows_firstVisit = $DB->pselect($query_firstVisit,$where);
             foreach($rows_firstVisit as $row) {
-                if(!in_array($row['Test_name'], $tests)){
-                    array_push($tests, $row['Test_name']);   
-                }     
+                if (!in_array($row['Test_name'], $tests)){
+                    array_push($tests, $row['Test_name']);
+                }
             }
             //also remove instruments that should not be part of the first visit
-            $query_notfirstVisit = "SELECT  DISTINCT Test_name FROM test_battery WHERE firstVisit=:FV 
+            $query_notfirstVisit = "SELECT  DISTINCT Test_name FROM test_battery WHERE firstVisit=:FV
                                  AND SubprojectID=:subID";
             $where = array('FV'=>'N','subID'=>$SubprojectID);
             $rows_notfirstVisit = $DB->pselect($query_notfirstVisit,$where);
             foreach($rows_notfirstVisit as $row) {
-                if(($key = array_search($row['Test_name'], $tests)) !== FALSE){ 
+                if (($key = array_search($row['Test_name'], $tests)) !== FALSE){
                     unset($tests[$key]); //remove the instrument from showing up on the first visit
                 }
             }
 
-        }        
+        }
         // return an array of test names
         return $tests;
     } // end lookupBattery()
-     
+
     /**
      * creates a new unique commentID for the given instrument in the
      * current battery
@@ -436,25 +436,25 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if($this->isError($error)) return $error;
-        
+        if ($this->isError($error)) return $error;
+
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-        if($this->isError($error)) return $error;
+        if ($this->isError($error)) return $error;
 
         // create timepoint object
         $timepoint =& TimePoint::singleton($this->sessionID);
-        if(Utility::isErrorX($timepoint)) 
+        if (Utility::isErrorX($timepoint))
             return $this->raiseError("Could not create timepoint object: ".$timepoint->getMessage());
 
         // create candidate object
         $candidate =& Candidate::singleton($timepoint->getCandID());
-        if(Utility::isErrorX($candidate)) 
+        if (Utility::isErrorX($candidate))
             return $this->raiseError("Could not create candidate object: ".$candidate->getMessage());
 
         return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
     }
-    
+
     /**
      * Generates a CommentID of the appropriate format given a SessionID and a Test name
      *
@@ -462,7 +462,7 @@ class NDB_BVL_Battery extends PEAR
      */
     static function generateCommentID($SessionID, $Test_name) {
         $DB = Database::singleton();
-        
+
         $TestID = $DB->pselectOne(
             "SELECT ID FROM test_names WHERE Test_name=:TN",
             array('TN' => $Test_name)
@@ -479,11 +479,11 @@ class NDB_BVL_Battery extends PEAR
         if (empty($TestID) || empty($OtherInfo)) {
             return null;
         }
-        return $OtherInfo['CandID'] 
-            . $OtherInfo['PSCID'] 
-            . $SessionID 
-            . $OtherInfo['SubprojectID'] 
-            . $TestID 
+        return $OtherInfo['CandID']
+            . $OtherInfo['PSCID']
+            . $SessionID
+            . $OtherInfo['SubprojectID']
+            . $TestID
             . time();
     }
     /**
@@ -496,7 +496,7 @@ class NDB_BVL_Battery extends PEAR
      */
     function _assertBatterySelected()
     {
-        if(is_null($this->sessionID))
+        if (is_null($this->sessionID))
             return $this->raiseError("No battery selected");
         return true;
     } // end _assertBatterySelected()
@@ -512,7 +512,7 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         $query = "SELECT count(*) as counter FROM test_names WHERE Test_name=:TN";
         $row = $DB->pselectRow($query, array('TN' => $testName));
-        if(Utility::isErrorX($row)) {
+        if (Utility::isErrorX($row)) {
             return $this->raiseError("DB Error: ".$row->getMessage());
         }
 
