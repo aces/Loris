@@ -64,7 +64,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         'TarchiveID AS Tarchive_Info','number_of_mincCreated',
         'number_of_mincInserted'/*,"'ViolatedScans' as ViolatedScans"*/
         );
-        
+
         $this->validFilters = array();
         $this->query        = " FROM mri_upload mu JOIN session ".
         "s ON (s.ID = mu.SessionID)
@@ -88,20 +88,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         /////////////////////////////////////////////////////////////////////
         if (!file_exists($log_directory)) {
             if (mkdir($log_directory)) {
-                
-                 ////////////////////////////////////////////////////////////
-                 ////change the directory permission/////////////////////////          
-                 ////////////////////////////////////////////////////////////
+
+                ////////////////////////////////////////////////////////////
+                ////change the directory permission/////////////////////////
+                ////////////////////////////////////////////////////////////
                 if (!(chmod($log_directory, 0774))) {
                     print('Cannot change the permission of the folder');
                     error_log("Cannot change the permission of the folder");
                 }
-            }
-            else {
+            } else {
                 print('Failed to create mri folder');
                 error_log("Log file cannot be created");
             }
-            
+
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -109,7 +108,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $this->message = new Message("MRI_upload", $log_directory);
         $log_path      = $this->message->getMessagePath();
-        
+
         if (!(chmod($log_path, 0770))) {
             print "file permission cannot be changed";
             error_log("file permission cannot be changed");
@@ -140,13 +139,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->addBasicText('CandID', 'CandID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $visitlabels = array_merge(
-            array(null=>''), Utility::getExistingVisitLabels()
+            array(null=>''), 
+            Utility::getExistingVisitLabels()
         );
-        $this->addSelect('VisitLabel', 'VisitLabel:', $visitlabels);
+        $this->addSelect(
+            'VisitLabel',
+            'VisitLabel:',
+            $visitlabels
+        );
         $new_files = array();
         $DB        =  Database::singleton();
         $files     =  $DB->pselect(
-            "SELECT distinct SourceLocation"." FROM mri_upload", array()
+            "SELECT distinct SourceLocation"." FROM mri_upload", 
+            array()
         );
 
         foreach ($files as $file) {
@@ -187,39 +192,42 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $query = "SELECT  SourceLocation,UploadedBy FROM mri_upload".
             " WHERE TarchiveID IS NULL ORDER BY UploadID DESC";
 
-            $upload_info            = $db->pselectRow($query, array());
-            $source_location        = $upload_info['SourceLocation'];
-            $mri_user               = $upload_info['UploadedBy'];
-            $config                 = NDB_Config::singleton();
-            $paths                  = $config->getSetting('paths');
-            $dicom_archive_settings = $config->getSetting('dicom_archive');
-            $mri_code_path          = $paths['MRICodePath'];
-            $mri_incoming_path      = $paths['IncomingPath'];
+            $upload_info     = $db->pselectRow($query, array());
+            $source_location = $upload_info['SourceLocation'];
+            $mri_user        = $upload_info['UploadedBy'];
+            $config          = NDB_Config::singleton();
+            $paths           = $config->getSetting('paths');
+            $candid          = $values['CandID'];
+            $pscid           = $values['PSCID'];
+            $visit_label     = $values['VisitLabel'];
+            $patient_name    = $pscid . "_" . $candid . "_" . $visit_label;
+            $log_directory   = $paths['base'] ."/". $config->getSetting('log')
+            . "/MRI_upload";
+            $mri_code_path   = $paths['MRICodePath'];
+            $DICOMTAR        = $mri_code_path. "dicom-archive/dicomTar.pl";
             $mri_header_executer    = $mri_code_path . "customize_headers.pl";
             $environment_script     = $mri_code_path . "environment";
-            $DICOMTAR               = $mri_code_path. "dicom-archive/dicomTar.pl";
-            $tarchive_location      =  $paths['data'] . "tarchive";
+            $tarchive_location      = $paths['data'] . "tarchive";
             $batch_upload_script    = $mri_code_path . "batch_uploads_tarchive";
-            $candid                 = $values['CandID'];
-            $pscid                  = $values['PSCID'];
-            $visit_label            = $values['VisitLabel'];
-            $patient_name           = $pscid . "_" . $candid . "_" . $visit_label;
-            $log_directory          = $paths['base'] ."/". $config->getSetting('log')
-            . "/MRI_upload";
+            $mri_incoming_path      = $paths['IncomingPath'];
+            $dicom_archive_settings = $config->getSetting('dicom_archive');
+
             ///////////////////////////////////////////////////////////////////
             //////////////////////////////changes the file-name////////////////
             ///////////////////////////////////////////////////////////////////
             $today = getdate();
             $date  = sprintf(
-                "%04d-%02d-%02d", $today['year'],
-                $today['mon'], $today['mday']
+                "%04d-%02d-%02d", 
+                $today['year'],
+                $today['mon'], 
+                $today['mday']
             );
             $this->message->changeLogName(
                 'MRI_upload_'. $patient_name . "." .$date. ".log"
             );
+            $dicom_created = false;
             $this->tpl_data['minc_success'] = false;
-            $dicom_created                  = false;
-
+            
 
             $file_name = pathinfo($source_location, PATHINFO_FILENAME);
             if ($this->show_queries) {
@@ -231,7 +239,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 /////////////////log message///////////////////////////////////////
                 ///////////////////////////////////////////////////////////////////
                 $this->message->addMessage(
-                    "file-name : $file_name, ". "and sourcelocation". 
+                    "file-name : $file_name, ". "and sourcelocation".
                     $source_location
                 );
                 $this->message->addMessage(
@@ -243,13 +251,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             /////untar or unzip the uploaded folder////////////////////////////
             ///////////////////////////////////////////////////////////////////
-            $decomp              = new File_Decompress(
-                $source_location, $mri_incoming_path
+            $decomp = new File_Decompress(
+                $source_location, 
+                $mri_incoming_path
             );
             $decompressed_folder = $decomp->decompressFile();
             $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
             if ($decompressed_folder) { //decompress the file
-
                 $this->message->addMessage(
                     "The File $source_location is now" .
                     "untarred into $mri_incoming_path \n"
@@ -271,14 +279,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 && (!empty($visit_label))
             ) {
 
-                 $result          = $this->insertDicom(
-                     $DICOMTAR, $file_name, 
-                     $decompressed_folder, $tarchive_location, $patient_name,
-                     $patient_id
-                 );
-                 $dicom_created   = $result[0];
-                 $tarchive_id     = $result[1];
-                 $ArchiveLocation = $result[2];
+                $result          = $this->insertDicom(
+                    $DICOMTAR, 
+                    $file_name,
+                    $decompressed_folder, 
+                    $tarchive_location, 
+                    $patient_name,
+                    $patient_id
+                );
+                $dicom_created   = $result[0];
+                $tarchive_id     = $result[1];
+                $ArchiveLocation = $result[2];
             }
 
             ///////////////////////////////////////////////////////////////////
@@ -286,7 +297,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             if ($tarchive_id) {
                 $db->update(
-                    "mri_upload", array('TarchiveID'=>$tarchive_id),
+                    "mri_upload", 
+                    array('TarchiveID'=>$tarchive_id),
                     array('SourceLocation'=>$source_location)
                 );
                 $this->tpl_data['dicom_success'] = true;
@@ -318,7 +330,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 "JOIN session s ON (s.ID = f.sessionID) ".
                 "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
                 $count = $db->pselectOne(
-                    $query, array('cid'=>$candid,
+                    $query, 
+                    array('cid'=>$candid,
                     'vlabel'=>$visit_label)
                 );
 
@@ -390,7 +403,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file->registerForm($this->form);
 
         //Tell File_Upload what file handlers to use.
-        $file->setFileHandler("mri_file", $this);
+        $file->setFileHandler(
+            "mri_file", 
+            $this
+        );
 
         //Set the target directory that you want files moved
         //into once they are validated and processed.
@@ -433,10 +449,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         //make sure the file-name is  valid
-        /**
-         * 
-        */
-
 
         $temp_file     = $file->fileInfo['tmp_name'];
         $temp_dir      = $this->tempdir(true);
@@ -444,17 +456,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (!copy($temp_file, '/tmp/new_compressed')) {
             echo "failed to copy $temp_file...\n";
         }
-        $db                             = Database::singleton();
-        $errors                         = array();
-        $config                         = NDB_Config::singleton();
-        $dicom_archive_settings         = 
-        $config->getSetting('dicom_archive');
-        $corect_name                    = 
-        $dicom_archive_settings['patientNameRegex'];
-        $file_name                      = $file->fileInfo['name'];
-        $not_dicom                      = false;
-        $files_not_dicom                = 0;
-        $files_not_readable             = 0;
+        $db     = Database::singleton();
+        $errors = array();
+        $config = NDB_Config::singleton();
+        $dicom_archive_settings = $config->getSetting(
+            'dicom_archive'
+        );
+        $corect_name            = $dicom_archive_settings['patientNameRegex'];
+        $file_name          = $file->fileInfo['name'];
+        $not_dicom          = false;
+        $files_not_dicom    = 0;
+        $files_not_readable = 0;
         $file_not_matching_patient_name = 0;
         $header_patient_name            = array();
 
@@ -492,7 +504,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             //////check to se if candid exists/////////////////////////////////
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate".
-                " WHERE candid = :cid", array('cid'=>$candid)
+                " WHERE candid = :cid", 
+                array('cid'=>$candid)
             )==0) {
                 $errors[] = "The CandID: $candid Doesn't exist";
             }
@@ -519,7 +532,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 "SELECT COUNT(*) FROM tarchive WHERE patientname = :pname",
                 array('pname'=>$patient_name)
             ))>0) {
-                $errors[]=" The Dicom file $file_name has already been ".
+                $errors[] =" The Dicom file $file_name has already been ".
                 "inserted into the tarchive table";
             }
 
@@ -528,10 +541,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             //////////Are in fact DICOM////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////
             /**
-             * 1) copy the temp file to $file->fileInfo['name']
-             * 2) uncompress the file
-             * 3) go through the folder and iterate..
-             * 4) Check to see if each file is of type dicom..
+             * Copy the temp file to $file->fileInfo['name']
+             * Uncompress the file
+             * Go through the folder and iterate..
+             * Check to see if each file is of type dicom..
             */
 
             ///////////////////////////////////////////////////////////////////
@@ -575,7 +588,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         continue;
                     }
 
-
                     ///////////////////////////////////////////////////////////
                     ///////////////if the file is not a dicom//////////////////
                     ///////////////////////////////////////////////////////////
@@ -587,7 +599,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                         if ((!(preg_match("/archive/i", $file_type)))
                             && (!(preg_match("/gzip compressed data/i", $file_type)))
                         ) {
-
 
                             $files_not_dicom++;
                         }
@@ -606,7 +617,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////////////////////////////////////////////////
                     /////////////remove the spaces in the string///////////////
                     ///////////////////////////////////////////////////////////
-                    $patient_name_from_header = str_replace(' ', '', $patient_name_from_header);
+                    $patient_name_from_header = str_replace(
+                        ' ',
+                        '', 
+                        $patient_name_from_header
+                    );
                     $patient_name = str_replace(' ', '', $patient_name);
 
                     ///////////////////////////////////////////////////////////
@@ -625,19 +640,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
 
             if ($files_not_dicom > 0) {
-                $errors[]=" There are  $files_not_dicom files detected which ".
+                $errors[] =" There are  $files_not_dicom files detected which ".
                 "are not of type DICOM";
             }
 
             if ($files_not_readable > 0) {
-                $errors[]=" There are  $files_not_readable files which are not ".
+                $errors[] =" There are  $files_not_readable files which are not ".
                 "readable by the browser. Please make sure that the files have ".
                 "the right permission";
             }
 
 
             if ($file_not_matching_patient_name > 0) {
-                $errors[]=" There are  $file_not_matching_patient_name ".
+                $errors[] =" There are  $file_not_matching_patient_name ".
                 "DICOM files where the patient_name is  ".
                 "$patient_name_from_header and doesn't match $patient_name";
             }
@@ -659,7 +674,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 "WHERE t.patientname = :pname",
                 array('pname'=>$patient_name)
             ))>0) {
-                $errors[]=" The file-name $file_name has already been uploaded";
+                $errors[] =" The file-name $file_name has already been uploaded";
             }
 
             if (count($errors) > 0) {
@@ -674,7 +689,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 return $errors;
             }
         }
-
         return true;
     }
 
@@ -689,9 +703,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $userid = $args['user_id'];
+        $userid    = $args['user_id'];
         $feedbacks = array();
-        $db= Database::singleton();
+        $db        = Database::singleton();
 
         ///////////////////////////////////////////////////////////////////////
         ////////// create user object//////////////////////////////////////////
@@ -703,7 +717,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (($user_name==null) || (!(isset($user_name)))) {
             $user = User::singleton();
             if (Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error: ".$user->getMessage());
+                return PEAR::raiseError(
+                    "User Error: ".$user->getMessage()
+                );
             }
             $user_name = $user->getUsername();
         }
@@ -714,11 +730,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
 
         //////////get the stored-file path/////////////////////////////////////
+        $date   = date('Y-m-d H:i:s');
         $config = NDB_Config::singleton();
-        $paths = $config->getSetting('paths');
+        $paths  = $config->getSetting('paths');
         $stored_file_path = $paths['IncomingPath'];
-        $file_name = $stored_file_path . $file->fileInfo['name'];
-        $date = date('Y-m-d H:i:s');
+        $file_name        = $stored_file_path . $file->fileInfo['name'];
+        
         //only insert if the file-name doesn't exist in the table:
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
@@ -730,9 +747,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             ////////////////////Use the arguments//////////////////////////////
             ///////////////////////////////////////////////////////////////////
-            $candid = $args['values']['CandID'];
-            $pscid = $args['values']['PSCID'];
             $visit_label = $args['values']['VisitLabel'];
+            $candid      = $args['values']['CandID'];
+            $pscid       = $args['values']['PSCID'];
+            
         }
 
         $sessionid = $db->pselectOne(
@@ -741,17 +759,21 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             array('cid'=>$candid,'vlabel'=>$visit_label)
         );
 
-        $values = array('UploadedBy'=>$user_name,
-        'UploadDate'=>$date,'SourceLocation'=>$file_name,
-        'SessionID'=>$sessionid
+        $values = array(
+            'UploadedBy'=>$user_name,
+            'UploadDate'=>$date,'SourceLocation'=>$file_name,
+            'SessionID'=>$sessionid
         );
-        $db->Insert('mri_upload', $values);
+        $db->Insert(
+            'mri_upload', 
+            $values
+        );
         return true;
     }
 
 
     /**
-    * getTargetDirectory retrieves info about where the file should be stored.
+    * The getTargetDirectory retrieves info about where the file should be stored.
     *
     * The returned directory is ADDED to the baseUploadDirectory property.  
     * It should have a trailing slash.
@@ -764,13 +786,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     */
     function getTargetDirectory($file, $args)
     {
-        $output="{$args["user_id"]}/";
+        $output ="{$args["user_id"]}/";
         return $output;
     }
 
 
     /**
-     * source the environment variable
+     * Source the environment variable
      *
      * @param String $mri_code_path Path to the MRI-Code
      * @param string $mri_user      user
@@ -791,8 +813,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $perlib = getenv('PERL5LIB');
         if (isset($perlib)) {
             $path .= getenv('PERL5LIB');
-        }
-        else {
+        } else {
             $path .= '/usr/lib/perl5/';
         }
 
@@ -818,13 +839,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * @param String $decompressed_folder Path to the decompressed folder
      * @param String $tarchive_location   Path to where the tarchive folder
      * 
-     * @return 
+     * @return String $result
      */
-
     function insertDicom($DICOMTAR,$file_name,$decompressed_folder,
         $tarchive_location
     ) {
-        $db= Database::singleton();
+        $db = Database::singleton();
         $dicom_inserted = false;
 
         ///////////////////////////////////////////////////////////////////////
@@ -848,10 +868,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $row = $db->pselectRow(
             "Select ArchiveLocation,TarchiveID FROM tarchive".
-            " ORDER BY Lastupdate DESC", array()
+            " ORDER BY Lastupdate DESC", 
+            array()
         );
         $ArchiveLocation = $row['ArchiveLocation'];
-        $tarchive_id = $row['TarchiveID'];
+        $tarchive_id     = $row['TarchiveID'];
 
         ///////////////////////////////////////////////////////////////////////
         //////display the log only if the tarchives are created correctly//////
@@ -882,28 +903,28 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
     /*
     function getViolatedScans($patient_name) {
-        
-        print "patient_name is "  . $patient_name . "<BR>";
-        $db= Database::singleton();
-        $query = "SELECT COUNT(*) FROM (".
-            "SELECT PatientName as PatientName, ".
-             "time_run as TimeRun,".
-             "minc_location as MincFile, ".
-             "series_description as Series_Description, ".
-             "'Could not identify scan type' as Problem, ".
-		     "SeriesUID ".
-             "FROM mri_protocol_violated_scans  UNION SELECT PatientName, ".
-             " TimeRun, MincFile, mri_scan_type.Scan_type,'Protocol Violation' ".
-             " ,SeriesUID FROM mri_violations_log ".
-             "LEFT JOIN mri_scan_type ".
-             "ON (mri_scan_type.ID=mri_violations_log.Scan_type) ".
-             "UNION SELECT PatientName, TimeRun, MincFile, null, Reason, ".
-             "SeriesUID FROM MRICandidateErrors) as v WHERE 1=1 AND ".
-             " v.PatientName LIKE CONCAT('%', :pname, '%') ";
-        $count= $db->pselectOne($query,array('pname'=>$patient_name));
-        print "count is $count ------------------<BR>";
-        
-        return $count;
+
+    print "patient_name is "  . $patient_name . "<BR>";
+    $db= Database::singleton();
+    $query = "SELECT COUNT(*) FROM (".
+    "SELECT PatientName as PatientName, ".
+    "time_run as TimeRun,".
+    "minc_location as MincFile, ".
+    "series_description as Series_Description, ".
+    "'Could not identify scan type' as Problem, ".
+    "SeriesUID ".
+    "FROM mri_protocol_violated_scans  UNION SELECT PatientName, ".
+    " TimeRun, MincFile, mri_scan_type.Scan_type,'Protocol Violation' ".
+    " ,SeriesUID FROM mri_violations_log ".
+    "LEFT JOIN mri_scan_type ".
+    "ON (mri_scan_type.ID=mri_violations_log.Scan_type) ".
+    "UNION SELECT PatientName, TimeRun, MincFile, null, Reason, ".
+    "SeriesUID FROM MRICandidateErrors) as v WHERE 1=1 AND ".
+    " v.PatientName LIKE CONCAT('%', :pname, '%') ";
+    $count= $db->pselectOne($query,array('pname'=>$patient_name));
+    print "count is $count ------------------<BR>";
+
+    return $count;
     }
     */
     /**
@@ -913,10 +934,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * 
      * @return String
      */
-
     function tempdir($dir=false)
     {
-        $tempfile=tempnam(sys_get_temp_dir(), '');
+        $tempfile =tempnam(
+            sys_get_temp_dir(),
+            ''
+        );
         if (file_exists($tempfile)) {
             unlink($tempfile);
         }
@@ -925,35 +948,35 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
-    
+
     /*
-    
+
     function _setDataTableRows($count)
     {
-        
-    		$x = 0;
-    		foreach ($this->list as $item) {
-            			foreach ($item as $key => $val) {
-			    
-			    //Construct the patient_name
-			    $patient_name = $item['PSCID']."_".
-                        $item['CandID']. "_". $item['visit_label'];
-                        
-			    if (isset($key)) {
-			        ///Set the violated scans 
-                    if ($key =='ViolatedScans'){
-                        $val = $this->getViolatedScans($patient_name);
-                    }
-				    $this->tpl_data['items'][$x][$i]['name']  = $key;
-				    $this->tpl_data['items'][$x][$i]['value'] = $val;
-			    }
-    			}
-			
-		   ///includes the patient-name for the given row of the data
-        		}
-    		return true;
+
+    $x = 0;
+    foreach ($this->list as $item) {
+    foreach ($item as $key => $val) {
+
+    //Construct the patient_name
+    $patient_name = $item['PSCID']."_".
+    $item['CandID']. "_". $item['visit_label'];
+
+    if (isset($key)) {
+    ///Set the violated scans
+    if ($key =='ViolatedScans'){
+    $val = $this->getViolatedScans($patient_name);
     }
-    
+    $this->tpl_data['items'][$x][$i]['name']  = $key;
+    $this->tpl_data['items'][$x][$i]['value'] = $val;
+    }
+    }
+
+    ///includes the patient-name for the given row of the data
+    }
+    return true;
+    }
+
     */
 }
 ?>
