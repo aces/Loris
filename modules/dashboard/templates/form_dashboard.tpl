@@ -321,6 +321,7 @@ $(".dropdown-menu a").click(function() {
     recruitmentPieChart.resize();
     recruitmentBarChart.resize();
     recruitmentLineChart.resize();
+    scanLineChart.resize();
 });
 
 var siteColours = [
@@ -467,7 +468,7 @@ $.ajax({
     type: 'post',
     success: function(data) {
         var recruitmentLineData = formatLineData(data);
-        recruitmentLineChart = c3.generate({
+        var recruitmentLineChart = c3.generate({
             bindto: '#recruitmentChart',
             data: {
                 x: 'x',
