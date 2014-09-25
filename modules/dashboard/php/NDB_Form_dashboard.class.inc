@@ -37,113 +37,6 @@ class NDB_Form_dashboard extends NDB_Form
         return $total;
     }
 
-    function _recruitmentBySite()
-    {
-        $DB =& Database::singleton();
-        $recruitmentData = array();
-        $recruitmentStartDate = $DB->pselectOne(
-            "SELECT min(Date_registered) FROM candidate", array()
-        );
-        $recruitmentEndDate = $DB->pselectOne(
-            "SELECT max(Date_registered) FROM candidate", array()
-        );
-        $recruitmentData['labels'] 
-            = $this->_createChartLabels($recruitmentStartDate, $recruitmentEndDate);
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $dataset) {
-            $recruitmentData['datasets'][] = array(
-                "name" => $dataset,
-                "data" => $this->_getRecruitmentData(
-                    $dataset, $recruitmentData['labels']
-                )
-            );
-        }
-        $recruitmentDataJSON = json_encode($recruitmentData);
-        return $recruitmentDataJSON;
-    }
-
-    function _getRecruitmentData($dataset, $labels)
-    {
-        $DB =& Database::singleton();
-        $data = array();
-        foreach ($labels as $label) {
-            $month = (strlen($label) == 6) 
-                ? substr($label, 0, 1) : substr($label, 0, 2);
-            $year = substr($label, -4, 4);
-            $data[]= $DB->pselectOne(
-                "SELECT count(c.CandID) FROM candidate c 
-                LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                WHERE psc.Name=:Dataset AND MONTH(Date_registered)=$month 
-                AND YEAR(Date_registered)=:Year", 
-                array('Dataset' => $dataset, 'Year' => $year)
-            );
-        }
-        return $data;
-    }
-
-    function _scansBySite()
-    {
-        $DB =& Database::singleton();
-        $scanData = array();
-        $scanStartDate = $DB->pselectOne(
-            "SELECT min(AcquisitionDate) FROM mri_acquisition_dates", array()
-        );
-        $scanEndDate = $DB->pselectOne(
-            "SELECT max(AcquisitionDate) FROM mri_acquisition_dates", array()
-        );
-        $scanData['labels'] 
-            = $this->_createChartLabels($scanStartDate, $scanEndDate);
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $dataset) {
-            $scanData['datasets'][] = array(
-                "name" => $dataset,
-                "data" => $this->_getScanData($dataset, $scanData['labels'])
-            );
-        }
-        $scanDataJSON = json_encode($scanData);
-        return $scanDataJSON;
-    }
-
-    function _getScanData($dataset, $labels)
-    {
-        $DB =& Database::singleton();
-        $data = array();
-        foreach ($labels as $label) {
-            $month = (strlen($label) == 6) 
-                ? substr($label, 0, 1) : substr($label, 0, 2);
-            $year = substr($label, -4, 4);
-            $data[]= $DB->pselectOne(
-                "SELECT count(f.FileID) 
-                FROM files f
-                LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
-                LEFT JOIN session s ON (s.ID=f.SessionID) 
-                LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                WHERE psc.Name=:Dataset 
-                AND MONTH(mad.AcquisitionDate)=:Month 
-                AND YEAR(mad.AcquisitionDate)=:Year", 
-                array('Dataset' => $dataset, 'Month' => $month, 'Year' => $year)
-            );
-        }
-        return $data;
-    }
-
-    function _createChartLabels($startDate, $endDate)
-    {
-        $startDateYear = substr($startDate, 0, 4);
-        $endDateYear = substr($endDate, 0, 4);
-        $startDateMonth = substr($startDate, 5, 2);
-        $endDateMonth = substr($endDate, 5, 2);
-        $labels = array();
-        for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
-            $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
-            $endMonth = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
-            for ($month = $startMonth; $month <= $endMonth; $month++) {
-                $labels[] = $month . "-" . $year;
-            }
-        }
-        return $labels;
-    }
-
     function dashboard()
     {
         $DB =& Database::singleton();
@@ -216,8 +109,6 @@ class NDB_Form_dashboard extends NDB_Form
         $this->tpl_data['total_scans'] = $DB->pselectOne(
             "SELECT count(*) FROM files f", array()
         );
-        $this->tpl_data['recruitment_chart'] = $this->_recruitmentBySite();
-        $this->tpl_data['scan_chart'] = $this->_scansBySite();
 
         // Tasks
         if ($user->hasPermission('mri_feedback')) {
