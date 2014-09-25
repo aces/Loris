@@ -130,15 +130,6 @@
                                          <td nowrap="nowrap"> </td>
                                     {/if}
                                     
-                                {*****elseif $items[item][piece].name eq 'ViolatedScans'}     
-         
-                                    {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}
-                                        <td nowrap="nowrap">
-                                            <a href="main.php?test_name=mri_violations&PatientName={$items[item][piece].patient_name}&filter=true">
-                                            View Violated Scans
-                                            </a>
-                                        </td>
-                                    {/if*****}    
                                 {else}
                                     <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                             {$items[item][piece].value} 
