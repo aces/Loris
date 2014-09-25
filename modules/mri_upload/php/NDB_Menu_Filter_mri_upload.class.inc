@@ -59,11 +59,18 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         // set the class variables
-        $this->columns = array('UploadID','s.CandID','c.PSCID','s.visit_label',
-        'SourceLocation','UploadDate','UploadedBy',
-        'TarchiveID AS Tarchive_Info','number_of_mincCreated',
-        'number_of_mincInserted'/*,"'ViolatedScans' as ViolatedScans"*/
-        );
+        $this->columns = array(
+                          'UploadID',
+                          's.CandID',
+                          'c.PSCID',
+                          's.visit_label',
+                          'SourceLocation',
+                          'UploadDate',
+                          'UploadedBy',
+                          'TarchiveID AS Tarchive_Info',
+                          'number_of_mincCreated',
+                          'number_of_mincInserted',
+                         );
 
         $this->validFilters = array();
         $this->query        = " FROM mri_upload mu JOIN session ".
@@ -139,7 +146,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->addBasicText('CandID', 'CandID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $visitlabels = array_merge(
-            array(null=>''), 
+            array(null => ''), 
             Utility::getExistingVisitLabels()
         );
         $this->addSelect(
@@ -157,7 +164,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         foreach ($files as $file) {
             $new_files[$file['SourceLocation']] =$file['SourceLocation'];
         }
-        $new_files = array(null=>'Any') + $new_files;
+        $new_files = array(null => 'Any') + $new_files;
 
         $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
 
@@ -298,8 +305,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             if ($tarchive_id) {
                 $db->update(
                     "mri_upload", 
-                    array('TarchiveID'=>$tarchive_id),
-                    array('SourceLocation'=>$source_location)
+                    array('TarchiveID' => $tarchive_id),
+                    array('SourceLocation' => $source_location)
                 );
                 $this->tpl_data['dicom_success'] = true;
             }
@@ -331,8 +338,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
                 $count = $db->pselectOne(
                     $query, 
-                    array('cid'=>$candid,
-                    'vlabel'=>$visit_label)
+                    array(
+                     'cid'    => $candid,
+                     'vlabel' => $visit_label,
+                    )
                 );
 
                 ///////////////////////////////////////////////////////////////
@@ -420,7 +429,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
 
         //set the the IDs to the handler functions.
-        $file->setHandlerArgs(array("values"=>$values));
+        $file->setHandlerArgs(array("values" => $values));
 
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
@@ -505,21 +514,21 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate".
                 " WHERE candid = :cid", 
-                array('cid'=>$candid)
+                array('cid' => $candid)
             )==0) {
                 $errors[] = "The CandID: $candid Doesn't exist";
             }
             //////check to se if pscid exists//////////////////////////////////
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate WHERE PSCID = :pid",
-                array('pid'=>$pscid)
+                array('pid' => $pscid)
             )==0) {
                 $errors[] = "The PSCID: $pscid Doesn't exist";
             }
             //////check to se if visit_label exists////////////////////////////
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM session WHERE Visit_label = :vlabel",
-                array('vlabel'=>$visit_label)
+                array('vlabel' => $visit_label)
             )==0) {
                 $errors[] = "The VisitLabel: $visit_label Doesn't exist";
             }
@@ -530,7 +539,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             if (($db->pselectOne(
                 "SELECT COUNT(*) FROM tarchive WHERE patientname = :pname",
-                array('pname'=>$patient_name)
+                array('pname' => $patient_name)
             ))>0) {
                 $errors[] =" The Dicom file $file_name has already been ".
                 "inserted into the tarchive table";
@@ -672,7 +681,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 "SELECT COUNT(*) FROM mri_upload mu ".
                 "JOIN tarchive t on (t.TarchiveID = mu.TarchiveID) ".
                 "WHERE t.patientname = :pname",
-                array('pname'=>$patient_name)
+                array('pname' => $patient_name)
             ))>0) {
                 $errors[] =" The file-name $file_name has already been uploaded";
             }
@@ -756,14 +765,18 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $sessionid = $db->pselectOne(
             "SELECT ID FROM  session WHERE CandID = :cid".
             " AND Visit_label =:vlabel ",
-            array('cid'=>$candid,'vlabel'=>$visit_label)
+            array(
+             'cid'    => $candid, 
+             'vlabel' => $visit_label,
+            )
         );
 
         $values = array(
-            'UploadedBy'=>$user_name,
-            'UploadDate'=>$date,'SourceLocation'=>$file_name,
-            'SessionID'=>$sessionid
-        );
+                   'UploadedBy'     => $user_name,
+                   'UploadDate'     => $date,
+                   'SourceLocation' => $file_name,
+                   'SessionID'      => $sessionid,
+                  );
         $db->Insert(
             'mri_upload', 
             $values
@@ -901,32 +914,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $result[] = $ArchiveLocation;
         return $result;
     }
-    /*
-    function getViolatedScans($patient_name) {
-
-    print "patient_name is "  . $patient_name . "<BR>";
-    $db= Database::singleton();
-    $query = "SELECT COUNT(*) FROM (".
-    "SELECT PatientName as PatientName, ".
-    "time_run as TimeRun,".
-    "minc_location as MincFile, ".
-    "series_description as Series_Description, ".
-    "'Could not identify scan type' as Problem, ".
-    "SeriesUID ".
-    "FROM mri_protocol_violated_scans  UNION SELECT PatientName, ".
-    " TimeRun, MincFile, mri_scan_type.Scan_type,'Protocol Violation' ".
-    " ,SeriesUID FROM mri_violations_log ".
-    "LEFT JOIN mri_scan_type ".
-    "ON (mri_scan_type.ID=mri_violations_log.Scan_type) ".
-    "UNION SELECT PatientName, TimeRun, MincFile, null, Reason, ".
-    "SeriesUID FROM MRICandidateErrors) as v WHERE 1=1 AND ".
-    " v.PatientName LIKE CONCAT('%', :pname, '%') ";
-    $count= $db->pselectOne($query,array('pname'=>$patient_name));
-    print "count is $count ------------------<BR>";
-
-    return $count;
-    }
-    */
+    
+    
     /**
      * Creates a temporairy file or directory
      *
@@ -949,34 +938,5 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
     }
 
-    /*
-
-    function _setDataTableRows($count)
-    {
-
-    $x = 0;
-    foreach ($this->list as $item) {
-    foreach ($item as $key => $val) {
-
-    //Construct the patient_name
-    $patient_name = $item['PSCID']."_".
-    $item['CandID']. "_". $item['visit_label'];
-
-    if (isset($key)) {
-    ///Set the violated scans
-    if ($key =='ViolatedScans'){
-    $val = $this->getViolatedScans($patient_name);
-    }
-    $this->tpl_data['items'][$x][$i]['name']  = $key;
-    $this->tpl_data['items'][$x][$i]['value'] = $val;
-    }
-    }
-
-    ///includes the patient-name for the given row of the data
-    }
-    return true;
-    }
-
-    */
 }
 ?>
