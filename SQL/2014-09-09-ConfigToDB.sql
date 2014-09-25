@@ -6,13 +6,13 @@
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('study', 'study variables', 1, 0);
 
 -- additional_user_info
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'additional_user_info', 'display additional user fields in User Accounts page e.g. Institution', 1, 0, ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'additional_user_info', 'display additional user fields in User Accounts page', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- title
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'title', 'descriptive study title, appears on top of the screen', 1, 0, ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'title', 'descriptive study title', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- studylogo
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'studylogo', 'logo of the study, appears on the left of the title on the top of the screen', 1, 0, ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'studylogo', 'logo of the study', 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- columnThreshold
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'columnThreshold', 'number of columns the quat table will contain', 1, 0, ID FROM ConfigSettings WHERE Name="study";
@@ -39,7 +39,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) S
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'endYear', "project's end year", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- useExternalID
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useExternalID', "external ID field is false unless data is used for blind data distribution, or/from external data sources", 1, 0, ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useExternalID', "use external ID field - false unless data is used for blind data distribution, or from external data sources", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- useProband
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useProband', "show proband section on the candidate parameter page", 1, 0, ID FROM ConfigSettings WHERE Name="study";
@@ -48,7 +48,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) S
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useProjects', "useProject field is false unless study involves more than one project where each project has multiple cohorts/subprojects", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- useScreening
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useScreening', "useScreening", 1, 0, ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'useScreening', "useScreening - false unless there is a screening stage with its own intruments done before the visit stage", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- excluded_instruments
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'excluded_instruments', "instruments to be excluded from the data dictionary and the data query tool", 1, 0, ID FROM ConfigSettings WHERE Name="study";
@@ -60,7 +60,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) S
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstruments', "instruments for which double data entry should be enabled", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- DoubleDataEntryInstrument
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstrument', "instrument for which Double Data entry should be enabled", 1, 1, ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstruments";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstrument', "instrument for which double data entry should be enabled", 1, 1, ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstruments";
 
 --
 -- paths
@@ -104,7 +104,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) S
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('gui', 'GUI settings', 1, 0);
 
 -- css
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'css', 'name of the css file that will be used to render LORIS', 1, 0, ID FROM ConfigSettings WHERE Name="gui";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'css', 'css file used for rendering', 1, 0, ID FROM ConfigSettings WHERE Name="gui";
 
 -- rowsPerPage
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'rowsPerPage', 'number of table rows to appear, per page', 1, 0, ID FROM ConfigSettings WHERE Name="gui";
