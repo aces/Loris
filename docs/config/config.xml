@@ -29,7 +29,7 @@
     <DownloadPath>%LORISROOT%</DownloadPath>
     <log>tools/logs/</log>
     <IncomingPath>/data/incoming/</IncomingPath>
-    <MRICodePath>data/%PROJECTNAME%/bin/mri/</MRICodePath>
+    <MRICodePath>/data/%PROJECTNAME%/bin/mri/</MRICodePath>
 
 </paths>
 
