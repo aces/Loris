@@ -1,4 +1,4 @@
-/*global document: false, $: false, window: false*/
+/*global document: false, $: false, window: false, setTimeout:false, FormData:false*/
 function change() {
     "use strict";
     $('#show').show();
@@ -50,11 +50,10 @@ function getMessage() {
                     data = data.replace("\n", "<br />");
                 }
                 printMessage(data);
-		        
                 // call it again, long-polling
-                setTimeout(getMessage, 1000); 
-          }
-      }
+                setTimeout(getMessage, 1000);
+            }
+        }
     );
 }
 
@@ -71,7 +70,7 @@ function getCurrentTime() {
         hours = ("0" + date.getHours()).slice(-2),
         minutes = ("0" + date.getMinutes()).slice(-2),
         seconds = ("0" + date.getSeconds()).slice(-2),
-        result = "[" + date.getFullYear() + "-" + month + "-" 
+        result = "[" + date.getFullYear() + "-" + month + "-"
             + day + " " + hours + ":" + minutes + ":" + seconds + "]";
     return result;
 }
@@ -83,19 +82,12 @@ function progressHandler(event) {
     "use strict";
     var progressbar = $("#progressbar"),
         progresslabel = $("#progresslabel"),
-        percent = Math.round((event.loaded / event.total) * 100); 
-    progressbar.attr('value', percent); 
-    progresslabel.text(percent + "%");   
-
-    function remove() {
-        $("#progressbar").hide();
-        $("#progresslabel").hide();
-    }
-    
+        percent = Math.round((event.loaded / event.total) * 100);
+    progressbar.attr('value', percent);
+    progresslabel.text(percent + "%");
     if (percent === 100) {
         progresslabel.text("Complete!");
         progresslabel.css('left', '-230px');
-       // setTimeout(remove, 200);
     }
 }
 
@@ -110,27 +102,28 @@ function uploadFile() {
     var formData = new FormData($("#mri_upload")[0]);
 
     $.ajax({
-    	type: 'POST',
-            url: "main.php?test_name=mri_upload",
-            data: formData,
-    	cache: false,
+        type: 'POST',
+        url: "main.php?test_name=mri_upload",
+        data: formData,
+        cache: false,
         contentType: false,
         processData: false,
-        xhr: function()
-            {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(evt){
+        xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener(
+                "progress",
+                function (evt) {
                     if (evt.lengthComputable) {
                         var progressbar = $("#progressbar"),
-                        progresslabel = $("#progresslabel"),
-                        percent = Math.round((evt.loaded / evt.total) * 100);
+                            progresslabel = $("#progresslabel"),
+                            percent = Math.round((evt.loaded / evt.total) * 100);
                         progressbar.attr('value', percent);
                         progresslabel.text(percent + "%");
                     }
-                }, false);
-                return xhr;
-            },
-        success: function(data){
+                },
+                false
+            );
+            return xhr;
         }
     });
 }
@@ -142,10 +135,12 @@ $(function () {
     "use strict";
     change();
     $("#progressbar").hide();
-    $("#mri_upload").submit(function (e) {
-	e.preventDefault();
-        var time = getCurrentTime(); 
-        $("#log_box").html(time + " Preparing... <br>");
-        uploadFile();
-    });
+    $("#mri_upload").submit(
+        function (e) {
+            e.preventDefault();
+            var time = getCurrentTime();
+            $("#log_box").html(time + " Preparing... <br>");
+                //uploadFile();
+        }
+    );
 });
