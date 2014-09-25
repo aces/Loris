@@ -43,8 +43,6 @@ function getMessage() {
                     if (data.indexOf("\n") > -1) {
                         data = data.replace("\n", "<br />");
                     }
-                    console.log("IN HERE");
-		            console.log(data);
                     printMessage(data);
                     return;
                 }
@@ -52,15 +50,12 @@ function getMessage() {
                     data = data.replace("\n", "<br />");
                 }
                 printMessage(data);
-		        console.log("ksjfhgkjhskjgn");
-		        
 		        
                 // call it again, long-polling
                 setTimeout(getMessage, 1000); 
           }
       }
     );
-    console.log("getting logs");
 }
 
 /*
@@ -123,7 +118,6 @@ function uploadFile() {
         processData: false,
         xhr: function()
             {
-                console.log("STARTING");
                 var xhr = new window.XMLHttpRequest();
                 xhr.upload.addEventListener("progress", function(evt){
                     if (evt.lengthComputable) {
@@ -137,7 +131,6 @@ function uploadFile() {
                 return xhr;
             },
         success: function(data){
-                console.log("COMPLETE");
         }
     });
 }
@@ -149,7 +142,6 @@ $(function () {
     "use strict";
     change();
     $("#progressbar").hide();
-
     $("#mri_upload").submit(function (e) {
 	e.preventDefault();
         var time = getCurrentTime(); 
