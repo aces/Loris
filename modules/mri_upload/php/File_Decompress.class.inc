@@ -21,7 +21,7 @@
  * PHP version >= 5.3
  * 
  * @category Behavioural
- * @package  Main 
+ * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
@@ -36,7 +36,7 @@ require_once 'PEAR.php';
  * The class contains the function to decompress the file depending on the type
  * 
  * @category Behavioural
- * @package  Main 
+ * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  Loris License
  * @link     https://github.com/aces/Loris-Trunk
@@ -46,16 +46,12 @@ class File_Decompress extends PEAR
     var $dest_path;
     var $file_name;
 
-
     /**
      * Constructor
      *
-     * @param String $file_name        File to be decompressed
-     * @param String $destination_path Path of the destination folder
-     * 
-     * @return File_Decompress
+     * @param String &$file_name        File to be decompressed
+     * @param String &$destination_path Path of the destination folder
      */
-
     function File_Decompress(&$file_name, &$destination_path) 
     {
         $this->file_name = $file_name;
@@ -87,9 +83,9 @@ class File_Decompress extends PEAR
     }
 
     /**
-     * tgzDecompres
+     * The tgzDecompres
      *
-     * decompress and untars .tgz and tar.gz files
+     * Decompress and untars .tgz and tar.gz files
      * 
      * @return String Returns the name of the decompressed folder
      */
@@ -98,7 +94,11 @@ class File_Decompress extends PEAR
         $decompressed_folder = null;
         $p = new PharData($this->file_name);
         $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
-        $is_extracted = $p->extractTo($this->dest_path,null,true);
+        $is_extracted        = $p->extractTo(
+            $this->dest_path,
+            null,
+            true
+        );
         return $decompressed_folder;
     }
     
@@ -111,15 +111,14 @@ class File_Decompress extends PEAR
     function gzipDecompress() 
     {
         $return_value = false;
-        
-        $decomp_file = new PharData($this->file_name);
-        $return_value 
-            = $decomp_file->decompress(); // creates /path/to/my.tar
+        $decomp_file  = new PharData($this->file_name);
+        // creates /path/to/my.tar
+        $return_value = $decomp_file->decompress(); 
         return $return_value;
     }
     
     /**
-     * untar 
+     * The untar function
      * untar a file into the destination folder
      *
      * @return boolean
@@ -127,7 +126,7 @@ class File_Decompress extends PEAR
     function untar() 
     {
         $return_value = false;
-        $p = new PharData($this->file_name);
+        $p            = new PharData($this->file_name);
         $return_value = $p->extractTo($this->dest_path);
            //could remove the folder later once completed...
         return $return_value;
@@ -135,18 +134,17 @@ class File_Decompress extends PEAR
 
 
     /**
-     * unzips a file by :
+     * Unzips a file by :
      * creating a Zip archive of the file, opening it, 
      * extracting it to the destination folder and
      * then closing the zip-archive handler
      *
      * @return booean
      */
-
     function unzip() 
     {
         $result = false;
-        $zip = new ZipArchive;
+        $zip    = new ZipArchive;
         $result = $zip->open($this->file_name);
         if ($result === true) {
             $zip->extractTo($this->dest_path);
