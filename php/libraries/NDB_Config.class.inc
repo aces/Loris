@@ -1,11 +1,34 @@
 <?php
+/**
+ * Provides an interface to the NeuroDB configuration
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 require_once "PEAR.php";
 require_once "Utility.class.inc";
 /**
- * provides an interface to the NeuroDB configuration
- * @access public
- * @version $Id: NDB_Config.class.inc,v 1.9 2007/03/16 20:48:33 sebas Exp $
- * @package main
+ * This class provides a generic interface to Loris configuration.
+ * Generally, the way to use it is to use NDB_Config::singleton() to
+ * get the config object, and then call $config->getSetting() to get
+ * the variable we're interested in.
+ *
+ * NDB_Config will do all necessary checking of config.xml, ConfigSetting
+ * table, etc to get the value of the setting.
+ *
+ * Some special variables that have their own database table (ie. MenuTabs
+ * or Subprojects) have special static functions to get the specific settings.
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Config
 {
@@ -221,9 +244,9 @@ class NDB_Config
         // on what was passed
         if ($id === null) {
             $configSetting = $db->pselect(
-                "SELECT cs.ID as ParentID, child.ID as ChildID, 
-                        cs.AllowMultiple, child.Name 
-                FROM ConfigSettings cs 
+                "SELECT cs.ID as ParentID, child.ID as ChildID,
+                        cs.AllowMultiple, child.Name
+                FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.Name=:nm",
                 array("nm" => $name)
@@ -232,7 +255,7 @@ class NDB_Config
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
                         cs.AllowMultiple, child.Name
-                FROM ConfigSettings cs 
+                FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.ID=:nm",
                 array("nm" => $id)
@@ -249,7 +272,7 @@ class NDB_Config
             $configSetting = $configSetting[0];
             if ($configSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
-                    "SELECT Value FROM Config WHERE ConfigID=:CID", 
+                    "SELECT Value FROM Config WHERE ConfigID=:CID",
                     array('CID' => $configSetting['ParentID'])
                 );
                 return $val;
@@ -257,7 +280,7 @@ class NDB_Config
                 // Allows multiple, but has no child elements. Was called
                 // as ie. $config->getSetting("DoubleDataEntryInstruments")
                 $val = $db->pselect(
-                    "SELECT Value FROM Config WHERE ConfigID=:CID", 
+                    "SELECT Value FROM Config WHERE ConfigID=:CID",
                     array('CID' => $configSetting['ParentID'])
                 );
                 $ret = array();
@@ -373,7 +396,7 @@ class NDB_Config
      *
      * @return boolean true if the user can access the menu item
      */
-    static function CheckMenuPermission($menuID)
+    static function checkMenuPermission($menuID)
     {
         $DB   = Database::singleton();
         $user = User::singleton();
@@ -409,7 +432,7 @@ class NDB_Config
      * @return An array of Label, Visible, Link, and ID to build the menu
      *         for the currently logged in user
      */
-    static function GetMenuTabs($parent = null)
+    static function getMenuTabs($parent = null)
     {
         $DB = Database::singleton();
         if ($parent === null) {
@@ -432,17 +455,17 @@ class NDB_Config
                   WHERE Parent=:ParentID",
                 array('ParentID' => $parent)
             );
-            if (NDB_Config::CheckMenuPermission($thisLevel[0]['ID'])) {
+            if (NDB_Config::checkMenuPermission($thisLevel[0]['ID'])) {
                 return $thisLevel;
             }
             return;
         }
 
         foreach ($thisLevel as &$thisRow) {
-            $nextLevel = NDB_Config::GetMenuTabs($thisRow['ID']);
+            $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
 
             if (!empty($nextLevel)) {
-                if (NDB_Config::CheckMenuPermission($nextLevel[0]['ID'])) {
+                if (NDB_Config::checkMenuPermission($nextLevel[0]['ID'])) {
                     $thisRow['subtabs'] = $nextLevel;
                 }
             }
