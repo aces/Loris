@@ -10,32 +10,36 @@ require_once "Utility.class.inc";
 class NDB_Config
 {
     /**
-    * the raw array of settings
-    * @access private
-    */
+     * The raw array of settings
+     * @access private
+     */
     var $_settings = array();
-    
+
     /**
-    * the merged array of study and site-specific settings
-    * @access private
-    */
+     * The merged array of study and site-specific settings
+     * @access private
+     */
     var $_siteSettings = array();
 
     /**
-    * an optional override for the location of the config file.  (default is ../project/config.xml)
-    * @access public
-    */
+     * An optional override for the location of the config file.
+     * (default is ../project/config.xml)
+     * @access public
+     */
     var $configFilePath;
-    
+
     /**
-    * the singleton design pattern - autoloads config file
-    * @return object   a NDB_Config object
-    */
+     * The singleton design pattern - autoloads config file
+     *
+     * @param string $configFile the neurodb config.xml config file
+     *
+     * @return NDB_Config object
+     */
     static function &singleton($configFile = "../project/config.xml")
     {
         static $config = null;
-        if(is_null($config)) {
-            $config = new NDB_Config();
+        if (is_null($config)) {
+            $config  = new NDB_Config();
             $success = $config->load($configFile);
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError($success->getMessage());
@@ -46,84 +50,81 @@ class NDB_Config
     }
 
     /**
-    * loads config file
-    */
+     * Loads config file
+     *
+     * @param string $configFile the neurodb config.xml config file
+     *
+     * @return none, but as side-effect loads $this->_settings
+     */
     function load($configFile = "../project/config.xml")
     {
-
         // load the configuration data into a global variable $config
-        /*
-        // PEAR::Config
-        require_once "Config.php";
-        $configObj = new Config;
-        $root =& $configObj->parseConfig($configFile, "XML");
-        if(Utility::isErrorX($root)) {
-            die("Config error: ".$root->getMessage());
-        } 
-        
-        $configObj = $root->searchPath(array('config'));
-        $arr = $configObj->toArray(); 
-        $this->_settings = $this->_settings['config'];
-         */
-
-        $newroot = simplexml_load_file($configFile);
-        //$arr2 = NDB_Config::ConvertToArray($newroot);
-        $this->_settings = NDB_Config::ConvertToArray($newroot); //$this->_settings['config'];
-        //unset($configObj, $root);
+        $newroot         = simplexml_load_file($configFile);
+        $this->_settings = NDB_Config::convertToArray($newroot);
     }
 
-    static function ConvertToArray(SimpleXMLElement $xml) 
+    /**
+     * Converts a SimpleXMLElement to an array.
+     * This is done for backwards compatibility as the old implementation
+     * used an external XML library before XML parsing was built into PHP,
+     * and this gets it into the same format that was previously used
+     * for backwards compatibility.
+     *
+     * @param SimpleXMLElement $xml The root element of the parsed XML.
+     *
+     * @return array of XML configuration
+     */
+    static function convertToArray(SimpleXMLElement $xml)
     {
-        $retVal = array();
+        $retVal   = array();
         $children = $xml->children();
-        if(count($children) > 0) {
+        if (count($children) > 0) {
             foreach ($children as $child) {
-                $name = $child->getName();
+                $name      = $child->getName();
                 $tagExists = isset($retVal[$name]);
 
-                $numericArrayExists = 
-                    isset($retVal[$name]) 
+                $numericArrayExists
+                    = isset($retVal[$name])
                     && is_array($retVal[$name])
-                    && Utility::NumericArray($retVal[$name])
-                    ;
+                    && Utility::NumericArray($retVal[$name]);
 
-                if($tagExists) {
-                    if(!$numericArrayExists) {
+                if ($tagExists) {
+                    if (!$numericArrayExists) {
                         // The tag is duplicated in the XML, so it should
                         // be stored in an array. Create a new array and replace
                         // the tag with what was already parsed before appending
                         // the child
                         $newArray = array();
 
-                        $Extant = $retVal[$name];
-                        $newArray [] = $Extant;
+                        $Extant        = $retVal[$name];
+                        $newArray[]    = $Extant;
                         $retVal[$name] = $newArray;
-                    } 
+                    }
                     // Since the tag appears multiple times, append it to the
                     // array instead of directly assigning it.
-                    $Converted = NDB_Config::ConvertToArray($child);
+                    $Converted = NDB_Config::convertToArray($child);
 
                     $attributes = $child->attributes();
-                    if(count($attributes) > 0) {
-                        if(!is_array($Converted)) {
+                    if (count($attributes) > 0) {
+                        if (!is_array($Converted)) {
                             $Converted = array($Converted);
                         }
                         $Converted['@'] = array();
-                        foreach($attributes as $atname => $val) {
+                        foreach ($attributes as $atname => $val) {
                             $Converted['@'][$atname] = $val->__toString();
                         }
                     }
                     $retVal[$name][] = $Converted;
                 } else {
-                    $retVal[$name] = NDB_Config::ConvertToArray($child);
-                    $attributes = $child->attributes();
+                    $retVal[$name] = NDB_Config::convertToArray($child);
+                    $attributes    = $child->attributes();
 
-                    if(count($attributes) > 0) {
-                        if(!is_array($retVal[$name])) {
+                    if (count($attributes) > 0) {
+                        if (!is_array($retVal[$name])) {
                             $retVal[$name] = array($retVal[$name]);
                         }
                         $retVal[$name]['@'] = array();
-                        foreach($attributes as $atname => $val) {
+                        foreach ($attributes as $atname => $val) {
                             $retVal[$name]['@'][$atname] = $val->__toString();
 
                         }
@@ -131,41 +132,49 @@ class NDB_Config
                 }
             }
         } else {
-            $retVal = $xml->__toString();
+            $retVal     = $xml->__toString();
             $attributes = $xml->attributes();
-            if(count($attributes) > 0) {
-                $retVal = array('#' => $retVal, '@' => array());
-                foreach($attributes as $name => $val) {
+            if (count($attributes) > 0) {
+                $retVal = array(
+                           '#' => $retVal,
+                           '@' => array()
+                          );
+                foreach ($attributes as $name => $val) {
                     $retVal['@'][$name] = $val->__toString();
-                    
+
                 }
             }
             return $retVal;
         }
         return $retVal;
     }
+
     /**
-    * attempts to determine the site of the user currently logged in and uses that to get site specific settings and override study defaults, building the _siteSettings property
-    */
+     * Attempts to determine the site of the user currently logged in and uses
+     * that to get site specific settings and override study defaults,
+     * building the _siteSettings property
+     *
+     * @return none, but modifies $this->siteSettings
+     */
     function mergeSettings()
     {
         // make sure this is a web client
-        if(!class_exists("User") || !isset($_SESSION['State'])) {
+        if (!class_exists("User") || !isset($_SESSION['State'])) {
             return;
         }
 
         // make sure a user has logged in
         $username = $_SESSION['State']->getUsername();
-        if(empty($username)) {
+        if (empty($username)) {
             $this->_siteSettings =& $this->_settings;
         } else {
-            $user =& User::singleton($username);
+            $user     =& User::singleton($username);
             $siteName = Utility::getCleanString($user->getSiteName());
-            if(isset($this->_settings['sites'][$siteName]) 
+            if (isset($this->_settings['sites'][$siteName])
                 && is_array($this->_settings['sites'][$siteName])
             ) {
-                $this->_siteSettings = $this->_settings;
-                $this->_siteSettings['study'] 
+                $this->_siteSettings          = $this->_settings;
+                $this->_siteSettings['study']
                     = Utility::array_merge_recursive_overwriting(
                         $this->_settings['study'],
                         $this->_settings['sites'][$siteName]
@@ -261,9 +270,9 @@ class NDB_Config
             // This was a parent element, so construct the children.
             $tree = array();
             foreach ($configSetting as $childSetting) {
-                $childName = $childSetting['Name'];
-                $childID   = $childSetting['ChildID'];
-                $childValue = $this->getSettingFromDB($childName, $childID);
+                $childName        = $childSetting['Name'];
+                $childID          = $childSetting['ChildID'];
+                $childValue       = $this->getSettingFromDB($childName, $childID);
                 $tree[$childName] = $childValue;
             }
             return $tree;
@@ -319,69 +328,121 @@ class NDB_Config
     {
         $DBValue = $this->getSettingFromDB($name);
 
-        if($DBValue !== null) {
+        if ($DBValue !== null) {
             return $DBValue;
         }
         // nothing in the database, so get the value from config.xml
         return $this->getSettingFromXML($name);
     }
-    
+
+    /**
+     * Get list of Subprojects for this project, given a subprojectID.
+     * This is differentiated from the default getSetting() because
+     * Subprojects will probably eventually get their own table instead
+     * of coming from config.xml
+     *
+     * @param integer $subprojectID The subprojectID we want the settings
+     *                              for
+     *
+     * @return associative array of settings for this subprojectID
+     */
     function getSubprojectSettings($subprojectID)
     {
         // Sub Project
-        $subprojectSettings=$this->getSetting('subprojects');
+        $subprojectSettings =$this->getSetting('subprojects');
 
-        //Loop through the subprojects to get an id out and to create the subproject drop down.
-    	   foreach(Utility::toArray($subprojectSettings['subproject']) AS $subproject){
-    		      if($subproject['id']==$subprojectID) {
+        //Loop through the subprojects to get an id out and to create
+        //the subproject drop down.
+        foreach (Utility::toArray($subprojectSettings['subproject'])
+            AS $subproject
+        ) {
+            if ($subproject['id']==$subprojectID) {
                 return $subproject;
             }
-    		
         }
         // no nodes found - returning null
         return null;
     }
 
-    static function CheckMenuPermission($menuID) 
+    /**
+     * Checks if the logged in user has permission for the given
+     * $menuID, so that we can determine if the menu should show
+     * up for them or not.
+     *
+     * @param integer $menuID The menuID to check.
+     *
+     * @return boolean true if the user can access the menu item
+     */
+    static function CheckMenuPermission($menuID)
     {
-        $DB = Database::singleton();
+        $DB   = Database::singleton();
         $user = User::singleton();
 
         $perms = $DB->pselect(
-            "SELECT code FROM LorisMenuPermissions 
+            "SELECT code FROM LorisMenuPermissions
                 JOIN permissions using (permID) WHERE MenuID=:MID",
             array('MID' => $menuID)
         );
 
-        if(empty($perms)) {
+        if (empty($perms)) {
             return true;
         }
 
-        foreach($perms as $perm) {
+        foreach ($perms as $perm) {
             if ($user->hasPermission($perm['code'])) {
                 return true;
             }
         }
         return false;
     }
-    static function GetMenuTabs($parent = null) 
+
+    /**
+     * Loads the menu tab structure into an array that can be used by
+     * smarty a smarty template. This is done as a static function instead
+     * of using $this->getSetting() to give more options for how to load
+     * the menus, exactly (config.xml, different database tables, etc..)
+     *
+     * @param integer $parent The parent ID of the tree. This should not
+     *                        be passed. It's used to build the tree recursively
+     *                        from the LorisMenu table.
+     *
+     * @return An array of Label, Visible, Link, and ID to build the menu
+     *         for the currently logged in user
+     */
+    static function GetMenuTabs($parent = null)
     {
         $DB = Database::singleton();
-        if($parent === null) {
-            $thisLevel = $DB->pselect("SELECT Label, CASE Visible WHEN 'false' THEN 0 ELSE 1 END as Visible, Link, ID FROM LorisMenu WHERE Parent IS NULL", array());
+        if ($parent === null) {
+            $thisLevel = $DB->pselect(
+                "SELECT Label,
+                       CASE Visible WHEN 'false' THEN 0 ELSE 1 END as Visible,
+                       Link,
+                       ID
+                  FROM LorisMenu
+                  WHERE Parent IS NULL",
+                array()
+            );
         } else {
-            $thisLevel = $DB->pselect("SELECT Label, CASE Visible WHEN 'false' THEN 0 ELSE 1 END as Visible, Link, ID FROM LorisMenu WHERE Parent=:ParentID ", array('ParentID' => $parent));
-            if(NDB_Config::CheckMenuPermission($thisLevel[0]['ID'])) {
+            $thisLevel = $DB->pselect(
+                "SELECT Label,
+                        CASE Visible WHEN 'false' THEN 0 ELSE 1 END as Visible,
+                        Link,
+                        ID
+                  FROM LorisMenu
+                  WHERE Parent=:ParentID",
+                array('ParentID' => $parent)
+            );
+            if (NDB_Config::CheckMenuPermission($thisLevel[0]['ID'])) {
                 return $thisLevel;
             }
             return;
         }
 
-        foreach($thisLevel as &$thisRow) {
+        foreach ($thisLevel as &$thisRow) {
             $nextLevel = NDB_Config::GetMenuTabs($thisRow['ID']);
 
-            if(!empty($nextLevel)) {
-                if(NDB_Config::CheckMenuPermission($nextLevel[0]['ID'])) {
+            if (!empty($nextLevel)) {
+                if (NDB_Config::CheckMenuPermission($nextLevel[0]['ID'])) {
                     $thisRow['subtabs'] = $nextLevel;
                 }
             }
@@ -389,6 +450,6 @@ class NDB_Config
 
         return $thisLevel;
     }
-  
+
 }
 ?>
