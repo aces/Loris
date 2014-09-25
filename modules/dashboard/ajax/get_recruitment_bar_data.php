@@ -31,7 +31,7 @@ foreach ($list_of_sites as $site) {
         WHERE c.Gender='male' AND psc.Name=:Site", array('Site' => $site)
     );
 }
-echo json_encode($genderData);
+print json_encode($genderData);
 
 exit();
 
