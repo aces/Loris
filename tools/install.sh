@@ -285,6 +285,10 @@ while true; do
             echo "Passwords did not match. Please try again.";
          done;
          stty echo
+    # Needed for mysql version > 5.6
+    elif [[ $result == *password* ]] && [[ $result != *1007* ]] ; then
+        echo "Warning: Using a password on the command line interface can be insecure.";
+        break;
     elif [[ $result == *1007* ]] ; then
         echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
         read -p "Database name: " mysqldb
