@@ -40,8 +40,8 @@
                             {if $node['AllowMultiple'] == 1}
                                 <div class="input-group-btn">
                                     <form method="POST" action="">
-                                         <button class="btn btn-default remove" id="{$k}" type="submit" name="remove-{$k}"><i class="glyphicon glyphicon-remove"></i></button>
-                                         <button class="btn btn-default add" id="{$k}" type="button" name="add-{$node['ID']}"><i class="glyphicon glyphicon-plus"></i></button>
+                                        <button class="btn btn-default add" id="{$k}" type="button" name="add-{$node['ID']}"><i class="glyphicon glyphicon-plus"></i></button>
+                                        <button class="btn btn-default remove" id="{$k}" type="submit" name="remove-{$k}"><i class="glyphicon glyphicon-minus"></i></button>
                                     </form>
                                 </div>
                             {/if}
