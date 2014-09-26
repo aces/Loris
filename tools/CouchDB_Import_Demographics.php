@@ -181,7 +181,7 @@ class CouchDBDemographicsImporter {
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
         $this->CouchDB->beginBulkTransaction();
-
+        $config_setting = NDB_Config::singleton();
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
@@ -190,7 +190,7 @@ class CouchDBDemographicsImporter {
                 $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
                 unset($demographics['ProjectID']);
             }
-            if ($config->getSetting("useFamilyID") === "true") {
+            if ($config_setting->getSetting("useFamilyID") === "true") {
                 $familyID     = $this->SQLDB->pselectOne("SELECT FamilyID FROM family
                                                           WHERE CandID=:cid",
                                                           array('cid'=>$demographics['CandID']));
