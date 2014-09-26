@@ -678,7 +678,7 @@ tr.directentry {
     right: 0px;
     overflow-y: auto;
     z-index: 1000;
-    transition: all 0.6s ease 0s;        
+    transition: all 0.6s ease 0s;
 }
 
 .help-content pre {
@@ -686,7 +686,8 @@ tr.directentry {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: #FFFFFF;
-
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 #helpclose {
    position: absolute;
