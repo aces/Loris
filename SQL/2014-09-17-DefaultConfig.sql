@@ -45,12 +45,6 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHER
 -- useScreening
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useScreening";
 
--- instrument
-INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="instrument";
-
--- DoubleDataEntryInstruments
-INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstruments";
-
 -- default path settings
 
 -- imagePath
@@ -102,16 +96,10 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "localhost" FROM ConfigSettings 
 -- url
 INSERT INTO Config (ConfigID, Value) SELECT ID, "https://localhost/" FROM ConfigSettings WHERE Name="url";
 
--- mantis_url
-INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="mantis_url";
-
 -- default dashboard settings
 
 -- projectDescription
 INSERT INTO Config (ConfigID, Value) SELECT ID, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun." FROM ConfigSettings WHERE Name="projectDescription";
-
--- recruitmentTarget
-INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="recruitmentTarget";
 
 -- default dicom_archive settings
 
