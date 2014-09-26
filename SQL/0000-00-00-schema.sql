@@ -859,7 +859,30 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2'),(19,'violated_scans','Violated Scans','2'),(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),(21,'data_integrity_flag','Data Integrity Flag','2'),(22,'config','Edit configuration settings','2');
+INSERT INTO `permissions` VALUES 
+	(1,'superuser','There can be only one Highlander','1'),
+	(2,'user_accounts','User management','2'),
+	(3,'user_accounts_multisite','Across all sites create and edit users','2'),
+	(4,'context_help','Edit help documentation','2'),
+	(5,'bvl_feedback','Behavioural QC','1'),
+	(6,'mri_feedback','Edit MRI feedback threads','2'),
+	(7,'mri_efax','Edit MRI Efax files','2'),
+	(8,'send_to_dcc','Send to DCC','2'),
+	(9,'unsend_to_dcc','Reverse Send from DCC','2'),
+	(10,'access_all_profiles','Across all sites access candidate profiles','2'),
+	(11,'data_entry','Data entry','1'),
+	(12,'certification','Certify examiners','2'),
+	(13,'certification_multisite','Across all sites certify examiners','2'),
+	(14,'timepoint_flag','Edit exclusion flags','2'),
+	(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
+	(16,'mri_safety','Review MRI safety form for accidental findings','2'),
+	(17,'conflict_resolver','Resolving conflicts','2'),
+	(18,'data_dict','Parameter Type description','2'),
+	(19,'violated_scans','Violated Scans','2'),
+	(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),
+	(21,'data_integrity_flag','Data Integrity Flag','2'),
+	(22,'config','Edit configuration settings','2'), 
+	(23,'mri_upload','MRI Uploader','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1827,7 +1850,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('DICOM Archive', 'main.php?test_name=dicom_archive', 3, 2),
     ('Imaging Browser', 'main.php?test_name=imaging_browser', 3, 3),
     ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4),
-    ('MRI Upload', 'main.php?test_name=mri_upload', 3, 4);
+    ('MRI Upload', 'main.php?test_name=mri_upload', 3, 5);
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', 'main.php?test_name=statistics', 4, 1),
     ('Data Query Tool', '/dqt/', 4, 2);
@@ -1884,23 +1907,26 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- Imaging Browser -- Config file currently does not require any permission
 -- Statistics -- Config file currently does not require any permission 
 
+--- MRI Upload 
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT 16, PermID FROM permissions WHERE code='file_upload';
+
 -- Data Query Tool
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 16, PermID FROM permissions WHERE code='data_dict';
+    SELECT 18, PermID FROM permissions WHERE code='data_dict';
 
 -- Data Dictionary
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 17, PermID FROM permissions WHERE code='data_dict';
+    SELECT 19, PermID FROM permissions WHERE code='data_dict';
 -- Document Repository
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 18, PermID FROM permissions WHERE code='file_upload';
-
+    SELECT 20, PermID FROM permissions WHERE code='mri_upload';
 -- Data Team Helper -- Config file currently does not require any permission
 -- Instrument Builder -- Config file currently does not require any permission
 
 -- User Accounts
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 21, PermID FROM permissions WHERE code='user_accounts';
+    SELECT 23, PermID FROM permissions WHERE code='user_accounts';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
