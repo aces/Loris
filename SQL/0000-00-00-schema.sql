@@ -217,7 +217,9 @@ CREATE TABLE `feedback_bvl_type` (
 
 LOCK TABLES `feedback_bvl_type` WRITE;
 /*!40000 ALTER TABLE `feedback_bvl_type` DISABLE KEYS */;
-INSERT INTO `feedback_bvl_type` VALUES (1,'Input','Input Errors'),(2,'Scoring','Scoring Errors');
+INSERT INTO `feedback_bvl_type` VALUES 
+    (1,'Input','Input Errors'),
+    (2,'Scoring','Scoring Errors');
 /*!40000 ALTER TABLE `feedback_bvl_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,14 +266,14 @@ CREATE TABLE `feedback_mri_comment_types` (
 LOCK TABLES `feedback_mri_comment_types` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comment_types` DISABLE KEYS */;
 INSERT INTO `feedback_mri_comment_types` VALUES 
-	(1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-	(2,'Intensity','volume','a:2:{s:5:\"field\";s:9:\"Intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-	(3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-	(4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-	(5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),	(6,'Overall','volume',''),
-	(7,'Subject','visit',''),
-	(8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
-	(9,'Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
+    (1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (2,'Intensity','volume','a:2:{s:5:\"field\";s:9:\"Intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),	    (6,'Overall','volume',''),
+    (7,'Subject','visit',''),	
+    (8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
+    (9,'Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
 /*!40000 ALTER TABLE `feedback_mri_comment_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -630,29 +632,29 @@ CREATE TABLE `mri_scan_type` (
 LOCK TABLES `mri_scan_type` WRITE;
 /*!40000 ALTER TABLE `mri_scan_type` DISABLE KEYS */;
 INSERT INTO `mri_scan_type` VALUES 
-	(40,'fMRI'),
-	(41,'flair'),
-	(44,'t1'),
-	(45,'t2'),
-	(46,'pd'),
-	(47,'mrs'),
-	(48,'dti'),
-	(49,'t1relx'),
-	(50,'dct2e1'),
-	(51,'dct2e2'),
-	(52,'scout'),
-	(53,'tal_msk'),
-	(54,'cocosco_cls'),
-	(55,'clean_cls'),
-	(56,'em_cls'),
-	(57,'seg'),	
-	(58,'white_matter'),
-	(59,'gray_matter'),
-	(60,'csf_matter'),
-	(61,'nlr_masked'),
-	(62,'pve'),
-	(999,'unknown'),
-	(1000,'NA');
+    (40,'fMRI'),
+    (41,'flair'),
+    (44,'t1'),
+    (45,'t2'),
+    (46,'pd'),
+    (47,'mrs'),
+    (48,'dti'),
+    (49,'t1relx'),
+    (50,'dct2e1'),
+    (51,'dct2e2'),
+    (52,'scout'),
+    (53,'tal_msk'),
+    (54,'cocosco_cls'),
+    (55,'clean_cls'),
+    (56,'em_cls'),
+    (57,'seg'),	
+    (58,'white_matter'),
+    (59,'gray_matter'),
+    (60,'csf_matter'),
+    (61,'nlr_masked'),
+    (62,'pve'),
+    (999,'unknown'),
+    (1000,'NA');
 /*!40000 ALTER TABLE `mri_scan_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -948,7 +950,29 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'superuser','There can be only one Highlander','1'),(2,'user_accounts','User management','2'),(3,'user_accounts_multisite','Across all sites create and edit users','2'),(4,'context_help','Edit help documentation','2'),(5,'bvl_feedback','Behavioural QC','1'),(6,'mri_feedback','Edit MRI feedback threads','2'),(7,'mri_efax','Edit MRI Efax files','2'),(8,'send_to_dcc','Send to DCC','2'),(9,'unsend_to_dcc','Reverse Send from DCC','2'),(10,'access_all_profiles','Across all sites access candidate profiles','2'),(11,'data_entry','Data entry','1'),(12,'certification','Certify examiners','2'),(13,'certification_multisite','Across all sites certify examiners','2'),(14,'timepoint_flag','Edit exclusion flags','2'),(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),(16,'mri_safety','Review MRI safety form for accidental findings','2'),(17,'conflict_resolver','Resolving conflicts','2'),(18,'data_dict','Parameter Type description','2'),(19,'violated_scans','Violated Scans','2'),(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),(21,'data_integrity_flag','Data Integrity Flag','2'),(22,'config','Edit configuration settings','2');
+INSERT INTO `permissions` VALUES 
+	(1,'superuser','There can be only one Highlander','1'),
+	(2,'user_accounts','User management','2'),
+	(3,'user_accounts_multisite','Across all sites create and edit users','2'),
+	(4,'context_help','Edit help documentation','2'),
+	(5,'bvl_feedback','Behavioural QC','1'),
+	(6,'mri_feedback','Edit MRI feedback threads','2'),
+	(7,'mri_efax','Edit MRI Efax files','2'),
+	(8,'send_to_dcc','Send to DCC','2'),
+	(9,'unsend_to_dcc','Reverse Send from DCC','2'),
+	(10,'access_all_profiles','Across all sites access candidate profiles','2'),
+	(11,'data_entry','Data entry','1'),
+	(12,'certification','Certify examiners','2'),
+	(13,'certification_multisite','Across all sites certify examiners','2'),
+	(14,'timepoint_flag','Edit exclusion flags','2'),
+	(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
+	(16,'mri_safety','Review MRI safety form for accidental findings','2'),
+	(17,'conflict_resolver','Resolving conflicts','2'),
+	(18,'data_dict','Parameter Type description','2'),
+	(19,'violated_scans','Violated Scans','2'),
+	(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),
+	(21,'data_integrity_flag','Data Integrity Flag','2'),
+	(22,'config','Edit configuration settings','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1930,12 +1954,12 @@ CREATE TABLE LorisMenu (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO LorisMenu (Label, OrderNumber) VALUES 
-	('Candidate', 1), 
-	('Clinical', 2), 
-	('Imaging', 3), 
-	('Reports', 4), 
-	('Tools', 5), 
-	('Admin', 6);
+     ('Candidate', 1), 
+     ('Clinical', 2), 
+     ('Imaging', 3), 
+     ('Reports', 4), 
+     ('Tools', 5), 
+     ('Admin', 6);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('New Profile', 'main.php?test_name=new_profile', 1, 1),
