@@ -1827,7 +1827,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
     ('DICOM Archive', 'main.php?test_name=dicom_archive', 3, 2),
     ('Imaging Browser', 'main.php?test_name=imaging_browser', 3, 3),
-    ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4);
+    ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4),
+    ('MRI Upload', 'main.php?test_name=mri_upload', 3, 5);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', 'main.php?test_name=statistics', 4, 1),
@@ -1885,23 +1886,28 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- Imaging Browser -- Config file currently does not require any permission
 -- Statistics -- Config file currently does not require any permission 
 
+--- Document Repository 
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT 16, PermID FROM permissions WHERE code='file_upload';
+
 -- Data Query Tool
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 16, PermID FROM permissions WHERE code='data_dict';
+    SELECT 18, PermID FROM permissions WHERE code='data_dict';
 
 -- Data Dictionary
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 17, PermID FROM permissions WHERE code='data_dict';
--- Document Repository
+    SELECT 19, PermID FROM permissions WHERE code='data_dict';
+
+-- MRI Upload
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 18, PermID FROM permissions WHERE code='file_upload';
+    SELECT 20, PermID FROM permissions WHERE code='mri_upload';
 
 -- Data Team Helper -- Config file currently does not require any permission
 -- Instrument Builder -- Config file currently does not require any permission
 
 -- User Accounts
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 21, PermID FROM permissions WHERE code='user_accounts';
+    SELECT 23, PermID FROM permissions WHERE code='user_accounts';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
