@@ -51,7 +51,7 @@ class Candidate
      *
      * @param integer $candID A 6 digit Loris CandID that matches
      *                        a candidate in the candidate table
-     * 
+     *
      * @return Candidate the Candidate object
      */
     static function &singleton($candID)
@@ -68,7 +68,7 @@ class Candidate
 
         return $candidateList[$candID];
     }
-    
+
     /**
      * This does the work of selecting the candidate and related
      * information from the database and populating it into the
@@ -81,9 +81,8 @@ class Candidate
      */
     function select($candID)
     {
-        $config = NDB_Config::singleton();
-        // right off, set the candID
-        $candID = trim($candID);
+        $config    = NDB_Config::singleton();
+        $candID    = trim($candID);
         $CandArray = array('Candidate' => $candID);
 
         // make a local reference to the Database object
@@ -97,12 +96,12 @@ class Candidate
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID 
-            FROM candidate as c 
-            LEFT JOIN psc as p USING (CenterID) 
-            LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy) 
+            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
+            FROM candidate as c
+            LEFT JOIN psc as p USING (CenterID)
+            LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
             WHERE c.CandID=:Candidate AND c.Active = 'Y'";
-        $row = array();
+
         $row = $db->pselectRow($query, $CandArray);
 
         if (Utility::isErrorX($row)) {
@@ -130,19 +129,19 @@ class Candidate
             $params = array();
             $parameterCandSettings = $headerSetting['parameter_candidate'];
             if (!is_array($parameterCandSettings)) {
-                $parameterCandSettings= array($parameterCandSettings);
+                $parameterCandSettings = array($parameterCandSettings);
             }
             foreach ($parameterCandSettings as $parameter_type) {
                 $row = $db->pselectRow(
-                    "SELECT Value, pt.Description 
-                    FROM candidate c 
+                    "SELECT Value, pt.Description
+                    FROM candidate c
                     JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
-                    LEFT JOIN parameter_type pt ON 
+                    LEFT JOIN parameter_type pt ON
                     (pc.ParameterTypeID=pt.ParameterTypeID)
-                    WHERE c.CandID=:Candidate AND pt.Name=:PTName", 
+                    WHERE c.CandID=:Candidate AND pt.Name=:PTName",
                     array(
-                        'Candidate' => $candID,
-                        'PTName' => $parameter_type
+                     'Candidate' => $candID,
+                     'PTName'    => $parameter_type,
                     )
                 );
                 if (!empty($row['Value'])) {
@@ -174,10 +173,10 @@ class Candidate
 
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
-        $query = "SELECT s.ID FROM session as s 
+        $query = "SELECT s.ID FROM session as s
             WHERE s.CandID=:Candidate AND s.Active='Y'
             ORDER BY ID";
-        $row = $db->pselect($query, $CandArray);
+        $row   = $db->pselect($query, $CandArray);
 
         if (Utility::isErrorX($row)) {
             return PEAR::raiseError(
@@ -190,9 +189,9 @@ class Candidate
             $this->listOfTimePoints[] = $value["ID"];
         }
     }
-   
+
     /**
-     * creates a new candidate, assigning CandID and PSCID
+     * Creates a new candidate, assigning CandID and PSCID
      *
      * @param int    $centerID    centerID of the site to which the candidate will
      *                            belong
@@ -239,7 +238,7 @@ class Candidate
         }
 
         // figure out how to generate PSCID
-        $config =& NDB_Config::singleton();
+        $config        =& NDB_Config::singleton();
         $PSCIDSettings = $config->getSetting('PSCID');
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -267,7 +266,7 @@ class Candidate
             ) {
                 return PEAR::raiseError("PSCID not unique", PSCID_NOT_UNIQUE);
             }
-        } else {           
+        } else {
             $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
             if (Utility::isErrorX($PSCID)) {
                 return $PSCID;
@@ -275,23 +274,24 @@ class Candidate
         }
 
         // insert the new candidate into the database
-        $setArray = array('CandID'       => $candID,
-            'CenterID'     => $centerID,
-            'PSCID'        => $PSCID,
-            'DoB'          => $dateOfBirth,
-            'EDC'          => $edc,
-            'Gender'       => $gender,
-            'Date_active'  => date('Y-m-d'),
-            'Date_registered' => date('Y-m-d'),
-            'Entity_type'  => 'Human',
-            'RegisteredBy' => $user->getUsername(),
-            'UserID'       => $user->getUsername(),
-        );
+        $setArray = array(
+                     'CandID'          => $candID,
+                     'CenterID'        => $centerID,
+                     'PSCID'           => $PSCID,
+                     'DoB'             => $dateOfBirth,
+                     'EDC'             => $edc,
+                     'Gender'          => $gender,
+                     'Date_active'     => date('Y-m-d'),
+                     'Date_registered' => date('Y-m-d'),
+                     'Entity_type'     => 'Human',
+                     'RegisteredBy'    => $user->getUsername(),
+                     'UserID'          => $user->getUsername(),
+                    );
 
         if ($config->getSetting('useExternalID') === 'true') {
             $externalID = Candidate::_generateExternalID();
             $setArray['ExternalID'] = $externalID;
-        } 
+        }
 
         $db->insert('candidate', $setArray);
 
@@ -302,7 +302,7 @@ class Candidate
     /**
      * Get a list of timepoints that this Candidate has registered
      *
-     * @return array Non-associative array of SessionIDs 1st Time Point 
+     * @return array Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
     function getListOfTimePoints()
@@ -324,12 +324,12 @@ class Candidate
     }
 
     /**
-     * Return a piece of data about this candidate 
+     * Return a piece of data about this candidate
      *
      * @param string $var The type of data about the Candidate
      *                    to be returned
      *
-     * @return mixed The info requested 
+     * @return mixed The info requested
      */
     function getData($var = null)
     {
@@ -352,7 +352,7 @@ class Candidate
     function setData($var, $value=null)
     {
         if (!is_array($var)) {
-            $setData = array($var=>$value);
+            $setData = array($var => $value);
         } else {
             $setData = $var;
         }
@@ -368,9 +368,7 @@ class Candidate
         $success = $db->update(
             'candidate',
             $setData,
-            array(
-                'CandID'=>$this->getData('CandID')
-            )
+            array('CandID' => $this->getData('CandID'))
         );
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError(
@@ -433,7 +431,7 @@ class Candidate
     {
         return $this->candidateInfo["PSC"];
     }
-    
+
 
     /**
      * Returns the ID of this candidate's site
@@ -516,10 +514,10 @@ class Candidate
     {
         return $this->candidateInfo["UserID"];
     }
-    
+
     /**
      * Returns the list of visit labels w/ corresponding SessionID as key
-     * 
+     *
      *@return array Associative array in the format SessionID=>Visit_label
      *@throws PEAR:Error
      */
@@ -528,7 +526,8 @@ class Candidate
         //make sure it returns an array
         $visitLabelArray = array();
 
-        $candID=$this->getCandID();
+        $candID = $this->getCandID();
+
         // make a local reference to the Database object
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
@@ -537,7 +536,7 @@ class Candidate
             );
         }
 
-        $query  = "SELECT ID, Visit_label FROM session 
+        $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
         $result = $db->pselect($query, array('Candidate' => $candID));
         if (Utility::isErrorX($result)) {
@@ -552,7 +551,7 @@ class Candidate
     }
 
     /**
-     * return the next visit number for the time point you are
+     * Return the next visit number for the time point you are
      * trying to register can be called statically
      *
      * @return     integer Next visit number for candidate
@@ -561,7 +560,8 @@ class Candidate
      */
     function getNextVisitNo()
     {
-        $candID=$this->getCandID();
+        $candID = $this->getCandID();
+
         // make a local reference to the Database object
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
@@ -570,21 +570,21 @@ class Candidate
             );
         }
 
-        $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo 
-            FROM session 
+        $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
+            FROM session
             WHERE CandID=:CaID AND (Active='Y' OR Active is null)
             GROUP BY CandID";
         $result = $db->pselectRow($query, array('CaID' => $candID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("Could not retrieve existing data for session");
         }
-        
+
         //return the next visit No
         return $result["nextVisitNo"];
     }
 
     /**
-     * return the suggested visit label for the time point you are
+     * Return the suggested visit label for the time point you are
      * trying to register
      * can be called statically
      *
@@ -593,11 +593,13 @@ class Candidate
      */
     function getNextVisitLabel()
     {
-        $nextVisitLabel = null;
         $config =& NDB_Config::singleton();
+
         $visitLabelSettings = $config->getSetting('visitLabels');
-        
-        $candID=$this->getCandID();
+        $nextVisitLabel     = null;
+
+        $candID = $this->getCandID();
+
         // make a local reference to the Database object
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
@@ -606,12 +608,12 @@ class Candidate
             );
         }
 
-        if ($visitLabelSettings['generation'] == 'user' 
+        if ($visitLabelSettings['generation'] == 'user'
             && !empty($visitLabelSettings['suggest'])
         ) {
             $existingVisitLabels = $this->getListOfVisitLabels();
-            $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel 
-                FROM session 
+            $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel
+                FROM session
                 WHERE CandID=:CaID AND (Active='Y' OR Active is null)
                 GROUP BY CandID";
             $result = $db->pselectRow($query, array('CaID' => $candID));
@@ -620,7 +622,7 @@ class Candidate
                     "Could not retrieve existing data for session"
                 );
             }
-    
+
             $nextVisitLabel = $result['nextVisitLabel'];
             if (!empty($existingVisitLabels)) {
                 while (in_array($nextVisitLabel, $existingVisitLabels)) {
@@ -631,18 +633,18 @@ class Candidate
                 // the 1st timepoint
                 $nextVisitLabel = '1';
             }
-            
+
             $nextVisitLabel = str_replace(
                 '%value%',
                 $nextVisitLabel,
                 $visitLabelSettings['suggest']
             );
         }
-        
+
         //return the next visit No
         return $nextVisitLabel;
     }
-    
+
     /**
      * Generates list of valid subprojects for a the selected Candidate's
      * project
@@ -652,16 +654,18 @@ class Candidate
      */
     function getValidSubprojects()
     {
-        $projID = $this->getProjectID();
         $db =& Database::singleton();
         if (Utility::isErrorX($db)) {
             return PEAR::raiseError(
                 "Could not connect to database: ".$db->getMessage()
             );
         }
-        $query  = "SELECT SubprojectID from project_rel where ProjectID = :prj";
-        $params = array('prj'=>$projID);
-        $subproj   = $db->pselect($query, $params);
+
+        $projID  = $this->getProjectID();
+        $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
+        $params  = array('prj' => $projID);
+        $subproj = $db->pselect($query, $params);
+
         if (Utility::isErrorX($subproj)) {
             return PEAR::raiseError(
                 "Could not connect to database: ".$subproj->getMessage()
@@ -683,18 +687,20 @@ class Candidate
      */
     function getFirstVisit()
     {
-        $candID = $this->getCandID();
         $db =& Database::singleton();
+
+        $candID = $this->getCandID();
+
         if (Utility::isErrorX($db)) {
             return PEAR::raiseError(
                 "Could not connect to database: ".$db->getMessage()
             );
         }
-    
+
         $query  = "SELECT Visit_label
-            FROM session s JOIN candidate c ON (c.CandID = s.CandID) 
+            FROM session s JOIN candidate c ON (c.CandID = s.CandID)
             WHERE c.CandID=:cid ORDER BY Date_Visit";
-        $where  = array('cid'=>$candID);
+        $where  = array('cid' => $candID);
         $vLabel = $db->pselectOne($query, $where);
         if (Utility::isErrorX($vLabel)) {
             return PEAR::raiseError(
@@ -719,10 +725,10 @@ class Candidate
         if (Utility::isErrorX($db)) {
             return $db;
         }
-        
+
         // generate a candidate id
         $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        
+
         // make sure the cand id is not used
         while ($db->pselectOne(
             "SELECT count(CandID) FROM candidate WHERE CandID=:CaID",
@@ -731,9 +737,9 @@ class Candidate
             // pick a new candidate id
             $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         }
-        
+
         return $candID;
-    }  
+    }
 
     /**
     * Generates a new PSCID in the format defined by the config file
@@ -750,10 +756,11 @@ class Candidate
         if (Utility::isErrorX($db)) {
             return $db;
         }
-        
+
         $config =& NDB_Config::singleton();
+
         $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays = Candidate::generateArrays($PSCIDSettings, $prefix);
+        $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
 
         // run one first time, then loop until the pscid is not used
         do {
@@ -789,10 +796,12 @@ class Candidate
     function _generateExternalID()
     {
         $config =& NDB_Config::singleton();
+
         $ExternalIDSettings = $config->getSetting('ExternalID');
-        $ExternalIDArrays = Candidate::generateArrays($ExternalIDSettings);
+        $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
 
         $db =& Database::singleton();
+
         if (Utility::isErrorX($db)) {
             return $db;
         }
@@ -838,9 +847,10 @@ class Candidate
     static function validatePSCID($PSCID, $siteAbbrev=null)
     {
         $config =& NDB_Config::singleton();
+
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex = Utility::structureToPCRE(
-            $PSCIDSettings['structure'], 
+        $regex         = Utility::structureToPCRE(
+            $PSCIDSettings['structure'],
             $siteAbbrev
         );
         return preg_match($regex, $PSCID);
@@ -920,15 +930,15 @@ class Candidate
                 case 'alpha':
                     $arrays[] = range('a', 'z');
                     break;
-                
+
                 case 'alphanumeric':
                     $arrays[] = array_merge(range(0, 9), range('a', 'z'));
                     break;
-                
+
                 case 'numeric':
                     $arrays[] = range(0, 9);
                     break;
-                
+
                 case 'static':
                     $arrays[] = array($seq['#']);
                     break;
