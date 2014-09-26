@@ -47,6 +47,10 @@ class NDB_Client
 
         $config =& NDB_Config::singleton($configFile);
 
+		// add extra include paths
+		$extLibs = $config->getSetting('extLibs');
+		if(!empty($extLibs)) set_include_path($extLibs.":".get_include_path());
+
         // after the extra includes, as those include Smarty
         require_once "Smarty_hook.class.inc";
 
