@@ -1468,6 +1468,7 @@ CREATE TABLE `help` (
     `hash` varchar(32) DEFAULT NULL,
     `topic` varchar(100) NOT NULL DEFAULT '',
     `content` text NOT NULL,
+    `projectContent` text DEFAULT NULL,
     `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
     `updated` datetime DEFAULT NULL, PRIMARY KEY (`helpID`), 
     UNIQUE KEY `hash` (`hash`), 
