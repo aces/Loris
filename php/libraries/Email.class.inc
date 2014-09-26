@@ -9,7 +9,7 @@
  * template directory.
  *
  * PHP Version 5
- *  
+ *
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
@@ -33,10 +33,10 @@ class Email extends PEAR
     /**
      * Sends email using templates
      *
-     * Every template MUST BEGIN with "Subject: subject text". Put new 
+     * Every template MUST BEGIN with "Subject: subject text". Put new
      * templates in the subfolder "email" of the Smarty templates folder.
      *
-     * @param string $to       email address to send email to 
+     * @param string $to       email address to send email to
      * @param string $template template to use for email content
      * @param array  $tpl_data template's data for smarty binding
      * @param string $reply_to optional email header
@@ -56,7 +56,7 @@ class Email extends PEAR
         $cc = '',
         $bcc = ''
     ) {
-        $config =& NDB_Config::singleton();
+        $config   =& NDB_Config::singleton();
         $defaults = $config->getSetting('headers');
 
         // set defaults
@@ -75,10 +75,10 @@ class Email extends PEAR
         $headers .= "Return-Path: $from\n";
         $headers .= "Content-transfer-encoding: 8bit\n";
         $headers .= "Date: " . date('r', time()) . "\n";
-        $headers .= "Message-ID: <" 
-            . md5(uniqid(time())) 
-            . "@" 
-            . $config->getSetting('host') 
+        $headers .= "Message-ID: <"
+            . md5(uniqid(time()))
+            . "@"
+            . $config->getSetting('host')
             . "\n";
         $headers .= "X-Sender: $from\n";
         $headers .= "X-Mailer: PHP\n";
@@ -106,7 +106,7 @@ class Email extends PEAR
         $message = preg_replace('/^Subject: .*/', '', $message);
 
         // send the email
-        @mail(
+        mail(
             $to,
             $match[1],
             preg_replace("/(?<!\r)\n/s", "\n", $message),
