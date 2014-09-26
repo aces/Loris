@@ -57,10 +57,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) S
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'instrument', "instrument to be excluded from the data dictionary and the data query tool", 1, 1, ID FROM ConfigSettings WHERE Name="excluded_instruments";
 
 -- DoubleDataEntryInstruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstruments', "instruments for which double data entry should be enabled", 1, 0, ID FROM ConfigSettings WHERE Name="study";
-
--- DoubleDataEntryInstrument
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstrument', "instrument for which double data entry should be enabled", 1, 1, ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstruments";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'DoubleDataEntryInstruments', "instruments for which double data entry should be enabled", 1, 1, ID FROM ConfigSettings WHERE Name="study";
 
 --
 -- paths

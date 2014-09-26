@@ -48,8 +48,8 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHER
 -- instrument
 INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="instrument";
 
--- DoubleDataEntryInstrument
-INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstrument";
+-- DoubleDataEntryInstruments
+INSERT INTO Config (ConfigID) SELECT ID FROM ConfigSettings WHERE Name="DoubleDataEntryInstruments";
 
 -- default path settings
 
