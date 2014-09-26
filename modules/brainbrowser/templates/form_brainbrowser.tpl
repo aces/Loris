@@ -1,8 +1,4 @@
 {literal}
-<!-- Load CSS. This technically shouldn't be in the body and should probably go in the main
-     brainbrowser css? -->
-<link type="text/css" href="GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css" rel="Stylesheet" />
-
 <!-- Define templates needed for BrainBrowser -->
 
 <!-- Overlay template -->
