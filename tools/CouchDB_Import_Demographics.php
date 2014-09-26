@@ -171,12 +171,6 @@ class CouchDBDemographicsImporter {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
         print "Updating Config:BaseConfig: $config";
 
-        $this->CouchDB->replaceDoc('DataDictionary:Demographics',
-            array('Meta' => array('DataDict' => true),
-                  'DataDictionary' => array('demographics' => $this->Dictionary) 
-            )
-        );
-
         // Run query
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
@@ -234,6 +228,11 @@ class CouchDBDemographicsImporter {
             print "$id: $success\n";
         }
         $this->_updateDataDict();
+        $this->CouchDB->replaceDoc('DataDictionary:Demographics',
+                array('Meta' => array('DataDict' => true),
+                    'DataDictionary' => array('demographics' => $this->Dictionary)
+                    )
+                );
 
         print $this->CouchDB->commitBulkTransaction();
 
