@@ -29,7 +29,7 @@ body {
 }
 
 #brainbrowser-wrapper {
-  width: 60em;
+  width: 100em;
   margin: 50px auto;
 }
 
@@ -65,7 +65,8 @@ canvas.slice-display {
 
 .volume-controls {
   width: 235px;
-  height: 400px;
+  height: 100%;
+  max-height: 380px;
 }
 
 #global-controls {
