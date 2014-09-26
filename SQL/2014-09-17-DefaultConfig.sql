@@ -72,7 +72,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "tools/logs/" FROM ConfigSetting
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/incoming/" FROM ConfigSettings WHERE Name="IncomingPath";
 
 -- MRICodePath
-INSERT INTO Config (ConfigID, Value) SELECT ID, "data/%PROJECTNAME%/bin/mri/" FROM ConfigSettings WHERE Name="MRICodePath";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/bin/mri/" FROM ConfigSettings WHERE Name="MRICodePath";
 
 -- default gui settings
 
