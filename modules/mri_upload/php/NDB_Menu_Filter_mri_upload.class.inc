@@ -47,7 +47,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        return true;
+        return $user->hasPermission('mri_upload');
     }
 
     /**
