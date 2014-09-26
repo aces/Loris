@@ -263,7 +263,15 @@ CREATE TABLE `feedback_mri_comment_types` (
 
 LOCK TABLES `feedback_mri_comment_types` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comment_types` DISABLE KEYS */;
-INSERT INTO `feedback_mri_comment_types` VALUES (1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(2,'Intensity','volume','a:2:{s:5:\"field\";s:9:\"Intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),(5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),(6,'Overall','volume',''),(7,'Subject','visit',''),(8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),(9,'Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
+INSERT INTO `feedback_mri_comment_types` VALUES 
+	(1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+	(2,'Intensity','volume','a:2:{s:5:\"field\";s:9:\"Intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+	(3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+	(4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+	(5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),	(6,'Overall','volume',''),
+	(7,'Subject','visit',''),
+	(8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
+	(9,'Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
 /*!40000 ALTER TABLE `feedback_mri_comment_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,7 +295,45 @@ CREATE TABLE `feedback_mri_predefined_comments` (
 
 LOCK TABLES `feedback_mri_predefined_comments` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` DISABLE KEYS */;
-INSERT INTO `feedback_mri_predefined_comments` VALUES (1,2,'missing slices'),(2,2,'reduced dynamic range due to bright artifact/pixel'),(3,2,'slice to slice intensity differences'),(4,2,'noisy scan'),(5,2,'susceptibilty artifact above the ear canals.'),(6,2,'susceptibilty artifact due to dental work'),(7,2,'sagittal ghosts'),(8,3,'slight ringing artefacts'),(9,3,'severe ringing artefacts'),(10,3,'movement artefact due to eyes'),(11,3,'movement artefact due to carotid flow'),(12,4,'slight movement between packets'),(13,4,'large movement between packets'),(14,5,'Large AP wrap around, affecting brain'),(15,5,'Medium AP wrap around, no affect on brain'),(16,5,'Small AP wrap around, no affect on brain'),(17,5,'Too tight LR, cutting into scalp'),(18,5,'Too tight LR, affecting brain'),(19,5,'Top of scalp cut off'),(20,5,'Top of brain cut off'),(21,5,'Base of cerebellum cut off'),(22,5,'missing top third - minc conversion?'),(23,6,'copy of prev data'),(24,2,"checkerboard artifact"),(25,2,"horizontal intensity striping (Venetian blind effect, DWI ONLY)"),(26,2,"diagonal striping (NRRD artifact, DWI ONLY)"),(27,2,"high intensity in direction of acquisition"),(28,2,"signal loss (dark patches)"),(29,8,"red artifact"),(30,8,"green artifact"),(31,8,"blue artifact"),(32,6,"Too few remaining gradients (DWI ONLY)"),(33,6,"No b0 remaining after DWIPrep (DWI ONLY)"),(34,6,"No gradient information available from scanner (DWI ONLY)"),(35,6,"Incorrect diffusion direction (DWI ONLY)"),(36,6,"Duplicate series"),(37,3,"slice wise artifact (DWI ONLY)"),(38,3,"gradient wise artifact (DWI ONLY)");
+INSERT INTO `feedback_mri_predefined_comments` VALUES 
+	(1,2,'missing slices'),
+	(2,2,'reduced dynamic range due to bright artifact/pixel'),
+	(3,2,'slice to slice intensity differences'),
+	(4,2,'noisy scan'),
+	(5,2,'susceptibilty artifact above the ear canals.'),
+	(6,2,'susceptibilty artifact due to dental work'),
+	(7,2,'sagittal ghosts'),
+	(8,3,'slight ringing artefacts'),
+	(9,3,'severe ringing artefacts'),
+	(10,3,'movement artefact due to eyes'),
+	(11,3,'movement artefact due to carotid flow'),
+	(12,4,'slight movement between packets'),
+	(13,4,'large movement between packets'),
+	(14,5,'Large AP wrap around, affecting brain'),
+	(15,5,'Medium AP wrap around, no affect on brain'),
+	(16,5,'Small AP wrap around, no affect on brain'),
+	(17,5,'Too tight LR, cutting into scalp'),
+	(18,5,'Too tight LR, affecting brain'),
+	(19,5,'Top of scalp cut off'),
+	(20,5,'Top of brain cut off'),
+	(21,5,'Base of cerebellum cut off'),
+	(22,5,'missing top third - minc conversion?'),
+	(23,6,'copy of prev data'),
+	(24,2,"checkerboard artifact"),
+	(25,2,"horizontal intensity striping (Venetian blind effect, DWI ONLY)"),
+	(26,2,"diagonal striping (NRRD artifact, DWI ONLY)"),
+	(27,2,"high intensity in direction of acquisition"),
+	(28,2,"signal loss (dark patches)"),
+	(29,8,"red artifact"),
+	(30,8,"green artifact"),
+	(31,8,"blue artifact"),
+	(32,6,"Too few remaining gradients (DWI ONLY)"),
+	(33,6,"No b0 remaining after DWIPrep (DWI ONLY)"),
+	(34,6,"No gradient information available from scanner (DWI ONLY)"),
+	(35,6,"Incorrect diffusion direction (DWI ONLY)"),
+	(36,6,"Duplicate series"),
+	(37,3,"slice wise artifact (DWI ONLY)"),
+	(38,3,"gradient wise artifact (DWI ONLY)");
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -583,7 +629,30 @@ CREATE TABLE `mri_scan_type` (
 
 LOCK TABLES `mri_scan_type` WRITE;
 /*!40000 ALTER TABLE `mri_scan_type` DISABLE KEYS */;
-INSERT INTO `mri_scan_type` VALUES (40,'fMRI'),(41,'flair'),(44,'t1'),(45,'t2'),(46,'pd'),(47,'mrs'),(48,'dti'),(49,'t1relx'),(50,'dct2e1'),(51,'dct2e2'),(52,'scout'),(53,'tal_msk'),(54,'cocosco_cls'),(55,'clean_cls'),(56,'em_cls'),(57,'seg'),(58,'white_matter'),(59,'gray_matter'),(60,'csf_matter'),(61,'nlr_masked'),(62,'pve'),(999,'unknown'),(1000,'NA');
+INSERT INTO `mri_scan_type` VALUES 
+	(40,'fMRI'),
+	(41,'flair'),
+	(44,'t1'),
+	(45,'t2'),
+	(46,'pd'),
+	(47,'mrs'),
+	(48,'dti'),
+	(49,'t1relx'),
+	(50,'dct2e1'),
+	(51,'dct2e2'),
+	(52,'scout'),
+	(53,'tal_msk'),
+	(54,'cocosco_cls'),
+	(55,'clean_cls'),
+	(56,'em_cls'),
+	(57,'seg'),	
+	(58,'white_matter'),
+	(59,'gray_matter'),
+	(60,'csf_matter'),
+	(61,'nlr_masked'),
+	(62,'pve'),
+	(999,'unknown'),
+	(1000,'NA');
 /*!40000 ALTER TABLE `mri_scan_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -661,7 +730,15 @@ CREATE TABLE `notification_types` (
 
 LOCK TABLES `notification_types` WRITE;
 /*!40000 ALTER TABLE `notification_types` DISABLE KEYS */;
-INSERT INTO `notification_types` VALUES (1,'mri new study',0,'New studies processed by the MRI upload handler'),(2,'mri new series',0,'New series processed by the MRI upload handler'),(3,'mri upload handler emergency',1,'MRI upload handler emergencies'),(4,'mri staging required',1,'New studies received by the MRI upload handler that require staging'),(5,'mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),(7,'hardcopy request',0,'Hardcopy requests'),(9,'visual bvl qc',0,'Timepoints selected for visual QC'),(10,'mri qc status',0,'MRI QC Status change');
+INSERT INTO `notification_types` VALUES 
+	(1,'mri new study',0,'New studies processed by the MRI upload handler'),
+	(2,'mri new series',0,'New series processed by the MRI upload handler'),
+	(3,'mri upload handler emergency',1,'MRI upload handler emergencies'),
+	(4,'mri staging required',1,'New studies received by the MRI upload handler that require staging'),
+	(5,'mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
+	(7,'hardcopy request',0,'Hardcopy requests'),
+	(9,'visual bvl qc',0,'Timepoints selected for visual QC'),
+	(10,'mri qc status',0,'MRI QC Status change');
 /*!40000 ALTER TABLE `notification_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -774,7 +851,16 @@ CREATE TABLE `parameter_type` (
 
 LOCK TABLES `parameter_type` WRITE;
 /*!40000 ALTER TABLE `parameter_type` DISABLE KEYS */;
-INSERT INTO `parameter_type` VALUES (1,'Selected','varchar(10)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),(2,'Geometric_intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(3,'Intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1,0),(8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),(9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0);
+INSERT INTO `parameter_type` VALUES 
+	(1,'Selected','varchar(10)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(2,'Geometric_intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
+	(3,'Intensity','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
+	(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
+	(5,'Movement_artifacts_between_packets','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
+	(6,'Coverage','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
+	(7,'md5hash','varchar(255)','md5hash magically created by NeuroDB::File',NULL,NULL,'parameter_file.Value','parameter_file',NULL,'quat_table_1',1,0),
+	(8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
+	(9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0);
 /*!40000 ALTER TABLE `parameter_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -828,9 +914,12 @@ UNLOCK TABLES;
 -- ADDing Meta-data Visit_label , candidate_label and candidate_dob
 --
 
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null);
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null);
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+VALUES ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+VALUES ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null);
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+VALUES  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
 
 INSERT INTO parameter_type_category (Name, type) VALUES('Identifiers', 'Metavars');
 
@@ -1259,7 +1348,23 @@ CREATE TABLE `user_perm_rel` (
 
 LOCK TABLES `user_perm_rel` WRITE;
 /*!40000 ALTER TABLE `user_perm_rel` DISABLE KEYS */;
-INSERT INTO `user_perm_rel` VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),(1,15),(1,16);
+INSERT INTO `user_perm_rel` VALUES 
+	(1,1),
+	(1,2),
+	(1,3),
+	(1,4),
+	(1,5),
+	(1,6),
+	(1,7),
+	(1,8),
+	(1,9),
+	(1,10),
+	(1,11),
+	(1,12),
+	(1,13),
+	(1,14),
+	(1,15),
+	(1,16);
 /*!40000 ALTER TABLE `user_perm_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1317,7 +1422,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Examiner,Password_md5,Password_expiry) VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Examiner,Password_md5,Password_expiry) 
+VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1552,7 +1658,19 @@ CREATE TABLE participant_status_options (
         PRIMARY KEY  (ID),
         UNIQUE KEY ID (ID) 
 );
-INSERT INTO `participant_status_options` VALUES (1,'Active',0,NULL),(2,'Refused/Not Enrolled',0,NULL),(3,'Ineligible',0,NULL),(4,'Excluded',0,NULL),(5,'Inactive',1,NULL),(6,'Incomplete',1,NULL),(7,'Complete',0,NULL),(8,'Unsure',NULL,5),(9,'Requiring Further Investigation',NULL,5),(10,'Not Responding',NULL,5),(11,'Death',NULL,6),(12,'Lost to Followup',NULL,6);
+INSERT INTO `participant_status_options` VALUES 
+	(1,'Active',0,NULL),
+	(2,'Refused/Not Enrolled',0,NULL),
+	(3,'Ineligible',0,NULL),
+	(4,'Excluded',0,NULL),
+	(5,'Inactive',1,NULL),
+	(6,'Incomplete',1,NULL),
+	(7,'Complete',0,NULL),
+	(8,'Unsure',NULL,5),
+	(9,'Requiring Further Investigation',NULL,5),
+	(10,'Not Responding',NULL,5),
+	(11,'Death',NULL,6),
+	(12,'Lost to Followup',NULL,6);
 
 CREATE TABLE participant_status (
         ID int(10) unsigned NOT NULL auto_increment,
@@ -1811,7 +1929,13 @@ CREATE TABLE LorisMenu (
     OrderNumber integer
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO LorisMenu (Label, OrderNumber) VALUES ('Candidate', 1), ('Clinical', 2), ('Imaging', 3), ('Reports', 4), ('Tools', 5), ('Admin', 6);
+INSERT INTO LorisMenu (Label, OrderNumber) VALUES 
+	('Candidate', 1), 
+	('Clinical', 2), 
+	('Imaging', 3), 
+	('Reports', 4), 
+	('Tools', 5), 
+	('Admin', 6);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('New Profile', 'main.php?test_name=new_profile', 1, 1),
