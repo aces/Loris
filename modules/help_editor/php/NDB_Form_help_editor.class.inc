@@ -132,7 +132,7 @@ class NDB_Form_help_editor extends NDB_Form
             // update the help file
             $success = $help_file->update(array(
                         'topic' => $values['title'],
-                        'project_content' => $values['content'],
+                        'projectContent' => $values['content'],
                         'updated' => date('Y-m-d h:i:s', time())
                         ));
             if (Utility::isErrorX($success)) {
@@ -147,7 +147,7 @@ class NDB_Form_help_editor extends NDB_Form
                 $parentID = HelpFile::insert(array(
                             'hash' => md5($_REQUEST['section']),
                             'topic' => "",
-                            'project_content' => "Under construction",
+                            'projectContent' => "Under construction",
                             'created' => date('Y-m-d h:i:s', time())
                             ));
                  // check errors
@@ -165,7 +165,7 @@ class NDB_Form_help_editor extends NDB_Form
                             'parentID' => $parentID,
                             'hash' => md5($_REQUEST['subsection']),
                             'topic' => $values['title'],
-                            'project_content' => $values['content'],
+                            'projectContent' => $values['content'],
                             'created' => date('Y-m-d h:i:s', time())
                             ));
 
@@ -179,7 +179,7 @@ class NDB_Form_help_editor extends NDB_Form
                 $helpID = HelpFile::insert(array(
                             'hash' => md5($_REQUEST['section']),
                             'topic' => $values['title'],
-                            'project_content' => $values['content'],
+                            'projectContent' => $values['content'],
                             'created' => date('Y-m-d h:i:s', time())
                             ));
 
