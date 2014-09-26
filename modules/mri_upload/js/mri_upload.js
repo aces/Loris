@@ -135,12 +135,14 @@ $(function () {
     "use strict";
     change();
     $("#progressbar").hide();
+/*
     $("#mri_upload").submit(
         function (e) {
             e.preventDefault();
             var time = getCurrentTime();
             $("#log_box").html(time + " Preparing... <br>");
-                //uploadFile();
+            uploadFile();
         }
     );
+*/
 });
