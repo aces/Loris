@@ -20,6 +20,11 @@ body {
     margin-left: 20px;
 }
 
+#brainbrowser {
+    display: table;
+    margin: 0 auto;
+}
+
 #threshold-slider0 {
     position: absolute;
     left: 68px;
@@ -37,14 +42,19 @@ body {
 }
 
 .volume-container {
-    width: 300px;
+    width: 260px;
+    height: 100%;
     padding-bottom: 10px;
+    display: inline-table;
+    margin: 0 auto;
+    overflow: hidden;
+    max-height: 1186px;
 }
 
-.volume-viewer-controls {
+/*.volume-viewer-controls {
     height: 320px !important; 
 }
-
+*/
 .blend-div {
     padding-top: 40px;
 }
@@ -109,9 +119,12 @@ body {
 
 #global-controls {
     padding: 5px;
-    background: #555555;
+/*    background: #555555; */
     border-radius: 4px;
     -webkit-border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+    width: 105px;
 }
 
 #app-name {
@@ -133,5 +146,5 @@ body {
 
 .filename {
     font-weight: bold;
-    color: #BBFF00;
+    color: #064785;
 }
