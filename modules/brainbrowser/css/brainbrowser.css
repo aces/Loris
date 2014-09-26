@@ -1,11 +1,12 @@
+@import url("GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css");
 html {
     overflow: scroll;
     overflow: auto;
     -moz-scrollbars-vertical !important;
-    min-height: 100%; margin-bottom: 1px; 
+    min-height: 100%; margin-bottom: 1px;
     overflow-y: scroll 30%  !important;
 }
-    
+
 body {
     background: #e2e2e2 !important;
 }
@@ -148,3 +149,4 @@ body {
     font-weight: bold;
     color: #064785;
 }
+
