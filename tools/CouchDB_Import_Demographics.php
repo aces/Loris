@@ -74,8 +74,19 @@ class CouchDBDemographicsImporter {
             'Description' => 'Participant status comments',
             'Type' => "text",
         )
-
     );
+
+    var $Config = array(
+        'Meta' => array(
+            'DocType' => 'ServerConfig'
+        ),
+        'Config' => array(
+            'GroupString'  => 'How to arrange data: ',
+            'GroupOptions' => 
+                array('Cross-sectional', 'Longitudinal')
+        )
+    );
+
     function __construct() {
         $this->SQLDB = Database::singleton();
         $this->CouchDB = CouchDB::singleton();
@@ -112,13 +123,6 @@ class CouchDBDemographicsImporter {
             $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
         }
-        // If family fields are being used, add family information into the query
-        if ($config->getSetting("useFamilyID") === "true") {
-            $familyFields = ", c.Sibling1 as Sibling_ID, f.Relationship_type as Relationship_to_sibling";
-            $fieldsInQuery .= $familyFields;
-            $familyTables = " LEFT JOIN family f ON (f.CandID=c.CandID)";
-            $tablesToJoin .= $familyTables;
-        }
         // If expected date of confinement is being used, add EDC information into the query
         if ($config->getSetting("useEDC") === "true") {
             $EDCFields = ", c.EDC as EDC";
@@ -141,20 +145,9 @@ class CouchDBDemographicsImporter {
                 'Type' => "int"
             );
         }
-        // If family fields are being used, update the data dictionary
-        if ($config->getSetting("useFamilyID") === "true") {
-            $this->Dictionary["Sibling_ID"] = array(
-                'Description' => 'ID of the candidate\'s sibling',
-                'Type' => "int(6)"
-            );
-            $this->Dictionary["Relationship_to_sibling"] = array(
-                'Description' => 'Candidate\'s relationship to their sibling',
-                'Type' => "enum('half_sibling','full_sibling','1st_cousin')"
-            );
-        }
         // If expected date of confinement is being used, update the data dictionary
         if ($config->getSetting("useEDC") === "true") {
-            $this->Dictionary["Relationship_to_sibling"] = array(
+            $this->Dictionary["EDC"] = array(
                 'Description' => 'Expected Date of Confinement (Due Date)',
                 'Type' => "varchar(255)"
             );
@@ -175,17 +168,14 @@ class CouchDBDemographicsImporter {
     }
 
     function run() {
+        $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
+        print "Updating Config:BaseConfig: $config";
 
-        $this->_updateDataDict();
-
-        $this->CouchDB->replaceDoc('DataDictionary:Demographics',
-            array('Meta' => array('DataDict' => true),
-                  'DataDictionary' => array('demographics' => $this->Dictionary) 
-            )
-        );
-        
         // Run query
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
+
+        $this->CouchDB->beginBulkTransaction();
+        $config_setting = NDB_Config::singleton();
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
@@ -194,6 +184,41 @@ class CouchDBDemographicsImporter {
                 $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
                 unset($demographics['ProjectID']);
             }
+            if ($config_setting->getSetting("useFamilyID") === "true") {
+                $familyID     = $this->SQLDB->pselectOne("SELECT FamilyID FROM family
+                                                          WHERE CandID=:cid",
+                                                          array('cid'=>$demographics['CandID']));
+                if (!empty($familyID)) {
+                   $this->Dictionary["FamilyID"] = array(
+                                    'Description' => 'FamilyID of Candidate',
+                                    'Type'        => "int(6)",
+                                    );
+                    $demographics['FamilyID'] = $familyID;
+                    $familyFields = $this->SQLDB->pselect("SELECT candID as Family_ID,
+                                    Relationship_type as Relationship_to_candidate
+                                    FROM family
+                                    WHERE FamilyID=:fid AND CandID<>:cid",
+                                    array('fid'=>$familyID, 'cid'=>$demographics['CandID']));
+                    $num_family = 1;
+                    if (!empty($familyFields)) {
+                        foreach($familyFields as $row) {
+                            //adding each sibling id and relationship to the file
+                            $this->Dictionary["Family_CandID".$num_family] = array(
+                                    'Description' => 'CandID of Family Member '.$num_family,
+                                    'Type'        => "varchar(255)",
+                                    );
+                            $this->Dictionary["Relationship_type_Family".$num_family] = array(
+                                    'Description' => 'Relationship of candidate to Family Member '.$num_family,
+                                    'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
+                                    );
+                            $demographics['Family_CandID'.$num_family]                      = $row['Family_ID'];
+                            $demographics['Relationship_type_Family'.$num_family] = $row['Relationship_to_candidate'];
+                            $num_family                                                += 1;
+                        }
+                    }
+                }
+            }
+
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
                 'identifier' => array($demographics['PSCID'], $demographics['Visit_label'])
@@ -202,6 +227,15 @@ class CouchDBDemographicsImporter {
             ));
             print "$id: $success\n";
         }
+        $this->_updateDataDict();
+        $this->CouchDB->replaceDoc('DataDictionary:Demographics',
+                array('Meta' => array('DataDict' => true),
+                    'DataDictionary' => array('demographics' => $this->Dictionary)
+                    )
+                );
+
+        print $this->CouchDB->commitBulkTransaction();
+
     }
 }
 
