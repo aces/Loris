@@ -44,8 +44,8 @@ class HelpFile extends PEAR
 
         // set the help ID
         $obj->helpID = $helpID;
-
-        $result = $DB->pselectRow("SELECT * FROM help WHERE helpID = :HID", array('HID' => $helpID));
+        $result = $DB->pselectRow("SELECT helpID, parentID, hash, topic, COALESCE(project_content, content) AS content,
+                                   created, updated FROM help WHERE helpID = :HID", array('HID' => $helpID));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
