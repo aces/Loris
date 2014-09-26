@@ -195,6 +195,11 @@ class CouchDBDemographicsImporter {
                                                           WHERE CandID=:cid",
                                                           array('cid'=>$demographics['CandID']));
                 if (!empty($familyID)) {
+                   $this->Dictionary["FamilyID"] = array(
+                                    'Description' => 'FamilyID of Candidate',
+                                    'Type'        => "int(6)",
+                                    );
+                    $demographics['FamilyID'] = $familyID;
                     $familyFields = $this->SQLDB->pselect("SELECT candID as Family_ID,
                                     Relationship_type as Relationship_to_candidate
                                     FROM family
@@ -204,16 +209,16 @@ class CouchDBDemographicsImporter {
                     if (!empty($familyFields)) {
                         foreach($familyFields as $row) {
                             //adding each sibling id and relationship to the file
-                            $this->Dictionary["Family_ID".$num_family] = array(
+                            $this->Dictionary["Family_CandID".$num_family] = array(
                                     'Description' => 'CandID of Family Member '.$num_family,
                                     'Type'        => "varchar(255)",
                                     );
-                            $this->Dictionary["Relationship_type_FamilyMember".$num_family] = array(
+                            $this->Dictionary["Relationship_type_Family".$num_family] = array(
                                     'Description' => 'Relationship of candidate to Family Member '.$num_family,
                                     'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
                                     );
-                            $demographics['Family_ID'.$num_family]                      = $row['Family_ID'];
-                            $demographics['Relationship_type_FamilyMember'.$num_family] = $row['Relationship_to_candidate'];
+                            $demographics['Family_CandID'.$num_family]                      = $row['Family_ID'];
+                            $demographics['Relationship_type_Family'.$num_family] = $row['Relationship_to_candidate'];
                             $num_family                                                += 1;
                         }
                     }
