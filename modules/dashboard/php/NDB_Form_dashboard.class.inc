@@ -111,6 +111,8 @@ class NDB_Form_dashboard extends NDB_Form
         );
 
         // Tasks
+
+        // New scans
         if ($user->hasPermission('mri_feedback')) {
             $this->tpl_data['new_scans'] = $DB->pselectOne(
                 "SELECT count(*) FROM files f 
@@ -119,6 +121,8 @@ class NDB_Form_dashboard extends NDB_Form
             );
             $this->tpl_data['new_scans_site'] = 'Site: all';
         }
+
+        // Data entry conflicts
         if ($user->hasPermission('conflict_resolver')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['conflicts'] = $DB->pselectOne(
@@ -136,6 +140,8 @@ class NDB_Form_dashboard extends NDB_Form
                 $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
             }
         }
+
+        // Incomplete forms
         if ($user->hasPermission('data_entry')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['incomplete_forms'] = $DB->pselectOne(
@@ -154,6 +160,8 @@ class NDB_Form_dashboard extends NDB_Form
                 $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
             }
         }
+
+        // Final radiological review
         if ($user->hasPermission('edit_final_radiological_review')) {
             $this->tpl_data['radiology_review'] = $DB->pselectOne(
                 "SELECT count(*) FROM final_radiological_review f 
@@ -162,6 +170,7 @@ class NDB_Form_dashboard extends NDB_Form
             $this->tpl_data['radiology_review_site'] = 'Site: all';
         }
 
+        // Accounts pending approval
         if ($user->hasPermission('user_accounts_multisite')) {
             $this->tpl_data['pending_users'] = $DB->pselectOne(
                 "SELECT count(*) FROM users WHERE Pending_approval='Y'", array()
@@ -175,6 +184,7 @@ class NDB_Form_dashboard extends NDB_Form
             $this->tpl_data['pending_users_site'] = 'Site: ' . $site;
         }
 
+        // Violated scans
         if ($user->hasPermission('violated_scans')) {
             $this->tpl_data['violated_scans'] = $DB->pselectOne(
                 "SELECT count(*) FROM mri_protocol_violated_scans", array()
@@ -182,7 +192,7 @@ class NDB_Form_dashboard extends NDB_Form
             $this->tpl_data['violated_scans_site'] = 'Site: all';
         }
 
-        // Document Repository
+        // Document Repository Items
         if ($user->hasPermission('file_upload')) {
             $document_repository = $DB->pselect(
                 "SELECT File_name, Date_uploaded FROM document_repository 
