@@ -2,6 +2,14 @@
 /**
  * This file is used by the Dashboard to get the data for
  * the recruitment line chart via AJAX
+ *
+ * PHP version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @license  Loris License
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 header("content-type:application/json");
@@ -40,6 +48,14 @@ print json_encode($recruitmentData);
 
 exit();
 
+/**
+ * create chart labels (dates)
+ *
+ * @param date $startDate start date of recruitment
+ * @param date $endDate   end date of recruitment
+ *
+ * @return array
+ */
 function createChartLabels($startDate, $endDate)
 {
     $startDateYear = substr($startDate, 0, 4);
@@ -57,6 +73,14 @@ function createChartLabels($startDate, $endDate)
     return $labels;
 }
 
+/**
+ * get recruitment data for each month in the label array
+ *
+ * @param string $dataset name of a site
+ * @param array  $labels  chart labels (months to query)
+ *
+ * @return array
+ */
 function getRecruitmentData($dataset, $labels)
 {
     $DB =& Database::singleton();
