@@ -33,17 +33,17 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       var width = viewer.panel_width;
       var height = viewer.panel_height;
       var active_canvas = viewer.active_canvas;
-      
+
       // Create a canvas on which we'll draw the images.
       var canvas = document.createElement("canvas");
       var context = canvas.getContext("2d");
       var img = new Image();
-      
+
       canvas.width = width * viewer.volumes.length;
       canvas.height = height * 3;
       context.fillStyle = "#000000";
       context.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // The active canvas is highlighted by the viewer,
       // so we set it to null and redraw the highlighting
       // isn't shown in the image.
@@ -58,7 +58,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       // Restore the active canvas.
       viewer.active_canvas = active_canvas;
       viewer.draw();
-      
+
       // Show the created image in a dialog box.
       img.onload = function() {
         $("<div></div>").append(img).dialog({
@@ -86,7 +86,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         var x = parseFloat(div.find("#world-x-" + vol_id).val());
         var y = parseFloat(div.find("#world-y-" + vol_id).val());
         var z = parseFloat(div.find("#world-z-" + vol_id).val());
-        
+
         // Make sure the values are numeric.
         if (!BrainBrowser.utils.isNumeric(x)) {
           x = 0;
@@ -406,7 +406,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     
       $.ajax({
           data: 'minc_id=' + minc_ids_arr[vol_id],
-          url: 'getMincName.php',
+          url: 'AjaxHelper.php?Module=brainbrowser&script=getMincName.php',
           method: 'GET',
           async: false,
           success: function(data) {
@@ -460,8 +460,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
         minc_volumes.push({
             type: 'minc',
-            header_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
-            raw_data_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+            header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
+            raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&raw_data=true",
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
