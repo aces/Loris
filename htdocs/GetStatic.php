@@ -49,20 +49,11 @@ if (empty($basePath)) {
 // Now get the file and do file validation
 $Module = $_GET['Module'];
 $File = $_GET['file'];
-if (empty($File)) {
-    $File = $Module . ".js";
-}
+
 if (empty($Module) || empty($File)) {
     error_log("Missing required parameters for request");
     header("HTTP/1.1 400 Bad Request");
     exit(2);
-}
-
-// File validation
-if (strpos($File, ".js") === false) {
-    error_log("ERROR: Not a javascript file.");
-    header("HTTP/1.1 400 Bad Request");
-    exit(3);
 }
 
 // Make sure that the user isn't trying to break out of the $path by
