@@ -2,6 +2,14 @@
 /**
  * This file is used by the Dashboard to get the data for
  * scan line chart via AJAX
+ *
+ * PHP version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @license  Loris License
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 header("content-type:application/json");
@@ -38,6 +46,14 @@ print json_encode($scanData);
 
 exit();
 
+/**
+ * create chart labels (dates)
+ *
+ * @param date $startDate start date of scans
+ * @param date $endDate   end date of scans
+ *
+ * @return array
+ */
 function createChartLabels($startDate, $endDate)
 {
     $startDateYear = substr($startDate, 0, 4);
@@ -55,6 +71,14 @@ function createChartLabels($startDate, $endDate)
     return $labels;
 }
 
+/**
+ * get scan data for each month in the label array
+ *
+ * @param string $dataset name of a site
+ * @param array  $labels  chart labels (months to query)
+ *
+ * @return array
+ */
 function getScanData($dataset, $labels)
 {
     $DB =& Database::singleton();
