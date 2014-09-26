@@ -1,4 +1,4 @@
-/*global document: false, $: false, window: false, unescape: false, Option: false*/
+/*global document: false, $: false*/
 
 var scanLineChart, recruitmentPieChart, recruitmentBarChart, recruitmentLineChart;
 
