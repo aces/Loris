@@ -1,3 +1,4 @@
+{literal}
 <html>
 <head>
 	<title>BrainBrowser Volume Viewer</title>
@@ -16,7 +17,7 @@
             <div class="filename">Overlay</div>
             <div class="coords">
                 <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-                    World Coordinates 
+                    World Coordinates
                 </div>
                 <div class="world-coords" data-volume-id="{{VOLID}}">
                     X<input id="world-x-{{VOLID}}" class="control-inputs">
@@ -24,7 +25,7 @@
                     Z<input id="world-z-{{VOLID}}" class="control-inputs">
                 </div>
                 <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
-                    Voxel Coordinates 
+                    Voxel Coordinates
                 </div>
                 <div class="voxel-coords" data-volume-id="{{VOLID}}">
                     X<input id="voxel-x-{{VOLID}}" class="control-inputs">
@@ -129,3 +130,4 @@
 
 </body>
 </html>
+{/literal}
