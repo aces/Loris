@@ -49,11 +49,7 @@
 
 
 </h2>
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <!-- <div class="col-xs-10 col-xs-offset-1" style="overflow-y:auto"> -->
-        <div class="table-scroll" id="content">
-<table class="table table-hover table-primary table-bordered data" width="80%">
+<table class="table table-hover table-primary table-bordered data dynamic-table" width="80%">
     <tr class="info">
         <th rowspan="2">Timepoint</th>
             {foreach key=proj item=name from=$Subprojects}
@@ -258,14 +254,4 @@
                 (Total: {$data.total})
             </td>
         </tr>
-    </table>
-</div>
-        <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-        </a>
-    </div>
-</div>
-</div>
+</table>
