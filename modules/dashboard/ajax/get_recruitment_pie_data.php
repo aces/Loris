@@ -2,6 +2,14 @@
 /**
  * This file is used by the Dashboard to get the data for
  * the recruitment pie chart via AJAX
+ *
+ * PHP version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @license  Loris License
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 ini_set('default_charset', 'utf-8');
