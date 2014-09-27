@@ -343,7 +343,6 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 
 
 
-
 while true; do
     read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
