@@ -57,7 +57,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSetting
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="data";
 
 -- extLibs
-INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/SMARTY/libs" FROM ConfigSettings WHERE Name="extLibs";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/EXTERNAL/LIBRARY/" FROM ConfigSettings WHERE Name="extLibs";
 
 -- mincPath
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="mincPath";
