@@ -63,6 +63,7 @@ class NDB_Form_Configuration extends NDB_Form
             "SELECT * FROM ConfigSettings", 
             array()
         );
+
         // add values
         foreach ($configs as &$tag) {
             $value = $this->DB->pselect(
@@ -76,30 +77,9 @@ class NDB_Form_Configuration extends NDB_Form
             }
         }
 
-        // build a tree from configs array
-        foreach ($configs as &$node) {
-            $node['Children'] = array();
-            $tree[$node['ID']] = &$node;
-            
-        }
-        foreach ($configs as &$node) {
-            $tree[$node['Parent']]['Children'][] = &$node;
-        }
-        
         // need a subtree with root = NULL only, others are repeating branches
-        $this->tpl_data['configs'] = $tree['']['Children'];
+        $this->tpl_data['config'] = $configs;
         $this->tpl_data['options'] = array('0'=>'0', '1'=>'1');
-
-        // most likely instruments will be treated in a special way, 
-        // so they have their tree for the template
-        $instrumentArray = $this->DB->pselectRow(
-            "SELECT Parent 
-            FROM ConfigSettings 
-            WHERE Name='Instrument'", 
-            array()
-        );
-        $instrumentID = $instrumentArray['Parent'];
-        $this->tpl_data['instruments'] = $tree[$instrumentID]['Children'];
     }
 
     /**
@@ -114,7 +94,6 @@ class NDB_Form_Configuration extends NDB_Form
     {
         foreach ($values as $key => $value) {
             if (is_numeric($key)) { //update
-                print "$key";
                 $this->DB->update(
                     'Config', 
                     array('Value' => $value), 
@@ -129,6 +108,7 @@ class NDB_Form_Configuration extends NDB_Form
                     );
                 } elseif ($id[0] === "remove") {
                     $this->DB->delete('Config', array('ID' => $id[1]));
+                    print("here");
                 }
             } 
         } 

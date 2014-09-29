@@ -1,32 +1,72 @@
-{function name=printTree}
-<div class="tree">
-<ul class="list-group">
+<script type="text/javascript" src="js/jquery/jquery.treegrid.js"></script>
+<script type="text/javascript" src="js/jquery.treegrid.bootstrap3.js"></script>
+
+<link rel="stylesheet" href="css/jquery.treegrid.css">
+
+<script type="text/javascript">
+  $(document).ready(function() {
+        $('.tree').treegrid({
+          initialState: 'collapsed'
+        });
+    });
+</script>
+
+{function name=printConfig}
+    {foreach $items as $item}
+        {if isset($item['Parent'])}
+            <tr class="treegrid-{$item['ID']} treegrid-parent-{$item['Parent']}">
+        {else}
+            <tr class="treegrid-{$item['ID']}">
+        {/if}
+                <td>{$item['Description']}</td>
+                {if isset($item['Value'])}
+                    <td>
+                        {if $item['AllowMultiple'] == 1}
+                            <button class="btn btn-default add" id="{$item['ID']}" type="button" name="add-{$item['ID']}"><i class="glyphicon glyphicon-plus"></i></button>
+                        {/if}
+                        {foreach from=$item['Value'] key=k item=v}
+                            <form class="form-inline" method="POST" action="">
+                                    <input class="form-control" name="{$k}" type="text" id="{$k}" value="{$v}">
+                            </form>
+                            {if $item['AllowMultiple'] == 1}
+                                <form class="inline" method="POST" action="">
+                                    <button class="btn btn-default remove" id="{$k}" type="submit" name="remove-{$k}"><i class="glyphicon glyphicon-remove"></i></button>
+                                </form>
+                            {/if}
+                            
+                        {/foreach}
+                    </td>
+                {else}
+                <td></td>
+                {/if}
+            </tr>
+    {/foreach}
+{/function}
+
+
+<!-- {function name=printTree}
+<table class="tree table table-striped">
     {foreach $items as $item}
         {if isset($item['Children']) && $item['Children']}
-{*SPECIAL CASE FOR INSTRUMENTS, SINCE THEY ARE MULTIPLE PARENT*}
-            {if $item['Name'] == 'ReliabilityInstruments'}
-                {* SORRY, IT'S NOT IMPLEMENTED *}
-            {else}
-                <li class="list-group-item list-group-item-success" id="{$item['ID']}">
-                    <span class="collapsable" id="{$item['ID']}">
-                        <span class="glyphicon glyphicon-chevron-down" id="{$item['ID']}"> {$item['Description']}</span>
-                    </span>
+            <tr class="treegrid-{$item['ID']}">
+                <td>{$item['Description']}</td><td>Additional info</td>
+            </tr>
                     {call name=printTree items=$item['Children']}
-                </li>
-            {/if}
         {else}
             {if $item['Value']} 
                 {call name=printLeaves node=$item}
             {/if}
         {/if}
     {/foreach}
-</ul>
-</div>
+</table>
 {/function}
 
 
 {function name=printLeaves}
 {foreach from=$node['Value'] key=k item=v}
+    <tr class="treegrid-2 treegrid-parent-1">
+        <td>Node 1-1</td><td>Additional info</td>
+    </tr>
     <div class="row" id="{$k}" style="margin-left:0px;margin-right:0px;">
         <li class="list-group-item list-group-item-info" id="{$k}">
             <span class="collapsable" id="{$node['ID']}">
@@ -52,7 +92,11 @@
         </li>
     </div>
 {/foreach}
-{/function}
+{/function} -->
 
-{call name=printTree items=$configs}
+<!--{call name=printTree items=$configs}-->
+
+<table class="tree table table-hover">
+    {call name=printConfig items=$config}
+</table>
 

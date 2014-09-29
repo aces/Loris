@@ -9,14 +9,6 @@ ul.config {
    cursor: pointer;
 }
 
-.form {
-   margin-top: -8px;
-}
-
-.form-control {
-   display: inline;
-}
-
 .btn {
    padding: 11px 12px !important;
 }
@@ -31,3 +23,12 @@ ul.config {
    color: #555 !important;
 }
  
+ .add {
+   display: inline;
+ }
+
+ .remove {
+   display: inline;
+ }
+
+ .form-control {display:inline;}
