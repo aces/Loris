@@ -22,7 +22,9 @@
                 {if isset($item['Value'])}
                     <td>
                         {if $item['AllowMultiple'] == 1}
-                            <button class="btn btn-default add" id="{$item['ID']}" type="button" name="add-{$item['ID']}"><i class="glyphicon glyphicon-plus"></i></button>
+                            <button class="btn btn-default add" id="{$item['ID']}" type="button" name="add-{$item['ID']}">
+                                <span class="glyphicon glyphicon-plus"></span> Add field
+                            </button>
                         {/if}
                         {foreach from=$item['Value'] key=k item=v}
                             <form class="form-inline" method="POST" action="">
