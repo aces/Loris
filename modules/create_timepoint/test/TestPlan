@@ -1,0 +1,6 @@
+Create Timepoint Test Plan:
+
+1. Access a candidate that does not have all timepoints from project created from Access Profile and click "Create time point"
+2. Choose a subproject from dropdown. Ensure that page reloads with subproject selected and also a list of visit labels
+3. Click create time point without choosing visit. Ensure there's an error.
+4. Choose visit label to be created and click "Create Time Point". Ensure that you get a page saying creation was successful. Click on "Click here to continue" link and ensure that it brings you back to timepoint list page for that candidate (with new timepoint created)
