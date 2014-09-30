@@ -1,0 +1,26 @@
+Access Profile Test Plan:
+
+1. Access access profile page, ensure that it renders.
+2. Select a site from site filter, filter, ensure that results filtered
+3. Verify advanced/basic filter toggle works.
+4. Verify advanced filters are expanded on page load when an advanced filter is set, and collapsed otherwise
+5. Test each filter individually
+   [ ] Site
+   [ ] DCCID
+   [ ] PSCID
+   [ ] Subproject
+   [ ] Project
+   [ ] Scan done
+   [ ] Participant Status
+   [ ] Gender
+   [ ] Number of visits
+   [ ] Date of birth
+   [ ] Latest Visit Status
+   [ ] Feedback
+6. Click "Clear Form" and ensure filters are reset.
+7. Filter for Scan done. Ensure that "Yes" link points to correct scan in imaging browser
+8. Ensure PSCID link points to correct timepoint_list page
+9. Enter wrong PSCID/DCCID combination and click OPen Profile. Ensure that you get an error.
+10. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
+11. Remove  access_all_profiles permission  and ensure that PSCID links are *not* clickable.
+12. Change useEDC and useProjects config variables to false and ensure filters are removed from menu
