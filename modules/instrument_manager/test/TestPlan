@@ -1,6 +1,6 @@
-Install Manager Test Plan
+Instrument Manager Test Plan
 
-1. User has access to Install Manager if he/she has permission “superuser”.
+1. User has access to Instrument Manager if he/she has permission “superuser”.
 2. Check that tab exists on a default install (for superusers).
 3. Check that the warning text above is accurate (about writable/uploading etc).
 4. Verify GUI is updated.
