@@ -10,7 +10,7 @@
 4- Click on 'Show Data' to get the list of Unresolved Conflicts
 5- Under 'Unresolved Conflicts' Choose the correct answer and click on 'Save'
 6- Click on 'Show Data' And the conflict should not longer appear.
-Note: Use 'Resolved Conflicts' To ensure that the conflict is resolved and saved in the database as follows:
+Note: Use 'Resolved Conflicts' To ensure that the conflicts are resolved and saved in the database as follows:
 
 7- Acess the Conflict Resolver Module under 'Clinical Tab' if the user has permission 
 8- Click on 'Resolved Conflicts'
