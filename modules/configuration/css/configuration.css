@@ -1,33 +1,45 @@
-ul.config {
-   list-style-type: none;
-   list-style-position: inside;
-}
-
-.collapsable {
-   margin-left: -20px;
-   padding-left: 20px;
-   cursor: pointer;
-}
-
-.form {
-   margin-top: -8px;
-}
-
 .form-control {
    display: inline;
 }
 
-.btn {
-   padding: 11px 12px !important;
+ .add {
+   margin-bottom: 7px;
+ }
+
+ .allowMultipleEntry {
+   display: inline;
+ }
+
+ .remove {
+   display: inline;
+   background-image: none;
+   border: none;
+   background-color: transparent;
+ }
+
+ .inline {
+   display: inline;
+ }
+
+.form-item {
+   display: block;
 }
 
-.list-group-item-success {
-   background-color: #CFE7EB !important;
-   color: #555 !important;
+.rm-btn {
+   float: right;
+   font-size: 10px;
+   color: #178ACC;
+   display: inline;
+   background-image: none;
+   border: none;
+   background-color: transparent;
+   margin-top: -4px;
+   margin-bottom: 4px;
 }
 
-.list-group-item-info {
-   background-color: #FCFCFC !important;
-   color: #555 !important;
+.rm-btn:hover, .rm-btn:focus {
+   background-color: transparent;
+   background-image: none;
+    color: #555555;
+    text-decoration: none
 }
- 
