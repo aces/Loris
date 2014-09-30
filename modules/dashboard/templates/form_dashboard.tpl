@@ -84,7 +84,7 @@
                         {/if}
                         
                     {else}
-                        Please add a recruitment target to the config file to see recruitment progression.
+                        Please add a recruitment target in the configuration module.
                     {/if}
                 </div>
                 <div class="recruitment-panel hidden" id="recruitment-site-breakdown">
