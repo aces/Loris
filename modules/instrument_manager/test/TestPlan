@@ -1,0 +1,9 @@
+Install Manager Test Plan
+
+1. User has access to Install Manager if he/she has permission “superuser”.
+2. Check that tab exists on a default install (for superusers).
+3. Check that the warning text above is accurate (about writable/uploading etc).
+4. Verify GUI is updated.
+5. Check that instrument gets installed properly. Also check the paths in the code.
+6. Check that instruments' metadata in the table are labeled accurately.
+7. Check that function CheckTable does what's it's supposed to do because I don't have time I have to go to a meeting right now.
