@@ -328,9 +328,18 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     -e "s/%USERNAME%/$mysqluser/g" \
     -e "s/%PASSWORD%/$mysqlpass/g" \
     -e "s/%DATABASE%/$mysqldb/g" \
-    -e "s#%LORISROOT%#$RootDir/#g" \
-    -e "s#%PROJECTNAME%#$projectname#g" \
     < ../docs/config/config.xml > ../project/config.xml
+
+
+
+echo ""
+echo "Populating database config."
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='DownloadPath')"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='imagePath')"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='data')"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mincPath')"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
 
 
 
