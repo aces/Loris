@@ -108,12 +108,11 @@ class NDB_Form_Configuration extends NDB_Form
                     );
                 } elseif ($id[0] === "remove") {
                     $this->DB->delete('Config', array('ID' => $id[1]));
-                    print("here");
                 }
             } 
         } 
         
-        $this->database_configuration_module();
+        $this->configuration();
     }
 }
 

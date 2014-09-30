@@ -27,15 +27,16 @@
                             </button>
                         {/if}
                         {foreach from=$item['Value'] key=k item=v}
-                            <form class="form-inline" method="POST" action="">
+                            <div class="form" id="{$item['ID']}">
+                                <form method="POST" action="">
                                     <input class="form-control" name="{$k}" type="text" id="{$k}" value="{$v}">
-                            </form>
+                                </form>
                             {if $item['AllowMultiple'] == 1}
                                 <form class="inline" method="POST" action="">
                                     <button class="btn btn-default remove" id="{$k}" type="submit" name="remove-{$k}"><i class="glyphicon glyphicon-remove"></i></button>
                                 </form>
                             {/if}
-                            
+                            </div>
                         {/foreach}
                     </td>
                 {else}
