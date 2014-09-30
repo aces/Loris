@@ -1,34 +1,24 @@
-ul.config {
-   list-style-type: none;
-   list-style-position: inside;
+.form-control {
+   display: inline;
 }
 
-.collapsable {
-   margin-left: -20px;
-   padding-left: 20px;
-   cursor: pointer;
-}
-
-.btn {
-   padding: 11px 12px !important;
-}
-
-.list-group-item-success {
-   background-color: #CFE7EB !important;
-   color: #555 !important;
-}
-
-.list-group-item-info {
-   background-color: #FCFCFC !important;
-   color: #555 !important;
-}
- 
  .add {
+   margin-bottom: 7px;
+ }
+
+ .inline {
+   display: inline;
+ }
+
+ .allowMultipleEntry {
    display: inline;
  }
 
  .remove {
+   float: left;
    display: inline;
  }
 
- .form-control {display:inline;}
+ .form-control {
+   display: inline;
+ }

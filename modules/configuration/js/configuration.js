@@ -1,17 +1,10 @@
 /*global document: false, $: false, window: false*/
 $(function () {
     "use strict";
-    $(".collapsable").click(function () {
-        $(this).parent().children().toggle();
-        $(this).toggle();
-    });
-    $(".collapsable").each(function () {
-        $(this).parent().children().toggle();
-        $(this).toggle();
-    });
 
     var count = 0;
     $(".add").click(function () {
+        console.log("here");
         count = count + 1;
         var id = $(this).attr('id'),
             new_id = id + "-" + count,
@@ -38,6 +31,15 @@ $(function () {
                 + '</span>'                                                                                                                                
                 + '</li></div>'
         );
+
+        /*
+        <form class="form-inline" method="POST" action="">
+            <input class="form-control" name="{$k}" type="text" id="{$k}" value="{$v}">
+        </form>
+        <form class="inline" method="POST" action="">
+            <button class="btn btn-default remove" id="{$k}" type="submit" name="remove-{$k}"><i class="glyphicon glyphicon-remove"></i></button>
+        </form>
+        */
     });
 
     $("ul.list-group").on("click", ".remove-new", function () {
