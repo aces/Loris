@@ -2,14 +2,23 @@
 <h2 class="statsH2">General statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}
 {if $CurrentProject} for {$CurrentProject.Name} {/if}</h2>
 
-{html_options id="DemographicSite" options=$Sites name="DemographicSite" selected=$CurrentSite.ID}
-{html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID}
+<div class="row">
+<div class="col-sm-2">
+{html_options id="DemographicSite" options=$Sites name="DemographicSite" selected=$CurrentSite.ID class="form-control"}
+</div>
+<div class="col-sm-3">
+{html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID class="form-control"}
+</div>
 
-<script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_demographic.js"></script>
-<button  onClick="updateDemographicTab()">Submit Query</button>
-<table class="data generalStats">
+<script type="text/javascript" src="js/modules/form_stats_demographic.js"></script>
+<button  onClick="updateDemographicTab()" class="btn btn-primary col-sm-2">Submit Query</button>
+</div>
+</br>
+<div class="row">
+<div class="col-md-8">
+<table class="table table-hover table-primary table-bordered">
 <thead>
-<tr>
+<tr class="info">
 <th></th>
 <th>Undefined Yet</th>
 {foreach from=$Subprojects item=name key=proj}
@@ -26,34 +35,36 @@
 <td>{$registered[$keyid].total}</td>
 {/foreach}
 {* 
-    <td class="total">{$registered.total}{if $registered.total-$Total_candidates neq 0} ({$Total_candidates -$registered.total} require DCC review){/if}</td>*}
+    <td class="total success">{$registered.total}{if $registered.total-$Total_candidates neq 0} ({$Total_candidates -$registered.total} require DCC review){/if}</td>*}
 
-    <td class="total">{$registered.total}</td>
+    <td class="total success">{$registered.total}</td>
     </tr>
     <tr>
     <td colspan="2">Registered candidates currently in or passed screening</td>
 {foreach from=$Subprojects item=proj key=keyid}
 <td>{$registered[$keyid].visit}</td>
 {/foreach}
-<td class="total">{$registered.visittotal}</td>
+<td class="total success">{$registered.visittotal}</td>
 </tr>
 <tr>
 <td colspan="2">Registered candidates who have come in for a visit</td>
 {foreach from=$Subprojects item=proj key=keyid}
 <td>{$edi[$keyid].complete}</td>
 {/foreach}
-<td class="total">{$edi.complete}</td>
+<td class="total success">{$edi.complete}</td>
 </tr>
 <tr>
 <td colspan="2">Registered candidates with T1 acquired</td>
 {foreach from=$Subprojects item=proj key=keyid}
 <td>{$scanned[$keyid].complete}</td>
 {/foreach}
-<td class="total">{$scanned.complete}</td>
+<td class="total success">{$scanned.complete}</td>
 </tr>
 
 </tbody>
 </table>
+</div>
+</div>
 
 {$RecruitsTable}
 </div>

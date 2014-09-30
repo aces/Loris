@@ -12,29 +12,45 @@
      - Visits (the visits to display)
      - Data (the data that populates the table)
  *}
-<script type="text/javascript" src="GetJS.php?Module=statistics&file=table_statistics.js"></script>
+<style type="text/css" src="main.css"></style>
+<script type="text/javascript" src="js/modules/table_statistics.js"></script>
 
 <h2 class="statsH2">{$Header}</h2>
 
 {if $Subsection=="demographics" }
-    {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
-    <button onClick="updateDemographicTab()">Submit Query</button>
+<div class="row">
+    <div class="col-sm-4">
+        {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
+    </div>
+    <button onClick="updateDemographicTab()" class="btn btn-primary col-sm-2">Submit Query</button>
+</div>
+<br>
 {/if}
 
 {if $Subsection==mri }
-   {html_options id="mri_type" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
-    <button onClick="updateMRITable()">Submit Query</button>
+<div class="row">
+    <div class="col-sm-4">
+        {html_options id="mri_type" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
+    </div>
+    <button onClick="updateMRITable()" class="btn btn-primary col-sm-2">Submit Query</button>
+</div>
+<br>
 {/if}
 
-{if $Subsection=="data_entry" }
-    {html_options id="BehaviouralInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
-    <button onClick="updateBehaviouralInstrument()">Submit Query</button>
+{if $Subsection=="data_entry"}
+<div class="row">
+    <div class="col-sm-4">
+        {html_options id="BehaviouralInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
+    </div>
+    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary col-sm-2">Submit Query</button>
+</div>
+<br>
 {/if}
 
 
 </h2>
-<table class="data" width="80%">
-    <tr>
+<table class="table table-hover table-primary table-bordered data dynamic-table" width="80%">
+    <tr class="info">
         <th rowspan="2">Timepoint</th>
             {foreach key=proj item=name from=$Subprojects}
             {assign var='colspan' value=count($Subcategories)+1}
@@ -42,7 +58,7 @@
             {/foreach}
         <th colspan="{$colspan}">Total</th>
     </tr>
-    <tr>
+    <tr class="info">
         {foreach key=proj item=name from=$Subprojects}
         {* Go through each category once, and add the total
            for each cohort *}
@@ -67,7 +83,7 @@
             +1 for timepoint list
    *}
    {assign var='colspan' value=(count($Subcategories)+1)*(count($Subprojects)+1)+1}
-   <th colspan="{$colspan}" width="50%">{$center.LongName}<br></th></tr>
+   <th class="info" colspan="{$colspan}" width="50%">{$center.LongName}<br></th></tr>
         {foreach item=visit from=$Visits key=title}
             {assign var="rowtotal" value="0"}
 
@@ -153,7 +169,7 @@
       {* Totals at the bottom *}
 	<tr>
         {assign var='colspan' value=(count($Subcategories)+1)*(count($Subprojects)+1)+1}
-       <th colspan="{$colspan}" width="50%">Total</th>
+       <th class="info" colspan="{$colspan}" width="50%">Total</th>
     </tr>
 	<tr>
         {foreach from=$Visits item=visit key=title}
@@ -238,4 +254,4 @@
                 (Total: {$data.total})
             </td>
         </tr>
-    </table>
+</table>
