@@ -6,19 +6,17 @@
    margin-bottom: 7px;
  }
 
- .inline {
-   display: inline;
- }
-
  .allowMultipleEntry {
    display: inline;
  }
 
  .remove {
-   float: left;
    display: inline;
+   background-image: none;
+   border: none;
+   background-color: transparent;
  }
 
- .form-control {
+ .inline {
    display: inline;
  }
