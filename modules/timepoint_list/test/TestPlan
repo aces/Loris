@@ -1,0 +1,4 @@
+Timepoint_list test plan:
+1. Access a candidate and ensure correct visits shown.
+2. Ensure create timepoint link points to correct place
+3. Ensure edit_candidate_info link points to correct place
