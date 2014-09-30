@@ -2,6 +2,10 @@
 $(function () {
     "use strict";
 
+    $('.tree').treegrid({
+          'initialState': 'collapsed',
+        });
+
     var count = 0;
     $(".add").click(function () {
         count = count + 1;
@@ -12,10 +16,10 @@ $(function () {
         formID = new_id + "-form";
 
         $("#"+id+"-formsection").append('<div class="form-item" id="' + formID + '">'
-            + '<form class="inline" method="POST">'
+            + '<form method="POST">'
             + '<input class="form-control input-sm" id="' + new_id + '" name="'+ parent +'" type="text">'
             + '</form>'
-            + '<form class="inline" method="POST">'
+            + '<form method="POST">'
             + '<button class="btn btn-default btn-small rm-btn remove-new" id="'+ new_id +'" type="button">Remove</button>'
             + '</form>'
             + '</div>'

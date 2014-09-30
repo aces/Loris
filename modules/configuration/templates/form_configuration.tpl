@@ -3,14 +3,6 @@
 
 <link rel="stylesheet" href="css/jquery.treegrid.css">
 
-<script type="text/javascript">
-  $(document).ready(function() {
-        $('.tree').treegrid({
-          'initialState': 'collapsed',
-        });
-    });
-</script>
-
 <p>Configuration Module Description</p>
 
 {function name=printConfig}
@@ -36,13 +28,14 @@
                             {foreach from=$item['Value'] key=k item=v}
                                 <div class="form-item">
                                     <form method="POST">
-                                        <input class="form-control input-sm config-input" name="{$k}" type="text" id="{$k}" value="{$v}">
+                                        <input class="form-control input-sm" name="{$k}" type="text" id="{$k}" value="{$v}">
                                     </form>
                                 {if $item['AllowMultiple'] == 1}
                                     <form method="POST">
                                         <button class="btn btn-default btn-small rm-btn" id="{$k}" type="submit" name="remove-{$k}">Remove</button>
                                     </form>
                                 {/if}
+                                </div>
                             {/foreach}
                         {/if}
                     </div>
