@@ -19,20 +19,6 @@
         <!--testCandidate>965327</testCandidate-->
     </tests>
 
-    <!-- file paths -->
-    <paths>
-        <imagePath>/data/%PROJECTNAME%/data/</imagePath>
-        <base>%LORISROOT%</base>
-        <data>/data/%PROJECTNAME%/data/</data>
-        <extLibs>/PATH/TO/SMARTY/libs</extLibs>
-        <mincPath>/data/%PROJECTNAME%/data/</mincPath>
-        <DownloadPath>%LORISROOT%</DownloadPath>
-        <log>tools/logs/</log>
-        <IncomingPath>/data/incoming/</IncomingPath>
-        <MRICodePath>/data/%PROJECTNAME%/bin/mri/</MRICodePath>
-
-    </paths>
-
     <!-- set to 1 if development environment -->
     <sandbox>0</sandbox>
 
@@ -47,14 +33,6 @@
         <name>Example database</name>
     </database>
 
-    <dicom_archive>
-        <patientIDRegex>/./</patientIDRegex>
-        <patientNameRegex>/./i</patientNameRegex>
-        <LegoPhantomRegex>/./i</LegoPhantomRegex>
-        <LivingPhantomRegex>/./i</LivingPhantomRegex>
-        <showTransferStatus>false</showTransferStatus>
-    </dicom_archive>
-
     <!-- Following links will appear on the footer of the home page of loris installation -->
     <Studylinks>
         <link url='http://www.loris.ca'>Loris Website</link>
@@ -67,59 +45,14 @@
     </links>
 
     <dashboard>
-        <!-- The project description will be displayed in the top panel of the Dashboard. -->
-        <projectDescription>
-            This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.
-        </projectDescription>
         <!-- The dashboard links will appear just below the project description on the Dashboard. -->
         <dashboardLinks>
             <link url='http://www.loris.ca'>Important Website</link>
         </dashboardLinks>
-        <!-- The target number of participants is used to generate a chart showing how recruitment is progressing towards its goal. -->
-        <recruitmentTarget></recruitmentTarget>
     </dashboard>
-
-    <!-- mail settings -->
-    <mail>
-        <headers>
-            <From>nobody@example.com</From>
-            <Reply-to>nobody@example.com</Reply-to>
-            <X-MimeOLE>Produced by LorisDB</X-MimeOLE>
-        </headers>
-    </mail>
-
-    <!-- www settings -->
-    <www>
-        <host>localhost</host>
-        <url>https://localhost/</url>
-        <mantis_url></mantis_url>
-    </www>
 
     <!-- study variables -->
     <study>
-        <!--display additional user fields in User Accounts page e.g. Institution-->
-        <additional_user_info>1</additional_user_info>        
-        <!-- Descriptive study title, appears on top of the screen-->
-        <title>Example Study</title>
-        <!-- Logo of the study, appears on the left of the title on the top of the screen -->
-        <studylogo>images/neuro_logo_blue.gif</studylogo>
-        <!---number of columns the quat table will contain  -->
-        <columnThreshold>250</columnThreshold>
-        <!-- true/false - use EDC (Expected Date of Confinement) field is false unless the study focuses on neonatals for birthdate estimations.-->
-        <useEDC>false</useEDC>
-        <!-- minimum age in years (0+)-->
-        <ageMin>8</ageMin>
-        <!-- max subject age in years -->
-        <ageMax>11</ageMax>
-        <!-- true/false - more than one site in the project? -->
-        <multipleSites>true</multipleSites>
-        <!-- true/false - use family ID -->
-        <useFamilyID>false</useFamilyID>
-        <!-- project's start year -->
-        <startYear>2004</startYear>
-        <!-- project's end year -->
-        <endYear>2014</endYear>
-
         <PSCID>
             <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
             <generation>user</generation>
@@ -128,8 +61,6 @@
             </structure>
         </PSCID>
         
-        <!--External ID field is false unless data is used for blind data distribution, or/from external data sources  -->
-        <useExternalID>false</useExternalID>
         <ExternalID>
             <generation>random</generation>
             <structure>
@@ -137,10 +68,7 @@
                 <seq type="numeric" length="4" min='1000' max='9999'/>
             </structure>
         </ExternalID>
-        <!--useProject field is false unless study involves more than one project where each project has multiple cohorts/subprojects-->
 
-        <useProband>false</useProband>
-        <useProjects>false</useProjects>
         <Projects>
             <project>
                 <id>1</id>
@@ -160,7 +88,6 @@
         </HeaderTable-->
         <!-- number of subprojects in the project - corresponds to the list of subpojects below -->
         <!-- max number of timepoints per subject (integer)-->
-        <useScreening>false</useScreening>
         <subprojects>
             <subproject>
                 <id>1</id>
@@ -232,10 +159,7 @@
                 <Displayname>ADOS (Module2)</Displayname>
             </Instrument>
         </ReliabilityInstruments>
-        <!--Define a list of instruments to be skipped by quickform_parser.php. These instruments will not be available in Data Dictionary module -->
-        <excluded_instruments>
-            <instrument></instrument>
-        </excluded_instruments>
+
          <!-- certification module -->
         <Certification>
             <EnableCertification>0</EnableCertification>
@@ -249,9 +173,6 @@
             </CertificationInstruments>
         </Certification>
 
-        <!-- Add instruments for which Double Data entry should be enabled -->
-        <DoubleDataEntryInstruments></DoubleDataEntryInstruments>
-
         <!-- Consent module allows addition of consent information in the candidate information page-->
          <ConsentModule>
             <useConsent>false</useConsent>
@@ -262,26 +183,5 @@
         </ConsentModule>
     </study>
     <!-- end of study definition -->
-
-    <!-- Conflict Resolver default max display settings -->
-    <ConflictResolver>
-        <MaxConflicts>50</MaxConflicts>
-    </ConflictResolver>
-
-    <!-- Statistics options -->
-    <statistics>
-        <excludedMeasures>radiology_review</excludedMeasures>
-        <excludedMeasures>mri_parameter_form</excludedMeasures>
-    </statistics>
-
-    <!-- GUI default settings -->
-    <gui>
-        <css>main.css</css>
-        <rowsPerPage>25</rowsPerPage>
-        <showTiming>0</showTiming>
-        <showPearErrors>0</showPearErrors>
-        <showDatabaseQueries>0</showDatabaseQueries>
-        <PopUpFeedbackBVL>1</PopUpFeedbackBVL>
-    </gui>
 
 </config>
