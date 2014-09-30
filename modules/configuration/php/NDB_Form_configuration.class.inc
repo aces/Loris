@@ -102,7 +102,6 @@ class NDB_Form_Configuration extends NDB_Form
             } else { //add new or remove
                 $id = split("-", $key);
                 if ($id[0] === "add") {
-                    print("Here");
                     $this->DB->insert(
                         'Config', 
                         array('ConfigID' => $id[1], 'Value' => $value)

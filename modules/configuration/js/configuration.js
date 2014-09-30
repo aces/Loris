@@ -4,7 +4,6 @@ $(function () {
 
     var count = 0;
     $(".add").click(function () {
-        console.log("here");
         count = count + 1;
         var id = $(this).attr('id'),
             new_id = id + "-" + count,
