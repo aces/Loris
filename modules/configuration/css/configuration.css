@@ -20,3 +20,26 @@
  .inline {
    display: inline;
  }
+
+.form-item {
+   display: block;
+}
+
+.rm-btn {
+   float: right;
+   font-size: 10px;
+   color: #178ACC;
+   display: inline;
+   background-image: none;
+   border: none;
+   background-color: transparent;
+   margin-top: -4px;
+   margin-bottom: 4px;
+}
+
+.rm-btn:hover, .rm-btn:focus {
+   background-color: transparent;
+   background-image: none;
+    color: #555555;
+    text-decoration: none
+}
