@@ -12,7 +12,8 @@
         <link type="text/css" href="css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
 
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bootstrap/css/custom-css.css">
         <!-- <link rel="stylesheet" href="bootstrap-3.1.1/css/magic-bootstrap.css"> -->
 
         <!-- Module-specific CSS -->
@@ -21,7 +22,7 @@
         {/if}
 
         <!-- Latest compiled and minified JavaScript -->
-        <script src="bootstrap-3.1.1/js/bootstrap.min.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
         <title>
             {$study_title}
         </title>
