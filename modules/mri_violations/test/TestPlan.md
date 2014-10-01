@@ -15,8 +15,8 @@ MRI Violations Module Test Plan:
 8.  MRI Protocol Violations page - allows editing of protocol table with permission `violated_scans_modifications`
 9.  Filter for scans that violate MRI check  (Type of Problem : MRI Protocol Check violation). Ensure link
     under Problem column goes to MRI Protocol Check Violations page with correct scan information
-10. MRI Protocol Check violation - check user access, Permission - `view_final_radiological_review`
-11. MRI Protocol Check violation check Selection Filter results for each of Tarchive ID, PatientName, CandID
+10. MRI Protocol Check violation page- check user access, Permission - `view_final_radiological_review`
+11. MRI Protocol Check violation page check Selection Filter results for each of Tarchive ID, PatientName, CandID
     DICOM Series UID
 12. MRI Protocol Check violation page - click on link under PatientName column, should go to Dicom Archive for the
     patient
