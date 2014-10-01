@@ -165,7 +165,7 @@ chmod 777 ../smarty/templates_c
 
 # set the group user to www-data for tools/logs directory:
 if [ -d logs ]; then
-	chgrp www-data logs
+	sudo chgrp www-data logs
 	# set the proper permission for the tools/logs directory:
 	chmod 770 logs 
 fi
