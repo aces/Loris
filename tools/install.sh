@@ -408,8 +408,8 @@ while true; do
             # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
             sed -e "s#%LORISROOT%#$RootDir/#g" \
                 -e "s#%PROJECTNAME%#$projectname#g" \
-                < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname > /dev/null
-            sudo a2dissite default
+                < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
+            sudo a2dissite 000-default
             sudo a2ensite $projectname
             break;;
         [Nn]* )
