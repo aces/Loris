@@ -7,7 +7,3 @@ Data Integrity Flag Test Plan
 5. GUI(especially tables,buttons) needs to be updated
 6. Check that the data_entry completion percentage is being calculated correctly
 7. Check that the form saves
-8. Misc:
-      Syntax could use some clean up: 
-      <NOTE: Please click on 'show-data' or refresh the page, once the 'save' button is clicked">
-      <Current Data_entry Completion Percentage (for V01 and instrument: aosi)>
