@@ -16,4 +16,6 @@
 8-  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any)
 9-  Under 'View Details' Click on 'Show/Hide Files' to view a list of all Dicom Files for the given patient
 10- Under 'View Details' Click on 'Show/Hide metadata' to view the details of the metadata file
-11- Click on 'View Images' to acess the MRI-Browser for the given subject
+11- Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the patient-name does not match the 
+regex in the config.xml
+12- Click on 'View Images' to acess the MRI-Browser for the given subject
