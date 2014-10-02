@@ -265,6 +265,7 @@ done;
 
 stty echo
 
+echo ""
 while true; do
     echo ""
     echo "Attempting to create the MySQL database '$mysqldb' ..."
@@ -343,6 +344,7 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 
 
 
+echo ""
 while true; do
     read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
@@ -395,6 +397,7 @@ while true; do
 done;
 
 
+echo ""
 while true; do
     read -p "Would you like to automatically create/install apache config files? [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
