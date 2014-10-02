@@ -2331,7 +2331,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 250 FROM ConfigSettings WHERE Na
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useEDC";
 
 -- ageMin
-INSERT INTO Config (ConfigID, Value) SELECT ID, 8 FROM ConfigSettings WHERE Name="ageMind";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 8 FROM ConfigSettings WHERE Name="ageMin";
 
 -- ageMax
 INSERT INTO Config (ConfigID, Value) SELECT ID, 11 FROM ConfigSettings WHERE Name="ageMax";
