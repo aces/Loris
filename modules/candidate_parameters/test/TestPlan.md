@@ -38,32 +38,32 @@
 ### Family Information Panel
 19. Check that the family panel only shows up if "Use family ID" is set to true in the configuration module.
 20. Check that these family members match what can be found in the family table.
+21. Click on the add family button and ensure that it takes you to the appropriate form.
 
 ### Add Family Info
-21. Try changing the family member ID to an ID that does not exist and make sure that an error appears.
+22. Try changing the family member ID to an ID that does not exist and make sure that an error appears.
 22. Try changing the family member ID to an ID that does exist. Save without specifying the relationship type. An error should appear.
-23. Enter the candidate's DCCID as the family member ID. Enter a relationship type. Make sure that an error appears. 
-24. Enter a valid DCCID as the family member ID and a relationship type. Check that these values are saved when the save button is clicked.
-25. Check that the return candidate info button is working.
+24. Enter the candidate's DCCID as the family member ID. Enter a relationship type. Make sure that an error appears. 
+25. Enter a valid DCCID as the family member ID and a relationship type. Check that these values are saved when the save button is clicked.
+26. Check that the return candidate info button is working.
 Note: Is there no way to edit/remove a family member from the front-end?
 
 ### Participant Status Panel
-- show all history
-- all fields displaying correctly
+27. Ensure that this panel shows all status changes for the participant
+28. Click on the update participant status button and ensure that it takes you to the appropriate form. 
 
 ### Update Participant Status
-- Change the participant status 
-- Change the participant status to inactivate or incomplete and edit the specify reason input. Save the form and ensure that an error appears
-- Try editing the Comments field and saving
-- Specify reason should only come up when inactive/incomplete is there
+29. Change the participant status and try to save it. See if it is successful.
+30. Change the participant status to inactivate or incomplete and do not edit the specify reason input. Try saving the form and ensure that an error appears
+31. Try editing the Comments field and saving
 
 ### Participation Consent Status Panel
-- Add a consent type like in the Developer's guide - does it show up here?
-- are the fields right?
+32. Add a new consent type following the Developer's guide. Does it show up in this panel when you refresh the page?
+33. Does the consent info shown in this table match what is stroed in the participant_status table?
 
 ### Update Consent Info
-Check that there is a set of form inputs for each type of consent. Add a new type of consent (by following the instructions in the Developer's guide for adding consent) and see that it appears here, with form inputs.
-Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
-Try entering two different dates for the date of consent. Make sure that an error appears when you try to save.
-Try entering two different dates for the date of withdrawal of consent. Make sure that an error appears when you try to save.
-For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
+34. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
+35. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
+36. Try entering two different dates for the date of consent. Make sure that an error appears when you try to save.
+37. Try entering two different dates for the date of withdrawal of consent. Make sure that an error appears when you try to save.
+38. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
