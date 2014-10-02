@@ -10,9 +10,12 @@
 4- Click on 'Show Data' to get the list of Unresolved Conflicts
 5- Under 'Unresolved Conflicts' Choose the correct answer and click on 'Save'
 6- Click on 'Show Data' And the conflict should not longer appear.
+7- Also check and make sure that the instrument and its corresponding DDE are updated accordingly
+
 Note: Use 'Resolved Conflicts' To ensure that the conflicts are resolved and saved in the database as follows:
 
-7- Acess the Conflict Resolver Module under 'Clinical Tab' if the user has permission 
+
+7- Access the Conflict Resolver Module under 'Clinical Tab' if the user has permission 
 8- Click on 'Resolved Conflicts'
 9- Click on 'Clear Form' to remove any previously entered parameters
 10 Filter for the specific parameter (Choose the one that applies):
