@@ -160,7 +160,7 @@
                     <div class="panel-body">
                         <div class="list-group tasks">
                             {if $conflicts neq "" and $conflicts neq 0}
-                            <a href="main.php?test_name=conflicts_resolve" class="list-group-item">
+                            <a href="main.php?test_name=conflict_resolver" class="list-group-item">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$conflicts}</div>
