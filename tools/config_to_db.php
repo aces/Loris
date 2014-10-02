@@ -92,14 +92,14 @@ function processLeaf($name, $value, $configID)
     if (empty($currentValue)) {
 
         $db->insert(
-            'config', array('ConfigID' => $configID, 'Value' => $value)
+            'Config', array('ConfigID' => $configID, 'Value' => $value)
         );
 
     } else if (!empty($currentValue) && $allowMultiple==0) { 
         // if the configID exists and the field does not allow multiples
 
         $db->update(
-            'config', array('Value' => $value), array('ConfigID' => $configID)
+            'Config', array('Value' => $value), array('ConfigID' => $configID)
         );
 
     } else { // if the configID exists and the field does allow multiples
@@ -107,7 +107,7 @@ function processLeaf($name, $value, $configID)
         // if it is not a copy of an already existing value
         if (!Recursive_In_array($value, $currentValue)) {
             $db->insert(
-                'config', array('ConfigID' => $configID, 'Value' => $value)
+                'Config', array('ConfigID' => $configID, 'Value' => $value)
             );
         }
 
