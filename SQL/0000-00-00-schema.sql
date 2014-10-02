@@ -2025,7 +2025,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
     ('Survey Module', 'main.php?test_name=survey_accounts', 6,2),
-    ('Help Editor', 'main.php?test_name=help_editor', 6,3);
+    ('Help Editor', 'main.php?test_name=help_editor', 6,3),
+    ('Configuration', 'main.php?test_name=configuration', 6, 4);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
