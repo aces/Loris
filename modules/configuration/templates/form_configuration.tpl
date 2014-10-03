@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="css/jquery.treegrid.css">
 
-<p>Configuration Module Description</p>
+<p>Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide.</p>
 
 {function name=printConfig}
     {foreach $items as $item}
