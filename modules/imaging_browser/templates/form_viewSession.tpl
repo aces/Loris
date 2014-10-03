@@ -77,8 +77,7 @@
             {/if}
 {* LINK TO COMMENTS *}
         <tr>
-            <td>{if $files[file].FileID}<a 
- onClick='window.open("feedback_mri_popup.php?fileID={$files[file].FileID}", "feedback_mri","width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>Link to comments</a><br>{else}&nbsp;{/if}
+            <td>{if $files[file].FileID}<a href="#noID" onClick='window.open("feedback_mri_popup.php?fileID={$files[file].FileID}", "feedback_mri","width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>Link to comments</a><br>{else}&nbsp;{/if}
             </td>
         </tr>
     </table>  
