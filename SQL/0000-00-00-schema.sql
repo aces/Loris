@@ -2069,7 +2069,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- Imaging Browser -- Config file currently does not require any permission
 -- Statistics -- Config file currently does not require any permission 
 
---- Document Repository 
+-- Document Repository 
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT 16, PermID FROM permissions WHERE code='file_upload';
 
