@@ -4,6 +4,6 @@ Instrument Manager Test Plan
 2. Check that tab exists on a default install (for superusers).
 3. Check that the warning text above is accurate for both with and without the directory writeable by Apache. The select file/upload button shouuld only be there if it's writeable.
 4. Verify GUI is updated.
-5. Check that instrument gets installed properly. Also check the paths in the code.
+5. Check that instrument gets installed properly. Also check the paths in the code - eg uploaded instruments in the right place with right permissions.
 6. Check that instruments' metadata in the table are labeled accurately.
-7. Check that function CheckTable performs the right checks, datatypes..
+7. Check that function CheckTable performs the appropriate checks on the instrument builder files and validates them properly - eg fields that don't match instrument table should be marked as invalid.
