@@ -174,7 +174,7 @@
                             </a>
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
-                                {if $incomplete_forms_site neq "Site: all"}
+                                {if $incomplete_forms_site eq "Site: all"}
                                 <a href="main.php?test_name=statistics&submenu=statistics_site" class="list-group-item">
                                 {else}
                                 <a href="main.php?test_name=statistics&submenu=statistics_site&CenterID={$user_site}" class="list-group-item">
