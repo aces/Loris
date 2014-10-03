@@ -8,4 +8,4 @@ Instrument List Test Plan
 6. Verify that BVL QC flags are working and only available if has bvl_feedback permission
 7. Verify that Visit can only be set as Passed after Data Entry (and DDE if applicable) is complete
 8. Verify if Current Stage is Not Started, Start Next Stage is available if valid Timepoint
-9. Verify that Send to DCC is only available after data entry is complete
+9. Verify that Send to DCC is only available after Visit is marked as Pass or Fail
