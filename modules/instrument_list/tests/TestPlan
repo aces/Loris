@@ -1,0 +1,11 @@
+Instrument List Test Plan
+
+1. Verify that update of current stage status requires (data_entry and the proper CenterID) OR if current stage is Approval, then only permission bvl_feedback is necessary to update current stage status
+2. Verify that instrument in list directs to corresponding instrument page
+3. Verify that the flags for each instrument in the list is set appropriately
+4. Verify that Double Data Entry is available if it is enabled for that instrument
+5. Verify that the meta data for the candidate/visit is correct - eg DoB, Gender, Visit Label, Visit Status, etc
+6. Verify that BVL QC flags are working and only available if has bvl_feedback permission
+7. Verify that Visit flags can only be set after Data Entry is complete
+8. Verify if Current Stage is Not Started, Start Next Stage is available if valid Timepoint
+9. Verify that Send to DCC is only available after data entry is complete
