@@ -56,7 +56,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 
         $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //get actual test_name
 
-        //$data_cleaning_fb_open = $this->getFeedbackcount($instrument,$_REQUEST['visit_label']);
         $visit_label = $_REQUEST['visit_label'];
         //save the date, flag status and comment in the data_integrity_flag table
         $DB =& Database::singleton();
@@ -283,25 +282,6 @@ function _getQuickformDate($databaseValue/*,$date_reference*/){
     }
     return $formDateValue;
 }
-
-function getFeedbackcount($test_name,$visit_label,$type='data_cleaning'){
-    $DB =& Database::singleton();
-    $query = "SELECT COUNT(*)
-        FROM session s
-        JOIN flag f ON (s.ID = f.SessionID)
-        JOIN feedback_bvl_thread b ON (b.commentid = f.commentid)
-        JOIN feedback_bvl_entry be ON (be.FeedbackID = b.FeedbackID)
-        JOIN feedback_bvl_type ftp ON (b.Feedback_type = ftp.Feedback_type)
-        JOIN candidate c ON (c.Candid = s.Candid)
-        JOIN psc ON (s.CenterID = psc.CenterID)
-        WHERE 
-        c.PSCID NOT LIKE '%999-99999%' AND c.Active = 'Y' AND s.Active = 'Y' AND 
-        f.test_name =:tname AND psc.Centerid!= '1' AND ftp.Name =:feedback_type AND s.Visit_label =:vlabel
-        AND b.status = 'Opened'";
-    $count = $DB->pselectOne($query,array('tname'=>$test_name,'feedback_type'=>$type,'vlabel'=>$visit_label));
-    return $count;
-}
-
 
 /**
  * getTestNameusingMappedName

@@ -88,7 +88,6 @@
 	        <td>{$form.flag_status.label}</td>
 	        <td>{$form.flag_status.html}</td>
 	    </tr>
-
 	    
    	    <tr>
 	        <td>{$form.comment.label}</td>
@@ -99,14 +98,12 @@
 		<tr>
 			<td nowrap="nowrap" colspan="3">
 				<input class="button" style="width: 100px" id="fire_away" name="fire_away" value="Save" type="submit"/>
-				<input class="button" style="width: 120px" id="update_data" name="update_data" value="Show updated Data" type="submit"/>
+				<input class="button" style="width: 150px" id="update_data" name="update_data" value="Show updated Data" type="submit"/>
 			</td>
 		</tr>
 
 	</table>
 </form>
-
-
 
 <form>
 	<table class="fancytable" border="0">
@@ -121,7 +118,6 @@
 	        <th>Date</th>
 	        <th>Flag Status</th>
 	        <th>Comment</th>
-	        <th>Data Cleaning open-feedbacks</th>
 	        <th>UserID</th>
 	    </tr>
 	    {foreach from=$elements_list_names item=element}
@@ -132,12 +128,10 @@
 		          <a href="main.php?visit_label={$elements_array[$element].visit_label}&instrument={$elements_array[$element].full_name}
 &filter=Show+Data&test_name=data_team_helper">{$elements_array[$element].instrument}
 		          </a>
-		          </td>
-		        
+		        </td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].date}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].flag}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].comment}</td>
-	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].dc_open_feedback}</td>
 	    		<td nowrap="nowrap" valign="top">{$elements_array[$element].userid}</td>
 	        </tr>
 	        
