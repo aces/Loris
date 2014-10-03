@@ -39,3 +39,4 @@ Instrument builder Test Plan
     9.a  Add questions
     9.b Save instrument file and ensure new changes are reflected in the file
 10. Install and test instrument and rules implemented
+11. Test functionality on mutiple broswers.
