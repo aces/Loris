@@ -11,3 +11,4 @@ Instrument List Test Plan
 9. Verify that Send to DCC is only available after Visit is marked as Pass/Failure/Withdrawal, and that user has 'send_to_dcc' permission
 10. Verify that 'unsend_to_dcc' permission is necessary to unsend to DCC
 11. Verify that breadcrumbs work
+12. Verify that values are correct for Visit Window
