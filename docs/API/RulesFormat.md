@@ -20,7 +20,8 @@ On a high level, a rule has the following form:
 {
     "Meta": {
         "InstrumentVersion": string,
-        "RulesFormatVersion" : "v0.0.1a-dev"
+        "RulesFormatVersion" : "v0.0.1a-dev",
+        "RequiredDefault" : boolean
     },
     "Rules": {
         "$QuestionName": [ QuestionRules ],
@@ -30,11 +31,23 @@ On a high level, a rule has the following form:
 }
 ```
 
-The Meta object mirrors the Instrument format. The `InstrumentVersion` represents
-the (author-specified) version of this instrument, and the `RulesFormatVersion` specifies
-the version of this spec that the accompagning JSON document follows. If combined with
-the instrument JSON format in the same JSON object, `RulesFormatVersion` and `InstrumentFormatVersion`
-MAY be different.
+The Meta object mirrors the Instrument format and has the following meaning.
+
+`InstrumentVersion`: represents the (author-specified) version of this instrument
+
+`RulesFormatVersion`: specifies the version of this spec that the accompagning JSON document follows.
+                      If combined with the instrument JSON format in the same JSON object,
+                      `RulesFormatVersion` and `InstrumentFormatVersion` MAY be different.
+
+`RequiredDefault`: Whether the default rule for fields obeying this spec is to be required, or
+                   not required. If `RequiredDefault` is true, all fields will be required unless
+                   one or more rules are specified for the question. If `RequiredDefault` is false,
+                   all fields will not be required unless a rule is set. When `RequiredDefault`
+                   is true and you need to specify that a question is NOT required, you can add
+                   a rule with no dependencies so that there is a rule registered.
+
+
+
 
 Like in the instrument JSON object, `InstrumentVersion` SHOULD change if the rules are
 modified in any way.
