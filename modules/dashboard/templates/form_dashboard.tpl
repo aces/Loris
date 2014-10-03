@@ -160,7 +160,7 @@
                     <div class="panel-body">
                         <div class="list-group tasks">
                             {if $conflicts neq "" and $conflicts neq 0}
-                            <a href="main.php?test_name=conflicts_resolve" class="list-group-item">
+                            <a href="main.php?test_name=conflict_resolver" class="list-group-item">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$conflicts}</div>
@@ -174,10 +174,10 @@
                             </a>
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
-                                {if $incomplete_forms_site eq "All"}
-                                <a href="main.php?test_name=statistics_site" class="list-group-item">
+                                {if $incomplete_forms_site neq "Site: all"}
+                                <a href="main.php?test_name=statistics&submenu=statistics_site" class="list-group-item">
                                 {else}
-                                <a href="main.php?test_name=statistics_site&CenterId={$user_site}&ProjectID=" class="list-group-item">
+                                <a href="main.php?test_name=statistics&submenu=statistics_site&CenterID={$user_site}" class="list-group-item">
                                 {/if}
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
