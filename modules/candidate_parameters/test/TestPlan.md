@@ -18,52 +18,54 @@
 
 ### Update Candidate Info
 6. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a time. Should you be able to save the Caveat Emptor Reason without the Caveat Emptor flag set?
-7. Check that the return candidate info button is working.
-8. Check if your changes are displayed in the Candidate Information panel
+7. If you set the Caveat Emptor flag to Yes, check that a reason must be specified. If the reason is set to other, check that an explanation must be provided.
+8. Check that the return candidate info button is working.
+9. Check if your changes are displayed in the Candidate Information panel
 
 ### Proband Information Panel
-9. Check that the proband section only shows up if "show proband section..." is set to true in the configuration module.
-10. Proband GUID, DoB Proband and Proband Gender should match what is stored in the candidate table. (Note: I don't even have Proband GUID in my table. It says "array" for this field on the module front-end. Perhaps it should take a different action.)
-11. Check that the age difference in months between the candidate and proband is correct.
-12. Remove the proband DoB. Check that the age difference field says that the age difference could not be calculated.
-13. Click on Update Proband Info and make sure that it goes to the correct form for this candidate
+10. Check that the proband section only shows up if "show proband section..." is set to true in the configuration module.
+11. Proband GUID, DoB Proband and Proband Gender should match what is stored in the candidate table. (Note: I don't even have Proband GUID in my table. It says "array" for this field on the module front-end. Perhaps it should take a different action.)
+12. Check that the age difference in months between the candidate and proband is correct.
+13. Remove the proband DoB. Check that the age difference field says that the age difference could not be calculated.
+14. Click on Update Proband Info and make sure that it goes to the correct form for this candidate
 
 ### Update Proband Info
-14. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a time.
-15. Try entering two different DoB and make sure an error appears if that is done.
-16. Try entering only one DoB and make sure an error appears if that is done.
-17. Try changing the DoB. Ensure that the age difference in the Proband Information Panel gets recalculated
+15. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a time.
+16. Try entering two different DoB and make sure an error appears if that is done.
+17. Try entering only one DoB and make sure an error appears if that is done.
+18. Try changing the DoB. Ensure that the age difference in the Proband Information Panel gets recalculated
 19. Check that the return candidate info button is working and that any changes you have made are now showing up.
 
 ### Family Information Panel
-19. Check that the family panel only shows up if "Use family ID" is set to true in the configuration module.
-20. Check that these family members match what can be found in the family table.
-21. Click on the add family button and ensure that it takes you to the appropriate form.
+20. Check that the family panel only shows up if "Use family ID" is set to true in the configuration module.
+21. Check that these family members match what can be found in the family table.
+22. Click on the add family button and ensure that it takes you to the appropriate form.
+23. Click on the DCCID and check that it takes you to the family members candidate profile.
 
 ### Add Family Info
-22. Try changing the family member ID to an ID that does not exist and make sure that an error appears.
-22. Try changing the family member ID to an ID that does exist. Save without specifying the relationship type. An error should appear.
-24. Enter the candidate's DCCID as the family member ID. Enter a relationship type. Make sure that an error appears. 
-25. Enter a valid DCCID as the family member ID and a relationship type. Check that these values are saved when the save button is clicked.
-26. Check that the return candidate info button is working.
+24. Try changing the family member ID to an ID that does not exist and make sure that an error appears.
+25. Try changing the family member ID to an ID that does exist. Save without specifying the relationship type. An error should appear.
+26. Enter the candidate's DCCID as the family member ID. Enter a relationship type. Make sure that an error appears. 
+27. Enter a valid DCCID as the family member ID and a relationship type. Check that these values are saved when the save button is clicked.
+28. Check that the return candidate info button is working.
 Note: Is there no way to edit/remove a family member from the front-end?
 
 ### Participant Status Panel
-27. Ensure that this panel shows all status changes for the participant
-28. Click on the update participant status button and ensure that it takes you to the appropriate form. 
+29. Ensure that this panel shows all status changes for the participant
+30. Click on the update participant status button and ensure that it takes you to the appropriate form. 
 
 ### Update Participant Status
-29. Change the participant status and try to save it. See if it is successful.
-30. Change the participant status to inactivate or incomplete and do not edit the specify reason input. Try saving the form and ensure that an error appears
-31. Try editing the Comments field and saving
+31. Change the participant status and try to save it. See if it is successful.
+32. Change the participant status to inactivate or incomplete and do not edit the specify reason input. Try saving the form and ensure that an error appears
+33. Try editing the Comments field and saving
 
 ### Participation Consent Status Panel
-32. Add a new consent type following the Developer's guide. Does it show up in this panel when you refresh the page?
-33. Does the consent info shown in this table match what is stroed in the participant_status table?
+34. Add a new consent type following the Developer's guide. Does it show up in this panel when you refresh the page?
+35. Does the consent info shown in this table match what is stroed in the participant_status table?
 
 ### Update Consent Info
-34. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
-35. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
-36. Try entering two different dates for the date of consent. Make sure that an error appears when you try to save.
-37. Try entering two different dates for the date of withdrawal of consent. Make sure that an error appears when you try to save.
-38. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
+36. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
+37. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
+38. Try entering two different dates for the date of consent. Make sure that an error appears when you try to save.
+39. Try entering two different dates for the date of withdrawal of consent. Make sure that an error appears when you try to save.
+40. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
