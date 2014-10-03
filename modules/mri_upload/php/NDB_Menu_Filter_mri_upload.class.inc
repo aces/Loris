@@ -72,12 +72,20 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                           'number_of_mincInserted',
                          );
 
-        $this->validFilters = array();
+        $this->validFilters = array('s.CandID',
+                                    'c.PSCID',
+                                    's.visit_label'
+                          
+        );
         $this->query        = " FROM mri_upload mu JOIN session ".
         "s ON (s.ID = mu.SessionID)
         JOIN candidate c on (c.CandID = s.CandID)
          WHERE 1=1 ";
-        $this->formToFilter = array();
+        $this->formToFilter = array(
+                'CandID'     => 's.CandID',
+                'PSCID'      =>'c.PSCID',
+                'visit_label'=>'s.visit_label'
+        );
         ////////////////////////////////////////////////////////////////////
         ////Create the log directory////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////
