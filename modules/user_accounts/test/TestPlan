@@ -22,7 +22,7 @@ When creating (OR?) editing a user: (subtest: edit_user)
       - Email.
 9. Check that if password and confirmed password do not match you get an error.
 10. Check that if you do not enter an email address that is syntactically valid you get an error.
-11. Check that when generating a password, the password rules are enforced.
+11. For an existing active user, edit the user's account and click 'Generate new password'. Save. Check that the user can login but is immediately asked to update his/her password.
 12. Check that if creating a new user an email is sent to him/her (requires email server).
 13. Check that if modifying a password for a user an email is sent to that user containing the new password (requires email server).
 14. Check that if the 'Display additional information' entry is set to false in the admin module, fields Degree, Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and FAX are not shown.
