@@ -1,6 +1,6 @@
 ## Certification module - Test Plan 
 
-1	User can view certification module IFF has permission (12) "certification"<br>
+1	User can view certification module IFF has permission (12) "certification"
 
 2	All Filters work; sorting by column headers works
 
