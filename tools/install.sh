@@ -399,7 +399,7 @@ done;
 
 echo ""
 while true; do
-    read -p "Would you like to automatically create/install apache config files? (This will only work for Ubuntu 14.04 default Apache installations) [yn] " yn
+    read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
