@@ -10,7 +10,7 @@
 5. Check that if Site is set to 'All' in the filter, users that have a different site than the user logged in are returned by the search (if any).
 6. Try to add a user with a user name already taken: check that you can't.
 
-When creating (OR?) editing a user: (subtest: edit_user)
+When creating or editing a user: (subtest: edit_user)
 ========================================================
 
 7. Check that password rules are enforced.
@@ -23,25 +23,26 @@ When creating (OR?) editing a user: (subtest: edit_user)
 9. Check that if password and confirmed password do not match you get an error.
 10. Check that if you do not enter an email address that is syntactically valid you get an error.
 11. For an existing active user, edit the user's account and click 'Generate new password'. Save. Check that the user can login but is immediately asked to update his/her password.
-12. Check that if creating a new user an email is sent to him/her (requires email server).
-13. Check that if modifying a password for a user an email is sent to that user containing the new password (requires email server).
-14. Check that if the 'Display additional information' entry is set to false in the admin module, fields Degree, Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and FAX are not shown.
-15. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
-16. Setting the Active=”No” for user X prevents user X from logging in until his/her account is approved.
-17 Check that modifications made to the basic user infos are displayed when the user table is reloaded.
-18. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or retain any changes).
-19. When editing an existing user: Check that Back button takes you to the User Account page and does not save any changes. 
-20. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes to the user profile.
+12. Check that when creating a new user, check that the first time the user logs in he/she is asked to enter a new password. 
+13. Check that if creating a new user an email is sent to him/her (requires email server).
+14. Check that if modifying a password for a user an email is sent to that user containing the new password (requires email server).
+15. Check that if the 'Display additional information' entry is set to false in the admin module, fields Degree, Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and FAX are not shown.
+16. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
+17. Setting the Active=”No” for user X prevents user X from logging in until his/her account is approved.
+18 Check that modifications made to the basic user infos are displayed when the user table is reloaded.
+19. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or retain any changes).
+20. When editing an existing user: Check that Back button takes you to the User Account page and does not save any changes. 
+21. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes to the user profile.
 
 On the My Preferences page:
 ==========================
 
-21. Check that all users (even those with NO permissions) have access to the My Preferences page.
-22. Change the user’s password.  Check that the password rules are enforced..
-23. Check that if password and confirmed password do not match you get an error.
-24. Check that saving fails if any field is left blank. 
-25. Check that if you do not enter an email address that is syntactically valid you get an error.
-26. Modify any field on the page and save, and go to the User Account page. Check that the modifications are displayed when looking at the modified user account.  
-27. Set the 'Receive doc repo notifications' to No. Upload a new document (any). Check that no email is sent to the user.
-28. Set the 'Receive doc repo notifications' to Yes. Upload a new document (any). Check that an email is sent to the user (requires email server).
-29. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you do not have access to the user account module, the system should tell you so.
+22. Check that all users (even those with NO permissions) have access to the My Preferences page.
+23. Change the user’s password.  Check that the password rules are enforced..
+24. Check that if password and confirmed password do not match you get an error.
+25. Check that saving fails if any field is left blank. 
+26. Check that if you do not enter an email address that is syntactically valid you get an error.
+27. Modify any field on the page and save, and go to the User Account page. Check that the modifications are displayed when looking at the modified user account.  
+28. Set the 'Receive doc repo notifications' to No. Upload a new document (any). Check that no email is sent to the user.
+29. Set the 'Receive doc repo notifications' to Yes. Upload a new document (any). Check that an email is sent to the user (requires email server).
+30. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you do not have access to the user account module, the system should tell you so.
