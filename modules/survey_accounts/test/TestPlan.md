@@ -18,4 +18,4 @@
    f. Try creating duplicate instrument for a candidate for a visit, should get an error message.
    g. Try creating instrument for a candidate in a non-existing visit, should get an error message.
 7. Enable a new instrument for Survey module and verify survey can be created. (IsDirectEntry set to 1 in test_names table).
-8. Test all functionality on multiple broswers ( Chrome and Firefox minimum).
+8. Test all functionality on multiple browsers ( Chrome and Firefox minimum).
