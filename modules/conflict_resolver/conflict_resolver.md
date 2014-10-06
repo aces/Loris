@@ -10,7 +10,7 @@
 4- Click on 'Show Data' to get the list of Unresolved Conflicts
 5- Under 'Unresolved Conflicts' Choose the correct answer and click on 'Save'
 6- Click on 'Show Data' And the conflict should not longer appear.
-7- Also check and make sure that the instrument and its corresponding DDE are updated accordingly
+7- Also check and make sure that the instrument and its corresponding DDE are updated accordingly. 
 
 Note: Use 'Resolved Conflicts' To ensure that the conflicts are resolved and saved in the database as follows:
 
