@@ -1,4 +1,4 @@
-1. User has access to document repository iff he/she has permission “Access files in the document repository” or is the super user.
+1. User has access to document repository iff he/she has permission “Access all documents” or is the super user.
 2. Create a category and a sub category.
 3. Check that the comments for a category are displayed properly. Also check that they can be edited/added.
 3. Upload/delete a file.
