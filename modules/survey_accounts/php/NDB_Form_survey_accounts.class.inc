@@ -109,15 +109,19 @@ class NDB_Form_survey_accounts extends NDB_Form
                         );
             }
         }
-        if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
-            return array(
-                    'Email'=> 'The email address is not valid.'
+        if ( !empty($values['Email']) ) {
+            if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
+                return array(
+                        'Email'=> 'The email address is not valid.'
                         );
+            }
         }
-        if($values['Email'] != $values['Email2']) {
-          return array(
-                    'Email2'=> 'The email addresses do not match.'
+        if ( !empty($values['Email']) && !empty($values['Email2'])) {
+            if ($values['Email'] != $values['Email2']) {
+                return array(
+                        'Email2'=> 'The email addresses do not match.'
                         );
+            }
         }
         if(empty($values['Test_name'])) {
             return array(
