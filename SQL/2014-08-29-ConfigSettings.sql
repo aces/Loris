@@ -4,6 +4,7 @@ CREATE TABLE `ConfigSettings` (
       `Description` varchar(255) DEFAULT NULL,
       `Visible` tinyint(1) DEFAULT '0',
       `AllowMultiple` tinyint(1) DEFAULT '0',
+      `AcceptData` tinyint(1) DEFAULT '0',
       `Parent` int(11) DEFAULT NULL,
       PRIMARY KEY (`ID`),
       UNIQUE KEY `Name` (`Name`)
