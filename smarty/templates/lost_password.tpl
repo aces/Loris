@@ -29,10 +29,18 @@
 			</div>
 			<div class="col-sm-6 col-xs-9">
 				{if $error_message}
-					{$error_message}<br>
+					<div class="form-group has-error">
+                        <label class="control-label">
+                            {$error_message}
+                        </label>
+                    </div>
 				{/if}
 				{if $confirm}
-					{$confirm}<br>
+					<div class="form-group has-success">
+					  	<label class="control-label">
+					  		{$confirm}
+					  	</label>
+					</div>
 				{/if}
 				Please enter your username below, and a new password will be sent to you.<br><br>
 				<div class="form-group">
