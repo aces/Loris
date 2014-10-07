@@ -2,7 +2,7 @@
 
 1. Check that you can only access the page if you have the data_entry permission.
 2. Try clicking on all the tabs. Do they appear to be working?
-3. On each page, check that tables are aligned and look good.
+3. On each page, check that tables are aligned and look good, and columns and rows are properly/adequately labelled.
 
 ### Demographic Statistics
 4. Click on the Demographic Statistics tab. For the general statistics table, compare the data in the table to that in the database to ensure that it is being queried correctly.
