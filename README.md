@@ -24,11 +24,9 @@ LORIS has following prerequisites:
 ```sudo passwd lorisadmin``` <br>
 ```su - lorisadmin```
 
-** Important ⇾ All steps from this point forward must be executed by lorisadmin user **
+** Important ⇾ All steps from this point forward must be executed by lorisadmin user**
 
-```sudo mkdir -m 775 -p /var/www/$projectname ```
-
-$projectname ⇾ placeholder2, type “loris” or one-word project name
+```sudo mkdir -m 775 -p /var/www/$projectname ``` $projectname ⇾ type “loris” or one-word project name
 
 ```sudo chown lorisadmin.lorisadmin /var/www/$projectname```
 
