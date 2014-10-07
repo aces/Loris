@@ -36,6 +36,16 @@ LORIS has following prerequisites:
 
 4) Run installer script to install core code, libraries, and MySQL schema (see Loris Setup Schematic). The script will prompt for the following information, including usernames and folders which it will create automatically.
 
+ * cd /var/www/$projectname/tools
+ * ./install.sh
+ * sudo service apache2 reload
+
+5) Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
+Log in with the username “admin” and the password you supplied for this user while running the Install script. 
+
+Note: Apache config files will be installed as *.conf, per Ubuntu 14.04. Rename these if running earlier version.
+ * sudo a2dissite default
+ * sudo a2ensite $projectname
 
 Notes for Loris post-installation setup are contained in the [Loris Developers Guide](https://docs.google.com/document/d/129T2SfqzKTTOkoXRykzCLe5Vy70A9Dzjw1O3vqgwsPQ).
 
@@ -47,4 +57,3 @@ Please feel free to subscribe to the LORIS Developer's mailing list, where you c
 # Upgrade Notes
 
 To upgrade LORIS to the latest version, pull the latest code from GitHub. MySQL patches are contained in the SQL/ subdirectory of LORIS. You must run any new patches that appear in that directory after running the `git pull` command. If you do not do this, some features may break as the MySQL table schema is likely out of date.
-
