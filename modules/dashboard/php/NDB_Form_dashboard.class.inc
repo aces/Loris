@@ -31,7 +31,7 @@ class NDB_Form_dashboard extends NDB_Form
     {
         $DB =& Database::singleton(); 
         $total = $DB->pselectOne(
-            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender", 
+            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender AND c.Active='Y'", 
             array('Gender' => $gender)
         );
         return $total;
@@ -80,7 +80,7 @@ class NDB_Form_dashboard extends NDB_Form
 
         // Recruitment totals
         $totalRecruitment = $DB->pselectOne(
-            "SELECT count(*) FROM candidate c", array()
+            "SELECT count(*) FROM candidate c WHERE c.Active='Y'", array()
         );
         $this->tpl_data['total_recruitment'] = $totalRecruitment;
 

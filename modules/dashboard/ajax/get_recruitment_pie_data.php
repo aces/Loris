@@ -30,7 +30,7 @@ foreach ($list_of_sites as $site) {
         "total" => $DB->pselectOne(
             "SELECT count(c.CandID) 
             FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-            WHERE psc.Name=:Site", array('Site' => $site)
+            WHERE c.Active='Y' psc.Name=:Site", array('Site' => $site)
         )
     );
 }

@@ -31,12 +31,12 @@ foreach ($list_of_sites as $site) {
     $genderData['datasets']['female'][] = $DB->pselectOne(
         "SELECT count(c.CandID) FROM candidate c 
         LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-        WHERE c.Gender='female' AND psc.Name=:Site", array('Site' => $site)
+        WHERE c.Gender='female' AND c.Active='Y' AND psc.Name=:Site", array('Site' => $site)
     );
     $genderData['datasets']['male'][] = $DB->pselectOne(
         "SELECT count(c.CandID) FROM candidate c 
         LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-        WHERE c.Gender='male' AND psc.Name=:Site", array('Site' => $site)
+        WHERE c.Gender='male' AND c.Active='Y' AND psc.Name=:Site", array('Site' => $site)
     );
 }
 print json_encode($genderData);
