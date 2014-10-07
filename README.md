@@ -31,8 +31,9 @@ LORIS has following prerequisites:
 3) Get code: 
  * Click “Fork” in https://github.com/aces/Loris-Trunk. Fork to your Git-user. 
  * Clone fork to your server: 
-````cd /var/www/ ````
-````git clone git@github.com:your-git-username/Loris-Trunk.git $projectname ````
+``` cd /var/www/ ```
+<br>
+```git clone git@github.com:your-git-username/Loris-Trunk.git $projectname ```
 
 4) Run installer script to install core code, libraries, and MySQL schema (see Loris Setup Schematic). The script will prompt for the following information, including usernames and folders which it will create automatically.
 
