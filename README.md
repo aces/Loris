@@ -22,11 +22,11 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
 ```sudo passwd lorisadmin``` <br>
 ```su - lorisadmin```
 
-<b>Important ⇾ All steps from this point forward must be executed by lorisadmin user<b>
+<b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
 
 ```sudo mkdir -m 775 -p /var/www/$projectname ``` <br>
 ```sudo chown lorisadmin.lorisadmin /var/www/$projectname```<br>
-$projectname ⇾ “loris” or one-word project name
+<i>$projectname ⇾ “loris” or one-word project name</i>
 
 2) Setup public keys: 
  * On LORIS server, run ssh-keygen. Press Enter until key created. 
