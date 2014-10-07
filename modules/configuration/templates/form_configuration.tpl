@@ -13,32 +13,42 @@
             <tr class="treegrid-{$item['ID']}">
         {/if}
                 <td>
-                        {$item['Description']}
+                    {$item['Description']}
                 </td>
                 <td>
-                    <div class="form-section" id="{$item['ID']}-formsection">
-                        {if $item['AllowMultiple'] == 1}
-                            <form method="POST" action="">
-                                <button class="btn btn-default btn-sm add" id="{$item['ID']}" type="button" name="add-{$item['ID']}">
-                                    <span class="glyphicon glyphicon-plus"></span> Add field
-                                </button>
-                            </form>
-                        {/if}
-                        {if isset($item['Value'])}
-                            {foreach from=$item['Value'] key=k item=v}
-                                <div class="form-item">
-                                    <form method="POST">
-                                        <input class="form-control input-sm" name="{$k}" type="text" id="{$k}" value="{$v}">
-                                    </form>
-                                {if $item['AllowMultiple'] == 1}
-                                    <form method="POST">
-                                        <button class="btn btn-default btn-small rm-btn" id="{$k}" type="submit" name="remove-{$k}">Remove</button>
-                                    </form>
+                    {if $item['AcceptData']}
+                        <div class="form-section" id="{$item['ID']}-formsection">
+                            {if $item['AllowMultiple'] == 1}
+                                <form method="POST" action="">
+                                    <button class="btn btn-default btn-sm add" id="{$item['ID']}" type="button" name="add-{$item['ID']}">
+                                        <span class="glyphicon glyphicon-plus"></span> Add field
+                                    </button>
+                                </form>
+                            {/if}
+                            {if isset($item['Value'])}
+                                {foreach from=$item['Value'] key=k item=v}
+                                    <div class="form-item">
+                                        <form method="POST">
+                                            <input class="form-control input-sm" name="{$k}" type="text" id="{$k}" value="{$v}">
+                                        </form>
+                                    {if $item['AllowMultiple'] == 1}
+                                        <form method="POST">
+                                            <button class="btn btn-default btn-small rm-btn" id="{$k}" type="submit" name="remove-{$k}">Remove</button>
+                                        </form>
+                                    {/if}
+                                    </div>
+                                {/foreach}
+                            {else}
+                                {if $item['AllowMultiple'] == 0}
+                                    <div class="form-item">
+                                        <form method="POST">
+                                            <input class="form-control input-sm" name="add-{$item['ID']}" type="text">
+                                        </form>
+                                    </div>
                                 {/if}
-                                </div>
-                            {/foreach}
-                        {/if}
-                    </div>
+                            {/if}
+                        </div>
+                    {/if}
                 </td>
             </tr>
     {/foreach}
