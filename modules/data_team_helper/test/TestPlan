@@ -2,7 +2,8 @@ Data Team Helper Test Plan:
 
 1. Access data_team_helper module
 2. Choose a visit label and instrument and click "Show Data"
-3. Ensure that Conflict/Incomplete Candidate/feedback status links point to the correct place.
-4. Ensure that Current data_entry status percentage is correct.
-5. Click on a field label and ensure that it downloads CSV of the data.
-6. Select "All Instruments" for a visit label and repeat steps 3-5
+3. Ensure that Conflict/Incomplete Candidate/Link to BVL Feedback links point to the correct place.
+4. Ensure that feedback status is correct.
+5. Ensure that Current data_entry status percentage is correct for the given visit.
+6. Click on a field label and ensure that it downloads CSV of the data.
+7. Select "All Instruments" for a visit label and repeat steps 3-5
