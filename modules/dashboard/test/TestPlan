@@ -3,7 +3,7 @@
   recruitment target is displayed in recruitment panel
 3. Put a recruitment target in the configuration module and check that the info in the recruitment panel is correct.
 4. Switch to site breakdown and check that info in recruitment panel is correct.
-5. Create a candidate and assign it to any site. Inactivate it. Make sure it is still taken into account in the gender
+5. Create a candidate and assign it to any site. Inactivate it. Make sure it is NOT taken into account in the gender
    breakdown view (recruitment panel). 
 6. Check that site breakdown view (recruitment panel) is correct.
 7. Check that scans per site (study progression panel) view is correct (scan dates and scan numbers).
