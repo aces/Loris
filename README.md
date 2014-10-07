@@ -21,13 +21,17 @@ LORIS has following prerequisites:
 1) Set up LINUX user lorisadmin and create LORIS base directory:
 
 ```sudo useradd -U -m -G sudo -s /bin/bash lorisadmin```
-<br>
+
 ```sudo passwd lorisadmin```
-<br>
-```su - lorisadmin   # Important ⇾ All steps from this point forward must be executed by lorisadmin user```
-<br>
-```sudo mkdir -m 775 -p /var/www/$projectname  # $projectname placeholder2, type “loris” or one-word project name```
-<br>
+
+```su - lorisadmin```
+
+Important ⇾ All steps from this point forward must be executed by lorisadmin user
+
+```sudo mkdir -m 775 -p /var/www/$projectname ```
+
+# $projectname placeholder2, type “loris” or one-word project name
+
 ```sudo chown lorisadmin.lorisadmin /var/www/$projectname```
 
 2) Setup public keys: 
@@ -38,13 +42,15 @@ LORIS has following prerequisites:
  * Clone fork to your server: 
 
 ``` cd /var/www/ ```
-<br>
+
 ```git clone git@github.com:your-git-username/Loris-Trunk.git $projectname ```
 
 4) Run installer script to install core code, libraries, and MySQL schema (see Loris Setup Schematic). The script will prompt for the following information, including usernames and folders which it will create automatically.
 
 ``` cd /var/www/$projectname/tools ```
+<br>
 ``` ./install.sh ```
+<br>
 ``` sudo service apache2 reload ```
 
 5) Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
