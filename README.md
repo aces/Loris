@@ -24,9 +24,9 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
 
 <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user<b>
 
-```sudo mkdir -m 775 -p /var/www/$projectname ``` $projectname ⇾ “loris” or one-word project name
-
-```sudo chown lorisadmin.lorisadmin /var/www/$projectname```
+```sudo mkdir -m 775 -p /var/www/$projectname ``` <br>
+```sudo chown lorisadmin.lorisadmin /var/www/$projectname```<br>
+$projectname ⇾ “loris” or one-word project name
 
 2) Setup public keys: 
  * On LORIS server, run ssh-keygen. Press Enter until key created. 
@@ -40,7 +40,7 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
 ```cd /var/www/ ``` <br>
 ```git clone git@github.com:your-git-username/Loris-Trunk.git $projectname ```
 
-4) Run installer script to install core code, libraries, and MySQL schema (see Loris Setup Schematic). The script will prompt for the following information, including usernames and folders which it will create automatically.
+4) Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for the following information, including usernames and folders which it will create automatically.
 
 ``` cd /var/www/$projectname/tools ``` <br>
 ``` ./install.sh ``` <br>
