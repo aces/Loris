@@ -20,17 +20,15 @@ LORIS has following prerequisites:
 
 1) Set up LINUX user lorisadmin and create LORIS base directory:
 
-```sudo useradd -U -m -G sudo -s /bin/bash lorisadmin```
-<br>
-```sudo passwd lorisadmin```
-<br>
+```sudo useradd -U -m -G sudo -s /bin/bash lorisadmin``` <br>
+```sudo passwd lorisadmin``` <br>
 ```su - lorisadmin```
 
-Important ⇾ All steps from this point forward must be executed by lorisadmin user
+** Important ⇾ All steps from this point forward must be executed by lorisadmin user **
 
 ```sudo mkdir -m 775 -p /var/www/$projectname ```
 
-# $projectname placeholder2, type “loris” or one-word project name
+$projectname ⇾ placeholder2, type “loris” or one-word project name
 
 ```sudo chown lorisadmin.lorisadmin /var/www/$projectname```
 
@@ -44,16 +42,13 @@ Important ⇾ All steps from this point forward must be executed by lorisadmin u
  * Click “Fork” in https://github.com/aces/Loris-Trunk. Fork to your Git-user. 
  * Clone fork to your server: 
 
-``` cd /var/www/ ```
-<br>
+``` cd /var/www/ ``` <br>
 ```git clone git@github.com:your-git-username/Loris-Trunk.git $projectname ```
 
 4) Run installer script to install core code, libraries, and MySQL schema (see Loris Setup Schematic). The script will prompt for the following information, including usernames and folders which it will create automatically.
 
-``` cd /var/www/$projectname/tools ```
-<br>
-``` ./install.sh ```
-<br>
+``` cd /var/www/$projectname/tools ``` <br>
+``` ./install.sh ``` <br>
 ``` sudo service apache2 reload ```
 
 5) Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
@@ -61,8 +56,7 @@ Log in with the username “admin” and the password you supplied for this user
 
 Note: Apache config files will be installed as *.conf, per Ubuntu 14.04. Rename these if running earlier version.
 
-```sudo a2dissite default```
-<br>
+```sudo a2dissite default``` <br>
 ```sudo a2ensite $projectname```
 
 Notes for Loris post-installation setup are contained in the [Loris Developers Guide](https://docs.google.com/document/d/129T2SfqzKTTOkoXRykzCLe5Vy70A9Dzjw1O3vqgwsPQ).
