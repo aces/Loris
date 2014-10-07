@@ -31,7 +31,7 @@ class NDB_Form_dashboard extends NDB_Form
     {
         $DB =& Database::singleton(); 
         $total = $DB->pselectOne(
-            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender", 
+            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender AND c.Active='Y'", 
             array('Gender' => $gender)
         );
         return $total;
@@ -49,9 +49,12 @@ class NDB_Form_dashboard extends NDB_Form
         );
         $userID = $user->getUsername();
         $last_login = $DB->pselectOne(
-            "SELECT max(Login_timestamp) 
-            FROM user_login_history 
-            WHERE userID=:UserID AND Success='Y'", array('UserID' => $userID)
+            "SELECT MAX(Login_timestamp)
+             FROM user_login_history
+             WHERE Login_timestamp < (SELECT MAX(Login_timestamp)
+                FROM user_login_history
+                WHERE userID=:UserID AND Success='Y')
+             AND userID=:UserID AND Success='Y'", array('UserID' => $userID)
         );
         $this->tpl_data['user_site'] = $siteID;
 
@@ -80,7 +83,7 @@ class NDB_Form_dashboard extends NDB_Form
 
         // Recruitment totals
         $totalRecruitment = $DB->pselectOne(
-            "SELECT count(*) FROM candidate c", array()
+            "SELECT count(*) FROM candidate c WHERE c.Active='Y'", array()
         );
         $this->tpl_data['total_recruitment'] = $totalRecruitment;
 
