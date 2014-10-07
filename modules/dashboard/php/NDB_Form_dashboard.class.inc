@@ -49,9 +49,12 @@ class NDB_Form_dashboard extends NDB_Form
         );
         $userID = $user->getUsername();
         $last_login = $DB->pselectOne(
-            "SELECT max(Login_timestamp) 
-            FROM user_login_history 
-            WHERE userID=:UserID AND Success='Y'", array('UserID' => $userID)
+            "SELECT MAX(Login_timestamp)
+             FROM user_login_history
+             WHERE Login_timestamp < (SELECT MAX(Login_timestamp)
+                FROM user_login_history
+                WHERE userID=:UserID AND Success='Y')
+             AND userID=:UserID AND Success='Y'", array('UserID' => $userID)
         );
         $this->tpl_data['user_site'] = $siteID;
 
