@@ -21,9 +21,13 @@ LORIS has following prerequisites:
 1) Set up LINUX user lorisadmin and create LORIS base directory:
 
 ```sudo useradd -U -m -G sudo -s /bin/bash lorisadmin```
+<br>
 ```sudo passwd lorisadmin```
+<br>
 ```su - lorisadmin   # Important ⇾ All steps from this point forward must be executed by lorisadmin user```
+<br>
 ```sudo mkdir -m 775 -p /var/www/$projectname  # $projectname placeholder2, type “loris” or one-word project name```
+<br>
 ```sudo chown lorisadmin.lorisadmin /var/www/$projectname```
 
 2) Setup public keys: 
@@ -47,7 +51,9 @@ LORIS has following prerequisites:
 Log in with the username “admin” and the password you supplied for this user while running the Install script. 
 
 Note: Apache config files will be installed as *.conf, per Ubuntu 14.04. Rename these if running earlier version.
+
 ```sudo a2dissite default```
+
 ```sudo a2ensite $projectname```
 
 Notes for Loris post-installation setup are contained in the [Loris Developers Guide](https://docs.google.com/document/d/129T2SfqzKTTOkoXRykzCLe5Vy70A9Dzjw1O3vqgwsPQ).
