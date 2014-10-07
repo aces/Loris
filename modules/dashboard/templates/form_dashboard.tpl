@@ -196,7 +196,7 @@
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$new_scans}</div>
-                                            New scan{if $new_scans neq 1}s{/if}
+                                            New and pending scan{if $new_scans neq 1}s{/if}
                                         </div>
                                         <div class="col-xs-4 text-right alert-chevron">
                                             <span class="glyphicon glyphicon-chevron-right medium"></span>
