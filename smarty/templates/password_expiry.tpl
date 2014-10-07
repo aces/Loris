@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- page title -->
 <title>{$title}</title>
 </head>
@@ -50,7 +51,11 @@
                 <br><br>
                 <div class="col-xs-12">
                     {if $error_message}
-                        {$error_message}<br>
+                        <div class="form-group has-error">
+                            <label class="control-label">
+                                {$error_message}
+                            </label>
+                        </div>
                     {/if}
                     <div class="form-group col-xs-12">
                         <label class="col-xs-4">
