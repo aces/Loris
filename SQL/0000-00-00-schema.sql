@@ -1423,7 +1423,7 @@ CREATE TABLE `users` (
   `Country` varchar(255) default NULL,
   `Fax` varchar(255) default NULL,
   `Email` varchar(255) NOT NULL default '',
-  `CenterID` tinyint(2) unsigned NOT NULL default '0',
+  `CenterID` tinyint(2) unsigned default NULL,
   `Privilege` tinyint(1) NOT NULL default '0',
   `PSCPI` enum('Y','N') NOT NULL default 'N',
   `DBAccess` varchar(10) NOT NULL default '',
