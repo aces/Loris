@@ -1,0 +1,28 @@
+1. User has access to document repository iff he/she has permission “Access all documents” or is the super user.
+2. Create a category and a sub category.
+3. Check that the comments for a category are displayed properly. Also check that they can be edited/added.
+3. Upload/delete a file.
+4. Edit document property and save. Check that changes were saved properly.
+5. Download a file and check content.
+6. Add files in repository to test search according to file name, file type, version, site and uploaded by.
+7. Check that expand/collapse works for non-empty categories. Check that when performing a search, the categories
+   containing the resulting files (and only those) are automatically expanded
+8. Check that if a category contains special characters (e.g. space, dot or comma) it can be expanded.
+9. Add two files with the same name but with different contents in two different categories. Verify that, when 
+   downloaded, their contents are different.
+10. Edit a file in the repository: check that “Last modified on” date is updated.
+11. Upload a file using another user and then update it. Check that “Last updated by” field is updated.
+12. User A edits a file. User B tries to delete the same file in the meantime. Check that he can't.
+13. Check that preference “Receive Document Repository Notifications” works.
+14. Check that performance is OK with large number of files.
+15. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
+    time one of the following event occurs:
+       - Addition, deletion or modification of a file
+       - Addition of a category.
+    Also check that the www address contained in the notification email is correct.
+16. Check that the following settings are in /etc/php5/apache2/php.ini:
+      session.gc_maxlifetime 10800
+      max_execution_time  10800
+      upload_max_filesize 1020M
+      post_max_size   1024M
+      
