@@ -4,8 +4,6 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
 
 # Prerequisites
 
-LORIS has following prerequisites:
-
  * LINUX (Optimized for Ubuntu 14.04) or Mac OS X (tested for 10.9)
  * Apache2 (libapache2-mod-php5)
  * MySQL (libmysqlclient15-dev mysql-client mysql-server)
@@ -26,7 +24,7 @@ LORIS has following prerequisites:
 
 <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user<b>
 
-```sudo mkdir -m 775 -p /var/www/$projectname ``` $projectname ⇾ type “loris” or one-word project name
+```sudo mkdir -m 775 -p /var/www/$projectname ``` $projectname ⇾ “loris” or one-word project name
 
 ```sudo chown lorisadmin.lorisadmin /var/www/$projectname```
 
