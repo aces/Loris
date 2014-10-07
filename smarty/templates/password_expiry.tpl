@@ -49,6 +49,9 @@
                 </strong>
                 <br><br>
                 <div class="col-xs-12">
+                    {if $error_message}
+                        {$error_message}<br>
+                    {/if}
                     <div class="form-group col-xs-12">
                         <label class="col-xs-4">
                             New Password:
