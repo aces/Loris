@@ -973,7 +973,8 @@ INSERT INTO `permissions` VALUES
 	(20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),
 	(21,'data_integrity_flag','Data Integrity Flag','2'),
 	(22,'config','Edit configuration settings','2'),
-	(23,'view_final_radiological_review','Can see final radiological reviews','2');
+	(23,'edit_final_radiological_review','Can edit final radiological reviews','2'),
+	(24,'view_final_radiological_review','Can see final radiological reviews','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
