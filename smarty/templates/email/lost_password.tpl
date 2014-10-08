@@ -10,4 +10,4 @@ Please try to login again. You will be prompted to change your password after lo
 
 Thank you,
 
-Database Group
+LORIS Team
