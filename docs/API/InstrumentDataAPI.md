@@ -8,10 +8,10 @@ API is NOT YET IMPLEMENTED.
 
 Loris will implement a RESTful API. Any request sent to `$LorisRoot/api/$APIVERSION/$API_CALL`
 will return either a JSON object or no data. The Loris API will use standard HTTP error
-codes (200 for success, 3xx for errors) and the body will either be empty or contain only
-a JSON object for any request. For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from
-the definitions in this specification. This document specifies $APIVERSION v0.0.1a-dev and it
-MUST be included in all requests.
+codes and the body will either be empty or contain only a JSON object for any request.
+For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
+document. This document specifies $APIVERSION v0.0.1a-dev and it
+MUST be included before the request in all requests.
 
 HTTP GET requests will NEVER modify data. POST requests MUST be used to modify data.
 
@@ -59,6 +59,7 @@ be true, otherwise an empty JSON object may be returned.
 ```
 POST /Instrument/Form/$InstrumentName?Form=true&Rules=true
 ```
+
 A POST request for `/Instrument/Form/$InstrumentName` will install or update an already existing
 form. The user issuing the request must have appropriate permissions. If either Rules=false or
 Form=false is set on the request, then that aspect of the form will NOT be updated and existing
