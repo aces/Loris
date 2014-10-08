@@ -403,6 +403,21 @@ class NDB_Form_candidate_parameters extends NDB_Form
            }
            $participant_vals['entry_staff'] = $id;
            $participant_vals['CandID']      = $values['CandID'];
+           //if it exists update it
+           $ParticipantCount = $DB->pselectOne(
+                   "SELECT COUNT(*) FROM participant_status WHERE CandID = :cid", 
+                   array("cid"=>$values['CandID'])
+                   );
+           if ($ParticipantCount > 0) {
+               $success = $DB->update(
+                       "participant_status", 
+                       $participant_vals,
+                       array("CandID"=>$values['CandID'])
+                       );
+           } else {
+               //insert it
+               $success = $DB->insert("participant_status",$participant_vals);
+           }
 
            if (Utility::isErrorX($success)) {
                return PEAR::raiseError(
