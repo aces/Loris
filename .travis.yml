@@ -1,0 +1,31 @@
+language: php
+php:
+    - 5.6
+    - 5.5
+    - 5.4
+    - 5.3
+
+before_script:
+    - mysql -e 'CREATE DATABASE LorisTest'
+    - pear upgrade-all
+    - pear install Benchmark
+    - pear install Config
+    - pear install File_Archive
+    - pear install HTML_Common
+    - pear install HTML_QuickForm
+    - pear config-set preferred_state beta
+    - pear install HTML_QuickForm2
+    - pear install Mail
+    - pear install Mail_Mime
+    - pear install Net_SMTP
+    - pear install Net_Socket
+    - pear install OLE
+    - pear install Pager
+    - pear install PHPDocumentor
+    - pear install Structures_Graph
+    - pear install XML_Parser
+    - pear install PHP_CodeSniffer
+    - phpenv rehash
+
+script:
+    - phpcs --standard=docs/LorisCS.xml php/libraries
