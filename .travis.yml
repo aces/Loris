@@ -1,12 +1,13 @@
 language: php
+
 php:
     - 5.6
     - 5.5
     - 5.4
     - 5.3
 
-before_script:
-    - mysql -e 'CREATE DATABASE LorisTest'
+install:
+    # List of PEAR modules installed by install script
     - pear upgrade-all
     - pear install Benchmark
     - pear install Config
@@ -24,8 +25,20 @@ before_script:
     - pear install PHPDocumentor
     - pear install Structures_Graph
     - pear install XML_Parser
+
+      # Running PHPCS is part of the test, even though
+      # Loris itself doesn't depend on it.
     - pear install PHP_CodeSniffer
+
+      # Travis-CI requires this.
     - phpenv rehash
 
+before_script:
+    - mysql -e 'CREATE DATABASE LorisTest'
+      # Even though this isn't used yet, it should in
+      # theory still catch syntax errors in the schema.
+    - mysql LorisTest < SQL/0000-00-00-schema.sql
+
 script:
+    # Run PHPCS on libraries directory.
     - phpcs --standard=docs/LorisCS.xml php/libraries
