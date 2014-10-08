@@ -13,6 +13,6 @@ CREATE TABLE `ConfigSettings` (
 CREATE TABLE `Config` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `ConfigID` int(11) DEFAULT NULL,
-    `Value` text DEFAULT NULL,
+    `Value` varchar(255) DEFAULT NULL,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
