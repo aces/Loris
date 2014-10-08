@@ -87,7 +87,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 JOIN parameter_type p ON (p.sourceFrom=f.test_name)
                 JOIN candidate c ON (c.CandID = s.CandID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' AND c.pscid NOT LIKE '%999-99999%' AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
+                WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
             $DB->select($query,  $info);
         }
         /**
@@ -176,7 +176,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             JOIN feedback_bvl_thread bt ON (bt.commentid = f.commentid)
             JOIN candidate c ON (c.Candid = s.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE c.PSCID NOT LIKE '%999-99999%' AND c.Active = 'Y' AND	s.Active = 'Y' AND bt.FieldName = :FN AND f.test_name = :TN AND psc.Centerid!= '1' AND c.PSCID NOT LIKE '%scanner%'";
+            WHERE c.Active = 'Y' AND	s.Active = 'Y' AND bt.FieldName = :FN AND f.test_name = :TN AND psc.Centerid!= '1' AND c.PSCID NOT LIKE '%scanner%'";
 
         if (isset($feedback_status) && $feedback_status!= "all") {
             $query .= " AND bt.status = :FStatus";
@@ -234,7 +234,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_battery t ON (t.test_name = f.test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE t.visit_label = s.Visit_label AND TableName LIKE CONCAT(:TN, '%') AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
+                WHERE t.visit_label = s.Visit_label AND TableName LIKE CONCAT(:TN, '%') AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
 
         } else {
             $query = "SELECT distinct s.CandID,ca.PSCID, c.FieldName,c.TableName,t.full_name AS test_name_display, s.visit_label FROM conflicts_unresolved c
@@ -243,7 +243,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_names t ON (t.test_name = f.test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE TableName LIKE CONCAT(:TN, '%') AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
+                WHERE TableName LIKE CONCAT(:TN, '%') AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
         }
         $conflicts = $DB->pselect($query,array('TN' => $test_name));
         return $conflicts;
@@ -263,7 +263,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_battery t ON (t.test_name = f.test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE t.visit_label = s.Visit_label AND TableName LIKE CONCAT(:TN, '%') AND c.FieldName = :FN AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
+                WHERE t.visit_label = s.Visit_label AND TableName LIKE CONCAT(:TN, '%') AND c.FieldName = :FN AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
         } else {
             $query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,c.TableName,t.full_name AS test_name_display, s.visit_label FROM conflicts_unresolved c
                 LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
@@ -271,7 +271,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN test_names t ON (t.test_name = f.test_name)
-                WHERE TableName LIKE CONCAT(:TN, '%') AND c.FieldName = :FN AND ca.PSCID NOT LIKE '%999-99999%' AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
+                WHERE TableName LIKE CONCAT(:TN, '%') AND c.FieldName = :FN AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
         }
         $conflicts = $DB->pselect($query,array('TN' => $test_name, 'FN' => $field_name));
         return $conflicts;
@@ -286,7 +286,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             JOIN candidate c ON (c.candid = s.candid)
             JOIN psc ON (s.CenterID = psc.CenterID)	";
 
-        $where = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND f.test_name LIKE :TN AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.pscid NOT LIKE '%999-99999%' AND c.candid NOT LIKE '%scanner%'";
+        $where = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND f.test_name LIKE :TN AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.candid NOT LIKE '%scanner%'";
         $qparams = array('TN' => $test_name);
 
         //filter for visit
@@ -343,7 +343,6 @@ class NDB_Form_data_team_helper extends NDB_Form
             AND f.Administration <> 'None'
             AND f.Data_entry = 'Complete'
             AND psc.Centerid!= '1'
-            AND c.PSCID NOT LIKE '%999-99999%'
             AND c.PSCID NOT LIKE '%scanner%'";
         $qparams = array();
 
