@@ -16,7 +16,7 @@
                     {$item['Description']}
                 </td>
                 <td>
-                    {if $item['AcceptData']}
+                    {if $item['DataType'] neq ""}
                         <div class="form-section" id="{$item['ID']}-formsection">
                             {if $item['AllowMultiple'] == 1}
                                 <form method="POST" action="">
