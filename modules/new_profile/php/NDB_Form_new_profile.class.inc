@@ -137,6 +137,12 @@ class NDB_Form_new_profile extends NDB_Form
             if (strlen(implode($values['edc1'])) > 2 && !_checkDate($values['edc1'])) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
+            if($values['edc1']['M'] != $values['edc2']['M'] ||
+                    $values['edc1']['d'] != $values['edc2']['d'] ||
+                    $values['edc1']['Y'] != $values['edc2']['Y'])
+            {
+                $errors['edc1'] = 'Estimated Due date fields must match.';
+            }
         }
 
         if (empty($values['gender'])) {
