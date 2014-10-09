@@ -2449,10 +2449,10 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "mri_parameter_form" FROM Config
 -- default mail settings
 
 -- From
-INSERT INTO Config (ConfigID, Value) SELECT ID, "nobody@example.com" FROM ConfigSettings WHERE Name="From";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="From";
 
 -- Reply-to
-INSERT INTO Config (ConfigID, Value) SELECT ID, "nobody@example.com" FROM ConfigSettings WHERE Name="Reply-to";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="Reply-to";
 
 -- X-MimeOLE
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";
