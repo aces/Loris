@@ -1,11 +1,12 @@
-#Test Plan: Behavioural Feedback module (pop-up)
+#Test Plan: Behavioural (BVL) Feedback module (pop-up)
+*Note: this file is stored in modules/candidate_list/test/ for now.*
 
 ## Module mechanics: 
 1. Verify that clicking pencil icon in top menu bar will pop up BVL Feedback window and display appropriate content from and BVL Candidate/Timepoint/Instrument/Subtest page
 2. Verify that clicking "Stop this window from popping up" will stop the pop-up from re-appearing
-3. Verify that upon clicking the pencil icon again, the bvl feedback pop-up re-appears and behaves normall (per 4,5 below)
+3. Verify that upon clicking the pencil icon again, the bvl feedback pop-up re-appears and behaves normally as you navigate through Loris's BVL side (per 4,5 below)
 
-Pop-up and main window content should be synced throughout the BVL side of Loris:
+## Synced content - Pop-up and main window content
 4. Verify that upon clicking a link in feedback window (to an instrument, timepoint), main Loris browser window will reload with appropriate page (e.g. aosi form).  Verify this works moving through various links/levels e.g. candidate list, timepoint list, instrument list and back again.  
 5. Verify that when navigating from candidate list to timepoint list to instrument list to instrument forms, and back and forth, in the main Loris browser window - Feedback window should reload to follow with appropriate feedback detail/links at each level.
 
@@ -15,7 +16,8 @@ Pop-up and main window content should be synced throughout the BVL side of Loris
 8. Verify that links work inside Bvl Feedback popup window for/on DCCID, visit label, instrument etc
 
 ## Permissions: 
-9. Verify that own-site feedback data Viewable IFF has permission ? no restrictions at present
+*This section should be revisited when permissions are re-done.  Soon.*
+9. Verify that own-site feedback data is Viewable { to everyone - no permission restrictions at present. Try accessing via Stats Bvl/Completion links. These permissions should be fixed.*}
 10. Verify that own-site feedback data Editable IFF has permission bvl_feedback
 11. Verify that Other sites feedback data viewable IFF has permission:access_all_profiles
 12. Verify that Other sites feedback data editable IFF has permission:access_all_profiles ** should be changed to superuser
