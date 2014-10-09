@@ -234,7 +234,7 @@
                             </a>
                             {/if}
                             {if $pending_users neq "" and $pending_users neq 0}
-                            <a href="main.php?test_name=user_accounts&pending=1&filter=Show%20Data" class="list-group-item">
+                            <a href="main.php?test_name=user_accounts&centerID=&userID=&active=&real_name=&pending=Y&email=&examiner=&filter=Show+Data" class="list-group-item">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$pending_users}</div>
