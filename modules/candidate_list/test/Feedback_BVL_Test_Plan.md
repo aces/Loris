@@ -4,7 +4,7 @@
 ## Module mechanics: 
 1. Verify that clicking pencil icon in top menu bar will pop up BVL Feedback window and display appropriate content from and BVL Candidate/Timepoint/Instrument/Subtest page
 2. Verify that clicking "Stop this window from popping up" will stop the pop-up from re-appearing
-3. Verify that upon clicking the pencil icon again, the bvl feedback pop-up re-appears and behaves normally as you navigate through Loris's BVL side (per 4,5 below)
+3. Verify that upon clicking the pencil icon again, the bvl feedback pop-up re-appears and behaves normally as you navigate through Loris's BVL side (per Synced content section below)
 
 ## Synced content - Pop-up and main window content
 4. Verify that upon clicking a link in feedback window (to an instrument, timepoint), main Loris browser window will reload with appropriate page (e.g. aosi form).  Verify this works moving through various links/levels e.g. candidate list, timepoint list, instrument list and back again.  
@@ -18,7 +18,7 @@
 ## Permissions: 
 *This section should be revisited when permissions are re-done.  Soon.*
 
-9. Verify that own-site feedback data is Viewable { to everyone - no permission restrictions at present. Try accessing via Stats Bvl/Completion links. These permissions should be fixed.*}
+9. Verify that own-site feedback data is Viewable { to everyone - no permission restrictions at present. Try accessing via Stats Bvl/Completion links. These permissions should be fixed.}
  
 10. Verify that own-site feedback data Editable IFF has permission bvl_feedback
 
