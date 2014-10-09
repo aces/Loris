@@ -10,7 +10,6 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
  * PHP/PEAR >= 5.2 (php5 php-pear php5-dev php5-mysql php5-gd)
  * php5-json (Debian/Ubuntu distributions) 
  * Git
- * Perl
  * Smarty 3
  * Package manager
 
