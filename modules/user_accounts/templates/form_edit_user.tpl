@@ -140,6 +140,7 @@ $(document).ready(function() {
             </div>
         {/if}
     </div>
+    {if $form.Degree}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Degree.label}
@@ -148,6 +149,8 @@ $(document).ready(function() {
     		{$form.Degree.html}
     	</div>
     </div>
+    {/if}
+    {if $form.Position_title}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Position_title.label}
@@ -156,6 +159,8 @@ $(document).ready(function() {
     		{$form.Position_title.html}
     	</div>
     </div>
+    {/if}
+    {if $form.Institution}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Institution.label}
@@ -164,6 +169,8 @@ $(document).ready(function() {
     		{$form.Institution.html}
     	</div>
     </div>
+    {/if}
+    {if $form.Department}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Department.label}
@@ -172,6 +179,8 @@ $(document).ready(function() {
     		{$form.Department.html}
     	</div>
     </div>
+    {/if}
+    {if $form.Address}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Address.label}
@@ -180,6 +189,8 @@ $(document).ready(function() {
     		{$form.Address.html}
     	</div>
     </div>
+    {/if}
+    {if $form.City}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.City.label}
@@ -188,6 +199,8 @@ $(document).ready(function() {
     		{$form.City.html}
     	</div>
     </div>
+    {/if}
+    {if $form.State}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.State.label}
@@ -196,6 +209,8 @@ $(document).ready(function() {
     		{$form.State.html}
     	</div>
     </div>
+    {/if}
+    {if $form.ZipCode}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Zip_code.label}
@@ -204,6 +219,8 @@ $(document).ready(function() {
     		{$form.Zip_code.html}
     	</div>
     </div>
+    {/if}
+    {if $form.Country}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Country.label}
@@ -212,6 +229,8 @@ $(document).ready(function() {
     		{$form.Country.html}
     	</div>
     </div>
+    {/if}
+    {if $form.Fax}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Fax.label}
@@ -220,6 +239,7 @@ $(document).ready(function() {
     		{$form.Fax.html}
     	</div>
     </div>
+    {/if}
     {if $form.errors.Email_Group}
     <div class="row form-group form-inline form-inline has-error">
     {else}
