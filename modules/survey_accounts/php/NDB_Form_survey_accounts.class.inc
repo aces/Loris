@@ -101,13 +101,33 @@ class NDB_Form_survey_accounts extends NDB_Form
              AND s.Active='Y'",
              array('v_CandID' => $values['CandID'], 'v_VL' => $values['VL'])
         );
-	foreach($instrument_list as $instrument) {
-		if($values['Test_name'] == $instrument['Test_name']) {
-			return array(
-		           'Test_name' => "Instrument ". $values['Test_name']." already exists for given candidate for visit ". $values['VL']
-			 );
-		}
-	}
+        foreach($instrument_list as $instrument) {
+            if($values['Test_name'] == $instrument['Test_name']) {
+                return array(
+                        'Test_name' => "Instrument ". $values['Test_name'].
+                                       " already exists for given candidate for visit ". $values['VL']
+                        );
+            }
+        }
+        if ( !empty($values['Email']) ) {
+            if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
+                return array(
+                        'Email'=> 'The email address is not valid.'
+                        );
+            }
+        }
+        if ( !empty($values['Email']) && !empty($values['Email2'])) {
+            if ($values['Email'] != $values['Email2']) {
+                return array(
+                        'Email2'=> 'The email addresses do not match.'
+                        );
+            }
+        }
+        if(empty($values['Test_name'])) {
+            return array(
+                    'Test_name'=> 'Please choose an instrument.'
+                        );
+        }
         if($_REQUEST['fire_away'] !== 'Create survey') {
             if (!filter_var(
                 $values['Email'],
@@ -187,7 +207,7 @@ class NDB_Form_survey_accounts extends NDB_Form
             return PEAR::raiseError("DB Error: ".$success->getMessage());
         }
         $this->tpl_data['success'] = $success;
-        
+ 
         if ($email) {
             $config = NDB_Config::singleton();
             $www = $config->getSetting("www");
@@ -215,6 +235,7 @@ class NDB_Form_survey_accounts extends NDB_Form
         $this->addSelect("VL", "Visit Label", Utility::getVisitList());
         $this->addSelect("Test_name", "Instrument", array_merge(array('' => ''), Utility::getDirectInstruments()));
         $this->addBasicText("Email", "Email address");
+        $this->addBasicText("Email2", "Confirm Email address");
 
         $this->form->addFormRule(array(&$this, '_validate_add_survey'));
     }

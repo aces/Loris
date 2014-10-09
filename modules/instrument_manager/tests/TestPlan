@@ -1,0 +1,10 @@
+Instrument Manager Test Plan
+
+1. User has access to Instrument Manager if he/she has permission “superuser”.
+2. Check that tab exists on a default install (for superusers).
+3. Check that the warning text above is accurate for both with and without the directory writeable by Apache. The select file/upload button shouuld only be there if it's writeable.
+4. Verify GUI is updated, menu tabs are working.
+5. Check that instrument gets installed properly. Also check the paths in the code - eg uploaded instruments in the instruments directory with right permissions.
+6. Check generate_tables_sql_and_testNames.php was performed on the instrument and output(instrument_subtests, test_names, instrument table itself) was generated correctly.
+7. Check that instruments' metadata in the table are labeled accurately.
+8. Check that function CheckTable performs the appropriate checks on the instrument builder files and validates them properly - eg "Table Valid" column is valid when instrument fields match up and "Pages Valid" is valid when subpages are valid.

@@ -4,7 +4,8 @@
 <meta charset="utf-8"/>
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
-<link rel="stylesheet" href="bootstrap-3.1.1/css/bootstrap.css">
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="bootstrap/css/custom-css.css">
 <!-- page title -->
 <title>{$title}</title>
 

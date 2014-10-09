@@ -13,7 +13,22 @@ $(window).resize(function(){
 });
 
 $(document).ready(function () {
+    $('#email_survey').attr('disabled','disabled');
+    $('#Email2').change (function() {
+            var email2 = $("input[name=Email2]").val();
+            var email  = $("input[name=Email]").val();
+            if (email.length > 0 && email2.length > 0 )
+            {
+                $('#email_survey').removeAttr('disabled');
+                $('#create_survey').attr('disabled','disabled');
+            }
+            if (email2.length == 0 || email.length == 0 || email != email2)
+            {
+                $('#create_survey').removeAttr('disabled');
+                $('#email_survey').attr('disabled','disabled');
+            }
 
+            } );
     $("#email_dialog").dialog({
         'autoOpen': false,
         'title'   : "Email to Study Participant",

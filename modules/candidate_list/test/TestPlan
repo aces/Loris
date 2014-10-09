@@ -1,0 +1,33 @@
+Access Profile Test Plan:
+
+1. Access access profile page, ensure that it renders.
+2. Verify that either the permission access_all_profiles or data_entry is required for access the page
+3. Verify that if data_entry and not access_all_profiles permissions, can only see subjects from own site.
+4. Check that initial filter state is Site = user site and Subproject = All
+5. Select a site from site filter, filter, ensure that results filtered
+6. Verify advanced/basic filter toggle works.
+7. Verify advanced filters are expanded on page load when an advanced filter is set, and collapsed otherwise
+8. Check that each dropdown has the correct options.
+9. Test each filter individually
+   [ ] Site
+   [ ] DCCID
+   [ ] PSCID
+   [ ] Subproject
+   [ ] Project
+   [ ] Scan done
+   [ ] Participant Status
+   [ ] Gender
+   [ ] Number of visits
+   [ ] Date of birth
+   [ ] Latest Visit Status
+   [ ] Feedback
+10. Click "Clear Form" and ensure filters are reset to same state as #2.
+11. Ensure that columns are sortable by clicking on them.
+
+12. Filter for Scan done. Ensure that "Yes" link points to correct scan in imaging browser
+13. Ensure PSCID link points to correct timepoint_list page
+14. Ensure that for candidates with feedback, feedback column is displayed and in the correct colour
+15. Enter wrong PSCID/DCCID combination and click Open Profile. Ensure that you get an error.
+16. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
+17. Remove  access_all_profiles permission  and ensure that PSCID links are *not* clickable.
+18. Change useEDC and useProjects config variables to false and ensure filters are removed from menu.

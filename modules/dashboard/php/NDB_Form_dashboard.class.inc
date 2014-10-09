@@ -31,156 +31,10 @@ class NDB_Form_dashboard extends NDB_Form
     {
         $DB =& Database::singleton(); 
         $total = $DB->pselectOne(
-            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender", 
+            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender AND c.Active='Y'", 
             array('Gender' => $gender)
         );
         return $total;
-    }
-
-    function _getRecruitmentTotalsBySite()
-    {
-        $DB =& Database::singleton();
-        $recruitmentBySiteData = array();
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $site) {
-            $recruitmentBySiteData[] = array(
-                "label" => $site,
-                "total" => $DB->pselectOne(
-                    "SELECT count(c.CandID) 
-                    FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                    WHERE psc.Name=:Site", array('Site' => $site)
-                )
-            );
-        }
-        return json_encode($recruitmentBySiteData);
-    }
-
-    function _getGenderTotalsBySite()
-    {
-        $DB =& Database::singleton();
-        $genderData = array();
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $site) {
-            $genderData['labels'][] = $site;
-            $genderData['datasets']['female'][] = $DB->pselectOne(
-                "SELECT count(c.CandID) FROM candidate c 
-                LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                WHERE c.Gender='female' AND psc.Name=:Site", array('Site' => $site)
-            );
-            $genderData['datasets']['male'][] = $DB->pselectOne(
-                "SELECT count(c.CandID) FROM candidate c 
-                LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                WHERE c.Gender='male' AND psc.Name=:Site", array('Site' => $site)
-            );
-        }
-        return json_encode($genderData);
-    }
-
-    function _recruitmentBySite()
-    {
-        $DB =& Database::singleton();
-        $recruitmentData = array();
-        $recruitmentStartDate = $DB->pselectOne(
-            "SELECT min(Date_registered) FROM candidate", array()
-        );
-        $recruitmentEndDate = $DB->pselectOne(
-            "SELECT max(Date_registered) FROM candidate", array()
-        );
-        $recruitmentData['labels'] 
-            = $this->_createChartLabels($recruitmentStartDate, $recruitmentEndDate);
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $dataset) {
-            $recruitmentData['datasets'][] = array(
-                "name" => $dataset,
-                "data" => $this->_getRecruitmentData(
-                    $dataset, $recruitmentData['labels']
-                )
-            );
-        }
-        $recruitmentDataJSON = json_encode($recruitmentData);
-        return $recruitmentDataJSON;
-    }
-
-    function _getRecruitmentData($dataset, $labels)
-    {
-        $DB =& Database::singleton();
-        $data = array();
-        foreach ($labels as $label) {
-            $month = (strlen($label) == 6) 
-                ? substr($label, 0, 1) : substr($label, 0, 2);
-            $year = substr($label, -4, 4);
-            $data[]= $DB->pselectOne(
-                "SELECT count(c.CandID) FROM candidate c 
-                LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-                WHERE psc.Name=:Dataset AND MONTH(Date_registered)=$month 
-                AND YEAR(Date_registered)=:Year", 
-                array('Dataset' => $dataset, 'Year' => $year)
-            );
-        }
-        return $data;
-    }
-
-    function _scansBySite()
-    {
-        $DB =& Database::singleton();
-        $scanData = array();
-        $scanStartDate = $DB->pselectOne(
-            "SELECT min(AcquisitionDate) FROM mri_acquisition_dates", array()
-        );
-        $scanEndDate = $DB->pselectOne(
-            "SELECT max(AcquisitionDate) FROM mri_acquisition_dates", array()
-        );
-        $scanData['labels'] 
-            = $this->_createChartLabels($scanStartDate, $scanEndDate);
-        $list_of_sites =& Utility::getSiteList();
-        foreach ($list_of_sites as $dataset) {
-            $scanData['datasets'][] = array(
-                "name" => $dataset,
-                "data" => $this->_getScanData($dataset, $scanData['labels'])
-            );
-        }
-        $scanDataJSON = json_encode($scanData);
-        return $scanDataJSON;
-    }
-
-    function _getScanData($dataset, $labels)
-    {
-        $DB =& Database::singleton();
-        $data = array();
-        foreach ($labels as $label) {
-            $month = (strlen($label) == 6) 
-                ? substr($label, 0, 1) : substr($label, 0, 2);
-            $year = substr($label, -4, 4);
-            $data[]= $DB->pselectOne(
-                "SELECT count(f.FileID) 
-                FROM files f
-                LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
-                LEFT JOIN session s ON (s.ID=f.SessionID) 
-                LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                WHERE psc.Name=:Dataset 
-                AND MONTH(mad.AcquisitionDate)=:Month 
-                AND YEAR(mad.AcquisitionDate)=:Year", 
-                array('Dataset' => $dataset, 'Month' => $month, 'Year' => $year)
-            );
-        }
-        return $data;
-    }
-
-    function _createChartLabels($startDate, $endDate)
-    {
-        $startDateYear = substr($startDate, 0, 4);
-        $endDateYear = substr($endDate, 0, 4);
-        $startDateMonth = substr($startDate, 5, 2);
-        $endDateMonth = substr($endDate, 5, 2);
-        $labels = array();
-        for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
-            $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
-            $endMonth = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
-            for ($month = $startMonth; $month <= $endMonth; $month++) {
-                $labels[] = $month . "-" . $year;
-            }
-        }
-        return $labels;
     }
 
     function dashboard()
@@ -195,9 +49,12 @@ class NDB_Form_dashboard extends NDB_Form
         );
         $userID = $user->getUsername();
         $last_login = $DB->pselectOne(
-            "SELECT max(Login_timestamp) 
-            FROM user_login_history 
-            WHERE userID=:UserID AND Success='Y'", array('UserID' => $userID)
+            "SELECT MAX(Login_timestamp)
+             FROM user_login_history
+             WHERE Login_timestamp < (SELECT MAX(Login_timestamp)
+                FROM user_login_history
+                WHERE userID=:UserID AND Success='Y')
+             AND userID=:UserID AND Success='Y'", array('UserID' => $userID)
         );
         $this->tpl_data['user_site'] = $siteID;
 
@@ -226,7 +83,7 @@ class NDB_Form_dashboard extends NDB_Form
 
         // Recruitment totals
         $totalRecruitment = $DB->pselectOne(
-            "SELECT count(*) FROM candidate c", array()
+            "SELECT count(*) FROM candidate c WHERE c.Active='Y'", array()
         );
         $this->tpl_data['total_recruitment'] = $totalRecruitment;
 
@@ -255,12 +112,10 @@ class NDB_Form_dashboard extends NDB_Form
         $this->tpl_data['total_scans'] = $DB->pselectOne(
             "SELECT count(*) FROM files f", array()
         );
-        $this->tpl_data['pie_chart'] = $this->_getRecruitmentTotalsBySite();
-        $this->tpl_data['bar_chart'] = $this->_getGenderTotalsBySite();
-        $this->tpl_data['recruitment_chart'] = $this->_recruitmentBySite();
-        $this->tpl_data['scan_chart'] = $this->_scansBySite();
 
         // Tasks
+
+        // New scans
         if ($user->hasPermission('mri_feedback')) {
             $this->tpl_data['new_scans'] = $DB->pselectOne(
                 "SELECT count(*) FROM files f 
@@ -269,6 +124,8 @@ class NDB_Form_dashboard extends NDB_Form
             );
             $this->tpl_data['new_scans_site'] = 'Site: all';
         }
+
+        // Data entry conflicts
         if ($user->hasPermission('conflict_resolver')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['conflicts'] = $DB->pselectOne(
@@ -286,6 +143,8 @@ class NDB_Form_dashboard extends NDB_Form
                 $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
             }
         }
+
+        // Incomplete forms
         if ($user->hasPermission('data_entry')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['incomplete_forms'] = $DB->pselectOne(
@@ -304,6 +163,8 @@ class NDB_Form_dashboard extends NDB_Form
                 $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
             }
         }
+
+        // Final radiological review
         if ($user->hasPermission('edit_final_radiological_review')) {
             $this->tpl_data['radiology_review'] = $DB->pselectOne(
                 "SELECT count(*) FROM final_radiological_review f 
@@ -312,6 +173,7 @@ class NDB_Form_dashboard extends NDB_Form
             $this->tpl_data['radiology_review_site'] = 'Site: all';
         }
 
+        // Accounts pending approval
         if ($user->hasPermission('user_accounts_multisite')) {
             $this->tpl_data['pending_users'] = $DB->pselectOne(
                 "SELECT count(*) FROM users WHERE Pending_approval='Y'", array()
@@ -325,6 +187,7 @@ class NDB_Form_dashboard extends NDB_Form
             $this->tpl_data['pending_users_site'] = 'Site: ' . $site;
         }
 
+        // Violated scans
         if ($user->hasPermission('violated_scans')) {
             $this->tpl_data['violated_scans'] = $DB->pselectOne(
                 "SELECT count(*) FROM mri_protocol_violated_scans", array()
@@ -332,7 +195,7 @@ class NDB_Form_dashboard extends NDB_Form
             $this->tpl_data['violated_scans_site'] = 'Site: all';
         }
 
-        // Document Repository
+        // Document Repository Items
         if ($user->hasPermission('file_upload')) {
             $document_repository = $DB->pselect(
                 "SELECT File_name, Date_uploaded FROM document_repository 
