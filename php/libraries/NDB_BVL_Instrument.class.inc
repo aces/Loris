@@ -2843,6 +2843,56 @@ function _checkDateTakenFuture($dateElement) {
 }
 
 /**
+ * Checks that the Date_taken element is a valid date
+ *
+ * @param array $dateElement The date element in QuickForm array format.
+ *
+ * @return True if the date is invalid, false if it's valid.
+ */
+function _checkDateTaken($dateElement)
+{
+    // if all three elements are empty,
+    // return true b/c it'll save the NULL in date field
+    if (empty($dateElement['M'])
+        && empty($dateElement['d'])
+        && empty($dateElement['Y'])
+    ) {
+        return true;
+    } elseif (empty($dateElement['M'])
+        || empty($dateElement['d'])
+        || empty($dateElement['Y'])
+    ) {
+        // otherwise, if any of the three elements are empty,
+        // return false b/c date entry has been attempted
+        return false;
+    } else {
+        // else, check the date
+        $checked = checkdate(
+            $dateElement['M'],
+            $dateElement['d'],
+            $dateElement['Y']
+        );
+        if (version_compare(phpversion(), '5.3.0', '>=')) {
+            if ($checked === false) {
+                return false;
+            }
+            $formatted = date_create();
+            $formatted->setDate(
+                $dateElement['Y'],
+                $dateElement['M'],
+                $dateElement['d']
+            );
+
+            $now  = date_create();
+            $diff = date_diff($formatted, $now);
+            return ($diff->format("%r") === '');
+        } else {
+            return $checked;
+        }
+    }
+}
+
+/**
  * QuickForm rule to check that a date is valid.
  * This is used by create timepoint and start timepoint pages,
  * so it probably shouldn't be in the instrument class.
