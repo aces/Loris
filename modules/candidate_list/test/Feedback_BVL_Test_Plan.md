@@ -17,9 +17,13 @@
 
 ## Permissions: 
 *This section should be revisited when permissions are re-done.  Soon.*
+
 9. Verify that own-site feedback data is Viewable { to everyone - no permission restrictions at present. Try accessing via Stats Bvl/Completion links. These permissions should be fixed.*}
+ 
 10. Verify that own-site feedback data Editable IFF has permission bvl_feedback
+
 11. Verify that Other sites feedback data viewable IFF has permission:access_all_profiles
+
 12. Verify that Other sites feedback data editable IFF has permission:access_all_profiles ** should be changed to superuser
 
 ## Creating/Editing feedback threads: 
