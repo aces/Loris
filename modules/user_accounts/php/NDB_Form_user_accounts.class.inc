@@ -250,7 +250,7 @@ class NDB_Form_user_accounts extends NDB_Form
             $msg_data['study'] = $config->getSetting('title');
             $msg_data['url'] = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
-            $msg_data['username'] = $values['Email'];
+            $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_md5'];
 
             $template = (empty($this->identifier)) ? 'new_user.tpl' : 'edit_user.tpl';
