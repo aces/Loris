@@ -214,7 +214,7 @@ stty -echo
 while true; do
         read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
 	echo ""
-        read -p "Re-enter the password to check for accuracy " mysqlpass2
+        read -p "Re-enter the password to check for accuracy: " mysqlpass2
 	if [[ "$mysqlpass" == "$mysqlpass2" ]] ; then
 	        break;
 	fi
@@ -228,7 +228,7 @@ stty -echo
 while true; do
         read -p "Enter the front-end Loris 'admin' user's password: " lorispass
         echo ""
-        read -p "Re-enter the password to check for accuracy " lorispass2
+        read -p "Re-enter the password to check for accuracy: " lorispass2
         if [[ "$lorispass" == "$lorispass2" ]] ; then
                 break;
         fi
@@ -255,7 +255,7 @@ stty -echo
 while true; do
         read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
         echo ""
-        read -p "Re-enter the password to check for accuracy " mysqlrootpass2
+        read -p "Re-enter the password to check for accuracy: " mysqlrootpass2
         if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
                 break;
         fi
@@ -278,7 +278,7 @@ while true; do
         while true; do
             read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
             echo ""
-            read -p "Re-enter the password to check for accuracy " mysqlrootpass2
+            read -p "Re-enter the password to check for accuracy: " mysqlrootpass2
             if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
                 break;
             fi
