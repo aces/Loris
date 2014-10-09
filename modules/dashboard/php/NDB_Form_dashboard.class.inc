@@ -198,7 +198,7 @@ class NDB_Form_dashboard extends NDB_Form
         // Document Repository Items
         if ($user->hasPermission('file_upload')) {
             $document_repository = $DB->pselect(
-                "SELECT File_name, Date_uploaded FROM document_repository 
+                "SELECT File_name, Date_uploaded, Data_dir FROM document_repository 
                 ORDER BY Date_uploaded DESC LIMIT 4", array()
             );
             for ($i=0; $i < sizeof($document_repository); $i++) {
