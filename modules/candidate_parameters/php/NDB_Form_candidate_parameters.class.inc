@@ -416,6 +416,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                        );
            } else {
                //insert it
+               $participant_vals['participant_status'] = 1; // 1 is Active which should be default
                $success = $DB->insert("participant_status",$participant_vals);
            }
 
