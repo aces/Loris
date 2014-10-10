@@ -1,4 +1,6 @@
 <meta charset="utf-8"/>
+<script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.instrument.js"></script>
+<script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.rules.js"></script>
 
 {literal}
 <style>
@@ -17,7 +19,7 @@
             Load Instrument (optional)
             <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-load"></span>
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up-load"></span> 
-        </div> 
+        </div>
         <div class="panel-body" id="panel-load">
             <input type="file" id="instfile" />
             <br>
@@ -156,8 +158,8 @@
                 <input class="btn btn-default" type="button" value="Add Row" onClick="addQuestion();" />
             </div>
         </div>
-        
-        
+
+
     </form>
     <div class="table-responsive">
         <table border="1" class="table table-hover table-primary table-bordered">
