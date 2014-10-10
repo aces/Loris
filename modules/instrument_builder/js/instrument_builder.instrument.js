@@ -10,7 +10,7 @@ var Instrument = {
             i,
             row;
 
-        for (i = 1; i < table.rows.length; i += 1) {
+        for (i = 0; i < table.rows.length; i += 1) {
             //alert("Checking row" + i);
             row = table.rows[i];
             name = $.trim(row.children[0].textContent);
