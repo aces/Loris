@@ -81,5 +81,6 @@ $(function () {
 function open_popup(newurl) {
     "use strict";
     var x = 200, y = 400, open_param = 'width=500px,height=300px, toolbar=no, location=no,status=yes, scrollbars=yes, resizable=yes, top=' + y + ', screenY=' + y + ', left=' + x + ', screenX=' + x;
-    window.open(newurl, 'feedback_mri', open_param);
+    w = window.open(newurl, 'feedback_mri', open_param);
+    w.focus();
 }
