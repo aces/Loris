@@ -25,13 +25,12 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
 
 <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
 
-     ```
-     sudo mkdir -m 775 -p /var/www/$projectname
-     sudo chown lorisadmin.lorisadmin /var/www/$projectname
-     ```
+    ```
+    sudo mkdir -m 775 -p /var/www/$projectname
+    sudo chown lorisadmin.lorisadmin /var/www/$projectname
+    ```
     
 <i>$projectname ⇾ “loris” or one-word project name</i>
-
 
 2. Get code: 
  * Click “Fork” in https://github.com/aces/Loris-Trunk. Fork to your Git-user. 
