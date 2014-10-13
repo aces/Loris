@@ -17,15 +17,17 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
 
 1) Set up LINUX user lorisadmin and create LORIS base directory:
 
-```
-sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-sudo passwd lorisadmin
-su - lorisadmin```
+    ```bash
+    sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
+    sudo passwd lorisadmin
+    su - lorisadmin
+    ```
 
 <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
 
-```sudo mkdir -m 775 -p /var/www/$projectname ``` <br>
-```sudo chown lorisadmin.lorisadmin /var/www/$projectname```<br>
+    ```sudo mkdir -m 775 -p /var/www/$projectname
+    sudo chown lorisadmin.lorisadmin /var/www/$projectname```
+    
 <i>$projectname ⇾ “loris” or one-word project name</i>
 
 
