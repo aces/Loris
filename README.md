@@ -23,14 +23,14 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
     su - lorisadmin
     ```
 
-<b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
+    <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
 
     ```
     sudo mkdir -m 775 -p /var/www/$projectname
     sudo chown lorisadmin.lorisadmin /var/www/$projectname
     ```
     
-<i>$projectname ⇾ “loris” or one-word project name</i>
+    <i>$projectname ⇾ “loris” or one-word project name</i>
 
 2. Get code: 
  * Click “Fork” in https://github.com/aces/Loris-Trunk. Fork to your Git-user. 
@@ -52,7 +52,7 @@ LORIS is a web-accessible database solution for Neuroimaging. LORIS provides a s
 4. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
 Log in with the username “admin” and the password you supplied for this user while running the Install script. 
 
-_Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. Rename these if running earlier version.
+    _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. Rename these if running earlier version.
 
     ```
     sudo a2dissite default
