@@ -455,8 +455,15 @@ class NDB_Config
                   WHERE Parent=:ParentID",
                 array('ParentID' => $parent)
             );
-            if (NDB_Config::checkMenuPermission($thisLevel[0]['ID'])) {
-                return $thisLevel;
+            $LevelWithPerm = array_filter(
+                $thisLevel,
+                function($el) {
+                    return NDB_Config::checkMenuPermission($el['ID']);
+                }
+            );
+
+            if (!empty($LevelWithPerm)) {
+                return $LevelWithPerm;
             }
             return;
         }
