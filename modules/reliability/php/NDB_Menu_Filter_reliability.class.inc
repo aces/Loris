@@ -94,7 +94,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $this->columns[] = 'candidate.ProjectID as Project';
         }
         $this->columns=array_merge($this->columns,
-             array('reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap' ));
+             array('reliability.CommentID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap' ));
         $this->query = $query;
         $this->group_by = '';
         $this->order_by = 'reliability.Instrument, session.CandID, session.Visit_label';
@@ -103,7 +103,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $this->headers[] = 'Project';
         }
         $this->headers=array_merge($this->headers,array('Instrument', 'reliability_score', 'Reliable'));
-        $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid');
+        $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.CandID');
 
         $this->formToFilter = array(
                                     'SubprojectID' => 'session.SubprojectID',
@@ -189,7 +189,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->addSelect('SubprojectID','Subproject:', $subproject_options);
         $this->addSelect('CenterID', 'Site:', $list_of_sites);
         $this->addSelect('reliability_center_id', 'Site of Reliability:', $list_of_sites);
-        $this->addBasicText('DCCID', 'DCCID::', array("size"=>9, "maxlength"=>6));
+        $this->addBasicText('DCCID', 'DCCID:', array("size"=>9, "maxlength"=>6));
         $this->addBasicText('PSCID', 'PSCID:', array("size"=>9, "maxlength"=>7));
         $this->addSelect('Gender', 'Gender:', $gender_options);
         $this->addSelect('Visit_label', 'Visit Label:', $list_of_visit_labels);
@@ -462,25 +462,25 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $newCommentID = $DB->pselectRow($query, $params_new);
         if(!$newCommentID) { 
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." did not complete". $params_new['Instrument']." or data not entered. Cannot swap candidates.";
-            return array('error' => '$error_msg');
+            return array('error' => $error_msg);
         }
         if($newCommentID['NewCenterID'] !== $CommentID['OldCenterID']) {
             return array('error' => "Candidates are not from the same site. Cannot swap candidates across sites.");
         }
         elseif($user->getCenterID() != $newCommentID['NewCenterID']) {
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
-            return array('error' =>'$error_msg');
+            return array('error' =>$error_msg);
         }
         elseif($user->getCenterID() != $CommentID['OldCenterID']) {
            $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
-           return array('error' => '$error_msg');
+           return array('error' => $error_msg);
 
         }
         $value = array('NewID'=>$newCommentID['NewID']);
         $replacementCheck = $DB->pselectRow("SELECT CommentID FROM reliability WHERE CommentID=:NewID'",$value );
         if(!empty($replacementCheck)) {
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." already in reliability. Cannot swap".$params['pid']."/".$params['id_V']."for it";
-            return array('error' => '$error_msg');
+            return array('error' => $error_msg);
         }
 
         $CenterID = $CommentID['CenterID'];
@@ -523,7 +523,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $CommentID = $DB->pselectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name=:Instrument AND c.PSCID=:PSCID AND s.Visit_label=:Visit_label", $params);
         if(!$CommentID) {
             $error_msg = $params['PSCID']."/".$params['Visit_label']." does not have data entered for".$params['Instrument'];
-            return array("error" =>"$error_msg");
+            return array("error" =>$error_msg);
 
         }
         $params['CenterID'] = $_POST['AddReliabilityCenter'];
