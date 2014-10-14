@@ -51,8 +51,8 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
 
 
         // set the class variables
-        $this->columns      = array('topic as Topic', 'parentID as Main_Topic', 
-                               'content as Content' );
+        $this->columns      = array('topic as Topic', 'parentID as Main_Topic',
+                               'COALESCE(projectContent,content) as Content' );
         $this->query        = $query;
         $this->order_by     = 'helpID';
         $this->headers      = array('Topic','Parent Topic', 'Content');
