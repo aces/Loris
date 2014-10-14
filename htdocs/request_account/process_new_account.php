@@ -11,7 +11,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");
 ini_set('default_charset', 'utf-8');
 /**
  * Request LORIS account form
