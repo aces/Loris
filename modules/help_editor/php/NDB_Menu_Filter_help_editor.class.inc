@@ -56,7 +56,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
         $this->query        = $query;
         $this->order_by     = 'helpID';
         $this->headers      = array('Topic','Parent Topic', 'Content');
-        $this->validFilters = array('topic','content');
+        $this->validFilters = array('topic','content','projectContent');
 
         $this->formToFilter = array(
                 'topic' => 'topic',
