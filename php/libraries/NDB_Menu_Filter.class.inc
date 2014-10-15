@@ -225,7 +225,8 @@ class NDB_Menu_Filter extends NDB_Menu
                 $value = $values[$formKey];
                 if (in_array($dbField, $this->validFilters)) {
                     $newFormFilters[$dbField] = $value;
-                    if (in_array($value, $this->validHavingFilters)) {
+
+                    if (in_array($dbField, $this->validHavingFilters)) {
                         $this->having[$dbField] = $value;
                     } else {
                         $this->filter[$dbField] = $value;
