@@ -28,6 +28,12 @@ $(document).ready(function() {
 </script>
 {/literal}
 <form method="post" name="edit_user" >
+
+    {if $form.errors}
+        <div class="alert alert-danger" role="alert">
+            Please ensure that all required fields are filled
+        </div>
+    {/if}
 	<h3>Password Rules</h3>
 	<ul>
 		<li>The password must be at least 8 characters long</li>
