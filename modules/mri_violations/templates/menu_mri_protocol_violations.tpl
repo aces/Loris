@@ -1,4 +1,5 @@
 <script src="js/filterControl.js" type="text/javascript"></script>
+<script type="text/javascript" src="GetJS.php?Module=mri_violations&file=mri_protocol_violations.js"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
