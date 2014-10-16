@@ -8,12 +8,11 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
  * Apache2 (libapache2-mod-php5)
  * MySQL (libmysqlclient15-dev mysql-client mysql-server)
  * PHP/PEAR 5.3+ (php5 php-pear php5-dev php5-mysql php5-gd)
- * php5-json (for Debian/Ubuntu distributions) 
- * Git
+ * php5-json (for Debian/Ubuntu distributions)
  * Smarty 3
  * Package manager (for LINUX distributions)
 
-# Installation 
+# Installation
 
 1. Set up LINUX user lorisadmin and create LORIS base directory:
 
@@ -29,28 +28,23 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
     sudo mkdir -m 775 -p /var/www/$projectname
     sudo chown lorisadmin.lorisadmin /var/www/$projectname
     ```
-    
+
     <i>$projectname ⇾ “loris” or one-word project name</i>
 
-2. Get code: 
- * Click “Fork” in https://github.com/aces/Loris. Fork to your Git-user. 
- * Clone fork to your server: 
-
-    ```
-    cd /var/www/
-    git clone git@github.com:your-git-username/Loris.git $projectname 
-    ```
+2. Get code:
+    Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and
+    extract it to `/var/www/$projectname`
 
 3. Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
 
-    ``` 
+    ```
     cd /var/www/$projectname/tools
-    ./install.sh 
-    sudo service apache2 reload 
+    ./install.sh
+    sudo service apache2 reload
     ```
 
 4. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
-Log in with the username “admin” and the password you supplied for this user while running the Install script. 
+Log in with the username “admin” and the password you supplied for this user while running the Install script.
 
     _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. Rename these if running earlier version.
 
