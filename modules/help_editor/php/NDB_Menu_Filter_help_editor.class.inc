@@ -51,17 +51,15 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
 
 
         // set the class variables
-        $this->columns      = array('topic as Topic', 'parentID as Main_Topic',
+        $this->columns      = array('topic as Topic', 'parentID as Parent_Topic',
                                'COALESCE(projectContent,content) as Content' );
         $this->query        = $query;
         $this->order_by     = 'helpID';
-        $this->headers      = array('Topic','Parent Topic', 'Content');
-        $this->validFilters = array('topic','content','projectContent');
+        //$this->headers      = array('Topic','Parent Topic', 'Content');
+        $this->validFilters = array('topic');
 
         $this->formToFilter = array(
-                'topic' => 'topic',
-                'Main_Topic'=>'parentID',
-                'helpID'=>'helpID'
+                'topic' => 'topic'
                 );
         $this->searchKeyword = array('topic','content');
         return true;
@@ -73,7 +71,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
 
         // add form elements
         $this->addBasicText('topic', 'Help topic:');
-        $this->addBasicText('keyword', 'Search keyword');       
+        $this->addBasicText('keyword', 'Search keyword');
 
         return true;
     }
@@ -89,7 +87,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
         $help = $DB->pselect("SELECT helpID, topic from help", array());
         foreach ($help as $row) {
             $help_section[$row['helpID']] = $row['topic'];
-        }
+        } 
         $x = 0;
 
         foreach ($this->list as $item) {
@@ -99,9 +97,10 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
                 if (substr($key, "Topic") == 0) {
                     $this->tpl_data['items'][$x][$i]['helpID']   = array_search($val,
                                                                    $help_section);
-                    $this->tpl_data['items'][$x][$i]['parentID'] = $item['Main_Topic'];
+                    $this->tpl_data['items'][$x][$i]['parentID'] = $item['Parent_Topic'];
+                    $item['Parent_Topic'] = $help_section[$item['Parent_Topic']];// this is to make sure sorting is done on the topic and not the ID
                 }
-                if ($key == "Main_Topic") {
+                if ($key == "Parent_Topic") {
                     $this->tpl_data['items'][$x][$i]['parentID'] = "-1";
                     $this->tpl_data['items'][$x][$i]['helpID']   = $val;
                     if ($val == "-1") {
