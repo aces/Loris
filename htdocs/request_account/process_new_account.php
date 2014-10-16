@@ -101,20 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
 
-        if ($result > 0) { 
-            $tpl_data['error_message'] = 'The email address already exists';
-            exit;
-        } else {
+        if ($result == 0) {
+            // insert into db only if email address if it doesnt exist
             $success = $DB->insert('users', $vals);
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("DB Error: ".$success->getMessage());
-            } 
-            //$tpl_data['success'] = true;
-            unset($_SESSION['tntcon']); 
-            //redirect to a new page
-            header("Location: thank-you.php", true, 301);
-            exit();
+            }
         }
+        unset($_SESSION['tntcon']);
+        //redirect to a new page
+        header("Location: thank-you.php", true, 301);
+        exit();
 
     }
 }
