@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Unknown(Samir?) <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -18,7 +18,7 @@
  * @category Main
  * @package  Loris
  * @author   Unknown(Samir?) <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class ConflictDetector

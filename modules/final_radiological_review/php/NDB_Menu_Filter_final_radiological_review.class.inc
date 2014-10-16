@@ -15,7 +15,7 @@
  *  @package    Main
  *  @subpackage RadiologicalReview
  *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris license
+ *  @license    @GPLv3
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -93,7 +93,7 @@ function _makePretty($key, $val)
  *  @package    Main
  *  @subpackage RadiologicalReview
  *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris license
+ *  @license    @GPLv3
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter

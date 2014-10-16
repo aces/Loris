@@ -8,7 +8,7 @@
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    Loris License
+ * @license    @GPLv3
  * @link       https://github.com/aces/Loris-Trunk
 */
 
@@ -23,7 +23,7 @@ require_once 'NDB_Form.class.inc';
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    Loris License
+ * @license    @GPLv3
  * @link       https://github.com/aces/Loris-Trunk
 */
 

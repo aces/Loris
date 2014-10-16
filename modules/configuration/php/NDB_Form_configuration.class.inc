@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main 
  * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 
@@ -22,7 +22,7 @@ require_once 'NDB_Form.class.inc';
  * @category Behavioural
  * @package  Main 
  * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 class NDB_Form_Configuration extends NDB_Form

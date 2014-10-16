@@ -9,7 +9,7 @@
  * @category Survey
  * @package  Loris
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once "NDB_Form.class.inc";
@@ -22,7 +22,7 @@ require_once "Email.class.inc";
  * @category Survey
  * @package  Loris
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Form_survey_accounts extends NDB_Form
