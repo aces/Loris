@@ -26,12 +26,6 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.ProbandGUID.label}</label>
-            <div class="col-sm-8">
-                {$form.ProbandGUID.html}
-            </div>
-        </div>
-        <div class="row">
             <label class="col-sm-4">{$form.ProbandGender.label}</label>
             <div class="col-sm-8">
                 {$form.ProbandGender.html}
