@@ -363,8 +363,10 @@ class FeedbackMRI
 
                 unset($statusField);
             }
-            // add overall row to the end of the output array 
-            $commentNames[$overallType] = $overallName;
+            // add overall row to the end of the output array
+            if ($overallType !== '' && !empty($overallName)) {
+                $commentNames[$overallType] = $overallName;
+            }
         }
 
         // return the output array
