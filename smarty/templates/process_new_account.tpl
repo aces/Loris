@@ -37,8 +37,13 @@
             </ul>
 {/if}
 
-
-<h2>Request LORIS Account</h2>
+<div class="col-xs-12">
+    <center>
+    <img src="../images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='images/LORIS_Logo_141007.png'" align="middle" width="92%">
+    </center>
+    <br>
+</div>
+<center><h2>Request Account</h2></center>
 <h3>Please fill in the form below. We will contact you once your account has been approved.</h3>
 
 <form action="process_new_account.php" method="post" name="form1" id="form1" class="form-horizontal">
@@ -72,7 +77,7 @@
                 <input name="Submit" class="btn btn-primary col-xs-4" type="submit" value="Submit"/>
             </div>
 </div>
-<br><br>
+<br><br><br>
 <div class="row">
                 <table class="LoginFooter" align="center">
                     <tr>
@@ -95,10 +100,10 @@
                     <td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
                     </tr>   
                     <tr>
-                    <td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2013. All rights reserved.</td>
+                    <td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; 2014. All rights reserved.</td>
                     </tr>   
                     <tr>
-                    <td align="center" colspan="1"style="color: #808080">Created by <a href="http://cbrain.mcgill.ca" style="color: #064785" target="_blank"> ACElab</a></td>
+                    <td align="center" colspan="1"style="color: #808080">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
                     </tr>
                     <tr>
                     <td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>

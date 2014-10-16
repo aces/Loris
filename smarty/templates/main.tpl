@@ -567,9 +567,9 @@
                 <div align="center" colspan="1" style="color:#808080" >
                     Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
-                <div align="center" colspan="1">
-                    <a href="http://cbrain.mcgill.ca" style="color: #2FA4E7" target="_blank">
-                        Created by ACElab
+      		<div align="center" colspan="1" style="color:#808080">
+                    Created by <a href="http://mcin-cnim.ca/" style="color: #2FA4E7" target="_blank">
+                         MCIN
                     </a>
                 </div>
             </div>

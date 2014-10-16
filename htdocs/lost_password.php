@@ -20,6 +20,9 @@ $tpl_data = array();
 // create an instance of the config object
 $config =& NDB_Config::singleton();
 $tpl_data['css']=$config->getSetting('css');
+$tpl_data['study_title'] = $config->getSetting('title');
+$tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+
 
 if (isset($_POST['username'])) {
 
