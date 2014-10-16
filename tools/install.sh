@@ -292,7 +292,7 @@ while true; do
         break;
     elif [[ $result == *1007* ]] ; then
         echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
-        read -p "Database name: " mysqldb
+        read -p "Choose a different database name: " mysqldb
     elif [[ $result != '' ]]; then
         echo "Could not create the database with the root user provided.";
         exit 1;
@@ -315,7 +315,7 @@ fi
 
 
 echo ""
-echo "Creating database tables from schema."
+echo "Creating/populuating database tables from schema."
 echo ""
 mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
 echo "Updating Loris admin user's password."
