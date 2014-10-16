@@ -51,7 +51,7 @@ class NDB_Reliability extends NDB_Form
         if (class_exists("NDB_Reliability_$name")) {
             $class = "NDB_Reliability_$name";
         } else {
-            return PEAR::raiseError("The form class ($name) is not defined.");
+            throw new Exception("The form class ($name) is not defined.");
         }
 
         // create a form instance
@@ -63,35 +63,20 @@ class NDB_Reliability extends NDB_Form
         $obj->reliability_center_id = $reliability_center_id;
 
         $access = $obj->_hasAccess();
-        if (Utility::isErrorX($access)) {
-            return PEAR::raiseError(
-                "NDB_Form::factory() access: ".$access->getMessage()
-            );
-        }
 
         // check that user has access
         if ($access == false) {
-            return PEAR::raiseError("You do not have access to this page.");
+            throw new Exception("You do not have access to this page.");
         }
 
         if (method_exists($obj, $page)) {
             $success = $obj->$page();
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError(
-                    "NDB_Form::factory() page: ".$success->getMessage()
-                );
-            }
             $obj->template = $page;
         } elseif (method_exists($obj, $name)) {
             $success = $obj->$name();
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError(
-                    "NDB_Form::factory() name: ".$success->getMessage()
-                );
-            }
             $obj->template = $name;
         } else {
-            return PEAR::raiseError("Form does not exist: $name $page");
+            throw new Exception("Form does not exist: $name $page");
         }
 
         return $obj;
@@ -119,11 +104,6 @@ class NDB_Reliability extends NDB_Form
 
         // get the defaults
         $localDefaults = $this->_getDefaults();
-        if (Utility::isErrorX($localDefaults)) {
-            return PEAR::raiseError(
-                "NDB_Form::display(): ".$localDefaults->getMessage()
-            );
-        }
         if (!is_array($localDefaults)) {
             $localDefaults = array();
         }
@@ -157,9 +137,6 @@ class NDB_Reliability extends NDB_Form
     {
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, "_save"), false);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("NDB_Form::save(): ".$success->getMessage());
-            }
         }
     }
 
@@ -190,9 +167,6 @@ class NDB_Reliability extends NDB_Form
         }
 
         $success = $this->_process($values);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("NDB_Form::_save(): ".$success->getMessage());
-        }
     }
 
     /**

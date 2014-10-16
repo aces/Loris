@@ -218,22 +218,15 @@ class NDB_BVL_Instrument extends NDB_Page
             $obj = new $class;
             $obj->InstrumentType = 'PHP';
             $success = $obj->setup($commentID, $page);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError($success->getMessage());
-            }
         }
 
         $access = $obj->_hasAccess();
-        if (Utility::isErrorX($access)) {
-            return PEAR::raiseError(
-                "NDB_Instrument::factory(): ".$access->getMessage()
-            );
-        }
 
         // check that user has access
         if ($access == false) {
-            return PEAR::raiseError(
-                "You do not have access to this page."
+            throw new Exception(
+                "You do not have access to this page.",
+                403
             );
         }
 
@@ -270,9 +263,6 @@ class NDB_BVL_Instrument extends NDB_Page
             return true; //default
         } else { //check if user has instrument's permissions
             $user =& User::singleton();
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error: ".$user->getMessage());
-            }
 
             //is the instrument listed at all in instrumentPermissions?
             $instrumentListed = false;
@@ -296,7 +286,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
 
             //no user permissions match required instrument permissions
-            return PEAR::raiseError("You do not have access to this page.");
+            throw new Exception("You do not have access to this page.", 403);
         }
     }
 
@@ -396,9 +386,6 @@ class NDB_BVL_Instrument extends NDB_Page
                 "SELECT * FROM $this->table WHERE CommentID=:CID",
                 array('CID' => $this->getCommentID())
             );
-            if ($this->isError($defaults)) {
-                return $this->raiseError('Could not get default values for form');
-            }
             // set the defaults (call private method _setDefaultsArray
             // which could be overridden if necessary)
             $defaults = $this->_setDefaultsArray($defaults[0]);
@@ -595,18 +582,6 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         }
 
-        if ($this->isError($scoreResult)) {
-            // since this error is not capture in main.php - temp display
-            print "<font color='red'>
-                Encountered error while scoring the instrument:"
-                . $scoreResult->getMessage()
-                . "</font>
-                <br>\n";
-            print "This error will not prevent data from being saved, " .
-                "unless the data entry error is also displayed."
-                ."<BR>Please inform DCC of this error<br>\n";
-            return PEAR::raiseError($scoreResult->getMessage());
-        }
         return true;
     }
 
@@ -806,12 +781,6 @@ class NDB_BVL_Instrument extends NDB_Page
             $values,
             array('CommentID' => $this->getCommentID())
         );
-        if ($this->isError($result)) {
-            print "Error saving data: ".$result->getMessage()."<br>\n";
-            return $this->raiseError(
-                'Could not save to database' . $result->getMessage()
-            );
-        }
     }
 
 
@@ -968,11 +937,6 @@ class NDB_BVL_Instrument extends NDB_Page
                  'cid'     => $centerID,
                 )
             );
-            if ($db->isError($results)) {
-                return $this->raiseError(
-                    "Could not get examiner names: " . $results->getMessage()
-                );
-            }
         } else {
             $results = $db->pselect(
                 "SELECT examinerID, full_name
@@ -981,11 +945,6 @@ class NDB_BVL_Instrument extends NDB_Page
                      ORDER BY full_name",
                 array('centID' => $centerID)
             );
-            if ($db->isError($results)) {
-                return $this->raiseError(
-                    "Could not get examiner names: ".$results->getMessage()
-                );
-            }
         }
 
         $examiners = array('' => '');
@@ -1053,13 +1012,7 @@ class NDB_BVL_Instrument extends NDB_Page
             "SELECT Date_taken FROM $this->table WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
-        if ($this->isError($doa)) {
-            return $this->raiseError(
-                "Could not get date of administration from $this->table"
-            );
-        } else {
-            $this->dateOfAdministration = $doa;
-        }
+        $this->dateOfAdministration = $doa;
 
         return $this->dateOfAdministration;
     }
@@ -1580,11 +1533,6 @@ class NDB_BVL_Instrument extends NDB_Page
     function getFieldValue($field)
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()."<br>\n"
-            );
-        }
 
         $query      = "SELECT $field FROM $this->table WHERE CommentID = :CID";
         $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
@@ -1628,11 +1576,6 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()."<br>\n"
-            );
-        }
 
         $query = "SELECT " . join(',', $this->_requiredElements)
             . " FROM $this->table WHERE CommentID=:CID";
@@ -1660,12 +1603,6 @@ class NDB_BVL_Instrument extends NDB_Page
     function getDataEntryCompletionStatus()
     {
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: "
-                .$db->getMessage()."<br>\n"
-            );
-        }
 
         $query = "SELECT Data_entry_completion_status
             FROM $this->table WHERE CommentID=:CID";
@@ -1684,7 +1621,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function _setDataEntryCompletionStatus($status)
     {
         if (!in_array($status, array('Complete', 'Incomplete'))) {
-            return PEAR::raiseError(
+            throw new Exception(
                 "Invalid status passed to _setDataEntryCompletionStatus - "
                 . "'$status' should have been either "
                 . "'Complete' or 'Incomplete'<br>\n"
@@ -1692,23 +1629,12 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()."<br>\n"
-            );
-        }
 
         $success = $db->update(
             $this->table,
             array('Data_entry_completion_status' => $status),
             array('CommentID' => $this->getCommentID())
         );
-
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "Could not update status: ".$success->getMessage()."<br>\n"
-            );
-        }
     }
 
     /**
@@ -2150,11 +2076,6 @@ class NDB_BVL_Instrument extends NDB_Page
     function _nullScores($scoreCols)
     {
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()."\n"
-            );
-        }
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
@@ -2177,11 +2098,6 @@ class NDB_BVL_Instrument extends NDB_Page
             array('CommentID' => $this->getCommentID())
         );
 
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "DB Error, fail null the scores:\n".$success->getMessage()."\n"
-            );
-        }
         return;
     }
 
@@ -2245,12 +2161,6 @@ class NDB_BVL_Instrument extends NDB_Page
             "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
             array('CID' => $instrumentInstance->getCommentID())
         );
-        if ($instrumentInstance->isError($defaults)) {
-            return $instrumentInstance->raiseError(
-                'Could not get default values for form'
-            );
-        }
-
         return $defaults[0];
     }
 

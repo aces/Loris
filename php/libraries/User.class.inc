@@ -54,28 +54,17 @@ class User extends UserPermissions
 
         // get the user's permissions
         $success = $obj->select($username);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("User::factory(): ".$success->getMessage());
-        }
 
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // get user data from database
-        $query = "SELECT users.*, psc.Name AS Site FROM users 
+        $query = "SELECT users.*, psc.Name AS Site FROM users
             LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
-        if (Utility::isErrorX($row)) {
-            return PEAR::raiseError("DB Error: ".$row->getMessage());
-        }
-        
+
         // store user data in object property
         $obj->userInfo = $row;
 
@@ -99,11 +88,6 @@ class User extends UserPermissions
         static $instance;
         if (is_null($instance)) {
             $instance = User::factory($username);
-            if (Utility::isErrorX($instance)) {
-                return PEAR::raiseError(
-                    "User Error ($username): ".$instance->getMessage()
-                );
-            }
         }
         return $instance;
     }
@@ -123,16 +107,8 @@ class User extends UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $success = $DB->insert('users', $set);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
 
         return true;
     }
@@ -151,20 +127,12 @@ class User extends UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $success = $DB->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])
         );
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
 
         return true;
     }
@@ -196,7 +164,7 @@ class User extends UserPermissions
     {
         return $this->userInfo['Real_name'];
     }
-    
+
     /**
      * Get the user's username
      *
@@ -315,13 +283,13 @@ class User extends UserPermissions
         $password = '';
 
         // define possible characters
-        $possible = '0123456789bcdfghjkmnpqrstvwxyz'; 
+        $possible = '0123456789bcdfghjkmnpqrstvwxyz';
 
         // length of possible characters minus one
         $possible_cnt = 29; //strlen($possible) - 1;
 
         // add random characters to $password until $length is reached
-        for ($i = 0; $i < $length; $i++) { 
+        for ($i = 0; $i < $length; $i++) {
             $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
         }
 
@@ -409,7 +377,7 @@ class User extends UserPermissions
             return false;
         }
         $username = $this->getUsername();
-        $auth = array('Authorization' => 'Basic ' 
+        $auth = array('Authorization' => 'Basic '
             . base64_encode($c_config['admin'] . ':' . $c_config['adminpass'])
         );
         $userjson = $cdb->_getURL("/_users/org.couchdb.user:" . $username, 'GET', $auth);

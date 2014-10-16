@@ -135,9 +135,7 @@ class Utility extends PEAR
             $dob,
             $matches
         )) {
-            return PEAR::raiseError(
-                "Argument 1 does not match expected date format (YYYY-MM-DD)"
-            );
+            throw new Exception("Argument 1 does not match expected date format (YYYY-MM-DD)");
         }
         $dob = array(
                 'year' => $matches[1],
@@ -150,9 +148,7 @@ class Utility extends PEAR
             $testdate,
             $matches
         )) {
-            return PEAR::raiseError(
-                "Argument 2 does not match expected date format (YYYY-MM-DD)"
-            );
+                throw new Exception("Argument 2 does not match expected date format (YYYY-MM-DD)");
         }
         $testdate = array(
                      'year' => $matches[1],
@@ -197,9 +193,6 @@ class Utility extends PEAR
 
         // execute the query
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -231,9 +224,6 @@ class Utility extends PEAR
         // execute the query
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -263,9 +253,6 @@ class Utility extends PEAR
         }
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -302,9 +289,6 @@ class Utility extends PEAR
         }
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -327,9 +311,6 @@ class Utility extends PEAR
         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         $list = array();
         foreach ($result as $row) {
@@ -403,11 +384,6 @@ class Utility extends PEAR
                 WHERE ProjectID=:pID";
             $subprojList = $db->pselect($query, array('pID' => $projectID));
 
-            if (Utility::isErrorX($subprojList)) {
-                return PEAR::raiseError(
-                    "Could not list of subprojects ".$subprojList->getMessage()
-                );
-            }
             foreach ($subprojList as $row) {
                 $subList[] = $row['SubprojectID'];
             }
@@ -440,12 +416,6 @@ class Utility extends PEAR
 
         $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
         $testName = $db->pselectOne($query, array('CID' => $commentID));
-
-        if (Utility::isErrorX($testName)) {
-            return PEAR::raiseError(
-                "Could not get test name: ".$testName->getMessage()
-            );
-        }
 
         return $testName;
     }
@@ -624,13 +594,6 @@ class Utility extends PEAR
         $rows  = array();
         $tests = array();
         $rows  = $DB->pselect($query, $params);
-        if (Utility::isErrorX($rows)) {
-            fwrite(
-                STDERR,
-                "Could not lookup battery from database: ".$rows->getMessage()
-            );
-            return false;
-        }
 
         // repackage the array
         foreach ($rows AS $row) {
@@ -1032,11 +995,6 @@ class Utility extends PEAR
             AND f.Test_name = :tn AND psc.Centerid!= '1'";
 
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
-        if (Utility::isErrorX($visitlabels)) {
-            return PEAR::raiseError(
-                "Could not get visit label: ".$visitlabels->getMessage()
-            );
-        }
         return $visitlabels;
     }
     /**
@@ -1230,9 +1188,6 @@ class Utility extends PEAR
             );
         }
 
-        if (Utility::isErrorX($test_names)) {
-            return PEAR::raiseError("DB Error: ".$instruments->getMessage());
-        }
         return $test_names;
     }
 
