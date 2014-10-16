@@ -13,10 +13,12 @@
     <div class="row">
     {$headerTable}
     </div>
+    <div class="row">
     <table class='table-header-right'>
 	<tr><td>{if $files|@count}{$files|@count} file(s) displayed.</td></tr>
         <tr><td><div id="jivApplet">&nbsp;</div></td></tr>
     </table>
+    </div>
     </td>
 </tr>
 </table>
@@ -83,7 +85,7 @@
     </table>  
     </td>
 {* MIDDLE TABLE (PICS) *}
-    <td><a name="{$smarty.section.file.index}">
+    <td>
         <table class="table-mri-right-and-center">
             <thead>
                 <tr>
@@ -146,7 +148,7 @@
 		    </td>
                 </tr>{/if}
             </tfoot> 
-	</table></a>
+	</table>
     </td>
 {* RIGHT SUBTABLE*}
     <td>
