@@ -316,9 +316,9 @@
                                         {/section}
                                     </ul>
 
-                                    If this error persists, please report a bug using 
+                                    If this error persists, please 
                                     <a target="mantis" href="{$mantis_url}">
-                                        Mantis
+                                        report a bug to your administrator
                                     </a>.
                                 </p>
                                 <p>
