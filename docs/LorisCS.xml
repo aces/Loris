@@ -49,4 +49,7 @@
     <!-- Deprecated functions that will cause errors on different versions
          of PHP -->
     <rule ref="PHPCompatibility.PHP.DeprecatedFunctions"/>
+
+    <!-- Do not allow trailing whitespace at the end of lines -->
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
 </ruleset>
