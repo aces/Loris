@@ -1,0 +1,53 @@
+language: php
+
+php: 5.4
+
+install:
+    # List of PEAR modules installed by install script
+    - pear upgrade-all
+    - pear install Benchmark
+    - pear install Config
+    - pear install File_Archive
+    - pear install HTML_Common
+    - pear install HTML_QuickForm
+    - pear config-set preferred_state beta
+    - pear install HTML_QuickForm2
+    - pear install Mail
+    - pear install Mail_Mime
+    - pear install Net_SMTP
+    - pear install Net_Socket
+    - pear install OLE
+    - pear install Pager
+    - pear install PHPDocumentor
+    - pear install Structures_Graph
+    - pear install XML_Parser
+
+      # Running PHPCS is part of the test, even though
+      # Loris itself doesn't depend on it.
+    - pear install PHP_CodeSniffer
+
+      # Travis-CI requires this.
+    - phpenv rehash
+
+before_script:
+    - mysql -e 'CREATE DATABASE LorisTest'
+      # Even though this isn't used yet, it should in
+      # theory still catch syntax errors in the schema.
+    - mysql LorisTest < SQL/0000-00-00-schema.sql
+
+script:
+    # Run PHPCS on libraries directory.
+    # Note that everything doesn't pass yet, so instead
+    # do each file that we know passes individually to ensure
+    # no backwards progress..
+    # Eventually, the following should be uncommented and the
+    # file by file invocations deleted..
+    #- phpcs --standard=docs/LorisCS.xml php/libraries
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Log.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Email.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/CouchDB.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
