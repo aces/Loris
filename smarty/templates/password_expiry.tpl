@@ -12,13 +12,13 @@
 
 <body>
 
-    <div class="navbar navbar-default" role="navigation" style="height:90px">
-        <div class="container">
-            <a class="navbar-brand" href="#" style="align:center;">
-                <img src="{$study_logo}" border="0" width="64" height="57" />
-                {$study_title}
-            </a>
-        </div>
+<div class="navbar navbar-default" role="navigation" style="height:90px">
+    <div class="container">
+        <a class="navbar-brand" href="#" style="align:center;">
+            <img src="{$study_logo}" border="0" width="64" height="57" />
+            {$study_title}
+        </a>
+    </div>
 </div>
 
 <form action="{$action}" method="post">
@@ -84,7 +84,7 @@
                 <br>Created by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
             </div>
             <div class="col-xs-4 col-xs-offset-4  ">
-                   Developed at <a href="www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
+                Developed at <a href="www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
             </div>
         </div>
     </div>

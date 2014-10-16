@@ -13,13 +13,13 @@
 
 <body>
 
-    <div class="navbar navbar-default" role="navigation" style="height:90px">
-        <div class="container">
-            <a class="navbar-brand" href="#" style="align:center;">
-                <img src="{$study_logo}" border="0" width="64" height="57" />
-                {$study_title}
-            </a>
-        </div>
+<div class="navbar navbar-default" role="navigation" style="height:90px">
+    <div class="container">
+        <a class="navbar-brand" href="#" style="align:center;">
+            <img src="{$study_logo}" border="0" width="64" height="57" />
+            {$study_title}
+        </a>
+    </div>
 </div>
 
 <form action="lost_password.php" target="_self" method="post">
@@ -28,7 +28,6 @@
 			<div class="col-sm-2 col-xs-3 col-sm-offset-2">
 				<img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" align="left">
 			</div>
-
 			<div class="col-sm-6 col-xs-9">
 				{if $error_message}
 					<div class="form-group has-error">
@@ -47,7 +46,7 @@
 				Please enter your username below, and a new password will be sent to you.<br><br>
 				<div class="form-group">
 					<label class="col-xs-2">
-                        Username:
+                        User:
                     </label>
                     <div class="col-xs-6">
                         <input class="form-control input-sm" tabindex="1" type="text" size="40" name="username" />

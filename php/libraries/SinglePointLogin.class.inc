@@ -71,7 +71,6 @@ class SinglePointLogin extends PEAR
         $study_logo  = $config->getSetting('studylogo');
         $tpl_data['study_title'] = $study_title;
         $tpl_data['study_logo']  = $study_logo;
-        
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);

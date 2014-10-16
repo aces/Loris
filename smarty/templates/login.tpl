@@ -145,7 +145,7 @@ BrowserDetect.init();
 		  			<center>
 		  				<img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='images/LORIS_Logo_141007.png'" align="middle" width="85%"> 
 		  			</center>
-<br>
+					<br>
 		  		</div>
 		  		<div class="hidden-xs hidden-sm">
 		  			<br><br><br><br>
@@ -197,7 +197,6 @@ BrowserDetect.init();
 					</tr>	
 					<tr>
 					<td align="center" colspan="1"style="color: #808080">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
-
 					</tr>
 					<tr>
 					<td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
