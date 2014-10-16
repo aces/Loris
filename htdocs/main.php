@@ -199,6 +199,10 @@ $timer->setMarker('Drew breadcrumbs');
 // show the back button
 $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 
+// bug tracking link
+$tpl_data['mantis_url'] = $config->getSetting('mantis_url');
+
+
 //Display the links, as specified in the config file
 $links=$config->getSetting('links');
 foreach(Utility::toArray($links['link']) AS $link){
