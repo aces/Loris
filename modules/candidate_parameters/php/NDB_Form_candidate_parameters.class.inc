@@ -749,7 +749,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                     );
 
             $consentQuestions = array();
-            foreach (Utility::asArray($consent['Consent']) as $question) {
+            foreach (Utility::toArray($consent['Consent']) as $question) {
                 $yesno = $this->addSelect($question['name'], $question['label'], 
                         array('' => '',
                             'yes' => 'yes',
