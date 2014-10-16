@@ -48,7 +48,10 @@
 
     <!-- Deprecated functions that will cause errors on different versions
          of PHP -->
-    <rule ref="PHPCompatibility.PHP.DeprecatedFunctions"/>
+    <!-- This is not directly included in PHPCS, but a third party
+         extension.. it can be run manually by anyone who's installed
+         the extension -->
+    <!-- rule ref="PHPCompatibility.PHP.DeprecatedFunctions"/-->
 
     <!-- Do not allow trailing whitespace at the end of lines -->
     <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
