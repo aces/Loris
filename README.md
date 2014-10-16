@@ -41,7 +41,7 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
     git clone git@github.com:your-git-username/Loris.git $projectname 
     ```
 
-3. Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for the following information, including usernames and folders which it will create automatically.
+3. Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
 
     ``` 
     cd /var/www/$projectname/tools
