@@ -4,8 +4,6 @@
 
 {else}
 
-<p>The suggested visit label appears in the field!</p>
-
 <form method="post" name="create_timepoint" id="create_timepoint">
 
     <h3>Create Time Point</h3>
