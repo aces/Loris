@@ -52,7 +52,7 @@
     {/section}
             </ul>
             
-            If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
+            If this error persists, please <a target="mantis" href="{$mantis_url}">report a bug to your administrator</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {else}
 
