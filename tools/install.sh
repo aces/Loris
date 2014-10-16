@@ -160,10 +160,13 @@ fi
 # Create some subdirectories, if needed.
 mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
+# Setting appropriate permissions for project instruments and tables_sql directories (this is necessary for the Instrument Manager and scripts)
+chmod g+w ../project/instruments ../project/tables_sql
+
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
 
-# set the group user to www-data for tools/logs directory:
+# Set the group to www-data for tools/logs directory:
 if [ -d logs ]; then
 	sudo chgrp www-data logs
 	# set the proper permission for the tools/logs directory:
