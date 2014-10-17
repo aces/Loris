@@ -12,20 +12,20 @@
 
 <body>
 
-<div class="navbar navbar-default" role="navigation">
+<div class="navbar navbar-default" role="navigation" style="height:90px">
     <div class="container">
-        <center class="navbar-brand">
-            Montreal Neurological Hospital and Institute
-        </center>
+        <a class="navbar-brand" href="#" style="align:center;">
+            <img src="{$study_logo}" border="0" width="64" height="57" />
+            {$study_title}
+        </a>
     </div>
 </div>
-
 
 <form action="{$action}" method="post">
     <div class="row">
         <div class="col-xs-12">
             <div class="col-sm-2 col-xs-3 col-sm-offset-2">
-                <img src="images/mni_logo_transparent.gif" class="img-responsive" alt="Responsive image" align="left">
+                <img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" align="left">
             </div>
             <div class="col-sm-6 col-xs-9">
                 <strong>
@@ -80,8 +80,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-10 col-sm-8 col-sm-offset-2">
-                Created By: <a href="http:www.bic.mni.mcgill.ca" target="_blank">McConnell Brain Imaging Centre</a>
+            <div class="col-xs-4 col-xs-offset-5">
+                <br>Created by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
+            </div>
+            <div class="col-xs-4 col-xs-offset-4  ">
+                Developed at <a href="www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
             </div>
         </div>
     </div>

@@ -45,6 +45,7 @@ $tpl_data['rand']        = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+$tpl_data['currentyear'] = date('Y');
 $study_links             = $config->getSetting('Studylinks');// print_r($study_links);
 foreach (Utility::toArray($study_links['link']) AS $link) {
     $LinkArgs = '';
