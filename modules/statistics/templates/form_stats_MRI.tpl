@@ -84,14 +84,14 @@
 </div>
 
 <div class="row">
-<h2 class="statsH2 col-sm-12">MRI Integrity Statistics for {$mri_center_name} {$mri_project_name}</h2>
+<h2 class="statsH2 col-sm-12">Imaging Integrity Statistics for {$mri_center_name} {$mri_project_name}</h2>
 </div>
 <div class="table-responsive">
     <table class="table table-primary table-bordered">
         <thead>
           <tr class="info">
                 <th>No Parameter Form Completed</th>
-                <th>Nothing in MRI Browser for Form</th>
+                <th>Nothing in Imaging Browser for Form</th>
                 <th>No tarchive Entry for Form</th>
                 <th>Breakdown of Problems</th>
           </tr>
