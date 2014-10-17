@@ -160,10 +160,6 @@ fi
 # Create some subdirectories, if needed.
 mkdir -p ../project ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
 
-# Setting appropriate permissions for project instruments and tables_sql directories (this is necessary for the Instrument Manager and scripts)
-chmod g+w ../project/instruments ../project/tables_sql
-sudo chgrp www-data ../project/instruments ../project/tables_sql
-
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
 
