@@ -542,18 +542,19 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date 
                                                FROM consent_info_history WHERE CandID=:cid", 
                                                array('cid'=>$this->identifier));
+               $study_consent_hist = array();
                 for ($i=0; $i<sizeof($study_consent); $i++ ) {
                     foreach ($study_consent[$i] as $key=>$value) {
                         if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
-                            break;    
+                            break;
                         }
                         if (!empty($study_consent[$i][$question['name']])) {
-                           $study_consent_hist[$i][$key] = $value;   
-                        }    
+                           $study_consent_hist[$i][$key] = $value;
+                        }
                     }
                 }
             $this->tpl_data['consent_list'][$question['name']] = array('label'=>$consentQuestion, 
-                                                                       'history'=>$study_consent_hist);    
+                                                                       'history'=>$study_consent_hist);
             }
         }
         $this->form->addFormRule(array(&$this,'_validate'));
