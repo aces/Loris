@@ -15,7 +15,6 @@ install:
     - pear install Mail
     - pear install Mail_Mime
     - pear install Net_SMTP
-    - pear install Net_Socket
     - pear install OLE
     - pear install Pager
     - pear install PHPDocumentor
