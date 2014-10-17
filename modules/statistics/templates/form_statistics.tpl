@@ -108,7 +108,7 @@ function CreateScatterplot() {
             <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs">Demographic Statistics</a></li>
             <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
             <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li>
-            <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">MRI Statistics</a></li>
+            <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">Imaging Statistics</a></li>
             <!-- <li class="statsTab"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li> -->
         </ul>
     </div>
@@ -123,7 +123,7 @@ function CreateScatterplot() {
             <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_demographic&dynamictabs=dynamictabs">Demographic Statistics</a></li>
             <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
             <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li>
-            <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">MRI Statistics</a></li>
+            <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">Imaging Statistics</a></li>
             <!-- <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li> -->
         </ul>
     </div>
