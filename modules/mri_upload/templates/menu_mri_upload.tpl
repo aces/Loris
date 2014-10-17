@@ -90,10 +90,7 @@
     
     </table>
 <div class="row">
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner">
-            <div class="table-scroll" id="content">
-                <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
+                <table class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
                     <thead>
                     <tr class="info">
                          <th nowrap="nowrap">No.</th>
@@ -147,14 +144,5 @@
                     </tbody>
                     <!-- end data table -->
                 </table>
-            </div>
-            <a class="left carousel-control"  id="scrollLeft" href="#carousel-example-generic">
-                <span class="glyphicon glyphicon-chevron-left"></span>
-            </a>
-            <a class="right carousel-control" id="scrollRight" href="#carousel-example-generic" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right"></span>
-            </a>
-        </div>
-    </div>
 </div>
 
