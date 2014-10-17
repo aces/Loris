@@ -450,9 +450,50 @@ class NDB_BVL_Instrument extends NDB_Page
             $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
             $this->form->accept($renderer);
-            $smarty->assign('form', $renderer->toArray());
 
-            $html = $smarty->fetch("instrument_html.tpl");
+            $formArray = $renderer->toArray();
+            if(isset($_REQUEST['json']) == 'true') {
+
+                foreach($formArray['sections'] as &$section) {
+                    foreach($section['elements'] as &$element) {
+                        if($element['type'] === 'select') {
+                            $html = new DOMDocument();
+                            $html->loadHTML($element['html']);
+
+                            $element['options'] = array();
+
+                            foreach($html->getElementsByTagName("option") as $option) {
+                                $element['options'][$option->nodeValue] = $option->textContent;
+                                
+                                /*j
+                                print "TextContent: " . $option->textContent;
+                                print "Value: ";
+                                print $option->nodeValue;
+                                 */
+                            }
+                            /*
+                            foreach($html->childNodes as $node) {
+                                print_r($node);
+
+                                print $node->nodeValue;
+                                print $node->textContent;
+                            }
+                            print "\n";
+                            $element['options'] = array("abc" => "def");
+                             */
+                        }
+                    }
+                }
+
+
+                $smarty->assign('form', $formArray);
+                $smarty->assign('testname', $this->testName);
+                $smarty->assign('fullname', $this->getFullName());
+                $html = $smarty->fetch("instrument_json.tpl");
+            } else {
+                $smarty->assign('form', $formArray);
+                $html = $smarty->fetch("instrument_html.tpl");
+            }
         }
 
         return $html;
@@ -979,6 +1020,9 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function freeze()
     {
+        if($_REQUEST['json'] === 'true') {
+            return;
+        }
         $this->form->freeze();
     }
 
