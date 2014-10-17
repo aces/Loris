@@ -11,6 +11,7 @@
     <button onClick="updateMRITab()" class="btn btn-primary btn-small">Submit Query</button>
     <br><br>
 
+<div class="row">
 <div class="col-sm-6">
     <table class="table table-primary table-bordered">
         <thead>
@@ -80,8 +81,11 @@
         </tbody>
     </table>
 </div>
+</div>
 
+<div class="row">
 <h2 class="statsH2 col-sm-12">MRI Integrity Statistics for {$mri_center_name} {$mri_project_name}</h2>
+</div>
 <div class="table-responsive">
     <table class="table table-primary table-bordered">
         <thead>
