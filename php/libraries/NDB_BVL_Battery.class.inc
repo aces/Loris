@@ -103,9 +103,7 @@ class NDB_BVL_Battery extends PEAR
         } else {
             $this->age = null;
         }
-
-
-    } // end selectBattery()
+    }
 
     /**
      * Asserts that no instruments are in the current battery and then, based
@@ -309,9 +307,7 @@ class NDB_BVL_Battery extends PEAR
         if ($this->isError($error)) {
             return $error;
         }
-
-
-    } // end removeInstrument()
+    }
 
     /**
      * Gets an array of instruments which are members of the currently
@@ -440,8 +436,6 @@ class NDB_BVL_Battery extends PEAR
             = $config->getSetting("DoubleDataEntryInstruments");
 
         return in_array($instrumentName, $doubleDataEntryInstruments);
-
-
     }
 
     /**
@@ -663,7 +657,6 @@ class NDB_BVL_Battery extends PEAR
             "SELECT ID FROM test_names WHERE Test_name=:TN",
             array('TN' => $Test_name)
         );
-
 
         $OtherInfo = $DB->pselectRow(
             "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
