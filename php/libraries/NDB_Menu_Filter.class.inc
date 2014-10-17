@@ -7,7 +7,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -25,7 +25,7 @@ require_once 'HTML/QuickForm/select.php';
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Menu_Filter extends NDB_Menu

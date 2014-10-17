@@ -8,7 +8,7 @@
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -36,7 +36,7 @@ define('CANDIDATE_MAX_PSCID', 9999);
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class Candidate

@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once "PEAR.php";
@@ -26,7 +26,7 @@ define("DEBUG", false);
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class Database extends PEAR

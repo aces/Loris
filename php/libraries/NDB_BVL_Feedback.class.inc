@@ -22,7 +22,7 @@
  * @category Behavioural
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'smarty3/Smarty.class.php';
@@ -36,7 +36,7 @@ require_once 'Database.class.inc';
  * @category Behavioural
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Feedback

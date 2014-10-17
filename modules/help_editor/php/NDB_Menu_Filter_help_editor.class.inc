@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -22,7 +22,7 @@ require_once 'NDB_Form.class.inc';
  * @category Main
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 

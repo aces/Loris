@@ -10,7 +10,7 @@
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    Loris license
+ * @license    @GPLv3
  * @link       https://www.github.com/olgatsib/Loris-Trunk/
  */
 
@@ -23,7 +23,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    Loris license
+ * @license    @GPLv3
  * @link       https://www.github.com/olgatsib/Loris-Trunk/
  */
 class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter

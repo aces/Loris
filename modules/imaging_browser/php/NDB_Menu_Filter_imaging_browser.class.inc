@@ -10,7 +10,7 @@
  *  @package    Main
  *  @subpackage Imaging 
  *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris license
+ *  @license    @GPLv3
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -23,7 +23,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  *  @package    Main
  *  @subpackage Imaging
  *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    Loris license
+ *  @license    @GPLv3
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter

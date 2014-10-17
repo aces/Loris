@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once "PEAR.php";
@@ -27,7 +27,7 @@ require_once "Utility.class.inc";
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Config

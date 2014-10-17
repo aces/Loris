@@ -7,7 +7,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/IBIS
 */
 
@@ -21,7 +21,7 @@ require_once 'PEAR.php';
  * @category Behavioural
  * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/IBIS
 */
 class Log extends PEAR

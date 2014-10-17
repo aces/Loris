@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -21,7 +21,7 @@ require_once "Utility.class.inc";
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
