@@ -2,9 +2,11 @@
 $(function () {
     "use strict";
 
-    $('.tree').treegrid({
-          'initialState': 'collapsed',
+    if ($(".tree")[0]) {
+        $('.tree').treegrid({
+            'initialState': 'collapsed',
         });
+    }
 
     var count = 0;
     $(".add").click(function () {
