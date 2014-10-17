@@ -1374,7 +1374,7 @@ CREATE TABLE `user_perm_rel` (
 
 LOCK TABLES `user_perm_rel` WRITE;
 /*!40000 ALTER TABLE `user_perm_rel` DISABLE KEYS */;
-INSERT INTO `user_perm_rel` (userID, permID) SELECT DISTINCT 1, permID from permissions;
+INSERT INTO `user_perm_rel` (userID, permID) SELECT DISTINCT 1, permID FROM permissions;
 /*!40000 ALTER TABLE `user_perm_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
