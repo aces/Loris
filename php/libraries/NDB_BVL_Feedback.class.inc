@@ -592,7 +592,6 @@ class NDB_BVL_Feedback
             );
         }
 
-
         // DCC users should be able to see THEIR OWN inactive threads,
         // other users should see only active threads
         if ($user->isMultiSiteEnabled() || $hasReadPermission===true) {
