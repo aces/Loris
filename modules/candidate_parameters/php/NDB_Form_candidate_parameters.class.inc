@@ -539,14 +539,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $consent                        = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
             foreach (Utility::toArray($consent['Consent']) as $question) {
-                $fields = array();
                 $consentQuestion = array($question['name']=> $question['label'],
                                          $question['name'] . '_date' => "Date of <BR> $question[label]",
                                          $question['name'] . '_withdrawal' => "Date of withdrawal <BR> of $question[label]",
                                          'data_entry_date' =>'Date Updated',
                                          'entry_staff'=>'Data Entry Staff');
                 $fields = $question['name'].', '.$question['name'] . '_date, '.$question['name'] . '_withdrawal, ';
-                $study_consent = $DB->pselect("SELECT DISTINCT $fields entry_staff,data_entry_date 
+                $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date 
                                                FROM consent_info_history WHERE CandID=:cid", 
                                                array('cid'=>$this->identifier));
                $study_consent_hist = array();
@@ -559,7 +558,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                            $study_consent_hist[$i][$key] = $value;
                         }
                     }
-                } //print_r($study_consent_hist);
+                }
             $this->tpl_data['consent_list'][$question['name']] = array('label'=>$consentQuestion, 
                                                                        'history'=>$study_consent_hist);
             }
