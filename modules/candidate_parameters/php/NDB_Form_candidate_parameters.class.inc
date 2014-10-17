@@ -75,11 +75,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $value_results = $DB->pselect("SELECT ParameterTypeID, Value FROM 
                          parameter_candidate WHERE CandID=:CaID", 
                          array('CaID' => $this->identifier));
-       
-        $proband_info['ProbandGUID'] = $DB->pselectOne("SELECT ProbandGUID FROM 
-                                       candidate WHERE CandID=:CandidateID", 
-                                       array('CandidateID' => $this->identifier));
-        $defaults['ProbandGUID']     = $proband_info['ProbandGUID'];
 
         $proband_info['ProbandDoB'] = $DB->pselectOne("SELECT ProbandDoB FROM 
                                        candidate WHERE CandID=:CandidateID", 
@@ -263,7 +258,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                             "ParameterTypeID"=>$set['ParameterTypeID']));
                 //insert new values
                 $DB->insert("parameter_candidate", $set);
-            } else if($key == "ProbandGUID" || $key == 'ProbandDoB' || $key == 'ProbandGender'
+            } else if($key == 'ProbandDoB' || $key == 'ProbandGender'
                       || $key =='flagged_caveatemptor' || $key == 'flagged_reason' || $key == 'flagged_other'
                       || $key == 'flagged_other_status') {
                 if($key == 'ProbandDoB') {
@@ -495,7 +490,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->addScoreColumn("PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
         }
         
-        $this->addScoreColumn('ProbandGUID', 'Proband GUID:');
         $this->addScoreColumn('ProbandDoB', 'DoB Proband:');
         $this->addScoreColumn('ProbandGender', 'Proband gender:');
         $this->addScoreColumn('Age_Difference','Age Difference between candidate<BR> and proband (in months):');
@@ -704,8 +698,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->tpl_data['candID'] = $this->identifier;
 
         $this->tpl_data['pscid'] = $pscid;
-        
-        $this->addBasicText('ProbandGUID', 'Proband GUID:');
         
         $config             =& NDB_Config::singleton();
         $probandDateOptions = array(
