@@ -18,7 +18,7 @@
 
 <div class="row">
 {if $Subsection=="demographics" }
-    <div class="col-sm-2">
+    <div class="col-sm-4">
         {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
     <button onClick="updateDemographicTab()" class="btn btn-primary btn-small">Submit Query</button>
