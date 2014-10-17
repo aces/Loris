@@ -16,23 +16,30 @@
 
 <h2 class="statsH2">{$Header}</h2>
 
+<div class="row">
 {if $Subsection=="demographics" }
-    {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
-    <button onClick="updateDemographicTab()">Submit Query</button>
+    <div class="col-sm-2">
+        {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
+    </div>
+    <button onClick="updateDemographicTab()" class="btn btn-primary btn-small">Submit Query</button>
 {/if}
 
 {if $Subsection==mri }
-   {html_options id="mri_type" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
-    <button onClick="updateMRITable()">Submit Query</button>
+    <div class="col-sm-2">
+        {html_options id="mri_type" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
+    </div>
+    <button onClick="updateMRITable()" class="btn btn-primary btn-small">Submit Query</button>
 {/if}
 
 {if $Subsection=="data_entry" }
-    {html_options id="BehaviouralInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected}
-    <button onClick="updateBehaviouralInstrument()">Submit Query</button>
+    <div class="col-sm-2">
+        {html_options id="BehaviouralInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
+    </div>
+    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary btn-small">Submit Query</button>
 {/if}
+</div>
 
-
-</h2>
+<br>
 <table class="data" width="80%">
     <tr>
         <th rowspan="2">Timepoint</th>
