@@ -687,7 +687,7 @@ tr.directentry {
     font-size: 14px;
     color: #FFFFFF;
     white-space: pre-wrap;
-    word-break: break-word;
+    word-break: normal;
 }
 #helpclose {
    position: absolute;
