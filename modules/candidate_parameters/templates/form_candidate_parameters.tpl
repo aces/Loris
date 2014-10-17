@@ -62,7 +62,7 @@
                 <div class="row">
                     <label class="col-sm-2">{$form.SiblingcID.label}</label>
                     <div class="col-sm-10">
-                        {$sibling.CandID}
+                       <a href="main.php?test_name=candidate_parameters&candID={$sibling.CandID}&identifier={$sibling.CandID}">{$sibling.CandID}</a>
                     </div>
                 </div>
             {/foreach}
