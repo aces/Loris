@@ -18,7 +18,6 @@ install:
     - pear install OLE
     - pear install Pager
     - pear install PHPDocumentor
-    - pear install Structures_Graph
     - pear install XML_Parser
 
       # Running PHPCS is part of the test, even though
