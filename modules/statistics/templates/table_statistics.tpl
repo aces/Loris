@@ -40,7 +40,7 @@
 </div>
 
 <br>
-<table class="data" width="80%">
+<table class="data table table-primary table-bordered  dynamictable">
     <tr>
         <th rowspan="2">Timepoint</th>
             {foreach key=proj item=name from=$Subprojects}
