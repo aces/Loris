@@ -13,7 +13,7 @@
  *  @category Main
  *  @package  Behavioural
  *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  GPLv3
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once "PEAR.php";
@@ -24,7 +24,7 @@ require_once "PEAR.php";
  *  @category Main
  *  @package  Behavioural
  *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  GPLv3
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Battery extends PEAR

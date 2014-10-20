@@ -7,7 +7,7 @@
  * @category Main
  * @package  Behavioural
  * @author   Unknown <example@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'NDB_Page.class.inc';
@@ -25,7 +25,7 @@ require_once 'HTML/QuickForm/Renderer/Default.php';
  * @category Main
  * @package  Behavioural
  * @author   Unknown <example@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Instrument extends NDB_Page

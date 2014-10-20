@@ -7,7 +7,7 @@
  *  @category Main
  *  @package  Main
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  GPLv3
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'NDB_Config.class.inc';
@@ -19,7 +19,7 @@ require_once 'NDB_Config.class.inc';
  *  @category Testing
  *  @package  Test
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  GPLv3
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 class SocketWrapper
@@ -128,7 +128,7 @@ class SocketWrapper
  *  @category Main
  *  @package  Main
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  GPLv3
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 class CouchDB
