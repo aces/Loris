@@ -15,11 +15,9 @@ install:
     - pear install Mail
     - pear install Mail_Mime
     - pear install Net_SMTP
-    - pear install Net_Socket
     - pear install OLE
     - pear install Pager
     - pear install PHPDocumentor
-    - pear install Structures_Graph
     - pear install XML_Parser
 
       # Running PHPCS is part of the test, even though
@@ -44,6 +42,7 @@ script:
     # file by file invocations deleted..
     #- phpcs --standard=docs/LorisCS.xml php/libraries
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Database.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
