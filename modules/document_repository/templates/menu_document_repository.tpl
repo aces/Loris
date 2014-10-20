@@ -1,31 +1,66 @@
-<form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
-<table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
-    <tr>
-        <th nowrap="nowrap" colspan="8">Selection Filter</th>
-    </tr>
-    <tr>
-        <td>{$form.File_name.label}</td>
-        <td>{$form.File_name.html}</td>
-        <td>{$form.version.label}</td>
-        <td>{$form.version.html}</td>
-        <td>{$form.uploaded_by.label}</td>
-        <td>{$form.uploaded_by.html}</td>
-    </tr>
-    <tr>
-        <td>{$form.File_type.label}</td>
-        <td>{$form.File_type.html}</td>
-        <td>{$form.For_site.label}</td>
-        <td>{$form.For_site.html}</td>
-    </tr>
-    <tr>
-
-        <td colspan="6" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=document_repository&reset=true'" /></td>
-        <td align="right"><button id = "upload" name = "upload" class = "button">Upload File</button></td>
-        <td align="right"><button id = "addCategory" name = "addCategory" class = "button" onclick="return false;">Add Category</button></td>
-    </tr>
-</table>
-</form>
-
+<div class="row">
+<div class="col-sm-12">
+    <div class="col-xs-12">
+        <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
+            <div class="panel panel-primary">
+                <div class="panel-heading" onclick="hideFilter();">
+                    Selection Filter
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                </div>
+                <div class="panel-body" id="panel-body">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-1">{$form.File_name.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.File_name.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.version.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.version.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.uploaded_by.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.uploaded_by.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-1">{$form.File_type.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.File_type.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.For_site.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.For_site.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-2 col-sm-offset-4">
+                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=document_repository&reset=true'" />
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2">
+                                <button id = "upload" name = "upload" class = "btn btn-sm btn-primary col-xs-12">Upload File</button>
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2">
+                                <button id = "addCategory" name = "addCategory" class = "btn btn-sm btn-primary col-xs-12" onclick="return false;">Add Category</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
                 
 <div class = "ui-accordion ui-widget ui-helper-reset">
 <table border="0" width="80%" id = "accordionTable" class="docRepository" data-open = "{$openAccordion}">
