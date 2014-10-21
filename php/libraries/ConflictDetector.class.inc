@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Unknown(Samir?) <example@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -18,7 +18,7 @@
  * @category Main
  * @package  Loris
  * @author   Unknown(Samir?) <example@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class ConflictDetector
@@ -44,31 +44,31 @@ class ConflictDetector
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
         }
-    
+
         // Get data entry status for $commentId2
         $status = new NDB_BVL_InstrumentStatus();
         $status->select($commentId2);
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
         }
-    
+
         // Create the instrument instance for $commentId1
         $instance1 =& NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId1,
             null
         );
-    
+
         // Create the instrument instance for $commentId2
         $instance2 =& NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId2,
             null
         );
-    
+
         // Run the diff
         $diffResult = $instance1->diff($instance2);
-    
+
         // Return the diff result
         return $diffResult;
     }
@@ -82,7 +82,7 @@ class ConflictDetector
      */
     function recordUnresolvedConflicts($diffResult)
     {
-        $db=&Database::singleton();
+        $db =& Database::singleton();
 
         foreach ($diffResult AS $diffLine) {
             $db->replace('conflicts_unresolved', $diffLine);
@@ -103,14 +103,14 @@ class ConflictDetector
     function clearConflictsForField($diffLine)
     {
         $deleteWhere = array(
-            'TableName'=>$diffLine['TableName'],
-            'ExtraKeyColumn'=>$diffLine['ExtraKeyColumn'],
-            'ExtraKey1'=>$diffLine['ExtraKey1'],
-            'ExtraKey2'=>$diffLine['ExtraKey2'],
-            'FieldName'=>$diffLine['FieldName'],
-            'CommentId1'=>$diffLine['CommentId1'],
-            'CommentId2'=>$diffLine['CommentId2']
-        );
+                        'TableName'      => $diffLine['TableName'],
+                        'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
+                        'ExtraKey1'      => $diffLine['ExtraKey1'],
+                        'ExtraKey2'      => $diffLine['ExtraKey2'],
+                        'FieldName'      => $diffLine['FieldName'],
+                        'CommentId1'     => $diffLine['CommentId1'],
+                        'CommentId2'     => $diffLine['CommentId2'],
+                       );
 
         $db =& Database::singleton();
         $db->delete('conflicts_unresolved', $deleteWhere);
@@ -126,7 +126,8 @@ class ConflictDetector
      */
     function clearConflictsForInstance($commentId)
     {
-        $deleteWhere = array('CommentId1'=>$commentId);
+        $deleteWhere = array('CommentId1' => $commentId);
+
         $db =& Database::singleton();
         $db->delete('conflicts_unresolved', $deleteWhere);
     }
@@ -140,7 +141,7 @@ class ConflictDetector
      */
     function isInstrumentInstanceInConflictState($commentId)
     {
-        $db =& Database::singleton();
+        $db            =& Database::singleton();
         $conflictCount = $db->pselectOne(
             "SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",
             array('CID' => $commentId)
