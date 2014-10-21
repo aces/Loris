@@ -2008,14 +2008,16 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Data Dictionary', 'main.php?test_name=datadict', 5, 1),
     ('Document Repository', 'main.php?test_name=document_repository', 5, 2),
-    ('Data Team Helper', 'main.php?test_name=data_team_helper', 5, 3),
-    ('Instrument Builder', 'main.php?test_name=instrument_builder', 5, 4);
+    ('Data Integrity Flag', 'main.php?test_name=data_integrity_flag', 5, 3),
+    ('Data Team Helper', 'main.php?test_name=data_team_helper', 5, 4),
+    ('Instrument Builder', 'main.php?test_name=instrument_builder', 5, 5);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
     ('Survey Module', 'main.php?test_name=survey_accounts', 6,2),
     ('Help Editor', 'main.php?test_name=help_editor', 6,3),
-    ('Configuration', 'main.php?test_name=configuration', 6, 4);
+    ('Instrument Manager', 'main.php?test_name=instrument_manager', 6,4),
+    ('Configuration', 'main.php?test_name=configuration', 6, 5);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
