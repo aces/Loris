@@ -84,13 +84,16 @@ function CreateScatterplot() {
   $(document).ready(function() {
     $(".tab-pane").load($('#onLoad').attr('value'));
     $(".statsTabLink").click(function(){
-        $(".tab-pane").load($(this).attr('value'));
+        $(".tab-pane").load($(this).attr('value'), function() {
+            $(".dynamictable").DynamicTable();
+        });
         $(".statsTab").removeClass("active");
         $(this).parent().addClass("active");
         $("#hiddenTabs").html($(this).html());
         $("#tabsContent").hide();
         $("#down").show();
         $("#up").hide();
+        
     })
   });
   function toggleTabs(){
@@ -98,6 +101,8 @@ function CreateScatterplot() {
     $("#down").toggle();
     $("#up").toggle();
 }
+
+
 
 </script>
 {/literal}
