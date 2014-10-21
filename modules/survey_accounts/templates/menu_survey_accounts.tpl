@@ -1,5 +1,6 @@
 <script src="js/filterControl.js" type="text/javascript"></script>
 
+<div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
         <form method="post" action="main.php?test_name=survey_accounts">
@@ -60,6 +61,7 @@
         </form>
     </div>
 </div>
+</div>
 
 <!--  title table with pagination -->
 
@@ -72,6 +74,7 @@
     </table>
 </div>
 
+<div class="row">
 <div id="results" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
         <div class="table-scroll" id="content">
@@ -112,4 +115,5 @@
             <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     </div>
+</div>
 </div>
