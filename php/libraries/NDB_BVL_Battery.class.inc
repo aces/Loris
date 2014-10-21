@@ -92,7 +92,7 @@ class NDB_BVL_Battery extends PEAR
             $ageArray = Utility::calculateAge($dob, $testDate);
             $age      = ($ageArray['year'] * 12 + $ageArray['mon'])
                     * 30
-                    * + $ageArray['day'];
+                    + $ageArray['day'];
             //echo "age is:".$age."<BR>\n";
             /*
             if ($age < 0) {
