@@ -154,7 +154,7 @@ class Database extends PEAR
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
-        $historydb = null;
+        $historydb    = null;
         $historytable = "history";
 
         if (class_exists('NDB_Config')) {
@@ -163,10 +163,10 @@ class Database extends PEAR
 
             // get history database from config
             $dbsettings = $config->getSetting("database");
-            if(isset($dbsettings['historydb'])) {
+            if (isset($dbsettings['historydb'])) {
                 $historydb = $dbsettings['historydb'];
             }
-            if(isset($dbsettings['historytable'])) {
+            if (isset($dbsettings['historytable'])) {
                 $historytable = $dbsettings['historytable'];
             }
 
@@ -185,16 +185,38 @@ class Database extends PEAR
             ." :primaryKeys, :primaryVals, :userID, :type)"
         );
 
-        $this->_PDO = new PDO("mysql:host=$host;dbname=$database", $username, $password);
+        $this->_PDO = new PDO(
+            "mysql:host=$host;dbname=$database",
+            $username,
+            $password
+        );
+
         if (is_null($this->_HistoryPDO)) {
-            if(is_null($historydb)) {
+            if (is_null($historydb)) {
                 $this->_HistoryPDO =& $this->_PDO;
             } else {
-                $this->_HistoryPDO = new PDO("mysql:host=$host;dbname=$historydb", $username, $password);
+                $this->_HistoryPDO = new PDO(
+                    "mysql:host=$host;dbname=$historydb",
+                    $username,
+                    $password
+                );
             }
         }
 
-        $this->_preparedStoreHistory = $this->_HistoryPDO->prepare("INSERT INTO $historytable (tbl, col, new, old, primaryCols, primaryVals, userID, type) VALUES (:histtable, :histcolumn, :newval, :oldval, :primaryKeys, :primaryVals, :userID, :type)");
+        $this->_preparedStoreHistory = $this->_HistoryPDO->prepare(
+            "INSERT INTO $historytable
+            (tbl, col, new, old, primaryCols, primaryVals, userID, type)
+            VALUES
+            ( :histtable,
+              :histcolumn,
+              :newval,
+              :oldval,
+              :primaryKeys,
+              :primaryVals,
+              :userID,
+              :type
+            )"
+        );
     }
 
     /**
