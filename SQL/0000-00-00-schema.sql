@@ -2026,66 +2026,87 @@ CREATE TABLE LorisMenuPermissions (
 
 -- New Profile permission
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 7, PermID FROM permissions WHERE code='data_entry';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='New Profile';
 
 -- Access Profile 
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 8, PermID FROM permissions WHERE code='data_entry';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Access Profile';
 
 -- Reliability
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 9, PermID FROM permissions WHERE code='user_accounts';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Reliability';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 9, PermID FROM permissions WHERE code='reliability_edit_all';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='reliability_edit_all' AND m.Label='Reliability';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 9, PermID FROM permissions WHERE code='access_all_profiles';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='Reliability';
 
--- Conflicts Resolver
+-- Conflict Resolver
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 10, PermID FROM permissions WHERE code='data_entry';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Conflict Resolver';
 
 -- Certification
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 11, PermID FROM permissions WHERE code='certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification' AND m.Label='Certification';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 11, PermID FROM permissions WHERE code='certification_multisite';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification_multisite' AND m.Label='Certification';
 
 -- Radiological Reviews
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 12, PermID FROM permissions WHERE code='edit_final_radiological_review';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='edit_final_radiological_review' AND m.Label='Radiological Reviews';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 12, PermID FROM permissions WHERE code='view_final_radiological_review';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='view_final_radiological_review' AND m.Label='Radiological Reviews';
 
 -- DICOM Archive -- Config file currently does not require any permission
 -- Imaging Browser -- Config file currently does not require any permission
--- Statistics -- Config file currently does not require any permission 
 
--- Document Repository 
-INSERT INTO LorisMenuPermissions (MenuID, PermID)
-    SELECT 16, PermID FROM permissions WHERE code='file_upload';
-
--- Data Query Tool
+-- MRI Violated Scans
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 18, PermID FROM permissions WHERE code='data_dict';
-
--- Data Dictionary
-INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 19, PermID FROM permissions WHERE code='data_dict';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
 
 -- MRI Upload
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 20, PermID FROM permissions WHERE code='mri_upload';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='mri_upload' AND m.Label='MRI Upload';
+
+-- Statistics -- Config file currently does not require any permission 
+
+-- Data Query Tool
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict' AND m.Label='Data Query Tool';
+
+-- Data Dictionary
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict' AND m.Label='Data Dictionary';
+
+-- Document Repository
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='file_upload' AND m.Label='Document Repository';
+
+-- Data Integrity Flag
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID 
+    FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_integrity_flag' AND m.Label='Data Integrity Flag';
 
 -- Data Team Helper -- Config file currently does not require any permission
 -- Instrument Builder -- Config file currently does not require any permission
 
 -- User Accounts
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 23, PermID FROM permissions WHERE code='user_accounts';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='User Accounts';
+
+-- Survey Module
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
+
+-- Help Editor
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
+
+-- Instrument Manager
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='superuser' AND m.Label='Instrument Manager';
+
+-- Configuration
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
 
 
 CREATE TABLE `ConfigSettings` (
