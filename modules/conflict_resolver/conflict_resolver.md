@@ -1,4 +1,4 @@
-1- Access the Coflict-resolver module under 'Clinical Tab' if the user has permission
+1- Access the Conflict-resolver module under 'Clinical Tab' if the user has permission
 
 2- Click on 'Clear Form' to remove any previously entered parameters
 
