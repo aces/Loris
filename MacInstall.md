@@ -1,6 +1,6 @@
-#LORIS Neuroimaging Platform
+#LORIS Mac Install Guide
 
-LORIS is a web-accessible database solution for neuroimaging, providing a secure infrastructure to automate the flow of clinical data for complex multi-site neuroimaging studies.
+This is an a guide how to get a LORIS instance Running on your Mac computer. It has been tested for Mac OS X 10.9. 
 
 # 1. System Requirements
 
@@ -21,7 +21,7 @@ Apache2 should be preinstalled on your Mac. To verify, type the following comman
 sudo apachectl start
 ```
 
-Navigate to [http://localhost](http://localhost). It works! should appear in your web browser.
+Navigate to [http://localhost](http://localhost). Your browser should display the message "It works!"
 
 ## 1.2 PHP 
 
@@ -65,7 +65,7 @@ sudo cp /etc/php.ini.default /etc/php.ini
 ```
 This command will initiate the file to the ```/etc``` directory
 
-### <a name="include_path">1.3.4 Including PEAR</a>
+### <a name="include_path"></a>1.3.4 Including PEAR
 
 For PEAR to work with LORIS it has to be included in the ```include_path``` in the ```php.ini```. To do so do the following:
 
@@ -113,7 +113,7 @@ If already installed continue to section 1.6 else continue
 ### 1.5.2 Obtaining MySQL
 
 Download the latest DMG Archive for you current Mac setup (either 32-bit or 64-bit) from the following link [dev.mysql.com/downloads/mysql]
-(dev.mysql.com/downloads/mysql) and install the nessacary files.
+(dev.mysql.com/downloads/mysql) and install the necessary files.
 
 ### 1.5.3 Starting MySQL
 
@@ -177,14 +177,14 @@ extract it to `~/Sites/$projectname`
 
 ##2.2 Installing LORIS
 
-Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
+Run installer script to install core code, libraries, and MySQL schema (see [Loris Installation Schematic](https://demo.loris.ca/LORIS_Installation_schematic.14-10.PDF)). The script will prompt for information, including usernames and folders which it will create automatically.
 
 ```
 cd ~/Sites/$projectname/tools
 ./install.sh
 ```
 
-The install script was created for LINUX OS so its apache2 setup steps won’t work. The section 3 describes how to apache2 server.
+The install script was created for LINUX OS so its apache2 setup steps won’t work. Section 3 describes how to apache2 server.
 
 # 3. Launching the Local Apache2 Server
 
@@ -225,7 +225,7 @@ Restart your apache server:
 sudo apachectl restart
 ```
 
-You can now access you LORIS sandbox using the url [http://localhost/~USERNAME/loris/htdocs](http://localhost/~USERNAME/loris/htdocs)
+You can now access you LORIS sandbox using the url <a>http://localhost/~$username/loris/htdocs</a>
 
 To access your sandbox on another device, replace ```localhost``` with your IP address for your machine.
 
@@ -273,8 +273,8 @@ Open the ```/etc/apache2/extra/httpd-vhosts.conf``` in the text editor and add t
 	DocumentRoot /Library/WebServer/Documents/
 </VirtualHost>
 ```
-<i>$username ⇾ your username for the computer</i>
-<i>$pathToPear ⇾ path where PEAR installs .php files (see [section 1.3.4](#include_path) part 1)</i>
+ * <i>$username ⇾ your username for the computer</i>
+ * <i>$pathToPear ⇾ path where PEAR installs .php files (see [section 1.3.4](#include_path) part 1)</i>
 
 
 
