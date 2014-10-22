@@ -113,8 +113,7 @@
 </tr>
 </table>
 
-<div class="table-responsive">
-<table class="table table-hover table-primary table-bordered">
+<table class="dynamictable table table-hover table-primary table-bordered">
     <thead>
     <tr class="info">
 	<th>No.</th>
@@ -146,4 +145,3 @@
 {/section}
 </tbody>
 </table>
-</div>

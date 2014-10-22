@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/mohadesz/Loris-Trunk
 */
 
@@ -26,7 +26,7 @@ require_once "Message.class.inc";
  * @category Behavioural
  * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/mohadesz/Loris-Trunk
 */
 class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form

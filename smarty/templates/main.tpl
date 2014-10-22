@@ -41,7 +41,8 @@
                     {/literal}
                     var thisUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
                     {literal}
-                    window.open(thisUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+                    w = window.open(thisUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+                    w.focus();
                 }
 
                 function feedback_bvl_popup(features) { 
@@ -49,7 +50,8 @@
                     {/literal}
                     var myUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
                     {literal}
-                    window.open(myUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+                    w = window.open(myUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
+                    w.focus();
                     }
                 }
 
@@ -314,9 +316,9 @@
                                         {/section}
                                     </ul>
 
-                                    If this error persists, please report a bug using 
+                                    If this error persists, please 
                                     <a target="mantis" href="{$mantis_url}">
-                                        Mantis
+                                        report a bug to your administrator
                                     </a>.
                                 </p>
                                 <p>
@@ -565,9 +567,9 @@
                 <div align="center" colspan="1" style="color:#808080" >
                     Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
-                <div align="center" colspan="1">
-                    <a href="http://cbrain.mcgill.ca" style="color: #2FA4E7" target="_blank">
-                        Created by ACElab
+      		<div align="center" colspan="1" style="color:#808080">
+                    Created by <a href="http://mcin-cnim.ca/" style="color: #2FA4E7" target="_blank">
+                         MCIN
                     </a>
                 </div>
             </div>

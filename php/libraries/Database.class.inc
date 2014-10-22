@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once "PEAR.php";
@@ -18,7 +18,7 @@ define("DEBUG", false);
 /**
  * Database abstraction layer presents a unified interface to database
  * connectivity.  Instantiate one object instance per database
- * connection.  
+ * connection.
  *
  * Throughout the class, all input arrays follow the same structure:
  * $array['column_name'] = 'value'.
@@ -26,13 +26,13 @@ define("DEBUG", false);
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class Database extends PEAR
 {
     /**
-     * the database handle, created by the connect() method
+     * The database handle, created by the connect() method
      *
      * @access private
      */
@@ -40,20 +40,20 @@ class Database extends PEAR
     //var $_databaseHandle = null;
 
     /**
-     * integer number of rows affected by the last replace/update/delete/insert
+     * Integer number of rows affected by the last replace/update/delete/insert
      *
      * @access public
      */
     var $affected;
 
     /**
-     * the auto_increment ID value of the last insert statement, 
+     * The auto_increment ID value of the last insert statement,
      * as designated by LAST_INSERT_ID
      *
      * @access public
      */
     var $lastInsertID;
-    
+
     var $_showQueries = false;
 
     var $_trackChanges = true;
@@ -61,11 +61,11 @@ class Database extends PEAR
     var $_preparedStoreHistory;
 
     /**
-     * singleton design pattern implementation - creates the object
+     * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary
      *
      * @param string  $database     the database to select
-     * @param string  $username     the username with which to log into 
+     * @param string  $username     the username with which to log into
      *                              the database server
      * @param string  $password     the password that matches the username
      * @param string  $host         the name of the database server
@@ -85,9 +85,9 @@ class Database extends PEAR
         static $connections = array();
 
         // if no arguments, try to get the first connection or choke
-        if (is_null($database) 
-            && is_null($username) 
-            && is_null($password) 
+        if (is_null($database)
+            && is_null($username)
+            && is_null($password)
             && is_null($host)
         ) {
             if (!empty($connections)) {
@@ -125,14 +125,14 @@ class Database extends PEAR
     }
 
     /**
-     * creates the connection to the database
+     * Creates the connection to the database
      *
-     * creates the connection to the database server and selects the
+     * Creates the connection to the database server and selects the
      * desired database.  the connection is stored in the Database
      * object, and should never be accessed directly by the user.
      *
      * @param string  $database     the database to select
-     * @param string  $username     the username with which to log into 
+     * @param string  $username     the username with which to log into
      *                              the database server
      * @param string  $password     the password that matches the username
      * @param string  $host         the name of the database server
@@ -151,14 +151,14 @@ class Database extends PEAR
             $config =& NDB_Config::singleton();
             $this->_showQueries = $config->getSetting('showDatabaseQueries');
         }
-        
+
         $this->_PDO = new PDO(
             "mysql:host=$host;dbname=$database;charset=UTF8",
             $username,
             $password
         );
         $this->_preparedStoreHistory = $this->_PDO->prepare(
-            "INSERT INTO history (tbl, col, new, old," 
+            "INSERT INTO history (tbl, col, new, old,"
             ." primaryCols, primaryVals, userID, type)"
             ." VALUES"
             ." (:histtable, :histcolumn, :newval, :oldval,"
@@ -167,15 +167,15 @@ class Database extends PEAR
     }
 
     /**
-     * determines whether the database connection is alive
+     * Determines whether the database connection is alive
      *
      * @return boolean
      * @access public
      */
     function isConnected()
     {
-        try { 
-            if(!$this->_PDO) {
+        try {
+            if (!$this->_PDO) {
                 return false;
             }
             $this->_PDO->query("SELECT 'x'");
@@ -186,9 +186,9 @@ class Database extends PEAR
     }
 
     /**
-     * inserts a row
+     * Inserts a row
      *
-     * inserts a single row into the specified table, containing the values specified
+     * Inserts a single row into the specified table, containing the values specified
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
@@ -198,12 +198,12 @@ class Database extends PEAR
      */
     function insert($table, $set)
     {
-        $query = "INSERT INTO $table SET ";
+        $query  = "INSERT INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
 
-        $prepQ = "INSERT INTO $table SET ";
+        $prepQ       = "INSERT INTO $table SET ";
         $exec_params = array();
-        $prepQ .= $this->_implodeAsPrepared(",", $set, $exec_params);
+        $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
@@ -214,7 +214,7 @@ class Database extends PEAR
         // one.
 
         $this->_printQuery($query);
-        $prep = $this->_PDO->prepare($prepQ);
+        $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
             return $this->raiseError(
@@ -222,7 +222,7 @@ class Database extends PEAR
             );
         }
 
-        $this->affected = $prep->rowCount(); 
+        $this->affected     = $prep->rowCount();
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
@@ -234,9 +234,9 @@ class Database extends PEAR
     }
 
     /**
-     * replaces/inserts a row
+     * Replaces/inserts a row
      *
-     * replaces into the table such if there already exists a row with
+     * Replaces into the table such if there already exists a row with
      * the same primary key it will be replaced by the new row
      *
      * @param string $table the table into which to insert the row
@@ -245,11 +245,11 @@ class Database extends PEAR
      * @return none
      * @access public
      */
-    function replace($table, $set) 
+    function replace($table, $set)
     {
-        $query = "REPLACE INTO $table SET ";
+        $query  = "REPLACE INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
-        
+
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
             return;
@@ -260,9 +260,9 @@ class Database extends PEAR
     }
 
     /**
-     * updates a row
+     * Updates a row
      *
-     * updates a single row in the specified table
+     * Updates a single row in the specified table
      *
      * @param string $table   the table into which to insert the row
      * @param array  $set     the values with which to fill the new row
@@ -273,27 +273,27 @@ class Database extends PEAR
      */
     function update($table, $set, $i_where)
     {
-        /* This is still here to print the easily readable version on 
+        /* This is still here to print the easily readable version on
          * the top of the page when showDatabaseQueries is on. It isn't
          * actually executed. */
-        $query = "UPDATE $table SET ";
+        $query  = "UPDATE $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
         $query .= " WHERE ";
-        $where = $this->_implodeWithKeys(' AND ', $i_where);
+        $where  = $this->_implodeWithKeys(' AND ', $i_where);
 
         /* This generates the version of the update statement which is
          * executed. */
         $exec_params = array();
-        $prepQ = "UPDATE $table SET ";
-        $prepQ .= $this->_implodeAsPrepared(",", $set, $exec_params, 'set_');
-        $prepQ .= " WHERE ";
-        $prepQ .= $this->_implodeAsPrepared(
+        $prepQ       = "UPDATE $table SET ";
+        $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params, 'set_');
+        $prepQ      .= " WHERE ";
+        $prepQ      .= $this->_implodeAsPrepared(
             " AND ",
             $i_where,
             $exec_params,
             'where_'
         );
-        
+
         if (DEBUG) {
             fwrite(STDERR, $query.$where."\n");
             return;
@@ -311,21 +311,21 @@ class Database extends PEAR
         }
         $this->_printQuery($query.$where);
 
-        $prep = $this->_PDO->prepare($prepQ);
+        $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
             return $this->raiseError(
                 "Update statement did not execute successfully."
             );
         }
-        $this->affected = $prep->rowCount(); 
+        $this->affected = $prep->rowCount();
         return true;
     }
 
     /**
-     * deletes a row
+     * Deletes a row
      *
-     * deletes a single row in the specified table
+     * Deletes a single row in the specified table
      *
      * @param string $table the table into which to insert the row
      * @param array  $where the selection filter, joined as a boolean and
@@ -335,8 +335,8 @@ class Database extends PEAR
      */
     function delete($table, $where)
     {
-        $query = "DELETE FROM $table WHERE ";
-        $where = $this->_implodeWithKeys(' AND ', $where);
+        $query  = "DELETE FROM $table WHERE ";
+        $where  = $this->_implodeWithKeys(' AND ', $where);
         $query .= $where;
 
         if (DEBUG) {
@@ -356,23 +356,23 @@ class Database extends PEAR
         if ($this->isError($err)) {
             return $err;
         }
-    
+
         $this->_printQuery($query);
         $this->affected = $this->_PDO->exec($query);
     }
 
     /**
-     * selects data from the database
+     * Selects data from the database
      *
-     * selects any amount of data from the database and stores the
+     * Selects any amount of data from the database and stores the
      * result into the $result array (accepted by reference - it will
      * be overwritten so make sure it's empty or garbage before
      * passing it in...)
      *
-     * @param string $query   the SQL string which defines the SELECT query.
-     * @param array  &$result an array into which the results of the select 
-     *                        will be stored - this array gets overwritten completely
-     * 
+     * @param string $query  the SQL string which defines the SELECT query.
+     * @param array  $result an array into which the results of the select
+     *                       will be stored - this array gets overwritten completely
+     *
      * @return     none
      * @access     public
      * @deprecated Use pselect wrappers instead
@@ -381,8 +381,8 @@ class Database extends PEAR
     {
         $result = array();
 
-        if (strpos(strtoupper($query), 'SELECT') !== 0 
-            && strpos(strtoupper($query), 'SHOW') !== 0 
+        if (strpos(strtoupper($query), 'SELECT') !== 0
+            && strpos(strtoupper($query), 'SHOW') !== 0
             && strpos(strtoupper($query), 'DESCRIBE') !== 0
         ) {
             $result = $this->raiseError(
@@ -391,7 +391,6 @@ class Database extends PEAR
             );
             return;
         }
-        
 
         try {
             $this->_printQuery($query);
@@ -410,18 +409,19 @@ class Database extends PEAR
     }
 
     /**
-     * *** This should not be used as it does not support prepared statements.
-     * *** It is left here for legacy reasons/instruments
-     * selects a single row from the database
+     * Selects a single row from the database
      *
-     * selects a single row from the database and stores the
+     * Selects a single row from the database and stores the
      * result into the $result array (accepted by reference - it will
      * be overwritten so make sure it's empty or garbage before
      * passing it in...)
      *
-     * @param string $query   the SQL string which defines the SELECT query.
-     * @param array  &$result an array into which the results of the select will 
-     *                        be stored - this array gets overwritten completely
+     * *** This should not be used as it does not support prepared statements.
+     * *** It is left here for legacy reasons/instruments
+     *
+     * @param string $query  the SQL string which defines the SELECT query.
+     * @param array  $result an array into which the results of the select will
+     *                       be stored - this array gets overwritten completely
      *
      * @return     none
      * @access     public
@@ -436,9 +436,12 @@ class Database extends PEAR
     }
 
     /**
+     * Selects a single value from the database
+     *
+     * Selects a single value from the database and directly return the value.
+     *
      * *** This should not be used as it does not support prepared statements.
      * *** It is left here for legacy reasons/instruments
-     * selects a single value from the database
      *
      * @param string $query The SQL string which defines the SELECT query.
      *
@@ -461,13 +464,13 @@ class Database extends PEAR
      *
      * @param string $query The SQL query to run
      *
-     * @return None As a side-effect updates affected and lastInsertID 
+     * @return None As a side-effect updates affected and lastInsertID
      *              if applicable
      */
     function run($query)
     {
         $this->_printQuery($query);
-        $this->affected = $this->_PDO->exec($query);
+        $this->affected     = $this->_PDO->exec($query);
         $this->lastInsertID = $this->_PDO->lastInsertId();
     }
 
@@ -500,10 +503,10 @@ class Database extends PEAR
     function execute($prepared, $params)
     {
         $execRun = $prepared->execute($params);
-        $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
+        $rows    = $prepared->fetchAll(PDO::FETCH_ASSOC);
         return $rows;
     }
-    /** 
+    /**
      * Runs an SQL select statement as a prepared query
      *
      * @param string $query  The SQL SELECT query to be run
@@ -522,14 +525,14 @@ class Database extends PEAR
     }
 
     /**
-     * Runs a query as a prepared statement and returns the first row as an 
-     * associative array. Automatically adds a limit clause to the query being 
+     * Runs a query as a prepared statement and returns the first row as an
+     * associative array. Automatically adds a limit clause to the query being
      * run for efficiency.
      *
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
      *
-     * @return array Associative array of form ColumnName => Value for each column 
+     * @return array Associative array of form ColumnName => Value for each column
      *               in the first row of the query
      */
     function pselectRow($query, $params)
@@ -560,9 +563,9 @@ class Database extends PEAR
         return $result;
     }
     /**
-     * implodes a hash including the keys (unlike php's implode)
+     * Implodes a hash including the keys (unlike php's implode)
      *
-     * sets each hash element into the format key='value', and then
+     * Sets each hash element into the format key='value', and then
      * implodes the resultant array with the specified glue
      *
      * @param string $glue      The glue to pass to php's implode function
@@ -582,7 +585,7 @@ class Database extends PEAR
             if ($item===null || $item==='') {
                 $output[] = "`$key`=NULL";
             } else {
-                $item = $this->quote($item);
+                $item     = $this->quote($item);
                 $output[] = "`$key`=$item";
             }
         }
@@ -593,13 +596,13 @@ class Database extends PEAR
      * Helper function to generate the string for the WHERE part of an update
      * or delete query. Generates the string in a prepared statement format.
      *
-     * @param string $glue       The glue used to combine parts of the dataArray 
-     *                           (ie " AND ")
-     * @param array  $dataArray  The array representing the WHERE condition to be
-     *                           glued together into a string
-     * @param array  &$exec_vals The values which are being bound to the query. Used
-     *                           to generate the prepared variable name.
-     * @param string $prefix     A prefix to apply to prepared variable names.
+     * @param string $glue      The glue used to combine parts of the dataArray
+     *                          (ie " AND ")
+     * @param array  $dataArray The array representing the WHERE condition to be
+     *                          glued together into a string
+     * @param array  $exec_vals The values which are being bound to the query. Used
+     *                          to generate the prepared variable name.
+     * @param string $prefix    A prefix to apply to prepared variable names.
      *
      * @return string A string that can be used to generate a prepared statement with
      *                appropriate variable names generated for data binding.
@@ -612,7 +615,7 @@ class Database extends PEAR
 
         $output = array();
         foreach ($dataArray as $key => $item ) {
-            $varname= str_replace("%", "_percent_", $key);
+            $varname  = str_replace("%", "_percent_", $key);
             $output[] = "`$key`=:$prefix$varname";
             if ($exec_vals !== null) {
                 $exec_vals["$prefix$varname"] = $item;
@@ -625,7 +628,7 @@ class Database extends PEAR
     /**
      * Quote a variable to make it safe
      *
-     * @param string $value An unsafe string 
+     * @param string $value An unsafe string
      *
      * @return The value appropriately quoted/escaped
      */
@@ -635,9 +638,9 @@ class Database extends PEAR
     }
 
     /**
-     * saves changes made to database records
+     * Saves changes made to database records
      *
-     * determines the difference between the old values and the new,
+     * Determines the difference between the old values and the new,
      * then saves a reference to that change
      *
      * @param string $table the table into which to insert the row
@@ -661,7 +664,7 @@ class Database extends PEAR
         if ($this->isError($description)) {
             return $description;
         }
-        
+
         // find the primary key columns
         foreach ($description AS $column) {
             if ($column['Key_name']=='PRIMARY') {
@@ -688,7 +691,7 @@ class Database extends PEAR
         $this->_preparedStoreHistory->bindParam(":type", $type);
         if ($type == 'I') {
             $this->_preparedStoreHistory->bindValue(":oldval", null);
-            // Don't need to compare against anything, just insert into the history 
+            // Don't need to compare against anything, just insert into the history
             // if it's an insert
             foreach (array_keys($set) AS $column) {
                 $this->_preparedStoreHistory->bindParam(":histcolumn", $column);
@@ -720,7 +723,7 @@ class Database extends PEAR
         } else if ($type == 'U' || $type == 'D') {
             // construct the select query
             $query = "SELECT * FROM $table WHERE $where";
-        
+
             // select the database data
             $this->select($query, $oldRows);
             if ($this->isError($oldRows)) {
@@ -732,11 +735,11 @@ class Database extends PEAR
                 // compute the difference between the two arrays
                 if ($type == 'D') {
                     $delta = $oldRow;
-                    $set = array();
+                    $set   = array();
                 } else {
                     $delta = array_diff_assoc($set, $oldRow);
                 }
-            
+
                 // find the primary key values
                 $primaryValues = array();
                 foreach ($primaryKeys AS $key) {
@@ -770,7 +773,7 @@ class Database extends PEAR
      *                       They will be replaced in the print statement so that the
      *                       user knows what parameters were used.
      *
-     * @return null As a side-effect, prints to the screen if config option is 
+     * @return null As a side-effect, prints to the screen if config option is
      *              enabled
      */
     function _printQuery($query, $params=null)

@@ -13,7 +13,7 @@
  *  @category Main
  *  @package  Behavioural
  *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  Loris license
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once "PEAR.php";
@@ -24,7 +24,7 @@ require_once "PEAR.php";
  *  @category Main
  *  @package  Behavioural
  *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  Loris license
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Battery extends PEAR
@@ -92,7 +92,7 @@ class NDB_BVL_Battery extends PEAR
             $ageArray = Utility::calculateAge($dob, $testDate);
             $age      = ($ageArray['year'] * 12 + $ageArray['mon'])
                     * 30
-                    * + $ageArray['day'];
+                    + $ageArray['day'];
             //echo "age is:".$age."<BR>\n";
             /*
             if ($age < 0) {
@@ -103,9 +103,7 @@ class NDB_BVL_Battery extends PEAR
         } else {
             $this->age = null;
         }
-
-
-    } // end selectBattery()
+    }
 
     /**
      * Asserts that no instruments are in the current battery and then, based
@@ -309,9 +307,7 @@ class NDB_BVL_Battery extends PEAR
         if ($this->isError($error)) {
             return $error;
         }
-
-
-    } // end removeInstrument()
+    }
 
     /**
      * Gets an array of instruments which are members of the currently
@@ -440,8 +436,6 @@ class NDB_BVL_Battery extends PEAR
             = $config->getSetting("DoubleDataEntryInstruments");
 
         return in_array($instrumentName, $doubleDataEntryInstruments);
-
-
     }
 
     /**
@@ -663,7 +657,6 @@ class NDB_BVL_Battery extends PEAR
             "SELECT ID FROM test_names WHERE Test_name=:TN",
             array('TN' => $Test_name)
         );
-
 
         $OtherInfo = $DB->pselectRow(
             "SELECT CandID, c.PSCID, s.SubprojectID FROM session s

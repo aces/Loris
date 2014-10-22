@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 
@@ -24,7 +24,7 @@ require_once 'MRIFile.class.inc';
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 
@@ -163,7 +163,7 @@ class Imaging_Session_ControlPanel
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
      

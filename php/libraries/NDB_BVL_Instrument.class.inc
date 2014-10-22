@@ -7,7 +7,7 @@
  * @category Main
  * @package  Behavioural
  * @author   Unknown <example@example.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'NDB_Page.class.inc';
@@ -25,7 +25,7 @@ require_once 'HTML/QuickForm/Renderer/Default.php';
  * @category Main
  * @package  Behavioural
  * @author   Unknown <example@example.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Instrument extends NDB_Page
@@ -389,7 +389,6 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->addGroup($buttons, null, null, "&nbsp;");
         }
 
-
         // get saved data to pre-populate form
         $db = Database::singleton();
         if ($this->preview !== true) {
@@ -614,7 +613,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * This handles the saving of the Candidate_Age and Window_Difference columns
      * to the database when the save function is called with a Date_taken.
      *
-     * @param array &$values A reference to the values saved from QuickForm that
+     * @param array $values A reference to the values saved from QuickForm that
      *                       will be passed to update. This will be modified to
      *                       have Candidate_Age and Window_Difference if the
      *                       Date_taken field is included.
@@ -707,7 +706,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * This removes all the value of any field which has its accompagning
      * _status field set.
      *
-     * @param array &$values A reference to the array which will be passed
+     * @param array $values A reference to the array which will be passed
      *                       to $DB->update().
      *
      * @return none, but as a side-effect modifies &$values array
@@ -740,7 +739,6 @@ class NDB_BVL_Instrument extends NDB_Page
         if (empty($this->dateTimeFields)) {
             $this->dateTimeFields = array("Date_taken");
         }
-
 
         //Convert date/time fields into database dates/times
         if (is_array($this->dateTimeFields) && count($this->dateTimeFields) > 0) {
@@ -1694,7 +1692,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
     * Sets the data entry completion status
     *
-    * @param string $status The status - either 'Complete' 
+    * @param string $status The status - either 'Complete'
     *                       or 'Incomplete'
     *
     * @return none
@@ -2006,7 +2004,7 @@ class NDB_BVL_Instrument extends NDB_Page
         );
     }
 
-    /** 
+    /**
      * Wrapper to create a month year date field
      *
      * This is only used in instruments and not in NDB_Page because
@@ -2029,7 +2027,7 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
 
-    /** 
+    /**
     * Wrapper with a user-created date group, a status box and appropriate rule
     *
     * @param string $name      The database name to add to the form
@@ -2124,8 +2122,6 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $label The user friendly label to display
      *
      * @return none
-     *
-     * @note 
      */
     function addNumericElementRD($field, $label)
     {
@@ -2222,7 +2218,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         // Load other instance data
         $otherData = NDB_BVL_Instrument::loadInstanceData($otherInstrument);
-        
+
         // Create the return object data structure
         $diff = array();
 
@@ -2355,9 +2351,9 @@ class NDB_BVL_Instrument extends NDB_Page
      *                          string of a .linst file to be interpreted.
      * @param boolean $base64   If true, read the filename as a base64 encoded
      *                          string of the file content, used for preview
-     *                          when no file has yet been saved to the 
+     *                          when no file has yet been saved to the
      *                          instruments/ directory
-     * 
+     *
      * @return none, but as a side effect displays the Instrument page
      */
     function loadInstrumentFile($filename, $base64 = false)
@@ -2478,6 +2474,7 @@ class NDB_BVL_Instrument extends NDB_Page
                             ""
                         );
                     }
+                    break;
                 case 'endtable':
                     if ($addElements) {
                         $this->form->addElement(
@@ -2652,7 +2649,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     if ($addElements) {
                         if ($Group['Name'] != null) {
                             print "Creating $pieces[1] with label: $pieces[2]";
-                            $Group['Elements'][] 
+                            $Group['Elements'][]
                                 = $this->form->createElement(
                                     'static',
                                     $pieces[1],
@@ -2669,7 +2666,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     }
                     $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
                     break;
-                default: 
+                default:
                     break;
                 }
             }

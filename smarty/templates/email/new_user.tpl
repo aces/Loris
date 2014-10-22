@@ -12,4 +12,4 @@ You will be prompted to change your password after logging in.
 
 Thank you,
 
-Database Group
+LORIS Team

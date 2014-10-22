@@ -20,3 +20,11 @@ Help Module Test Plan
 16. Sort all header columns.
 17. Check multiple pages links.
 18. Check filter expansion.
+19. In the help editor, exmamine a topic that has project specific help text and make sure 
+    that this is the help text that is displayed in the result table and not the generic help
+    text.
+20. Go to the acces profile page (or any other page). Click the help icon in the upper right corner
+    and edit the help text. When taken to the edit help text page, click on the help icon in the 
+    upper right corner and click the Edit button again. Click the 'Return to edit help content'
+    and afterwards on the 'Return to Access Profile'. Make sure you are taken to the Access Profile page.
+      

@@ -7,7 +7,7 @@
  * @category Documentation
  * @package  Main
  * @author   Justin Kat <justinkat@gmail.com>, Mia Petkova <mia.petkova@gmail.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
@@ -21,7 +21,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @category Documentation
  * @package  Main 
  * @author   Justin Kat <justinkat@gmail.com>, Mia Petkova <mia.petkova@gmail.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/Jkat/Loris-Trunk/
 */
 

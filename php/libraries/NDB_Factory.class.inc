@@ -12,7 +12,7 @@
  *  @category Main
  *  @package  Main
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  Loris license
+ *  @license  GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'NDB_Factory.class.inc';
@@ -27,7 +27,7 @@ require_once 'CouchDB.class.inc';
  *  @category Main
  *  @package  Main
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  Loris license
+ *  @license  GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Factory

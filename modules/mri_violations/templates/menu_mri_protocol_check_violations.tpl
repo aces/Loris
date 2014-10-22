@@ -1,5 +1,6 @@
 <script src="js/filterControl.js" type="text/javascript"></script>
 
+<div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
         <form method="post" action="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations">
@@ -55,9 +56,9 @@
         </form>
     </div>
 </div>
-
+</div>
 <!--  title table with pagination -->
-
+<div class="row">
 <div id="pagelinks">
     <table border="0" valign="bottom" width="100%">
         <tr>
@@ -66,7 +67,8 @@
         </tr>
     </table>
 </div>
-
+</div>
+<div class="row">
 <div id="results" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
         <div class="table-scroll" id="content">
@@ -113,4 +115,5 @@
             <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     </div>
+</div>
 </div>

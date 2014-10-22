@@ -1372,25 +1372,9 @@ CREATE TABLE `user_perm_rel` (
 -- Dumping data for table `user_perm_rel`
 --
 
-LOCK TABLES `user_perm_rel` WRITE;
+LOCK TABLES `user_perm_rel` WRITE, `permissions` READ;
 /*!40000 ALTER TABLE `user_perm_rel` DISABLE KEYS */;
-INSERT INTO `user_perm_rel` VALUES 
-	(1,1),
-	(1,2),
-	(1,3),
-	(1,4),
-	(1,5),
-	(1,6),
-	(1,7),
-	(1,8),
-	(1,9),
-	(1,10),
-	(1,11),
-	(1,12),
-	(1,13),
-	(1,14),
-	(1,15),
-	(1,16);
+INSERT INTO `user_perm_rel` (userID, permID) SELECT DISTINCT 1, permID FROM permissions;
 /*!40000 ALTER TABLE `user_perm_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1848,7 +1832,10 @@ INSERT INTO `help` (helpID, parentID, hash, topic, content, created, updated) VA
 (34,33, md5('edit_user'), 'Add or Edit User Accounts', 'On this page, the user may enter and modify detailed information including address, degree, position and password. By checking a series of boxes under “Roles” and “Permissions” an administrator-level user may add, change or remove a user’s access to areas or functions in the database. After making changes, the administrator must click “Save” to ensure the permissions are updated. Note that permissions may be “Reset” by selecting the appropriate button. The administrator may also return to the list of users by selecting “Back”.' ,'2014-09-01 00:00:00',NULL),
 (35,-1,md5('instrument_builder'), 'Instrument Builder', 'The Instrument Builder module is designed to create new behavioural forms on the database. Existing instruments that were created using the instrument builder can be added under the “Load Instrument (optional)” heading. Most new instruments will be generated through the “Create Instrument” tab.\r\nThere are a series of buttons that specify the type of information each field in the form conveys.\r\n<b>Field Types, by Category :</b>\r\n<u>Information</u>\r\n• Header :: Used to specify a title for the page or section of the instrument. Text will appear in boldface at the centre of the page.\r\n• Label :: Functions as a subtitle to introduce a subset of questions\r\n• Scored Field :: Specifies any field that will have data entry. The type of scored field should be indicated under the “data entry” section\r\n<u>Data Entry</u>\r\n• Textbox :: Used for fields with free text, preferably short answers\r\n• Textarea :: Used for free text fields with longer inputs such as general comments, etc.\r\n• Dropdown :: Used for forced choice fields. The options for the dropdown menu need to be specified.  Once “Dropdown” is selected, the user will see an added row labeled as “Dropdown option”. Once the option has been entered, press “add option”. This new option should appear in the “preview” menu. The field “not_answered” will be automatically added to each dropdown menu. Once all options have been added, click “add row”. For subsequent dropdown scored fields, previous dropdown options will be preserved. If the user would like to create a new dropdown menu, click “reset”.\r\n• Multiselect :: Used for fields that have a select box where multiple options can be chosen.\r\n• Date :: Used for creating a date field such as Date of Birth\r\n• Numeric :: Used for creating a numeric field such as Height, Weight, etc.\r\n<u>Formatting</u>\r\n• Blank Line :: Can be used to separate sections within the same page of an instrument. The “Question Name” and “Question Text” can be left blank.\r\n• Page Break :: Used to add a new page within the instrument. The “Question Text” can be populated with the name of the new page, if desired.\r\n \r\n<b>Note on Question Names: </b>\r\n“Question Name” is the field name as it appears (only) in the back-end of the database. The “Question Text” will be seen by users on the database once the instrument has been uploaded. Users have the option of entering the same content into both the “Question Name” and “Question Text” boxes, but generally the “Question Name” is more brief and is formatted with the question number (ie. q1_*). Question names are unique and should not contain spaces. \r\n\r\nAfter each question entry, click “add row” to add the new field to the instrument code. \r\nThis should appear in table format at the bottom of the page. Each row can also be added to the table simply by pressing the enter key.\r\nIf a mistake was made while creating the instrument, users can directly edit the field names in the table at the bottom of the page. By clicking on the field name, a cursor should appear. The user can then make the appropriate changes and hit enter once finished. It is also possible to rearrange or delete fields using the “Options” column.\r\n \r\nOnce the user is satisfied with their instrument, it can be saved and validated.','2014-09-01 00:00:00',NULL),
 (36,33,md5('my_preferences'), 'My Preferences', 'This module allows the user to modify first name, last name, email address, and current password, as well as Document Repository preferences. All changes made to the user’s preferences must be saved by clicking “Save” after completion. Information can be reset using the “Reset” button.','2014-09-01 00:00:00',NULL),
-(37,30,NULL,'Put the topic here','Put the content here','2014-09-01 00:00:00',NULL) ; 
+(37,30,NULL,'Put the topic here','Put the content here','2014-09-01 00:00:00',NULL),
+(38, -1, md5('configuration'), 'Configuration', 'The Configuration Module allows you to edit configuration settings from the front end. The configuration values are stored in the database, instead of in the config.xml file. Any settings that are not currently in the Configuration Module can still be found and edited from the config.xml file.\r\n\r\nTo edit any configuration settings, navigate to the field that you\'d like to edit in the module, click in the form area and edit/insert a value. Pressing enter while the edited form area is selected will save any changes that you make.\r\n\r\nYou should not edit more than two fields at a time as the submit function only saves the data in the form area that you have currently selected. Therefore, if you edit two different fields, only the one that is selected at the time you press enter will be saved. It is recommended to save any changes you make in one field by pressing enter, before moving on to other fields. This will prevent losing any changes that you make.\r\n\r\nSome configuration settings can accept multiple values. For these settings, you can add additional fields by pressing the "Add Field". This will create an empty form area where you can insert new values. You must press enter while the new area is selected to save the new value. You can remove a field by pressing the remove button below the form area.\r\n\r\nCare should be taken when editing the fields as there is currently no way to revert changes.', '2014-09-01 00:00:00', NULL),
+(39, -1,md5('help_editor'),'Help Editor','Help Editor module displays existing help content for various modules in LORIS. A list of entries will appear that organizes help content by Topic, Parent Topic and Content. The selection filter allows users to search by Topic or Search keyword. They search keyword returns result if the search item appears in either the Topic or Content text. At the top of the table, column headings will appear underlined and show a click icon when the user hovers over the heading title. Data can be sorted in ascending order according to a given column by clicking on the column heading (i.e. Topic, Parent Topic etc.), and by clicking again, in descending order.\r\n\r\nEditing Content : The content for any module can be edited by clicking on the Topic or Parent topic of choice. ','2014-09-01 00:00:00', NULL),
+(40,39,md5('edit_help_content'),'Edit Help Content','This page will display a title and existing content for each module. Both the title and the content are editable. The text can be updated directed on the page and to save the changes click on the Save button at the bottom.','2014-09-01 00:00:00', NULL);
 
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -2096,7 +2083,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='superuser' AND m.Label='Configuration';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
 
 
 CREATE TABLE `ConfigSettings` (
@@ -2174,7 +2161,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'useScreening', "Whether or not there is a screening stage with its own intruments done before the visit stage", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 -- excluded_instruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'excluded_instruments', "instruments to be excluded from the data dictionary and the data query tool", 1, 0, ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'excluded_instruments', "Instruments to be excluded from the data dictionary and the data query tool", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- instrument
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'instrument', "Instrument to be excluded from the data dictionary and the data query tool", 1, 1, 'text', ID FROM ConfigSettings WHERE Name="excluded_instruments";
@@ -2449,10 +2436,10 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "mri_parameter_form" FROM Config
 -- default mail settings
 
 -- From
-INSERT INTO Config (ConfigID, Value) SELECT ID, "nobody@example.com" FROM ConfigSettings WHERE Name="From";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="From";
 
 -- Reply-to
-INSERT INTO Config (ConfigID, Value) SELECT ID, "nobody@example.com" FROM ConfigSettings WHERE Name="Reply-to";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="Reply-to";
 
 -- X-MimeOLE
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";

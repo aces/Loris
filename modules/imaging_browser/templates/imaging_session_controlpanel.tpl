@@ -29,7 +29,7 @@
 
     <h3>Visit Controls</h3>
     <ul>
-        <li><a href="#" onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">Visit Label Feedback</a></li>
+        <li><a href="#" onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">Visit Level Feedback</a></li>
     </ul>
 
     <h3>Visit QC</h3>

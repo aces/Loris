@@ -250,7 +250,7 @@ class NDB_Form_user_accounts extends NDB_Form
             $msg_data['study'] = $config->getSetting('title');
             $msg_data['url'] = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
-            $msg_data['username'] = $values['UserID'];
+            $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_md5'];
 
             $template = (empty($this->identifier)) ? 'new_user.tpl' : 'edit_user.tpl';
@@ -500,21 +500,30 @@ class NDB_Form_user_accounts extends NDB_Form
         $errors = array();
 
         // if username is user-defined, and it is a new user
-	if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
+        if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
             // check username's uniqueness
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
-            array('UID' => $values['UserID'] )
-        );
+            $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
+                    array('UID' => $values['UserID'] )
+                    );
 
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
+            if (Utility::isErrorX($result)) {
+                return PEAR::raiseError("DB Error: ".$result->getMessage());
+            }
+
+            if ($result > 0) {
+                $errors['UserID_Group'] = 'The user name already exists';
+            }
+
         }
-
-        if ($result > 0) {
-            $errors['UserID_Group'] = 'The user name already exists';
+        if (!empty($this->identifier)) {
+            $pass = $DB->pselectOne("SELECT Password_md5 FROM users WHERE UserID = :UID",
+                    array('UID' => $this->identifier) );
+             //case of new user the password column will be null so either password should be set or
+            // password should be generated
+            if (empty($pass) && empty($values['Password_md5']) && $values['NA_Password'] != 1) {
+                $errors['Password_Group'] = 'Please specify password or click Generate new password';
+            }
         }
-    }
-
         // if password is user-defined, and user wants to change password
         if (empty($values['NA_Password']) && !empty($values['Password_md5'])) {
             // check password strength
@@ -522,13 +531,17 @@ class NDB_Form_user_accounts extends NDB_Form
                 $errors['Password_Group'] = 'The password is weak, or the passwords do not match';
             }
         }
+        // if password is generated then the email user button should be clicked
+        if($values['NA_Password'] == 1 && $values['SendEmail'] != 1) {
+               $errors['Email_Group'] = 'When generating a new password, please notify the user by checking Send email to user box';
+        }
 
         // check email address' uniqueness
         $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID <> :UID", array('VEmail' => $values['Email'], 'UID' => $values['UserID']));
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
-    
+
         if ($result > 0) {
             $errors['Email_Group'] = 'The email address already exists';
         }

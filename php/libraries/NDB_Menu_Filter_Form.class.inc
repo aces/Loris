@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main 
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 
@@ -23,7 +23,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @category Behavioural
  * @package  Main 
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk	
 */
 

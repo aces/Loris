@@ -234,7 +234,7 @@
                             </a>
                             {/if}
                             {if $pending_users neq "" and $pending_users neq 0}
-                            <a href="main.php?test_name=user_accounts&pending=1&filter=Show%20Data" class="list-group-item">
+                            <a href="main.php?test_name=user_accounts&pending=Y&filter=Show+Data" class="list-group-item">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$pending_users}</div>
@@ -266,7 +266,7 @@
                     <div class="panel-body">
                         <div class="list-group document-repository-item">
                             {foreach from=$document_repository_notifications item=link}
-                            <a href="document_repository/admin/{$link.File_name}" class="list-group-item">
+                            <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$link.Data_dir}" download="{$link.File_name}" class="list-group-item">
                                 {if $link.new eq 1}
                                     <span class="pull-left new-flag">NEW</span>
                                 {/if}

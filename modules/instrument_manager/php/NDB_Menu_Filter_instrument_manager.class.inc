@@ -28,13 +28,16 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
         $this->formToFilter = array (
         );
 
-        if(!is_writeable($this->path . "project/instruments")) {
-            $this->tpl_data['writeable'] = false;
+        $writable = true;
+        if (!is_writeable($this->path . "project/instruments") || !is_writable($this->path . "project/tables_sql")) {
+            $writable = false;
         } else {
-            $this->tpl_data['writeable'] = true;
+            $writable = true;
         }
-            
-        if($_POST['install'] == 'Install Instrument') {
+
+        $this->tpl_data['writeable'] = $writable;
+
+        if($writable && $_POST['install'] == 'Install Instrument') {
             $db = Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
 
@@ -42,7 +45,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
             move_uploaded_file($_FILES['install_file']['tmp_name'], $new_file);
             chmod($new_file, 0644);
             chdir($this->path . "/tools");
-            
+
             $exists = $db->pselectOne("SELECT count(*) FROM test_names WHERE Test_name=:testname", array('testname' => $_FILES['install_file']['name']));
             if($exists <= 0) {
                 $db_config = $config->getSetting('database');

@@ -65,8 +65,10 @@
 </div>
 </div>
 
+<div class="row">
 <div class="col-xs-12">
 	<h1>Change Log</h1>
+</div>
 </div>
 <div class="table-responsive">
 	<table class="table table-hover table-primary table-bordered">
