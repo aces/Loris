@@ -6,11 +6,17 @@
        	{if $subject.nextTimepoint.URL != ''}<li><a href="{$subject.nextTimepoint.URL}">&nbsp;&nbsp;&nbsp;<img class='img-navigation-array' src="images/right.gif" alt="Next">&nbsp;Next</a></li>{/if}
     </ul>
     {if $prevTimepoint.URL!="" && $nextTimepoint.URL!=""}<br><br>{/if}
-    <h3>3D Panel Viewing</h3>
+    <h3>BrainBrowser Viewing</h3>
     <ul>
-       	<li><input id="bboverlay" type="button" class="button" accesskey="c" value="3D+Overlay"></li>
-       	<li><input id="bbonly" type="button" class="button" accesskey="d" value="3D Only"></li>
+       	<li><input id="bboverlay" type="button" class="button" value="3D+Overlay"></li>
+       	<li><input id="bbonly" type="button" class="button" value="3D Only"></li>
     </ul>
+    <h3>JIV Viewing</h3>
+    <ul>
+       	<li><input type="button" class="button" accesskey="c" value="3D+Overlay" onClick="javascript:show_jiv(jivNames, jivData, true);"></li>
+       	<li><input type="button" class="button" accesskey="d" value="3D Only"  onClick="javascript:show_jiv(jivNames, jivData, false);"></li>
+    </ul>
+
 
     <h3>Links</h3>
     <ul>
