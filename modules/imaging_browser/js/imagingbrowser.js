@@ -18,7 +18,8 @@ $(document).ready(function () {
             }
             console.log(FileIDs);
 
-            window.open("minc.html?minc_id=[" + FileIDs + "]" + extraparam);
+            w = window.open("minc.html?minc_id=[" + FileIDs + "]" + extraparam);
+            w.focus();
         };
     };
     $("#bboverlay").click(callback("&overlay=true"));

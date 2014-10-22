@@ -8,7 +8,7 @@
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'PEAR.php';
@@ -24,7 +24,7 @@ require_once 'NDB_Factory.class.inc';
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class Utility extends PEAR

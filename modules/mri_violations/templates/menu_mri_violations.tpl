@@ -1,5 +1,5 @@
 <script src="js/filterControl.js" type="text/javascript"></script>
-
+<div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
         <form method="post" action="main.php?test_name=mri_violations">
@@ -62,7 +62,8 @@
         </form>
     </div>
 </div>
-
+</div>
+<div class="row">
 <!--  title table with pagination -->
 <table id="LogEntries" border="0" valign="bottom" width="100%">
     <tr>
@@ -120,4 +121,5 @@
             <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     </div>
+</div>
 </div>

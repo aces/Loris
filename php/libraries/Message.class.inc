@@ -7,7 +7,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Olga Tsibulevskaya  <olgatsib@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/IBIS
 */
 
@@ -21,7 +21,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/IBIS
 */
 require_once 'NDB_Config.class.inc';

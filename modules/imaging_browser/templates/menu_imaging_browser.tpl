@@ -83,10 +83,15 @@
                         {$form.Pending.html}
                     </div>
                 </div>
-                <div class="form-group col-md-2 col-md-offset-2">
-                    <input type="submit" class="btn btn-sm btn-primary col-xs-12" name="filter" value="Show Data">
+                <div class="form-group col-md-6">
+                    <div class="col-sm-4 col-sm-offset-4">
+                    		<input type="submit" class="btn btn-sm btn-primary col-xs-12" name="filter" value="Show Data">
+                    </div>
+                    <div class="col-sm-4">
+                    		<input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=imaging_browser&reset=true'" />
+                    </div>
                 </div>
-            </div>
+             </div>
         </form>
     </div>
 </div>

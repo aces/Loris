@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once "PEAR.php";
@@ -27,7 +27,7 @@ require_once "Utility.class.inc";
  * @category Main
  * @package  Loris
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Config
@@ -455,8 +455,15 @@ class NDB_Config
                   WHERE Parent=:ParentID",
                 array('ParentID' => $parent)
             );
-            if (NDB_Config::checkMenuPermission($thisLevel[0]['ID'])) {
-                return $thisLevel;
+            $LevelWithPerm = array_filter(
+                $thisLevel,
+                function($el) {
+                    return NDB_Config::checkMenuPermission($el['ID']);
+                }
+            );
+
+            if (!empty($LevelWithPerm)) {
+                return $LevelWithPerm;
             }
             return;
         }

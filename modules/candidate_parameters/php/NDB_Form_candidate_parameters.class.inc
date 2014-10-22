@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -21,7 +21,7 @@ require_once "Utility.class.inc";
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -75,11 +75,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $value_results = $DB->pselect("SELECT ParameterTypeID, Value FROM 
                          parameter_candidate WHERE CandID=:CaID", 
                          array('CaID' => $this->identifier));
-       
-        $proband_info['ProbandGUID'] = $DB->pselectOne("SELECT ProbandGUID FROM 
-                                       candidate WHERE CandID=:CandidateID", 
-                                       array('CandidateID' => $this->identifier));
-        $defaults['ProbandGUID']     = $proband_info['ProbandGUID'];
 
         $proband_info['ProbandDoB'] = $DB->pselectOne("SELECT ProbandDoB FROM 
                                        candidate WHERE CandID=:CandidateID", 
@@ -227,7 +222,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
     }
 
     function _process($values)
-    {   
+    {
         if(!is_array($values) || count($values) ==0) {
         	return true;
         }
@@ -238,7 +233,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $config  =& NDB_Config::singleton();
         $consent = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
-
             foreach (Utility::asArray($consent['Consent']) as $question) {
                 unset($values[$question['name'].'_date2']);
                 unset($values[$question['name'].'_withdrawal2']);
@@ -263,7 +257,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                             "ParameterTypeID"=>$set['ParameterTypeID']));
                 //insert new values
                 $DB->insert("parameter_candidate", $set);
-            } else if($key == "ProbandGUID" || $key == 'ProbandDoB' || $key == 'ProbandGender'
+            } else if($key == 'ProbandDoB' || $key == 'ProbandGender'
                       || $key =='flagged_caveatemptor' || $key == 'flagged_reason' || $key == 'flagged_other'
                       || $key == 'flagged_other_status') {
                 if($key == 'ProbandDoB') {
@@ -390,7 +384,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
        if ($consent['useConsent'] === 'true') {
 
            $participant_vals = array();
-           foreach (Utility::asArray($consent['Consent']) as $question) {
+           foreach (Utility::toArray($consent['Consent']) as $question) {
                $participant_vals[$question['name']] = $values[$question['name']];
                $consent_dates = array($question['name'].'_date',$question['name'].'_withdrawal');
                foreach($consent_dates as $field) {
@@ -416,6 +410,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                        );
            } else {
                //insert it
+               $participant_vals['participant_status'] = 1; // 1 is Active which should be default
                $success = $DB->insert("participant_status",$participant_vals);
            }
 
@@ -494,7 +489,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->addScoreColumn("PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
         }
         
-        $this->addScoreColumn('ProbandGUID', 'Proband GUID:');
         $this->addScoreColumn('ProbandDoB', 'DoB Proband:');
         $this->addScoreColumn('ProbandGender', 'Proband gender:');
         $this->addScoreColumn('Age_Difference','Age Difference between candidate<BR> and proband (in months):');
@@ -547,18 +541,19 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date 
                                                FROM consent_info_history WHERE CandID=:cid", 
                                                array('cid'=>$this->identifier));
+               $study_consent_hist = array();
                 for ($i=0; $i<sizeof($study_consent); $i++ ) {
                     foreach ($study_consent[$i] as $key=>$value) {
                         if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
-                            break;    
+                            break;
                         }
                         if (!empty($study_consent[$i][$question['name']])) {
-                           $study_consent_hist[$i][$key] = $value;   
-                        }    
+                           $study_consent_hist[$i][$key] = $value;
+                        }
                     }
                 }
             $this->tpl_data['consent_list'][$question['name']] = array('label'=>$consentQuestion, 
-                                                                       'history'=>$study_consent_hist);    
+                                                                       'history'=>$study_consent_hist);
             }
         }
         $this->form->addFormRule(array(&$this,'_validate'));
@@ -704,8 +699,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $this->tpl_data['pscid'] = $pscid;
         
-        $this->addBasicText('ProbandGUID', 'Proband GUID:');
-        
         $config             =& NDB_Config::singleton();
         $probandDateOptions = array(
             'language' => 'en',
@@ -748,7 +741,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                     );
 
             $consentQuestions = array();
-            foreach (Utility::asArray($consent['Consent']) as $question) {
+            foreach (Utility::toArray($consent['Consent']) as $question) {
                 $yesno = $this->addSelect($question['name'], $question['label'], 
                         array('' => '',
                             'yes' => 'yes',

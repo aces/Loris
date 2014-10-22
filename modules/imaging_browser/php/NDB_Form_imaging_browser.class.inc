@@ -9,7 +9,7 @@
  * @package    Main
  * @subpackage Imaging 
  * @author     Loris team <info-loris.mni@mcgill.ca> 
- * @license    Loris License
+ * @license    @GPLv3
  * @link       https://github.com/aces/Loris-Trunk
 */
 
@@ -25,7 +25,7 @@ require_once 'Notify.class.inc';
  * @package    Main
  * @subpackage Imaging 
  * @author     Loris team <info-loris.mni@mcgill.ca>
- * @license    Loris License
+ * @license    @GPLv3
  * @link       https://github.com/aces/Loris-Trunk
 */
 

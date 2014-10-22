@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -20,7 +20,7 @@ require_once "Utility.class.inc";
  * @category Main
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -198,7 +198,7 @@ class NDB_Form_dashboard extends NDB_Form
         // Document Repository Items
         if ($user->hasPermission('file_upload')) {
             $document_repository = $DB->pselect(
-                "SELECT File_name, Date_uploaded FROM document_repository 
+                "SELECT File_name, Date_uploaded, Data_dir FROM document_repository 
                 ORDER BY Date_uploaded DESC LIMIT 4", array()
             );
             for ($i=0; $i < sizeof($document_repository); $i++) {

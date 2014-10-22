@@ -74,8 +74,12 @@
                     {if substr_count($items[item][piece].name, "Topic")}
                      
                         <td id ='{$items[item][piece].name}' class='description' bgcolor="{$items[item][piece].bgcolor}">
+                          {if $items[item][piece].parentID eq -1 && $items[item][piece].name eq 'Parent_Topic' && $items[item][piece].value eq '-'}
+                           {$items[item][piece].value}
+                           {else}
                            <a href="main.php?test_name=help_editor&subtest=edit_help_content&helpID={$items[item][piece].helpID}&parentID={$items[item][piece].parentID}">
                            {$items[item][piece].value}</a>
+                          {/if}
                         </td>
                     {else}
                         {**if $items[item][piece].name != "Name"**}

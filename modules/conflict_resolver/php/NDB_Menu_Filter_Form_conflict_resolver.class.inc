@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main 
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 
@@ -23,7 +23,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
  * @category Behavioural
  * @package  Main 
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris-Trunk    
 */
 

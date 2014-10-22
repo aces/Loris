@@ -6,7 +6,7 @@
         {/foreach}
     </ul>
     {/if}
-    <h1>General Information</h1>
+    <h3>General Information</h3>
     <div class="col-sm-8 col-md-6 col-xs-12">
         <div class="col-xs-12">
             <label class="col-xs-6">{$form.PSCID.label}</label>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="col-xs-12">
-        <h1>Review Values</h1>
+        <h3>Review Values</h3>
     </div>
     <div class="table-responsive">
         <table width="80%" class="table table-hover table-primary table-bordered">
@@ -109,7 +109,7 @@
     {$form.hidden}
 </form>
 <div class="col-xs-12">
-    <h1>Change Log</h1>
+    <h3>Change Log</h3>
 </div>
 <div class="table-responsive">
     <table class="table table-hover table-primary table-bordered">

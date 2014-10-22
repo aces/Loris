@@ -13,7 +13,7 @@
  * @category MRI
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -25,7 +25,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @category MRI
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
