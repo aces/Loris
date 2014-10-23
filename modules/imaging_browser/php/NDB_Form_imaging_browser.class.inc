@@ -46,7 +46,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     *
     * @return NULL
     */
-    function viewSession() 
+    function view_session() 
     {
         $this->DB = Database::singleton();
         if (Utility::isErrorX($this->DB)) {
