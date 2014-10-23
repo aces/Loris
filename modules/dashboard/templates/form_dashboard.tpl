@@ -271,6 +271,7 @@
                                     <span class="pull-left new-flag">NEW</span>
                                 {/if}
                                 <span class="pull-right text-muted small">Uploaded: {$link.Date_uploaded}</span>
+                                </br>
                                 {$link.File_name}
                             </a>
                             {/foreach}
