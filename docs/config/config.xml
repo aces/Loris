@@ -53,7 +53,6 @@
 
     <!-- study variables -->
     <study>
-
         <PSCID>
             <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
             <generation>user</generation>
