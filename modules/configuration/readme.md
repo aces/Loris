@@ -12,10 +12,11 @@ Some configuration settings can accept multiple values. For these settings, you 
 Care should be taken when editing the fields as there is currently no way to "undo" changes.
 
 ###Migrating configuration data from the config.xml to the database
-1. Add the config permission to the permissions table by running [this patch](https://github.com/aces/Loris-Trunk/blob/master/SQL/2014-08-20-Config_Permissions.sql)
-2. Create the ConfigSettings and Config table by running [this patch](https://github.com/aces/Loris-Trunk/blob/master/SQL/2014-08-29-ConfigSettings.sql)
-3. Update a data type in the Config table by running [this patch](https://github.com/aces/Loris/blob/master/SQL/2014-09-24-Config_Value_Datatype.sql)
-4. Fill the ConfigSettings table by running [this patch](https://github.com/aces/Loris-Trunk/blob/master/SQL/2014-09-25-ConfigToDB.sql)
-5. Fill the Config table with default values by running [this patch](https://github.com/aces/Loris-Trunk/blob/master/SQL/2014-09-26-DefaultConfig.sql)
-6. Run the config migration script, which moves values from your project's config.xml to the database. From the tools directory, run `php config_to_db.php`
-7. Add the configuration module to the LORIS menu by running [this patch](https://github.com/aces/Loris-Trunk/blob/master/SQL/2014-10-02-ConfigMenu.sql)
+1. Add the config permission to the permissions table by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-08-20-Config_Permissions.sql)
+2. Create the ConfigSettings and Config table by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-08-29-ConfigSettings.sql)
+3. Update a data type in the Config table by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-09-24-Config_Value_Datatype.sql)
+4. Fill the ConfigSettings table by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-09-25-ConfigToDB.sql)
+5. Fill the Config table with default values by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-09-26-DefaultConfig.sql)
+6. Add the configuration module to the LORIS menu by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-10-02-ConfigMenu.sql)
+7. Add the configuration help text by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-10-15-ConfigHelp.sql)
+8. Run the config migration script, which moves values from your project's config.xml to the database. From the tools directory, run `php config_to_db.php`
