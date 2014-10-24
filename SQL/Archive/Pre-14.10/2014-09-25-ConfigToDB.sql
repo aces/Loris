@@ -14,7 +14,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 -- studylogo
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'studylogo', 'Logo of the study', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
---- columnThreshold
+-- columnThreshold
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'columnThreshold', 'Number of columns the quat table will contain', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 -- useEDC
