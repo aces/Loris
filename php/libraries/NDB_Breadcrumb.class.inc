@@ -71,6 +71,7 @@ class NDB_Breadcrumb extends PEAR
             $this->_breadcrumb[$this->_lastIndex]['text'] = $text;
         } elseif (!is_null($parameter)) {
             $this->_breadcrumb[$this->_lastIndex]['text'] = ucwords(str_replace('_', ' ', $this->_parameters[$parameter]));
+            $this->_breadcrumb[$this->_lastIndex]['text'] = ucwords(preg_replace('/([A-Z])/', ' $1', $this->_breadcrumb[$this->_lastIndex]['text'] ));
         } else {
             $this->_breadcrumb[$this->_lastIndex]['text'] = $this->_userFriendlyNames[$this->_parameters['test_name']];
         }
