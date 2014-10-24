@@ -133,7 +133,7 @@
         <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].tarchiveID}&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>
         {elseif $items[item][piece].name == "MRI_Browser"}
             {if $items[item][piece].sessionID != ""}
-        <a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$items[item][piece].sessionID}&outputType=native&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>{else}&nbsp;{/if}
+        <a href="main.php?test_name=imaging_browser&subtest=view_session&sessionID={$items[item][piece].sessionID}&outputType=native&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>{else}&nbsp;{/if}
         {else}
              {$items[item][piece].value}
         {/if}
