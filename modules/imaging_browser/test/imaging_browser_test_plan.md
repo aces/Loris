@@ -8,7 +8,7 @@
 5. Test column table is sortable by headers
 6. Test that Links work, to correct dataset (selected/native)
 
-#B. ViewSession / Volume List 
+#B. View Session / Volume List 
 7. Sidebar:  all links work 
 8. 3d panel overlay etc - they work.  add panel checkbox works
 9. "Visit Level Feedback" - pops up QC window (see section D below)
