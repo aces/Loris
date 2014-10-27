@@ -39,7 +39,6 @@ class NDB_Client
         require_once "NDB_BVL_Battery.class.inc";
         require_once "NDB_BVL_Instrument.class.inc";
         require_once "NDB_BVL_InstrumentStatus.class.inc";
-        require_once "NDB_BVL_LogicTest.class.inc";
         require_once "TimePoint.class.inc";
         require_once "Utility.class.inc";
 
