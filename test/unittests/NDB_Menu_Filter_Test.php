@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
 
 class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
@@ -175,8 +175,6 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
 
     }
     /**
-     *
-    /*
      * TODO:
      * setupFilters
      */
