@@ -53,3 +53,4 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/CouchDB.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/TimePoint.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/UserPermissions.class.inc
