@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
 
-class NDBMenuFilterTest extends PHPUnit_Framework_TestCase
+class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for
@@ -115,5 +115,6 @@ class NDBMenuFilterTest extends PHPUnit_Framework_TestCase
      * TODO:
      * setFilterSortOrder
      * setupFilters
+     */
 }
 ?>
