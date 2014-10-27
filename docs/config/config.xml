@@ -20,7 +20,9 @@
     </tests>
 
     <!-- set to 1 if development environment -->
-    <sandbox>0</sandbox>
+    <dev>
+        <sandbox>0</sandbox>
+    </dev>
 
     <!-- database settings -->
     <database>

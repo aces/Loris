@@ -2,10 +2,15 @@ language: php
 
 php: 5.4
 
+before_install:
+    - mkdir -p project smarty/templates_c
+    - chmod 777 smarty/templates_c
+
 install:
     # Install composer modules
     - composer install --dev
     # List of PEAR modules installed by install script
+    - pear config-get php_dir
     - pear upgrade-all
     - pear install Benchmark
     - pear install Config
@@ -29,11 +34,53 @@ install:
       # Travis-CI requires this.
     - phpenv rehash
 
+      # Download a Selenium Web Driver release
+    - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
+
 before_script:
+    # Set up the MySQL database, install the Schema, create a MySQL user
+    # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
-      # Even though this isn't used yet, it should in
-      # theory still catch syntax errors in the schema.
     - mysql LorisTest < SQL/0000-00-00-schema.sql
+    - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
+    - mysql LorisTest -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aatestpass')), Pending_approval='N' WHERE ID=1"
+    - sed -e "s/%HOSTNAME%/localhost/g"
+          -e "s/%USERNAME%/SQLTestUser/g"
+          -e "s/%PASSWORD%/TestPassword/g"
+          -e "s/%DATABASE%/LorisTest/g"
+          < docs/config/config.xml > project/config.xml
+    - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+    - mysql LorisTest -e "SELECT * FROM Config"
+    # Enable php-fpm as per Travis DOCs
+    - sudo apt-get update
+    - sudo apt-get install apache2 libapache2-mod-fastcgi smarty3
+    # /usr/share/php gets obliterated from the path by phpenv, so make
+    # a symlink to fake it.
+    - ln -s /usr/share/php/smarty3 ~/.phpenv/versions/$(phpenv version-name)/pear
+
+    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - sudo a2enmod rewrite actions fastcgi alias
+    - sudo a2dismod php5
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+      # Configure apache
+    - cat /etc/apache2/mods-enabled/fastcgi.conf
+    - sudo cp -f docs/config/apache2-fastcgi /etc/apache2/sites-available/default
+    - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)/htdocs?g" --in-place /etc/apache2/sites-available/default
+    - sudo service apache2 restart
+    - sudo tail -f /var/log/apache2/error.log&
+    - wget "http://localhost/index.html"
+    - cat index.html
+    - wget "http://localhost/main.php"
+    - cat main.php
+    # Things that Selenium requires
+    # Required so that Selenium can run Firefox
+    - sh -e /etc/init.d/xvfb start
+    - export DISPLAY=:99.0
+    # Start Selenium and redirect Selenium WebDriver
+    # output to /dev/null so that it doesn't flood the
+    # screen in the middle of our other tests
+    - java -jar selenium-server-standalone-2.44.0.jar > /dev/null &
 
 script:
     # Run PHP -l on everything to ensure there's no syntax
@@ -42,6 +89,9 @@ script:
       do
         php -l $i || exit $?;
       done
+    # Run integration tests to make sure everything didn't just
+    # break
+    - phpunit test/integrationtests/
     # Run PHPCS on libraries directory.
     # Note that everything doesn't pass yet, so instead
     # do each file that we know passes individually to ensure
@@ -84,3 +134,6 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/State.class.inc
+
+after_failure:
+    - sudo cat /var/log/apache2/error.log
