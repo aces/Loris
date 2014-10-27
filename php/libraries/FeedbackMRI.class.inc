@@ -6,7 +6,8 @@
  */
 require_once "MRIFile.class.inc";
 
-class FeedbackMRI {
+class FeedbackMRI
+{
     /**
      * FileID from files table
      */
@@ -25,10 +26,10 @@ class FeedbackMRI {
     /**
      * constructor sets object parameters
      *
-     * @param     int     $fileID
-     * @param     int     $sessionID
-     * @access    private
-     * @return    none
+     * @param  int $fileID
+     * @param  int $sessionID
+     * @access private
+     * @return none
      */
     function FeedbackMRI($fileID='', $sessionID='')
     {
@@ -47,8 +48,8 @@ class FeedbackMRI {
     /**
      * clears all predefined comments from the object (used prior to re-setting the list of predefined comments)
      *
-     * @return    bool    if operation succeeded
-     * @access    public
+     * @return bool    if operation succeeded
+     * @access public
      */
     function clearPredefinedComments()
     {
@@ -68,9 +69,9 @@ class FeedbackMRI {
     /**
      * clears all comments from the object
      *
-     * @return    void
-     * @throws    PEAR_Error
-     * @access    public
+     * @return void
+     * @throws PEAR_Error
+     * @access public
      */
     function clearAllComments()
     {
@@ -91,9 +92,9 @@ class FeedbackMRI {
     /**
      * sets (or adds) predefined comments to an object - does NOT clear predefined comments internally
      *
-     * @param     array   $predefinedCommentIDs   an array of integers which are PredefinedCommentID from feedback_mri_predefined_comments table
-     * @return    bool    $success                if operation succeeded
-     * @access    public
+     * @param  array $predefinedCommentIDs an array of integers which are PredefinedCommentID from feedback_mri_predefined_comments table
+     * @return bool    $success                if operation succeeded
+     * @access public
      */
     function setPredefinedComments($predefinedCommentIDs)
     {
@@ -118,10 +119,10 @@ class FeedbackMRI {
     /**
      * adds a text comment to an object
      *
-     * @param     string  $comment                the body of the message to store
-     * @param     int     $commentTypeID          CommentTypeID from feedback_mri_comment_types table
-     * @return    bool    $success                if operation succeeded
-     * @access    public
+     * @param  string $comment       the body of the message to store
+     * @param  int    $commentTypeID CommentTypeID from feedback_mri_comment_types table
+     * @return bool    $success                if operation succeeded
+     * @access public
      */
     function addTextComment($comment, $commentTypeID)
     {
@@ -140,9 +141,9 @@ class FeedbackMRI {
     /**
      * gets the comments stored for the object
      *
-     * @return    array   $comments               tree: $cA[$typeID]['predefined'] is an array with integer keys (PredefinedCommentID) and boolean values (true) and $cA[$typeID]['text'] is an array of strings (free-form comments) where $typeID is always the CommentTypeID from feedback_mri_comment_types table
-     * @throws    PEAR_Error
-     * @access    public
+     * @return array   $comments               tree: $cA[$typeID]['predefined'] is an array with integer keys (PredefinedCommentID) and boolean values (true) and $cA[$typeID]['text'] is an array of strings (free-form comments) where $typeID is always the CommentTypeID from feedback_mri_comment_types table
+     * @throws PEAR_Error
+     * @access public
      */
     function getComments()
     {
@@ -178,10 +179,10 @@ class FeedbackMRI {
     /**
      * gets the list of all predefined comments for a given type
      * 
-     * @param     int     $commentTypeID          CommentTypeID from feedback_mri_comment_types table
-     * @return    array   $comments               an array with key (int) PredefinedCommentID and value (string) Comment
-     * @throws    PEAR_Error
-     * @access    public
+     * @param  int $commentTypeID CommentTypeID from feedback_mri_comment_types table
+     * @return array   $comments               an array with key (int) PredefinedCommentID and value (string) Comment
+     * @throws PEAR_Error
+     * @access public
      */
     function getAllPredefinedComments($commentTypeID)
     {
@@ -214,10 +215,10 @@ class FeedbackMRI {
     /**
      * gets the value of a single field in the MRI table
      * 
-     * @param     int     $fieldName              field to select from in mri table
-     * @return    string  $value                  value of $fieldName in mri table
-     * @throws    PEAR_Error
-     * @access    public
+     * @param  int $fieldName field to select from in mri table
+     * @return string  $value                  value of $fieldName in mri table
+     * @throws PEAR_Error
+     * @access public
      */
     function getMRIValue($fieldName)
     {
@@ -259,11 +260,11 @@ class FeedbackMRI {
     /**
      * sets the value of a single field in the MRI table
      * 
-     * @param     string  $fieldName              field to set in mri table
-     * @param     string  $value                  value to set in $fieldName
-     * @return    bool    
-     * @throws    PEAR_Error
-     * @access    public
+     * @param  string $fieldName field to set in mri table
+     * @param  string $value     value to set in $fieldName
+     * @return bool    
+     * @throws PEAR_Error
+     * @access public
      */
     function setMRIValue($fieldName, $value)
     {
@@ -316,8 +317,8 @@ class FeedbackMRI {
     /**
      * gets the list of all comment types
      * 
-     * @return    array   $commentNames           a two-dimensional array of ints (CommentTypeID) and three-element arrays ('name'=>string CommentName, 'field'=>string name of column in mri table for status, 'values'=>array of possible enum values for field)
-     * @access    public
+     * @return array   $commentNames           a two-dimensional array of ints (CommentTypeID) and three-element arrays ('name'=>string CommentName, 'field'=>string name of column in mri table for status, 'values'=>array of possible enum values for field)
+     * @access public
      */
     function getAllCommentTypes()
     {
@@ -362,8 +363,10 @@ class FeedbackMRI {
 
                 unset($statusField);
             }
-            // add overall row to the end of the output array 
-            $commentNames[$overallType] = $overallName;
+            // add overall row to the end of the output array
+            if ($overallType !== '' && !empty($overallName)) {
+                $commentNames[$overallType] = $overallName;
+            }
         }
 
         // return the output array
@@ -373,11 +376,11 @@ class FeedbackMRI {
     /**
      * adds a db entry for a comment to an object
      *
-     * @param     string  $comment                the body of the message to store
-     * @param     int     $commentTypeID          CommentTypeID from feedback_mri_comment_types table (optional if using predefinedCommentID)
-     * @param     int     $predefinedCommentID    PredefinedCommentID from feedback_mri_predefined_comments table
-     * @return    bool    $success                if operation succeeded
-     * @access    private
+     * @param  string $comment             the body of the message to store
+     * @param  int    $commentTypeID       CommentTypeID from feedback_mri_comment_types table (optional if using predefinedCommentID)
+     * @param  int    $predefinedCommentID PredefinedCommentID from feedback_mri_predefined_comments table
+     * @return bool    $success                if operation succeeded
+     * @access private
      */
     function _addComment($comment='', $commentTypeID='', $predefinedCommentID='')
     {
@@ -385,7 +388,7 @@ class FeedbackMRI {
         if (empty($comment) && empty($predefinedCommentID)           // no comment of either type
             || (!empty($comment) && !empty($predefinedCommentID))    // both comment types
             || (!empty($comment) && empty($commentTypeID))           // text comment with no typeID
-            ) {
+        ) {
             return false;
         }
 
@@ -439,8 +442,8 @@ class FeedbackMRI {
     /**
      * constructs an appropriate where expression to limit selects to the current object
      *
-     * @return    string  $where                  where string to limit selects to current object
-     * @access    private
+     * @return string  $where                  where string to limit selects to current object
+     * @access private
      */
     function _buildWhere()
     {
@@ -460,8 +463,8 @@ class FeedbackMRI {
      * argument for the Database class to limit queries to the current
      * object
      *
-     * @return    array  $where                  key=>value pairs
-     * @access    private
+     * @return array  $where                  key=>value pairs
+     * @access private
      */
     function _buildWhereAssoc()
     {

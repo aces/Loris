@@ -7,8 +7,8 @@
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 
-<link type="text/css" href="css/jquery-ui-1.8.10.custom.css" rel="Stylesheet" />	
-<script src="js/jquery/jquery-1.10.2.js" type="text/javascript"></script>
+<link type="text/css" href="css/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />	
+<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="js/modules/direct_entry.js"></script>
 
@@ -52,7 +52,7 @@
     {/section}
             </ul>
             
-            If this error persists, please report a bug using <a target="mantis" href="{$mantis_url}">Mantis</a>.</p>
+            If this error persists, please <a target="mantis" href="{$mantis_url}">report a bug to your administrator</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {else}
 
@@ -60,7 +60,7 @@
 {if $finalpage} 
 {$workspace}
 <h1 align="center">Review Page</h1>
-<p>Please review the data entered below. Unanwered questions are highlighed in red. Please use the back button to go access the previous pages and enter any data that is missing.</p>
+<p>Please review the data entered below. Unanswered questions are highlighted in red. Please use the back button to go access the previous pages and enter any data that is missing.</p>
 <p>Unanswered questions are highlighted in red.</p>
 {if $review}
 <hr>

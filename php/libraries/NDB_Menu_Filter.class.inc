@@ -7,7 +7,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -25,11 +25,12 @@ require_once 'HTML/QuickForm/select.php';
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Menu_Filter extends NDB_Menu
 {
+    var $TotalItems;
     /**
      * The columns to SELECT
      * @var    array
@@ -57,13 +58,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * @access private
      */
     var $order_by = '1';
-
-    /**
-     * Stores the filter form data, or other form data
-     * @var    HTML_QuickForm 
-     * @access private
-     */
-    var $form;
 
     /**
      * Items selected from the GUI selection form
@@ -113,6 +107,20 @@ class NDB_Menu_Filter extends NDB_Menu
      * @access private
      */
     var $list;
+
+    /**
+     * List of filters which are checkboxes so that
+     * it can be determined if it was checked or not.
+     * (Note that HTTP sends nothing if a checkbox is
+     * unchecked.)
+     */
+    var $CheckboxFilters = array();
+
+    /**
+     * A list of fields which are to be searched if the
+     * search keyword is used.
+     */
+    var $searchKey = array();
 
     /**
      * Calls other member functions to do all the work necessary to create the menu
@@ -200,6 +208,8 @@ class NDB_Menu_Filter extends NDB_Menu
         if (isset($_REQUEST['reset'])) {
             // erase filter data from the session
             $_SESSION['State']->setProperty('filter', null);
+            $_SESSION['State']->setProperty('keyword', null);
+           
         } elseif (isset($_REQUEST['filter'])) {
             // get the form's filters
             foreach ($this->formToFilter as $key => $val) {
@@ -235,9 +245,18 @@ class NDB_Menu_Filter extends NDB_Menu
             }
             $_SESSION['State']->setProperty('filter', $formFilters);
         }
+        if(isset($_REQUEST['keyword'])) {
+           $search['keyword'] = $_REQUEST['keyword'];
+           $oldSearch = $_SESSION['State']->getProperty('keyword');
+           if(is_array($oldSearch)) {
+               $search = array_merge($oldSearch, $search);
+           }
+           $_SESSION['State']->setProperty('keyword', $search);
+
+
+        }
 
         $filter = $_SESSION['State']->getProperty('filter');
-
         /**
          * TODO: I don't know why this is written this way.
          *       It should be rewritten both to fix references
@@ -269,12 +288,24 @@ class NDB_Menu_Filter extends NDB_Menu
            
             // set the filter form's defaults
             if (!empty($defaults)) {
-                eval("\$this->form->setDefaults(
+                eval("\$this->_setDefaults(
                     array(".implode(', ', $defaults).")
                 );");
             }
         }
+        $keyword = $_SESSION['State']->getProperty('keyword');
 
+        if(is_array($keyword)) {
+            foreach ($keyword as $key=>$val) {
+                // $defaults[] = "'$key'=>'$val'";
+                $defaults[$key] = $val;
+                $this->searchKey[$key] = $val;
+            }
+        }
+        // set the filter form's defaults
+        $this->_setDefaults($defaults);
+
+      
         // set only the valid filters
         foreach ($this->validFilters as $value) {
             // if no filter was defined (i.e. first hit) 
@@ -424,13 +455,50 @@ class NDB_Menu_Filter extends NDB_Menu
         $query = '';
         $query .= $this->_getBaseQuery();
 
+        $filterdetails = $this->_getBaseFilter();
+        $query .= $filterdetails['clause'];
+        $qparams = $filterdetails['params'];
+        // apply ORDER BY filters
+        $query .= " ORDER BY ";
+        if (!empty($this->filter['order'])) {
+            $query .= $this->filter['order']['field']
+                ." ".$this->filter['order']['fieldOrder'].", ";
+        }
+        $query .= $this->order_by;
+        // get the list
+        
+        $pageNum = 1;
+        if(isset($_REQUEST['pageID'])) {
+            $pageNum = $_REQUEST['pageID'];
+        }
+
+
+
+
+
+        $this->_getNumberPages($query);
+
+        $config =& NDB_Config::singleton();
+        $resultsPerPage = $config->getSetting('rowsPerPage');
+        $limit = " LIMIT $resultsPerPage OFFSET " . (($pageNum-1)*$resultsPerPage);
+        $result = $DB->pselect($query . $limit, $qparams);
+        
+        if (Utility::isErrorX($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
+        }
+        return $result;
+    }
+
+    function _getBaseFilter() {
+        $qparams = array();
+        $WhereClause = '';
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
             foreach ($this->filter as $field => $val) {
                 $prepared_key = Utility::getCleanString($field);
                 $query_piece = $this->_addValidFilters($prepared_key, $field, $val); 
                 if (!empty($query_piece)) {
-                    $query .= $query_piece;
+                    $WhereClause .= $query_piece;
 
                     if (in_array($field, $this->CheckboxFilters)) {
                         continue;
@@ -441,22 +509,24 @@ class NDB_Menu_Filter extends NDB_Menu
                 }
             }
         }
-
-        if (isset($this->searchKeyword) && isset($_REQUEST['keyword'])) {
-            $query .= " AND (";
+       
+         if(is_array($this->searchKey) && count($this->searchKey) > 0 && $this->searchKey['keyword'] !== '') {
+            $WhereClause .= " AND (";
             $fields = array();
             foreach ($this->searchKeyword as $field) {
                 //  $fields[] =" $field LIKE :v_SearchValue";
                 $fields[] =" $field LIKE CONCAT('%', :v_searchkey, '%')"; 
             }
-            $query .= join(" OR ", $fields);
-                $qparams['v_searchkey'] = $_REQUEST['keyword'];
-            $query .= ")";
-        }
+            $WhereClause .= join(" OR ", $fields);
 
+            $qparams['v_searchkey'] = $this->searchKey['keyword'];
+            $WhereClause .= ")";
+
+          }
+           
         // add GROUP BY if applicable
         if (!empty($this->group_by)) {
-            $query .= " GROUP BY $this->group_by ";
+            $WhereClause .= " GROUP BY $this->group_by ";
         }
         // add HAVING clause (for restricting aggregates)
         if (!empty($this->having)) {
@@ -468,34 +538,34 @@ class NDB_Menu_Filter extends NDB_Menu
                 if ($val !== '' and $val != null) {
                     $prepared_key = Utility::getCleanString($key);
                     if ($first == false) {
-                        $query .= ' AND ';
+                        $WhereClause .= ' AND ';
                     } else { 
-                        $query .= ' HAVING ';
+                        $WhereClause .= ' HAVING ';
                     }
                     $first = false;
 
-                    $query .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
-                        $qparams["v_$prepared_key"] = $val;
+                    $WhereClause .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
+                    $qparams["v_$prepared_key"] = $val;
                 }
             }
         }
 
-        // apply ORDER BY filters
-        $query .= " ORDER BY ";
-        if (!empty($this->filter['order'])) {
-            $query .= $this->filter['order']['field']
-                ." ".$this->filter['order']['fieldOrder'].", ";
-        }
-        $query .= $this->order_by;
-        // get the list
-        $result = $DB->pselect($query, $qparams);
-        
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
-        return $result;
+        return array('clause' => $WhereClause, 'params' => $qparams);
     }
 
+
+    function _getNumberPages($query) {
+        $wheredetails = $this->_getBaseFilter();
+        $db = Database::singleton();
+        if(empty($this->group_by)) {
+            $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
+        } else if (!empty($this->group_by)) {
+            $query = "SELECT COUNT(*) FROM ($query) as tmptable";
+
+        }
+        $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
+
+    }
 
     /**
      * Sets the template data for the list of candidates, users, etc.
@@ -513,10 +583,9 @@ class NDB_Menu_Filter extends NDB_Menu
             'mode'       => 'Sliding',
                 'perPage'    => $config->getSetting('rowsPerPage'),
                 'delta'      => 3,
-                'itemData'   => $this->list
+                'totalItems' => $this->TotalItems
             );
         $pager = Pager::factory($params);
-        $this->list = $pager->getPageData();
         $links = $pager->getLinks();
         $this->tpl_data['page_links'] = $links['all'];
 
@@ -590,7 +659,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function display()
     {
         // dump the html for the menu
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_neurodb($this->Module);
         $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
         $this->form->accept($renderer);
         $smarty->assign('mode', $this->mode);

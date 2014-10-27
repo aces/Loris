@@ -74,11 +74,11 @@ function log_msg($message) {
 
 // include instrument class
 if($test_name != 'all') {
-    if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")) {
+     if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
+            && !is_file("../project/instruments/$test_name.linst")) {
         fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
         return false;
     }
-    require_once "../project/instruments/NDB_BVL_Instrument_$test_name.class.inc";
 }
 
 $db =& Database::singleton();
@@ -114,7 +114,7 @@ foreach($result as $test) {
     log_msg("Running scoring for $test_name");
     log_msg("------------------------------");
 
-    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID
+    $query = "SELECT s.CandID, s.Visit_label, s.ID as SessionID, t.CommentID, c.PSCID
         FROM candidate as c, session as s, flag as f, $test_name as t
         WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
         AND s.Active = 'Y' AND c.Active='Y' 
@@ -150,8 +150,8 @@ foreach($result as $test) {
         }
 
         // print out candidate/session info
-        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: \n");
-        fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
+        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: ($record[PSCID])\n");
+        //fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
 
         // call the score function
         $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $oldRecord);

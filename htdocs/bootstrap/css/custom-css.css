@@ -1,0 +1,126 @@
+/*
+ *	This file is for custom css that is designed
+ *	to overwrite bootstraps css file
+ */
+
+/*
+ *	Styling for the navbar dropdowns
+ */
+.navbar-nav>li>.dropdown-menu {
+    margin-top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    background-color: #064785;
+}
+.navbar-nav>li>.dropdown-menu>li>a {
+    color: white;
+}
+
+/*
+ *	Making the table header font colour white
+ */
+table th{
+    color: white;
+}
+.table>thead>tr>th>a {
+    color: #ffffff;
+}
+
+/*
+ *	CSS for the tables
+ */
+.static-col.pis{
+    padding-bottom: 71px;
+}
+.pis {
+    height: 80px;
+}
+.table-scroll { 
+    overflow-x:auto;
+    padding-bottom:1px;
+}
+.table-scroll-static { 
+    overflow-x:auto;  
+    margin-left:7em;
+    padding-bottom:1px;
+}
+.scrollable {
+    margin-right: 50px;
+    margin-left:50px;
+}
+.scrollableStat {
+    margin-right: 50px;
+    margin-left:10em;
+}
+.static-col {
+    position:absolute; 
+    width:7em; 
+    left:0;
+    top:auto;
+    border-right: 0px none black; 
+    border-top-width:3px; /*only relevant for first row*/
+}
+.colm-static{
+    left: 3em;
+}
+
+/*
+ *	CSS for the footer
+ */
+#footer {
+	position: relative;
+    margin-top: -100px; /* negative value of footer height */
+    height: 100px;
+    clear:both;
+}
+html, body {
+	height: 100%;
+}
+#wrap {
+	min-height: 100%;
+}
+
+#page {
+	overflow:auto;
+    padding-bottom: 100px; /* must be same height as the footer */
+ }
+
+/*
+ *	CSS for intrument forms
+ */
+.has-error .form-control {
+    border: 3px solid;
+    border-color: #b94a48;
+}
+.has-error .form-error {
+color: #b94a48;
+}
+.has-warning .form-control {
+	border: 3px solid;
+	border-color: #c09853;
+}
+.warning {
+	color: #c09853;
+}
+
+/*
+ *  CSS for login footer
+ */
+.LoginFooter {
+    bottom:0;
+    clear: both;
+    height: 3em;
+    width: 100%;
+    font-size: 0.9em;
+    color: gray;
+    text-align: center;
+    vertical-align: bottom;
+}
+ul#navlist {
+    margin-left: 0;
+    padding-left: 0;
+}
+#navlist li {
+	display: inline;
+	list-style-type: none;
+}

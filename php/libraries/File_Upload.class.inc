@@ -10,7 +10,7 @@ require_once "HTML/QuickForm.php";
 * manipulation of uploaded files.
 *
 * @package behavioural
-* @access public
+* @access  public
 */
 class File_Upload extends PEAR
 {
@@ -40,7 +40,7 @@ class File_Upload extends PEAR
      * Loops through the uploaded files running the full suit of functions against 
      * them.
      *
-     * @return   boolean True on success False on failure
+     * @return boolean True on success False on failure
      */
     function processFiles()
     {
@@ -133,7 +133,7 @@ class File_Upload extends PEAR
      * file ($this->file), and checks to ensure that it was uploaded correctly. It 
      * then registers the file info in the $this->fileInfo property.
      *
-     * @return    bool    $success		if operation succeeded
+     * @return bool    $success		if operation succeeded
      */
     function preProcessFile()
     {
@@ -164,7 +164,7 @@ class File_Upload extends PEAR
      * @param string $action The name of the method to call.
      *
      * @return boolean true if operation succeeded
-     * @access    public
+     * @access public
      */
     function callFileHandler($field, $action)
     {
@@ -179,7 +179,7 @@ class File_Upload extends PEAR
         
         //Call the method
         $func = array($class, $method);
-        $args = array($this, $args);
+        $args = array(&$this, $args);
 
         $output=call_user_func_array($func, $args);
 
@@ -190,8 +190,8 @@ class File_Upload extends PEAR
     /**
      * moveFile moves the file from the tmp directory to its final destination.
      *
-     * @return    bool    $success		if operation succeeded
-     * @access    public
+     * @return bool    $success		if operation succeeded
+     * @access public
      */
     function moveFile()
     {
@@ -223,8 +223,8 @@ class File_Upload extends PEAR
      *
      * @param string $destination_dir The name of the destination directory.
      *
-     * @return    bool    if operation succeeded
-     * @access    public
+     * @return bool    if operation succeeded
+     * @access public
      */
     function getNewDirectory($destination_dir="")
     {
@@ -273,8 +273,8 @@ class File_Upload extends PEAR
     /**
      * getNewFilename builds the final filename for the file.
      *
-     * @return    bool    if operation succeeded
-     * @access    public
+     * @return bool    if operation succeeded
+     * @access public
      */
     function getNewFilename()
     {
@@ -318,7 +318,7 @@ class File_Upload extends PEAR
      * @param string $field The field whose handler we should test.
      *
      * @return boolean True if the class is valid.
-     * @see File_Upload::processFiles()
+     * @see    File_Upload::processFiles()
      */
     function isValidFileHandler($field)
     {
@@ -378,8 +378,8 @@ class File_Upload extends PEAR
     *                          import, or move.  If any (or all) of these 
     *                          are empty the defaults will be used.
     *
-    * @return   boolean true
-    * @see File_Upload::processFiles()
+    * @return boolean true
+    * @see    File_Upload::processFiles()
     */
     function setFileHandler($fieldName, $className, $methods="")
     {
@@ -408,8 +408,8 @@ class File_Upload extends PEAR
     *
     * @param array $args An associative array.
     *
-    * @return   boolean true
-    * @see File_Upload::processFiles()
+    * @return boolean true
+    * @see    File_Upload::processFiles()
     */
     function setHandlerArgs($args)
     {
@@ -427,8 +427,8 @@ class File_Upload extends PEAR
     * @param string $name   The string file name
     * @param int    $maxlen Maximun permited string lenght
     *
-    * @return   string Formatted file name
-    * @see File_Upload::moveFile()
+    * @return string Formatted file name
+    * @see    File_Upload::moveFile()
     */
     function nameToSafe($name, $maxlen=250)
     {
@@ -445,10 +445,10 @@ class File_Upload extends PEAR
     *
     * @param string $name The string file name
     *
-    * @return   string split file name
-    * @see File_Upload::nameToIncremental()
-    * @see File_Upload::nameToUniqueRandom()
-    * @see File_Upload::nameToUniqueTimestamp()
+    * @return string split file name
+    * @see    File_Upload::nameToIncremental()
+    * @see    File_Upload::nameToUniqueRandom()
+    * @see    File_Upload::nameToUniqueTimestamp()
     */
     function getSplitFilename($name)
     {
@@ -473,7 +473,7 @@ class File_Upload extends PEAR
      * @param int    $name The proposed name for the file.
      *
      * @return string New filename
-     * @see File_Upload::moveFile()
+     * @see    File_Upload::moveFile()
      */
     function nameToIncremental($dir, $name)
     {
@@ -499,7 +499,7 @@ class File_Upload extends PEAR
       * @param string $name The target directory for the file.
       *
       * @return string New filename
-      * @see File_Upload::moveFile()
+      * @see    File_Upload::moveFile()
       */
     function nameToUniqueRandom($name)
     {
@@ -518,7 +518,7 @@ class File_Upload extends PEAR
     * @param int $name The proposed name for the file.
     *
     * @return string $new_name   New filename
-    * @see File_Upload::moveFile()
+    * @see    File_Upload::moveFile()
     */
     function nameToUniqueTimestamp($name)
     {
@@ -542,7 +542,7 @@ class File_Upload extends PEAR
      * @param string $mode The desired mode.
      *
      * @return boolean true if overwriting, false on invalid argument
-     * @see File_Upload::moveFile()
+     * @see    File_Upload::moveFile()
      */
     function setOverwriteMode($mode)
     {
@@ -575,7 +575,7 @@ class File_Upload extends PEAR
      * @param string $mode The desired mode.
      *
      * @return boolean true if renaming, false if invalid argument
-     * @see File_Upload::moveFile()
+     * @see    File_Upload::moveFile()
      */
     function setRenameMode($mode)
     {
@@ -597,7 +597,7 @@ class File_Upload extends PEAR
     * @param boolean $mode The desired mode.
     *
     * @return boolean true
-    * @see File_Upload::moveFile()
+    * @see    File_Upload::moveFile()
     */
     function setFileVerify($mode)
     {
@@ -609,8 +609,8 @@ class File_Upload extends PEAR
     *
     * @param boolean $mode The desired mode.
     *
-    * @return   void
-    * @see File_Upload::moveFile()
+    * @return void
+    * @see    File_Upload::moveFile()
     */
     function setFileImport($mode)
     {
@@ -622,8 +622,8 @@ class File_Upload extends PEAR
      *
      * @param boolean $mode The desired mode.
      *
-     * @return   void
-     * @see File_Upload::moveFile()
+     * @return void
+     * @see    File_Upload::moveFile()
      */
     function setFileMove($mode)
     {
@@ -636,8 +636,8 @@ class File_Upload extends PEAR
      *
      * @param string $dir The desired directory.  Use a trailing slash.
      *
-     * @return   void
-     * @see File_Upload::moveFile()
+     * @return void
+     * @see    File_Upload::moveFile()
      */
     function setBaseUploadDirectory($dir)
     {
@@ -652,8 +652,8 @@ class File_Upload extends PEAR
     *
     * @param string $prefix The desired prefix.
     *
-    * @return  void
-    * @see File_Upload::moveFile()
+    * @return void
+    * @see    File_Upload::moveFile()
     */
     function setFilenamePrefix($prefix)
     {
@@ -665,7 +665,7 @@ class File_Upload extends PEAR
     * Gets the final destination directory for the uploaded file
     *
     * @return string directory
-    * @see File_Upload::getNewFilename()
+    * @see    File_Upload::getNewFilename()
     */
     function getDestinationDirectory()
     {
@@ -676,8 +676,8 @@ class File_Upload extends PEAR
     /**
     * getDestinationFilename:  Gets the final filename for the uploaded file
     *
-    * @see File_Upload::getNewFilename()
-    * @return  string filename
+    * @see    File_Upload::getNewFilename()
+    * @return string filename
     */
     function getDestinationFilename()
     {
@@ -689,7 +689,7 @@ class File_Upload extends PEAR
     *
     * @param boolean $mode The desired mode.
     *
-    * @see File_Upload::moveFile()
+    * @see    File_Upload::moveFile()
     * @return null
     */
     function setCreateDirectories($mode)
@@ -704,7 +704,7 @@ class File_Upload extends PEAR
     * @param string       $field The field to attach the error to.
     * @param string|array $msg   The string or array of error messages to add.
     *
-    * @return   void
+    * @return void
     */
     function setError($field, $msg)
     {
@@ -722,8 +722,8 @@ class File_Upload extends PEAR
     /**
     * Gets the array of errors
     *
-    * @see File_Upload::setError()
-    * @return   array   errors
+    * @see    File_Upload::setError()
+    * @return array   errors
     */
     function getErrors()
     {

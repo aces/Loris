@@ -40,13 +40,15 @@ class NDB_Menu extends NDB_Page
      * @throws PEAR_Error
      * @access public
      */
-    function &factory($menu, $mode)
+    static function &factory($menu, $mode)
     {
         // get the name of the class
         if (class_exists("NDB_Menu_$menu")) {
             $class = "NDB_Menu_$menu";
         } elseif (class_exists("NDB_Menu_Filter_$menu")) {
             $class = "NDB_Menu_Filter_$menu";
+        } elseif (class_exists("NDB_Menu_Filter_Form_$menu")) {
+            $class = "NDB_Menu_Filter_Form_$menu";
         } else {
             return PEAR::raiseError("The menu class ($menu) is not defined.");
         }
@@ -54,6 +56,11 @@ class NDB_Menu extends NDB_Page
         // create a new menu object
         $obj = new $class;
 
+        if(isset($_REQUEST['test_name'])) {
+            $obj->Module = $_REQUEST['test_name'];
+        } else {
+            $obj->Module = $menu;
+        }
         // set the local variables
         $obj->menu = $menu;
         $obj->mode = $mode;        
@@ -117,7 +124,7 @@ class NDB_Menu extends NDB_Page
     function display()
     {
         // dump the html for the menu
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("menu_$this->menu.tpl");

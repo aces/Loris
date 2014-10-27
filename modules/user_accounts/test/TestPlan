@@ -1,0 +1,63 @@
+                             User Account module - Test plan
+                             ===============================
+
+1. Make sure you do not have access to the User Account page if you do not have at least one of these permissions:
+      - There can be only one Highlander.
+      - User management / Survey module.
+2. If you have access to the User Module, you should see all the users if you have permission 'Across all sites edit 
+   create users'. Otherwise, only the users that belong to your site are shown.
+3. Check that the Clear Form button works.
+4. Search according to all criteria: site, user name, active, full name, pending approval, email and examiner. 
+5. Check that if Site is set to 'All' in the filter, users that have a different site than the user logged in are 
+   returned by the search (if any).
+6. Try to add a user with a user name already taken: check that you can't.
+
+When creating or editing a user: (subtest: edit_user)
+========================================================
+
+7. Check that password rules are enforced.
+8. Check that saving fails if you do not enter at least these informations:
+      - User name.
+      - Password (and confirm password).
+      - First name.
+      - Last name.
+      - Email.
+9. Check that if password and confirmed password do not match you get an error.
+10. Check that if you do not enter an email address that is syntactically valid you get an error.
+11. For an existing active user, edit the user's account and click 'Generate new password' and check 'Send email'.
+    Save. Check that an email is sent to the user with the new password. Check that the password rules are enforced 
+    for this new password. Check that after logging in, the user is immediately asked to update his/her password.
+12. Check that if creating a new user an email is sent to him/her (requires email server). Also check that when a new
+    user is logging in for the first time he/she is asked to change his/her password.
+13. Check that if modifying a password for a user an email is sent to that user containing the new password (requires
+    email server).
+14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change).
+15. Check that if the 'Display additional information' entry is set to false in the admin module, fields Degree,  
+    Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and 
+    FAX are not shown.
+16. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
+17. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
+18 Check that modifications made to the basic user infos are displayed when the user table is reloaded.
+19. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or
+    retain any changes).
+20. When editing an existing user: Check that Back button takes you to the User Account page and does not save any 
+    changes. 
+21. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page 
+    without saving any changes to the user profile.
+
+On the My Preferences page:
+==========================
+
+22. Check that all users (even those with NO permissions) have access to the My Preferences page.
+23. Change the user’s password.  Check that the password rules are enforced..
+24. Check that if password and confirmed password do not match you get an error.
+25. Check that saving fails if any field is left blank. 
+26. Check that if you do not enter an email address that is syntactically valid you get an error.
+27. Modify any field on the page and save, and go to the User Account page. Check that the modifications are 
+    displayed when looking at the modified user account.  
+28. Set the 'Receive doc repo notifications' to No. Upload a new document (any). Check that no email is sent to the 
+    user.
+29. Set the 'Receive doc repo notifications' to Yes. Upload a new document (any). Check that an email is sent to the
+    user (requires email server).
+30. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you 
+    do not have access to the user account module, the system should tell you so.

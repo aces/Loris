@@ -7,27 +7,25 @@
  *  @category Main
  *  @package  Main
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  Loris license
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'NDB_Config.class.inc';
 
 /**
- * Wrapper around PHP IO functions (fopen/close/get/etc) 
+ * Wrapper around PHP IO functions (fopen/close/get/etc)
  * so that a mock can be used for testing HTTP requests
  *
  *  @category Testing
  *  @package  Test
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  Loris license
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 class SocketWrapper
 {
     /**
      * Constructor for SocketWrapper
-     *
-     * @return none
      */
     function __construct()
     {
@@ -35,8 +33,6 @@ class SocketWrapper
 
     /**
      * Destructor for SocketWrapper
-     *
-     * @return none
      */
     function __destruct()
     {
@@ -64,7 +60,7 @@ class SocketWrapper
      */
     function setPort($port)
     {
-        $this->port= $port;
+        $this->port = $port;
     }
 
     /**
@@ -95,7 +91,9 @@ class SocketWrapper
      */
     function eof()
     {
-        return feof($this->socket);
+        if ($this->socket) {
+            return feof($this->socket);
+        }
     }
 
     /**
@@ -105,7 +103,9 @@ class SocketWrapper
      */
     function gets()
     {
-        return fgets($this->socket);
+        if ($this->socket) {
+            return fgets($this->socket);
+        }
     }
 
     /**
@@ -128,11 +128,23 @@ class SocketWrapper
  *  @category Main
  *  @package  Main
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  Loris license
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
 class CouchDB
 {
+
+    /**
+     * Boolean true if we are currently doing a bulk transaction.
+     */
+    var $bulk = false;
+
+    /**
+     * Array of documents to be commited when the current bulk transaction
+     * ends.
+     */
+    var $bulkDocuments = array();
+
     /**
      * Returns one and only one CouchDB database wrapper object.
      * NOTE: You shouldn't call this directly, instead you should
@@ -163,7 +175,8 @@ class CouchDB
     function _constructURL($op, $doc)
     {
         $config = NDB_Config::singleton();
-        $db = $config->getSetting("CouchDB");
+        $db     = $config->getSetting("CouchDB");
+
         return "$op /$db[database]/$doc";
     }
 
@@ -171,27 +184,30 @@ class CouchDB
      * Low level function to send a GET request to CouchDB, relative
      * to the server (not relative to the database.)
      *
-     * @param string $url The URL to GET relative to CouchDB server (not DB)
-     * @param string $op  The HTTP verb to use for the request.
+     * @param string $url     The URL to GET relative to CouchDB server (not DB)
+     * @param string $op      The HTTP verb to use for the request.
+     * @param array  $headers An array of extra HTTP headers to send
      *
      * @return string A string representation of the JSON returned by CouchDB
      */
-    function _getURL($url, $op = 'GET', $headers = array()) {
-        $config = NDB_Config::singleton();
+    function _getURL($url, $op = 'GET', $headers = array())
+    {
+        $config      = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
+
         $handler = $this->SocketHandler;
         $handler->setHost($couchconfig['hostname']);
         $handler->setPort($couchconfig['port']);
-        $handler->open();
 
+        $handler->open();
         $handler->write("$op $url HTTP/1.0\r\n");
-        foreach($headers as $key => $value) {
+        foreach ($headers as $key => $value) {
             $handler->write($key . ':' . $value . "\r\n");
         }
         $handler->write("\r\n");
 
         $response = '';
-        while(!$handler->eof()) {
+        while (!$handler->eof()) {
             $response .= $handler->gets();
         }
         $handler->close();
@@ -201,7 +217,7 @@ class CouchDB
 
 
     /**
-     * Low level function to get a document from CouchDB, relative to the 
+     * Low level function to get a document from CouchDB, relative to the
      * CouchDB database.
      *
      * @param string $url The URL to GET from the server relative to the DB
@@ -211,14 +227,24 @@ class CouchDB
      */
     function _getRelativeURL($url, $op = 'GET')
     {
-        $config = NDB_Config::singleton();
+        $config      = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
+
         $handler = $this->SocketHandler;
         $handler->setHost($couchconfig['hostname']);
         $handler->setPort($couchconfig['port']);
-        $handler->open();
 
-        $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n\r\n");
+        $handler->open();
+        $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
+        $handler->write(
+            "Authorization: Basic "
+            . base64_encode(
+                $couchconfig['admin'] . ":" . $couchconfig['adminpass']
+            )
+            . "\r\n"
+        );
+
+        $handler->write("\r\n");
 
         $response = '';
         while (!$handler->eof()) {
@@ -235,25 +261,39 @@ class CouchDB
      * for posting to other CouchDB databases on the same server (ie. the users
      * database.)
      *
-     * @param string $url  The URL relative to the server to make a POST request to.
-     * @param array  $data Associative array representing the JSON document to POST.
-     * @param string $op   HTTP verb to use for the request
-     * @param array  $headers  The extra HTTP headers to send with the request
+     * @param string $url     The URL relative to the server to make a POST
+     *                        request to.
+     * @param array  $data    Associative array representing the JSON document
+     *                        to POST.
+     * @param array  $headers The extra HTTP headers to send with the request
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $headers = array()) {
-        $config = NDB_Config::singleton();
+    function _postURL($url, $data, $headers = array())
+    {
+        $config      = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
+
         $handler = $this->SocketHandler;
         $handler->setHost($couchconfig['hostname']);
         $handler->setPort($couchconfig['port']);
-        $handler->open();
 
+        $handler->open();
         $handler->write($url . " HTTP/1.0\r\n");
         $handler->write("Content-Length: " . strlen($data) . "\r\n");
         $handler->write("Content-type: application/json\r\n");
-        foreach($headers as $key => $value) {
+
+        $handler->write(
+            "Authorization: Basic "
+            . base64_encode(
+                $couchconfig['admin']
+                . ":"
+                . $couchconfig['adminpass']
+            )
+            . "\r\n"
+        );
+
+        foreach ($headers as $key => $value) {
             $handler->write($key . ':' . $value . "\r\n");
         }
         $handler->write("\r\n");
@@ -267,20 +307,44 @@ class CouchDB
         return trim($response_split[1]);
     }
 
-    function _postRelativeURL($url, $data, $op = 'POST') {
+    /**
+     * Posts a URL relative to the CouchDB database URL.
+     *
+     * @param string $url  The name of the document to be posted
+     * @param string $data The content to be written to the URL
+     *                     as the HTTP payload.
+     * @param string $op   The HTTP operation to use. Default POST.
+     *
+     * @return The page content (Without headers) returned by the
+     *         CouchDB web server.
+     */
+    function _postRelativeURL($url, $data, $op = 'POST')
+    {
         return $this->_postURL($this->_constructURL($op, $url), $data);
     }
 
     /**
      * Returns a document from CouchDB database
      *
-     * @param string $id The document to retrieve
+     * @param string $id      The document to retrieve
+     * @param array  $options HTTP options to add to the request
      *
      * @return array An associative array representing the document
      */
-    function getDoc($id)
+    function getDoc($id, $options = array())
     {
         $json = $this->_getRelativeURL($id);
+
+        if (!empty($options)) {
+            if (strpos($id, "?") === false) {
+                $url = $id . "?" . http_build_query($options);
+            } else {
+                $url = $id . "&" . http_build_query($options);
+            }
+        } else {
+            $url = $id;
+        }
+        $json = $this->_getRelativeURL($url);
         $data = json_decode($json, true);
 
         if (isset($data['error']) && $data['error'] === 'not_found') {
@@ -299,7 +363,10 @@ class CouchDB
      */
     function deleteDoc($id)
     {
-        $json = $this->_getRelativeURL($id, "DELETE");
+        $getjson = $this->_getRelativeURL($id);
+        $getdata = json_decode($getjson, true);
+
+        $json = $this->_getRelativeURL($id . "?rev=" . $getdata['_rev'], "DELETE");
         $data = json_decode($json, true);
 
         if (!isset($data['ok'])) {
@@ -313,15 +380,27 @@ class CouchDB
      * Makes a raw PUT request for the named document, without any error
      * handling around CouchDB formatting or checking.
      *
+     * If currently in a bulk transaction, this adds it to the bulk request
+     * that will be sent on commit.
+     *
      * @param string $id  The document name to PUT
      * @param array  $doc An array representing the JSON document
      *
-     * @return string The JSON string returned by the CouchDB server
+     * @return string The JSON string returned by the CouchDB server, or
+     *                null if in bulk mode.
      */
     function putDoc($id, $doc)
     {
         $encoded = json_encode($doc);
+
+        if ($this->bulk) {
+            $doc['_id'] = $id;
+            array_push($this->bulkDocuments, $doc);
+            return null;
+        }
+
         $json = $this->_postRelativeURL($id, $encoded, 'PUT');
+
         return $json;
     }
 
@@ -329,9 +408,12 @@ class CouchDB
      * Makes a raw POST request to CouchDB server. This will create the
      * document with a CouchDB generated id.
      *
+     * @param array $doc A PHP array encoding the JSON document to be created
+     *
      * @return string the JSON string returned by the CouchDB server
      */
-    function postDoc($doc) {
+    function postDoc($doc)
+    {
         $json = $this->_postRelativeURL("", json_encode($doc), 'POST');
         return $json;
     }
@@ -383,11 +465,16 @@ class CouchDB
         $m_original = $original_doc;
         unset($m_original['_id']);
         unset($m_original['_rev']);
+        unset($m_original['_attachments']);
         if ($m_original === $doc) {
-            return 'unchanged';
+            return 'unchanged contents';
         }
 
         $doc['_rev'] = $original_doc['_rev'];
+        if (isset($original_doc['_attachments'])) {
+            // Preserve the attachments if there are any.
+            $doc['_attachments'] = $original_doc['_attachments'];
+        }
         $this->putDoc($id, $doc);
         return 'modified';
     }
@@ -406,14 +493,52 @@ class CouchDB
     function queryView($designdoc, $viewname, $params)
     {
         $query = $this->_getRelativeURL(
-            "_design/" . $designdoc . "/_view/" . $viewname 
+            "_design/" . $designdoc . "/_view/" . $viewname
             . "?" . http_build_query($params)
         );
+
         $data = json_decode($query, true);
+
         if (isset($data['error']) && $data['error'] == 'not_found') {
             return array();
         }
         return $data['rows'];
+    }
+
+    /**
+     * Signals that a large transaction is about to happen, and that the
+     * CouchDB wrapper should send a single bulk request for all the
+     * upcoming updates, instead of one request per update.
+     *
+     * This does not affect get requests, and functions like replaceDoc
+     * will still need to send multiple get requests to CouchDB to get the
+     * current revision, but the PUT requests will be queued until commited
+     * with commitBulkTransaction();
+     *
+     * @return none
+     */
+    function beginBulkTransaction()
+    {
+        $this->bulk = true;
+    }
+
+    /**
+     * Sends a POST request to update all the documents that have been queued
+     * since the BulkTransaction was started.
+     *
+     * @return string The string that was returned by CouchDB
+     */
+    function commitBulkTransaction()
+    {
+        if ($this->bulk !== true) {
+            return false;
+        }
+        $docs = json_encode(array('docs' => $this->bulkDocuments));
+
+        $this->bulk          = false;
+        $this->bulkDocuments = array();
+
+        return $this->_postRelativeURL('_bulk_docs', $docs);
     }
 }
 ?>

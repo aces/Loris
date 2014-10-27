@@ -17,8 +17,8 @@ if(Utility::isErrorX($root)) {
     die("Config error: ".$root->getMessage());
 }
 $configObj =& $root->searchPath(array('config'));
-$config = $configObj->toArray();
-$config = $config['config'];
+$configxml = $configObj->toArray();
+$configxml = $configxml['config'];
 unset($configObj, $root);
 
 // require all relevant OO class libraries
@@ -31,7 +31,7 @@ require_once "Candidate.class.inc";
  * new DB Object
  * gets connection name and user name..
  */
-$DB =& Database::singleton($config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['host']);
+$DB =& Database::singleton($configxml['database']['database'], $configxml['database']['username'], $configxml['database']['password'], $configxml['database']['host']);
 if(Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n";
     die();

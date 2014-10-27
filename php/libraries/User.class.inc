@@ -7,7 +7,7 @@
  * @category Main
  * @package  Main
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -22,7 +22,7 @@ require_once 'CouchDB.class.inc';
  * @category Main
  * @package  Main
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  Loris license
+ * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class User extends UserPermissions
@@ -68,7 +68,7 @@ class User extends UserPermissions
 
         // get user data from database
         $query = "SELECT users.*, psc.Name AS Site FROM users 
-            JOIN psc ON (users.centerID=psc.CenterID)
+            LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
@@ -174,7 +174,7 @@ class User extends UserPermissions
      *
      * @param string $var Name of variable to get
      *
-     * @note          Call without any parameters to get the entire user data array
+     * @note   Call without any parameters to get the entire user data array
      * @return mixed
      * @access public
      */
@@ -386,18 +386,19 @@ class User extends UserPermissions
     /**
      * Check if user belongs to DCC
      *
-     *
      * @return boolean
      * @access public
      */
 
-     function isUserDCC() {
-      //DCC site = 1 by LORIS convention
-      return ($this->userInfo['CenterID']== 1);     
-     }
+    function isUserDCC()
+    {
+        //DCC site = 1 by LORIS convention
+        return ($this->userInfo['CenterID']== 1);
+    }
 
 
-    function updateCouchUser($password) {
+    function updateCouchUser($password)
+    {
         $factory = NDB_Factory::singleton();
         $cdb = $factory->CouchDB();
         $config = $factory->Config();
@@ -424,7 +425,8 @@ class User extends UserPermissions
         $userobj['password'] = $password;
 
 
-        $response = $cdb->_postURL("PUT /_users/org.couchdb.user:" . $username,
+        $response = $cdb->_postURL(
+            "PUT /_users/org.couchdb.user:" . $username,
             json_encode($userobj),
             $auth
         );
