@@ -5,4 +5,9 @@
             <directory>./unittests/</directory>
         </testsuite>
     </testsuites>
+    <testsuites>
+        <testsuite name='Loris Core Integration Tests'>
+            <directory>./integrationtests/</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>
