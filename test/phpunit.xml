@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit>
+    <testsuites>
+        <testsuite name='LorisUnitTests for php/libraries'>
+            <directory>./unittests/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
