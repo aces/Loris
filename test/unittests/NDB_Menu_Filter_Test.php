@@ -111,9 +111,73 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Tests _setFilterSortOrder($order) function. This test should ensure
+     * that:
+     *   1. If function is called with an array of the form:
+     *          [
+     *              'field'      => *Form* Field Name,
+     *              'fieldOrder' => 'ASC' OR 'DESC'
+     *          ]
+     *      then the filter is updated appropriately to be sorted by those
+     *      columns while the rest of the filter is unaffected.
+     */
+    function testSetFilterSortOrder() {
+        $method = array('_setFilterSortOrder');
+        $allOtherMethods = $this->_getAllMethodsExcept($method);
+        $stub = $this->getMock('NDB_Menu_Filter', $this->_getAllMethodsExcept($method));
+
+        $stub->headers = array('FakeField', "FakeField2");
+        $stub->formToFilter = array(
+            'FakeField'  => 'table.column',
+            'FakeField2' => 'table.column2'
+        );
+        $stub->filter = array(
+            'table.column' => 'I am a saved filter',
+            'table.column2' => 'I am a saved filter',
+        );
+
+        $stub->_setFilterSortOrder(array(
+            'field'      => "FakeField",
+            "fieldOrder" => "DESC",
+        ));
+
+        $this->assertEquals(
+            $stub->filter,
+            array(
+                'table.column'  => 'I am a saved filter',
+                'table.column2' => 'I am a saved filter',
+                'order'         => array(
+                                    'field'      => 'FakeField',
+                                    'fieldOrder' => "DESC",
+                                   )
+            )
+        );
+
+        $stub->_setFilterSortOrder(array(
+            'field'      => "FakeField2",
+            "fieldOrder" => "ASC",
+        ));
+
+        $this->assertEquals(
+            $stub->filter,
+            array(
+                'table.column'  => 'I am a saved filter',
+                'table.column2' => 'I am a saved filter',
+                'order'         => array(
+                                    'field'      => 'FakeField2',
+                                    'fieldOrder' => "ASC",
+                                   )
+            )
+        );
+
+
+
+    }
+    /**
+     *
     /*
      * TODO:
-     * setFilterSortOrder
      * setupFilters
      */
 }
