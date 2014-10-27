@@ -3,6 +3,8 @@ language: php
 php: 5.4
 
 install:
+    # Install composer modules
+    - composer install --dev
     # List of PEAR modules installed by install script
     - pear upgrade-all
     - pear install Benchmark
