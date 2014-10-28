@@ -34,6 +34,12 @@ before_script:
     - mysql LorisTest < SQL/0000-00-00-schema.sql
 
 script:
+    # Run PHP -l on everything to ensure there's no syntax
+    # errors.
+    - for i in `ls php/libraries/*.class.inc`;
+      do
+        php -l $i || exit $?;
+      done
     # Run PHPCS on libraries directory.
     # Note that everything doesn't pass yet, so instead
     # do each file that we know passes individually to ensure
