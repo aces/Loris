@@ -823,7 +823,7 @@ Class TimePoint
 
         // check the status
         $errorMsg = "TimePoint::setBVLQCExclusion: You need to specify";
-        $errorMSg .= " a valid BVL QC Exclusion Status\n"
+        $errorMSg .= " a valid BVL QC Exclusion Status\n";
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
             return PEAR::raiseError($errorMsg);
         }
