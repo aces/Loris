@@ -118,9 +118,11 @@ class NDB_Form_dashboard extends NDB_Form
         // New scans
         if ($user->hasPermission('mri_feedback')) {
             $this->tpl_data['new_scans'] = $DB->pselectOne(
-                "SELECT count(*) FROM files f 
-                LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-                WHERE fqc.QCStatus IS NULL", array()
+                "SELECT count(*) FROM (SELECT count(*) FROM files f 
+                 LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
+                 LEFT JOIN session s ON (s.ID=f.SessionID)
+                 WHERE fqc.QCStatus IS NULL
+                 GROUP BY s.ID) as newScans", array()
             );
             $this->tpl_data['new_scans_site'] = 'Site: all';
         }
