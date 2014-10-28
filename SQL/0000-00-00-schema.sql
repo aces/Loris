@@ -335,7 +335,9 @@ INSERT INTO `feedback_mri_predefined_comments` VALUES
 	(35,6,"Incorrect diffusion direction (DWI ONLY)"),
 	(36,6,"Duplicate series"),
 	(37,3,"slice wise artifact (DWI ONLY)"),
-	(38,3,"gradient wise artifact (DWI ONLY)");
+	(38,3,"gradient wise artifact (DWI ONLY)"),
+    (39,2,"susceptibility artifact due to anatomy");
+
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
