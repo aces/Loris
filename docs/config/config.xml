@@ -181,7 +181,12 @@
                 <label>Consent to Study</label>
             </Consent>
         </ConsentModule>
+
     </study>
     <!-- end of study definition -->
+
+    <gui>
+        <showDatabaseQueries>0</showDatabaseQueries>
+    </gui>
 
 </config>
