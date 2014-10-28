@@ -60,3 +60,4 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/TimePoint.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/UserPermissions.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
