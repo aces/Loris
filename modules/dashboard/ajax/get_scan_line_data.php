@@ -88,14 +88,15 @@ function getScanData($dataset, $labels)
             ? substr($label, 0, 1) : substr($label, 0, 2);
         $year = substr($label, -4, 4);
         $data[]= $DB->pselectOne(
-            "SELECT count(f.FileID) 
-            FROM files f
-            LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
-            LEFT JOIN session s ON (s.ID=f.SessionID) 
-            LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-            WHERE psc.Name=:Dataset 
-            AND MONTH(mad.AcquisitionDate)=:Month 
-            AND YEAR(mad.AcquisitionDate)=:Year", 
+            "SELECT count(*) FROM (SELECT count(f.FileID) 
+             FROM files f
+             LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
+             LEFT JOIN session s ON (s.ID=f.SessionID) 
+             LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
+             WHERE psc.Name=:Dataset 
+             AND MONTH(mad.AcquisitionDate)=:Month 
+             AND YEAR(mad.AcquisitionDate)=:Year
+             GROUP BY s.ID) AS scanCount", 
             array('Dataset' => $dataset, 'Month' => $month, 'Year' => $year)
         );
     }
