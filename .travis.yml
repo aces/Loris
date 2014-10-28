@@ -52,6 +52,7 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/ConflictDetector.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/HelpFile.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Log.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/File_Upload.class.inc
