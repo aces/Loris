@@ -893,7 +893,7 @@ Class TimePoint
                     $timepoint = TimePoint::singleton($sessionID);
                     if (Utility::isErrorX($timepoint)) {
                         $errorMsg = "TimePoint Error ($sessionID): "
-                                    . $timepoint->getMessage()
+                                    . $timepoint->getMessage();
                         return PEAR::raiseError($errorMsg);
                     }
 
