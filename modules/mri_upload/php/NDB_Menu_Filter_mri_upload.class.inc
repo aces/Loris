@@ -468,11 +468,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //make sure the file-name is  valid
 
         $temp_file     = $file->fileInfo['tmp_name'];
-        $temp_dir      = $this->tempdir(true);
+        $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
-        if (!copy($temp_file, '/tmp/new_compressed')) {
-            echo "failed to copy $temp_file...\n";
-        }
+
         $db     = Database::singleton();
         $errors = array();
         $config = NDB_Config::singleton();
@@ -577,7 +575,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             $decomp = new File_Decompress($new_temp_file, $temp_dir);
             $decomp->decompressFile(); //decompress the file
-
+            
             ///////////////////////////////////////////////////////////////////
             //////////////////iterate through the folder///////////////////////
             ///////////////////////////////////////////////////////////////////
@@ -677,10 +675,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////
             ///////////////remove the  temp_folder/////////////////////////////
             ///////////////////////////////////////////////////////////////////
-            if (!is_dir($temp_dir)) {
+            if (is_dir($temp_dir)) {
                 rmdir($temp_dir);
             }
-
+            if (file_exists($new_temp_file)) {
+                unlink($new_temp_file);
+            }
             ///////////////////////////////////////////////////////////////////
             //Check to see if the file has already been uploaded or not////////
             ///////////////////////////////////////////////////////////////////
@@ -925,13 +925,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     
     
     /**
-     * Creates a temporairy file or directory
+     * Creates a temporairy directory
      *
-     * @param String $dir Path to the directory
-     * 
      * @return String
      */
-    function tempdir($dir=false)
+    function tempdir()
     {
         $tempfile =tempnam(
             sys_get_temp_dir(),
