@@ -48,15 +48,15 @@
 
 </form>
 <br>
-
-<table border="1" valign="top" class="std">
-    <tr>
-        <td> Current Single Data_entry Completion Percentage (for <b>{$visit_label}</b> and instrument: <b>{$test_name}</b>)&nbsp&nbsp  </td>
-        <td> &nbsp&nbsp&nbsp{$percent_completed}%</td>
-    </tr>
-    
-</table>
-
+{if $test_name}
+    <table border="1" valign="top" class="std">
+        <tr>
+            <td> Current Single Data_entry Completion Percentage (for <b>{$visit_label}</b> and instrument: <b>{$test_name}</b>)&nbsp&nbsp  </td>
+            <td> &nbsp&nbsp&nbsp{$percent_completed}%</td>
+        </tr>
+        
+    </table>
+{/if}
 <table>
   <tr>
  		<td>
