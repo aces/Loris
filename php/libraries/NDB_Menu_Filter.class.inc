@@ -478,7 +478,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $config         =& NDB_Config::singleton();
         $resultsPerPage = $config->getSetting('rowsPerPage');
         $limit          = " LIMIT $resultsPerPage"
-                          ." OFFSET " . (($pageNum-1)*$resultsPerPage
+                          ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
 
         if (Utility::isErrorX($result)) {
