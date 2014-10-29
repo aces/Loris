@@ -20,7 +20,7 @@ install:
     #- pear install File_Archive
     #- pear install HTML_Common
     #- pear install HTML_QuickForm
-    #- pear config-set preferred_state beta
+    - pear config-set preferred_state beta
     #- pear install HTML_QuickForm2
     #- pear install Mail
     #- pear install Mail_Mime
