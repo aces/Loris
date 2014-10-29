@@ -63,6 +63,7 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Caller.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/TimePoint.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/UserPermissions.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
