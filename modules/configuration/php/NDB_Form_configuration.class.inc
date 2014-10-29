@@ -78,8 +78,9 @@ class NDB_Form_Configuration extends NDB_Form
         }
 
         // need a subtree with root = NULL only, others are repeating branches
-        $this->tpl_data['config'] = $configs;
-        $this->tpl_data['options'] = array('0'=>'0', '1'=>'1');
+        $this->tpl_data['config']      = $configs;
+        $this->tpl_data['options']     = array('0'=>'0', '1'=>'1');
+        $this->tpl_data['instruments'] = Utility::getAllInstruments();
     }
 
     /**

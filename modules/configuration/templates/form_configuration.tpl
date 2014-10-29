@@ -18,8 +18,8 @@
                 <td>
                     {if $item['DataType'] neq ""}
                         <div class="form-section" id="{$item['ID']}-formsection">
-                            {if $item['AllowMultiple'] == 1}
-                                <form method="POST" action="">
+                            {if $item['AllowMultiple'] == 1 && $item['DataType'] neq 'instrument'}
+                                <form method="POST">
                                     <button class="btn btn-default btn-sm add" id="{$item['ID']}" type="button" name="add-{$item['ID']}">
                                         <span class="glyphicon glyphicon-plus"></span> Add field
                                     </button>
@@ -27,16 +27,44 @@
                             {/if}
                             {if isset($item['Value'])}
                                 {foreach from=$item['Value'] key=k item=v}
-                                    <div class="form-item">
+                                    {if $item['DataType'] eq 'boolean'}
                                         <form method="POST">
-                                            <input class="form-control input-sm" name="{$k}" type="text" id="{$k}" value="{$v}">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radio-{$k}" value="1">Yes
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radio-{$k}" value="0" checked>No
+                                            </label>
                                         </form>
-                                    {if $item['AllowMultiple'] == 1}
+                                    {elseif $item['DataType'] eq 'email'}
                                         <form method="POST">
-                                            <button class="btn btn-default btn-small rm-btn" id="{$k}" type="submit" name="remove-{$k}">Remove</button>
+                                            <input class="form-control input-sm" type="email" name="{$k}" id="{$k}" value="{$v}">
                                         </form>
+                                    {elseif $item['DataType'] eq 'instrument'}
+                                        <form method="POST">
+                                            <select multiple class="form-control">
+                                                {foreach $instruments as $instrument}
+                                                    <option>{$instrument}</option>
+                                                {/foreach}
+                                            </select>
+                                        </form>
+                                        {break}
+                                    {elseif $item['DataType'] eq 'textarea'}
+                                        <form method="POST">
+                                            <textarea class="form-control" name="{$k}" id="{$k}" rows="3">{$v}</textarea>
+                                        </form>
+                                    {else}
+                                        <div class="form-item">
+                                            <form method="POST">
+                                                <input class="form-control input-sm" name="{$k}" type="text" id="{$k}" value="{$v}">
+                                            </form>
+                                        {if $item['AllowMultiple'] == 1}
+                                            <form method="POST">
+                                                <button class="btn btn-default btn-small rm-btn" id="{$k}" type="submit" name="remove-{$k}">Remove</button>
+                                            </form>
+                                        {/if}
+                                        </div>
                                     {/if}
-                                    </div>
                                 {/foreach}
                             {else}
                                 {if $item['AllowMultiple'] == 0}
@@ -57,4 +85,3 @@
 <table class="tree table table-hover">
     {call name=printConfig items=$config}
 </table>
-
