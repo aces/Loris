@@ -12,21 +12,23 @@ install:
     - composer install --dev
     # List of PEAR modules installed by install script
     - pear config-get php_dir
+    # Currently commented out because all we do is run
+    # PHPCS and php -l on the code from Travis.
     - pear upgrade-all
-    - pear install Benchmark
-    - pear install Config
-    - pear install File_Archive
-    - pear install HTML_Common
-    - pear install HTML_QuickForm
-    - pear config-set preferred_state beta
-    - pear install HTML_QuickForm2
-    - pear install Mail
-    - pear install Mail_Mime
-    - pear install Net_SMTP
-    - pear install OLE
-    - pear install Pager
-    - pear install PHPDocumentor
-    - pear install XML_Parser
+    #- pear install Benchmark
+    #- pear install Config
+    #- pear install File_Archive
+    #- pear install HTML_Common
+    #- pear install HTML_QuickForm
+    #- pear config-set preferred_state beta
+    #- pear install HTML_QuickForm2
+    #- pear install Mail
+    #- pear install Mail_Mime
+    #- pear install Net_SMTP
+    #- pear install OLE
+    #- pear install Pager
+    #- pear install PHPDocumentor
+    #- pear install XML_Parser
 
       # Running PHPCS is part of the test, even though
       # Loris itself doesn't depend on it.
