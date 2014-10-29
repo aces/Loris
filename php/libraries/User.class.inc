@@ -7,7 +7,7 @@
  * @category Main
  * @package  Main
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -22,7 +22,7 @@ require_once 'CouchDB.class.inc';
  * @category Main
  * @package  Main
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class User extends UserPermissions
@@ -341,7 +341,8 @@ class User extends UserPermissions
         // compare password to values
         foreach ($values as $key => $value) {
             $function = create_function(
-                '$a, $b', 'return $a ' . $operators[$key] . ' $b;'
+                '$a, $b',
+                'return $a ' . $operators[$key] . ' $b;'
             );
             // if the comparison fails
             if (!$function($password, $value)) {
@@ -355,9 +356,7 @@ class User extends UserPermissions
      * Check if user belongs to DCC
      *
      * @return boolean
-     * @access public
      */
-
     function isUserDCC()
     {
         //DCC site = 1 by LORIS convention
@@ -365,30 +364,38 @@ class User extends UserPermissions
     }
 
 
+    /**
+     * Updates the CouchDB user for this user to synchronize
+     * the password with Loris.
+     *
+     * @param string $password Plaintext password to synchronize
+     *
+     * @return none
+     */
     function updateCouchUser($password)
     {
         $factory = NDB_Factory::singleton();
-        $cdb = $factory->CouchDB();
-        $config = $factory->Config();
-
+        $cdb     = $factory->CouchDB();
+        $config  = $factory->Config();
 
         $c_config = $config->getSetting('CouchDB');
-        if($c_config['SyncAccounts'] !== 'true') {
+        if ($c_config['SyncAccounts'] !== 'true') {
             return false;
         }
         $username = $this->getUsername();
         $auth = array('Authorization' => 'Basic '
             . base64_encode($c_config['admin'] . ':' . $c_config['adminpass'])
         );
-        $userjson = $cdb->_getURL("/_users/org.couchdb.user:" . $username, 'GET', $auth);
-        $userobj = json_decode($userjson, true);
 
-        if(isset($userobj['error']) && $userobj['error'] == 'not_found') {
-            $userobj = array('_id' => 'org.couchdb.user:' . $username,
-                'type' => 'user',
-                'name' => $username,
-                'roles' => array('dqg', $c_config['database'])
-            );
+        if (isset($userobj['error']) && $userobj['error'] == 'not_found') {
+            $userobj = array(
+                        '_id'   => 'org.couchdb.user:' . $username,
+                        'type'  => 'user',
+                        'name'  => $username,
+                        'roles' => array(
+                                    'dqg', $c_config['database'],
+                                   )
+                       );
         }
         $userobj['password'] = $password;
 
