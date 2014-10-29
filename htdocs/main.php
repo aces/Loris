@@ -48,8 +48,6 @@ tplFromRequest('dynamictabs');
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
-// whether or not you want to see the bloody bvl feedback popup
-$tpl_data['PopUpFeedbackBVL'] = $config->getSetting('PopUpFeedbackBVL');
 // draw the user information table
 $user =& User::singleton();
 if (Utility::isErrorX($user)) {
