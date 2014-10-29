@@ -356,38 +356,18 @@ while true; do
             sudo pear upgrade-all
             echo "Installing PEAR Benchmark..."
             sudo pear install Benchmark
-            echo "Installing PEAR Config..."
-            sudo pear install Config
-            echo "Installing PEAR File_Archive..."
-            sudo pear install File_Archive
             echo "Installing PEAR HTML_Common..."
             sudo pear install HTML_Common
             echo "Installing PEAR HTML_QuickForm..."
             sudo pear install HTML_QuickForm
             echo "Configuring PEAR preferred state..."
             sudo pear config-set preferred_state beta
-            echo "Installing PEAR HTML_QuickForm2..."
-            sudo pear install HTML_QuickForm2
             echo "Installing PEAR Mail..."
             sudo pear install Mail
-            echo "Installing PEAR Mail_Mime..."
-            sudo pear install Mail_Mime
-            echo "Installing PEAR Net_SMTP..."
-            sudo pear install Net_SMTP
-            echo "Installing PEAR Net_Socket..."
-            sudo pear install Net_Socket
-            echo "Installing PEAR OLE..."
-            sudo pear install OLE
             echo "Installing PEAR Pager..."
             sudo pear install Pager
-            echo "Installing PEAR PhpDocumentor..."
-            sudo pear install PhpDocumentor
-            echo "Installing PEAR Spreadsheet_Excel_Writer..."
-            sudo pear install Spreadsheet_Excel_Writer
             echo "Installing PEAR Structures_Graph..."
             sudo pear install Structures_Graph
-            echo "Installing PEAR XML_Parser..."
-            sudo pear install XML_Parser
             break;;
         [Nn]* )
             echo "Not installing PEAR libraries."
