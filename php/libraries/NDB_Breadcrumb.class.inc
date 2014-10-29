@@ -1,11 +1,28 @@
 <?php
+/**
+ * This file contains the class used for building breadcrumbs in the GUI
+ * of Loris
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Main
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 require_once 'PEAR.php';
 
 /**
  * Breadcrumb class
- * 
+ *
  * Builds the breadcrumb for the GUI
- * @package main
+ *
+ * @category Main
+ * @package  Main
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class NDB_Breadcrumb extends PEAR
 {
@@ -36,44 +53,58 @@ class NDB_Breadcrumb extends PEAR
      * @access private
      */
     var $_userFriendlyNames = array(
-                                   'next_stage' => 'Start Next Stage',
-                                   'create_timepoint' => 'Create Time Point',
-                                   'instrument_list' => 'TimePoint Details',
-                                   'timepoint_list' => 'Candidate Profile',
-                                   'candidate_list' => 'Access Profile'
-                                   );
+                               'next_stage'       => 'Start Next Stage',
+                               'create_timepoint' => 'Create Time Point',
+                               'instrument_list'  => 'TimePoint Details',
+                               'timepoint_list'   => 'Candidate Profile',
+                               'candidate_list'   => 'Access Profile',
+                              );
 
     /**
      * Adds a crumb to the breadcrumb
      *
-     * You may pass in the next test name, so that the breadcrumb correctly 
+     * You may pass in the next test name, so that the breadcrumb correctly
      * adds the next crumb on the next iteration. You may pass in custom text
      * to fill the crumb, or you may pass in the name of a parameter to format
      * with which to fill the crumb. You can also pass in a parameter to unset.
      *
-     * @param  string   next test name (optional)
-     * @param  string   parameter to unset (optional)
-     * @param  string   crumb text (optional)
-     * @param  string   parameter to format (optional)
+     * @param string $testName  next test name (optional)
+     * @param string $unset     parameter to unset (optional)
+     * @param string $text      crumb text (optional)
+     * @param string $parameter parameter to format (optional)
+     *
      * @return void
-     * @access private
      */
-    function _addCrumb($testName = null, $unset = null, $text = null, $parameter = null)
-    {
+    function _addCrumb(
+        $testName = null,
+        $unset = null,
+        $text = null,
+        $parameter = null
+    ) {
         // go the the next crumb
         $this->_lastIndex++;
 
         // set the query string
-        $this->_breadcrumb[$this->_lastIndex]['query'] = Utility::unparse_str($this->_parameters);
+        $this->_breadcrumb[$this->_lastIndex]['query']
+            = Utility::unparse_str($this->_parameters);
 
         // set the crumb text
         if (!is_null($text)) {
             $this->_breadcrumb[$this->_lastIndex]['text'] = $text;
         } elseif (!is_null($parameter)) {
-            $this->_breadcrumb[$this->_lastIndex]['text'] = ucwords(str_replace('_', ' ', $this->_parameters[$parameter]));
-            $this->_breadcrumb[$this->_lastIndex]['text'] = ucwords(preg_replace('/([A-Z])/', ' $1', $this->_breadcrumb[$this->_lastIndex]['text'] ));
+            $this->_breadcrumb[$this->_lastIndex]['text']
+                = ucwords(str_replace('_', ' ', $this->_parameters[$parameter]));
+            $this->_breadcrumb[$this->_lastIndex]['text']
+                = ucwords(
+                    preg_replace(
+                        '/([A-Z])/',
+                        ' $1',
+                        $this->_breadcrumb[$this->_lastIndex]['text']
+                    )
+                );
         } else {
-            $this->_breadcrumb[$this->_lastIndex]['text'] = $this->_userFriendlyNames[$this->_parameters['test_name']];
+            $this->_breadcrumb[$this->_lastIndex]['text']
+                = $this->_userFriendlyNames[$this->_parameters['test_name']];
         }
 
         // set the next crumb's test name
@@ -87,8 +118,17 @@ class NDB_Breadcrumb extends PEAR
         }
     }
 
-    function _getRequest($name) {
-        if(isset($_REQUEST[$name])) {
+    /**
+     * Gets something from the $_REQUEST object with a guard
+     * to minimize undefined index errors.
+     *
+     * @param string $name The parameter to retrieve
+     *
+     * @return mixed Input from $_REQUEST
+     */
+    function _getRequest($name)
+    {
+        if (isset($_REQUEST[$name])) {
             return $_REQUEST[$name];
         }
         return null;
@@ -104,13 +144,13 @@ class NDB_Breadcrumb extends PEAR
     {
         // set the parameters array
         $this->_parameters = array(
-                                   'test_name' => $this->_getRequest('test_name'),
-                                   'subtest' => $this->_getRequest('subtest'),
-                                   'candID' => $this->_getRequest('candID'),
-                                   'sessionID' => $this->_getRequest('sessionID'),
-                                   'commentID' => $this->_getRequest('commentID'),
-                                   'identifier' => $this->_getRequest('identifier')
-                                   );
+                              'test_name'  => $this->_getRequest('test_name'),
+                              'subtest'    => $this->_getRequest('subtest'),
+                              'candID'     => $this->_getRequest('candID'),
+                              'sessionID'  => $this->_getRequest('sessionID'),
+                              'commentID'  => $this->_getRequest('commentID'),
+                              'identifier' => $this->_getRequest('identifier'),
+                             );
 
         // check if test name is empty
         if (empty($this->_parameters['test_name'])) {
@@ -120,35 +160,55 @@ class NDB_Breadcrumb extends PEAR
         // create DB object
         $DB =& Database::singleton();
         if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
         }
 
         // set the 'instrument list' crumb text
         if (!empty($_REQUEST['sessionID'])) {
             $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
             if (Utility::isErrorX($timePoint)) {
-                return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
+                return PEAR::raiseError(
+                    "TimePoint Error ("
+                    . $_REQUEST['sessionID']
+                    . "): "
+                    . $timePoint->getMessage()
+                );
             }
-            $this->_userFriendlyNames['instrument_list'] = 'TimePoint '.$timePoint->getVisitLabel().' Details';
+            $this->_userFriendlyNames['instrument_list']
+                = 'TimePoint '.$timePoint->getVisitLabel().' Details';
         }
 
         // set the 'timepoint list' crumb text
         if (!empty($_REQUEST['candID'])) {
             $candidate =& Candidate::singleton($_REQUEST['candID']);
             if (Utility::isErrorX($candidate)) {
-                return PEAR::raiseError("Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage());
+                return PEAR::raiseError(
+                    "Candidate Error ("
+                    . $_REQUEST['candID']
+                    . "): "
+                    . $candidate->getMessage()
+                );
             }
-            $this->_userFriendlyNames['timepoint_list'] = 'Candidate Profile '.$candidate->getData('CandID').' / '.$candidate->getData('PSCID');
+            $this->_userFriendlyNames['timepoint_list']
+                = 'Candidate Profile '
+                    . $candidate->getData('CandID')
+                    . ' / '
+                    . $candidate->getData('PSCID');
         }
 
         // add a crumb for subtests
         if (!empty($this->_parameters['subtest'])) {
             $params = array(
-                'PTestname' => $this->_parameters['test_name'],
-                'PSubtest'  => $this->_parameters['subtest']
+                       'PTestname' => $this->_parameters['test_name'],
+                       'PSubtest'  => $this->_parameters['subtest'],
+                      );
+            $result = $DB->pselectOne(
+                "SELECT Description FROM instrument_subtests
+                WHERE Test_name = :PTestname AND Subtest_name = :PSubtest",
+                $params
             );
-            $result = $DB->pselectOne("SELECT Description FROM instrument_subtests WHERE Test_name = :PTestname 
-                AND Subtest_name = :PSubtest", $params);
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -163,9 +223,12 @@ class NDB_Breadcrumb extends PEAR
         // add a crumb for instruments
         if (!empty($this->_parameters['commentID'])) {
             $params = array(
-                'PTestname' => $this->_parameters['test_name']
+                       'PTestname' => $this->_parameters['test_name'],
+                      );
+            $result = $DB->pselectOne(
+                "SELECT Full_name FROM test_names WHERE Test_name = :PTestname",
+                $params
             );
-            $result = $DB->pselectOne("SELECT Full_name FROM test_names WHERE Test_name = :PTestname", $params);
             if (Utility::isErrorX($result)) {
                 return PEAR::raiseError("DB Error: ".$result->getMessage());
             }
@@ -178,23 +241,38 @@ class NDB_Breadcrumb extends PEAR
         }
 
         // set the order of the crumbs
-        $crumbOrder = array('next_stage'       => array('next'  => 'instrument_list',
-                                                        'unset' => 'identifier'),
-                            'create_timepoint' => array('next'  => 'timepoint_list',
-                                                        'unset' => 'identifier'),
-                            'instrument_list'  => array('next'  => 'timepoint_list',
-                                                        'unset' => 'sessionID'),
-                            'timepoint_list'   => array('next'  => 'candidate_list',
-                                                        'unset' => 'candID'),
-                            'candidate_list'   => array('next'  => '',
-                                                        'unset' => '')
-                            );
+        $crumbOrder = array(
+                       'next_stage'       => array(
+                                              'next'  => 'instrument_list',
+                                              'unset' => 'identifier',
+                                             ),
+                       'create_timepoint' => array(
+                                              'next'  => 'timepoint_list',
+                                              'unset' => 'identifier',
+                                             ),
+                       'instrument_list'  => array(
+                                              'next'  => 'timepoint_list',
+                                              'unset' => 'sessionID',
+                                             ),
+                       'timepoint_list'   => array(
+                                              'next'  => 'candidate_list',
+                                              'unset' => 'candID',
+                                             ),
+                       'candidate_list'   => array(
+                                              'next'  => '',
+                                              'unset' => '',
+                                             )
+                      );
 
-        // loop through the crumbs according to the order above, or just make one crumb
+        // loop through the crumbs according to the order above, or just
+        // make one crumb
         if (array_key_exists($this->_parameters['test_name'], $crumbOrder)) {
             while (!empty($this->_parameters['test_name'])) {
 
-                $this->_addCrumb($crumbOrder[$this->_parameters['test_name']]['next'], $crumbOrder[$this->_parameters['test_name']]['unset']);
+                $this->_addCrumb(
+                    $crumbOrder[$this->_parameters['test_name']]['next'],
+                    $crumbOrder[$this->_parameters['test_name']]['unset']
+                );
             }
         } else {
             $this->_addCrumb(null, null, null, 'test_name');
