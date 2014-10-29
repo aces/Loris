@@ -38,7 +38,24 @@ $(function () {
         if(e.which === 13) { // Determine if the user pressed the enter button                                   
             $(this).blur();                                                                                      
         }                                                                                                        
-    });   
+    });
+
+    $('form').on('submit', function(e) {
+
+        e.preventDefault();
+        console.log("Here");
+        /*
+        $.ajax({
+            type: 'post',
+            url: 'AjaxHelper.php?Module=configuration&script=process.php',
+            data: $('form').serialize(),
+            success: function () {
+                alert('form was submitted');
+            }
+        });
+        */
+
+    });
 });
  
                                                                                                                  
