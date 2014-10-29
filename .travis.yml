@@ -54,6 +54,7 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Log.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/File_Upload.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Email.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/CouchDB.class.inc
