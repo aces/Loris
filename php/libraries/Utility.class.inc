@@ -7,9 +7,9 @@
  *
  * @category Main
  * @package  Loris
- * @author   Various <example@example.com>
- * @license  GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 require_once 'PEAR.php';
 require_once "NDB_Config.class.inc";
@@ -23,9 +23,9 @@ require_once 'NDB_Factory.class.inc';
  *
  * @category Main
  * @package  Loris
- * @author   Various <example@example.com>
- * @license  GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Utility extends PEAR
 {
@@ -398,7 +398,9 @@ class Utility extends PEAR
             $allSubprojects[$subproject['id']] =$subproject['title'];
         }
         if ($projectID != null) {
-            $query       = "SELECT SubprojectID FROM project_rel WHERE ProjectID=:pID";
+            $query       = "SELECT SubprojectID
+                FROM project_rel
+                WHERE ProjectID=:pID";
             $subprojList = $db->pselect($query, array('pID' => $projectID));
 
             if (Utility::isErrorX($subprojList)) {
@@ -552,16 +554,16 @@ class Utility extends PEAR
     }
 
     /**
-     * merges two arrays recursively, overwriting values of the first
+     * Merges two arrays recursively, overwriting values of the first
      * with the second.  the one "strange" bit is that if there exists
      * a set of 2 or more sibling elements with the same name, then
      * the entire set will be replaced rather than recursively merged.
      *
-     * @param array $array1 The first array to be merged
-     * @param array $array2 The second array to be merged
-     * @param array& &$merged_array A reference to an array to merge
-     *                              the parameters into. If not specified,
-     *                              a new array will be created
+     * @param array $array1       The first array to be merged
+     * @param array $array2       The second array to be merged
+     * @param array $merged_array A reference to an array to merge
+     *                            the parameters into. If not specified,
+     *                            a new array will be created
      *
      * @return An array with the two parameters recursively merged
      */
@@ -578,7 +580,9 @@ class Utility extends PEAR
                 $merged_array[$key] = $value;
             } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
                 Utility::array_merge_recursive_overwriting(
-                    $array1[$key], $array2[$key], $merged_array[$key]
+                    $array1[$key],
+                    $array2[$key],
+                    $merged_array[$key]
                 );
             } else {
                 $merged_array[$key] = $value;
@@ -588,8 +592,9 @@ class Utility extends PEAR
     }
 
     /**
-     * returns a list of bvl instruments
-     * returns a list of instruments for a timepoint's stage ($stage).
+     * Returns a list of bvl instruments
+     *
+     * Returns a list of instruments for a timepoint's stage ($stage).
      * If no stage arg is passed, return the full list for all stages
      *
      * @param integer $age   age in days
@@ -637,7 +642,7 @@ class Utility extends PEAR
     }
 
     /**
-     * toArray ensures that $var is a collection of $var elements, not just a
+     * Ensures that $var is a collection of $var elements, not just a
      * single element. This is useful for using config->getSetting for an element
      * that may be in the config multiple times or may be in the config file a
      * single time. By calling toArray, you ensure that the value you're working
@@ -658,7 +663,7 @@ class Utility extends PEAR
     }
 
     /**
-     * asArray ensures that $var is a collection elements, not just a single element
+     * Ensures that $var is a collection elements, not just a single element
      * Not the same as toArray, apparently.
      * Note: This function should be used for tags without attributes
      *
@@ -755,7 +760,7 @@ class Utility extends PEAR
      * function will result in '' being saved as 0 for fields where
      * the backend data type is int.
      *
-     * @param array& &$arr  A reference to an array being saved to
+     * @param array  $arr   A reference to an array being saved to
      *                      the database. This array may be modified
      *                      by calls to this function.
      * @param string $field The field for which '' should be converted
@@ -795,6 +800,9 @@ class Utility extends PEAR
     }
 
     /**
+     * Now that Loris requires PHP >5.3 places that use this code should be
+     * updated to use a closure.
+     *
      * Function (previously?) used by stats page(?) for map/reduce to extract
      * the Test_name from all the rows returned from a database call and
      * thereby convert from an array of the form
@@ -820,9 +828,12 @@ class Utility extends PEAR
     }
 
     /**
+     * Now that Loris requires PHP >5.3 places that use this code should be
+     * updated to use a closure.
+     *
      * Function (previously?) used by stats page(?) for map/reduce to extract
      * the Full_name from all the rows returned from a database call and
-     * thereby convert from an array of the form
+     * thereby convert from an array of the form:
      *
      * array(0 => array('Full_name' => value))
      *
