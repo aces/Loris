@@ -85,7 +85,6 @@ TD.tip:hover SPAN {
 }
 
 .selected {
-    background: white !important;
     color: #fff;
 }
 

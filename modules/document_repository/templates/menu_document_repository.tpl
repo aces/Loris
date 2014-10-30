@@ -95,7 +95,7 @@
         </tr>
         {section name=file loop=$File_categories[$k].Files}
             {assign var="FileDetails" value=$File_categories[$k].Files[file]}
-            <tr class="categories ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+            <tr class="categories categories_{$File_categories[$k].CategoryName|replace:$find:$replace} ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
                 <td class="File_name" nowrap="nowrap">
                     <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$FileDetails.Data_dir}" target="_blank" download="{$FileDetails.File_name}">{$FileDetails.File_name}</a> ({$FileDetails.File_size})
                 </td>
