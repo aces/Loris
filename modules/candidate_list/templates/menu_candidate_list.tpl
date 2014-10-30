@@ -212,6 +212,7 @@
     <td align="right">{$page_links}</td>
 </tr>
 </table>
+<<<<<<< HEAD
 <table id="cand" class ="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
     <thead>
         <tr class="info">
