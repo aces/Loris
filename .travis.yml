@@ -49,7 +49,7 @@ script:
     #- phpcs --standard=docs/LorisCS.xml php/libraries
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Database.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/FeedackMRI.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/FeedbackMRI.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/ConflictDetector.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
