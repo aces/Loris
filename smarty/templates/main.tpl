@@ -140,12 +140,7 @@
          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     </head>
     {/if}
-    <body {if $PopUpFeedbackBVL && ($user.permissions.superuser==true 
-              || $user.permissions.access_all_profiles==true 
-              || $user.user_from_study_site==true)}
-                    onload="feedback_bvl_popup();" 
-            {/if}
-    >
+    <body>
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
             <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
