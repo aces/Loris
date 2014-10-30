@@ -51,6 +51,8 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/SinglePointLogin.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Smarty_hook.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Database.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Site.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/MRIFile.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Client.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/FeedbackMRI.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/ConflictDetector.class.inc
