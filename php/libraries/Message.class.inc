@@ -4,13 +4,13 @@
  *
  * PHP version 5
  *
- * @category Behavioural
+ * @category Main
  * @package  Main
  * @author   Olga Tsibulevskaya  <olgatsib@gmail.com>
- * @license  GPLv3
- * @link     https://github.com/aces/IBIS
-*/
-
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+require_once 'NDB_Config.class.inc';
 
 /**
  * Message Class
@@ -18,14 +18,12 @@
  * The class contains the utility to write messages to the file.
  * Was created to be used for the Ajax long-polling
  *
- * @category Behavioural
+ * @category Main
  * @package  Main
- * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license  GPLv3
- * @link     https://github.com/aces/IBIS
-*/
-require_once 'NDB_Config.class.inc';
-
+ * @author   Olga Tsibulevskaya  <olgatsib@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class Message
 {
     var $messageFile;
@@ -33,39 +31,42 @@ class Message
     /**
      * Constructor
      *
-     * @param string $path path to the file
+     * @param string $file_name The name of the file to write a message to
+     * @param string $location  Path to the file
      */
     function __construct($file_name,$location=null)
-    {   
-    	///Create the proper file-name
-    	$today= getdate();
-        $date = sprintf(
-            "%04d-%02d-%02d", $today['year'], 
-            $today['mon'], $today['mday']
+    {
+        ///Create the proper file-name
+        $today         = getdate();
+        $date          = sprintf(
+            "%04d-%02d-%02d",
+            $today['year'],
+            $today['mon'],
+            $today['mday']
         );
-        $config=&NDB_Config::singleton();
-        $log_location =  $config->getSetting("log");
+        $config        =&NDB_Config::singleton();
+        $log_location  =  $config->getSetting("log");
         $base_location = $config->getSetting("base");
 
         if ($log_location[0] !== '/') { // It's not an absolute path (i.e logs/tools)
             //append log_location to base_location
             //if base_location is /var/www/
-            if ($base_location[strlen($base_location)-1]== '/') { 
+            if ($base_location[strlen($base_location)-1]== '/') {
                 $log_location = $base_location . $log_location;
             } else {   // else if base location is /var/www/
                 $log_location = $base_location . "/" . $log_location;
             }
         }
         if (($location == null) || ($location == '')) {
-            $this->messageFile  = $log_location . "/" . $file_name . 
+            $this->messageFile = $log_location . "/" . $file_name .
             "." .  $date . ".log";
         } else {
-            $this->messageFile  = $location . "/" . $file_name 
+            $this->messageFile = $location . "/" . $file_name
             . "." . $date . ".log";
         }
         ///create an empty file
         touch($this->messageFile);
-        
+
     }
 
     /**
@@ -105,18 +106,19 @@ class Message
     /**
     * Changes the name of the current log file
     *
-    * @param String  $log_name  The Name of the new log-file
-    * 
+    * @param String $log_name The Name of the new log-file
+    *
     * @return null
     */
-    function changeLogName($log_name) {
-    	$path_parts = pathinfo($this->messageFile);
-    	$new_name = $path_parts['dirname'] . "/" .$log_name;
-    	//renames the file-name
-    	rename($this->messageFile,$new_name);
-    	$this->messageFile = $new_name;
+    function changeLogName($log_name)
+    {
+        $path_parts = pathinfo($this->messageFile);
+        $new_name   = $path_parts['dirname'] . "/" .$log_name;
+        //renames the file-name
+        rename($this->messageFile, $new_name);
+        $this->messageFile = $new_name;
     }
-    
+
     /**
     * Returns the path to the log
     *
