@@ -69,3 +69,4 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/UserPermissions.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/State.class.inc
