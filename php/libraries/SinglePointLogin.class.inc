@@ -116,9 +116,13 @@ class SinglePointLogin extends PEAR
         $tpl_data['study_title'] = $study_title;
         $tpl_data['study_logo']  = $study_logo;
 
+<<<<<<< HEAD
         $tpl_data['action'] = $_SERVER['PHP_SELF']
             .'?'
             . http_build_query($params);
+=======
+        $tpl_data['action'] = $_SERVER['PHP_SELF'].'?'.Utility::unparse_str($params);
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
         $tpl_data['error_message'] = $this->_lastError;
 
@@ -153,6 +157,14 @@ class SinglePointLogin extends PEAR
     {
         // get saved data to pre-populate form
         $user =& User::factory($_POST['username']);
+<<<<<<< HEAD
+=======
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError(
+                "User Error (".$_POST['username']."): ".$user->getMessage()
+            );
+        }
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
         // get user's data
         $data = $user->getData();
@@ -161,6 +173,7 @@ class SinglePointLogin extends PEAR
         if (!User::isPasswordStrong(
             $_POST['password'],
             array(
+<<<<<<< HEAD
              $_POST['confirm'],
              $data['UserID'],
              $data['Email'],
@@ -169,6 +182,12 @@ class SinglePointLogin extends PEAR
              '==',
              '!=',
              '!=',
+=======
+             $_POST['confirm'], $data['UserID'], $data['Email'],
+            ),
+            array(
+             '==', '!=', '!=',
+>>>>>>> Ran PHPCS on SinglePointLogin class
             )
         )
         ) {
@@ -193,12 +212,24 @@ class SinglePointLogin extends PEAR
         );
         $set    = array(
                    'Password'        => null,
+<<<<<<< HEAD
                    'Password_md5'    => User::MD5Salt($_POST['password']),
+=======
+                   'Password_md5'    => User::md5_salt($_POST['password']),
+>>>>>>> Ran PHPCS on SinglePointLogin class
                    'Password_expiry' => $expiry,
                   );
 
         // update the user
         $success = $user->update($set);
+<<<<<<< HEAD
+=======
+        if (Utility::isErrorX($success)) {
+            return PEAR::raiseError(
+                "SinglePointLogin::save(): " . $success->getMessage()
+            );
+        }
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
         // get config options relating to proftpd
         $config      =& NDB_Config::singleton();
@@ -206,6 +237,10 @@ class SinglePointLogin extends PEAR
 
         // if proftpd stuff is enabled:
         if ($ftpSettings['enabled'] == 'true') {
+<<<<<<< HEAD
+=======
+
+>>>>>>> Ran PHPCS on SinglePointLogin class
             // connect to proftpd database
             $ftpdb   = new Database();
             $success = $ftpdb->connect(
@@ -215,12 +250,27 @@ class SinglePointLogin extends PEAR
                 $ftpSettings['host'],
                 false
             );
+<<<<<<< HEAD
+=======
+            if (Utility::isErrorX($success)) {
+                return PEAR::raiseError(
+                    "Could not connect to database: ".$success->getMessage()
+                );
+            }
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
             // check users table to see if we have a valid user
             $query = "SELECT COUNT(*) AS User_count
                           FROM ftpusers
                       WHERE userid = :UID";
             $row   = $ftpdb->pselectRow($query, array('UID' => $_POST['username']));
+<<<<<<< HEAD
+=======
+            if (Utility::isErrorX($row)) {
+                return PEAR::raiseError("DB Error: ".$row->getMessage());
+            }
+
+>>>>>>> Ran PHPCS on SinglePointLogin class
             // update password
             if ($row['User_count'] == 1) {
 
@@ -231,11 +281,28 @@ class SinglePointLogin extends PEAR
                     $setArray,
                     array('userid' => $_POST['username'])
                 );
+<<<<<<< HEAD
             } else {
                 // if user does not exist, insert user data
                 $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
 
                 $maxUID = $ftpdb->pselectOne($query, array());
+=======
+                if (Utility::isErrorX($success)) {
+                    return PEAR::raiseError(
+                        "SinglePointLogin::save(): ".$success->getMessage()
+                    );
+                }
+            } else {
+                // if user does not exist, insert user data
+
+                $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
+
+                $maxUID = $ftpdb->pselectOne($query, array());
+                if (Utility::isErrorX($maxUID)) {
+                    return PEAR::raiseError("DB Error: ".$maxUID->getMessage());
+                }
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
                 $setArray['userid']  = $_POST['username'];
                 $setArray['passwd']  = crypt($_POST['password']);
@@ -244,6 +311,14 @@ class SinglePointLogin extends PEAR
 
                 // insert into proftpd
                 $success = $ftpdb->insert("ftpusers", $setArray);
+<<<<<<< HEAD
+=======
+                if (Utility::isErrorX($success)) {
+                    return PEAR::raiseError(
+                        "SinglePointLogin::save(): ".$success->getMessage()
+                    );
+                }
+>>>>>>> Ran PHPCS on SinglePointLogin class
             }
         }
         return true;
@@ -266,6 +341,7 @@ class SinglePointLogin extends PEAR
         $this->_username = isset($_POST['username'])
             ? $_POST['username']
             : 'Unknown';
+<<<<<<< HEAD
 
         $setArray = array(
                      'userID'          => $this->_username,
@@ -275,10 +351,28 @@ class SinglePointLogin extends PEAR
                      'IP_address'      => $_SERVER['REMOTE_ADDR'],
                      'Page_requested'  => $_SERVER['REQUEST_URI'],
                     );
+=======
+         $setArray       = array(
+                            'userID'          => $this->_username,
+                            'Success'         => 'Y',
+                            'Failcode'        => null,
+                            'Login_timestamp' => date('Y-m-d H:i:s'),
+                            'IP_address'      => $_SERVER['REMOTE_ADDR'],
+                            'Page_requested'  => $_SERVER['REQUEST_URI'],
+                           );
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
             $success = $this->save();
+<<<<<<< HEAD
+=======
+            if (Utility::isErrorX($success)) {
+                return PEAR::raiseError(
+                    "SinglePointLogin::authenticate(): ".$success->getMessage()
+                );
+            }
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
             if ($success == false) {
                 $this->showPasswordExpiryScreen();
@@ -310,6 +404,7 @@ class SinglePointLogin extends PEAR
 
         // create DB object
         $DB =& Database::singleton();
+<<<<<<< HEAD
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
@@ -322,6 +417,24 @@ class SinglePointLogin extends PEAR
                   WHERE UserID = :username
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $_POST['username']));
+=======
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
+        }
+
+        // check users table to see if we have a valid user
+        $query = "SELECT COUNT(*) AS User_count,
+                         Password_md5, Password_expiry, Active, Pending_approval
+                    FROM users
+                  WHERE UserID = :username
+                  GROUP BY UserID";
+        $row   = $DB->pselectRow($query, array('username' => $_POST['username']));
+        if (Utility::isErrorX($row)) {
+            return PEAR::raiseError("DB Error: ".$row->getMessage());
+        }
+>>>>>>> Ran PHPCS on SinglePointLogin class
 
         if ($row['User_count'] == 1) {
             // validate the user
@@ -404,6 +517,14 @@ class SinglePointLogin extends PEAR
 
         // bad usename or password
         $this->_lastError = "Incorrect username or password";
+<<<<<<< HEAD
+=======
+        //insert failed_detail into user_login_history
+        $this->insertFailedDetail(
+            $this->_lastError,
+            $setArray
+        );
+>>>>>>> Ran PHPCS on SinglePointLogin class
         return false;
     }
 
@@ -457,7 +578,15 @@ class SinglePointLogin extends PEAR
     {
         // create DB object
         $DB =& Database::singleton();
+<<<<<<< HEAD
 
+=======
+        if (Utility::isErrorX($DB)) {
+            return PEAR::raiseError(
+                "Could not connect to database: ".$DB->getMessage()
+            );
+        }
+>>>>>>> Ran PHPCS on SinglePointLogin class
         $setArray['Success']     = 'N';
         $setArray['Fail_detail'] = $description;
 
