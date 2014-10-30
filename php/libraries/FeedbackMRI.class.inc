@@ -193,9 +193,9 @@ class FeedbackMRI
                 $PredefinedID = $row['PredefinedCommentID'];
 
                 if (empty($row['Comment'])) {
-                    $comments[$CTID]]['predefined'][$PredefinedID] = true;
+                    $comments[$CTID]['predefined'][$PredefinedID] = true;
                 } else {
-                    $comments[$CTID]]['text'] = stripslashes($row['Comment']);
+                    $comments[$CTID]['text'] = stripslashes($row['Comment']);
                 }
             }
         }
