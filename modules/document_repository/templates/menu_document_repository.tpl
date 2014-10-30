@@ -79,15 +79,15 @@
 </tr>
 
 {assign "find" array(' ','>','(',')')}
-{assign "replace" array('_','_','_','_')}
+{assign "replaceFind" array('_','_','_','_')}
 <div id="accordion" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons" role="tablist">
 {foreach from=$File_categories item=val key=k}
     {if $val != "Any"}
         <tr>
                 <td nowrap="nowrap" colspan = "11">
-                    <h3 id = "header_{$File_categories[$k].CategoryName|replace:$find:$replace}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px;" align="left">{$File_categories[$k].CategoryName}
+                    <h3 id = "header_{$File_categories[$k].CategoryName|replace:$find:$replaceFind}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px;" align="left">{$File_categories[$k].CategoryName}
                         <span class="tip">...
-                            <span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$File_categories[$k].CategoryName|replace:$find:$replace}" contenteditable="true">
+                            <span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$File_categories[$k].CategoryName|replace:$find:$replaceFind}" contenteditable="true">
                                 {$File_categories[$k].Comment}
                             </span>
                 </span>
@@ -95,7 +95,8 @@
         </tr>
         {section name=file loop=$File_categories[$k].Files}
             {assign var="FileDetails" value=$File_categories[$k].Files[file]}
-            <tr class="categories categories_{$File_categories[$k].CategoryName|replace:$find:$replace} ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+            <tr class="categories categories_{$File_categories[$k].CategoryName|replace:$find:$replaceFind
+        } ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
                 <td class="File_name" nowrap="nowrap">
                     <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$FileDetails.Data_dir}" target="_blank" download="{$FileDetails.File_name}">{$FileDetails.File_name}</a> ({$FileDetails.File_size})
                 </td>
