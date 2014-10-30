@@ -67,6 +67,7 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_InstrumentStatus_ControlPanel.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_InstrumentStatus.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/CouchDB.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Message.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Breadcrumb.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Caller.class.inc
