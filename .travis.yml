@@ -49,6 +49,7 @@ script:
     #- phpcs --standard=docs/LorisCS.xml php/libraries
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/SinglePointLogin.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument_instrument_preview.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Smarty_hook.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Database.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Site.class.inc
