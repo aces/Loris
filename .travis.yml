@@ -62,6 +62,7 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Factory.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Log.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/User.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Form.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/File_Upload.class.inc
