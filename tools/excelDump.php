@@ -16,8 +16,10 @@ require_once "Utility.class.inc";
 //Configuration variables for this script, possibly installation dependent.
 //$dataDir = "dataDump" . date("dMy");
 $dumpName = "dataDump" . date("dMy"); // label for dump
-$dataDir = $config['paths']['base'] . "tools/$dumpName/"; //temporary working directory
-$destinationDir = $config['paths']['base'] . "htdocs/dataDumps"; //temporary working directory
+$config = NDB_Config::singleton();
+$paths = $config->getSetting('paths'); print_r($paths);
+$dataDir = $paths['base'] . "tools/$dumpName/"; //temporary working directory
+$destinationDir = $paths['base'] . "htdocs/dataDumps"; //temporary working directory
 
 /*
 * Prepare output/tmp directories, if needed.
@@ -56,7 +58,8 @@ function MapSubprojectID(&$results) {
     $subprojectLookup = array();
     // Look it up from the config file, because it's not stored
     // in the database
-    foreach($config["study"]["subprojects"]["subproject"] as $subproject) {
+    $study = $config->getSetting['study'];
+    foreach($study["subprojects"]["subproject"] as $subproject) {
 	    $subprojectLookup[$subproject["id"]] =  $subproject["title"];
     }
 
@@ -95,8 +98,7 @@ foreach ($instruments as $instrument) {
             if($instrument->ValidityEnabled == true) {
                 $extra_fields = 'f.Validity, ';
             }
-            $NDB_Config = NDB_Config::singleton();
-            $ddeInstruments = $NDB_Config->getSetting("DoubleDataEntryInstruments");
+            $ddeInstruments = $config->getSetting("DoubleDataEntryInstruments");
             print_r($ddeInstruments);
             if(in_array($Test_name, $ddeInstruments)) {
                 $extra_fields .= "CASE ddef.Data_entry='Complete' WHEN 1 then 'Y' 
