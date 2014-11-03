@@ -53,7 +53,6 @@ class Login_Test extends PHPUnit_Extensions_Selenium2TestCase
 
         $login->click();
 
-        print $this->byCssSelector("body")->text();
         $this->assertContains("Welcome", $this->byCssSelector("body")->text());
     }
 }
