@@ -5,7 +5,7 @@ class Login_Test extends PHPUnit_Extensions_Selenium2TestCase
 {
     protected function setUp()
     {
-        $this->setBrowser('htmlunit');
+        $this->setBrowser('firefox');
         $this->setBrowserUrl('http://localhost/');
     }
 
@@ -38,5 +38,23 @@ class Login_Test extends PHPUnit_Extensions_Selenium2TestCase
         $this->assertContains("Incorrect username or password", $this->byCssSelector("body")->text());
     }
 
+    public function testLoginSuccess()
+    {
+        $this->url('/main.php');
+        $username = $this->byName("username");
+        $password = $this->byName("password");
+
+        $username->value("admin");
+        $password->value("testpass");
+
+        $login = $this->byName("login");
+        $this->assertEquals('submit', $login->attribute("type"));
+        $this->assertEquals('login', $login->value());
+
+        $login->click();
+
+        print $this->byCssSelector("body")->text();
+        $this->assertContains("Welcome", $this->byCssSelector("body")->text());
+    }
 }
 ?>
