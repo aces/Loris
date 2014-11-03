@@ -5,25 +5,25 @@
 <div class="row">
     <div class="col-lg-8">
 
-    	<!-- Welcome panel -->
+        <!-- Welcome panel -->
         <div class="panel panel-default">
             <div class="panel-body">
-            	<h3 class="welcome">Welcome, {$username}.</h3>
+                <h3 class="welcome">Welcome, {$username}.</h3>
                 <p class="pull-right small login-time">Last login: {$last_login}</p>
-            	<p class="project-description">{$project_description}</p>
+                <p class="project-description">{$project_description}</p>
             </div>
             <!-- Only add the welcome panel footer if there are links -->
             {if $dashboard_links neq ""}
-	            <div class="panel-footer">| 
-	            	{foreach from=$dashboard_links item=link}
-						<a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
-					{/foreach}
-				</div>
+                <div class="panel-footer">| 
+                    {foreach from=$dashboard_links item=link}
+                        <a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
+                    {/foreach}
+                </div>
             {/if}
-    	</div>
+        </div>
 
-    	<!-- Recruitment -->
-    	<div class="panel panel-default">
+        <!-- Recruitment -->
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Recruitment</h3>
                 <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
@@ -49,14 +49,14 @@
                                 <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_full_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
                                     <p>
                                     {$female_full_percent}%
-                                    </br>
+                                    <br>
                                     Female
                                     </p>
                                 </div>
                                 <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_full_percent}%"  title="{$male_total} Males">
                                     <p>
                                     {$male_full_percent}%
-                                    </br>
+                                    <br>
                                     Male
                                     </p>
                                 </div>
@@ -68,14 +68,14 @@
                                 <div class="progress-bar progress-bar-female" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
                                     <p>
                                     {$female_percent}%
-                                    </br>
+                                    <br>
                                     Female
                                     </p>
                                 </div>
                                 <div class="progress-bar progress-bar-male" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
                                     <p>
                                     {$male_percent}%
-                                    </br>
+                                    <br>
                                     Male
                                     </p>
                                 </div>
@@ -110,7 +110,7 @@
 
         <!-- Charts -->
         <div class="panel panel-default">
-        	<div class="panel-heading">
+            <div class="panel-heading">
                 <h3 class="panel-title">Study Progression</h3>
                 <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
                 <div class="pull-right">
