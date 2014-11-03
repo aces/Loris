@@ -4,6 +4,8 @@ php: 5.4
 
 before_install:
     - sudo apt-get update
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
 
 install:
     # Install composer modules
