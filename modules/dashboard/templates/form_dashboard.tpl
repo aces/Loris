@@ -128,7 +128,7 @@
             </div>
             <div class="panel-body">
                     <div id="scans-line-chart-panel">
-                        <h5 class="chart-title">Scans per site</h5>
+                        <h5 class="chart-title">Scan sessions per site</h5>
                         {if $total_scans neq 0}
                             <div id="scanChart"></div>
                         {else}
