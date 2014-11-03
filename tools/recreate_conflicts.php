@@ -1,39 +1,115 @@
 <?php
+/**
+ * This script allows recreation of conflicts
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Rathi Sekaran <sekaranrathi@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 
 require_once "../php/libraries/NDB_Client.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
-require_once "ConflictDetector.class.inc";
+require_once "../php/libraries/ConflictDetector.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
 $config = NDB_Config::singleton();
-$db = Database::singleton();
+$db     = Database::singleton();
 
+/**
+ * HELP SCREEN
+ * display and stop processing if action=help
+ */
+if (empty($argv[1]) || $argv[1] == 'help') {
+    fwrite(STDERR, "Usage: \n\n");
+    $case1 ="recreate_conflicts.php all         : To recreate".
+        "conflicts for all instrument\n";
+    $case2 = "recreate_conflicts.php <test_name> : To recreate".
+        "conflict for one instrument \n";
+
+    fwrite(
+        STDERR,
+        $case1
+    );
+    fwrite(
+        STDERR,
+        $case2
+    );
+    return;
+}
+
+/**
+* Get cmd-line arguments
+*/
+// get $action argument
+$action         = strtolower($argv[1]);
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
-$allInstruments = $db->pselect("SELECT CommentID, Test_name, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag join session s ON (s.ID=flag.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE Test_name=:testname AND CommentID NOT LIKE 'DDE%' AND s.Active='Y' AND c.Active='Y'");
-foreach($allInstruments as $instrument) {
-    ConflictDetector::clearConflictsForInstance($instrument['CommentID']);
+if ($action=='all') {
+    $allInstruments = Utility::getAllInstruments();
+} else {
+    $allInstruments = array($action => $action);
 }
 // clear the unresolved conflicts for all the instruments
+foreach ($allInstruments as $instrument=>$Full_name) {
+    $clear_conflicts = $db->pselect(
+        "SELECT CommentID, Test_name,
+                                            CONCAT('DDE_', CommentID)
+                                            AS DDECommentID
+                                     FROM flag
+                                     JOIN session s ON (s.ID=flag.SessionID)
+                                     JOIN candidate c ON (c.CandID=s.CandID)
+                                     WHERE Test_name=:testname AND CommentID
+                                           NOT LIKE 'DDE%' AND s.Active='Y'
+                                           AND c.Active='Y'",
+        array('testname' => $instrument)
+    );
+    if (Utility::isErrorX($clear_conflicts)) {
+        return PEAR::raiseError(
+            "Error, failed to clear conflicts: ".
+            $clear_conflicts->getMessage()
+        );
+
+    }
+    foreach ($clear_conflicts as $conflict) {
+        ConflictDetector::clearConflictsForInstance($conflict['CommentID']);
+    }
+}
 foreach ($ddeInstruments as $test) {
-    $instruments = $db->pselect("SELECT CommentID, Test_name, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag sde join session s ON (s.ID=flag.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE sde.Test_name=:testname AND sde.CommentID NOT LIKE 'DDE%' AND sde.Data_entry='Complete' AND s.Active='Y' AND c.Active='Y' AND EXISTS (SELECT 'x' FROM flag dde WHERE dde.CommentID=CONCAT('DDE_', sde.CommentID) AND Data_entry='Complete')",
+    $instruments = $db->pselect(
+        "SELECT CommentID, Test_name, CONCAT('DDE_',
+                                        CommentID) AS DDECommentID
+                                 FROM flag sde
+                                 JOIN session s ON (s.ID=sde.SessionID)
+                                 JOIN candidate c ON (c.CandID=s.CandID)
+                                 WHERE sde.Test_name=:testname AND sde.CommentID
+                                       NOT LIKE 'DDE%' AND sde.Data_entry='Complete'
+                                       AND s.Active='Y' AND c.Active='Y'
+                                       AND EXISTS (SELECT 'x' FROM flag dde WHERE
+                                           dde.CommentID=CONCAT('DDE_',sde.CommentID)
+                                       AND Data_entry='Complete')",
         array('testname' => $test)
     );
 
-    foreach($instruments as $instrument) {
-    // If the instrument requires double data entry, check that DDE is also done
-    if(in_array($instrument['Test_name'], $ddeInstruments)) {
-        print "Recreating conflicts for " . $instrument['Test_name'] . ':' .  $instrument['CommentID'] . "\n";
-        $diff=ConflictDetector::detectConflictsForCommentIds($instrument['Test_name'], 
-            $instrument['CommentID'], $instrument['DDECommentID']
-        );
-        ConflictDetector::recordUnresolvedConflicts($diff);
-    }
+    foreach ($instruments as $instrument) {
+        // If the instrument requires double data entry, check that DDE is also done
+        if (in_array($instrument['Test_name'], $ddeInstruments)) {
+            print "Recreating conflicts for " . $instrument['Test_name'] .
+                   ':'. $instrument['CommentID'] . "\n";
+            $diff = ConflictDetector::detectConflictsForCommentIds(
+                $instrument['Test_name'],
+                $instrument['CommentID'],
+                $instrument['DDECommentID']
+            );
+            ConflictDetector::recordUnresolvedConflicts($diff);
+        }
     }
 }
-
-//$db->delete("conflicts_unresolved", array());
 
 ?>
