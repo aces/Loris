@@ -3,8 +3,7 @@ language: php
 php: 5.4
 
 before_install:
-    - mkdir -p project smarty/templates_c
-    - chmod 777 smarty/templates_c
+    - sudo apt-get update
 
 install:
     # Install composer modules
@@ -37,7 +36,26 @@ install:
       # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
+    # Install requirements for php-fpm as per Travis DOCs
+    - sudo apt-get install apache2 libapache2-mod-fastcgi smarty3
+    # /usr/share/php gets obliterated from the path by phpenv, so make
+    # a symlink to fake it.
+    - ln -s /usr/share/php/smarty3 ~/.phpenv/versions/$(phpenv version-name)/pear
+    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - sudo a2enmod rewrite actions fastcgi alias
+    - sudo a2dismod php5
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+    # Start Selenium and redirect Selenium WebDriver
+    # output to /dev/null so that it doesn't flood the
+    # screen in the middle of our other tests
+    - java -jar selenium-server-standalone-2.44.0.jar 2>&1 /dev/null &
+
 before_script:
+    # Set up the Loris environment
+    - mkdir -p project smarty/templates_c
+    - chmod 777 smarty/templates_c
+
     # Set up the MySQL database, install the Schema, create a MySQL user
     # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
@@ -50,37 +68,11 @@ before_script:
           -e "s/%DATABASE%/LorisTest/g"
           < docs/config/config.xml > project/config.xml
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-    - mysql LorisTest -e "SELECT * FROM Config"
-    # Enable php-fpm as per Travis DOCs
-    - sudo apt-get update
-    - sudo apt-get install apache2 libapache2-mod-fastcgi smarty3
-    # /usr/share/php gets obliterated from the path by phpenv, so make
-    # a symlink to fake it.
-    - ln -s /usr/share/php/smarty3 ~/.phpenv/versions/$(phpenv version-name)/pear
 
-    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-    - sudo a2enmod rewrite actions fastcgi alias
-    - sudo a2dismod php5
-    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
       # Configure apache
-    - cat /etc/apache2/mods-enabled/fastcgi.conf
     - sudo cp -f docs/config/apache2-fastcgi /etc/apache2/sites-available/default
     - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)/htdocs?g" --in-place /etc/apache2/sites-available/default
     - sudo service apache2 restart
-    - sudo tail -f /var/log/apache2/error.log&
-    - wget "http://localhost/index.html"
-    - cat index.html
-    - wget "http://localhost/main.php"
-    - cat main.php
-    # Things that Selenium requires
-    # Required so that Selenium can run Firefox
-    - sh -e /etc/init.d/xvfb start
-    - export DISPLAY=:99.0
-    # Start Selenium and redirect Selenium WebDriver
-    # output to /dev/null so that it doesn't flood the
-    # screen in the middle of our other tests
-    - java -jar selenium-server-standalone-2.44.0.jar > /dev/null &
 
 script:
     # Run PHP -l on everything to ensure there's no syntax
@@ -134,6 +126,3 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/State.class.inc
-
-after_failure:
-    - sudo cat /var/log/apache2/error.log
