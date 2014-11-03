@@ -51,7 +51,7 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - java -jar selenium-server-standalone-2.44.0.jar > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.44.0.jar > /dev/null &
 
 before_script:
     # Set up the Loris environment
