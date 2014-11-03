@@ -29,9 +29,9 @@ $db     = Database::singleton();
 if (empty($argv[1]) || $argv[1] == 'help') {
     fwrite(STDERR, "Usage: \n\n");
     $case1 ="recreate_conflicts.php all         : To recreate".
-        "conflicts for all instrument\n";
+        "conflicts for all instruments\n";
     $case2 = "recreate_conflicts.php <test_name> : To recreate".
-        "conflict for one instrument \n";
+        "conflict for a given instrument \n";
 
     fwrite(
         STDERR,
