@@ -44,7 +44,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     /**
      * Determine whether the user has permission to view the imaging_browser page
      *
-     * @return bool whether the user hass access
+     * @return bool whether the user has access
      */
     function _hasAccess()
     {
