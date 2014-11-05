@@ -43,3 +43,11 @@
     color: #555555;
     text-decoration: none
 }
+
+.tree-name {
+   display:inline;
+}
+
+.submitted {
+   display:inline;
+}

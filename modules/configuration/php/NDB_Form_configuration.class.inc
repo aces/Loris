@@ -59,6 +59,11 @@ class NDB_Form_Configuration extends NDB_Form
             die();
         }
 
+        $parentMenuItems = $this->DB->pselect(
+            "SELECT Label, Name FROM ConfigSettings WHERE Parent IS NULL", 
+            array()
+        );
+
         $configs = $this->DB->pselect(
             "SELECT * FROM ConfigSettings", 
             array()
@@ -77,10 +82,20 @@ class NDB_Form_Configuration extends NDB_Form
             }
         }
 
-        // need a subtree with root = NULL only, others are repeating branches
-        $this->tpl_data['config']      = $configs;
-        $this->tpl_data['options']     = array('0'=>'0', '1'=>'1');
-        $this->tpl_data['instruments'] = Utility::getAllInstruments();
+        // build a tree from configs array
+        foreach ($configs as &$node) {
+            $node['Children'] = array();
+            $tree[$node['ID']] = &$node;
+            
+        }
+        foreach ($configs as &$node) {
+            $tree[$node['Parent']]['Children'][] = &$node;
+        }
+
+        $this->tpl_data['parentMenuItems'] = $parentMenuItems;
+        $this->tpl_data['config']          = $configs;
+        $this->tpl_data['options']         = array('0'=>'0', '1'=>'1');
+        $this->tpl_data['instruments']     = Utility::getAllInstruments();
     }
 
     /**

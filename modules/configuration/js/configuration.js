@@ -2,11 +2,7 @@
 $(function () {
     "use strict";
 
-    if ($(".tree")[0]) {
-        $('.tree').treegrid({
-            'initialState': 'collapsed',
-        });
-    }
+    $('.config-name').tooltip();
 
     var count = 0;
     $(".add").click(function () {
@@ -33,29 +29,24 @@ $(function () {
         var id = $(this).attr('id');
         $("#" + id + "-form").remove();
     });
-    
-    $('.form-control').keypress(function(e) {
-        if(e.which === 13) { // Determine if the user pressed the enter button                                   
-            $(this).blur();                                                                                      
-        }                                                                                                        
-    });
 
     $('form').on('submit', function(e) {
-
         e.preventDefault();
-        console.log("Here");
-        /*
         $.ajax({
             type: 'post',
             url: 'AjaxHelper.php?Module=configuration&script=process.php',
-            data: $('form').serialize(),
-            success: function () {
-                alert('form was submitted');
+            data: $(this).serialize(),
+            success: function (data) {
+                $('.submit-area', this).append("<label>Submitted</label>");
+            },
+            error: function(xhr, desc, err) {
+                console.log(xhr);
+                console.log("Details: " + desc + "\nError:" + err);
             }
         });
-        */
 
     });
+
 });
  
                                                                                                                  
