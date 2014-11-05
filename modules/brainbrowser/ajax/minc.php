@@ -1,7 +1,7 @@
 <?php
 ini_set('default_charset', 'utf-8');
-require_once "../tools/generic_includes.php";
 require_once "Utility.class.inc";
+require_once "NDB_Config.class.inc";
 
 $headers = array();
 

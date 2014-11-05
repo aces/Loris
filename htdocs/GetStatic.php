@@ -1,9 +1,9 @@
 <?php
 /**
- * Controls access to a module's javascript CSS styles on the filesystem. This script
+ * Controls access to a module's javascript files on the filesystem. This script
  * should ensure that only files relative to module's path specified are
  * accessible.
- * By calling new NDB_Client(), it also makes sure that the user is logged in to 
+ * By calling new NDB_Client(), it also makes sure that the user is logged in to
  * Loris.
  *
  * It also does validation to make sure required config settings are specified.
@@ -48,17 +48,12 @@ if (empty($basePath)) {
 
 // Now get the file and do file validation
 $Module = $_GET['Module'];
-if (empty($_REQUEST['file'])) {
-    $File = $Module . ".css";
-} else {
-    $File = $_REQUEST['file'];
-}
+$File = $_GET['file'];
 
-// File validation
-if (strpos($File, ".css") === false) {
-    error_log("ERROR: Not a CSS file.");
+if (empty($Module) || empty($File)) {
+    error_log("Missing required parameters for request");
     header("HTTP/1.1 400 Bad Request");
-    exit(3);
+    exit(2);
 }
 
 // Make sure that the user isn't trying to break out of the $path by
@@ -71,7 +66,7 @@ if (strpos("..", $File) !== false) {
 }
 
 
-$FullPath = $basePath . "/modules/$Module/css/$File";
+$FullPath = $basePath . "/modules/$Module/static/$File";
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");
@@ -79,8 +74,8 @@ if (!file_exists($FullPath)) {
     exit(5);
 }
 
-$MimeType = "text/css";
-header("Content-type: $MimeType");
+// $MimeType = "application/javascript";
+// header("Content-type: $MimeType");
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
