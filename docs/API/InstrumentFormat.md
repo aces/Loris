@@ -121,9 +121,13 @@ as follows:
     "Name" : REQUIRED,
     "Description" : REQUIRED,
     Options : {
-        "Values" : { "SaveValue" : "Human Readable Description", "SaveValue2" : ... }
-        "AllowMultiple" : boolean,
-        "SupressNotAnswered" : boolean
+        "Values" : {
+            "SaveValue"       : "Human Readable Description",
+            "SaveValue2"      : "Another human readable description"
+            ...
+        },
+        "AllowMultiple"   : boolean,
+        "RequireResponse" : boolean
     }
 }
 ```
@@ -146,14 +150,16 @@ as follows:
                          one option can be selected.
                          Default: false
 
-`Options.SupressNotAnswered`: Boolean. If false, an implementation should
+`Options.RequireResponse`: Boolean. If true, an implementation should
                        automatically add a not_answered option to the
-                       select box on top of the values. If true, it should
-                       not.
+                       select box in addition to the values specified
+                       to allow the user to explicitly not answer a question
+                       but require that some answer is entered.
+                       If false, it should not.
                        This is done instead of simply adding the option to
                        Values to ensure consistency with other PageElement types
                        such as date or text.
-                       Default false.
+                       Default true.
 
 
 
@@ -191,10 +197,10 @@ save it. The format is as follows:
 `Options.Regex`: Optional, a regex that the data entered must conform to. If not
                entered, no rules are enforced.
 
-`Options.SupressNotAnswered`: If false, there MUST be some way for the user to specify
-              that the question is not answered, regardless of other rules. If true,
+`Options.RequireResponse`: If true, there MUST be some way for the user to specify
+              that the question is not answered, regardless of other rules. If false,
               the not answered option is supressed.
-              Default: false
+              Default: true
 
 
 
@@ -226,7 +232,7 @@ as follows:
 
 `Options.MaxDate`: The maximum date that can be chosen by the user. Format is YYYY-MM-DD
 
-`Options.SupressNotAnswered`: Follows the same rules as TextElement:Options.SupressNotAnswered
+`Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse
 
 
 
@@ -266,7 +272,7 @@ A NumericElement represents a numeric data input and has the general form of:
                   MaxValue are specified MaxValue MUST be greater than or equal to
                   MinValue.
 
-`Options.SupressNotAnswered`: Follows the same rules as TextElement:Options.SupressNotAnswered
+`Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse
 
 
 
