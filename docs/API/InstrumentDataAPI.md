@@ -2,7 +2,7 @@ This file describes the REST API to be implemented for interacting with Loris da
 API is NOT YET IMPLEMENTED.
 ====
 
-# Loris Instrument API - v0.0.1a-dev
+# Loris Instrument API - v0.0.1b-dev
 
 ## 1.0 Overview
 
@@ -10,163 +10,116 @@ Loris will implement a RESTful API. Any request sent to `$LorisRoot/api/$APIVERS
 will return either a JSON object or no data. The Loris API will use standard HTTP error
 codes and the body will either be empty or contain only a JSON object for any request.
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.1a-dev and it
+document. This document specifies $APIVERSION v0.0.1b-dev and it
 MUST be included before the request in all requests.
 
-HTTP GET requests will NEVER modify data. POST requests MUST be used to modify data.
+HTTP GET requests will NEVER modify data. PUT or PATCH requests MUST be used to modify data.
 
-The current version of the API is split into 2 parts. Part 1 specifies the API for getting
-instruments and their data. Part 2 specifies the API for interacting with candidate data.
+PUT requests either create or overwrite all data for a given instrument/candidate/visit/etc.
+Any fields not explicitly specified in the PUT request are nulled.
+
+PATCH requests are identical to PUT requests, but any fields not explicitly mentioned are
+unmodified from their current value.
 
 The current API assumes that the user issuing the HTTP request is already logged in to Loris
 and has appropriate permissions. If not, an error object will be returned of the form
 
 ```json
 {
-    "error" : "an error message"
+    "error" : "User not authenticated"
 }
 ```
 
-and a non-200 code will be used.
+and an `401 Unauthorized` HTTP error code is returned.
 
 Subsequence versions of this API should specify a more flexible authentication mechanism.
 
-## 2.0 Instrument API
+# 2.0 Project API
 
-The instrument API specifies an API for interacting with instruments and their data directly if
-the CommentID is known.
-The instrument API is specified under $LorisRoot/api/$APIVERSION/Instrument/ and uses subcomponents
-for different aspects of interacting with Loris instruments.
-
-
-### 2.1 API for getting/updating forms and/or rules.
-
-The /Instrument/Form/ subcomponent specifies rules for creating and retrieving the instrument
-form and rules itself as specified by the InstrumentFormat and RulesFormat documents. It can be
-used to get the details needed to render the form by a client.
+The Project API lives under the /projects part of the API URL hierarchy. It is used to get
+project specific settings or data.
 
 ```
-GET /Instrument/Form/$InstrumentName?Form=true&Rules=true
+GET /projects
 ```
 
-This will return a JSON object of the format specified in InstrumentFormat.md and RulesFormat.md
-which describe the instrument named $InstrumentName in this Loris instance.
-If Form=true and Rules=true, the rules and form will be combined into a single JSON object.
-If either are false, then that portion of the object will be omitted.
-Default for both both are true if omitted from the GET request. At least one should always
-be true, otherwise an empty JSON object may be returned.
+Will return a list of projects in this Loris instance. There is no corresponding PUT or PATCH
+request. The JSON returned is of the form:
 
-```
-POST /Instrument/Form/$InstrumentName?Form=true&Rules=true
+```json
+{
+    "Projects" : ["ProjectName1", "ProjectName2", ...]
+}
 ```
 
-A POST request for `/Instrument/Form/$InstrumentName` will install or update an already existing
-form. The user issuing the request must have appropriate permissions. If either Rules=false or
-Form=false is set on the request, then that aspect of the form will NOT be updated and existing
-form or rules will continue to be used.
-
-NOTE: The `POST` aspect of this subcomponent is likely to return a `501 Not Implemented` code for
-      the foreseeable future.
-
-### 2.2 Flags
-
-The `/Instrument/Flags` subcomponent specifies an API for interacting with instrument flags, separately
-from the data. Flags correspond to the instrument flags on the left sidepanel of an instrument in Loris.
-
-The Flags subcomponent requires knowing the CommentID of the instrument that you would like to update.
-If the CommentID is unknown, it can be retrieved using the Candidate API.
-
 ```
-GET /Instrument/Flags/$CommentID
+GET /projects/$ProjectName
 ```
 
-A GET request to `/Instrument/Flags/$CommentID` will retrieve a JSON object of the current flags. If
-the CommentID is unknown, it can be found using the candidate API.
+Will return a 200 series error code if the project exists, and 404 code if it does not. The body of the
+request MAY be empty and should not be depended upon. Future versions of this API MAY specify
+a JSON specification to represent a project that this request would return.
 
-The JSON object is of the form:
+```
+GET /projects/$ProjectName/instruments/
+```
+
+Will return a JSON object of the form
 
 ```json
 {
     "Meta" : {
-        "CommentID" : $CommentID
+        "Project" : "ProjectName"
     },
-    "Flags" : {
-        "Data_entry" : "In Progress|Complete",
-        "Administration" : "None|Partial|All",
-        "Validity" : "Questionable|Invalid|Valid"
-    }
+    "Instruments" : ["InstrumentName", "InstrumentName2", "..."]
 }
 ```
 
-Where the Data_Entry, Administration, and Validity correspond to the flags in the `flag` table of Loris.
-for that CommentID. Validity MAY be omitted if Validity is disabled for the instrument but every instrument
-should have a Data_entry and Administration flag
+Where the InstrumentNames are the "Short Name" of all the instruments used/installed in this project.
+
+## 2.1 Instrument Forms
 
 ```
-POST /Instrument/Flags/$CommentID
+GET /projects/$ProjectName/instruments/$InstrumentName
 ```
 
-A POST request to `/Instrument/Flags/$CommentID` will update the flags for the CommentID. The body of
-the POST request should be a valid JSON object of the same format as the JSON object returned by a GET request.
-However, if any flag is missing from the POST request that flag will not be updated. To null a flag, the value
-of the JSON key should be explicitly set to the empty string.
+This will return a JSON representation of the instrument form. If available, rules and form will
+be combined into a single JSON object. The format for the JSON returned is specified in the
+accompanying InstrumentFormat.md and RulesFormat.md documents. The JSON document can be used
+to render the form by a client.
 
-Loris will return a 200 code on success and an appropriate HTTP error code on failure. If the CommentID of
-the URL and JSON object do not match, a `400 Bad Request` will be returned.
+PUT and PATCH are not supported for instrument forms.
 
+Methods for getting/putting data into specific candidates are specified in section 3.
 
-### 2.3 Instrument Data
+# 3.0 Candidate API
 
-The `Instrument/Data` subcomponent of the instrument API is used for getting or modifying the data
-of an instrument.
-It requires knowledge of the `CommentID`. If the `CommentID` is not known, it can be retrieved
-using the Candidate API.
+The /candidate portion of the API is used for retrieving and modifying candidate data and
+data attached to a specific candidate or visit such as visits or instrument data.
 
 ```
-GET /Instrument/Data/$CommentID?IncludeFlags=false
+GET /candidates
 ```
 
-This will return a JSON object representing the data for the specified `CommentID`. The JSON object will
-be of the format.
+will return a JSON object of the form
 
 ```json
 {
-    "Meta" : {
-        "CommentID" : CommentID
-    },
-    "data" : {
-        "Field1"       : "Value",
-        "AnotherField" : "value",
-        ...
-    }
+    "Candidates" : [CandID1, CandID2, CandID3, ...]
 }
 ```
 
-Where each field in the `data` hash represents the field corresponding to the InstrumentFormat. If
-`?IncludeFlags=true` is set, then a "Flags" key will also be added to the top level JSON object.
+containing ALL CandIDs present in this Loris instance.
 
-```
-POST /Instrument/Data/$CommentID
-```
+PUT / POST / PATCH methods are not supported on /candidate in this
+version of the Loris API.
 
-Posting a JSON object of the same format as that returned by a GET request to the same address will
-update the data for that instrument. Any fields not in the "data" hash will be unmodified. To null them,
-the key must be explicitly set to the empty string.
-
-If the CommentID in the Meta object and the CommentID in the JSON object do not match a `400 Bad Request`
-error will be returned.
-
-## 3.0 Candidate API
-
-The Candidate API is used to retrieve information about candidates the data for that candidate and its
-respective visits. It is currently a read-only API, except for the aspect which mirrors the instrument API.
-
-### 3.1 Getting Candidate data
+# 3.1 Specific Candidate
 
 If a GET request for a candidate is issued such as
 
 ```
-GET $CandID
+GET /candidates/$CandID
 ```
 
 A JSON object representing that candidate will be returned.
@@ -182,66 +135,123 @@ The JSON object is of the form
 }
 ```
 
-### 3.2 Getting Candidate Visit label
+where V1, V2, etc are the visit labels that are registered for this
+candidate.
+
+PUT / PATCH are not supported for candidates in this version of the
+API.
+
+### 3.2 Getting Candidate visit data
 
 A GET request of the form
 
 ```
-GET $CandID/$VisitLabel?IncludeInstruments=true&IncludeImages=false&IncludeDocuments=false
+GET /candidates/$CandID/$VisitLabel
 ```
 
-Will return a JSON object of that candidate's visit. The JSON object is of the form
+Will return a JSON object of the metadata for that candidate's visit.
+
+The JSON object is of the form:
 
 ```json
 {
     "Meta" : {
         "CandID" : CandID,
         "Visit"  : VisitLabel
-    },
-    "Instruments" : {
-        "InstrumentName" : "CommentID",
-        "AnotherInstrument" : "CommentID2",
-        ...
-    },
-    "Images"      : {
-        "FileName" : "MRI Protocol Name for File",
-        "FileName2" : "MRI Protocol",
-        ...
-    }
-    "Documents"   : {
-        "DocumentName" : "URL to retrieve document",
-        "Docment2"     : "URL to retrieve Document2"
     }
 }
 ```
 
-Instruments, Images, and Documents hashes will only be included in the object if
-the respective IncludeX GET parameter is set. Default is only IncludeInstruments=true,
-and the others are false.
+PUT and PATCH are not supported for Visit Labels.
 
-### 3.3 The Candidate/Instrument API.
-
-The Candidate API also contains a subcomponent to mirror the Instrument Data API described
-in section 2.2 and 2.3 for when there is no knowledge of the CommentID. It consists of the
-following requests:
-
+### 3.3 Candidate Instruments
 ```
-GET $CandID/$VisitLabel/Instruments/$InstrumentName&DDE=false
-POST $CandID/$VisitLabel/Instruments/$InstrumentName&DDE=false
+GET /candidates/$CandID/$VisitLabel/instruments
 ```
 
-These are the equivalent of `GET /Instrument/Data/$CommentID` or `POST /Instrument/Data/$CommentID`
-for the CommentID of `InstrumentName` of candidate `CandID` at timepoint `VisitLabel`. If DDE=true is
-specified, it is equivalent to the double data entry CommentID, otherwise the single data entry CommentID
-is used.
+Will return a JSON object of the form.
 
-
+```json
+{
+    "Meta" : {
+        "CandID" : CandID
+        "Visit"  : VisitLabel
+    },
+    "Instruments" : [ "InstrumentName", "AnotherInstrument", ...]
+}
 ```
-GET $CandID/$VisitLabel/Instruments/$InstrumentName/Flags&DDE=false
-POST $CandID/$VisitLabel/Instruments/$InstrumentName/Flags&DDE=false
+
+Where the instruments array represents the instruments that were administered for that
+candidate at that visit. InstrumentNames are the short names and the forms for them
+SHOULD all be retrievable through the `project` portion of the API.
+
+PUT / PATCH / POST are not currently supported for candidate instruments.
+
+### 3.3 The Candidate Instrument Data
+
+```json
+GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
+PUT /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
+PATCH /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
 ```
 
-These are the equivalent of `GET /Instrument/Flags/$CommentID` or `POST /Instrument/Flags/$CommentID`
-for the CommentID of `InstrumentName` of candidate `CandID` at timepoint `VisitLabel`. If DDE=true is
-specified, it is equivalent to the double data entry CommentID, otherwise the single data entry CommentID
-is used.
+These will retrieve or modifiy the data for $InstrumentName. If /dde is present, the double data
+entry form of the data will be retrieved/modified. If absent, the "single data entry" version
+of the form is used instead.
+
+The format returned by a GET request is a JSON document of the form:
+
+```json
+{
+    "$InstrumentName" : {
+        "FieldName1" : "Value1",
+        "FieldName2" : "Value2",
+        ...
+    }
+}
+```
+
+Including the values of ALL fields for this instrument, including score field values.
+
+The body of a PUT request to the same URL MUST contain a JSON object of the same format. Data PUT
+to the URL SHOULD contain all fields with data entry. The server will null the data for keys not
+specified. A PUT request MAY not specify score columns that will be calculated/overwriten by
+server-side scoring. If the client attempted to score fields client-side and the value passed by the PUT
+request conflict with the server-side calculation of the score, the server-side calculation will win.
+Any keys specified in the document PUT that do not match a corresponding field in the form MAY be ignored.
+
+The specification for PATCH request is similar to a PUT request, with the exception that any
+fields not specified MUST be unmodified by the server rather than nulled. In most cases a series
+of PATCH requests SHOULD be used rather than a single PUT request for a client with pagination.
+
+
+### 3.3.1 Instrument flags
+```
+GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
+PUT /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
+PATCH /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
+```
+
+This URL is used to GET and modify flags for an instrument. The standard GET/PUT/PATCH
+rules apply. However, PATCH and PUT requests MUST include the "Meta" attribute and all
+fields in it MUST be specified and match the values in the URL, otherwise a "400 Bad request"
+error is returned and no data is modified. Like instruments, the [/dde] component is optional
+and used to differentiate single data entry and double data entry flags.
+
+The format of the JSON object for these URLS is:
+
+```json
+{
+    "Meta" : {
+        "Candidate"  : $CandID,
+        "Visit"      : $VisitLabel,
+        "Instrument" : $InstrumentName,
+        "DDE"        : true|false
+    },
+    "Flags" : {
+        "Data_entry" : "In Progress|Complete",
+        "Administration" : "None|Partial|All",
+        "Validity" : "Questionable|Invalid|Valid"
+    }
+}
+```
