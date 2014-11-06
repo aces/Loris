@@ -81,3 +81,4 @@ script:
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/State.class.inc
+    - phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
