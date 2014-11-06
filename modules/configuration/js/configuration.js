@@ -37,7 +37,8 @@ $(function () {
             url: 'AjaxHelper.php?Module=configuration&script=process.php',
             data: $(this).serialize(),
             success: function (data) {
-                $('.submit-area', this).append("<label>Submitted</label>");
+                var html = "<label>Submitted</label>";
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500);
             },
             error: function(xhr, desc, err) {
                 console.log(xhr);
