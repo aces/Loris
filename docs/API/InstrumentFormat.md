@@ -43,7 +43,16 @@ Where each key should be interpreted as so:
 `Meta.InstrumentVersion`: A string (determined by the instrument author) to describe the
                         version of the instrument being described by this object. There
                         are no restrictions on how to determine the InstrumentVersion,
-                        but it SHOULD change with any changes to the instrument.
+                        but it SHOULD change with any changes to the instrument object.
+
+                        For instance, if an `InstrumentVersion` of "MyInstrument-V1" exists
+                        and the options were changed in a `SelectPageElement` to better match
+                        the paper copy of the instrument, the InstrumentVersion of the new
+                        version SHOULD be changed to "MyInstrument-V2" or in some other way
+                        that could differentiate the instrument objects.
+
+                        The `InstrumentVersion` is a self-contained string which can be interpreted
+                        independently of the `ShortName` or `LongName` of the instrument.
 
 `Meta.InstrumentFormatVersion`: A hardcoded string specifying what version of this spec
                               the instrument is written to comply to. Required.
@@ -159,7 +168,7 @@ as follows:
                        This is done instead of simply adding the option to
                        Values to ensure consistency with other PageElement types
                        such as date or text.
-                       Default true.
+                       Default: true.
 
 
 
@@ -176,7 +185,7 @@ save it. The format is as follows:
     Options {
         Type: "large|small",
         Regex: "string",
-        "SupressNotAnswered" : boolean
+        "RequireResponse" : boolean
     }
 }
 ```
@@ -217,16 +226,16 @@ as follows:
     Options {
         MinDate : "YYYY-MM-DD",
         MaxDate : "YYYY-MM-DD",
-        "SupressNotAnswered" : boolean
+        "RequireResponse" : boolean
     }
 }
 ```
 
 `Type`: MUST be "date"
 
-`Name`: Required. Follows PageElement.Name rules.
+`Name`: Required. Follows `PageElement.Name` rules.
 
-`Description`: Required. Follows PageElement.Name rules.
+`Description`: Required. Follows `PageElement.Name` rules.
 
 `Options.MinDate`: The minimum date that can be chosen by the user. Format is YYYY-MM-DD
 
@@ -295,11 +304,11 @@ the user. It has the following form.
 
 `Type`: MUST be "score".
 
-`Name`: Required. Follows PageElement.Name rules. The Name MAY be used by an
-      implementation as a field name to save calculated data into.
+`Name`: Required. Follows `PageElement.Name` rules. The Name MAY be used by an
+        implementation as a field name to save calculated data into.
 
-`Description`: Optional. Follows PageElement.Name rules. If not specified, the
-             score will be displayed with no accompagning text.
+`Description`: Optional. Follows `PageElement.Name` rules. If not specified, the
+               score will be displayed with no accompagning text.
 
 
 ## 2.2: Layout related types
