@@ -120,7 +120,7 @@ class NDB_Caller extends PEAR
                 && ($this->existsAndRequire("NDB_Menu_Filter_$submenu.class.inc")
                 || $this->existsAndRequire("NDB_Menu_$submenu.class.inc")
                 || $this->existsAndRequire($menu_filter_form_subtest)))
-) {
+            ) {
                 // No subtest, load the menu
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
