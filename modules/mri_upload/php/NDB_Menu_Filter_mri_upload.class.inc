@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Mri_upload class file
  *
@@ -19,15 +18,11 @@ require_once "File_Decompress.class.inc";
 require_once "Message.class.inc";
 
 /**
- * Log Class
- *
- * This class is MRI_upload Filter Menu
- * 
  * @category Behavioural
  * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
- * @license  GPLv3
- * @link     https://github.com/mohadesz/Loris-Trunk
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link https://github.com/aces/Loris
 */
 class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
@@ -75,17 +70,16 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->validFilters = array('s.CandID',
                                     'c.PSCID',
                                     's.visit_label'
-                          
-        );
+                              );
         $this->query        = " FROM mri_upload mu JOIN session ".
         "s ON (s.ID = mu.SessionID)
         JOIN candidate c on (c.CandID = s.CandID)
          WHERE 1=1 ";
         $this->formToFilter = array(
-                'CandID'     => 's.CandID',
-                'PSCID'      =>'c.PSCID',
-                'visit_label'=>'s.visit_label'
-        );
+                                'CandID'     => 's.CandID',
+                                'PSCID'      =>'c.PSCID',
+                                'visit_label'=>'s.visit_label'
+                              );
         ////////////////////////////////////////////////////////////////////
         ////Create the log directory////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////
@@ -203,6 +197,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             ////////////////////////initialization/////////////////////////////
             ///////////////////////////////////////////////////////////////////
             $db = Database::singleton();
+            
             /////get the location of the last uploaded folder//////////////////
             $query = "SELECT  SourceLocation,UploadedBy FROM mri_upload".
             " WHERE TarchiveID IS NULL ORDER BY UploadID DESC";
@@ -226,10 +221,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $batch_upload_script    = $mri_code_path . "batch_uploads_tarchive";
             $mri_incoming_path      = $paths['IncomingPath'];
             $dicom_archive_settings = $config->getSetting('dicom_archive');
-
-            ///////////////////////////////////////////////////////////////////
-            //////////////////////////////changes the file-name////////////////
-            ///////////////////////////////////////////////////////////////////
+            $this->tpl_data['minc_success'] = false;
+            $dicom_created = false;
+            $file_name = pathinfo($source_location, PATHINFO_FILENAME);
             $today = getdate();
             $date  = sprintf(
                 "%04d-%02d-%02d", 
@@ -237,159 +231,63 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $today['mon'], 
                 $today['mday']
             );
-            $this->message->changeLogName(
-                'MRI_upload_'. $patient_name . "." .$date. ".log"
-            );
-            $dicom_created = false;
-            $this->tpl_data['minc_success'] = false;
             
-
-            $file_name = pathinfo($source_location, PATHINFO_FILENAME);
-            if ($this->show_queries) {
-                print "file-name : $file_name, and sourcelocation ".
-                $source_location;
-                print " visitlabel $visit_label pscid: $pscid and candid: ".
-                $candid;
-                ///////////////////////////////////////////////////////////////////
-                /////////////////log message///////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////
-                $this->message->addMessage(
-                    "file-name : $file_name, ". "and sourcelocation".
-                    $source_location
-                );
-                $this->message->addMessage(
-                    " visitlabel $visit_label pscid: $pscid"."and candid: ".
-                    $candid
-                );
-            }
-
-            ///////////////////////////////////////////////////////////////////
-            /////untar or unzip the uploaded folder////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            $decomp = new File_Decompress(
-                $source_location, 
-                $mri_incoming_path
-            );
-            $decompressed_folder = $decomp->decompressFile();
-            $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
-            if ($decompressed_folder) { //decompress the file
-                $this->message->addMessage(
-                    "The File $source_location is now" .
-                    "untarred into $mri_incoming_path \n"
-                );
-            }
-
-            ///////////////////////////////////////////////////////////////////
-            /////Source Environment Variables//////////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            $this->sourceEnvironment($mri_code_path, $mri_user);
-
-            ///////////////////////////////////////////////////////////////////
-            //////////////////////run dicomtar for the DICOM file//////////////
-            ///////////////////////////////////////////////////////////////////
-
             ///if the candid, pscid, and visit_label are inserted
             if ((!empty($candid))
                 && (!empty($pscid))
                 && (!empty($visit_label))
             ) {
-
-                $result          = $this->insertDicom(
-                    $DICOMTAR, 
-                    $file_name,
-                    $decompressed_folder, 
-                    $tarchive_location, 
-                    $patient_name,
-                    $patient_id
+            
+                ///////////////////////////////////////////////////////////////////
+                ///////////////changes the log file-name///////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                $this->message->changeLogName(
+                    'MRI_upload_'. $patient_name . "." .$date. ".log"
                 );
-                $dicom_created   = $result[0];
-                $tarchive_id     = $result[1];
-                $ArchiveLocation = $result[2];
-            }
-
-            ///////////////////////////////////////////////////////////////////
-            ////////////////set the tarchiveid in mri_upload table/////////////
-            ///////////////////////////////////////////////////////////////////
-            if ($tarchive_id) {
-                $db->update(
-                    "mri_upload", 
-                    array('TarchiveID' => $tarchive_id),
-                    array('SourceLocation' => $source_location)
-                );
-                $this->tpl_data['dicom_success'] = true;
-            }
-
-            ///////////////////////////////////////////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            ///////////////////////////RUN the MINC Insertion//////////////////
-            ///////////////////////////////////////////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            //////Set the file-path based on the patient_name//////////////////
-            ///////////////////////////////////////////////////////////////////
-            if ($dicom_created) {
-
-                $tarchive_log = new Log(
-                    $patient_name. "_tarchive_file",
-                    $log_directory
-                );
-                $tarchive_log->addLog($ArchiveLocation, false);
-
-                //get the path to the error_log
-                $tarchive_file_log = $tarchive_log->getLogPath();
-
-                $command = "cd $mri_code_path; perl $batch_upload_script ".
-                "< $tarchive_file_log";
-
-                $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
-                "JOIN files f ON (f.sessionID = mu.SessionID) ".
-                "JOIN session s ON (s.ID = f.sessionID) ".
-                "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
-                $count = $db->pselectOne(
-                    $query, 
-                    array(
-                     'cid'    => $candid,
-                     'vlabel' => $visit_label,
-                    )
-                );
-
-                ///////////////////////////////////////////////////////////////
-                //if the minc is not inserted into the files table/////////////
-                ////Run the minc-insertion pipeline////////////////////////////
-                ///////////////////////////////////////////////////////////////
-
-                if ($count==0) {
+              
+                if ($this->show_queries) {
+                    print "file-name : $file_name, and sourcelocation ".
+                    $source_location;
+                    print " visitlabel $visit_label pscid: $pscid and candid: ".
+                    $candid;
+                    
+                ///////////////////////////////////////////////////////////////////
+                /////////////////log message///////////////////////////////////////
+                ///////////////////////////////////////////////////////////////////
                     $this->message->addMessage(
-                        "Inserting MINC into the".
-                        " files table \n"
+                        "file-name : $file_name, ". "and sourcelocation".
+                        $source_location
                     );
-                    $output = shell_exec($command);
-                    if ($this->show_queries) {
-                        print "command is $command";
-                        $this->message->addMessage("command is $command");
-                        print $output;
-                        $this->message->addMessage($output);
-                    }
-                    ////////////////////TODO://////////////////////////////////
-                    //extra checks can be added to make sure that the//////////
-                    /// mincs are created, before the minc-inserted is set/////
-                    /////////// to true////////////////////////////////////////
-                    if ($output==0) {
-
-                        $this->message->addMessage(
-                            "The minc file for" .
-                            " patient-name $patient_name is now inserted into db".
-                            "\n"
-                        );
-                        $this->message->addMessage(
-                            "The process completed".
-                            "successfully \n"
-                        );
-                        $this->tpl_data['minc_success'] = true;
-                    }
+                    $this->message->addMessage(
+                        " visitlabel $visit_label pscid: $pscid"."and candid: ".
+                        $candid
+                    );
                 }
-
+                
+                ///////////////////////////////////////////////////////////////////
+                /////untar or unzip the uploaded folder////////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                $this->fileExtract($source_location);
+                
+                ///////////////////////////////////////////////////////////////////
+                /////Source Environment Variables//////////////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                $this->sourceEnvironment($mri_code_path, $mri_user);
+    
+                ///////////////////////////////////////////////////////////////////
+                ///////////////run dicomtar for the DICOM file/////////////////////
+                ///////////////////////////////////////////////////////////////////
+                list($tarchive_id,$ArchiveLocation)  = 
+                    $this->insertDicom( $file_name, $decompressed_folder);
+    
+                ///////////////////////////////////////////////////////////////////
+                //////////////////////RUN the batchupload//////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                if ($tarchive_id) {
+                    $this->runBatchUpload($tarchive_id,$ArchiveLocation,$patient_name);
+                }
+                $this->tpl_data['upload_success'] = true;
             }
-            $this->tpl_data['upload_success'] = true;
         }
     }
 
@@ -595,7 +493,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     ///////////////////////////////////////////////////////////
                     ///////////////determin the file-type//////////////////////
                     ///////////////////////////////////////////////////////////
-                    $file_type = shell_exec("file $file");
+                    $file_type = $this->runCommand("file $file");
 
                     ///////////////////////////////////////////////////////////
                     /////////////// check if it's readable/////////////////////
@@ -627,7 +525,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
                     $cmd = "dcmdump $file | grep -i patientname";
 
-                    $patient_name_string = shell_exec($cmd);
+                    $patient_name_string = $this->runCommand($cmd);
                     preg_match("^\[(.*?)\]^", $patient_name_string, $fields);
                     $patient_name_from_header = $fields[1];
 
@@ -855,19 +753,23 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      * Runs the dicomTar.pl and will return true if the dicom is inserted,
      * ,tarchiveid, and archivelocation
      *
-     * @param String $DICOMTAR            Path to Dicomtar.pl
      * @param String $file_name           Path to the uploaded file
      * @param String $decompressed_folder Path to the decompressed folder
-     * @param String $tarchive_location   Path to where the tarchive folder
      * 
-     * @return String $result
+     * @return Array $tarchive_id,$ArchiveLocation
      */
-    function insertDicom($DICOMTAR,$file_name,$decompressed_folder,
-        $tarchive_location
-    ) {
+    function insertDicom($file_name,$decompressed_folder) {
+
         $db = Database::singleton();
         $dicom_inserted = false;
-
+        $config          = NDB_Config::singleton();
+        $paths           = $config->getSetting('paths');
+        $mri_code_path   = $paths['MRICodePath'];
+        $DICOMTAR        = $mri_code_path. "dicom-archive/dicomTar.pl";
+        $tarchive_location      = $paths['data'] . "tarchive";
+        $tarchive_id = null;
+        $ArchiveLocation = '';
+        
         ///////////////////////////////////////////////////////////////////////
         //////////////////Run the dicom_tar////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -875,7 +777,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         .  " -clobber -database -profile prod";
 
         $this->message->addMessage("Running DICOM \n");
-        $output = shell_exec($cmd);
+        $output = $this->runCommand($cmd);
 
         if ($this->show_queries) {
             print "cmd : $cmd \n";
@@ -907,22 +809,115 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////FIX THIS////////////////////////////////////////////
         $tarchive_file_created = true;
 
-        //////////////////////////////////////////////////////////////////////
-        /////////////////if successfully completed return true////////////////
-        //////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        /////////////////if successfully completed return true/////////////////
+        ///////////////////////////////////////////////////////////////////////
 
         if (($tarchive_file_created)
             && ($tarchive_id!=null)
         ) {
-            $dicom_inserted = true;
-        }
-
-        $result[] = $dicom_inserted;
-        $result[] = $tarchive_id;
-        $result[] = $ArchiveLocation;
-        return $result;
+    
+        ///////////////////////////////////////////////////////////////////////
+        ////////////////set the tarchiveid in mri_upload table/////////////////
+        ///////////////////////////////////////////////////////////////////////
+            $db->update(
+                  "mri_upload", 
+                  array('TarchiveID' => $tarchive_id),
+                  array('SourceLocation' => $source_location)
+             );
+             $this->tpl_data['dicom_success'] = true;
+       }
+        return array($tarchive_id,$ArchiveLocation);
     }
     
+    /**
+     * Runs the batchUpload script with specific arguments
+     *
+     * @param Integer $tarchive_id
+     * @param String  $ArchiveLocation
+     * @param String  $patient_name
+     */
+    function runBatchUpload($tarchive_id,$ArchiveLocation,$patient_name) {
+        
+        
+            ///////////////////////////////////////////////////////////////////
+            //////////////////////Create the log file /////////////////////////
+            /////////////////////Which is the input to the batchupload/////////
+            ///////////////////////////////////////////////////////////////////
+            
+            $tarchive_log = new Log(    
+                      $patient_name. "_tarchive_file",
+                      $log_directory
+            );
+            $tarchive_log->addLog($ArchiveLocation, false);
+            //get the path to the error_log
+            $tarchive_file_log = $tarchive_log->getLogPath();
+
+            ///////////////////////////////////////////////////////////////////
+            ///////////////////////initialization//////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+            
+            $config          = NDB_Config::singleton();
+            $paths           = $config->getSetting('paths');                                               
+            $mri_code_path   = $paths['MRICodePath'];
+            $db              = Database::singleton();
+            $batch_upload_script    = $mri_code_path . "batch_uploads_tarchive";
+            
+            ///////////////////////////////////////////////////////////////////
+            //////////////////////////run batchupload script///////////////////
+            ///////////////////////////////////////////////////////////////////
+            $command = "cd $mri_code_path; perl $batch_upload_script ".
+                       "< $tarchive_file_log";
+
+            $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
+                    "JOIN files f ON (f.sessionID = mu.SessionID) ".
+                    "JOIN session s ON (s.ID = f.sessionID) ".
+                    "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
+            $count = $db->pselectOne(
+                       $query, 
+                       array(
+                        'cid'    => $candid,
+                        'vlabel' => $visit_label,
+                       )
+                    );
+
+            ///////////////////////////////////////////////////////////////
+            //if the minc is not inserted into the files table/////////////
+            ////Run the minc-insertion pipeline////////////////////////////
+            ///////////////////////////////////////////////////////////////
+    
+            if ($count==0) {
+                $this->message->addMessage(
+                    "Inserting MINC into the".
+                    " files table \n"
+                );
+                $output = $this->runCommand($command);
+                if ($this->show_queries) {
+                    print "command is $command";
+                    $this->message->addMessage("command is $command");
+                    print $output;
+                    $this->message->addMessage($output);
+                }
+                ////////////////////TODO://////////////////////////////////
+                //extra checks can be added to make sure that the//////////
+                /// mincs are created, before the minc-inserted is set/////
+                /////////// to true////////////////////////////////////////
+                if ($output==0) {
+    
+                    $this->message->addMessage(
+                        "The minc file for" .
+                        " patient-name $patient_name is now inserted into db".
+                        "\n"
+                    );
+                    
+                    $this->message->addMessage(
+                        "The process completed".
+                        "successfully \n"
+                    );
+                    $this->tpl_data['minc_success'] = true;
+                 }
+            }
+    }
     
     /**
      * Creates a temporairy file or directory
@@ -945,6 +940,39 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
-
+    
+    
+    /**
+     * Extracts the file
+     *
+     * @param String $source_location
+     */
+     function fileExtract($source_location) {
+         
+       ///////////////////////////////////////////////////////////////////
+       /////untar or unzip the uploaded folder////////////////////////////
+       ///////////////////////////////////////////////////////////////////
+        $config       = NDB_Config::singleton();
+        $paths        = $config->getSetting('paths');
+        $mri_incoming_path = $paths['IncomingPath'];
+        $decomp = new File_Decompress($source_location);
+        $decompressed_folder = $decomp->decompressFile();
+            $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
+            if ($decompressed_folder) { //decompress the file
+                $this->message->addMessage(
+                    "The File $source_location is now" .
+                    "untarred into $mri_incoming_path \n"
+                );
+            }
+     }
+     
+     /**
+      * Runs the commnand
+      *
+      * @param String $command
+      */
+     function runCommand($command) {
+         return shell_exec($command);
+     }
 }
 ?>
