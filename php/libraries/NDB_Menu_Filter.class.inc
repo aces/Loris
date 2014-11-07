@@ -184,157 +184,175 @@ class NDB_Menu_Filter extends NDB_Menu
         return true;
     }
 
+    /**
+     * This method will reset any saved filters that are associated with
+     * the session back to its default state.
+     *
+     * @return none
+     */
+    function _resetFilters()
+    {
+        $_SESSION['State']->setProperty('filter', null);
+        $_SESSION['State']->setProperty('keyword', null);
+    }
 
     /**
-     * Builds the filter array to be used in this filter menu
+     * This will populate the $this->filter and $this->having attributes
+     * with the proper values based on the parameter based, so that the
+     * query for this NDB_Menu_Filter can be constructed. It will go through
+     * each formToFilter variable and ensure that only validFilters are
+     * set.
      *
-     * To reset the filter form, the reset button must not be part of the form.
-     * It must be a button that appends 'reset=true' to the URI. Otherwise,
-     * the submitted values in the other form elements will reappear, although
-     * the filter itself will have been reset.
+     * @param array $values An array of the form
+     *                             [FormFieldName => Value,
+     *                             FormFieldName2 => Value2,
+     *                             ...
+     *                             ]
+     *                      to retrieve the values from.
      *
-     * @return void
-     * @access private
+     * @return An array of filters in the same form as the $values parameter
+     *         that can be saved for future use.
+     */
+    function _setFilters($values)
+    {
+        $filters = $this->formToFilter;
+
+        $newFormFilters = array();
+
+        // Go through the form's fields and set the valid ones.
+        foreach ($this->formToFilter as $formKey => $dbField) {
+            if (isset($values[$formKey]) && $values[$formKey] !== '') {
+                $value = $values[$formKey];
+                if (in_array($dbField, $this->validFilters)) {
+                    $newFormFilters[$dbField] = $value;
+
+                    if (in_array($dbField, $this->validHavingFilters)) {
+                        $this->having[$dbField] = $value;
+                    } else {
+                        $this->filter[$dbField] = $value;
+                    }
+                }
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * Set the sort column for the current query page and saves
+     * it into the current filter.
+     *
+     * @param array $order An array of the form
+     *                      [
+     *                          'field' => Form Field Name
+     *                          'fieldOrder' => "ASC|DESC"
+     *                      ]
+     *
+     * @return none, modifies both $_SESSION and $this->filter as
+     *         a side-effect.
+     */
+    function _setFilterSortOrder($order)
+    {
+        // Get the existing filter. It's already been saved into
+        // the session previously in $this->_setupFilters.
+        $savedFilters = $_SESSION['State']->getProperty('filter');
+        if (!is_array($savedFilters)) {
+            $savedFilters = array();
+        }
+        if (is_array($order) && in_array($order['field'], $this->headers)) {
+            $savedFilters['order'] = $order;
+            $this->filter['order'] = $order;
+        }
+
+        $_SESSION['State']->setProperty('filter', $savedFilters);
+    }
+
+    /**
+     * Sets the class variables required for a search key to be used.
+     * A search key is like a filter that searches through multiple
+     * columns.
+     *
+     * @param string $keyword The keyword to search through columns for.
+     *
+     * @return none, but side-effect modifies $this->searchKey
+     */
+    function _setSearchKeyword($keyword)
+    {
+        $this->searchKey = array('keyword' => $keyword);
+    }
+
+    /**
+     * Builds the filter array to be used in this filter menu. The end result
+     * should be that all the NDB_Menu_Filter attributes required for the query
+     * to work are set up.
+     *
+     * Generally, it does the following:
+     *   1. Reset filters (if applicable)
+     *   2. Set up the (new) filters
+     *   3. Set up the search keyword
+     *   4. Set the search order (if applicable)
+     *
+     * The end result should be that $this->filter and $this->having are setup
+     * properly so that the query can be constructed by $this->_getList()
+     *
+     * @return none
      */
     function _setupFilters()
     {
-        // create user object
-        $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-
-        // manipulate the filters
+        // 1. Reset filters
         if (isset($_REQUEST['reset'])) {
             // erase filter data from the session
-            $_SESSION['State']->setProperty('filter', null);
-            $_SESSION['State']->setProperty('keyword', null);
-
-        } elseif (isset($_REQUEST['filter'])) {
-            // get the form's filters
-            foreach ($this->formToFilter as $key => $val) {
-                if (is_array($val)) {
-                    foreach ($val as $key2 => $val2) {
-                        if (isset($_REQUEST[$key][$key2])) {
-                            $formFilters[$val2] = $_REQUEST[$key][$key2];
-                        }
-                    }
-                } else {
-                    if (isset($_REQUEST[$key])) {
-                        $formFilters[$val] = $_REQUEST[$key];
-                    }
-                }
-            }
-
-            // get the ordering
-            if (is_array($_REQUEST['filter'])
-                && in_array(
-                    $_REQUEST['filter']['order']['field'],
-                    $this->headers
-                )
-            ) {
-                $formFilters['order'] = $_REQUEST['filter']['order'];
-            }
-
-            // save filter data in the session
-            $oldFormFilters = $_SESSION['State']->getProperty('filter');
-            if (is_array($oldFormFilters)) {
-                foreach ($oldFormFilters as $key => $val) {
-                    if (in_array($key, $this->CheckboxFilters)) {
-                        unset($oldFormFilters[$key]);
-                    }
-                }
-                $formFilters = array_merge($oldFormFilters, $formFilters);
-            }
-            $_SESSION['State']->setProperty('filter', $formFilters);
+            $this->_resetFilters(true);
         }
+
+        // 2. After resetting filters (if applicable), set the new
+        // filters using the appropriate method.
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // If it's a GET request (ie just reloading the page with
+            // previous filters or clicking on a sort column, use
+            // the filters that were saved into the session.
+            $savedFilters = $_SESSION['State']->getProperty('filter');
+            $this->_setFilters($savedFilters);
+
+            // Also set the form defaults based on the saved query, so that
+            // the filters values remain populated correctly in the front-end,
+            // not just in the query..
+            $defaults = $this->_getDefaults();
+            $this->_setDefaults(array_merge($defaults, $savedFilters));
+        } else if ($_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_POST['filter'])
+        ) {
+            // If it's a POST, set the filters based on the
+            // request and save them into the session so that future
+            // GET requests have access to them.
+            $newFilters = $this->_setFilters($_POST);
+            if (!empty($newFilters)) {
+                $_SESSION['State']->setProperty('filter', $newFilters);
+            }
+        }
+
+        // 3. Set the search keyword (if applicable)
+        $key = null;
         if (isset($_REQUEST['keyword'])) {
-            $search['keyword'] = $_REQUEST['keyword'];
-            $oldSearch         = $_SESSION['State']->getProperty('keyword');
-            if (is_array($oldSearch)) {
-                $search = array_merge($oldSearch, $search);
-            }
-            $_SESSION['State']->setProperty('keyword', $search);
+            // It was included in the request, so save it.
+            $key = $_REQUEST['keyword'];
+            $_SESSION['State']->setProperty('keyword', $key);
+        } else {
+            // It was not included, so get the keyword from the session
+            $key = $_SESSION['State']->getProperty('keyword');
+        }
+
+        // Set the keyword after getting it from the appropriate place
+        if (!empty($key)) {
+            $this->_setSearchKeyword($key);
 
         }
 
-        $filter = $_SESSION['State']->getProperty('filter');
-        /**
-         * TODO: I don't know why this is written this way.
-         *       It should be rewritten both to fix references
-         *       to undefined indexes and because it definitely
-         *       shouldn't be using eval for security reasons.
-         *       - Dave
-         */
-        // build the array of defaults
-        foreach ($this->formToFilter as $key => $val) {
-            if (is_array($filter) && count($filter) > 0) {
-                if (is_array($val)) {
-                    foreach ($val as $key2 => $val2) {
-                        $sub[] = "'".$filter[$val2]."'";
-                    }
-                    $defaults[] = "'$key' => array(".implode(', ', $sub).")";
-                    unset($sub);
-                } else {
-                    if (isset($filter[$val])) {
-                        $defaults[] = "'$key' => '".$filter[$val]."'";
-                    } else {
-                        $defaults[] = "'$key' => ''";
-                    }
-                }
-            } else {
-                if (strtolower(substr($val, -8)) == 'centerid') {
-                    $defaults[] = "'$key' => '".$user->getData('CenterID')."'";
-                }
-            }
-
-            // set the filter form's defaults
-            if (!empty($defaults)) {
-                eval("\$this->_setDefaults(
-                    array(".implode(', ', $defaults).")
-                );");
-            }
-        }
-        $keyword = $_SESSION['State']->getProperty('keyword');
-
-        if (is_array($keyword)) {
-            foreach ($keyword as $key=>$val) {
-                // $defaults[] = "'$key'=>'$val'";
-                $defaults[$key]        = $val;
-                $this->searchKey[$key] = $val;
-            }
-        }
-        // set the filter form's defaults
-        $this->_setDefaults($defaults);
-
-        // set only the valid filters
-        foreach ($this->validFilters as $value) {
-            // if no filter was defined (i.e. first hit)
-            // limit listing to the user's site
-            if (is_array($filter) && count($filter) > 0) {
-                // If it's an aggregate, don't add it
-                // to the where clause filters. Add it to the
-                // having clause filters
-                if (isset($filter[$value])) {
-                    if (in_array($value, $this->validHavingFilters)) {
-                        $this->having[$value] = $filter[$value];
-                    } else {
-                        $this->filter[$value] = $filter[$value];
-                    }
-                }
-            } else {
-                if (strtolower(substr($value, -8)) == 'centerid') {
-                    $this->filter[$value] = $user->getData('CenterID');
-                }
-            }
-        }
-
-        // set the ordering
-        if (isset($filter['order']) && in_array(
-            $filter['order']['field'],
-            $this->headers
-        )) {
-            $this->filter['order'] = $filter['order'];
+        // 4. If the user clicked on a sort column, set the order.
+        //    It's likely a GET request even though it modifies the data,
+        //    so just use $_REQUEST.
+        if (isset($_REQUEST['filter']['order'])) {
+            $this->_setFilterSortOrder($_REQUEST['filter']['order']);
         }
     }
 

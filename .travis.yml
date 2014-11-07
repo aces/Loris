@@ -3,6 +3,8 @@ language: php
 php: 5.4
 
 install:
+    # Install composer modules
+    - composer install --dev
     # List of PEAR modules installed by install script
     - pear upgrade-all
     - pear install Benchmark
@@ -47,6 +49,7 @@ script:
     # Eventually, the following should be uncommented and the
     # file by file invocations deleted..
     #- phpcs --standard=docs/LorisCS.xml php/libraries
+    - phpunit test/unittests/
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/SinglePointLogin.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument_instrument_preview.class.inc
