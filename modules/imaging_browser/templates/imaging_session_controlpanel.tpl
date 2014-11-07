@@ -33,7 +33,7 @@
         <dt>QC Status</dt>
        	<dt class='dt-qc-status'>{if $subject.has_permission}{html_options options=$subject.status_options selected=$subject.mriqcstatus name=visit_status tabindex=1 class="form-control input-sm" style="width:100px"}{else}{$subject.mriqcstatus}{/if}</dt>
        	<dt>QC Pending</dt>
-       	<dt>{if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2 class="form-control input-sm" style="width:100px"}{else}{if $subject.mriqcpending=='Y'}Yes{else}No{/if}{/if}</dt>
+       	<dt>{if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2 class="form-control input-sm" style="width:100px"}{else}{if $subject.mriqcpending=='Y'}<img src='images/check_blue.gif' class='img-pending' />{else}&ndbp;{/if}{/if}</dt>
     </dl>
     {if $subject.has_permission}<input class="button" type="submit" accesskey="s" value="Save" name="save_changes">{/if}
 </div>

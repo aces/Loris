@@ -42,6 +42,20 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     var $sessionID;
 
     /**
+     * Determine whether the user has permission to view the imaging_browser page
+     *
+     * @return bool whether the user has access
+     */
+    function _hasAccess()
+    {
+        $user =& User::singleton();
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: " .$user->getMessage());
+        }
+        return $user->hasPermission('view_final_radiological_review');
+    }
+
+    /**
     * Sets up main parameters 
     *
     * @return NULL
