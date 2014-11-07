@@ -455,6 +455,7 @@ class NDB_Config
                   WHERE Parent=:ParentID",
                 array('ParentID' => $parent)
             );
+
             $LevelWithPerm = array_filter(
                 $thisLevel,
                 function($el) {
