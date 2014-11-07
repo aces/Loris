@@ -8,14 +8,6 @@
 <title>{$study_title}</title>
 </head>
 <body>
-<script language="javascript" type="text/javascript">
-{literal}
-function closeTheWindow() {
-    document.cookie = 'FeedbackButtonBoolean=';
-    window.close();
-}
-{/literal}
-</script>
 
 
 <!-- start main table -->
@@ -235,6 +227,5 @@ function closeTheWindow() {
 </td>
 </tr>
 </table>
-<a href onclick="closeTheWindow()">Stop this window from popping up</a>
 </body>
 </html>
