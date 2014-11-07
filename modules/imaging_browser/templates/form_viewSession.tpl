@@ -108,9 +108,14 @@
             <tfoot> 
                 <tr>
                     <th>Voxel size</th>
-                    <td colspan="3">
+                    <td colspan="2">
 		    {if $files[file].Xstep != "" and $files[file].Ystep != ""}X: {$files[file].Xstep} mm Y: {$files[file].Ystep} mm Z: {$files[file].Zstep} mm
                     {elseif $files[file].Xstep != ""}{$files[file].Xstep}{else}&nbsp;{/if}
+                    </td>
+                    <td>
+		                {if $files[file].FileID}
+                            <a href="mri/jiv/get_file.php?file={$files[file].FullFilename}">Download MINC</a>
+                        {/if}
                     </td>
                 </tr>
                 {if $files[file].SourceFile != ''}
@@ -135,18 +140,6 @@
                      <td> {if $files[file].NrrdFile != ""}<a href="mri/jiv/get_file.php?file={$files[file].NrrdFile}">Download NRRD</a>{else}&nbsp;{/if}</td>
                 </tr>
                 {/if} 
-		{if $files[file].FileID}
-                <tr>
-                    <td>
-                        <a href="#noID" onClick='javascript:show_jiv(new Array("{$files[file].JivFilename}"), new Array("{$files[file].JivAddress}"), false)' accesskey="{$smarty.section.file.index}">JIV Viewer</a>
-                    </td>
-                    <td colspan='2'>
-                        <a href="#noID" onClick="window.open('minc.html?minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location=0,width=auto,height=auto')">BrainBrowser Volume Viewer</a>
-                    </td>
-                    <td>
-                        <a href="mri/jiv/get_file.php?file={$files[file].FullFilename}">Download MINC</a>
-		    </td>
-                </tr>{/if}
             </tfoot> 
 	</table>
     </td>
