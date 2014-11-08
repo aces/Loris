@@ -376,9 +376,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $temp_file     = $file->fileInfo['tmp_name'];
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
-        $db     = Database::singleton();
-        $errors = array();
-        $config = NDB_Config::singleton();
+        $db            = Database::singleton();
+        $errors        = array();
+        $config        = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
