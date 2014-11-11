@@ -403,7 +403,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //i.e: /tmp/3VUnrg/anonymized_dcm.zip
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
 
-        ///copies /tmp/phphiWGlo to /tmp/3VUnrg/anonymized_dcm.zip
+        ///i.e copies /tmp/phphiWGlo to /tmp/3VUnrg/anonymized_dcm.zip
         if (!copy($temp_file, $new_temp_file)) {
                 echo "failed to copy $temp_file to $new_temp_file \n";
         }
