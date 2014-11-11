@@ -180,9 +180,13 @@ class NDB_Page extends PEAR
     function addBasicTextArea(
         $field,
         $label,
-        $specifications=array('class' => 'form-control input-sm')
+        $optional=array()
     ) {
-        $this->form->addElement('textarea', $field, $label, $specifications);
+        $optional = array_merge(
+            array('class' => 'form-control input-sm'),
+            $optional
+        );
+        $this->form->addElement('textarea', $field, $label, $optional);
     }
 
     /**
