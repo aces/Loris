@@ -243,9 +243,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 && (!empty($visit_label))
             ) {
 
-                ///////////////////////////////////////////////////////////////////
-                ///////////////changes the log file-name///////////////////////////
-                ///////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////
+                ///////////////changes the log file-name///////////////////////
+                ///////////////////////////////////////////////////////////////
                 $this->message->changeLogName(
                     'MRI_upload_'. $patient_name . "." .$date. ".log"
                 );
@@ -256,9 +256,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     print " visitlabel $visit_label pscid: $pscid and candid: ".
                     $candid;
 
-                    ////////////////////////////////////////////////////////////////
-                    /////////////////log message////////////////////////////////////
-                    ////////////////////////////////////////////////////////////////
+                    ///////////////////////////////////////////////////////////
+                    /////////////////log message///////////////////////////////
+                    ///////////////////////////////////////////////////////////
                     $this->message->addMessage(
                         "file-name : $file_name, ". "and sourcelocation".
                         $source_location
@@ -269,25 +269,25 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     );
                 }
 
-                ///////////////////////////////////////////////////////////////////
-                /////untar or unzip the uploaded folder////////////////////////////
-                ///////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////
+                /////untar or unzip the uploaded folder////////////////////////
+                ///////////////////////////////////////////////////////////////
                 $decompressed_folder = $this->fileExtract($source_location);
-
-                ///////////////////////////////////////////////////////////////////
-                /////Source Environment Variables//////////////////////////////////
-                ///////////////////////////////////////////////////////////////////
+                
+                ///////////////////////////////////////////////////////////////
+                /////Source Environment Variables//////////////////////////////
+                ///////////////////////////////////////////////////////////////
                 $this->sourceEnvironment($mri_code_path, $mri_user);
 
-                ///////////////////////////////////////////////////////////////////
-                ///////////////run dicomtar for the DICOM file/////////////////////
-                ///////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////
+                ///////////////run dicomtar for the DICOM file/////////////////
+                ///////////////////////////////////////////////////////////////
                 list($tarchive_id,$ArchiveLocation)
                     = $this->insertDicom($decompressed_folder, $source_location);
 
-                ///////////////////////////////////////////////////////////////////
-                //////////////////////RUN the batchupload//////////////////////////
-                ///////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////
+                //////////////////////RUN the batchupload//////////////////////
+                ///////////////////////////////////////////////////////////////
                 if ($tarchive_id) {
                     $this->runBatchUpload(
                         $ArchiveLocation,
@@ -843,15 +843,18 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      *
      * @param String $ArchiveLocation Path to the tarchive file
      * @param String $patient_name    The patient-name
+     * @param String $visit_label     The visit_label
+     * @param String $candid          The candid
      *
-     * @return Null
+     * @return boolean Returns true if the operation ended successfully
+     *  false otherwise
      */
-    function runBatchUpload($ArchiveLocation,$patient_name)
+    function runBatchUpload($ArchiveLocation,$patient_name,$visit_label,$candid)
     {
 
             ///////////////////////////////////////////////////////////////////
-            //////////////////////Create the log file /////////////////////////
-            /////////////////////Which is the input to the batchupload/////////
+            ////////Create the log file which contains the archivelocation/////
+            /////////////////////Which will be the input to the batchupload////
             ///////////////////////////////////////////////////////////////////
 
             $tarchive_log = new Log(
@@ -878,51 +881,45 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $command = "cd $mri_code_path; perl $batch_upload_script ".
                        "< $tarchive_file_log";
 
-            $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
-                    "JOIN files f ON (f.sessionID = mu.SessionID) ".
-                    "JOIN session s ON (s.ID = f.sessionID) ".
-                    "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
-            $count = $db->pselectOne(
-                $query,
-                array(
-                 'cid'    => $candid,
-                 'vlabel' => $visit_label,
-                )
-            );
+            $minc_data_count = $this->getMincDataCount($candid,$visit_label);
 
             ///////////////////////////////////////////////////////////////
             //if the minc is not inserted into the files table/////////////
-            ////Run the minc-insertion pipeline////////////////////////////
+            ////Run the batch_upload script////////////////////////////////
             ///////////////////////////////////////////////////////////////
-        if ($count==0) {
-            $this->message->addMessage(
-                "Inserting MINC into the".
-                " files table \n"
-            );
-            $output = $this->runCommand($command);
-            if ($this->show_queries) {
-                print "command is $command";
-                $this->message->addMessage("command is $command");
-                print $output;
-                $this->message->addMessage($output);
+            if ($minc_data_count==0) {
+                
+                $output = $this->runCommand($command);
+                if ($this->show_queries) {
+                    print "command is $command";
+                    $this->message->addMessage("command is $command");
+                    print $output;
+                    $this->message->addMessage($output);
+                }
+           
+                ////get the minc-data after running the batch_upload//
+                $minc_data_count = $this->getMincData($candid,$visit_label);
+                
+                ////////////////////////////////////////////////////////////
+                //if the batch_upload command has executed correctly////////
+                /// And the minc data exist in the table////////////////////
+                ////////////////////////////////////////////////////////////
+                if (($output==0)&&($minc_data_count >0)) {
+                    
+                     $this->message->addMessage(
+                         "The minc file for" .
+                         " patient-name $patient_name is now inserted into db".
+                         "\n"
+                     );
+                     $this->message->addMessage(
+                         "The process completed".
+                                         "successfully \n"
+                                     );
+                    $this->tpl_data['minc_success'] = true;
+                    return true;
+                }
             }
-            ////////////////////TODO://////////////////////////////////
-            //extra checks can be added to make sure that the//////////
-            /// mincs are created, before the minc-inserted is set/////
-            /////////// to true////////////////////////////////////////
-            if ($output==0) {
-                 $this->message->addMessage(
-                     "The minc file for" .
-                     " patient-name $patient_name is now inserted into db".
-                     "\n"
-                 );
-                                 $this->message->addMessage(
-                                     "The process completed".
-                                     "successfully \n"
-                                 );
-                $this->tpl_data['minc_success'] = true;
-            }
-        }
+            return false;
     }
 
     /**
@@ -986,6 +983,34 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         $result = shell_exec($command);
         return $result;
+    }
+    
+    /**
+     * Returns the number of the mincs inserted using the 
+     * visit_label and candid
+     *
+     * @param String $visit_label The visit label
+     * @param String $candid      The candid
+     * 
+     * @return String $count      The number of mincs inserted in the database
+     */
+    
+    function getMincDataCount($visit_label,$candid) {
+        
+        $db = Database::singleton();
+        $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
+                    "JOIN files f ON (f.sessionID = mu.SessionID) ".
+                    "JOIN session s ON (s.ID = f.sessionID) ".
+                    "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
+        $count = $db->pselectOne(
+                $query,
+                array(
+                 'cid'    => $candid,
+                 'vlabel' => $visit_label,
+                )
+            );
+        return $count;
+        
     }
 }
 ?>
