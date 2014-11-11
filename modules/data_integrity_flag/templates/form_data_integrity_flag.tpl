@@ -45,6 +45,7 @@
 	                        </div>
 	                    </div>
 	                </div>
+	                <input type="hidden" name="test_name" value="data_integrity_flag" />
 	        	</form>
 	        </div>
 	    </div>
