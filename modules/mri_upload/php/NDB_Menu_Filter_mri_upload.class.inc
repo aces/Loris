@@ -943,13 +943,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function tempdir()
     {
-        $tempdir =tempnam(
+        $temp_file_name =tempnam(
             sys_get_temp_dir(),
             ''
         );
-        mkdir($tempdir);
-        if (is_dir($tempfile)) {
-            return $tempfile;
+        
+        if (file_exists($temp_file_name)) {
+            unlink($temp_file_name);
+        }
+        mkdir($temp_file_name);
+        if (is_dir($temp_file_name)) {
+            return $temp_file_name;
         }
     }
 
@@ -964,9 +968,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function fileExtract($file_path,$target)
     {
-               ///////////////////////////////////////////////////////////////////
+        
+        ///////////////////////////////////////////////////////////////////
         /////untar or unzip the uploaded folder////////////////////////////
         ///////////////////////////////////////////////////////////////////
+        $config = NDB_Config::singleton();
+        $paths  = $config->getSetting('paths');
         $mri_incoming_path = $paths['IncomingPath'];
         $decomp            = new File_Decompress(
             $file_path,
