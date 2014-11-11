@@ -272,8 +272,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ///////////////////////////////////////////////////////////////
                 /////untar or unzip the uploaded folder////////////////////////
                 ///////////////////////////////////////////////////////////////
-                $decompressed_folder = $this->fileExtract($source_location);
-                
+                $decompressed_folder = $this->fileExtract(
+                    $source_location,
+                    $mri_incoming_path
+                );
+
                 ///////////////////////////////////////////////////////////////
                 /////Source Environment Variables//////////////////////////////
                 ///////////////////////////////////////////////////////////////
@@ -371,14 +374,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isValid($file, $args)
     {
 
-        //make sure the file-name is  valid
-
-        $temp_file     = $file->fileInfo['tmp_name'];
-        $temp_dir      = $this->tempdir();
-        $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
-        $db            = Database::singleton();
-        $errors        = array();
-        $config        = NDB_Config::singleton();
+        //////////////////////////////////////////////////////////////////////
+        //////////////////initialization//////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
+        $db     = Database::singleton();
+        $errors = array();
+        $config = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
@@ -389,6 +390,23 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $files_not_readable = 0;
         $file_not_matching_patient_name = 0;
         $header_patient_name            = array();
+
+        /////////////////////////////////////////////////////////////////////
+        /////////////generates a temporairy directory////////////////////////
+        //////////////And copies the uploaded file to do it//////////////////
+        /////////////////////////////////////////////////////////////////////
+        /**
+         * Note: This is needed for the validation
+         */
+        $temp_dir  = $this->tempdir();
+        $temp_file = $file->fileInfo['tmp_name'];
+        //i.e: /tmp/3VUnrg/anonymized_dcm.zip
+        $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
+
+        ///copies /tmp/phphiWGlo to /tmp/3VUnrg/anonymized_dcm.zip
+        if (!copy($temp_file, $new_temp_file)) {
+                echo "failed to copy $temp_file to $new_temp_file \n";
+        }
 
         ///////////////////////////////////////////////////////////////////////
         //////////////Make sure the extension is valid/////////////////////////
@@ -444,7 +462,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
             ///////////////////////////////////////////////////////////////////
             //////////////////Check to see if the dicom file is already////////
-            //////////////////////////////inserted in the tarchive table///////
+            //////////////////inserted in the tarchive table///////////////////
             ///////////////////////////////////////////////////////////////////
             if (($db->pselectOne(
                 "SELECT COUNT(*) FROM tarchive WHERE patientname = :pname",
@@ -459,25 +477,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             //////////Are in fact DICOM////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////
             /**
-             * Copy the temp file to $file->fileInfo['name']
-             * Uncompress the file
+             * Uncompress/extracts the file
              * Go through the folder and iterate..
              * Check to see if each file is of type dicom..
             */
 
             ///////////////////////////////////////////////////////////////////
-            //////////copy the temporairy file to a temporairy directory///////
-            //////////with a correct Extension/////////////////////////////////
+            //////////////////////extracts/decompresses the uploaded file//////
             ///////////////////////////////////////////////////////////////////
-            if (!copy($temp_file, $new_temp_file)) {
-                echo "failed to copy $temp_file to $new_temp_file \n";
-            }
-
-            ///////////////////////////////////////////////////////////////////
-            ///////////////////////decompress the uploaded file////////////////
-            ///////////////////////////////////////////////////////////////////
-            $decomp = new File_Decompress($new_temp_file, $temp_dir);
-            $decomp->decompressFile(); //decompress the file
+            $this->fileExtract($new_temp_file, $temp_dir);
 
             ///////////////////////////////////////////////////////////////////
             //////////////////iterate through the folder///////////////////////
@@ -557,17 +565,26 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 }
             }
 
+            ///////////////////////////////////////////////////////////////////
+            //////////////detect files that are not dicom//////////////////////
+            ///////////////////////////////////////////////////////////////////
             if ($files_not_dicom > 0) {
                 $errors[] =" There are  $files_not_dicom files detected which ".
                 "are not of type DICOM";
             }
 
+            ///////////////////////////////////////////////////////////////////
+            //////////////detect files that are not readable///////////////////
+            ///////////////////////////////////////////////////////////////////
             if ($files_not_readable > 0) {
                 $errors[] =" There are  $files_not_readable files which are not ".
                 "readable by the browser. Please make sure that the files have ".
                 "the right permission";
             }
 
+            ///////////////////////////////////////////////////////////////////
+            //////detect files that the header patient-name doesn't match//////
+            ///////////////////////////////////////////////////////////////////
             if ($file_not_matching_patient_name > 0) {
                 $errors[] =" There are  $file_not_matching_patient_name ".
                 "DICOM files where the patient_name is  ".
@@ -881,44 +898,41 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $command = "cd $mri_code_path; perl $batch_upload_script ".
                        "< $tarchive_file_log";
 
-            $minc_data_count = $this->getMincDataCount($candid,$visit_label);
+            $minc_data_count = $this->getMincDataCount($candid, $visit_label);
 
             ///////////////////////////////////////////////////////////////
             //if the minc is not inserted into the files table/////////////
             ////Run the batch_upload script////////////////////////////////
             ///////////////////////////////////////////////////////////////
-            if ($minc_data_count==0) {
-                
-                $output = $this->runCommand($command);
-                if ($this->show_queries) {
-                    print "command is $command";
-                    $this->message->addMessage("command is $command");
-                    print $output;
-                    $this->message->addMessage($output);
-                }
-           
-                ////get the minc-data after running the batch_upload//
-                $minc_data_count = $this->getMincData($candid,$visit_label);
-                
-                ////////////////////////////////////////////////////////////
-                //if the batch_upload command has executed correctly////////
-                /// And the minc data exist in the table////////////////////
-                ////////////////////////////////////////////////////////////
-                if (($output==0)&&($minc_data_count >0)) {
-                    
-                     $this->message->addMessage(
-                         "The minc file for" .
-                         " patient-name $patient_name is now inserted into db".
-                         "\n"
-                     );
-                     $this->message->addMessage(
-                         "The process completed".
-                                         "successfully \n"
-                                     );
-                    $this->tpl_data['minc_success'] = true;
-                    return true;
-                }
+        if ($minc_data_count==0) {
+                         $output = $this->runCommand($command);
+            if ($this->show_queries) {
+                print "command is $command";
+                $this->message->addMessage("command is $command");
+                print $output;
+                $this->message->addMessage($output);
             }
+                    ////get the minc-data after running the batch_upload//
+            $minc_data_count = $this->getMincDataCount($candid, $visit_label);
+
+            ////////////////////////////////////////////////////////////
+            //if the batch_upload command has executed correctly////////
+            /// And the minc data exist in the table////////////////////
+            ////////////////////////////////////////////////////////////
+            if (($output==0)&&($minc_data_count >0)) {
+                $this->message->addMessage(
+                    "The minc file for" .
+                    " patient-name $patient_name is now inserted into db".
+                    "\n"
+                );
+                $this->message->addMessage(
+                    "The process completed".
+                    "successfully \n"
+                );
+                $this->tpl_data['minc_success'] = true;
+                return true;
+            }
+        }
             return false;
     }
 
@@ -929,14 +943,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function tempdir()
     {
-        $tempfile =tempnam(
+        $tempdir =tempnam(
             sys_get_temp_dir(),
             ''
         );
-        if (file_exists($tempfile)) {
-            unlink($tempfile);
-        }
-        mkdir($tempfile);
+        mkdir($tempdir);
         if (is_dir($tempfile)) {
             return $tempfile;
         }
@@ -945,28 +956,28 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     /**
      * Extracts the file
      *
-     * @param String $source_location Path to the uploaded file
+     * @param String $file_path Path to the file to be decompressed
+     * @param String $target    Path to the folder where the file will be
+     * decompressed
      *
      * @return String $decompressed_folder The path to the decompressed folder
      */
-    function fileExtract($source_location)
+    function fileExtract($file_path,$target)
     {
                ///////////////////////////////////////////////////////////////////
         /////untar or unzip the uploaded folder////////////////////////////
         ///////////////////////////////////////////////////////////////////
-        $config = NDB_Config::singleton();
-        $paths  = $config->getSetting('paths');
         $mri_incoming_path = $paths['IncomingPath'];
         $decomp            = new File_Decompress(
-            $source_location,
-            $mri_incoming_path
+            $file_path,
+            $target
         );
         $decompressed_folder    = $decomp->decompressFile();
            $decompressed_folder = $mri_incoming_path . "/" . $decompressed_folder;
         if ($decompressed_folder) { //decompress the file
             $this->message->addMessage(
-                "The File $source_location is now" .
-                "untarred into $mri_incoming_path \n"
+                "The File $file_path is now" .
+                "untarred into $target \n"
             );
         }
         return $decompressed_folder;
@@ -984,33 +995,32 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $result = shell_exec($command);
         return $result;
     }
-    
+
     /**
-     * Returns the number of the mincs inserted using the 
+     * Returns the number of the mincs inserted using the
      * visit_label and candid
      *
      * @param String $visit_label The visit label
      * @param String $candid      The candid
-     * 
+     *
      * @return String $count      The number of mincs inserted in the database
      */
-    
-    function getMincDataCount($visit_label,$candid) {
-        
-        $db = Database::singleton();
+    function getMincDataCount($visit_label,$candid)
+    {
+
+        $db    = Database::singleton();
         $query = "SELECT COUNT(f.FileID) FROM mri_upload mu ".
                     "JOIN files f ON (f.sessionID = mu.SessionID) ".
                     "JOIN session s ON (s.ID = f.sessionID) ".
                     "WHERE s.CandID =  :cid AND s.Visit_label= :vlabel ";
         $count = $db->pselectOne(
-                $query,
-                array(
-                 'cid'    => $candid,
-                 'vlabel' => $visit_label,
-                )
-            );
+            $query,
+            array(
+             'cid'    => $candid,
+             'vlabel' => $visit_label,
+            )
+        );
         return $count;
-        
     }
 }
 ?>
