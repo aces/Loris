@@ -35,7 +35,7 @@
 
 {function name=printForm}
     {foreach from=$node['Value'] key=k item=v}
-        {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
+        {if $node['AllowMultiple'] == 1}<div class="input-group entry" id="{$k}">{/if}
         {if $node['DataType'] eq 'boolean'}
             {if $v eq "1" || $v eq "0"}
             <label class="radio-inline">
@@ -66,7 +66,7 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger" id="{$k}" type="submit" name="remove-{$k}">
+                <button class="btn btn-danger btn-remove" id="{$k}" type="button" name="remove-{$k}">
                     <span class="glyphicon glyphicon-remove"></span>
                 </button>
             </div>
