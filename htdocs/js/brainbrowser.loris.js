@@ -98,7 +98,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       img.src = canvas.toDataURL();
     });
 
-//        var volume = viewer.volumes[vol_id];
     //////////////////////////////////
     // Per volume UI hooks go in here.
     //////////////////////////////////
@@ -261,7 +260,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
       container.find(".time-div").each(function() {
         var div = $(this);
-//        var volume = viewer.volumes[vol_id];
         
         if (volume.data.time) {
           div.show();
