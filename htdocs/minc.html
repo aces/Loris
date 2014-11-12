@@ -10,7 +10,7 @@
 <body>
     <!--<h1 id="app-name" class="app-label" style="display: block">Imaging Browser</h1>-->
     <script id="overlay-ui-template" type="x-volume-ui-template">
-        <div class="overlay-viewer-display">
+        <div class="overlay-viewer-display" id="panel-size">
         </div>
         <div class="volume-viewer-controls volume-controls">
             <div><br/></div>
@@ -66,6 +66,12 @@
                     Y<input id="voxel-y-{{VOLID}}" class="control-inputs">
                     Z<input id="voxel-z-{{VOLID}}" class="control-inputs">
                 </div>
+            </div>
+            <div id="intensity-value-div-{{VOLID}}">
+                <span class="control-heading" data-volume-id="{{VOLID}}">
+                   Value:
+                </span>
+                <span id="intensity-value-{{VOLID}}" class="intensity-value"></span>
             </div>
             <div id="color-map-{{VOLID}}">
                 <span class="control-heading" id="color-map-heading-{{VOLID}}">
