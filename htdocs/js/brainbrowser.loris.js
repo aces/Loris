@@ -537,6 +537,11 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     //////////////////////////////
     viewer.loadDefaultColorMapFromURL(color_map_config.url, color_map_config.cursor_color);
 
+    ////////////////////////////////////////
+    // Set the size of slice display panels.
+    ////////////////////////////////////////
+    viewer.setDefaultPanelSize(256, 256);
+
     ///////////////////
     // Start rendering.
     ///////////////////
