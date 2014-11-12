@@ -2,10 +2,6 @@
    display: inline;
 }
 
- .add {
-   margin-bottom: 7px;
- }
-
  .allowMultipleEntry {
    display: inline;
  }
@@ -50,4 +46,9 @@
 
 .submitted {
    display:inline;
+}
+
+.entry
+{
+    margin-bottom: 10px;
 }

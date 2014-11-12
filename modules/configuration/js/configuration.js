@@ -5,13 +5,17 @@ $(function () {
     $('.config-name').tooltip();
 
     var count = 0;
-    $(".add").click(function () {
+    $(".add").click(function (e) {
+        e.preventDefault();
+
         count = count + 1;
         var id = $(this).attr('id'),
         new_id = id + "-" + count,
         name   = $("#" + id + ".name").html(),
         parent = $(this).attr("name"),
         formID = new_id + "-form";
+
+        //var newField = currentField.clone().appendTo()
 
         $("#"+id+"-formsection").append('<div class="form-item" id="' + formID + '">'
             + '<form method="POST">'
