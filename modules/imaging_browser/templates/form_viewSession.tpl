@@ -99,7 +99,7 @@
             <tbody>
                 <tr>
                     <td colspan="4">
-		    <a href="#noID" onClick="window.open('minc.html?minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto')">
+		    <a href="#noID" onClick="window.open('minc.html?minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto, scrollbars=yes')">
                     <img class='img-checkpic' src="{$files[file].CheckPic}">
                     </a>
                     </td>
