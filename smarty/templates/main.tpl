@@ -77,6 +77,10 @@
                         $(this).toggleClass('open');
                     });
                     $(".help-button").click(function(e) {
+                        if($('div.help-content').length) {
+                            $('div.help-content').remove();
+                            return false;
+                         }
                         var getParams = {};
                         {/literal}
                         {if $test_name}
@@ -113,8 +117,9 @@
                                 {literal}
                                 document.getElementById('page').appendChild(div);
                                 div.setAttribute("class", "help-content");
+                                $(div).addClass('visible');
                                 btn.addEventListener("click", function(e) {
-                                    $(div).hide();      
+                                    $(div).remove();
                                     e.preventDefault(); 
                                 }) ;
                                 edit.addEventListener("click", function(e) {
