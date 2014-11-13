@@ -109,7 +109,6 @@ class State
                               'instrument_list',
                               'create_timepoint',
                               'demographics',
-                              'mri_safety',
                              );
 
         $caller =& NDB_Caller::singleton();
