@@ -3,9 +3,8 @@ $(document).ready(function(){
 $("input[name=preview]").click(function(e) {
     if($('div.help-content').length) {
         $('div.help-content').remove();
-        return false;
+        e.preventDefault();
     }
-
     var title   = $('input[name="title"]').val(),
         content = $('textarea[name="content"]').val(),
         myDate  = new Date(),
