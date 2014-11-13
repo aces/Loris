@@ -92,10 +92,14 @@ class NDB_Form_Configuration extends NDB_Form
             $tree[$node['Parent']]['Children'][] = &$node;
         }
 
+        $instruments = Utility::getAllInstruments();
+        $instruments = array_merge(array('' => ''), $instruments);
+
         $this->tpl_data['parentMenuItems'] = $parentMenuItems;
         $this->tpl_data['config']          = $configs;
         $this->tpl_data['options']         = array('0'=>'0', '1'=>'1');
-        $this->tpl_data['instruments']     = Utility::getAllInstruments();
+        $this->tpl_data['instruments']     = $instruments;
+
     }
 
     /**
