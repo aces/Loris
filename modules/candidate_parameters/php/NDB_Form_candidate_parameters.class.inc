@@ -109,10 +109,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                                     CandID=:CandidateID",
                                     array('CandidateID'=>$this->identifier));
         if (Utility::isErrorX($familyid)) {
-            $relations = $DB->pselect("SELECT Relation_CandID, Relation_code FROM 
-                         family WHERE CandID=:CandidateID", 
-                         array('CandidateID'=> $this->identifier));
-
+            return PEAR::raiseError("Error: ".$familyid->getMessage());
         } else {
             $this->tpl_data['familyID'] = $familyid;
             $relations                  = $DB->pselect("SELECT CandID, Relationship_type 
