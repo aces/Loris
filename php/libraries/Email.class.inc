@@ -57,7 +57,7 @@ class Email extends PEAR
         $bcc = ''
     ) {
         $config   =& NDB_Config::singleton();
-        $defaults = $config->getSetting('headers');
+        $defaults = $config->getSetting('mail');
 
         // set defaults
         if (empty($from)) {
