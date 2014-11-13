@@ -13,7 +13,7 @@
         {/foreach}
         <div class="row">
             <label class="col-sm-2">{$form.title.label}</label>
-            <div class="col-sm-4" id='help-edit-title'>
+            <div class="col-sm-4">
                 {$form.title.html}
             </div>
         </div>
@@ -26,7 +26,7 @@
         {foreach from=$elements_list item=element}
             <div class="row">
                 <label class="col-sm-4">{$form.$element.label}</label>
-                <div class="col-sm-8" id='help-edit-content'>
+                <div class="col-sm-8">
                     {$form.$element.html}
                 </div>
             </div>
