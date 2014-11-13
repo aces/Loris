@@ -13,7 +13,7 @@
         {/foreach}
         <div class="row">
             <label class="col-sm-2">{$form.title.label}</label>
-            <div class="col-sm-4">
+            <div class="col-sm-4" id='help-edit-title'>
                 {$form.title.html}
             </div>
         </div>
@@ -26,7 +26,7 @@
         {foreach from=$elements_list item=element}
             <div class="row">
                 <label class="col-sm-4">{$form.$element.label}</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8" id='help-edit-content'>
                     {$form.$element.html}
                 </div>
             </div>
@@ -36,8 +36,9 @@
         {/foreach}
         <br>
         <input class="btn btn-sm btn-primary col-sm-offset-3" name="fire_away" value="Save" type="submit" />
+        <input type="button" name="reset" value="Undo" class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=help_editor&subtest=edit_help_content&section={$section}&subsection={$subsection}'" />
+        <input class="btn btn-sm btn-primary" name="preview" value="Preview" type="button" />
         {/if}
         <input class="btn btn-sm btn-primary" onclick="location.href='{$url}'" value="Return to {$module_name}" type="button" />
-
     </div>
 </div>
