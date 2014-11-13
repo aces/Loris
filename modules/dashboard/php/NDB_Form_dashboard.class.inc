@@ -116,7 +116,7 @@ class NDB_Form_dashboard extends NDB_Form
         // Tasks
 
         // New scans
-        if ($user->hasPermission('mri_feedback')) {
+        if ($user->hasPermission('imaging_browser_qc')) {
             $this->tpl_data['new_scans'] = $DB->pselectOne(
                 "SELECT count(distinct s.ID)
                  FROM files f 
