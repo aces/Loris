@@ -975,7 +975,9 @@ INSERT INTO `permissions` VALUES
 	(21,'data_integrity_flag','Data Integrity Flag','2'),
 	(22,'config','Edit configuration settings','2'),
 	(23,'edit_final_radiological_review','Can edit final radiological reviews','2'),
-	(24,'view_final_radiological_review','Can see final radiological reviews','2');
+	(24,'view_final_radiological_review','Can see final radiological reviews','2'),
+    (25,'imaging_browser_view_site','View own-site Imaging Browser pages','2'),
+    (26,'imaging_browser_view_allsites', 'View all-sites Imaging Browser pages', '2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
