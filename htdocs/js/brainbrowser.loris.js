@@ -15,6 +15,9 @@ function getQueryVariable(variable) {
 
 BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     "use strict";
+    var loading_div = $("#loading");
+
+
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
     bboptions = {};
 
@@ -523,7 +526,29 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     }
 
     var color_map_config = BrainBrowser.config.get("color_maps")[0];
+
+    loading_div.show();
+    bboptions.complete = function() {
+      loading_div.hide();
+    }
+
+    //////////////////////////////
+    // Load the default color map.
+    //////////////////////////////
     viewer.loadDefaultColorMapFromURL(color_map_config.url, color_map_config.cursor_color);
+
+    ////////////////////////////////////////
+    // Set the size of slice display panels.
+    ////////////////////////////////////////
+    viewer.setDefaultPanelSize(256, 256);
+
+    ///////////////////
+    // Start rendering.
+    ///////////////////
     viewer.render();
+
+    /////////////////////
+    // Load the volumes.
+    /////////////////////
     viewer.loadVolumes(bboptions);
 });
