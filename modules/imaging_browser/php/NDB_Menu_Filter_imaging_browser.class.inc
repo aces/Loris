@@ -39,7 +39,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return $user->hasPermission('view_final_radiological_review');
+        return $user->hasPermission('imaging_browser_view_allsites');
     }
 
     /**
