@@ -36,8 +36,9 @@
         {/foreach}
         <br>
         <input class="btn btn-sm btn-primary col-sm-offset-3" name="fire_away" value="Save" type="submit" />
+        <input type="button" name="reset" value="Reset" class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=help_editor&subtest=edit_help_content&section={$section}&subsection={$subsection}'" />
+        <input class="btn btn-sm btn-primary" name="preview" value="Preview" type="button" />
         {/if}
         <input class="btn btn-sm btn-primary" onclick="location.href='{$url}'" value="Return to {$module_name}" type="button" />
-
     </div>
 </div>

@@ -77,6 +77,12 @@
                         $(this).toggleClass('open');
                     });
                     $(".help-button").click(function(e) {
+                        var helpContent = $('div.help-content');
+                        if(helpContent.length) {
+                           helpContent.toggle();
+                           e.preventDefault();
+                           return;
+                        }
                         var getParams = {};
                         {/literal}
                         {if $test_name}
@@ -113,8 +119,9 @@
                                 {literal}
                                 document.getElementById('page').appendChild(div);
                                 div.setAttribute("class", "help-content");
+                                $(div).addClass('visible');
                                 btn.addEventListener("click", function(e) {
-                                    $(div).hide();      
+                                    $(div).hide();
                                     e.preventDefault(); 
                                 }) ;
                                 edit.addEventListener("click", function(e) {
