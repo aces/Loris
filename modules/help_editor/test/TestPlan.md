@@ -30,5 +30,5 @@ Help Module Test Plan
 21. Test Undo Button - In the Help Editor , add content and click on Undo. Make sure the none of the recent changes were
     saved and the page reloads with the default content.
 22. Test Preview Button - In the Help Editor, update title , content and click on the Preview buttong. Make sure
-    the recent changes are visible in the help side panel. Clicking the Preview button once should open the help
-    content and clicking again should hide it.
+    the recent changes are visible in the help side panel. Continue updating the content and click review button should
+    show the latest help content in the side panel.

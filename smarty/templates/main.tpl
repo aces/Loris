@@ -121,7 +121,7 @@
                                 div.setAttribute("class", "help-content");
                                 $(div).addClass('visible');
                                 btn.addEventListener("click", function(e) {
-                                    $(div).remove();
+                                    $(div).hide();
                                     e.preventDefault(); 
                                 }) ;
                                 edit.addEventListener("click", function(e) {
