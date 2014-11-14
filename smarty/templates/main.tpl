@@ -77,10 +77,12 @@
                         $(this).toggleClass('open');
                     });
                     $(".help-button").click(function(e) {
-                        if($('div.help-content').length) {
-                            $('div.help-content').remove();
-                            return false;
-                         }
+                        var helpContent = $('div.help-content');
+                        if(helpContent.length) {
+                           helpContent.toggle();
+                           e.preventDefault();
+                           return;
+                        }
                         var getParams = {};
                         {/literal}
                         {if $test_name}
