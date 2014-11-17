@@ -25,9 +25,6 @@ function toggleTabs(){
     $("#down").toggle();
     $("#up").toggle();
 }
-
-
-
 </script>
 {/literal}
 <div id="tabs" style="background: white">
