@@ -52,7 +52,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return $user->hasPermission('imaging_browser_view_allsites');
+
+        // allow only to view own site data
+        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        if (Utility::isErrorX($timePoint)) {
+            return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
+        }
+
+        return ($user->hasPermission('imaging_browser_view_allsites') || ($user->getData('CenterID') == $timePoint->getData('CenterID') && $user->hasPermission('imaging_browser_view_site')));
     }
 
     /**
