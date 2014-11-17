@@ -89,7 +89,7 @@ class NDB_Page extends PEAR
      */
     function addFile($name, $label)
     {
-        $this->form->addElement('file', $name, $label);
+        $this->form->addElement('file', $name, $label, array('class' => 'fileUpload'));
     }
 
     /**
