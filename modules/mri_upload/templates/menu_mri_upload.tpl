@@ -70,6 +70,9 @@
         </div>
     </div>
 </div>
+ 
+{*  This section is commented out because the functionality is not currently in the backend
+    This functionality is expected to be implemented in future releases of LORIS 
     <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
     
     <table>
@@ -89,6 +92,8 @@
         </tr>
     
     </table>
+
+*}
 <div class="row">
                 <table class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
                     <thead>
