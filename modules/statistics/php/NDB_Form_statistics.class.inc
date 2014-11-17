@@ -73,6 +73,13 @@ class NDB_Form_statistics extends NDB_Form
         if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
+
+        $this->tpl_data['StatsTabs'] = $DB->pselect(
+            "SELECT ModuleName, SubModuleName, Description
+                 FROM StatisticsTabs
+                 ORDER BY OrderNo",
+            array()
+        );
     }
 
     function stats_general()
