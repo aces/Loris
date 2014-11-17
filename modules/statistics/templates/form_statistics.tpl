@@ -52,7 +52,6 @@ function toggleTabs(){
             <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs">Behavioural Statistics</a></li>
             <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_reliability&dynamictabs=dynamictabs">Reliability Statistics</a></li>
             <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_MRI&dynamictabs=dynamictabs">Imaging Statistics</a></li>
-            <!-- <li class="statsTab list-group-item"><a class="statsTabLink" value="main.php?test_name=statistics&subtest=stats_scatter&dynamictabs=dynamictabs">Scatterplots</a></li> -->
         </ul>
     </div>
     <div class="tab-content">
