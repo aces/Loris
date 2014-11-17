@@ -15,6 +15,9 @@ function getQueryVariable(variable) {
 
 BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     "use strict";
+    var loading_div = $("#loading");
+
+
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
     bboptions = {};
 
@@ -22,23 +25,43 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     // This part is stolen from the BrainBrowser demo
     // *********************
 
+    // Change viewer panel canvas size.
+    $("#panel-size").change(function() {
+      var size = parseInt($(this).val(), 10);
+
+      viewer.setPanelSize(size, size, { scale_image: true });
+    }); 
+
     // Should cursors in all panels be synchronized?
     $("#sync-volumes").change(function() {
-      viewer.synced = $(this).is(":checked");
+      var synced = $(this).is(":checked");
+      if (synced) {
+        viewer.resetDisplays();
+        viewer.redrawVolumes();
+      }
+
+      viewer.synced = synced;
     });
 
     // This will create an image of all the display panels
     // currently being shown in the viewer.
     $("#screenshot").click(function() {
-      var width = viewer.panel_width;
-      var height = viewer.panel_height;
-      var active_canvas = viewer.active_canvas;
+      var width = 0;
+      var height = 0;
+      var active_panel = viewer.active_panel;
       
       // Create a canvas on which we'll draw the images.
       var canvas = document.createElement("canvas");
       var context = canvas.getContext("2d");
       var img = new Image();
       
+      viewer.volumes.forEach(function(volume) {
+        volume.display.forEach(function(panel) {
+          width = Math.max(width, panel.canvas.width);
+          height = Math.max(height, panel.canvas.height);
+        });
+      });
+
       canvas.width = width * viewer.volumes.length;
       canvas.height = height * 3;
       context.fillStyle = "#000000";
@@ -47,8 +70,12 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       // The active canvas is highlighted by the viewer,
       // so we set it to null and redraw the highlighting
       // isn't shown in the image.
-      viewer.active_canvas = null;
-      viewer.draw();
+      if (active_panel) {
+        active_panel.updated = true;
+        viewer.active_panel = null;
+        viewer.draw();
+      }
+
       viewer.volumes.forEach(function(volume, x) {
         volume.display.forEach(function(panel, y) {
           context.drawImage(panel.canvas, x * width, y * height);
@@ -56,8 +83,11 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       });
 
       // Restore the active canvas.
-      viewer.active_canvas = active_canvas;
-      viewer.draw();
+      if (active_panel) {
+        active_panel.updated = true;
+        viewer.active_panel = active_panel;
+        viewer.draw();
+      }
       
       // Show the created image in a dialog box.
       img.onload = function() {
@@ -74,7 +104,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     //////////////////////////////////
     // Per volume UI hooks go in here.
     //////////////////////////////////
-    BrainBrowser.events.addEventListener("volumeuiloaded", function(container, vol_id) {
+    viewer.addEventListener("volumeuiloaded", function(container, volume, vol_id) {
       container = $(container);
 
       container.find(".button").button();
@@ -160,7 +190,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       // Change the range of intensities that will be displayed.
       container.find(".threshold-div").each(function() {
         var div = $(this);
-        var volume = viewer.volumes[vol_id];
 
         // Input fields to input min and max thresholds directly.
         var min_input = div.find("#min-threshold-" + vol_id);
@@ -234,7 +263,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
       container.find(".time-div").each(function() {
         var div = $(this);
-        var volume = viewer.volumes[vol_id];
         
         if (volume.data.time) {
           div.show();
@@ -303,7 +331,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       // orientation.
       container.find(".slice-series-div").each(function() {
         var div = $(this);
-        var volume = viewer.volumes[vol_id];
 
         var space_names = {
           xspace: "Sagittal",
@@ -362,7 +389,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         var div = $(this);
         var slider = div.find(".slider");
         var blend_input = div.find("#blend-val");
-        var volume = viewer.volumes[vol_id];
 
         // Slider to select blend value.
         slider.slider({
@@ -423,10 +449,15 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
     // Update coordinate display as slices are updated
     // by the user.
-    BrainBrowser.events.addEventListener("sliceupdate", function(vol_id) {
-      var volume = viewer.volumes[vol_id];
+    viewer.addEventListener("sliceupdate", function() {
+      // 'this' gets bound to the panel that triggered the
+      // sliceupdate event
+      var panel = this;
+      var volume = panel.volume;
+      var vol_id = panel.volume_id;
       var world_coords = volume.getWorldCoords();
       var voxel_coords = volume.getVoxelCoords();
+      var value;
 
       $("#world-x-" + vol_id).val(world_coords.x.toPrecision(4));
       $("#world-y-" + vol_id).val(world_coords.y.toPrecision(4));
@@ -435,6 +466,15 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       $("#voxel-x-" + vol_id).val(parseInt(voxel_coords.x, 10));
       $("#voxel-y-" + vol_id).val(parseInt(voxel_coords.y, 10));
       $("#voxel-z-" + vol_id).val(parseInt(voxel_coords.z, 10));
+
+      value = volume.getIntensityValue();
+      $("#intensity-value-" + vol_id)
+      .css("background-color", "#" + volume.color_map.colorFromValue(value,     {
+        format: "hex",
+        min: volume.min,
+        max: volume.max
+      }))
+      .html(Math.floor(value));
 
       if (volume.data && volume.data.time) {
         $("#time-slider-" + vol_id).slider("option", "value", volume.current_time);
@@ -486,7 +526,29 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     }
 
     var color_map_config = BrainBrowser.config.get("color_maps")[0];
+
+    loading_div.show();
+    bboptions.complete = function() {
+      loading_div.hide();
+    }
+
+    //////////////////////////////
+    // Load the default color map.
+    //////////////////////////////
     viewer.loadDefaultColorMapFromURL(color_map_config.url, color_map_config.cursor_color);
+
+    ////////////////////////////////////////
+    // Set the size of slice display panels.
+    ////////////////////////////////////////
+    viewer.setDefaultPanelSize(256, 256);
+
+    ///////////////////
+    // Start rendering.
+    ///////////////////
     viewer.render();
+
+    /////////////////////
+    // Load the volumes.
+    /////////////////////
     viewer.loadVolumes(bboptions);
 });

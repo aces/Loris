@@ -84,7 +84,7 @@ body {
 }
 
 .ui-slider {
-    width: 174px;
+/*    width: 174px; */
     margin-right: 38px;
 }
 
@@ -124,7 +124,7 @@ body {
     -webkit-border-radius: 4px;
     display: block;
     margin: 0 auto;
-    width: 105px;
+    width: 320px;
 }
 
 #app-name {
@@ -147,4 +147,8 @@ body {
 .filename {
     font-weight: bold;
     color: #064785;
+}
+
+.intensity-value {
+    padding: 1px;
 }

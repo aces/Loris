@@ -335,7 +335,9 @@ INSERT INTO `feedback_mri_predefined_comments` VALUES
 	(35,6,"Incorrect diffusion direction (DWI ONLY)"),
 	(36,6,"Duplicate series"),
 	(37,3,"slice wise artifact (DWI ONLY)"),
-	(38,3,"gradient wise artifact (DWI ONLY)");
+	(38,3,"gradient wise artifact (DWI ONLY)"),
+    (39,2,"susceptibility artifact due to anatomy");
+
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -957,7 +959,6 @@ INSERT INTO `permissions` VALUES
 	(4,'context_help','Edit help documentation','2'),
 	(5,'bvl_feedback','Behavioural QC','1'),
 	(6,'mri_feedback','Edit MRI feedback threads','2'),
-	(7,'mri_efax','Edit MRI Efax files','2'),
 	(8,'send_to_dcc','Send to DCC','2'),
 	(9,'unsend_to_dcc','Reverse Send from DCC','2'),
 	(10,'access_all_profiles','Across all sites access candidate profiles','2'),
@@ -966,7 +967,6 @@ INSERT INTO `permissions` VALUES
 	(13,'certification_multisite','Across all sites certify examiners','2'),
 	(14,'timepoint_flag','Edit exclusion flags','2'),
 	(15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
-	(16,'mri_safety','Review MRI safety form for accidental findings','2'),
 	(17,'conflict_resolver','Resolving conflicts','2'),
 	(18,'data_dict','Parameter Type description','2'),
 	(19,'violated_scans','Violated Scans','2'),
@@ -1826,7 +1826,17 @@ INSERT INTO `help` (helpID, parentID, hash, topic, content, created, updated) VA
 (28,27,md5('statistics_site'), 'Per Instrument Statistics', 'Completion Statistics for each site are displayed, and are organized by instrument and visit label. The “Completion Count” column displays the number of completed entries per instrument. Each PSCID that appears in the “Incomplete Candidates” list was designed to be a link itself to that particular candidate’s page for the selected instrument.','2014-09-01 00:00:00',NULL),
 (29,27,md5('statistics_mri_site'), 'Imaging Integrity Statistics Breakdown', 'This page contains a table listing various Scan Insertion Issues in the left-most column. In the “Incomplete Entries” column, clicking on the candidate IDs will redirect the user to the appropriate Imaging form or dataset for that candidate.','2014-09-01 00:00:00',NULL),
 (30,-1,md5('datadict'), 'Data Dictionary', 'As the title suggests, the Data Dictionary houses definitions or descriptions for various instrument fields. In addition, like many other modules in LORIS, the Data Dictionary features a Selection Filter where the user may select from a number of drop-down select boxes and click “Show Data” to quickly locate desired information. The selection filter can be hidden using the upward arrow icon, and reopened using the downward arrow icon.','2014-09-01 00:00:00',NULL),
-(31,-1,md5('data_team_helper'), 'Data Team Helper', 'The “Data Team Helper” aids users in pinpointing which fields for specific forms have been completed and if there is any behavioural feedback that has been entered. The Selection Filter allows users to search by Visit Label and by Instrument. After choosing the desired options from the drop-down select boxes and clicking “Show Data”, a completion percentage will be calculated and will appear directly below the Selection Filter. \r\n\r\nThe results table will contain all fields from the selected instrument (or All Instruments if this feature was chosen) for the specified visit. Under the column “Names (Instrument_Fieldname)”, links to field names are provided, containing downloadable .csv files. These .csv files provide information for every candidate about data entry for that particular field at the specified visit (i.e. whether the data for this field is “Complete”, “In Progress” or Null). The “Link to Bvl Feedback” column contains links to pop-up feedback windows, where feedback for a particular field and candidate was previously entered. If such information was never entered, users will see “N/A”. For existing links to behavioural feedback, the corresponding status for this field will be listed under the column “Feedback Status”. \r\n\r\nAny candidates with conflicts between initial and double data entry will be listed under the “Conflicts” column. Clicking on the candidate’s link will open up a new tab, directing the user to the Conflict Resolver for the corresponding field and visit label for that candidate. A list of candidates for which data entry is incomplete for that particular instrument and visit label will be listed under “Incomplete Candidates”. The ID of each candidate listed is a link to that candidate’s data entry page.','2014-09-01 00:00:00',NULL),
+
+(31,-1,md5('data_team_helper'), 'Data Team Helper', "The 'Data Team Helper' allows the users to find out what the outstanding behaviourial feedbacks, conflicts and incompleted forms for the given candidate/field/instrument by filtering for the given visit-Label and Instrument.
+This module will also display the 'Single Data_entry Completion Percentage' for the given visit and instrument, only if the instrument is selected.\n\r
+The resulting table:\n
+- displays all fields from the selected instrument (or All Instruments if this feature was chosen) for the specified visit. \n
+- Under the column 'Names (Instrument_Fieldname)', the given field name is clickable which allows the user to download the data for the given field/instrument in the .csv format, containing the data and data_entry (i.e complete, in_pregress or null)  for every candidate for the given field and visit.\n
+- The 'Link to Bvl Feedback' column contains links to pop-up feedback window, where feedback for a particular field and candidate was previously entered, based on the field-name. If such information was never entered, users will see “N/A”. \n
+- For existing links to behavioural feedback, the corresponding status for this field will be listed under the column 'Feedback Status'. \n
+- Any candidates with conflicts between initial and double data entry will be listed under the 'Conflicts' column. Clicking on the candidate’s link will open up a new tab, directing the user to the Conflict Resolver for the corresponding field and visit label for that candidate. \n
+- A list of candidates for which data entry is incomplete for that particular instrument and visit label will be listed under 'Incomplete Candidates'. The ID of each candidate listed is a link to that candidate’s data entry page.\n",'2014-09-01 00:00:00',NULL),
+
 (32,-1,md5('data_integrity_flag'), 'Data Integrity','The Data Integrity module provides a direct way for users to view and update behavioural feedback at-a-glance, without requiring the user to navigate to the individual instrument forms or use the behavioural feedback pop-up window. \r\n\r\nThe Selection Filter allows users to search for existing feedback for a particular Visit Label, Instrument and User. Upon clicking “Show Data”, the user can add a new flag or behavioural feedback comment within the table directly below the Selection Filter. Users can also search through existing behavioural feedback results within the third table on the page. When adding new behavioural feedback, the date on which the flag was created must be indicated, as well as the Flag Status from the dropdown menu, and any additional comments. The “Save” button must be clicked in order to save the new behavioural flag. Click “Show updated data” or refresh the page to see the most recent behavioural flag within the results table.\r\n\r\nWithin the results table (third table on the Data Integrity page), links under the “Instrument” column will redirect the user to a detailed summary of each field for that particular instrument along with links to behavioural feedback and to incomplete candidates. Users can also view the date the flag was submitted, the Flag Status, any comments, data cleaning feedback, and UserID. Note, Flag Status is based on the codes used in the dropdown of the second table, where 1=Ready for Review, 2= Review Completed, 3=Feedbacks Closed, and 4=Finalization.' ,'2014-09-01 00:00:00',NULL),
 (33,-1,md5('user_accounts'), 'User Accounts', 'This feature of LORIS allows an administrator to create accounts and set the Roles and Permissions for database users. Like many modules in LORIS, User Accounts has a Selection Filter which allows the user to quickly search for desired information. The Selection Filter panel can be hidden using the upward arrow icon , and reopened using the downward arrow icon. Once the appropriate user has been found, the profile can be viewed by selecting the “Username” outlined in navy text.','2014-09-01 00:00:00',NULL),
 (34,33, md5('edit_user'), 'Add or Edit User Accounts', 'On this page, the user may enter and modify detailed information including address, degree, position and password. By checking a series of boxes under “Roles” and “Permissions” an administrator-level user may add, change or remove a user’s access to areas or functions in the database. After making changes, the administrator must click “Save” to ensure the permissions are updated. Note that permissions may be “Reset” by selecting the appropriate button. The administrator may also return to the list of users by selecting “Back”.' ,'2014-09-01 00:00:00',NULL),
@@ -1991,7 +2001,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
-    ('Conflicts Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
+    ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
     ('Certification', 'main.php?test_name=certification', 2, 3);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
@@ -2008,14 +2018,16 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Data Dictionary', 'main.php?test_name=datadict', 5, 1),
     ('Document Repository', 'main.php?test_name=document_repository', 5, 2),
-    ('Data Team Helper', 'main.php?test_name=data_team_helper', 5, 3),
-    ('Instrument Builder', 'main.php?test_name=instrument_builder', 5, 4);
+    ('Data Integrity Flag', 'main.php?test_name=data_integrity_flag', 5, 3),
+    ('Data Team Helper', 'main.php?test_name=data_team_helper', 5, 4),
+    ('Instrument Builder', 'main.php?test_name=instrument_builder', 5, 5);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
     ('Survey Module', 'main.php?test_name=survey_accounts', 6,2),
     ('Help Editor', 'main.php?test_name=help_editor', 6,3),
-    ('Configuration', 'main.php?test_name=configuration', 6, 4);
+    ('Instrument Manager', 'main.php?test_name=instrument_manager', 6,4),
+    ('Configuration', 'main.php?test_name=configuration', 6, 5);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -2024,66 +2036,87 @@ CREATE TABLE LorisMenuPermissions (
 
 -- New Profile permission
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 7, PermID FROM permissions WHERE code='data_entry';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='New Profile';
 
 -- Access Profile 
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 8, PermID FROM permissions WHERE code='data_entry';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Access Profile';
 
 -- Reliability
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 9, PermID FROM permissions WHERE code='user_accounts';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Reliability';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 9, PermID FROM permissions WHERE code='reliability_edit_all';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='reliability_edit_all' AND m.Label='Reliability';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 9, PermID FROM permissions WHERE code='access_all_profiles';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='Reliability';
 
--- Conflicts Resolver
+-- Conflict Resolver
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 10, PermID FROM permissions WHERE code='data_entry';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Conflict Resolver';
 
 -- Certification
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 11, PermID FROM permissions WHERE code='certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification' AND m.Label='Certification';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 11, PermID FROM permissions WHERE code='certification_multisite';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification_multisite' AND m.Label='Certification';
 
 -- Radiological Reviews
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 12, PermID FROM permissions WHERE code='edit_final_radiological_review';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='edit_final_radiological_review' AND m.Label='Radiological Reviews';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 12, PermID FROM permissions WHERE code='view_final_radiological_review';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='view_final_radiological_review' AND m.Label='Radiological Reviews';
 
 -- DICOM Archive -- Config file currently does not require any permission
 -- Imaging Browser -- Config file currently does not require any permission
--- Statistics -- Config file currently does not require any permission 
 
--- Document Repository 
-INSERT INTO LorisMenuPermissions (MenuID, PermID)
-    SELECT 16, PermID FROM permissions WHERE code='file_upload';
-
--- Data Query Tool
+-- MRI Violated Scans
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 18, PermID FROM permissions WHERE code='data_dict';
-
--- Data Dictionary
-INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 19, PermID FROM permissions WHERE code='data_dict';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
 
 -- MRI Upload
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 20, PermID FROM permissions WHERE code='mri_upload';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='mri_upload' AND m.Label='MRI Upload';
+
+-- Statistics -- Config file currently does not require any permission 
+
+-- Data Query Tool
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict' AND m.Label='Data Query Tool';
+
+-- Data Dictionary
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict' AND m.Label='Data Dictionary';
+
+-- Document Repository
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='file_upload' AND m.Label='Document Repository';
+
+-- Data Integrity Flag
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID 
+    FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_integrity_flag' AND m.Label='Data Integrity Flag';
 
 -- Data Team Helper -- Config file currently does not require any permission
 -- Instrument Builder -- Config file currently does not require any permission
 
 -- User Accounts
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT 23, PermID FROM permissions WHERE code='user_accounts';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='User Accounts';
+
+-- Survey Module
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Survey Module';
+
+-- Help Editor
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='context_help' AND m.Label='Help Editor';
+
+-- Instrument Manager
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='superuser' AND m.Label='Instrument Manager';
+
+-- Configuration
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
 
 
 CREATE TABLE `ConfigSettings` (
@@ -2122,10 +2155,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'title', 'Descriptive study title', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 -- studylogo
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'studylogo', 'Logo of the study', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
-
--- columnThreshold
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'columnThreshold', 'Number of columns the quat table will contain', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'studylogo', 'Logo of the study. File should be located under the /var/www/$projectname/htdocs/images/ folder', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 -- useEDC
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'useEDC', 'Use EDC (Expected Date of Confinement) - false unless the study focuses on neonatals for birthdate estimations.', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
@@ -2155,19 +2185,19 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'useProband', "Show proband section on the candidate parameter page", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 -- useProjects
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'useProjects', "Whether or not study involves more than one project where each project has multiple cohorts/subprojects", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'useProjects', "Study involves more than one project, where each project has multiple cohorts/subprojects", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 -- useScreening
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'useScreening', "Whether or not there is a screening stage with its own intruments done before the visit stage", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'useScreening', "Use Screening stage with its own distinct instruments, administered before the Visit stage", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 -- excluded_instruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'excluded_instruments', "Instruments to be excluded from the data dictionary and the data query tool", 1, 0, ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Parent) SELECT 'excluded_instruments', "Instruments to be excluded from the Data Dictionary and the Data Query tool", 1, 0, ID FROM ConfigSettings WHERE Name="study";
 
 -- instrument
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'instrument', "Instrument to be excluded from the data dictionary and the data query tool", 1, 1, 'text', ID FROM ConfigSettings WHERE Name="excluded_instruments";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'instrument', "Instrument (test name e.g. hand_preference)", 1, 1, 'text', ID FROM ConfigSettings WHERE Name="excluded_instruments";
 
 -- DoubleDataEntryInstruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'text', ID FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled (test name e.g. hand_preference)", 1, 1, 'text', ID FROM ConfigSettings WHERE Name="study";
 
 --
 -- paths
@@ -2195,7 +2225,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'DownloadPath', 'Where files are downloaded', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths";
 
 -- log
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'log', 'Path to logs', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'log', 'Path to logs (relative path starting from /var/www/$projectname)', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths";
 
 -- IncomingPath
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'IncomingPath', 'Path for data transferred to the project server', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths";
@@ -2259,16 +2289,16 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('dicom_archive', 'DICOM archive settings', 1, 0);
 
 -- patientIDRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'patientIDRegex', 'Regex for the patient ID', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'patientIDRegex', 'Regex for masking the patient ID', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- patientNameRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'patientNameRegex', 'Regex for the patient name', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'patientNameRegex', 'Regex for masking the patient name', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- LegoPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'LegoPhantomRegex', 'Regex to be used on a Lego Phantom scan', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'LegoPhantomRegex', 'Regex for identifying a Lego Phantom scan header', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- LivingPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'LivingPhantomRegex', 'Regex to be used on Living Phantom scan', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'LivingPhantomRegex', 'Regex for identifying a Living Phantom scan header', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- showTransferStatus
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'showTransferStatus', 'Show transfer status in the DICOM archive table', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive";
@@ -2281,7 +2311,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple) VALUES ('statistics', 'Statistics settings', 1, 0);
 
 -- excludedMeasures
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'excludedMeasures', 'Excluded measures', 1, 1, 'text', ID FROM ConfigSettings WHERE Name="statistics";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent) SELECT 'excludedMeasures', 'Excluded measures (test name e.g. hand_preference)', 1, 1, 'text', ID FROM ConfigSettings WHERE Name="statistics";
 
 --
 -- mail
@@ -2315,9 +2345,6 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "Example Study" FROM ConfigSetti
 
 -- studylogo
 INSERT INTO Config (ConfigID, Value) SELECT ID, "images/neuro_logo_blue.gif" FROM ConfigSettings WHERE Name="studylogo";
-
--- columnThreshold
-INSERT INTO Config (ConfigID, Value) SELECT ID, 250 FROM ConfigSettings WHERE Name="columnThreshold";
 
 -- useEDC
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useEDC";

@@ -109,7 +109,7 @@
 <table id="LogEntries" border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
-    <td class="controlPanelSection">List of Log Entries</td>
+    <td class="controlPanelSection">List of Imaging Datasets found</td>
 
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>

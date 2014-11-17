@@ -1,25 +1,41 @@
 <?php
+/**
+ * Contains the base code to use for all NeuroDB forms
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Main
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 require_once "NDB_Page.class.inc";
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /**
- * Base Form class
- * @package main
+ * Base Form class that is overwritten by specific form pages
+ *
+ * @category Main
+ * @package  Main
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class NDB_Form extends NDB_Page
 {
     /**
      * Stores the template
-     * @var    string 
+     * @var    string
      * @access private
      */
     var $template;
- 
+
     /**
      * Redirect URL
-     * @var    string 
+     * @var    string
      * @access private
      */
     var $redirect;
@@ -30,24 +46,21 @@ class NDB_Form extends NDB_Page
      * @access private
      */
     var $_GUIDelimiter = "&nbsp;\n";
-    
+
     /**
-    * additional template data
-    * @var array
-    * @access private
+    * Additional template data
     */
     var $tpl_data = array();
-    
+
 
     /**
      * Generates a new form instance and runs the appropriate method
      *
-     * @param  string      Identifies the form
-     * @param  string      Identifies the page to show
-     * @param  string      Variables passed to form
+     * @param string $name       Identifies the form
+     * @param string $page       Identifies the page to show
+     * @param string $identifier Variables passed to form
+     *
      * @return void
-     * @throws PEAR_Error
-     * @access public
      */
     static function &factory($name, $page, $identifier)
     {
@@ -62,16 +75,13 @@ class NDB_Form extends NDB_Page
         $obj = new $class;
 
         // set the local variables
-        $obj->_setupPage($name, $page, $identifier, null, 'test_form'); 
+        $obj->_setupPage($name, $page, $identifier, null, 'test_form');
 
-       /** $obj->form = new HTML_QuickForm('test_form');
-        $obj->name = $name;
-        $obj->page = $page;
-        $obj->identifier = $identifier; */  
-       
         $access = $obj->_hasAccess();
         if (Utility::isErrorX($access)) {
-            return PEAR::raiseError("NDB_Form::factory() access: ".$access->getMessage());
+            return PEAR::raiseError(
+                "NDB_Form::factory() access: ".$access->getMessage()
+            );
         }
 
         // check that user has access
@@ -79,21 +89,23 @@ class NDB_Form extends NDB_Page
             return PEAR::raiseError("You do not have access to this page.", 403);
         }
 
- 	    if (method_exists($obj, $page)) {
-	        $success = $obj->$page();
+        if (method_exists($obj, $page)) {
+            $success = $obj->$page();
             if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("NDB_Form::factory() page: ".$success->getMessage());
+                return PEAR::raiseError(
+                    "NDB_Form::factory() page: ".$success->getMessage()
+                );
             }
             $obj->template = $page;
-	    }
- 	    elseif (method_exists($obj, $name)) {
-	        $success = $obj->$name();
+        } elseif (method_exists($obj, $name)) {
+            $success = $obj->$name();
             if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("NDB_Form::factory() name: ".$success->getMessage());
+                return PEAR::raiseError(
+                    "NDB_Form::factory() name: ".$success->getMessage()
+                );
             }
             $obj->template = $name;
-	    }
-        else {
+        } else {
             return PEAR::raiseError("Form does not exist: $name $page");
         }
 
@@ -102,9 +114,10 @@ class NDB_Form extends NDB_Page
 
 
     /**
-     * Returns false if user does not have access to page
+     * Returns false if user does not have access to page.
      *
-     * Usage: the hasAccess() function in a child class should contain something like:
+     * Usage: the hasAccess() function in a child class should contain
+     * something like:
      *
      *     // create user object
      *     $user =& User::singleton();
@@ -145,18 +158,24 @@ class NDB_Form extends NDB_Page
             }
         }
     }
-    
+
 
     /**
      * Preprocesses the array of values to be saved into the database
      *
-     * @param  array    the array of values ready to be passed to a Database::replace call as the set array
+     * @param array $values the array of values ready to be passed to
+     *                      a Database::replace call as the set array
+     *
      * @return void
-     * @access private
      */
     function _save($values)
     {
-        unset($values['test_name'], $values['subtest'], $values['identifier'], $values['fire_away']);
+        unset(
+            $values['test_name'],
+            $values['subtest'],
+            $values['identifier'],
+            $values['fire_away']
+        );
 
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -173,12 +192,12 @@ class NDB_Form extends NDB_Page
 
 
     /**
-     * Processes the values and saves to database
+     * Processes the values and saves to database. Usually overridden
+     * by form instance.
      *
-     * @note            overloaded function
-     * @param  array    form values
+     * @param array $values form values
+     *
      * @return void
-     * @access private
      */
     function _process($values)
     {
@@ -187,7 +206,7 @@ class NDB_Form extends NDB_Page
 
     /**
      * Resets the form
-     * 
+     *
      * Usage: Call this function if you do not want to display the frozen form
      * after saving but just want to dump a message and maybe some links
      *
@@ -196,8 +215,8 @@ class NDB_Form extends NDB_Page
      */
     function _resetForm()
     {
-       $this->_setupPage($name, $page, $identifier, null, 'test_form');
-       // $this->form = new HTML_QuickForm('test_form');
+        $this->_setupPage($name, $page, $identifier, null, 'test_form');
+        // $this->form = new HTML_QuickForm('test_form');
     }
 }
 ?>

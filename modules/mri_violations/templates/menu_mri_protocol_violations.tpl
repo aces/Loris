@@ -1,4 +1,3 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
 <script type="text/javascript" src="GetJS.php?Module=mri_violations&file=mri_protocol_violations.js"></script>
 
 <div class="col-sm-12">
@@ -19,7 +18,7 @@
                             <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
                         </div>
                     </div>
-                    <div class="row">    
+                    <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.PatientName.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.PatientName.html}</div>
@@ -68,57 +67,44 @@
 <!-- Mri- protocol table  -->
 <div id='hide' style="font-weight: bold" class="toggle_mri_tbl">
   <span class="glyphicon glyphicon-minus"></span> Hide mri-protocol Table
-</div> 
+</div>
 
 <div id='show' style="font-weight: bold" class="toggle_mri_tbl">
   <span class="glyphicon glyphicon-plus"></span> Show mri-protocol Table
-</div> 
-
-<div id="mri-protocol" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="table-scroll" id="mri-protocol-content">
-            <table  class ="table table-hover table-primary table-bordered" border="0" width="100%">
-                <thead>
-                    <tr class="info">
-                        {assign var=count value=0}
-                        {foreach from=$mri_protocol_header item=mp}
-                            <th id="header_{$count}">
-                               {$mp}
-                            </th>
-                            {assign var=count value=$count+1}
-                        {/foreach}
-                    </tr>
-                </thead>
-                <tbody>
-                    {foreach from=$mri_protocol_data item=mp}
-                      {assign var=ccount value=0}
-                      
-                        <tr>
-                          {foreach from=$mp item=row}
-                            {if $violated_scans_modifications}
-                               <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
-                            {else}
-                               <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
-                            {/if}  
-                                    {$row}
-                                {$k}
-                                       </td>
-                            {assign var=ccount value=$ccount+1}
-                          {/foreach}
-                        </tr>
-                    {/foreach}
-                </tbody>
-            </table>
-        </div>
-        <a class="left carousel-control"  id="protocolScrollLeft" href="#mri-protocol">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="right carousel-control" id="protocolScrollRight" href="#mri-protocol" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-        </a>
-    </div>
 </div>
 
+<table class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
+    <thead>
+        <tr class="info">
+            {assign var=count value=0}
+            {foreach from=$mri_protocol_header item=mp}
+                <th id="header_{$count}">
+                   {$mp}
+                </th>
+                {assign var=count value=$count+1}
+            {/foreach}
+        </tr>
+    </thead>
+    <tbody>
+        {foreach from=$mri_protocol_data item=mp}
+          {assign var=ccount value=0}
+
+            <tr>
+              {foreach from=$mp item=row}
+                {if $violated_scans_modifications}
+                   <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
+                {else}
+                   <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
+                {/if}
+                        {$row}
+                    {$k}
+                           </td>
+                {assign var=ccount value=$ccount+1}
+              {/foreach}
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
 </br></br>
 
 <table border="0" valign="bottom" width="100%">
@@ -127,39 +113,27 @@
 </tr>
 </table>
 
-<div id="results" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="table-scroll" id="content">
-            <table class="table table-hover table-primary table-bordered" border="0" width="100%">
-                <thead>
-                    <tr class="info">
-                        <th nowrap="nowrap">No.</th>
-                            {section name=header loop=$headers}
-                                <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&submenu=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
-                            {/section}
-                    </tr>
-                </thead>
-                <tbody>
-                    {section name=item loop=$items}
-                        <tr>
-                        <!-- print out data rows -->
-                        {section name=piece loop=$items[item]}
-                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-                                {$items[item][piece].value}
-                            </td>
-                        {/section}
-                        </tr>           
-                    {sectionelse}
-                        <tr><td colspan="19">No data found</td></tr>
-                    {/section}
-                </tbody>
-            </table>
-        </div>
-        <a class="left carousel-control"  id="scrollLeft" href="#results">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="right carousel-control" id="scrollRight" href="#results" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-        </a>
-    </div>
-</div>
+<table class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
+    <thead>
+        <tr class="info">
+            <th nowrap="nowrap">No.</th>
+                {section name=header loop=$headers}
+                    <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&submenu=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                {/section}
+        </tr>
+    </thead>
+    <tbody>
+        {section name=item loop=$items}
+            <tr>
+            <!-- print out data rows -->
+            {section name=piece loop=$items[item]}
+                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                    {$items[item][piece].value}
+                </td>
+            {/section}
+            </tr>
+        {sectionelse}
+            <tr><td colspan="19">No data found</td></tr>
+        {/section}
+    </tbody>
+</table>

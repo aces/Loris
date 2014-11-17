@@ -2,23 +2,33 @@ language: php
 
 php: 5.4
 
+before_install:
+    - sudo apt-get update
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
+
 install:
+    # Install composer modules
+    - composer install --dev
     # List of PEAR modules installed by install script
-    - pear upgrade-all
+    - pear config-get php_dir
+    # Currently commented out because all we do is run
+    # PHPCS and php -l on the code from Travis.
+    #- pear upgrade
     - pear install Benchmark
-    - pear install Config
-    - pear install File_Archive
-    - pear install HTML_Common
+    #- pear install Config
+    #- pear install File_Archive
+    #- pear install HTML_Common
     - pear install HTML_QuickForm
     - pear config-set preferred_state beta
-    - pear install HTML_QuickForm2
-    - pear install Mail
-    - pear install Mail_Mime
-    - pear install Net_SMTP
-    - pear install OLE
+    #- pear install HTML_QuickForm2
+    #- pear install Mail
+    #- pear install Mail_Mime
+    #- pear install Net_SMTP
+    #- pear install OLE
     - pear install Pager
-    - pear install PHPDocumentor
-    - pear install XML_Parser
+    #- pear install PHPDocumentor
+    #- pear install XML_Parser
 
       # Running PHPCS is part of the test, even though
       # Loris itself doesn't depend on it.
@@ -27,13 +37,57 @@ install:
       # Travis-CI requires this.
     - phpenv rehash
 
+      # Download a Selenium Web Driver release
+    - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
+
+    # Install requirements for php-fpm as per Travis DOCs
+    - sudo apt-get install apache2 libapache2-mod-fastcgi smarty3
+    # /usr/share/php gets obliterated from the path by phpenv, so make
+    # a symlink to fake it.
+    - ln -s /usr/share/php/smarty3 ~/.phpenv/versions/$(phpenv version-name)/pear
+    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - sudo a2enmod rewrite actions fastcgi alias
+    - sudo a2dismod php5
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+    # Start Selenium and redirect Selenium WebDriver
+    # output to /dev/null so that it doesn't flood the
+    # screen in the middle of our other tests
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.44.0.jar > /dev/null &
+
 before_script:
+    # Set up the Loris environment
+    - mkdir -p project smarty/templates_c
+    - chmod 777 smarty/templates_c
+
+    # Set up the MySQL database, install the Schema, create a MySQL user
+    # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
-      # Even though this isn't used yet, it should in
-      # theory still catch syntax errors in the schema.
     - mysql LorisTest < SQL/0000-00-00-schema.sql
+    - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
+    - mysql LorisTest -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aatestpass')), Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
+    - sed -e "s/%HOSTNAME%/localhost/g"
+          -e "s/%USERNAME%/SQLTestUser/g"
+          -e "s/%PASSWORD%/TestPassword/g"
+          -e "s/%DATABASE%/LorisTest/g"
+          < docs/config/config.xml > project/config.xml
+    - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+
+      # Configure apache
+    - sudo cp -f docs/config/apache2-fastcgi /etc/apache2/sites-available/default
+    - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)/htdocs?g" --in-place /etc/apache2/sites-available/default
+    - sudo service apache2 restart
 
 script:
+    # Run PHP -l on everything to ensure there's no syntax
+    # errors.
+    - for i in `ls php/libraries/*.class.inc`;
+      do
+        php -l $i || exit $?;
+      done
+    # Run integration tests to make sure everything didn't just
+    # break
+    - phpunit test/integrationtests/
     # Run PHPCS on libraries directory.
     # Note that everything doesn't pass yet, so instead
     # do each file that we know passes individually to ensure
@@ -41,12 +95,40 @@ script:
     # Eventually, the following should be uncommented and the
     # file by file invocations deleted..
     #- phpcs --standard=docs/LorisCS.xml php/libraries
+    - phpunit test/unittests/
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/SinglePointLogin.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument_instrument_preview.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Smarty_hook.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Database.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Site.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/MRIFile.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Client.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/FeedbackMRI.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/ConflictDetector.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Factory.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Log.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Form.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/File_Upload.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Notify.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Email.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_InstrumentStatus_ControlPanel.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_InstrumentStatus.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/CouchDB.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/Message.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Breadcrumb.class.inc
     - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Caller.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Page.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/TimePoint.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/UserPermissions.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
+    - phpcs --standard=docs/LorisCS.xml php/libraries/State.class.inc
+    - phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
+    - phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
