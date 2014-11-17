@@ -29,8 +29,8 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-4">{$form.mri_file.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.mri_file.html}</div>
+                            <label class="col-sm-4">{$form.mri_file.label}</label>
+                            <div class="col-sm-8">{$form.mri_file.html}</div>
                         </div>
                     </div>
                     <div class="row">
