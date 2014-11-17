@@ -30,7 +30,7 @@
 {* LEFT SUBTABLE (SELECTIONS) *}
         <table class='table-mri-lefttable'>
     	<tr>
-	    <td class='td-mri-lefttable-select'>Add panel<input class='mripanel' data-file-id='{$files[file].FileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
+	    <td style="min-width: 100px" class='td-mri-lefttable-select'>Add panel<input class='mripanel' data-file-id='{$files[file].FileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
     	</tr>
 {* SELECTED DROPDOWN only for native images *}
 {if $files[file].OutputType == "native"}
@@ -39,7 +39,7 @@
     	</tr>
     	<tr>
 	    <td id='td-mri-lefttable-select'>
-	    {if $has_permission}
+	    {if $has_qc_permission}
 	    {html_options options=$selected_options selected=$files[file].Selected tabindex="3" name="selectedvol[`$files[file].FileID`]"}
 	    {else}
 		{if $files[file].Selected != ""}{$files[file].Selected}
@@ -54,7 +54,7 @@
         </tr>
         <tr>
 	    <td id='td-mri-lefttable-select'>
-	    {if $has_permission}	
+	    {if $has_qc_permission}	
 	        {if $files[file].New}<font color='red'>NEW</font>{/if}
 		{html_options options=$status_options selected=$files[file].QCStatus tabindex="4" name="status[`$files[file].FileID`]"}
 	    {else}
@@ -66,7 +66,7 @@
 	{if $files[file].FileID} 
             <tr><th>Caveat Emptor</th></tr>
             <tr><td id='td-mri-lefttable-select'>
-            {if $has_permission}
+            {if $has_qc_permission}
                 {if $files[file].Caveat}
                 <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
                 {/if}
