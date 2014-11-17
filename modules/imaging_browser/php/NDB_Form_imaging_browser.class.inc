@@ -63,6 +63,21 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     }
 
     /**
+     * Determine whether the user has permission to QC the imaging_browser page
+     *
+     * @return bool whether the user has QC permission
+     */
+    function _hasQCPerm()
+    {
+        $user =& User::singleton();
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: " .$user->getMessage());
+        }
+
+        return $user->hasPermission('imaging_browser_qc');
+    }
+
+    /**
     * Sets up main parameters 
     *
     * @return NULL
@@ -115,6 +130,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $this->tpl_data['caveat_options'] 
                 = array ('' => '&nbsp;', true => 'True', false => 'False');
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
+            $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ? true : false;
         }
     }
     /**
