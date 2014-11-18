@@ -60,12 +60,12 @@ class NDB_Form_Configuration extends NDB_Form
         }
 
         $parentMenuItems = $this->DB->pselect(
-            "SELECT Label, Name FROM ConfigSettings WHERE Parent IS NULL AND Visible=1", 
+            "SELECT Label, Name FROM ConfigSettings WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber", 
             array()
         );
 
         $configs = $this->DB->pselect(
-            "SELECT * FROM ConfigSettings WHERE Visible=1", 
+            "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber", 
             array()
         );
 
