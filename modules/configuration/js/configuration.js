@@ -15,9 +15,9 @@ $(function () {
         parent = $(this).attr("name"),
         formID = new_id + "-form";
 
-        var currentField = $(this).parent();
-        var newField = currentField.clone();
-        console.log(newField);
+        var currentField = $(this).parent().find("config-form-group entry:first-child");
+        var newField = currentField.clone().appendTo($(this).parent().children(":first"));
+        console.log(currentField);
 
         /*
         $("#"+id+"-formsection").append('<div class="form-item" id="' + formID + '">'
@@ -46,8 +46,7 @@ $(function () {
             type: 'post',
             url: 'AjaxHelper.php?Module=configuration&script=delete.php',
             data: {id: id},
-            success: function (data) {
-                console.log(data);
+            success: function () {
                 $("#" + id).remove();
             },
             error: function(xhr, desc, err) {
@@ -59,13 +58,15 @@ $(function () {
 
     $('form').on('submit', function(e) {
         e.preventDefault();
+        console.log($(this).serialize());
         $.ajax({
             type: 'post',
             url: 'AjaxHelper.php?Module=configuration&script=process.php',
             data: $(this).serialize(),
             success: function () {
                 var html = "<label>Submitted</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500);
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
+                $('input[type="reset"]').attr('disabled','disabled');
             },
             error: function(xhr, desc, err) {
                 console.log(xhr);
@@ -76,5 +77,3 @@ $(function () {
     });
 
 });
- 
-                                                                                                                 
