@@ -126,7 +126,7 @@ class FeedbackMRI
             $success = $this->_addComment('', '', $predefinedCommentID);
 
             // choke if it failed
-            if ($success == false) {
+            if ($success != 'true') {
                 return false;
             }
         }
