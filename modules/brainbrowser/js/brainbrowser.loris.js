@@ -56,10 +56,10 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       var img = new Image();
 
       viewer.volumes.forEach(function(volume) {
-          volume.display.forEach(function(panel) {
-              width = Math.max(width, panel.canvas.width);
-              height = Math.max(height, panel.canvas.height);
-          });
+        volume.display.forEach(function(panel) {
+          width = Math.max(width, panel.canvas.width);
+          height = Math.max(height, panel.canvas.height);
+        });
       });
 
       canvas.width = width * viewer.volumes.length;
@@ -84,9 +84,9 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
       // Restore the active canvas.
       if (active_panel) {
-          active_panel.updated = true;
-          viewer.active_panel = active_panel;
-          viewer.draw();
+        active_panel.updated = true;
+        viewer.active_panel = active_panel;
+        viewer.draw();
       }
 
       // Show the created image in a dialog box.
