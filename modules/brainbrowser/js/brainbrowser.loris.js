@@ -46,14 +46,21 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     // This will create an image of all the display panels
     // currently being shown in the viewer.
     $("#screenshot").click(function() {
-      var width = viewer.panel_width;
-      var height = viewer.panel_height;
-      var active_canvas = viewer.active_canvas;
+      var width = 0;
+      var height = 0;
+      var active_panel = viewer.active_panel;
 
       // Create a canvas on which we'll draw the images.
       var canvas = document.createElement("canvas");
       var context = canvas.getContext("2d");
       var img = new Image();
+
+      viewer.volumes.forEach(function(volume) {
+          volume.display.forEach(function(panel) {
+              width = Math.max(width, panel.canvas.width);
+              height = Math.max(height, panel.canvas.height);
+          });
+      });
 
       canvas.width = width * viewer.volumes.length;
       canvas.height = height * 3;
@@ -76,8 +83,11 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       });
 
       // Restore the active canvas.
-      viewer.active_canvas = active_canvas;
-      viewer.draw();
+      if (active_panel) {
+          active_panel.updated = true;
+          viewer.active_panel = active_panel;
+          viewer.draw();
+      }
 
       // Show the created image in a dialog box.
       img.onload = function() {
@@ -419,14 +429,13 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           viewer.redrawVolumes();
         });
       });
-    
+
       $.ajax({
           data: 'minc_id=' + minc_ids_arr[vol_id],
           url: 'AjaxHelper.php?Module=brainbrowser&script=getMincName.php',
           method: 'GET',
-          async: false,
           success: function(data) {
-            $("#filename-"+vol_id).html(data);
+              $("#filename-"+vol_id).html(data);
           }
       });
 
