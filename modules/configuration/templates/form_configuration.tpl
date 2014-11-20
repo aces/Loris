@@ -57,8 +57,8 @@
 
 {function name=printForm}
     <div class="config-form-group">
-    {if $node['AllowMultiple'] == 1}<div class="input-group entry" id="{$node['ID']}">{/if}
     {foreach from=$node['Value'] key=k item=v}
+        {if $node['AllowMultiple'] == 1}<div class="input-group entry" id="{$node['ID']}">{/if}
         {if $node['DataType'] eq 'boolean'}
             {call createRadio k=$k v=$v}
         {elseif $node['DataType'] eq 'instrument'}
@@ -77,7 +77,9 @@
                 </button>
             </div>
         {/if}
+        {if $node['AllowMultiple'] == 1}</div>{/if}
     {foreachelse}
+        {if $node['AllowMultiple'] == 1}<div class="input-group entry" id="{$node['ID']}">{/if}
         {assign var=id value={"add-"|cat:$node['ID']} }
         {if $node['DataType'] eq 'boolean'}
             {call createRadio k=$id}
@@ -92,13 +94,13 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove" id="{$k}" type="button" name="remove-{$k}">
+                <button class="btn btn-danger btn-remove remove-new" id="{$k}" type="button" name="remove-{$k}">
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>
         {/if}
+        {if $node['AllowMultiple'] == 1}</div>{/if}
     {/foreach}
-    {if $node['AllowMultiple'] == 1}</div>{/if}
     </div>
 {/function}
 

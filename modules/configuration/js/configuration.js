@@ -9,35 +9,35 @@ $(function () {
         e.preventDefault();
 
         count = count + 1;
-        var id = $(this).attr('id'),
+
+        // Field that will be copied
+        var currentField = $(this).parent().find(".entry:first-child");
+
+        var id = $(currentField).attr('id'),
         new_id = id + "-" + count,
-        name   = $("#" + id + ".name").html(),
-        parent = $(this).attr("name"),
-        formID = new_id + "-form";
+        name   = 'add-' + id;
 
-        var currentField = $(this).parent().find("config-form-group entry:first-child");
-        var newField = currentField.clone().appendTo($(this).parent().children(":first"));
-        console.log(currentField);
+        // Setup the new form field
+        var newField = currentField.clone().attr('id', new_id);
+        newField.find(".form-control").attr('name', name);
+        newField.find(".btn-remove").addClass('remove-new').removeClass('btn-remove');
+        resetForm(newField);
+        
+        newField.appendTo($(this).parent().children(":first"));
 
-        /*
-        $("#"+id+"-formsection").append('<div class="form-item" id="' + formID + '">'
-            + '<form method="POST">'
-            + '<input class="form-control input-sm" id="' + new_id + '" name="'+ parent +'" type="text">'
-            + '</form>'
-            + '<form method="POST">'
-            + '<button class="btn btn-default btn-small rm-btn remove-new" id="'+ new_id +'" type="button">Remove</button>'
-            + '</form>'
-            + '</div>'
-
-        );*/
     });
 
     $('body').on('click','.remove-new', function () {
-        var id = $(this).attr('id');
-        $("#" + id + "-form").remove();
+        if ($(this).parent().parent().parent().children().length > 1)
+            $(this).parent().parent().remove();
+        else {
+            resetForm($(this).parent().parent());
+            $(this).prop('disabled', true);;
+        }
     });
 
     $('.btn-remove').click(function(e) {
+
         e.preventDefault();
 
         var id = $(this).attr('id');
@@ -47,7 +47,12 @@ $(function () {
             url: 'AjaxHelper.php?Module=configuration&script=delete.php',
             data: {id: id},
             success: function () {
-                $("#" + id).remove();
+                if ($(this).parent().parent().parent().children().length > 1)
+                    $(this).parent().parent().remove();
+                else {
+                    resetForm($(this).parent().parent());
+                    $(this).prop('disabled', true);;
+                }
             },
             error: function(xhr, desc, err) {
                 console.log(xhr);
@@ -76,4 +81,19 @@ $(function () {
 
     });
 
+    $( ".target" ).change(function() {
+        if (disabled) {
+            
+        } 
+            enable
+    });
+
 });
+
+function resetForm($form) {
+    "use strict";
+
+    $form.find('input:text, input:password, input:file, select, textarea').val('');
+    $form.find('input:radio, input:checkbox')
+         .removeAttr('checked').removeAttr('selected');
+}
