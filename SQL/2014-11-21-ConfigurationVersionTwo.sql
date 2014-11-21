@@ -68,7 +68,7 @@ UPDATE ConfigSettings SET Label='Images' WHERE Name='imagePath';
 UPDATE ConfigSettings SET Label='Base' WHERE Name='base';
 UPDATE ConfigSettings SET Label='Data' WHERE Name='data';
 UPDATE ConfigSettings SET Label='External libraries' WHERE Name='extLibs';
-UPDATE ConfigSettings SET Label='Minc files' WHERE Name='mincPath';
+UPDATE ConfigSettings SET Label='MINC files' WHERE Name='mincPath';
 UPDATE ConfigSettings SET Label='Downloads' WHERE Name='DownloadPath';
 UPDATE ConfigSettings SET Label='Logs' WHERE Name='log';
 UPDATE ConfigSettings SET Label='Incoming data' WHERE Name='IncomingPath';
