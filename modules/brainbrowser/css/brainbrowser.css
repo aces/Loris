@@ -59,7 +59,7 @@ body {
 }
 */
 .blend-div {
-    padding-top: 40px;
+ /*   padding-top: 40px;*/
 }
 
 #blend-slider {
@@ -179,10 +179,20 @@ body {
 .filename-additional-info {
     display: none;
 }
+.filename-overlay-additional-info {
+    display: none;
+}
 .arrow {
   padding: 1px;
   float: right;
   position: relative;
   top: -28px;
 
+}
+
+.filename-overlay {
+    font-weight: bold;
+    color: #064785;
+    font-size: 14px;
+    margin-top: 0.7em;
 }

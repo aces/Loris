@@ -3,7 +3,15 @@
     <div class="overlay-viewer-display" id="panel-size">
     </div>
     <div class="volume-viewer-controls volume-controls">
-        <div class="filename">Overlay</div>
+        <div class="filename-overlay clickable">Overlay</div>
+        <span class="arrow glyphicon glyphicon-chevron-up"></span>
+        <div class="blend-div" data-volume-id="{{VOLID}}">
+            <span class="control-heading" id="blend-heading{{VOLID}}">Blend (0.0 to 1.0)</span>
+            <input class="control-inputs blend-inputs" value="0.5" id="blend-val"/>
+            <div id="blend-slider" class="slider volume-viewer-blend"></div>
+        </div>
+       <div class="line-separator"></div>
+       <div class="filename-overlay-additional-info">
         <div class="coords">
             <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                 World Coordinates 
@@ -13,6 +21,8 @@
                 Y<input id="world-y-{{VOLID}}" class="control-inputs">
                 Z<input id="world-z-{{VOLID}}" class="control-inputs">
             </div>
+          <div class="line-separator"></div>
+
             <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
                 Voxel Coordinates 
             </div>
@@ -22,11 +32,7 @@
                 Z<input id="voxel-z-{{VOLID}}" class="control-inputs">
             </div>
         </div>
-        <div class="blend-div" data-volume-id="{{VOLID}}">
-            <span class="control-heading" id="blend-heading{{VOLID}}">Blend (0.0 to 1.0)</span>
-            <input class="control-inputs blend-inputs" value="0.5" id="blend-val"/>
-            <div id="blend-slider" class="slider volume-viewer-blend"></div>
-        </div>
+       </div>
     </div>
 </script>
 
@@ -62,10 +68,8 @@
                 </div>
                 <div class="slider volume-viewer-threshold" id="threshold-slider-{{VOLID}}"></div>
             </div>
-<div class="line-separator"></div>
+            <div class="line-separator"></div>
 
-            <!--div class="filename clickable" id="filename-{{VOLID}}"></div>
-                <span class="arrow clickable glyphicon glyphicon-chevron-up"></span-->
             <div class="filename-additional-info">
             <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
                 Voxel Coordinates

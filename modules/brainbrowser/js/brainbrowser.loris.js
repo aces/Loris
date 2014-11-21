@@ -447,6 +447,16 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
                }
 
        });
+       $('.filename-overlay').on("click", function() {
+               $('.filename-overlay-additional-info').slideToggle("fast");
+               if ($('.arrow').hasClass('glyphicon-chevron-down')) {
+                   $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+               } else {
+                   $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+               }
+
+       });
+
     });
 
 
