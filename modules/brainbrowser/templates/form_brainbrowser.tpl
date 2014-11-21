@@ -82,9 +82,9 @@
         </div>
         <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
             <div class="control-heading" id="slice-series-heading-{{VOLID}}">View slices</div>
-            <span class="slice-series-button button" data-axis="xspace">Sagittal</span>
-            <span class="slice-series-button button" data-axis="yspace">Coronal</span>
-            <span class="slice-series-button button" data-axis="zspace">Transverse</span>
+            <span class="slice-series-button button btn btn-sm btn-primary" data-axis="xspace">Sagittal</span>
+            <span class="slice-series-button button btn btn-sm btn-primary" data-axis="yspace">Coronal</span>
+            <span class="slice-series-button button btn btn-sm btn-primary" data-axis="zspace">Transverse</span>
         </div>
     </div>
 </script>
