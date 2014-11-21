@@ -24,21 +24,23 @@ $client->initialize();
 $DB =& Database::singleton();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
-        $DB->update(
-            'Config', 
-            array('Value' => $value), 
-            array('ID' => $key)
-        );
+        if ($value == "") {
+            $DB->delete('Config', array('ID' => $value));
+        } else {
+            $DB->update(
+                'Config', 
+                array('Value' => $value), 
+                array('ID' => $key)
+            );
+        }
     } else { //add new or remove
         $id = split("-", $key);
-        if ($id[0] === "add") {
+        if ($value !== "") {
             $DB->insert(
                 'Config', 
                 array('ConfigID' => $id[1], 'Value' => $value)
             );
-        } elseif ($id[0] === "remove") {
-            $DB->delete('Config', array('ID' => $id[1]));
-        }
+        } 
     } 
 } 
 
