@@ -438,7 +438,15 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             $("#filename-"+vol_id).html(data);
           }
       });
+      $('.filename').on("click", function() {
+               $('.filename-additional-info').slideToggle("fast");
+               if ($('.arrow').hasClass('glyphicon-chevron-down')) {
+                   $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+               } else {
+                   $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+               }
 
+       });
     });
 
 
@@ -467,13 +475,14 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       $("#voxel-z-" + vol_id).val(parseInt(voxel_coords.z, 10));
 
       value = volume.getIntensityValue();
-      $("#intensity-value-" + vol_id)
+      $("#intensity-value-" + vol_id).html(Math.floor(value));
+/*
       .css("background-color", "#" + volume.color_map.colorFromValue(value,     {
         format: "hex",
         min: volume.min,
         max: volume.max
       }))
-      .html(Math.floor(value));
+      .html(Math.floor(value));*/
 
       if (volume.data && volume.data.time) {
         $("#time-slider-" + vol_id).slider("option", "value", volume.current_time);
