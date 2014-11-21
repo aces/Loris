@@ -25,11 +25,11 @@ $destinationDir = $paths['base'] . "htdocs/dataDumps"; //temporary working direc
 * Prepare output/tmp directories, if needed.
 */
 //Create
-if(!file_exists($dataDir)) {
+if (!file_exists($dataDir)) {
 	mkdir($dataDir);
 }
 //Create
-if(!file_exists($destinationDir)) {
+if (!file_exists($destinationDir)) {
         mkdir($destinationDir);
 }
 
@@ -48,7 +48,7 @@ function MapSubprojectID(&$results) {
     $subprojectLookup = array();
     // Look it up from the config
     $study = $config->getSetting['study'];
-    foreach($study["subprojects"]["subproject"] as $subproject) {
+    foreach ($study["subprojects"]["subproject"] as $subproject) {
 	    $subprojectLookup[$subproject["id"]] =  $subproject["title"];
     }
 
@@ -72,14 +72,14 @@ if (PEAR::isError($instruments)) {
 foreach ($instruments as $instrument) {
 	//Query to pull the data from the DB
 	$Test_name = $instrument['Test_name'];
-    if($Test_name == 'prefrontal_task') {
+    if ($Test_name == 'prefrontal_task') {
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, 'See validity_of_data field' as Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
     } else if ($Test_name == 'radiology_review') {
         $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, 'Site review:', i.*, 'Final Review:', COALESCE(fr.Review_Done, 0) as Review_Done, fr.Final_Review_Results, fr.Final_Exclusionary, fr.Final_Incidental_Findings, fre.full_name as Final_Examiner_Name, fr.Final_Review_Results2, fre2.full_name as Final_Examiner2_Name, fr.Final_Exclusionary2, COALESCE(fr.Review_Done2, 0) as Review_Done2, fr.Final_Incidental_Findings2, fr.Finalized from candidate c, session s, flag f, $Test_name i left join final_radiological_review fr ON (fr.CommentID=i.CommentID) left outer join examiners e on (i.Examiner = e.examinerID) left join examiners fre ON (fr.Final_Examiner=fre.examinerID) left join examiners fre2 ON (fre2.examinerID=fr.Final_Examiner2) where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
     } else {
         if (is_file("../project/instruments/NDB_BVL_Instrument_$Test_name.class.inc")) {
             $instrument =& NDB_BVL_Instrument::factory($Test_name, '', false);
-            if($instrument->ValidityEnabled == true) {
+            if ($instrument->ValidityEnabled == true) {
 	            $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
             } else {
 	            $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
@@ -89,7 +89,7 @@ foreach ($instruments as $instrument) {
         }
     }
 	$DB->select($query, $instrument_table);
-	if(PEAR::isError($instrument_table)) {
+	if (PEAR::isError($instrument_table)) {
 		print "Cannot pull instrument table data ".$instrument_table->getMessage()."<br>\n";
 		die();
 	}
@@ -108,7 +108,7 @@ if (count($result) > 0) {
 	$Test_name = "figs_year3_relatives";
 	$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
 	$DB->select($query, $instrument_table);
-	if(PEAR::isError($instrument_table)) {
+	if (PEAR::isError($instrument_table)) {
 		print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";
 		die();
 	}
@@ -210,7 +210,7 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 
 	// add all header rows
 	$headers = array_keys($instrument_table[0]);
-	foreach($headers as $headerNum=>$header) {
+	foreach ($headers as $headerNum=>$header) {
 		//figure out which sheet number the header belongs on
 		$worksheetNum = intval($headerNum  / $maxColsPerWorksheet);
 		$worksheet =& $worksheets[$worksheetNum];
@@ -223,7 +223,7 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 	$rowCount=1;  //start right after the header
 	foreach ($instrument_table as $row) {
 		$dataRow = array_values($row);
-		foreach($dataRow as $valueNum=>$value){
+		foreach ($dataRow as $valueNum=>$value){
 			//figure out which sheet number the header belongs on
 			$worksheetNum = intval($valueNum  / $maxColsPerWorksheet);
 			$worksheet =& $worksheets[$worksheetNum];
@@ -253,8 +253,8 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
  */
 function delTree($dir) {
 	$files = glob( $dir . '*', GLOB_MARK );
-	foreach( $files as $file ){
-		if( substr( $file, -1 ) == '/' ) {
+	foreach ( $files as $file ){
+		if ( substr( $file, -1 ) == '/' ) {
 			delTree( $file );
 		} else {
 			unlink( $file );
