@@ -20,7 +20,7 @@ $(function () {
         // Setup the new form field
         var newField = currentField.clone().attr('id', new_id);
         newField.find(".form-control").attr('name', name);
-        newField.find(".btn-remove").addClass('remove-new').removeClass('btn-remove');
+        newField.find(".btn-remove").addClass('remove-new').removeClass('btn-remove').prop('disabled', false);
         resetForm(newField);
         
         newField.appendTo($(this).parent().children(":first"));
@@ -28,11 +28,12 @@ $(function () {
     });
 
     $('body').on('click','.remove-new', function () {
-        if ($(this).parent().parent().parent().children().length > 1)
+        if ($(this).parent().parent().parent().children().length > 1) {
             $(this).parent().parent().remove();
+        }
         else {
             resetForm($(this).parent().parent());
-            $(this).prop('disabled', true);;
+            $(this).prop('disabled', true);
         }
     });
 
@@ -42,16 +43,20 @@ $(function () {
 
         var id = $(this).attr('id');
 
+        var button = this;
+
         $.ajax({
             type: 'post',
             url: 'AjaxHelper.php?Module=configuration&script=delete.php',
             data: {id: id},
             success: function () {
-                if ($(this).parent().parent().parent().children().length > 1)
-                    $(this).parent().parent().remove();
+                if ($(button).parent().parent().parent().children().length > 1) {
+                    $(button).parent().parent().remove();
+                }
                 else {
-                    resetForm($(this).parent().parent());
-                    $(this).prop('disabled', true);;
+                    resetForm($(button).parent().parent());
+                    $(button).prop('disabled', true);
+                    //.attr('name', name);
                 }
             },
             error: function(xhr, desc, err) {
@@ -59,11 +64,12 @@ $(function () {
                 console.log("Details: " + desc + "\nError:" + err);
             }
         });
+        
     });
 
+    // On form submit, process the changes through an AJAX call
     $('form').on('submit', function(e) {
         e.preventDefault();
-        console.log($(this).serialize());
         $.ajax({
             type: 'post',
             url: 'AjaxHelper.php?Module=configuration&script=process.php',
@@ -81,11 +87,12 @@ $(function () {
 
     });
 
-    $( ".target" ).change(function() {
-        if (disabled) {
-            
-        } 
-            enable
+    // Re-enable the delete button if the form changes
+    $( "form" ).change(function() {
+        var button = $('.btn-remove', this);
+        if ($(button).is(':disabled')) {
+            $(button).prop('disabled', false);
+        }
     });
 
 });
@@ -95,5 +102,5 @@ function resetForm($form) {
 
     $form.find('input:text, input:password, input:file, select, textarea').val('');
     $form.find('input:radio, input:checkbox')
-         .removeAttr('checked').removeAttr('selected');
+        .removeAttr('checked').removeAttr('selected');
 }
