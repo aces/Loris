@@ -1,14 +1,14 @@
 <?php
 /**
- * This file is used by the Dashboard to get the data for
- * the recruitment bar chart via AJAX
+ * This file is used by the Configuration module to update
+ * or insert values into the Config table.
  *
  * PHP version 5
  *
  * @category Main
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  Loris License
+ * @license  GPLv3
  * @link     https://github.com/aces/Loris
  */
 
