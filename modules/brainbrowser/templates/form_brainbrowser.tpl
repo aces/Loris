@@ -34,7 +34,8 @@
     <div class="volume-viewer-display">
     </div>
     <div class="volume-viewer-controls volume-controls">
-        <div class="filename" id="filename-{{VOLID}}"></div>
+        <div class="filename clickable" id="filename-{{VOLID}}"></div>
+        <span class="arrow glyphicon glyphicon-chevron-up"></span>
         <div class="coords">
             <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                 World Coordinates 
@@ -44,6 +45,28 @@
                 Y<input id="world-y-{{VOLID}}" class="control-inputs">
                 Z<input id="world-z-{{VOLID}}" class="control-inputs">
             </div>
+            <div class="line-separator"></div>
+            <div id="color-map-{{VOLID}}">
+                <span class="control-heading" id="color-map-heading-{{VOLID}}">
+                    Color Map
+                </span>
+            </div>
+            <div class="line-separator"></div>
+            <div class="threshold-div" data-volume-id="{{VOLID}}">
+                <div class="control-heading">
+                    Threshold
+                </div>
+                <div class="thresh-inputs">
+                    <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
+                    <input id="max-threshold-{{VOLID}}" class="control-inputs thresh-input-right" value="255"/>
+                </div>
+                <div class="slider volume-viewer-threshold" id="threshold-slider-{{VOLID}}"></div>
+            </div>
+<div class="line-separator"></div>
+
+            <!--div class="filename clickable" id="filename-{{VOLID}}"></div>
+                <span class="arrow clickable glyphicon glyphicon-chevron-up"></span-->
+            <div class="filename-additional-info">
             <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
                 Voxel Coordinates
             </div>
@@ -52,27 +75,12 @@
                 Y<input id="voxel-y-{{VOLID}}" class="control-inputs">
                 Z<input id="voxel-z-{{VOLID}}" class="control-inputs">
             </div>
-        </div>
+        <div class="line-separator"></div>
         <div id="intensity-value-div-{{VOLID}}">
             <span class="control-heading" data-volume-id="{{VOLID}}">
-               Value:
+               Intensity Value
             </span>
-            <span id="intensity-value-{{VOLID}}" class="intensity-value"></span>
-        </div>
-        <div id="color-map-{{VOLID}}">
-            <span class="control-heading" id="color-map-heading-{{VOLID}}">
-                Color Map 
-            </span>
-        </div>
-        <div class="threshold-div" data-volume-id="{{VOLID}}">
-            <div class="control-heading">
-                Threshold
-            </div>
-            <div class="thresh-inputs">
-                <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
-                <input id="max-threshold-{{VOLID}}" class="control-inputs thresh-input-right" value="255"/>
-            </div> 
-            <div class="slider volume-viewer-threshold" id="threshold-slider-{{VOLID}}"></div>
+            <span id="intensity-value-{{VOLID}}" class="intensity-value control-inputs"></span>
         </div>
         <div id="time-{{VOLID}}" class="time-div" data-volume-id="{{VOLID}}" style="display: none">
             <span class="control-heading">Time</span>
@@ -80,19 +88,21 @@
             <div class="slider volume-viewer-threshold" id="threshold-time-slider-{{VOLID}}"></div>
             <input type="checkbox" class="button" id="play-{{VOLID}}"><label for="play-{{VOLID}}">Play</label>
         </div>
+       <div class="line-separator"></div>
         <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
             <div class="control-heading" id="slice-series-heading-{{VOLID}}">View slices</div>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="xspace">Sagittal</span>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="yspace">Coronal</span>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="zspace">Transverse</span>
         </div>
+       </div> <!--closing filename-additional-info -->
     </div>
 </script>
 
 <div id="loading" style="display: none; color: #064785; font-size: 20px">Loading...</div>
 <div id="brainbrowser-wrapper" style="display: none">
     <div id="global-controls">
-    <span id="sync-volumes-wrapper">
+    <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary">
         <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes"><label for="sync-volumes" id="sync-volumes">Sync Volumes</label>
     </span>
     <span class="control-heading"> Set panel size:</span>

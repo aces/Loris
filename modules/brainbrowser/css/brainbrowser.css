@@ -67,6 +67,9 @@ body {
 
 .control-heading {
     font-weight: normal !important;
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: black;
 }
 
 .control-inputs {
@@ -76,6 +79,7 @@ body {
     -webkit-border-radius: 3px; 
     border-radius: 3px; 
     background: #c1c1c1;
+    text-align: center;
 }
 
 .thresh-input-left {
@@ -122,14 +126,14 @@ body {
 
 #global-controls {
     padding: 5px;
+    position: fixed;
 /*    background: #555555; */
     border-radius: 4px;
     -webkit-border-radius: 4px;
     display: block;
-    margin: 0 auto;
     width: 320px;
-   right: 0px;
-   top: 150px;
+    right: 0px;
+    top: 130px;
 }
 
 #app-name {
@@ -152,8 +156,33 @@ body {
 .filename {
     font-weight: bold;
     color: #064785;
+    font-size: 14px;
+    margin-top: 0.7em;
 }
 
 .intensity-value {
     padding: 1px;
+    float: right;
+    text-align: center;
+}
+#color-map-select {
+    float: right;
+    margin-right: 20px;
+}
+.line-separator {
+    height:1px;
+    background:#717171;
+    border-bottom:1px solid #ddd;
+    margin-top: 0.7em;
+    margin-bottom: 0.5em;
+}
+.filename-additional-info {
+    display: none;
+}
+.arrow {
+  padding: 1px;
+  float: right;
+  position: relative;
+  top: -28px;
+
 }
