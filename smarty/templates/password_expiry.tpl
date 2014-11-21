@@ -14,7 +14,7 @@
 
 <div class="navbar navbar-default" role="navigation" style="height:90px">
     <div class="container">
-        <a class="navbar-brand" href="#" style="align:center;">
+        <a class="navbar-brand" style="align:center;">
             <img src="{$study_logo}" border="0" width="64" height="57" />
             {$study_title}
         </a>
