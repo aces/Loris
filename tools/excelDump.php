@@ -16,8 +16,10 @@ require_once "Archive/Tar.php";
 //Configuration variables for this script, possibly installation dependent.
 //$dataDir = "dataDump" . date("dMy");
 $dumpName = "dataDump" . date("dMy"); // label for dump
-$dataDir = $config['paths']['base'] . "tools/$dumpName/"; //temporary working directory
-$destinationDir = $config['paths']['base'] . "htdocs/dataDumps"; //temporary working directory
+$config = NDB_Config::singleton();
+$paths = $config->getSetting('paths');
+$dataDir = $paths['base'] . "tools/$dumpName/"; //temporary working directory
+$destinationDir = $paths['base'] . "htdocs/dataDumps"; //temporary working directory
 
 /*
 * Prepare output/tmp directories, if needed.
@@ -44,9 +46,9 @@ $d->close();
 function MapSubprojectID(&$results) {
     global $config;
     $subprojectLookup = array();
-    // Look it up from the config file, because it's not stored
-    // in the database
-    foreach($config["study"]["subprojects"]["subproject"] as $subproject) {
+    // Look it up from the config
+    $study = $config->getSetting['study'];
+    foreach($study["subprojects"]["subproject"] as $subproject) {
 	    $subprojectLookup[$subproject["id"]] =  $subproject["title"];
     }
 
