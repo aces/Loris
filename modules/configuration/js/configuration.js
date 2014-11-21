@@ -54,9 +54,12 @@ $(function () {
                     $(button).parent().parent().remove();
                 }
                 else {
+                    var parent_id = $(button).parent().parent().attr('id');
+                    var name      = 'add-' + parent_id;
+
                     resetForm($(button).parent().parent());
                     $(button).prop('disabled', true);
-                    //.attr('name', name);
+                    $(button).parent().parent().children('.form-control').attr('name', name);
                 }
             },
             error: function(xhr, desc, err) {
@@ -88,7 +91,8 @@ $(function () {
     });
 
     // Re-enable the delete button if the form changes
-    $( "form" ).change(function() {
+    $( ".input-group" ).change(function() {
+        console.log(this);
         var button = $('.btn-remove', this);
         if ($(button).is(':disabled')) {
             $(button).prop('disabled', false);
