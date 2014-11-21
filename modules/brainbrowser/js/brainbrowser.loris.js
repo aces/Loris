@@ -435,7 +435,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           url: 'AjaxHelper.php?Module=brainbrowser&script=getMincName.php',
           method: 'GET',
           success: function(data) {
-              $("#filename-"+vol_id).html(data);
+            $("#filename-"+vol_id).html(data);
           }
       });
 
