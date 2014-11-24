@@ -81,10 +81,8 @@
                     <td align="right">{$page_links}</td>
                 </tr>
             </table>
-
-            <div class="table-responsive">
                 <form method="post" action="main.php?test_name=conflict_resolver" name="conflict_resolver" id="conflict_resolver">
-                    <table class="table table-hover table-primary table-bordered table-unresolved-conflicts" border="0">
+                    <table class="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
                         <thead>
 
                             {foreach from=$form.errors item=error}
