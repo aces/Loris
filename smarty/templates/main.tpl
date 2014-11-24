@@ -338,8 +338,7 @@
                             {else}
                                 {if $candID != ""}
                                     <!-- table with candidate profile info -->
-                                    <div class="table-responsive">
-                                        <table cellpadding="2" class="table table-info table-bordered" style="max-width:auto">
+                                        <table cellpadding="2" class="table table-info table-bordered dynamictable" style="max-width:auto">
                                             <!-- column headings -->
                                             <thead>
                                                 <tr class="info">
@@ -467,7 +466,6 @@
                                                     </tr>
                                             </tbody>  
                                         </table>
-                                    </div>
 
                                     {if $sessionID != ""}
                                         <div class="table-responsive">

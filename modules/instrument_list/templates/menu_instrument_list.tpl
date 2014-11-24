@@ -3,8 +3,7 @@
 <table border="0" valign="bottom" width="100%"><td class="controlPanelSection"><strong>Behavioral Battery of Instruments</strong></td></table>
 
 <!-- table with list of instruments and links to open them -->
-<div class="table-responsive">
-<table class="table table-hover table-bordered" cellpadding="2">
+<table class="table table-hover table-bordered dynamictable" cellpadding="2">
 {section name=group loop=$instruments}
     <!-- print the sub group header row -->
     <thead>
