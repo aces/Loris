@@ -456,7 +456,10 @@ class NDB_BVL_Instrument extends NDB_Page
 
                 foreach($formArray['sections'] as &$section) {
                     foreach($section['elements'] as &$element) {
+                        /* Hacks to get data that QuickForm_Renderer_Array doesn't provide
+                         * an easy way to get */
                         if($element['type'] === 'select') {
+                            // Parse the HTML to get the options from the select
                             $html = new DOMDocument();
                             $html->loadHTML($element['html']);
 
@@ -464,23 +467,23 @@ class NDB_BVL_Instrument extends NDB_Page
 
                             foreach($html->getElementsByTagName("option") as $option) {
                                 $element['options'][$option->nodeValue] = $option->textContent;
-                                
-                                /*j
-                                print "TextContent: " . $option->textContent;
-                                print "Value: ";
-                                print $option->nodeValue;
-                                 */
                             }
-                            /*
-                            foreach($html->childNodes as $node) {
-                                print_r($node);
+                        } else if ($element['type'] === "date") {
+                            $html = new DOMDocument();
+                            $html->loadHTML($element['html']);
+                            // Parse the HTML to get the min and max date
+                            $selects = $html->getElementsByTagName("select");
+                            $year = $selects->item(0);
 
-                                print $node->nodeValue;
-                                print $node->textContent;
-                            }
-                            print "\n";
-                            $element['options'] = array("abc" => "def");
-                             */
+                            // Item 0 is blank, item 1 is the minimum,
+                            // the last item is the maximum year
+                            $minYear = $year->childNodes->item(1)->textContent;
+                            $maxYear = $year->lastChild->textContent;
+
+                            $element['options'] = array(
+                                'mindate' => $minYear . "-01-01",
+                                'maxdate' => $maxYear . "-12-31"
+                            );
                         }
                     }
                 }
