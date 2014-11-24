@@ -41,7 +41,7 @@
     </div>
     <div class="volume-viewer-controls volume-controls">
         <div class="filename clickable" id="filename-{{VOLID}}"></div>
-        <span class="arrow glyphicon glyphicon-chevron-up"></span>
+            <span class="arrow glyphicon glyphicon-chevron-up"></span>
         <div class="coords">
             <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                 World Coordinates 
@@ -70,7 +70,7 @@
             </div>
             <div class="line-separator"></div>
 
-            <div class="filename-additional-info">
+            <div class="filename-additional-info" id="filename-additional-info-{{VOLID}}">
             <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
                 Voxel Coordinates
             </div>
@@ -85,12 +85,16 @@
                Intensity Value
             </span>
             <span id="intensity-value-{{VOLID}}" class="intensity-value control-inputs"></span>
+            <span id="intensity-value-bg-{{VOLID}}" class="intensity-value control-inputs" style="height:20px"></span>
         </div>
+        <div class="line-separator"></div>
         <div id="time-{{VOLID}}" class="time-div" data-volume-id="{{VOLID}}" style="display: none">
             <span class="control-heading">Time</span>
             <input class="control-inputs time-inputs" value="0" id="time-val-{{VOLID}}"/>
+            <span class="btn btn-sm btn-primary play-btn">
+            <input type="checkbox" class="button ui-helper-hidden-accessible" id="play-{{VOLID}}"><label for="play-{{VOLID}}">Play</label>
+            </span>
             <div class="slider volume-viewer-threshold" id="threshold-time-slider-{{VOLID}}"></div>
-            <input type="checkbox" class="button" id="play-{{VOLID}}"><label for="play-{{VOLID}}">Play</label>
         </div>
        <div class="line-separator"></div>
         <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
@@ -109,12 +113,30 @@
     <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary">
         <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes"><label for="sync-volumes" id="sync-volumes">Sync Volumes</label>
     </span>
-    <span class="control-heading"> Set panel size:</span>
+    <br>
+     <div class="btn-group">
+         
+           <!--ul class="dropdown-menu" role="menu" id="panel-size">
+            <li> <a class="selected" value="256">default</a> </li>
+            <li> <a class="option" value="200">Small</a> </li>
+            <li> <a class="option" value="200">Large</a> </li>
+            <li> <a class="option" value="200">Extra-large</a> </li>
+           </ul-->
+            <select id="panel-size" class="form-control input-sm">
+         <option value="" SELECTED>Choose Panel Size</option>
+        <option value="256">Default</option>
+        <option value="200">Small</option>
+        <option value="350">Large</option>
+        <option value="450">Extra-large</option>
+    </select> 
+    </div>
+    <!--span class="control-heading"> Set panel size:</span>
     <select id="panel-size">
         <option value="256" SELECTED>default</option>
+        <option value="200">small</option>
         <option value="350">large</option>
         <option value="450">extra-large</option>
-    </select>
+    </select-->
     </div>
     <div id="brainbrowser"></div>
 </div>

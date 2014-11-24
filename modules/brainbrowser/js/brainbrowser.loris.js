@@ -28,9 +28,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     // Change viewer panel canvas size.
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
-
       viewer.setPanelSize(size, size, { scale_image: true });
-    }); 
+    });
 
     // Should cursors in all panels be synchronized?
     $("#sync-volumes").change(function() {
@@ -438,21 +437,24 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             $("#filename-"+vol_id).html(data);
           }
       });
-      $('.filename').on("click", function() {
-               $('.filename-additional-info').slideToggle("fast");
-               if ($('.arrow').hasClass('glyphicon-chevron-down')) {
-                   $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+
+      $('#filename-'+vol_id).on("click", function() {
+               $('#filename-additional-info-'+vol_id).slideToggle("fast");
+               var arrow = $(this).siblings('.arrow');
+               if (arrow.hasClass('glyphicon-chevron-down')) {
+                   arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
                } else {
-                   $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                   arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
                }
 
        });
        $('.filename-overlay').on("click", function() {
                $('.filename-overlay-additional-info').slideToggle("fast");
-               if ($('.arrow').hasClass('glyphicon-chevron-down')) {
-                   $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+               var arrow = $(this).siblings('.arrow');
+               if (arrow.hasClass('glyphicon-chevron-down')) {
+                   arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
                } else {
-                   $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                   arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
                }
 
        });
@@ -486,13 +488,11 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
       value = volume.getIntensityValue();
       $("#intensity-value-" + vol_id).html(Math.floor(value));
-/*
-      .css("background-color", "#" + volume.color_map.colorFromValue(value,     {
+      $("#intensity-value-bg-" + vol_id).css("background-color", "#" + volume.color_map.colorFromValue(value,     {
         format: "hex",
         min: volume.min,
         max: volume.max
-      }))
-      .html(Math.floor(value));*/
+      }));
 
       if (volume.data && volume.data.time) {
         $("#time-slider-" + vol_id).slider("option", "value", volume.current_time);
