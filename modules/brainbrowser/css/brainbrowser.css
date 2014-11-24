@@ -157,7 +157,8 @@ body {
     font-weight: bold;
     color: #064785;
     font-size: 14px;
-    margin-top: 0.7em;
+    margin-top: 0.5em;
+    padding-right: 15px;
 }
 
 .intensity-value {
@@ -172,7 +173,8 @@ body {
 .line-separator {
     height:1px;
     background:#717171;
-    border-bottom:1px solid #ddd;
+ /*   border-bottom:1px solid #ddd;*/
+   border-bottom:1px solid #e5e5e5;
     margin-top: 0.7em;
     margin-bottom: 0.5em;
 }
@@ -195,4 +197,8 @@ body {
     color: #064785;
     font-size: 14px;
     margin-top: 0.7em;
+}
+.play-btn {
+   float: right;
+   font-size: 11px;
 }
