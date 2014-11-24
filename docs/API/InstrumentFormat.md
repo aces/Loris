@@ -179,12 +179,12 @@ save it. The format is as follows:
 
 ```json
 {
-    Type: "text",
+    "Type": "text",
     "Name": REQUIRED,
-    Description: REQUIRED,
-    Options {
-        Type: "large|small",
-        Regex: "string",
+    "Description": REQUIRED,
+    "Options" : {
+        "Type"  : "large|small",
+        "Regex" : "string",
         "RequireResponse" : boolean
     }
 }
