@@ -114,8 +114,8 @@
 
 
 <!-- start data table -->
-<div id="datatable" class="table-responsive">
-    <table border="0" class="table table-hover table-primary table-bordered">
+<div id="datatable">
+    <table border="0" class="table table-hover table-primary table-bordered dynamictable">
         <thead>
             <tr class="info">
                 <th>No.</th>
