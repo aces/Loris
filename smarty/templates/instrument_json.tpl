@@ -36,12 +36,14 @@
     {renderselect element=$element}
 {elseif $element.type == "text" || $element.type == "textarea"}
     {rendertext element=$element}
-{elseif $element.type == "group"}
-    GROUP NOT YET IMPLEMENTED
 {elseif $element.type == "date"}
     {renderdate element=$element}
+{elseif $element.type == "numeric"}
+    NUMERIC TYPE NOT YET IMPLEMENTED
 {elseif $element.type == "static"}
-    STATIC NOT YET IMPLEMENTEd
+    STATIC NOT YET IMPLEMENTED
+{elseif $element.type == "group"}
+    GROUP NOT YET IMPLEMENTED
 {else}
             UNKNOWN ELEMENT TYPE: $element.type
 {$element|print_r}
@@ -61,7 +63,7 @@
         {foreach from=$section.elements item=element}
             {renderelement element=$element}
         {/foreach}
-{/foreach}
+    {/foreach}
     ]
 {rdelim}
 </pre>
