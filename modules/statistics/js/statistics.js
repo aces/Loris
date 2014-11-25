@@ -1,5 +1,5 @@
 $(document).ready(function() {
-        $(".tab-pane").load($('#onLoad').attr('value'));
+        $(".tab-pane").load($('.onLoad a').attr('value'));
         $(".statsTabLink").click(function(){
             $(".tab-pane").load($(this).attr('value'), function() {
                     $(".dynamictable").DynamicTable();

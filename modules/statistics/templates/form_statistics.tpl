@@ -1,8 +1,8 @@
 <div id="tabs" style="background: white">
     <div class="hidden-xs hidden-sm">
         <ul class="nav nav-tabs">
-            {foreach from=$StatsTabs item=tab}
-            <li class="statsTab">
+            {foreach from=$StatsTabs item=tab name=tabs}
+            <li class="statsTab{if $smarty.foreach.tabs.first} active onLoad{/if}">
                 <a class="statsTabLink" value="main.php?test_name={$tab.ModuleName}&subtest={$tab.SubModuleName}&dynamictabs=dynamictabs">{$tab.Description}</a>
             </li>
             {/foreach}
