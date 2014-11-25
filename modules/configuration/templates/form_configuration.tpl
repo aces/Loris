@@ -25,7 +25,7 @@
 {/function}
 
 {function name=createEmail}
-    <input class="form-control" type="email" name="{$k}" id="{$k}" value="{$v}">
+    <input class="form-control" type="email" name="{$k}" value="{$v}">
 {/function}
 
 {function name=createTextArea}
@@ -33,7 +33,7 @@
 {/function}
 
 {function name=createText}
-    <input type="text" class="form-control" name="{$k}" id="{$k}" value="{$v}">
+    <input type="text" class="form-control" name="{$k}" value="{$v}">
 {/function}
 
 {function name=printConfigItem}
@@ -56,9 +56,9 @@
 {/function}
 
 {function name=printForm}
-    <div class="config-form-group">
+    <div class="config-form-group" id="{$node['ID']}">
     {foreach from=$node['Value'] key=k item=v}
-        {if $node['AllowMultiple'] == 1}<div class="input-group entry" id="{$node['ID']}">{/if}
+        {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {if $node['DataType'] eq 'boolean'}
             {call createRadio k=$k v=$v}
         {elseif $node['DataType'] eq 'instrument'}
@@ -72,14 +72,14 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove" id="{$k}" type="button" name="remove-{$k}">
+                <button class="btn btn-danger btn-remove" type="button" name="remove-{$k}">
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>
         {/if}
         {if $node['AllowMultiple'] == 1}</div>{/if}
     {foreachelse}
-        {if $node['AllowMultiple'] == 1}<div class="input-group entry" id="{$node['ID']}">{/if}
+        {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {assign var=id value={"add-"|cat:$node['ID']} }
         {if $node['DataType'] eq 'boolean'}
             {call createRadio k=$id}
@@ -94,7 +94,7 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove remove-new" id="{$k}" type="button" name="remove-{$k}" disabled>
+                <button class="btn btn-danger btn-remove remove-new" type="button" disabled>
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>
