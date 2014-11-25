@@ -117,8 +117,8 @@
      <div class="btn-group">
          <select id="panel-size" class="form-control input-sm panel-size">
              <option value="256" SELECTED>Choose Panel Size</option>
-             <option value="256">Default</option>
              <option value="200">Small</option>
+             <option value="256">Default</option>
              <option value="350">Large</option>
              <option value="450">Extra-large</option>
          </select>
