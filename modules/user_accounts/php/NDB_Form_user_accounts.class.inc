@@ -118,7 +118,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 $user->updateCouchUser($set['Password_md5']);
             }
 
-            $set['Password_md5'] = User::md5_salt($set['Password_md5']);
+            $set['Password_md5'] = User::MD5Salt($set['Password_md5']);
         }
 
 
