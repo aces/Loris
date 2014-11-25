@@ -147,13 +147,14 @@ if (count($result) > 0) {
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC, pc1.Value as Comments, c.flagged_caveatemptor as Caveat_Emptor, c.flagged_info as Caveat_Emptor_reason, c.flagged_other as Caveat_Emptor_detail, c.ProbandGender, c.ProbandDoB,ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) LEFT JOIN parameter_candidate pc1 ON (c.CandID = pc1.CandID AND pc1.ParameterTypeID=7296) LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' AND (ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL) ORDER BY c.PSCID";
+$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC, pc1.Value as Comments, c.flagged_caveatemptor as Caveat_Emptor, c.flagged_info as Caveat_Emptor_reason, c.flagged_other as Caveat_Emptor_detail, c.ProbandGender, c.ProbandDoB,ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference,ps.ndar_consent from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) LEFT JOIN parameter_candidate pc1 ON (c.CandID = pc1.CandID AND pc1.ParameterTypeID=7296) LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' AND (ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL) ORDER BY c.PSCID";
 $DB->select($query, $results);
 if (Utility::isErrorX($results)) {
     PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
 }
 
 foreach($results as &$result) {
+    $result['FamilyID']= '';
     for ($i = 1; $i<=3; $i++) {
         $result['Sibling'.$i] = "";
         $result['Relationship_type_Sibling'.$i] = "";
@@ -164,7 +165,8 @@ foreach($results as &$result) {
     if (Utility::isErrorX($familyID)) {
         PEAR::raiseError("Couldn't get candidate info. " . $familyID->getMessage());
     }
-    if (!empty($familyID)) { 
+    if (!empty($familyID)) {
+        $result['FamilyID']=$familyID;
         $familyFields = $DB->pselect("SELECT candID as Sibling_ID,
                 Relationship_type as Relationship_to_sibling
                 FROM family
