@@ -39,7 +39,7 @@ class Site
     static function &singleton($centerID)
     {
         static $siteList = array();
-        if(!isset($siteList[$centerID])) {
+        if (!isset($siteList[$centerID])) {
             try {
                 $siteList[$centerID] = new Site();
                 $error = $siteList[$centerID]->select($centerID);

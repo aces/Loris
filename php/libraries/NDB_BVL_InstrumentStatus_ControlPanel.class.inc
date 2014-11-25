@@ -79,8 +79,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $this->_instrument =& $instrument;
 
             $this->ValidityEnabled  = $instrument->ValidityEnabled;
-
             $this->ValidityRequired = $instrument->ValidityRequired;
+
             // generate the subtest list
             $list = $instrument->getSubtestList();
             $this->tpl_data['subtests'] = $list;

@@ -89,13 +89,13 @@ class NDB_BVL_Feedback
 
         if (!isset($feedbackList[$objectName])) {
             try {
-            $feedbackList[$objectName] = new NDB_BVL_Feedback();
-            $error = $feedbackList[$objectName]->setup(
-                $username,
-                $candID,
-                $sessionID,
-                $commentID
-            );
+                $feedbackList[$objectName] = new NDB_BVL_Feedback();
+                $error = $feedbackList[$objectName]->setup(
+                    $username,
+                    $candID,
+                    $sessionID,
+                    $commentID
+                );
             } catch(Exception $e) {
                 unset($feedbackList[$objectName]);
                 throw new Exception("Could not instantiate feedback object", null, $e);
