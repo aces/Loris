@@ -222,7 +222,7 @@ class User extends UserPermissions
      */
     function isEmailValid()
     {
-        if(!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
             return false;
         };
         return true;
