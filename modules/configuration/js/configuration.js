@@ -13,14 +13,13 @@ $(function () {
         // Field that will be copied
         var currentField = $(this).parent().find(".entry:first-child");
 
-        var id = $(currentField).attr('id'),
-        new_id = id + "-" + count,
-        name   = 'add-' + id;
+        var id = $(currentField).parent().attr('id'),
+        name   = 'add-' + id + '-' + count;
 
         // Setup the new form field
-        var newField = currentField.clone().attr('id', new_id);
+        var newField = currentField.clone();
         newField.find(".form-control").attr('name', name);
-        newField.find(".btn-remove").addClass('remove-new').removeClass('btn-remove').prop('disabled', false);
+        $(newField).find(".btn-remove").addClass('remove-new').removeClass('btn-remove').prop('disabled', false);
         resetForm(newField);
         
         newField.appendTo($(this).parent().children(":first"));
@@ -96,6 +95,7 @@ $(function () {
         var button = $('.btn-remove', this);
         if ($(button).is(':disabled')) {
             $(button).prop('disabled', false);
+            
         }
     });
 
