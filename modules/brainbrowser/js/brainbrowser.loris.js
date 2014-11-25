@@ -49,12 +49,12 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       var width = 0;
       var height = 0;
       var active_panel = viewer.active_panel;
-      
+
       // Create a canvas on which we'll draw the images.
       var canvas = document.createElement("canvas");
       var context = canvas.getContext("2d");
       var img = new Image();
-      
+
       viewer.volumes.forEach(function(volume) {
         volume.display.forEach(function(panel) {
           width = Math.max(width, panel.canvas.width);
@@ -66,7 +66,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       canvas.height = height * 3;
       context.fillStyle = "#000000";
       context.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // The active canvas is highlighted by the viewer,
       // so we set it to null and redraw the highlighting
       // isn't shown in the image.
@@ -88,7 +88,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         viewer.active_panel = active_panel;
         viewer.draw();
       }
-      
+
       // Show the created image in a dialog box.
       img.onload = function() {
         $("<div></div>").append(img).dialog({
@@ -116,7 +116,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         var x = parseFloat(div.find("#world-x-" + vol_id).val());
         var y = parseFloat(div.find("#world-y-" + vol_id).val());
         var z = parseFloat(div.find("#world-z-" + vol_id).val());
-        
+
         // Make sure the values are numeric.
         if (!BrainBrowser.utils.isNumeric(x)) {
           x = 0;
@@ -429,12 +429,11 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           viewer.redrawVolumes();
         });
       });
-    
+
       $.ajax({
           data: 'minc_id=' + minc_ids_arr[vol_id],
-          url: 'getMincName.php',
+          url: 'AjaxHelper.php?Module=brainbrowser&script=getMincName.php',
           method: 'GET',
-          async: false,
           success: function(data) {
             $("#filename-"+vol_id).html(data);
           }
@@ -500,8 +499,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
         minc_volumes.push({
             type: 'minc',
-            header_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
-            raw_data_url: "minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+            header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
+            raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&raw_data=true",
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
