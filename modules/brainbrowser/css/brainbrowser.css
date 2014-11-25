@@ -132,7 +132,8 @@ body {
     -webkit-border-radius: 4px;
     display: block;
     width: 320px;
-    top: 130px;
+    top: 160px;
+    left: 30px;
 }
 
 #app-name {

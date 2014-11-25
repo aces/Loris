@@ -95,8 +95,8 @@
             <input type="checkbox" class="button ui-helper-hidden-accessible" id="play-{{VOLID}}"><label for="play-{{VOLID}}">Play</label>
             </span>
             <div class="slider volume-viewer-threshold" id="threshold-time-slider-{{VOLID}}"></div>
+            <div class="line-separator"></div>
         </div>
-       <div class="line-separator"></div>
         <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
             <div class="control-heading" id="slice-series-heading-{{VOLID}}">View slices</div>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="xspace">Sagittal</span>
@@ -116,7 +116,7 @@
     <br>
      <div class="btn-group">
          <select id="panel-size" class="form-control input-sm panel-size">
-             <option value="" SELECTED>Choose Panel Size</option>
+             <option value="256" SELECTED>Choose Panel Size</option>
              <option value="256">Default</option>
              <option value="200">Small</option>
              <option value="350">Large</option>
