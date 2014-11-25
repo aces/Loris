@@ -238,7 +238,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function md5_salt($word)
+    static function MD5Salt($word)
     {
         // get a two-character hexadecimal salt from 10 to ff
         $salt = dechex(rand(16, 255));
@@ -258,7 +258,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function md5_unsalt($word, $hash)
+    static function MD5Unsalt($word, $hash)
     {
         // get the first two characters of the hash
         $salt = substr($hash, 0, 2);

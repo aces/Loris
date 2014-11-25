@@ -173,7 +173,7 @@ class SinglePointLogin extends PEAR
         }
 
         // check that password has changed
-        if (User::md5_unsalt($_POST['password'], $data['Password_md5'])) {
+        if (User::MD5Unsalt($_POST['password'], $data['Password_md5'])) {
             $this->_lastError = 'You cannot keep the same password';
         }
 
@@ -189,7 +189,7 @@ class SinglePointLogin extends PEAR
         );
         $set    = array(
                    'Password'        => null,
-                   'Password_md5'    => User::md5_salt($_POST['password']),
+                   'Password_md5'    => User::MD5Salt($_POST['password']),
                    'Password_expiry' => $expiry,
                   );
 
@@ -314,7 +314,7 @@ class SinglePointLogin extends PEAR
 
         if ($row['User_count'] == 1) {
             // validate the user
-            if (User::md5_unsalt($_POST['password'], $row['Password_md5'])) {
+            if (User::MD5Unsalt($_POST['password'], $row['Password_md5'])) {
                 // check that the user is active
                 if ($row['Active'] == 'N') {
                     $this->_lastError = "Your account has been deactivated."
