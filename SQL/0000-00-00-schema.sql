@@ -978,7 +978,8 @@ INSERT INTO `permissions` VALUES
     (24,'view_final_radiological_review','Can see final radiological reviews','2'),
     (25,'imaging_browser_view_site','View own-site Imaging Browser pages','2'),
     (26,'imaging_browser_view_allsites', 'View all-sites Imaging Browser pages', '2'),
-    (27,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2');
+    (27,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
+    (28,'mri_violated_scans_view_allsites','Across all sites view MRI Protocol Violated Scans module and pages','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
