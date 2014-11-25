@@ -352,7 +352,8 @@ class NDB_Config
             if ($DBValue !== null) {
                 return $DBValue;
             }
-        } catch(Exception $e) { }
+        } catch(Exception $e) {
+        }
 
         // nothing in the database, so get the value from config.xml
         return $this->getSettingFromXML($name);

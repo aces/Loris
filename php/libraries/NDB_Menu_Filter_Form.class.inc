@@ -32,14 +32,15 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
 
 
     /**
-        * Saves the form
-        * Attempts to validate the form (using the defined rules) and
-        * saves the validated data into the database
-        *
-        * @return void
-        * @throws PEAR_Error
-        * @access public
-    */
+     * Saves the form
+     *
+     * Attempts to validate the form (using the defined rules) and
+     * saves the validated data into the database
+     *
+     * @return void
+     * @throws PEAR_Error
+     * @access public
+     */
     function save()
     {
         if (!isset($_REQUEST['filter'])
@@ -53,7 +54,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
                 // if statement can probably be removed.
                 if (Utility::isErrorX($success) ) {
                     throw new Exception(
-                            "NDB_Form::save(): ". $success->getMessage()
+                        "NDB_Form::save(): ". $success->getMessage()
                     );
                 }
             }
