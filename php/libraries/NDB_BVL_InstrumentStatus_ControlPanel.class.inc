@@ -91,6 +91,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             if ($this->getDataEntryStatus() == null && $hasAccess) {
                 $success = $this->setDataEntryStatus('In Progress');
+            }
 
             // generate the administration flag buttons
             $this->tpl_data['access']['administration']
