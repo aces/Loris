@@ -107,7 +107,7 @@
     </div>
 </script>
 
-<div id="loading" style="display: none; color: #064785; font-size: 20px">Loading...</div>
+<div id="loading" style="display: none; color: #064785; font-size: 20px; align:center;">Loading...</div>
 <div id="brainbrowser-wrapper" style="display: none">
     <div id="global-controls">
     <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary">
@@ -115,29 +115,15 @@
     </span>
     <br>
      <div class="btn-group">
-         
-           <!--ul class="dropdown-menu" role="menu" id="panel-size">
-            <li> <a class="selected" value="256">default</a> </li>
-            <li> <a class="option" value="200">Small</a> </li>
-            <li> <a class="option" value="200">Large</a> </li>
-            <li> <a class="option" value="200">Extra-large</a> </li>
-           </ul-->
-            <select id="panel-size" class="form-control input-sm">
-         <option value="" SELECTED>Choose Panel Size</option>
-        <option value="256">Default</option>
-        <option value="200">Small</option>
-        <option value="350">Large</option>
-        <option value="450">Extra-large</option>
-    </select> 
+         <select id="panel-size" class="form-control input-sm panel-size">
+             <option value="" SELECTED>Choose Panel Size</option>
+             <option value="256">Default</option>
+             <option value="200">Small</option>
+             <option value="350">Large</option>
+             <option value="450">Extra-large</option>
+         </select>
     </div>
-    <!--span class="control-heading"> Set panel size:</span>
-    <select id="panel-size">
-        <option value="256" SELECTED>default</option>
-        <option value="200">small</option>
-        <option value="350">large</option>
-        <option value="450">extra-large</option>
-    </select-->
-    </div>
+   </div>
     <div id="brainbrowser"></div>
 </div>
 <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=jquery.mousewheel.min.js"></script>

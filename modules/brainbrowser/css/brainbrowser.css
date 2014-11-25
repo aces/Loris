@@ -132,7 +132,6 @@ body {
     -webkit-border-radius: 4px;
     display: block;
     width: 320px;
-    right: 0px;
     top: 130px;
 }
 
@@ -201,4 +200,11 @@ body {
 .play-btn {
    float: right;
    font-size: 11px;
+}
+.panel-size {
+  color: #fff;
+  background-color: #064785;
+  border-color: #053a6d;
+  margin-top: 10px;
+  font-weight: bold;
 }
