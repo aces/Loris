@@ -2128,8 +2128,10 @@ CREATE TABLE `ConfigSettings` (
     `Description` varchar(255) DEFAULT NULL,
     `Visible` tinyint(1) DEFAULT '0',
     `AllowMultiple` tinyint(1) DEFAULT '0',
-    `DataType` enum('text') DEFAULT NULL,
+    `DataType` ENUM('text', 'boolean', 'email', 'instrument', 'textarea') DEFAULT NULL,
     `Parent` int(11) DEFAULT NULL,
+    `Label` varchar(255) DEFAULT NULL,
+    `OrderNumber` int(11) DEFAULT NULL,
     PRIMARY KEY (`ID`),
     UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
