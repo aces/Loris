@@ -98,7 +98,11 @@ class NDB_BVL_Feedback
                 );
             } catch(Exception $e) {
                 unset($feedbackList[$objectName]);
-                throw new Exception("Could not instantiate feedback object", null, $e);
+                throw new Exception(
+                    "Could not instantiate feedback object",
+                    null,
+                    $e
+                );
             }
         }
 
