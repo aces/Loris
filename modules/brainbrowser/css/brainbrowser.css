@@ -169,6 +169,8 @@ body {
 #color-map-select {
     float: right;
     margin-right: 20px;
+    width: 30%;
+    height: 28%;
 }
 .line-separator {
     height:1px;

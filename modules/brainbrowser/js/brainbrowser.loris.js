@@ -162,7 +162,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       // Change the color map currently being used to display data.
       // Color map URLs are read from the config file and added to the
       // color map select box.
-      var color_map_select = $('<select id="color-map-select"></select>').change(function() {
+      var color_map_select = $('<select id="color-map-select" class="form-control input-sm"></select>').change(function() {
         var selection = $(this).find(":selected");
 
         viewer.loadVolumeColorMapFromURL(vol_id, selection.val(), selection.data("cursor-color"), function() {
