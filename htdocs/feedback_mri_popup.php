@@ -24,7 +24,7 @@ if(PEAR::isError($user)) {
 }
 
 // check permissions
-if ($user->hasPermission('mri_feedback')) {
+if ($user->hasPermission('imaging_browser_qc')) {
     $tpl_data['has_permission'] = true;
 }
 
@@ -34,7 +34,7 @@ $comments = new FeedbackMRI($_REQUEST['fileID'], $_REQUEST['sessionID']);
 /*
  * UPDATE SECTION
  */
-if ($_POST['fire_away'] && $user->hasPermission('mri_feedback'))
+if ($_POST['fire_away'] && $user->hasPermission('imaging_browser_qc'))
 {
   // clear all predefined comments
   $comments->clearAllComments();
@@ -97,7 +97,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 
     // print the status select field if it exists
     if(!empty($comment_array['field']) && ($comments->objectType == 'volume')) {
-        if ($user->hasPermission('mri_feedback')) {
+        if ($user->hasPermission('imaging_browser_qc')) {
             $tpl_data['comment'][$i]['select_name'] = $comment_array['field'];
             $tpl_data['comment'][$i]['select_value_array'] = $comment_array['values'];
         }

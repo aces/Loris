@@ -58,7 +58,7 @@ class Imaging_Session_ControlPanel
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return $user->hasPermission('view_final_radiological_review');
+        return $user->hasPermission('imaging_browser_qc');
     }
 
     /**

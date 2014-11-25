@@ -39,7 +39,14 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return $user->hasPermission('view_final_radiological_review');
+
+        // allow only to view own site data
+        $site =& Site::singleton($user->getData('CenterID'));
+        if (Utility::isErrorX($site)) {
+            return PEAR::raiseError("DB Error: ".$site->getMessage());
+        }
+
+        return ($user->hasPermission('imaging_browser_view_allsites') || ($site->isStudySite() && $user->hasPermission('imaging_browser_view_site')));
     }
 
     /**
@@ -172,6 +179,32 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
+        // create user object
+        $user =& User::singleton();
+        if(Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+        
+        // PSC
+        if ($user->hasPermission('imaging_browser_view_allsites')) {
+            // get the list of study sites - to be replaced by the Site object
+            $list_of_sites = Utility::getSiteList();
+            if(Utility::isErrorX($list_of_sites)) {
+                return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
+            }
+            if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
+        }
+        else {
+            // allow only to view own site data
+            $site =& Site::singleton($user->getData('CenterID'));
+            if (Utility::isErrorX($site)) {
+                return PEAR::raiseError("DB Error: ".$site->getMessage());
+            }
+            if ($site->isStudySite()) {
+                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
+            }
+        }
+
         $DB = Database::singleton();
         $allAr = array('' => 'All');
         $this->addBasicText('pscid', 'PSCID', array("size"=>10,"maxlength"=>25));
@@ -182,7 +215,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
         );
         $this->addSelect('ProjectID', 'Project', $allAr + Utility::getProjectList());
-        $this->addSelect('SiteID', 'Site', $allAr + Utility::getSiteList());
+        $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',
             'QC Status',
@@ -237,7 +270,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             foreach ($item as $key => $val) {
                 if ($key == 'sessionID') {
                     $this->tpl_data['items'][$x]['sessionID'] = $val;
-		    $filtered_sessionIDs[] = $val;
+                    $filtered_sessionIDs[] = $val;
                     continue;
                 }
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
@@ -247,7 +280,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $x++;
         }
         $this->tpl_data['numTimepoints'] = $this->TotalItems; //$x;
-	$_SESSION['State']->setProperty(
+        $_SESSION['State']->setProperty(
 	    'mriSessionsListed', $filtered_sessionIDs
         );
         return true;
