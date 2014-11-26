@@ -537,7 +537,7 @@ class Utility extends PEAR
      *
      * @return An array with the two parameters recursively merged
      */
-    static function array_merge_recursive_overwriting(
+    static function arrayMergeRecursiveOverwriting(
         $array1,
         $array2,
         &$merged_array=null
@@ -549,7 +549,7 @@ class Utility extends PEAR
             if (is_array($array1[$key]) && isset($array1[$key][0])) {
                 $merged_array[$key] = $value;
             } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
-                Utility::array_merge_recursive_overwriting(
+                Utility::arrayMergeRecursiveOverwriting(
                     $array1[$key],
                     $array2[$key],
                     $merged_array[$key]

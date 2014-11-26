@@ -195,7 +195,7 @@ class NDB_Config
             ) {
                 $this->_siteSettings          = $this->_settings;
                 $this->_siteSettings['study']
-                    = Utility::array_merge_recursive_overwriting(
+                    = Utility::arrayMergeRecursiveOverwriting(
                         $this->_settings['study'],
                         $this->_settings['sites'][$siteName]
                     );
