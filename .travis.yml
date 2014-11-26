@@ -33,7 +33,11 @@ install:
     # Travis-CI requires this.
     - phpenv rehash
 
+<<<<<<< HEAD
       # Download a Selenium Web Driver release
+=======
+    # Download a Selenium Web Driver release
+>>>>>>> Run PHPCS on entire directory, not individual files
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
     # Install requirements for php-fpm as per Travis DOCs
