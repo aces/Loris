@@ -2154,52 +2154,52 @@ CREATE TABLE `Config` (
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('study', 'Study variables', 1, 0, 'Study', 1);
 
 -- additional_user_info
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'additional_user_info', 'Display additional user fields in User Accounts page', 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Additional user information', 14;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'additional_user_info', 'Display additional user fields in User Accounts page', 1, 0, 'boolean', ID, 'Additional user information', 14 FROM ConfigSettings WHERE Name="study";
 
 -- title
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'title', 'Descriptive study title', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study", 'Study title', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'title', 'Descriptive study title', 1, 0, 'text', ID, 'Study title', 1 FROM ConfigSettings WHERE Name="study";
 
 -- studylogo
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'studylogo', 'Logo of the study. File should be located under the /var/www/$projectname/htdocs/images/ folder', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study", 'Study logo', 2;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'studylogo', 'Logo of the study. File should be located under the /var/www/$projectname/htdocs/images/ folder', 1, 0, 'text', ID, 'Study logo', 2 FROM ConfigSettings WHERE Name="study";
 
 -- useEDC
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useEDC', 'Use EDC (Expected Date of Confinement) - false unless the study focuses on neonatals for birthdate estimations.', 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Use EDC', 12;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useEDC', 'Use EDC (Expected Date of Confinement) - false unless the study focuses on neonatals for birthdate estimations.', 1, 0, 'boolean', ID, 'Use EDC', 12 FROM ConfigSettings WHERE Name="study";
 
 -- ageMin
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ageMin', 'Minimum candidate age in years (0+)', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study", 'Minimum candidate age', 7;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ageMin', 'Minimum candidate age in years (0+)', 1, 0, 'text', ID, 'Minimum candidate age', 7 FROM ConfigSettings WHERE Name="study";
 
 -- ageMax
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ageMax', 'Maximum candidate age in years', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study", 'Maximum candidate age', 8;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ageMax', 'Maximum candidate age in years', 1, 0, 'text', ID, 'Maximum candidate age', 8 FROM ConfigSettings WHERE Name="study";
 
 -- multipleSites
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'multipleSites', 'More than one site in the project', 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Multiples sites', 3;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'multipleSites', 'More than one site in the project', 1, 0, 'boolean', ID, 'Multiples sites', 3 FROM ConfigSettings WHERE Name="study";
 
 -- useFamilyID
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useFamilyID', 'Use family ID', 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Use family', 10;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useFamilyID', 'Use family ID', 1, 0, 'boolean', ID, 'Use family', 10 FROM ConfigSettings WHERE Name="study";
 
 -- startYear
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'startYear', "Project's start year", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study", 'Project start year', 5;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'startYear', "Project's start year", 1, 0, 'text', ID, 'Project start year', 5 FROM ConfigSettings WHERE Name="study";
 
 -- endYear
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'endYear', "Project's end year", 1, 0, 'text', ID FROM ConfigSettings WHERE Name="study", 'Project end year', 6;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'endYear', "Project's end year", 1, 0, 'text', ID, 'Project end year', 6 FROM ConfigSettings WHERE Name="study";
 
 -- useExternalID
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useExternalID', "Use external ID field - false unless data is used for blind data distribution, or from external data sources", 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Use external ID', 11;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useExternalID', "Use external ID field - false unless data is used for blind data distribution, or from external data sources", 1, 0, 'boolean', ID, 'Use external ID', 11 FROM ConfigSettings WHERE Name="study";
 
 -- useProband
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useProband', "Show proband section on the candidate parameter page", 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Use proband', 9;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useProband', "Show proband section on the candidate parameter page", 1, 0, 'boolean', ID, 'Use proband', 9 FROM ConfigSettings WHERE Name="study";
 
 -- useProjects
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useProjects', "Study involves more than one project, where each project has multiple cohorts/subprojects", 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Use projects', 4;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useProjects', "Study involves more than one project, where each project has multiple cohorts/subprojects", 1, 0, 'boolean', ID, 'Use projects', 4 FROM ConfigSettings WHERE Name="study";
 
 -- useScreening
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useScreening', "Use Screening stage with its own distinct instruments, administered before the Visit stage", 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="study", 'Use screening', 13;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useScreening', "Use Screening stage with its own distinct instruments, administered before the Visit stage", 1, 0, 'boolean', ID, 'Use screening', 13 FROM ConfigSettings WHERE Name="study";
 
 -- excluded_instruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_instruments', "Instruments to be excluded from the Data Dictionary and the Data Query tool", 1, 1, 'instrument', ID FROM ConfigSettings WHERE Name="study", 'Excluded instruments', 15;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_instruments', "Instruments to be excluded from the Data Dictionary and the Data Query tool", 1, 1, 'instrument', ID, 'Excluded instruments', 15 FROM ConfigSettings WHERE Name="study";
 
 -- DoubleDataEntryInstruments
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'instrument', ID FROM ConfigSettings WHERE Name="study", 'Double data entry instruments', 16;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'instrument', ID, 'Double data entry instruments', 16 FROM ConfigSettings WHERE Name="study";
 
 --
 -- paths
@@ -2209,31 +2209,31 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Path settings', 1, 0, 'Paths', 2);
 
 -- imagePath
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'imagePath', 'Path to images', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'Images', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'imagePath', 'Path to images', 1, 0, 'text', ID, 'Images', 1 FROM ConfigSettings WHERE Name="paths";
 
 -- base
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'base', 'Base path', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'Base', 2;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'base', 'Base path', 1, 0, 'text', ID, 'Base', 2 FROM ConfigSettings WHERE Name="paths";
 
 -- data
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'data', 'Path to data', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'Data', 3;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'data', 'Path to data', 1, 0, 'text', ID, 'Data', 3 FROM ConfigSettings WHERE Name="paths";
 
 -- extLibs
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'extLibs', 'Path to external libraries', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'External libraries', 4;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'extLibs', 'Path to external libraries', 1, 0, 'text', ID, 'External libraries', 4 FROM ConfigSettings WHERE Name="paths";
 
 -- mincPath
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mincPath', 'Path to MINC files', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'MINC files', 5;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mincPath', 'Path to MINC files', 1, 0, 'text', ID, 'MINC files', 5 FROM ConfigSettings WHERE Name="paths";
 
 -- DownloadPath
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DownloadPath', 'Where files are downloaded', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'Downloads', 6;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DownloadPath', 'Where files are downloaded', 1, 0, 'text', ID, 'Downloads', 6 FROM ConfigSettings WHERE Name="paths";
 
 -- log
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'log', 'Path to logs (relative path starting from /var/www/$projectname)', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'Logs', 7;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'log', 'Path to logs (relative path starting from /var/www/$projectname)', 1, 0, 'text', ID, 'Logs', 7 FROM ConfigSettings WHERE Name="paths";
 
 -- IncomingPath
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'IncomingPath', 'Path for data transferred to the project server', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'Incoming data', 8;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'IncomingPath', 'Path for data transferred to the project server', 1, 0, 'text', ID, 'Incoming data', 8 FROM ConfigSettings WHERE Name="paths";
 
 -- MRICodePath
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRICodePath', 'Path to MRI code', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="paths", 'MRI code', 9;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRICodePath', 'Path to MRI code', 1, 0, 'text', ID, 'MRI code', 9 FROM ConfigSettings WHERE Name="paths";
 
 --
 -- gui
@@ -2243,16 +2243,16 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'GUI settings', 1, 0, 'GUI', 3);
 
 -- css
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'css', 'CSS file used for rendering', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="gui", 'CSS file', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'css', 'CSS file used for rendering', 1, 0, 'text', ID, 'CSS file', 1 FROM ConfigSettings WHERE Name="gui";
 
 -- rowsPerPage
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'rowsPerPage', 'Number of table rows to appear, per page', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="gui", 'Table rows per page', 2;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'rowsPerPage', 'Number of table rows to appear, per page', 1, 0, 'text', ID, 'Table rows per page', 2 FROM ConfigSettings WHERE Name="gui";
 
 -- showTiming
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showTiming', 'Show breakdown of timing information for page loading', 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="gui", 'Show page load timing', 3;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showTiming', 'Show breakdown of timing information for page loading', 1, 0, 'boolean', ID, 'Show page load timing', 3 FROM ConfigSettings WHERE Name="gui";
 
 -- showPearErrors
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showPearErrors', 'Print PEAR errors', 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="gui", 'Show PEAR errors', 4;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showPearErrors', 'Print PEAR errors', 1, 0, 'boolean', ID, 'Show PEAR errors', 4 FROM ConfigSettings WHERE Name="gui";
 
 --
 -- www
@@ -2262,13 +2262,13 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('www', 'WWW settings', 1, 0, 'WWW', 4);
 
 -- host
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'host', 'Host', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="www", 'Host', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'host', 'Host', 1, 0, 'text', ID, 'Host', 1 FROM ConfigSettings WHERE Name="www";
 
 -- url
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'url', 'Main project URL', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="www", 'Main project URL', 2;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'url', 'Main project URL', 1, 0, 'text', ID, 'Main project URL', 2 FROM ConfigSettings WHERE Name="www";
 
 -- mantis_url
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mantis_url', 'Bug tracker URL', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="www", 'Bug tracker URL', 3;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mantis_url', 'Bug tracker URL', 1, 0, 'text', ID, 'Bug tracker URL', 3 FROM ConfigSettings WHERE Name="www";
 
 --
 -- dashboard
@@ -2278,10 +2278,10 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('dashboard', 'Dashboard settings', 1, 0, 'Dashboard', 5);
 
 -- projectDescription
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'projectDescription', 'Description of the project that will be displayed in the top panel of the dashboard', 1, 0, 'textarea', ID FROM ConfigSettings WHERE Name="dashboard", 'Project Description', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'projectDescription', 'Description of the project that will be displayed in the top panel of the dashboard', 1, 0, 'textarea', ID, 'Project Description', 1 FROM ConfigSettings WHERE Name="dashboard";
 
 -- recruitmentTarget
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'recruitmentTarget', 'Target number of participants for the study', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dashboard", 'Target number of participants', 2;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'recruitmentTarget', 'Target number of participants for the study', 1, 0, 'text', ID, 'Target number of participants', 2 FROM ConfigSettings WHERE Name="dashboard";
 
 --
 -- dicom_archive
@@ -2291,19 +2291,19 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('dicom_archive', 'DICOM archive settings', 1, 0, 'DICOM archive', 6);
 
 -- patientIDRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'patientIDRegex', 'Regex for masking the patient ID', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive", 'Patient ID regex', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'patientIDRegex', 'Regex for masking the patient ID', 1, 0, 'text', ID, 'Patient ID regex', 1 FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- patientNameRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'patientNameRegex', 'Regex for masking the patient name', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive", 'Patient name regex', 2;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'patientNameRegex', 'Regex for masking the patient name', 1, 0, 'text', ID, 'Patient name regex', 2 FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- LegoPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'LegoPhantomRegex', 'Regex for identifying a Lego Phantom scan header', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive", 'Lego phantom regex', 3;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'LegoPhantomRegex', 'Regex for identifying a Lego Phantom scan header', 1, 0, 'text', ID, 'Lego phantom regex', 3 FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- LivingPhantomRegex
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'LivingPhantomRegex', 'Regex to be used on Living Phantom scan', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="dicom_archive", 'Living phantom regex', 4;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'LivingPhantomRegex', 'Regex to be used on Living Phantom scan', 1, 0, 'text', ID, 'Living phantom regex', 4 FROM ConfigSettings WHERE Name="dicom_archive";
 
 -- showTransferStatus
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showTransferStatus', 'Regex for identifying a Living Phantom scan header', 1, 0, 'boolean', ID FROM ConfigSettings WHERE Name="dicom_archive", 'Show transfer status', 5;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showTransferStatus', 'Regex for identifying a Living Phantom scan header', 1, 0, 'boolean', ID, 'Show transfer status', 5 FROM ConfigSettings WHERE Name="dicom_archive";
 
 --
 -- statistics
@@ -2313,7 +2313,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('statistics', 'Statistics settings', 1, 0, 'Statistics', 7);
 
 -- excludedMeasures
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excludedMeasures', 'Excluded measures', 1, 1, 'instrument', ID FROM ConfigSettings WHERE Name="statistics", 'Excluded measures', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excludedMeasures', 'Excluded measures', 1, 1, 'instrument', ID, 'Excluded measures', 1 FROM ConfigSettings WHERE Name="statistics";
 
 --
 -- mail
@@ -2323,13 +2323,13 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('mail', 'Mail settings', 1, 0, 'Mail', 8);
 
 -- From
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'From', 'From', 1, 0, 'email', ID FROM ConfigSettings WHERE Name="mail", 'From', 1;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'From', 'From', 1, 0, 'email', ID, 'From', 1 FROM ConfigSettings WHERE Name="mail";
 
 -- Reply-to
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'Reply-to', 'Reply-to', 1, 0, 'email', ID FROM ConfigSettings WHERE Name="mail", 'Reply-to', 2;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'Reply-to', 'Reply-to', 1, 0, 'email', ID, 'Reply-to', 2 FROM ConfigSettings WHERE Name="mail";
 
 -- X-MimeOLE
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'X-MimeOLE', 'X-MimeOLE', 1, 0, 'text', ID FROM ConfigSettings WHERE Name="mail", 'X-MimeOLE', 3;
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'X-MimeOLE', 'X-MimeOLE', 1, 0, 'text', ID, 'X-MimeOLE', 3 FROM ConfigSettings WHERE Name="mail";
 
 -- Filling Config table with default values
 
