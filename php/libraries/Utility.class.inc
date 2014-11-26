@@ -777,29 +777,6 @@ class Utility extends PEAR
     }
 
     /**
-     * Case insensitive search to see if an item is in an array
-     * from php.net comments
-     *
-     * @param string $item  The needle to search for
-     * @param array  $array The array to search for $item
-     *
-     * @return  True iff $item is in $array without regard to case
-     * @note    Function comment written by Dave, not the author of this function.
-     * @note    This does not appear to be used. If not, it should be removed,
-     * @cleanup ?
-     */
-    function in_array_insensitive($item, $array)
-    {
-        $item = &strtoupper($item);
-        foreach ($array as $element) {
-            if ($item == strtoupper($element)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Now that Loris requires PHP >5.3 places that use this code should be
      * updated to use a closure.
      *
