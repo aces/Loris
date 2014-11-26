@@ -94,7 +94,7 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove remove-new" type="button" disabled>
+                <button class="btn btn-danger btn-remove remove-new" type="button">
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>
