@@ -383,14 +383,13 @@ class User extends UserPermissions
             return false;
         }
         $username = $this->getUsername();
-        $auth     = array(
-                     'Authorization' => 'Basic '
-                     . base64_encode(
-                         $c_config['admin']
-                         . ':'
-                         . $c_config['adminpass']
-                     )
-                    );
+        $authkey  = base64_encode(
+            $c_config['admin']
+            . ':'
+            . $c_config['adminpass']
+        );
+
+        $auth     = array('Authorization' => 'Basic ' . $authkey);
         $userjson = $cdb->_getURL(
             "/_users/org.couchdb.user:" . $username,
             'GET',
