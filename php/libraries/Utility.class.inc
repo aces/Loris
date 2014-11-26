@@ -60,32 +60,6 @@ class Utility extends PEAR
     }
 
     /**
-     * Builds a query string
-     *
-     * @param array $params Array of parameters to put into query string format
-     *
-     * @return string
-     */
-    static function unparse_str ($params)
-    {
-        $str = '';
-        foreach ($params as $key => $value) {
-            if (is_array($value)) {
-                foreach ($value AS $vkey => $vval) {
-                    $str .= (strlen($str) < 1) ? '' : '&';
-                    $str .= $key . rawurlencode("[$vkey]")
-                        . '=' . rawurlencode($vval);
-                }
-            } else {
-                $str .= (strlen($str) < 1) ? '' : '&';
-                $str .= $key . '=' . rawurlencode($value);
-            }
-        }
-        return ($str);
-    }
-
-
-    /**
      * Converts a multi-dimensional array to a one-dimensional array
      *
      * @param array $array The multi-dimensional array

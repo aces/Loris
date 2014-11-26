@@ -209,7 +209,7 @@ class MRINavigation
     *
     * @param int $delta offset for the next/prev link
     *
-    * @return string $urlParams	parameters
+    * @return string $urlParams        parameters
     */
     function _otherLink($delta) 
     {
@@ -217,7 +217,9 @@ class MRINavigation
             $urlParams = $this->urlParams;
             $urlParams['sessionID'] = $this
                 ->FilteredSessionList[$this->currentListIndex+$delta];
-            $this->bits[1] = Utility::unparse_str($urlParams);
+
+            $this->bits[1] = http_build_query($urlParams);
+
             return implode('?', $this->bits);
         }
     }
