@@ -81,9 +81,7 @@
     {foreachelse}
         {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {assign var=id value={"add-"|cat:$node['ID']} }
-        {if $node['DataType'] eq 'boolean'}
-            {call createRadio k=$id}
-        {elseif $node['DataType'] eq 'instrument'}
+        {if $node['DataType'] eq 'instrument'}
             {call createInstrument k=$id}
         {elseif $node['DataType'] eq 'email'}
             {call createEmail k=$id}
