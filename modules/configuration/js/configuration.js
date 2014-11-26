@@ -19,7 +19,7 @@ $(function () {
         // Setup the new form field
         var newField = currentField.clone();
         newField.find(".form-control").attr('name', name);
-        $(newField).find(".btn-remove").addClass('remove-new').removeClass('btn-remove').prop('disabled', false);
+        $(newField).find(".btn-remove").addClass('remove-new').removeClass('btn-remove');
         resetForm(newField);
         
         newField.appendTo($(this).parent().children(":first"));
@@ -32,7 +32,6 @@ $(function () {
         }
         else {
             resetForm($(this).parent().parent());
-            $(this).prop('disabled', true);
         }
     });
 
@@ -40,25 +39,26 @@ $(function () {
 
         e.preventDefault();
 
-        var id = $(this).attr('id');
+        var id = $(this).attr('name');
 
         var button = this;
-
+        
         $.ajax({
             type: 'post',
-            url: 'AjaxHelper.php?Module=configuration&script=delete.php',
+            url: 'AjaxHelper.php?Module=configuration&script=process.php',
             data: {id: id},
-            success: function () {
+            success: function (data) {
+                console.log(data);
                 if ($(button).parent().parent().parent().children().length > 1) {
                     $(button).parent().parent().remove();
                 }
                 else {
-                    var parent_id = $(button).parent().parent().attr('id');
+                    var parent_id = $(button).parent().parent().parent().attr('id');
                     var name      = 'add-' + parent_id;
 
                     resetForm($(button).parent().parent());
-                    $(button).prop('disabled', true);
                     $(button).parent().parent().children('.form-control').attr('name', name);
+                    $(button).addClass('remove-new').removeClass('btn-remove')
                 }
             },
             error: function(xhr, desc, err) {
@@ -87,16 +87,6 @@ $(function () {
             }
         });
 
-    });
-
-    // Re-enable the delete button if the form changes
-    $( ".input-group" ).change(function() {
-        console.log(this);
-        var button = $('.btn-remove', this);
-        if ($(button).is(':disabled')) {
-            $(button).prop('disabled', false);
-            
-        }
     });
 
 });

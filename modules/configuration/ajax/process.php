@@ -34,13 +34,18 @@ foreach ($_POST as $key => $value) {
             );
         }
     } else { //add new or remove
-        $id = split("-", $key);
-        if ($value !== "") {
-            $DB->insert(
-                'Config', 
-                array('ConfigID' => $id[1], 'Value' => $value)
-            );
-        } 
+        $keySplit = split("-", $key);
+        $valueSplit = split("-", $value);
+        if ($keySplit[0] == 'add') {
+            if ($value !== "") {
+                $DB->insert(
+                    'Config', 
+                    array('ConfigID' => $keySplit[1], 'Value' => $value)
+                );
+            }
+        } elseif ($valueSplit[0] == 'remove') {
+            $DB->delete('Config', array('ID' => $valueSplit[1]));
+        }
     } 
 } 
 
