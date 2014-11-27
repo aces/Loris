@@ -1,4 +1,61 @@
 {literal}
+<style type="text/css">
+    .tree{
+        overflow-x: auto
+    }
+    #home-dir{
+        padding-left: 0px;
+    }
+    .file_name{
+        float: left;
+        border: 1px solid #999;
+    }
+    .version{
+        width: 30px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .file_type{
+        width: 50px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .instrument{
+        width: 100px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .updated_by{
+        width: 100px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .for_site{
+        width: 100px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .comments{
+        width: 300px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .date_uploaded{
+        width: 150px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .editLink{
+        width: 50px;
+        float: left;
+        border: 1px solid #999;
+    }
+    .deleteLink{
+        width: 50px;
+        float: left;
+        border: 1px solid #999;
+    }
+</style>
 <script type="text/javascript" src="js/modules/mustache.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -40,6 +97,7 @@ $(document).ready(function() {
             for(var ii in files) {
                 var template = $('#template').html();
                 Mustache.parse(template);   // optional, speeds up future uses
+                files[ii].fileNameWidth = 500 - (depth - 1) * 70;
                 var rendered = Mustache.render(template, files[ii]);
                 $("#" + path[depth - 1] + "Children").append(rendered);
 
@@ -117,39 +175,51 @@ $(function () {
 </script>
 
 <script id="template" type="x-tmpl-mustache">
-    <li style="display: none;">
-        <div class="row">
-            <div class="col-xs-3">
+    <li class="fileLI" style="display: none;">
+        <div style="display: table; width: 1430px">
+            <div class="file_name" style="width: {{ fileNameWidth }}px;">
                 {{ File_name }} ({{ File_size }})
             </div>
-            <div class="col-xs-1">
-                {{ version }}
+            <div class="version">
+                <p>
+                    {{ version }}
+                </p>
             </div>
-            <div class="col-xs-1">
-                {{ File_type }}
+            <div class="file_type">
+                <p>
+                    {{ File_type }}
+                </p>
             </div>
-            <div class="col-xs-1">
-                {{ instrument }}
+            <div class="instrument">
+                <p>
+                    {{ instrument }}
+                </p>
             </div>
-            <div class="col-xs-1">
-                {{ uploaded_by }}
+            <div class="updated_by">
+                <p>
+                    {{ uploaded_by }}
+                </p>
             </div>
-            <div class="col-xs-1">
-                {{ For_site }}
+            <div class="for_site">
+                <p>
+                    {{ For_site }}
+                </p>
             </div>
-            <div class="col-xs-1">
-                {{ comments }}
+            <div class="comments">
+                <p>
+                    {{ comments }}
+                </p>
             </div>
-            <div class="col-xs-2">
-                {{ Date_uploaded }}
+            <div class="date_uploaded">
+                <p>
+                    {{ Date_uploaded }}
+                </p>
             </div>
-            <div class="col-xs-1">
-                <div class="col-xs-6">
-                    Edit
-                </div>
-                <div class="col-xs-6">
-                    Delete
-                </div>
+            <div class="editLink">
+                Edit
+            </div>
+            <div class="deleteLink">
+                Delete
             </div>
         </div>
     </li>
@@ -184,6 +254,12 @@ $(function () {
 </table>
 </form>
 
+<div class="tree">
+    <ul id="home-dir">
+
+    </ul>
+</div>
+
 <div class = "ui-accordion ui-widget ui-helper-reset">
 <table border="0" width="80%" id = "accordionTable" class="docRepository" data-open = "{$openAccordion}">
 <tr>
@@ -200,20 +276,26 @@ $(function () {
     {/section}
 </tr>
 
+<<<<<<< HEAD
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
 
 <table class="table table-striped">
+=======
+<!-- <table class="table table-striped">
+>>>>>>> modify tree structure
     <tbody id="dir-tree">
 
     </tbody>
-</table>
+</table> -->
 
+<<<<<<< HEAD
 <div class="tree well">
     <ul id="home-dir">
+=======
 
-    </ul>
-</div>
+>>>>>>> modify tree structure
+
 
 <div id="accordion" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons" role="tablist">
 {foreach from=$File_categories item=val key=k}
