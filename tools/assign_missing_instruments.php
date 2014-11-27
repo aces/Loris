@@ -84,10 +84,8 @@ function populateVisitLabel($result, $visit_label)
     $timePoint =& TimePoint::singleton($result['ID']);
 
     $DB =& Database::singleton();
-    $query_firstVisit = "SELECT Visit_label FROM session WHERE 
-    CandID=:cid ORDER BY Date_visit"; 
-    $where = array ('cid'=>$result['CandID']);
-    $result_firstVisit= $DB->pselectOne($query_firstVisit, $where);
+    $candidate = Candidate::singleton($result['CandID']);
+    $result_firstVisit= $candidate->getFirstVisit();
  
     $isFirstVisit = false;//adding check for first visit 
     if ($result_firstVisit == $visit_label) {
