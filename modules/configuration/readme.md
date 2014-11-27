@@ -19,3 +19,7 @@ Care should be taken when editing the fields as there is currently no way to "un
 5. Add the configuration module to the LORIS menu by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-10-02-ConfigMenu.sql)
 6. Add the configuration help text by running [this patch](https://github.com/aces/Loris/blob/master/SQL/Archive/Pre-14.10/2014-10-15-ConfigHelp.sql)
 7. Run the config migration script, which moves values from your project's config.xml to the database. From the tools directory, run `php config_to_db.php`
+
+Moving from 14.10:
+8. Remove the ColumnThreshold setting by running [this patch](https://github.com/aces/Loris/blob/master/SQL/2014-10-24-RemoveColumnThreshold.sql)
+9. Update some of the setting descriptions by running [this patch](https://github.com/aces/Loris/blob/master/SQL/2014-10-24-UpdateConfigDescriptions.sql)
