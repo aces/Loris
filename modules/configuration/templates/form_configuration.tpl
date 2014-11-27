@@ -38,8 +38,11 @@
 
 {function name=printConfigItem}
 <div class="form-group">
-    <label class="col-sm-2 control-label config-name" data-toggle="tooltip" data-placement="right" title="{$node['Description']}">{$node['Label']}</label>
-    <div class="col-sm-10">
+    <div class="col-sm-3" data-toggle="tooltip" data-placement="right" title="{$node['Description']}">
+        <label class="col-sm-12 control-label config-name">{$node['Label']}</label>
+        <div class="config-dev-name pull-right"><i>{$node['Name']}</i></div>
+    </div>
+    <div class="col-sm-9">
         {if isset($node['Children']) && $node['Children']}
             Child nodes go here
             {call name=printConfigItem node=$node['Children']}
@@ -130,17 +133,19 @@
             <h3>{$topItem['Label']}</h3>
             <p>{$topItem['Description']}</p>
             <hr>
+            <div class="col-md-11">
             <form class="form-horizontal" role="form" method="post">
             {foreach $topItem['Children'] as $configChild}
                 {call name=printConfigItem node=$configChild}
             {/foreach}
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-9 submit-area">
+                    <div class="col-sm-offset-3 col-sm-9 submit-area">
                         <button type="submit" class="btn btn-primary">Submit</button>
                         <button type="reset" class="btn btn-default">Reset</button>
                     </div>
                 </div>
             </form>
+            </div>
         </div>
     {/foreach}
     </div>

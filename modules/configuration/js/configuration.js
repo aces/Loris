@@ -2,7 +2,7 @@
 $(function () {
     "use strict";
 
-    $('.config-name').tooltip();
+    $('div').tooltip();
 
     var count = 0;
     $(".add").click(function (e) {
@@ -40,15 +40,13 @@ $(function () {
         e.preventDefault();
 
         var id = $(this).attr('name');
-
         var button = this;
         
         $.ajax({
             type: 'post',
             url: 'AjaxHelper.php?Module=configuration&script=process.php',
             data: {id: id},
-            success: function (data) {
-                console.log(data);
+            success: function () {
                 if ($(button).parent().parent().parent().children().length > 1) {
                     $(button).parent().parent().remove();
                 }
@@ -65,17 +63,21 @@ $(function () {
                 console.log(xhr);
                 console.log("Details: " + desc + "\nError:" + err);
             }
-        });
-        
+        });  
     });
 
     // On form submit, process the changes through an AJAX call
     $('form').on('submit', function(e) {
         e.preventDefault();
+
+        var form = $(this).serialize();
+
+        //validate(form);
+
         $.ajax({
             type: 'post',
             url: 'AjaxHelper.php?Module=configuration&script=process.php',
-            data: $(this).serialize(),
+            data: form,
             success: function () {
                 var html = "<label>Submitted</label>";
                 $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
@@ -86,15 +88,22 @@ $(function () {
                 console.log("Details: " + desc + "\nError:" + err);
             }
         });
-
     });
-
 });
 
-function resetForm($form) {
+/*
+function validate(form) {
+    // age
+    // year
+    // email - this should be done already
+    // not same instrument twice
+}
+*/
+
+function resetForm(form) {
     "use strict";
 
-    $form.find('input:text, input:password, input:file, select, textarea').val('');
-    $form.find('input:radio, input:checkbox')
+    $(form).find('input:text, input:password, input:file, select, textarea').val('');
+    $(form).find('input:radio, input:checkbox')
         .removeAttr('checked').removeAttr('selected');
 }
