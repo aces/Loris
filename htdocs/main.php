@@ -45,6 +45,8 @@ tplFromRequest('sessionID');
 tplFromRequest('commentID');
 tplFromRequest('dynamictabs');
 
+$www = $config->getSetting('www');
+$tpl_data['baseurl'] = $www['url'];
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
 // draw the user information table
@@ -92,7 +94,7 @@ $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
     if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
-        $tpl_data['test_name_js'] = "GetJS.php?Module=$TestName";
+        $tpl_data['test_name_js'] = "js/$TestName.js";
     } elseif (file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
         // Old style, this should be removed after all modules are modularized.
         $tpl_data['test_name_js'] = "js/modules/$TestName.js";
@@ -100,7 +102,7 @@ if (!empty($TestName)) {
 
     // Get CSS for a module
     if (file_exists($paths['base'] . "modules/$TestName/css/$TestName.css")) {
-        $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
+        $tpl_data['test_name_css'] = "css/$TestName";
     }
 
     // Used for CSS for a specific instrument. This should eventually be
