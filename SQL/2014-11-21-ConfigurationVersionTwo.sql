@@ -6,8 +6,7 @@ DELETE FROM ConfigSettings WHERE Name='instrument';
 
 -- Remove the header config setting
 
-UPDATE ConfigSettings SET Parent=(SELECT ID FROM ConfigSettings WHERE Name='mail') WHERE Parent=(SELECT ID FROM ConfigSettings WHERE Name='headers');
-UPDATE Config SET ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mail') WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='headers');
+UPDATE ConfigSettings SET Parent=(SELECT ID FROM (SELECT * FROM ConfigSettings) as x WHERE Name='mail') WHERE Parent=(SELECT ID FROM (SELECT * FROM ConfigSettings) as y WHERE Name='headers');
 DELETE FROM ConfigSettings WHERE Name='headers';
 
 -- Add different datatypes to the config settings
