@@ -82,6 +82,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
             'l.PatientName',
             'l.CandID'
         );
+        $this->EqualityFilters = array('l.SeriesUID');
         $this->formToFilter = array (
                                     'TarchiveID' => 'l.TarchiveID',
                                     'SeriesUID' => 'l.SeriesUID',
