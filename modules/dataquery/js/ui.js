@@ -405,7 +405,7 @@ $(document).ready(function () {
 
     $("#CalculateStats").click(function (e) {
         var headers = dataTable.fnSettings().aoColumns.map(function (row) { return row.sTitle; }),
-            worker = new Worker("script/ui.stats.js"),
+            worker = new Worker("GetJS.php?Module=dataquery&file=ui.stats.js"),
             tbl = $("#stats tbody"),
             selectedColumns = [],
             xaxis = document.getElementById("scatter-xaxis"),
