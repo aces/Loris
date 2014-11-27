@@ -36,7 +36,7 @@
     <tbody>
     {section name=timepoint loop=$timePoints}
         <tr>
-            <td><a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
+            <td><a href="{$baseurl}/main.php?test_name=instrument_list&candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
 
             <td>{$timePoints[timepoint].SubprojectTitle}</td>
 

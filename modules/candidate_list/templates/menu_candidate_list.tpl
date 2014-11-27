@@ -204,7 +204,7 @@
          <th>No.</th>
             <!-- print out column headings - quick & dirty hack -->
             {section name=header loop=$headers}
-                <th><a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                <th><a href="{$baseurl}/main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
             {/section}
         </tr>
     </thead>
@@ -219,7 +219,7 @@
                 {/if}
                 {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
                     {assign var="PSCID" value=$items[item][piece].value}
-                    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+                    <a href="{$baseurl}/main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
 
                 {elseif $items[item][piece].name == "scan_Done"}
                     {if $items[item][piece].value == 'Y'}
