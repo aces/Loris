@@ -504,16 +504,21 @@ class CouchDB
      * @param string $viewname  View to be queried
      * @param array  $params    Any additional parameters to be passed to the
      *                          CouchDB view
+     * @param boolean $full_json If true will include the full json returned,
+     *                           and not just the parsed rows.
      *
      * @return array An array of the rows returned by the view
      */
-    function queryView($designdoc, $viewname, $params)
+    function queryView($designdoc, $viewname, $params, $full_json=false)
     {
         $query = $this->_getRelativeURL(
             "_design/" . $designdoc . "/_view/" . $viewname
             . "?" . http_build_query($params)
         );
 
+        if($full_json) {
+            return $query;
+        }
         $data = json_decode($query, true);
 
         if (isset($data['error']) && $data['error'] == 'not_found') {
