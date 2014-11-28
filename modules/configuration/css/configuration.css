@@ -1,45 +1,29 @@
-.form-control {
-   display: inline;
-}
-
- .add {
-   margin-bottom: 7px;
- }
-
- .allowMultipleEntry {
-   display: inline;
- }
-
- .remove {
-   display: inline;
-   background-image: none;
-   border: none;
-   background-color: transparent;
- }
-
- .inline {
-   display: inline;
+.remove {
+    display: inline;
+    background-image: none;
+    border: none;
+    background-color: transparent;
  }
 
 .form-item {
-   display: block;
+    display: block;
 }
 
-.rm-btn {
-   float: right;
-   font-size: 10px;
-   color: #178ACC;
-   display: inline;
-   background-image: none;
-   border: none;
-   background-color: transparent;
-   margin-top: -4px;
-   margin-bottom: 4px;
+.submitted {
+    display:inline;
 }
 
-.rm-btn:hover, .rm-btn:focus {
-   background-color: transparent;
-   background-image: none;
-    color: #555555;
-    text-decoration: none
+.entry {
+    margin-bottom: 10px;
+}
+
+.config-dev-name {
+    color:grey;
+    font-size: 11px;
+    padding-right: 15px;
+    margin-top: -3px;
+}
+
+.submit-area {
+    margin-top: 30px;
 }
