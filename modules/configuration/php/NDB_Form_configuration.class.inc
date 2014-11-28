@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main 
  * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 
@@ -22,7 +22,7 @@ require_once 'NDB_Form.class.inc';
  * @category Behavioural
  * @package  Main 
  * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 class NDB_Form_Configuration extends NDB_Form
@@ -63,7 +63,9 @@ class NDB_Form_Configuration extends NDB_Form
         }
 
         $parentMenuItems = $this->DB->pselect(
-            "SELECT Label, Name FROM ConfigSettings WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber", 
+            "SELECT Label, Name 
+             FROM ConfigSettings 
+             WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber", 
             array()
         );
 
