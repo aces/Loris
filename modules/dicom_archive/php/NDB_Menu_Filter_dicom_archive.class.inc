@@ -37,11 +37,8 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
-        return $user->hasPermission('view_final_radiological_review');
+        $user = User::singleton();
+        return $user->hasPermission('dicom_archive_view_allsites');
     }
     
     /**
