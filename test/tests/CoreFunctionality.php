@@ -47,7 +47,7 @@ class TestOfLoris extends LorisTest
         $salt = substr($row['Password_md5'], 0, 2);
         $this->assertTrue($row['Password_md5'] == ($salt . md5($salt . '4test4')));
         $this->assertFalse(
-            $row['Password_md5'] == User::md5_salt('notrealpassword')
+            $row['Password_md5'] == User::MD5Salt('notrealpassword')
         );
     }
 
