@@ -161,4 +161,38 @@ UPDATE ConfigSettings SET OrderNumber=1 WHERE Name='From';
 UPDATE ConfigSettings SET OrderNumber=2 WHERE Name='Reply-to';
 UPDATE ConfigSettings SET OrderNumber=3 WHERE Name='X-MimeOLE';
 
+-- Updating descriptions
+
+UPDATE ConfigSettings SET Description='Settings related to details of the study' WHERE Name='study';
+UPDATE ConfigSettings SET Description='Settings that specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.' WHERE Name='paths';
+UPDATE ConfigSettings SET Description='Settings related to the overall display of LORIS' WHERE Name='gui';
+UPDATE ConfigSettings SET Description='Web address settings' WHERE Name='www';
+UPDATE ConfigSettings SET Description='Settings that affect the appearance of the dashboard and its charts' WHERE Name='dashboard';
+UPDATE ConfigSettings SET Description='DICOM archive settings' WHERE Name='dicom_archive';
+UPDATE ConfigSettings SET Description='Statistics module settings' WHERE Name='statistics';
+UPDATE ConfigSettings SET Description='Settings that affect emails sent from LORIS' WHERE Name='mail';
+
+UPDATE ConfigSettings SET Description='Full descriptive title of the study' WHERE Name='title';
+UPDATE ConfigSettings SET Description='Filename containing logo of the study. File should be located under the htdocs/images/ folder' WHERE Name='studyLogo';
+UPDATE ConfigSettings SET Description='Enable if there is there more than one site in the project' WHERE Name='multipleSites';
+UPDATE ConfigSettings SET Description='Enable if the study involves more than one project, where each project has multiple cohorts/subprojects' WHERE Name='useProjects';
+UPDATE ConfigSettings SET Description='Enable for proband data collection' WHERE Name='useProband';
+UPDATE ConfigSettings SET Description='Enable if family members are recruited for the study' WHERE Name='useFamilyID';
+UPDATE ConfigSettings SET Description='Enable if data is used for blind data distribution, or from external data sources' WHERE Name='useExternalID';
+UPDATE ConfigSettings SET Description='Use EDC (Expected Date of Confinement) if the study uses neonatals for birthdate estimations' WHERE Name='useEDC';
+UPDATE ConfigSettings SET Description='Enable if there is a Screening stage with its own distinct instruments, administered before the Visit stage' WHERE Name='useScreening';
+
+UPDATE ConfigSettings SET Description='Path to Imaging Browser files' WHERE Name='imagePath';
+UPDATE ConfigSettings SET Description='The base filesystem path where LORIS is installed' WHERE Name='base';
+
+UPDATE ConfigSettings SET Description='CSS file used for rendering (default main.css)' WHERE Name='css';
+
+UPDATE ConfigSettings SET Description='Main project URL where LORIS can be accessed' WHERE Name='url';
+
+UPDATE ConfigSettings SET Description='Description of the project that will be displayed on the dashboard' WHERE Name='projectDescription';
+
+UPDATE ConfigSettings SET Description='Excluded measures' WHERE Name='excludedMeasures';
+
+-- Update the help
+
 UPDATE help SET content='The Configuration Module allows you to edit configuration settings from the front end. The configuration values are stored in the database, instead of in the config.xml file. Any settings that are not currently in the Configuration Module can still be found and edited from the config.xml file.\r\n\r\nTo edit any configuration settings, navigate to the field that you\'d like to edit in the module, and edit or insert a new value.\r\n\r\nSome configuration settings can accept multiple values. For these settings, you can add additional fields by pressing the "Add Field" button. This will create an empty form area where you can insert new values. You can delete any of the settings by pressing the red delete button attached to the form.\r\n\r\nPress the submit button at the bottom of the page to save your changes. You must press the submit button that is on the page where you are making the changes for the changes to be stored in the database. If you press the submit button on another configuration page, it will not store any changes made on other pages.\r\n\r\nCare should be taken when editing the fields as there is currently no way to revert changes. You can reset the form to its values on page load by pressing the reset button. However, this will not undo any changes made before the submit button has been pressed.' WHERE hash=md5('configuration');
