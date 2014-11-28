@@ -29,8 +29,8 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-4">{$form.mri_file.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.mri_file.html}</div>
+                            <label class="col-sm-4">{$form.mri_file.label}</label>
+                            <div class="col-sm-8">{$form.mri_file.html}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -70,6 +70,9 @@
         </div>
     </div>
 </div>
+ 
+{*  This section is commented out because the functionality is not currently in the backend
+    This functionality is expected to be implemented in future releases of LORIS 
     <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
     
     <table>
@@ -89,6 +92,8 @@
         </tr>
     
     </table>
+
+*}
 <div class="row">
                 <table class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
                     <thead>

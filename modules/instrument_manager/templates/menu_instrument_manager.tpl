@@ -7,7 +7,7 @@
                 <div class="panel-heading">Upload Instrument</div>
                 <div class="panel-body">
                     <div class="col-xs-12">
-                        <input type="file" name="install_file">
+                        <input class="fileUpload" type="file" name="install_file">
                         <br>
                         <input class="btn btn-default" type="submit" name="install" value="Install Instrument" class="button">
                     </div>
