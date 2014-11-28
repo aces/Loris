@@ -65,7 +65,7 @@ class NDB_Menu extends NDB_Page
         } elseif (class_exists("NDB_Menu_Filter_Form_$menu")) {
             $class = "NDB_Menu_Filter_Form_$menu";
         } else {
-            return PEAR::raiseError("The menu class ($menu) is not defined.");
+            throw new Exception("The menu class ($menu) is not defined.");
         }
 
         // create a new menu object
@@ -80,13 +80,10 @@ class NDB_Menu extends NDB_Page
         $obj->menu = $menu;
         $obj->mode = $mode;
         $access    = $obj->_hasAccess();
-        if (Utility::isErrorX($access)) {
-            return PEAR::raiseError("NDB_Menu::factory(): ".$access->getMessage());
-        }
 
         // check that user has access
         if ($access == false) {
-            return PEAR::raiseError("You do not have access to this page.", 403);
+            throw new Exception("You do not have access to this page.", 403);
         }
 
         return $obj;
@@ -101,9 +98,6 @@ class NDB_Menu extends NDB_Page
      *
      *     // create user object
      *     $user =& User::singleton();
-     *     if(Utility::isErrorX($user)) {
-     *         return PEAR::raiseError("User Error: ".$user->getMessage());
-     *     }
      *
      *     return $user->hasPermission('superuser');
      *
