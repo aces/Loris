@@ -86,7 +86,7 @@ class NDB_Breadcrumb extends PEAR
 
         // set the query string
         $this->_breadcrumb[$this->_lastIndex]['query']
-            = Utility::unparse_str($this->_parameters);
+            = http_build_query($this->_parameters);
 
         // set the crumb text
         if (!is_null($text)) {
