@@ -189,7 +189,7 @@ class NDB_Page extends PEAR
     ) {
         $specifications = array_merge(
             array('class' => 'form-control input-sm'),
-            $optional
+            $specifications
         );
         $this->form->addElement('textarea', $field, $label, $specifications);
     }
