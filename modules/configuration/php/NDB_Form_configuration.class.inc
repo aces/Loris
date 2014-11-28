@@ -51,6 +51,9 @@ class NDB_Form_Configuration extends NDB_Form
 
     function configuration()
     {
+
+        $config =& NDB_Config::singleton();
+
         $this->DB = Database::singleton();
         if (Utility::isErrorX($this->DB)) {
             return PEAR::raiseError(
@@ -97,42 +100,9 @@ class NDB_Form_Configuration extends NDB_Form
 
         $this->tpl_data['parentMenuItems'] = $parentMenuItems;
         $this->tpl_data['config']          = $configs;
-        $this->tpl_data['options']         = array('0'=>'0', '1'=>'1');
         $this->tpl_data['instruments']     = $instruments;
+        $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
 
-    }
-
-    /**
-     * process the form
-     *
-     * @param Array $values the array of values from the form
-     * 
-     * @return NULL
-     */
-
-    function _process($values)
-    {
-        foreach ($values as $key => $value) {
-            if (is_numeric($key)) { //update
-                $this->DB->update(
-                    'Config', 
-                    array('Value' => $value), 
-                    array('ID' => $key)
-                );
-            } else { //add new or remove
-                $id = split("-", $key);
-                if ($id[0] === "add") {
-                    $this->DB->insert(
-                        'Config', 
-                        array('ConfigID' => $id[1], 'Value' => $value)
-                    );
-                } elseif ($id[0] === "remove") {
-                    $this->DB->delete('Config', array('ID' => $id[1]));
-                }
-            } 
-        } 
-        
-        $this->configuration();
     }
 }
 

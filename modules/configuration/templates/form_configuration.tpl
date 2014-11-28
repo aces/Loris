@@ -40,7 +40,7 @@
 <div class="form-group">
     <div class="col-sm-3" data-toggle="tooltip" data-placement="right" title="{$node['Description']}">
         <label class="col-sm-12 control-label config-name">{$node['Label']}</label>
-        <div class="config-dev-name pull-right"><i>{$node['Name']}</i></div>
+        {if $sandbox}<div class="config-dev-name pull-right"><i>{$node['Name']}</i></div>{/if}
     </div>
     <div class="col-sm-9">
         {if isset($node['Children']) && $node['Children']}
