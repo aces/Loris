@@ -190,7 +190,7 @@ class NDB_Form_dashboard extends NDB_Form
         }
 
         // Violated scans
-        if ($user->hasPermission('violated_scans')) {
+        if ($user->hasPermission('violated_scans_view_allsites')) {
             $this->tpl_data['violated_scans'] = $DB->pselectOne(
                 "SELECT count(*) FROM mri_protocol_violated_scans", array()
             );
