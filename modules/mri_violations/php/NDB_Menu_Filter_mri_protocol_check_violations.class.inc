@@ -42,7 +42,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
         if (PEAR::isError($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return $user->hasPermission('view_final_radiological_review');
+        return $user->hasPermission('violated_scans_view_allsites');
     }
 
     /**

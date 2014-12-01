@@ -1,1 +1,2 @@
-INSERT INTO permissions (code, description, categoryID) VALUES ("mri_violated_scans_view_allsites", "Across all sites view MRI Protocol Violated Scans module and pages", 2);
+UPDATE permissions code="violated_scans_view_allsites" ,description="Violated Scans: View all-sites Violated Scans" WHERE code="violated_scans";
+UPDATE permissions code="violated_scans_edit" ,description="Violated Scans: Edit MRI protocol table" WHERE code="violated_scans_modifications";
