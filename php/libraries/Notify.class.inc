@@ -40,7 +40,7 @@ class Notify extends PEAR
 
         $typeID = Notify::getTypeID($type);
         if (empty($typeID) || Notify::isError($typeID)) {
-            return Notify::raiseError(
+            throw new Exception(
                 "Could not retrieve notification type id for type '$type'"
             );
         }

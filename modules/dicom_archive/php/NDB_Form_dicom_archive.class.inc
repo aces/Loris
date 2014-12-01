@@ -41,10 +41,7 @@ class NDB_Form_Dicom_Archive extends NDB_Form
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
+        $user = User::singleton();
         return $user->hasPermission('dicom_archive_view_allsites');
     }
 

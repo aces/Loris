@@ -60,32 +60,6 @@ class Utility extends PEAR
     }
 
     /**
-     * Builds a query string
-     *
-     * @param array $params Array of parameters to put into query string format
-     *
-     * @return string
-     */
-    static function unparse_str ($params)
-    {
-        $str = '';
-        foreach ($params as $key => $value) {
-            if (is_array($value)) {
-                foreach ($value AS $vkey => $vval) {
-                    $str .= (strlen($str) < 1) ? '' : '&';
-                    $str .= $key . rawurlencode("[$vkey]")
-                        . '=' . rawurlencode($vval);
-                }
-            } else {
-                $str .= (strlen($str) < 1) ? '' : '&';
-                $str .= $key . '=' . rawurlencode($value);
-            }
-        }
-        return ($str);
-    }
-
-
-    /**
      * Converts a multi-dimensional array to a one-dimensional array
      *
      * @param array $array The multi-dimensional array
@@ -135,9 +109,7 @@ class Utility extends PEAR
             $dob,
             $matches
         )) {
-            return PEAR::raiseError(
-                "Argument 1 does not match expected date format (YYYY-MM-DD)"
-            );
+            throw new Exception("Argument 1 does not match expected date format (YYYY-MM-DD)");
         }
         $dob = array(
                 'year' => $matches[1],
@@ -150,9 +122,7 @@ class Utility extends PEAR
             $testdate,
             $matches
         )) {
-            return PEAR::raiseError(
-                "Argument 2 does not match expected date format (YYYY-MM-DD)"
-            );
+                throw new Exception("Argument 2 does not match expected date format (YYYY-MM-DD)");
         }
         $testdate = array(
                      'year' => $matches[1],
@@ -197,9 +167,6 @@ class Utility extends PEAR
 
         // execute the query
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -231,9 +198,6 @@ class Utility extends PEAR
         // execute the query
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -263,9 +227,6 @@ class Utility extends PEAR
         }
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -302,9 +263,6 @@ class Utility extends PEAR
         }
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // fix the array
         $list = array();
@@ -327,9 +285,6 @@ class Utility extends PEAR
         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
         $result = $DB->pselect($query, array());
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         $list = array();
         foreach ($result as $row) {
@@ -403,11 +358,6 @@ class Utility extends PEAR
                 WHERE ProjectID=:pID";
             $subprojList = $db->pselect($query, array('pID' => $projectID));
 
-            if (Utility::isErrorX($subprojList)) {
-                return PEAR::raiseError(
-                    "Could not list of subprojects ".$subprojList->getMessage()
-                );
-            }
             foreach ($subprojList as $row) {
                 $subList[] = $row['SubprojectID'];
             }
@@ -440,12 +390,6 @@ class Utility extends PEAR
 
         $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
         $testName = $db->pselectOne($query, array('CID' => $commentID));
-
-        if (Utility::isErrorX($testName)) {
-            return PEAR::raiseError(
-                "Could not get test name: ".$testName->getMessage()
-            );
-        }
 
         return $testName;
     }
@@ -567,7 +511,7 @@ class Utility extends PEAR
      *
      * @return An array with the two parameters recursively merged
      */
-    static function array_merge_recursive_overwriting(
+    static function arrayMergeRecursiveOverwriting(
         $array1,
         $array2,
         &$merged_array=null
@@ -579,7 +523,7 @@ class Utility extends PEAR
             if (is_array($array1[$key]) && isset($array1[$key][0])) {
                 $merged_array[$key] = $value;
             } elseif (is_array($array2[$key]) && !isset($array2[$key][0])) {
-                Utility::array_merge_recursive_overwriting(
+                Utility::arrayMergeRecursiveOverwriting(
                     $array1[$key],
                     $array2[$key],
                     $merged_array[$key]
@@ -624,13 +568,6 @@ class Utility extends PEAR
         $rows  = array();
         $tests = array();
         $rows  = $DB->pselect($query, $params);
-        if (Utility::isErrorX($rows)) {
-            fwrite(
-                STDERR,
-                "Could not lookup battery from database: ".$rows->getMessage()
-            );
-            return false;
-        }
 
         // repackage the array
         foreach ($rows AS $row) {
@@ -774,29 +711,6 @@ class Utility extends PEAR
             $arr[$field] = null;
         }
         return $arr;
-    }
-
-    /**
-     * Case insensitive search to see if an item is in an array
-     * from php.net comments
-     *
-     * @param string $item  The needle to search for
-     * @param array  $array The array to search for $item
-     *
-     * @return  True iff $item is in $array without regard to case
-     * @note    Function comment written by Dave, not the author of this function.
-     * @note    This does not appear to be used. If not, it should be removed,
-     * @cleanup ?
-     */
-    function in_array_insensitive($item, $array)
-    {
-        $item = &strtoupper($item);
-        foreach ($array as $element) {
-            if ($item == strtoupper($element)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -1032,11 +946,6 @@ class Utility extends PEAR
             AND f.Test_name = :tn AND psc.Centerid!= '1'";
 
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
-        if (Utility::isErrorX($visitlabels)) {
-            return PEAR::raiseError(
-                "Could not get visit label: ".$visitlabels->getMessage()
-            );
-        }
         return $visitlabels;
     }
     /**
@@ -1230,9 +1139,6 @@ class Utility extends PEAR
             );
         }
 
-        if (Utility::isErrorX($test_names)) {
-            return PEAR::raiseError("DB Error: ".$instruments->getMessage());
-        }
         return $test_names;
     }
 

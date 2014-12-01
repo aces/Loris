@@ -8,12 +8,14 @@ html {
 }
 
 body {
-    background: #e2e2e2 !important;
+   /* background: #e2e2e2 !important;*/
+   background: white;
+
 }
 
 #brainbrowser-wrapper {
     margin-top: 0px !important;
-/*    background: white;*/
+    background: white;
 }
 
 #volume-viewer {
@@ -57,7 +59,7 @@ body {
 }
 */
 .blend-div {
-    padding-top: 40px;
+ /*   padding-top: 40px;*/
 }
 
 #blend-slider {
@@ -65,6 +67,9 @@ body {
 
 .control-heading {
     font-weight: normal !important;
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: black;
 }
 
 .control-inputs {
@@ -74,6 +79,7 @@ body {
     -webkit-border-radius: 3px; 
     border-radius: 3px; 
     background: #c1c1c1;
+    text-align: center;
 }
 
 .thresh-input-left {
@@ -120,12 +126,14 @@ body {
 
 #global-controls {
     padding: 5px;
+    position: fixed;
 /*    background: #555555; */
     border-radius: 4px;
     -webkit-border-radius: 4px;
     display: block;
-    margin: 0 auto;
     width: 320px;
+    top: 160px;
+    left: 30px;
 }
 
 #app-name {
@@ -148,8 +156,58 @@ body {
 .filename {
     font-weight: bold;
     color: #064785;
+    font-size: 14px;
+    margin-top: 0.5em;
+    padding-right: 15px;
 }
 
 .intensity-value {
     padding: 1px;
+    float: right;
+    text-align: center;
+}
+#color-map-select {
+    float: right;
+    margin-right: 20px;
+    width: 30%;
+    height: 28%;
+}
+.line-separator {
+    height:1px;
+    background:#717171;
+ /*   border-bottom:1px solid #ddd;*/
+   border-bottom:1px solid #e5e5e5;
+    margin-top: 0.7em;
+    margin-bottom: 0.5em;
+}
+.filename-additional-info {
+    display: none;
+}
+.filename-overlay-additional-info {
+    display: none;
+}
+.arrow {
+  padding: 1px;
+  float: right;
+  position: relative;
+  top: -28px;
+
+}
+
+.filename-overlay {
+    font-weight: bold;
+    color: #064785;
+    font-size: 14px;
+    margin-top: 0.7em;
+}
+.play-btn {
+   float: right;
+   font-size: 11px;
+}
+.panel-size {
+  color: #fff;
+  background-color: #064785;
+  border-color: #053a6d;
+  margin-top: 10px;
+  font-weight: bold;
 }

@@ -60,10 +60,6 @@ class Candidate
         if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
             $success = $candidateList[$candID]->select($candID);
-
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError($success->getMessage());
-            }
         }
 
         return $candidateList[$candID];
@@ -87,11 +83,6 @@ class Candidate
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
@@ -104,12 +95,8 @@ class Candidate
 
         $row = $db->pselectRow($query, $CandArray);
 
-        if (Utility::isErrorX($row)) {
-            return PEAR::raiseError("DB Error: " . $row->getMessage());
-        }
-
         if (!is_array($row) || sizeof($row) == 0) {
-            return PEAR::raiseError(
+            throw new Exception(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
             );
@@ -167,7 +154,7 @@ class Candidate
                 trim($_REQUEST['PSCID'])
             ) != strtolower($this->getPSCID())
             ) {
-                return (PEAR::raiseError("IDs do not match"));
+                throw new Exception("IDs do not match");
             }
         }
 
@@ -177,12 +164,6 @@ class Candidate
             WHERE s.CandID=:Candidate AND s.Active='Y'
             ORDER BY ID";
         $row   = $db->pselect($query, $CandArray);
-
-        if (Utility::isErrorX($row)) {
-            return PEAR::raiseError(
-                "Could not retrieve candidate/timepoint data from database"
-            );
-        }
 
         // store user data in object property
         foreach ($row AS $value) {
@@ -207,35 +188,13 @@ class Candidate
     static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
     {
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         $site =& Site::singleton($centerID);
-        if (Utility::isErrorX($site)) {
-            return PEAR::raiseError(
-                "Could not create a new candidate for site: ("
-                . $site->getMessage()
-                . ")"
-            );
-        }
 
         $user =& User::singleton($_SESSION['State']->getUsername());
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError(
-                "Could not create a new candidate for user: ("
-                . $user->getMessage()
-                . ")"
-            );
-        }
 
         // generate candid
         $candID = Candidate::_generateCandID();
-        if (Utility::isErrorX($candID)) {
-            return $candID;
-        }
 
         // figure out how to generate PSCID
         $config        =& NDB_Config::singleton();
@@ -244,7 +203,7 @@ class Candidate
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified
             if (empty($PSCID)) {
-                return PEAR::raiseError(
+                throw new Exception(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
                 );
@@ -252,7 +211,7 @@ class Candidate
 
             // check pscid structure
             if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
-                return PEAR::raiseError(
+                throw new Exception(
                     "PSCID has an invalid structure",
                     PSCID_INVALID_STRUCTURE
                 );
@@ -264,13 +223,10 @@ class Candidate
                 array('PID' => $PSCID)
             ) > 0
             ) {
-                return PEAR::raiseError("PSCID not unique", PSCID_NOT_UNIQUE);
+                throw new Exception("PSCID not unique", PSCID_NOT_UNIQUE);
             }
         } else {
             $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
-            if (Utility::isErrorX($PSCID)) {
-                return $PSCID;
-            }
         }
 
         // insert the new candidate into the database
@@ -360,21 +316,12 @@ class Candidate
         $this->candidateInfo = array_merge($this->candidateInfo, $setData);
 
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
+
         $success = $db->update(
             'candidate',
             $setData,
             array('CandID' => $this->getData('CandID'))
         );
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "Candidate::setData: ".$success->getMessage()
-            );
-        }
         return true;
     }
 
@@ -530,18 +477,10 @@ class Candidate
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
         $result = $db->pselect($query, array('Candidate' => $candID));
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("Could not retrieve existing data for session");
-        }
 
         // map the array [VisitNo]=>Visit_label
         foreach ($result as $row) {
@@ -564,20 +503,12 @@ class Candidate
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
             FROM session
             WHERE CandID=:CaID AND (Active='Y' OR Active is null)
             GROUP BY CandID";
         $result = $db->pselectRow($query, array('CaID' => $candID));
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("Could not retrieve existing data for session");
-        }
 
         //return the next visit No
         return $result["nextVisitNo"];
@@ -602,11 +533,6 @@ class Candidate
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         if ($visitLabelSettings['generation'] == 'user'
             && !empty($visitLabelSettings['suggest'])
@@ -617,11 +543,6 @@ class Candidate
                 WHERE CandID=:CaID AND (Active='Y' OR Active is null)
                 GROUP BY CandID";
             $result = $db->pselectRow($query, array('CaID' => $candID));
-            if (Utility::isErrorX($result)) {
-                return PEAR::raiseError(
-                    "Could not retrieve existing data for session"
-                );
-            }
 
             $nextVisitLabel = $result['nextVisitLabel'];
             if (!empty($existingVisitLabels)) {
@@ -655,22 +576,12 @@ class Candidate
     function getValidSubprojects()
     {
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
         $params  = array('prj' => $projID);
         $subproj = $db->pselect($query, $params);
 
-        if (Utility::isErrorX($subproj)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$subproj->getMessage()
-            );
-        }
         foreach ($subproj as $row) {
             foreach ($row as $key =>$val) {
                 if ($key == 'SubprojectID') {
@@ -691,22 +602,12 @@ class Candidate
 
         $candID = $this->getCandID();
 
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
-
         $query  = "SELECT Visit_label
             FROM session s JOIN candidate c ON (c.CandID = s.CandID)
-            WHERE c.CandID=:cid ORDER BY Date_Visit";
+            WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
+            ORDER BY Date_Visit";
         $where  = array('cid' => $candID);
         $vLabel = $db->pselectOne($query, $where);
-        if (Utility::isErrorX($vLabel)) {
-            return PEAR::raiseError(
-                "Could not connect to database: " . $vLabel->getMessage()
-            );
-        }
 
         return $vLabel;
     }
@@ -722,9 +623,6 @@ class Candidate
     {
         // get a database connection
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return $db;
-        }
 
         // generate a candidate id
         $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
@@ -753,9 +651,6 @@ class Candidate
     {
         // get a database connection
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return $db;
-        }
 
         $config =& NDB_Config::singleton();
 
@@ -801,10 +696,6 @@ class Candidate
         $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
 
         $db =& Database::singleton();
-
-        if (Utility::isErrorX($db)) {
-            return $db;
-        }
 
         do {
             // genereate a new external ID

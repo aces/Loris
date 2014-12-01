@@ -28,9 +28,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     // Change viewer panel canvas size.
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
-
       viewer.setPanelSize(size, size, { scale_image: true });
-    }); 
+    });
 
     // Should cursors in all panels be synchronized?
     $("#sync-volumes").change(function() {
@@ -163,7 +162,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       // Change the color map currently being used to display data.
       // Color map URLs are read from the config file and added to the
       // color map select box.
-      var color_map_select = $('<select id="color-map-select"></select>').change(function() {
+      var color_map_select = $('<select id="color-map-select" class="form-control input-sm"></select>').change(function() {
         var selection = $(this).find(":selected");
 
         viewer.loadVolumeColorMapFromURL(vol_id, selection.val(), selection.data("cursor-color"), function() {
@@ -439,6 +438,27 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           }
       });
 
+      $('#filename-'+vol_id).on("click", function() {
+               $('#filename-additional-info-'+vol_id).slideToggle("fast");
+               var arrow = $(this).siblings('.arrow');
+               if (arrow.hasClass('glyphicon-chevron-down')) {
+                   arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+               } else {
+                   arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+               }
+
+       });
+       $('.filename-overlay').on("click", function() {
+               $('.filename-overlay-additional-info').slideToggle("fast");
+               var arrow = $(this).siblings('.arrow');
+               if (arrow.hasClass('glyphicon-chevron-down')) {
+                   arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+               } else {
+                   arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+               }
+
+       });
+
     });
 
 
@@ -467,13 +487,12 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       $("#voxel-z-" + vol_id).val(parseInt(voxel_coords.z, 10));
 
       value = volume.getIntensityValue();
-      $("#intensity-value-" + vol_id)
-      .css("background-color", "#" + volume.color_map.colorFromValue(value,     {
+      $("#intensity-value-" + vol_id).html(Math.floor(value));
+      $("#intensity-value-bg-" + vol_id).css("background-color", "#" + volume.color_map.colorFromValue(value,     {
         format: "hex",
         min: volume.min,
         max: volume.max
-      }))
-      .html(Math.floor(value));
+      }));
 
       if (volume.data && volume.data.time) {
         $("#time-slider-" + vol_id).slider("option", "value", volume.current_time);
