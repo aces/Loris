@@ -970,16 +970,15 @@ INSERT INTO `permissions` VALUES
     (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
     (18,'data_dict','Parameter Type description','2'),
-    (19,'violated_scans','Violated Scans','2'),
-    (20,'violated_scans_modifications','Editing the MRI protocol table (Violated Scans module)','2'),
+    (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
+    (20,'violated_scans_edit','Violated Scans: Edit MRI protocol table','2'),
     (21,'data_integrity_flag','Data Integrity Flag','2'),
     (22,'config','Edit configuration settings','2'),
     (23,'edit_final_radiological_review','Can edit final radiological reviews','2'),
     (24,'view_final_radiological_review','Can see final radiological reviews','2'),
     (25,'imaging_browser_view_site','View own-site Imaging Browser pages','2'),
     (26,'imaging_browser_view_allsites', 'View all-sites Imaging Browser pages', '2'),
-    (27,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
-    (28,'mri_violated_scans_view_allsites','Across all sites view MRI Protocol Violated Scans module and pages','2');
+    (27,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
