@@ -63,20 +63,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    </span><span class="sr-only">Close</span></button>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     <h3 class="modal-title">Email to Study Participant</h3>
                 </div>
             <div class="modal-body">
-                <textarea class="form-control" name="email_dialog" rows="24" cols="80">This is where your message goes.</textarea>
+                <textarea class="form-control" id="emailContent" name="email_dialog" rows="24" cols="80">This is where your message goes.</textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Email</button>
+                <button type="button" id="emailData" class="btn btn-primary">Email</button>
             </div>
         </div>
-    </div>
-    <div id="email_dialog">
-        <textarea name="email_dialog" rows="24" cols="80">This is where your message goes.</textarea>
     </div>
 </form>
 </div>
