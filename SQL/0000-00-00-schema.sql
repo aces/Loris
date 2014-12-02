@@ -2000,7 +2000,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 
 -- MRI Violated Scans
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans' AND m.Label='MRI Violated Scans';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans_view_allsites' AND m.Label='MRI Violated Scans';
 
 -- MRI Upload
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
