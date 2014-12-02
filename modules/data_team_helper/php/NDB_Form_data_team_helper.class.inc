@@ -15,7 +15,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        return true;
+        return ($user->hasPermission('data_team_helper'));
     }
 
     function _getDefaults()
