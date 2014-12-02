@@ -110,7 +110,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
                     }
                 }
                 $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
+                $this->tpl_data['items'][$x][$i]['value'] = utf8_encode($val);
 
                 $i++;
             }
