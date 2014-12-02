@@ -58,7 +58,8 @@ $(document).ready(function () {
     });
     $("input[type=submit]").click(function (e) {
         if(e.currentTarget.classList.contains('email')) {
-            $("#email_dialog").dialog("open");
+            $("#emailModal").modal();
+            // $("#email_dialog").dialog("open");
             return false;
         }
     });
