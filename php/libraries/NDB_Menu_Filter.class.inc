@@ -605,7 +605,7 @@ class NDB_Menu_Filter extends NDB_Menu
             if (isset($this->filter['order'])) {
                 $this->tpl_data['headers'][$i]['fieldOrder']
                     = ($this->filter['order']['fieldOrder']
-                        == 'ASC') ? 'DESC' : 'ASC';
+                        == 'DESC') ? 'ASC' : 'DESC';
             }
             $i++;
         }
