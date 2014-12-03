@@ -14,7 +14,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once "NDB_Form.class.inc";
-require_once'RequiredIf.inc';
 
 /**
  * The class that implements base functionality for Reliability checking.
