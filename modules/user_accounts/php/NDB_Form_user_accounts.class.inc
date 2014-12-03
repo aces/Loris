@@ -148,13 +148,6 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
 
-        // update Mantis account if applicable
-        $mantis_dir = $config->getSetting('mantis');
-        if (!empty($mantis_dir)) {
-            // update mantis records
-            $user->updateMantisUser($values['Password_md5']);
-        }
-        
         // update the user permissions if applicable
         if (!empty($permIDs)) {
             $success = $user->removePermissions();
