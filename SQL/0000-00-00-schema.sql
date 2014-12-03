@@ -969,7 +969,7 @@ INSERT INTO `permissions` VALUES
     (14,'timepoint_flag','Edit exclusion flags','2'),
     (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
-    (18,'data_dict','Parameter Type description','2'),
+    (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
     (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
     (20,'violated_scans_edit','Violated Scans: Edit MRI protocol table','2'),
     (21,'data_integrity_flag','Data Integrity Flag','2'),
@@ -978,7 +978,14 @@ INSERT INTO `permissions` VALUES
     (24,'view_final_radiological_review','Can see final radiological reviews','2'),
     (25,'imaging_browser_view_site','View own-site Imaging Browser pages','2'),
     (26,'imaging_browser_view_allsites', 'View all-sites Imaging Browser pages', '2'),
-    (27,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2');
+    (27,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
+    (28,'reliability_edit_all', 'Access and Edit all Reliability profiles', '2'),
+    (29,'reliability_swap_candidates', 'Swap Reliability candidates across all sites', '2'),
+    (30,'instrument_builder', 'Instrument Builder: Create and Edit instrument forms', '2'),
+    (31,'data_dict_edit','Edit Data Dictionary','2'),
+    (32,'data_team_helper','Data Team Helper','2'),
+    (33,'candidate_parameter_view','View Candidate Parameters','2'),
+    (34,'candidate_parameter_edit','Edit Candidate Parameters','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -2010,11 +2017,11 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 
 -- Data Query Tool
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict' AND m.Label='Data Query Tool';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict_view' AND m.Label='Data Query Tool';
 
 -- Data Dictionary
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict' AND m.Label='Data Dictionary';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_dict_view' AND m.Label='Data Dictionary';
 
 -- Document Repository
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2024,8 +2031,13 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID 
     FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_integrity_flag' AND m.Label='Data Integrity Flag';
 
--- Data Team Helper -- Config file currently does not require any permission
--- Instrument Builder -- Config file currently does not require any permission
+-- Data Team Helper
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_team_helper' AND m.Label='Data Team Helper';
+
+-- Instrument Builder 
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='instrument_builder' AND m.Label='Instrument Builder';
 
 -- User Accounts
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
