@@ -153,7 +153,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @return object the new object of $instrument type
      * @access public
      */
-    function factory($instrument, $commentID, $page, $guarantee_exists = true)
+    static function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
         include_once 'HTML/QuickForm.php';
         $class = "NDB_BVL_Instrument_$instrument";
