@@ -1,15 +1,15 @@
-{function name="renderbase" type=$type element=$element}
+{function name="renderbase" type=$type element=$element lastComma=true}
     "Type" : "{$type}",
-    "Name" : "{$element.name}",
-    "Description" : "{$element.label}",
+    {if $element.name} "Name" : "{$element.name}",{/if}
+    "Description" : "{$element.label}"
 {/function}
 {function name="renderselect" element=$element}
 {ldelim}
-    {renderbase type="select" element=$element}
+    {renderbase type="select" element=$element},
     "Options" : {ldelim}
         "Values" : {ldelim}
-        {foreach from=$element.options item=item key=key}
-            "{$key}": "{$item}"
+        {foreach from=$element.options item=item key=key name=SelectLoop}
+            "{$key}": "{$item|strip}"{if !$smarty.foreach.SelectLoop.last},{/if}
             {/foreach}
         {rdelim}
     {rdelim}
@@ -17,7 +17,7 @@
 {/function}
 {function name="rendertext" element=$element}
 {ldelim}
-    {renderbase type="text" element=$element}
+    {renderbase type="text" element=$element},
     "Options" : {ldelim}
         "Type" : "{if $element.type == "textarea"}large{else}small{/if}",
         "RequireResponse" : true
@@ -25,13 +25,21 @@
 {rdelim}
 {/function}
 {function renderdate element=$element}
-    {renderbase type="date" element=$element}
+{ldelim}
+    {renderbase type="date" element=$element},
     "Options" : {ldelim}
-        "MinDate" : {$element.options.mindate}
-        "MaxDate" : {$element.options.maxdate}
+        "MinDate" : "{$element.options.mindate}",
+        "MaxDate" : "{$element.options.maxdate}"
     {rdelim}
+{rdelim}
+{/function}
+{function name="renderscore" element=$element}
+{ldelim}
+    {renderbase type="score" element=$element}
+{rdelim}
 {/function}
 {function name="renderelement" element=$element}
+{strip}
 {if $element.type == "select"}
     {renderselect element=$element}
 {elseif $element.type == "text" || $element.type == "textarea"}
@@ -41,15 +49,29 @@
 {elseif $element.type == "numeric"}
     NUMERIC TYPE NOT YET IMPLEMENTED
 {elseif $element.type == "static"}
-    STATIC NOT YET IMPLEMENTED
+    {if $element.name!= ''}
+        {if $element.name != 'Window_difference' && $element.name != 'Candidate_Age'}
+            {* Window Difference and Candidate Age are from the MetaData fields *}
+            {renderscore element=$element}
+        {/if}
+    {else}
+        {if $element.description|strip}
+            {renderbase type="label" element=$element lastComma=false}
+        {/if}
+    {/if}
 {elseif $element.type == "group"}
-    GROUP NOT YET IMPLEMENTED
+    {ldelim}
+        "Type" : "Group",
+        "Error" : "Unimplemented"
+    {rdelim}
 {else}
-            UNKNOWN ELEMENT TYPE: $element.type
-{$element|print_r}
+    {ldelim}
+        "Type" : "Unknown",
+        "Error" :"Unknown type"
+    {rdelim}
 {/if}
+{/strip}
 {/function}
-<pre>
 {ldelim}
     "Meta" : {ldelim}
         "InstrumentVersion" : "1l",
@@ -59,11 +81,15 @@
         "IncludeMetaDataFields" : "true"
     {rdelim},
     "Elements" : [
-    {foreach from=$form.sections item=section}
-        {foreach from=$section.elements item=element}
-            {renderelement element=$element}
+    {foreach from=$form.elements item=element name=ElementLoop}
+        {capture assign="el"}{strip}{renderelement element=$element}{/strip}{/capture}
+        {if $el}{$el}{if $el && !$smarty.foreach.ElementLoop.last},{/if}{/if}
+    {/foreach}
+    {foreach from=$form.sections item=section name=SectionsLoop}
+        {foreach from=$section.elements item=element name=SectionLoop}
+            {capture assign="el"}{strip}{renderelement element=$element}{/strip}{/capture}
+            {if $el}{$el}{/if}{if $el}{if !$smarty.foreach.SectionsLoop.last},{elseif !$smarty.foreach.SectionLoop.last},{/if}{/if}
         {/foreach}
     {/foreach}
     ]
 {rdelim}
-</pre>

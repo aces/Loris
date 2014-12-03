@@ -2177,6 +2177,70 @@ class NDB_BVL_Instrument extends NDB_Page
         return $html;
     }
 
+
+    function _toJSONParseSmarty(&$element) {
+        /* Hacks to get data that QuickForm_Renderer_Array doesn't provide
+         * an easy way to get */
+        if($element['type'] === 'select') {
+            // Parse the HTML to get the options from the select
+            $html = new DOMDocument();
+            $html->loadHTML($element['html']);
+
+            $element['options'] = array();
+
+            foreach($html->getElementsByTagName("option") as $option) {
+                $element['options'][$option->nodeValue] = $option->textContent;
+            }
+        } else if ($element['type'] === "date") {
+            $html = new DOMDocument();
+            $html->loadHTML($element['html']);
+            // Parse the HTML to get the min and max date
+            $selects = $html->getElementsByTagName("select");
+            $year = $selects->item(0);
+
+            // Item 0 is blank, item 1 is the minimum,
+            // the last item is the maximum year
+            $minYear = $year->childNodes->item(1)->textContent;
+            $maxYear = $year->lastChild->textContent;
+
+            $element['options'] = array(
+                'mindate' => $minYear . "-01-01",
+                'maxdate' => $maxYear . "-12-31"
+            );
+        }
+    }
+
+    function _toJSONParsePage() {
+        $smarty   = new Smarty_neurodb;
+        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
+
+        $this->form->accept($renderer);
+
+        $formArray = $renderer->toArray();
+        if($formArray['elements']) {
+            foreach($formArray['elements'] as &$element) {
+                $name = $element['name'];
+                if($element['type'] === 'group') {
+                    unset($formArray['elements'][$name]);
+                }
+                if(strpos($name, "_status") === false) {
+                    $this->_toJSONParseSmarty($element);
+                } else {
+                    unset($formArray['elements'][$name]);
+                }
+            }
+        }
+
+        if($formArray['sections']) {
+            foreach($formArray['sections'] as &$section) {
+                foreach($section['elements'] as &$element) {
+                    $this->_toJSONParseSmarty($element);
+                }
+            }
+        }
+        return $formArray;
+
+    }
     /**
      * Returns a JSON representation of the currently instantiated
      * instrument.
@@ -2187,52 +2251,25 @@ class NDB_BVL_Instrument extends NDB_Page
      * @return string containing valid JSON
      */
     function toJSON() {
+        if($this->InstrumentType === 'LINST') {
+            throw new Exception("LINST Not yet supported");
+        }
         $smarty   = new Smarty_neurodb;
         $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
-        $this->form->accept($renderer);
-
-        $formArray = $renderer->toArray();
-        foreach($formArray['sections'] as &$section) {
-            foreach($section['elements'] as &$element) {
-                /* Hacks to get data that QuickForm_Renderer_Array doesn't provide
-                 * an easy way to get */
-                if($element['type'] === 'select') {
-                    // Parse the HTML to get the options from the select
-                    $html = new DOMDocument();
-                    $html->loadHTML($element['html']);
-
-                    $element['options'] = array();
-
-                    foreach($html->getElementsByTagName("option") as $option) {
-                        $element['options'][$option->nodeValue] = $option->textContent;
-                    }
-                } else if ($element['type'] === "date") {
-                    $html = new DOMDocument();
-                    $html->loadHTML($element['html']);
-                    // Parse the HTML to get the min and max date
-                    $selects = $html->getElementsByTagName("select");
-                    $year = $selects->item(0);
-
-                    // Item 0 is blank, item 1 is the minimum,
-                    // the last item is the maximum year
-                    $minYear = $year->childNodes->item(1)->textContent;
-                    $maxYear = $year->lastChild->textContent;
-
-                    $element['options'] = array(
-                        'mindate' => $minYear . "-01-01",
-                        'maxdate' => $maxYear . "-12-31"
-                    );
-                }
-            }
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest){
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
         }
-
+        $formArray = $this->_toJSONParsePage();
 
         $smarty->assign('form', $formArray);
         $smarty->assign('testname', $this->testName);
         $smarty->assign('fullname', $this->getFullName());
         $html = $smarty->fetch("instrument_json.tpl");
-        return $html;
+
+        return json_encode(json_decode($html));
     }
 }
 
