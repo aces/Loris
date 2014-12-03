@@ -262,13 +262,9 @@ class NDB_Form_user_accounts extends NDB_Form
         ///get the value for additional_user_info flag
         $config =& NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
-       
-        //------------------------------------------------------------
-
-        // register RequiredIfGroup rule
-        $this->form->registerRule('requiredIfGroup', null, 'HTML_QuickForm_Rule_RequiredIfGroup', 'RequiredIfGroup.inc');
 
         //------------------------------------------------------------
+
 
         // it is a new user
         if (empty($this->identifier)) {
@@ -280,11 +276,6 @@ class NDB_Form_user_accounts extends NDB_Form
             $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
 
-            // user name rules - only required if user name is user-defined
-            $this->addGroupRule('UserID_Group', array('UserID' => array(array('The user name must be less than 255 characters long', 'maxlength', 255))));
-            $reqIfSettings = array('controller' => 'NA_UserID', 'operator' => '!=', 'value' => 1);
-            $this->addRule('UserID_Group', 'User name is required', 'requiredIfGroup', 
-                                 array_merge($reqIfSettings, array('element' => 'UserID')));
         }
         // it is an existing user
         else {
@@ -300,14 +291,6 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
-
-        // it is a new user
-        if (empty($this->identifier)) {
-            // password rules - only required if password is user-defined
-            $reqIfSettings = array('controller' => 'NA_Password', 'operator' => '!=', 'value' => 1);
-            $this->addRule('Password_Group', 'Password is required', 'requiredIfGroup', 
-                                 array_merge($reqIfSettings, array('element' => 'Password_md5')));
-        }
 
         // full name
         //$this->addBasicText('Real_name', 'Full name');
@@ -326,7 +309,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // extra info
 
         ////if the option is not set or if it's and it's true then display it 
-        
+
         if ((!isset($additional_user_info)) || ($additional_user_info)){
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
@@ -507,6 +490,10 @@ class NDB_Form_user_accounts extends NDB_Form
                 $errors['UserID_Group'] = 'The user name already exists';
             }
 
+            if (strlen($values['UserID']) > 255) {
+                $errors['UserID_Group'] = 'The user name must be less than 255 characters long';
+            }
+
         }
         if (!empty($this->identifier)) {
             $pass = $DB->pselectOne("SELECT Password_md5 FROM users WHERE UserID = :UID",
@@ -525,8 +512,12 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
         // if password is generated then the email user button should be clicked
-        if($values['NA_Password'] == 1 && $values['SendEmail'] != 1) {
+        if ($values['NA_Password'] == 1 && $values['SendEmail'] != 1) {
                $errors['Email_Group'] = 'When generating a new password, please notify the user by checking Send email to user box';
+        }
+
+        if (empty($this->identifier) && empty($values['NA_Password']) && empty($values['Password_md5']) ) {
+               $errors['Password_Group'] = 'Password is required';
         }
 
         // check email address' uniqueness
