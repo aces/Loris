@@ -25,7 +25,7 @@ $DB =& Database::singleton();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
-            $DB->delete('Config', array('ID' => $value));
+            $DB->delete('Config', array('ID' => $key));
         } else {
             $DB->update(
                 'Config', 
