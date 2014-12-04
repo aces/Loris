@@ -11,8 +11,7 @@ MRI Violations Module Test Plan:
 5.  MRI Protocol Violations page - ensure first table displays all valid protocols
     for the study
 6.  MRI Protocol Violations page - displays header information of violated scan
-7.  MRI Protocol Violations page - allows editing of protocol table with permission `Editing the MRI protocol table
-    (Violated Scans module)`.
+7.  MRI Protocol Violations page - allows editing of protocol table with permission 'Violated Scans: Edit MRI            protocol table'.
     Edit values in the protocol table and verify it is saved in the database.
 8.  Verify one or two of the scans in the second table and ensure it indeed violates mri protocol.
 9.  Filter for scans that violate MRI check  (Type of Problem : MRI Protocol Check violation). Ensure link
