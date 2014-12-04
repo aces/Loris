@@ -8,8 +8,8 @@
 * @category Instrument
 * @package  BMI_Instrument
 * @author   Rathi Gnanasekaran <sekaranrathi@gmail.com>
-* @license  Loris License
-* @link     https://github.com/aces/IBIS
+* @license  GPLv3
+* @link     https://github.com/aces/Loris
 */
 
 require_once "../tools/generic_includes.php";
