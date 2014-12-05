@@ -2189,7 +2189,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $element['options'] = array();
 
             foreach($html->getElementsByTagName("option") as $option) {
-                $element['options'][$option->nodeValue] = $option->textContent;
+                $element['options'][$option->getAttribute("value")] = $option->textContent;
             }
         } else if ($element['type'] === "date") {
             $html = new DOMDocument();
