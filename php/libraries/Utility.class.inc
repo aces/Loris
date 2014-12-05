@@ -109,7 +109,9 @@ class Utility extends PEAR
             $dob,
             $matches
         )) {
-            throw new Exception("Argument 1 does not match expected date format (YYYY-MM-DD)");
+            throw new Exception(
+                "Argument 1 does not match expected date format (YYYY-MM-DD)"
+            );
         }
         $dob = array(
                 'year' => $matches[1],
@@ -122,7 +124,9 @@ class Utility extends PEAR
             $testdate,
             $matches
         )) {
-                throw new Exception("Argument 2 does not match expected date format (YYYY-MM-DD)");
+            throw new Exception(
+                "Argument 2 does not match expected date format (YYYY-MM-DD)"
+            );
         }
         $testdate = array(
                      'year' => $matches[1],
