@@ -1,7 +1,14 @@
 RewriteEngine on
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Headers "*"
 
 RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentJSON.php?Instrument=$2 [END]
-RewriteRule ^projects$ projects.php
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/$ GetProjectInstruments.php?Project=$1 [END]
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/ GetProject.php?Project=$1 [END]
 
+# These are not yet implemented
+RewriteRule ^projects$ projects.php
 RewriteRule ^projects/([a-zA-Z0-9_.]+)$ projects.php?Project=$1
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments$ projects.php?Project=$1
+
+
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1
