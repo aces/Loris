@@ -57,8 +57,18 @@ GET /projects/$ProjectName
 ```
 
 Will return a 200 series error code if the project exists, and 404 code if it does not. The body of the
-request MAY be empty and should not be depended upon. Future versions of this API MAY specify
-a JSON specification to represent a project that this request would return.
+request will be an entity of the form
+
+```json
+{
+    "Meta" : {
+        "Project" : "ProjectName"
+    },
+    "Visits" : ["V1", "V2", ... ],
+    "Instruments" : ["InstrumentName", "InstrumentName2", "..."],
+    "Candidates" : ["123543", "523234", ....]
+}
+```
 
 ```
 GET /projects/$ProjectName/instruments/
@@ -76,6 +86,25 @@ Will return a JSON object of the form
 ```
 
 Where the InstrumentNames are the "Short Name" of all the instruments used/installed in this project.
+
+```
+GET /projects/$ProjectName/visits/
+```
+
+Will return a JSON object of the form
+
+```json
+{
+    "Meta" : {
+        "Project" : "ProjectName"
+    },
+    "Visits" : ["V1", "V2", ... ],
+}
+```
+
+Where V1, V2, ... are the visits that may exist for this project
+
+
 
 ## 2.1 Instrument Forms
 

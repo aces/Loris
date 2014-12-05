@@ -116,6 +116,7 @@ class NDB_Factory
             $config = new MockNDB_Config();
         } else {
             $config = NDB_Config::singleton($configfile);
+            return $config;
         }
 
         self::$_config = $config;
