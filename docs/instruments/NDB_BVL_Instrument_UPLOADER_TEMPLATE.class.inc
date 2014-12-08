@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     */
     function _main(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "<INSTRUMENT TITLE>");
+        $this->addHeader("<INSTRUMENT TITLE>");
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
@@ -81,11 +81,11 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
        //continue onto further pages, if needed.
 
        //upload file
-       $this->form->addElement('file', 'upload_file', 'Upload a file');
+       $this->addFile('file', 'upload_file', 'Upload a file');
 
     }
 
-   function _saveValues($values) {
+    function _saveValues($values) {
 
          if(isset($values['upload_file']) && !empty($values['upload_file']['name'])) {
             require_once "File_Upload.class.inc";
@@ -139,7 +139,14 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
       $this->_save($values);
 
    }
-
+   /*
+    * Import data from the uploaded file
+    *
+    * @param $file Reference to file object
+    * @param $args An associative array set by setHandlerArgs function
+    *
+    * @return true If operation succeeded
+    */
    function importFile(&$file, $args) {
         $fp=fopen($file->fileInfo['tmp_name'], "r");
 
