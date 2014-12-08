@@ -5,10 +5,10 @@
 *
 * PHP version 5
 *
-* @category Instrument
+* @category Main
 * @package  BMI_Instrument
 * @author   Rathi Gnanasekaran <sekaranrathi@gmail.com>
-* @license  GPLv3
+* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://github.com/aces/Loris
 */
 
