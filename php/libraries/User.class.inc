@@ -402,7 +402,8 @@ class User extends UserPermissions
                         'type'  => 'user',
                         'name'  => $username,
                         'roles' => array(
-                                    'dqg', $c_config['database'],
+                                    'dqg',
+                                    $c_config['database'],
                                    )
                        );
         }
