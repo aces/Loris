@@ -49,7 +49,10 @@ class NDB_BVL_InstrumentStatus
      * The set of valid options for the administration flag
      */
     var $_administrationOptions = array(
-                                   null, 'None', 'Partial', 'All',
+                                   null,
+                                   'None',
+                                   'Partial',
+                                   'All',
                                   );
 
     /**
