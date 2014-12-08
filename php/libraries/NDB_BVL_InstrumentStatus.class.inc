@@ -40,7 +40,9 @@ class NDB_BVL_InstrumentStatus
      * The set of valid options for the data entry flag
      */
     var $_dataEntryOptions = array(
-                              null, 'In Progress', 'Complete',
+                              null,
+                              'In Progress',
+                              'Complete',
                              );
 
     /**

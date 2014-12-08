@@ -49,7 +49,10 @@ class NDB_BVL_Feedback
 
     // set of status options
     var $_feedbackStatusOptions = array(
-                                   'opened','answered','closed','comment',
+                                   'opened',
+                                   'answered',
+                                   'closed',
+                                   'comment',
                                   );
 
     var $_username ='';
