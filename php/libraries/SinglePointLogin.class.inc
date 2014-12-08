@@ -161,10 +161,14 @@ class SinglePointLogin extends PEAR
         if (!User::isPasswordStrong(
             $_POST['password'],
             array(
-             $_POST['confirm'], $data['UserID'], $data['Email'],
+             $_POST['confirm'],
+             $data['UserID'],
+             $data['Email'],
             ),
             array(
-             '==', '!=', '!=',
+             '==',
+             '!=',
+             '!=',
             )
         )
         ) {
