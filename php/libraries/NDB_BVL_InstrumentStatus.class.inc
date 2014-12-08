@@ -59,14 +59,19 @@ class NDB_BVL_InstrumentStatus
      * The set of valid options for the validity flag
      */
     var $_validityOptions = array(
-                             null, 'Valid', 'Questionable', 'Invalid',
+                             null,
+                             'Valid',
+                             'Questionable',
+                             'Invalid',
                             );
 
     /**
      * The set of valid options for the exclusion flag
      */
     var $_exclusionOptions = array(
-                              null, 'Fail', 'Pass',
+                              null,
+                              'Fail',
+                              'Pass',
                              );
 
 
