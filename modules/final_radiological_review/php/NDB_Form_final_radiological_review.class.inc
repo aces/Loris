@@ -68,7 +68,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
      */
     function final_radiological_review()
     {
-        $yes_no = array('' => '', '1' => 'Yes', '0' => 'No');
+        $yes_no = array('' => '', 'yes' => 'Yes', 'no' => 'No');
         $exclusionary = array('' => '',
                 'exclusionary' => 'Exclusionary',
                 'non_exclusionary' => 'Non-Exclusionary'
