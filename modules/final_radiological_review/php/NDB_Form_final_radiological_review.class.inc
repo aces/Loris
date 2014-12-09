@@ -203,9 +203,9 @@ class NDB_Form_final_radiological_review extends NDB_Form
 
 
             $history = $DB->pselect(
-                'SELECT userID, changeDate, col, old, new FROM history 
-                WHERE tbl=:histtbl AND primaryVals= :primKey ORDER BY changeDate DESC', 
-                array('histtbl' =>  $this->__table, 'primKey' => $this->identifier)
+                'SELECT userID, changeDate, col, old, new FROM final_radiological_review_history
+                WHERE primaryVals= :primKey ORDER BY changeDate DESC',
+                array('primKey' => $this->identifier)
             );
 
             $history_display = '';
@@ -287,26 +287,49 @@ class NDB_Form_final_radiological_review extends NDB_Form
         $this->stripEmpty($values, 'Review_Done2');
         $this->stripEmpty($values, 'Finalized');
 
+        if (!(is_null($_SESSION['State']))) {
+            $currentUser           = User::singleton($_SESSION['State']->getUsername());
+            $values['entry_staff'] = $currentUser->getData("UserID");
+        }
+
         $DB =& Database::singleton();
         if (isset($this->identifier)) {
             $exists = $DB->pselectRow(
                 "SELECT 'x' FROM " . $this->__table . " WHERE CommentID=:CID",
                 array('CID' => $this->identifier)
             );
-            
+
             if ($exists == array()) {
                 $insert_values = array_merge(
-                    array('CommentID' => $this->identifier), 
+                    array('CommentID' => $this->identifier),
                     $values
                 );
                 $DB->insert($this->__table, $insert_values);
             } else {
                 $DB->update(
-                    $this->__table, $values, 
+                    $this->__table, $values,
                     array('CommentID' => $this->identifier)
                 );
             }
+            //update the final radiological review history table
 
+            foreach($values as $key=>$val) {
+                $update_vals = array('col'=>$key,
+                                     'new'=>$values[$key],
+                                     'primaryVals'=>$this->identifier,
+                                     'changeDate'=>time(),
+                                     'userID'=>$values['entry_staff'] );
+
+                $old_val = $DB->pselectOne("SELECT COALESCE(old, new) as VAL FROM
+                                            final_radiological_review_history
+                                            WHERE primaryVals:primKey AND col:field",
+                                            array('primKey'=>$this->identifier,
+                                                  'field'=>$key));
+               if (!empty($old_val)) {
+                    $update_vals['old'] = $old_val['VAL'];
+                }
+               $DB->insert("final_radiological_review_history", $update_vals);
+            }
         }
         return true;
     }
