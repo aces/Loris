@@ -1,6 +1,6 @@
 ## Imaging Browser test plan
 	
-#A Imaging Browser front page
+#A. Imaging Browser front page
 1. User can load Imaging Browser module front page IFF has permission imaging_browser_view_site or imaging_browser_view_allsites
 2. User can see other sites Imaging datasets IFF has permission imaging_browser_view_allsites. User can see only own site Imaging datasets IFF has permission imaging_browser_view_site.
 3. Test that all Filters work.  Upon first loading, Site filter should be set to own site 
