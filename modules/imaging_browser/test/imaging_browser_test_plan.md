@@ -18,7 +18,7 @@
 13. Verify Visit-level QC controls and comments can be deleted/unchecked/emptied and saved
 14. Test Breadcrumb link back to Imaging Browser
 
-Main panel:  per acquisition:
+#C. Main panel:  per acquisition:
 14. Files can be downloaded (links clickable) only IFF has permission (future feature not implemented yet)
 15. Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable iff permission imaging_browser_qc
 16. Selected:  can be set back to Null (blank)
@@ -26,13 +26,13 @@ Main panel:  per acquisition:
 18. BrainBrowser link works (launches window)
 19. Link to Comments link works (launches window)
 
-#C. MRI-QC : Scan-level (Link to Comments) dialog window
+#D. MRI-QC : Scan-level (Link to Comments) dialog window
 20. Viewable by all, editable IFF permission imaging_browser_qc
 21. Comments save, checkboxes save, dropdown values save
 22. Both save buttons work
 23. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
 
-#D. Visit-level QC feedback dialog window
+#E. Visit-level QC feedback dialog window
 24. editable IFF permission imaging_browser_qc
 25. Comments save
 26. Both save buttons work (top and bottom)
