@@ -73,9 +73,9 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 'exclusionary' => 'Exclusionary',
                 'non_exclusionary' => 'Non-Exclusionary'
         );
-        $results = array('' => '', 
-                         'normal' => 'Normal', 
-                         'abnormal' => 'Abnormal', 
+        $results = array('' => '',
+                         'normal' => 'Normal',
+                         'abnormal' => 'Abnormal',
                          'atypical' => 'Atypical');
         $abnormality = array(null => '',
                             '0' => 'None',
@@ -289,7 +289,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
 
         if (!(is_null($_SESSION['State']))) {
             $currentUser           = User::singleton($_SESSION['State']->getUsername());
-            $values['entry_staff'] = $currentUser->getData("UserID");
+            $userID                = $currentUser->getData("UserID");
         }
 
         $DB =& Database::singleton();
@@ -312,23 +312,21 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 );
             }
             //update the final radiological review history table
-
             foreach($values as $key=>$val) {
                 $update_vals = array('col'=>$key,
                                      'new'=>$values[$key],
                                      'primaryVals'=>$this->identifier,
-                                     'changeDate'=>time(),
-                                     'userID'=>$values['entry_staff'] );
+                                     'userID'=>$userID );
 
                 $old_val = $DB->pselectOne("SELECT COALESCE(old, new) as VAL FROM
                                             final_radiological_review_history
-                                            WHERE primaryVals:primKey AND col:field",
+                                            WHERE primaryVals=:primKey AND col=:field",
                                             array('primKey'=>$this->identifier,
                                                   'field'=>$key));
-               if (!empty($old_val)) {
-                    $update_vals['old'] = $old_val['VAL'];
+               if (empty($old_val)) {
+                    $update_vals['old'] = $old_val;
+                    $DB->insert("final_radiological_review_history", $update_vals);
                 }
-               $DB->insert("final_radiological_review_history", $update_vals);
             }
         }
         return true;
