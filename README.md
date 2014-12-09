@@ -53,7 +53,7 @@ Log in with the username “admin” and the password you supplied for this user
     sudo a2ensite $projectname
     ```
 
-5. Notes for LORIS post-installation setup are contained in the [LORIS Developers Guide](https://docs.google.com/document/d/129T2SfqzKTTOkoXRykzCLe5Vy70A9Dzjw1O3vqgwsPQ).
+5. Notes for LORIS post-installation setup are contained in the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup).
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
