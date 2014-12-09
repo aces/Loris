@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     */
     function _main(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "<INSTRUMENT TITLE>");
+        $this->addHeader("<INSTRUMENT TITLE>");
         
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
