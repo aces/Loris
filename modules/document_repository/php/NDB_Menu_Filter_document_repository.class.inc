@@ -251,7 +251,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                     $refs->{$result['id']} =& $thisref;
                 }
                 foreach ($result as $k => $v) {
-                        $thisref->{$k} = $v;
+                        $thisref->{$k} = utf8_encode($v);
                 }
                 if ($result['parent_id'] == 0) {
                     $tree->{$result['id']} = &$thisref;
@@ -324,6 +324,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         while ($item = $prepared->fetch(PDO::FETCH_ASSOC)) {
             $FileCategory =& $this->tpl_data['File_categories'][$item['File_category']];
             $DisplayItem = $item;
+            $DisplayItem['File_name'] = utf8_encode($item['File_name']);
             $DisplayItem['File_size'] = $this->format_size($item['File_size']);
             $DisplayItem['For_site']  = $site_names[$item['For_site']];
 
