@@ -318,13 +318,16 @@ class NDB_Form_final_radiological_review extends NDB_Form
                                      'primaryVals'=>$this->identifier,
                                      'userID'=>$userID );
 
-                $old_val = $DB->pselectOne("SELECT COALESCE(old, new) as VAL FROM
+                $old_val = $DB->pselectOne("SELECT new FROM
                                             final_radiological_review_history
                                             WHERE primaryVals=:primKey AND col=:field",
                                             array('primKey'=>$this->identifier,
                                                   'field'=>$key));
-               if (empty($old_val)) {
+
+               if (!empty($old_val) && $old_val != $val) { // the val has been updated
                     $update_vals['old'] = $old_val;
+                    $DB->insert("final_radiological_review_history", $update_vals);
+                } else /* if (empty($old_val) )*/ {// no history exists
                     $DB->insert("final_radiological_review_history", $update_vals);
                 }
             }
