@@ -327,7 +327,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
                if (!empty($old_val) && $old_val != $val) { // the val has been updated
                     $update_vals['old'] = $old_val;
                     $DB->insert("final_radiological_review_history", $update_vals);
-                } else /* if (empty($old_val) )*/ {// no history exists
+                } else if (empty($old_val) ) {// no history exists
                     $DB->insert("final_radiological_review_history", $update_vals);
                 }
             }
