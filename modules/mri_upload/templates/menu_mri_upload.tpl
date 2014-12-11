@@ -112,13 +112,13 @@
                    
                         <tr>
                             <!-- print out data rows -->
+
                             {section name=piece loop=$items[item]}
                           
                                 {if $items[item][piece].name eq 'Tarchive_Info'}
                                     <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&
                                     tarchiveID={$items[item][piece].value}">
                                     View Details</a></td>
-                                    
                                 {elseif $items[item][piece].name eq 'number_of_mincInserted'}     
                                 	
                                     {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}

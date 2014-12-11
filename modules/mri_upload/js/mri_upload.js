@@ -159,10 +159,6 @@ $(function () {
 
         form.appendTo('body').submit();
     });
-
-
-
-
 /*
     $("#mri_upload").submit(
         function (e) {
