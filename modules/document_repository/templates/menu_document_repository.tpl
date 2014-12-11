@@ -139,15 +139,6 @@
     </div>
 </div>
 
-<div class = "dialog">
-<div class = "sure" title="Please Confirm" >
-    <p>
-        <span class="ui-icon ui-icon-trash" style="float:left; margin:0 7px 50px 0;"></span>
-	    Are you sure you want to delete this file?
-    </p>
-</div>
-</div>
-
 <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
