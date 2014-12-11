@@ -219,6 +219,7 @@
                 {/if}
                 {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
                     {assign var="PSCID" value=$items[item][piece].value}
+                    {assign var="DCCID" value=$items[item][piece].DCCID}
                     <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
 
                 {elseif $items[item][piece].name == "scan_Done"}
@@ -227,8 +228,8 @@
                         {* PSCID will have been assigned on previous iteration of loop, since Scan_done is after PSCID in the table *}
                         <a href="#" class="scanDoneLink" data-pscid="{$PSCID}">{$scan_done}</a>
                     {else}
-                        {assign var="scan_done" value="No"}
-                        {$scan_done}
+                        {assign var="scan_done" value="Upload MRI"}
+                        <a href="#" class="UploadScanLink" data-pscid="{$PSCID}" data-dccid="{$DCCID}">{$scan_done}</a>
                     {/if}
                 {else}
                     {$items[item][piece].value}

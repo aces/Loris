@@ -62,4 +62,30 @@ $(document).ready(function() {
 
         form.appendTo('body').submit();
     });
+
+  $(".UploadScanLink").click(function(e) {
+        e.preventDefault();
+        var form = $('<form />', {
+            "action" : "main.php?test_name=mri_upload",
+            "method" : "post"
+        });
+        var values = {
+            "reset" : "true",
+            "PSCID" : this.dataset.pscid,
+            "CandID" : this.dataset.dccid,
+            "filter" : "Show Data"
+        }
+
+        $.each(values, function(name, value) {
+            $("<input />", {
+                type: 'hidden',
+                name: name,
+                value: value
+            }).appendTo(form);
+        });
+
+        form.appendTo('body').submit();
+    });
+
+
 });
