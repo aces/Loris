@@ -2234,7 +2234,7 @@ CREATE TABLE `final_radiological_review_history` (
   `col` varchar(255) NOT NULL DEFAULT '',
   `old` text,
   `new` text,
-  `primaryVals` text,
+  `CommentID` text,
   `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `userID` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)

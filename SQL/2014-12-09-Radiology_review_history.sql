@@ -3,12 +3,12 @@ CREATE TABLE `final_radiological_review_history` (
   `col` varchar(255) NOT NULL DEFAULT '',
   `old` text,
   `new` text,
-  `primaryVals` text,
+  `CommentID` text,
   `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `userID` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO final_radiological_review_history (col, old, new, primaryVals, changeDate, userID) SELECT col, old, new, primaryVals, changeDate, userID FROM history WHERE tbl='final_radiological_review';
+INSERT INTO final_radiological_review_history (col, old, new, CommentID, changeDate, userID) SELECT col, old, new, primaryVals, changeDate, userID FROM history WHERE tbl='final_radiological_review';
 DELETE FROM final_radiological_review_history WHERE col IN ('password', 'login','username');
