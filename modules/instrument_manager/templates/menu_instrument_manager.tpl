@@ -43,7 +43,7 @@ Automatic uploading of instruments has been disabled.
      <th nowrap="nowrap">No.</th>
         <!-- print out column headings - quick & dirty hack -->
         {section name=header loop=$headers}
-            <th nowrap="nowrap">{$headers[header].displayName}</a></th>
+            <th nowrap="nowrap"><a href="main.php?test_name=instrument_manager&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
         {/section}
     </tr>
     </thead>
