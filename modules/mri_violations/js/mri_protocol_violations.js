@@ -53,6 +53,7 @@ function save() {
             });
     }).keypress(function (e) {
         if (e.which === 13) { // Determine if the user pressed the enter button
+	    e.preventDefault();
             $(this).blur();
         }
     });
