@@ -17,7 +17,7 @@
     </div>
 </div>
 {else}
-<div class="alert alert-info">
+<div class="alert alert-warning">
 Instrument directory or tables_sql not writeable.
 Automatic uploading of instruments has been disabled.
 </div>
