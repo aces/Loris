@@ -11,7 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once 'smarty3/Smarty.class.php';
 
 /**
  * This overrides the Smarty base class in order to look into module/templates,
