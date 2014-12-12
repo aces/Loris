@@ -2228,3 +2228,14 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
     ('statistics', 'stats_behavioural', 'Behavioural Statistics', 3),
     ('statistics', 'stats_reliability', 'Reliability Statistics', 4),
     ('statistics', 'stats_MRI', 'Imaging Statistics', 5);
+
+CREATE TABLE `final_radiological_review_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `col` varchar(255) NOT NULL DEFAULT '',
+  `old` text,
+  `new` text,
+  `CommentID` varchar(255),
+  `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `userID` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
