@@ -4,20 +4,128 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "678871c4286338e3307228665131d5f0",
+    "hash": "4e3750136714ae3fb8751bad362feade",
     "packages": [
+        {
+            "name": "pear/pager",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pear/Pager.git",
+                "reference": "2bbf01511adb5bfb96720d2aed9e5ec530868053"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pear/Pager/zipball/2bbf01511adb5bfb96720d2aed9e5ec530868053",
+                "reference": "2bbf01511adb5bfb96720d2aed9e5ec530868053",
+                "shasum": ""
+            },
+            "require": {
+                "pear/pear_exception": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Pager": "./"
+                }
+            },
+            "include-path": [
+                "./"
+            ],
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "email": "l.alberton@quipo.it",
+                    "name": "Lorenzo Alberton",
+                    "role": "Lead"
+                },
+                {
+                    "email": "richard@phpguru.org",
+                    "name": "Richard Heyes",
+                    "role": "Lead"
+                }
+            ],
+            "description": "More info available on: http://pear.php.net/package/Pager",
+            "support": {
+                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Pager",
+                "source": "https://github.com/pear/Pager"
+            },
+            "time": "2014-05-14 08:34:23"
+        },
+        {
+            "name": "pear/pear_exception",
+            "version": "1.0-beta1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pear/PEAR_Exception.git",
+                "reference": "f053615c7cbdfaba5a3b7021ee58a48523b8576c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/f053615c7cbdfaba5a3b7021ee58a48523b8576c",
+                "reference": "f053615c7cbdfaba5a3b7021ee58a48523b8576c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=4.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "class",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "PEAR": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "."
+            ],
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Helgi Thormar",
+                    "email": "dufuz@php.net",
+                    "role": "Lead"
+                },
+                {
+                    "name": "Greg Beaver",
+                    "email": "cellog@php.net",
+                    "role": "Helper"
+                }
+            ],
+            "description": "The PEAR Exception base class.",
+            "homepage": "https://github.com/pear/PEAR_Exception",
+            "keywords": [
+                "exception"
+            ],
+            "time": "2014-02-21 17:29:07"
+        },
         {
             "name": "smarty/smarty",
             "version": "v3.1.21",
             "source": {
                 "type": "git",
-                "url": "https://github.com/uwetews/smarty3-dist.git",
-                "reference": "1441f32fce8494a0b153551fe2b659f5ce8e7eed"
+                "url": "https://github.com/smarty-php/smarty.git",
+                "reference": "1f878e6d746ecc8ec8d00d9c75044cf7d23ad94a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/uwetews/smarty3-dist/zipball/1441f32fce8494a0b153551fe2b659f5ce8e7eed",
-                "reference": "1441f32fce8494a0b153551fe2b659f5ce8e7eed",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/1f878e6d746ecc8ec8d00d9c75044cf7d23ad94a",
+                "reference": "1f878e6d746ecc8ec8d00d9c75044cf7d23ad94a",
                 "shasum": ""
             },
             "require": {
@@ -59,7 +167,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-10-17 23:19:29"
+            "time": "2014-10-31 04:22:20"
         }
     ],
     "packages-dev": [
@@ -936,9 +1044,9 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "platform": [],
     "platform-dev": []
 }

@@ -3,6 +3,7 @@
  * @package main
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+require_once __DIR__ . "/../vendor/autoload.php";
 ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
 // Create an output buffer to capture console output, separately from the 
@@ -14,12 +15,10 @@ $timer = new Benchmark_Timer;
 $timer->start();
 
 // load the client
-require_once 'NDB_Client.class.inc';
 $client = new NDB_Client;
 $client->initialize();
 
 // require additional libraries
-require_once 'NDB_Breadcrumb.class.inc';
 
 $TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : 'dashboard';
 $subtest = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';

@@ -25,7 +25,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'smarty3/Smarty.class.php';
 require_once 'User.class.inc';
 require_once 'Database.class.inc';
 
