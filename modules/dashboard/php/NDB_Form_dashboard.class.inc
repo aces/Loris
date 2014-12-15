@@ -176,7 +176,7 @@ class NDB_Form_dashboard extends NDB_Form
         }
 
         // Accounts pending approval
-        if ($user->hasPermission('user_accounts_multisite')) {
+        if ($user->hasPermission('user_accounts_multisite') && $user->hasPermission('user_accounts')) {
             $this->tpl_data['pending_users'] = $DB->pselectOne(
                 "SELECT count(*) FROM users WHERE Pending_approval='Y'", array()
             );
