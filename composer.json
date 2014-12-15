@@ -10,13 +10,14 @@
         "url" : "https://github.com/pear/Pager"
     },
     {
-        "type" : "pear",
-        "url" : "https://pear.php.net"
+        "type" : "vcs",
+        "url" : "https://github.com/pear/Benchmark"
     }
     ],
     "require" : {
         "smarty/smarty" : "3.1.*",
-        "pear/Pager" : "*"
+        "pear/Pager" : "*",
+        "pear/Benchmark" : "*"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : ">= 2.0",
