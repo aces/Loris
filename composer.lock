@@ -4,8 +4,54 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4e3750136714ae3fb8751bad362feade",
+    "hash": "0a99094469981e7bd4b7cb87e635ddee",
     "packages": [
+        {
+            "name": "pear/benchmark",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pear/Benchmark.git",
+                "reference": "1275e3e3c8a02810a6cc007eb57c2a8d1f8f909b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pear/Benchmark/zipball/1275e3e3c8a02810a6cc007eb57c2a8d1f8f909b",
+                "reference": "1275e3e3c8a02810a6cc007eb57c2a8d1f8f909b",
+                "shasum": ""
+            },
+            "require": {
+                "pear/pear_exception": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "suggest": {
+                "ext-bcmath": "May require the bcmath PHP extension"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "./"
+                ]
+            },
+            "license": [
+                "New BSD"
+            ],
+            "authors": [
+                {
+                    "email": "anant@kix.in",
+                    "name": "Anant Narayanan",
+                    "role": "Lead"
+                }
+            ],
+            "description": "More info available on: http://pear.php.net/package/Benchmark",
+            "support": {
+                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Benchmark",
+                "source": "https://github.com/pear/Benchmark"
+            },
+            "time": "2014-02-20 19:26:09"
+        },
         {
             "name": "pear/pager",
             "version": "dev-master",
