@@ -344,8 +344,9 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 
 
 # Install external libraries using composer
-
-composer install --nodev
+cd ..
+composer install --no-dev
+cd tools
 
 echo ""
 while true; do
