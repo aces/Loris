@@ -4,161 +4,138 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "53d982c2d42d11ef0c0a600360804209",
+    "hash": "64e488d09818ab54aea0a821a456d583",
     "packages": [
         {
-            "name": "pear/benchmark",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Benchmark.git",
-                "reference": "1275e3e3c8a02810a6cc007eb57c2a8d1f8f909b"
-            },
+            "name": "pear-pear.php.net/Benchmark",
+            "version": "1.2.9",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Benchmark/zipball/1275e3e3c8a02810a6cc007eb57c2a8d1f8f909b",
-                "reference": "1275e3e3c8a02810a6cc007eb57c2a8d1f8f909b",
-                "shasum": ""
+                "type": "file",
+                "url": "https://pear.php.net/get/Benchmark-1.2.9.tgz",
+                "reference": null,
+                "shasum": null
             },
             "require": {
-                "pear/pear_exception": "*"
+                "php": ">=4.0.0.0"
             },
-            "require-dev": {
-                "phpunit/phpunit": "*"
+            "replace": {
+                "pear-pear/benchmark": "== 1.2.9.0"
             },
-            "suggest": {
-                "ext-bcmath": "May require the bcmath PHP extension"
-            },
-            "type": "library",
+            "type": "pear-library",
             "autoload": {
                 "classmap": [
-                    "./"
+                    ""
                 ]
             },
-            "license": [
-                "New BSD"
+            "include-path": [
+                "/"
             ],
-            "authors": [
-                {
-                    "email": "anant@kix.in",
-                    "name": "Anant Narayanan",
-                    "role": "Lead"
-                }
-            ],
-            "description": "More info available on: http://pear.php.net/package/Benchmark",
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Benchmark",
-                "source": "https://github.com/pear/Benchmark"
-            },
-            "time": "2014-02-20 19:26:09"
+            "description": "Framework to benchmark PHP scripts or function calls."
         },
         {
-            "name": "pear/pager",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Pager.git",
-                "reference": "2bbf01511adb5bfb96720d2aed9e5ec530868053"
-            },
+            "name": "pear-pear.php.net/HTML_Common",
+            "version": "1.2.5",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Pager/zipball/2bbf01511adb5bfb96720d2aed9e5ec530868053",
-                "reference": "2bbf01511adb5bfb96720d2aed9e5ec530868053",
-                "shasum": ""
+                "type": "file",
+                "url": "https://pear.php.net/get/HTML_Common-1.2.5.tgz",
+                "reference": null,
+                "shasum": null
             },
             "require": {
-                "pear/pear_exception": "*"
+                "php": ">=4.0.4.0"
             },
-            "require-dev": {
-                "phpunit/phpunit": "*"
+            "replace": {
+                "pear-pear/html_common": "== 1.2.5.0"
             },
-            "type": "library",
+            "type": "pear-library",
             "autoload": {
-                "psr-0": {
-                    "Pager": "./"
-                }
+                "classmap": [
+                    ""
+                ]
             },
             "include-path": [
-                "./"
+                "/"
             ],
-            "license": [
-                "BSD"
-            ],
-            "authors": [
-                {
-                    "email": "l.alberton@quipo.it",
-                    "name": "Lorenzo Alberton",
-                    "role": "Lead"
-                },
-                {
-                    "email": "richard@phpguru.org",
-                    "name": "Richard Heyes",
-                    "role": "Lead"
-                }
-            ],
-            "description": "More info available on: http://pear.php.net/package/Pager",
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Pager",
-                "source": "https://github.com/pear/Pager"
-            },
-            "time": "2014-05-14 08:34:23"
+            "description": "The PEAR::HTML_Common package provides methods for html code display and attributes handling.\n* Methods to set, remove, update html attributes.\n* Handles comments in HTML code.\n* Handles layout, tabs, line endings for nicer HTML code."
         },
         {
-            "name": "pear/pear_exception",
-            "version": "1.0-beta1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/PEAR_Exception.git",
-                "reference": "f053615c7cbdfaba5a3b7021ee58a48523b8576c"
-            },
+            "name": "pear-pear.php.net/HTML_QuickForm",
+            "version": "3.2.14",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/f053615c7cbdfaba5a3b7021ee58a48523b8576c",
-                "reference": "f053615c7cbdfaba5a3b7021ee58a48523b8576c",
-                "shasum": ""
+                "type": "file",
+                "url": "https://pear.php.net/get/HTML_QuickForm-3.2.14.tgz",
+                "reference": null,
+                "shasum": null
             },
             "require": {
-                "php": ">=4.4.0"
+                "pear-pear.php.net/html_common": ">=1.2.1.0",
+                "php": ">=4.3.0.0"
             },
-            "require-dev": {
-                "phpunit/phpunit": "*"
+            "replace": {
+                "pear-pear/html_quickform": "== 3.2.14.0"
             },
-            "type": "class",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
+            "type": "pear-library",
             "autoload": {
-                "psr-0": {
-                    "PEAR": ""
-                }
+                "classmap": [
+                    ""
+                ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "include-path": [
-                "."
+                "/"
             ],
-            "license": [
-                "BSD-2-Clause"
+            "description": "NOTICE: development of HTML_QuickForm version 3 is frozen. Please submit\nfeature requests for HTML_QuickForm2 package.\n\nThe HTML_QuickForm package provides methods to dynamically create, validate\nand render HTML forms.\n\nFeatures:\n* More than 20 ready-to-use form elements.\n* XHTML compliant generated code.\n* Numerous mixable and extendable validation rules.\n* Automatic server-side validation and filtering.\n* On request javascript code generation for client-side validation.\n* File uploads support.\n* Total customization of form rendering.\n* Support for external template engines (ITX, Sigma, Flexy, Smarty).\n* Pluggable elements, rules and renderers extensions."
+        },
+        {
+            "name": "pear-pear.php.net/Mail",
+            "version": "1.2.0",
+            "dist": {
+                "type": "file",
+                "url": "https://pear.php.net/get/Mail-1.2.0.tgz",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "php": ">=4.4.9.0"
+            },
+            "replace": {
+                "pear-pear/mail": "== 1.2.0.0"
+            },
+            "type": "pear-library",
+            "autoload": {
+                "classmap": [
+                    ""
+                ]
+            },
+            "include-path": [
+                "/"
             ],
-            "authors": [
-                {
-                    "name": "Helgi Thormar",
-                    "email": "dufuz@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Greg Beaver",
-                    "email": "cellog@php.net",
-                    "role": "Helper"
-                }
+            "description": "PEAR's Mail package defines an interface for implementing mailers under the PEAR hierarchy.  It also provides supporting functions useful to multiple mailer backends.  Currently supported backends include: PHP's native mail() function, sendmail, and SMTP.  This package also provides a RFC822 email address list validation utility class."
+        },
+        {
+            "name": "pear-pear.php.net/Pager",
+            "version": "2.4.9",
+            "dist": {
+                "type": "file",
+                "url": "https://pear.php.net/get/Pager-2.4.9.tgz",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "php": ">=4.0.0.0"
+            },
+            "replace": {
+                "pear-pear/pager": "== 2.4.9.0"
+            },
+            "type": "pear-library",
+            "autoload": {
+                "classmap": [
+                    ""
+                ]
+            },
+            "include-path": [
+                "/"
             ],
-            "description": "The PEAR Exception base class.",
-            "homepage": "https://github.com/pear/PEAR_Exception",
-            "keywords": [
-                "exception"
-            ],
-            "time": "2014-02-21 17:29:07"
+            "description": "It takes an array of data as input and pages it according to various parameters.\nIt also builds links within a specified range, and allows complete customization of the output (it even works with front controllers and mod_rewrite).\nTwo operating modes available: \"Jumping\" and \"Sliding\" window style."
         },
         {
             "name": "smarty/smarty",
@@ -1090,9 +1067,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": [],
-    "prefer-stable": true,
+    "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": [],
     "platform-dev": []
 }
