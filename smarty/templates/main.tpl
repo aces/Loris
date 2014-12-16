@@ -526,7 +526,6 @@
                                     {/if}
                                 {/if}
                                 <div id="kgkjgkjg">
-            Smarty: {$smarty.version}
                                     {$workspace}
                                 </div>  
                             {/if}
