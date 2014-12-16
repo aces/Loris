@@ -313,8 +313,11 @@ class SinglePointLogin extends PEAR
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
-                        Password_md5, Password_expiry, Active,
-                        Pending_approval, Password_hash
+                        Password_md5,
+                        Password_expiry,
+                        Active,
+                        Pending_approval,
+                        Password_hash
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
@@ -329,25 +332,40 @@ class SinglePointLogin extends PEAR
                 $php55 = true;
             }
 
-            // If either the password hashing isn't available, or the Password_hash column is empty,
-            // we check using Loris's old MD5Unsalt method that the passwords are equal.
-            // If there is a saved Password_hash, then we verify using the PHP 5.5+ password hashing
-            // API.
-            if (((!$php55 || empty($row['Password_hash']))&& User::MD5Unsalt($_POST['password'], $row['Password_md5'])) ||
-                (password_verify($_POST['password'], $row['Password_hash']))
-                ) {
-                // If the PHP password hashing is available, check if a rehash is required and if so, rehash it.
-                // (If Password_hash is null, skip the password_needs_rehash check, because we know that we have
-                // access to the password hashing API, and we know it's never been hashed using password_hash.
-                if($php55) {
-                    if(empty($row['Password_hash'])
-                        || password_needs_rehash($row['Password_hash'], PASSWORD_DEFAULT)
+            // If either the password hashing isn't available, or the
+            // Password_hash column is empty, we check using Loris's old
+            // MD5Unsalt method that the passwords are equal.
+            //
+            // If there is a saved Password_hash, then we verify using the
+            // PHP 5.5+ password hashing API.
+            if (((!$php55 || empty($row['Password_hash']))
+                && User::MD5Unsalt($_POST['password'], $row['Password_md5']))
+                || (password_verify($_POST['password'], $row['Password_hash']))
+            ) {
+                // If the PHP password hashing is available, check if a rehash
+                // is required and if so, rehash it.
+                //
+                // (If Password_hash is null, skip the password_needs_rehash
+                // check, because we know that we have access to the password
+                // hashing API, and we know it's never been hashed using
+                // password_hash.
+                if ($php55) {
+                    $oldhash = $row['Password_hash'];
+                    if (empty($oldhash)
+                        || password_needs_rehash($oldhash, PASSWORD_DEFAULT)
                     ) {
                         // Hash the password using PHP defaults.
                         $hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
                         // Save the new hash and wipe out the old, insecure MD5 sum.
-                        $DB->update("users", array('Password_hash' => $hash, 'Password_MD5' => null), array('UserID' => $_POST['username']));
-                        }
+                        $DB->update(
+                            "users",
+                            array(
+                             'Password_hash' => $hash,
+                             'Password_MD5'  => null,
+                            ),
+                            array('UserID' => $_POST['username'])
+                        );
+                    }
                 }
                 // check that the user is active
                 if ($row['Active'] == 'N') {
