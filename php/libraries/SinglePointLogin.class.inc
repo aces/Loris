@@ -340,7 +340,7 @@ class SinglePointLogin extends PEAR
             // PHP 5.5+ password hashing API.
             if (((!$php55 || empty($row['Password_hash']))
                 && User::MD5Unsalt($_POST['password'], $row['Password_md5']))
-                || (password_verify($_POST['password'], $row['Password_hash']))
+                || ($php55 && password_verify($_POST['password'], $row['Password_hash']))
             ) {
                 // If the PHP password hashing is available, check if a rehash
                 // is required and if so, rehash it.
