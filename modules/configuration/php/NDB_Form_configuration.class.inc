@@ -27,13 +27,6 @@ require_once 'NDB_Form.class.inc';
 */
 class NDB_Form_Configuration extends NDB_Form
 {
-    function verifyDependencies() {
-        if (Database::CheckTable("ConfigSettings") === false
-            || Database::CheckTable("Config") === false
-        ) {
-            throw new Exception("Missing tables for config module.");
-        };
-    }
     /**
      * _has_access returns true
      * if the user has the specific permission
