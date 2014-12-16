@@ -83,10 +83,10 @@ class NDB_Caller extends PEAR
             return;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['login']) )
-        {
-           header("HTTP/1.1 303 See Other");
-           header("Location: http://$_SERVER[HTTP_HOST]");
+            && isset($_POST['login'])
+        ) {
+             header("HTTP/1.1 303 See Other");
+             header("Location: http://$_SERVER[HTTP_HOST]");
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
