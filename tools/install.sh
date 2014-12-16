@@ -350,25 +350,7 @@ while true; do
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
-            echo "Installing PEAR libraries (may prompt for sudo password)."
-            echo ""
-            echo "Upgrading PEAR..."
-            sudo pear upgrade-all
-            echo "Installing PEAR Benchmark..."
-            sudo pear install Benchmark
-            echo "Installing PEAR HTML_Common..."
-            sudo pear install HTML_Common
-            echo "Installing PEAR HTML_QuickForm..."
-            sudo pear install HTML_QuickForm
-            echo "Configuring PEAR preferred state..."
-            sudo pear config-set preferred_state beta
-            echo "Installing PEAR Mail..."
-            sudo pear install Mail
-            echo "Installing PEAR Pager..."
-            sudo pear install Pager
-            echo "Installing PEAR Structures_Graph..."
-            sudo pear install Structures_Graph
-            break;;
+            composer install --nodev
         [Nn]* )
             echo "Not installing PEAR libraries."
             break;;
