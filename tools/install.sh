@@ -75,12 +75,12 @@ else
     exit 2;
 fi
 
-if [[ -n $(which pear) ]]; then
+if [[ -n $(which composer) ]]; then
     echo ""
-    echo "PEAR appears to be installed."
+    echo "PHP Composer appears to be installed."
 else
     echo ""
-    echo "PEAR does not appear to be installed. Aborting."
+    echo "PHP Composer does not appear to be installed. Aborting."
     exit 2;
 fi
 
@@ -343,21 +343,9 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
 
 
+# Install external libraries using composer
 
-echo ""
-while true; do
-    read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
-    echo $yn | tee -a $LOGFILE > /dev/null
-    case $yn in
-        [Yy]* )
-            composer install --nodev
-        [Nn]* )
-            echo "Not installing PEAR libraries."
-            break;;
-        * ) echo "Please enter 'y' or 'n'."
-   esac
-done;
-
+composer install --nodev
 
 echo ""
 while true; do
