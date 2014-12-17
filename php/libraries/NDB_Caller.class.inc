@@ -82,6 +82,18 @@ class NDB_Caller extends PEAR
         if (empty($test_name)) {
             return;
         }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_POST['login'])
+        ) {
+            header("HTTP/1.1 303 See Other");
+            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ) {
+                 $isSecure = true;
+            }
+             $url  = $isSecure ? 'https://' : 'http://';
+             $url .= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+             // sending user to the url that was requested
+             header("Location: $url");
+        }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
         }
