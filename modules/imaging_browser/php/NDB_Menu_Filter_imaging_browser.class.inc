@@ -119,6 +119,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             f.OutputType='native' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
 
+        $user =& User::singleton();
+        if (!$user->hasPermission('imaging_browser_view_allsites')) {
+            $this->query .= " AND c.CenterID=" . $user->getCenterID();
+        }
+
         $this->columns = array(
             'p.MRI_alias as Site',
             'c.PSCID as PSCID',
