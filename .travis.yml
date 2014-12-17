@@ -1,9 +1,10 @@
 language: php
 
 php: 5.4
+sudo: false
 
 before_install:
-    - sudo apt-get update
+    - apt-get update
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
 
@@ -37,13 +38,13 @@ install:
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
     # Install requirements for php-fpm as per Travis DOCs
-    - sudo apt-get install apache2 libapache2-mod-fastcgi smarty3
+    - apt-get install apache2 libapache2-mod-fastcgi smarty3
     # /usr/share/php gets obliterated from the path by phpenv, so make
     # a symlink to fake it.
     - ln -s /usr/share/php/smarty3 ~/.phpenv/versions/$(phpenv version-name)/pear
-    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-    - sudo a2enmod rewrite actions fastcgi alias
-    - sudo a2dismod php5
+    - cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - a2enmod rewrite actions fastcgi alias
+    - a2dismod php5
     - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     # Start Selenium and redirect Selenium WebDriver
@@ -70,9 +71,9 @@ before_script:
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
 
       # Configure apache
-    - sudo cp -f docs/config/apache2-fastcgi /etc/apache2/sites-available/default
-    - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)/htdocs?g" --in-place /etc/apache2/sites-available/default
-    - sudo service apache2 restart
+    - cp -f docs/config/apache2-fastcgi /etc/apache2/sites-available/default
+    - sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)/htdocs?g" --in-place /etc/apache2/sites-available/default
+    - service apache2 restart
 
 script:
     # Run PHP -l on everything to ensure there's no syntax
