@@ -28,7 +28,7 @@ Instrument format:
 {
     "Meta" : {
         "InstrumentVersion": string,
-        "InstrumentFormatVersion" : "v0.0.1a-dev",
+        "InstrumentFormatVersion" : "v0.0.1b-dev",
         "ShortName" : "InstrumentName", /* Required */
         "LongName"  : "The Human Readable Instrument Name", /* Required */
         "IncludeMetaDataFields" : boolean
@@ -55,7 +55,8 @@ Where each key should be interpreted as so:
                         independently of the `ShortName` or `LongName` of the instrument.
 
 `Meta.InstrumentFormatVersion`: A hardcoded string specifying what version of this spec
-                              the instrument is written to comply to. Required.
+                              the instrument is written to comply to. For this spec, must be "v0.0.1b-dev".
+                              Required.
 
 `Meta.ShortName`: A short name for this test suitable for a database table or file name.
 
