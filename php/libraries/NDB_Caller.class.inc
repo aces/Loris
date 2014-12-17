@@ -86,7 +86,11 @@ class NDB_Caller extends PEAR
             && isset($_POST['login'])
         ) {
              header("HTTP/1.1 303 See Other");
-             header("Location: http://$_SERVER[HTTP_HOST]");
+             $url = stripos($_SERVER['SERVER_PROTOCOL'],
+                            'https') === true ? 'https://' : 'http://';
+             $url .= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+             // sending user to the url that was requested
+             header("Location: $url");
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
