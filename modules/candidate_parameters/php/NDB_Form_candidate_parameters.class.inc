@@ -398,6 +398,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
                    "SELECT COUNT(*) FROM participant_status WHERE CandID = :cid", 
                    array("cid"=>$values['CandID'])
                    );
+
+	   // inserting to consent_info_history table before participant_status
+           // because else{} below adds a field specific to participant_status table
+           $success = $DB->insert("consent_info_history", $participant_vals); 
+
            if ($ParticipantCount > 0) {
                $success = $DB->update(
                        "participant_status", 
@@ -410,18 +415,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
                $success = $DB->insert("participant_status",$participant_vals);
            }
 
-           if (Utility::isErrorX($success)) {
-               return PEAR::raiseError(
-                       "NDB_Form_candidate_parameters::_process: ".$success->getMessage()
-                       );
-           }
-
-           $success = $DB->insert("consent_info_history", $participant_vals); 
-           if (Utility::isErrorX($success)) {
-               return PEAR::raiseError(
-                       "NDB_Form_candidate_parameters::_process: ".$success->getMessage()
-                       );
-           }
        }
        $this->tpl_data['success'] = true;
 
