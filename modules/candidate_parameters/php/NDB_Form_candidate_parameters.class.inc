@@ -399,8 +399,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
                    array("cid"=>$values['CandID'])
                    );
 
-	   // inserting to consent_info_history table before participant_status
-           // because else{} below adds a field specific to participant_status table
+           // Insert to consent_info_history table first, before participant_status
+           // because else{} below adds a column specific to participant_status table
            $success = $DB->insert("consent_info_history", $participant_vals); 
 
            if ($ParticipantCount > 0) {
