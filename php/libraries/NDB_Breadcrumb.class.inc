@@ -58,6 +58,7 @@ class NDB_Breadcrumb extends PEAR
                                'instrument_list'  => 'TimePoint Details',
                                'timepoint_list'   => 'Candidate Profile',
                                'candidate_list'   => 'Access Profile',
+                               'datadict'         => 'Data Dictionary',
                               );
 
     /**
@@ -91,7 +92,9 @@ class NDB_Breadcrumb extends PEAR
         // set the crumb text
         if (!is_null($text)) {
             $this->_breadcrumb[$this->_lastIndex]['text'] = $text;
-        } elseif (!is_null($parameter)) {
+        } elseif (!is_null($parameter)
+            && !(isset($this->_userFriendlyNames[$this->_parameters[$parameter]]))
+        ) {
             $this->_breadcrumb[$this->_lastIndex]['text']
                 = ucwords(str_replace('_', ' ', $this->_parameters[$parameter]));
             $this->_breadcrumb[$this->_lastIndex]['text']
