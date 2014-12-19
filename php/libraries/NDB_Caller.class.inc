@@ -78,6 +78,7 @@ class NDB_Caller extends PEAR
     */
     function load($test_name, $subtest, $CommentID = '', $nextpage=null)
     {
+        $config =& NDB_Config::singleton();
         // if no first argument, return
         if (empty($test_name)) {
             return;
@@ -86,11 +87,8 @@ class NDB_Caller extends PEAR
             && isset($_POST['login'])
         ) {
             header("HTTP/1.1 303 See Other");
-            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ) {
-                 $isSecure = true;
-            }
-             $url  = $isSecure ? 'https://' : 'http://';
-             $url .= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+             $url  = $config->getSetting('url');
+             $url .= $_SERVER['REQUEST_URI'];
              // sending user to the url that was requested
              header("Location: $url");
         }
@@ -98,7 +96,6 @@ class NDB_Caller extends PEAR
             $CommentID = $_REQUEST['commentID'];
         }
         // get the files path, aka the base directory
-        $config =& NDB_Config::singleton();
         $base   = $config->getSetting('base');
 
         if (is_dir($base . "modules/$test_name")) {
