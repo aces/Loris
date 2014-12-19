@@ -66,25 +66,36 @@ class SinglePointLogin extends PEAR
         $tpl_data['action']        = $_SERVER['PHP_SELF']
             . '?' . http_build_query($params);
         $tpl_data['error_message'] = $this->_lastError;
-        $study_links = $config->getSetting('Studylinks');// print_r($study_links);
-        foreach (Utility::toArray($study_links['link']) AS $link) {
-            $LinkArgs = '';
-            $BaseURL  = $link['@']['url'];
-            if (isset($link['@']['args'])) {
-                $LinkArgs = $link_args[$link['@']['args']];
+        try {
+            $study_links = $config->getSetting('Studylinks');// print_r($study_links);
+            foreach (Utility::toArray($study_links['link']) AS $link) {
+                $LinkArgs = '';
+                $BaseURL  = $link['@']['url'];
+                if (isset($link['@']['args'])) {
+                    $LinkArgs = $link_args[$link['@']['args']];
+                }
+                $LinkLabel  = $link['#'];
+                $WindowName = md5($link['@']['url']);
+                $tpl_data['studylinks'][] =array(
+                    'url'        => $BaseURL . $LinkArgs,
+                    'label'      => $LinkLabel,
+                    'windowName' => $WindowName,
+                );
             }
-            $LinkLabel  = $link['#'];
-            $WindowName = md5($link['@']['url']);
-            $tpl_data['studylinks'][] =array(
-                                        'url'        => $BaseURL . $LinkArgs,
-                                        'label'      => $LinkLabel,
-                                        'windowName' => $WindowName,
-                                       );
+        } catch(ConfigurationException $e) {
+            // If StudyLinks aren't defined, it shouldn't be fatal.
         }
-        $study_title = $config->getSetting('title');
-        $study_logo  = $config->getSetting('studylogo');
+
         $tpl_data['study_title'] = $study_title;
-        $tpl_data['study_logo']  = $study_logo;
+        try {
+            $tpl_data['study_logo']  = $study_logo;
+        } catch(ConfigurationException $e) {
+            $tpl_data['study_logo']  = '';
+        }
+
+        // If there's no study, we have a bigger problem
+        $study_title = $config->getSetting('title');
+
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
