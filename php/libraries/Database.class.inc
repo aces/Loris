@@ -102,7 +102,7 @@ class Database extends PEAR
                 $connection = current($connections);
                 return $connection;
             } else {
-                throw new Exception("No database connection exists");
+                throw new DatabaseException("No database connection exists");
             }
         } else {
             // name the connection
@@ -120,7 +120,7 @@ class Database extends PEAR
                 );
                 if ($connections[$connection]->isError($ok)) {
                     unset($connections[$connection]);
-                    throw new Exception(
+                    throw new DatabaseException(
                         'Could not connect to database: '.$ok->getMessage()
                     );
                 }
@@ -270,7 +270,7 @@ class Database extends PEAR
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
-            throw new Exception(
+            throw new DatabaseException(
                 "Insert statement did not execute successfully."
             );
         }
@@ -353,7 +353,7 @@ class Database extends PEAR
         }
 
         if (preg_match("/=NULL/", $where)) {
-            throw new Exception(
+            throw new DatabaseException(
                 "NULL values not allowed in a WHERE structure."
             );
         }
@@ -367,7 +367,7 @@ class Database extends PEAR
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
-            throw new Exception(
+            throw new DatabaseException(
                 "Update statement did not execute successfully."
             );
         }
@@ -398,7 +398,7 @@ class Database extends PEAR
         }
 
         if (preg_match("/=NULL/", $query)) {
-            throw new Exception(
+            throw new DatabaseException(
                 "NULL values not allowed in a WHERE structure."
             );
         }
@@ -438,7 +438,7 @@ class Database extends PEAR
             && strpos(strtoupper($query), 'SHOW') !== 0
             && strpos(strtoupper($query), 'DESCRIBE') !== 0
         ) {
-            throw new Exception(
+            throw new DatabaseException(
                 "Only SELECT statements can be run with Database::select()."
                 . "  Query was '$query'"
             );
@@ -455,7 +455,7 @@ class Database extends PEAR
             }
             return $result;
         } catch(Exception $e) {
-            throw new Exception("Invalid SELECT statement, $query");
+            throw new DatabaseException("Invalid SELECT statement, $query");
         }
     }
 
