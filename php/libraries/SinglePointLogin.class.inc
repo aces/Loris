@@ -352,15 +352,10 @@ class SinglePointLogin extends PEAR
                 $result =  $DB->insert('user_login_history', $setArray);
                 return true;
             }
-            // bad usename or password
         }
 
+            // bad usename or password
         $this->_lastError = "Incorrect username or password";
-        //insert failed_detail into user_login_history
-        $this->insertFailedDetail(
-            $this->_lastError,
-            $setArray
-        );
         return false;
     }
 
