@@ -78,7 +78,7 @@ class NDB_Caller extends PEAR
     */
     function load($test_name, $subtest, $CommentID = '', $nextpage=null)
     {
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         // if no first argument, return
         if (empty($test_name)) {
             return;
