@@ -2192,7 +2192,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name
 
 -- default www settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "localhost" FROM ConfigSettings WHERE Name="host";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "https://localhost/" FROM ConfigSettings WHERE Name="url";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "http://localhost/" FROM ConfigSettings WHERE Name="url";
 
 -- default dashboard settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun." FROM ConfigSettings WHERE Name="projectDescription";
