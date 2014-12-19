@@ -25,7 +25,7 @@ border-color:#000;
 }
 
 SPAN.tip {
-    TEXT-DECORATION: none
+    TEXT-DECORATION: none;
 }
 SPAN.tip:hover {
     POSITION: relative
@@ -143,4 +143,7 @@ label em {
 .no-files {
     font-weight: bold;
     size: 1.1em;
+}
+.categorycomments{
+    color: black;
 }
