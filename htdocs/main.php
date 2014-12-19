@@ -160,6 +160,9 @@ try {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
     $tpl_data['workspace'] = $workspace;
+} catch(ConfigurationException $e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    $tpl_data['error_message'][] = $e->getMessage();
 } catch(Exception $e) {
     switch($e->getCode()) {
         case 404: header("HTTP/1.1 404 Not Found"); break;
@@ -251,4 +254,3 @@ if ($config->getSetting('showTiming')) {
 
 //print '<pre>'; print_r($tpl_data); print '</pre>';
 ?>
-
