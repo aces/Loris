@@ -96,7 +96,7 @@ class NDB_Caller extends PEAR
             $CommentID = $_REQUEST['commentID'];
         }
         // get the files path, aka the base directory
-        $base   = $config->getSetting('base');
+        $base = $config->getSetting('base');
 
         if (is_dir($base . "modules/$test_name")) {
             // New module style
