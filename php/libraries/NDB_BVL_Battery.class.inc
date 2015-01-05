@@ -40,7 +40,7 @@ class NDB_BVL_Battery extends PEAR
     /**
      * Constructor - merely asserts that the environment is suitable
      */
-    function NDB_BVL_Battery()
+    function __construct()
     {
     }
 

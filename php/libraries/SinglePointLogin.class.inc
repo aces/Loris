@@ -266,14 +266,15 @@ class SinglePointLogin extends PEAR
         $this->_username = isset($_POST['username'])
             ? $_POST['username']
             : 'Unknown';
-         $setArray       = array(
-                            'userID'          => $this->_username,
-                            'Success'         => 'Y',
-                            'Failcode'        => null,
-                            'Login_timestamp' => date('Y-m-d H:i:s'),
-                            'IP_address'      => $_SERVER['REMOTE_ADDR'],
-                            'Page_requested'  => $_SERVER['REQUEST_URI'],
-                           );
+
+        $setArray = array(
+                     'userID'          => $this->_username,
+                     'Success'         => 'Y',
+                     'Failcode'        => null,
+                     'Login_timestamp' => date('Y-m-d H:i:s'),
+                     'IP_address'      => $_SERVER['REMOTE_ADDR'],
+                     'Page_requested'  => $_SERVER['REQUEST_URI'],
+                    );
 
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
@@ -288,6 +289,7 @@ class SinglePointLogin extends PEAR
         if (empty($_POST['login'])) {
             return false;
         }
+
         if (empty($_POST['username'])) {
             $this->_lastError = 'Please enter a username';
             $this->insertFailedDetail(
@@ -296,6 +298,7 @@ class SinglePointLogin extends PEAR
             );
             return false;
         }
+
         if (empty($_POST['password'])) {
             $this->_lastError = 'Please enter a password';
             $this->insertFailedDetail(
@@ -310,9 +313,9 @@ class SinglePointLogin extends PEAR
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
-                         Password_md5, Password_expiry, Active, Pending_approval
-                    FROM users
-                  WHERE UserID = :username
+                     Password_md5, Password_expiry, Active, Pending_approval
+                FROM users
+              WHERE UserID = :username
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $_POST['username']));
 
@@ -354,7 +357,7 @@ class SinglePointLogin extends PEAR
             }
         }
 
-            // bad usename or password
+        // bad usename or password
         $this->_lastError = "Incorrect username or password";
         return false;
     }

@@ -44,7 +44,7 @@ class FeedbackMRI
      * @param int $fileID    The fileID that this feedback is for
      * @param int $sessionID The SessionID that this feedback is for
      */
-    function FeedbackMRI($fileID='', $sessionID='')
+    function __construct($fileID='', $sessionID='')
     {
         // set object properties
         $this->fileID    = $fileID;
