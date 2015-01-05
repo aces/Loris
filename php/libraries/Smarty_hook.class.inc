@@ -38,10 +38,10 @@ class Smarty_NeuroDB extends Smarty
      */
     function __construct($moduleName = null)
     {
+        parent::__construct();
+
         $config =& NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
-
-        $this->__construct();
 
         // NeuroDB plugin is no longer needed now that Smarty3 supports
         // multiple template directories
