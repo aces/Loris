@@ -36,7 +36,7 @@ class Smarty_NeuroDB extends Smarty
      *
      * @param string $moduleName The name of the module to search through
      */
-    function Smarty_NeuroDB($moduleName = null)
+    function __construct($moduleName = null)
     {
         $config =& NDB_Config::singleton();
         $paths  = $config->getSetting('paths');

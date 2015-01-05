@@ -373,7 +373,7 @@ class NDB_BVL_Feedback
             $qparams['CanID'] = $this->_feedbackObjectInfo['CandID'];
             $queryBy          = " CandID";
         } elseif (!empty($this->_feedbackObjectInfo['FieldName'])) {
-            $query           .= 	" AND FieldName = :FName";
+            $query           .=     " AND FieldName = :FName";
             $qparams['FName'] = $this->_feedbackObjectInfo['FieldName'];
             $queryBy          = " FieldName";
         } else {
