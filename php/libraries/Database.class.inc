@@ -271,7 +271,9 @@ class Database extends PEAR
         $result = $prep->execute($exec_params);
         if ($result === false) {
             throw new DatabaseException(
-                "Insert statement did not execute successfully."
+                "Insert statement did not execute successfully.",
+                $prepQ,
+                $exec_params
             );
         }
 
@@ -354,7 +356,8 @@ class Database extends PEAR
 
         if (preg_match("/=NULL/", $where)) {
             throw new DatabaseException(
-                "NULL values not allowed in a WHERE structure."
+                "NULL values not allowed in a WHERE structure.",
+                $prepQ
             );
         }
 
@@ -368,7 +371,9 @@ class Database extends PEAR
         $result = $prep->execute($exec_params);
         if ($result === false) {
             throw new DatabaseException(
-                "Update statement did not execute successfully."
+                "Update statement did not execute successfully.",
+                $prepQ,
+                $exec_params
             );
         }
         $this->affected = $prep->rowCount();
@@ -399,7 +404,8 @@ class Database extends PEAR
 
         if (preg_match("/=NULL/", $query)) {
             throw new DatabaseException(
-                "NULL values not allowed in a WHERE structure."
+                "NULL values not allowed in a WHERE structure.",
+                $query
             );
         }
 
@@ -439,8 +445,8 @@ class Database extends PEAR
             && strpos(strtoupper($query), 'DESCRIBE') !== 0
         ) {
             throw new DatabaseException(
-                "Only SELECT statements can be run with Database::select()."
-                . "  Query was '$query'"
+                "Only SELECT statements can be run with Database::select().",
+                $query
             );
         }
 
@@ -455,7 +461,7 @@ class Database extends PEAR
             }
             return $result;
         } catch(Exception $e) {
-            throw new DatabaseException("Invalid SELECT statement, $query");
+            throw new DatabaseException("Invalid SELECT statement", $query);
         }
     }
 
