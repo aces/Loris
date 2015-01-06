@@ -75,12 +75,12 @@ else
     exit 2;
 fi
 
-if [[ -n $(which pear) ]]; then
+if [[ -n $(which composer) ]]; then
     echo ""
-    echo "PEAR appears to be installed."
+    echo "PHP Composer appears to be installed."
 else
     echo ""
-    echo "PEAR does not appear to be installed. Aborting."
+    echo "PHP Composer does not appear to be installed. Aborting."
     exit 2;
 fi
 
@@ -343,39 +343,10 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
 
 
-
-echo ""
-while true; do
-    read -p "Would you like to install PEAR libraries (affects system files)? [yn] " yn
-    echo $yn | tee -a $LOGFILE > /dev/null
-    case $yn in
-        [Yy]* )
-            echo "Installing PEAR libraries (may prompt for sudo password)."
-            echo ""
-            echo "Upgrading PEAR..."
-            sudo pear upgrade-all
-            echo "Installing PEAR Benchmark..."
-            sudo pear install Benchmark
-            echo "Installing PEAR HTML_Common..."
-            sudo pear install HTML_Common
-            echo "Installing PEAR HTML_QuickForm..."
-            sudo pear install HTML_QuickForm
-            echo "Configuring PEAR preferred state..."
-            sudo pear config-set preferred_state beta
-            echo "Installing PEAR Mail..."
-            sudo pear install Mail
-            echo "Installing PEAR Pager..."
-            sudo pear install Pager
-            echo "Installing PEAR Structures_Graph..."
-            sudo pear install Structures_Graph
-            break;;
-        [Nn]* )
-            echo "Not installing PEAR libraries."
-            break;;
-        * ) echo "Please enter 'y' or 'n'."
-   esac
-done;
-
+# Install external libraries using composer
+cd ..
+composer install --no-dev
+cd tools
 
 echo ""
 while true; do
