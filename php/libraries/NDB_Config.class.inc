@@ -257,7 +257,9 @@ class NDB_Config
             );
 
             if (count($configSetting) === 0) {
-                throw new ConfigurationException("Config setting $name does not exist in database");
+                throw new ConfigurationException(
+                    "Config setting $name does not exist in database"
+                );
             }
         } else {
             $configSetting = $db->pselect(

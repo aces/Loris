@@ -67,7 +67,7 @@ class SinglePointLogin extends PEAR
             . '?' . http_build_query($params);
         $tpl_data['error_message'] = $this->_lastError;
         try {
-            $study_links = $config->getSetting('Studylinks');// print_r($study_links);
+            $study_links = $config->getSetting('Studylinks');
             foreach (Utility::toArray($study_links['link']) AS $link) {
                 $LinkArgs = '';
                 $BaseURL  = $link['@']['url'];
@@ -77,10 +77,10 @@ class SinglePointLogin extends PEAR
                 $LinkLabel  = $link['#'];
                 $WindowName = md5($link['@']['url']);
                 $tpl_data['studylinks'][] =array(
-                    'url'        => $BaseURL . $LinkArgs,
-                    'label'      => $LinkLabel,
-                    'windowName' => $WindowName,
-                );
+                                            'url'        => $BaseURL . $LinkArgs,
+                                            'label'      => $LinkLabel,
+                                            'windowName' => $WindowName,
+                                           );
             }
         } catch(ConfigurationException $e) {
             // If StudyLinks aren't defined, it shouldn't be fatal.
@@ -88,9 +88,9 @@ class SinglePointLogin extends PEAR
 
         $tpl_data['study_title'] = $study_title;
         try {
-            $tpl_data['study_logo']  = $study_logo;
+            $tpl_data['study_logo'] = $study_logo;
         } catch(ConfigurationException $e) {
-            $tpl_data['study_logo']  = '';
+            $tpl_data['study_logo'] = '';
         }
 
         // If there's no study, we have a bigger problem
