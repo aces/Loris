@@ -6,7 +6,7 @@ require_once "NDB_Form.class.inc";
 class NDB_Form_brainbrowser extends NDB_Form
 {
 
-    function _hasAccess() 
+    function _hasAccess()
     {
         return true;
         //$this->_has_perm('superuser');
