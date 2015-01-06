@@ -40,7 +40,7 @@ class NDB_BVL_Instrument_Instrument_Preview extends NDB_BVL_Instrument
      * Loads a LINST file and rules from the data posted to it in order
      * to preview how Loris would render that file.
      */
-    function NDB_BVL_Instrument_Instrument_Preview()
+    function __construct()
     {
         $this->loadInstrumentFile(
             "data:text/plain;base64," . base64_encode($_REQUEST['instrumentdata']),

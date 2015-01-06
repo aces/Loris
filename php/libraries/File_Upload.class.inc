@@ -33,7 +33,7 @@ class File_Upload extends PEAR
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods
      */
-    function File_Upload()
+    function __construct()
     {
         //Set Defaults
         $this->renameMode        = "incremental";
