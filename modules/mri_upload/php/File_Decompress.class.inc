@@ -50,7 +50,7 @@ class File_Decompress extends PEAR
      * @param String $file_name        File to be decompressed
      * @param String $destination_path Path of the destination folder
      */
-    function File_Decompress(&$file_name, &$destination_path)
+    function __construct(&$file_name, &$destination_path)
     {
         $this->file_name = $file_name;
         $this->dest_path = $destination_path;

@@ -894,35 +894,35 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             //if the minc is not inserted into the files table/////////////
             ////Run the minc-insertion pipeline////////////////////////////
             ///////////////////////////////////////////////////////////////
-        if ($count==0) {
-            $this->message->addMessage(
-                "Inserting MINC into the".
-                " files table \n"
-            );
-            $output = $this->runCommand($command);
-            if ($this->show_queries) {
-                print "command is $command";
-                $this->message->addMessage("command is $command");
-                print $output;
-                $this->message->addMessage($output);
-            }
-            ////////////////////TODO://////////////////////////////////
-            //extra checks can be added to make sure that the//////////
-            /// mincs are created, before the minc-inserted is set/////
-            /////////// to true////////////////////////////////////////
-            if ($output==0) {
-                 $this->message->addMessage(
-                     "The minc file for" .
-                     " patient-name $patient_name is now inserted into db".
-                     "\n"
-                 );
+            if ($count==0) {
+                $this->message->addMessage(
+                    "Inserting MINC into the".
+                    " files table \n"
+                );
+                $output = $this->runCommand($command);
+                if ($this->show_queries) {
+                    print "command is $command";
+                    $this->message->addMessage("command is $command");
+                    print $output;
+                    $this->message->addMessage($output);
+                }
+                ////////////////////TODO://////////////////////////////////
+                //extra checks can be added to make sure that the//////////
+                /// mincs are created, before the minc-inserted is set/////
+                /////////// to true////////////////////////////////////////
+                if ($output==0) {
+                     $this->message->addMessage(
+                         "The minc file for" .
+                         " patient-name $patient_name is now inserted into db".
+                         "\n"
+                     );
                                  $this->message->addMessage(
                                      "The process completed".
                                      "successfully \n"
                                  );
-                $this->tpl_data['minc_success'] = true;
+                                 $this->tpl_data['minc_success'] = true;
+                }
             }
-        }
     }
 
     /**
