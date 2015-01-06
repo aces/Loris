@@ -1,0 +1,25 @@
+RewriteEngine on
+
+# Bootstrap is not a Loris module, don't rewrite it.
+RewriteRule ^bootstrap/(.*) bootstrap/$1 [L]
+# Redirect /CandID/ to visit label list
+RewriteRule ^([0-9]{6,6})/$ /main.php?test_name=timepoint_list&candID=$1
+# Want to redirect /CandID/Visit_label/ to instrument list, but
+# because of the main.php URL structure it needs to be the sessionID instead
+# of Visit_label
+RewriteRule ^([0-9]{6,6})/([0-9]+)/$ /main.php?test_name=instrument_list&candID=$1&sessionID=$2
+
+# Preferences is a special case for url rewriting
+RewriteRule ^preferences/$ /main.php?test_name=user_accounts&subtest=my_preferences
+# Rewrite /foo/ to appropriate module
+# Includes /foo/css/cssfile.css
+#          /foo/js/javascriptfile.js
+#          /foo/ajax/AjaxScript.php
+# To use the appropriate helper script as well.
+RewriteRule ^([a-zA-Z_]+)/$ /main.php?test_name=$1
+RewriteRule ^([a-zA-Z_]+)/css/([a-zA-Z0-9.]+)$ /GetCSS.php?Module=$1&file=$2
+RewriteRule ^([a-zA-Z_]+)/js/([a-zA-Z0-9.]+)$ /GetJS.php?Module=$1&file=$2
+RewriteRule ^([a-zA-Z_]+)/static/([a-zA-Z0-9.]+)$ /GetStatic.php?Module=$1&file=$2
+RewriteRule ^([a-zA-Z_]+)/ajax/([a-zA-Z0-9.]+)$ /AjaxHelper.php?Module=$1&script=$2
+# Handle submodules too under /foo/submodulename
+RewriteRule ^([a-zA-Z_]+)/([a-zA-Z0-9_.]+)/$ /main.php?test_name=$1&subtest=$2
