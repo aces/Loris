@@ -36,21 +36,12 @@ class Smarty_NeuroDB extends Smarty
      *
      * @param string $moduleName The name of the module to search through
      */
-<<<<<<< HEAD
     function __construct($moduleName = null)
-=======
-    function Smarty_NeuroDB($moduleName = null)
->>>>>>> Made Smarty_neurodb pass PHPCS
     {
         parent::__construct();
 
         $config =& NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
-<<<<<<< HEAD
-=======
-
-        $this->__construct();
->>>>>>> Made Smarty_neurodb pass PHPCS
 
         // NeuroDB plugin is no longer needed now that Smarty3 supports
         // multiple template directories
