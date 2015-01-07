@@ -412,6 +412,7 @@ class SinglePointLogin extends PEAR
     {
         // create DB object
         $DB =& Database::singleton();
+
         $setArray['Success']     = 'N';
         $setArray['Fail_detail'] = $description;
 
