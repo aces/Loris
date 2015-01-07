@@ -347,16 +347,16 @@ class NDB_Config
     function getSetting($name)
     {
         try {
-            $DBValue = $this->getSettingFromDB($name);
+            $XMLValue = $this->getSettingFromXML($name);
 
-            if ($DBValue !== null) {
-                return $DBValue;
+            if ($XMLValue !== null) {
+                return $XMLValue;
             }
         } catch(Exception $e) {
         }
 
-        // nothing in the database, so get the value from config.xml
-        return $this->getSettingFromXML($name);
+        // nothing in the config file, so get the value from the DB
+        return $this->getSettingFromDB($name);
     }
 
     /**
