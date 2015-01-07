@@ -16,6 +16,8 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function testLoginFailure()
     {
 
+       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+       print $bodyText;
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
 
@@ -59,7 +61,7 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     public function tearDown() {
-        $this->webDriver->close();
+        $this->webDriver->quit();
     }
 }
 ?>
