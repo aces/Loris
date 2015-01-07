@@ -48,7 +48,11 @@ if (empty($basePath)) {
 
 // Now get the file and do file validation
 $Module = $_GET['Module'];
-$File = $Module . ".css";
+if (empty($_REQUEST['file'])) {
+    $File = $Module . ".css";
+} else {
+    $File = $_REQUEST['file'];
+}
 
 // File validation
 if (strpos($File, ".css") === false) {

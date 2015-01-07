@@ -70,8 +70,7 @@
 	<h1>Change Log</h1>
 </div>
 </div>
-<div class="table-responsive">
-	<table class="table table-hover table-primary table-bordered">
+	<table class="table table-hover table-primary table-bordered dynamictable">
 		<tr class="info">
 			<th>Time</th>
 			<th>User</th>
@@ -84,4 +83,3 @@
 		</tr>
 		{$form.certification_history.html}
 	</table>
-</div>

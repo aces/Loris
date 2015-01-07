@@ -40,12 +40,14 @@ class Site
     {
         static $siteList = array();
         if (!isset($siteList[$centerID])) {
-            $siteList[$centerID] = new Site();
-            $error = $siteList[$centerID]->select($centerID);
-            if (Utility::isErrorX($error)) {
+            try {
+                $siteList[$centerID] = new Site();
+                $error = $siteList[$centerID]->select($centerID);
+            } catch(Exception $e) {
                 $message = $error->getMessage();
                 unset($siteList[$centerID]);
-                return PEAR::raiseError("Could not select site: ($message)");
+                throw new Exception("Could not select site ($message)", null, $e);
+
             }
         }
 
@@ -65,22 +67,11 @@ class Site
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         $query  = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site
                       FROM psc
                    WHERE CenterID = :CID";
         $result = $db->pselectRow($query, array('CID' => $centerID));
-
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError(
-                "Could not retrieve site information form the Database"
-            );
-        }
 
         //store site data in the object property
         if (is_array($result) && count($result) > 0) {
@@ -88,7 +79,7 @@ class Site
                 $this->_siteInfo[$key] = $value;
             }
         } else {
-            return PEAR::raiseError("Invalid site\n");
+            throw new Exception("Invalid site");
         }
     }
 

@@ -7,6 +7,7 @@
         <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
         <script type="text/javascript" src="js/jquery.dynamictable.js"></script>
+        <script type="text/javascript" src="js/jquery.fileupload.js"></script>
         <!-- Custom JavaScript for the Menu Toggle -->
    
         <link type="text/css" href="css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
@@ -135,6 +136,7 @@
                     });
 
                     $(".dynamictable").DynamicTable();
+                    $(".fileUpload").FileUpload();
                 });
 
                 
@@ -338,8 +340,7 @@
                             {else}
                                 {if $candID != ""}
                                     <!-- table with candidate profile info -->
-                                    <div class="table-responsive">
-                                        <table cellpadding="2" class="table table-info table-bordered" style="max-width:auto">
+                                        <table cellpadding="2" class="table table-info table-bordered dynamictable" style="max-width:auto">
                                             <!-- column headings -->
                                             <thead>
                                                 <tr class="info">
@@ -467,7 +468,6 @@
                                                     </tr>
                                             </tbody>  
                                         </table>
-                                    </div>
 
                                     {if $sessionID != ""}
                                         <div class="table-responsive">

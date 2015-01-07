@@ -21,7 +21,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up-load"></span> 
         </div>
         <div class="panel-body" id="panel-load">
-            <input type="file" id="instfile" />
+            <input class="fileUpload" type="file" id="instfile" />
             <br>
             <input class="btn btn-default" type="button" id="load" value="Load Instrument" />
         </div>

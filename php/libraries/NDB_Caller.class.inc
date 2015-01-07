@@ -78,16 +78,25 @@ class NDB_Caller extends PEAR
     */
     function load($test_name, $subtest, $CommentID = '', $nextpage=null)
     {
+        $config = NDB_Config::singleton();
         // if no first argument, return
         if (empty($test_name)) {
             return;
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_POST['login'])
+        ) {
+            header("HTTP/1.1 303 See Other");
+             $url  = $config->getSetting('url');
+             $url .= $_SERVER['REQUEST_URI'];
+             // sending user to the url that was requested
+             header("Location: $url");
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
         }
         // get the files path, aka the base directory
-        $config =& NDB_Config::singleton();
-        $base   = $config->getSetting('base');
+        $base = $config->getSetting('base');
 
         if (is_dir($base . "modules/$test_name")) {
             // New module style
@@ -129,9 +138,6 @@ class NDB_Caller extends PEAR
                 } else {
                     $html = $this->loadMenu($test_name, $mode);
                 }
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
 
                 $this->type = 'menu';
                 return $html;
@@ -140,10 +146,6 @@ class NDB_Caller extends PEAR
                     ? $_REQUEST['identifier']
                     : '';
                 $html       = $this->loadForm($test_name, $subtest, $identifier);
-
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
 
                 $this->type = 'form';
                 return $html;
@@ -179,9 +181,6 @@ class NDB_Caller extends PEAR
 
                 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
                 $html = $this->loadMenu($test_name, $mode);
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
 
                 $this->type = 'menu';
                 return $html;
@@ -198,9 +197,6 @@ class NDB_Caller extends PEAR
                     ? $_REQUEST['identifier']
                     : '';
                 $html       = $this->loadForm($test_name, $subtest, $identifier);
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
 
                 $this->type = 'form';
                 return $html;
@@ -221,9 +217,6 @@ class NDB_Caller extends PEAR
                     $_REQUEST['identifier'],
                     $_REQUEST['reliability_center_id']
                 );
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
 
                 $this->type = 'reliability';
                 return $html;
@@ -244,10 +237,6 @@ class NDB_Caller extends PEAR
                     $nextpage
                 );
 
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
-
                 $this->type = 'instrument';
                 return $html;
             } else if (file_exists($linstfile)) {
@@ -261,10 +250,7 @@ class NDB_Caller extends PEAR
         }
 
         // it is nothing!
-        return PEAR::raiseError(
-            "This page ($test_name) is under construction.",
-            404
-        );
+        throw new Exception("This page ($test_name) is under construction.", 404);
     }
 
     /**
@@ -279,16 +265,8 @@ class NDB_Caller extends PEAR
     {
         // make an instance of the menu's object
         $menu =& NDB_Menu::factory($menu, $mode);
-        if (Utility::isErrorX($menu)) {
-            return PEAR::raiseError($menu->getMessage());
-        }
 
         $success = $menu->setup();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadMenu() save: ".$success->getMessage()
-            );
-        }
 
         if (method_exists($menu, 'getControlPanel')) {
             $this->controlPanel = $menu->getControlPanel();
@@ -296,16 +274,6 @@ class NDB_Caller extends PEAR
         $html = $menu->display();
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError(
-                    "NDB_Caller::loadForm() save: ".$success->getMessage()
-                );
-            }
-        }
-        if (Utility::isErrorX($html)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadMenu() display: ".$html->getMessage()
-            );
         }
 
         return $html;
@@ -324,30 +292,16 @@ class NDB_Caller extends PEAR
     {
         // make an instance of the form's object
         $form = NDB_Form::factory($class, $page, $identifier);
-        if (Utility::isErrorX($form)) {
-            return PEAR::raiseError($form->getMessage());
-        }
 
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
         $success = $form->save();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadForm() save: ".$success->getMessage()
-            );
-        }
 
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
         $html = $form->display();
-        if (Utility::isErrorX($html)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadForm() display: ".$html->getMessage()
-            );
-        }
-
         return $html;
     }
 
@@ -371,23 +325,10 @@ class NDB_Caller extends PEAR
             $identifier,
             $reliability_center_id
         );
-        if (Utility::isErrorX($form)) {
-            return PEAR::raiseError($form->getMessage());
-        }
 
         $success = $form->save();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadReliability() save: ".$success->getMessage()
-            );
-        }
 
         $html = $form->display();
-        if (Utility::isErrorX($html)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadReliability() display: ".$html->getMessage()
-            );
-        }
 
         return $html;
     }
@@ -422,18 +363,9 @@ class NDB_Caller extends PEAR
                 . "</script>";
         }
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         if ($_REQUEST['sessionID']) {
             $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
-            if (Utility::isErrorX($timepoint)) {
-                return PEAR::raiseError(
-                    "NDB_Caller::loadInstrument, Timepoint Error: "
-                    .$timepoint->getMessage()
-                );
-            }
         }
 
         // make an instance of the instrument's object
@@ -454,11 +386,6 @@ class NDB_Caller extends PEAR
 
         // save instrument form data
         $success = $instrument->save();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadInstrument() save: ".$success->getMessage()
-            );
-        }
 
         if ($redirectToOnSuccess !== null && $success !== false) {
             return "<script language='javascript'>"
@@ -468,11 +395,6 @@ class NDB_Caller extends PEAR
         // create an instrument status object
         $status  = new NDB_BVL_InstrumentStatus;
         $success = $status->select($commentID);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "Instrument Status Error ($commentID): ".$success->getMessage()
-            );
-        }
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
@@ -485,11 +407,6 @@ class NDB_Caller extends PEAR
         }
 
         $html = $instrument->display();
-        if (Utility::isErrorX($html)) {
-            return PEAR::raiseError(
-                "NDB_Caller::loadInstrument() display: ".$html->getMessage()
-            );
-        }
 
         return $html;
     }

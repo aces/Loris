@@ -116,8 +116,7 @@
 </tr>
 </table>
 
-<div class="table-responsive">
-<table class="table table-hover table-primary table-bordered" width="100%" border="1">
+<table class="table table-hover table-primary table-bordered dynamictable" width="100%" border="1">
     <thead>
         <tr class="info">
             <th>No.</th>
@@ -164,7 +163,6 @@
         {/section}
     </tbody>
 </table>
-</div>
 
 {if $numTimepoints}
   {$numTimepoints} subject timepoint(s) selected.<br>

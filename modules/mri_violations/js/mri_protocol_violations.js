@@ -42,7 +42,7 @@ function save() {
                 position: [800, 120],
                 buttons: {
                     Yes: function () {
-                        $.get("AjaxHelper.php?Module=mri_violations&script=UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value, function () {});
+                        $.get("AjaxHelper.php?Module=mri_violations&script=UpdateMRIProtocol.php&field_id=" + id + "&field_value=" + value, function () {});
                         $(this).dialog("close");
                     },
                     close: function () {
@@ -53,6 +53,7 @@ function save() {
             });
     }).keypress(function (e) {
         if (e.which === 13) { // Determine if the user pressed the enter button
+	    e.preventDefault();
             $(this).blur();
         }
     });

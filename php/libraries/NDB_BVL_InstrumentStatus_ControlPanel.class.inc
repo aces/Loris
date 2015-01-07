@@ -35,7 +35,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function display()
     {
         if (empty($this->_commentID)) {
-            return PEAR::raiseError("No instrument instance selected");
+            throw new Exception("No instrument instance selected");
         }
 
         $this->tpl_data['candID']    = isset($_REQUEST['candID'])
@@ -77,67 +77,33 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             );
 
             $this->_instrument =& $instrument;
-            if (Utility::isErrorX($instrument)) {
-                return PEAR::raiseError($instrument->getMessage());
-            }
 
             $this->ValidityEnabled  = $instrument->ValidityEnabled;
             $this->ValidityRequired = $instrument->ValidityRequired;
+
             // generate the subtest list
             $list = $instrument->getSubtestList();
-            if (Utility::isErrorX($list)) {
-                return PEAR::raiseError($list->getMessage());
-            } else {
-                $this->tpl_data['subtests'] = $list;
-            }
+            $this->tpl_data['subtests'] = $list;
         }
 
         if (empty($_REQUEST['subtest'])) {
             $hasAccess = $this->_hasAccess();
-            if (Utility::isErrorX($hasAccess)) {
-                return PEAR::raiseError(
-                    "Instrument Status CP::_displayDataEntry: "
-                    .$hasAccess->getMessage()
-                );
-            }
 
             if ($this->getDataEntryStatus() == null && $hasAccess) {
                 $success = $this->setDataEntryStatus('In Progress');
-                if (Utility::isErrorX($success)) {
-                    return PEAR::raiseError(
-                        "InstrumentStatus_ControlPanel: ".$success->getMessage()
-                    );
-                }
             }
 
             // generate the administration flag buttons
             $this->tpl_data['access']['administration']
                 = $this->_displayAdministration();
-            if (Utility::isErrorX($this->tpl_data['access']['administration'])) {
-                return PEAR::raiseError(
-                    "InstrumentStatus_ControlPanel: "
-                    .$this->tpl_data['access']['administration']->getMessage()
-                );
-            }
 
             // generate the data entry flag buttons
-            $this->tpl_data['access']['data_entry'] = $this->_displayDataEntry();
-            if (Utility::isErrorX($this->tpl_data['access']['data_entry'])) {
-                return PEAR::raiseError(
-                    "InstrumentStatus_ControlPanel: "
-                    .$this->tpl_data['access']['data_entry']->getMessage()
-                );
-            }
+            $this->tpl_data['access']['data_entry']
+                = $this->_displayDataEntry();
 
             // generate the validity flag buttons
             if ($this->ValidityEnabled == true) {
                 $this->tpl_data['access']['validity'] = $this->_displayValidity();
-                if (Utility::isErrorX($this->tpl_data['access']['validity'])) {
-                    return PEAR::raiseError(
-                        "InstrumentStatus_ControlPanel: "
-                        .$this->tpl_data['access']['validity']->getMessage()
-                    );
-                }
             }
 
             if ($config->getSetting('InstrumentResetting')
@@ -165,12 +131,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function save()
     {
         $hasAccess = $this->_hasAccess();
-        if (Utility::isErrorX($hasAccess)) {
-            return PEAR::raiseError(
-                "Instrument Status CP::_displayAdministration: "
-                .$hasAccess->getMessage()
-            );
-        }
         // don't do anything if the instrument is locked
         if (!$hasAccess) {
             return false;
@@ -200,7 +160,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
         // get control panel selections from _REQUEST
         $possibleFlags = array(
-                          'setDataEntry', 'setAdministration', 'setValidity',
+                          'setDataEntry',
+                          'setAdministration',
+                          'setValidity',
                          );
         $flagsToSave   = array_intersect($possibleFlags, array_keys($_REQUEST));
 
@@ -209,11 +171,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             foreach ($flagsToSave AS $flagToSave) {
                 $method  = $flagToSave . "Status";
                 $success = $this->$method($_REQUEST[$flagToSave]);
-                if (Utility::isErrorX($success)) {
-                    return PEAR::raiseError(
-                        "Could not save flag: ".$success->getMessage()
-                    );
-                }
             }
         }
 
@@ -228,12 +185,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function _displayDataEntry()
     {
         $hasAccess = $this->_hasAccess();
-        if (Utility::isErrorX($hasAccess)) {
-            return PEAR::raiseError(
-                "Instrument Status CP::_displayDataEntry: "
-                .$hasAccess->getMessage()
-            );
-        }
 
         // loop through the options
         $i = 0;
@@ -268,12 +219,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 ) {
                     // run the data entry logic test
                     $testName = Utility::getTestNameByCommentID($this->_commentID);
-                    if (Utility::isErrorX($testName)) {
-                        return PEAR::raiseError(
-                            "Could not get test name: ".$testName->getMessage()
-                        );
-                    }
-
                     if (isset($this->_instrument)) {
                         if ($showLink == true) {
                             $CompStatus
@@ -304,12 +249,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function _displayAdministration()
     {
         $hasAccess = $this->_hasAccess();
-        if (Utility::isErrorX($hasAccess)) {
-            return PEAR::raiseError(
-                "Instrument Status CP::_displayAdministration: "
-                .$hasAccess->getMessage()
-            );
-        }
 
         $dataEntry = $this->getDataEntryStatus();
 
@@ -354,11 +293,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function _displayValidity()
     {
         $hasAccess = $this->_hasAccess();
-        if (Utility::isErrorX($hasAccess)) {
-            return PEAR::raiseError(
-                "Instrument Status CP::_displayValidity: ".$hasAccess->getMessage()
-            );
-        }
 
         $validityStatus    = $this->getValidityStatus();
         $data_entry_status = $this->getDataEntryStatus();
@@ -396,12 +330,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function _displayExclusion()
     {
         $hasAccess = $this->_hasAccess();
-        if (Utility::isErrorX($hasAccess)) {
-            return PEAR::raiseError(
-                "Instrument Status CP::_displayExclusion: "
-                .$hasAccess->getMessage()
-            );
-        }
 
         $exclusionStatus = $this->getExclusionStatus();
 
@@ -435,17 +363,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     {
         // get user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // make a timepoint object
         $timePoint =& TimePoint::singleton($this->getSessionID());
-        if (Utility::isErrorX($timePoint)) {
-            return PEAR::raiseError(
-                'Could not select timepoint: '.$timePoint->getMessage()
-            );
-        }
 
         // make sure user belongs to same site as timepoint
         if (!$user->hasPermission('data_entry')
@@ -461,20 +381,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             null,
             $this->_commentID
         );
-        if (Utility::isErrorX($feedback)) {
-            return PEAR::raiseError(
-                'Could not select feedback: '.$feedback->getMessage()
-            );
-        }
 
         // find out the current worst feedback thread status
         $maxThreadStatus = $feedback->getMaxThreadStatus(false);
-        if (Utility::isErrorX($maxThreadStatus)) {
-            return PEAR::raiseError(
-                'Could not get max feedback thread status: '
-                .$maxThreadStatus->getMessage()
-            );
-        }
 
         // statuses are locked if the timepoint is submitted and there is no
         // open feedback

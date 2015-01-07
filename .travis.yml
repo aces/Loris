@@ -30,11 +30,7 @@ install:
     #- pear install PHPDocumentor
     #- pear install XML_Parser
 
-      # Running PHPCS is part of the test, even though
-      # Loris itself doesn't depend on it.
-    - pear install PHP_CodeSniffer
-
-      # Travis-CI requires this.
+    # Travis-CI requires this.
     - phpenv rehash
 
       # Download a Selenium Web Driver release
@@ -81,54 +77,20 @@ before_script:
 script:
     # Run PHP -l on everything to ensure there's no syntax
     # errors.
-    - for i in `ls php/libraries/*.class.inc`;
+    - for i in `ls php/libraries/*.class.inc modules/*/php/* modules/*/ajax/* htdocs/*.php htdocs/*/*.php`;
       do
         php -l $i || exit $?;
       done
+    # Run unit tests to make sure functions still do what they should.
+    - phpunit test/unittests/
+
     # Run integration tests to make sure everything didn't just
     # break
     - phpunit test/integrationtests/
-    # Run PHPCS on libraries directory.
-    # Note that everything doesn't pass yet, so instead
-    # do each file that we know passes individually to ensure
-    # no backwards progress..
-    # Eventually, the following should be uncommented and the
-    # file by file invocations deleted..
-    #- phpcs --standard=docs/LorisCS.xml php/libraries
-    - phpunit test/unittests/
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/SinglePointLogin.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument_instrument_preview.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Smarty_hook.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Database.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Site.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/MRIFile.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Client.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/FeedbackMRI.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/ConflictDetector.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Factory.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Log.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Form.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/File_Upload.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Notify.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Email.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_InstrumentStatus_ControlPanel.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_InstrumentStatus.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/CouchDB.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Message.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Breadcrumb.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Caller.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Page.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/TimePoint.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/UserPermissions.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/State.class.inc
-    - phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
-    - phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
+
+    # Run PHPCS on the entire libraries directory.
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries
+
+    # Run PHPCS on specific modules
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc

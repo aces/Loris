@@ -64,9 +64,6 @@ class NDB_Config
         if (is_null($config)) {
             $config  = new NDB_Config();
             $success = $config->load($configFile);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError($success->getMessage());
-            }
         }
 
         return $config;
@@ -198,7 +195,7 @@ class NDB_Config
             ) {
                 $this->_siteSettings          = $this->_settings;
                 $this->_siteSettings['study']
-                    = Utility::array_merge_recursive_overwriting(
+                    = Utility::arrayMergeRecursiveOverwriting(
                         $this->_settings['study'],
                         $this->_settings['sites'][$siteName]
                     );
@@ -233,9 +230,9 @@ class NDB_Config
         }
 
         $db = Database::singleton();
-        if (Utility::isErrorX($db) || $db->isConnected() !== true) {
+        if ($db->isConnected() !== true) {
             // no database connection, fall back on config.xml
-            return PEAR::raiseError(
+            throw new Exception(
                 "No connection to database while trying to get setting $name"
             );
         }
@@ -349,11 +346,15 @@ class NDB_Config
     */
     function getSetting($name)
     {
-        $DBValue = $this->getSettingFromDB($name);
+        try {
+            $DBValue = $this->getSettingFromDB($name);
 
-        if ($DBValue !== null) {
-            return $DBValue;
+            if ($DBValue !== null) {
+                return $DBValue;
+            }
+        } catch(Exception $e) {
         }
+
         // nothing in the database, so get the value from config.xml
         return $this->getSettingFromXML($name);
     }

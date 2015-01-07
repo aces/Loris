@@ -51,26 +51,15 @@ class UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return("Could not connect to database: ".$DB->getMessage());
-        }
 
         // get the proper ID from the database
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = array('UName' => $username);
 
         $this->userID = $DB->pselectOne($query, $params);
-        if (Utility::isErrorX($this->userID)) {
-            return PEAR::raiseError("DB Error: ".$this->userID->getMessage());
-        }
 
         // load the user's permissions
         $success = $this->setPermissions();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "UserPermissions::select(): ".$success->getMessage()
-            );
-        }
 
         return true;
     }
@@ -87,20 +76,12 @@ class UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // get all the permissions for this user
         $query = "SELECT code FROM permissions, user_perm_rel
             WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
 
         $results = $DB->pselect($query, array('UID' => $this->userID));
-        if (Utility::isErrorX($results)) {
-            return PEAR::raiseError("DB Error: ".$results->getMessage());
-        }
 
         // reset the array
         $this->permissions = array();
@@ -160,11 +141,6 @@ class UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // add the permissions
         foreach ($set as $value) {
@@ -175,18 +151,10 @@ class UserPermissions
                  'permID' => $value,
                 )
             );
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("DB Error: ".$success->getMessage());
-            }
         }
 
         // refresh the user permissions
         $success = $this->setPermissions();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "UserPermissions::addPermissions(): ".$success->getMessage()
-            );
-        }
 
         return true;
     }
@@ -204,22 +172,12 @@ class UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
-
         if (is_null($set)) {
             // remove all permissions
             $success = $DB->delete(
                 'user_perm_rel',
                 array('userID' => $this->userID)
             );
-
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("DB Error: ".$success->getMessage());
-            }
         } else {
             // remove the permissions
             foreach ($set as $value) {
@@ -230,19 +188,11 @@ class UserPermissions
                      'permID' => $value,
                     )
                 );
-                if (Utility::isErrorX($success)) {
-                    return PEAR::raiseError("DB Error: ".$success->getMessage());
-                }
             }
         }
 
         // refresh the user permissions
         $success = $this->setPermissions();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "UserPermissions::removePermissions(): ".$success->getMessage()
-            );
-        }
 
         return true;
     }
@@ -259,11 +209,6 @@ class UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // get all the permissions for this user
         $query = "SELECT permissions.permID
@@ -271,9 +216,6 @@ class UserPermissions
             WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
 
         $results = $DB->pselect($query, array('UID' => $this->userID));
-        if (Utility::isErrorX($results)) {
-            return PEAR::raiseError("DB Error: ".$results->getMessage());
-        }
 
         return Utility::reduce($results);
     }
@@ -290,11 +232,6 @@ class UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $query   = "SELECT p.permID, p.code, p.description, pc.Description as type
             FROM permissions p
@@ -303,9 +240,6 @@ class UserPermissions
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, p.description";
         $results = $DB->pselect($query, array('UID' => $this->userID));
-        if (Utility::isErrorX($results)) {
-            return PEAR::raiseError("DB Error: ".$results->getMessage());
-        }
 
         return $results;
     }
@@ -324,11 +258,7 @@ class UserPermissions
 
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
+
         //insert into the login_history
         $sucess =  $DB->insert(
             'user_account_history',
@@ -338,9 +268,6 @@ class UserPermissions
              'PermAction' => $permAction,
             )
         );
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
     }
 
 }

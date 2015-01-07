@@ -192,7 +192,7 @@
                                 </a>
                             {/if}
                             {if $new_scans neq "" and $new_scans neq 0}
-                                <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
+                                <a href="main.php?test_name=imaging_browser" class="list-group-item new-scans">
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$new_scans}</div>
@@ -220,7 +220,7 @@
                                 </a>
                             {/if}
                             {if $radiology_review neq "" and $radiology_review neq 0}
-                            <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
+                            <a href="main.php?test_name=final_radiological_review" class="list-group-item radiological-review">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$radiology_review}</div>
@@ -234,7 +234,7 @@
                             </a>
                             {/if}
                             {if $pending_users neq "" and $pending_users neq 0}
-                            <a href="main.php?test_name=user_accounts&pending=Y&filter=Show+Data" class="list-group-item">
+                            <a href="main.php?test_name=user_accounts" class="list-group-item pending-accounts">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$pending_users}</div>

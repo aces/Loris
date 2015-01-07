@@ -81,7 +81,7 @@
                     <td align="right">{$page_links}</td>
                 </tr>
             </table>
-            <table class="table table-hover table-primary table-bordered" border="0">
+            <table class="table table-hover table-primary table-bordered dynamictable" border="0">
                 <thead>
 
                     {foreach from=$form.errors item=error}

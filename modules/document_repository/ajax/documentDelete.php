@@ -20,6 +20,8 @@ $fileName = $DB->pselectOne("Select File_name from document_repository where rec
                             array(':identifier' => $rid));
 $userName = $DB->pselectOne("Select uploaded_by from document_repository where record_id =:identifier",
                             array(':identifier'=> $rid));
+$dataDir  = $DB->pselectOne("Select Data_dir from document_repository where record_id =:identifier",
+                            array(':identifier'=> $rid));
 
 $user =& User::singleton();
 if (Utility::isErrorX($user)) {
@@ -39,7 +41,7 @@ if ($user->hasPermission('file_upload')) {
     }
 }
 
-$path = "document_repository/" . $userName . "/" . $fileName;
+$path = __DIR__ . "/../user_uploads/$dataDir";
 
 if (file_exists($path))
     unlink($path);

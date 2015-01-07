@@ -89,7 +89,12 @@ class NDB_Page extends PEAR
      */
     function addFile($name, $label)
     {
-        $this->form->addElement('file', $name, $label);
+        $this->form->addElement(
+            'file',
+            $name,
+            $label,
+            array('class' => 'fileUpload')
+        );
     }
 
     /**
@@ -180,8 +185,12 @@ class NDB_Page extends PEAR
     function addBasicTextArea(
         $field,
         $label,
-        $specifications=array('class' => 'form-control input-sm')
+        $specifications=array()
     ) {
+        $specifications = array_merge(
+            array('class' => 'form-control input-sm'),
+            $specifications
+        );
         $this->form->addElement('textarea', $field, $label, $specifications);
     }
 
@@ -471,11 +480,6 @@ class NDB_Page extends PEAR
 
         // get the defaults
         $localDefaults = $this->_getDefaults();
-        if (PEAR::isError($localDefaults)) {
-            return PEAR::raiseError(
-                "NDB_Form::display(): ".$localDefaults->getMessage()
-            );
-        }
         if (!is_array($localDefaults)) {
             $localDefaults = array();
         }

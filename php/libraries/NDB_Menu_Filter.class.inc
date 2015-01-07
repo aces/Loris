@@ -133,11 +133,6 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         // setup the menu's variables
         $success = $this->_setupVariables();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Menu_Filter::setup() setup: ".$success->getMessage()
-            );
-        }
 
         // set the headers if necessary
         if (!is_array($this->headers) || count($this->headers) == 0) {
@@ -156,11 +151,6 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // build the menu
         $success = $this->_build();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Menu_Filter::setup() build: ".$success->getMessage()
-            );
-        }
 
         return true;
     }
@@ -367,27 +357,12 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         // show selection form table
         $success = $this->_setFilterForm();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Menu_Filter::_build() filter: ".$success->getMessage()
-            );
-        }
 
         // get the list
         $this->list = $this->_getList();
-        if (Utility::isErrorX($this->list)) {
-            return PEAR::raiseError(
-                "NDB_Menu_Filter::_build() list: ".$this->list->getMessage()
-            );
-        }
 
         // show data table with user information and access URLs
         $success = $this->_setDataTable();
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "NDB_Menu_Filter::_build() table: ".$success->getMessage()
-            );
-        }
     }
 
 
@@ -463,11 +438,6 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $qparams = array();
         // add the base query
@@ -499,9 +469,6 @@ class NDB_Menu_Filter extends NDB_Menu
                           ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
 
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
         return $result;
     }
 
@@ -638,7 +605,7 @@ class NDB_Menu_Filter extends NDB_Menu
             if (isset($this->filter['order'])) {
                 $this->tpl_data['headers'][$i]['fieldOrder']
                     = ($this->filter['order']['fieldOrder']
-                        == 'ASC') ? 'DESC' : 'ASC';
+                        == 'DESC') ? 'ASC' : 'DESC';
             }
             $i++;
         }
@@ -648,11 +615,6 @@ class NDB_Menu_Filter extends NDB_Menu
             // print out data rows
             $count   = $pager->getOffsetByPageId();
             $success = $this->_setDataTableRows($count[0]);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError(
-                    "NDB_Filter::_setDataTable(): ".$success->getMessage()
-                );
-            }
         }
     }
 

@@ -90,17 +90,8 @@ class FeedbackMRI
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $success = $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
-
         return true;
     }
 
@@ -126,7 +117,7 @@ class FeedbackMRI
             $success = $this->_addComment('', '', $predefinedCommentID);
 
             // choke if it failed
-            if ($success == false) {
+            if ($success != 'true') {
                 return false;
             }
         }
@@ -170,11 +161,6 @@ class FeedbackMRI
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // start building the query
         $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
@@ -182,9 +168,6 @@ class FeedbackMRI
                   WHERE ".$this->_buildWhere();
 
         $DB->select($query, $result);
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // build the output array
         if (is_array($result)) {
@@ -217,11 +200,6 @@ class FeedbackMRI
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // build the query
         $query = "SELECT PredefinedCommentID, Comment
@@ -229,9 +207,6 @@ class FeedbackMRI
                   WHERE CommentTypeID=:CTID";
 
         $result = $DB->pselect($query, array('CTID' => $commentTypeID));
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // build the output array
         $comments = array();
@@ -263,19 +238,12 @@ class FeedbackMRI
 
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
         $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
-        if (Utility::isErrorX($parameterTypeID)) {
-            return PEAR::raiseError("DB Error: ".$parameterTypeID->getMessage());
-        } elseif (empty($parameterTypeID)) {
+        if (empty($parameterTypeID)) {
             return false;
         }
 
@@ -291,9 +259,7 @@ class FeedbackMRI
              'FID'  => $this->fileID,
             )
         );
-        if (Utility::isErrorX($value)) {
-            return PEAR::raiseError("DB Error: ".$value->getMessage());
-        } elseif (empty($value)) {
+        if (empty($value)) {
             return false;
         }
 
@@ -318,19 +284,12 @@ class FeedbackMRI
 
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
         $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
-        if (Utility::isErrorX($parameterTypeID)) {
-            return PEAR::raiseError("DB Error: ".$parameterTypeID->getMessage());
-        } elseif (empty($parameterTypeID)) {
+        if (empty($parameterTypeID)) {
             return false;
         }
 
@@ -346,9 +305,6 @@ class FeedbackMRI
              'FID'  => $this->fileID,
             )
         );
-        if (Utility::isErrorX($updateNeeded)) {
-            return PEAR::raiseError("DB Error: ".$updateNeeded->getMessage());
-        }
 
         // build the query
         if ($updateNeeded) {
@@ -360,9 +316,6 @@ class FeedbackMRI
                  'FileID'          => $this->fileID,
                 )
             );
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("DB Error: ".$success->getMessage());
-            }
         } else {
             $success = $DB->insert(
                 'parameter_file',
@@ -373,9 +326,6 @@ class FeedbackMRI
                  'InsertTime'      => time(),
                 )
             );
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("DB Error: ".$success->getMessage());
-            }
         }
 
         return true;
@@ -393,11 +343,6 @@ class FeedbackMRI
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // build the array
         $query = "SELECT CommentTypeID, CommentName, CommentStatusField
@@ -405,9 +350,6 @@ class FeedbackMRI
                   WHERE CommentType=:CT";
 
         $result = $DB->pselect($query, array('CT' => $this->objectType));
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // build the output array and keep overall section at the end of the array
         $commentNames = array();
@@ -477,11 +419,6 @@ class FeedbackMRI
 
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // object identifier
         if ($this->objectType == 'volume') {
@@ -506,9 +443,8 @@ class FeedbackMRI
                 $subquery,
                 array('PCID' => $predefinedCommentID)
             );
-            if (Utility::isErrorX($commentTypeID)) {
-                return PEAR::raiseError("DB Error: ".$commentTypeID->getMessage());
-            } elseif (empty($commentTypeID)) {
+
+            if (empty($commentTypeID)) {
                 return false;
             }
         }
@@ -522,9 +458,6 @@ class FeedbackMRI
         }
 
         $success = $DB->insert('feedback_mri_comments', $set);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
 
         return true;
     }

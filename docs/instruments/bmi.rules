@@ -1,0 +1,5 @@
+height_feet{-}Required{-}unit_classification{@}=={@}standard
+height_inches{-}Required{-}unit_classification{@}=={@}standard
+weight_lbs{-}Required{-}unit_classification{@}=={@}standard
+height_cms{-}Required{-}unit_classification{@}=={@}metric
+weight_kgs{-}Required{-}unit_classification{@}=={@}metric

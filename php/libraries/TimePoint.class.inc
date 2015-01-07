@@ -80,15 +80,17 @@ Class TimePoint
     {
         // instantiate new TimePoint object
         static $timePointList =array();
-
         if (!isset($timePointList[$sessionID])) {
-            $timePointList[$sessionID] = new TimePoint();
-            $success = $timePointList[$sessionID]->select($sessionID);
-            if (Utility::isErrorX($success)) {
+            try {
+                $timePointList[$sessionID] = new TimePoint();
+
+                $success = $timePointList[$sessionID]->select($sessionID);
+            }
+            catch (Exception $e) {
+                // Since there was a problem with this $sessionID, don't store
+                // it in the static list but then keep propagating the error..
                 unset($timePointList[$sessionID]);
-                return PEAR::raiseError(
-                    "Could not instantiate TimePoint object".$success->getMessage()
-                );
+                throw new Exception("Could not select timepoint", null, $e);
             }
         }
 
@@ -115,11 +117,6 @@ Class TimePoint
 
         // make a local reference to the Database object
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$db->getMessage()
-            );
-        }
 
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
@@ -134,12 +131,6 @@ Class TimePoint
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow($query, array('SID' => $sessionID));
 
-        if (Utility::isErrorX($row)) {
-            return PEAR::raiseError(
-                "Could not retrieve candidate data from database"
-            );
-        }
-
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
@@ -149,7 +140,7 @@ Class TimePoint
             $this->_timePointInfo['SubprojectTitle'] =$subprojectSettings['title'];
         } else {
             // return error when 0 rows to prevent creation of an empty object
-            return PEAR::raiseError(
+            throw new Exception(
                 "Failed to retrieve data for timepoint ($sessionID)"
             );
         }
@@ -217,11 +208,6 @@ Class TimePoint
                     WHERE c.CandID=:CaID AND (s.Active='Y' OR s.Active is null)
                     GROUP BY c.CandID";
         $row   = $db->pselectRow($query, array('CaID' => $candID));
-        if (Utility::isErrorX($row)) {
-            return PEAR::raiseError(
-                "Could not retrieve existing data for candidate".$row->getMessage()
-            );
-        }
 
         // if this is a web hit (thus state exists)
         if (is_object($_SESSION['State'])) {
@@ -255,11 +241,6 @@ Class TimePoint
 
         // insert the data
         $success = $db->insert('session', $insertData);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError(
-                "Could not register new timepoint record".$success->getMessage()
-            );
-        }
     }
 
     /**
@@ -590,7 +571,7 @@ Class TimePoint
     {
         // if not $stage is passed, evaluate the current stage
         if (empty($stage)) {
-            return PEAR::raiseError("Study Stage Not Specified");
+            throw new Exception("Study Stage Not Specified");
         } else {
             return in_array($stage, $this->_dynamicStageOptions);
         }
@@ -604,10 +585,6 @@ Class TimePoint
     function isCurrentStageDynamic()
     {
         $isStageDynamic = $this->isStudyStageDynamic($this->getCurrentStage());
-        if (Utility::isErrorX($isStageDynamic)) {
-            // pass the error
-            return PEAR::raiseError($isStageDynamic->getMessage());
-        }
         return $isStageDynamic;
     }
 
@@ -669,15 +646,9 @@ Class TimePoint
             $update_columns,
             array('ID' => $this->getSessionID())
         );
-        if (Utility::isErrorX($dbErrors)) {
-            return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
-        }
 
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
     }
 
     /**
@@ -740,7 +711,7 @@ Class TimePoint
         $db =& Database::singleton();
 
         if (!in_array($type, $this->bvlQcTypes)) {
-            return PEAR::raiseError("You need to specify a valid BVL QC Type");
+            throw new Exception("You need to specify a valid BVL QC Type");
         }
 
         $setArray = array('BVLQCType' => $type);
@@ -752,16 +723,8 @@ Class TimePoint
             array('ID' => $this->getSessionID())
         );
 
-        if (Utility::isErrorX($dbErrors)) {
-            return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
-        }
-
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if (Utility::isErrorX($success)) {
-            //throw PEAR error
-            return PEAR::raiseError($success->getMessage());
-        }
     }
 
     /**
@@ -777,7 +740,7 @@ Class TimePoint
         $db =& Database::singleton();
 
         if (!in_array($status, $this->bvlQcStatuses)) {
-            return PEAR::raiseError("You need to specify a valid BVL QC Type");
+            throw new Exception("You need to specify a valid BVL QC Type");
         }
 
         // get the current bvlqc type
@@ -785,7 +748,7 @@ Class TimePoint
 
         // can't set the status to Complete unless the type is set
         if ($status == 'Complete' && empty($qcType)) {
-            return PEAR::raiseError("Cannot complete QC until the type is defined");
+            throw new Exception("Cannot complete QC until the type is defined");
         }
 
         $setArray = array('BVLQCStatus' => $status);
@@ -797,16 +760,8 @@ Class TimePoint
             array('ID' => $this->getSessionID())
         );
 
-        if (Utility::isErrorX($dbErrors)) {
-            return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
-        }
-
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if (Utility::isErrorX($success)) {
-            //throw PEAR error
-            return PEAR::raiseError($success->getMessage());
-        }
     }
 
     /**
@@ -825,7 +780,10 @@ Class TimePoint
         $errorMsg  = "TimePoint::setBVLQCExclusion: You need to specify";
         $errorMSg .= " a valid BVL QC Exclusion Status\n";
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
-            return PEAR::raiseError($errorMsg);
+            throw new Exception(
+                "TimePoint::setBVLQCExclusion: "
+                . "You need to specify a valid BVL QC Exclusion Status"
+            );
         }
 
         // fields to update
@@ -838,16 +796,8 @@ Class TimePoint
             array('ID' => $this->getSessionID())
         );
 
-        if (Utility::isErrorX($dbErrors)) {
-            return PEAR::raiseError("DB Error: ".$dbErrors->getMessage());
-        }
-
         // reload TimePoint object
         $success = $this->select($this->getSessionID());
-        if (Utility::isErrorX($success)) {
-            //throw PEAR error
-            return PEAR::raiseError($success->getMessage());
-        }
 
         return true;
     }
@@ -875,27 +825,17 @@ Class TimePoint
         // screening or visit, do not allow the user to start another timepoint
         if ($currentStage == 'Not Started') {
             $candidate =& Candidate::singleton($this->getCandID());
-            if (Utility::isErrorX($candidate)) {
-                return PEAR::raiseError(
-                    "Candidate Error ($candID): ".$candidate->getMessage()
-                );
-            }
 
             // when starting screening, make sure that all other started visits
             // were previously submitted to DCC
             $listOfTimePoints = $candidate->getListOfTimePoints();
-            $currentTimePoint =TimePoint::singleton($_REQUEST['sessionID']);
+            $currentTimePoint = TimePoint::singleton($_REQUEST['sessionID']);
 
             // if there are any timepoints
             if (is_array($listOfTimePoints)) {
                 foreach ($listOfTimePoints as $sessionID) {
                     // create timepoint object
                     $timepoint = TimePoint::singleton($sessionID);
-                    if (Utility::isErrorX($timepoint)) {
-                        $errorMsg = "TimePoint Error ($sessionID): "
-                                    . $timepoint->getMessage();
-                        return PEAR::raiseError($errorMsg);
-                    }
 
                     // if a timepoint is started and not submitted, return false
                     if ($onlyOneOpenTimepoint=="true"

@@ -28,4 +28,4 @@
 12. Check that the Site Review column data matches what is in the database.
 13. Check that a conflict message appears if there is a difference between the Final and Extra reviews.
 14. Check that a conflict message appears if there is a difference between the Site and Final reviews.
-15. Alter a one of the form fields and save the form. Check that a new row is added to the change log, documenting the change.
+15. Alter one of the form fields and save the form. Check that a new row is added to the change log, documenting the change.

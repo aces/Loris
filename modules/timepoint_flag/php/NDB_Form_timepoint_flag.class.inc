@@ -15,9 +15,6 @@ class NDB_Form_timepoint_flag extends NDB_Form
         $user =& User::singleton();
 		$config =& NDB_Config::singleton();
         $timepoint =& TimePoint_Flag::singleton($this->identifier);
-        if (Utility::isErrorX($timepoint)) {
-            return PEAR::raiseError("Error, failed to create a form for this timepoint ($this->identifier):\n".$timepoint->getMessage());
-        }
         
         // get the value of the session.Scan_done field
         $scanDone = $timepoint->getData('Scan_done');
@@ -55,9 +52,6 @@ class NDB_Form_timepoint_flag extends NDB_Form
         // flag statuses are captured as constants TIMEPOINT_FLAG_TRIGGER, TIMEPOINT_FLAG_NA_INSTRUMENT, TIMEPOINT_FLAG_NULL
         $flagList = array();
         $flagList = $timepointFlagObject->evaluateTimepointFlags();
-        if (Utility::isErrorX($flagList)) {
-            return PEAR::raiseError("Error, failed to evaluate flags for timepoint ($this->identifier):\n". $flagList->getMessage());
-        }
         
         
         // if there are no flags, show the buttons to send the timepoint to DCC
@@ -71,9 +65,6 @@ class NDB_Form_timepoint_flag extends NDB_Form
 
             // check if the flag exists, i.e. previously triggered
             $flagExists = $timepointFlagObject->timepointFlagExists($sessionID, $flagName);
-            if (Utility::isErrorX($flagExists)) {
-                return PEAR::raiseError("Error:\n".$flagExists->getMessage());
-            }
 
         	// skip to next flag if it's already in the table
             if ($flagExists && $flagStatus != $timepointFlagObject->showConstant('TIMEPOINT_FLAG_MISSING_DATA')) {

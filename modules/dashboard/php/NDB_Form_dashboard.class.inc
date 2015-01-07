@@ -116,7 +116,7 @@ class NDB_Form_dashboard extends NDB_Form
         // Tasks
 
         // New scans
-        if ($user->hasPermission('mri_feedback')) {
+        if ($user->hasPermission('imaging_browser_qc')) {
             $this->tpl_data['new_scans'] = $DB->pselectOne(
                 "SELECT count(distinct s.ID)
                  FROM files f 
@@ -176,7 +176,7 @@ class NDB_Form_dashboard extends NDB_Form
         }
 
         // Accounts pending approval
-        if ($user->hasPermission('user_accounts_multisite')) {
+        if ($user->hasPermission('user_accounts_multisite') && $user->hasPermission('user_accounts')) {
             $this->tpl_data['pending_users'] = $DB->pselectOne(
                 "SELECT count(*) FROM users WHERE Pending_approval='Y'", array()
             );
@@ -190,7 +190,7 @@ class NDB_Form_dashboard extends NDB_Form
         }
 
         // Violated scans
-        if ($user->hasPermission('violated_scans')) {
+        if ($user->hasPermission('violated_scans_view_allsites')) {
             $this->tpl_data['violated_scans'] = $DB->pselectOne(
                 "SELECT count(*) FROM mri_protocol_violated_scans", array()
             );

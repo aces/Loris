@@ -33,6 +33,18 @@ class NDB_Form_Dicom_Archive extends NDB_Form
      * Keeps array of protocols from mri_protocol
      */
     var $protocols;
+
+    /**
+     * Determine whether the user has permission to view this page
+     *
+     * @return bool whether the user has access
+     */
+    function _hasAccess()
+    {
+        $user = User::singleton();
+        return $user->hasPermission('dicom_archive_view_allsites');
+    }
+
     /**
     * Sets up main parameters
     *
@@ -46,7 +58,7 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             die();
         }
 
-        if (!empty($_REQUEST['tarchiveID'])) {
+        if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
             $tarchiveID = $_REQUEST['tarchiveID'];
             $this->tpl_data['archive'] = $this->_getTarchiveData(
                 $tarchiveID, 'tarchive'

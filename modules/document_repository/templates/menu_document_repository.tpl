@@ -44,14 +44,14 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-2">
-                                <button id = "upload" name = "upload" class = "btn btn-sm btn-primary col-xs-12">Upload File</button>
+                                <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-2">
-                                <button id = "addCategory" name = "addCategory" class = "btn btn-sm btn-primary col-xs-12" onclick="return false;">Add Category</button>
+                                <button type="button" name = "addCategory" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
                             </div>
                         </div>
                     </div>
@@ -118,155 +118,270 @@
 {/foreach}
 </div> <!--end of toggle div-->
 
-<div class = "dialog">
-<div class = "sure" title="Please Confirm" >
-    <p>
-        <span class="ui-icon ui-icon-trash" style="float:left; margin:0 7px 50px 0;"></span>
-	    Are you sure you want to delete this file?
-    </p>
-</div>
-</div>
-
-
-<form id="addCategory" action="AjaxHelper.php?Module=document_repository&script=addCategory.php" method="POST">
-<div class = "addCategory" title="Add Category">
-    <p>
-        What category would you like to add?
-    </p>
-
-<fieldset id="addCategoryForm" style = "border: none; width:125px !important; height:150px !important;">
-	Category Name: <input type="text" name="category_name" />
-	<br>
-	Parent: 
-        <select name="parent_id" id="parent_id">
-        <option value=" "> </option>
-            {foreach from = $File_categories item=val key=k}
-                {if $val != "Any"}
-                        <option value={$k}>{$val.CategoryName}</option>
-                    {/if}
-            {/foreach}
-        </select>
-	<br>
-	Comments: <input type="text" name="comments" />
-</fieldset>
-</div>
-</form>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="myModalLabel">Please Confirm</h3>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span class="ui-icon ui-icon-trash" style="float:left; margin:0 7px 50px 0;"></span>
+                    Are you sure you want to delete this file?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="postDelete" role="button" aria-disabled="false" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<div id="uploadArea" class = "dialog-form" style = "border-style: solid; border-color: #7c7781; border-width:1px; margin: 1em !important; width:390px !important; height:auto !important;" title="Upload new file">
-<form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=document_repository&script=documentEditUpload.php">
-<div class = "upload-error">
-    <p style = "color: #f33;">
-	    <span class="ui-icon ui-icon-alert" style = "float:left;"></span>
-	    Please enter all required (*) fields.
-    </p>
+<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="myModalLabel">Upload File</h3>
+            </div>
+            <form id="addCategoryForm" action="AjaxHelper.php?Module=document_repository&script=addCategory.php" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p>What category would you like to add?</p>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4">
+                                Category Name:
+                            </label>
+                            <div class="col-xs-8">
+                                <input type="text" name="category_name" class="form-control input-sm" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4">
+                                Parent:
+                            </label>
+                            <div class="col-xs-8">
+                                <select name="parent_id" id="parent_id" class="form-control input-sm">
+                                    <option value=" "> </option>
+                                    {foreach from = $File_categories item=val key=k}
+                                        {if $val != "Any"}
+                                                <option value={$k}>{$val.CategoryName}</option>
+                                            {/if}
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4">
+                                Comments:
+                            </label>
+                            <div class="col-xs-8">
+                                <input type="text" name="comments" class="form-control input-sm"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="postCategory" role="button" aria-disabled="false" data-dismiss="modal">Add</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<div class = "file-error">
-    <p style = "color: #f33;">
-	    <span class="ui-icon ui-icon-alert" style = "float:left;"></span>
-	    Please choose a file to upload.
-</p>
-</div>
 
-<fieldset style = "border: none;">
-	<label for="category">Category<font color="red"><sup> *</sup></font></label>
-	<select name="category" id = "category" class = "form-fields">
-	<option value=" "> </option>
-	    {foreach from = $File_categories item=val key=k}
-	        {if $val != "Any"}
- 		        <option value={$k}>{$val.CategoryName}</option>
-		{/if}
-	    {/foreach}
-	</select>
-	</br></br>
-	<label for="site">Site<font color="red"><sup> *</sup></font></label>
-	<select name="site" id = "site" class = "form-fields">
-	<option value=" "> </option>
-	    {foreach from = $Sites item=val key=k}
-	        <option value={$k}>{$val}</option>
-	    {/foreach}
-	</select>
-	</br></br>
-        <label for="instrument">Instrument<font color="red"><sup> *</sup></font></label>
-        <select name="instrument" id = "instrument" class = "form-fields">
-        <option value=""> </option>
-            {foreach from = $Instruments item=val key=k}
-                <option value={$k}>{$val}</option>
-            {/foreach}
-        </select>
-        </br></br>
-	<label for="pscid">PSCID</label>
-	<input type="text" size = "27" name="pscid" id="pscid" class="ui-corner-all form-fields" /></br></br>
-	<label for="visit">Visit label</label>
-	<input type="text" size = "27" name="visit" id="visit" class="ui-corner-all form-fields" /></br></br>
-	<label for="comments">Comments</label>
-	<textarea cols = "20" rows = "3" name="comments" id="comments" style = "border: 2px inset;" class="ui-corner-all form-fields"> </textarea><p></p><br></br>
-	<label for="file">File<font color="red"><sup> *</sup></font></label>
-	<span class="file-wrapper">
-  		<input type="file" name="file" id="file" style = "margin-left: 1em;"/>
-  	<span class="button-file ui-button-text ui-widget ui-state-default ui-corner-all ui-button-text-only" role = "button" aria-disabled = "false" style = "margin-left:10.5em; padding: 0.5em;">Choose file</span>
-	<span class="fileName"></span>
-    </span>
-    </br></br>
-	<label for="version">Version</label>
-	<input type="text" size = "27" name="version" id="version" class="ui-corner-all form-fields" /></br></br>
-	<input type="hidden" name = "user" id = "user" value = "{$User}">
-	<input type="hidden" name = "action" id = "action" value = "upload">
-	<input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="100000000" />
-	</fieldset>
-	</br></br>
-	<div class="ui-dialog-buttonset dialog">
-	<button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id = "cancelButton" role="button" aria-disabled="false" style = "float:right;"><span class="ui-button-text">Cancel</span></button>
-	<button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id = "uploadButton" role="button" aria-disabled="false" style = "float:right;"><span class="ui-button-text">Upload</span></button>
-	</div>
-</form>
+<div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="myModalLabel">Upload File</h3>
+            </div>
+            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=document_repository&script=documentEditUpload.php">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class = "upload-error col-xs-12">
+                            <p style = "color: #f33;">
+                                <span class="ui-icon ui-icon-alert" style = "float:left;"></span>
+                                Please enter all required (*) fields.
+                            </p>
+                        </div>
+                        <div class = "file-error col-xs-12">
+                            <p style = "color: #f33;">
+                                <span class="ui-icon ui-icon-alert" style = "float:left;"></span>
+                                Please choose a file to upload.
+                            </p>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label for="category" class="col-xs-4">Category<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-8">
+                                <select name="category" id = "category" class = "form-fields form-control input-sm">
+                                    <option value=" "> </option>
+                                    {foreach from = $File_categories item=val key=k}
+                                        {if $val != "Any"}
+                                            <option value={$k}>{$val.CategoryName}</option>
+                                    {/if}
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="site">Site<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-8">
+                                <select name="site" id = "site" class = "form-fields form-control input-sm">
+                                <option value=" "> </option>
+                                    {foreach from = $Sites item=val key=k}
+                                        <option value={$k}>{$val}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="instrument">Instrument<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-8">
+                                <select name="instrument" id = "instrument" class = "form-fields form-control input-sm">
+                                <option value=""> </option>
+                                    {foreach from = $Instruments item=val key=k}
+                                        <option value={$k}>{$val}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="pscid">PSCID</label>
+                            <div class="col-xs-8">
+                                <input type="text" size = "27" name="pscid" id="pscid" class="ui-corner-all form-fields form-control input-sm" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="visit">Visit label</label>
+                            <div class="col-xs-8">
+                                <input type="text" size = "27" name="visit" id="visit" class="ui-corner-all form-fields form-control input-sm" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="comments">Comments</label>
+                            <div class="col-xs-8">
+                                <textarea cols = "20" rows = "3" name="comments" id="comments" style = "border: 2px inset;" class="ui-corner-all form-fields form-control input-sm"> </textarea><p></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="file">File<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-8">
+                                <span class="file-wrapper">
+                                    <input type="file" name="file" id="file" style = "margin-left: 1em;"/>
+                                <span class="button-file ui-button-text ui-widget ui-state-default ui-corner-all ui-button-text-only" role = "button" aria-disabled = "false" style = "margin-left:10.5em; padding: 0.5em;">Choose file</span>
+                                <span class="fileName"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="version">Version</label>
+                            <div class="col-xs-8">
+                                <input type="text" size = "27" name="version" id="version" class="ui-corner-all form-fields form-control input-sm" />
+                            </div>
+                        </div>
+                        <input type="hidden" name = "user" id = "user" value = "{$User}">
+                        <input type="hidden" name = "action" id = "action" value = "upload">
+                        <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="100000000" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id = "uploadButton" role="button" aria-disabled="false">Upload</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 
 <!--The Edit Dialog-->
-<div class = "dialog-form-edit dialog" style = "border-style: solid; border-color: #7c7781; border-width:1px; margin: 1em !important; width:390px !important; height:300px !important;" title="Edit file">
-<p class="validateTips"></p>
-
-<form name = "editForm" id = "editForm" method = "post"> 
-<fieldset style = "border: none;">
-	<label for="category">Category</label>
-	<select name="category" id = "categoryEdit" class = "form-fields">
-	<option value=""> </option>
-	    {foreach from = $File_categories item=val key=k}
-            {if $val != "Any"}
-        	    <option value={$k}>{$val.CategoryName}</option>
-        	{/if}
-	    {/foreach}
-	</select>
-	</br></br>
-	<label for="site">Site</label>
-	<select name="site" id = "siteEdit" class = "form-fields">
-	<option value=""> </option>
-	    {foreach from = $Sites item=val key=k}
-	        <option value={$k}>{$val}</option>
-	    {/foreach}
-	</select>
-	</br></br>
-        <label for="instrument">Instrument<font color="red"><sup> *</sup></font></label>
-        <select name="instrument" id = "instrumentEdit" class = "form-fields">
-        <option value=""> </option>
-            {foreach from = $Instruments item=val key=k}
-                <option value={$k}>{$val}</option>
-            {/foreach}
-        </select>
-        </br></br>
-        <label for="pscid">PSCID</label>
-        <input type="text" size = "27" name="pscid" id="pscidEdit" class="ui-corner-all form-fields" /></br></br>
-        <label for="visit">Visit label</label>
-        <input type="text" size = "27" name="visit" id="visitEdit" class="ui-corner-all form-fields" /></br></br>
-        <label for="comments">Comments</label>
-        <textarea cols = "20" rows = "3" name="comments" id="commentsEdit" style = "border: 2px inset;" class="ui-corner-all form-fields"> </textarea><p></p><br></br>
-        <label for="version">Version</label>
-        <input type="text" size = "27" name="version" id="versionEdit" class="ui-corner-all form-fields" /></br></br>
-	    <input type="hidden" name = "action" id = "actionEdit" value = "edit">
-</fieldset>
-</form>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="myModalLabel">Edit File</h3>
+            </div>
+            <form name = "editForm" id = "editForm" method = "post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="category">Category</label>
+                            <div class="col-xs-8">
+                                <select name="category" id = "categoryEdit" class = "form-fields form-control input-sm">
+                                    <option value=""> </option>
+                                    {foreach from = $File_categories item=val key=k}
+                                        {if $val != "Any"}
+                                            <option value={$k}>{$val.CategoryName}</option>
+                                        {/if}
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="site">Site</label>
+                            <div class="col-xs-8">
+                                <select name="site" id = "siteEdit" class = "form-fields form-control input-sm">
+                                    <option value=""> </option>
+                                    {foreach from = $Sites item=val key=k}
+                                        <option value={$k}>{$val}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="instrument">
+                                Instrument<font color="red"><sup> *</sup></font>
+                            </label>
+                            <div class="col-xs-8">
+                                <select name="instrument" id = "instrumentEdit" class = "form-fields form-control input-sm">
+                                    <option value=""> </option>
+                                    {foreach from = $Instruments item=val key=k}
+                                        <option value={$k}>{$val}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="pscid">PSCID</label>
+                            <div class="col-xs-8">
+                                <input type="text" size = "27" name="pscid" id="pscidEdit" class="ui-corner-all form-fields form-control input-sm" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="visit">Visit label</label>
+                            <div class="col-xs-8">
+                                <input type="text" size = "27" name="visit" id="visitEdit" class="ui-corner-all form-fields form-control input-sm" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="comments">Comments</label>
+                            <div class="col-xs-8">
+                                <textarea cols = "20" rows = "3" name="comments" id="commentsEdit" style = "border: 2px inset;" class="ui-corner-all form-fields form-control input-sm"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="version">Version</label>
+                            <div class="col-xs-8">
+                                <input type="text" size = "27" name="version" id="versionEdit" class="ui-corner-all form-fields form-control input-sm" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id = "postEdit" role="button" aria-disabled="false" data-dismiss="modal">Edit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+                <input type="hidden" name = "action" id = "actionEdit" value = "edit">
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class = "upload-success">

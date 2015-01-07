@@ -42,7 +42,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
         if (PEAR::isError($user)) {
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
-        return $user->hasPermission('view_final_radiological_review');
+        return $user->hasPermission('violated_scans_view_allsites');
     }
 
     /**
@@ -52,11 +52,13 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->query = " FROM mri_violations_log l WHERE 1=1 ";
+        $this->query = " FROM mri_violations_log l JOIN mri_scan_type m
+                         ON m.ID=l.Scan_type WHERE 1=1 ";
         $this->columns = array(
             'l.PatientName',
             'l.CandID',
             'l.Visit_label',
+            'm.Scan_type',
             'l.Severity',
             'l.Header',
             'l.Value',
@@ -69,6 +71,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
         $this->headers = array('PatientName',
                                'CandID',
                                'Visit_label',
+                               'Scan_type',
                                'Severity',
                                'Header',
                                'Value',
