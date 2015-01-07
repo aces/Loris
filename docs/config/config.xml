@@ -9,16 +9,6 @@
   branch in its entirely will override the study branch.
 -->
 <config>
-    <tests>
-        <!-- Whether or not tests are allowed to modify data.
-             should only ever be true on a sandbox, since even though the tests
-             try and revert everything, something could potentially go wrong -->
-        <testModify>false</testModify>
-        <!-- This isn't necessary, but if you want to use a specific candidate to
-             check if the instruments work, put the CandID here.. -->
-        <!--testCandidate>965327</testCandidate-->
-    </tests>
-
     <!-- set to 1 if development environment -->
     <dev>
         <sandbox>0</sandbox>
