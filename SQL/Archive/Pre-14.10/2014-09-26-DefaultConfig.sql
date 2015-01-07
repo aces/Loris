@@ -9,7 +9,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "Example Study" FROM ConfigSetti
 -- studylogo
 INSERT INTO Config (ConfigID, Value) SELECT ID, "images/neuro_logo_blue.gif" FROM ConfigSettings WHERE Name="studylogo";
 
---- columnThreshold
+-- columnThreshold
 INSERT INTO Config (ConfigID, Value) SELECT ID, 250 FROM ConfigSettings WHERE Name="columnThreshold";
 
 -- useEDC
