@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/LorisIntegrationTest.class.inc";
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class Statistics_Test extends LorisIntegrationTest
 {
     public function testTabsFramework()
