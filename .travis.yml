@@ -65,11 +65,17 @@ script:
       do
         php -l $i || exit $?;
       done
+    # Run PHPCS on the entire libraries directory.
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries
+    # Run PHPCS on specific modules
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
+
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit test/unittests/
 
     # Run integration tests to make sure everything didn't just
-    # break
+    # break the basic functionality
     - vendor/bin/phpunit test/integrationtests/
 
     # Run integration tests for specific modules
@@ -91,4 +97,6 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
 
     # Run JSLINT on specific scripts
-    - jslint htdocs/js/jquery.dynamictable.js 
+    - jslint htdocs/js/jquery.dynamictable.js
+    # Run individual module tests
+    - vendor/bin/phpunit modules/statistics/tests/
