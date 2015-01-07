@@ -7,7 +7,7 @@
                 <div class="panel-heading">Upload Instrument</div>
                 <div class="panel-body">
                     <div class="col-xs-12">
-                        <input type="file" name="install_file">
+                        <input class="fileUpload" type="file" name="install_file">
                         <br>
                         <input class="btn btn-default" type="submit" name="install" value="Install Instrument" class="button">
                     </div>
@@ -17,7 +17,7 @@
     </div>
 </div>
 {else}
-<div class="alert alert-info">
+<div class="alert alert-warning">
 Instrument directory or tables_sql not writeable.
 Automatic uploading of instruments has been disabled.
 </div>
@@ -43,7 +43,7 @@ Automatic uploading of instruments has been disabled.
      <th nowrap="nowrap">No.</th>
         <!-- print out column headings - quick & dirty hack -->
         {section name=header loop=$headers}
-            <th nowrap="nowrap">{$headers[header].displayName}</a></th>
+            <th nowrap="nowrap"><a href="main.php?test_name=instrument_manager&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
         {/section}
     </tr>
     </thead>

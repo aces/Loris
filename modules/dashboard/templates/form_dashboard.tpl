@@ -5,25 +5,25 @@
 <div class="row">
     <div class="col-lg-8">
 
-    	<!-- Welcome panel -->
+        <!-- Welcome panel -->
         <div class="panel panel-default">
             <div class="panel-body">
-            	<h3 class="welcome">Welcome, {$username}.</h3>
+                <h3 class="welcome">Welcome, {$username}.</h3>
                 <p class="pull-right small login-time">Last login: {$last_login}</p>
-            	<p class="project-description">{$project_description}</p>
+                <p class="project-description">{$project_description}</p>
             </div>
             <!-- Only add the welcome panel footer if there are links -->
             {if $dashboard_links neq ""}
-	            <div class="panel-footer">| 
-	            	{foreach from=$dashboard_links item=link}
-						<a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
-					{/foreach}
-				</div>
+                <div class="panel-footer">| 
+                    {foreach from=$dashboard_links item=link}
+                        <a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
+                    {/foreach}
+                </div>
             {/if}
-    	</div>
+        </div>
 
-    	<!-- Recruitment -->
-    	<div class="panel panel-default">
+        <!-- Recruitment -->
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Recruitment</h3>
                 <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
@@ -49,14 +49,14 @@
                                 <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_full_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
                                     <p>
                                     {$female_full_percent}%
-                                    </br>
+                                    <br>
                                     Female
                                     </p>
                                 </div>
                                 <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_full_percent}%"  title="{$male_total} Males">
                                     <p>
                                     {$male_full_percent}%
-                                    </br>
+                                    <br>
                                     Male
                                     </p>
                                 </div>
@@ -68,14 +68,14 @@
                                 <div class="progress-bar progress-bar-female" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
                                     <p>
                                     {$female_percent}%
-                                    </br>
+                                    <br>
                                     Female
                                     </p>
                                 </div>
                                 <div class="progress-bar progress-bar-male" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
                                     <p>
                                     {$male_percent}%
-                                    </br>
+                                    <br>
                                     Male
                                     </p>
                                 </div>
@@ -110,7 +110,7 @@
 
         <!-- Charts -->
         <div class="panel panel-default">
-        	<div class="panel-heading">
+            <div class="panel-heading">
                 <h3 class="panel-title">Study Progression</h3>
                 <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
                 <div class="pull-right">
@@ -128,7 +128,7 @@
             </div>
             <div class="panel-body">
                     <div id="scans-line-chart-panel">
-                        <h5 class="chart-title">Scans per site</h5>
+                        <h5 class="chart-title">Scan sessions per site</h5>
                         {if $total_scans neq 0}
                             <div id="scanChart"></div>
                         {else}
@@ -192,7 +192,7 @@
                                 </a>
                             {/if}
                             {if $new_scans neq "" and $new_scans neq 0}
-                                <a href="main.php?test_name=imaging_browser&Pending=PN&filter=Show%20Data" class="list-group-item">
+                                <a href="main.php?test_name=imaging_browser" class="list-group-item new-scans">
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$new_scans}</div>
@@ -220,7 +220,7 @@
                                 </a>
                             {/if}
                             {if $radiology_review neq "" and $radiology_review neq 0}
-                            <a href="main.php?test_name=final_radiological_review&Review_done=no&filter=Show%20Data" class="list-group-item">
+                            <a href="main.php?test_name=final_radiological_review" class="list-group-item radiological-review">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$radiology_review}</div>
@@ -234,7 +234,7 @@
                             </a>
                             {/if}
                             {if $pending_users neq "" and $pending_users neq 0}
-                            <a href="main.php?test_name=user_accounts&pending=Y&filter=Show+Data" class="list-group-item">
+                            <a href="main.php?test_name=user_accounts" class="list-group-item pending-accounts">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$pending_users}</div>
@@ -271,6 +271,7 @@
                                     <span class="pull-left new-flag">NEW</span>
                                 {/if}
                                 <span class="pull-right text-muted small">Uploaded: {$link.Date_uploaded}</span>
+                                <br>
                                 {$link.File_name}
                             </a>
                             {/foreach}

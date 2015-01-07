@@ -109,15 +109,14 @@
 <table id="LogEntries" border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
-    <td class="controlPanelSection">List of Log Entries</td>
+    <td class="controlPanelSection">List of Imaging Datasets found</td>
 
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>
 </table>
 
-<div class="table-responsive">
-<table class="table table-hover table-primary table-bordered" width="100%" border="1">
+<table class="table table-hover table-primary table-bordered dynamictable" width="100%" border="1">
     <thead>
         <tr class="info">
             <th>No.</th>
@@ -164,7 +163,6 @@
         {/section}
     </tbody>
 </table>
-</div>
 
 {if $numTimepoints}
   {$numTimepoints} subject timepoint(s) selected.<br>

@@ -37,7 +37,14 @@ class Database extends PEAR
      * @access private
      */
     var $_PDO = null;
-    //var $_databaseHandle = null;
+
+    /**
+     * The database handle for storing history information.
+     * If missing, will be the same as $_PDO
+     *
+     * @access private
+     */
+    var $_HistoryPDO = null;
 
     /**
      * Integer number of rows affected by the last replace/update/delete/insert
@@ -95,7 +102,7 @@ class Database extends PEAR
                 $connection = current($connections);
                 return $connection;
             } else {
-                return PEAR::raiseError('No database connection exists');
+                throw new Exception("No database connection exists");
             }
         } else {
             // name the connection
@@ -113,7 +120,7 @@ class Database extends PEAR
                 );
                 if ($connections[$connection]->isError($ok)) {
                     unset($connections[$connection]);
-                    return PEAR::raiseError(
+                    throw new Exception(
                         'Could not connect to database: '.$ok->getMessage()
                     );
                 }
@@ -147,9 +154,22 @@ class Database extends PEAR
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
+        $historydb    = null;
+        $historytable = "history";
+
         if (class_exists('NDB_Config')) {
             $config =& NDB_Config::singleton();
             $this->_showQueries = $config->getSetting('showDatabaseQueries');
+
+            // get history database from config
+            $dbsettings = $config->getSetting("database");
+            if (isset($dbsettings['historydb'])) {
+                $historydb = $dbsettings['historydb'];
+            }
+            if (isset($dbsettings['historytable'])) {
+                $historytable = $dbsettings['historytable'];
+            }
+
         }
 
         $this->_PDO = new PDO(
@@ -163,6 +183,39 @@ class Database extends PEAR
             ." VALUES"
             ." (:histtable, :histcolumn, :newval, :oldval,"
             ." :primaryKeys, :primaryVals, :userID, :type)"
+        );
+
+        $this->_PDO = new PDO(
+            "mysql:host=$host;dbname=$database",
+            $username,
+            $password
+        );
+
+        if (is_null($this->_HistoryPDO)) {
+            if (is_null($historydb)) {
+                $this->_HistoryPDO =& $this->_PDO;
+            } else {
+                $this->_HistoryPDO = new PDO(
+                    "mysql:host=$host;dbname=$historydb",
+                    $username,
+                    $password
+                );
+            }
+        }
+
+        $this->_preparedStoreHistory = $this->_HistoryPDO->prepare(
+            "INSERT INTO $historytable
+            (tbl, col, new, old, primaryCols, primaryVals, userID, type)
+            VALUES
+            ( :histtable,
+              :histcolumn,
+              :newval,
+              :oldval,
+              :primaryKeys,
+              :primaryVals,
+              :userID,
+              :type
+            )"
         );
     }
 
@@ -217,7 +270,7 @@ class Database extends PEAR
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
-            return $this->raiseError(
+            throw new Exception(
                 "Insert statement did not execute successfully."
             );
         }
@@ -300,7 +353,7 @@ class Database extends PEAR
         }
 
         if (preg_match("/=NULL/", $where)) {
-            return $this->raiseError(
+            throw new Exception(
                 "NULL values not allowed in a WHERE structure."
             );
         }
@@ -314,7 +367,7 @@ class Database extends PEAR
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
-            return $this->raiseError(
+            throw new Exception(
                 "Update statement did not execute successfully."
             );
         }
@@ -345,7 +398,7 @@ class Database extends PEAR
         }
 
         if (preg_match("/=NULL/", $query)) {
-            return $this->raiseError(
+            throw new Exception(
                 "NULL values not allowed in a WHERE structure."
             );
         }
@@ -385,11 +438,10 @@ class Database extends PEAR
             && strpos(strtoupper($query), 'SHOW') !== 0
             && strpos(strtoupper($query), 'DESCRIBE') !== 0
         ) {
-            $result = $this->raiseError(
+            throw new Exception(
                 "Only SELECT statements can be run with Database::select()."
                 . "  Query was '$query'"
             );
-            return;
         }
 
         try {
@@ -403,8 +455,7 @@ class Database extends PEAR
             }
             return $result;
         } catch(Exception $e) {
-            $result = $this->raiseError("Invalid SELECT statement, $query");
-            return $result;
+            throw new Exception("Invalid SELECT statement, $query");
         }
     }
 

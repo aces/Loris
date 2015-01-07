@@ -44,7 +44,7 @@
                 </div>
             {/foreach}
             <div class="row">
-                <label class="col-sm-4">{$form.Age_Difference.label}</label>
+                <label class="col-sm-2">{$form.Age_Difference.label}</label>
                 <div class="col-sm-8">
                     {$form.Age_Difference.html}
                 </div>

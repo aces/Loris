@@ -33,7 +33,7 @@
 {section name=record loop=$archive_series}
         <tr>
             <td>{$archive_series[record].SeriesNumber}</td>
-            <td>{$archive_series[record].SeriesDescription}</td>
+            <td>{$archive_series[record].SeriesDescription|escape:'htmlall'}</td>
             <td>{$archive_series[record].ProtocolName|default:"Unknown"}</td>
             <td>{$archive_series[record].SequenceName}</td>
             <td>{$archive_series[record].EchoTime}</td>

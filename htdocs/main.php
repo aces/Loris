@@ -48,26 +48,18 @@ tplFromRequest('dynamictabs');
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
-// whether or not you want to see the bloody bvl feedback popup
-$tpl_data['PopUpFeedbackBVL'] = $config->getSetting('PopUpFeedbackBVL');
 // draw the user information table
-$user =& User::singleton();
-if (Utility::isErrorX($user)) {
-    $tpl_data['error_message'][] = "User Error: ".$user->getMessage();
-} else {
+try {
+    $user =& User::singleton();
     $tpl_data['user'] = $user->getData();
     $tpl_data['user']['permissions'] = $user->getPermissions();
-}
-$tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
+    $tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
 
-$site =& Site::singleton($user->getData('CenterID'));
-if (Utility::isErrorX($site)) {
-    $tpl_data['error_message'][] = "Site Error: ".$site->getMessage();
-    unset($site);
-} else {
+    $site =& Site::singleton($user->getData('CenterID'));
     $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
+} catch(Exception $e) {
+    $tpl_data['error_message'][] = "Error: " . $e->getMessage();
 }
-
 
 // the the list of tabs, their links and perms
 $tpl_data['tabs'] = NDB_Config::GetMenuTabs();
@@ -83,11 +75,11 @@ if (!empty($_REQUEST['candID'])) {
 }
 
 if (!empty($_REQUEST['sessionID'])) {
-    $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-    if (Utility::isErrorX($timePoint)) {
-        $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
-    } else {
+    try {
+        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
         $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
+    } catch (Exception $e) {
+        $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
     }
 }
 
@@ -123,26 +115,26 @@ if (!empty($TestName)) {
 
 // get candidate data
 if (!empty($_REQUEST['candID'])) {
-    $candidate =& Candidate::singleton($_REQUEST['candID']);
-    if (Utility::isErrorX($candidate)) {
-        $tpl_data['error_message'][] = "Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage();
-    } else {
+    try {
+        $candidate =& Candidate::singleton($_REQUEST['candID']);
         $tpl_data['candidate'] = $candidate->getData();
+    } catch(Exception $e) {
+        $tpl_data['error_message'][] = $e->getMessage();
     }
 }
 
 // get time point data
 if (!empty($_REQUEST['sessionID'])) {
-    $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-    if($config->getSetting("SupplementalSessionStatus")) {
-        $tpl_data['SupplementalSessionStatuses'] = true;
+    try {
+        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        if($config->getSetting("SupplementalSessionStatus")) {
+            $tpl_data['SupplementalSessionStatuses'] = true;
+        }
+        $tpl_data['timePoint'] = $timePoint->getData();
+    } catch(Exception $e) {
+        $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
     }
     
-    if (Utility::isErrorX($timePoint)) {
-        $tpl_data['error_message'][] = "TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage();
-    } else {
-        $tpl_data['timePoint'] = $timePoint->getData();
-    }
 }
 
 $timer->setMarker('Drew the top workspace tables');
@@ -150,38 +142,29 @@ $timer->setMarker('Drew the top workspace tables');
 //--------------------------------------------------
 
 // load the menu or instrument
-$caller =& NDB_Caller::singleton();
-function HandleError($error) {
-    switch($error->code) {
+try {
+    $caller =& NDB_Caller::singleton();
+    $workspace = $caller->load($TestName, $subtest);
+    if(isset($caller->controlPanel)) {
+        $tpl_data['control_panel'] = $caller->controlPanel;
+    }
+    $tpl_data['workspace'] = $workspace;
+} catch(Exception $e) {
+    switch($e->getCode()) {
         case 404: header("HTTP/1.1 404 Not Found"); break;
         case 403: header("HTTP/1.1 403 Forbidden"); break;
     }
-    if(empty($error->code)) {
-        //print $error->message;
-    }
-}
-$caller->setErrorHandling(PEAR_ERROR_CALLBACK, 'HandleError');
-$workspace = $caller->load($TestName, $subtest);
-if(isset($caller->controlPanel)) {
-    $tpl_data['control_panel'] = $caller->controlPanel;
-
-}
-if (Utility::isErrorX($workspace)) {
-    $tpl_data['error_message'][] = $workspace->getMessage();
-} else {
-    $tpl_data['workspace'] = $workspace;
+    $tpl_data['error_message'][] = $e->getMessage();
 }
 
 $timer->setMarker('Drew main workspace');
 
 //--------------------------------------------------
 
-// make the breadcrumb
-$breadcrumb = new NDB_Breadcrumb;
-$crumbs = $breadcrumb->getBreadcrumb();
-if (Utility::isErrorX($crumbs)) {
-    $tpl_data['error_message'][] = $crumbs->getMessage();
-} else {
+try {
+    $breadcrumb = new NDB_Breadcrumb;
+    $crumbs = $breadcrumb->getBreadcrumb();
+
     $tpl_data['crumbs'] = $crumbs;
     parse_str($crumbs[0]['query'], $parsed);
     if(isset($parsed['test_name'])) {
@@ -189,6 +172,8 @@ if (Utility::isErrorX($crumbs)) {
     } else {
         $tpl_data['top_level'] = '';
     }
+} catch(Exception $e) {
+    $tpl_data['error_message'][] = $e->getMessage();
 }
 
 $timer->setMarker('Drew breadcrumbs');

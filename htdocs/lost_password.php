@@ -43,7 +43,7 @@ if (isset($_POST['username'])) {
             $password = User::newPassword();
 
             // reset the password in the database
-            $success = $user->update(array('Password_md5' => User::md5_salt($password), 'Password_expiry' => '0000-00-00'));
+            $success = $user->update(array('Password_md5' => User::MD5Salt($password), 'Password_expiry' => '0000-00-00'));
             if (PEAR::isError($success)) {
                 $tpl_data['error_message'] = $success->getMessage();
             }

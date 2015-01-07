@@ -7,6 +7,7 @@
         <script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
         <script type="text/javascript" src="js/jquery.dynamictable.js"></script>
+        <script type="text/javascript" src="js/jquery.fileupload.js"></script>
         <!-- Custom JavaScript for the Menu Toggle -->
    
         <link type="text/css" href="css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
@@ -77,6 +78,12 @@
                         $(this).toggleClass('open');
                     });
                     $(".help-button").click(function(e) {
+                        var helpContent = $('div.help-content');
+                        if(helpContent.length) {
+                           helpContent.toggle();
+                           e.preventDefault();
+                           return;
+                        }
                         var getParams = {};
                         {/literal}
                         {if $test_name}
@@ -113,8 +120,9 @@
                                 {literal}
                                 document.getElementById('page').appendChild(div);
                                 div.setAttribute("class", "help-content");
+                                $(div).addClass('visible');
                                 btn.addEventListener("click", function(e) {
-                                    $(div).hide();      
+                                    $(div).hide();
                                     e.preventDefault(); 
                                 }) ;
                                 edit.addEventListener("click", function(e) {
@@ -128,6 +136,7 @@
                     });
 
                     $(".dynamictable").DynamicTable();
+                    $(".fileUpload").FileUpload();
                 });
 
                 
@@ -140,12 +149,7 @@
          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     </head>
     {/if}
-    <body {if $PopUpFeedbackBVL && ($user.permissions.superuser==true 
-              || $user.permissions.access_all_profiles==true 
-              || $user.user_from_study_site==true)}
-                    onload="feedback_bvl_popup();" 
-            {/if}
-    >
+    <body>
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
             <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -336,8 +340,7 @@
                             {else}
                                 {if $candID != ""}
                                     <!-- table with candidate profile info -->
-                                    <div class="table-responsive">
-                                        <table cellpadding="2" class="table table-info table-bordered" style="max-width:auto">
+                                        <table cellpadding="2" class="table table-info table-bordered dynamictable" style="max-width:auto">
                                             <!-- column headings -->
                                             <thead>
                                                 <tr class="info">
@@ -465,7 +468,6 @@
                                                     </tr>
                                             </tbody>  
                                         </table>
-                                    </div>
 
                                     {if $sessionID != ""}
                                         <div class="table-responsive">

@@ -34,12 +34,12 @@
             </div>
         </div>
     </div>
-
+<div class="row">
     <div class="col-xs-12">
         <h3>Review Values</h3>
     </div>
-    <div class="table-responsive">
-        <table width="80%" class="table table-hover table-primary table-bordered">
+</div>
+        <table width="80%" class="table table-hover table-primary table-bordered dynamictable">
             <thead>
                 <tr class="info">
                     <th>Field</th>
@@ -104,15 +104,15 @@
                 </tr>
             </tbody>
         </table>
-    </div>
     <input type="submit" class="btn btn-sm btn-primary col-xs-4 col-sm-2" name="fire_away" value="Save" />
     {$form.hidden}
-</form>
+<!--/form-->
+<div class="row">
 <div class="col-xs-12">
     <h3>Change Log</h3>
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-primary table-bordered">
+</div>
+    <table class="table table-hover table-primary table-bordered dynamictable">
         <thead>
             <tr class="info">
                 <th>Time</th>
@@ -126,4 +126,4 @@
             {$form.history.html}
         </tbody>
     </table>
-</div>
+</form>

@@ -124,3 +124,29 @@ ul#navlist {
 	display: inline;
 	list-style-type: none;
 }
+/* 
+ *  Styling for modals
+ */
+.modal-header {
+    background-color: #064785;
+    color: white;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+}
+.close {
+    color: white;
+    opacity: 1;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    background: none repeat scroll 0 0 transparent;
+    cursor: inherit;
+    display: block;
+}

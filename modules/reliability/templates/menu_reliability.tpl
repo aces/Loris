@@ -196,8 +196,7 @@
 </table>
 
 <!-- start data table -->
-<div class="table-responsive">
-    <table border="0" width="100%" class ="table table-hover table-primary table-bordered">
+    <table border="0" width="100%" class ="table table-hover table-primary table-bordered dynamictable">
         <thead>
             <tr class="info">
              <th>No.</th>
@@ -268,5 +267,4 @@
                         
     <!-- end data table -->
     </table>
-</div>
 
