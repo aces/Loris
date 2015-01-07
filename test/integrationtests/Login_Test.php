@@ -1,5 +1,5 @@
 <?php
-class LorisIntegrationTest extends PHPUnit_Framework_TestCase
+class LorisLoginTest extends PHPUnit_Framework_TestCase
 {
     protected $webDriver;
 
@@ -10,7 +10,7 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
        $this->webDriver->get('http://localhost/main.php');
 
-       print "Page source: " . $this->webDriver->getPageSource();
+       //print "Page source: " . $this->webDriver->getPageSource();
 
     }
 
