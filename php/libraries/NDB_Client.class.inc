@@ -67,20 +67,12 @@ class NDB_Client
 
         include_once "NDB_BVL_Feedback.class.inc";
 
+        // Load the config file.
         $config =& NDB_Config::singleton($configFile);
 
-        // add extra include paths
-        $extLibs = $config->getSetting('extLibs');
-        if (!empty($extLibs)) {
-            set_include_path($extLibs.":".get_include_path());
-        }
-
-        // after the extra includes, as those include Smarty
-        include_once "Smarty_hook.class.inc";
-
-        /*
-        * new DB Object
-        */
+        // Load the database object with settings from config
+        // so that after this we can just call Database::singleton()
+        // with no parameters
         $dbConfig = $config->getSetting('database');
         $DB       =& Database::singleton(
             $dbConfig['database'],
@@ -88,6 +80,19 @@ class NDB_Client
             $dbConfig['password'],
             $dbConfig['host']
         );
+
+        // add extra include paths. This must be done
+        // after the database is connected, since the setting
+        // can come from the database.
+        $extLibs = $config->getSetting('extLibs');
+        if (!empty($extLibs)) {
+            set_include_path($extLibs.":".get_include_path());
+        }
+
+        // This must be done after the extra includes, as those may
+        // include Smarty
+        include_once "Smarty_hook.class.inc";
+
         if (Utility::isErrorX($DB)) {
             die("Could not connect to database: ".$DB->getMessage());
         }
