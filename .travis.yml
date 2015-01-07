@@ -82,11 +82,13 @@ script:
         php -l $i || exit $?;
       done
     # Run unit tests to make sure functions still do what they should.
-    - phpunit test/unittests/
+    - vendor/bin/phpunit test/unittests/
 
     # Run integration tests to make sure everything didn't just
     # break
     - phpunit test/integrationtests/
+    - vendor/bin/phpunit test/integrationtests/
+
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
 
