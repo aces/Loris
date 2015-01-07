@@ -1,4 +1,5 @@
 <?php
+require_once 'LorisIntegrationTest.class.inc';
 class LorisLoginTest extends LorisIntegrationTest
 {
     protected $webDriver;
