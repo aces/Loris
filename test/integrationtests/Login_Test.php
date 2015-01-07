@@ -1,5 +1,5 @@
 <?php
-class LorisLoginTest extends PHPUnit_Framework_TestCase
+class LorisLoginTest extends LorisIntegrationTest
 {
     protected $webDriver;
 
@@ -28,7 +28,7 @@ class LorisLoginTest extends PHPUnit_Framework_TestCase
        $this->assertEquals('submit', $login->getAttribute("type"));
        $this->assertEquals('login', $login->getAttribute("value"));
 
-       $username->sendKeys("admin");
+       $username->sendKeys("UnitTester");
        $password->sendKeys("IJUSTMADETHISUP");
 
        $login->click();
@@ -50,8 +50,8 @@ class LorisLoginTest extends PHPUnit_Framework_TestCase
        $this->assertEquals('submit', $login->getAttribute("type"));
        $this->assertEquals('login', $login->getAttribute("value"));
 
-       $username->sendKeys("admin");
-       $password->sendKeys("testpass");
+       $username->sendKeys("UnitTester");
+       $password->sendKeys("4test4");
 
        $login->click();
 
