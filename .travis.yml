@@ -33,11 +33,7 @@ install:
     # Travis-CI requires this.
     - phpenv rehash
 
-<<<<<<< HEAD
       # Download a Selenium Web Driver release
-=======
-    # Download a Selenium Web Driver release
->>>>>>> Run PHPCS on entire directory, not individual files
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
     # Install requirements for php-fpm as per Travis DOCs
@@ -85,34 +81,16 @@ script:
       do
         php -l $i || exit $?;
       done
-    # Run PHPCS on libraries directory.
-    # Note that everything doesn't pass yet, so instead
-    # do each file that we know passes individually to ensure
-    # no backwards progress..
-    # Eventually, the following should be uncommented and the
-    # file by file invocations deleted..
-    #- phpcs --standard=docs/LorisCS.xml php/libraries
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Config.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/SinglePointLogin.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument_instrument_preview.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Smarty_hook.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Database.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/ConflictDetector.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Instrument.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Feedback.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Factory.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_BVL_Battery.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Log.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/File_Upload.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Notify.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Email.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/CouchDB.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Breadcrumb.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/Candidate.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Caller.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/TimePoint.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/UserPermissions.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Reliability.class.inc
-    - phpcs --standard=docs/LorisCS.xml php/libraries/NDB_Menu_Filter_Form.class.inc
+    # Run unit tests to make sure functions still do what they should.
+    - phpunit test/unittests/
+
+    # Run integration tests to make sure everything didn't just
+    # break
+    - phpunit test/integrationtests/
+
+    # Run PHPCS on the entire libraries directory.
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries
+
+    # Run PHPCS on specific modules
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * snp_browser class file
  * Displays SNP genomic variant data.
