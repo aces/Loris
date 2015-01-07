@@ -10,14 +10,13 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
        $this->webDriver->get('http://localhost/main.php');
 
+       print "Page source: " . $this->webDriver->getPageSource();
 
     }
 
     function testLoginFailure()
     {
 
-       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-       print $bodyText;
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
 
