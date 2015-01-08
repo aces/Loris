@@ -343,7 +343,10 @@ class NDB_Form_certification extends NDB_Form
                 $this->addBasicDate('date_cert['.$key.']', 'Date', $dateOptions);
             }
         }
+
         $this->form->addFormRule(array(&$this, '_validate'));
+        $instruments = array_merge(array('' => ''), $instruments);
+        $this->addSelect('certification_instruments', 'Instrument', $instruments);
     }
 
     function _validate($values)
