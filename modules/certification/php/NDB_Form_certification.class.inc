@@ -345,8 +345,8 @@ class NDB_Form_certification extends NDB_Form
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));
-        $instruments = array_merge(array('' => ''), $instruments);
-        $this->addSelect('certification_instruments', 'Instrument', $instruments);
+
+        $this->tpl_data['certification_instruments'] = $instruments;
     }
 
     function _validate($values)

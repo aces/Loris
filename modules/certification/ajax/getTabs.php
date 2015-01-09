@@ -26,24 +26,11 @@ $DB = Database::singleton();
 // Get the ID for the instrument that was selected
 $instrumentID = $_REQUEST['instrument'];
 
-// Check what instruments for which the examiner is already certified -> how do you get the identifier???
-/*$certifiedInstruments = $DB->pselect(
-    "SELECT testID FROM certification WHERE certID=:CID",
-    array('CID' => $_REQUEST['identifier'])
-);*/
-
-$certificationStatus = $DB->pselect(
-    "SELECT pass FROM certification WHERE certID=:CID AND testID=:TID",
-    array('CID' => 4, 'TID' => $instrumentID)
+// Check the tabs and their titles
+$tabs = $DB->pselect(
+    "SELECT Title, OrderNumber FROM certification_training WHERE TestID=:TID ORDER BY OrderNumber",
+    array('TID' => $instrumentID)
 );
 
-// Check if the examiner is certified for the selected instrument
-if ($certificationStatus["pass"] == 'certified') {
-    print 0;
-} else if ($certificationStatus["pass"] == 'in_training') {
-    print 1;
-} else {
-    print 2;
-    //print json_encode($certificationStatus);
-}
+print json_encode($tabs);
 ?>
