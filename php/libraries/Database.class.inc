@@ -184,7 +184,7 @@ class Database extends PEAR
             ." (:histtable, :histcolumn, :newval, :oldval,"
             ." :primaryKeys, :primaryVals, :userID, :type)"
         );
-        
+
         if (is_null($this->_HistoryPDO)) {
             if (is_null($historydb)) {
                 $this->_HistoryPDO =& $this->_PDO;
