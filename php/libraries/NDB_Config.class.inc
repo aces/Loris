@@ -80,6 +80,9 @@ class NDB_Config
     {
         // load the configuration data into a global variable $config
         $newroot         = simplexml_load_file($configFile);
+        if($newroot === FALSE || $newroot === null) {
+            throw new Exception("Could not load Loris config file $configFile");
+        }
         $this->_settings = NDB_Config::convertToArray($newroot);
     }
 
