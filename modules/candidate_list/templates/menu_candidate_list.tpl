@@ -19,7 +19,6 @@
                 colm_static = true;
             }
         });
-        alert($("#number").offset().left);
         $(".colm-freeze").ColmFreeze(4);
     });
 </script>
@@ -224,19 +223,23 @@
     <td align="right">{$page_links}</td>
 </tr>
 </table>
-<table class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
+
+
+<table id="cand" class ="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
     <thead>
         <tr class="info">
-         <th>No.</th>
+         <th id="number">No.</th>
             <!-- print out column headings - quick & dirty hack -->
             {section name=header loop=$headers}
-                <th><a href="{$baseurl}/main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                    <th>
+                <a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
             {/section}
         </tr>
     </thead>
     <tbody>
         {section name=item loop=$items}
             <tr>
+            <!-- print out data rows -->
             {section name=piece loop=$items[item]}
                 {if $items[item][piece].bgcolor != ''}
                     <td style="background-color:{$items[item][piece].bgcolor}">
@@ -245,13 +248,12 @@
                 {/if}
                 {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
                     {assign var="PSCID" value=$items[item][piece].value}
-                    <a href="{$baseurl}/main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-
+                    <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+                        
                 {elseif $items[item][piece].name == "scan_Done"}
                     {if $items[item][piece].value == 'Y'}
                         {assign var="scan_done" value="Yes"}
-                        {* PSCID will have been assigned on previous iteration of loop, since Scan_done is after PSCID in the table *}
-                        <a href="#" class="scanDoneLink" data-pscid="{$PSCID}">{$scan_done}</a>
+                        <a href="main.php?test_name=imaging_browser&pscid={$PSCID}&filter=Show%20Data">{$scan_done}</a>
                     {else}
                         {assign var="scan_done" value="No"}
                         {$scan_done}
@@ -261,55 +263,10 @@
                 {/if}
                 </td>
             {/section}
-            </tr>
+            </tr>           
         {sectionelse}
             <tr><td colspan="12">No candidates found</td></tr>
         {/section}
-    </tbody>
+    </tbody>                   
+<!-- end data table -->
 </table>
-
-<table id="cand" class ="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
-                <thead>
-                    <tr class="info">
-                     <th id="number">No.</th>
-                        <!-- print out column headings - quick & dirty hack -->
-                        {section name=header loop=$headers}
-                                <th>
-                            <a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                        {/section}
-                    </tr>
-                </thead>
-                <tbody>
-                    {section name=item loop=$items}
-                        <tr>
-                        <!-- print out data rows -->
-                        {section name=piece loop=$items[item]}
-                            {if $items[item][piece].bgcolor != ''}
-                                <td style="background-color:{$items[item][piece].bgcolor}">
-                            {else}
-                                <td>
-                            {/if}
-                            {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-                                {assign var="PSCID" value=$items[item][piece].value}
-                                <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-                                    
-                            {elseif $items[item][piece].name == "scan_Done"}
-                                {if $items[item][piece].value == 'Y'}
-                                    {assign var="scan_done" value="Yes"}
-                                    <a href="main.php?test_name=imaging_browser&pscid={$PSCID}&filter=Show%20Data">{$scan_done}</a>
-                                {else}
-                                    {assign var="scan_done" value="No"}
-                                    {$scan_done}
-                                {/if}
-                            {else}
-                                {$items[item][piece].value}
-                            {/if}
-                            </td>
-                        {/section}
-                        </tr>           
-                    {sectionelse}
-                        <tr><td colspan="12">No candidates found</td></tr>
-                    {/section}
-                </tbody>                   
-            <!-- end data table -->
-            </table>
