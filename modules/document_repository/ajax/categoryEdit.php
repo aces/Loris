@@ -36,7 +36,7 @@ if (Utility::isErrorX($user)) {
 }
 
 //if user has document repository permission
-if ($user->hasPermission('file_upload')) {
+if ($user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete')) {
     $DB->update(
         'document_repository_categories',
         array('comments'=>$comments),
