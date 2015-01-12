@@ -38,6 +38,7 @@ class CouchDBInstrumentImporter {
                     'Description' => 'Double Data Entry was completed for instrument'
                 )
             );
+
             $Fields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom=:inst AND Queryable=1",
                 array('inst' => $instrument));
             foreach($Fields as $field) {
@@ -47,10 +48,15 @@ class CouchDBInstrumentImporter {
                     $Dict[$fname]['Type'] = $field['Type'];
                     $Dict[$fname]['Description'] = $field['Description'];
                 }
+
             }
 
             unset($Dict['city_of_birth']);
             unset($Dict['city_of_birth_status']);
+            unset($Dict['mother_dob_date']);
+            unset($Dict['mother_dob_date_status']);
+            unset($Dict['father_dob_date']);
+            unset($Dict['father_dob_date_status']);
 
             $this->CouchDB->replaceDoc("DataDictionary:$instrument", array(
                 'Meta' => array('DataDict' => true),
@@ -77,7 +83,10 @@ class CouchDBInstrumentImporter {
 
                 unset($docdata['city_of_birth']);
                 unset($docdata['city_of_birth_status']);
-
+                unset($Dict['mother_dob_date']);
+                unset($Dict['mother_dob_date_status']);
+                unset($Dict['father_dob_date']);
+                unset($Dict['father_dob_date_status']);
                 if(is_numeric($docdata['Examiner'])) {
                     $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $row['Examiner']));
                 }
