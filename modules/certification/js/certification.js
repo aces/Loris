@@ -14,9 +14,9 @@ $(document).ready(function() {
             $.post("AjaxHelper.php?Module=certification&script=getExaminerTestStatus.php", {instrument: instrument}, function(data) {
                 if (data == 2) {
                     var uncertifiedHTML = '<div class="alert alert-success alert-certification" role="alert">' 
-                                            + 'Please complete the training below to be certified for ' 
-                                            + instrumentName 
-                                            + '</div>';
+                                          + 'Please complete the training below to be certified for ' 
+                                          + instrumentName 
+                                          + '</div>';
 
                     $(select).parent().parent().parent().after(uncertifiedHTML);
                     loadTabs(instrument);
@@ -24,17 +24,17 @@ $(document).ready(function() {
                 }
                 else if (data == 1) {
                     var inProgressHTML = '<div class="alert alert-warning alert-certification" role="alert">' 
-                                            + 'Please continue the training below to be certified for ' 
-                                            + instrumentName 
-                                            + '</div>';
+                                         + 'Please continue the training below to be certified for ' 
+                                         + instrumentName 
+                                         + '</div>';
 
                     $(select).parent().parent().parent().after(inProgressHTML);
                 }
                 else {
                     var certifiedHTML = '<div class="alert alert-danger alert-certification" role="alert">' 
-                                                     + 'You have already been certified for ' 
-                                                     + instrumentName 
-                                                     + '</div>';
+                                        + 'You have already been certified for ' 
+                                        + instrumentName 
+                                        + '</div>';
 
                     $(select).parent().parent().parent().after(certifiedHTML);
                 }
@@ -55,10 +55,7 @@ $(document).ready(function() {
 function loadTabs(instrument) {
     $.post("AjaxHelper.php?Module=certification&script=getTabs.php", {instrument: instrument}, function(data) {
         console.log(data);
-        data.forEach(function(tab) {
-            // create html for disabled tabs
-        });
-        // insert tabs
+        $('#tabs').html(data);
     });
 }
 

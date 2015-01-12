@@ -16,13 +16,5 @@
     </div>
 </div>
 
-<!--
-<ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="#">Description</a></li>
-  <li role="presentation"><a href="#">Instructions</a></li>
-  <li role="presentation"><a href="#">Example</a></li>
-  <li role="presentation"><a href="#">Scoring</a></li>
-  <li role="presentation"><a href="#">Video</a></li>
-  <li role="presentation"><a href="#">Quiz</a></li>
-</ul>
--->
+<div id="tabs">
+</div>

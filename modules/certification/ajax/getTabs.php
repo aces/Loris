@@ -32,5 +32,11 @@ $tabs = $DB->pselect(
     array('TID' => $instrumentID)
 );
 
-print json_encode($tabs);
+$tabhtml = '<ul class="nav nav-tabs">';
+foreach ($tabs as $tab) {
+    $tabhtml = $tabhtml . '<li class="disabled" id="' . $tab['OrderNumber'] . '"><a href="#">' . $tab['Title'] . '</a></li>';
+}
+$tabhtml = $tabhtml . '</ul>';
+
+print $tabhtml;
 ?>
