@@ -74,7 +74,7 @@
 
     }, wrapTable = function (table) {
         $(table).wrap("<div class=\"row\"></div>");
-        
+
         // Add wrapper code necessary for bootstrap carousel
         $(table).wrap("<div class=\"carousel slide col-xs-12\"></div>");
 
@@ -103,11 +103,14 @@
         return colm_static;
     };
 
-    $.fn.DynamicTable = function () {
+    $.fn.DynamicTable = function (colmNumber) {
+        colmNumber = colmNumber || -1;
         this.filter("table").each(function () {
-            var leftLink, rightLink, table = this;
+            var leftLink, 
+                rightLink, 
+                table = this;
+            // set up table for scrollable side bars 
             wrapTable(this);
-
             // Get references to links to pass to Setup and checkOverflow
             leftLink = this.nextSibling;
             rightLink = leftLink.nextSibling;
@@ -119,45 +122,26 @@
                 checkOverflow(table.parentElement, rightLink, leftLink);
             });
 
-            return this;
-        });
-        return this;
-    };
+            if(colmNumber >= 0) {
+                var id = $(this).attr('id'),
+                    colm_static = false;
+                $(this).find("tr").each(function (key, value) {
+                    console.log(key);
+                    if(key == 0){
+                        var child2 = $(value).children().get(colmNumber);
+                        $(child2).attr('class', id + 'Next');
+                    }
+                    var child1 = $(value).children().get(colmNumber - 1),
+                        height = $(child1).next().outerHeight();
+                    $(child1).attr('class', id);
+                    $(child1).outerHeight(height);
 
-    $.fn.ColmFreeze = function(colmNumber) {
-        this.filter("table").each(function () {
-            var leftLink, 
-                rightLink, 
-                table = this,
-                id = $(this).attr('id'),
-                colm_static = false;
-            wrapTable(this);
+                });
+                $(this).parent().scroll(function(){
+                    colm_static = freezeColm(id, colm_static);
+                });
+            }
 
-
-            $(this).find("tr").each(function (key, value) {
-                console.log(key);
-                if(key == 0){
-                    var child2 = $(value).children().get(colmNumber);
-                    $(child2).attr('class', id + 'Next');
-                }
-                var child1 = $(value).children().get(colmNumber - 1),
-                    height = $(child1).next().outerHeight();
-                $(child1).attr('class', id);
-                $(child1).outerHeight(height);
-
-            });
-
-            leftLink = this.nextSibling;
-            rightLink = leftLink.nextSibling;
-
-            setupScrolling(this.parentElement, rightLink, leftLink);
-            checkOverflow(this.parentElement, rightLink, leftLink);
-            window.addEventListener("resize", function () {
-                checkOverflow(table.parentElement, rightLink, leftLink);
-            });
-            $(this).parent().scroll(function(){
-                colm_static = freezeColm(id, colm_static);
-            });
             return this;
         });
         return this;
