@@ -986,7 +986,8 @@ INSERT INTO `permissions` VALUES
     (32,'data_team_helper','Data Team Helper','2'),
     (33,'candidate_parameter_view','View Candidate Parameters','2'),
     (34,'candidate_parameter_edit','Edit Candidate Parameters','2'),
-    (35,'file_upload','Access Document Repository','2');
+    (35,'document_repository_view','View and upload files in Document Repository','2'),
+    (36,'document_repository_delete','Delete files in Document Repository','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
