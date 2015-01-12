@@ -22,7 +22,7 @@ if (Utility::isErrorX($userSingleton)) {
 }
 
 //if user has document repository permission
-if ($userSingleton->hasPermission('file_upload')) {
+if ($userSingleton->hasPermission('document_repository_view') || $userSingleton->hasPermission('document_repository_delete')) {
     if ($action == 'upload') {
         $user = $_POST['user'];
         $category = $_POST['category'];

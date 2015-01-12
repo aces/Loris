@@ -28,8 +28,8 @@ if (Utility::isErrorX($user)) {
     return PEAR::raiseError("User Error: ".$user->getMessage());
 }
 
-//if user has document repository permission
-if ($user->hasPermission('file_upload')) {
+//if user has document repository delete permission
+if ($user->hasPermission('document_repository_delete')) {
     $DB->delete("document_repository", array("record_id" => $rid));
     $www = $config->getSetting('www');
     $msg_data['deleteDocument'] = $www['url'] . "/main.php?test_name=document_repository";
