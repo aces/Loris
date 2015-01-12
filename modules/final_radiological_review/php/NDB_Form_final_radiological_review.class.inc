@@ -102,13 +102,13 @@ class NDB_Form_final_radiological_review extends NDB_Form
         $this->addScoreColumn('DICOM_Folder_Name', 'DICOM Folder:', 'Unknown');
         $this->addScoreColumn('DICOM_ID', 'DICOM ID:', 'Unknown');
 
-        $this->addSelect('Review_Done', 'Review Done:', $yes_no_string);
+        $this->addSelect('Review_Done', 'Review Done:', $yes_no);
         $this->addSelect('Final_Review_Results', 'Results of Radiology Review:', $results);
         $this->addSelect('Final_Exclusionary', 'Exclusionary Status:', $exclusionary);
         $this->addSelect('SAS', 'SAS Score:', $abnormality);
         $this->addSelect('PVS', 'PVS Score:', $abnormality);
         $this->addBasicTextArea('Final_Incidental_Findings', 'Description of Incidental Findings (Comments):');
-        $this->addSelect('Finalized', 'Is review finalized?', $yes_no_string);
+        $this->addSelect('Finalized', 'Is review finalized?', $yes_no);
 
         $this->addSelect('Final_Examiner2', 'Radiologist/Reviewer:', $radiologists);
         $this->addSelect('Review_Done2', 'Review Done:', $yes_no);
