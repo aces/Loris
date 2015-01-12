@@ -187,14 +187,6 @@
             leftLink = this.nextSibling;
             rightLink = leftLink.nextSibling;
 
-            setupScrolling(this.parentElement, rightLink, leftLink);
-            checkOverflow(this.parentElement, rightLink, leftLink);
-            window.addEventListener("resize", function () {
-                checkOverflow(table.parentElement, rightLink, leftLink);
-            });
-            $(this).parent().scroll(function(){
-                colm_static = freezeColm(id, colm_static);
-            });
             return this;
         });
         return this;
