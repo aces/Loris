@@ -11,6 +11,5 @@ function updateDemographicTab() {
             $('#demographics').html(response);
   
         }
-        }
-    );
+    });
 }

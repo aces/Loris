@@ -119,6 +119,14 @@ foreach ($instruments as $instrument) {
 		die();
 	}
     MapSubprojectID($instrument_table);
+    if ($Test_name == 'tsi') {
+        foreach ($instrument_table as &$row) {
+            unset($row['father_dob_date']);
+            unset($row['father_dob_date_status']);
+            unset($row['mother_dob_date']);
+            unset($row['mother_dob_date_status']);
+        }
+    }
 	writeExcel($Test_name, $instrument_table, $dataDir);
 
 } //end foreach instrument
