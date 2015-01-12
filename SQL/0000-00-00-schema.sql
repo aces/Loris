@@ -986,9 +986,10 @@ INSERT INTO `permissions` VALUES
     (32,'data_team_helper','Data Team Helper','2'),
     (33,'candidate_parameter_view','View Candidate Parameters','2'),
     (34,'candidate_parameter_edit','Edit Candidate Parameters','2'),
-    (35,'file_upload','Access Document Repository','2'),
-    (36,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
-    (37,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2');
+    (35,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
+    (36,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2'),
+    (37,'document_repository_view','View and upload files in Document Repository','2'),
+    (38,'document_repository_delete','Delete files in Document Repository','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
