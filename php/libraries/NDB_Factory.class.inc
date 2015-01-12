@@ -89,7 +89,10 @@ class NDB_Factory
     }
 
     /**
-     * Return either a real or mock NDB_Config object.
+     * Return either a real or mock NDB_Config object depending on testing
+     * status of this factory object.
+     *
+     * @param string $configfile Location of XML file to parse config from
      *
      * @return NDB_Config A config singleton
      */
