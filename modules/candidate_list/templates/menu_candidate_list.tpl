@@ -19,7 +19,7 @@
                 colm_static = true;
             }
         });
-        $(".colm-freeze").ColmFreeze(4);
+        $(".colm-freeze").DynamicTable(4);
     });
 </script>
 {/literal}
