@@ -108,13 +108,12 @@ if (!empty($TestName)) {
         $tpl_data['test_name_css'] = "css/$TestName";
     }
 
-    // Used for CSS for a specific instrument. This should eventually be
-    // rolled into the GetCSS wrapper
-    if (file_exists("css/instruments/$TestName.css")) {
+    // Used for CSS for a specific instrument.
+    if (file_exists($paths['base'] . "project/instruments/$TestName.css")) {
         if(strpos($_SERVER['REQUEST_URI'], "main.php") === false) {
             $tpl_data['test_name_css'] = "css/instruments/$TestName.css";
         } else {
-            $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
+            $tpl_data['test_name_css'] = "GetCSS.php?Instrument=$TestName";
         }
     }
 }
