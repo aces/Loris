@@ -1,14 +1,15 @@
 <script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_reliability.js"></script>
 <div id="reliability">
     <h2 class="statsH2">Reliability Statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
-        <div class="col-sm-2">
+        <div class="col-sm-2 col-xs-12 form-group">
             {html_options id="ReliabilitySite" options=$Sites name="ReliabilitySite" selected=$CurrentSite.ID class="form-control"}   
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 col-xs-12 form-group">
             {html_options id="ReliabilityProject" options=$Projects name="ReliabilityProject" selected=$CurrentProject.ID class="form-control"}
-        </div>   
-            <button onClick="updateReliabilityTab()" class="btn btn-primary btn-small">Submit Query</button>
-
+        </div>  
+        <div class="col-sm-3 col-xs-12 form-group"> 
+            <button onClick="updateReliabilityTab()" class="btn btn-primary btn-small col-xs-12">Submit Query</button>
+        </div>
     <br><br>
     <div class="row">
     <div class="table-reponsive">

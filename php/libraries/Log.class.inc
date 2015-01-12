@@ -35,7 +35,7 @@ class Log extends PEAR
      * @param String $file_name The name of the log file
      * @param String $location  The path of the log file
      */
-    function Log($file_name,$location=null)
+    function __construct($file_name,$location=null)
     {
         $today = getdate();
         $date  = sprintf(

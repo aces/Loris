@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main 
  * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 
@@ -22,7 +22,7 @@ require_once 'NDB_Form.class.inc';
  * @category Behavioural
  * @package  Main 
  * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 class NDB_Form_Configuration extends NDB_Form
@@ -51,6 +51,9 @@ class NDB_Form_Configuration extends NDB_Form
 
     function configuration()
     {
+
+        $config =& NDB_Config::singleton();
+
         $this->DB = Database::singleton();
         if (Utility::isErrorX($this->DB)) {
             return PEAR::raiseError(
@@ -59,8 +62,15 @@ class NDB_Form_Configuration extends NDB_Form
             die();
         }
 
+        $parentMenuItems = $this->DB->pselect(
+            "SELECT Label, Name 
+             FROM ConfigSettings 
+             WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber", 
+            array()
+        );
+
         $configs = $this->DB->pselect(
-            "SELECT * FROM ConfigSettings", 
+            "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber", 
             array()
         );
 
@@ -77,42 +87,24 @@ class NDB_Form_Configuration extends NDB_Form
             }
         }
 
-        // need a subtree with root = NULL only, others are repeating branches
-        $this->tpl_data['config'] = $configs;
-        $this->tpl_data['options'] = array('0'=>'0', '1'=>'1');
-    }
+        // build a tree from configs array
+        foreach ($configs as &$node) {
+            $node['Children'] = array();
+            $tree[$node['ID']] = &$node;
+            
+        }
+        foreach ($configs as &$node) {
+            $tree[$node['Parent']]['Children'][] = &$node;
+        }
 
-    /**
-     * process the form
-     *
-     * @param Array $values the array of values from the form
-     * 
-     * @return NULL
-     */
+        $instruments = Utility::getAllInstruments();
+        $instruments = array_merge(array('' => ''), $instruments);
 
-    function _process($values)
-    {
-        foreach ($values as $key => $value) {
-            if (is_numeric($key)) { //update
-                $this->DB->update(
-                    'Config', 
-                    array('Value' => $value), 
-                    array('ID' => $key)
-                );
-            } else { //add new or remove
-                $id = split("-", $key);
-                if ($id[0] === "add") {
-                    $this->DB->insert(
-                        'Config', 
-                        array('ConfigID' => $id[1], 'Value' => $value)
-                    );
-                } elseif ($id[0] === "remove") {
-                    $this->DB->delete('Config', array('ID' => $id[1]));
-                }
-            } 
-        } 
-        
-        $this->configuration();
+        $this->tpl_data['parentMenuItems'] = $parentMenuItems;
+        $this->tpl_data['config']          = $configs;
+        $this->tpl_data['instruments']     = $instruments;
+        $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
+
     }
 }
 

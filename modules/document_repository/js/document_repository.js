@@ -83,69 +83,30 @@ $(document).ready(function() {
 
     //Open confirmation dialog on Delete click
     var id;
-    $('.sure').dialog({ autoOpen: false })
     $('.thedeletelink').click(function(){ 
-        $('.sure').dialog('open'); 
+        //$('.sure').dialog('open');
+        $("#deleteModal").modal();
         id = this.id;
     });
-
-    //Delete dialog
-    $(".sure").dialog({
-        buttons : {
-            "Cancel" : function() {
-                 $(this).dialog("close");
+    $("#postDelete").click(function(){
+        $.ajax({
+            url: "AjaxHelper.php?Module=document_repository&script=documentDelete.php", 
+            type: "POST",
+            data: {id:id}, 
+            success: function(){
+                $("#"+id).parent().parent().remove();
+                $('.delete-success').show();
+                setTimeout("$('.delete-success').hide();", 3000);
             },
-             "Yes" : function() {
-                 $.ajax({
-                    url: "AjaxHelper.php?Module=document_repository&script=documentDelete.php", 
-                    type: "POST",
-                    data: {id:id}, 
-                    success: function(){
-                        $("#"+id).parent().parent().remove();
-			            $('.delete-success').show();
-			            setTimeout("$('.delete-success').hide();", 3000);
-                    },
-                    error:function(jqXHR, textStatus, errorThrown){
-                        console.log("Error: " + textStatus + " " +errorThrown);
-                    }   
-        	});
-        
-                $(this).dialog("close");
-        	        return false;
-        	}	 	
-         }  
+            error:function(jqXHR, textStatus, errorThrown){
+                console.log("Error: " + textStatus + " " +errorThrown);
+            }   
+        });
     });
-
     //Add category dialog
     $('.addCategory').dialog({ autoOpen: false });
     $('#addCategory').click(function(){
         $('.addCategory').dialog('open');
-    });
-
-    $(".addCategory").dialog({
-	buttons : {
-             "Cancel" : function() {
-                 $(this).dialog("close");
-             },
-             "Add" : function() {
-                 $.ajax({
-                    url: "AjaxHelper.php?Module=document_repository&script=addCategory.php",
-                    type: "POST",
-                    data: $("#addCategoryForm").serialize(),
-                    success: function(){
-                                 $('.add-success').show();
-                                 setTimeout("$('.add-success').hide();", 3000);
-                                 setTimeout("location.reload();",3000);
-                    },
-                    error:function(jqXHR, textStatus, errorThrown){
-                        console.log("Error: " + textStatus + " " +errorThrown);
-                    }
-                });
-
-                $(this).dialog("close");
-                        return false;
-                }
-         }
     });
 
     //Upload dialog
@@ -163,54 +124,32 @@ $(document).ready(function() {
         $(".dialog-form").dialog("close");
     });
 
-    $("#upload").click(function() {
-        $(".dialog-form").dialog("open");
+    $("#upload").click(function(e) {
+        // $(".dialog-form").dialog("open");
+        e.preventDefault;
+        $('#uploadFileModal').modal(options)
         return false;
+    });
+    $("#postCategory").click(function(){
+        // $("#postCategory").modal('hide');
+        $.ajax({
+            url: "AjaxHelper.php?Module=document_repository&script=addCategory.php",
+            type: "POST",
+            data: $("#addCategoryForm").serialize(),
+            success: function(){
+                         $('.add-success').show();
+                         setTimeout("$('.add-success').hide();", 3000);
+                         setTimeout("location.reload();",3000);
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                console.log("Error: " + textStatus + " " +errorThrown);
+            }
+        });
     });
 
 
     //Edit dialog    
-    $(".dialog-form-edit").dialog({
-        autoOpen: false,
-        height: 500,
-        width: 666,
-        modal: true,
-        cache: false,
-       // close: function() {
-         //   allFields.val( "" ).removeClass( "ui-state-error" );
-       // },
-	    buttons:{
-            "Cancel": function() { 
-	        $(this).dialog("close");					
-        },
-	    "Edit": function() {
-            var data = {
-                idEdit:id,
-                categoryEdit:$(categoryEdit).val(),
-                siteEdit:$(siteEdit).val(),
-                instrumentEdit:$(instrumentEdit).val(),
-                pscidEdit:$(pscidEdit).val(),
-                visitEdit:$(visitEdit).val(),
-                commentsEdit:$(commentsEdit).val(),
-                versionEdit:$(versionEdit).val(),
-                action:$(actionEdit).val(),
-                submit: 'yeah!!!!'
-             };
-
-             $.ajax({
-                type: "POST",
-                url: "AjaxHelper.php?Module=document_repository&script=documentEditUpload.php",
-                data: data,
- 	            success: function(){    
-                    $('.edit-success').show();
-                    setTimeout(function() { location.reload() }, 3000);
-                }
-             });
-
-             $(".dialog-form-edit").dialog("close");
-	    }	
-	}
-    });
+    
 
     $("#cancelEditButton").click(function() {
         $(".dialog-form-edit").dialog("close");
@@ -218,7 +157,8 @@ $(document).ready(function() {
 		
     //The Edit file function
     $(".theeditlink").click(function() {
-        $(".dialog-form-edit").dialog("open");
+        // $(".dialog-form-edit").dialog("open");
+        $("#editModal").modal();
         id = this.id;
 
 	    $.ajax({
@@ -240,6 +180,30 @@ $(document).ready(function() {
 
                 }   
 	});
+    $("#postEdit").click(function(){
+        var data = {
+                idEdit:id,
+                categoryEdit:$(categoryEdit).val(),
+                siteEdit:$(siteEdit).val(),
+                instrumentEdit:$(instrumentEdit).val(),
+                pscidEdit:$(pscidEdit).val(),
+                visitEdit:$(visitEdit).val(),
+                commentsEdit:$(commentsEdit).val(),
+                versionEdit:$(versionEdit).val(),
+                action:$(actionEdit).val(),
+                submit: 'yeah!!!!'
+             };
+
+             $.ajax({
+                type: "POST",
+                url: "AjaxHelper.php?Module=document_repository&script=documentEditUpload.php",
+                data: data,
+                success: function(){    
+                    $('.edit-success').show();
+                    setTimeout(function() { location.reload() }, 3000);
+                }
+             });
+    });
 
         return false;
     });

@@ -7,7 +7,7 @@
  * @category Main
  * @package  Main
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -22,7 +22,7 @@ require_once 'CouchDB.class.inc';
  * @category Main
  * @package  Main
  * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class User extends UserPermissions
@@ -54,28 +54,17 @@ class User extends UserPermissions
 
         // get the user's permissions
         $success = $obj->select($username);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("User::factory(): ".$success->getMessage());
-        }
 
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         // get user data from database
-        $query = "SELECT users.*, psc.Name AS Site FROM users 
+        $query = "SELECT users.*, psc.Name AS Site FROM users
             LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
-        if (Utility::isErrorX($row)) {
-            return PEAR::raiseError("DB Error: ".$row->getMessage());
-        }
-        
+
         // store user data in object property
         $obj->userInfo = $row;
 
@@ -99,11 +88,6 @@ class User extends UserPermissions
         static $instance;
         if (is_null($instance)) {
             $instance = User::factory($username);
-            if (Utility::isErrorX($instance)) {
-                return PEAR::raiseError(
-                    "User Error ($username): ".$instance->getMessage()
-                );
-            }
         }
         return $instance;
     }
@@ -123,16 +107,8 @@ class User extends UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $success = $DB->insert('users', $set);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
 
         return true;
     }
@@ -151,20 +127,12 @@ class User extends UserPermissions
     {
         // create DB object
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $success = $DB->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])
         );
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
 
         return true;
     }
@@ -196,7 +164,7 @@ class User extends UserPermissions
     {
         return $this->userInfo['Real_name'];
     }
-    
+
     /**
      * Get the user's username
      *
@@ -254,10 +222,10 @@ class User extends UserPermissions
      */
     function isEmailValid()
     {
-        // stolen from PEAR::HTML_QuickForm
-        $regex = "/^((\"[^\"\f\n\r\t\v\b]+\")|([\w\!\#\$\%\&\'\*\+\-\~\/\^\`\|\{\}]+(\.[\w\!\#\$\%\&\'\*\+\-\~\/\^\`\|\{\}]+)*))@((\[(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))\])|(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))|((([A-Za-z0-9\-])+\.)+[A-Za-z\-]+))$/";
-    
-        return preg_match($regex, $this->userInfo['Email']);
+        if (!filter_var($this->userInfo['Email'], FILTER_VALIDATE_EMAIL)) {
+            return false;
+        };
+        return true;
     }
 
 
@@ -270,7 +238,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function md5_salt($word)
+    static function MD5Salt($word)
     {
         // get a two-character hexadecimal salt from 10 to ff
         $salt = dechex(rand(16, 255));
@@ -290,7 +258,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    static function md5_unsalt($word, $hash)
+    static function MD5Unsalt($word, $hash)
     {
         // get the first two characters of the hash
         $salt = substr($hash, 0, 2);
@@ -315,13 +283,13 @@ class User extends UserPermissions
         $password = '';
 
         // define possible characters
-        $possible = '0123456789bcdfghjkmnpqrstvwxyz'; 
+        $possible = '0123456789bcdfghjkmnpqrstvwxyz';
 
         // length of possible characters minus one
         $possible_cnt = 29; //strlen($possible) - 1;
 
         // add random characters to $password until $length is reached
-        for ($i = 0; $i < $length; $i++) { 
+        for ($i = 0; $i < $length; $i++) {
             $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
         }
 
@@ -373,7 +341,8 @@ class User extends UserPermissions
         // compare password to values
         foreach ($values as $key => $value) {
             $function = create_function(
-                '$a, $b', 'return $a ' . $operators[$key] . ' $b;'
+                '$a, $b',
+                'return $a ' . $operators[$key] . ' $b;'
             );
             // if the comparison fails
             if (!$function($password, $value)) {
@@ -387,9 +356,7 @@ class User extends UserPermissions
      * Check if user belongs to DCC
      *
      * @return boolean
-     * @access public
      */
-
     function isUserDCC()
     {
         //DCC site = 1 by LORIS convention
@@ -397,38 +364,54 @@ class User extends UserPermissions
     }
 
 
+    /**
+     * Updates the CouchDB user for this user to synchronize
+     * the password with Loris.
+     *
+     * @param string $password Plaintext password to synchronize
+     *
+     * @return none
+     */
     function updateCouchUser($password)
     {
         $factory = NDB_Factory::singleton();
-        $cdb = $factory->CouchDB();
-        $config = $factory->Config();
-
+        $cdb     = $factory->CouchDB();
+        $config  = $factory->Config();
 
         $c_config = $config->getSetting('CouchDB');
-        if($c_config['SyncAccounts'] !== 'true') {
+        if ($c_config['SyncAccounts'] !== 'true') {
             return false;
         }
         $username = $this->getUsername();
-        $auth = array('Authorization' => 'Basic ' 
-            . base64_encode($c_config['admin'] . ':' . $c_config['adminpass'])
+        $authkey  = base64_encode(
+            $c_config['admin']
+            . ':'
+            . $c_config['adminpass']
         );
-        $userjson = $cdb->_getURL("/_users/org.couchdb.user:" . $username, 'GET', $auth);
-        $userobj = json_decode($userjson, true);
 
-        if(isset($userobj['error']) && $userobj['error'] == 'not_found') {
-            $userobj = array('_id' => 'org.couchdb.user:' . $username,
-                'type' => 'user',
-                'name' => $username,
-                'roles' => array('dqg', $c_config['database'])
-            );
+        $auth     = array('Authorization' => 'Basic ' . $authkey);
+        $userjson = $cdb->_getURL(
+            "/_users/org.couchdb.user:" . $username,
+            'GET',
+            $auth
+        );
+
+        if (isset($userobj['error']) && $userobj['error'] == 'not_found') {
+            $userobj = array(
+                        '_id'   => 'org.couchdb.user:' . $username,
+                        'type'  => 'user',
+                        'name'  => $username,
+                        'roles' => array(
+                                    'dqg',
+                                    $c_config['database'],
+                                   )
+                       );
         }
         $userobj['password'] = $password;
 
-
         $response = $cdb->_postURL(
             "PUT /_users/org.couchdb.user:" . $username,
-            json_encode($userobj),
-            $auth
+            json_encode($userobj)
         );
     }
 }

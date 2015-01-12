@@ -73,8 +73,10 @@
 
 
     }, wrapTable = function (table) {
+        $(table).wrap("<div class=\"row\"></div>");
+        
         // Add wrapper code necessary for bootstrap carousel
-        $(table).wrap("<div class=\"carousel slide\" data-ride=\"carousel\"></div>");
+        $(table).wrap("<div class=\"carousel slide col-xs-12\"></div>");
 
         // Add wrapper necessary for dynamictable code
         $(table).wrap("<div class=\"dynamicContentWrapper table-scroll\" style=\"overflow-x: auto\"></div>");

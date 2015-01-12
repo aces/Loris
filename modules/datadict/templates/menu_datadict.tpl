@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <div class="row">
 <div class="col-sm-10 col-md-10">
@@ -59,8 +59,7 @@
 
 <br>
 <!-- start data table -->
-<div class="table-responsive">
-    <table  class="table table-hover table-primary table-bordered" border="0" width="100%">
+    <table  class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
         <thead>
             <tr class="info">
              <th>No.</th>
@@ -103,5 +102,3 @@
                         
     <!-- end data table -->
     </table>
-</div>
-

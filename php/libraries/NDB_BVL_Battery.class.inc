@@ -40,17 +40,8 @@ class NDB_BVL_Battery extends PEAR
     /**
      * Constructor - merely asserts that the environment is suitable
      */
-    function NDB_BVL_Battery()
+    function __construct()
     {
-        // assert that a global Database object exists
-        if (!isset($GLOBALS['DB'])) {
-            return $this->raiseError("No Database object exists in global scope");
-        }
-
-        // assert that the Database object is connected
-        if (!$GLOBALS['DB']->isConnected()) {
-            return $this->raiseError("Database object is not connected");
-        }
     }
 
     /**
@@ -63,9 +54,6 @@ class NDB_BVL_Battery extends PEAR
     function selectBattery($sessionID)
     {
         $timepoint =TimePoint::singleton($sessionID);
-        if (Utility::isErrorX($timepoint)) {
-            return $this->raiseError("Invalid session ID");
-        }
 
         // set the battery
         $this->sessionID = $sessionID;
@@ -138,17 +126,20 @@ class NDB_BVL_Battery extends PEAR
 
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
-        $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
-        if ($this->isError($currentTests)) {
-            return $this->raiseError(
+        try {
+            $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
+        } catch (Exception $e) {
+            throw new Exception(
                 "Could not get the current list of instruments, "
-                . "thus unable to assert that the battery is empty"
+                . "thus unable to assert that the battery is empty",
+                null,
+                $e
             );
         }
 
         // assert that the current battery is empty
         if (count($currentTests) > 0) {
-            return $this->raiseError(
+            throw new Exception(
                 "Battery is not empty - will not clobber an existing battery."
             );
         }
@@ -163,24 +154,11 @@ class NDB_BVL_Battery extends PEAR
             $firstVisit
         );
 
-        if ($this->isError($neededTests)) {
-            return $this->raiseError(
-                "Could not lookup the battery for age $this->age "
-                ."and subprojectID ".$this->getSubprojectID()
-            );
-        }
-
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
             $success = $this->addInstrument($testName);
 
-            // make sure that the addition succeeded
-            if ($this->isError($success)) {
-                return $this->raiseError(
-                    "Failed to add instrument $testName to battery"
-                );
-            }
         } // end looping over the list of instruments
     } // end createBattery()
 
@@ -211,8 +189,8 @@ class NDB_BVL_Battery extends PEAR
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
         $rows  = $DB->pselect($query, array('SID' => $this->sessionID));
-        if ($this->isError($rows) || count($rows)==0) {
-            return $this->raiseError(
+        if (count($rows)==0) {
+            throw new Exception(
                 "Failed to get SessionID, and UserID when trying to add $testName"
             );
         }
@@ -220,19 +198,9 @@ class NDB_BVL_Battery extends PEAR
 
         // generate a commentID
         $commentID = $this->_createCommentID($testName);
-        if ($this->isError($commentID)) {
-            return $this->raiseError(
-                "Unable to generate a valid CommentID when trying to add $testName"
-            );
-        }
 
         // insert into the test table
         $success = $DB->insert($testName, array('CommentID' => $commentID));
-        if ($this->isError($success)) {
-            return $this->raiseError(
-                "Unable to add storage record to $commentID $testName"
-            );
-        }
 
         // insert into the flag table
         $success = $DB->insert(
@@ -246,22 +214,11 @@ class NDB_BVL_Battery extends PEAR
             )
         );
 
-        if ($this->isError($success)) {
-            return $this->raiseError(
-                "Unable to add storage record to flag: $testName"
-            );
-        }
-
         // generate the double data entry commentid
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
          $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
-        if ($this->isError($success)) {
-            return $this->raiseError(
-                "Unable to add storage record to $ddeCommentID $testName"
-            );
-        }
 
         // insert the dde into the flag table
         $success = $DB->insert(
@@ -275,11 +232,6 @@ class NDB_BVL_Battery extends PEAR
             )
         );
 
-        if ($this->isError($success)) {
-            return $this->raiseError(
-                "Unable to add storage record to flag: $testName"
-            );
-        }
         return $commentID;
 
     } // end addInstrument()
@@ -298,15 +250,9 @@ class NDB_BVL_Battery extends PEAR
     {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-        if ($this->isError($error)) {
-            return $error;
-        }
     }
 
     /**
@@ -327,9 +273,6 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // craft the select query
         $query   = "SELECT f.Test_name FROM flag f JOIN session s
@@ -339,10 +282,6 @@ class NDB_BVL_Battery extends PEAR
                AND f.CommentID NOT LIKE 'DDE%'";
         $qparams = array('SID' => $this->sessionID);
         $rows    = $DB->pselect($query, $qparams);
-
-        if ($this->isError($rows)) {
-            return $this->raiseError("Could not get battery from database");
-        }
 
         // repackage the array
         $tests = array();
@@ -371,9 +310,6 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // craft the select query
         $query   = "SELECT f.Test_name,
@@ -411,9 +347,6 @@ class NDB_BVL_Battery extends PEAR
 
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
-        if ($this->isError($rows)) {
-            return $this->raiseError("Could not get battery from database");
-        }
 
         // return all the data selected
         return $rows;
@@ -549,10 +482,6 @@ class NDB_BVL_Battery extends PEAR
         $tests = array();
         $rows  = $DB->pselect($query, $qparams);
 
-        if ($this->isError($rows)) {
-            return $this->raiseError("Could not lookup battery from database");
-        }
-
         // repackage the array
         foreach ($rows AS $row) {
             $tests[] = $row['Test_name'];
@@ -610,31 +539,15 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // create timepoint object
         $timepoint =& TimePoint::singleton($this->sessionID);
-        if (Utility::isErrorX($timepoint)) {
-            return $this->raiseError(
-                "Could not create timepoint object: ".$timepoint->getMessage()
-            );
-        }
 
         // create candidate object
         $candidate =& Candidate::singleton($timepoint->getCandID());
-        if (Utility::isErrorX($candidate)) {
-            return $this->raiseError(
-                "Could not create candidate object: ".$candidate->getMessage()
-            );
-        }
 
         return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
     }
@@ -686,7 +599,7 @@ class NDB_BVL_Battery extends PEAR
     function _assertBatterySelected()
     {
         if (is_null($this->sessionID)) {
-            return $this->raiseError("No battery selected");
+            throw new Exception("No battery selected");
         }
         return true;
     } // end _assertBatterySelected()
@@ -705,10 +618,6 @@ class NDB_BVL_Battery extends PEAR
         $DB    = Database::singleton();
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
         $row   = $DB->pselectRow($query, array('TN' => $testName));
-
-        if (Utility::isErrorX($row)) {
-            return $this->raiseError("DB Error: ".$row->getMessage());
-        }
 
         return $row['counter'] >= 1;
     } // end _assertValidInstrument()

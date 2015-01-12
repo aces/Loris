@@ -42,7 +42,7 @@ function save() {
                 position: [800, 120],
                 buttons: {
                     Yes: function () {
-                        $.get("AjaxHelper.php?Module=mri_violations&script=UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value, function () {});
+                        $.get("AjaxHelper.php?Module=mri_violations&script=UpdateMRIProtocol.php&field_id=" + id + "&field_value=" + value, function () {});
                         $(this).dialog("close");
                     },
                     close: function () {
@@ -53,6 +53,7 @@ function save() {
             });
     }).keypress(function (e) {
         if (e.which === 13) { // Determine if the user pressed the enter button
+	    e.preventDefault();
             $(this).blur();
         }
     });
@@ -62,18 +63,4 @@ $(function () {
     "use strict";
     change();
     save();
-});
-$(document).ready(function(){
-    $.getScript("js/modules/dynamic_table.table.js")
-        .done(function(){
-            Table.setup("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
-            Table.checkOverflow("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
-            Table.setup("content", "scrollRight", "scrollLeft");
-            Table.checkOverflow("content", "scrollRight", "scrollLeft");
-        });
-});
-$(window).resize(function(){
-    Table.checkOverflow("mri-protocol-content", "protocolScrollRight", "protocolScrollLeft");
-    Table.checkOverflow("content", "scrollRight", "scrollLeft");
-    // checkOverflow();
 });

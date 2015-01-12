@@ -99,11 +99,11 @@ Class Instrument_List_ControlPanel extends TimePoint
         {
 
             // trigger timepoint flags
-            require_once "TimePoint_Flag.class.inc";
             $config =& NDB_Config::singleton();
             $study = $config->getSetting('study');
             $sessionID = $this->getData('SessionID');
             if ($study['timepointFlagCheck_send2dcc'] && $this->getVisitStatus()=='Pass') {
+                require_once __DIR__ . "../../modules/timepoint_flag/php/TimePoint_Flag.class.inc";
                 // object instance
                 $timepointFlagObject =& TimePoint_Flag::singleton($sessionID);
                 // flag types

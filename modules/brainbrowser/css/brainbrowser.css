@@ -1,0 +1,213 @@
+@import url("GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css");
+html {
+    overflow: scroll;
+    overflow: auto;
+    -moz-scrollbars-vertical !important;
+    min-height: 100%; margin-bottom: 1px;
+    overflow-y: scroll 30%  !important;
+}
+
+body {
+   /* background: #e2e2e2 !important;*/
+   background: white;
+
+}
+
+#brainbrowser-wrapper {
+    margin-top: 0px !important;
+    background: white;
+}
+
+#volume-viewer {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+#brainbrowser {
+    display: table;
+    margin: 0 auto;
+}
+
+#threshold-slider0 {
+    position: absolute;
+    left: 68px;
+    top: 918px;
+    width: 230px;
+}
+
+#capture-slices, #sync-volumes {
+    font-size: 12px;
+}
+
+
+.slice-display {
+/*    height: 220px;*/
+}
+
+.volume-container {
+    width: 260px;
+    height: 100%;
+    padding-bottom: 10px;
+    display: inline-table;
+    margin: 0 auto;
+    overflow: hidden;
+    max-height: 1186px;
+}
+
+/*.volume-viewer-controls {
+    height: 320px !important; 
+}
+*/
+.blend-div {
+ /*   padding-top: 40px;*/
+}
+
+#blend-slider {
+}
+
+.control-heading {
+    font-weight: normal !important;
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: black;
+}
+
+.control-inputs {
+    width:60px;
+    margin-right:20px;
+    -moz-border-radius: 3px; 
+    -webkit-border-radius: 3px; 
+    border-radius: 3px; 
+    background: #c1c1c1;
+    text-align: center;
+}
+
+.thresh-input-left {
+    margin-right:270px;
+}
+
+.thresh-input-right, .thresh-input-left, .time-inputs, .blend-inputs{
+    width:30px;
+}
+
+.ui-slider {
+/*    width: 174px; */
+    margin-right: 38px;
+}
+
+#slice-series-heading0 {
+    display: none;
+}
+
+.slice-series-button {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#slice-series-buttons0 {
+    overflow: hidden;
+    position: absolute;
+    top: 10px;
+    left: 130px;
+}
+
+#time-val {
+    width: 30px;
+}
+
+#threshold-time-slider0 {
+    position: absolute;
+    left: 85px;
+    top: 120px;
+    top: 968px;
+    width: 210px;
+}
+
+#global-controls {
+    padding: 5px;
+    position: fixed;
+/*    background: #555555; */
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    display: block;
+    width: 320px;
+    top: 160px;
+    left: 30px;
+}
+
+#app-name {
+    border:0;
+    background: #064785;
+    z-index: 999
+    display: block;
+}
+
+.app-label {
+    position: inherit;
+    text-align: center;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1px;
+    margin-bottom: 25px;
+}
+
+.filename {
+    font-weight: bold;
+    color: #064785;
+    font-size: 14px;
+    margin-top: 0.5em;
+    padding-right: 15px;
+}
+
+.intensity-value {
+    padding: 1px;
+    float: right;
+    text-align: center;
+}
+#color-map-select {
+    float: right;
+    margin-right: 20px;
+    width: 30%;
+    height: 28%;
+}
+.line-separator {
+    height:1px;
+    background:#717171;
+ /*   border-bottom:1px solid #ddd;*/
+   border-bottom:1px solid #e5e5e5;
+    margin-top: 0.7em;
+    margin-bottom: 0.5em;
+}
+.filename-additional-info {
+    display: none;
+}
+.filename-overlay-additional-info {
+    display: none;
+}
+.arrow {
+  padding: 1px;
+  float: right;
+  position: relative;
+  top: -28px;
+
+}
+
+.filename-overlay {
+    font-weight: bold;
+    color: #064785;
+    font-size: 14px;
+    margin-top: 0.7em;
+}
+.play-btn {
+   float: right;
+   font-size: 11px;
+}
+.panel-size {
+  color: #fff;
+  background-color: #064785;
+  border-color: #053a6d;
+  margin-top: 10px;
+  font-weight: bold;
+}

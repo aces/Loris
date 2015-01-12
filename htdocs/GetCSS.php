@@ -27,7 +27,7 @@ set_include_path(
     __DIR__ . "/../project/libraries:" .
     __DIR__ . "/../php/libraries"
 );
-
+require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
@@ -48,7 +48,11 @@ if (empty($basePath)) {
 
 // Now get the file and do file validation
 $Module = $_GET['Module'];
-$File = $Module . ".css";
+if (empty($_REQUEST['file'])) {
+    $File = $Module . ".css";
+} else {
+    $File = $_REQUEST['file'];
+}
 
 // File validation
 if (strpos($File, ".css") === false) {

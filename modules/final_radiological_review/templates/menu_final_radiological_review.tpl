@@ -78,6 +78,7 @@
                         <label class="col-sm-12 col-md-8">{$form.Finalized.label}</label>
                         <div class="col-sm-12 col-md-4">{$form.Finalized.html}</div>
                     </div>
+                    <div class="form-group col-sm-4"></div>
                     <div class="form-group col-md-4 col-sm-6">
                         <div class="col-sm-6 col-xs-12">
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
@@ -114,8 +115,8 @@
 
 
 <!-- start data table -->
-<div id="datatable" class="table-responsive">
-    <table border="0" class="table table-hover table-primary table-bordered">
+<div id="datatable">
+    <table border="0" class="table table-hover table-primary table-bordered dynamictable">
         <thead>
             <tr class="info">
                 <th>No.</th>
@@ -140,7 +141,7 @@
                 {/section}
                 </tr>           
             {sectionelse}
-                <tr><td colspan="8">Nothing found</td></tr>
+                <tr><td colspan="14">Nothing found</td></tr>
             {/section}
         </tbody>        
     <!-- end data table -->

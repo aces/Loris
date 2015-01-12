@@ -1,0 +1,169 @@
+/*
+* BrainBrowser: Web-based Neurological Visualization Tools
+* (https://brainbrowser.cbrain.mcgill.ca)
+*
+* Copyright (C) 2011 
+* The Royal Institution for the Advancement of Learning
+* McGill University
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as
+* published by the Free Software Foundation, either version 3 of the
+* License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*
+* Author: Tarek Sherif <tsherif@gmail.com> (http://tareksherif.ca/)
+* Author: Nicolas Kassis
+*/
+
+body {
+  background-color: #000000;
+}
+
+#brainbrowser-wrapper {
+  width: 100em;
+  margin: 50px auto;
+}
+
+#volume-viewer {
+  display: inline-block;
+  background-color: #FFFFFF;
+  padding: 0.5em;
+  border-radius: 10px;
+}
+
+
+.volume-container {
+  display: block;
+  margin: 0 auto;
+}
+
+canvas.slice-display {
+/*  display: block;*/
+  margin: 3px 5px;
+}
+
+.volume-viewer-controls {
+  font-size: 12px;
+  padding: 10px;
+  margin: 3px 5px;
+  background: white;
+  border: 1px solid #ccc;
+}
+
+.volume-viewer-controls > div {
+  margin-bottom: 10px;
+}
+
+.volume-controls {
+ /* width: 235px;
+  height: 100%;*/
+  height: auto;
+  max-height: 480px;
+}
+
+#global-controls {
+  -moz-border-radius: 10px 10px 0 0;
+  -webkit-border-radius: 10px 10px 0 0;
+  border-radius: 10px 10px 0 0;
+  padding-bottom: 0;
+}
+
+#global-controls .instructions {
+  padding: 10px 0 5px 0;
+}
+
+.control-heading {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.control-heading:not(:first-child) {
+  margin-top: 12px;
+}
+
+.control-inputs {
+  border: none;
+  padding: 2px;
+  margin-left: 10px;
+  width: 2em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.coords .control-inputs {
+  margin-right: 0.6em;
+  width: 40px;
+  font-size: 12px;
+}
+
+.volume-viewer-threshold, .volume-viewer-blend {
+  width: 80%;
+  margin: auto;
+}
+
+.ui-slider .ui-slider-handle .ui-state-default .ui-corner-all {
+  color: #777777 !important;
+  font-size: 10px;
+  padding: 3px;
+  text-shadow: 0 1px 0 #FFFFFF;
+  text-decoration:none;
+}
+
+.slider {
+  margin-top: 1.5em!important;
+  margin-bottom: 1em!important;
+}
+
+.thresh-inputs {
+  position: relative;
+  height: 1em;
+}
+
+.thresh-input-left {
+  position: absolute;
+  left: 3px;
+}
+
+.thresh-input-right {
+  position: absolute;
+  right: 10px;
+}
+
+.slice-series-button {
+  font-size: 11px;
+}
+
+#volume-file {
+  margin-top: 12px;
+  margin-bottom: 10px;
+  display: none;
+}
+
+#volume-file-submit {
+  margin-top: 6px;
+}
+
+#volume-file-hint {
+  margin: 4px;
+}
+
+#volume-file-hint a {
+  color: orange;
+}
+.clickable {
+  cursor: pointer;
+}

@@ -18,7 +18,9 @@
         <li><a href="main.php?test_name=radiology_review&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.RadiologyReviewCommentID}">Radiology Review</a></li>
         {foreach from=$subject.tarchiveids item=tarchive}
         <li><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive(s) {$tarchive.TarchiveID}</a></li>{/foreach}
-        <li><a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a></li>
+        {if $mantis}
+            <li><a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a></li>
+        {/if}
     </ul>
 
     <h3>Visit Controls</h3>
@@ -33,7 +35,7 @@
         <dt>QC Status</dt>
        	<dt class='dt-qc-status'>{if $subject.has_permission}{html_options options=$subject.status_options selected=$subject.mriqcstatus name=visit_status tabindex=1 class="form-control input-sm" style="width:100px"}{else}{$subject.mriqcstatus}{/if}</dt>
        	<dt>QC Pending</dt>
-       	<dt>{if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2 class="form-control input-sm" style="width:100px"}{else}{if $subject.mriqcpending=='Y'}<img src='images/check_blue.gif' class='img-pending' />{else}&ndbp;{/if}{/if}</dt>
+       	<dt>{if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2 class="form-control input-sm" style="width:100px"}{else}{if $subject.mriqcpending=='Y'}Yes{else}No{/if}{/if}</dt>
     </dl>
     {if $subject.has_permission}<input class="button" type="submit" accesskey="s" value="Save" name="save_changes">{/if}
 </div>

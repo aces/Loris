@@ -93,12 +93,12 @@
                         {section name=piece loop=$items[item]}
                         {if $items[item][piece]}
                             {if $items[item][piece].value eq 'Could not identify scan type'}
-                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}"> 
-                                    <a href="main.php?test_name=mri_violations&submenu=mri_protocol_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
+                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                    <a href="#" class="mri_violations" id="mri_protocol_violations" data-PatientName="{$items[item].PatientName}" "{if $series}"data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
                                 </td>
                             {elseif $items[item][piece].value eq 'Protocol Violation'}
                             <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                <a href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&PatientName={$items[item].PatientName}{if $series}&SeriesUID={$series}{/if}&filter=true">{$items[item][piece].value}</a>
+                                <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $series}" data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
                             </td>
                             {else}
                                 <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">

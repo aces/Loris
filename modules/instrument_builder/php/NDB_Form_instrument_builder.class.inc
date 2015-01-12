@@ -8,8 +8,7 @@ class NDB_Form_instrument_builder extends NDB_Form
 
     function _hasAccess() 
     {
-        return true;
-        //$this->_has_perm('superuser');
+        return $this->_has_perm('instrument_builder');
     }
     // Wrapper to get the user object and check the permission.
     function _has_perm($perm)

@@ -43,7 +43,7 @@ if (!empty($_REQUEST['helpID'])) {
 }
 $help_file       = HelpFile::factory($helpID);
 $data            = $help_file->toArray();
-$data['content'] = trim($data['content']);
+$data['content'] = utf8_encode(trim($data['content']));
 if (empty($data['content'])) {
     $data['content'] = 'Under Construction';
 }

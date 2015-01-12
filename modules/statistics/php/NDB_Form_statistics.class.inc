@@ -73,6 +73,13 @@ class NDB_Form_statistics extends NDB_Form
         if (Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
+
+        $this->tpl_data['StatsTabs'] = $DB->pselect(
+            "SELECT ModuleName, SubModuleName, Description
+                 FROM StatisticsTabs
+                 ORDER BY OrderNo",
+            array()
+        );
     }
 
     function stats_general()
@@ -544,32 +551,6 @@ class NDB_Form_statistics extends NDB_Form
          }
          $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
     }
-
-    function stats_scatter()
-    {
-        $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
-        if(Utility::isErrorX($centers)) {
-            return PEAR::raiseError("DB Error: ".$centers->getMessage());
-        }
-        $this->tpl_data['Centers'] = $centers;
-        $this->tpl_data['Sites'] = array('' => 'All Sites');
-        foreach ($centers as $row) {
-            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['site'] == $row['NumericID']) {
-                $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
-            }
-        }
-        $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
-        $Visits = Utility::getExistingVisitLabels();
-        $this->tpl_data['Visits'] = $Visits;
-
-        $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
- }
-
 
     function stats_demographic()
     {
