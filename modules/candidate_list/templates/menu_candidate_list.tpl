@@ -9,7 +9,24 @@
 {literal}
 <script type="text/javascript">
     $(document).ready(function(){
+<<<<<<< HEAD
         $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
+=======
+        var colm_static = false;
+        $(".table-scroll").scroll(function(){
+            if(colm_static === true){
+                if($(".colm-site").offset().left >= 30){
+                    console.log("JHSFJFS");
+                    $(".colm-pscid").removeClass("static-col colm-static");
+                    colm_static = false;
+                }
+            } else if($(".colm-pscid").offset().left <= 35){
+                $(".colm-pscid").addClass("static-col colm-static");
+                colm_static = true;
+            }
+        });
+        $(".colm-freeze").ColmFreeze(4);
+>>>>>>> minor styling fixes and code cleanup
     });
 </script>
 {/literal}
