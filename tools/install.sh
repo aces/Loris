@@ -163,6 +163,9 @@ mkdir -p ../project ../project/libraries ../project/instruments ../project/templ
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
 
+# Changing group to www-data to give permission to create directories in Document Repository module
+sudo chown www-data.www-data ../modules/document_repository/user_uploads
+
 # Set the proper permission for the tools/logs directory:
 if [ -d logs ]; then
         chmod 770 logs
