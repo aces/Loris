@@ -91,7 +91,6 @@
 
         if(colm_static === true){
             if(nextColPos >= statColPos + statColWid){
-                console.log("JHSFJFS");
                 $("." + tableID).removeClass("static-col colm-static");
                 return false;
             }
@@ -125,7 +124,6 @@
                 var id = $(this).attr('id'),
                     colm_static = false;
                 $(this).find("tr").each(function (key, value) {
-                    console.log(key);
                     if(key == 0){
                         var child2 = $(value).children().get(colmNumber);
                         $(child2).attr('class', id + 'Next');
