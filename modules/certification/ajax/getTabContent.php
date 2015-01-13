@@ -25,26 +25,22 @@ $DB = Database::singleton();
 
 // Get the ID for the instrument that was selected
 $instrumentID = $_REQUEST['instrument'];
+$tabID = $_REQUEST['tabNumber'];
 
 // Check the tabs and their titles
-$tabs = $DB->pselect(
-    "SELECT Title, TrainingType, OrderNumber FROM certification_training WHERE TestID=:TID ORDER BY OrderNumber",
-    array('TID' => $instrumentID)
+$tabInformation = $DB->pselect(
+    "SELECT Content, TrainingType FROM certification_training WHERE TestID=:TID AND OrderNumber=:TNO",
+    array('TID' => $instrumentID, 'TNO' => $tabID)
 );
 
-// Add tab html
-$tabhtml = '<ul class="nav nav-tabs" id="trainingTabs">';
-foreach ($tabs as $tab) {
-    $tabhtml = $tabhtml . '<li class="disabled" id="' . $tab['OrderNumber'] . '"><a href="#' . str_replace(' ', '', $tab['Title']) . '">' . $tab['Title'] . '</a></li>';
-}
-$tabhtml = $tabhtml . '</ul>';
+$tabContent = $tabInformation[0]['Content'];
 
-// Add tab body html
-$tabhtml = $tabhtml . '<div>';
-foreach ($tabs as $tab) {
-    $tabhtml = $tabhtml . '<div class="tab-pane ' . 'training-' . $tab['TrainingType'] . '" id="' . str_replace(' ', '', $tab['Title']) . '"></div>';
+if ($tabInformation[0]['TrainingType'] == 'text') {
+    $tabContent = $tabContent . '<div>I have completed reading this section of the training module. <button class="btn btn-default btn-xs btn-agree" type="button">Agree</button></div>';
 }
-$tabhtml = $tabhtml . '</div>';
+else if ($tabInformation[0]['TrainingType'] == 'video') {
+    $tabContent = $tabContent . '<div>I have completed watching this section of the training module. <button class="btn btn-default btn-xs btn-agree" type="button">Agree</button></div>';
+}
 
-print $tabhtml;
+print $tabContent;
 ?>

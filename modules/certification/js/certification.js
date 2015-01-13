@@ -20,7 +20,7 @@ $(document).ready(function() {
 
                     $(select).parent().parent().parent().after(uncertifiedHTML);
                     loadTabs(instrument);
-                    //loadTab(1);
+                    loadTabContent(instrument, 1);
                 }
                 else if (data == 1) {
                     var inProgressHTML = '<div class="alert alert-warning alert-certification" role="alert">' 
@@ -41,24 +41,47 @@ $(document).ready(function() {
             });
         }
         else {
-            // cleanup tabs
+            $('#tabs').html("");
         }
-
-        
     });
 
-    // on click of next tab button, load next tab
+    /*$('body').on('click','.nav-tabs', function (e) {
+        e.preventDefault();
+        var tabID = $(this).attr('id');
+        $(tabID).tab('show');
+    });*/
+
+    $('body').on('click','.btn-agree', function (e) {
+        var instrument = $("option:selected", "select[name='certification_instruments']").val();
+        tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
+        loadTabContent(instrument, tabNumber);
+        $(this).prop('disabled', true);
+    });
 
     // on click of quiz completion, mark quiz, update certification status, clear tabs?
 });
 
+/* Load all the tab headers (no content) */
 function loadTabs(instrument) {
-    $.post("AjaxHelper.php?Module=certification&script=getTabs.php", {instrument: instrument}, function(data) {
-        console.log(data);
-        $('#tabs').html(data);
-    });
+    $('#tabs').load("AjaxHelper.php?Module=certification&script=getTabs.php", {instrument: instrument});
 }
 
-function loadTabContent() {
-
+/* Load the content of one tab, enable the tab header to be clicked, open tab*/
+function loadTabContent(instrument, tabNumber) {
+    var tabID = '#' + tabNumber;
+    /*var href = $("a:first-child", tabID).attr("href");
+    console.log(href);
+    $(href).load("AjaxHelper.php?Module=certification&script=getTabContent.php", {instrument: instrument, tabNumber: tabNumber}, function() {
+        $('#trainingTabs').tab();
+        $(tabID).removeClass('disabled');
+        $(tabID).tab('show');
+    });*/
+    
+    $.post("AjaxHelper.php?Module=certification&script=getTabContent.php", {instrument: instrument, tabNumber: tabNumber}, function(data) {
+        var href = $(tabID).children().attr('href');
+        $(href).html(data);
+        $('#trainingTabs').tab();
+        $(tabID).removeClass('disabled');
+        $(tabID).tab('show');
+    });
 }
