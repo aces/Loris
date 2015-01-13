@@ -395,7 +395,7 @@ class User extends UserPermissions
             'GET',
             $auth
         );
-        $userobj = json_decode($userjson, true);
+        $userobj  = json_decode($userjson, true);
         if (isset($userobj['error']) && $userobj['error'] == 'not_found') {
             $userobj = array(
                         '_id'   => 'org.couchdb.user:' . $username,
