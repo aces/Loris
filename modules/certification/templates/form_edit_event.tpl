@@ -16,5 +16,7 @@
     </div>
 </div>
 
+<div id="instructions"></div>
+
 <div id="tabs">
 </div>

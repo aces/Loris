@@ -18,7 +18,7 @@ $(document).ready(function() {
                                           + instrumentName 
                                           + '</div>';
 
-                    $(select).parent().parent().parent().after(uncertifiedHTML);
+                    $('#instructions').html(uncertifiedHTML);
                     loadTabs(instrument);
                     loadTabContent(instrument, 1);
                 }
@@ -28,7 +28,7 @@ $(document).ready(function() {
                                          + instrumentName 
                                          + '</div>';
 
-                    $(select).parent().parent().parent().after(inProgressHTML);
+                    $('#instructions').html(inProgressHTML);
                 }
                 else {
                     var certifiedHTML = '<div class="alert alert-danger alert-certification" role="alert">' 
@@ -36,7 +36,7 @@ $(document).ready(function() {
                                         + instrumentName 
                                         + '</div>';
 
-                    $(select).parent().parent().parent().after(certifiedHTML);
+                    $('#instructions').html(certifiedHTML);
                 }
             });
         }

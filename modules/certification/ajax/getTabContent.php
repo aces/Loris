@@ -36,10 +36,10 @@ $tabInformation = $DB->pselect(
 $tabContent = $tabInformation[0]['Content'];
 
 if ($tabInformation[0]['TrainingType'] == 'text') {
-    $tabContent = $tabContent . '<div>I have completed reading this section of the training module. <button class="btn btn-default btn-xs btn-agree" type="button">Agree</button></div>';
+    $tabContent = '<div class="training-instructions"><p>Please read the following:</p></div>' . '<div class="training-content">' . $tabContent . '</div>' . '<div class="well well-sm training-complete">I have completed reading this section of the training module. <button class="btn btn-default btn-agree" type="button">Agree</button></div>';
 }
 else if ($tabInformation[0]['TrainingType'] == 'video') {
-    $tabContent = $tabContent . '<div>I have completed watching this section of the training module. <button class="btn btn-default btn-xs btn-agree" type="button">Agree</button></div>';
+    $tabContent = '<div class="training-instructions"><p>Please watch the following:</p></div>' . '<div class="training-content">' . $tabContent . '</div>' . '<div class="well well-sm training-complete">I have completed watching this section of the training module. <button class="btn btn-default btn-agree" type="button">Agree</button></div>';
 }
 
 print $tabContent;
