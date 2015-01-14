@@ -37,7 +37,8 @@ Subsequence versions of this API should specify a more flexible authentication m
 # 2.0 Project API
 
 The Project API lives under the /projects part of the API URL hierarchy. It is used to get
-project specific settings or data.
+project specific settings or data. PUT and PATCH are not supported for the part of the API
+living under /projects unless otherwise noted.
 
 ```
 GET /projects
@@ -51,6 +52,8 @@ request. The JSON returned is of the form:
     "Projects" : ["ProjectName1", "ProjectName2", ...]
 }
 ```
+
+If the Loris instance does not use projects, it will consist of a single project called "loris"
 
 ```
 GET /projects/$ProjectName
@@ -69,6 +72,8 @@ request will be an entity of the form
     "Candidates" : ["123543", "523234", ....]
 }
 ```
+
+It consists of a union of the $ProjectName/instruments/, $ProjectName/visits/, and $ProjectName/candidates/ URLs listed below.
 
 ```
 GET /projects/$ProjectName/instruments/
@@ -104,7 +109,22 @@ Will return a JSON object of the form
 
 Where V1, V2, ... are the visits that may exist for this project
 
+```
+GET /projects/$ProjectName/candidates/
+```
 
+will return a JSON object of the form
+
+```json
+{
+    "Meta" : {
+        "Project" : "ProjectName"
+    },
+    "Candidates" : ["123456", "342332", ... ],
+}
+```
+
+where 123456, 342332, etc are the candidates that exist for this project.
 
 ## 2.1 Instrument Forms
 
@@ -142,6 +162,9 @@ containing ALL CandIDs present in this Loris instance.
 
 PUT / POST / PATCH methods are not supported on /candidate in this
 version of the Loris API.
+
+Future versions will likely include support for POSTing to this URL
+to create a new candidate
 
 # 3.1 Specific Candidate
 
@@ -191,7 +214,10 @@ The JSON object is of the form:
 }
 ```
 
-PUT and PATCH are not supported for Visit Labels.
+A PUT request of the same format will create the VisitLabel for this candidate,
+in an unstarted stage if the Visit label provided is valid.
+
+PATCH is not supported for Visit Labels.
 
 ### 3.3 Candidate Instruments
 ```
@@ -266,6 +292,8 @@ rules apply. However, PATCH and PUT requests MUST include the "Meta" attribute a
 fields in it MUST be specified and match the values in the URL, otherwise a "400 Bad request"
 error is returned and no data is modified. Like instruments, the [/dde] component is optional
 and used to differentiate single data entry and double data entry flags.
+
+The "Validity" flag may be missing, if the ValidityEnabled flag is not true for this instrument.
 
 The format of the JSON object for these URLS is:
 
