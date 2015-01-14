@@ -91,10 +91,17 @@
 
         if(colm_static === true){
             if(nextColPos >= statColPos + statColWid){
+                $("." + tableID).each(function(key, value){
+                    $(value).css("height", "");
+                });
                 $("." + tableID).removeClass("static-col colm-static");
                 return false;
             }
         } else if(statColPos <= leftScrollWid + leftScrollPos){
+            $("." + tableID).each(function(key, value){
+                var height = $(value).next().outerHeight();
+                $(value).outerHeight(height);
+            });
             $("." + tableID).addClass("static-col colm-static");
             return true;
         }
@@ -104,10 +111,10 @@
     $.fn.DynamicTable = function (colmNumber) {
         colmNumber = colmNumber || -1;
         this.filter("table").each(function () {
-            var leftLink, 
-                rightLink, 
+            var leftLink,
+                rightLink,
                 table = this;
-            // set up table for scrollable side bars 
+            // set up table for scrollable side bars
             wrapTable(this);
             // Get references to links to pass to Setup and checkOverflow
             leftLink = this.nextSibling;
@@ -131,8 +138,6 @@
                     var child1 = $(value).children().get(colmNumber - 1),
                         height = $(child1).next().outerHeight();
                     $(child1).attr('class', id);
-                    $(child1).outerHeight(height);
-
                 });
                 $(this).parent().scroll(function(){
                     colm_static = freezeColm(id, colm_static);
