@@ -1,43 +1,33 @@
 <?php
-//Load config file and ensure paths are correct
-set_include_path(
-    get_include_path() . ":" .
-    __DIR__ . "../../../../php/libraries"
-);
+set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 
-header("Access-Control-Allow-Origin: *");
-// Ensures the user is logged in, and parses the config file.
-require_once "NDB_Client.class.inc";
-require_once 'Database.class.inc';
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../../../../project/config.xml");
+require_once 'Visit.php';
 
-$candID = $_REQUEST['CandID'];
-$Visit  = $_REQUEST['VisitLabel'];
+class CandidateInstrumentsJSON extends VisitJSON {
+    public function __construct($CandID, $Visit) {
+        // Parent will validate CandID and Visit Label and abort if necessary
+        parent::__construct($CandID, $Visit);
 
-$cand = Candidate::singleton($candID);
-$Visits = array_values($cand->getListOfVisitLabels());
+        $Insts = $this->DB->pselect(
+            "SELECT Test_name FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE s.CandID=:CID AND s.Active='Y' AND s.Visit_label=:VL",
+            array('CID' => $CandID, 'VL' => $Visit)
+        );
 
+        $Instruments = array_column($Insts, 'Test_name');
 
-if(in_array($Visit, $Visits)) {
-    $VL = $Visit;
-} else {
-    throw new Exception("Invalid visit");
+        $this->JSON = [
+            "Meta"   => [
+                "CandID" => $CandID,
+                'Visit'  => $Visit
+            ],
+            'Instruments' => $Instruments
+        ];
+    }
 }
 
-$Insts = $DB->pselect(
-    "SELECT Test_name FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE s.CandID=:CID AND s.Active='Y' AND s.Visit_label=:VL",
-    array('CID' => $candID, 'VL' => $VL)
-);
-$Instruments = array_column($Insts, 'Test_name');
-$retVal = [
-    "Meta"   => [
-        "CandID" => $candID,
-        'Visit'  => $VL
-    ],
-    'Instruments' => $Instruments
-];
+if(!isset($_REQUEST['NoInstruments'])) {
+    $obj = new CandidateInstrumentsJSON($_REQUEST['CandID'], $_REQUEST['VisitLabel']);
+    print $obj->toJSONString();
+}
 
-print json_encode($retVal);
 ?>

@@ -1,26 +1,39 @@
 <?php
-//Load config file and ensure paths are correct
-set_include_path(
-    get_include_path() . ":" .
-    __DIR__ . "../../../../php/libraries"
-);
+set_include_path(get_include_path() . ":" . __DIR__ . "/../");
+require_once 'APIBase.php';
 
-header("Access-Control-Allow-Origin: *");
-// Ensures the user is logged in, and parses the config file.
-require_once "NDB_Client.class.inc";
-require_once 'Database.class.inc';
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../../../../project/config.xml");
+class CandidateJSON extends APIBase {
+    var $Candidate;
+    public function __construct($CandID) {
+        parent::__construct();
 
-$candID = $_REQUEST['CandID'];
+        if(!is_numeric($CandID)
+            || $CandID < 100000
+            || $CandID > 999999
+        ) {
+            header("HTTP/1.1 400 Bad Request");
+            print json_encode(["error" => "Invalid CandID format"]);
+            exit(0);
 
-$cand = Candidate::singleton($candID);
+        }
 
-$retVal = [
-    "Meta"   => [ "CandID" => $candID ],
-    "Visits" => array_values($cand->getListOfVisitLabels())
-];
+        try {
+            $this->Candidate = Candidate::singleton($CandID);
+        } catch(Exception $e) {
+            header("HTTP/1.1 404 Not Found");
+            print json_encode(["error" => "Unknown CandID"]);
+            exit(0);
+        }
 
-print json_encode($retVal);
+        $this->JSON = [
+            "Meta"   => [ "CandID" => $CandID ],
+            "Visits" => array_values($this->Candidate->getListOfVisitLabels())
+        ];
+    }
+}
+
+if(!isset($_REQUEST['NoCandidate'])) {
+    $obj = new CandidateJSON($_REQUEST['CandID']);
+    print $obj->toJSONString();
+}
 ?>

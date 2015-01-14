@@ -187,6 +187,9 @@ class NDB_BVL_Instrument extends NDB_Page
                 $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
             }
         } else {
+            if($guarantee_exists === true && !file_exists($base."project/instruments/$class.class.inc")) {
+                throw new Exception("Instrument does not exist");
+            }
             include_once $base."project/instruments/$class.class.inc";
             $obj = new $class;
             // Now go ahead and instantiate it
