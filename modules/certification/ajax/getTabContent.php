@@ -39,7 +39,7 @@ if ($tabInformation[0]['TrainingType'] == 'text') {
     $tabContent = '<div class="panel panel-default training-instructions"><div class="panel-body">Please read the following:</div></div>' . '<div class="training-content"><h3>' . $tabInformation[0]['Title'] . '</h3>' . $tabContent . '</div>' . '<div class="well well-sm training-complete"><button class="btn btn-default btn-agree btn-success" type="button">Agree</button> I have completed reading this section of the training module.</div>';
 }
 else if ($tabInformation[0]['TrainingType'] == 'video') {
-    $tabContent = '<div class="training-instructions"><p>Please watch the following:</p></div>' . '<div class="training-content"><h3>' . $tabInformation[0]['Title'] . '</h3>' . $tabContent . '</div>' . '<div class="well well-sm training-complete"><button class="btn btn-default btn-agree btn-success" type="button">Agree</button> I have completed watching this section of the training module.</div>';
+    $tabContent = '<div class="panel panel-default training-instructions"><div class="panel-body">Please watch the following:</div></div>' . '<div class="training-content"><h3>' . $tabInformation[0]['Title'] . '</h3>' . $tabContent . '</div>' . '<div class="well well-sm training-complete"><button class="btn btn-default btn-agree btn-success" type="button">Agree</button> I have completed watching this section of the training module.</div>';
 }
 
 print $tabContent;
