@@ -2,13 +2,22 @@ RewriteEngine on
 Header set Access-Control-Allow-Origin "*"
 Header set Access-Control-Allow-Headers "*"
 
+# Projects API rewrite rules
 RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentJSON.php?Instrument=$2 [END]
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/$ GetProjectInstruments.php?Project=$1 [END]
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/ GetProject.php?Project=$1 [END]
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/visits/$ projects/Project.php?Project=$1&Visits=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/candidates/$ projects/Project.php?Project=$1&Candidates=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/$ projects/Project.php?Project=$1&Instruments=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true [END]
 
-# These are not yet implemented
-RewriteRule ^projects$ projects.php
-RewriteRule ^projects/([a-zA-Z0-9_.]+)$ projects.php?Project=$1
+RewriteRule ^projects$ Projects.php
 
+# Candidates API rewrite rules
 
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1
+RewriteRule ^candidates([/]*)$ Candidates.php [END]
+RewriteRule ^candidates/([0-9]+)$ candidates/Candidate.php?CandID=$1 [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)$ candidates/Visit.php?CandID=$1&VisitLabel=$2 [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2 [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1 [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/flags$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&flags=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde/flags$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&flags=true [END]
