@@ -2,7 +2,6 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
-
     });
 </script>
 {/literal}
