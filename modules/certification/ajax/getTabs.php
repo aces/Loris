@@ -35,12 +35,12 @@ $tabs = $DB->pselect(
 // Add tab html
 $tabhtml = '<ul class="nav nav-tabs" id="trainingTabs">';
 foreach ($tabs as $tab) {
-    $tabhtml = $tabhtml . '<li class="disabled" id="' . $tab['OrderNumber'] . '"><a href="#' . str_replace(' ', '', $tab['Title']) . '">' . $tab['Title'] . '</a></li>';
+    $tabhtml = $tabhtml . '<li class="disabled" id="' . $tab['OrderNumber'] . '"><a role="button" data-toggle="tab" data-target="#' . str_replace(' ', '', $tab['Title']) . '">' . $tab['Title'] . '</a></li>';
 }
 $tabhtml = $tabhtml . '</ul>';
 
 // Add tab body html
-$tabhtml = $tabhtml . '<div>';
+$tabhtml = $tabhtml . '<div class="tab-content container">';
 foreach ($tabs as $tab) {
     $tabhtml = $tabhtml . '<div class="tab-pane ' . 'training-' . $tab['TrainingType'] . '" id="' . str_replace(' ', '', $tab['Title']) . '"></div>';
 }

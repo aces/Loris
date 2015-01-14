@@ -45,12 +45,6 @@ $(document).ready(function() {
         }
     });
 
-    /*$('body').on('click','.nav-tabs', function (e) {
-        e.preventDefault();
-        var tabID = $(this).attr('id');
-        $(tabID).tab('show');
-    });*/
-
     $('body').on('click','.btn-agree', function (e) {
         var instrument = $("option:selected", "select[name='certification_instruments']").val();
         tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
@@ -78,10 +72,12 @@ function loadTabContent(instrument, tabNumber) {
     });*/
     
     $.post("AjaxHelper.php?Module=certification&script=getTabContent.php", {instrument: instrument, tabNumber: tabNumber}, function(data) {
-        var href = $(tabID).children().attr('href');
-        $(href).html(data);
+        var ref = $(tabID).children().attr('data-target');
+        $(ref).html(data);
         $('#trainingTabs').tab();
         $(tabID).removeClass('disabled');
         $(tabID).tab('show');
+        $('.tab-pane').removeClass("active");
+        $(ref).addClass("active");
     });
 }
