@@ -12,24 +12,26 @@
  * @link     https://github.com/aces/Loris
  */
 //Load config file and ensure paths are correct
-set_include_path(
-    get_include_path()
-    . ":"
-    .  __DIR__ . "../../../php/libraries"
-);
+set_include_path(get_include_path() . ":" . __DIR__);
+require_once 'APIBase.php';
 
- header("Access-Control-Allow-Origin: *");
-// Ensures the user is logged in, and parses the config file.
-require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../../../project/config.xml");
+class InstrumentJSON extends APIBase {
+    function __construct($Instrument) {
+        parent::__construct();
+
+        require_once 'NDB_BVL_Instrument.class.inc';
+
+        try {
+            $a = NDB_BVL_Instrument::factory($Instrument, null, null, true);
+            $this->JSON = json_decode($a->toJSON());
+        } catch(Exception $e) {
+            header("HTTP/1.1 404 Not Found");
+        }
+
+    }
+}
 
 
-require_once 'NDB_BVL_Instrument.class.inc';
-$Instrument = $_REQUEST['Instrument'];
-
-$a = NDB_BVL_Instrument::factory($Instrument, null, null);
-
-print $a->toJSON();
+$obj = new InstrumentJSON($_REQUEST['Instrument']);
+print $obj->toJSONString();
 ?>

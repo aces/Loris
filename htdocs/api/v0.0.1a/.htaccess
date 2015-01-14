@@ -9,15 +9,15 @@ RewriteRule ^projects/([a-zA-Z0-9_.]+)/candidates/$ projects/Project.php?Project
 RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/$ projects/Project.php?Project=$1&Instruments=true [END]
 RewriteRule ^projects/([a-zA-Z0-9_.]+)/$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true [END]
 
-RewriteRule ^projects$ Projects.php
+RewriteRule ^projects(/*)$ Projects.php [END]
 
 # Candidates API rewrite rules
 
 RewriteRule ^candidates([/]*)$ Candidates.php [END]
 RewriteRule ^candidates/([0-9]+)$ candidates/Candidate.php?CandID=$1 [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)$ candidates/Visit.php?CandID=$1&VisitLabel=$2 [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2 [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1 [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/flags$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&flags=true [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde/flags$ GetInstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&flags=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)$ candidates/Visit.php?CandID=$1&VisitLabel=$2&NoCandidate=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2&NoCandidate=true&NoVisit=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&NoVisit=true&NoCandidate=true&NoInstruments=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&NoVisit=true&NoCandidate=true&NoInstruments=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&flags=true&NoVisit=true&NoCandidate=true&NoInstruments=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&flags=true&NoVisit=true&NoCandidate=true&NoInstruments=true [END]

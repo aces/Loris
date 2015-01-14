@@ -1,63 +1,74 @@
 <?php
-//Load config file and ensure paths are correct
-set_include_path(
-get_include_path() . ":" .
-__DIR__ . "../../../php/libraries"
-);
+set_include_path(get_include_path() . ":" . __DIR__ . "/..");
+require_once 'APIBase.php';
 
-header("Access-Control-Allow-Origin: *");
-// Ensures the user is logged in, and parses the config file.
-require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../../../../project/config.xml");
-require_once 'Utility.class.inc';
+error_log(get_include_path());
+class ProjectJSON extends APIBase {
+    var $ProjectID;
+    var $ProjectInstruments;
 
-$project = $_REQUEST['Project'];
+    protected function getProjectID($ProjectName) {
+        $config = NDB_Config::singleton();
 
-function getProjectID($projectName) {
-    $config = NDB_Config::singleton();
-
-    $Projects = $config->getSetting("Projects")["project"];
-    foreach($Projects as $project) {
-        if($project['title'] === $projectName) {
-            return $project['id'];
+        $Projects = $config->getSetting("Projects")["project"];
+        foreach($Projects as $project) {
+            if($project['title'] === $ProjectName) {
+                return $project['id'];
+            }
         }
     }
-}
 
-$projID = getProjectID($project);
+    public function __construct($projectName, $bCandidates, $bInstruments, $bVisits) {
+        parent::__construct();
+        require_once 'Utility.class.inc';
 
-// Basic stub
-$returnVal = [
-    "Meta" => [
-        "Project" => $project
-    ]
-];
+        $this->ProjectID = $this->getProjectID($projectName);
 
-$Instruments = Utility::getAllInstruments();
-$InstrumentNames = array_keys($Instruments);
+        if(!is_numeric($this->ProjectID)) {
+            header("HTTP/1.1 404 Not Found");
+            print json_encode(['error' => 'Invalid project']);
+            exit(0);
+        }
 
-$Visits = Utility::getExistingVisitLabels($projID);
-$VisitNames = array_keys($Visits);
+        $JSONArray = [
+            "Meta" => [
+                "Project" => $projectName
+            ]
+        ];
 
+        if($bCandidates) {
+            $rows = $this->DB->pselect("SELECT CandID FROM candidate WHERE ProjectID=:projID", array("projID" => $this->ProjectID));
+            $CandIDs = [];
 
+            foreach($rows as $row) {
+                $CandIDs[] = $row['CandID'];
+            }
 
-$DB = Database::singleton();
-$rows = $DB->pselect("SELECT CandID FROM candidate WHERE ProjectID=:projID", array("projID" => $projID));
-$CandIDs = [];
-if(isset($_REQUEST['Candidates'])) {
-    foreach($rows as $row) {
-        $CandIDs[] = $row['CandID'];
+            $JSONArray['Candidates'] = $CandIDs;
+        }
+
+        if($bInstruments) {
+            $Instruments = Utility::getAllInstruments();
+            $JSONArray['Instruments'] = array_keys($Instruments);
+        }
+
+        if($bVisits) {
+            $Visits = Utility::getExistingVisitLabels($this->ProjectID);
+            $VisitNames = array_keys($Visits);
+
+            $JSONArray['Visits'] = $VisitNames;
+        }
+
+        $this->JSON = $JSONArray;
     }
-    $returnVal['Candidates'] = $CandIDs;
-}
-if(isset($_REQUEST['Instruments'])) {
-    $returnVal['Instruments'] = $InstrumentNames;
-}
-if(isset($_REQUEST['Visits'])) {
-    $returnVal['Visits'] = $VisitNames;
 }
 
-print json_encode($returnVal);
+$Proj = new ProjectJSON(
+    $_REQUEST['Project'],
+    isset($_REQUEST['Candidates'])  ? true : false,
+    isset($_REQUEST['Instruments']) ? true : false,
+    isset($_REQUEST['Visits'])      ? true : false
+);
+
+print $Proj->toJSONString();
 ?>

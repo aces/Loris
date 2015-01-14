@@ -1,36 +1,33 @@
 <?php
-//Load config file and ensure paths are correct
-set_include_path(
-    get_include_path() . ":" .
-    __DIR__ . "../../../../php/libraries"
-);
+set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 
-header("Access-Control-Allow-Origin: *");
-// Ensures the user is logged in, and parses the config file.
-require_once "NDB_Client.class.inc";
-require_once 'Database.class.inc';
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../../../../project/config.xml");
+require_once 'Candidate.php';
 
-$candID = $_REQUEST['CandID'];
-$Visit  = $_REQUEST['VisitLabel'];
+class VisitJSON extends CandidateJSON {
+    public function __construct($CandID, $VisitLabel) {
+        // Parent constructor will handle validation of
+        // CandID
+        parent::__construct($CandID);
 
-$cand = Candidate::singleton($candID);
-$Visits = array_values($cand->getListOfVisitLabels());
+        $Visits = array_values($this->Candidate->getListOfVisitLabels());
 
-if(in_array($Visit, $Visits)) {
-    $VL = $Visit;
-} else {
-    throw new Exception("Invalid visit");
+        if(!in_array($VisitLabel, $Visits)) {
+            header("HTTP/1.1 404 Not Found");
+            print json_encode(["error" => "Invalid visit $VisitLabel"]);
+            exit(0);
+        }
+
+        $this->JSON = [
+            "Meta"   => [
+                "CandID" => $CandID,
+                'Visit'  => $VisitLabel
+            ],
+        ];
+    }
 }
 
-$retVal = [
-    "Meta"   => [
-        "CandID" => $candID,
-        'Visit'  => $VL
-    ],
-];
-
-print json_encode($retVal);
+if(!isset($_REQUEST['NoVisit'])) {
+    $obj = new VisitJSON($_REQUEST['CandID'], $_REQUEST['VisitLabel']);
+    print $obj->toJSONString();
+}
 ?>

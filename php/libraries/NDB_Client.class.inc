@@ -154,5 +154,18 @@ class NDB_Client
         // finished initializing
         return true;
     }
+
+    function isLoggedIn() {
+        return false;
+        if (!isset($_SESSION['State'])) {
+            $_SESSION['State'] =& State::singleton();
+            $login = new SinglePointLogin();
+            $_SESSION['State']->setProperty('login', $login);
+        } else {
+            $login = $_SESSION['State']->getProperty('login');
+        }
+
+        return $login->isLoggedIn();
+    }
 }
 ?>
