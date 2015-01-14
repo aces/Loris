@@ -1,7 +1,3 @@
-<!-- 
-<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
-
-<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script> -->
 <script type="text/javascript" src="js/advancedMenu.js"></script>
 {literal}
 <script type="text/javascript">
@@ -10,7 +6,6 @@
         $(".table-scroll").scroll(function(){
             if(colm_static === true){
                 if($(".colm-site").offset().left >= 30){
-                    console.log("JHSFJFS");
                     $(".colm-pscid").removeClass("static-col colm-static");
                     colm_static = false;
                 }
@@ -19,7 +14,7 @@
                 colm_static = true;
             }
         });
-        $(".colm-freeze").DynamicTable(4);
+        $("#cand").DynamicTable(4);
     });
 </script>
 {/literal}
@@ -194,7 +189,7 @@
         <input type="hidden" name="test_name" value="timepoint_list">
         <div class="form-group">
             <label class="col-sm-5 control-label">
-                DCC-ID:            
+                DCC-ID:
             </label>
             <div class="col-sm-7">
                 <input tabindex="2" size="10" maxlength="12" type=text name="candID" class="form-control">
@@ -203,7 +198,7 @@
         <br>
         <div class="form-group">
             <label class="col-sm-5 control-label">
-                PSC-ID:           
+                PSC-ID:
             </label>
             <div class="col-sm-7">
                 <input tabindex="2" size="10" maxlength="12" type=text name="PSCID" class="form-control">
@@ -255,7 +250,6 @@
                 {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
                     {assign var="PSCID" value=$items[item][piece].value}
                     <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-                        
                 {elseif $items[item][piece].name == "scan_Done"}
                     {if $items[item][piece].value == 'Y'}
                         {assign var="scan_done" value="Yes"}
@@ -269,10 +263,10 @@
                 {/if}
                 </td>
             {/section}
-            </tr>           
+            </tr>
         {sectionelse}
             <tr><td colspan="12">No candidates found</td></tr>
         {/section}
-    </tbody>                   
+    </tbody>
 <!-- end data table -->
 </table>
