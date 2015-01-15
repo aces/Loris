@@ -28,22 +28,21 @@ $instrumentID = $_REQUEST['instrument'];
 $tabID = $_REQUEST['tabNumber'];
 
 // Check the tabs and their titles
-$tabInformation = $DB->pselect(
+$tabInformation = $DB->pselectRow(
     "SELECT Title, Content, TrainingType FROM certification_training WHERE TestID=:TID AND OrderNumber=:TNO",
     array('TID' => $instrumentID, 'TNO' => $tabID)
 );
 
-$tabContent = $tabInformation[0]['Content'];
+$tabContent = $tabInformation['Content'];
 
-if ($tabInformation[0]['TrainingType'] == 'text') {
-    $tabHTML = createTabHTML(0, 'Please read the following:', $tabInformation[0]['Title'], $tabContent, 'Agree', 'I have completed reading this section of the training module.'); 
+if ($tabInformation['TrainingType'] == 'text') {
+    $tabHTML = createTabHTML(0, 'Please read the following:', $tabInformation['Title'], $tabContent, 'Agree', 'I have completed reading this section of the training module.'); 
 }
-else if ($tabInformation[0]['TrainingType'] == 'video') {
-    $tabHTML = createTabHTML(0, 'Please watch the following:', $tabInformation[0]['Title'], $tabContent, 'Agree', 'I have completed watching this section of the training module.'); 
+else if ($tabInformation['TrainingType'] == 'video') {
+    $tabHTML = createTabHTML(0, 'Please watch the following:', $tabInformation['Title'], $tabContent, 'Agree', 'I have completed watching this section of the training module.'); 
 }
-else if ($tabInformation[0]['TrainingType'] == 'quiz') {
-    $tabHTML = createTabHTML(1, 'Please complete the quiz below in order to receive certification:', $tabInformation[0]['Title'], createQuiz($instrumentID), 'Submit', 'Submit your answers to the quiz. If any answers are incorrect, you will be prompted to repeat the certification training.'); 
-    $tabContent = '<div class="panel panel-default training-instructions"><div class="panel-body">Please complete the quiz below in order to receive certification:</div></div>' . '<div class="training-content"><h3>' . $tabInformation[0]['Title'] . '</h3><form id="quiz">' . $quizHTML . '</form></div>' . '<div class="well well-sm training-complete"><button type="submit" form="quiz" id="quizSubmit" class="btn btn-default btn-submit btn-success" type="button">Submit</button> Submit your answers to the quiz. If any answers are incorrect, you will be prompted to repeat the certification training.</div>';
+else if ($tabInformation['TrainingType'] == 'quiz') {
+    $tabHTML = createTabHTML(1, 'Please complete the quiz below in order to receive certification:', $tabInformation['Title'], createQuiz($instrumentID), 'Submit', 'Submit your answers to the quiz. If any answers are incorrect, you will be prompted to repeat the certification training.'); 
 }
 
 print $tabHTML;
@@ -114,7 +113,9 @@ function createTabHTML($quiz, $instructions, $title, $tabContent, $button, $mess
     
     $buttonPanel = '<div class="well well-sm training-complete"><button '
                     . ($quiz == 1 ? 'type="submit" form="quiz" id="quizSubmit" ' : '')
-                    . 'class="btn btn-default btn-agree btn-success" type="button">'
+                    . 'class="btn btn-default ' 
+                    . ($quiz == 0 ? 'btn-agree ' : '')
+                    . 'btn-success" type="button">'
                     . $button
                     . '</button> '
                     . $message
