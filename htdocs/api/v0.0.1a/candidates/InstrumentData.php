@@ -1,8 +1,9 @@
 <?php
+namespace Loris\API\Candidates\Candidate;
 set_include_path(get_include_path() . ":" . __DIR__);
 require_once 'Instruments.php';
 
-class CandidateInstrumentDataJSON extends CandidateInstrumentsJSON {
+class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
     var $Instrument;
     public function __construct($method, $CandID, $Visit, $Instrument, $bDDE, $bFlags) {
         $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];

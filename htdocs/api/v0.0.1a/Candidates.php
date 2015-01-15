@@ -2,10 +2,11 @@
 /**
  * PHP 5.5+
  */
+namespace Loris\API;
 set_include_path(get_include_path() . ":" . __DIR__);
 require_once 'APIBase.php';
 
-class CandidatesJSON extends APIBase {
+class Candidates extends APIBase {
     public function __construct($method) {
         $this->AllowedMethods = ['GET', 'POST'];
 
@@ -27,7 +28,7 @@ class CandidatesJSON extends APIBase {
 }
 
 if(isset($_REQUEST['PrintCandidates'])) {
-    $obj = new CandidatesJSON($_SERVER['REQUEST_METHOD']);
+    $obj = new Candidates($_SERVER['REQUEST_METHOD']);
     print $obj->toJSONString();
 }
 ?>

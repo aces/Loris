@@ -1,8 +1,9 @@
 <?php
+namespace Loris\API\Candidates;
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
 
-class CandidateJSON extends APIBase {
+class Candidate extends \Loris\API\APIBase {
     var $Candidate;
     public function __construct($method, $CandID) {
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
@@ -16,18 +17,18 @@ class CandidateJSON extends APIBase {
             || $CandID < 100000
             || $CandID > 999999
         ) {
-            header("HTTP/1.1 400 Bad Request");
+            $this->header("HTTP/1.1 400 Bad Request");
             print json_encode(["error" => "Invalid CandID format"]);
-            exit(0);
+            $this->safeExit(0);
 
         }
 
         try {
-            $this->Candidate = Candidate::singleton($CandID);
+            $this->Candidate = \Candidate::singleton($CandID);
         } catch(Exception $e) {
-            header("HTTP/1.1 404 Not Found");
+            $this->header("HTTP/1.1 404 Not Found");
             print json_encode(["error" => "Unknown CandID"]);
-            exit(0);
+            $this->safeExit(0);
         }
 
         if($requestDelegationCascade) {
@@ -45,7 +46,7 @@ class CandidateJSON extends APIBase {
 }
 
 if(isset($_REQUEST['PrintCandidate'])) {
-    $obj = new CandidateJSON(
+    $obj = new \Loris\API\Candidates\Candidate(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID']
     );

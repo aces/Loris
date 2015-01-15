@@ -1,14 +1,16 @@
 <?php
+namespace Loris\API\Projects;
+
 set_include_path(get_include_path() . ":" . __DIR__ . "/..");
 require_once 'APIBase.php';
 
-class ProjectJSON extends APIBase {
+class Project extends \Loris\API\APIBase {
     var $ProjectID;
     var $ProjectName;
     var $ProjectInstruments;
 
     protected function getProjectID($ProjectName) {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $Projects = $config->getSetting("Projects")["project"];
         foreach($Projects as $project) {
@@ -32,9 +34,9 @@ class ProjectJSON extends APIBase {
         $this->ProjectID = $this->getProjectID($projectName);
 
         if(!is_numeric($this->ProjectID)) {
-            header("HTTP/1.1 404 Not Found");
-            print json_encode(['error' => 'Invalid project']);
-            exit(0);
+            $this->header("HTTP/1.1 404 Not Found");
+            $this->error(['error' => 'Invalid project']);
+            $this->safeExit(0);
         }
 
         $this->handleRequest();
