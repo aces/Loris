@@ -2,7 +2,7 @@ This file describes the REST API to be implemented for interacting with Loris da
 API is NOT YET IMPLEMENTED.
 ====
 
-# Loris Instrument API - v0.0.1c-dev
+# Loris Instrument API - v0.0.1d-dev
 
 ## 1.0 Overview
 
@@ -163,11 +163,34 @@ will return a JSON object of the form
 
 containing ALL CandIDs present in this Loris instance.
 
-PUT / POST / PATCH methods are not supported on /candidate in this
-version of the Loris API.
+A new candidate can be created by sending a POST request to /candidates.
 
-Future versions will likely include support for POSTing to this URL
-to create a new candidate
+The body of the POST request should be a JSON object of the form:
+
+```json
+{
+    "Candidate" : {
+        "Project" : ProjectName,
+        "PSCID"   : PSCID,
+        "EDC"     : "YYYY-MM-DD",
+        "DoB"     : "YYYY-MM-DD",
+        "Gender"  : "Male|Female"
+    }
+}
+
+Project is only required use useProjects is enabled in the Loris instance, and
+similarly EDC is only required if useEDC is enabled in the Loris config. The
+PSCID is only required if the generation type in the Loris config is not set to
+"sequential".
+
+The candidate will be created at the site of the user using the API's site.
+A response code of 201 Created will be returned on success, 409 Conflict if
+the PSCID already exists, and a 400 Bad Request if any data provided is invalid
+(PSCID format, date format, gender something other than Male|Female, invalid project
+name, etc)
+
+PUT / PATCH methods are not supported on /candidate in this
+version of the Loris API.
 
 # 3.1 Specific Candidate
 
