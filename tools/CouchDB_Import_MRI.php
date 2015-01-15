@@ -44,11 +44,17 @@ class CouchDBMRIImporter {
                 if (!empty($comments['field'])) {
                     $fieldName = $comments['field'];
                     $type      = "enum ('" .implode("','", $comments['values']). "')";
+
+                    $this->Dictionary["Comment_".$fieldName."_$ScanType"] = array(
+                        'Type' => 'varchar(255)',
+                        'Description' => "Overall Comment for $fieldName $ScanType"
+                        );
+
                 } else {
                     $fieldName = $comments['name'];
                     $type      = 'varchar(255)';
                 }
-                $this->feedback_Comments[$CommentTypeID] = $fieldName;
+                $this->feedback_Comments[$CommentTypeID] = $fieldName;//array($fieldName=>$comments['name']);
                 $this->Dictionary[$fieldName."_$ScanType"] = array(
                         'Type' => $type,
                         'Description' => $comments['name']." $ScanType"
@@ -66,7 +72,7 @@ class CouchDBMRIImporter {
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
             }
-        }
+        } //print_r($this->Dictionary);
         $this->CouchDB->replaceDoc("DataDictionary:mri_data",
             array('Meta' => array( 'DataDict' => true),
                 'DataDictionary' => array(
@@ -84,10 +90,33 @@ class CouchDBMRIImporter {
         $Query .= " FROM session s JOIN candidate c USING (CandID) LEFT JOIN feedback_mri_comments fmric ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID) WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1 limit 10";
         return $Query;
     }
-    function _addMRIFeedback($current_feedback, $scan_type) {
-     //   print_r($current_feedback);
-        foreach ($current_feedback as $CommentTypeID=>$comment) {
+    function _addMRIFeedback($current_feedback, $scan_type, $mri_feedback, &$CandidateData) {
 
+        //setting default values for mri feedback
+        foreach ($this->feedback_Comments as $CommentTypeID=>$field) {
+            $CandidateData[$field."_".$scan_type] = $mri_feedback->getMRIValue($field);
+            $CandidateData["Comment_".$field."_".$scan_type] = '';// overall comment field for each CommentTypeID
+
+            // set deafault for all the predefined comments as well
+            $predefn = $this->feedback_PreDefinedComments[$CommentTypeID];
+            foreach ($predefn as $id=>$key) {
+                $CandidateData[$key."_".$scan_type] = 'No'; //no is default
+            }
+        }
+        foreach ($current_feedback as $CommentTypeID=>$comment) {
+            if (array_key_exists("predefined", $comment)) {
+                $predefined = $comment['predefined'];
+                foreach ($predefined as $key=>$val) {
+                   $field_set = $this->feedback_PreDefinedComments[$CommentTypeID][$key];
+                   $CandidateData[$field_set."_".$scan_type] = 'Yes';
+                }
+            }
+            if (array_key_exists("text", $comment)) {
+                $field_set = "Comment_".$this->feedback_Comments[$CommentTypeID];
+                $CandidateData[$field_set."_".$scan_type] = $comment['text'];
+            }
+        }
+    }
     function UpdateCandidateDocs($data) {
         foreach($data as $row) {
             $doc = $row;
@@ -176,11 +205,11 @@ class CouchDBMRIImporter {
                 $scan_type = $scanType['ScanType'];
                 if (!empty($row['Selected_'.$scan_type]) ) {
                     $fileID = $this->SQLDB->pselectOne("SELECT FileID FROM files WHERE File=:fname",
-                              array('fname'=>$row['Selected_'.$scan_type]));//print "FILE = $fileID";
+                              array('fname'=>$row['Selected_'.$scan_type]));print "FILE = $fileID";
                     // instantiate feedback mri object
                  $mri_feedback = new FeedbackMRI($fileID, $row['SessionID']);
                  $current_feedback = $mri_feedback->getComments();//print_r($current_feedback);
-                 $this->_addMRIFeedback($current_feedback, $scan_type);
+                 $this->_addMRIFeedback($current_feedback, $scan_type, $mri_feedback, $CandidateData);
                 }
             }
         }
