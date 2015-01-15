@@ -2,7 +2,6 @@ This directory contains the implementation of Loris's REST API, documented in th
 ../../../docs/API/LorisRESTAPI.md
 
 Currently, basic GET support is implemented for each URL documented. Still to do:
-- Verify that proper HTTP response codes are used everywhere (especially for error conditions)
 - PUT / PATCH / POST method support where the behaviour is defined
 - Comprehensive unit tests
 - Run the results through PHPCS
