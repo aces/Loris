@@ -35,13 +35,11 @@ class APIBase {
         $this->client->makeCommandLine();
         $this->client->initialize(__DIR__ . "/../../../project/config.xml");
 
-        /*
         if(!$this->client->isLoggedIn()) {
             header("HTTP/1.1 401 Unauthorized");
             print json_encode(["error" => "User not authenticated"]);
             exit(0);
         }
-         */
 
         $this->DB = Database::singleton();
 
@@ -68,10 +66,17 @@ class APIBase {
     }
 
     function handleGET() {
+
     }
+
     function handlePUT() {
+        header("HTTP/1.1 501 Not Implemented");
+        exit(0);
     }
+
     function handlePOST() {
+        header("HTTP/1.1 501 Not Implemented");
+        exit(0);
     }
 
     function toJSONString() {
