@@ -3,11 +3,11 @@ Header set Access-Control-Allow-Origin "*"
 Header set Access-Control-Allow-Headers "*"
 
 # Projects API rewrite rules
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentJSON.php?Instrument=$2 [END]
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/visits/$ projects/Project.php?Project=$1&Visits=true [END]
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/candidates/$ projects/Project.php?Project=$1&Candidates=true [END]
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/$ projects/Project.php?Project=$1&Instruments=true [END]
-RewriteRule ^projects/([a-zA-Z0-9_.]+)/$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentJSON.php?Instrument=$2 [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/visits(/*)$ projects/Project.php?Project=$1&Visits=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/candidates(/*)$ projects/Project.php?Project=$1&Candidates=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments(/*)$ projects/Project.php?Project=$1&Instruments=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)(/*)$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true [END]
 
 RewriteRule ^projects(/*)$ Projects.php [END]
 
