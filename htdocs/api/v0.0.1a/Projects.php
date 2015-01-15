@@ -3,9 +3,11 @@ set_include_path(get_include_path() . ":" . __DIR__);
 require_once 'APIBase.php';
 
 class ProjectsJSON extends APIBase {
-    public function __construct() {
-        parent::__construct();
+    public function __construct($method) {
+        parent::__construct($method);
+    }
 
+    public function handleGET() {
         $config = NDB_Config::singleton();
 
         $useProjects = $config->getSetting("useProjects");
@@ -23,6 +25,6 @@ class ProjectsJSON extends APIBase {
     }
 }
 
-$obj = new ProjectsJSON();
+$obj = new ProjectsJSON($_SERVER['REQUEST_METHOD']);
 print $obj->toJSONString();
 ?>

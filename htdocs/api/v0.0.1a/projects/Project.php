@@ -2,9 +2,9 @@
 set_include_path(get_include_path() . ":" . __DIR__ . "/..");
 require_once 'APIBase.php';
 
-error_log(get_include_path());
 class ProjectJSON extends APIBase {
     var $ProjectID;
+    var $ProjectName;
     var $ProjectInstruments;
 
     protected function getProjectID($ProjectName) {
@@ -18,8 +18,15 @@ class ProjectJSON extends APIBase {
         }
     }
 
-    public function __construct($projectName, $bCandidates, $bInstruments, $bVisits) {
-        parent::__construct();
+    public function __construct($method, $projectName, $bCandidates, $bInstruments, $bVisits) {
+        $this->AutoHandleRequestDelegation = false;
+        parent::__construct($method);
+
+        $this->bCandidates = $bCandidates;
+        $this->bInstruments = $bInstruments;
+        $this->bVisits = $bVisits;
+
+        $this->ProjectName = $projectName;
         require_once 'Utility.class.inc';
 
         $this->ProjectID = $this->getProjectID($projectName);
@@ -30,13 +37,17 @@ class ProjectJSON extends APIBase {
             exit(0);
         }
 
+        $this->handleRequest();
+
+    }
+    function handleGET() {
         $JSONArray = [
             "Meta" => [
-                "Project" => $projectName
+                "Project" => $this->ProjectName
             ]
         ];
 
-        if($bCandidates) {
+        if($this->bCandidates) {
             $rows = $this->DB->pselect("SELECT CandID FROM candidate WHERE ProjectID=:projID", array("projID" => $this->ProjectID));
             $CandIDs = [];
 
@@ -47,12 +58,12 @@ class ProjectJSON extends APIBase {
             $JSONArray['Candidates'] = $CandIDs;
         }
 
-        if($bInstruments) {
+        if($this->bInstruments) {
             $Instruments = Utility::getAllInstruments();
             $JSONArray['Instruments'] = array_keys($Instruments);
         }
 
-        if($bVisits) {
+        if($this->bVisits) {
             $Visits = Utility::getExistingVisitLabels($this->ProjectID);
             $VisitNames = array_keys($Visits);
 
@@ -64,6 +75,7 @@ class ProjectJSON extends APIBase {
 }
 
 $Proj = new ProjectJSON(
+    $_SERVER['REQUEST_METHOD'],
     $_REQUEST['Project'],
     isset($_REQUEST['Candidates'])  ? true : false,
     isset($_REQUEST['Instruments']) ? true : false,

@@ -12,26 +12,33 @@
  * @link     https://github.com/aces/Loris
  */
 //Load config file and ensure paths are correct
-set_include_path(get_include_path() . ":" . __DIR__);
+set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
 
 class InstrumentJSON extends APIBase {
-    function __construct($Instrument) {
-        parent::__construct();
+    var $Instrument;
 
-        require_once 'NDB_BVL_Instrument.class.inc';
+    function __construct($method, $Instrument) {
+        $this->AutoHandleRequestDelegation = false;
+        parent::__construct($method);
 
         try {
-            $a = NDB_BVL_Instrument::factory($Instrument, null, null, true);
-            $this->JSON = json_decode($a->toJSON());
+            $this->Instrument = NDB_BVL_Instrument::factory($Instrument, null, null, true);
         } catch(Exception $e) {
             header("HTTP/1.1 404 Not Found");
+            print json_encode(["error" => "Invalid Instrument"]);
+            exit(0);
         }
 
+        $this->handleRequest();
+    }
+
+    function handleGET() {
+        $this->JSON = json_decode($this->Instrument->toJSON());
     }
 }
 
 
-$obj = new InstrumentJSON($_REQUEST['Instrument']);
+$obj = new InstrumentJSON($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
 print $obj->toJSONString();
 ?>
