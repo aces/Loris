@@ -2,6 +2,8 @@
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
+require_once "FeedbackMRI.class.inc";
+
 class CouchDBMRIImporter {
     var $SQLDB; // reference to the database handler, store here instead
                 // of using Database::singleton in case it's a mock.
@@ -15,13 +17,17 @@ class CouchDBMRIImporter {
             'Description' => 'QC Comment for Session'
         )
     );
+    var $feedback_Comments; //reference to list of MRI feedback types;
+    var $feedback_PreDefinedComments; //reference to list of MRI feedback types;
     function __construct() {
         $this->SQLDB = Database::singleton();
         $this->CouchDB = CouchDB::singleton();
     }
 
     function UpdateDataDict($types) {
-        
+
+        $mri_feedback = new FeedbackMRI(1, "");
+
         foreach($types as $type) {
             $ScanType = $type['ScanType'];
             $this->Dictionary["Selected_$ScanType"] = array(
@@ -33,10 +39,37 @@ class CouchDBMRIImporter {
                 'Type' => "enum('Pass', 'Fail')",
                 'Description' => "QC Status for $ScanType file"
             );
+            $feedback_types = $mri_feedback->getAllCommentTypes();//print_r($feedback_types);
+            foreach ($feedback_types as $CommentTypeID=>$comments) {
+                if (!empty($comments['field'])) {
+                    $fieldName = $comments['field'];
+                    $type      = "enum ('" .implode("','", $comments['values']). "')";
+                } else {
+                    $fieldName = $comments['name'];
+                    $type      = 'varchar(255)';
+                }
+                $this->feedback_Comments[$CommentTypeID] = $fieldName;
+                $this->Dictionary[$fieldName."_$ScanType"] = array(
+                        'Type' => $type,
+                        'Description' => $comments['name']." $ScanType"
+                        );
+                $preDefinedComments = $mri_feedback->getAllPredefinedComments($CommentTypeID);
+                $this->feedback_PreDefinedComments[$CommentTypeID] = array();
+                $pre = array();
+                foreach ($preDefinedComments as $preDefinedCommentTypeID=>$preDefinedComment) {
+                    $this->Dictionary[$preDefinedComment['field']."_$ScanType"] = array(
+                            'Type' => "enum('Yes', 'No')",
+                            'Description' => $preDefinedComment['Comment']." $ScanType"
+                            );
+                     $pre[$preDefinedCommentTypeID] = $preDefinedComment['field'];
+                }
+                $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
+
+            }
         }
         $this->CouchDB->replaceDoc("DataDictionary:mri_data",
             array('Meta' => array( 'DataDict' => true),
-                'DataDictionary' => array( 
+                'DataDictionary' => array(
                     'mri_data' => $this->Dictionary
                 )
             )
@@ -44,21 +77,26 @@ class CouchDBMRIImporter {
     }
 
     function _generateCandidatesQuery($ScanTypes) {
-        $Query = "SELECT c.PSCID, s.Visit_label, fmric.Comment as QCComment";
+        $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment as QCComment";
         foreach($ScanTypes as $Scan) {
             $Query .= ", (SELECT f.File FROM files f LEFT JOIN files_qcstatus fqc USING(FileID) LEFT JOIN parameter_file p ON (p.FileID=f.FileID AND p.ParameterTypeID=$Scan[ParameterTypeID]) WHERE f.SessionID=s.ID AND p.Value='$Scan[ScanType]' LIMIT 1) as `Selected_$Scan[ScanType]`, (SELECT fqc.QCStatus FROM files f LEFT JOIN files_qcstatus fqc USING(FileID) LEFT JOIN parameter_file p ON (p.FileID=f.FileID AND p.ParameterTypeID=$Scan[ParameterTypeID]) WHERE f.SessionID=s.ID AND p.Value='$Scan[ScanType]' LIMIT 1) as `$Scan[ScanType]_QCStatus`";
         }
-        $Query .= " FROM session s JOIN candidate c USING (CandID) LEFT JOIN feedback_mri_comments fmric ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID) WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
+        $Query .= " FROM session s JOIN candidate c USING (CandID) LEFT JOIN feedback_mri_comments fmric ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID) WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1 limit 10";
         return $Query;
     }
+    function _addMRIFeedback($current_feedback, $scan_type) {
+     //   print_r($current_feedback);
+        foreach ($current_feedback as $CommentTypeID=>$comment) {
 
-    function UpdateCandidateDocs($data, $ScanTypes) {
+    function UpdateCandidateDocs($data) {
         foreach($data as $row) {
             $doc = $row;
             $identifier = array($row['PSCID'], $row['Visit_label']);
             $docid = 'MRI_Files:' . join($identifier, '_');
             unset($doc['PSCID']);
             unset($doc['Visit_label']);
+            unset($doc['SessionID']);
+            unset($doc['FileID']);
             $success = $this->CouchDB->replaceDoc($docid, 
                 array('Meta' => array(
                     'DocType' => 'mri_data',
@@ -122,11 +160,31 @@ class CouchDBMRIImporter {
     }
 
     function run() {
-        $ScanTypes = $this->SQLDB->pselect("SELECT DISTINCT pf.ParameterTypeID, pf.Value as ScanType from parameter_type pt JOIN parameter_file pf USING (ParameterTypeID) WHERE pt.Name='selected' AND COALESCE(pf.Value, '') <> ''", array());
+        $ScanTypes = $this->SQLDB->pselect("SELECT DISTINCT pf.ParameterTypeID,
+                          pf.Value as ScanType
+                     FROM parameter_type pt
+                     JOIN parameter_file pf
+                     USING (ParameterTypeID)
+                     WHERE pt.Name='selected' AND COALESCE(pf.Value, '') <> ''", array());
         $this->UpdateDataDict($ScanTypes);
         $query = $this->_generateCandidatesQuery($ScanTypes);
         $CandidateData = $this->SQLDB->pselect($query, array());
         $this->UpdateCandidateDocs($CandidateData, $ScanTypes);
+        $CandidateData = $this->SQLDB->pselect($query, array());//print_r($CandidateData);
+        foreach ($CandidateData as $row) {
+            foreach ($ScanTypes as $scanType) {
+                $scan_type = $scanType['ScanType'];
+                if (!empty($row['Selected_'.$scan_type]) ) {
+                    $fileID = $this->SQLDB->pselectOne("SELECT FileID FROM files WHERE File=:fname",
+                              array('fname'=>$row['Selected_'.$scan_type]));//print "FILE = $fileID";
+                    // instantiate feedback mri object
+                 $mri_feedback = new FeedbackMRI($fileID, $row['SessionID']);
+                 $current_feedback = $mri_feedback->getComments();//print_r($current_feedback);
+                 $this->_addMRIFeedback($current_feedback, $scan_type);
+                }
+            }
+        }
+        //$this->UpdateCandidateDocs($CandidateData);
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..
