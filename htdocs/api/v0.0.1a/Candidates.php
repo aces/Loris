@@ -7,6 +7,8 @@ require_once 'APIBase.php';
 
 class CandidatesJSON extends APIBase {
     public function __construct($method) {
+        $this->AllowedMethods = ['GET', 'POST'];
+
         parent::__construct($method);
     }
 

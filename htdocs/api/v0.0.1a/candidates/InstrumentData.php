@@ -5,6 +5,7 @@ require_once 'Instruments.php';
 class CandidateInstrumentDataJSON extends CandidateInstrumentsJSON {
     var $Instrument;
     public function __construct($method, $CandID, $Visit, $Instrument, $bDDE, $bFlags) {
+        $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
         $this->AutoHandleRequestDelegation = false;
         $this->bDDE = $bDDE;
         $this->bFlags = $bFlags;
