@@ -90,8 +90,8 @@ class CouchDBMRIImporter {
         $Query .= " FROM session s JOIN candidate c USING (CandID) LEFT JOIN feedback_mri_comments fmric ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID) WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1 limit 10";
         return $Query;
     }
-    function _addMRIFeedback($current_feedback, $scan_type, $mri_feedback, &$CandidateData) {
-
+    function _addMRIFeedback($current_feedback, $scan_type, $mri_feedback) {
+        $CandidateData = array();
         //setting default values for mri feedback
         foreach ($this->feedback_Comments as $CommentTypeID=>$field) {
             $CandidateData[$field."_".$scan_type] = $mri_feedback->getMRIValue($field);
@@ -112,10 +112,11 @@ class CouchDBMRIImporter {
                 }
             }
             if (array_key_exists("text", $comment)) {
-                $field_set = "Comment_".$this->feedback_Comments[$CommentTypeID];
+                $field_set = "Comment_".$this->feedback_Comments[$CommentTypeID];"\n ---- ".$comment['text']."----\n";
                 $CandidateData[$field_set."_".$scan_type] = $comment['text'];
             }
         }
+        return $CandidateData;
     }
     function UpdateCandidateDocs($data) {
         foreach($data as $row) {
@@ -200,7 +201,7 @@ class CouchDBMRIImporter {
         $CandidateData = $this->SQLDB->pselect($query, array());
         $this->UpdateCandidateDocs($CandidateData, $ScanTypes);
         $CandidateData = $this->SQLDB->pselect($query, array());//print_r($CandidateData);
-        foreach ($CandidateData as $row) {
+        foreach ($CandidateData as &$row) {
             foreach ($ScanTypes as $scanType) {
                 $scan_type = $scanType['ScanType'];
                 if (!empty($row['Selected_'.$scan_type]) ) {
@@ -209,10 +210,12 @@ class CouchDBMRIImporter {
                     // instantiate feedback mri object
                  $mri_feedback = new FeedbackMRI($fileID, $row['SessionID']);
                  $current_feedback = $mri_feedback->getComments();//print_r($current_feedback);
-                 $this->_addMRIFeedback($current_feedback, $scan_type, $mri_feedback, $CandidateData);
+                 $mri_qc_results = $this->_addMRIFeedback($current_feedback, $scan_type, $mri_feedback);
+            //     array_push($row, $mri_qc_results);
+                 $row = array_merge($row, $mri_qc_results);
                 }
             }
-        }
+        } print_r($CandidateData);
         //$this->UpdateCandidateDocs($CandidateData);
     }
 }
