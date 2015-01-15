@@ -6,7 +6,6 @@ $(document).ready(function() {
 
         var instrument = $("option:selected", this).val();
         var instrumentName = $("option:selected", this).text();
-        var select = this;
 
         $(".alert-certification").remove();
 
@@ -52,6 +51,17 @@ $(document).ready(function() {
         $(this).prop('disabled', true);
     });
 
+    $('body').on('click','#quizSubmit', function (e) {
+        e.preventDefault();
+
+        var form = $(this).serialize();
+        var instrument = $("option:selected", "select[name='certification_instruments']").val();
+
+        $.post("AjaxHelper.php?Module=certification&script=markQuiz.php", {instrument: instrument, form: form}, function(data) {
+
+        });
+    });
+
     // on click of quiz completion, mark quiz, update certification status, clear tabs?
 });
 
@@ -74,7 +84,6 @@ function loadTabContent(instrument, tabNumber) {
     $.post("AjaxHelper.php?Module=certification&script=getTabContent.php", {instrument: instrument, tabNumber: tabNumber}, function(data) {
         var ref = $(tabID).children().attr('data-target');
         $(ref).html(data);
-        $('#trainingTabs').tab();
         $(tabID).removeClass('disabled');
         $(tabID).tab('show');
         $('.tab-pane').removeClass("active");

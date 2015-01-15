@@ -3,7 +3,7 @@ CREATE TABLE `certification_training` (
     `TestID` int(10) unsigned NOT NULL,
     `Title` varchar(255) NOT NULL,
     `Content` text,
-    `TrainingType` enum('text', 'video', 'quiz'),
+    `TrainingType` enum('text', 'video', 'quiz') NOT NULL,
     `OrderNumber` INTEGER UNSIGNED NOT NULL,
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
