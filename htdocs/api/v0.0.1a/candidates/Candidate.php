@@ -4,8 +4,13 @@ require_once 'APIBase.php';
 
 class CandidateJSON extends APIBase {
     var $Candidate;
-    public function __construct($CandID) {
-        parent::__construct();
+    public function __construct($method, $CandID) {
+        $requestDelegationCascade = $this->AutoHandleRequestDelegation;
+
+        $this->AutoHandleRequestDelegation = false;
+        $this->CandID = $CandID;
+
+        parent::__construct($method);
 
         if(!is_numeric($CandID)
             || $CandID < 100000
@@ -25,15 +30,25 @@ class CandidateJSON extends APIBase {
             exit(0);
         }
 
+        if($requestDelegationCascade) {
+            $this->handleRequest();
+        }
+    }
+
+    public function handleGET() {
+
         $this->JSON = [
-            "Meta"   => [ "CandID" => $CandID ],
+            "Meta"   => [ "CandID" => $this->CandID ],
             "Visits" => array_values($this->Candidate->getListOfVisitLabels())
         ];
     }
 }
 
 if(!isset($_REQUEST['NoCandidate'])) {
-    $obj = new CandidateJSON($_REQUEST['CandID']);
+    $obj = new CandidateJSON(
+        $_SERVER['REQUEST_METHOD'],
+        $_REQUEST['CandID']
+    );
     print $obj->toJSONString();
 }
 ?>

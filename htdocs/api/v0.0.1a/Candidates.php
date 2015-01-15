@@ -6,9 +6,11 @@ set_include_path(get_include_path() . ":" . __DIR__);
 require_once 'APIBase.php';
 
 class CandidatesJSON extends APIBase {
-    public function __construct() {
-        parent::__construct();
+    public function __construct($method) {
+        parent::__construct($method);
+    }
 
+    public function handleGET() {
         $candidates = $this->DB->pselect(
             "SELECT CandID FROM candidate WHERE Active='Y'",
             []
@@ -23,6 +25,6 @@ class CandidatesJSON extends APIBase {
 }
 
 
-$obj = new CandidatesJSON();
+$obj = new CandidatesJSON($_SERVER['REQUEST_METHOD']);
 print $obj->toJSONString();
 ?>

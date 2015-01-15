@@ -7,7 +7,20 @@ class APIBase {
     var $DB;
     var $client;
     var $JSON;
-    function __construct() {
+    var $AllowedMethods = ['GET'];
+    var $AutoHandleRequestDelegation = true;
+    var $HTTPMethod;
+
+    function __construct($method) {
+        // Verify that method is allowed for this type of request.
+        if(!in_array($method, $this->AllowedMethods)) {
+            header("HTTP/1.1 405 Method Not Allowed");
+            header("Allow: " . join(", ", $this->AllowedMethods));
+            exit(0);
+        }
+
+        $this->HTTPMethod = $method;
+
         //Load config file and ensure paths are correct
         set_include_path(
             get_include_path() . ":" .
@@ -15,7 +28,6 @@ class APIBase {
         );
         require_once 'NDB_Client.class.inc';
 
-        header("Access-Control-Allow-Origin: *");
         $this->client = new NDB_Client();
         // Even though it's not a command line client, this prevents
         // the login related to showing the login screen from applying,
@@ -32,6 +44,34 @@ class APIBase {
          */
 
         $this->DB = Database::singleton();
+
+        if($this->AutoHandleRequestDelegation) {
+            $this->handleRequest();
+        }
+    }
+
+    function handleRequest() {
+        $method = $this->HTTPMethod;
+
+        switch($this->HTTPMethod) {
+        case 'GET':
+            $this->handleGET();
+            break;
+        case 'PUT':
+            $this->handlePUT();
+            break;
+        case 'POST':
+            $this->handlePOST();
+            break;
+
+        }
+    }
+
+    function handleGET() {
+    }
+    function handlePUT() {
+    }
+    function handlePOST() {
     }
 
     function toJSONString() {
