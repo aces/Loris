@@ -15,7 +15,7 @@
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
 
-class InstrumentJSON extends APIBase {
+class InstrumentForm extends APIBase {
     var $Instrument;
 
     function __construct($method, $Instrument) {
@@ -38,7 +38,8 @@ class InstrumentJSON extends APIBase {
     }
 }
 
-
-$obj = new InstrumentJSON($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
-print $obj->toJSONString();
+if(isset($_REQUEST['PrintInstrumentForm'])) {
+    $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
+    print $obj->toJSONString();
+}
 ?>

@@ -25,6 +25,8 @@ class ProjectsJSON extends APIBase {
     }
 }
 
-$obj = new ProjectsJSON($_SERVER['REQUEST_METHOD']);
-print $obj->toJSONString();
+if(isset($_REQUEST['PrintProjects'])) {
+    $obj = new ProjectsJSON($_SERVER['REQUEST_METHOD']);
+    print $obj->toJSONString();
+}
 ?>

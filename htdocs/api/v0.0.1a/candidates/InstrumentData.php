@@ -76,13 +76,15 @@ class CandidateInstrumentDataJSON extends CandidateInstrumentsJSON {
 
 }
 
-$obj = new CandidateInstrumentDataJSON(
-    $_SERVER['REQUEST_METHOD'],
-    $_REQUEST['CandID'],
-    $_REQUEST['Visit'],
-    $_REQUEST['Instrument'],
-    isset($_REQUEST['DDE'])   ? true : false,
-    isset($_REQUEST['flags']) ? true : false
-);
-print $obj->toJSONString();
+if(isset($_REQUEST['PrintInstrumentData'])) {
+    $obj = new CandidateInstrumentDataJSON(
+        $_SERVER['REQUEST_METHOD'],
+        $_REQUEST['CandID'],
+        $_REQUEST['Visit'],
+        $_REQUEST['Instrument'],
+        isset($_REQUEST['DDE'])   ? true : false,
+        isset($_REQUEST['flags']) ? true : false
+    );
+    print $obj->toJSONString();
+}
 ?>

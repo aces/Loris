@@ -32,7 +32,7 @@ class CandidateInstrumentsJSON extends VisitJSON {
     }
 }
 
-if(!isset($_REQUEST['NoInstruments'])) {
+if(isset($_REQUEST['PrintInstruments'])) {
     $obj = new CandidateInstrumentsJSON(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],

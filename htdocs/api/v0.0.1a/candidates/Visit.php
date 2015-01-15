@@ -5,7 +5,7 @@ require_once 'Candidate.php';
 
 class VisitJSON extends CandidateJSON {
     public function __construct($method, $CandID, $VisitLabel) {
-        $this->AllowedMethods = ['GET', 'PUT']
+        $this->AllowedMethods = ['GET', 'PUT'];
         $this->VisitLabel = $VisitLabel;
         // Parent constructor will handle validation of
         // CandID
@@ -31,7 +31,7 @@ class VisitJSON extends CandidateJSON {
     }
 }
 
-if(!isset($_REQUEST['NoVisit'])) {
+if(isset($_REQUEST['PrintVisit'])) {
     $obj = new VisitJSON(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],
