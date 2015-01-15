@@ -10,7 +10,7 @@ Loris will implement a RESTful API. Any request sent to `$LorisRoot/api/$APIVERS
 will return either a JSON object or no data. The Loris API will use standard HTTP error
 codes and the body will either be empty or contain only a JSON object for any request.
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.1b-dev and it
+document. This document specifies $APIVERSION v0.0.1d-dev and it
 MUST be included before the request in all requests.
 
 HTTP GET requests will NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -24,7 +24,7 @@ Any fields not explicitly specified in the PUT request are nulled.
 PATCH requests are identical to PUT requests, but any fields not explicitly mentioned are
 unmodified from their current value.
 
-DELETE is not supported on any URL in this API.
+DELETE is not supported on any resource defined in this API.
 
 The current API assumes that the user issuing the HTTP request is already logged in to Loris
 and has appropriate permissions. If not, an error object will be returned of the form
@@ -41,7 +41,7 @@ Subsequence versions of this API should specify a more flexible authentication m
 
 # 2.0 Project API
 
-The Project API lives under the /projects part of the API URL hierarchy. It is used to get
+The Project API lives under the /projects portion of the API URL hierarchy. It is used to get
 project specific settings or data. PUT and PATCH are not supported for the part of the API
 living under /projects unless otherwise noted.
 
