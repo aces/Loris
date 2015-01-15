@@ -2,7 +2,7 @@ This file describes the REST API to be implemented for interacting with Loris da
 API is NOT YET IMPLEMENTED.
 ====
 
-# Loris Instrument API - v0.0.1b-dev
+# Loris Instrument API - v0.0.1c-dev
 
 ## 1.0 Overview
 
@@ -59,8 +59,9 @@ If the Loris instance does not use projects, it will consist of a single project
 GET /projects/$ProjectName
 ```
 
-Will return a 200 series error code if the project exists, and 404 code if it does not. The body of the
-request will be an entity of the form
+Will return a 200 OK response if the project exists, and 404 Not Found if it does not, as well as any portion of the API under /projects/$ProjectName.
+
+The body of the request to /projects/$ProjectName will be an entity of the form:
 
 ```json
 {
@@ -132,6 +133,8 @@ where 123456, 342332, etc are the candidates that exist for this project.
 GET /projects/$ProjectName/instruments/$InstrumentName
 ```
 
+Will return a 200 response on success and 404 Not Found if $InstrumentName is not a valid instrument for this instance of Loris.
+
 This will return a JSON representation of the instrument form. If available, rules and form will
 be combined into a single JSON object. The format for the JSON returned is specified in the
 accompanying InstrumentFormat.md and RulesFormat.md documents. The JSON document can be used
@@ -193,6 +196,10 @@ candidate.
 PUT / PATCH are not supported for candidates in this version of the
 API.
 
+It will return a 200 OK on success, a 404 if the candidate does not exist, and
+a 400 Bad Request if the CandID is invalid (not a 6 digit integer). The same is
+true of all of the API hierarchy under /candidates/$CandID.
+
 ### 3.2 Getting Candidate visit data
 
 A GET request of the form
@@ -218,6 +225,9 @@ A PUT request of the same format will create the VisitLabel for this candidate,
 in an unstarted stage if the Visit label provided is valid.
 
 PATCH is not supported for Visit Labels.
+
+It will return a 404 Not Found if the visit label does not exist for this candidate
+(as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)
 
 ### 3.3 Candidate Instruments
 ```
@@ -279,6 +289,7 @@ The specification for PATCH request is similar to a PUT request, with the except
 fields not specified MUST be unmodified by the server rather than nulled. In most cases a series
 of PATCH requests SHOULD be used rather than a single PUT request for a client with pagination.
 
+A 200 OK will be returned on success, and a 404 Not Found if $InstrumentName is not a valid instrument installed in this Loris instance.
 
 ### 3.3.1 Instrument flags
 ```
