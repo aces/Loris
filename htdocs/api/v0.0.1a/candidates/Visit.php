@@ -1,9 +1,10 @@
 <?php
+namespace Loris\API\Candidates\Candidate;
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 
 require_once 'Candidate.php';
 
-class VisitJSON extends CandidateJSON {
+class Visit extends \Loris\API\Candidates\Candidate {
     public function __construct($method, $CandID, $VisitLabel) {
         $this->AllowedMethods = ['GET', 'PUT'];
         $this->VisitLabel = $VisitLabel;

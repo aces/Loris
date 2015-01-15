@@ -11,11 +11,12 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
+namespace Loris\API\Projects;
 //Load config file and ensure paths are correct
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
 
-class InstrumentForm extends APIBase {
+class InstrumentForm extends \Loris\API\APIBase {
     var $Instrument;
 
     function __construct($method, $Instrument) {
@@ -23,10 +24,10 @@ class InstrumentForm extends APIBase {
         parent::__construct($method);
 
         try {
-            $this->Instrument = NDB_BVL_Instrument::factory($Instrument, null, null, true);
+            $this->Instrument = \NDB_BVL_Instrument::factory($Instrument, null, null, true);
         } catch(Exception $e) {
-            header("HTTP/1.1 404 Not Found");
-            print json_encode(["error" => "Invalid Instrument"]);
+            $this->header("HTTP/1.1 404 Not Found");
+            $this->error("Invalid Instrument");
             exit(0);
         }
 

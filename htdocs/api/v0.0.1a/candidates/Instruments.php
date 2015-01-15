@@ -1,9 +1,10 @@
 <?php
+namespace Loris\API\Candidates\Candidate;
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 
 require_once 'Visit.php';
 
-class CandidateInstrumentsJSON extends VisitJSON {
+class Instruments extends Visit {
     public function __construct($method, $CandID, $Visit) {
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
         // Parent will validate CandID and Visit Label and abort if necessary

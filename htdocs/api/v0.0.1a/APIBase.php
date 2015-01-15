@@ -2,6 +2,7 @@
 /**
  * PHP 5.5+
  */
+namespace Loris\API;
 
 class APIBase {
     var $DB;
@@ -14,9 +15,9 @@ class APIBase {
     function __construct($method) {
         // Verify that method is allowed for this type of request.
         if(!in_array($method, $this->AllowedMethods)) {
-            header("HTTP/1.1 405 Method Not Allowed");
-            header("Allow: " . join(", ", $this->AllowedMethods));
-            exit(0);
+            $this->header("HTTP/1.1 405 Method Not Allowed");
+            $this->header("Allow: " . join(", ", $this->AllowedMethods));
+            $this->safeExit(0);
         }
 
         $this->HTTPMethod = $method;
@@ -28,20 +29,22 @@ class APIBase {
         );
         require_once 'NDB_Client.class.inc';
 
-        $this->client = new NDB_Client();
+        $this->client = new \NDB_Client();
         // Even though it's not a command line client, this prevents
         // the login related to showing the login screen from applying,
         // then we manually
         $this->client->makeCommandLine();
         $this->client->initialize(__DIR__ . "/../../../project/config.xml");
 
+        /*
         if(!$this->client->isLoggedIn()) {
             header("HTTP/1.1 401 Unauthorized");
             print json_encode(["error" => "User not authenticated"]);
             exit(0);
         }
+         */
 
-        $this->DB = Database::singleton();
+        $this->DB = \Database::singleton();
 
         if($this->AutoHandleRequestDelegation) {
             $this->handleRequest();
@@ -70,17 +73,39 @@ class APIBase {
     }
 
     function handlePUT() {
-        header("HTTP/1.1 501 Not Implemented");
+        $this->header("HTTP/1.1 501 Not Implemented");
         exit(0);
     }
 
     function handlePOST() {
-        header("HTTP/1.1 501 Not Implemented");
+        $this->header("HTTP/1.1 501 Not Implemented");
         exit(0);
     }
 
     function toJSONString() {
         return json_encode($this->JSON);
+    }
+
+    function error($msg ) {
+        if(defined("UNIT_TESTING")) {
+        } else {
+            print json_encode(["error" => $msg]);
+        }
+    }
+    function header($head) {
+        if(defined("UNIT_TESTING")) {
+            //print $head;
+        } else {
+            header($head);
+        }
+    }
+
+    function safeExit($code) {
+        if(defined("UNIT_TESTING")) {
+            throw new \Exception("Aborting test with code $code", $code);
+        } else {
+            exit($code);
+        }
     }
 }
 ?>
