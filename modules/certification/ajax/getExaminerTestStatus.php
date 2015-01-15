@@ -32,15 +32,15 @@ $instrumentID = $_REQUEST['instrument'];
     array('CID' => $_REQUEST['identifier'])
 );*/
 
-$certificationStatus = $DB->pselect(
+$certificationStatus = $DB->pselectOne(
     "SELECT pass FROM certification WHERE certID=:CID AND testID=:TID",
-    array('CID' => 4, 'TID' => $instrumentID)
+    array('CID' => 3, 'TID' => $instrumentID)
 );
 
 // Check if the examiner is certified for the selected instrument
-if ($certificationStatus["pass"] == 'certified') {
+if ($certificationStatus == 'certified') {
     print 0;
-} else if ($certificationStatus["pass"] == 'in_training') {
+} else if ($certificationStatus == 'in_training') {
     print 1;
 } else {
     print 2;
