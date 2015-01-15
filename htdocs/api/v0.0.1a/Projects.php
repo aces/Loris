@@ -6,10 +6,20 @@ class ProjectsJSON extends APIBase {
     public function __construct() {
         parent::__construct();
 
-        $projects = Utility::getProjectList();
-        $this->JSON = [
-            "Projects" =>  array_values($projects)
-        ];
+        $config = NDB_Config::singleton();
+
+        $useProjects = $config->getSetting("useProjects");
+
+        if($useProjects && $useProjects !== "false" && $useProjects !== "0") {
+            $projects = Utility::getProjectList();
+            $this->JSON = [
+                "Projects" =>  array_values($projects)
+            ];
+        } else {
+            $this->JSON = [
+                "Projects" =>  ["loris"]
+            ];
+        }
     }
 }
 
