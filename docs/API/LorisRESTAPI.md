@@ -13,13 +13,18 @@ For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in
 document. This document specifies $APIVERSION v0.0.1b-dev and it
 MUST be included before the request in all requests.
 
-HTTP GET requests will NEVER modify data. PUT or PATCH requests MUST be used to modify data.
+HTTP GET requests will NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
+data as per their definitions in the HTTP/1.1 specification. Any methods not supported
+will respond with a 405 Method Not Allowed response and an appropriate Allow header set (as
+per HTTP documentation.)
 
 PUT requests either create or overwrite all data for a given instrument/candidate/visit/etc.
 Any fields not explicitly specified in the PUT request are nulled.
 
 PATCH requests are identical to PUT requests, but any fields not explicitly mentioned are
 unmodified from their current value.
+
+DELETE is not supported on any URL in this API.
 
 The current API assumes that the user issuing the HTTP request is already logged in to Loris
 and has appropriate permissions. If not, an error object will be returned of the form
@@ -346,3 +351,4 @@ The format of the JSON object for these URLS is:
     }
 }
 ```
+
