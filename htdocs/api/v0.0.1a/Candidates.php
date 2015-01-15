@@ -26,7 +26,8 @@ class CandidatesJSON extends APIBase {
     }
 }
 
-
-$obj = new CandidatesJSON($_SERVER['REQUEST_METHOD']);
-print $obj->toJSONString();
+if(isset($_REQUEST['PrintCandidates'])) {
+    $obj = new CandidatesJSON($_SERVER['REQUEST_METHOD']);
+    print $obj->toJSONString();
+}
 ?>

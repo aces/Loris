@@ -1,23 +1,21 @@
 RewriteEngine on
-Header set Access-Control-Allow-Origin "*"
-Header set Access-Control-Allow-Headers "*"
 
 # Projects API rewrite rules
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments/([a-zA-Z0-9_.]+)$ projects/InstrumentForm.php?Instrument=$2 [END]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/visits(/*)$ projects/Project.php?Project=$1&Visits=true [END]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/candidates(/*)$ projects/Project.php?Project=$1&Candidates=true [END]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments(/*)$ projects/Project.php?Project=$1&Instruments=true [END]
-RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)(/*)$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments/([a-zA-Z0-9_.]+)$ projects/InstrumentForm.php?Instrument=$2&PrintInstrumentForm=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/visits(/*)$ projects/Project.php?Project=$1&Visits=true&PrintProjectJSON=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/candidates(/*)$ projects/Project.php?Project=$1&Candidates=true&PrintProjectJSON=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments(/*)$ projects/Project.php?Project=$1&Instruments=true&PrintProjectJSON=true [END]
+RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)(/*)$ projects/Project.php?Project=$1&Instruments=true&Visits=true&Candidates=true&PrintProjectJSON=true [END]
 
-RewriteRule ^projects(/*)$ Projects.php [END]
+RewriteRule ^projects(/*)$ Projects.php?PrintProjects=true [END]
 
 # Candidates API rewrite rules
 
-RewriteRule ^candidates([/]*)$ Candidates.php [END]
-RewriteRule ^candidates/([0-9]+)(/*)$ candidates/Candidate.php?CandID=$1 [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)(/*)$ candidates/Visit.php?CandID=$1&VisitLabel=$2&NoCandidate=true [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2&NoCandidate=true&NoVisit=true [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&NoVisit=true&NoCandidate=true&NoInstruments=true [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&NoVisit=true&NoCandidate=true&NoInstruments=true [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&flags=true&NoVisit=true&NoCandidate=true&NoInstruments=true [END]
-RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&flags=true&NoVisit=true&NoCandidate=true&NoInstruments=true [END]
+RewriteRule ^candidates([/]*)$ Candidates.php?PrintCandidates=true [END]
+RewriteRule ^candidates/([0-9]+)(/*)$ candidates/Candidate.php?CandID=$1&PrintCandidate=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)(/*)$ candidates/Visit.php?CandID=$1&VisitLabel=$2&PrintVisit=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2&NoCandidate=true&PrintInstruments=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&PrintInstrumentData=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&PrintInstrumentData=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&flags=true&PrintInstrumentData=true [END]
+RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)/dde/flags$ candidates/InstrumentData.php?Instrument=$3&Visit=$2&CandID=$1&DDE=true&flags=true&PrintInstrumentData=true [END]

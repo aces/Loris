@@ -44,7 +44,7 @@ class CandidateJSON extends APIBase {
     }
 }
 
-if(!isset($_REQUEST['NoCandidate'])) {
+if(isset($_REQUEST['PrintCandidate'])) {
     $obj = new CandidateJSON(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID']

@@ -74,13 +74,15 @@ class ProjectJSON extends APIBase {
     }
 }
 
-$Proj = new ProjectJSON(
-    $_SERVER['REQUEST_METHOD'],
-    $_REQUEST['Project'],
-    isset($_REQUEST['Candidates'])  ? true : false,
-    isset($_REQUEST['Instruments']) ? true : false,
-    isset($_REQUEST['Visits'])      ? true : false
-);
+if(isset($_REQUEST['PrintProjectJSON'])) {
+    $Proj = new ProjectJSON(
+        $_SERVER['REQUEST_METHOD'],
+        $_REQUEST['Project'],
+        isset($_REQUEST['Candidates'])  ? true : false,
+        isset($_REQUEST['Instruments']) ? true : false,
+        isset($_REQUEST['Visits'])      ? true : false
+    );
 
-print $Proj->toJSONString();
+    print $Proj->toJSONString();
+}
 ?>
