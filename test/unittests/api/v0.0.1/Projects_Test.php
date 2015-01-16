@@ -13,8 +13,11 @@ class Projects_Test extends PHPUnit_Framework_TestCase
     }
 
     function testValidMethods() {
-        $API = new \Loris\API\Projects("GET");
-
+        try {
+            $API = new \Loris\API\Projects("GET");
+        } catch (\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
         $this->assertEquals($API->AllowedMethods, ['GET']);
     }
 }
