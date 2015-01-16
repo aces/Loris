@@ -1,7 +1,7 @@
 {function name="renderbase" type=$type element=$element lastComma=true}
-    "Type" : "{$type}",
-    {if $element.name} "Name" : "{$element.name}",{/if}
-    "Description" : "{$element.label}"
+    "Type" : "{$type}"
+    {if $element.name}, "Name" : "{$element.name}"{/if}
+    {if $element.label},"Description" : "{$element.label}"{/if}
 {/function}
 {function name="renderselect" element=$element}
 {ldelim}
