@@ -10,11 +10,12 @@ class InstrumentForm_Test extends PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException Exception
-     */
     function testValidMethods() {
-        $API = new \Loris\API\Projects\InstrumentForm("GET", "test", false, false, false);
+        try {
+            $API = new \Loris\API\Projects\InstrumentForm("GET", "test", false, false, false);
+        } catch(\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
         $this->assertEquals($API->AllowedMethods, ['GET']);
     }
 }
