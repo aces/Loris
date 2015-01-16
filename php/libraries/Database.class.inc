@@ -185,12 +185,6 @@ class Database extends PEAR
             ." :primaryKeys, :primaryVals, :userID, :type)"
         );
 
-        $this->_PDO = new PDO(
-            "mysql:host=$host;dbname=$database",
-            $username,
-            $password
-        );
-
         if (is_null($this->_HistoryPDO)) {
             if (is_null($historydb)) {
                 $this->_HistoryPDO =& $this->_PDO;
