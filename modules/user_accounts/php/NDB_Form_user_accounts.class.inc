@@ -115,7 +115,6 @@ class NDB_Form_user_accounts extends NDB_Form
             $config =& NDB_Config::singleton();
             $couch_config = $config->getSetting("CouchDB");
             if ($couch_config['SyncAccounts'] === "true") {
-                $user =& User::factory($set['UserID']);
                 $user->updateCouchUser($set['Password_md5']);
             }
 
