@@ -29,6 +29,7 @@ set_include_path(
 // inline. They'll still show up in the Apache logs.
 ini_set("display_errors", "Off");
 
+require_once __DIR__ . "/../../../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
