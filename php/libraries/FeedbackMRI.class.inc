@@ -213,11 +213,11 @@ class FeedbackMRI
         $comments = array();
         if (is_array($result)) {
             foreach ($result as $row) {
-                $PredefinedID = $row['PredefinedCommentID'];
+                $PredefinedID       = $row['PredefinedCommentID'];
                 $preDefinedComments = array();
                 $preDefinedComments['Comment'] = stripslashes($row['Comment']);
                 $preDefinedComments['field']   = $row['FieldName'];
-                $comments[$PredefinedID] = $preDefinedComments;
+                $comments[$PredefinedID]       = $preDefinedComments;
             }
         }
 
