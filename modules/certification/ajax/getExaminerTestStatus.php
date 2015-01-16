@@ -1,6 +1,7 @@
 <?php
 /**
- * Certification module....
+ * Certification training: Check is the user's certification status for the
+ * instrument they select for training.
  *
  * PHP Version 5
  *
@@ -14,24 +15,13 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
 require_once "Database.class.inc";
-require_once 'NDB_Config.class.inc';
-require_once 'NDB_Client.class.inc';
-$config =& NDB_Config::singleton();
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
 
 $DB = Database::singleton();
 
 // Get the ID for the instrument that was selected
 $instrumentID = $_REQUEST['instrument'];
 
-// Check what instruments for which the examiner is already certified -> how do you get the identifier???
-/*$certifiedInstruments = $DB->pselect(
-    "SELECT testID FROM certification WHERE certID=:CID",
-    array('CID' => $_REQUEST['identifier'])
-);*/
-
+// Get the status of their certification for the select instrument
 $certificationStatus = $DB->pselectOne(
     "SELECT pass FROM certification WHERE certID=:CID AND testID=:TID",
     array('CID' => 3, 'TID' => $instrumentID)
@@ -44,6 +34,5 @@ if ($certificationStatus == 'certified') {
     print 1;
 } else {
     print 2;
-    //print json_encode($certificationStatus);
 }
 ?>

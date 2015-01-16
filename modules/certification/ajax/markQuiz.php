@@ -1,7 +1,6 @@
 <?php
 /**
- * Certification module....
- *
+ * Certification training: Checks if the answers given for training quiz are correct.
  * PHP Version 5
  *
  * @category Behavioural
@@ -14,12 +13,6 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
 require_once "Database.class.inc";
-require_once 'NDB_Config.class.inc';
-require_once 'NDB_Client.class.inc';
-$config =& NDB_Config::singleton();
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
 
 $DB = Database::singleton();
 
@@ -28,7 +21,6 @@ $instrumentID = $_REQUEST['instrument'];
 
 // iterate over instruments
 $quizCorrect = 1;
-
 foreach ($_POST as $question => $answer) {
     if (is_numeric($question)) {
         if (correct($instrumentID, $question, $answer) == 0) {
@@ -40,8 +32,7 @@ foreach ($_POST as $question => $answer) {
 
 if ($quizCorrect == 1) {
     print 1;
-}
-else {
+} else {
     print 0;
 }
 
