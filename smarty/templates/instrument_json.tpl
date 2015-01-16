@@ -12,6 +12,11 @@
             "{$key}": "{$item|strip}"{if !$smarty.foreach.SelectLoop.last},{/if}
             {/foreach}
         {rdelim}
+        {if $element.RequireResponse}
+        , "RequireResponse" : true
+        {else}
+        , "RequireResponse" : false
+        {/if}
     {rdelim}
 {rdelim}
 {/function}
