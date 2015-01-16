@@ -15,6 +15,7 @@
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
+require_once 'NDB_Config.class.inc';
 
 /**
  * Provides the PHP code for the menu filter for the imaging browser
@@ -220,7 +221,10 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
         );
-        $this->addSelect('ProjectID', 'Project', $allAr + Utility::getProjectList());
+        $config =& NDB_Config::singleton();
+        if ($config->getSetting('useProjects') === 'true') {
+                $this->addSelect('ProjectID', 'Project', $allAr + Utility::getProjectList());
+        }
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',
