@@ -25,7 +25,6 @@ class InstrumentData_Test extends PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($API->AllowedMethods, ['GET', 'PUT', 'PATCH']);
-        $this->assertEquals(0, 3);
     }
 }
 ?>
