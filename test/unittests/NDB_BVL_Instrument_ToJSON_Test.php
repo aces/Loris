@@ -21,7 +21,7 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'));
         $this->MockSinglePointLogin = $this->getMock('SinglePointLogin');
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
-        $this->QuickForm = $this->getMock("HTML_Quickform");
+        $this->QuickForm = new \HTML_Quickform(); //$this->getMock("HTML_Quickform");
 
         $_SESSION = array(
             'State' => $this->Session
@@ -30,8 +30,8 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $this->Client = new \NDB_Client;
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName"))->getMock();
 
+        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";
@@ -61,12 +61,79 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testSelectElement() {
+        $this->i->addSelect("FieldName", "Field Description", array("value" => "Option"));
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $selectElement = $outArray['Elements'][0];
+
+        $this->assertEquals($selectElement,
+            [
+                'Type' => "select",
+                "Name" => "FieldName",
+                "Description" => "Field Description",
+                "Options" => [
+                    "Values" => [
+                        "value" => "Option"
+                    ]
+                ],
+                /*
+                 * These are not included in the output because
+                 * they're the defaults
+                "AllowMultiple" => false,
+                "RequireResponse" => true
+                 */
+            ]
+        );
+    }
+
+    function testMultiselectElement() {
     }
 
     function testTextElement() {
+        $this->i->addTextElement("FieldName", "Field Description", array("value" => "Option"));
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $textElement = $outArray['Elements'][0];
+
+        $this->assertEquals($textElement,
+            [
+                'Type'        => "text",
+                "Name"        => "FieldName",
+                "Description" => "Field Description",
+                "Options"     => [
+                    "Type"            => "small",
+                    "RequireResponse" => true
+                ]
+            ]
+        );
     }
 
     function testDateElement() {
+        $this->i->addBasicDate(
+            "FieldName",
+            "Field Description",
+            [
+                'format'  => 'YMd',
+                "minYear" => "1990",
+                "maxYear" => "2000"
+            ]
+        );
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $dateElement = $outArray['Elements'][0];
+
+        $this->assertEquals($dateElement,
+            [
+                'Type'        => "date",
+                "Name"        => "FieldName",
+                "Description" => "Field Description",
+                "Options"     => [
+                    "MinDate" => "1990-01-01",
+                    "MaxDate" => "2000-12-31",
+                    "RequireResponse" => false
+                ]
+            ]
+        );
     }
 
     function testNumericElement() {
