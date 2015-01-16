@@ -133,10 +133,10 @@ BrowserDetect.init();
 	
  	<div class="navbar navbar-default" role="navigation" style="height:90px">
  		<div class="container">
-	 		<a class="navbar-brand" href="#" style="align:center;">
+	 		<div class="navbar-brand" style="align:center;">
 		 		<img src="{$study_logo}" border="0" width="64" height="57" />
 		 		{$study_title}
-	 		</a>
+	 		</div>
 	 	</div>
  	</div>
  	<div class="row panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
