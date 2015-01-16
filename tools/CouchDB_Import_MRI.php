@@ -25,7 +25,8 @@ class CouchDBMRIImporter {
     }
 
     function UpdateDataDict($types) {
-
+        /* creating dummy mri feedback object so all the mri feedback
+        *  types can be added to the dictionary */
         $mri_feedback = new FeedbackMRI(1, "");
 
         foreach($types as $type) {
@@ -126,7 +127,6 @@ class CouchDBMRIImporter {
             unset($doc['PSCID']);
             unset($doc['Visit_label']);
             unset($doc['SessionID']);
-            unset($doc['FileID']);
             $success = $this->CouchDB->replaceDoc($docid, 
                 array('Meta' => array(
                     'DocType' => 'mri_data',
