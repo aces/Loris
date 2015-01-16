@@ -21,6 +21,6 @@
         "phpunit/phpunit-selenium" : ">=1.2"
     },
     "autoload" : {
-        "classmap": ["php/libraries"]
+        "classmap": ["php/libraries", "php/exceptions"]
     }
 }
