@@ -140,6 +140,39 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testScoreElement() {
+        $this->i->addScoreColumn(
+            "FieldName",
+            "Field Description",
+            "45"
+        );
+        $this->i->addScoreColumn(
+            "FieldName2",
+            null
+        );
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $scoreElement = $outArray['Elements'][0];
+        $scoreElement2 = $outArray['Elements'][1];
+
+        print_r($outArray);
+        $this->assertEquals($scoreElement,
+            [
+                'Type'        => "score",
+                "Name"        => "FieldName",
+                "Description" => "Field Description",
+                /*"Options"     => [
+                ]*/
+            ]
+        );
+        $this->assertEquals($scoreElement2,
+            [
+                'Type'        => "score",
+                "Name"        => "FieldName2",
+                /*"Options"     => [
+                ]*/
+            ]
+        );
+
     }
 }
 ?>
