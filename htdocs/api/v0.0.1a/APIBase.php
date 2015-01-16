@@ -3,16 +3,20 @@
  * PHP 5.5+
  */
 namespace Loris\API;
+require_once __DIR__ . '/SafeExitException.php';
 
 class APIBase {
     var $DB;
     var $client;
     var $JSON;
-    var $AllowedMethods = ['GET'];
+    var $AllowedMethods = [];
     var $AutoHandleRequestDelegation = true;
     var $HTTPMethod;
 
     function __construct($method) {
+        if(empty($this->AllowedMethods)) {
+            $this->AllowedMethods = ['GET'];
+        }
         // Verify that method is allowed for this type of request.
         if(!in_array($method, $this->AllowedMethods)) {
             $this->header("HTTP/1.1 405 Method Not Allowed");
@@ -102,7 +106,7 @@ class APIBase {
 
     function safeExit($code) {
         if(defined("UNIT_TESTING")) {
-            throw new \Exception("Aborting test with code $code", $code);
+            throw new SafeExitException("Aborting test with code $code", $code, $this);
         } else {
             exit($code);
         }

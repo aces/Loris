@@ -6,7 +6,9 @@ require_once 'Instruments.php';
 class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
     var $Instrument;
     public function __construct($method, $CandID, $Visit, $Instrument, $bDDE, $bFlags) {
-        $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
+        if(empty($this->AllowedMethods)) {
+            $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
+        }
         $this->AutoHandleRequestDelegation = false;
         $this->bDDE = $bDDE;
         $this->bFlags = $bFlags;

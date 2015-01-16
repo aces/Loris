@@ -25,16 +25,18 @@ class InstrumentForm extends \Loris\API\APIBase {
 
         try {
             $this->Instrument = \NDB_BVL_Instrument::factory($Instrument, null, null, true);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Invalid Instrument");
-            exit(0);
+            $this->safeExit(0);
         }
 
         $this->handleRequest();
     }
 
     function handleGET() {
+        print_r($this->Instrument);
+        print "Hello";
         $this->JSON = json_decode($this->Instrument->toJSON());
     }
 }
