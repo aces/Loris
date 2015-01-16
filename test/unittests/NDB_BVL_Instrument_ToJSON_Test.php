@@ -62,9 +62,11 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
 
     function testSelectElement() {
         $this->i->addSelect("FieldName", "Field Description", array("value" => "Option"));
+        $this->i->addSelect("FieldName", "Field Description", array("value" => "Option", 'not_answered' => 'Not Answered'));
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $selectElement = $outArray['Elements'][0];
+        $selectElement2 = $outArray['Elements'][1];
 
         $this->assertEquals($selectElement,
             [
@@ -74,14 +76,33 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                 "Options" => [
                     "Values" => [
                         "value" => "Option"
-                    ]
+                    ],
+                    "RequireResponse" => false
                 ],
                 /*
                  * These are not included in the output because
                  * they're the defaults
                 "AllowMultiple" => false,
-                "RequireResponse" => true
                  */
+            ]
+        );
+
+        $this->assertEquals($selectElement2,
+            [
+                'Type' => "select",
+                "Name" => "FieldName",
+                "Description" => "Field Description",
+                "Options" => [
+                    "Values" => [
+                        "value" => "Option"
+                    ],
+                    "RequireResponse" => true
+                /*
+                 * These are not included in the output because
+                 * they're the defaults
+                "AllowMultiple" => false,
+                 */
+                ],
             ]
         );
     }
