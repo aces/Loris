@@ -6,7 +6,9 @@ require_once 'Candidate.php';
 
 class Visit extends \Loris\API\Candidates\Candidate {
     public function __construct($method, $CandID, $VisitLabel) {
-        $this->AllowedMethods = ['GET', 'PUT'];
+        if(empty($this->AllowedMethods)) {
+            $this->AllowedMethods = ['GET', 'PUT'];
+        }
         $this->VisitLabel = $VisitLabel;
         // Parent constructor will handle validation of
         // CandID

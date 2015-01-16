@@ -6,6 +6,9 @@ require_once 'Visit.php';
 
 class Instruments extends Visit {
     public function __construct($method, $CandID, $Visit) {
+        if(empty($this->AllowedMethods)) {
+            $this->AllowedMethods = ['GET'];
+        }
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
         // Parent will validate CandID and Visit Label and abort if necessary
         parent::__construct($method, $CandID, $Visit);

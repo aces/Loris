@@ -18,16 +18,16 @@ class Candidate extends \Loris\API\APIBase {
             || $CandID > 999999
         ) {
             $this->header("HTTP/1.1 400 Bad Request");
-            print json_encode(["error" => "Invalid CandID format"]);
+            $this->error("Invalid CandID format");
             $this->safeExit(0);
 
         }
 
         try {
             $this->Candidate = \Candidate::singleton($CandID);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $this->header("HTTP/1.1 404 Not Found");
-            print json_encode(["error" => "Unknown CandID"]);
+            $this->error("Unknown CandID");
             $this->safeExit(0);
         }
 
