@@ -13,7 +13,6 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM per
 --
 -- Table structure for table `gene`
 --
-DROP TABLE IF EXISTS `gene`;
 CREATE TABLE `gene` (
   `GeneID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Symbol` varchar(255) DEFAULT NULL,
@@ -29,7 +28,6 @@ CREATE TABLE `gene` (
 --
 -- Table structure for table `genome_loc`
 --
-DROP TABLE IF EXISTS `genome_loc`;
 CREATE TABLE `genome_loc` (
   `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Chromosome` varchar(255) DEFAULT NULL,
@@ -43,7 +41,6 @@ CREATE TABLE `genome_loc` (
 --
 -- Table structure for table `genotyping_platform`
 --
-DROP TABLE IF EXISTS `genotyping_platform`;
 CREATE TABLE `genotyping_platform` (
   `PlatformID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
@@ -56,7 +53,6 @@ CREATE TABLE `genotyping_platform` (
 --
 -- Table structure for table `SNP`
 --
-DROP TABLE IF EXISTS `SNP`;
 CREATE TABLE `SNP` (
   `SNPID` bigint(20) NOT NULL AUTO_INCREMENT,
   `CandID` int(6) DEFAULT NULL,
