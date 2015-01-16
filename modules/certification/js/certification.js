@@ -51,18 +51,19 @@ $(document).ready(function() {
         $(this).prop('disabled', true);
     });
 
-    $('body').on('click','#quizSubmit', function (e) {
+    // on click of quiz completion, mark quiz, update certification status, clear tabs?
+    $('body').on('submit','#quiz', function (e) {
         e.preventDefault();
 
         var form = $(this).serialize();
         var instrument = $("option:selected", "select[name='certification_instruments']").val();
+        var queryString = form + '&instrument=' + instrument;
 
-        $.post("AjaxHelper.php?Module=certification&script=markQuiz.php", {instrument: instrument, form: form}, function(data) {
-
+        $.post("AjaxHelper.php?Module=certification&script=markQuiz.php", queryString, function(data) {
+            // If 1 - correct
+            // If 2 - incorrect
         });
     });
-
-    // on click of quiz completion, mark quiz, update certification status, clear tabs?
 });
 
 /* Load all the tab headers (no content) */

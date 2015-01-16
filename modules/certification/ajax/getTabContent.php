@@ -50,8 +50,7 @@ print $tabHTML;
 exit();
 
 function createQuizRadio($questionNumber, $answerNumber, $answer) {
-    return '<div class="radio"><label><input type="radio" name="' 
-           . 'q' 
+    return '<div class="radio"><label><input type="radio" name="'  
            . $questionNumber 
            . '" id="q' 
            . $questionNumber 
@@ -112,10 +111,12 @@ function createTabHTML($quiz, $instructions, $title, $tabContent, $button, $mess
                     . '</div>';
     
     $buttonPanel = '<div class="well well-sm training-complete"><button '
-                    . ($quiz == 1 ? 'type="submit" form="quiz" id="quizSubmit" ' : '')
+                    . ($quiz == 1 ? 'id="quizSubmit" form="quiz"' : '')
                     . 'class="btn btn-default ' 
                     . ($quiz == 0 ? 'btn-agree ' : '')
-                    . 'btn-success" type="button">'
+                    . 'btn-success" type="'
+                    . ($quiz == 0 ? 'button' : 'submit')
+                    . '">'
                     . $button
                     . '</button> '
                     . $message

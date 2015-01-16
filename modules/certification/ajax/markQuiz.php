@@ -26,21 +26,42 @@ $DB = Database::singleton();
 // Get the ID for the instrument that was selected
 $instrumentID = $_REQUEST['instrument'];
 
-print_r($_POST);
-
-/*
-$answers = $DB->pselectOne(
-    "SELECT QuizAnswers FROM certification_training WHERE TestID=:TID",
-    array('TID' => $instrumentID)
-);
-
 // iterate over instruments
 $quizCorrect = 1;
 
-if ($quizCorrect == 1) {
-    
+foreach ($_POST as $question => $answer) {
+    if (is_numeric($question)) {
+        if (correct($instrumentID, $question, $answer) == 0) {
+            $quizCorrect = 0;
+            break;
+        }
+    }
 }
-*/
 
-print 0;
+if ($quizCorrect == 1) {
+    print 1;
+}
+else {
+    print 0;
+}
+
+exit();
+
+function correct($instrumentID, $question, $answer) {
+    $DB = Database::singleton();
+    $correctAnswer = $DB->pselectOne(
+        "SELECT a.OrderNumber as Answer 
+         FROM certification_training_quiz_questions q 
+         LEFT JOIN certification_training_quiz_answers a
+         ON (q.ID=a.QuestionID)
+         WHERE q.TestID=:TID AND a.Correct=1 AND q.OrderNumber=:QNO",
+        array('TID' => $instrumentID, 'QNO' => $question)
+    );
+    if ($correctAnswer == $answer) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
 ?>
