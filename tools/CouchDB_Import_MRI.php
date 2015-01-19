@@ -312,14 +312,14 @@ class CouchDBMRIImporter
                     $fileID = $this->SQLDB->pselectOne(
                         "SELECT FileID FROM files WHERE File=:fname",
                         array('fname'=>$row['Selected_'.$scan_type])
-                    );print "FILE = $fileID";
+                    );
                     // instantiate feedback mri object
                     $mri_feedback = new FeedbackMRI($fileID, $row['SessionID']);
                     $current_feedback = $mri_feedback->getComments();
                     $mri_qc_results = $this->_addMRIFeedback(
-                        $current_feedback, 
+                        $current_feedback,
                         $scan_type, $mri_feedback
-                    );print_r($mri_qc_results);
+                    );
                     $row = array_merge($row, $mri_qc_results);
                 }
             }
