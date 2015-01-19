@@ -2194,6 +2194,13 @@ class NDB_BVL_Instrument extends NDB_Page
 
             $element['options'] = array();
 
+            $selectEl = $html->getElementsByTagName("select")->item(0);
+
+            if($selectEl->getAttribute("multiple") == 'multiple') {
+                $element['Multiselect'] = true;
+            }
+
+
             foreach($html->getElementsByTagName("option") as $option) {
                 if($option->getAttribute("value") === 'not_answered')
                 {
