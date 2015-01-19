@@ -136,6 +136,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     var $preview = false;
 
+    var $WrapperTextElements = array();
+    var $WrapperDateWithStatusElements = array();
     /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
@@ -1517,6 +1519,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     )
     ) {
         $group[] =& $this->createText($field);
+        $this->WrapperTextElements[$field] = $group[0];
         $group[] =& $this->createSelect(
             $field."_status",
             "",
@@ -1687,6 +1690,7 @@ class NDB_BVL_Instrument extends NDB_Page
     */
     function addDateElement($name, $label, $options = null)
     {
+
         if ($options === null) {
             $options = $this->dateOptions;
         }
@@ -1700,6 +1704,7 @@ class NDB_BVL_Instrument extends NDB_Page
              'style' => 'max-width:33%; display:inline-block;',
             )
         );
+        $this->WrapperDateWithStatusElements[$name . "_date"] = $group[0];
         if (!in_array($name . "_date", $this->dateTimeFields)) {
             $this->dateTimeFields[] = $name . "_date";
         }
@@ -2223,6 +2228,54 @@ class NDB_BVL_Instrument extends NDB_Page
                 'mindate' => $minYear . "-01-01",
                 'maxdate' => $maxYear . "-12-31",
             );
+
+            if(isset($this->WrapperDateWithStatusElements[$element['name']])) {
+                $element['NoResponse'] = false;
+            } else {
+                $element['NoResponse'] = true;
+            }
+
+        }
+        return $element;
+    }
+
+    function _toJSONParsePageElement(&$element, &$formArray)
+    {
+        $name = $element['name'];
+        if($element['type'] === 'group') {
+            $elementName = str_replace("_group", '', $name);
+            if(isset($this->WrapperTextElements[$elementName])) {
+                // Convert text elements created by wrapper into
+                // the native type.
+                $mapFunc = function(&$el) use ($name, $elementName) {
+                    if($el['name'] === $name) {
+                        $el['name'] = $elementName;
+                        $el['type'] = 'text';
+                    }
+                };
+                array_map($mapFunc, $formArray['elements']);
+            }
+
+            if(isset($this->WrapperDateWithStatusElements[$elementName])) {
+                // Convert text elements created by wrapper into
+                // the native type.
+                $mapFunc = function(&$el) use ($name, $elementName) {
+
+                    if($el['name'] === $name) {
+                        $label = $el['label'];
+                        $el = $this->_toJSONParseSmarty($el['elements'][0]);
+                        $el['label'] = $label;
+                        //$el = $this->_toJSONParseSmarty($el);
+                    }
+                };
+                array_map($mapFunc, $formArray['elements']);
+            }
+            unset($formArray['elements'][$name]);
+        }
+        if(strpos($name, "_status") === false) {
+            $this->_toJSONParseSmarty($element);
+        } else {
+            unset($formArray['elements'][$name]);
         }
     }
 
@@ -2235,22 +2288,14 @@ class NDB_BVL_Instrument extends NDB_Page
         $formArray = $renderer->toArray();
         if(isset($formArray['elements'])) {
             foreach($formArray['elements'] as &$element) {
-                $name = $element['name'];
-                if($element['type'] === 'group') {
-                    unset($formArray['elements'][$name]);
-                }
-                if(strpos($name, "_status") === false) {
-                    $this->_toJSONParseSmarty($element);
-                } else {
-                    unset($formArray['elements'][$name]);
-                }
+                $this->_toJSONParsePageElement($element, $formArray);
             }
         }
 
         if(isset($formArray['sections'])) {
             foreach($formArray['sections'] as &$section) {
                 foreach($section['elements'] as &$element) {
-                    $this->_toJSONParseSmarty($element);
+                    $this->_toJSONParsePageElement($element, $section);
                 }
             }
         }
