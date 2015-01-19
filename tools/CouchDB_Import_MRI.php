@@ -111,7 +111,7 @@ class CouchDBMRIImporter
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
             }
-        } //print_r($this->Dictionary);
+        }
         $this->CouchDB->replaceDoc(
             "DataDictionary:mri_data",
             array('Meta' => array( 'DataDict' => true),
@@ -150,8 +150,7 @@ class CouchDBMRIImporter
                     LEFT JOIN feedback_mri_comments fmric 
                     ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
                     WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' 
-                          AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1 
-                          limit 10";
+                          AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
         return $Query;
     }
 
@@ -320,12 +319,11 @@ class CouchDBMRIImporter
                     $mri_qc_results = $this->_addMRIFeedback(
                         $current_feedback, 
                         $scan_type, $mri_feedback
-                    );
-                    //     array_push($row, $mri_qc_results);
+                    );print_r($mri_qc_results);
                     $row = array_merge($row, $mri_qc_results);
                 }
             }
-        } //print_r($CandidateData);
+        }
         $this->updateCandidateDocs($CandidateData);
     }
 }
