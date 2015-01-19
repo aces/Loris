@@ -112,9 +112,11 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
 
     function testTextElement() {
         $this->i->addTextElement("FieldName", "Field Description", array("value" => "Option"));
+        $this->i->addTextAreaElement("FieldName2", "Field Description2", array("value" => "Option"));
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $textElement = $outArray['Elements'][0];
+        $textareaElement = $outArray['Elements'][1];
 
         $this->assertEquals($textElement,
             [
@@ -123,6 +125,18 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                 "Description" => "Field Description",
                 "Options"     => [
                     "Type"            => "small",
+                    "RequireResponse" => true
+                ]
+            ]
+        );
+
+        $this->assertEquals($textareaElement,
+            [
+                'Type'        => "text",
+                "Name"        => "FieldName2",
+                "Description" => "Field Description2",
+                "Options"     => [
+                    "Type"            => "large",
                     "RequireResponse" => true
                 ]
             ]
