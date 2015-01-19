@@ -2318,7 +2318,11 @@ class NDB_BVL_Instrument extends NDB_Page
 
         if(isset($formArray['sections'])) {
             foreach($formArray['sections'] as &$section) {
-                foreach($section['elements'] as &$element) {
+                if(isset($section['elements'])) {
+                    foreach($section['elements'] as &$element) {
+                        $this->_toJSONParsePageElement($element, $section);
+                    }
+                } else {
                     $this->_toJSONParsePageElement($element, $section);
                 }
             }

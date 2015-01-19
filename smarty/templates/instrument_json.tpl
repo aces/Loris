@@ -3,6 +3,15 @@
     {if $element.name}, "Name" : "{$element.name}"{/if}
     {if $element.label},"Description" : "{$element.label}"{/if}
 {/function}
+{function name="renderheader" description=$header level=$level}
+{ldelim}
+    "Type" : "header",
+    "Description" : "{$header}"{if $level},
+    "Options" : {ldelim}
+        "Level" : {$level}
+    {rdelim}{/if}
+{rdelim}
+{/function}
 {function name="renderselect" element=$element}
 {ldelim}
     {renderbase type="select" element=$element},
@@ -107,6 +116,11 @@
         {if $el}{$el}{if $el && !$smarty.foreach.ElementLoop.last},{/if}{/if}
     {/foreach}
     {foreach from=$form.sections item=section name=SectionsLoop}
+        {if $section.header}
+             {capture assign="header"}{strip}{$section.header}{/strip}{/capture}
+             {renderheader description=$header level=1}
+             {if $section.elements},{/if}
+        {/if}
         {foreach from=$section.elements item=element name=SectionLoop}
             {capture assign="el"}{strip}{renderelement element=$element}{/strip}{/capture}
             {if $el}{$el}{/if}{if $el}{if !$smarty.foreach.SectionsLoop.last},{elseif !$smarty.foreach.SectionLoop.last},{/if}{/if}
