@@ -21,10 +21,19 @@ $DB = Database::singleton();
 // Get the ID for the instrument that was selected
 $instrumentID = $_REQUEST['instrument'];
 
+
+$user =& User::singleton();
+if (PEAR::isError($user)) {
+    return PEAR::raiseError("User Error: " .$user->getMessage());
+}
+
+$userFullName = $user->getFullname();
+$userCenter = $user->getCenterID();
+
 // Get the status of their certification for the select instrument
 $certificationStatus = $DB->pselectOne(
-    "SELECT pass FROM certification WHERE certID=:CID AND testID=:TID",
-    array('CID' => 3, 'TID' => $instrumentID)
+    "SELECT c.pass FROM certification c LEFT JOIN examiners e ON (c.examinerID=e.examinerID) WHERE e.full_name=:name AND e.centerID=:CID AND c.testID=:TID",
+    array('name' => $userFullName, 'CID' => $userCenter, 'TID' => $instrumentID)
 );
 
 // Check if the examiner is certified for the selected instrument
