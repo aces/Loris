@@ -258,7 +258,22 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testNumericElement() {
-        $this->markTestIncomplete("Numeric Test is not yet implemented");
+        $this->i->addNumericElement("TestElement", "Test Description");
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $numericElement = $outArray['Elements'][0];
+
+        $this->assertEquals($numericElement,
+            [
+                "Type" => "numeric",
+                "Name" => "TestElement",
+                "Description" => "Test Description",
+                "Options" => [
+                    "NumberType" => "decimal"
+                ]
+            ]
+        );
+
     }
 
     function testScoreElement() {

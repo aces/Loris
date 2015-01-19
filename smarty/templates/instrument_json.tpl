@@ -47,6 +47,18 @@
     {renderbase type="score" element=$element}
 {rdelim}
 {/function}
+{function name="rendernumeric" element=$element}
+{ldelim}
+    {renderbase type="numeric" element=$element},
+    "Options" : {ldelim}
+        {* The Loris wrappers use HTML_Quickform numeric rules to
+           enforce this in PHP. The numeric rule can be either decimal
+           or integer, so we say it's a decimal which is more lax
+           *}
+        "NumberType" : "decimal"
+    {rdelim}
+{rdelim}
+{/function}
 {function name="renderelement" element=$element}
 {strip}
 {if $element.type == "select"}
@@ -56,7 +68,7 @@
 {elseif $element.type == "date"}
     {renderdate element=$element}
 {elseif $element.type == "numeric"}
-    NUMERIC TYPE NOT YET IMPLEMENTED
+    {rendernumeric element=$element}
 {elseif $element.type == "static"}
     {if $element.name!= ''}
         {if $element.name != 'Window_difference' && $element.name != 'Candidate_Age'}
