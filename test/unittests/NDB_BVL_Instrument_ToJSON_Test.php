@@ -61,12 +61,20 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testSelectElement() {
-        $this->i->addSelect("FieldName", "Field Description", array("value" => "Option"));
-        $this->i->addSelect("FieldName", "Field Description", array("value" => "Option", 'not_answered' => 'Not Answered'));
+        $value = array('value' => "Option");
+        $not_answered = array('value' => 'Option', 'not_answered' => 'Not Answered');
+        $this->i->addSelect("FieldName", "Field Description", $value);
+        $this->i->addSelect("FieldName", "Field Description", $not_answered);
+        $this->i->form->addElement('select', "multiselect1", "Test Question", $value, "multiple");
+        $this->i->form->addElement('select', "multiselect2", "Test Question", $not_answered, "multiple");
+        //$this->i->addSelect( "multiselect2", "Test Question2", $not_answered,"multiple size='5'" );
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $selectElement = $outArray['Elements'][0];
         $selectElement2 = $outArray['Elements'][1];
+
+        $multiselectElement = $outArray['Elements'][2];
+        $multiselectElement2 = $outArray['Elements'][3];
 
         $this->assertEquals($selectElement,
             [
@@ -106,7 +114,35 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->markTestIncomplete("Missing tests for multiselect elements");
+        $this->assertEquals($multiselectElement,
+            [
+                'Type' => "select",
+                "Name" => "multiselect1",
+                "Description" => "Test Question",
+                "Options" => [
+                    "Values" => [
+                        "value" => "Option"
+                    ],
+                    "RequireResponse" => false,
+                    "AllowMultiple" => true,
+                ],
+            ]
+        );
+
+        $this->assertEquals($multiselectElement2,
+            [
+                'Type' => "select",
+                "Name" => "multiselect2",
+                "Description" => "Test Question",
+                "Options" => [
+                    "Values" => [
+                        "value" => "Option"
+                    ],
+                    "RequireResponse" => true,
+                    "AllowMultiple" => true,
+                ],
+            ]
+        );
     }
 
 

@@ -17,6 +17,9 @@
         {else}
         , "RequireResponse" : false
         {/if}
+        {if $element.Multiselect}
+        , "AllowMultiple" : true
+        {/if}
     {rdelim}
 {rdelim}
 {/function}
