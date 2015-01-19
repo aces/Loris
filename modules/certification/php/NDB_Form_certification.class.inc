@@ -20,12 +20,24 @@ class NDB_Form_certification extends NDB_Form
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        $centerID = $DB->pselectOne("SELECT centerID FROM examiners, certification WHERE examiners.examinerID = certification.examinerID AND certification.certID =:crt_id", array('crt_id'=>$this->identifier));
-        if (PEAR::isError($centerID)) {
-            return PEAR::raiseError("DB Error: ".$centerID->getMessage());
-        }
+        if ($this->page == 'edit_event') {
+            $centerID = $DB->pselectOne("SELECT centerID FROM examiners, certification WHERE examiners.examinerID = certification.examinerID AND certification.certID =:crt_id", array('crt_id'=>$this->identifier));
+            if (PEAR::isError($centerID)) {
+                return PEAR::raiseError("DB Error: ".$centerID->getMessage());
+            }
 
-        return ($user->hasPermission('certification') && ($user->hasPermission('certification_multisite') || $user->getData('CenterID') == $centerID));
+            return ($user->hasPermission('certification') && ($user->hasPermission('certification_multisite') || $user->getData('CenterID') == $centerID));
+
+        } elseif ($this->page == 'training') {
+            $username = $user->getFullname();
+            $username = "Christine Rogers";
+            $examiner = $DB->pselectOne("SELECT examinerID FROM examiners WHERE full_name=:user", array('user'=>$username));
+            if (empty($examiner)) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     function _getDefaults()
@@ -77,9 +89,7 @@ class NDB_Form_certification extends NDB_Form
                 $defaults['pass['.$row['testID'].']'] = $row['pass'];
                 $defaults['comment['.$row['testID'].']'] = $row['comment'];
             }
-
         }
-
         return $defaults;
     }
 
@@ -90,7 +100,6 @@ class NDB_Form_certification extends NDB_Form
         if(Utility::isErrorX($DB)) {
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
-
 
         foreach ($values['pass'] as $testID => $pass) {
             $history_query = "SELECT new, new_date from certification_history where primaryVals =:crt_id AND testID =:tst_id ORDER BY changeDate DESC";
@@ -343,8 +352,29 @@ class NDB_Form_certification extends NDB_Form
                 $this->addBasicDate('date_cert['.$key.']', 'Date', $dateOptions);
             }
         }
-
         $this->form->addFormRule(array(&$this, '_validate'));
+    }
+
+    function training() {
+        $config =& NDB_Config::singleton();
+        $DB =& Database::singleton();
+        if(Utility::isErrorX($DB)) {
+            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
+        }
+
+        $instruments = array();
+        $instruments_query = "SELECT ID, Full_name FROM test_names WHERE Test_name like ";
+        $certificationConfig = $config->getSetting("Certification");
+        $certificationInstruments = $certificationConfig['CertificationInstruments'];
+        foreach(Utility::toArray($certificationInstruments) AS $certificationInstrument){
+            foreach (Utility::toArray($certificationInstrument['test']) AS $test) {
+                $test_key = $test['@']['value'];
+                $instruments_query .= "'%" . $test_key . "%' OR Test_name LIKE ";
+                $testID = $DB->selectOne("SELECT ID FROM test_names WHERE Test_name like '%$test_key%'");
+                $test_value = $test['#'];
+                $instruments[$testID] = $test_value;
+            }
+        }
 
         $this->tpl_data['certification_instruments'] = $instruments;
     }
