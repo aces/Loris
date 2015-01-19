@@ -141,7 +141,28 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
             ]
         );
         $this->i->addBasicDate(
-            "FieldName",
+            "FieldName2",
+            "Field Description",
+            [
+                'format'  => 'YMd',
+                "minYear" => "1990",
+                "maxYear" => "2000",
+                "addEmptyOption" => true,
+            ]
+        );
+
+        $this->i->addDateElement(
+            "FieldName3",
+            "Field Description",
+            [
+                'format'  => 'YMd',
+                "minYear" => "1990",
+                "maxYear" => "2000",
+                "addEmptyOption" => false,
+            ]
+        );
+        $this->i->addDateElement(
+            "FieldName4",
             "Field Description",
             [
                 'format'  => 'YMd',
@@ -154,7 +175,11 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $outArray = json_decode($json, true);
         $dateElement = $outArray['Elements'][0];
         $dateElement2 = $outArray['Elements'][1];
+        $dateElement3 = $outArray['Elements'][2];
+        $dateElement4 = $outArray['Elements'][3];
 
+        // They were added with addBasicDate, so response is
+        // not required.
         $expectedResult = [
                 'Type'        => "date",
                 "Name"        => "FieldName",
@@ -162,11 +187,24 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                 "Options"     => [
                     "MinDate" => "1990-01-01",
                     "MaxDate" => "2000-12-31",
+                    "RequireResponse" => false
                 ]
             ];
 
         $this->assertEquals($dateElement, $expectedResult);
+
+        $expectedResult['Name'] = 'FieldName2';
         $this->assertEquals($dateElement2, $expectedResult);
+
+        unset($expectedResult['Options']['RequireResponse']);
+
+        // The addDateElement wrappers add _date to the field name, the
+        // addBasicDate wrappers do not.
+        $expectedResult['Name'] = 'FieldName3_date';
+        $this->assertEquals($dateElement3, $expectedResult);
+
+        $expectedResult['Name'] = 'FieldName4_date';
+        $this->assertEquals($dateElement4, $expectedResult);
     }
 
     function testNumericElement() {

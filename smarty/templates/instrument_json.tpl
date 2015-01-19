@@ -34,7 +34,8 @@
     {renderbase type="date" element=$element},
     "Options" : {ldelim}
         "MinDate" : "{$element.options.mindate}",
-        "MaxDate" : "{$element.options.maxdate}"
+        "MaxDate" : "{$element.options.maxdate}"{if $element.NoResponse},
+        "RequireResponse" : false{/if}
     {rdelim}
 {rdelim}
 {/function}
@@ -69,7 +70,7 @@
         "Type" : "Group",
         "Error" : "Unimplemented"
     {rdelim}
-{else}
+{elseif $element.type == "ignored"}{else}
     {ldelim}
         "Type" : "Unknown",
         "Error" :"Unknown type"
