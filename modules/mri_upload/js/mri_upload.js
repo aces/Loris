@@ -135,6 +135,30 @@ $(function () {
     "use strict";
     change();
     $("#progressbar").hide();
+
+    $(".MRI_BrowserLink").click(function(e) {
+        e.preventDefault();
+        var form = $('<form />', {
+            "action" : "main.php?test_name=imaging_browser",
+            "method" : "post"
+        });
+        var values = {
+            "reset" : "true",
+            "DCCID" : this.dataset.candid,
+            "VL"    : this.dataset.visitlabel,
+            "filter" : "Show Data"
+        }
+
+        $.each(values, function(name, value) {
+            $("<input />", {
+                type: 'hidden',
+                name: name,
+                value: value
+            }).appendTo(form);
+        });
+
+        form.appendTo('body').submit();
+    });
 /*
     $("#mri_upload").submit(
         function (e) {
