@@ -79,14 +79,16 @@
 {elseif $element.type == "numeric"}
     {rendernumeric element=$element}
 {elseif $element.type == "static"}
-    {if $element.name!= ''}
+    {if $element.name != ''}
         {if $element.name != 'Window_difference' && $element.name != 'Candidate_Age'}
             {* Window Difference and Candidate Age are from the MetaData fields *}
             {renderscore element=$element}
         {/if}
     {else}
-        {if $element.description|strip}
+        {if $element.label|strip}
+            {ldelim}
             {renderbase type="label" element=$element lastComma=false}
+            {rdelim}
         {/if}
     {/if}
 {elseif $element.type == "group"}
@@ -119,7 +121,7 @@
         {if $section.header}
              {capture assign="header"}{strip}{$section.header}{/strip}{/capture}
              {renderheader description=$header level=1}
-             {if $section.elements},{/if}
+             {if $section.elements || !$smarty.foreach.SectionsLoop.last},{/if}
         {/if}
         {foreach from=$section.elements item=element name=SectionLoop}
             {capture assign="el"}{strip}{renderelement element=$element}{/strip}{/capture}

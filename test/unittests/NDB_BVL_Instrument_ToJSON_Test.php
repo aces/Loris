@@ -298,12 +298,13 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testHeaderElement() {
+        // Since QuickForm arbitrarily decides to split things into "sections"
+        // when there's a header, the header test adds 2 headers to ensure that
+        // the JSON serialization was done according to spec, and not according
+        // to QuickForm's whims.
+        // The first "section" has no elements, and the second one, to make sure
+        // that the serialization won't die on a 0 element "section"
         $this->i->form->addElement("header", null, "I am your test header");
-        $this->i->addScoreColumn(
-            "FieldName",
-            "Field Description",
-            "45"
-        );
         $this->i->form->addElement("header", null, "I am another test header");
         $this->i->addScoreColumn(
             "FieldName2",
@@ -313,7 +314,7 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $headerElement = $outArray['Elements'][0];
-        $headerElement2= $outArray['Elements'][2];
+        $headerElement2= $outArray['Elements'][1];
 
         $this->assertEquals($headerElement,
             [
@@ -333,12 +334,23 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                 ]
             ]
         );
+
+        $this->assertEquals(count($outArray['Elements']), 3);
     }
 
-    /*
     function testLabelElement() {
-        $this->markTestIncomplete("Label test is not yet implemented");
+        $this->i->addLabel("I am a label");
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $labelElement = $outArray['Elements'][0];
+
+        $this->assertEquals($labelElement,
+            [
+                'Type'        => "label",
+                "Description" => "I am a label"
+            ]
+        );
+        $this->assertEquals(count($outArray['Elements']), 1);
     }
-     */
 }
 ?>
