@@ -1,6 +1,7 @@
 <?php
 /**
  * Certification training: Checks if the answers given for training quiz are correct.
+ *
  * PHP Version 5
  *
  * @category Behavioural
@@ -38,20 +39,32 @@ if ($quizCorrect == 1) {
 
 exit();
 
-function correct($instrumentID, $question, $answer) {
-    $DB = Database::singleton();
+/**
+ * Determines if an answer is correct for a question from the training quiz
+ *
+ * @param string $instrumentID The ID of the instrument
+ * @param string $question     The question number
+ * @param string $answer       The answer number provided by the user
+ *
+ * @return int
+ */
+function correct($instrumentID, $question, $answer)
+{
+    $DB            = Database::singleton();
     $correctAnswer = $DB->pselectOne(
         "SELECT a.OrderNumber as Answer 
          FROM certification_training_quiz_questions q 
          LEFT JOIN certification_training_quiz_answers a
          ON (q.ID=a.QuestionID)
          WHERE q.TestID=:TID AND a.Correct=1 AND q.OrderNumber=:QNO",
-        array('TID' => $instrumentID, 'QNO' => $question)
+        array(
+         'TID' => $instrumentID,
+         'QNO' => $question,
+        )
     );
     if ($correctAnswer == $answer) {
         return 1;
-    }
-    else {
+    } else {
         return 0;
     }
 }

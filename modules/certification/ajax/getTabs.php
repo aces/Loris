@@ -1,6 +1,7 @@
 <?php
 /**
- * Certification training: Creates the html for the tab navigation, and the divs that will hold the tab content.
+ * Certification training: Creates the html for the tab navigation, 
+ * and the divs that will hold the tab content.
  *
  * PHP Version 5
  *
@@ -22,21 +23,37 @@ $instrumentID = $_REQUEST['instrument'];
 
 // Get the tab titles
 $tabs = $DB->pselect(
-    "SELECT Title, TrainingType, OrderNumber FROM certification_training WHERE TestID=:TID ORDER BY OrderNumber",
+    "SELECT Title, TrainingType, OrderNumber
+     FROM certification_training
+     WHERE TestID=:TID
+     ORDER BY OrderNumber",
     array('TID' => $instrumentID)
 );
 
 // Add tab html
 $tabhtml = '<ul class="nav nav-tabs" id="trainingTabs">';
 foreach ($tabs as $tab) {
-    $tabhtml = $tabhtml . '<li class="disabled" id="' . $tab['OrderNumber'] . '"><a role="button" data-toggle="tab" data-target="#' . str_replace(' ', '', $tab['Title']) . '">' . $tab['Title'] . '</a></li>';
+    $tabhtml = $tabhtml
+             . '<li class="disabled" id="'
+             . $tab['OrderNumber']
+             . '"><a role="button" data-toggle="tab" data-target="#'
+             . str_replace(' ', '', $tab['Title'])
+             . '">'
+             . $tab['Title']
+             . '</a></li>';
 }
 $tabhtml .= '</ul>';
 
 // Add tab body html
 $tabhtml .= '<div class="tab-content container">';
 foreach ($tabs as $tab) {
-    $tabhtml = $tabhtml . '<div class="tab-pane ' . 'training-' . $tab['TrainingType'] . '" id="' . str_replace(' ', '', $tab['Title']) . '"></div>';
+    $tabhtml = $tabhtml
+             . '<div class="tab-pane '
+             . 'training-'
+             . $tab['TrainingType']
+             . '" id="'
+             . str_replace(' ', '', $tab['Title'])
+             . '"></div>';
 }
 $tabhtml .= '</div>';
 
