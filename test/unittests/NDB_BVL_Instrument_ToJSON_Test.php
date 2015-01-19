@@ -105,10 +105,10 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                 ],
             ]
         );
+
+        $this->markTestIncomplete("Missing tests for multiselect elements");
     }
 
-    function testMultiselectElement() {
-    }
 
     function testTextElement() {
         $this->i->addTextElement("FieldName", "Field Description", array("value" => "Option"));
@@ -222,6 +222,7 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testNumericElement() {
+        $this->markTestIncomplete("Numeric Test is not yet implemented");
     }
 
     function testScoreElement() {
@@ -257,6 +258,14 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
             ]
         );
 
+    }
+
+    function testHeaderElement() {
+        $this->markTestIncomplete("Header test is not yet implemented");
+    }
+
+    function testLabelElement() {
+        $this->markTestIncomplete("Label test is not yet implemented");
     }
 }
 ?>
