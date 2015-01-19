@@ -87,11 +87,6 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                     ],
                     "RequireResponse" => false
                 ],
-                /*
-                 * These are not included in the output because
-                 * they're the defaults
-                "AllowMultiple" => false,
-                 */
             ]
         );
 
@@ -105,11 +100,6 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                         "value" => "Option"
                     ],
                     "RequireResponse" => true
-                /*
-                 * These are not included in the output because
-                 * they're the defaults
-                "AllowMultiple" => false,
-                 */
                 ],
             ]
         );
@@ -296,27 +286,59 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
                 'Type'        => "score",
                 "Name"        => "FieldName",
                 "Description" => "Field Description",
-                /*"Options"     => [
-                ]*/
             ]
         );
         $this->assertEquals($scoreElement2,
             [
                 'Type'        => "score",
                 "Name"        => "FieldName2",
-                /*"Options"     => [
-                ]*/
             ]
         );
 
     }
 
     function testHeaderElement() {
-        $this->markTestIncomplete("Header test is not yet implemented");
+        $this->i->form->addElement("header", null, "I am your test header");
+        $this->i->addScoreColumn(
+            "FieldName",
+            "Field Description",
+            "45"
+        );
+        $this->i->form->addElement("header", null, "I am another test header");
+        $this->i->addScoreColumn(
+            "FieldName2",
+            "Field Description",
+            "45"
+        );
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $headerElement = $outArray['Elements'][0];
+        $headerElement2= $outArray['Elements'][2];
+
+        $this->assertEquals($headerElement,
+            [
+                'Type'        => "header",
+                "Description" => "I am your test header",
+                "Options"     => [
+                    "Level" => 1
+                ]
+            ]
+        );
+        $this->assertEquals($headerElement2,
+            [
+                'Type'        => "header",
+                "Description" => "I am another test header",
+                "Options"     => [
+                    "Level" => 1
+                ]
+            ]
+        );
     }
 
+    /*
     function testLabelElement() {
         $this->markTestIncomplete("Label test is not yet implemented");
     }
+     */
 }
 ?>
