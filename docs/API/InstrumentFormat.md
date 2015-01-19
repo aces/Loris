@@ -1,11 +1,11 @@
+# 0.0: Preamble
+
 This file describes the general format to be used by Loris to describe
-instruments as a JSON object and will likely become an important of the
+instruments as a JSON object and will likely become an important part of the
 API and/or mobile specific versions of Loris.
 
-This spec is NOT YET IMPLEMENTED. Anywhere. However, it will supercede
-the .linst files created by the current instrument builder.
+This format will supercede the .linst files created by the current instrument builder.
 
-=========================================================================
 
 # 1.0: Instrument format overview
 
@@ -15,7 +15,7 @@ meta data about the instrument and the version of it described by the JSON objec
 
 An implementation should ignore any keys it doesn't expect so as to make it easier to extend
 this standard without breaking backwards compatibility. Instruments MAY implement both
-the instrument format described below and the accompagning rules format in the same
+the instrument format described below and the accompagnying rules format in the same
 JSON object, or they MAY be used independently.
 
 ## 1.1: The Top Level JSON object
@@ -24,11 +24,11 @@ The high level view of the JSON object looks like this:
 
 Instrument format:
 
-```json
+```js
 {
     "Meta" : {
         "InstrumentVersion": string,
-        "InstrumentFormatVersion" : "v0.0.1b-dev",
+        "InstrumentFormatVersion" : "v0.0.2-dev",
         "ShortName" : "InstrumentName", /* Required */
         "LongName"  : "The Human Readable Instrument Name", /* Required */
         "IncludeMetaDataFields" : boolean
@@ -85,7 +85,7 @@ Each type of element may contain type specific options. In general, a PageElemen
 the following format:
 
 
-```json
+```js
 {
     "Type" : string,
     "Name" : UniqueQuestionIdentifier,
@@ -118,19 +118,20 @@ the following format:
 
 2.1.x describes input related types
 2.2.x describes layout related types
-3.x   will describe ElementGroup related types.
+3.x   describes element group related types.
 
-### 2.1.1: SelectPageElement
+### 2.1.1: Select Element
 
-A SelectPageElement encompasses both HTML select and multiselect types and appears
-as follows:
+A Select element encompasses both HTML select and multiselect types and appears
+as follows. It denotes a group of values of which the user must select one option
+(or many, if `AllowMultiple` is true):
 
-```json
+```js
 {
     "Type" : "select",
     "Name" : REQUIRED,
     "Description" : REQUIRED,
-    Options : {
+    "Options" : {
         "Values" : {
             "SaveValue"       : "Human Readable Description",
             "SaveValue2"      : "Another human readable description"
@@ -178,7 +179,7 @@ as follows:
 A text element represents a place for the user to enter text into a form and
 save it. The format is as follows:
 
-```json
+```js
 {
     "Type": "text",
     "Name": REQUIRED,
@@ -219,14 +220,14 @@ save it. The format is as follows:
 A DateElement represents a way for a user to enter a date. The general format is
 as follows:
 
-```json
+```js
 {
-    Type: "date",
-    Name: REQUIRED,
+    "Type": "date",
+    "Name": REQUIRED,
     "Description": REQUIRED,
-    Options {
-        MinDate : "YYYY-MM-DD",
-        MaxDate : "YYYY-MM-DD",
+    "Options" : {
+        "MinDate" : "YYYY-MM-DD",
+        "MaxDate" : "YYYY-MM-DD",
         "RequireResponse" : boolean
     }
 }
@@ -251,15 +252,15 @@ as follows:
 
 A NumericElement represents a numeric data input and has the general form of:
 
-```json
+```js
 {
-    Type: "numeric",
-    Name: REQUIRED,
-    Description: REQUIRED,
-    Options {
-        NumberType: "integer|decimal",
-        MinValue: number,
-        MaxValue: number
+    "Type": "numeric",
+    "Name": REQUIRED,
+    "Description": REQUIRED,
+    "Options" : {
+        "NumberType": "integer|decimal",
+        "MinValue": number,
+        "MaxValue": number
     }
 }
 ```
@@ -292,12 +293,12 @@ A score field represents a placeholder to display/save values based on other
 data entered by the user in the instrument but does not directly get input from
 the user. It has the following form.
 
-```
+```js
 {
-    Type: "score",
-    Name: REQUIRED,
-    Description: OPTIONAL,
-    Options: {
+    "Type": "score",
+    "Name": REQUIRED,
+    "Description": OPTIONAL,
+    "Options": {
         /* None currently */
     }
 }
@@ -324,14 +325,15 @@ is NOT REQUIRED and unused.
 A HeaderElement represents a header which should be displayed with some level of prominence
 (ie bolded or centered.) 1 is the most prominent header, and lower numbers should be used
 for subsection/subheaders. There is no need to add a header with the instrument name as an
-implementation of this spec MAY already do so.
+implementation of this spec MAY already do so. There is no limit for how many levels of headers
+may be used by an instrument.
 
-```json
+```js
 {
-    Type: "header",
-    Description: "Required",
-    Options: {
-        Level: integer
+    "Type": "header",
+    "Description": "Required",
+    "Options": {
+        "Level": integer
     }
 }
 ```
@@ -348,13 +350,13 @@ implementation of this spec MAY already do so.
 
 ### 2.2.2: LabelElement
 
-A label element represents some text to display to the user with no accompagning user
+A label element represents some text to display to the user with no accompagnying user
 input. It has the following form:
 
-```json
+```js
 {
-    Type: "label",
-    "Description" : Required,
+    "Type": "label",
+    "Description" : REQUIRED,
     "Options": {
         /* None currently */
 
@@ -372,10 +374,122 @@ input. It has the following form:
 
 ElementGroups represent some kind of grouping of elements and may represent,
 for instance, a table, rows in that table, pages, or groups of elements that aren't
-tabular but should be logically grouped together into a row. This part of the spec has yet to
-be written.
+tabular but should be logically grouped together into a row. 
 
-TODO: Add PageGroups
-      ElementGroups
-      TableGroup
-      RowGroup
+Groups have the general form of:
+```js
+{
+    "Type"      : "ElementGroup",
+    "GroupType" : Type,
+    "Elements"  : [ /* Array of elements */]
+}
+```
+
+`Type`: MUST be "ElementGroup",
+
+`GroupType`: must be one of the types defined in section 3 of this documents.
+
+`Elements`: must be an array of elements from either section 2 or 3 of this document.
+            Specific GroupTypes may have restrictions on what type of element is permitted
+            within that GroupType's elements.
+
+
+## 3.1: Page
+
+A page group represents a group of questions to be displayed on a single page together. It
+has the following form:
+
+```js
+{
+    "Type"      : "ElementGroup"
+    "GroupType" : "Page"
+    "Elements"  : [ /* Array of elements of any element or group type defined in this document */],
+    "Description" : OPTIONAL
+}
+```
+
+Any element that it not part of a Page group will be placed on a default top level page.
+
+`Type`: MUST be "ElementGroup",
+
+`GroupType`: MUST be "Page"
+
+`Elements`: May be of any type except with the exception that a Page MUST NOT have further
+            Page groups embedded into the Page.
+
+`Description`: OPTIONAL. A name to give the page which may be used to aid in page navigation.
+               If missing, an implementation may use any method it chooses to differentiate
+               pages.
+
+## 3.2 Element
+
+An Element group denotes a collection of elements which should be displayed together and
+separated by a delimiter.
+
+They often have rules which work together and may be interdependent.
+
+Element groups have the form:
+
+```js
+{
+    "Type"      : "ElementGroup",
+    "GroupType" : "Element"
+    "Elements"  : [ /* Array of elements defined in section 2 of this document */]
+}
+```
+
+`Type`: MUST be "ElementGroup",
+
+`GroupType`: MUST be "Element"
+
+`Elements`: May be any element type defined in section 2, but MUST NOT contain further
+            subgroups.
+
+## 3.3 Table
+
+A table group denotes a group of rows that should be grouped together into a tabular form.
+
+It contains only row groups which should all be of the same size. If the row groups are not
+of the same size, rows of a table rendering should be padded with empty cells at the end
+to grow smaller rows to the size of the biggest row.
+
+```js
+{
+    "Type"      : "ElementGroup",
+    "GroupType" : "Table",
+    "Elements"  : [ /* Array of Row group elements defined in section 3.4*/],
+    "Description" : OPTIONAL
+}
+```
+
+`Type`: MUST be "ElementGroup",
+
+`GroupType`: MUST be "Table"
+
+`Elements`: MUST only contain Row groups.
+
+`Description`: OPTIONAL. A table footer to label the table figure.
+
+## 3.4 Row
+
+Row groups denote rows in a table. If rows are not in a table, they should be rendered
+such that they are an element group which spans the entire width of the page independently
+of other rows on the page.
+
+If row groups are part of a table, they should be rendered into a tabular form where each
+column of the table has the same width. Table headers can be created by adding element types
+of type "header" into the row group.
+
+```js
+{
+    "Type"      : "ElementGroup",
+    "GroupType" : "Row",
+    "Elements"  : [ /* Array of elements defined in section 2 of this document */]
+}
+```
+
+`Type`: MUST be "ElementGroup",
+
+`GroupType`: MUST be "Row"
+
+`Elements`: May contain any standard element type from section 2.
