@@ -136,25 +136,37 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
             [
                 'format'  => 'YMd',
                 "minYear" => "1990",
-                "maxYear" => "2000"
+                "maxYear" => "2000",
+                "addEmptyOption" => false,
+            ]
+        );
+        $this->i->addBasicDate(
+            "FieldName",
+            "Field Description",
+            [
+                'format'  => 'YMd',
+                "minYear" => "1990",
+                "maxYear" => "2000",
+                "addEmptyOption" => true,
             ]
         );
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $dateElement = $outArray['Elements'][0];
+        $dateElement2 = $outArray['Elements'][1];
 
-        $this->assertEquals($dateElement,
-            [
+        $expectedResult = [
                 'Type'        => "date",
                 "Name"        => "FieldName",
                 "Description" => "Field Description",
                 "Options"     => [
                     "MinDate" => "1990-01-01",
                     "MaxDate" => "2000-12-31",
-                    "RequireResponse" => false
                 ]
-            ]
-        );
+            ];
+
+        $this->assertEquals($dateElement, $expectedResult);
+        $this->assertEquals($dateElement2, $expectedResult);
     }
 
     function testNumericElement() {
@@ -175,7 +187,6 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $scoreElement = $outArray['Elements'][0];
         $scoreElement2 = $outArray['Elements'][1];
 
-        print_r($outArray);
         $this->assertEquals($scoreElement,
             [
                 'Type'        => "score",
