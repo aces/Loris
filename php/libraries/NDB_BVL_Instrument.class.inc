@@ -1604,6 +1604,7 @@ class NDB_BVL_Instrument extends NDB_Page
              'class' => 'form-control',
             )
         );
+        $this->WrapperTextElements[$field] = $group[0];
         $group[] =& $this->createSelect(
             $field."_status",
             "",
@@ -2250,7 +2251,11 @@ class NDB_BVL_Instrument extends NDB_Page
                 $mapFunc = function(&$el) use ($name, $elementName) {
                     if($el['name'] === $name) {
                         $el['name'] = $elementName;
-                        $el['type'] = 'text';
+                        if($this->WrapperTextElements[$elementName]->_type == 'textarea') {
+                            $el['type'] = 'textarea';
+                        } else {
+                            $el['type'] = 'text';
+                        }
                     }
                 };
                 array_map($mapFunc, $formArray['elements']);
