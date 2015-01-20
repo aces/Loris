@@ -214,53 +214,6 @@ class SinglePointLogin extends PEAR
 
         // update the user
         $success = $user->update($set);
-
-        // get config options relating to proftpd
-        $config      =& NDB_Config::singleton();
-        $ftpSettings = $config->getSetting("proftpd");
-
-        // if proftpd stuff is enabled:
-        if ($ftpSettings['enabled'] == 'true') {
-            // connect to proftpd database
-            $ftpdb   = new Database();
-            $success = $ftpdb->connect(
-                $ftpSettings['database'],
-                $ftpSettings['username'],
-                $ftpSettings['password'],
-                $ftpSettings['host'],
-                false
-            );
-
-            // check users table to see if we have a valid user
-            $query = "SELECT COUNT(*) AS User_count
-                          FROM ftpusers
-                      WHERE userid = :UID";
-            $row   = $ftpdb->pselectRow($query, array('UID' => $_POST['username']));
-            // update password
-            if ($row['User_count'] == 1) {
-
-                $setArray['passwd'] = crypt($_POST['password']);
-
-                $success = $ftpdb->update(
-                    'ftpusers',
-                    $setArray,
-                    array('userid' => $_POST['username'])
-                );
-            } else {
-                // if user does not exist, insert user data
-                $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
-
-                $maxUID = $ftpdb->pselectOne($query, array());
-
-                $setArray['userid']  = $_POST['username'];
-                $setArray['passwd']  = crypt($_POST['password']);
-                $setArray['uid']     = $maxUID + 1;
-                $setArray['homedir'] = "/";
-
-                // insert into proftpd
-                $success = $ftpdb->insert("ftpusers", $setArray);
-            }
-        }
         return true;
     }
 
