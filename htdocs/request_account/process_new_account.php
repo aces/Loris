@@ -11,6 +11,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+require_once __DIR__ . '/../../vendor/autoload.php';
 set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");
 ini_set('default_charset', 'utf-8');
 /**
@@ -44,22 +45,29 @@ $tpl_data['css']         = "../".$config->getSetting('css');
 $tpl_data['rand']        = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
-$tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
 $tpl_data['currentyear'] = date('Y');
-$study_links             = $config->getSetting('Studylinks');// print_r($study_links);
-foreach (Utility::toArray($study_links['link']) AS $link) {
-    $LinkArgs = '';
-    $BaseURL  = $link['@']['url'];
-    if (isset($link['@']['args'])) {
-        $LinkArgs = $link_args[$link['@']['args']];
-    }
-    $LinkLabel                = $link['#'];
-    $WindowName               = md5($link['@']['url']);
-    $tpl_data['studylinks'][] = array(
+try {
+    $tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+} catch(ConfigurationException $e) {
+    $tpl_data['study_logo'] = '';
+}
+try {
+    $study_links             = $config->getSetting('Studylinks');// print_r($study_links);
+    foreach (Utility::toArray($study_links['link']) AS $link) {
+        $LinkArgs = '';
+        $BaseURL  = $link['@']['url'];
+        if (isset($link['@']['args'])) {
+            $LinkArgs = $link_args[$link['@']['args']];
+        }
+        $LinkLabel                = $link['#'];
+        $WindowName               = md5($link['@']['url']);
+        $tpl_data['studylinks'][] = array(
             'url'        => $BaseURL . $LinkArgs,
             'label'      => $LinkLabel,
             'windowName' => $WindowName
-            );
+        );
+    }
+} catch(ConfigurationException $e) {
 }
 
 $err = array();
