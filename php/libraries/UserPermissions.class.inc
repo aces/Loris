@@ -79,7 +79,8 @@ class UserPermissions
 
         // get all the permissions for this user
         $query = "SELECT p.code, pr.userID FROM permissions p
-                    LEFT JOIN user_perm_rel pr ON (p.permID=pr.permID AND pr.userID=:UID)";
+            LEFT JOIN user_perm_rel pr
+            ON (p.permID=pr.permID AND pr.userID=:UID)";
 
         $results = $DB->pselect($query, array('UID' => $this->userID));
 
@@ -88,7 +89,9 @@ class UserPermissions
 
         // fill the array
         foreach ($results AS $row) {
-            if(!empty($row['userID']) && $row['userID'] === $this->userID) {
+            if (!empty($row['userID'])
+                && $row['userID'] === $this->userID
+            ) {
                 $this->permissions[$row['code']] = true;
             } else {
                 $this->permissions[$row['code']] = false;
@@ -108,8 +111,7 @@ class UserPermissions
      */
     function hasPermission($code)
     {
-        if (!isset($this->permissions[$code]))
-        {
+        if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
         }
         if ($this->permissions[$code] === true) {
