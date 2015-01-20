@@ -122,7 +122,11 @@ class SinglePointLogin extends PEAR
         $tpl_data['title'] = $config->getSetting('title');
         $tpl_data['css']   = $config->getSetting('css');
         $study_title       = $config->getSetting('title');
-        $study_logo        = $config->getSetting('studylogo');
+        try {
+            $study_logo        = $config->getSetting('studylogo');
+        } catch(ConfigurationException $e) {
+            $study_logo = '';
+        }
 
         $tpl_data['study_title'] = $study_title;
         $tpl_data['study_logo']  = $study_logo;
