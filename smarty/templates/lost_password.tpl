@@ -16,7 +16,7 @@
 <div class="navbar navbar-default" role="navigation" style="height:90px">
     <div class="container">
         <div class="navbar-brand" style="align:center;">
-            <img src="{$study_logo}" border="0" width="64" height="57" />
+            {if $study_logo}<img src="{$study_logo}" border="0" width="64" height="57" />{/if}
             {$study_title}
         </div>
     </div>

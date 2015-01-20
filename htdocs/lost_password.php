@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
@@ -21,7 +22,11 @@ $tpl_data = array();
 $config =& NDB_Config::singleton();
 $tpl_data['css']=$config->getSetting('css');
 $tpl_data['study_title'] = $config->getSetting('title');
-$tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+try {
+    $tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+} catch(ConfigurationException $e) {
+    $tpl_data['study_logo']  = '';
+}
 
 if (isset($_POST['username'])) {
 
