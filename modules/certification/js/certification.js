@@ -12,24 +12,14 @@ $(document).ready(function() {
         if (instrument !== "0") {
             $.post("AjaxHelper.php?Module=certification&script=getExaminerTestStatus.php", {instrument: instrument}, function(data) {
                 if (data == 0) {
-                    var certifiedHTML = '<div class="alert alert-danger alert-certification" role="alert">' 
-                                        + 'You have already been certified for ' 
-                                        + instrumentName 
-                                        + '.'
-                                        + '</div>';
+                    var certifiedHTML = createAlert('danger', 'You have already been certified for ' + instrumentName + '.');
 
                     $('#instructions').html(certifiedHTML);
                 }
                 else {
-                    var uncertifiedHTML = '<div class="alert alert-success alert-certification" role="alert">' 
-                                          + 'Please complete the training below to be certified for ' 
-                                          + instrumentName
-                                          + '.'
-                                          + '</div>';
-
+                    var uncertifiedHTML = createAlert('success', 'Please complete the training below to be certified for ' + instrumentName + '.');
                     $('#instructions').html(uncertifiedHTML);
                     loadTabs(instrument);
-                    loadTabContent(instrument, 1);
                 }
             });
         }
@@ -58,22 +48,15 @@ $(document).ready(function() {
 
             // If 1 - correct
             if (data == 1) {
-                var correctHTML = '<div class="alert alert-success alert-certification" role="alert">' 
-                                          + 'You are now certified for '
-                                          + getSelectedInstrumentName()
-                                          + '.'
-                                          + '</div>';
+                var correctHTML = createAlert('success', 'You are now certified for ' + getSelectedInstrumentName() + '.');
                 $('#instructions').html(correctHTML);
                 // TODO: send the data to be inserted
             }
             // If 2 - incorrect
             else {
-                var incorrectHTML = '<div class="alert alert-danger alert-certification" role="alert">' 
-                                          + 'Your answers were not correct. Please complete the training again.'
-                                          + '</div>';
+                var incorrectHTML = createAlert('danger', 'Your answers were not correct. Please complete the training again.');
                 $('#instructions').html(incorrectHTML);
                 loadTabs(instrument);
-                loadTabContent(instrument, 1);
             }
         });
     });
@@ -87,9 +70,28 @@ function getSelectedInstrumentName() {
     return $("option:selected", "select[name='certification_instruments']").text();
 }
 
+function createAlert(alertType, message) {
+    var alertHTML = '<div class="alert alert-'
+                    + alertType
+                    + ' alert-certification" role="alert">'
+                    + message
+                    + '</div>';
+    return alertHTML;
+}
+
 /* Load all the tab headers (no content) */
 function loadTabs(instrument) {
-    $('#tabs').load("AjaxHelper.php?Module=certification&script=getTabs.php", {instrument: instrument});
+    $.post("AjaxHelper.php?Module=certification&script=getTabs.php", {instrument: instrument}, function(data) {
+        if (data == '0') {
+            $('#tabs').html("");
+            var alertHTML = createAlert('danger', 'There is no online training for the ' + getSelectedInstrumentName() + ' at this time.');
+            $('#instructions').html(alertHTML);
+        }
+        else {
+            $('#tabs').html(data);
+            loadTabContent(instrument, 1);
+        }
+    });
 }
 
 /* Load the content of one tab, enable the tab header to be clicked, open tab*/

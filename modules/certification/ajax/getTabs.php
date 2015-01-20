@@ -30,6 +30,12 @@ $tabs = $DB->pselect(
     array('TID' => $instrumentID)
 );
 
+// If there is no training content for the instrument, return 0
+if (empty($tabs)) {
+    print 0;
+    exit();
+}
+
 // Add tab html
 $tabhtml = '<ul class="nav nav-tabs" id="trainingTabs">';
 foreach ($tabs as $tab) {
