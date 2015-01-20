@@ -254,12 +254,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/php-webdriver.git",
-                "reference": "da9b3f98bfcd79e4597fdc0f15e931f6d49670e0"
+                "reference": "94ec250686de16ae054db281804bcd7f5b19b0ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/da9b3f98bfcd79e4597fdc0f15e931f6d49670e0",
-                "reference": "da9b3f98bfcd79e4597fdc0f15e931f6d49670e0",
+                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/94ec250686de16ae054db281804bcd7f5b19b0ac",
+                "reference": "94ec250686de16ae054db281804bcd7f5b19b0ac",
                 "shasum": ""
             },
             "require": {
@@ -287,7 +287,7 @@
                 "selenium",
                 "webdriver"
             ],
-            "time": "2015-01-07 04:07:11"
+            "time": "2015-01-12 17:41:12"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -489,16 +489,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "f8d5d08c56de5cfd592b3340424a81733259a876"
+                "reference": "db32c18eba00b121c145575fcbcd4d4d24e6db74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/f8d5d08c56de5cfd592b3340424a81733259a876",
-                "reference": "f8d5d08c56de5cfd592b3340424a81733259a876",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/db32c18eba00b121c145575fcbcd4d4d24e6db74",
+                "reference": "db32c18eba00b121c145575fcbcd4d4d24e6db74",
                 "shasum": ""
             },
             "require": {
@@ -511,7 +511,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.3-dev"
+                    "dev-master": "1.4-dev"
                 }
             },
             "autoload": {
@@ -534,7 +534,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2014-08-31 06:12:13"
+            "time": "2015-01-17 09:51:32"
         },
         {
             "name": "phpunit/phpunit",
