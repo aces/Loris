@@ -18,7 +18,7 @@ install:
       # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
-    - php -S localhost:8080&
+    - php -S localhost:8080 -t htdocs&
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
