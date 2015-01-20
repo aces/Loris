@@ -1,6 +1,8 @@
 language: php
 cache:
-    directories: vendor
+    directories:
+        - vendor
+        - selenium-server-standalone-2.44.0.jar
 
 sudo: false
 
@@ -16,7 +18,7 @@ install:
     - phpenv rehash
 
       # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
+    - wget -N "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
     - php -S localhost:8080 -t htdocs&
     # Start Selenium and redirect Selenium WebDriver
