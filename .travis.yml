@@ -18,7 +18,7 @@ install:
       # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
-    - php -S localhost:80
+    - php -S localhost:8080&
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
@@ -41,6 +41,8 @@ before_script:
           -e "s/%DATABASE%/LorisTest/g"
           < docs/config/config.xml > project/config.xml
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+    - mysql LorisTest -e "UPDATE Config SET Value='localhost:8080' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host')"
+    - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8080' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
 script:
     # Run PHP -l on everything to ensure there's no syntax
