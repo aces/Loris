@@ -11,7 +11,7 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
        $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
 
-       $this->webDriver->get($url . "/main.php');
+       $this->webDriver->get($url . '/main.php');
 
        print "Page source: " . $this->webDriver->getPageSource();
 
