@@ -14,6 +14,7 @@ class APIBase {
     var $HTTPMethod;
 
     var $Factory;
+    var $Headers;
 
     function __construct($method) {
         if(empty($this->AllowedMethods)) {
@@ -93,15 +94,12 @@ class APIBase {
         return json_encode($this->JSON);
     }
 
-    function error($msg ) {
-        if(defined("UNIT_TESTING")) {
-        } else {
-            print json_encode(["error" => $msg]);
-        }
+    function error($msg) {
+        print json_encode(["error" => $msg]);
     }
     function header($head) {
         if(defined("UNIT_TESTING")) {
-            //print $head;
+            $this->Headers[] = $head;
         } else {
             header($head);
         }

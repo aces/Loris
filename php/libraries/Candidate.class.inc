@@ -78,8 +78,9 @@ class Candidate
      */
     public function select($candID)
     {
-        $factory   = NDB_Factory::singleton();
-        $config    = $factory->config();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $candID    = trim($candID);
         $CandArray = array('Candidate' => $candID);
 
@@ -519,14 +520,15 @@ class Candidate
      */
     public function getListOfVisitLabels()
     {
+        $factory = NDB_Factory::singleton();
         //make sure it returns an array
         $visitLabelArray = array();
 
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
+        //
+        $db = $factory->database();
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
