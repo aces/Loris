@@ -27,9 +27,9 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
         );
 
         if(empty($CommentID)) {
-            header("HTTP/1.1 404 Not Found");
-            print json_encode(["error" => "Invalid instrument for candidate"]);
-            exit(0);
+            $this->header("HTTP/1.1 404 Not Found");
+            $this->error("Invalid instrument for candidate");
+            $this->safeExit(0);
         }
         if($this->bDDE) {
             $CommentID = 'DDE_' . $CommentID;
@@ -38,9 +38,9 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
         try {
             $this->Instrument = NDB_BVL_Instrument::factory($Instrument, $CommentID, null, true);
         } catch(Exception $e) {
-            header("HTTP/1.1 404 Not Found");
-            print json_encode(["error" => "Invalid instrument"]);
-            exit(0);
+            $this->header("HTTP/1.1 404 Not Found");
+            $this->error("Invalid instrument");
+            $this->safeExit(0);
         }
 
         $this->handleRequest();
