@@ -1,8 +1,10 @@
 <?php
+namespace Loris\Tests\API;
 require_once __DIR__ . '/../../../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../../../htdocs/api/v0.0.1a/projects/Project.php';
+require_once __DIR__ . '/../BaseTestCase.php';
 
-class Project_Test extends PHPUnit_Framework_TestCase
+class Project_Test extends BaseTestCase
 {
     function setUp() {
         if(!defined("UNIT_TESTING")) {
@@ -13,12 +15,12 @@ class Project_Test extends PHPUnit_Framework_TestCase
         $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
 
-        $this->Factory = NDB_Factory::singleton();
+        $this->Factory = \NDB_Factory::singleton();
         $this->Factory->setTesting(true);
 
         // Make sure the references used by the test are the same ones
         // returned by the factory
-        $this->Config = $this->Factory->config();
+        $this->Config   = $this->Factory->config();
         $this->Database = $this->Factory->database();
 
         $this->Config->expects($this->any())->method('getSetting')->will(
@@ -108,11 +110,12 @@ class Project_Test extends PHPUnit_Framework_TestCase
     function testProjectVisits() {
         $API = new \Loris\API\Projects\Project("GET", "TestProject", false, false, true);
         $this->assertEquals($API->JSON,
-            ['Meta' => [
-                "Project" => "TestProject"
-            ],
-            "Visits" => ["V001", "AnotherVisit"]
-        ]
+            [
+                'Meta' => [
+                    "Project" => "TestProject"
+                ],
+                "Visits" => ["V001", "AnotherVisit"]
+            ]
         );
     }
 

@@ -1,18 +1,19 @@
 <?php
+namespace Loris\Tests\API;
 require_once __DIR__ . '/../../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../../htdocs/api/v0.0.1a/Projects.php';
+require_once __DIR__ . '/BaseTestCase.php';
 
-class Projects_Test extends PHPUnit_Framework_TestCase
+class Projects_Test extends BaseTestCase
 {
-    /**
-     */
     function setUp() {
         if(!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
+
         $this->Config =& $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
 
-        $this->Factory = NDB_Factory::singleton();
+        $this->Factory = \NDB_Factory::singleton();
         $this->Factory->setTesting(true);
 
         $this->Config = $this->Factory->config();
