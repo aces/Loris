@@ -31,13 +31,32 @@ foreach ($_POST as $question => $answer) {
     }
 }
 
-if ($quizCorrect == 1) {
-    print 1;
-} else {
+if ($quizCorrect == 0) {
     print 0;
-}
+    exit();
+} else {
+    $user =& User::singleton();
+    if (PEAR::isError($user)) {
+        return PEAR::raiseError("User Error: " .$user->getMessage());
+    }
 
-exit();
+    $userFullName = $user->getFullname();
+    $userCenter   = $user->getCenterID();
+    $examinerID   = $DB->pselectOne(
+        "SELECT examinerID 
+         FROM examiners
+         WHERE full_name=:FN AND centerID=:CID",
+        array(
+         'FN' => $userFullName,
+         'CID' => $userCenter,
+        )
+    );
+    
+    $DB->update("certification", array('pass'=>'certified'), array('testID'=>$instrumentID, 'examinerID'=>$examinerID));
+
+    print 1;
+    exit();
+}
 
 /**
  * Determines if an answer is correct for a question from the training quiz
