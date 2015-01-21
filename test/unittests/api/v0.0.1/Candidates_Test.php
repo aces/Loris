@@ -13,11 +13,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
     }
 
     function testValidMethods() {
-        try {
-            $API = new \Loris\API\Candidates("GET");
-        } catch(\Loris\API\SafeExitException $e) {
-            $API = $e->Object;
-        }
+        $API = new \Loris\API\Candidates("GET");
 
         $this->assertEquals($API->AllowedMethods, ['GET', 'POST']);
     }

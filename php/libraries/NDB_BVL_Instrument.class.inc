@@ -162,7 +162,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
-        $config =& NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config = $factory->config();
         $base   = $config->getSetting('base');
 
         // The conflict resolver doesn't care if the instrument exists or not, it
@@ -187,10 +188,13 @@ class NDB_BVL_Instrument extends NDB_Page
                 $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
             }
         } else {
-            if($guarantee_exists === true && !file_exists($base."project/instruments/$class.class.inc")) {
+            if(!class_exists($class) && ($guarantee_exists === true && !file_exists($base."project/instruments/$class.class.inc"))) {
                 throw new Exception("Instrument does not exist");
             }
-            include_once $base."project/instruments/$class.class.inc";
+            if(!class_exists($class)) {
+                include_once $base."project/instruments/$class.class.inc";
+            }
+            // Now go ahead and instantiate it
             $obj = new $class;
             // Now go ahead and instantiate it
         }

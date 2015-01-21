@@ -35,9 +35,7 @@ class InstrumentForm extends \Loris\API\APIBase {
     }
 
     function handleGET() {
-        print_r($this->Instrument);
-        print "Hello";
-        $this->JSON = json_decode($this->Instrument->toJSON());
+        $this->JSON = json_decode($this->Instrument->toJSON(), true);
     }
 }
 

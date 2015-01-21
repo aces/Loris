@@ -10,7 +10,7 @@ class Project extends \Loris\API\APIBase {
     var $ProjectInstruments;
 
     protected function getProjectID($ProjectName) {
-        $config = \NDB_Config::singleton();
+        $config = $this->Factory->config();
 
         $Projects = $config->getSetting("Projects")["project"];
         foreach($Projects as $project) {
@@ -61,12 +61,12 @@ class Project extends \Loris\API\APIBase {
         }
 
         if($this->bInstruments) {
-            $Instruments = Utility::getAllInstruments();
+            $Instruments = \Utility::getAllInstruments();
             $JSONArray['Instruments'] = array_keys($Instruments);
         }
 
         if($this->bVisits) {
-            $Visits = Utility::getExistingVisitLabels($this->ProjectID);
+            $Visits = \Utility::getExistingVisitLabels($this->ProjectID);
             $VisitNames = array_keys($Visits);
 
             $JSONArray['Visits'] = $VisitNames;
