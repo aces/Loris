@@ -17,9 +17,9 @@ class Visit extends \Loris\API\Candidates\Candidate {
         $Visits = array_values($this->Candidate->getListOfVisitLabels());
 
         if(!in_array($VisitLabel, $Visits)) {
-            header("HTTP/1.1 404 Not Found");
-            print json_encode(["error" => "Invalid visit $VisitLabel"]);
-            exit(0);
+            $this->header("HTTP/1.1 404 Not Found");
+            $this->error("Invalid visit $VisitLabel");
+            $this->safeExit(0);
         }
 
     }
