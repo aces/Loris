@@ -68,18 +68,14 @@ class NDB_Client
         include_once "NDB_BVL_Feedback.class.inc";
 
         // Load the config file.
-        $config = NDB_Config::singleton($configFile);
+        $factory = NDB_Factory::singleton();
+
+        $config = $factory->config($configFile);
 
         // Load the database object with settings from config
         // so that after this we can just call Database::singleton()
         // with no parameters
-        $dbConfig = $config->getSetting('database');
-        $DB       =& Database::singleton(
-            $dbConfig['database'],
-            $dbConfig['username'],
-            $dbConfig['password'],
-            $dbConfig['host']
-        );
+        $DB = $factory->database();
 
         // add extra include paths. This must be done
         // after the database is connected, since the setting

@@ -10,7 +10,7 @@ class Projects extends APIBase {
     }
 
     public function handleGET() {
-        $config = \NDB_Config::singleton();
+        $config = $this->Factory->config();
 
         $useProjects = $config->getSetting("useProjects");
 

@@ -13,6 +13,8 @@ class APIBase {
     var $AutoHandleRequestDelegation = true;
     var $HTTPMethod;
 
+    var $Factory;
+
     function __construct($method) {
         if(empty($this->AllowedMethods)) {
             $this->AllowedMethods = ['GET'];
@@ -48,7 +50,8 @@ class APIBase {
         }
          */
 
-        $this->DB = \Database::singleton();
+        $this->Factory = \NDB_Factory::singleton();
+        $this->DB = $this->Factory->database();
 
         if($this->AutoHandleRequestDelegation) {
             $this->handleRequest();
