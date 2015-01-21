@@ -35,6 +35,7 @@ if ($quizCorrect == 0) {
     print 0;
     exit();
 } else {
+    /*
     $user =& User::singleton();
     if (PEAR::isError($user)) {
         return PEAR::raiseError("User Error: " .$user->getMessage());
@@ -51,9 +52,13 @@ if ($quizCorrect == 0) {
          'CID' => $userCenter,
         )
     );
+    $date = date("Y") . '-' . date("m") . '-' . date("d");
     
-    $DB->update("certification", array('pass'=>'certified'), array('testID'=>$instrumentID, 'examinerID'=>$examinerID));
-
+    $DB->replace(
+        "certification",
+        array('examinerID' => $examinerID, 'date_cert' => $date, 'testID' => $instrumentID, 'pass' => 'certified')
+    );
+    */
     print 1;
     exit();
 }
