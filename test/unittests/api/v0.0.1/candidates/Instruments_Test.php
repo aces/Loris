@@ -1,23 +1,37 @@
 <?php
+namespace Loris\Tests\API;
 require_once __DIR__ . '/../../../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../../../htdocs/api/v0.0.1a/candidates/Instruments.php';
+require_once __DIR__ . '/../BaseTestCase.php';
 
-class Instruments_Test extends PHPUnit_Framework_TestCase
+class Instruments_Test extends BaseTestCase
 {
-    function setUp() {
-        if(!defined("UNIT_TESTING")) {
-            define("UNIT_TESTING", true);
-        }
-    }
-
     function testValidMethods() {
-        try {
-            $API = new \Loris\API\Candidates\Candidate\Instruments("GET", "123456", "V06");
-        } catch(\Loris\API\SafeExitException $e) {
-            $API = $e->Object;
-        }
+        $API = new \Loris\API\Candidates\Candidate\Instruments(
+            "GET",
+            "123456",
+            "VisitTwo"
+        );
 
         $this->assertEquals($API->AllowedMethods, ['GET']);
+    }
+
+    function testGetCandidateInstruments() {
+        $API = new \Loris\API\Candidates\Candidate\Instruments(
+            "GET",
+            "123456",
+            "VisitTwo"
+        );
+
+        $this->assertEquals($API->JSON,
+            [
+                "Meta" => [
+                    "CandID" => 123456,
+                    "Visit" => "VisitTwo"
+                ],
+                "Instruments" => ["Test", "TestTwo"]
+            ]
+        );
     }
 }
 ?>
