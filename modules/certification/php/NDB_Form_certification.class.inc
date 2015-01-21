@@ -30,7 +30,6 @@ class NDB_Form_certification extends NDB_Form
 
         } elseif ($this->page == 'training') {
             $username = $user->getFullname();
-            $username = "Christine Rogers";
             $examiner = $DB->pselectOne("SELECT examinerID FROM examiners WHERE full_name=:user", array('user'=>$username));
             if (empty($examiner)) {
                 return false;
