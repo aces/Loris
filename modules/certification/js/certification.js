@@ -62,7 +62,7 @@ $(document).ready(function () {
 
         if (instrument !== "0") {
             $.post("AjaxHelper.php?Module=certification&script=getExaminerTestStatus.php", {instrument: instrument}, function (data) {
-                if (data === 0) {
+                if (data === '0') {
                     var certifiedHTML = createAlert('danger', 'You have already been certified for ' + instrumentName + '.');
 
                     $('#instructions').html(certifiedHTML);
