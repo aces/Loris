@@ -35,20 +35,5 @@ class NDB_Form_Brainbrowser extends NDB_Form
     {
         return true;
     }
-
-    /**
-     * Wrapper to get the user object and check the permission.
-     *
-     * Used within Smarty templates
-     *
-     * @param string $perm The permission code to check
-     *
-     * @return boolean true if user has permission
-     */
-    function hasPerm($perm)
-    {
-        $user =& User::singleton();
-        return $user->hasPermission($perm);
-    }
 }
 ?>
