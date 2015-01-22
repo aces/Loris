@@ -168,7 +168,7 @@ class NDB_Factory
             if ($db_ref !== null) {
                 return $db_ref;
             }
-            self::$_db = Database::singleton();
+                self::$_db = Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');

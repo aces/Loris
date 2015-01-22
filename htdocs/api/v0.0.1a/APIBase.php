@@ -4,6 +4,7 @@
  */
 namespace Loris\API;
 require_once __DIR__ . '/SafeExitException.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 class APIBase {
     var $DB;
@@ -36,6 +37,7 @@ class APIBase {
         );
         require_once 'NDB_Client.class.inc';
 
+        $this->Factory = \NDB_Factory::singleton();
         $this->client = new \NDB_Client();
         // Even though it's not a command line client, this prevents
         // the login related to showing the login screen from applying,
@@ -51,7 +53,6 @@ class APIBase {
         }
          */
 
-        $this->Factory = \NDB_Factory::singleton();
         $this->DB = $this->Factory->database();
 
         if($this->AutoHandleRequestDelegation) {

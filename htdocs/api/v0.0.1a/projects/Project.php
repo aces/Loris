@@ -77,7 +77,7 @@ class Project extends \Loris\API\APIBase {
 }
 
 if(isset($_REQUEST['PrintProjectJSON'])) {
-    $Proj = new ProjectJSON(
+    $Proj = new Project(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['Project'],
         isset($_REQUEST['Candidates'])  ? true : false,
