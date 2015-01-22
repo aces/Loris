@@ -11,12 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'Pager/Pager.php';
-require_once 'NDB_Menu.class.inc';
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-require_once 'HTML/QuickForm/text.php';
-require_once 'HTML/QuickForm/select.php';
 /**
  * Menu class, with filtering
  *
@@ -660,10 +654,8 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         // dump the html for the menu
         $smarty   = new Smarty_neurodb($this->Module);
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
         $smarty->assign('mode', $this->mode);
-        $smarty->assign('form', $renderer->toArray());
+        $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
