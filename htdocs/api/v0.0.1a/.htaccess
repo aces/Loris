@@ -1,4 +1,7 @@
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Headers "*"
 RewriteEngine on
+
 
 # Projects API rewrite rules
 RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments/([a-zA-Z0-9_.]+)$ projects/InstrumentForm.php?Instrument=$2&PrintInstrumentForm=true [END]
