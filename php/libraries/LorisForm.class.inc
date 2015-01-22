@@ -1,0 +1,132 @@
+<?php
+class LorisForm {
+    var $form = array();
+    function &addBase($name, $label) {
+        $el = array('label' => $label, 'name' => $name);
+        $this->form[$name] =& $el;
+        return $el;
+    }
+
+    function addSelect($name, $label, $options) {
+        $el =& $this->addBase($name, $label);
+        $el['type'] = 'select';
+        $el['options'] = $options;
+    }
+
+    function addText($name, $label) {
+        $el =& $this->addBase($name, $label);
+        $el['type'] = 'text';
+    }
+
+    function addDate($name, $label, $options) {
+        $el =& $this->addBase($name, $label);
+        $el['type'] = 'date';
+    }
+
+    function selectHTML($el) {
+        $strOptions = '';
+        $options = $el['options'];
+        foreach($options as $optionKey => $optionVal) {
+            $strOptions .= "<option value='$optionKey'>$optionVal</option>";
+        }
+
+        $retVal = "<select";
+        if($el['required']) {
+            $retVal .= ' required';
+            if($el['requireMsg']) {
+                $retVal .= " oninvalid=\"this.setCustomValidity('$el[requireMsg]')\"";
+            }
+        }
+        $retVal .= ">$strOptions</select>";
+
+        return $retVal;
+    }
+
+    function dateHTML($el) {
+        return "<input name=\"$el[name]\" type=\"date\" "
+            . "oninvalid=\"this.setCustomValidity('$el[requireMsg]')\""
+
+            . ($el['required'] ? "required" : '') . ">";
+
+    }
+
+    function textHTML($el) {
+        return "<input name=\"$el[name]\" type=\"text\">";
+    }
+
+    function addElement($type, $name, $label, $options, ...$params) {
+        $el = null;
+        switch($type)  {
+        case 'select':
+            $el = $this->addSelect($name, $label, $options);
+            break;
+        case 'date':
+            $el = $this->addDate($name, $label, $options);
+            break;
+        case 'text':
+        default:
+            $el = $this->addText($name, $label, $options);
+            break;
+        }
+    }
+
+    function setDefaults($arr) {
+    }
+
+    function validate() {
+    }
+
+    function applyFilter() {
+    }
+
+    function isFrozen() {
+        return false;
+    }
+
+    function toArray() {
+        foreach($this->form as &$el) {
+            switch($el['type']) {
+            case 'date':
+                $el['html'] = $this->dateHTML($el);
+                break;
+            case 'select':
+
+                $el['html'] = $this->selectHTML($el);
+                break;
+            case 'text':
+                $el['html'] = $this->textHTML($el);
+                break;
+
+            }
+        }
+        return $this->form;
+    }
+
+    function addRule($element, $message, $type, ...$params) {
+        if(!isset($this->form[$element])) {
+            return;
+            throw new LorisException("Invalid Element $element");
+        }
+
+        if($type === 'required') {
+            $this->form[$element]['required'] = true;
+            $this->form[$element]['requireMsg'] = $message;
+        }
+    }
+
+    function registerRule() {
+    }
+    function addGroupRule() {
+    }
+
+    function addFormRule() {
+    }
+    function addGroup() {
+    }
+
+    function createElement() {
+    }
+    function getSubmitValues() {
+    }
+}
+?>
