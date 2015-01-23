@@ -66,25 +66,36 @@ class SinglePointLogin extends PEAR
         $tpl_data['action']        = $_SERVER['PHP_SELF']
             . '?' . http_build_query($params);
         $tpl_data['error_message'] = $this->_lastError;
-        $study_links = $config->getSetting('Studylinks');// print_r($study_links);
-        foreach (Utility::toArray($study_links['link']) AS $link) {
-            $LinkArgs = '';
-            $BaseURL  = $link['@']['url'];
-            if (isset($link['@']['args'])) {
-                $LinkArgs = $link_args[$link['@']['args']];
+        try {
+            $study_links = $config->getSetting('Studylinks');
+            foreach (Utility::toArray($study_links['link']) AS $link) {
+                $LinkArgs = '';
+                $BaseURL  = $link['@']['url'];
+                if (isset($link['@']['args'])) {
+                    $LinkArgs = $link_args[$link['@']['args']];
+                }
+                $LinkLabel  = $link['#'];
+                $WindowName = md5($link['@']['url']);
+                $tpl_data['studylinks'][] =array(
+                                            'url'        => $BaseURL . $LinkArgs,
+                                            'label'      => $LinkLabel,
+                                            'windowName' => $WindowName,
+                                           );
             }
-            $LinkLabel  = $link['#'];
-            $WindowName = md5($link['@']['url']);
-            $tpl_data['studylinks'][] =array(
-                                        'url'        => $BaseURL . $LinkArgs,
-                                        'label'      => $LinkLabel,
-                                        'windowName' => $WindowName,
-                                       );
+        } catch(ConfigurationException $e) {
+            // If StudyLinks aren't defined, it shouldn't be fatal.
         }
-        $study_title = $config->getSetting('title');
-        $study_logo  = $config->getSetting('studylogo');
+
         $tpl_data['study_title'] = $study_title;
-        $tpl_data['study_logo']  = $study_logo;
+        try {
+            $tpl_data['study_logo'] = $study_logo;
+        } catch(ConfigurationException $e) {
+            $tpl_data['study_logo'] = '';
+        }
+
+        // If there's no study, we have a bigger problem
+        $study_title = $config->getSetting('title');
+
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
@@ -111,7 +122,11 @@ class SinglePointLogin extends PEAR
         $tpl_data['title'] = $config->getSetting('title');
         $tpl_data['css']   = $config->getSetting('css');
         $study_title       = $config->getSetting('title');
-        $study_logo        = $config->getSetting('studylogo');
+        try {
+            $study_logo = $config->getSetting('studylogo');
+        } catch(ConfigurationException $e) {
+            $study_logo = '';
+        }
 
         $tpl_data['study_title'] = $study_title;
         $tpl_data['study_logo']  = $study_logo;
@@ -199,53 +214,6 @@ class SinglePointLogin extends PEAR
 
         // update the user
         $success = $user->update($set);
-
-        // get config options relating to proftpd
-        $config      =& NDB_Config::singleton();
-        $ftpSettings = $config->getSetting("proftpd");
-
-        // if proftpd stuff is enabled:
-        if ($ftpSettings['enabled'] == 'true') {
-            // connect to proftpd database
-            $ftpdb   = new Database();
-            $success = $ftpdb->connect(
-                $ftpSettings['database'],
-                $ftpSettings['username'],
-                $ftpSettings['password'],
-                $ftpSettings['host'],
-                false
-            );
-
-            // check users table to see if we have a valid user
-            $query = "SELECT COUNT(*) AS User_count
-                          FROM ftpusers
-                      WHERE userid = :UID";
-            $row   = $ftpdb->pselectRow($query, array('UID' => $_POST['username']));
-            // update password
-            if ($row['User_count'] == 1) {
-
-                $setArray['passwd'] = crypt($_POST['password']);
-
-                $success = $ftpdb->update(
-                    'ftpusers',
-                    $setArray,
-                    array('userid' => $_POST['username'])
-                );
-            } else {
-                // if user does not exist, insert user data
-                $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
-
-                $maxUID = $ftpdb->pselectOne($query, array());
-
-                $setArray['userid']  = $_POST['username'];
-                $setArray['passwd']  = crypt($_POST['password']);
-                $setArray['uid']     = $maxUID + 1;
-                $setArray['homedir'] = "/";
-
-                // insert into proftpd
-                $success = $ftpdb->insert("ftpusers", $setArray);
-            }
-        }
         return true;
     }
 

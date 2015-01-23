@@ -134,7 +134,9 @@ BrowserDetect.init();
  	<div class="navbar navbar-default" role="navigation" style="height:90px">
  		<div class="container">
 	 		<div class="navbar-brand" style="align:center;">
+                {if $study_logo}
 		 		<img src="{$study_logo}" border="0" width="64" height="57" />
+                {/if}
 		 		{$study_title}
 	 		</div>
 	 	</div>
@@ -176,14 +178,17 @@ BrowserDetect.init();
 					<tr>
 					<hr width = 70%>
 					<td width="100%">
+                    {if $studylinks}
 					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
 					<li id="active">|</li>
+                    {
 					{foreach from=$studylinks item=link}
 					<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
 					{/foreach}
 
 					</ul>
+                    {/if}
 					</td>
 					</tr>
 					<tr>

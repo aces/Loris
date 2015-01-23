@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" href="{$css}" type="text/css" />
+<link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
 <link rel="stylesheet" href="../bootstrap-3.1.1/css/bootstrap.css">
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
@@ -12,13 +12,11 @@
 
 <body>
 <div class ="logo">
-
-    </div>
-    
+</div>
     <div class="navbar navbar-default" role="navigation" style="height:90px">
         <div class="container">
             <div class="navbar-brand" style="align:center;">
-                <img src="{$study_logo}" border="0" width="64" height="57" />
+                {if $study_logo}<img src="{$study_logo}" border="0" width="64" height="57" />{/if}
                 {$study_title}
             </div>
         </div>
@@ -39,7 +37,7 @@
 
 <div class="col-xs-12">
     <center>
-    <img src="../images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='images/LORIS_Logo_141007.png'" align="middle" width="92%">
+    <img src="{$baseurl}/images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_Logo_141007.png'" align="middle" width="92%">
     </center>
     <br>
 </div>
@@ -83,6 +81,7 @@
                     <tr>
                     <hr width = 70%>
                     <td width="100%">
+                    {if $studylinks}
                     <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
                     <li id="active">|</li>
@@ -91,6 +90,7 @@
                     {/foreach}
 
                     </ul>
+                    {/if}
                     </td>
                     </tr>
                     <tr>
