@@ -114,7 +114,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
     foreach ($predefined_comments AS $predefined_comment_id => $predefined_comment_text) {
         // print a form element
         $tpl_data['comment'][$i]['predefined'][$j]['id'] = $predefined_comment_id;
-        $tpl_data['comment'][$i]['predefined'][$j]['predefined_text'] = $predefined_comment_text;
+        $tpl_data['comment'][$i]['predefined'][$j]['predefined_text'] = $predefined_comment_text['Comment'];
         
         // print the comment text
         if ($saved_comments[$comment_type_id]['predefined'][$predefined_comment_id]) {
