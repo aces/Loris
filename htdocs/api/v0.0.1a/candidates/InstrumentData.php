@@ -36,7 +36,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
         }
 
         try {
-            $this->Instrument = NDB_BVL_Instrument::factory($Instrument, $CommentID, null, true);
+            $this->Instrument = \NDB_BVL_Instrument::factory($Instrument, $CommentID, null, true);
         } catch(Exception $e) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Invalid instrument");
@@ -59,7 +59,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
         ];
 
         if(!$this->bFlags) {
-            $Values = NDB_BVL_Instrument::loadInstanceData($this->Instrument);
+            $Values = \NDB_BVL_Instrument::loadInstanceData($this->Instrument);
 
             unset($Values['CommentID']);
             unset($Values['UserID']);
@@ -80,7 +80,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
 }
 
 if(isset($_REQUEST['PrintInstrumentData'])) {
-    $obj = new CandidateInstrumentDataJSON(
+    $obj = new InstrumentData(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],
         $_REQUEST['Visit'],
