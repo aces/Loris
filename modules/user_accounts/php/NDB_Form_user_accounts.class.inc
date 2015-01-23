@@ -452,7 +452,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // document repository notifications
         $editor =& User::singleton();
-        if ($editor->hasPermission('file_upload')) {
+        if ($editor->hasPermission('document_repository_view') || $editor->hasPermission('document_repository_delete')) {
                 $doc_Repo_Notifications_Options = array('N' => 'No', 'Y' => 'Yes');
                 $this->addSelect('Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options); 
         }
