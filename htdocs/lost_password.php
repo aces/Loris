@@ -33,9 +33,9 @@ $config          =& NDB_Config::singleton();
 $tpl_data['css'] =$config->getSetting('css');
 $tpl_data['study_title'] = $config->getSetting('title');
 try {
-    $tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+    $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
-    $tpl_data['study_logo']  = '';
+    $tpl_data['study_logo'] = '';
 }
 
 if (isset($_POST['username'])) {
