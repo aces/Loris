@@ -8,6 +8,10 @@ class InstrumentData_Test extends BaseTestCase
 {
     function testValidMethods() {
         try {
+            // Get the candidate data for the candidate set up in the base
+            // class. Since the instrument data portion uses all sorts of static
+            // methods from NDB_BVL_Instrument, use the flags which only uses
+            // database calls
             $API = new \Loris\API\Candidates\Candidate\InstrumentData(
                 "GET",
                 "123456",
