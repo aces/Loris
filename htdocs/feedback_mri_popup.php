@@ -121,38 +121,43 @@ $comment_types = $comments->getAllCommentTypes();
 // loop through the comment types
 $i = 0;
 foreach ($comment_types AS $comment_type_id => $comment_array) {
+    $CommentTpl =& $tpl_data['comment'][$i];
 
     // print the status select field if it exists
     if (!empty($comment_array['field']) && ($comments->objectType == 'volume')) {
         if ($user->hasPermission('imaging_browser_qc')) {
-            $tpl_data['comment'][$i]['select_name']        = $comment_array['field'];
-            $tpl_data['comment'][$i]['select_value_array'] = $comment_array['values'];
+            $CommentTpl['select_name']        = $comment_array['field'];
+            $ComeentTpl['select_value_array'] = $comment_array['values'];
         }
-        $tpl_data['comment'][$i]['selected'] = $comments->getMRIValue($comment_array['field']);
+        $CommentTpl['selected'] = $comments->getMRIValue($comment_array['field']);
     }
 
-    $tpl_data['comment'][$i]['name'] = $comment_array['name'];
+    $CommentTpl['name'] = $comment_array['name'];
 
     // get the list of predefined comments for the current type
     $predefined_comments = $comments->getAllPredefinedComments($comment_type_id);
 
     // loop through the predefined comments
     $j = 0;
-    foreach ($predefined_comments AS $predefined_comment_id => $predefined_comment_text) {
+    foreach ($predefined_comments
+        AS $predefined_comment_id => $predefined_comment_text
+    ) {
+        $PredefinedTpl =& $CommentTpl['predefined'][$j];
         // print a form element
-        $tpl_data['comment'][$i]['predefined'][$j]['id'] = $predefined_comment_id;
-        $tpl_data['comment'][$i]['predefined'][$j]['predefined_text'] = $predefined_comment_text['Comment'];
+        $PredefinedTpl['id'] = $predefined_comment_id;
+        $PredefinedTpl['predefined_text'] = $predefined_comment_text['Comment'];
 
         // print the comment text
-        if ($saved_comments[$comment_type_id]['predefined'][$predefined_comment_id]) {
-            $tpl_data['comment'][$i]['predefined'][$j]['checked'] = true;
+        $Saved = $saved_comments[$comment_type_id];
+        if ($Saved['predefined'][$predefined_comment_id]) {
+            $CommentTpl['predefined'][$j]['checked'] = true;
         }
         $j++;
     }
 
     // print a form element for a free-form comment
-    $tpl_data['comment'][$i]['type']       = $comment_type_id;
-    $tpl_data['comment'][$i]['saved_text'] = $saved_comments[$comment_type_id]['text'];
+    $CommentTpl['type']       = $comment_type_id;
+    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'];
     $i++;
 }
 
