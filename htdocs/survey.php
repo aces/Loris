@@ -16,6 +16,7 @@
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'NDB_Config.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Caller.class.inc';
