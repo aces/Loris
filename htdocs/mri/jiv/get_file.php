@@ -24,6 +24,7 @@
 set_include_path(
     get_include_path() . ":../../../project/libraries:../../../php/libraries"
 );
+require_once __DIR__ . "/../../../vendor/autoload.php";
 // Since we're sending binary data, we don't want PHP to print errors or warnings
 // inline. They'll still show up in the Apache logs.
 ini_set("display_errors", "Off");

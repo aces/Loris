@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+require_once __DIR__ . '/../vendor/autoload.php';
 ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
 
