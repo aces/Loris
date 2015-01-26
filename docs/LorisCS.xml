@@ -55,4 +55,11 @@
 
     <!-- Do not allow trailing whitespace at the end of lines -->
     <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
+
+    <!-- Ensure that proper line endings are used -->
+     <rule ref="Generic.Files.LineEndings">
+         <properties>
+             <property name="eolChar" value="\n"/>
+         </properties>
+     </rule>
 </ruleset>
