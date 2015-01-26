@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains code to process user input from 
+ * This file contains code to process user input from
  * Request Account form
  *
  * PHP Version 5
@@ -40,32 +40,32 @@ session_start();
 $tpl_data = array();
 
 // create an instance of the config object
-$config                  = NDB_Config::singleton();
-$tpl_data['css']         = "../".$config->getSetting('css');
-$tpl_data['rand']        = rand(0, 9999);
+$config           = NDB_Config::singleton();
+$tpl_data['css']  = "../".$config->getSetting('css');
+$tpl_data['rand'] = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
 try {
-    $tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+    $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
     $tpl_data['study_logo'] = '';
 }
 try {
-    $study_links             = $config->getSetting('Studylinks');// print_r($study_links);
+    $study_links = $config->getSetting('Studylinks');// print_r($study_links);
     foreach (Utility::toArray($study_links['link']) AS $link) {
         $LinkArgs = '';
         $BaseURL  = $link['@']['url'];
         if (isset($link['@']['args'])) {
             $LinkArgs = $link_args[$link['@']['args']];
         }
-        $LinkLabel                = $link['#'];
-        $WindowName               = md5($link['@']['url']);
+        $LinkLabel  = $link['#'];
+        $WindowName = md5($link['@']['url']);
         $tpl_data['studylinks'][] = array(
-            'url'        => $BaseURL . $LinkArgs,
-            'label'      => $LinkLabel,
-            'windowName' => $WindowName
-        );
+                                     'url'        => $BaseURL . $LinkArgs,
+                                     'label'      => $LinkLabel,
+                                     'windowName' => $WindowName,
+                                    );
     }
 } catch(ConfigurationException $e) {
 }
@@ -83,8 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
           $err[] = 'Your email is not valid!';
     }
-    if (isset($_SESSION['tntcon']) 
-        && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']) {
+    if (isset($_SESSION['tntcon'])
+        && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
+    ) {
         $err[] = 'The verification code is incorrect';
     }
     if (count($err)) {
@@ -100,12 +101,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         // check to see if verificaton code was correct
         // if verification code was correct send the message and show this page
         $fullname = $name." ".$lastname;
-        $vals     = array('UserID'=>$from, 'Real_name'=>$fullname, 
-                          'First_name'=>$name, 'Last_name'=>$lastname,
-                          'Pending_approval'=>'Y', 'Email'=>$from);
+        $vals     = array(
+                     'UserID'           => $from,
+                     'Real_name'        => $fullname,
+                     'First_name'       => $name,
+                     'Last_name'        => $lastname,
+                     'Pending_approval' => 'Y',
+                     'Email'            => $from,
+                    );
         // check email address' uniqueness
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail",
-                                      array('VEmail' => $from));
+        $result = $DB->pselectOne(
+            "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
+            array('VEmail' => $from)
+        );
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
@@ -124,9 +132,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     }
 }
-function checkLen($str, $len=2) 
+
+/**
+ * Check that the user input for a field meets minimum length requirements
+ *
+ * @param string  $str The request parameter to check
+ * @param integer $len The minimum length for the parameter
+ *
+ * @return True if the parameter was sent and meets minimum length, false
+ *         otherwise
+ */
+function checkLen($str, $len=2)
 {
-    return isset($_REQUEST[$str]) 
+    return isset($_REQUEST[$str])
            && mb_strlen(strip_tags($_REQUEST[$str]), "utf-8") > $len;
 }
 
