@@ -12,9 +12,9 @@ class InstrumentData_Test extends BaseTestCase
                 "GET",
                 "123456",
                 "VisitTwo",
-                "test",
+                "Test",
                 false,
-                false
+                true 
             );
         } catch(\Loris\API\SafeExitException $e) {
             $API = $e->Object;
