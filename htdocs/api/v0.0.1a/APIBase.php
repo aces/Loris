@@ -83,12 +83,12 @@ class APIBase {
 
     function handlePUT() {
         $this->header("HTTP/1.1 501 Not Implemented");
-        exit(0);
+        $this->safeExit(0);
     }
 
     function handlePOST() {
         $this->header("HTTP/1.1 501 Not Implemented");
-        exit(0);
+        $this->safeExit(0);
     }
 
     function toJSONString() {

@@ -42,5 +42,58 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($API->JSON, ["Candidates" => ["123456", "222222"]]);
     }
+
+    function testPostCandidateValid() {
+        try {
+            $API = new \Loris\API\Candidates("POST",
+                ['candidate' => json_encode([
+                'Candidate' => [
+                    'Project' => "loris",
+                    'PSCID'   => 'HelloPSC',
+                    'EDC'     => '2015-05-19',
+                    'Gender'  => 'Male'
+                ]])
+            ]
+        );
+        } catch(\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
+
+        $this->assertEquals($API->Headers, ['HTTP/1.1 201 Created']);
+        $this->assertEquals(isset($API->JSON['Meta']['CandID']), true);
+        $CandID = $API->JSON['Meta']['CandID'];
+        $this->assertEquals(is_numeric($CandID), true);
+        $this->assertTrue($CandID >= 100000);
+        $this->assertTrue($CandID <= 999999);
+    }
+
+    function testPostCandidateInvalidGender() {
+        try {
+            $API = new \Loris\API\Candidates("POST", 
+                ['candidate' => json_encode([
+                'Candidate' => [
+                    'Project' => "loris",
+                    'PSCID'   => 'HelloPSC',
+                    'EDC'     => '2015-05-19',
+                    'Gender'  => 'None'
+                ]])
+            ]
+        );
+        } catch(\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
+
+        $this->assertEquals($API->Headers, ['HTTP/1.1 400 Bad Request']);
+    }
+    function testPostCandidateInvalidJSON() {
+        try {
+            $API = new \Loris\API\Candidates("POST",
+                ['candidate' => "{ oops: synax error }"]);
+        } catch(\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
+
+        $this->assertEquals($API->Headers, ['HTTP/1.1 400 Bad Request']);
+    }
 }
 ?>
