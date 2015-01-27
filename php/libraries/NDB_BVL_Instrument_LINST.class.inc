@@ -29,7 +29,7 @@ require_once 'HTML/QuickForm/Renderer/Default.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_BVL_Instrument_LINST extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 {
 
     var $InstrumentType = 'LINST';
@@ -51,7 +51,7 @@ class NDB_BVL_Instrument_LINST extends NDB_BVL_Instrument
      */
     function _addMetadataFields()
     {
-        $config      =& NDB_Config::singleton();
+        $config      =& \NDB_Config::singleton();
         $dateOptions = array(
                         'language'         => 'en',
                         'format'           => 'YMd',
@@ -123,10 +123,7 @@ class NDB_BVL_Instrument_LINST extends NDB_BVL_Instrument
     function getSubtestList()
     {
         // get a database connection
-        $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return $db;
-        }
+        $db =& \Database::singleton();
 
         $query = "SELECT Subtest_name AS Name, Description
             FROM instrument_subtests
@@ -134,9 +131,6 @@ class NDB_BVL_Instrument_LINST extends NDB_BVL_Instrument
                 ORDER BY Order_number";
 
         $results = $db->pselect($query, array('TN' => $this->testName));
-        if (Utility::isErrorX($results)) {
-            return $results;
-        }
 
         return $results;
     }
@@ -417,8 +411,8 @@ class NDB_BVL_Instrument_LINST extends NDB_BVL_Instrument
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
 
-            $db         = Database::singleton();
-            $this->form = new HTML_Quickform('test_form');
+            $db         = \Database::singleton();
+            $this->form = new \HTML_Quickform('test_form');
 
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
