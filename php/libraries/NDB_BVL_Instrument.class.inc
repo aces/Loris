@@ -189,23 +189,26 @@ class NDB_BVL_Instrument extends NDB_Page
                 include_once 'NDB_BVL_Instrument_LINST.class.inc';
                 $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
             }
-            //$obj->form = new HTML_Quickform('test_form');
-            $obj->commentID = $commentID;
-            $obj->page      = $page;
-            $obj->loadInstrumentFile(
-                $base . "project/instruments/$instrument.linst"
-            );
-            if (file_exists($base."project/instruments/$instrument.rules")) {
-                $obj->loadInstrumentRules(
-                    $base . "project/instruments/$instrument.rules"
-                );
-            }
         } else {
             include_once $base."project/instruments/$class.class.inc";
             $obj = new $class;
             // Now go ahead and instantiate it
         }
+
+        // Sets up page variables such as $this->commentID and $this->form
         $success = $obj->setup($commentID, $page);
+
+        // Adds all of the form element and form rules to the page after
+        // having instantiated the form above
+        $obj->loadInstrumentFile(
+            $base . "project/instruments/$instrument.linst"
+        );
+        // Add rules only if they exist.
+        if (file_exists($base."project/instruments/$instrument.rules")) {
+            $obj->loadInstrumentRules(
+                $base . "project/instruments/$instrument.rules"
+            );
+        }
 
         $access = $obj->_hasAccess();
 

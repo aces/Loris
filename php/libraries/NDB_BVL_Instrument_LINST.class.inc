@@ -42,9 +42,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     var $preview = false;
 
-    function _setupPage($commentID, $page) {
+    function setup($commentID, $page) {
         $this->commentID = $commentID;
         $this->page = $page;
+
+        $this->form = new \HTML_Quickform('test_form');
     }
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
@@ -413,10 +415,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function loadInstrumentFile($filename, $base64 = false)
     {
         if (file_exists($filename) || $base64 === true) {
-            $this->InstrumentType = 'LINST';
-
-            $db         = \Database::singleton();
-            $this->form = new \HTML_Quickform('test_form');
+            $db = \Database::singleton();
 
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
