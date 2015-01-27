@@ -30,14 +30,24 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
 {
     function _hasAccess()
     {
+
         // create user object
         $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-
-        //return $user->hasPermission('examiner');
-        return true;
+        $DB =& Database::singleton();
+        $username = $user->getFullname();
+        $examiner = $DB->pselectOne("SELECT examinerID FROM examiners WHERE full_name=:user", array('user'=>$username));
+        if (!empty($examiner)) {
+            $config  = NDB_Config::singleton();
+            $baseURL = $config->getSetting('url');
+            header('Location: ' . $baseURL . '/main.php?test_name=examiner&subtest=training');
+            exit();
+        } else {
+            //return $user->hasPermission('examiner');
+            return true;
+        }
     }
 
     function _setupVariables()
