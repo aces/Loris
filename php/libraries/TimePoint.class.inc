@@ -816,43 +816,11 @@ Class TimePoint
      */
     function isStartable()
     {
-        $config =& NDB_Config::singleton();
-        $onlyOneOpenTimepoint = $config->getSetting('onlyOneOpenTimepoint');
-
         $currentStage = $this->getData('Current_stage');
 
         // if we have not yet started, and at least one timepoint is in
         // screening or visit, do not allow the user to start another timepoint
         if ($currentStage == 'Not Started') {
-            $candidate =& Candidate::singleton($this->getCandID());
-
-            // when starting screening, make sure that all other started visits
-            // were previously submitted to DCC
-            $listOfTimePoints = $candidate->getListOfTimePoints();
-            $currentTimePoint = TimePoint::singleton($_REQUEST['sessionID']);
-
-            // if there are any timepoints
-            if (is_array($listOfTimePoints)) {
-                foreach ($listOfTimePoints as $sessionID) {
-                    // create timepoint object
-                    $timepoint = TimePoint::singleton($sessionID);
-
-                    // if a timepoint is started and not submitted, return false
-                    if ($onlyOneOpenTimepoint=="true"
-                        && (in_array(
-                            $timepoint->getData('Current_stage'),
-                            array(
-                             'Screening',
-                             'Visit',
-                            )
-                        )
-                        && $timepoint->getSubprojectID() == $this->getSubprojectID())
-                    ) {
-                        return false;
-                    }
-                }
-            }
-
             return true;
         } elseif ($currentStage == 'Screening'
             && in_array($this->getData('Screening'), array('Pass', 'Failure'))
