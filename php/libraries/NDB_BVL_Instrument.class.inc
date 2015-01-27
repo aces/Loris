@@ -2340,9 +2340,6 @@ class NDB_BVL_Instrument extends NDB_Page
      * @return string containing valid JSON
      */
     function toJSON() {
-        if($this->InstrumentType === 'LINST') {
-            throw new Exception("LINST Not yet supported");
-        }
         $smarty   = new Smarty_neurodb;
         $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
