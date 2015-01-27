@@ -24,7 +24,7 @@ function createAlert(alertType, message) {
 function loadTabContent(instrument, tabNumber) {
     "use strict";
     var tabID = '#' + tabNumber;
-    $.post("AjaxHelper.php?Module=certification&script=getTabContent.php", {instrument: instrument, tabNumber: tabNumber}, function (data) {
+    $.post("AjaxHelper.php?Module=examiner&script=getTabContent.php", {instrument: instrument, tabNumber: tabNumber}, function (data) {
         var ref = $(tabID).children().attr('data-target');
         $(ref).html(data);
         $(tabID).removeClass('disabled');
@@ -37,7 +37,7 @@ function loadTabContent(instrument, tabNumber) {
 /* Load all the tab headers (no content) */
 function loadTabs(instrument) {
     "use strict";
-    $.post("AjaxHelper.php?Module=certification&script=getTabs.php", {instrument: instrument}, function (data) {
+    $.post("AjaxHelper.php?Module=examiner&script=getTabs.php", {instrument: instrument}, function (data) {
         if (data === '0') {
             $('#tabs').html("");
             var alertHTML = createAlert('danger', 'There is no online training for the ' + getSelectedInstrumentName() + ' at this time.');
@@ -61,7 +61,7 @@ $(document).ready(function () {
         $(".alert-certification").remove();
 
         if (instrument !== "0") {
-            $.post("AjaxHelper.php?Module=certification&script=getExaminerTestStatus.php", {instrument: instrument}, function (data) {
+            $.post("AjaxHelper.php?Module=examiner&script=getExaminerTestStatus.php", {instrument: instrument}, function (data) {
                 if (data === '0') {
                     var certifiedHTML = createAlert('danger', 'You have already been certified for ' + instrumentName + '.');
 
@@ -93,7 +93,7 @@ $(document).ready(function () {
             instrument = getSelectedInstrumentID(),
             queryString = form + '&instrument=' + instrument;
 
-        $.post("AjaxHelper.php?Module=certification&script=markQuiz.php", queryString, function (data) {
+        $.post("AjaxHelper.php?Module=examiner&script=markQuiz.php", queryString, function (data) {
             $('#tabs').html("");
             console.log(data);
             // If 1 - correct
