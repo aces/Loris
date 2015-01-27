@@ -20,23 +20,12 @@ class NDB_Form_certification extends NDB_Form
             return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
         }
 
-        if ($this->page == 'edit_event') {
-            $centerID = $DB->pselectOne("SELECT centerID FROM examiners, certification WHERE examiners.examinerID = certification.examinerID AND certification.certID =:crt_id", array('crt_id'=>$this->identifier));
-            if (PEAR::isError($centerID)) {
-                return PEAR::raiseError("DB Error: ".$centerID->getMessage());
-            }
-
-            return ($user->hasPermission('certification') && ($user->hasPermission('certification_multisite') || $user->getData('CenterID') == $centerID));
-
-        } elseif ($this->page == 'training') {
-            $username = $user->getFullname();
-            $examiner = $DB->pselectOne("SELECT examinerID FROM examiners WHERE full_name=:user", array('user'=>$username));
-            if (empty($examiner)) {
-                return false;
-            }
-            return true;
+        $centerID = $DB->pselectOne("SELECT centerID FROM examiners, certification WHERE examiners.examinerID = certification.examinerID AND certification.certID =:crt_id", array('crt_id'=>$this->identifier));
+        if (PEAR::isError($centerID)) {
+            return PEAR::raiseError("DB Error: ".$centerID->getMessage());
         }
-        return false;
+
+        return ($user->hasPermission('certification') && ($user->hasPermission('certification_multisite') || $user->getData('CenterID') == $centerID));
     }
 
     function _getDefaults()
