@@ -201,9 +201,9 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         } else {
             include_once $base."project/instruments/$class.class.inc";
+            $obj = new $class;
             // Now go ahead and instantiate it
         }
-        $obj = new $class;
         $success = $obj->setup($commentID, $page);
 
         $access = $obj->_hasAccess();
