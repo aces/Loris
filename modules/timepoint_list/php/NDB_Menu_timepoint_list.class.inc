@@ -153,32 +153,6 @@ class NDB_Menu_timepoint_list extends NDB_Menu
 
                 $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
 				
-                 $config =& NDB_Config::singleton();
-                 $isNIHPD = $config->getSetting('isNIHPD');
-                // show future time points
-                if ($isNIHPD == "true") {
-                	$this->tpl_data['isNIHPD']="true";
-                    if($timePoint->getSubprojectID() == 1) {
-                        
-                        // get the number of visits in the project
-                        $study = $config->getSetting('study');
-                        
-                        // get the current time
-                        $this->tpl_data['now'] = time();
-                        
-                        // split the first date of visit
-                        list($year, $month, $day) = explode('-', $firstDateOfVisit);
-                        
-                        // get the list of future timepoints
-                        $x = 0;
-                        for ($i = $numberOfVisits; $i <= $study['visits'] - 1; $i++) {
-                            $this->tpl_data['visits'][$x]['windowTarget'] = mktime(0, 0, 0, $month, $day, $year + 2 * $i);
-                            $this->tpl_data['visits'][$x]['min'] = mktime(0, 0, 0, $month - 6, $day, $year + 2 * $i);
-                            $this->tpl_data['visits'][$x]['max'] = mktime(0, 0, 0, $month + 3, $day, $year + 2 * $i);
-                            $x++;
-                        }
-                    }
-                }
             } // end list
         }
 
