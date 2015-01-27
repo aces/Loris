@@ -199,7 +199,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 $obj          = new NDB_BVL_Instrument_instrument_preview();
                 $obj->preview = true;
             } else {
-                $obj = new NDB_BVL_Instrument();
+                $obj = new NDB_BVL_Instrument_LINST();
             }
             //$obj->form = new HTML_Quickform('test_form');
             $obj->commentID = $commentID;
