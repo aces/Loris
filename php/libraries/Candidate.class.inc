@@ -217,7 +217,7 @@ class Candidate
 
             // check pscid structure
             if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
-                throw new Exception(
+                throw new LorisException(
                     "PSCID has an invalid structure",
                     PSCID_INVALID_STRUCTURE
                 );

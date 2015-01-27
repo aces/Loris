@@ -170,7 +170,7 @@ containing ALL CandIDs present in this Loris instance.
 
 A new candidate can be created by sending a POST request to /candidates.
 
-The body of the POST request should be a JSON object of the form:
+The body of the POST request should be a candidate key with a JSON object of the form:
 
 ```json
 {
@@ -192,7 +192,8 @@ The candidate will be created at the site of the user using the API's site.
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, and a 400 Bad Request if any data provided is invalid
 (PSCID format, date format, gender something other than Male|Female, invalid project
-name, etc)
+name, etc). A created candidate will be accompagnied by data for the candidate
+of the same form as a request to GET /candidates/$CandID
 
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
