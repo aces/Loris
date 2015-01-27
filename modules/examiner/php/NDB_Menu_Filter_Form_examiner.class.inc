@@ -69,7 +69,7 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
                 );
         
         if ($certification == '1') {
-            array_push($this->columns, 'tn.Full_name as Certification', 'c.certID as ID', 'c.pass as Pass');
+            array_push($this->columns, 'tn.Full_name as Certification', 'e.examinerID as ID', 'c.pass as Pass');
             array_push($this->headers, 'Certification');
             array_push($this->validFilters, 'tn.Full_name');
             array_push($this->formToFilter, array('instrument' => 'tn.Full_name'));
@@ -135,6 +135,7 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
 
     function _setDataTableRows($count)
     {
+        // Code from old certification module
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('EnableCertification');
         $certification = '1';
@@ -199,6 +200,10 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
             //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
+                if ($key == 'Examiner') {
+                    $this->tpl_data['items'][$x][$i]['ID'] = $item['ID'];
+                }
+
                 if ($key == 'Radiologist') {
                     $this->tpl_data['items'][$x][$i]['name']  = $key;
                     if ($val == 1) {
