@@ -87,12 +87,6 @@ class NDB_BVL_Instrument extends NDB_Page
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     /**
-     * Either PHP or LINST depending on what
-     * type of instrument we're workign with
-     */
-    var $InstrumentType = 'PHP';
-
-    /**
      * Array of required fields to check
      * @access private
      */
@@ -141,13 +135,6 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     var $ValidityRequired = true;
 
-
-    /**
-     * An array of questions and their types for LINST style instruments,
-     * useful so that we can look up if it's in a group or not for when
-     * registering rules
-     */
-    var $LinstQuestions = array();
 
     /**
      * True if the page is being previewed from the instrument builder,
@@ -216,7 +203,6 @@ class NDB_BVL_Instrument extends NDB_Page
             include_once $base."project/instruments/$class.class.inc";
             // Now go ahead and instantiate it
             $obj = new $class;
-            $obj->InstrumentType = 'PHP';
             $success = $obj->setup($commentID, $page);
         }
 
@@ -1150,103 +1136,6 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
 
-            // Run any rules that are dependent on the value of the current question,
-            // ie if XINRegister was called as
-            //      $this->XINRegisterRule(
-            //          "q1",
-            //          "q1{@}<={@}3",
-            //          "Must be less than or equal to 3"
-            //      );
-            // These differ from 'required' rules in that they're run even if the
-            // value isn't empty. Currently, this only supports simple, one value
-            // comparisons (though XINRegister can be called multiple times and each
-            // needs to be enforced independently), because the logic in
-            // XINRunElementRules is confusing and modifying it could potentially
-            // break existing XINRules.
-            //
-            // DINRunElementRules only runs a single rule, and returns false if it's
-            // violated. It's much simpler than XINRules but should be expanded
-            // later to support more complex logic.
-            //
-            // - Dave
-            if ($this->InstrumentType === 'LINST') {
-
-                // Numeric data types min/max are enforced through PHP, not XINRules.
-                // This is because if a user registers XINRules for the question, we
-                // still want to enforce the min/max for the field. It also makes
-                // dealing with _status==not_answered easier, because the rules for
-                // enforcing range are independent of the rules for enforcing
-                // required.
-                if ($this->LinstQuestions[$elname]['type'] === 'numeric') {
-                    // Cast everything to a double so that < and > work as
-                    // expected
-                    $value = doubleval($elements[$elname]);
-                    $min   = doubleval(
-                        $this->LinstQuestions[$elname]['options']['min']
-                    );
-                    $max   = doubleval(
-                        $this->LinstQuestions[$elname]['options']['max']
-                    );
-
-                    // If the value is empty, XINRules handle required messages.
-                    // "0" is empty in PHP. If the user entered 0 we still want to
-                    // enforce the min/max.
-                    if (!empty($value) || $elements[$elname] === '0') {
-                        if (!empty($min)) {
-                            if ($value < $min) {
-                                $errors[$elname . "_group"]
-                                    = "Must be greater than $min.";
-                            }
-                        }
-                        if (!empty($max)) {
-                            if ($value > $max) {
-                                $errors[$elname . "_group"]
-                                    = "Must be less than $max.";
-                            }
-                        }
-                    }
-                }
-                if (!empty($this->XINRules[$elname])) {
-                    $registered_rules = $this->XINRules[$elname];
-                    if ($this->XINDebug) {
-                        //debugging code
-                        echo "<p><b>$elname</b><br> ";
-                    }
-                    foreach ($registered_rules as $registered) {
-                        $rules = $registered['rules'];
-
-                        foreach ($rules as $rule) {
-                            //If this is an OR rule using two different controllers
-                            //explode it at the pipe.
-                            //ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-                            if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
-                                $rules_array = explode("|", $rule);
-                            } else {
-                                //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
-                                $rules_array[] = $rule;
-                            }
-                            foreach ($rules_array as $rule) {
-                                $rule_array = explode("{@}", $rule);
-                                if ($rule_array[0] == $elname) {
-                                    $result = $this->DINRunElementRules(
-                                        $elname,
-                                        $elements,
-                                        $registered
-                                    );
-                                    if ($result == false) {
-                                        $el = $registered['group'] != ""
-                                            ? $registered['group']
-                                            : $elname;
-
-                                        $errors[$el] = $registered['message'];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
             if ($elvalue=="" || $flag==false) {
@@ -1255,27 +1144,13 @@ class NDB_BVL_Instrument extends NDB_Page
                     echo "<p><b>$elname</b><br> ";
                 }
                 if (!empty($this->XINRules[$elname])) {
-                    if ($this->InstrumentType === 'LINST') {
-                        $registered_rules = $this->XINRules[$elname];
-                        foreach ($registered_rules as $registered_rule) {
-                            $result = $this->XINRunElementRules(
-                                $elname,
-                                $elements,
-                                $registered_rule
-                            );
-                            if (is_array($result)) {
-                                $errors += $result;
-                            }
-                        }
-                    } else {
-                        $result = $this->XINRunElementRules(
-                            $elname,
-                            $elements,
-                            $this->XINRules[$elname]
-                        );
-                        if (is_array($result)) {
-                            $errors += $result;
-                        }
+                    $result = $this->XINRunElementRules(
+                        $elname,
+                        $elements,
+                        $this->XINRules[$elname]
+                    );
+                    if (is_array($result)) {
+                        $errors += $result;
                     }
                 } else if (substr($elname, -7) != "_status"
                     && !in_array($elname, array("page", "subtest"))
@@ -1299,45 +1174,6 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Run registered rules for $elname. Only used for instrument builder
-     * instruments.
-     *
-     * @param string  $elname     The element to be validate
-     * @param array   $elements   array of values from current page.
-     * @param boolean $registered Array of all rules which have been
-     *                            registered.
-     *
-     * @return boolean true if the element passes, false if it fails a rule.
-     */
-    function DINRunElementRules($elname, $elements, $registered)
-    {
-        foreach ($registered['rules'] AS $rule) {
-            //Loop through the assigned rules (which is the array of formatted
-            //statements passed in XINRegisterRule)
-            $split        = explode('{@}', $rule);
-            $userval      = $elements[$elname];
-            $operator     = $split[1];
-            $comparevalue = $split[2];
-
-            // Special case for if the rule was registered
-            // as "q{@}=={@}NEVER_REQUIRED"
-            if ($comparevalue == 'NEVER_REQUIRED' && $operator == '==') {
-                return true;
-            }
-            $compareFunction = create_function(
-                '$a, $b',
-                "return \$a $operator \$b;"
-            );
-
-            if (!($compareFunction($comparevalue, $userval)) ) {
-                return false;
-            }
-        }
-        // Nothing that was compared failed
-        return true;
-    }
-
-    /**
     * Attaches a user defined rule (conditions) to a form element (grouped or not).
     *
     * @param string $elname  Name of element registering the rule
@@ -1353,45 +1189,18 @@ class NDB_BVL_Instrument extends NDB_Page
     */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {
-        // I'm not sure if these are logically the same. I think they should be, but
-        // there was a bug introduced by the LINST changes to XINRules to old
-        // instruments so I'm making sure that the old code is followed exactly
-        // with this if block.
-        // After everything's working, review this to see if we can get rid of one of
-        // the if statement and use the same logic for "old" instruments and "new"
-        // instruments
-        //  -- Dave
-        if ($this->InstrumentType === 'LINST') {
-            if (!is_array($rules)) {
-                $rules_array[] = $rules;
-            } else {
-                $rules_array = $rules;
-            }
-            $rule = array(
-                     'message' => $message,
-                     'group'   => $group,
-                     'rules'   => array()
-                    );
-
-            foreach ($rules_array AS $rule_cmd) {
-                $rule['rules'][] = $rule_cmd;
-            }
-            $this->XINRules[$elname][] = $rule;
-            return true;
+        if (!is_array($rules)) {
+            $rules_array[] = $rules;
         } else {
-            if (!is_array($rules)) {
-                $rules_array[] = $rules;
-            } else {
-                $rules_array = $rules;
-            }
-            $this->XINRules[$elname]['message'] = $message;
-            $this->XINRules[$elname]['group']   = $group;
-
-            foreach ($rules_array AS $rule) {
-                $this->XINRules[$elname]['rules'][] = $rule;
-            }
-            return true;
+            $rules_array = $rules;
         }
+        $this->XINRules[$elname]['message'] = $message;
+        $this->XINRules[$elname]['group']   = $group;
+
+        foreach ($rules_array AS $rule) {
+            $this->XINRules[$elname]['rules'][] = $rule;
+        }
+        return true;
     }
 
 
