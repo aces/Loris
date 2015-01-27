@@ -186,7 +186,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 $obj          = new NDB_BVL_Instrument_instrument_preview();
                 $obj->preview = true;
             } else {
-                $obj = new NDB_BVL_Instrument_LINST();
+                $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
             }
             //$obj->form = new HTML_Quickform('test_form');
             $obj->commentID = $commentID;
@@ -202,9 +202,9 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             include_once $base."project/instruments/$class.class.inc";
             // Now go ahead and instantiate it
-            $obj = new $class;
-            $success = $obj->setup($commentID, $page);
         }
+        $obj = new $class;
+        $success = $obj->setup($commentID, $page);
 
         $access = $obj->_hasAccess();
 
@@ -2050,33 +2050,26 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * This does the work of parsing a Loris Instrument (.linst) file and
-     * calling all the appropriate addElement functions to build the instrument
-     * page for user data entry.
+     * Parses a file that isn't written in PHP and loads it into a format
+     * that LORIS understands.
+     *
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
      *
      * @param string  $filename The filename to be loaded, or a base64 encoded
-     *                          string of a .linst file to be interpreted.
+     *                          string.
      * @param boolean $base64   If true, read the filename as a base64 encoded
-     *                          string of the file content, used for preview
-     *                          when no file has yet been saved to the
-     *                          instruments/ directory
-     *
-     * @return none, but as a side effect displays the Instrument page
+     *                          string of the file content, used for preview.
      */
     function loadInstrumentFile($filename, $base64 = false)
     {
     }
 
     /**
-     * Load the rules for the instrument from $filename, which must be a file
-     * in the Loris Instrument Rule file format inspired by XINRules.
+     * Load the rules for an instrument from the file system.
      *
-     * Rules are of the format:
-     *   question{-}Error message if violated{-}XIN Rules to evaluate
-     *
-     * For example:
-     *
-     * family_other{-}Required if family_member is other{-}family_member{@}=={@}other
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
      *
      * @param string $filename Either the path to a file, or a base64 encoded
      *                         string which can be interpreted as a file by
@@ -2084,8 +2077,6 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param bool   $base64   If true, the "filename" is really a base64 encoded
      *                         data URL, so we shouldn't check that the file exists
      *                         on the filesystem. (Used by preview)
-     *
-     * @return null Registers all instrument rules as a side-effect.
      */
     function loadInstrumentRules($filename, $base64 = false)
     {
