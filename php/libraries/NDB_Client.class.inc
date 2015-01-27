@@ -47,7 +47,7 @@ class NDB_Client
     *
     * @return true on success
     */
-    function initialize($configFile = "../project/config.xml")
+    function initialize($configFile = null)
     {
         // require all relevant OO class libraries
         include_once "NDB_Config.class.inc";
@@ -68,7 +68,7 @@ class NDB_Client
         include_once "NDB_BVL_Feedback.class.inc";
 
         // Load the config file.
-        $config =& NDB_Config::singleton($configFile);
+        $config = NDB_Config::singleton($configFile);
 
         // Load the database object with settings from config
         // so that after this we can just call Database::singleton()
