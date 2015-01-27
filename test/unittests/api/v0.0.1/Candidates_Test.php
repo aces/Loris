@@ -13,6 +13,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
         $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
+        $this->getMockBuilder('Candidate')->setMockClassName("MockCandidate")->getMock();
 
         $this->Factory = NDB_Factory::singleton();
         $this->Factory->setTesting(true);
@@ -28,7 +29,6 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
                 return array();
             }
         ));
-
     }
 
     function testValidMethods() {
@@ -45,16 +45,25 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
     function testPostCandidateValid() {
         try {
-            $API = new \Loris\API\Candidates("POST",
+            $API = $this->getMockBuilder(
+                '\Loris\API\Candidates')->disableOriginalConstructor()->setMethods(['createNew'])->getMock();
+            $API->expects($this->once())->method('createNew');//->expects($this->once());
+            $API->__construct("POST",
                 ['candidate' => json_encode([
-                'Candidate' => [
-                    'Project' => "loris",
-                    'PSCID'   => 'HelloPSC',
-                    'EDC'     => '2015-05-19',
-                    'Gender'  => 'Male'
-                ]])
-            ]
-        );
+                    'Candidate' => [
+                        'Project' => "loris",
+                        'PSCID'   => 'HelloPSC',
+                        'EDC'     => '2015-05-19',
+                        'DoB'     => '2015-05-26',
+                        'Gender'  => 'Male'
+                    ]
+                ])]);
+            //$API->expects($this->once())->method('createNew');
+            //$Mocked->expects($this->once())->method('createNew');
+            //$API = new $Mocked("POST",
+             //   )
+            //]
+        //);
         } catch(\Loris\API\SafeExitException $e) {
             $API = $e->Object;
         }
@@ -65,11 +74,12 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals(is_numeric($CandID), true);
         $this->assertTrue($CandID >= 100000);
         $this->assertTrue($CandID <= 999999);
+
     }
 
     function testPostCandidateInvalidGender() {
         try {
-            $API = new \Loris\API\Candidates("POST", 
+            $API = new \Loris\API\Candidates("POST",
                 ['candidate' => json_encode([
                 'Candidate' => [
                     'Project' => "loris",
@@ -85,6 +95,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($API->Headers, ['HTTP/1.1 400 Bad Request']);
     }
+
     function testPostCandidateInvalidJSON() {
         try {
             $API = new \Loris\API\Candidates("POST",
