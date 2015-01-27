@@ -42,6 +42,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     var $preview = false;
 
+    function _setupPage($commentID, $page) {
+        $this->commentID = $commentID;
+        $this->page = $page;
+    }
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
      * current form
