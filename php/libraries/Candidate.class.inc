@@ -111,7 +111,7 @@ class Candidate
             $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
         }
 
-        $headerSetting = $config->getSetting('parameter_candidate');
+        $headerSetting = $config->getSetting('HeaderTableCandidateParameter');
         if (!empty($headerSetting)) {
             $params = array();
             if (!is_array($headerSetting)) {
