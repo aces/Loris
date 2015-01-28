@@ -1,5 +1,4 @@
 <?php
-namespace Loris\Behavioural;
 /**
  * This file contains the base class for instruments in Loris
  *
@@ -11,6 +10,7 @@ namespace Loris\Behavioural;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+namespace Loris\Behavioural;
 require_once 'NDB_Page.class.inc';
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
@@ -42,9 +42,18 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     var $preview = false;
 
-    function setup($commentID, $page) {
+    /**
+     * Sets up the variables required for a LINST instrument to load
+     *
+     * @param string $commentID The CommentID being loaded
+     * @param string $page      The page being loaded
+     *
+     * @return none
+     */
+    function setup($commentID, $page)
+    {
         $this->commentID = $commentID;
-        $this->page = $page;
+        $this->page      = $page;
 
         $this->form = new \HTML_Quickform('test_form');
     }
@@ -386,10 +395,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $rules_array = $rules;
         }
         $rule = array(
-            'message' => $message,
-            'group'   => $group,
-            'rules'   => array()
-        );
+                 'message' => $message,
+                 'group'   => $group,
+                 'rules'   => array()
+                );
 
         foreach ($rules_array AS $rule_cmd) {
             $rule['rules'][] = $rule_cmd;
