@@ -66,9 +66,12 @@ class NDB_Config
             // for a project/config.xml, then check for the config
             // file in a standard unix filesystem location.
             // /etc/loris/config.xml
-            if($configFile === null) {
-                if(!empty(getenv('LORIS_CONFIG'))) {
-                    $configFile = getenv('LORIS_CONFIG');
+            if ($configFile === null) {
+                // Can't directly check !empty because of a bug
+                // in PHP < 5.5, need to assign to a variable first
+                $env = getenv('LORIS_CONFIG');
+                if (!empty($env)) {
+                    $configFile = $env;
                 } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
                     // "Classic" Loris location of project directory
                     // parallel to php directory
