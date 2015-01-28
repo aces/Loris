@@ -2064,6 +2064,8 @@ class NDB_BVL_Instrument extends NDB_Page
      *                          string.
      * @param boolean $base64   If true, read the filename as a base64 encoded
      *                          string of the file content, used for preview.
+     *
+     * @return none
      */
     function loadInstrumentFile($filename, $base64 = false)
     {
@@ -2081,6 +2083,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param bool   $base64   If true, the "filename" is really a base64 encoded
      *                         data URL, so we shouldn't check that the file exists
      *                         on the filesystem. (Used by preview)
+     *
+     * @return none
      */
     function loadInstrumentRules($filename, $base64 = false)
     {
