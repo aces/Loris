@@ -111,14 +111,13 @@ class Candidate
             $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
         }
 
-        $headerSetting = $config->getSetting('HeaderTable');
+        $headerSetting = $config->getSetting('parameter_candidate');
         if (!empty($headerSetting)) {
             $params = array();
-            $parameterCandSettings = $headerSetting['parameter_candidate'];
-            if (!is_array($parameterCandSettings)) {
-                $parameterCandSettings = array($parameterCandSettings);
+            if (!is_array($headerSetting)) {
+                $headerSetting = array($headerSetting);
             }
-            foreach ($parameterCandSettings as $parameter_type) {
+            foreach ($headerSetting as $parameter_type) {
                 $row = $db->pselectRow(
                     "SELECT Value, pt.Description
                     FROM candidate c
