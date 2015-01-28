@@ -1,0 +1,1 @@
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'parameter_candidate', 'Candidate parameters to be displayed in the table at the top of candidate profiles.', 1, 1, 'text', ID, 'Candidate profile parameters', 5 FROM ConfigSettings WHERE Name="gui";
