@@ -75,7 +75,7 @@ class NDB_Config
                 } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
                     // "Classic" Loris location of project directory
                     // parallel to php directory
-                    $configFile = __DIR__ . "/../../loris/config.xml";
+                    $configFile = __DIR__ . "/../../project/config.xml";
                 } else if (file_exists("/etc/loris/config.xml")) {
                     // Standard Unix filesystem layout
                     $configFile = "/etc/loris/config.xml";
