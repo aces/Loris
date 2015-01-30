@@ -50,7 +50,7 @@ class File_Decompress extends PEAR
      * @param String $file_name        File to be decompressed
      * @param String $destination_path Path of the destination folder
      */
-    function __construct(&$file_name, &$destination_path)
+    function File_Decompress(&$file_name, &$destination_path)
     {
         $this->file_name = $file_name;
         $this->dest_path = $destination_path;
@@ -71,7 +71,7 @@ class File_Decompress extends PEAR
         ) {
             return $this->tgzDecompres();
         } elseif (preg_match("/.tar/", $this->file_name)) {
-            return $this->untar();
+            return $this->untar($this->file_name);
         } elseif (preg_match("/.zip/", $this->file_name)) {
             return $this->unzip();
         } elseif (preg_match("/.gz/", $this->file_name)) {
@@ -89,15 +89,11 @@ class File_Decompress extends PEAR
      */
     function tgzDecompres()
     {
-        $decompressed_folder = null;
-        $p = new PharData($this->file_name);
-        $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
-        $is_extracted        = $p->extractTo(
-            $this->dest_path,
-            null,
-            true
-        );
-        return $decompressed_folder;
+        $command = "tar zxvf $this->file_name -C $this->dest_path";
+        system($command, &$return_value);
+        if($return_value != 0) {
+            throw new InvalidArgumentException("Command $command failed with exit status $return_value");
+        }
     }
 
     /**
@@ -121,13 +117,16 @@ class File_Decompress extends PEAR
      *
      * @return boolean
      */
-    function untar()
+    function untar($tar_filename, $dest_dir)
     {
-        $return_value = false;
-        $p            = new PharData($this->file_name);
-        $return_value = $p->extractTo($this->dest_path);
-           //could remove the folder later once completed...
-        return $return_value;
+        $command = "tar xvf $tar_filename -C $dest_dir";
+        system($command, &$return_value);
+        
+        if($return_value != 0) {
+            throw new InvalidArgumentException("Command $command failed with exit status $return_value");
+        }
+        
+        return true;
     }
 
 
