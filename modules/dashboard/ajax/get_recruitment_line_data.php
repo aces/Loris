@@ -32,9 +32,9 @@ $recruitmentStartDate = $DB->pselectOne(
 $recruitmentEndDate = $DB->pselectOne(
     "SELECT max(Date_registered) FROM candidate", array()
 );
-$recruitmentData['labels'] 
+$recruitmentData['labels']
     = createChartLabels($recruitmentStartDate, $recruitmentEndDate);
-$list_of_sites =& Utility::getSiteList();
+$list_of_sites = Utility::getSiteList();
 foreach ($list_of_sites as $dataset) {
     $recruitmentData['datasets'][] = array(
         "name" => $dataset,
