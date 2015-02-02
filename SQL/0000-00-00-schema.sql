@@ -2135,6 +2135,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'rowsPerPage', 'Number of table rows to display per page', 1, 0, 'text', ID, 'Table rows per page', 2 FROM ConfigSettings WHERE Name="gui";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showTiming', 'Show breakdown of timing information for page loading', 1, 0, 'boolean', ID, 'Show page load timing', 3 FROM ConfigSettings WHERE Name="gui";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showPearErrors', 'Print PEAR errors', 1, 0, 'boolean', ID, 'Show PEAR errors', 4 FROM ConfigSettings WHERE Name="gui";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'HeaderTableCandidateParameter', 'Candidate parameters to be displayed in the table at the top of candidate profiles.', 1, 1, 'text', ID, 'Candidate profile parameters', 5 FROM ConfigSettings WHERE Name="gui";
 
 -- www
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('www', 'Web address settings', 1, 0, 'WWW', 4);
