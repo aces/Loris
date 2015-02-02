@@ -15,7 +15,6 @@
  *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
- *
  */
 
 
@@ -37,17 +36,17 @@ $config =& NDB_Config::singleton();
 $paths  = $config->getSetting('paths');
 
 // Basic config validation
-$basePath    = $paths['base'];
+$basePath = $paths['base'];
 if (empty($basePath)) {
     error_log("ERROR: Config settings are missing");
-    header("HTTP/1.1 500 Internal Server Error"); 
+    header("HTTP/1.1 500 Internal Server Error");
     exit(1);
 }
 
 
 // Now get the file and do file validation
 $Module = $_GET['Module'];
-$File = $_GET['script'];
+$File   = $_GET['script'];
 if (empty($Module) || empty($File)) {
     error_log("Missing required parameters for request");
     header("HTTP/1.1 400 Bad Request");
