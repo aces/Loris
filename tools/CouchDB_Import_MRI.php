@@ -41,7 +41,7 @@ class CouchDBMRIImporter
     );
     var $feedback_Comments; //reference to list of MRI feedback types;
     var $feedback_PreDefinedComments; //reference to list of MRI feedback types;
-
+    var $mri_header_fields;// reference to list of mri header fields
     /**
      * Constructor for CouchDBMRIImporter
      */
@@ -110,6 +110,36 @@ class CouchDBMRIImporter
                 }
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
+            }
+            $this->mri_header_fields = array('ScannerID'=>'Scanner ID'
+                                       'Pipeline'=>'Pipeline',
+                                       'OutputType'=>'Output',
+                                       'AcquisitionProtocol'=>'Protocol',
+                                       'CoordinateSpace'=>'Space',
+                                       'Algorithm'=>'Algorithm',
+                                       'AcquisitionDate'=>'Acquisition Date',
+                                       'FileInsertDate'=>'Insert date',
+                                       'SeriesDescription'=>'Series Description',
+                                       'SeriesNumber'=>'Series Number',
+                                       'EchoTime'=>'Echo Time',
+                                       'RepetitionTime'=>'Repetition Time',
+                                       'SliceThickness'=>'Slice Thickness',
+                                       'Time'=>'No of volumes',
+                                       'Comment'=>'Comment',
+                                       'SlicewiseRejected'=>
+                                           'Slicewise correlations (Nb)',
+                                       'InterlaceRejected'=>
+                                           'Interlace correlations (Nb)',
+                                       'IntergradientRejected'=>
+                                           'Gradient-wise correlations (Nb)',
+                                       'TotalRejected'=>
+                                           'No. of rejected directions');
+            foreach ($this->mri_header_fields as $field=>$desc) {
+                $this->Dictionary[$field."_$ScanType"] 
+                    = array(
+                            'Type' => "varchar(255)",
+                            'Description'=> $desc." $ScanType"
+                           );
             }
         }
         $this->CouchDB->replaceDoc(
@@ -196,6 +226,63 @@ class CouchDBMRIImporter
             }
         }
         return $CandidateData;
+    }
+
+    /**
+     * Add mri header information  to each selected scan
+     *
+     * @param file object $FileObj   File object
+     * @param string      $scan_type Scan type of the selected file
+     *
+     * @return array      $mri_header_info Array of mri header info for the given 
+     *                                     file
+     */
+    function _addMRIHeaderInfo($FileObj, $scan_type)
+    {
+        $mri_header_info = array(
+                'ScannerID_'.$scan_type=> $FileObj->getParameter('ScannerID'),
+                'Pipeline_'.$scan_type => $FileObj->getParameter('Pipeline'),
+                'OutputType_'.$scan_type => $FileObj->getParameter('OutputType'),
+                'AcquisitionProtocol_'.$scan_type =>
+                    $FileObj->getAcquisitionProtocol(),
+                'CoordinateSpace_'.$scan_type =>
+                    $FileObj->getParameter('CoordinateSpace'),
+                'Algorithm_'.$scan_type => $FileObj->getParameter('Algorithm'),
+                'AcquisitionDate_'.$scan_type => $this->_getDate(
+                    $FileObj, 'acquisition_date', $acqDate
+                ),
+                'FileInsertDate_'.$scan_type => $FileObj->getParameter('InsertTime'),
+                'SeriesDescription_'.$scan_type =>
+                    $FileObj->getParameter('series_description'),
+                'SeriesNumber_'.$scan_type =>
+                    $FileObj->getParameter('series_number'),
+                'EchoTime_'.$scan_type => number_format(
+                    $FileObj->getParameter('echo_time')*1000, 2
+                ),
+                'RepetitionTime_'.$scan_type => number_format(
+                    $FileObj->getParameter('repetition_time')*1000, 2
+                ),
+                'SliceThickness_'.$scan_type => number_format(
+                    $FileObj->getParameter('slice_thickness'), 2
+                ),
+                'Time_'.$scan_type => number_format(
+                    $FileObj->getParameter('time'), 2
+                ),
+                'Comment_'.$scan_type => $FileObj->getParameter('Comment'),
+                'TotalRejected_'.$scan_type => $FileObj->getParameter(
+                    'processing:total_rejected'
+                ),
+                'SlicewiseRejected_'.$scan_type => $this->_getRejected(
+                    $FileObj, 'slicewise', $sliceRej
+                ),
+                'InterlaceRejected_'.$scan_type => $this->_getRejected(
+                    $FileObj, 'interlace', $laceRej
+                ),
+                'IntergradientRejected_'.$scan_type => $this->_getRejected(
+                    $FileObj, 'intergradient', $interRej
+                )
+                    );
+
     }
 
     /**
@@ -313,6 +400,12 @@ class CouchDBMRIImporter
                         "SELECT FileID FROM files WHERE File=:fname",
                         array('fname'=>$row['Selected_'.$scan_type])
                     );
+                    $FileObj = new MRIFile($fileID);
+                    $mri_header_results = $this->addMRIHeaderInfo(
+                        $FileObj,
+                        $scan_type
+                    );
+                    $row = array_merge($row, $mri_header_results);
                     // instantiate feedback mri object
                     $mri_feedback = new FeedbackMRI($fileID, $row['SessionID']);
                     $current_feedback = $mri_feedback->getComments();
