@@ -47,9 +47,9 @@ function MapSubprojectID(&$results) {
     global $config;
     $subprojectLookup = array();
     // Look it up from the config
-    $study = $config->getSetting['study'];
+    $study = $config->getSetting('study');
     foreach ($study["subprojects"]["subproject"] as $subproject) {
-	    $subprojectLookup[$subproject["id"]] =  $subproject["title"];
+	    $subprojectLookup[$subproject["id"]] = $subproject["title"];
     }
 
     for ($i = 0; $i < count($results); $i++) {
