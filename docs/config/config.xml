@@ -60,7 +60,12 @@
                 <seq type="numeric" length="4" min='1000' max='9999'/>
             </structure>
         </ExternalID>
-
+        <!--Header table is diplayed on top of instrument list page and instrument pages -->
+        <HeaderTable>
+            <!--Specify the table as the tag and the field to query as the value inside the tag -->
+            <candidate>ProbandDoB</candidate>
+            <parameter_session>MRI_Done</parameter_session>
+        </HeaderTable>
         <Projects>
             <project>
                 <id>1</id>
