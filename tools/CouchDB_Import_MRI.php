@@ -111,7 +111,7 @@ class CouchDBMRIImporter
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
             }
-            $this->mri_header_fields = array('ScannerID'=>'Scanner ID'
+            $this->mri_header_fields = array('ScannerID'=>'Scanner ID',
                                        'Pipeline'=>'Pipeline',
                                        'OutputType'=>'Output',
                                        'AcquisitionProtocol'=>'Protocol',
@@ -229,6 +229,53 @@ class CouchDBMRIImporter
     }
 
     /**
+    * Gets the date according to the type
+    *
+    * @param MRIFile $file  file object
+    * @param string  $type  type of the date
+    * @param array   $array array containing the date
+    *
+    * @return date if exists, if not an empty string
+    */
+    function _getDate($file, $type, $array)
+    {
+        if (preg_match(
+            "/(\d{4})-?(\d{2})-?(\d{2})/", 
+            $file->getParameter($type), $array
+        )) {
+            return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
+        } else {
+            return "";
+        }
+    }
+
+    /**
+    * Gets a rejected parameter according to its type
+    *
+    * @param MRIFile $file  file object
+    * @param string  $type  type of the rejected
+    * @param array   $array array containing rejected
+    *
+    * @return parameter of the rejected
+    */
+    function _getRejected($file, $type, $array)
+    {
+        $parameter = 'processing:' . $type . '_rejected';
+        if (preg_match(
+            "/(Directions)([^\(]+)(\(\d+\))/",
+            $file->getParameter($parameter), $array
+        )) {
+            $dirList = preg_split('/\,/', $array[2]);
+            if (count($dirList) > 1) {
+                sort($dirList);
+            }
+            return "Directions " . join(", ", $dirList) . " " . $array[3];
+        } else {
+            return $file->getParameter($parameter);
+        }
+    }
+
+    /**
      * Add mri header information  to each selected scan
      *
      * @param file object $FileObj   File object
@@ -281,8 +328,8 @@ class CouchDBMRIImporter
                 'IntergradientRejected_'.$scan_type => $this->_getRejected(
                     $FileObj, 'intergradient', $interRej
                 )
-                    );
-
+                );
+         return $mri_header_info;
     }
 
     /**
@@ -401,7 +448,7 @@ class CouchDBMRIImporter
                         array('fname'=>$row['Selected_'.$scan_type])
                     );
                     $FileObj = new MRIFile($fileID);
-                    $mri_header_results = $this->addMRIHeaderInfo(
+                    $mri_header_results = $this->_addMRIHeaderInfo(
                         $FileObj,
                         $scan_type
                     );
