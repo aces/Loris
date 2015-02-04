@@ -32,7 +32,7 @@ class LorisForm {
         }
 
         $retVal = "<select";
-        if($el['required']) {
+        if(isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if($el['requireMsg']) {
                 $retVal .= " oninvalid=\"this.setCustomValidity('$el[requireMsg]')\"";
