@@ -1,6 +1,6 @@
 {literal}
 <style type="text/css">
-    .tree{
+       .tree{
         overflow-x: auto
     }
     #home-dir{
@@ -55,6 +55,70 @@
         float: left;
         border: 1px solid #999;
     }
+    /*#dir-tree>tr>td.blah{
+        background-color: black;
+    }*/
+#dir-tree>tr>td.blah::before {
+    /*border-left:1px solid #999;
+    bottom:50px;
+    height:100%;
+    top:0;
+    width:1px*/
+    /*margin-left: -50%;
+    text-align: right;*/
+}
+/*#dir-tree>tr>td.blah::before {*/
+.fileDDD::before{
+    /*content: '';
+    left: -20px;
+    position: absolute;
+    right: auto;*/
+    position: absolute;
+    margin-top: 20px;
+    margin-left: -30px;
+    overflow: hidden;
+    width: 30px;
+    height: 1px;
+    content: '\a0';
+    background-color: #999;
+}
+#dir-tree>tr>td:first-child {
+    padding: 0px;
+}
+/* #dir-tree>tr>td:first-child>div{
+    height: 100%;
+} */
+#dir-tree>tr>td:first-child>div{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    border-left:1px solid #999;
+    /*padding: 8px;*/
+    padding-left: 30px;
+    /*position: absolute;*/
+    height:100%;
+    /* float:left; */
+    overflow: auto;
+}
+.fileDDD>div{
+    overflow: inherit;
+}
+#dir-tree>tr>td:first-child>span{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    border-left:1px solid #999;
+    /*padding: 8px;*/
+    padding-left: 30px;
+    /*position: absolute;*/
+    /*height:100%;*/
+    /* float:left; */
+    overflow: auto;
+}
+.spacer{
+    float: left;
+    width: 60px;
+}
 </style>
 <script type="text/javascript" src="js/modules/mustache.js"></script>
 <script type="text/javascript">
@@ -75,7 +139,14 @@ $(document).ready(function() {
             var dirData = {
                 name: path[depth - 1],
                 indent: function(){
-                    return (depth - 1)*15;
+                    return (depth - 1)*60;
+                },
+                depth: function(){
+                    var depthArray = [];
+                    for (var i = 0; i < depth - 1; i++) {
+                        depthArray.push(" ");
+                    };
+                    return depthArray;
                 }
             }
             var renderDir = Mustache.render(directory, dirData);
@@ -104,7 +175,14 @@ $(document).ready(function() {
                 //new table layout
                 var file = $('#file').html();
                 Mustache.parse(file);   // optional, speeds up future uses
-                files[ii].indent = (depth)*30;
+                files[ii].indent = (depth)*60;
+                files[ii].depth =   function(){
+                                        var depthArray = [];
+                                        for (var i = 0; i < depth; i++) {
+                                            depthArray.push(" ");
+                                        };
+                                        return depthArray;
+                                    }
                 var renderedFile = Mustache.render(file, files[ii]);
                 $("#" + path[depth - 1] + "a").after(renderedFile);
             }
@@ -131,18 +209,33 @@ $(function () {
 </script>
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ name }}a">
-        <td style="text-indent: {{ indent }}px;">
-            <span class='glyphicon glyphicon-folder-close'>
-                {{ name }}
-            </span>
+        <td>
+            {{ #depth }}
+                <div class="spacer"> </div>
+            {{ /depth }}
+            {{ #indent }}
+                <div class="fileDDD">
+                    <span style="padding: 8px" class='blah glyphicon glyphicon-chevron-down'>
+                        {{ name }}
+                    </span>
+                </div>
+            {{ /indent }}
+            {{ ^indent }}
+                <span style="padding: 8px" class='blah glyphicon glyphicon-chevron-down'>
+                    {{ name }}
+                </span>
+            {{ /indent }}
         </td>
         <td colspan="9"></td>
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
     <tr>
-        <td style="padding-left: {{ indent }}px;">
-            {{ File_name }} ({{ File_size }})
+        <td class="blah">
+            {{ #depth }}
+                <div class="spacer"> </div>
+            {{ /depth }}
+            <div class="fileDDD"><div style="padding-top: 8px">{{ File_name }} ({{ File_size }})</div></div>
         </td>
         <td>
             {{ version }}
@@ -276,25 +369,15 @@ $(function () {
     {/section}
 </tr>
 
-<<<<<<< HEAD
+
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
 
 <table class="table table-striped">
-=======
-<!-- <table class="table table-striped">
->>>>>>> modify tree structure
     <tbody id="dir-tree">
 
     </tbody>
-</table> -->
-
-<<<<<<< HEAD
-<div class="tree well">
-    <ul id="home-dir">
-=======
-
->>>>>>> modify tree structure
+</table>
 
 
 <div id="accordion" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons" role="tablist">
