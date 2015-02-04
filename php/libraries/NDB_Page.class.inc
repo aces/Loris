@@ -68,7 +68,7 @@ class NDB_Page
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->form       = new LorisForm($formname);
+        $this->form       = new \Loris\LorisForm($formname);
         $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
