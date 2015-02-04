@@ -308,7 +308,7 @@ class NDB_Menu_Filter extends NDB_Menu
             // the filters values remain populated correctly in the front-end,
             // not just in the query..
             $defaults = $this->_getDefaults();
-            if(is_array($savedFilters)) {
+            if (is_array($savedFilters)) {
                 $this->_setDefaults(array_merge($defaults, $savedFilters));
             } else {
                 $this->_setDefaults($defaults);
