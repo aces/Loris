@@ -2435,6 +2435,20 @@ class NDB_BVL_Instrument extends NDB_Page
 
         return json_encode(json_decode($html));
     }
+
+    function determineDataEntryAllowed() {
+        $DB = Database::singleton();
+        $entry = $DB->pselectOne("SELECT Data_entry FROM flag WHERE
+           CommentID=:CID", array('CID' => $this->getCommentId()));
+
+        if($entry === 'Complete') {
+            return false;
+        }
+        return true;
+    }
+    function validate($values) {
+        return $this->determineDataEntryAllowed();
+    }
 }
 
 /**

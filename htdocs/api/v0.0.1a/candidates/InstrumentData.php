@@ -7,7 +7,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
     var $Instrument;
     public function __construct($method, $CandID, $Visit, $Instrument, $bDDE, $bFlags) {
         if(empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
+            $this->AllowedMethods = ['GET', 'PUT', 'PATCH', 'OPTIONS'];
         }
         $this->AutoHandleRequestDelegation = false;
         $this->bDDE = $bDDE;
@@ -74,6 +74,35 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments {
                 unset($flags['Validity']);
             }
             $this->JSON['Flags'] = $flags;
+        }
+    }
+
+    function handleOPTIONS() {
+        $this->Header("Access-Control-Allow-Methods: ".
+            join($this->AllowedMethods, ",")
+        );
+    }
+
+    function handlePUT() {
+        $fp = fopen("php://input", "r");
+        $data = '';
+        while(!feof($fp)) {
+            $data .= fread($fp, 1024);
+        }
+        fclose($fp);
+
+        $data = json_decode($data, true);
+        if($this->Instrument->validate($data)) {
+            $this->Instrument->clearInstrument();
+            $this->Instrument->_save($data[$this->Instrument->testName]);
+            $this->JSON = array("success" => "Updated");
+        } else {
+            $this->Header("HTTP/1.1 403 Forbidden");
+            if(!$this->Instrument->determineDataEntryAllowed()) {
+                $this->JSON = array('error' => "Can not update instruments that are flagged as complete");
+            } else {
+                $this->JSON = array("error" => "Could not update.");
+            }
         }
     }
 

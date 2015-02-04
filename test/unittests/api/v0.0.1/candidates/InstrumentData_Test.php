@@ -24,7 +24,7 @@ class InstrumentData_Test extends BaseTestCase
             $API = $e->Object;
         }
 
-        $this->assertEquals($API->AllowedMethods, ['GET', 'PUT', 'PATCH']);
+        $this->assertEquals($API->AllowedMethods, ['GET', 'PUT', 'PATCH', 'OPTIONS']);
     }
 }
 ?>
