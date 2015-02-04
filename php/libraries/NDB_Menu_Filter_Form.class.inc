@@ -29,6 +29,37 @@ require_once 'NDB_Menu_Filter.class.inc';
 
 class NDB_Menu_Filter_Form extends NDB_Menu_Filter
 {
+    /*
+     * Use HTML_QuickForm for Menu_Filter_Forms, since the Form part makes it more complicated
+     * than Menu_Filters
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    {
+        $this->form       = new HTML_QuickForm($formname);
+        $this->name       = $name;
+        $this->page       = $page;
+        $this->identifier = $identifier;
+        $this->commentID  = $commentID;
+        $this->defaults   = array();
+    }
+
+    function _resetForm()
+    {
+        $this->form = new HTML_QuickForm('test_form');
+    }
+
+    function display()
+    {
+        // dump the html for the menu
+        $smarty   = new Smarty_neurodb($this->Module);
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
+        $this->form->accept($renderer);
+        $smarty->assign('mode', $this->mode);
+        $smarty->assign('form', $renderer->toArray());
+        $smarty->assign($this->tpl_data);
+        $html = $smarty->fetch("menu_$this->menu.tpl");
+        return $html;
+    }
 
 
     /**
@@ -42,11 +73,14 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      */
     function save()
     {
+        print "WHAT";
         if (!isset($_REQUEST['filter'])
             && isset($_REQUEST['fire_away'])
             || !empty($_REQUEST['fire_away'])
         ) {
+            print "VALIDATING";
             if ($this->form->validate()) {
+                print "I R VALID?";
                 $success = $this->form->process(array(&$this, "_save"), false);
                 // QuickForm may have returned a PEAR error, so convert it
                 // to an exception. If this is ever upgraded to QF2, this
@@ -104,20 +138,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
     function _process($values)
     {
         return true;
-    }
-
-    /**
-     * Resets the form
-     *
-     * Usage: Call this function if you do not want to display the frozen form
-     * after saving but just want to dump a message and maybe some links
-     *
-     * @return void
-     * @access private
-     */
-    function _resetForm()
-    {
-        $this->form = new HTML_QuickForm('test_form');
     }
 
 }
