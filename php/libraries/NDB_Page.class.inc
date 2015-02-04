@@ -24,7 +24,7 @@ require_once 'HTML/QuickForm/Renderer/Default.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page
+class NDB_Page extends PEAR
 {
     /**
      * The name of the test_name being accessed
