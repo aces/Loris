@@ -2,6 +2,8 @@
 namespace Loris;
 class LorisForm {
     var $form = array();
+    var $defaultValues = array();
+
     function &addBase($name, $label) {
         $el = array('label' => $label, 'name' => $name);
         $this->form[$name] =& $el;
@@ -48,12 +50,17 @@ class LorisForm {
         return "<input name=\"$el[name]\" type=\"date\" "
             . "oninvalid=\"this.setCustomValidity('$msg')\""
 
-            . (isset($el['required']) ? "required" : '') . ">";
+            . (isset($el['required']) ? "required" : '')
+            . (isset($this->defaultValues[$el['name']]) ? ' value="' . $this->defaultValues[$el['name']] . '" ' : '')
+            . ">";
 
     }
 
     function textHTML($el) {
-        return "<input name=\"$el[name]\" type=\"text\">";
+        return "<input name=\"$el[name]\" type=\"text\""
+            . (
+                isset($this->defaultValues[$el['name']]) ? ' value="' . $this->defaultValues[$el['name']] . '"' : ''
+            ) .">";
     }
 
     function addElement($type, $name, $label, $options, ...$params) {
@@ -73,6 +80,8 @@ class LorisForm {
     }
 
     function setDefaults($arr) {
+        print_r($arr);
+        $this->defaultValues = $arr;
     }
 
     function validate() {
