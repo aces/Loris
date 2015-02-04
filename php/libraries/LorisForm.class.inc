@@ -44,10 +44,11 @@ class LorisForm {
     }
 
     function dateHTML($el) {
+        $msg = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         return "<input name=\"$el[name]\" type=\"date\" "
-            . "oninvalid=\"this.setCustomValidity('$el[requireMsg]')\""
+            . "oninvalid=\"this.setCustomValidity('$msg')\""
 
-            . ($el['required'] ? "required" : '') . ">";
+            . (isset($el['required']) ? "required" : '') . ">";
 
     }
 
@@ -104,9 +105,18 @@ class LorisForm {
     }
 
     function addRule($element, $message, $type, ...$params) {
-        if(!isset($this->form[$element])) {
+        if(is_array($element)) {
+            if($type === 'compare') {
+                $this->form[$element[0]]['compare'] = $this->form[$element[1]];
+                $this->form[$element[1]]['compare'] = $this->form[$element[0]];
+            }
             return;
-            throw new LorisException("Invalid Element $element");
+        }
+        if(!is_string($element)) {
+            throw new \LorisException("Element name is not a string");
+        }
+        if(!isset($this->form[$element])) {
+            throw new \LorisException("Invalid Element $element");
         }
 
         if($type === 'required') {
