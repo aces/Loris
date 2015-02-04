@@ -30,10 +30,16 @@ class LorisForm {
         $strOptions = '';
         $options = $el['options'];
         foreach($options as $optionKey => $optionVal) {
-            $strOptions .= "<option value='$optionKey'>$optionVal</option>";
+            $selected = '';
+
+            if(isset($this->defaultValues[$el['name']]) && $optionKey == $this->defaultValues[$el['name']]) {
+                $selected = 'selected="selected"';
+            }
+
+            $strOptions .= "<option value='$optionKey' $selected>$optionVal</option>";
         }
 
-        $retVal = "<select";
+        $retVal = "<select name=\"$el[name]\"";
         if(isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if($el['requireMsg']) {
@@ -80,7 +86,6 @@ class LorisForm {
     }
 
     function setDefaults($arr) {
-        print_r($arr);
         $this->defaultValues = $arr;
     }
 
