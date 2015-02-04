@@ -37,7 +37,7 @@ class Instruments extends Visit {
 }
 
 if(isset($_REQUEST['PrintInstruments'])) {
-    $obj = new CandidateInstrumentsJSON(
+    $obj = new Instruments(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],
         $_REQUEST['VisitLabel']

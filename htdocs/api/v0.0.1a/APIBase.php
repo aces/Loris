@@ -73,6 +73,9 @@ class APIBase {
         case 'POST':
             $this->handlePOST();
             break;
+        case 'OPTIONS':
+            $this->handleOPTIONS();
+            break;
 
         }
     }
@@ -90,6 +93,14 @@ class APIBase {
         $this->header("HTTP/1.1 501 Not Implemented");
         $this->safeExit(0);
     }
+
+    function handleOPTIONS() {
+        $this->Header("Access-Control-Allow-Methods: ".
+            join($this->AllowedMethods, ",")
+        );
+        $this->safeExit(0);
+    }
+
 
     function toJSONString() {
         return json_encode($this->JSON);
