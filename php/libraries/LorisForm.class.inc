@@ -1,4 +1,5 @@
 <?php
+namespace Loris;
 class LorisForm {
     var $form = array();
     function &addBase($name, $label) {
