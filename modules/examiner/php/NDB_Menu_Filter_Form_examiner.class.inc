@@ -237,9 +237,9 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
     {
         $DB =& Database::singleton();
 
-        $fullName    = $_POST['addName'];
-        $siteID      = $_POST['addSite'];
-        $radiologist = $_POST['radiologist'];
+        $fullName    = $values['addName'];
+        $siteID      = $values['addSite'];
+        $radiologist = $values['radiologist'];
 
         $DB->insert('examiners', array('full_name' => $fullName, 'centerID' => $siteID, 'radiologist' => $radiologist));
     }

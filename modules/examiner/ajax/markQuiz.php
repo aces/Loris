@@ -35,7 +35,6 @@ if ($quizCorrect == 0) {
     print 0;
     exit();
 } else {
-    /*
     $user =& User::singleton();
     if (PEAR::isError($user)) {
         return PEAR::raiseError("User Error: " .$user->getMessage());
@@ -58,7 +57,6 @@ if ($quizCorrect == 0) {
         "certification",
         array('examinerID' => $examinerID, 'date_cert' => $date, 'testID' => $instrumentID, 'pass' => 'certified')
     );
-    */
     print 1;
     exit();
 }

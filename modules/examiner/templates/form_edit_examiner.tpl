@@ -22,7 +22,6 @@
                         </div>
                         <br>
                     {/foreach}
-
                         <div class="row">
                             {if not $success}
                                 <div class="form-group col-xs-12">
@@ -61,7 +60,6 @@
             <th>Time</th>
             <th>User</th>
             <th>Measure</th>
-            <th>Visit</th>
             <th>Old Value</th>
             <th>Old Date</th>
             <th>New Value</th>
