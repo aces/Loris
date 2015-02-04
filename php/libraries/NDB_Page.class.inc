@@ -12,8 +12,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
-require_once 'LorisForm.class.inc';
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/Default.php';
 /**
  * Base class that contains a number of wrapper functions for adding
  * elements to the current page.
@@ -68,7 +68,7 @@ class NDB_Page
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->form       = new \Loris\LorisForm($formname);
+        $this->form       = new HTML_QuickForm($formname);
         $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
@@ -227,7 +227,7 @@ class NDB_Page
      */
     function addHidden($label, $attributes=null)
     {
-        $this->form->addElement('hidden', $label, $attributes, null);
+        $this->form->addElement('hidden', $label, $attributes);
     }
 
     /**
@@ -489,9 +489,11 @@ class NDB_Page
 
         // display the HTML_Quickform object
         $smarty   = new Smarty_neurodb($this->name);
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
+        $this->form->accept($renderer);
         $smarty->ModuleName = $this->name;
 
-        $smarty->assign('form', $this->form->toArray());
+        $smarty->assign('form', $renderer->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_$this->template.tpl");
         return $html;

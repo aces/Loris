@@ -4,25 +4,29 @@ class LorisForm {
     var $form = array();
     var $defaultValues = array();
 
-    function &addBase($name, $label) {
+    function &addBase($name, $label, $attribs) {
         $el = array('label' => $label, 'name' => $name);
+        if(isset($attribs['class'])) {
+            $el['class'] = $attribs['class'];
+        }
         $this->form[$name] =& $el;
         return $el;
     }
 
-    function addSelect($name, $label, $options) {
-        $el =& $this->addBase($name, $label);
+    function addSelect($name, $label, $options, $attribs = array()) {
+        $el =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'select';
         $el['options'] = $options;
+
     }
 
-    function addText($name, $label) {
-        $el =& $this->addBase($name, $label);
+    function addText($name, $label, $options=array()) {
+        $el =& $this->addBase($name, $label, $options);
         $el['type'] = 'text';
     }
 
     function addDate($name, $label, $options) {
-        $el =& $this->addBase($name, $label);
+        $el =& $this->addBase($name, $label, $options);
         $el['type'] = 'date';
     }
 
@@ -39,7 +43,11 @@ class LorisForm {
             $strOptions .= "<option value='$optionKey' $selected>$optionVal</option>";
         }
 
-        $retVal = "<select name=\"$el[name]\"";
+        $cls = '';
+        if(isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        $retVal = "<select name=\"$el[name]\" $cls";
         if(isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if($el['requireMsg']) {
@@ -52,8 +60,12 @@ class LorisForm {
     }
 
     function dateHTML($el) {
+        $cls = '';
+        if(isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
         $msg = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        return "<input name=\"$el[name]\" type=\"date\" "
+        return "<input name=\"$el[name]\" type=\"date\" $cls"
             . "oninvalid=\"this.setCustomValidity('$msg')\""
 
             . (isset($el['required']) ? "required" : '')
@@ -63,17 +75,21 @@ class LorisForm {
     }
 
     function textHTML($el) {
-        return "<input name=\"$el[name]\" type=\"text\""
+        $cls = '';
+        if(isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"text\" $cls"
             . (
                 isset($this->defaultValues[$el['name']]) ? ' value="' . $this->defaultValues[$el['name']] . '"' : ''
             ) .">";
     }
 
-    function addElement($type, $name, $label, $options, ...$params) {
+    function addElement($type, $name, $label, $options=array(), $attribs=array(), ...$params) {
         $el = null;
         switch($type)  {
         case 'select':
-            $el = $this->addSelect($name, $label, $options);
+            $el = $this->addSelect($name, $label, $options, $attribs);
             break;
         case 'date':
             $el = $this->addDate($name, $label, $options);
