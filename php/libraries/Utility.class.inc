@@ -156,7 +156,6 @@ class Utility extends PEAR
      * Returns a list of available ethnicities that can be assigned to subjects
      *
      * @return  array       an associative array("ethnicity" => "ethnicity")
-     * @throws  PEAR_Error
      * @access  public
      * @static
      * @note    This is no longer used and should be removed
@@ -184,7 +183,6 @@ class Utility extends PEAR
      * Returns a list of existing ethnicities of all candidates
      *
      * @return  array       an associative array("ethnicity" => "ethnicity")
-     * @throws  PEAR_Error
      * @access  public
      * @static
      * @note    This is no longer used and should be removed
@@ -301,7 +299,6 @@ class Utility extends PEAR
     /**
      * Returns a list of study Subprojects
      *
-     * @throws PEAR_Error
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
     static function getSubprojectList()
