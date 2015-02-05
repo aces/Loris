@@ -69,7 +69,7 @@ class NDB_Page extends PEAR
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->form       = new HTML_QuickForm($formname);
+        $this->form       = new LorisForm($formname);
         $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
@@ -490,11 +490,11 @@ class NDB_Page extends PEAR
 
         // display the HTML_Quickform object
         $smarty   = new Smarty_neurodb($this->name);
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
+        //$renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
+        //$this->form->accept($renderer);
         $smarty->ModuleName = $this->name;
 
-        $smarty->assign('form', $renderer->toArray());
+        $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_$this->template.tpl");
         return $html;
