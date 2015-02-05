@@ -82,6 +82,10 @@ class LorisForm
 
     }
 
+    public function addStatic($name, $label) {
+        $el =& $this->addBase($name, $label, array());
+        $el['type']    = 'static';
+    }
     /**
      * Reimplementation of HTML_QuickForm's "addText" API.
      *
@@ -173,6 +177,9 @@ class LorisForm
         case 'file':
             $el = $this->addFile($name, $label, $options);
             break;
+        case 'static':
+            $el = $this->addStatic($name, $label);
+            break;
         case 'text':
         default:
             $el = $this->addText($name, $label, $options);
@@ -242,6 +249,16 @@ class LorisForm
         return $retVal;
     }
 
+    function staticHTML($el) {
+        return $this->getValue($el['name']);
+        /*
+        if (empty($el['name'])) {
+            print "EMPTY";
+        }
+        print 
+        return '';
+         */
+    }
     /**
      * Generates the HTML to add to the page when rendered for a date
      * element.
@@ -422,8 +439,10 @@ class LorisForm
                 $el['html'] = $this->dateHTML($el);
                 break;
             case 'select':
-
                 $el['html'] = $this->selectHTML($el);
+                break;
+            case 'static':
+                $el['html'] = $this->staticHTML($el);
                 break;
             case 'text':
                 $el['html'] = $this->textHTML($el);
