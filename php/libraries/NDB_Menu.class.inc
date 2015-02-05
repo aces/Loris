@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once 'NDB_Page.class.inc';
-require_once 'LorisForm.class.inc';
 /**
  * Base Menu class
  *
@@ -132,7 +131,7 @@ class NDB_Menu extends NDB_Page
      * After support for forms is implemented, this override should be removed.
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname) {
-        $this->form = new \Loris\LorisForm($formname);
+        $this->form = new LorisForm($formname);
 
         $this->name       = $name;
         $this->page       = $page;
