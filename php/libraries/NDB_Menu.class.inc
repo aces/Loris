@@ -130,6 +130,7 @@ class NDB_Menu extends NDB_Page
      * this can be done before the LorisForm rule functionality is fully implemented.
      *
      * After support for forms is implemented, this override should be removed.
+     *
      * @param string $name       See NDB_Page
      * @param string $page       See NDB_Page
      * @param string $identifier See NDB_Page
@@ -138,7 +139,8 @@ class NDB_Menu extends NDB_Page
      *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname) {
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    {
         $this->form = new LorisForm($formname);
 
         $this->name       = $name;
