@@ -313,7 +313,7 @@ class LorisForm
         call_user_func($func,$this->getSubmitValues());
     }
 
-    /**13_01_03 885760 care_child_interview  -----care_grade -----baseline----as 8th
+    /**
      * Reimplements the HTML_QuickForm applyFilter API.
      * TODO: Implement this. We only ever use "trim", so that will be the only
      *       thing implemented.
