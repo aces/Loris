@@ -554,6 +554,17 @@ class LorisForm
             $name = $el['name'];
 
             $retVal[$name] = $_REQUEST[$name];
+            if($el['type'] === 'date') {
+                // Convert dates to the type of group that was used
+                // by HTML_QuickForm. This should eventually be modified
+                // to just use a normal HTML5 date.
+                $vals = explode("-", $retVal[$name]);
+                $retVal[$name] = array(
+                    'Y' => $vals[0],
+                    'M' => $vals[1],
+                    'd' => $vals[2]
+                );
+            }
         }
         return $retVal;
     }
