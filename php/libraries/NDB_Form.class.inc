@@ -14,7 +14,6 @@ require_once "NDB_Page.class.inc";
 require_once "PEAR.php";
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 /**
  * Base Form class that is overwritten by specific form pages
  *
