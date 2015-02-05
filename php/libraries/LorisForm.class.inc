@@ -143,8 +143,7 @@ class LorisForm
         $name,
         $label,
         $options=array(),
-        $attribs=array(),
-        ...$params
+        $attribs=array()
     ) {
         $el = null;
         switch($type)  {
@@ -238,13 +237,14 @@ class LorisForm
             $cls = "class=\"$el[class]\"";
         }
         $msg = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $val = $this->getDefault($el['name']);
         return "<input name=\"$el[name]\" type=\"date\" $cls"
             . "oninvalid=\"this.setCustomValidity('$msg')\""
 
             . (isset($el['required']) ? "required" : '')
             . (
-                !empty($this->getDefault($el['name']))
-                ? ' value="' . $this->getDefault($el['name']) . '" '
+                !empty($val)
+                ? ' value="' . $val . '" '
                 : ''
               )
             . ">";
@@ -262,13 +262,14 @@ class LorisForm
     function textHTML($el)
     {
         $cls = '';
+        $val = $this->getDefault($el['name']);
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
         return "<input name=\"$el[name]\" type=\"text\" $cls"
             . (
-                !empty($this->getDefault($el['name']))
-                ? ' value="' . $this->getDefault($el['name']) . '"'
+                !empty($val)
+                ? ' value="' . $val . '"'
                 : ''
               )
             .">";
@@ -308,10 +309,11 @@ class LorisForm
      */
     function process($func)
     {
-        $func($this->getSubmitValues());
+       
+        call_user_func($func,$this->getSubmitValues());
     }
 
-    /**
+    /**13_01_03 885760 care_child_interview  -----care_grade -----baseline----as 8th
      * Reimplements the HTML_QuickForm applyFilter API.
      * TODO: Implement this. We only ever use "trim", so that will be the only
      *       thing implemented.
@@ -382,7 +384,7 @@ class LorisForm
      *
      * @return none
      */
-    function addRule($element, $message, $type, ...$params)
+    function addRule($element, $message, $type)
     {
         if (is_array($element)) {
             if ($type === 'compare') {
