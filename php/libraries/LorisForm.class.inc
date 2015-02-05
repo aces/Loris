@@ -161,11 +161,22 @@ class LorisForm
         }
     }
 
-    function getDefault($name) {
-        if(isset($_REQUEST[$name])) {
+    /**
+     * Retrives the default value to populate for a form element.
+     * If it was POSTed by the user, use that value, otherwise use
+     * the form default.
+     *
+     * @param string $name The form element name to retrieve the value
+     *                     for.
+     *
+     * @return string The value to use for the form element.
+     */
+    function getDefault($name)
+    {
+        if (isset($_REQUEST[$name])) {
             return $_REQUEST[$name];
         }
-        if(isset($this->defaultValues[$name])) {
+        if (isset($this->defaultValues[$name])) {
             return $this->defaultValues[$name];
         }
         return null;
