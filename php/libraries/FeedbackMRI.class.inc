@@ -83,7 +83,6 @@ class FeedbackMRI
      * Clears all comments from the object
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function clearAllComments()
