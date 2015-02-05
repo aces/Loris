@@ -161,6 +161,15 @@ class LorisForm
         }
     }
 
+    function getDefault($name) {
+        if(isset($_REQUEST[$name])) {
+            return $_REQUEST[$name];
+        }
+        if(isset($this->defaultValues[$name])) {
+            return $this->defaultValues[$name];
+        }
+        return null;
+    }
     /**
      * Generates the HTML to add to the page when rendered for a select
      * element.
@@ -176,9 +185,7 @@ class LorisForm
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
-            if (isset($this->defaultValues[$el['name']])
-                && $optionKey == $this->defaultValues[$el['name']]
-            ) {
+            if ($optionKey == $this->getDefault($el['name'])) {
                 $selected = 'selected="selected"';
             }
 
@@ -225,8 +232,8 @@ class LorisForm
 
             . (isset($el['required']) ? "required" : '')
             . (
-                isset($this->defaultValues[$el['name']])
-                ? ' value="' . $this->defaultValues[$el['name']] . '" '
+                !empty($this->getDefault($el['name']))
+                ? ' value="' . $this->getDefault($el['name']) . '" '
                 : ''
               )
             . ">";
@@ -249,8 +256,8 @@ class LorisForm
         }
         return "<input name=\"$el[name]\" type=\"text\" $cls"
             . (
-                isset($this->defaultValues[$el['name']])
-                ? ' value="' . $this->defaultValues[$el['name']] . '"'
+                !empty($this->getDefault($el['name']))
+                ? ' value="' . $this->getDefault($el['name']) . '"'
                 : ''
               )
             .">";
