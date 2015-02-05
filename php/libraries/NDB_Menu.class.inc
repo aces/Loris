@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once 'NDB_Page.class.inc';
+
 /**
  * Base Menu class
  *
