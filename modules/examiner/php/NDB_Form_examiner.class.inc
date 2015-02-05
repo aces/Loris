@@ -58,9 +58,12 @@ class NDB_Form_examiner extends NDB_Form
              array('EID'=>$this->identifier));
 
         // Create the table html for the certification history
-        foreach($certification_history as $history_item)
-        {
-            $defaults['certification_history'] .= '<tr><td>' . $history_item['changeDate'] . '</td><td>' . $history_item['userID'] . '</td><td>' . $history_item['Measure'] . '</td><td>' . $history_item['old'] . '</td><td>' .  $history_item['old_date'] . '</td><td>' . $history_item['new'] . '</td><td>' . $history_item['new_date'] . '</td></tr>';
+        if (empty($certification_history)) {
+            $defaults['certification_history'] .= '<tr><td colspan="7">' . 'No changes have been made' . '</td></tr>';
+        } else {
+            foreach($certification_history as $history_item) {
+                $defaults['certification_history'] .= '<tr><td>' . $history_item['changeDate'] . '</td><td>' . $history_item['userID'] . '</td><td>' . $history_item['Measure'] . '</td><td>' . $history_item['old'] . '</td><td>' .  $history_item['old_date'] . '</td><td>' . $history_item['new'] . '</td><td>' . $history_item['new_date'] . '</td></tr>';
+            }
         }
 
         // get the certification results for the given examiner
@@ -79,149 +82,72 @@ class NDB_Form_examiner extends NDB_Form
 
     function _process($values)
     {
-        $DB =& Database::singleton();
-        if(Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
+        $DB = Database::singleton();
 
         foreach ($values['pass'] as $testID => $pass) {
-            $history_query = "SELECT ch.new, ch.new_date
-                              FROM certification_history ch
-                              LEFT JOIN certification c ON (c.certID=ch.primaryVals)
-                              WHERE c.examinerID=:EID AND testID=:TID
-                              ORDER BY changeDate DESC";
-            $history_where = array('EID'=>$this->identifier, 'TID'=>$testID);
 
             //select history events
-            $oldVals = $DB->pselectRow($history_query, $history_where);
-            $oldVal = $oldVals['new'];
-            $oldDate = $oldVals['new_date'];
-
-            $measureID = $DB->pselectRow("SELECT testID from certification where examinerID=:EID AND testID =:tst_id", array('EID'=>$this->identifier, 'tst_id'=>$testID));
-            $date = $values['date_cert'][$testID];
+            $oldVals = $DB->pselectRow(
+                "SELECT ch.new, ch.new_date
+                 FROM certification_history ch
+                 LEFT JOIN certification c ON (c.certID=ch.primaryVals)
+                 WHERE c.examinerID=:EID AND ch.testID=:TID
+                 ORDER BY changeDate DESC", array('EID'=>$this->identifier, 'TID'=>$testID));
+            
+            $oldVal                     = $oldVals['new'];
+            $oldDate                    = $oldVals['new_date'];
+            $date                       = $values['date_cert'][$testID];
             $values['comment'][$testID] = trim($values['comment'][$testID]);
-            $date_cert = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
+            $date_cert                  = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
+            
             //if date is empty when saving, set to null, otherwise drop-downs display odd behaviour (populated with Nov-30)
             if ($date_cert == '0000-00-00') {
                 $date_cert = null;
             }
 
-            $certID = $DB->pselectOne("SELECT certID from certification where examinerID =:EID", array('EID'=>$this->identifier));
-            $tests = $DB->pselect("SELECT testID from certification where examinerID=:EID", array('EID'=>$this->identifier));
-            $testIDs = array();
-            foreach($tests as $arr) {
-                $i=1;
-                array_push($testIDs, $arr['testID']);
-                $i++;
-            }
-            $exists = in_array($testID, $testIDs);
+            $certID = $DB->pselectOne("SELECT certID from certification where examinerID =:EID and testID=:TID", array('EID'=>$this->identifier, 'TID'=>$testID));
 
+            if (empty($certID)) { // new test certification for the examiner
+                $DB->insert('certification', array(
+                    'examinerID'  => $this->identifier, 
+                    'date_cert'   => $date_cert,
+                    'testID'      => $testID,
+                    'pass'        => $pass,
+                    'comment'     => $values['comment'][$testID]
+                ));
+                $DB->insert('certification_history', array(
+                    'col'         => 'pass',
+                    'old'         => $oldVal,
+                    'old_date'    => $oldDate,
+                    'new'         => $pass,
+                    'new_date'    => $date_cert,
+                    'primaryVals' => $certID,
+                    'testID'      => $testID,
+                    'visit_label' => $visit_label,
+                    'changeDate'  => date("Y-m-d H:i:s"),
+                    'userID'      => $_SESSION['State']->getUsername(),
+                    'type'        => 'I'
+                ));
+            } else { // update to a test certification for the examiner
+                $oldCertification = $DB->pselect(
+                    "SELECT pass, date_cert, comment
+                     FROM certification
+                     WHERE examinerID=:EID AND testID =:TID", 
+                     array('EID'=>$this->identifier, 'TID'=>$testID));
+                
+                // If one of the values was changed
+                if ($oldCertification['pass'] != $pass || $oldCertification['comment'] != $values['comment'][$testID] || $oldCertification['date_cert'] != $date_cert) {
+                    $DB->update('certification', array(
+                        'date_cert' => $date_cert,
+                        'pass'      => $pass,
+                        'comment'   => $values['comment'][$testID]
+                    ), array(
+                        'examinerID' => $this->identifier, 
+                        'testID'     => $testID,
+                    ));
 
-            //for new certification events
-            if (empty($certID) && !empty($pass)) {
-                $success = $DB->insert('certification', array(
-                            'examinerID'  => $values['examinerID'], 
-                            'date_cert'   => $date_cert,
-                            'visit_label' => $visit_label,
-                            'testID'      => $testID,
-                            'pass'        => $pass,
-                            'comment'     => $values['comment'][$testID]
-                        )
-                    );
-                if (Utility::isErrorX($success)) {
-                    return PEAR::raiseError("DB Error: ".$success->getMessage());
-                }
-                $this->identifier = $DB->lastInsertID;
-                unset($success);
-                $success2 = $DB->insert('certification_history', array(
-                            'col'         => 'pass',
-                            'old'         => $oldVal,
-                            'old_date'    => $oldDate,
-                            'new'         => $pass,
-                            'new_date'    => $date_cert,
-                            'primaryVals' => $this->identifier,
-                            'testID'      => $testID, 
-                            'visit_label' => $visit_label,
-                            'changeDate'  => date("Y-m-d H:i:s"),
-                            'userID'      => $_SESSION['State']->getUsername(),
-                            'type'        => 'I'
-                            ));
-                if (PEAR::isError($success2)) {
-                    return PEAR::raiseError("DB Error: ".$success->getMessage());
-                }
-            } else {
-                if (empty($measureID) && in_array($pass, array('not_certified', 'in_training', 'certified'))) {
-                    $success = $DB->replace('certification', array(
-                                'certID'      => $certID,
-                                'examinerID'  => $values['examinerID'],
-                                'date_cert'   => $date_cert,
-                                'visit_label' => $visit_label,
-                                'pass'        => $pass, 
-                                'testID'      => $testID,
-                                'comment'     => $values['comment'][$testID]
-                                ));
-                    if (PEAR::isError($success)) {
-                        return PEAR::raiseError("DB Error: ".$success->getMessage());
-                    }
-                    unset($success);
-                    $success = $DB->insert('certification_history', array(
-                                'col'         => 'pass',
-                                'old'         => $oldVal,
-                                'old_date'    => $oldDate,
-                                'new'         => $pass,
-                                'new_date'    => $date_cert,
-                                'primaryVals' => $this->identifier, //certID,
-                                'testID'      => $testID,
-                                'visit_label' => $visit_label,
-                                'changeDate'  => date("Y-m-d H:i:s"),
-                                'userID'      => $_SESSION['State']->getUsername(),
-                                'type'        => 'I'
-                            ));
-                    if (PEAR::isError($success)) {
-                        return PEAR::raiseError("DB Error: ".$success->getMessage());
-                    }
-
-                    $this->identifier = $DB->lastInsertID;
-                } elseif (!empty($measureID)) { //if entry for this examiner/measure combination exists
-                    unset($test_certification); 
-                    //check existing values and update accordingly if they are different
-                    $test_certification = $DB->pselectOne(
-                        "SELECT pass
-                         FROM certification
-                         WHERE certID=:crt_id AND testID =:tst_id", 
-                         array('crt_id'=>$this->identifier, 'tst_id'=>$testID));
-                    $date = $DB->pselectOne(
-                        "SELECT date_cert
-                         FROM certification
-                         WHERE certID =:crt_id AND testID =:tst_id",
-                         array('crt_id'=>$this->identifier, 'tst_id'=>$testID));
-                    $comment = $DB->pselectOne(
-                        "SELECT comment
-                         FROM certification
-                         WHERE certID =:crt_id AND testID =:tst_id", 
-                         array('crt_id'=>$this->identifier, 'tst_id'=>$testID));
-
-
-                    $where = array('certID' => $this->identifier, 'testID' => $testID);
-
-
-                    $certification_exists = $DB->pselectOne("SELECT certID from certification where certID =:crt_id AND testID =:tst_id", array('crt_id'=>$this->identifier, 'tst_id'=>$testID));
-
-                    if ($test_certification != $pass || $values['comment'][$testID] != $comment || $values['date_cert'][$testID] != $date_cert) {
-                        $success = $DB->update('certification', array(
-                            'date_cert'   => $date_cert,
-                            'pass'        => $pass, //$values['pass'],
-                            'comment'     => $values['comment'][$testID]
-                        ), $where);
-                        $type = 'U';
-
-                        if (PEAR::isError($success)) {
-                            return PEAR::raiseError("DB Error: ".$success->getMessage());
-                        }
-                    }
-                    unset($success);
                     if ($oldDate != $date_cert || $oldVal != $pass) {
-                        $success = $DB->insert('certification_history', array(
+                        $DB->insert('certification_history', array(
                             'col'         => 'pass',
                             'old'         => $oldVal,
                             'old_date'    => $oldDate,
@@ -232,11 +158,8 @@ class NDB_Form_examiner extends NDB_Form
                             'visit_label' => $visit_label,
                             'changeDate'  => date("Y-m-d H:i:s"),
                             'userID'      => $_SESSION['State']->getUsername(),
-                            'type'        => $type
+                            'type'        => 'U'
                         ));
-                        if (PEAR::isError($success)) {
-                            return PEAR::raiseError("DB Error: ".$success->getMessage());
-                        }
                     }
                 }
             }
@@ -293,7 +216,7 @@ class NDB_Form_examiner extends NDB_Form
             $this->addBasicText('comment['.$key.']', 'Comment');
             $this->addBasicDate('date_cert['.$key.']', 'Date', $dateOptions);
         }
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule(array(&$this, '_validate_edit_examiner'));
     }
 
     function training() {
@@ -317,17 +240,14 @@ class NDB_Form_examiner extends NDB_Form
         $this->tpl_data['certification_instruments'] = $instruments;
     }
 
-    function _validate($values)
+    function _validate_edit_examiner($values)
     {
 
         // check that there is both a status and a date (neither can be null)
         foreach ($values['pass'] as $key => $row) {
-            print_r($key);
-            print_r($this->dateEmpty($values['date_cert'][$key]));
-            print_r(empty($row));
             if (empty($row) || $this->dateEmpty($values['date_cert'][$key])) {
                 if (!(empty($row) && $this->dateEmpty($values['date_cert'][$key]))) {
-                    $errors['pass'] = 'Both the certification status and date must be filled out';
+                    return array('pass' => 'Both the certification status and date must be filled out');
                 }
             }
         }
@@ -336,17 +256,17 @@ class NDB_Form_examiner extends NDB_Form
         foreach ($values['date_cert'] as $date) {
             if (empty($date['Y']) || empty($date['M']) || empty($date['d'])) {
                 if (!(empty($date['Y']) && empty($date['M']) && empty($date['d']))) {
-                    $errors['date_cert'] = 'The date entered is not valid';
+                    return array('date_cert' => 'The date entered is not valid');
+
                 }
             }
         }
 
-        print_r($errors);
-        return $errors;
+        return array();
     }
 
     function dateEmpty($date) {
-        return (empty($date['Y']) || empty($date['M']) || empty($date['d']));
+        return (empty($date['Y']) && empty($date['M']) && empty($date['d']));
     }
 }
 ?>

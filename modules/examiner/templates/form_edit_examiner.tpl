@@ -52,7 +52,7 @@
 
 <div class="row">
 <div class="col-xs-12">
-    <h1>Change Log</h1>
+    <h3>Change Log</h3>
 </div>
 </div>
     <table class="table table-hover table-primary table-bordered dynamictable">
