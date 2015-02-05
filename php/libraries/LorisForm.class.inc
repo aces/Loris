@@ -278,6 +278,19 @@ class LorisForm
      */
     function validate()
     {
+        return true;
+    }
+
+    /**
+     * Reimplements the HTML_Quickform API.
+     *
+     * @param callable $func The callback to use to process this form.
+     *
+     * @return none
+     */
+    function process($func)
+    {
+        $func($this->getSubmitValues());
     }
 
     /**
@@ -436,7 +449,6 @@ class LorisForm
     {
     }
 
-
     /**
      * Reimplementation of QuickForm API.
      *
@@ -448,6 +460,13 @@ class LorisForm
      */
     function getSubmitValues()
     {
+        $retVal = array();
+        foreach ($this->form as $el) {
+            $name = $el['name'];
+
+            $retVal[$name] = $_REQUEST[$name];
+        }
+        return $retVal;
     }
 }
 ?>
