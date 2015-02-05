@@ -31,6 +31,9 @@ class LorisForm
 {
     var $form          = array();
     var $defaultValues = array();
+    var $formRules     = array();
+    var $errors        = array();
+    var $frozen = false;
 
     /**
      * Adds an element to the $this->form array. Handles the creation
@@ -187,7 +190,7 @@ class LorisForm
      *
      * @return string The value to use for the form element.
      */
-    function getDefault($name)
+    function getValue($name)
     {
         if (isset($_REQUEST[$name])) {
             return $_REQUEST[$name];
@@ -213,7 +216,7 @@ class LorisForm
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
-            if ($optionKey == $this->getDefault($el['name'])) {
+            if ($optionKey == $this->getValue($el['name'])) {
                 $selected = 'selected="selected"';
             }
 
@@ -229,9 +232,9 @@ class LorisForm
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
-                $retVal .= ' oninvalid="this.setCustomValidity(\''
+                $retVal .= ' onChange="this.setCustomValidity(this.value === \'\' ? \''
                     . $el['requireMsg']
-                    . "')\"";
+                    . "' : '')\"";
             }
         }
         $retVal .= ">$strOptions</select>";
@@ -254,14 +257,12 @@ class LorisForm
             $cls = "class=\"$el[class]\"";
         }
         $msg = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $val = $this->getDefault($el['name']);
         return "<input name=\"$el[name]\" type=\"date\" $cls"
-            . "oninvalid=\"this.setCustomValidity('$msg')\""
-
+            . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
             . (isset($el['required']) ? "required" : '')
             . (
-                !empty($val)
-                ? ' value="' . $val . '" '
+                !empty($this->getValue($el['name']))
+                ? ' value="' . $this->getValue($el['name']) . '" '
                 : ''
               )
             . ">";
@@ -279,14 +280,13 @@ class LorisForm
     function textHTML($el)
     {
         $cls = '';
-        $val = $this->getDefault($el['name']);
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
         return "<input name=\"$el[name]\" type=\"text\" $cls"
             . (
-                !empty($val)
-                ? ' value="' . $val . '"'
+                !empty($this->getValue($el['name']))
+                ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
               )
             .">";
@@ -337,6 +337,31 @@ class LorisForm
      */
     function validate()
     {
+        $values = $this->getSubmitValues();
+        foreach ($this->form as $elName => $el) {
+            $value = $this->getValue($el['name']);
+            if (empty($value)) {
+                print "Required element $el[name] not provided.";
+                return false;
+            }
+
+            if(isset($el['compare'])
+                && $value != $this->getValue($el['compare'])
+            )
+            {
+                print "Comparison failed";
+                return false;
+            }
+        }
+        foreach ($this->formRules as $rule) {
+            $violations = $rule($values);
+            if (!empty($violations)) {
+                print "Custom validation failed.";
+                print_r($violations);
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -363,6 +388,9 @@ class LorisForm
     {
     }
 
+    function freeze() {
+        $this->frozen = true;
+    }
     /**
      * Reimplement the HTML_QuickForm isFrozen API.
      * TODO: Implement this.
@@ -371,7 +399,7 @@ class LorisForm
      */
     function isFrozen()
     {
-        return false;
+        return $this->frozen;
     }
 
     /**
@@ -428,8 +456,8 @@ class LorisForm
     {
         if (is_array($element)) {
             if ($type === 'compare') {
-                $this->form[$element[0]]['compare'] = $this->form[$element[1]];
-                $this->form[$element[1]]['compare'] = $this->form[$element[0]];
+                $this->form[$element[0]]['compare'] = $element[1];
+                $this->form[$element[1]]['compare'] = $element[0];
             }
             return;
         }
@@ -472,13 +500,14 @@ class LorisForm
      * Reimplementation of QuickForm API.
      *
      * Adds a PHP callback to use to enforce rules.
-     * TODO: Implement this so that instruments (and others?)
-     *       can use LorisForm.
+     *
+     * @param callable $func The callback to use to validate this form.
      *
      * @return none.
      */
-    function addFormRule()
+    function addFormRule($func)
     {
+        $this->formRules[] = $func;
     }
 
     /**
