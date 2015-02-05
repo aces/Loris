@@ -132,9 +132,6 @@ class LorisForm
      *                        where "options" has a different meaning
      *                        and attribs takes the place of what "options"
      *                        is for other types.
-     * @param mixed  $params  Other parameters, just so that we don't error
-     *                        out if called in a way that HTML_QuickForm supported
-     *                        but is not implemented.
      *
      * @return none, but modifies this->form as a side-effect
      */
@@ -309,8 +306,7 @@ class LorisForm
      */
     function process($func)
     {
-       
-        call_user_func($func,$this->getSubmitValues());
+        call_user_func($func, $this->getSubmitValues());
     }
 
     /**
@@ -379,8 +375,6 @@ class LorisForm
      *                        be an array of 2 element names.
      * @param string $message The message to display if the rule is violated
      * @param string $type    The rule type. 'compare' or 'required'
-     * @param mixed  $params  Other parameters that may have been passed to
-     *                        QuickForm API. Unused
      *
      * @return none
      */
