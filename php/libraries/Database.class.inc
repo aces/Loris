@@ -554,7 +554,7 @@ class Database extends PEAR
     function execute($prepared, $params)
     {
         $execRun = $prepared->execute($params);
-        if($execRun === FALSE) {
+        if ($execRun === false) {
             $err = $prepared->errorInfo();
             throw new DatabaseException($err[2], $prepared->queryString, $params);
         }
@@ -576,7 +576,7 @@ class Database extends PEAR
     function pselect($query, $params)
     {
         $this->_printQuery($query, $params);
-        $stmt = $this->prepare($query);
+        $stmt   = $this->prepare($query);
         $result = $this->execute($stmt, $params);
         return $result;
     }
