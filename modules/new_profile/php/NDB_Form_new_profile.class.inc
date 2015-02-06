@@ -75,8 +75,8 @@ class NDB_Form_new_profile extends NDB_Form
                              'language'        => 'en',
                              'format'          => 'YMd',
                              'addEmptyOption'  => true,
-                             'minYear'         => $study['startYear'] - $study['ageMax'],
-                             'maxYear'         => $study['endYear'] - $study['ageMin']
+                             'minYear'         => $config->getSetting('startYear') - $config->getSetting('ageMax'),
+                             'maxYear'         => $config->getSetting('endYear') - $config->getSetting('ageMin')
                              );
 
         // add date of birth

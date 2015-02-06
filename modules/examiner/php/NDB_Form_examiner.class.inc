@@ -216,6 +216,9 @@ class NDB_Form_examiner extends NDB_Form
             $this->addBasicText('comment['.$key.']', 'Comment');
             $this->addBasicDate('date_cert['.$key.']', 'Date', $dateOptions);
         }
+
+        $this->tpl_data['examiner_name'] = $DB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:EID", array('EID'=>$this->identifier));
+
         $this->form->addFormRule(array(&$this, '_validate_edit_examiner'));
     }
 

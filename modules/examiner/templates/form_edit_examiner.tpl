@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-md-12 col-sm-8">
-        <form method="post" name="edit_user" id="edit_user">
+        <form method="post" name="edit_examiner" id="edit_examiner">
             <div class="panel panel-primary">
-                <div class="panel-heading" onclick="hideFilter();">
-                    Edit Certification
+                <div class="panel-heading">
+                    Edit Certification for {$examiner_name}
                 </div>
                 <div class="panel-body" id="panel-body">
                     {foreach from=$form.errors item=error}
@@ -12,19 +12,20 @@
                         </div>
                     {/foreach}
                     {foreach from=$form.pass item=item key=key}
-                        <div class="form-group">
+                        <div class="row">
+                            <div class="form-group col-md-12">
                                 <label class="col-sm-12 col-md-1">{$form.pass[$key].label}</label>
                                 <div class="col-sm-12 col-md-2">{$form.pass[$key].html}</div>
-                                <label class="col-sm-12 col-md-1">{$form.date_cert[$key].label}</label>
+                                <label class="col-sm-12 col-md-1 col-md-offset-1">{$form.date_cert[$key].label}</label>
                                 <div class="col-sm-12 col-md-3 form-inline">{$form.date_cert[$key].html}</div>
                                 <label class="col-sm-12 col-md-1">{$form.comment[$key].label}</label>
                                 <div class="col-sm-12 col-md-3">{$form.comment[$key].html}</div>
+                            </div>
                         </div>
-                        <br>
                     {/foreach}
                         <div class="row">
                             {if not $success}
-                                <div class="form-group col-xs-12">
+                                <div class="col-xs-12">
                                     <div class="visible-xs visible-sm col-xs-12"> </div>
                                     <div class="visible-xs visible-sm col-xs-12"> </div>
                                     <div class="visible-xs visible-sm col-xs-12"> </div>
