@@ -67,6 +67,7 @@ script:
     # break
     - vendor/bin/phpunit test/integrationtests/
 
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
