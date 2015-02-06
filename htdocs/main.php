@@ -189,6 +189,12 @@ try {
 } catch(ConfigurationException $e) {
     header("HTTP/1.1 500 Internal Server Error");
     $tpl_data['error_message'][] = $e->getMessage();
+} catch(DatabaseException $e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = "Query: " . $e->query;
+    $tpl_data['error_message'][] = "Bind parameters: " . print_r($e->params, true);
+
 } catch(Exception $e) {
     switch($e->getCode()) {
     case 404: header("HTTP/1.1 404 Not Found");

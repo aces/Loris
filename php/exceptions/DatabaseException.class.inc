@@ -38,9 +38,9 @@ class DatabaseException extends LorisException
      */
     function __construct($msg, $query = '', $bindparams = array())
     {
-        parent::__construct();
+        parent::__construct($msg);
         $this->query  = $query;
-        $this->params = $query;
+        $this->params = $bindparams;
     }
 }
 ?>
