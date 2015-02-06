@@ -69,22 +69,22 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->columns =array_merge(
             $this->columns,
             array(
-             'min(session.SubprojectID) as Subproject',
-             'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-             'session.Scan_done as scan_Done',
+             'min(s.SubprojectID) as Subproject',
+             'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
+             's.Scan_done as scan_Done',
             )
         );
         if ($config->getSetting("useEDC")==="true") {
             $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
             $this->formToFilter['edc'] = 'c.EDC';
-            $this->validFilters[]      ='c.EDC';
+            $this->validFilters[]      = 'c.EDC';
         }
 
         // Need distinct because of joining with feedback_bvl_thread
-        $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)',
+        $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)';
         $FeedbackSQL   = 'COALESCE(MIN(feedback_bvl_thread.Status+1), 1)';
 
-        $this>columns =array_merge(
+        $this->columns = array_merge(
             $this->columns,
             array(
              $VisitCountSQL,
@@ -95,7 +95,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         $this->query = " FROM candidate c
             LEFT JOIN psc ON (c.CenterID=psc.CenterID)
-            LEFT JOIN session ON (c.CandID = s.CandID AND s.Active = 'Y')
+            LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
             LEFT JOIN feedback_bvl_thread
                 ON (c.CandID=feedback_bvl_thread.CandID)
             LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
@@ -121,11 +121,11 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'c.DoB',
                                      $VisitCountSQL,
                                      'max(s.Current_stage)',
-                                     $FeedbackSQL
+                                     $FeedbackSQL,
                                      's.Scan_done',
                                     );
         $this->validHavingFilters = array(
-                                     $VisitCountSQL
+                                     $VisitCountSQL,
                                      'max(s.Current_stage)',
                                      $FeedbackSQL,
                                     );
@@ -156,6 +156,10 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
+        include_once __DIR__
+            . "/../../candidate_parameters/php/"
+            . "NDB_Form_candidate_parameters.class.inc";
+            //+  NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // create user object
         $user   =& User::singleton();
         $config =& NDB_Config::singleton();
@@ -265,8 +269,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
 
     /**
-     * Overrides the default setDataTableRows to assign some TPL variables
-     * that are used for links, but not displayed.
+     * Overrides the default setDataTableRows to assign the background colour
+     * to the feedback thread column
      *
      * @param integer $count The number of rows in the table
      *
