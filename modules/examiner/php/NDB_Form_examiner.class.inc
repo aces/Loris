@@ -22,8 +22,8 @@ class NDB_Form_examiner extends NDB_Form
                  array('EID'=>$this->identifier)
             );
 
-            return ($user->hasPermission('certification') 
-                && ($user->hasPermission('certification_multisite') || $user->getData('CenterID') == $centerID));
+            return ($user->hasPermission('examiner') 
+                && ($user->hasPermission('examiner_multisite') || $user->getData('CenterID') == $centerID));
 
         // training page
         } elseif ($this->page == 'training') {

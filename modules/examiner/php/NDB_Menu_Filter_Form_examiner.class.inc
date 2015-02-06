@@ -45,8 +45,7 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
             header('Location: ' . $baseURL . '/main.php?test_name=examiner&subtest=training');
             exit();
         } else {
-            //return $user->hasPermission('examiner');
-            return true;
+            return $user->hasPermission('examiner');
         }
     }
 
