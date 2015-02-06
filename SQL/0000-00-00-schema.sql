@@ -974,8 +974,8 @@ INSERT INTO `permissions` VALUES
     (9,'unsend_to_dcc','Reverse Send from DCC','2'),
     (10,'access_all_profiles','Across all sites access candidate profiles','2'),
     (11,'data_entry','Data entry','1'),
-    (12,'certification','Certify examiners','2'),
-    (13,'certification_multisite','Across all sites certify examiners','2'),
+    (12,'examiner','Add and certify examiners','2'),
+    (13,'examiner_multisite','Across all sites add and certify examiners','2'),
     (14,'timepoint_flag','Edit exclusion flags','2'),
     (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
@@ -1957,7 +1957,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
     ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
-    ('Certification', 'main.php?test_name=certification', 2, 3);
+    ('Examiner', 'main.php?test_name=examiner', 2, 3);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
@@ -2012,9 +2012,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 
 -- Certification
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification' AND m.Label='Certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner' AND m.Label='Examiner';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification_multisite' AND m.Label='Certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_multisite' AND m.Label='Examiner';
 
 -- Radiological Reviews
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
