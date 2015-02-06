@@ -1,5 +1,6 @@
 <div class="row">
     <div class="col-md-12 col-sm-8">
+        {$form.errors|print_r}
         <form method="post" name="edit_examiner" id="edit_examiner">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -30,14 +31,14 @@
                                     <div class="visible-xs visible-sm col-xs-12"> </div>
                                     <div class="visible-xs visible-sm col-xs-12"> </div>
                                     <div class="visible-xs visible-sm col-xs-12"> </div>
-                                    <div class="col-sm-6 col-md-3 col-xs-12 col-md-offset-5">
+                                    <div class="col-sm-6 col-md-2 col-xs-12 col-md-offset-8">
                                         <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
                                     </div>
                                     <div class="visible-xs col-xs-12"> </div>
                                     <div class="visible-xs col-xs-12"> </div>
                                     <div class="visible-xs col-xs-12"> </div>
                                     <div class="visible-xs col-xs-12"> </div>
-                                    <div class="col-sm-6 col-md-3 col-xs-12">
+                                    <div class="col-sm-6 col-md-2 col-xs-12">
                                         <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
                                     </div>
                                 </div>
