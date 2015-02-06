@@ -54,8 +54,8 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
     $confirm = true;
 }
 
-$DB    =& Database::singleton();
-$query ="SELECT ID, subprojectID from session";
+$DB    = Database::singleton();
+$query = "SELECT ID, subprojectID from session";
 if (!empty($argv[1]) && $argv[1]!="confirm") {
     $query .=" WHERE visit_label='$argv[1]'";
 } else {
