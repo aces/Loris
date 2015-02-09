@@ -53,7 +53,6 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
     {
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('EnableCertification');
-        $certification = '1';
         
         // base queries
         $query              = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
@@ -62,6 +61,8 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
         if ($certification == '1') {
             $query .= $CertificationQuery;
         }
+
+        $query .= ' WHERE 1=1';
 
         // set the class variables
         $this->columns      = array('e.full_name as Examiner', 'psc.Name as Site',
@@ -101,7 +102,7 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
             if(Utility::isErrorX($sites)) {
                 return PEAR::raiseError("DB Error: ".$sites->getMessage());
             }
-            if(is_array($sites)) $sites = array('' => 'All') + $sites;
+            if(is_array($sites)) $sites = array('' => '') + $sites;
         }
         else {
             // allow only to view own site data
@@ -121,7 +122,6 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
 
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('EnableCertification');
-        $certification = '1';
 
         // add form elements
         $this->addBasicText('examiner', 'Examiner:');
@@ -134,8 +134,8 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
         $this->addBasicText('addName', 'Name');
         $this->addSelect('addSite', 'Site', $sites);
 
-        $this->form->addRule('Name', 'Name is required', 'required');
-        $this->form->addRule('Site', 'Site is required', 'required');
+        //$this->form->addRule('Name', 'Name is required', 'required');
+        //$this->form->addRule('Site', 'Site is required', 'required');
 
         $this->tpl_data['certification'] = $certification;
 
@@ -147,7 +147,6 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
         // Code from old certification module
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('EnableCertification');
-        $certification = '1';
 
         if ($certification == '1') {
             $IDs = array();
