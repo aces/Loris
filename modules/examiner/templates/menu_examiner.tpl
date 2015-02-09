@@ -54,20 +54,20 @@
             <div class="panel-body">
             <form method="post" action="main.php?test_name=examiner" name="examiner" id="examiner">
                 <div class="row">
-                    <div class="form-group col-md-12">
-                        <label class="col-md-2">{$form.addName.label}</label>
-                        <div class="col-md-10">{$form.addName.html}</div>
+                    <div class="form-group col-md-8">
+                        <label class="col-md-4">{$form.addName.label}</label>
+                        <div class="col-md-8">{$form.addName.html}</div>
+                    </div>
+                    <div class="checkbox">
+                        <label class="col-md-4">
+                            <input type="checkbox" name="radiologist" value="1"> Radiologist
+                        </label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-6">
-                        <label class="col-md-6">{$form.addSite.label}</label>
-                        <div class="col-md-6">{$form.addSite.html}</div>
-                    </div>
-                    <div class="checkbox">
-                        <label class="col-md-6">
-                            <input type="checkbox" name="radiologist" value="1"> Radiologist
-                        </label>
+                    <div class="form-group col-md-8">
+                        <label class="col-md-4">{$form.addSite.label}</label>
+                        <div class="col-md-8">{$form.addSite.html}</div>
                     </div>
                 </div>
                 <div class="row">
