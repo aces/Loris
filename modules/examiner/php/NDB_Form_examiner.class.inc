@@ -98,7 +98,7 @@ class NDB_Form_examiner extends NDB_Form
             $certID = $DB->pselectOne("SELECT certID from certification where examinerID =:EID and testID=:TID", array('EID'=>$this->identifier, 'TID'=>$testID));
 
 
-            if (empty($certID)) { // new test certification for the examiner
+            if (empty($certID) && !empty($pass)) { // new test certification for the examiner
                 $DB->insert('certification', array(
                     'examinerID'  => $this->identifier, 
                     'date_cert'   => $date_cert,
@@ -171,6 +171,7 @@ class NDB_Form_examiner extends NDB_Form
 
     function edit_examiner()
     {
+
         $config = NDB_Config::singleton(); 
 
         $dateOptions = array(
