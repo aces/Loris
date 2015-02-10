@@ -69,7 +69,6 @@ class UserPermissions
      * Loads the users's permissions
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function setPermissions()
@@ -212,7 +211,6 @@ class UserPermissions
      * Returns an array of the user's permission IDs
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function getPermissionIDs()
@@ -235,7 +233,6 @@ class UserPermissions
      * Returns an array with all permissions information for the user
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function getPermissionsVerbose()

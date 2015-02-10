@@ -161,7 +161,6 @@ class SinglePointLogin extends PEAR
      * Saves the new password if last was expired
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function save()
@@ -221,7 +220,6 @@ class SinglePointLogin extends PEAR
      * Checks whether a given username and password are valid
      *
      * @return bool
-     * @throws PEAR_Error
      * @access public
      */
     function authenticate()

@@ -51,7 +51,6 @@ class NDB_Caller extends PEAR
      * Singleton method
      *
      * @return NDB_Caller
-     * @throws PEAR_Error
      * @access public
      * @static
      */

@@ -126,7 +126,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function setup()
@@ -350,7 +349,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Contructs the menu
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _build()
@@ -431,7 +429,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Returns a list of candidates, users, etc.
      *
      * @return array
-     * @throws PEAR_Error
      * @access private
      */
     function _getList()
@@ -576,7 +573,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Sets the template data for the list of candidates, users, etc.
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _setDataTable()

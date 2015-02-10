@@ -38,7 +38,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      * saves the validated data into the database
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function save()

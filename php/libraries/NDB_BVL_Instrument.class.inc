@@ -170,7 +170,6 @@ class NDB_BVL_Instrument extends NDB_Page
      *                                  missing.
      *
      * @return object the new object of $instrument type
-     * @throws PEAR:error
      * @access public
      */
     function factory($instrument, $commentID, $page, $guarantee_exists = true)
@@ -1022,7 +1021,6 @@ class NDB_BVL_Instrument extends NDB_Page
      * Gets a list of subtests of the current instrument
      *
      * @return array
-     * @throws PEAR::Error
      */
     function getSubtestList()
     {

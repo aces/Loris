@@ -155,7 +155,6 @@ class NDB_BVL_Feedback
      * to be able to complete various queries.
      *
      * @return void
-     * @throws PEAR::Error
      */
     function _setCandidateProfileInfo()
     {
@@ -225,7 +224,6 @@ class NDB_BVL_Feedback
      * Returns an array of feedback types array format: [Type][Name, Label]
      *
      * @return array
-     * @throws PEAR::Error
      */
     function getFeedbackTypes()
     {
@@ -253,7 +251,6 @@ class NDB_BVL_Feedback
      * @param integer $feedbackID ID of the thread whose type we want to get
      *
      * @return string feedback type of the thread
-     * @throws PEAR::Error
      * @fixme  This seems to try selecting a column that doesn't exist in Loris?
      */
     function getThreadType($feedbackID)
@@ -773,7 +770,6 @@ class NDB_BVL_Feedback
      * @param integer $feedbackID The ID of the feedback thread being closed
      *
      * @return void
-     * @throws PEAR::Error
      * FIXME: deleteTread is spelled wrong. Find all references (none?) and
      *        rename or delete this function if it's unused
      */

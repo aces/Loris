@@ -19,7 +19,6 @@ Class Instrument_List_ControlPanel extends TimePoint
      * generates the HTML to display the set of buttons for the timepoint status flags
      * @return string
      * @access public
-     * @throws PEAR_Error
      */
     function display()
     {
@@ -74,7 +73,6 @@ Class Instrument_List_ControlPanel extends TimePoint
      * saves changes to the session table based on interaction with the control panel
      * @return void
      * @access public
-     * @throws PEAR_Error
      */
     function save()
     {
@@ -258,7 +256,6 @@ Class Instrument_List_ControlPanel extends TimePoint
      * generates the HTML to display the set of buttons for the Time Point status update 
      * @return string
      * @access private
-     * @throws PEAR_Error
      */
     function _displayStatus()
     {
@@ -414,7 +411,6 @@ Class Instrument_List_ControlPanel extends TimePoint
      * generates the HTML to display the set of buttons for the Time Point status update
      * @return string
      * @access private
-     * @throws PEAR_Error
      */
     function _displayBVLQCStatus()
     {
@@ -439,7 +435,6 @@ Class Instrument_List_ControlPanel extends TimePoint
      * generates the HTML to display the set of buttons for the Time Point status update 
      * @return string
      * @access private
-     * @throws PEAR_Error
      */
     function _displaySendToDCC()
     {

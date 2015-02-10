@@ -233,7 +233,6 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
      * Sets the template data for the list of candidates, users, etc.
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _setDataTable()

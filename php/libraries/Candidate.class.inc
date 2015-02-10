@@ -182,7 +182,6 @@ class Candidate
      * @param string $PSCID       PSCID specified by the user, if available
      *
      * @return int   $candID      candidate id of the new candidate
-     * @throws PEAR::Error
      * @static
      */
     static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
@@ -466,7 +465,6 @@ class Candidate
      * Returns the list of visit labels w/ corresponding SessionID as key
      *
      *@return array Associative array in the format SessionID=>Visit_label
-     *@throws PEAR:Error
      */
     function getListOfVisitLabels()
     {
@@ -495,7 +493,6 @@ class Candidate
      *
      * @return     integer Next visit number for candidate
      * @deprecated
-     *@throws     PEAR:Error
      */
     function getNextVisitNo()
     {
@@ -520,7 +517,6 @@ class Candidate
      * can be called statically
      *
      * @return string Next suggested visit label
-     * @throws PEAR:Error
      */
     function getNextVisitLabel()
     {
@@ -571,7 +567,6 @@ class Candidate
      * project
      *
      * @return array Array of the form SubprojectID => SubprojectID
-     * @throws PEAR::Error
      */
     function getValidSubprojects()
     {
@@ -617,7 +612,6 @@ class Candidate
     * Generates a new random CandID
     *
     * @return integer An unused random 6 digit candidate id
-    * @throws PEAR::Error
     */
     static function _generateCandID()
     {
@@ -645,7 +639,6 @@ class Candidate
     * @param string $prefix The prefix to use for the PSCID
     *
     * @return string Project candidate id in format defined by config.xml
-    * @throws PEAR::Error
     */
     static function _generatePSCID($prefix)
     {
@@ -686,7 +679,6 @@ class Candidate
      * This is based on _generatePSCID.
      *
      * @return string Anonymized ExternalID for distributing data
-     * @throws PEAR::Error
      */
     function _generateExternalID()
     {

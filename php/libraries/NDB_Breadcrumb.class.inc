@@ -140,7 +140,6 @@ class NDB_Breadcrumb extends PEAR
      * Makes a breadcrumb
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function getBreadcrumb()
