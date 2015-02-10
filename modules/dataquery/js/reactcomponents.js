@@ -266,6 +266,56 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
     }
 });
 
+TabPane = React.createClass({displayName: 'TabPane',
+    render: function() {
+        return (
+            React.createElement("div", {className: "tab-pane", id: this.props.TabId}, 
+                React.createElement("h1", null, this.props.Title), 
+                this.props.content
+            )
+            );
+    }
+});
+InfoTabPane = React.createClass({displayName: 'InfoTabPane',
+    render: function() {
+        content = React.createElement("div", null, 
+            React.createElement("p", null, "Data was last updated on xxxx")
+        );
+        return React.createElement(TabPane, {title: "Welcome to the Data Query Tool", 
+            content: content, TabId: "Info"})
+    }
+});
+
+FieldSelectTabPane = React.createClass({displayName: 'FieldSelectTabPane',
+    render: function() {
+        var content = React.createElement(FieldSelector, {title: "Fields", items: this.props.categories})
+        return React.createElement(TabPane, {content: content, TabId: "DefineFields"})
+    }
+
+});
+
+DataQueryApp = React.createClass({displayName: 'DataQueryApp',
+    render: function() {
+        var tabs = [], tabsNav = [];
+        tabs.push(React.createElement(InfoTabPane, null));
+        tabs.push(React.createElement(FieldSelectTabPane, null));
+
+        return React.createElement("div", null, 
+                React.createElement("nav", {className: "nav nav-tabs"}, 
+                    React.createElement("ul", null, 
+                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Info", 'data-toggle': "tab"}, "Info")), 
+                        React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#DefineFields", 'data-toggle': "tab"}, "Define Fields")), 
+                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFilters", 'data-toggle': "tab"}, "Define Filters")), 
+                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", 'data-toggle': "tab"}, "View Data")), 
+                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", 'data-toggle': "tab"}, "Statistical Analysis"))
+                    )
+                ), 
+                React.createElement("div", {className: "tab-content"}, 
+                    tabs
+                )
+            );
+    }
+});
 RFieldSelector = React.createFactory(FieldSelector);
-RCategoryList = React.createFactory(CategoryList);
-RFieldList = React.createFactory(FieldList);
+
+RDataQueryApp = React.createFactory(DataQueryApp);

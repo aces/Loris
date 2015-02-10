@@ -266,6 +266,56 @@ FieldSelector = React.createClass({
     }
 });
 
+TabPane = React.createClass({
+    render: function() {
+        return (
+            <div className="tab-pane" id={this.props.TabId}>
+                <h1>{this.props.Title}</h1>
+                {this.props.content}
+            </div>
+            );
+    }
+});
+InfoTabPane = React.createClass({
+    render: function() {
+        content = <div>
+            <p>Data was last updated on xxxx</p>
+        </div>;
+        return <TabPane title="Welcome to the Data Query Tool"
+            content={content} TabId="Info" />
+    }
+});
+
+FieldSelectTabPane = React.createClass({
+    render: function() {
+        var content = <FieldSelector title="Fields" items={this.props.categories} />
+        return <TabPane content={content} TabId="DefineFields" />
+    }
+
+});
+
+DataQueryApp = React.createClass({
+    render: function() {
+        var tabs = [], tabsNav = [];
+        tabs.push(<InfoTabPane />);
+        tabs.push(<FieldSelectTabPane />);
+
+        return <div>
+                <nav className="nav nav-tabs">
+                    <ul>
+                        <li role="presentation"><a href="#Info" data-toggle="tab">Info</a></li>
+                        <li role="presentation" className="active"><a href="#DefineFields" data-toggle="tab">Define Fields</a></li>
+                        <li role="presentation"><a href="#DefineFilters" data-toggle="tab">Define Filters</a></li>
+                        <li role="presentation"><a href="#ViewData" data-toggle="tab">View Data</a></li>
+                        <li role="presentation"><a href="#Statistics" data-toggle="tab">Statistical Analysis</a></li>
+                    </ul>
+                </nav>
+                <div className="tab-content">
+                    {tabs}
+                </div>
+            </div>;
+    }
+});
 RFieldSelector = React.createFactory(FieldSelector);
-RCategoryList = React.createFactory(CategoryList);
-RFieldList = React.createFactory(FieldList);
+
+RDataQueryApp = React.createFactory(DataQueryApp);
