@@ -24,5 +24,19 @@ class NDB_Form_dataquery extends NDB_Form
             )
         );
         $this->tpl_data['updatetime'] = $update[0]['key'];
+
+        $categories = $couch->queryView(
+            "DQG-2.0",
+            "categories",
+            array("reduce" => "true",
+                "group_level" => "2"
+            )
+        );
+        $cat_tpl = array();
+        foreach($categories as $row) {
+            $cat_tpl[] = $row['key'];
+        }
+
+        $this->tpl_data['categories'] = $cat_tpl;
     }
 }
