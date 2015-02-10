@@ -1,0 +1,8 @@
+dt:after {
+    content: ':';
+    font-weight: bold;
+}
+
+dd {
+    margin-left: 2em;
+}
