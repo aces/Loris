@@ -1,4 +1,204 @@
-<script src="GetJS.php?Module=dataquery&file=jquery.dataTables.min.js"></script>
+<script src="/js/react.js"></script>
+<script src="GetJS.php?Module=dataquery&file=reactcomponents.js"></script>
+<div id="content">
+    <nav class="nav nav-tabs">
+    <ul class="nav nav-tabs navbar-left" data-tabs="tabs">
+        <li role="presentation"><a href="#Info" data-toggle="tab">Info</a></li>
+        <li role="presentation" class="active"><a href="#DefineFields" data-toggle="tab">Define Fields</a></li>
+        <li role="presentation"><a href="#DefineFilters" data-toggle="tab">Define Filters</a></li>
+        <li role="presentation"><a href="#ViewData" data-toggle="tab">View Data</a></li>
+        <li role="presentation"><a href="#Statistics" data-toggle="tab">Statistical Analysis</a></li>
+    </ul>
+    <ul class="nav nav-tabs navbar-right">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Load Saved Query <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Query 1</a></li>
+                <li><a href="#">Query 2</a></li>
+                <li><a href="#">Query 3</a></li>
+            </ul>
+        <li role="presentation"><a href="#">Managed Saved Queries</a></li>
+    </ul>
+    </nav>
+
+    <div class="tab-content">
+        <div class="tab-pane" id="Info">
+            <h1>Welcome to the Data Querying Tool, {$username}</h1>
+            <p>Data was last updated on <span id="updatetime">{$updatetime}</span></p>
+            <p>Please define or use your query by using the following tabs.</p>
+            <dl>
+                <dt>Define Fields</dt>
+                <dd>Define the fields to be added to your query here.</dd>
+                <dt>Define Filters</dt>
+                <dd>Define the criteria to filter the data for your query here.</dd>
+                <dt>View Data</dt>
+                <dd>See the results of your query.</dd>
+                <dt>Statistical Analysis</dt>
+                <dd>Visualize or see basic statistical measures from your query here.</dd>
+                <dt>Load Saved Query</dt>
+                <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
+                <dt>Managed Saved Queries</dt>
+                <dd>Either save your current query or see the criteria of previously saved queries here.</dd>
+            </dl>
+        </div>
+        <div class="tab-pane active" id="DefineFields">
+            <style type="text/css">
+                .list-group-item-text {
+                    margin-left: 2em;
+                }
+                .block {
+                    display: table-cell;
+                    clear: right;
+                    text-align: center;
+                    vertical-align: bottom;
+                }
+                h4 input, h4 select option, h4 select {
+                    color: black;
+                }
+
+
+            </style>
+            <div id="FieldSelect"></div>
+
+
+            <div id="FieldCategory"></div>
+            <div id="FieldFieldSelect"></div>
+            <script>
+                var categories = [
+                        {foreach from=$categories item=category}
+                            "{$category|escape:"js"}",
+                        {/foreach}
+                    ];
+
+                var fieldSelect = RFieldSelector(
+                    {
+                        title: "Fields",
+                        items: categories
+                    }
+                );
+                React.render(fieldSelect, document.getElementById("FieldSelect"));
+
+            </script>
+
+
+            <div>
+                <h1 class="col-md-10">Fields</h1>
+                <div class="col-md-2 block">
+                    <label>Search:</label><input type="text">
+                </div>
+            </div>
+            <div class="list-group col-md-9 col-sm-12">
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">Category1,Field1</h4><p class="list-group-item-text ">Description goes here.</p>
+                </div>
+                <div class="list-group-item active">
+                    <h4 class="list-group-item-heading">Category1,Field2<span class="glyphicon glyphicon-download-alt pull-right" title="Downloadable"></span></h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item active">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item active">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item active">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <ul class="pagination">
+                    <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li><a href="#">1</span></a></li>
+                    <li><a href="#">2</span></a></li>
+                    <li><a href="#">3</span></a></li>
+                    <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-pane" id="DefineFilters">
+            <h1>Filters</h1>
+            <div id="FilterCategory"></div>
+            <script>
+                filterCategories= RCategoryList({
+                    items: [
+                        {foreach from=$categories item=category}
+                            "{$category|escape:"js"}",
+                        {/foreach}
+                    ]
+                });
+                React.render(filterCategories, document.getElementById("FilterCategory"));
+
+            </script>
+            <div class="list-group col-md-9 col-sm-12">
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">Category3,Field1
+                    </h4><p class="list-group-item-text ">Description goes here.</p>
+                </div>
+                <div class="list-group-item active">
+                    <h4 class="list-group-item-heading">Category3,Field2
+                    <select>
+                        <option>=</option>
+                        <option>!=</option>
+                        <option>&lt;=</option>
+                        <option>&gt;=</option>
+                        <option>startsWith</option>
+                        <option>contains</option>
+                    </select>
+                    <input type="text">
+                    </h4>
+                    <p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category3,Field3</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category3,Field4</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <div class="list-group-item ">
+                    <h4 class="list-group-item-heading">Category3,Field5</h4><p class="list-group-item-text">Description goes here.</p>
+                </div>
+                <ul class="pagination">
+                    <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li><a href="#">1</span></a></li>
+                    <li><a href="#">2</span></a></li>
+                    <li><a href="#">3</span></a></li>
+                    <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-pane" id="ViewData">
+            <h1>View Data</h1>
+            <p>I r am a the data table</p>
+        </div>
+        <div class="tab-pane" id="Statistics">
+            <h1>Statistics</h1>
+            <p>I am stats</p>
+        </div>
+    </div>
+</div>
+
+<!--script src="GetJS.php?Module=dataquery&file=jquery.dataTables.min.js"></script>
 <script src="GetJS.php?Module=dataquery&file=user.js"></script>
 <script src="GetJS.php?Module=dataquery&file=array_tools.js"></script>
 <script src="GetJS.php?Module=dataquery&file=categories.js"></script>
@@ -37,7 +237,6 @@
                 <div class="ui-widget-header">
                     Choose category:
                     <select id="categories" onChange="javascript:Categories.show(this.value, 'fieldslist', { selectedManager: defineManager})";></select> <button id="addAll">Add all</button> <button id="removeAll">Remove all</button>
-                    <!--a href="help" class="ui-icon ui-icon-help">Help</a-->
                 </div>
                 <table class="fieldlist" id="fields" width="100%">
                     <thead>
@@ -137,9 +336,6 @@
             <div>
                 <button id="SaveCSV" class="databutton">Download Table as CSV</button>
                 <button id="SaveZip" class="databutton">Download All Files as ZIP</button>
-                <!-- Don't display the below link, it's just used to tie a dataURL to
-                which is then invoked/clicked via javascript when the above buttons are
-                clicked -->
                 <a download="download" id="DownloadLink" style="display: none">Download link</a>
             </div>
 
@@ -211,4 +407,4 @@
             </div>
         </div>
     </div>
-</div>
+</div-->
