@@ -1,5 +1,22 @@
 <script src="/js/react.js"></script>
 <script src="GetJS.php?Module=dataquery&file=reactcomponents.js"></script>
+<div id="reactTest">
+</div>
+<script>
+var categories = [
+        {foreach from=$categories item=category}
+            "{$category|escape:"js"}",
+        {/foreach}
+    ];
+var queryApp = RDataQueryApp(
+    {
+        title: "Fields",
+        items: categories
+    });
+React.render(queryApp, document.getElementById("reactTest"));
+</script>
+
+
 <div id="content">
     <nav class="nav nav-tabs">
     <ul class="nav nav-tabs navbar-left" data-tabs="tabs">
@@ -59,35 +76,13 @@
 
             </style>
             <div id="FieldSelect"></div>
-
-
-            <div id="FieldCategory"></div>
-            <div id="FieldFieldSelect"></div>
             <script>
-                var categories = [
-                        {foreach from=$categories item=category}
-                            "{$category|escape:"js"}",
-                        {/foreach}
-                    ];
-        var fieldSelect = RFieldSelector(
-                    {
+                var fieldSelect = RFieldSelector({
                         title: "Fields",
                         items: categories
-                    }
-                );
+                    });
                 React.render(fieldSelect, document.getElementById("FieldSelect"));
-
-
                     </script>
-
-
-                <ul class="pagination">
-                    <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li><a href="#">1</span></a></li>
-                    <li><a href="#">2</span></a></li>
-                    <li><a href="#">3</span></a></li>
-                    <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
-                </ul>
         </div>
         <div class="tab-pane" id="DefineFilters">
             <div id="FilterCategory"></div>
@@ -106,7 +101,18 @@
         </div>
         <div class="tab-pane" id="ViewData">
             <h1>View Data</h1>
+            <div>
+                <button id="runquery" class="databutton">Run Query</button>
+                <button id="SaveQuery" class="databutton">Save Query</button>
+            </div>
+            <div>
+                <button id="SaveCSV" class="databutton">Download Table as CSV</button>
+                <button id="SaveZip" class="databutton">Download All Files as ZIP</button>
+                <a download="download" id="DownloadLink" style="display: none">Download link</a>
+            </div>
+
             <p>I r am a the data table</p>
+
         </div>
         <div class="tab-pane" id="Statistics">
             <h1>Statistics</h1>
