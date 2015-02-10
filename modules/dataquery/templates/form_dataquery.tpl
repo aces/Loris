@@ -69,8 +69,7 @@
                             "{$category|escape:"js"}",
                         {/foreach}
                     ];
-
-                var fieldSelect = RFieldSelector(
+        var fieldSelect = RFieldSelector(
                     {
                         title: "Fields",
                         items: categories
@@ -78,55 +77,10 @@
                 );
                 React.render(fieldSelect, document.getElementById("FieldSelect"));
 
-            </script>
+
+                    </script>
 
 
-            <div>
-                <h1 class="col-md-10">Fields</h1>
-                <div class="col-md-2 block">
-                    <label>Search:</label><input type="text">
-                </div>
-            </div>
-            <div class="list-group col-md-9 col-sm-12">
-                <div class="list-group-item">
-                    <h4 class="list-group-item-heading">Category1,Field1</h4><p class="list-group-item-text ">Description goes here.</p>
-                </div>
-                <div class="list-group-item active">
-                    <h4 class="list-group-item-heading">Category1,Field2<span class="glyphicon glyphicon-download-alt pull-right" title="Downloadable"></span></h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item active">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item active">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item active">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category1,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
                 <ul class="pagination">
                     <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
                     <li><a href="#">1</span></a></li>
@@ -134,58 +88,21 @@
                     <li><a href="#">3</span></a></li>
                     <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
                 </ul>
-            </div>
         </div>
         <div class="tab-pane" id="DefineFilters">
-            <h1>Filters</h1>
             <div id="FilterCategory"></div>
             <script>
-                filterCategories= RCategoryList({
-                    items: [
-                        {foreach from=$categories item=category}
-                            "{$category|escape:"js"}",
-                        {/foreach}
-                    ]
-                });
-                React.render(filterCategories, document.getElementById("FilterCategory"));
+                var filterSelect = RFieldSelector(
+                    {
+                        title: "Filters",
+                        items: categories,
+                        type: "Criteria"
+                    }
+                );
+
+                React.render(filterSelect, document.getElementById("FilterCategory"));
 
             </script>
-            <div class="list-group col-md-9 col-sm-12">
-                <div class="list-group-item">
-                    <h4 class="list-group-item-heading">Category3,Field1
-                    </h4><p class="list-group-item-text ">Description goes here.</p>
-                </div>
-                <div class="list-group-item active">
-                    <h4 class="list-group-item-heading">Category3,Field2
-                    <select>
-                        <option>=</option>
-                        <option>!=</option>
-                        <option>&lt;=</option>
-                        <option>&gt;=</option>
-                        <option>startsWith</option>
-                        <option>contains</option>
-                    </select>
-                    <input type="text">
-                    </h4>
-                    <p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category3,Field3</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category3,Field4</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <div class="list-group-item ">
-                    <h4 class="list-group-item-heading">Category3,Field5</h4><p class="list-group-item-text">Description goes here.</p>
-                </div>
-                <ul class="pagination">
-                    <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li><a href="#">1</span></a></li>
-                    <li><a href="#">2</span></a></li>
-                    <li><a href="#">3</span></a></li>
-                    <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
-                </ul>
-            </div>
         </div>
         <div class="tab-pane" id="ViewData">
             <h1>View Data</h1>
