@@ -137,6 +137,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (empty($_FILES) && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
+            
             $upload_max_size = ini_get('upload_max_filesize');
             echo "<p style=\"color: #F00;\">\nPlease make sure files are
             not larger than {$upload_max_size} <br></p>";
@@ -145,6 +146,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return true;
     }
 
+    
+    function _process() {
+        if ($this->_saveFile($values)) {
+        
+            return true;
+        }
+        return false;
+    }
     // methods available to all children
     /**
        * Save the file to the DataBase
@@ -160,10 +169,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         include_once "File_Upload.class.inc";
 
         //get the stored-file path
+
         $config           = NDB_Config::singleton();
         $paths            = $config->getSetting('paths');
         $stored_file_path = $paths['IncomingPath'];
-
+        
         $file =new File_Upload;
 
         $file->overwriteMode = "reject";
@@ -173,13 +183,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler(
-            "mri_file",
-            $this
-        );
+            "mri_file", $this    );
 
         //Set the target directory that you want files moved
         //into once they are validated and processed.
         $file->setBaseUploadDirectory($stored_file_path);
+        
         $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError(
@@ -187,7 +196,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $user->getMessage()
             );
         }
-
+        
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
 
@@ -218,7 +227,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         //make sure the file-name is  valid
-
+        
         $temp_file     = $file->fileInfo['tmp_name'];
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
@@ -228,24 +237,19 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
-        $corect_name            = $dicom_archive_settings['patientNameRegex'];
+        $corect_name        = $dicom_archive_settings['patientNameRegex'];
         $file_name          = $file->fileInfo['name'];
-        $not_dicom          = false;
-        $files_not_dicom    = 0;
-        $files_not_readable = 0;
-        $file_not_matching_patient_name = 0;
         $header_patient_name            = array();
 
         ///////////////////////////////////////////////////////////////////////
-        //////////////Make sure the extension is valid/////////////////////////
+        ////////////// Checks to see if the file is of type////////////////////
+        //////////////.gz, .zip or .tgz////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if (!(preg_match("/.zip/i", $file_name))
-            && (!(preg_match("/.tgz/i", $file_name)))
-            && (!(preg_match("/.tar.gz/i", $file_name)))
-        ) {
-            $errors[] ="Incorrect File-name extention, The file-name
+        /*if (!$this->isFileCompressed($file_name)) {
+           $errors[] ="Incorrect File-name extention, The file-name
             should either of type '.gz', '.zip' or 'tgz' ";
         }
+        */
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -264,23 +268,27 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
             $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
-
+            ///////////////////////////////////////////////////////////////////
             //////check to se if candid exists/////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate".
                 " WHERE candid = :cid",
                 array('cid' => $candid)
             )==0) {
                 $errors[] = "The CandID: $candid Doesn't exist";
-            }
+            }//////////////////////////////////////////////////////////////////
             //////check to se if pscid exists//////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate WHERE PSCID = :pid",
                 array('pid' => $pscid)
             )==0) {
                 $errors[] = "The PSCID: $pscid Doesn't exist";
             }
+            ///////////////////////////////////////////////////////////////////
             //////check to se if visit_label exists////////////////////////////
+            ///////////////////////////////////////////////////////////////////
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM session WHERE Visit_label = :vlabel",
                 array('vlabel' => $visit_label)
@@ -326,7 +334,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 foreach ($errors as $error) {
                     $this->message->addMessage("$error");
                 }
-
                 $this->message->addMessage(
                     "Error: the process completed with errors \n"
                 );
@@ -414,6 +421,28 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
     /**
+     * Checks to see if the file is of type
+     * .zip , .tgz or .tar.gz
+     * if Yes it will return true
+     * Otherwise it will return false
+     * @param $file_name The uploaded file
+     * @return boolean
+     */
+    function isFileCompressed($file_name) {
+        
+        ///////////////////////////////////////////////////////////////////////
+        //////////////Make sure the extension is valid/////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        if (!(preg_match("/.zip/i", $file_name))
+            && (!(preg_match("/.tgz/i", $file_name)))
+            && (!(preg_match("/.tar.gz/i", $file_name)))
+        ) {
+            return false;
+            
+        }
+        return true;
+    }
+    /**
      * Creates a temporairy directory
      *
      * @return String
@@ -432,5 +461,23 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
+      /**
+    * The getTargetDirectory retrieves info about where the file should be stored.
+    *
+    * The returned directory is ADDED to the baseUploadDirectory property.
+    * It should have a trailing slash.
+    *
+    * @param string $file The full filename including directory.
+    * @param Array  $args The list of arguments
+    *
+    * @return bool  $success if operation succeeded
+    * @access public
+    */
+    function getTargetDirectory($file, $args)
+    {
+        $output ="{$args["user_id"]}/";
+        return $output;
+    }
+   
 }
 ?>
