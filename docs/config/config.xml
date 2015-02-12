@@ -72,6 +72,8 @@
             </project>
         </Projects>
 
+        <SupplementalSessionStatus>false</SupplementalSessionStatus>
+
         <!-- Add items to display in the header table for a candidate/session.
          Until a project has been going on for a while, this is most likely
          unnecessary. -->
