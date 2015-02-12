@@ -35,10 +35,7 @@ if ($quizCorrect == 0) {
     print 0;
     exit();
 } else {
-    $user =& User::singleton();
-    if (PEAR::isError($user)) {
-        return PEAR::raiseError("User Error: " .$user->getMessage());
-    }
+    $user = User::singleton();
 
     $userFullName = $user->getFullname();
     $userCenter   = $user->getCenterID();
@@ -51,12 +48,15 @@ if ($quizCorrect == 0) {
          'CID' => $userCenter,
         )
     );
-    $date = date("Y") . '-' . date("m") . '-' . date("d");
     
-    $DB->replace(
-        "certification",
-        array('examinerID' => $examinerID, 'date_cert' => $date, 'testID' => $instrumentID, 'pass' => 'certified')
+    $values = array(
+        'pass'       => array($instrumentID => 'certified'),
+        'date_cert'  => array($instrumentID => array('Y' => date("Y"), 'M' => date("m"), 'd' => date("d"))),
+        'examiner'   => $examinerID
     );
+
+    process($values);
+
     print 1;
     exit();
 }
@@ -88,6 +88,99 @@ function correct($instrumentID, $question, $answer)
         return 1;
     } else {
         return 0;
+    }
+}
+
+function process($values)
+{
+    $DB = Database::singleton();
+
+    foreach ($values['pass'] as $testID => $pass) {
+
+        $date       = $values['date_cert'][$testID];
+        $comment    = trim($values['comment'][$testID]);
+        $date_cert  = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
+
+        if (!empty($values['examiner'])) {
+            $examinerID = $values['examiner'];
+        } else {
+            $examinerID = $this->identifier;
+        }
+
+        //if date is empty when saving, set to null, otherwise drop-downs display odd behaviour (populated with Nov-30)
+        if ($date_cert == '0000-00-00') {
+            $date_cert = null;
+        }
+
+        $certID = $DB->pselectOne("SELECT certID from certification where examinerID =:EID and testID=:TID", array('EID'=>$examinerID, 'TID'=>$testID));
+
+        if (empty($certID) && !empty($pass)) { // new test certification for the examiner
+            $DB->insert('certification', array(
+                'examinerID' => $examinerID, 
+                'date_cert'  => $date_cert,
+                'testID'     => $testID,
+                'pass'       => $pass,
+                'comment'    => $comment
+            ));
+            $certID = $DB->pselectOne("SELECT certID from certification where examinerID=:EID and testID=:TID", array('EID'=>$examinerID, 'TID'=>$testID));
+            $DB->insert('certification_history', array(
+                'col'         => 'pass',
+                'new'         => $pass,
+                'new_date'    => $date_cert,
+                'primaryVals' => $certID,
+                'testID'      => $testID,
+                'visit_label' => $visit_label,
+                'changeDate'  => date("Y-m-d H:i:s"),
+                'userID'      => $_SESSION['State']->getUsername(),
+                'type'        => 'I'
+            ));
+        } else { // update to a test certification for the examiner
+
+            //select history events
+            $oldVals = $DB->pselectRow(
+                "SELECT ch.new, ch.new_date
+                 FROM certification_history ch
+                 LEFT JOIN certification c ON (c.certID=ch.primaryVals)
+                 WHERE c.examinerID=:EID AND ch.testID=:TID
+                 ORDER BY changeDate DESC", array('EID'=>$examinerID, 'TID'=>$testID));
+
+            $oldVal  = $oldVals['new'];
+            $oldDate = $oldVals['new_date'];
+
+            $oldCertification = $DB->pselect(
+                "SELECT pass, date_cert, comment
+                 FROM certification
+                 WHERE examinerID=:EID AND testID =:TID", 
+                 array('EID'=>$examinerID, 'TID'=>$testID));
+
+            // If one of the values was changed
+            if ($oldCertification['pass'] != $pass || $oldCertification['comment'] != $comment || $oldCertification['date_cert'] != $date_cert) {
+                $DB->update('certification', array(
+                    'date_cert' => $date_cert,
+                    'pass'      => $pass,
+                    'comment'   => $comment
+                ), array(
+                    'examinerID' => $examinerID,
+                    'testID'     => $testID,
+                ));
+
+                if ($oldDate != $date_cert || $oldVal != $pass) {
+                    $DB->insert('certification_history', array(
+                        'col'         => 'pass',
+                        'old'         => $oldVal,
+                        'old_date'    => $oldDate,
+                        'new'         => $pass,
+                        'new_date'    => $date_cert,
+                        'primaryVals' => $certID,
+                        'testID'      => $testID,
+                        'visit_label' => $visit_label,
+                        'changeDate'  => date("Y-m-d H:i:s"),
+                        'userID'      => $_SESSION['State']->getUsername(),
+                        'type'        => 'U'
+                    ));
+                }
+            }
+        }
     }
 }
 ?>
