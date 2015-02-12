@@ -63,6 +63,7 @@
         <!--Header table is diplayed on top of instrument list page and instrument pages -->
         <HeaderTable>
             <!--Specify the table as the tag and the field to query as the value inside the tag -->
+            <parameter_candidate>candidate_comment</parameter_candidate>
             <candidate>ProbandDoB</candidate>
             <parameter_session>MRI_Done</parameter_session>
         </HeaderTable>
@@ -76,13 +77,6 @@
                 <title>Another Sample Project</title>
             </project>
         </Projects>
-
-        <!-- Add items to display in the header table for a candidate/session.
-         Until a project has been going on for a while, this is most likely
-         unnecessary. -->
-        <!--HeaderTable>
-         <parameter_candidate>candidate_comment</parameter_candidate>
-        </HeaderTable-->
         <!-- number of subprojects in the project - corresponds to the list of subpojects below -->
         <!-- max number of timepoints per subject (integer)-->
         <subprojects>
