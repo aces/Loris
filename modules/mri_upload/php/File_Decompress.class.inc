@@ -50,7 +50,7 @@ class File_Decompress extends PEAR
      * @param String $file_name        File to be decompressed
      * @param String $destination_path Path of the destination folder
      */
-    function File_Decompress($file_name, $destination_path)
+    function __construct($file_name, $destination_path)
     {
         $this->file_name = $file_name;
         $this->dest_path = $destination_path;
@@ -91,15 +91,16 @@ class File_Decompress extends PEAR
     {
         $command = "tar zxvf $this->file_name -C $this->dest_path";
         system($command, $return_value);
-        if($return_value != 0) {
-            throw new InvalidArgumentException("Command $command failed with exit status $return_value");
+        if ($return_value != 0) {
+            $errorMessage = "Command $command failed with exit status $return_value";
+            throw new InvalidArgumentException($errorMessage);
         }
     }
 
     /**
      * Decompress a gzipped file
      *
-     * @return Boolean returns false if the decompression fails
+     * @return $return_value Boolean returns false if the decompression fails
      *  And true otherwise
      */
     function gzipDecompress()
@@ -115,17 +116,21 @@ class File_Decompress extends PEAR
      * The untar function
      * untar a file into the destination folder
      *
+     * @param String $tar_filename name of the tar file.
+     * @param String $dest_dir     directory where the file should be decompressed.
+     *
      * @return boolean
      */
     function untar($tar_filename, $dest_dir)
     {
         $command = "tar xvf $tar_filename -C $dest_dir";
         system($command, $return_value);
-        
-        if($return_value != 0) {
-            throw new InvalidArgumentException("Command $command failed with exit status $return_value");
+
+        if ($return_value != 0) {
+            $errorMessage = "Command $command failed with exit status $return_value";
+            throw new InvalidArgumentException($errorMessage);
         }
-        
+
         return true;
     }
 
