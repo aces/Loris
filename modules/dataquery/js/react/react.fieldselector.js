@@ -28,6 +28,7 @@ PaginationLinks = React.createClass({
         );
     }
 });
+
 CategoryItem = React.createClass({
     render: function() {
         var classList = "list-group-item";
@@ -42,6 +43,7 @@ CategoryItem = React.createClass({
         );
     }
 });
+
 CategoryList = React.createClass({
     getInitialState: function () {
         return {
@@ -71,6 +73,7 @@ CategoryList = React.createClass({
                 selected=true;
             }
             items.push(<CategoryItem
+                key={this.props.items[i]}
                 name={this.props.items[i]}
                 count="2"
                 selected={selected}
@@ -83,7 +86,29 @@ CategoryList = React.createClass({
 });
 
 FieldItem = React.createClass({
+    getInitialState: function() {
+        return {
+            "operator" : '=',
+            "value"    : ''
+        };
+    },
     changeCriteria: function(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        var state = this.state;
+        if(evt.target.classList.contains("queryOperator")) {
+            state.operator = evt.target.value;
+        }
+        if(evt.target.classList.contains("queryValue")) {
+            state.value = evt.target.value;
+        }
+        this.setState(state);
+
+        if(this.props.onCriteriaChange) {
+            this.props.onCriteriaChange(this.props.FieldName, this);
+        }
+    },
+    preventDefault: function(evt) {
         evt.preventDefault();
         evt.stopPropagation();
     },
@@ -99,15 +124,15 @@ FieldItem = React.createClass({
         }
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = <span>
-                    <select onClick={this.changeCriteria}>
-                        <option> = </option>
-                        <option>!=</option>
-                        <option>&lt;=</option>
-                        <option>&gt;</option>
-                        <option>startsWith</option>
-                        <option>contains</option>
+                    <select className="queryOperator" onClick={this.changeCriteria} defaultValue={this.state.operator}>
+                        <option value="="> = </option>
+                        <option value="!=">!=</option>
+                        <option value="&lt;=">&lt;=</option>
+                        <option value="&gt;=">&gt;</option>
+                        <option value="startsWith">startsWith</option>
+                        <option value="contains">contains</option>
                     </select>
-                    <input onClick={this.changeCriteria} type="text" />
+                    <input className="queryValue" onClick={this.preventDefault} onChange={this.changeCriteria} type="text" defaultValue={this.state.value} />
                 </span>;
             return (
                 <div className={classList} onClick={this.props.onClick}>
@@ -152,7 +177,7 @@ FieldList = React.createClass({
         if(filter > 0) {
             start = 0;
         }
-        
+
         for(var i = start; i < items.length; i += 1) {
             fieldName = items[i].key;
             fieldName = fieldName.join(",");
@@ -174,6 +199,7 @@ FieldList = React.createClass({
                 Description={desc}
                 type={this.props.type}
                 onClick={this.onFieldClick(fieldName)}
+                onCriteriaChange={this.props.onCriteriaChange}
                 selected={selected}
                 downloadable={isFile}
                 />);
@@ -207,8 +233,14 @@ FieldSelector = React.createClass({
 
         if(idx > -1) {
             fields.splice(idx, 1);
+            if(this.props.onFieldChange) {
+                this.props.onFieldChange("remove", fieldName);
+            }
         } else {
             fields.push(fieldName);
+            if(this.props.onFieldChange) {
+                this.props.onFieldChange("add", fieldName);
+            }
         }
         this.setState({
             selectedFields: fields
@@ -257,6 +289,7 @@ FieldSelector = React.createClass({
                     items={this.state.categoryFields[this.state.selectedCategory]}
                     type={this.props.type}
                     onFieldSelect={this.onFieldSelect}
+                    onCriteriaChange={this.props.onCriteriaChange}
                     FieldsPerPage="10"
                     selected={this.state.selectedFields}
                     Filter={this.state.filter}
@@ -266,56 +299,4 @@ FieldSelector = React.createClass({
     }
 });
 
-TabPane = React.createClass({
-    render: function() {
-        return (
-            <div className="tab-pane" id={this.props.TabId}>
-                <h1>{this.props.Title}</h1>
-                {this.props.content}
-            </div>
-            );
-    }
-});
-InfoTabPane = React.createClass({
-    render: function() {
-        content = <div>
-            <p>Data was last updated on xxxx</p>
-        </div>;
-        return <TabPane title="Welcome to the Data Query Tool"
-            content={content} TabId="Info" />
-    }
-});
-
-FieldSelectTabPane = React.createClass({
-    render: function() {
-        var content = <FieldSelector title="Fields" items={this.props.categories} />
-        return <TabPane content={content} TabId="DefineFields" />
-    }
-
-});
-
-DataQueryApp = React.createClass({
-    render: function() {
-        var tabs = [], tabsNav = [];
-        tabs.push(<InfoTabPane />);
-        tabs.push(<FieldSelectTabPane />);
-
-        return <div>
-                <nav className="nav nav-tabs">
-                    <ul>
-                        <li role="presentation"><a href="#Info" data-toggle="tab">Info</a></li>
-                        <li role="presentation" className="active"><a href="#DefineFields" data-toggle="tab">Define Fields</a></li>
-                        <li role="presentation"><a href="#DefineFilters" data-toggle="tab">Define Filters</a></li>
-                        <li role="presentation"><a href="#ViewData" data-toggle="tab">View Data</a></li>
-                        <li role="presentation"><a href="#Statistics" data-toggle="tab">Statistical Analysis</a></li>
-                    </ul>
-                </nav>
-                <div className="tab-content">
-                    {tabs}
-                </div>
-            </div>;
-    }
-});
 RFieldSelector = React.createFactory(FieldSelector);
-
-RDataQueryApp = React.createFactory(DataQueryApp);

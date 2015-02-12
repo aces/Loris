@@ -28,6 +28,7 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
         );
     }
 });
+
 CategoryItem = React.createClass({displayName: 'CategoryItem',
     render: function() {
         var classList = "list-group-item";
@@ -42,6 +43,7 @@ CategoryItem = React.createClass({displayName: 'CategoryItem',
         );
     }
 });
+
 CategoryList = React.createClass({displayName: 'CategoryList',
     getInitialState: function () {
         return {
@@ -71,6 +73,7 @@ CategoryList = React.createClass({displayName: 'CategoryList',
                 selected=true;
             }
             items.push(React.createElement(CategoryItem, {
+                key: this.props.items[i], 
                 name: this.props.items[i], 
                 count: "2", 
                 selected: selected, 
@@ -83,7 +86,29 @@ CategoryList = React.createClass({displayName: 'CategoryList',
 });
 
 FieldItem = React.createClass({displayName: 'FieldItem',
+    getInitialState: function() {
+        return {
+            "operator" : '=',
+            "value"    : ''
+        };
+    },
     changeCriteria: function(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        var state = this.state;
+        if(evt.target.classList.contains("queryOperator")) {
+            state.operator = evt.target.value;
+        }
+        if(evt.target.classList.contains("queryValue")) {
+            state.value = evt.target.value;
+        }
+        this.setState(state);
+
+        if(this.props.onCriteriaChange) {
+            this.props.onCriteriaChange(this.props.FieldName, this);
+        }
+    },
+    preventDefault: function(evt) {
         evt.preventDefault();
         evt.stopPropagation();
     },
@@ -99,15 +124,15 @@ FieldItem = React.createClass({displayName: 'FieldItem',
         }
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = React.createElement("span", null, 
-                    React.createElement("select", {onClick: this.changeCriteria}, 
-                        React.createElement("option", null, " = "), 
-                        React.createElement("option", null, "!="), 
-                        React.createElement("option", null, "<="), 
-                        React.createElement("option", null, ">"), 
-                        React.createElement("option", null, "startsWith"), 
-                        React.createElement("option", null, "contains")
+                    React.createElement("select", {className: "queryOperator", onClick: this.changeCriteria, defaultValue: this.state.operator}, 
+                        React.createElement("option", {value: "="}, " = "), 
+                        React.createElement("option", {value: "!="}, "!="), 
+                        React.createElement("option", {value: "<="}, "<="), 
+                        React.createElement("option", {value: ">="}, ">"), 
+                        React.createElement("option", {value: "startsWith"}, "startsWith"), 
+                        React.createElement("option", {value: "contains"}, "contains")
                     ), 
-                    React.createElement("input", {onClick: this.changeCriteria, type: "text"})
+                    React.createElement("input", {className: "queryValue", onClick: this.preventDefault, onChange: this.changeCriteria, type: "text", defaultValue: this.state.value})
                 );
             return (
                 React.createElement("div", {className: classList, onClick: this.props.onClick}, 
@@ -152,7 +177,7 @@ FieldList = React.createClass({displayName: 'FieldList',
         if(filter > 0) {
             start = 0;
         }
-        
+
         for(var i = start; i < items.length; i += 1) {
             fieldName = items[i].key;
             fieldName = fieldName.join(",");
@@ -174,6 +199,7 @@ FieldList = React.createClass({displayName: 'FieldList',
                 Description: desc, 
                 type: this.props.type, 
                 onClick: this.onFieldClick(fieldName), 
+                onCriteriaChange: this.props.onCriteriaChange, 
                 selected: selected, 
                 downloadable: isFile}
                 ));
@@ -207,8 +233,14 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
 
         if(idx > -1) {
             fields.splice(idx, 1);
+            if(this.props.onFieldChange) {
+                this.props.onFieldChange("remove", fieldName);
+            }
         } else {
             fields.push(fieldName);
+            if(this.props.onFieldChange) {
+                this.props.onFieldChange("add", fieldName);
+            }
         }
         this.setState({
             selectedFields: fields
@@ -257,6 +289,7 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
                     items: this.state.categoryFields[this.state.selectedCategory], 
                     type: this.props.type, 
                     onFieldSelect: this.onFieldSelect, 
+                    onCriteriaChange: this.props.onCriteriaChange, 
                     FieldsPerPage: "10", 
                     selected: this.state.selectedFields, 
                     Filter: this.state.filter}
@@ -266,56 +299,4 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
     }
 });
 
-TabPane = React.createClass({displayName: 'TabPane',
-    render: function() {
-        return (
-            React.createElement("div", {className: "tab-pane", id: this.props.TabId}, 
-                React.createElement("h1", null, this.props.Title), 
-                this.props.content
-            )
-            );
-    }
-});
-InfoTabPane = React.createClass({displayName: 'InfoTabPane',
-    render: function() {
-        content = React.createElement("div", null, 
-            React.createElement("p", null, "Data was last updated on xxxx")
-        );
-        return React.createElement(TabPane, {title: "Welcome to the Data Query Tool", 
-            content: content, TabId: "Info"})
-    }
-});
-
-FieldSelectTabPane = React.createClass({displayName: 'FieldSelectTabPane',
-    render: function() {
-        var content = React.createElement(FieldSelector, {title: "Fields", items: this.props.categories})
-        return React.createElement(TabPane, {content: content, TabId: "DefineFields"})
-    }
-
-});
-
-DataQueryApp = React.createClass({displayName: 'DataQueryApp',
-    render: function() {
-        var tabs = [], tabsNav = [];
-        tabs.push(React.createElement(InfoTabPane, null));
-        tabs.push(React.createElement(FieldSelectTabPane, null));
-
-        return React.createElement("div", null, 
-                React.createElement("nav", {className: "nav nav-tabs"}, 
-                    React.createElement("ul", null, 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Info", 'data-toggle': "tab"}, "Info")), 
-                        React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#DefineFields", 'data-toggle': "tab"}, "Define Fields")), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFilters", 'data-toggle': "tab"}, "Define Filters")), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", 'data-toggle': "tab"}, "View Data")), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", 'data-toggle': "tab"}, "Statistical Analysis"))
-                    )
-                ), 
-                React.createElement("div", {className: "tab-content"}, 
-                    tabs
-                )
-            );
-    }
-});
 RFieldSelector = React.createFactory(FieldSelector);
-
-RDataQueryApp = React.createFactory(DataQueryApp);

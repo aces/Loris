@@ -1,7 +1,23 @@
 <script src="/js/react.js"></script>
-<script src="GetJS.php?Module=dataquery&file=reactcomponents.js"></script>
+<script src="GetJS.php?Module=dataquery&file=react.fieldselector.js"></script>
+<script src="GetJS.php?Module=dataquery&file=react.tabs.js"></script>
 <div id="reactTest">
 </div>
+<style type="text/css">
+.list-group-item-text {
+    margin-left: 2em;
+}
+.block {
+    display: table-cell;
+    clear: right;
+    text-align: center;
+    vertical-align: bottom;
+}
+h4 input, h4 select option, h4 select {
+    color: black;
+}
+</style>
+
 <script>
 var categories = [
         {foreach from=$categories item=category}
@@ -11,13 +27,14 @@ var categories = [
 var queryApp = RDataQueryApp(
     {
         title: "Fields",
-        items: categories
+        categories: categories,
+        UpdatedTime: "{$updatetime|escape:"js"}"
     });
 React.render(queryApp, document.getElementById("reactTest"));
 </script>
 
 
-<div id="content">
+<!--div id="content">
     <nav class="nav nav-tabs">
     <ul class="nav nav-tabs navbar-left" data-tabs="tabs">
         <li role="presentation"><a href="#Info" data-toggle="tab">Info</a></li>
@@ -119,7 +136,7 @@ React.render(queryApp, document.getElementById("reactTest"));
             <p>I am stats</p>
         </div>
     </div>
-</div>
+</div-->
 
 <!--script src="GetJS.php?Module=dataquery&file=jquery.dataTables.min.js"></script>
 <script src="GetJS.php?Module=dataquery&file=user.js"></script>
