@@ -30,16 +30,15 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
 {
     function _hasAccess()
     {
-
         // create user object
-        $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-        $DB =& Database::singleton();
+        $user   = User::singleton();
+        $DB     = Database::singleton();
+        $config = NDB_Config::singleton();
+
         $username = $user->getFullname();
         $examiner = $DB->pselectOne("SELECT examinerID FROM examiners WHERE full_name=:user", array('user'=>$username));
-        if (!empty($examiner)) {
+
+        if (!empty($examiner) && $config->getSetting('useTraining')) {
             $config  = NDB_Config::singleton();
             $baseURL = $config->getSetting('url');
             header('Location: ' . $baseURL . '/main.php?test_name=examiner&subtest=training');
@@ -123,19 +122,14 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('EnableCertification');
 
-        // add form elements
+        // add menu filter form elements
         $this->addBasicText('examiner', 'Examiner:');
         $this->addSelect('site', 'Site:', $sites);
         $this->addSelect('radiologist', 'Radiologist:', $radiologist);
-        if ($certification == '1') {
-            $this->addBasicText('instrument', 'Instrument:');
-        }
 
+        // add examiner form elements
         $this->addBasicText('addName', 'Name');
         $this->addSelect('addSite', 'Site', $sites);
-
-        //$this->form->addRule('Name', 'Name is required', 'required');
-        //$this->form->addRule('Site', 'Site is required', 'required');
 
         $this->tpl_data['certification'] = $certification;
 
@@ -239,7 +233,10 @@ class NDB_Menu_Filter_Form_examiner extends NDB_Menu_Filter_Form
         $siteID      = $values['addSite'];
         $radiologist = $values['radiologist'];
 
-        $DB->insert('examiners', array('full_name' => $fullName, 'centerID' => $siteID, 'radiologist' => $radiologist));
+        // In the future, add validation so that errors are returned here
+        if (!empty($fullName) && !empty($siteID)) {
+            $DB->insert('examiners', array('full_name' => $fullName, 'centerID' => $siteID, 'radiologist' => $radiologist));
+        }
     }
 }
 ?>

@@ -1,7 +1,7 @@
 <script type="text/javascript" src="js/filterControl.js"></script>
 
 <div class="row">
-    <div class="col-sm-10 col-md-7">
+    <div class="col-sm-12 col-md-7">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
                 Selection Filter
@@ -25,19 +25,13 @@
                             <label class="col-sm-12 col-md-4">{$form.radiologist.label}</label>
                             <div class="col-sm-12 col-md-8">{$form.radiologist.html}</div>
                         </div>
-                        {if $certification == "1"}
-                        <div class="form-group col-sm-6">
-                            <label class="col-sm-12 col-md-4">{$form.instrument.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.instrument.html}</div>
-                        </div>
-                        {/if}
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-md-offset-6">
-                            <div class="col-sm-4 col-sm-offset-4">
+                            <div class="col-sm-6">
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=examiner&reset=true'" />
                             </div>
                         </div>
@@ -46,7 +40,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-5">
+    <div class="col-sm-12 col-md-5">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <span class="glyphicon glyphicon-plus"></span> Add Examiner

@@ -9,8 +9,9 @@ class NDB_Form_examiner extends NDB_Form
 {
     function _hasAccess()
     {
-        $user = User::singleton();
-        $DB   = Database::singleton();
+        $user   = User::singleton();
+        $DB     = Database::singleton();
+        $config = NDB_Config::singleton();
 
         // edit_examiner page
         if ($this->page == 'edit_examiner') {
@@ -28,14 +29,16 @@ class NDB_Form_examiner extends NDB_Form
         // training page
         } elseif ($this->page == 'training') {
 
-            $examiner = $DB->pselectOne(
-                "SELECT examinerID FROM examiners WHERE full_name=:user",
-                array('user'=>$user->getFullname()));
+            if ($config->getSetting('useTraining')) {
+                
+                $examiner = $DB->pselectOne(
+                    "SELECT examinerID FROM examiners WHERE full_name=:user",
+                    array('user'=>$user->getFullname())
+                );
             
-            if (empty($examiner)) {
-                return false;
-            } else {
-                return true;
+                if (!empty($examiner)) {
+                    return true;
+                }
             }
         }
 
@@ -86,27 +89,32 @@ class NDB_Form_examiner extends NDB_Form
 
         foreach ($values['pass'] as $testID => $pass) {
 
-            $date                       = $values['date_cert'][$testID];
-            $values['comment'][$testID] = trim($values['comment'][$testID]);
-            $date_cert                  = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
+            $date       = $values['date_cert'][$testID];
+            $comment    = trim($values['comment'][$testID]);
+            $date_cert  = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
+
+            if (!empty($values['examiner'])) {
+                $examinerID = $values['examiner'];
+            } else {
+                $examinerID = $this->identifier;
+            }
 
             //if date is empty when saving, set to null, otherwise drop-downs display odd behaviour (populated with Nov-30)
             if ($date_cert == '0000-00-00') {
                 $date_cert = null;
             }
 
-            $certID = $DB->pselectOne("SELECT certID from certification where examinerID =:EID and testID=:TID", array('EID'=>$this->identifier, 'TID'=>$testID));
-
+            $certID = $DB->pselectOne("SELECT certID from certification where examinerID =:EID and testID=:TID", array('EID'=>$examinerID, 'TID'=>$testID));
 
             if (empty($certID) && !empty($pass)) { // new test certification for the examiner
                 $DB->insert('certification', array(
-                    'examinerID'  => $this->identifier, 
-                    'date_cert'   => $date_cert,
-                    'testID'      => $testID,
-                    'pass'        => $pass,
-                    'comment'     => $values['comment'][$testID]
+                    'examinerID' => $examinerID, 
+                    'date_cert'  => $date_cert,
+                    'testID'     => $testID,
+                    'pass'       => $pass,
+                    'comment'    => $comment
                 ));
-                $certID = $DB->pselectOne("SELECT certID from certification where examinerID =:EID and testID=:TID", array('EID'=>$this->identifier, 'TID'=>$testID));
+                $certID = $DB->pselectOne("SELECT certID from certification where examinerID=:EID and testID=:TID", array('EID'=>$examinerID, 'TID'=>$testID));
                 $DB->insert('certification_history', array(
                     'col'         => 'pass',
                     'new'         => $pass,
@@ -126,25 +134,25 @@ class NDB_Form_examiner extends NDB_Form
                      FROM certification_history ch
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
-                     ORDER BY changeDate DESC", array('EID'=>$this->identifier, 'TID'=>$testID));
+                     ORDER BY changeDate DESC", array('EID'=>$examinerID, 'TID'=>$testID));
 
-                $oldVal                     = $oldVals['new'];
-                $oldDate                    = $oldVals['new_date'];
+                $oldVal  = $oldVals['new'];
+                $oldDate = $oldVals['new_date'];
 
                 $oldCertification = $DB->pselect(
                     "SELECT pass, date_cert, comment
                      FROM certification
                      WHERE examinerID=:EID AND testID =:TID", 
-                     array('EID'=>$this->identifier, 'TID'=>$testID));
+                     array('EID'=>$examinerID, 'TID'=>$testID));
 
                 // If one of the values was changed
-                if ($oldCertification['pass'] != $pass || $oldCertification['comment'] != $values['comment'][$testID] || $oldCertification['date_cert'] != $date_cert) {
+                if ($oldCertification['pass'] != $pass || $oldCertification['comment'] != $comment || $oldCertification['date_cert'] != $date_cert) {
                     $DB->update('certification', array(
                         'date_cert' => $date_cert,
                         'pass'      => $pass,
-                        'comment'   => $values['comment'][$testID]
+                        'comment'   => $comment
                     ), array(
-                        'examinerID' => $this->identifier,
+                        'examinerID' => $examinerID,
                         'testID'     => $testID,
                     ));
 
@@ -248,12 +256,14 @@ class NDB_Form_examiner extends NDB_Form
 
     function _validate_edit_examiner($values)
     {
+        $errors = array();
 
         // check that there is both a status and a date (neither can be null)
         foreach ($values['pass'] as $key => $row) {
             if (empty($row) || $this->dateEmpty($values['date_cert'][$key])) {
                 if (!(empty($row) && $this->dateEmpty($values['date_cert'][$key]))) {
-                    return array('pass' => 'Both the certification status and date must be filled out');
+                    print_r("bug 1");
+                    $errors['pass'][$key] = 'Both the certification status and date must be filled out';
                 }
             }
         }
@@ -262,12 +272,13 @@ class NDB_Form_examiner extends NDB_Form
         foreach ($values['date_cert'] as $date) {
             if (empty($date['Y']) || empty($date['M']) || empty($date['d'])) {
                 if (!(empty($date['Y']) && empty($date['M']) && empty($date['d']))) {
-                    return array('date_cert' => 'The date entered is not valid');
+                    print_r("bug 2");
+                    $errors['date_cert'][$key] = 'The date entered is not valid';
                 }
             }
         }
 
-        return array();
+        return $errors;
     }
 
     function dateEmpty($date) {
