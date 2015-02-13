@@ -83,14 +83,14 @@
         <subprojects>
             <subproject>
                 <id>1</id>
-                <title>MRI session</title>
+                <title>Control</title>
                 <options>
                     <useEDC>false</useEDC>
                 </options>
             </subproject>
             <subproject>
                 <id>2</id>
-                <title>Instrument Data</title>
+                <title>Experimental</title>
                 <options>
                     <useEDC>false</useEDC>
                 </options>
