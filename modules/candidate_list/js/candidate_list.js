@@ -50,7 +50,7 @@ $(document).ready(function() {
             "reset" : "true",
             "pscid" : this.dataset.pscid,
             "filter" : "Show Data"
-        }
+        };
 
         $.each(values, function(name, value) {
             $("<input />", {
