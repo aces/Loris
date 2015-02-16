@@ -52,7 +52,11 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         if (!empty($examiner) && $config->getSetting('useTraining')) {
             $config  = NDB_Config::singleton();
             $baseURL = $config->getSetting('url');
-            header('Location: ' . $baseURL . '/main.php?test_name=examiner&subtest=training');
+            header(
+                'Location: '
+                . $baseURL
+                . '/main.php?test_name=examiner&subtest=training'
+            );
             exit();
         } else {
             return $user->hasPermission('examiner');
@@ -72,7 +76,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // base queries
         $query     = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
-        $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) LEFT JOIN test_names tn ON (c.testID = tn.ID)";
+        $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) 
+            LEFT JOIN test_names tn ON (c.testID = tn.ID)";
 
         if ($useCertification == '1') {
             $query .= $certQuery;
