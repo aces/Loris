@@ -101,7 +101,7 @@
                 {section name=piece loop=$items[item]}
                     <td>
                         {if $items[item][piece].name == "Examiner" and $certification == "1"}
-                            <a href="main.php?test_name=examiner&subtest=edit_examiner&identifier={$items[item][piece].ID}">{$items[item][piece].value}</a>
+                            <a href="main.php?test_name=examiner&subtest=editExaminer&identifier={$items[item][piece].ID}">{$items[item][piece].value}</a>
                         {else}
                             {$items[item][piece].value}
                         {/if}

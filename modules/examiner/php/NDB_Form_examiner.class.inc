@@ -36,7 +36,7 @@ class NDB_Form_Examiner extends NDB_Form
         $DB     = Database::singleton();
         $config = NDB_Config::singleton();
 
-        if ($this->page == 'edit_examiner') { // edit_examiner page
+        if ($this->page == 'editExaminer') { // edit_examiner page
 
             $centerID = $DB->pselectOne(
                 "SELECT centerID 
@@ -287,11 +287,11 @@ class NDB_Form_Examiner extends NDB_Form
     }
 
     /**
-     * Edit_examiner subtest.
+     * EditExaminer subtest.
      *
      * @return nothing
      */
-    function edit_examiner()
+    function editExaminer()
     {
         // Add static certification history table element
         $this->form->addElement('static', 'certification_history', '', '');
@@ -330,7 +330,7 @@ class NDB_Form_Examiner extends NDB_Form
             array('EID' => $this->identifier)
         );
 
-        $this->form->addFormRule(array(&$this, '_validate_edit_examiner'));
+        $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
     }
 
     /**
@@ -350,7 +350,7 @@ class NDB_Form_Examiner extends NDB_Form
      *
      * @return array of error messages
      */
-    function _validate_edit_examiner($values)
+    function _validateEditExaminer($values)
     {
         $errors = array();
 
