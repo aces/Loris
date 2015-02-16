@@ -36,6 +36,7 @@ class NDB_Form_dataquery extends NDB_Form
         foreach($categories as $row) {
             $cat_tpl[] = $row['key'];
         }
+        print_r($categories);
 
         $this->tpl_data['categories'] = $cat_tpl;
     }
