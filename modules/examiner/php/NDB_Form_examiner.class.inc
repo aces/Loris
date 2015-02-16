@@ -340,7 +340,7 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function training()
     {
-        $this->tpl_data['certification_instruments'] = $this->getCertificationInstruments();
+        $this->tpl_data['cert_instruments'] = $this->getCertificationInstruments();
     }
 
     /**
@@ -358,7 +358,8 @@ class NDB_Form_Examiner extends NDB_Form
         foreach ($values['pass'] as $key => $row) {
             if (empty($row) || $this->dateEmpty($values['date_cert'][$key])) {
                 if (!(empty($row) && $this->dateEmpty($values['date_cert'][$key]))) {
-                    $errors['pass[' . $key .']'] = 'Both certification status and date must be filled out';
+                    $errors['pass[' . $key .']'] = 'Both certification status and 
+                        date must be filled out';
                 }
             }
         }
