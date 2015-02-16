@@ -358,7 +358,7 @@ class NDB_Form_Examiner extends NDB_Form
         foreach ($values['pass'] as $key => $row) {
             if (empty($row) || $this->dateEmpty($values['date_cert'][$key])) {
                 if (!(empty($row) && $this->dateEmpty($values['date_cert'][$key]))) {
-                    $errors['pass'][$key] = 'Both certification status and date must be filled out';
+                    $errors['pass[' . $key .']'] = 'Both certification status and date must be filled out';
                 }
             }
         }
@@ -367,12 +367,11 @@ class NDB_Form_Examiner extends NDB_Form
         foreach ($values['date_cert'] as $date) {
             if (empty($date['Y']) || empty($date['M']) || empty($date['d'])) {
                 if (!(empty($date['Y']) && empty($date['M']) && empty($date['d']))) {
-                    $errors['date_cert'][$key] = 'The date entered is not valid';
+                    $errors['date_cert'] = 'The date entered is not valid';
                 }
             }
         }
 
-        //print_r($errors);
         return $errors;
     }
 
