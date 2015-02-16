@@ -1793,6 +1793,7 @@ CREATE TABLE `mri_upload` (
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
   `UploadDate` DateTime DEFAULT NULL,
   `SourceLocation` varchar(255) NOT NULL DEFAULT '',
+   `PatientName` varchar(255) NOT NULL DEFAULT '',
   `number_of_mincInserted` int(11) DEFAULT NULL,
   `number_of_mincCreated` int(11) DEFAULT NULL,
   `TarchiveID` int(11) DEFAULT NULL,

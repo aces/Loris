@@ -8,7 +8,7 @@
  * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/mohadesz/Loris-Trunk
+ * @link     https://gi=nullhub.com/mohadesz/Loris-Trunk
 */
 
 require_once 'NDB_Menu_Filter_Form.class.inc';
@@ -32,7 +32,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
 
     var $show_queries = true;
-
+    var $temp_path=null;
     /**
      * The _has_access returns true
      * if the user has the specific permission
@@ -147,7 +147,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
     
-    function _process() {
+    function _process($values) {
         if ($this->_saveFile($values)) {
         
             return true;
@@ -177,6 +177,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file =new File_Upload;
 
         $file->overwriteMode = "reject";
+        $file->fileMove          = false;
+
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
         $file->registerForm($this->form);
@@ -187,7 +189,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Set the target directory that you want files moved
         //into once they are validated and processed.
-        $file->setBaseUploadDirectory($stored_file_path);
+        //$file->setBaseUploadDirectory($stored_file_path);
         
         $user = User::singleton();
         if (Utility::isErrorX($user)) {
@@ -231,6 +233,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $temp_file     = $file->fileInfo['tmp_name'];
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
+        $this->setTempPath($new_temp_file);
         $db            = Database::singleton();
         $errors        = array();
         $config        = NDB_Config::singleton();
@@ -331,13 +334,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
             if (count($errors) > 0) {
                 print_r($errors);
-                foreach ($errors as $error) {
-                    $this->message->addMessage("$error");
-                }
-                $this->message->addMessage(
-                    "Error: the process completed with errors \n"
-                );
-                return $errors;
+               return $errors;
             }
         }
         return true;
@@ -355,6 +352,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function importFile($file, $args)
     {
         $userid    = $args['user_id'];
+        print_r($args);
         $feedbacks = array();
         $db        = Database::singleton();
 
@@ -375,13 +373,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////////////Insert values into mri_upload//////////////////////
         ///////////////////////////////////////////////////////////////////////
-
-        //////////get the stored-file path/////////////////////////////////////
         $date   = date('Y-m-d H:i:s');
-        $config = NDB_Config::singleton();
-        $paths  = $config->getSetting('paths');
-        $stored_file_path = $paths['IncomingPath'];
-        $file_name        = $stored_file_path . $file->fileInfo['name'];
+            
         //only insert if the file-name doesn't exist in the table:
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
@@ -410,8 +403,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $values = array(
                    'UploadedBy'     => $user_name,
                    'UploadDate'     => $date,
-                   'SourceLocation' => $file_name,
+                   'SourceLocation' => $this->getTempPath(),
                    'SessionID'      => $sessionid,
+                   'PatientName'      => $pscid."_" . $candid . "_". $visit_label,
                   );
         $db->Insert(
             'mri_upload',
@@ -478,6 +472,30 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $output ="{$args["user_id"]}/";
         return $output;
     }
+
+      /**
+    * The SetTempDir sets the tempdir
+    *
+    * @param string $tempFilePath The path to the temp file
+    *
+    * @return NULL
+    */
+    function setTempPath($tempFilePath)
+    {
+     $this->temp_path = $tempFilePath;
+    }
+
+
+   /**
+    * The getTempPath gets the temp_path
+    *
+    * @return String returns temp_path
+    */
+    function getTempPath()
+    {
+        return $this->temp_path;
+    }
+
    
 }
 ?>
