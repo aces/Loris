@@ -75,9 +75,10 @@ ViewDataTabPane = React.createClass({
             } else {
                 criteria.push(
                     <div className="row">
-                        <span className="col-sm-4">{el}</span>
-                        <span className="col-sm-4">{item.operator}</span>
-                        <span className="col-sm-4">{item.value}</span>
+                        <span className="col-sm-3">{el}</span>
+                        <span className="col-sm-3">{item.operator}</span>
+                        <span className="col-sm-3">{item.value}</span>
+                        <span className="col-sm-3">{item.sessions}</span>
                     </div>
                     );
             }
@@ -165,5 +166,3 @@ DataQueryApp = React.createClass({
             </div>;
     }
 });
-
-RDataQueryApp = React.createFactory(DataQueryApp);

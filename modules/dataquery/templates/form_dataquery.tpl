@@ -1,6 +1,7 @@
 <script src="/js/react.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.fieldselector.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.tabs.js"></script>
+<script src="GetJS.php?Module=dataquery&file=react.app.js"></script>
 <div id="reactTest">
 </div>
 <style type="text/css">

@@ -75,9 +75,10 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
             } else {
                 criteria.push(
                     React.createElement("div", {className: "row"}, 
-                        React.createElement("span", {className: "col-sm-4"}, el), 
-                        React.createElement("span", {className: "col-sm-4"}, item.operator), 
-                        React.createElement("span", {className: "col-sm-4"}, item.value)
+                        React.createElement("span", {className: "col-sm-3"}, el), 
+                        React.createElement("span", {className: "col-sm-3"}, item.operator), 
+                        React.createElement("span", {className: "col-sm-3"}, item.value), 
+                        React.createElement("span", {className: "col-sm-3"}, item.sessions)
                     )
                     );
             }
@@ -165,5 +166,3 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
             );
     }
 });
-
-RDataQueryApp = React.createFactory(DataQueryApp);
