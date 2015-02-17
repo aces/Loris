@@ -38,17 +38,22 @@ class NDB_Form_Examiner extends NDB_Form
 
         if ($this->page == 'editExaminer') { // edit_examiner page
 
-            $centerID = $DB->pselectOne(
-                "SELECT centerID 
-                 FROM examiners, certification 
-                 WHERE examiners.examinerID=certification.examinerID
-                 AND certification.examinerID=:EID",
-                array('EID' => $this->identifier)
-            );
+            $certification    = $config->getSetting('Certification');
+            $useCertification = $certification['EnableCertification'];
 
-            return ($user->hasPermission('examiner')
-                && ($user->hasPermission('examiner_multisite')
-                || $user->getData('CenterID') == $centerID));
+            if ($useCertification) {
+                $centerID = $DB->pselectOne(
+                    "SELECT centerID 
+                     FROM examiners, certification 
+                     WHERE examiners.examinerID=certification.examinerID
+                     AND certification.examinerID=:EID",
+                    array('EID' => $this->identifier)
+                );
+
+                return ($user->hasPermission('examiner')
+                    && ($user->hasPermission('examiner_multisite')
+                    || $user->getData('CenterID') == $centerID));
+            }
 
         } elseif ($this->page == 'training') { // training page
 
@@ -368,7 +373,7 @@ class NDB_Form_Examiner extends NDB_Form
         foreach ($values['date_cert'] as $date) {
             if (empty($date['Y']) || empty($date['M']) || empty($date['d'])) {
                 if (!(empty($date['Y']) && empty($date['M']) && empty($date['d']))) {
-                    $errors['date_cert'] = 'The date entered is not valid';
+                    $errors['date_cert[' . $key .']'] = 'The date entered is not valid';
                 }
             }
         }
