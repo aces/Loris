@@ -113,7 +113,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
         evt.stopPropagation();
     },
     render: function() {
-        var classList = "list-group-item";
+        var classList = "list-group-item row";
         var downloadIcon = "";
         var criteria;
         if(this.props.selected) {
@@ -122,6 +122,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
         if(this.props.downloadable) {
             downloadIcon = React.createElement("span", {className: "glyphicon glyphicon-download-alt pull-right", title: "Downloadable File"})
         }
+        var displayName = this.props.FieldName.substring(this.props.Category.length + 1);
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = React.createElement("span", null, 
                     React.createElement("select", {className: "queryOperator", onClick: this.changeCriteria, defaultValue: this.state.operator}, 
@@ -136,13 +137,16 @@ FieldItem = React.createClass({displayName: 'FieldItem',
                 );
             return (
                 React.createElement("div", {className: classList, onClick: this.props.onClick}, 
-                React.createElement("h4", {className: "list-group-item-heading"}, this.props.FieldName, " ", criteria), React.createElement("p", {className: "list-group-item-text"}, this.props.Description)
+                    React.createElement("h4", {className: "list-group-item-heading col-sm-12 col-md-2"}, displayName), 
+                    React.createElement("span", {className: "col-sm-10 col-md-7"}, this.props.Description), 
+                    React.createElement("span", {className: "col-sm-2 col-md-3"}, criteria)
             )
             );
         }
         return (
             React.createElement("div", {className: classList, onClick: this.props.onClick}, 
-                React.createElement("h4", {className: "list-group-item-heading"}, this.props.FieldName, criteria, downloadIcon), React.createElement("p", {className: "list-group-item-text"}, this.props.Description)
+                React.createElement("h4", {className: "list-group-item-heading col-sm-12 col-md-2"}, displayName, criteria, downloadIcon), 
+                React.createElement("span", {className: "col-sm-12 col-md-10"}, this.props.Description)
             )
         );
     }
@@ -170,7 +174,7 @@ FieldList = React.createClass({displayName: 'FieldList',
         var fields = [];
         var items = this.props.items || [];
         var fieldName, desc, isFile;
-        var rowsPerPage = this.props.FieldsPerPage || 10;
+        var rowsPerPage = this.props.FieldsPerPage || 20;
 
         var start = (this.state.PageNumber - 1) * rowsPerPage;
         var filter = this.props.Filter.toLowerCase();
@@ -196,6 +200,7 @@ FieldList = React.createClass({displayName: 'FieldList',
                 selected=true;
             }
             fields.push(React.createElement(FieldItem, {FieldName: fieldName, 
+                Category: this.props.category, 
                 Description: desc, 
                 type: this.props.type, 
                 onClick: this.onFieldClick(fieldName), 
@@ -288,9 +293,10 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
                 React.createElement(FieldList, {
                     items: this.state.categoryFields[this.state.selectedCategory], 
                     type: this.props.type, 
+                    category: this.state.selectedCategory, 
                     onFieldSelect: this.onFieldSelect, 
                     onCriteriaChange: this.props.onCriteriaChange, 
-                    FieldsPerPage: "10", 
+                    FieldsPerPage: "15", 
                     selected: this.state.selectedFields, 
                     Filter: this.state.filter}
                 )
