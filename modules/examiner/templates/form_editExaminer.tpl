@@ -27,10 +27,10 @@
                         {if not $success}
                         <div class="col-xs-12">
                             <div class="col-sm-6 col-md-2 col-xs-12 col-md-offset-8">
-                                <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
+                                <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit">
                             </div>
                             <div class="col-sm-6 col-md-2 col-xs-12">
-                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
+                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='main.php?test_name=examiner&subtest=editExaminer&reset=true'">
                             </div>
                         </div>
                         {/if}
