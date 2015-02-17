@@ -113,7 +113,7 @@ FieldItem = React.createClass({
         evt.stopPropagation();
     },
     render: function() {
-        var classList = "list-group-item";
+        var classList = "list-group-item row";
         var downloadIcon = "";
         var criteria;
         if(this.props.selected) {
@@ -122,6 +122,7 @@ FieldItem = React.createClass({
         if(this.props.downloadable) {
             downloadIcon = <span className="glyphicon glyphicon-download-alt pull-right" title="Downloadable File"></span>
         }
+        var displayName = this.props.FieldName.substring(this.props.Category.length + 1);
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = <span>
                     <select className="queryOperator" onClick={this.changeCriteria} defaultValue={this.state.operator}>
@@ -136,13 +137,16 @@ FieldItem = React.createClass({
                 </span>;
             return (
                 <div className={classList} onClick={this.props.onClick}>
-                <h4 className="list-group-item-heading">{this.props.FieldName} {criteria}</h4><p className="list-group-item-text">{this.props.Description}</p>
+                    <h4 className="list-group-item-heading col-sm-12 col-md-2">{displayName}</h4>
+                    <span className="col-sm-10 col-md-7">{this.props.Description}</span>
+                    <span className="col-sm-2 col-md-3">{criteria}</span>
             </div>
             );
         }
         return (
             <div className={classList} onClick={this.props.onClick}>
-                <h4 className="list-group-item-heading">{this.props.FieldName}{criteria}{downloadIcon}</h4><p className="list-group-item-text">{this.props.Description}</p>
+                <h4 className="list-group-item-heading col-sm-12 col-md-2">{displayName}{criteria}{downloadIcon}</h4>
+                <span className="col-sm-12 col-md-10">{this.props.Description}</span>
             </div>
         );
     }
@@ -170,7 +174,7 @@ FieldList = React.createClass({
         var fields = [];
         var items = this.props.items || [];
         var fieldName, desc, isFile;
-        var rowsPerPage = this.props.FieldsPerPage || 10;
+        var rowsPerPage = this.props.FieldsPerPage || 20;
 
         var start = (this.state.PageNumber - 1) * rowsPerPage;
         var filter = this.props.Filter.toLowerCase();
@@ -196,6 +200,7 @@ FieldList = React.createClass({
                 selected=true;
             }
             fields.push(<FieldItem FieldName={fieldName}
+                Category={this.props.category}
                 Description={desc}
                 type={this.props.type}
                 onClick={this.onFieldClick(fieldName)}
@@ -288,9 +293,10 @@ FieldSelector = React.createClass({
                 <FieldList
                     items={this.state.categoryFields[this.state.selectedCategory]}
                     type={this.props.type}
+                    category={this.state.selectedCategory}
                     onFieldSelect={this.onFieldSelect}
                     onCriteriaChange={this.props.onCriteriaChange}
-                    FieldsPerPage="10"
+                    FieldsPerPage="15"
                     selected={this.state.selectedFields}
                     Filter={this.state.filter}
                 />
