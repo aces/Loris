@@ -122,7 +122,9 @@ FieldItem = React.createClass({
         if(this.props.downloadable) {
             downloadIcon = <span className="glyphicon glyphicon-download-alt pull-right" title="Downloadable File"></span>
         }
+        // Don't display the category in the field selector
         var displayName = this.props.FieldName.substring(this.props.Category.length + 1);
+
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = <span>
                     <select className="queryOperator" onClick={this.changeCriteria} defaultValue={this.state.operator}>
@@ -143,6 +145,7 @@ FieldItem = React.createClass({
             </div>
             );
         }
+
         return (
             <div className={classList} onClick={this.props.onClick}>
                 <h4 className="list-group-item-heading col-sm-12 col-md-2">{displayName}{criteria}{downloadIcon}</h4>
