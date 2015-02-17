@@ -289,14 +289,6 @@ $(document).ready(function() {
     </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Examiner.label}
-    	</label>
-    	<div class="col-sm-10">
-    		{$form.Examiner.html}
-    	</div>
-    </div>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
     		{$form.PermID_Group.label}
     	</label>
     	<div class="col-sm-10 col-xs-12">
