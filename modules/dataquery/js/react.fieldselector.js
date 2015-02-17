@@ -122,7 +122,9 @@ FieldItem = React.createClass({displayName: 'FieldItem',
         if(this.props.downloadable) {
             downloadIcon = React.createElement("span", {className: "glyphicon glyphicon-download-alt pull-right", title: "Downloadable File"})
         }
+        // Don't display the category in the field selector
         var displayName = this.props.FieldName.substring(this.props.Category.length + 1);
+
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = React.createElement("span", null, 
                     React.createElement("select", {className: "queryOperator", onClick: this.changeCriteria, defaultValue: this.state.operator}, 
@@ -143,6 +145,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
             )
             );
         }
+
         return (
             React.createElement("div", {className: classList, onClick: this.props.onClick}, 
                 React.createElement("h4", {className: "list-group-item-heading col-sm-12 col-md-2"}, displayName, criteria, downloadIcon), 

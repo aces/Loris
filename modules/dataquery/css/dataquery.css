@@ -6,3 +6,8 @@ dt:after {
 dd {
     margin-left: 2em;
 }
+
+select, option, input {
+    color: black;
+}
+

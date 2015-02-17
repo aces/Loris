@@ -44,7 +44,7 @@ DataQueryApp = React.createClass({
         criteria[fieldName] = criteriaItem.state;
         this.setState({ criteria: criteria} );
 
-        if (criteriaItem.operator === '=') {
+        if (criteriaItem.state.operator === '=') {
             $.get("AjaxHelper.php?Module=dataquery&script=queryEqual.php",
                   {
                     category: fieldArray[0],
