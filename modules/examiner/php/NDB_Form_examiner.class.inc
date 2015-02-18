@@ -32,9 +32,12 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function _hasAccess()
     {
-        $user   = User::singleton();
         $DB     = Database::singleton();
         $config = NDB_Config::singleton();
+
+        $user         = User::singleton();
+        $userFullName = $user->getFullname();
+        $userCenter   = $user->getCenterID();
 
         if ($this->page == 'editExaminer') { // edit_examiner page
 
@@ -60,8 +63,13 @@ class NDB_Form_Examiner extends NDB_Form
             if ($config->getSetting('useTraining')) {
 
                 $examiner = $DB->pselectOne(
-                    "SELECT examinerID FROM examiners WHERE full_name=:user",
-                    array('user' => $user->getFullname())
+                    "SELECT examinerID 
+                     FROM examiners 
+                     WHERE full_name=:user AND centerID=:center",
+                    array(
+                     'user'   => $FullName,
+                     'center' => $userCenter,
+                    )
                 );
 
                 if (!empty($examiner)) {
@@ -373,7 +381,8 @@ class NDB_Form_Examiner extends NDB_Form
         foreach ($values['date_cert'] as $date) {
             if (empty($date['Y']) || empty($date['M']) || empty($date['d'])) {
                 if (!(empty($date['Y']) && empty($date['M']) && empty($date['d']))) {
-                    $errors['date_cert[' . $key .']'] = 'The date entered is not valid';
+                    $errors['date_cert[' . $key .']'] = 'The date entered is 
+                        not valid';
                 }
             }
         }
