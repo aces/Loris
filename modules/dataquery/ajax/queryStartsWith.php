@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -15,7 +14,13 @@ $results = $cdb->queryView(
     "DQG-2.0",
     "search",
     array("reduce" => "false",
-          "key" => "[\"$category\", \"$fieldName\", \"$value\"]",
+          "startkey" => "[\"$category\", \"$fieldName\", \"$value\"]",
+          "endkey" => "[\"$category\", \"$fieldName\", \"$value"
+                          // PHP doesn't have any /u9999 unicode escaping, so
+                          //  we use mb_convert_encoding to embed a high
+                          //  unicode character
+                          . mb_convert_encoding('&#x9999;', 'UTF-8', 'HTML-ENTITIES')
+                          . "\"]",
       )
 );
 

@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -15,7 +14,8 @@ $results = $cdb->queryView(
     "DQG-2.0",
     "search",
     array("reduce" => "false",
-          "key" => "[\"$category\", \"$fieldName\", \"$value\"]",
+          "startkey" => "[\"$category\", \"$fieldName\", \"$value\"]",
+          "endkey" => "[\"$category\", \"$fieldName\", {}]",
       )
 );
 
