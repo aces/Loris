@@ -71,7 +71,7 @@ exit();
  * Creates the HTML for a radio button for one multiple choice answer.
  *
  * @param string $questionNumber The question number in the training quiz
- * @param string $answerNumber   The order number of the answer 
+ * @param string $answerNumber   The order number of the answer
  * @param string $answer         The text to be displayed as the answer
  *
  * @return string
@@ -181,7 +181,8 @@ function createTabHTML($quiz, $instructions, $title, $tabContent, $button, $mess
                       . '</button> '
                       . $message
                       . '</div>';
-    $html             = $instructionPanel . $mainContent . $buttonPanel;
+
+    $html = $instructionPanel . $mainContent . $buttonPanel;
 
     return $html;
 }

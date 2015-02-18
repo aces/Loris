@@ -168,9 +168,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // Add a useCertification template variable so that the template
         // rendering can depend on the EnableCertification setting
-        $config                          = NDB_Config::singleton();
-        $certification                   = $config->getSetting('Certification');
-        $useCertification                = $certification['EnableCertification'];
+        $config           = NDB_Config::singleton();
+        $certification    = $config->getSetting('Certification');
+        $useCertification = $certification['EnableCertification'];
         $this->tpl_data['certification'] = $useCertification;
 
     }

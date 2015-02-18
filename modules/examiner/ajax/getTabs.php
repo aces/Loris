@@ -1,6 +1,6 @@
 <?php
 /**
- * Certification training: Creates the html for the tab navigation, 
+ * Certification training: Creates the html for the tab navigation,
  * and the divs that will hold the tab content.
  *
  * PHP Version 5

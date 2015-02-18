@@ -421,7 +421,7 @@ class NDB_Form_Examiner extends NDB_Form
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $test_key = $certificationInstrument['@']['value'];
-            $testID = $DB->selectOne(
+            $testID   = $DB->selectOne(
                 "SELECT ID
                  FROM test_names
                  WHERE Test_name
