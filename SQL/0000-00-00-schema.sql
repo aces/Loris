@@ -2391,4 +2391,4 @@ CREATE TABLE `certification_training_quiz_answers` (
     `OrderNumber` INTEGER UNSIGNED NOT NULL,
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;git
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
