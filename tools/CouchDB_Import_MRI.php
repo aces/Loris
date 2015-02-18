@@ -152,7 +152,7 @@ class CouchDBMRIImporter
                                                 );
             }
         }
-        $this->CouchDB->replaceDoc(
+      $this->CouchDB->replaceDoc(
             "DataDictionary:mri_data",
             array(
              'Meta'           => array('DataDict' => true),
@@ -307,14 +307,14 @@ class CouchDBMRIImporter
 
         $header['ScannerID_'.$type]           = $FileObj->getParameter('ScannerID');
         $header['Pipeline_'.$type]            = $FileObj->getParameter('Pipeline');
-        $header['OutputType_'.$type]          = $FileObj->getParameter('OutputType'),
+        $header['OutputType_'.$type]          = $FileObj->getParameter('OutputType');
         $header['AcquisitionProtocol_'.$type] = $FileObj->getAcquisitionProtocol();
         $header['CoordinateSpace_'.$type]     = $FileObj->getParameter($coord);
         $header['Algorithm_'.$type]           = $FileObj->getParameter('Algorithm');
         $header['AcquisitionDate_'.$type]     = $this->_getDate(
             $FileObj,
             'acquisition_date',
-            $acqDate,
+            $acqDate
         );
         $header['FileInsertDate_'.$type]      = $FileObj->getParameter('InsertTime');
         $header['SeriesDescription_'.$type]   = $FileObj->getParameter($ser_desc);
@@ -435,7 +435,7 @@ class CouchDBMRIImporter
                                 $rev,
                                 $data,
                                 'PUT',
-                                'application/x-minc',
+                                'application/x-minc'
                             );
                         }
                     }
@@ -488,7 +488,7 @@ class CouchDBMRIImporter
                     $mri_qc_results   = $this->_addMRIFeedback(
                         $current_feedback,
                         $scan_type,
-                        $mri_feedback,
+                        $mri_feedback
                     );
                     $row = array_merge($row, $mri_qc_results);
                 }
