@@ -1364,7 +1364,6 @@ CREATE TABLE `users` (
   `PSCPI` enum('Y','N') NOT NULL default 'N',
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
-  `Examiner` enum('Y','N') NOT NULL default 'N',
   `Password_md5` varchar(34) default NULL,
   `Password_hash` varchar(255) default NULL,
   `Password_expiry` date NOT NULL default '0000-00-00',
