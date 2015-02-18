@@ -11,3 +11,8 @@ select, option, input {
     color: black;
 }
 
+h4 {
+    color: black;
+    background: inherit; /*#064785; */
+}
+
