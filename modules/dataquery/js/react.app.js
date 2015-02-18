@@ -44,8 +44,8 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         criteria[fieldName] = criteriaItem.state;
         this.setState({ criteria: criteria} );
 
-        if (criteriaItem.state.operator === '=') {
-            $.get("AjaxHelper.php?Module=dataquery&script=queryEqual.php",
+        var ajaxRetrieve = function(script) {
+            $.get("AjaxHelper.php?Module=dataquery&script=" + script,
                   {
                     category: fieldArray[0],
                     field: fieldArray[1],
@@ -54,6 +54,19 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                   responseHandler,
                   'json'
             );
+        };
+        if (criteriaItem.state.operator === '=') {
+            ajaxRetrieve("queryEqual.php");
+        } else if (criteriaItem.state.operator === '!=') {
+            ajaxRetrieve("queryNotEqual.php");
+        } else if (criteriaItem.state.operator === '<=') {
+            ajaxRetrieve("queryLessThanEqual.php");
+        } else if (criteriaItem.state.operator === '>=') {
+            ajaxRetrieve("queryGreaterThanEqual.php");
+        } else if (criteriaItem.state.operator === 'startsWith') {
+            ajaxRetrieve("queryStartsWith.php");
+        } else if (criteriaItem.state.operator === 'contains') {
+            ajaxRetrieve("queryContains.php");
         }
     },
     render: function() {
