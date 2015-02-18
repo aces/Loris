@@ -14,19 +14,12 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
-require_once "Database.class.inc";
-
 $DB = Database::singleton();
 
 // Get the ID for the instrument that was selected
 $instrumentID = $_REQUEST['instrument'];
 
-
-$user =& User::singleton();
-if (PEAR::isError($user)) {
-    return PEAR::raiseError("User Error: " .$user->getMessage());
-}
-
+$user         = User::singleton();
 $userFullName = $user->getFullname();
 $userCenter   = $user->getCenterID();
 
@@ -51,4 +44,5 @@ if ($certificationStatus == 'certified') {
 } else {
     print 2;
 }
+exit();
 ?>
