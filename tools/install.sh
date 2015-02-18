@@ -351,6 +351,9 @@ cd ..
 composer install --no-dev
 cd tools
 
+# for CentOS, the log directory is called httpd
+logdirectory=apache2
+
 echo ""
 while true; do
     read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
@@ -365,6 +368,7 @@ while true; do
             # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
             sed -e "s#%LORISROOT%#$RootDir/#g" \
                 -e "s#%PROJECTNAME%#$projectname#g" \
+		-e "s#%LOGDIRECTORY%#$logdirectory#g" \
                 < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
             sudo a2dissite 000-default
             sudo a2ensite $projectname
