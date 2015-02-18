@@ -131,7 +131,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
                         React.createElement("option", {value: "="}, " = "), 
                         React.createElement("option", {value: "!="}, "!="), 
                         React.createElement("option", {value: "<="}, "<="), 
-                        React.createElement("option", {value: ">="}, ">"), 
+                        React.createElement("option", {value: ">="}, ">="), 
                         React.createElement("option", {value: "startsWith"}, "startsWith"), 
                         React.createElement("option", {value: "contains"}, "contains")
                     ), 

@@ -54,12 +54,30 @@ FilterSelectTabPane = React.createClass({
 });
 
 ViewDataTabPane = React.createClass({
+    runQuery: function() {
+        if (this.props.Criteria.length === 0) {
+            // Get all the candidates
+        } else {
+            // Get an array where of the results of each criteria
+            var sessionsArrays = [];
+            for (var el in  this.props.Criteria) {
+                if(this.props.Criteria.hasOwnProperty(el)) {
+                    sessionsArrays.push(this.props.Criteria[el].sessions)
+                }
+            }
+
+            // Then do an intersection on the sessions that came out of each
+            // criteria (equivalent to a logical AND between the operators)
+            var sessions = arrayIntersect(sessionsArrays);
+            console.log(sessions);
+        }
+    },
     render: function() {
         var headers = [];
         for(var i = 0; i < this.props.Fields.length; i += 1) {
             headers.push(<th>{this.props.Fields[i]}</th>);
         }
-        var buttons = <div className="commands"><button>Run Query</button></div>
+        var buttons = <div className="commands"><button onClick={this.runQuery}>Run Query</button></div>
         var criteria = [];
         for (var el in  this.props.Criteria) {
             if(!this.props.Criteria.hasOwnProperty(el)) {

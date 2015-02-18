@@ -131,7 +131,7 @@ FieldItem = React.createClass({
                         <option value="="> = </option>
                         <option value="!=">!=</option>
                         <option value="&lt;=">&lt;=</option>
-                        <option value="&gt;=">&gt;</option>
+                        <option value="&gt;=">&gt;=</option>
                         <option value="startsWith">startsWith</option>
                         <option value="contains">contains</option>
                     </select>
