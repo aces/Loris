@@ -373,8 +373,6 @@ while true; do
 	    sudo sed -i '221 a\Include /etc/httpd/sites-available/*.conf' /etc/httpd/conf/httpd.conf
 
 	    sudo service httpd restart
-            # sudo a2dissite 000-default
-            # sudo a2ensite $projectname
             break;;
         [Nn]* )
             echo "Not configuring apache."
