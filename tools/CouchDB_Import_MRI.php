@@ -142,6 +142,8 @@ class CouchDBMRIImporter
                           'InterlaceRejected'   => 'Interlace correlations (Nb)',
                           'IntergradientReject' => 'Gradient-wise correlations (Nb)',
                           'TotalRejected'       => 'No. of rejected directions',
+                          'Caveat'              => 'Caveat',
+                          'ProcessingPipeline'  => 'Processing Pipleline',
                          );
             $this->mri_header_fields = $mri_array;
             foreach ($this->mri_header_fields as $field=>$desc) {
@@ -152,7 +154,7 @@ class CouchDBMRIImporter
                                                 );
             }
         }
-      $this->CouchDB->replaceDoc(
+        $this->CouchDB->replaceDoc(
             "DataDictionary:mri_data",
             array(
              'Meta'           => array('DataDict' => true),
@@ -304,6 +306,7 @@ class CouchDBMRIImporter
         $ser_num   = 'series_number';
         $tot_rej   = 'processing:total_rejected';
         $inter_rej = 'IntergradientRejected_'.$type;
+        $pipeline  = 'processing:pipeline';
 
         $header['ScannerID_'.$type]           = $FileObj->getParameter('ScannerID');
         $header['Pipeline_'.$type]            = $FileObj->getParameter('Pipeline');
@@ -347,12 +350,13 @@ class CouchDBMRIImporter
             'interlace',
             $laceRej
         );
-        $header[$inter_rej] = $this->_getRejected(
+        $header[$inter_rej]      = $this->_getRejected(
             $FileObj,
             'intergradient',
             $interRej
         );
-
+        $header['Caveat_'.$type] = $FileObj->getParameter('Caveat');
+        $header['ProcessingPipeline_'.$type] = $FileObj->getParameter($pipeline);
         return $header;
     }
 
