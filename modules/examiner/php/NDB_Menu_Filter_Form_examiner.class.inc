@@ -78,7 +78,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         $query .= ' WHERE 1=1';
 
-        $user   = User::singleton();
+        $user = User::singleton();
         if (!$user->hasPermission('examiner_multisite')) {
             $query .= " AND e.CenterID=" . $user->getData('CenterID');
         }
@@ -283,7 +283,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                     "SELECT ID
                      FROM users
                      WHERE Real_name=:fullName AND CenterID=:siteID",
-                    array('fullName' => $fullName, 'siteID' => $siteID)
+                    array(
+                     'fullName' => $fullName,
+                     'siteID'   => $siteID,
+                    )
                 );
 
                 if (!empty($userID)) {
