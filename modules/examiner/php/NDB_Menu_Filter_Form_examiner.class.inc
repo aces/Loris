@@ -41,16 +41,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $DB     = Database::singleton();
         $config = NDB_Config::singleton();
 
-        $username = $user->getFullname();
-        $examiner = $DB->pselectOne(
-            "SELECT examinerID FROM examiners WHERE full_name=:user",
-            array('user' => $username)
-        );
-
         // If the user is an examiner and the useTraining setting is on,
         // redirect to the training module
-        if (!empty($examiner) && $config->getSetting('useTraining')) {
-            $config  = NDB_Config::singleton();
+        if ($user->hasPermission('examiner') && $config->getSetting('useTraining')) {
             $baseURL = $config->getSetting('url');
             header(
                 'Location: '
@@ -59,7 +52,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             );
             exit();
         } else {
-            return $user->hasPermission('examiner');
+            return $user->hasPermission('examiner_view');
         }
     }
 
@@ -84,6 +77,11 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         }
 
         $query .= ' WHERE 1=1';
+
+        $user   = User::singleton();
+        if (!$user->hasPermission('examiner_multisite')) {
+            $query .= " AND e.CenterID=" . $user->getData('CenterID');
+        }
 
         // set the class variables
         $this->columns      = array(
@@ -272,22 +270,52 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _process($values)
     {
-        $DB = Database::singleton();
+        $DB     = Database::singleton();
+        $config = NDB_Config::singleton();
 
         $fullName    = $values['addName'];
         $siteID      = $values['addSite'];
         $radiologist = $values['radiologist'];
 
-        // In the future, add validation so that errors are returned here
         if (!empty($fullName) && !empty($siteID)) {
-            $DB->insert(
-                'examiners',
-                array(
-                 'full_name'   => $fullName,
-                 'centerID'    => $siteID,
-                 'radiologist' => $radiologist,
-                )
-            );
+            if ($config->getSetting('useTraining')) {
+                $userID = $DB->pselectOne(
+                    "SELECT ID
+                     FROM users
+                     WHERE Real_name=:fullName AND CenterID=:siteID",
+                    array('fullName' => $fullName, 'siteID' => $siteID)
+                );
+
+                if (!empty($userID)) {
+                    $DB->insert(
+                        'examiners',
+                        array(
+                         'full_name'   => $fullName,
+                         'centerID'    => $siteID,
+                         'radiologist' => $radiologist,
+                        )
+                    );
+                    $permID = $DB->pselectOne(
+                        "SELECT permID FROM permissions WHERE code='examiner'"
+                    );
+                    $DB->insert(
+                        'user_perm_rel',
+                        array(
+                         'userID' => $userID,
+                         'permID' => $permID,
+                        )
+                    );
+                }
+            } else {
+                $DB->insert(
+                    'examiners',
+                    array(
+                     'full_name'   => $fullName,
+                     'centerID'    => $siteID,
+                     'radiologist' => $radiologist,
+                    )
+                );
+            }
         }
     }
 }

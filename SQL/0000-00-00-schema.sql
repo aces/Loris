@@ -974,10 +974,11 @@ INSERT INTO `permissions` VALUES
     (9,'unsend_to_dcc','Reverse Send from DCC','2'),
     (10,'access_all_profiles','Across all sites access candidate profiles','2'),
     (11,'data_entry','Data entry','1'),
-    (12,'examiner','Add and certify examiners','2'),
-    (13,'examiner_multisite','Across all sites add and certify examiners','2'),
-    (14,'timepoint_flag','Edit exclusion flags','2'),
-    (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
+    (12,'examiner','Examiner','1'),
+    (13,'examiner_view','Add and certify examiners','2'),
+    (14,'examiner_multisite','Across all sites add and certify examiners','2'),
+    (15,'timepoint_flag','Edit exclusion flags','2'),
+    (16,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
     (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
     (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
@@ -2012,6 +2013,8 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- Certification
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner' AND m.Label='Examiner';
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_site' AND m.Label='Examiner';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_multisite' AND m.Label='Examiner';
 

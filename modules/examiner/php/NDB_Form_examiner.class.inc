@@ -47,14 +47,13 @@ class NDB_Form_Examiner extends NDB_Form
             if ($useCertification) {
                 $centerID = $DB->pselectOne(
                     "SELECT centerID 
-                     FROM examiners, certification 
-                     WHERE examiners.examinerID=certification.examinerID
-                     AND certification.examinerID=:EID",
+                     FROM examiners
+                     WHERE examinerID=:EID",
                     array('EID' => $this->identifier)
                 );
 
-                return ($user->hasPermission('examiner')
-                    && ($user->hasPermission('examiner_multisite')
+                return $user->hasPermission('examiner_view')
+                    && (($user->hasPermission('examiner_multisite')
                     || $user->getData('CenterID') == $centerID));
             }
 
@@ -62,19 +61,7 @@ class NDB_Form_Examiner extends NDB_Form
 
             if ($config->getSetting('useTraining')) {
 
-                $examiner = $DB->pselectOne(
-                    "SELECT examinerID 
-                     FROM examiners 
-                     WHERE full_name=:user AND centerID=:center",
-                    array(
-                     'user'   => $FullName,
-                     'center' => $userCenter,
-                    )
-                );
-
-                if (!empty($examiner)) {
-                    return true;
-                }
+                return $user->hasPermission('examiner');
             }
         }
 
