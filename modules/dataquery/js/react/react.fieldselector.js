@@ -14,7 +14,7 @@ PaginationLinks = React.createClass({
         if(this.props.total === 0) {
             return <div />;
         }
-        for(var i = 1; i < this.props.total / rowsPerPage; i += 1) {
+        for(var i = 1; i <= Math.ceil(this.props.total / rowsPerPage); i += 1) {
             classList = '';
             if(this.props.Active == i) {
                 classList = "active";
@@ -50,7 +50,6 @@ CategoryList = React.createClass({
             selectedCategory: ""
         };
     },
-
     selectCategoryHandler: function(category) {
         var that = this;
         return function(evt) {
@@ -86,26 +85,20 @@ CategoryList = React.createClass({
 });
 
 FieldItem = React.createClass({
-    getInitialState: function() {
-        return {
-            "operator" : '=',
-            "value"    : ''
-        };
-    },
     changeCriteria: function(evt) {
         evt.preventDefault();
         evt.stopPropagation();
+        var op = this.props.Criteria;
         var state = this.state;
         if(evt.target.classList.contains("queryOperator")) {
-            state.operator = evt.target.value;
+            op.operator = evt.target.value;
         }
         if(evt.target.classList.contains("queryValue")) {
-            state.value = evt.target.value;
+            op.value = evt.target.value;
         }
-        this.setState(state);
 
         if(this.props.onCriteriaChange) {
-            this.props.onCriteriaChange(this.props.FieldName, this);
+            this.props.onCriteriaChange(this.props.FieldName, op);
         }
     },
     preventDefault: function(evt) {
@@ -127,7 +120,7 @@ FieldItem = React.createClass({
 
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = <span>
-                    <select className="queryOperator" onClick={this.changeCriteria} defaultValue={this.state.operator}>
+                    <select className="queryOperator" onClick={this.changeCriteria} defaultValue={this.props.Criteria.operator}>
                         <option value="="> = </option>
                         <option value="!=">!=</option>
                         <option value="&lt;=">&lt;=</option>
@@ -135,14 +128,14 @@ FieldItem = React.createClass({
                         <option value="startsWith">startsWith</option>
                         <option value="contains">contains</option>
                     </select>
-                    <input className="queryValue" onClick={this.preventDefault} onChange={this.changeCriteria} type="text" defaultValue={this.state.value} />
+                    <input className="queryValue" onClick={this.preventDefault} onChange={this.changeCriteria} type="text" defaultValue={this.props.Criteria.value} />
                 </span>;
             return (
                 <div className={classList} onClick={this.props.onClick}>
                     <h4 className="list-group-item-heading col-sm-12 col-md-2">{displayName}</h4>
                     <span className="col-sm-10 col-md-7">{this.props.Description}</span>
                     <span className="col-sm-2 col-md-3">{criteria}</span>
-            </div>
+                </div>
             );
         }
 
@@ -154,6 +147,7 @@ FieldItem = React.createClass({
         );
     }
 });
+
 FieldList = React.createClass({
     getInitialState: function() {
         return {
@@ -202,11 +196,17 @@ FieldList = React.createClass({
             if(this.props.selected && this.props.selected.indexOf(fieldName) > -1) {
                 selected=true;
             }
+
+            var crit = undefined;
+            if(this.props.Criteria && this.props.Criteria[fieldName]) {
+                crit = this.props.Criteria[fieldName];
+            }
             fields.push(<FieldItem FieldName={fieldName}
                 Category={this.props.category}
                 Description={desc}
                 type={this.props.type}
                 onClick={this.onFieldClick(fieldName)}
+                Criteria={crit}
                 onCriteriaChange={this.props.onCriteriaChange}
                 selected={selected}
                 downloadable={isFile}
@@ -283,11 +283,15 @@ FieldSelector = React.createClass({
                         <label>Search:</label><input type="text" onChange={this.filterChange}/>
                     </div>
                 </div>
-                <CategoryList items={this.props.items} onCategorySelect={this.onCategorySelect}/>
+                <CategoryList
+                    items={this.props.items}
+                    onCategorySelect={this.onCategorySelect}
+                />
                 <FieldList
                     items={this.state.categoryFields[this.state.selectedCategory]}
                     type={this.props.type}
                     category={this.state.selectedCategory}
+                    Criteria={this.props.Criteria}
                     onFieldSelect={this.onFieldSelect}
                     onCriteriaChange={this.props.onCriteriaChange}
                     FieldsPerPage="15"
@@ -298,5 +302,3 @@ FieldSelector = React.createClass({
         );
     }
 });
-
-RFieldSelector = React.createFactory(FieldSelector);
