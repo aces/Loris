@@ -69,7 +69,6 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
             // Then do an intersection on the sessions that came out of each
             // criteria (equivalent to a logical AND between the operators)
             var sessions = arrayIntersect(sessionsArrays);
-            console.log(sessions);
         }
     },
     render: function() {
