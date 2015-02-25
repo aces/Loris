@@ -1,10 +1,24 @@
 SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
+    loadQuery: function(queryName) {
+        var that = this;
+        return function() {
+            $.getJSON("AjaxHelper.php?Module=dataquery&script=GetDoc.php", { DocID: queryName},
+            function(data) {
+                if(that.props.onSelectQuery) {
+                    that.props.onSelectQuery(data.Fields, data.Conditions);
+                }
+
+                console.log(data);
+            }
+            );
+        }
+    },
     render: function() {
         var userSaved = [];
         var globalSaved = [];
 
         for(var i = 0; i < this.props.userQueries.length; i += 1) {
-            userSaved.push(React.createElement("li", null, React.createElement("a", {href: "#"}, this.props.userQueries[i])));
+            userSaved.push(React.createElement("li", null, React.createElement("a", {href: "#", onClick: this.loadQuery(this.props.userQueries[i])}, this.props.userQueries[i])));
         }
         for(var i = 0; i < this.props.globalQueries.length; i += 1) {
             globalSaved.push(React.createElement("li", null, React.createElement("a", {href: "#"}, this.props.globalQueries[i])));
@@ -31,6 +45,13 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
             fields: [],
             criteria: {}
         };
+    },
+    loadSavedQuery: function (fields, criteria) {
+        console.log("Loading a query");
+        console.log(fields);
+        console.log(criteria);
+        console.log("Loaded a query");
+        this.setState({fields: fields});
     },
     fieldChange: function(changeType, fieldName) {
         var fields = this.state.fields;
@@ -99,7 +120,7 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
     render: function() {
         var tabs = [], tabsNav = [];
         tabs.push(React.createElement(InfoTabPane, {TabId: "Info", UpdatedTime: this.props.UpdatedTime}));
-        tabs.push(React.createElement(FieldSelectTabPane, {categories: this.props.categories, TabId: "DefineFields", onFieldChange: this.fieldChange}));
+        tabs.push(React.createElement(FieldSelectTabPane, {categories: this.props.categories, TabId: "DefineFields", onFieldChange: this.fieldChange, selectedFields: this.state.fields}));
         tabs.push(React.createElement(FilterSelectTabPane, {categories: this.props.categories, TabId: "DefineFilters", onCriteriaChange: this.criteriaChange, onFieldChange: this.criteriaFieldChange}));
         tabs.push(React.createElement(ViewDataTabPane, {TabId: "ViewData", Fields: this.state.fields, Criteria: this.state.criteria}));
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics"}));
@@ -113,7 +134,11 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                         React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", 'data-toggle': "tab"}, "View Data")), 
                         React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", 'data-toggle': "tab"}, "Statistical Analysis"))
                     ), 
-                    React.createElement(SavedQueriesList, {userQueries: this.props.SavedQueries.User, globalQueries: this.props.SavedQueries.Shared})
+                    React.createElement(SavedQueriesList, {
+                        userQueries: this.props.SavedQueries.User, 
+                        globalQueries: this.props.SavedQueries.Shared, 
+                        onSelectQuery: this.loadSavedQuery}
+                    )
                 ), 
                 React.createElement("div", {className: "tab-content"}, 
                     tabs

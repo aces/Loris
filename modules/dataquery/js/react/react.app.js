@@ -1,12 +1,26 @@
 SavedQueriesList = React.createClass({
+    loadQuery: function(queryName) {
+        var that = this;
+        return function() {
+            $.getJSON("AjaxHelper.php?Module=dataquery&script=GetDoc.php", { DocID: queryName},
+            function(data) {
+                if(that.props.onSelectQuery) {
+                    that.props.onSelectQuery(data.Fields, data.Conditions);
+                }
+
+                console.log(data);
+            }
+            );
+        }
+    },
     render: function() {
         var userSaved = [];
         var globalSaved = [];
 
-        for(var i = 0; i <= this.props.userQueries.length; i += 1) {
-            userSaved.push(<li><a href="#">{this.props.userQueries[i]}</a></li>);
+        for(var i = 0; i < this.props.userQueries.length; i += 1) {
+            userSaved.push(<li><a href="#" onClick={this.loadQuery(this.props.userQueries[i])}>{this.props.userQueries[i]}</a></li>);
         }
-        for(var i = 0; i <= this.props.globalQueries.length; i += 1) {
+        for(var i = 0; i < this.props.globalQueries.length; i += 1) {
             globalSaved.push(<li><a href="#">{this.props.globalQueries[i]}</a></li>);
         }
         return (
@@ -31,6 +45,13 @@ DataQueryApp = React.createClass({
             fields: [],
             criteria: {}
         };
+    },
+    loadSavedQuery: function (fields, criteria) {
+        console.log("Loading a query");
+        console.log(fields);
+        console.log(criteria);
+        console.log("Loaded a query");
+        this.setState({fields: fields});
     },
     fieldChange: function(changeType, fieldName) {
         var fields = this.state.fields;
@@ -99,7 +120,7 @@ DataQueryApp = React.createClass({
     render: function() {
         var tabs = [], tabsNav = [];
         tabs.push(<InfoTabPane TabId="Info" UpdatedTime={this.props.UpdatedTime}/>);
-        tabs.push(<FieldSelectTabPane categories={this.props.categories} TabId="DefineFields" onFieldChange={this.fieldChange}/>);
+        tabs.push(<FieldSelectTabPane categories={this.props.categories} TabId="DefineFields" onFieldChange={this.fieldChange} selectedFields={this.state.fields}/>);
         tabs.push(<FilterSelectTabPane categories={this.props.categories} TabId="DefineFilters" onCriteriaChange={this.criteriaChange} onFieldChange={this.criteriaFieldChange} />);
         tabs.push(<ViewDataTabPane TabId="ViewData" Fields={this.state.fields} Criteria={this.state.criteria} />);
         tabs.push(<StatsVisualizationTabPane TabId="Statistics" />);
@@ -113,7 +134,11 @@ DataQueryApp = React.createClass({
                         <li role="presentation"><a href="#ViewData" data-toggle="tab">View Data</a></li>
                         <li role="presentation"><a href="#Statistics" data-toggle="tab">Statistical Analysis</a></li>
                     </ul>
-                    <SavedQueriesList userQueries={this.props.SavedQueries.User} globalQueries={this.props.SavedQueries.Shared} />
+                    <SavedQueriesList
+                        userQueries={this.props.SavedQueries.User}
+                        globalQueries={this.props.SavedQueries.Shared}
+                        onSelectQuery={this.loadSavedQuery}
+                    />
                 </nav>
                 <div className="tab-content">
                     {tabs}

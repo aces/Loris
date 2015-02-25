@@ -199,7 +199,7 @@ FieldList = React.createClass({
             }
 
             selected=false;
-            if(this.props.selected.indexOf(fieldName) > -1) {
+            if(this.props.selected && this.props.selected.indexOf(fieldName) > -1) {
                 selected=true;
             }
             fields.push(<FieldItem FieldName={fieldName}
@@ -230,13 +230,12 @@ FieldSelector = React.createClass({
         return {
             filter: "",
             selectedCategory: "",
-            selectedFields: [],
             categoryFields: {
             }
         };
     },
     onFieldSelect: function(fieldName) {
-        var fields = this.state.selectedFields;
+        var fields = this.props.selectedFields;
         var idx = fields.indexOf(fieldName);
 
         if(idx > -1) {
@@ -250,20 +249,12 @@ FieldSelector = React.createClass({
                 this.props.onFieldChange("add", fieldName);
             }
         }
-        this.setState({
-            selectedFields: fields
-        });
     },
     onCategorySelect: function(category) {
         var that=this;
 
-        // Use the cached version
+        // Use the cached version if it exists
         if(this.state.categoryFields[category]) {
-            /*
-            this.setState({
-                categoryFields: categoryFields
-            });
-            */
         } else {
             // Retrieve the data dictionary
             $.get("AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: category}, function(data) {
@@ -300,7 +291,7 @@ FieldSelector = React.createClass({
                     onFieldSelect={this.onFieldSelect}
                     onCriteriaChange={this.props.onCriteriaChange}
                     FieldsPerPage="15"
-                    selected={this.state.selectedFields}
+                    selected={this.props.selectedFields || []}
                     Filter={this.state.filter}
                 />
             </div>
