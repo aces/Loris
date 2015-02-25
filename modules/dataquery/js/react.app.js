@@ -7,8 +7,6 @@ SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
                 if(that.props.onSelectQuery) {
                     that.props.onSelectQuery(data.Fields, data.Conditions);
                 }
-
-                console.log(data);
             }
             );
         }
@@ -47,10 +45,6 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         };
     },
     loadSavedQuery: function (fields, criteria) {
-        console.log("Loading a query");
-        console.log(fields);
-        console.log(criteria);
-        console.log("Loaded a query");
         var criteriaState = {};
         for(var i = 0; i < criteria.length; i +=1 ) {
             var critObj = criteria[i];
@@ -134,7 +128,6 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
     },
     render: function() {
         var tabs = [], tabsNav = [];
-        console.log(this.state.criteria);
         tabs.push(React.createElement(InfoTabPane, {
                 TabId: "Info", 
                 UpdatedTime: this.props.UpdatedTime}
