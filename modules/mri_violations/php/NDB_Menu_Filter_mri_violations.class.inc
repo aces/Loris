@@ -24,7 +24,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
+class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter_Form
 {
     /**
      * Check if user should be allowed to see this page.
@@ -63,7 +63,8 @@ class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
             'v.MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
             'v.Problem',
-            'v.SeriesUID'
+            'v.SeriesUID',
+            'v.Resolved'
         );
 
         $this->query = " FROM (
@@ -71,25 +72,39 @@ class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
                 time_run as TimeRun,
                 minc_location as MincFile,
                 series_description as Series_Description,
-                'Could not identify scan type' as Problem,
-		SeriesUID 
-            FROM mri_protocol_violated_scans "
-            .  " UNION " . 
+                'Could not identify scan type' as Problem, 
+                SeriesUID,
+                violations_resolved.Resolved as Resolved
+            FROM mri_protocol_violated_scans 
+            LEFT JOIN violations_resolved
+            ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID 
+            AND violations_resolved.TypeTable='mri_protocol_violated_scans')"
+            . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
                 MincFile,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
-                SeriesUID FROM mri_violations_log 
+                SeriesUID,
+                violations_resolved.Resolved as Resolved
+            FROM mri_violations_log 
             LEFT JOIN mri_scan_type 
-            ON (mri_scan_type.ID=mri_violations_log.Scan_type)"
-            .  " UNION " . 
+            ON (mri_scan_type.ID=mri_violations_log.Scan_type)
+            LEFT JOIN violations_resolved
+            ON (violations_resolved.ExtID=mri_violations_log.LogID 
+            AND violations_resolved.TypeTable='mri_violations')"
+            . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
                 MincFile,
                 null,
                 Reason, 
-                SeriesUID FROM MRICandidateErrors"
+                SeriesUID,
+                violations_resolved.Resolved as Resolved
+            FROM MRICandidateErrors
+            LEFT JOIN violations_resolved
+            ON (violations_resolved.ExtID=MRICandidateErrors.ID 
+            AND violations_resolved.TypeTable='MRICandidateErrors')"
          . ") as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
@@ -99,7 +114,8 @@ class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
                 'ProblemType' => 'v.Problem',
                 'Filename' => 'v.MincFile',
                 'Description' => 'v.Series_Description',
-                'SeriesUID' => 'v.SeriesUID'
+                'SeriesUID' => 'v.SeriesUID',
+                'Resolved' => 'v.Resolved'
         );
         $this->validFilters = array(
             'v.PatientName',
@@ -107,11 +123,11 @@ class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
             'v.MincFile',
             'v.Problem',
             'v.Series_Description',
-            'v.SeriesUID'
+            'v.SeriesUID',
+            'v.Resolved'
         );
         return true;
     }
-
 
     /**
      * Generate the quickform elements necessary for filter form
@@ -125,7 +141,7 @@ class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        $this->addBasicText('PatientName', 'PatientName');
+        $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicText('TimeRun', 'Time Run');
         $this->addBasicText('Filename', 'File name');
@@ -141,8 +157,27 @@ class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
                     => 'Could not identify scan type',
                 'Protocol Violation'
                     => 'MRI Protocol Check violation'
-        )
+            )
         );
+        // conflict resolved
+        $this->addSelect(
+            'Resolved', 
+            'Violation resolved', 
+            array(
+                '0' => 'Unresolved',
+                '1' => 'Resolved'
+                )
+            );
+        // sites
+        $this->addSelect(
+            'Site', 
+            'Site', 
+            array(
+                '0' => 'one',
+                '1' => 'two',
+                '2' => 'three',
+                )
+            );
 
         return true;
     }
@@ -174,9 +209,35 @@ class NDB_Menu_Filter_Mri_Violations extends NDB_Menu_Filter
                 }            
                 $i++;
             }
+            $options = array('0'=>'Unresolved', '1'=>'Resolved');
+            $this->addCheckbox(($x + $count), "", $options);
+            //$this->addSelect(($x + $count), "", $options);
+        
             $x++;
         }
+
+        //var_dump($this);                    
         return true;
+    }
+
+    function _process($values)
+    {
+        echo "PROCESSING...<BR>";
+
+        if (!is_array($values) || count($values) ==0) {
+            return true;
+        }
+        
+        $DB =& Database::singleton();
+        
+        $user =& User::singleton();
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+
+        var_dump($values);
+
+        $this->tpl_data['success'] = true;
     }
 }
 ?>
