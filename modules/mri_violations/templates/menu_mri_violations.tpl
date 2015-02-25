@@ -35,6 +35,14 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Site.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Site.html}</div> 
+                            <label class="col-sm-12 col-md-2">{$form.Resolved.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Resolved.html}</div>                
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-sm-5 col-sm-offset-7 hidden-sm">
                             <div class="col-sm-6 col-xs-12">
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
@@ -100,19 +108,33 @@
                             <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                 <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $series}" data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
                             </td>
+                            {elseif $items[item][piece].name eq 'Resolved'}
+	                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">                            	
+	                            	{$form[$items[item][0].value].html}                                
+	                            </td>
                             {else}
                                 <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                    {$items[item][piece].value}
+                                    {$items[item][piece].value} 
                                 </td>
                             {/if}
-                        {/if}
-                        {/section}
+                        {/if}                        	 
+                        {/section}                        	
                         </tr>           
                     {sectionelse}
                         <tr><td colspan="12">No data found</td></tr>
-                    {/section}
+                    {/section}   
+                    <tr>
+		                <td nowrap="nowrap" colspan="5" id="message-area">
+		                    
+		                </td>
+		                <td nowrap="nowrap" colspan="5">
+		                    <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
+		                    <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+		                </td>
+		            </tr>                 
                 </tbody>
             </table>
+            
         </div>
         <a class="left carousel-control"  id="scrollLeft" href="#results">
             <span class="glyphicon glyphicon-chevron-left"></span>
