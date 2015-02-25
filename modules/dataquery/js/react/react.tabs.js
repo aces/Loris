@@ -40,7 +40,7 @@ InfoTabPane = React.createClass({
 
 FieldSelectTabPane = React.createClass({
     render: function() {
-        var content = <FieldSelector title="Fields" items={this.props.categories} onFieldChange={this.props.onFieldChange} />
+        var content = <FieldSelector title="Fields" items={this.props.categories} onFieldChange={this.props.onFieldChange} selectedFields={this.props.selectedFields}/>
         return <TabPane content={content} TabId={this.props.TabId} />
     }
 
@@ -48,7 +48,7 @@ FieldSelectTabPane = React.createClass({
 
 FilterSelectTabPane = React.createClass({
     render: function() {
-        var content = <FieldSelector title="Filters" items={this.props.categories} type="Criteria" onFieldChange={this.props.onFieldChange} onCriteriaChange={this.props.onCriteriaChange}/>
+        var content = <FieldSelector title="Filters" items={this.props.categories} type="Criteria" onFieldChange={this.props.onFieldChange} onCriteriaChange={this.props.onCriteriaChange} selectedFields={this.props.selectedFields}/>
         return <TabPane content={content} TabId={this.props.TabId} />
     }
 });
