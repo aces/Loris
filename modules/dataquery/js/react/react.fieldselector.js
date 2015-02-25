@@ -69,15 +69,15 @@ CategoryList = React.createClass({
              };
         for(i = 0; i < this.props.items.length; i += 1) {
             selected = false;
-            if(this.props.items[i] == this.state.selectedCategory) {
+            if(this.props.items[i].category == this.state.selectedCategory) {
                 selected=true;
             }
             items.push(<CategoryItem
-                key={this.props.items[i]}
-                name={this.props.items[i]}
-                count="2"
+                key={this.props.items[i].category}
+                name={this.props.items[i].category}
+                count={this.props.items[i].numFields}
                 selected={selected}
-                onClick={this.selectCategoryHandler(this.props.items[i])} />);
+                onClick={this.selectCategoryHandler(this.props.items[i].category)} />);
         }
         return (
             <div className="list-group col-md-3 col-sm-12">{items}</div>

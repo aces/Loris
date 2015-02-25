@@ -1,3 +1,30 @@
+SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
+    render: function() {
+        var userSaved = [];
+        var globalSaved = [];
+
+        for(var i = 0; i < this.props.userQueries.length; i += 1) {
+            userSaved.push(React.createElement("li", null, React.createElement("a", {href: "#"}, this.props.userQueries[i])));
+        }
+        for(var i = 0; i < this.props.globalQueries.length; i += 1) {
+            globalSaved.push(React.createElement("li", null, React.createElement("a", {href: "#"}, this.props.globalQueries[i])));
+        }
+        return (
+             React.createElement("ul", {className: "nav nav-tabs navbar-right"}, 
+                 React.createElement("li", {className: "dropdown"}, 
+                     React.createElement("a", {href: "#", className: "dropdown-toggle", 'data-toggle': "dropdown", role: "button", 'aria-expanded': "false"}, "Load Saved Query ", React.createElement("span", {className: "caret"})), 
+                     React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
+                        React.createElement("li", {role: "presentation", className: "dropdown-header"}, "User Saved Queries"), 
+                        userSaved, 
+                        React.createElement("li", {role: "presentation", className: "dropdown-header"}, "Shared Saved Queries"), 
+                        globalSaved
+                     )
+                 ), 
+                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#"}, "Managed Saved Queries"))
+             )
+            );
+    }
+});
 DataQueryApp = React.createClass({displayName: 'DataQueryApp',
     getInitialState: function() {
         return {
@@ -86,17 +113,7 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                         React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", 'data-toggle': "tab"}, "View Data")), 
                         React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", 'data-toggle': "tab"}, "Statistical Analysis"))
                     ), 
-                    React.createElement("ul", {className: "nav nav-tabs navbar-right"}, 
-                        React.createElement("li", {className: "dropdown"}, 
-                            React.createElement("a", {href: "#", className: "dropdown-toggle", 'data-toggle': "dropdown", role: "button", 'aria-expanded': "false"}, "Load Saved Query ", React.createElement("span", {className: "caret"})), 
-                            React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
-                                React.createElement("li", null, React.createElement("a", {href: "#"}, "Query 1")), 
-                                React.createElement("li", null, React.createElement("a", {href: "#"}, "Query 2")), 
-                                React.createElement("li", null, React.createElement("a", {href: "#"}, "Query 3"))
-                            )
-                        ), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#"}, "Managed Saved Queries"))
-                    )
+                    React.createElement(SavedQueriesList, {userQueries: this.props.SavedQueries.User, globalQueries: this.props.SavedQueries.Shared})
                 ), 
                 React.createElement("div", {className: "tab-content"}, 
                     tabs

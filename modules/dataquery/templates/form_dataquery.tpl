@@ -22,15 +22,20 @@ h4 input, h4 select option, h4 select {
 
 <script>
 var categories = [
-        {foreach from=$categories item=category}
-            "{$category|escape:"js"}",
+        {foreach from=$categories item=value key=category}
+           { "category" : "{$category|escape:"js"}",
+             "numFields" : {$value} },
         {/foreach}
     ];
 var queryApp = RDataQueryApp(
     {
         title: "Fields",
         categories: categories,
-        UpdatedTime: "{$updatetime|escape:"js"}"
+        UpdatedTime: "{$updatetime|escape:"js"}",
+        SavedQueries : {
+            "User" : {$savedqueries.user|json_encode},
+            "Shared" : {$savedqueries.shared|json_encode}
+        }
     });
 React.render(queryApp, document.getElementById("reactTest"));
 </script>
