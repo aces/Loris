@@ -51,7 +51,19 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         console.log(fields);
         console.log(criteria);
         console.log("Loaded a query");
-        this.setState({fields: fields});
+        var criteriaState = {};
+        for(var i = 0; i < criteria.length; i +=1 ) {
+            var critObj = criteria[i];
+
+            criteriaState[critObj.Field] = {
+                "operator" : critObj.Operator,
+                "value"    : critObj.Value
+            }
+        }
+        this.setState({
+            fields: fields,
+            criteria: criteriaState
+        });
     },
     fieldChange: function(changeType, fieldName) {
         var fields = this.state.fields;
@@ -70,7 +82,10 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
     criteriaFieldChange: function(changeType, fieldName) {
         var fields = this.state.criteria;
         if(changeType === 'add') {
-            fields[fieldName] = undefined;
+            fields[fieldName] = {
+                "operator" : '=',
+                'value'    : ''
+            }
         } else if(changeType === 'remove') {
             delete fields[fieldName];
         }
@@ -89,7 +104,7 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
 
             that.setState(state);
         };
-        criteria[fieldName] = criteriaItem.state;
+        criteria[fieldName] = criteriaItem;
         this.setState({ criteria: criteria} );
 
         var ajaxRetrieve = function(script) {
@@ -103,26 +118,47 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                   'json'
             );
         };
-        if (criteriaItem.state.operator === '=') {
+        if (criteriaItem.operator === '=') {
             ajaxRetrieve("queryEqual.php");
-        } else if (criteriaItem.state.operator === '!=') {
+        } else if (criteriaItem.operator === '!=') {
             ajaxRetrieve("queryNotEqual.php");
-        } else if (criteriaItem.state.operator === '<=') {
+        } else if (criteriaItem.operator === '<=') {
             ajaxRetrieve("queryLessThanEqual.php");
-        } else if (criteriaItem.state.operator === '>=') {
+        } else if (criteriaItem.operator === '>=') {
             ajaxRetrieve("queryGreaterThanEqual.php");
-        } else if (criteriaItem.state.operator === 'startsWith') {
+        } else if (criteriaItem.operator === 'startsWith') {
             ajaxRetrieve("queryStartsWith.php");
-        } else if (criteriaItem.state.operator === 'contains') {
+        } else if (criteriaItem.operator === 'contains') {
             ajaxRetrieve("queryContains.php");
         }
     },
     render: function() {
         var tabs = [], tabsNav = [];
-        tabs.push(React.createElement(InfoTabPane, {TabId: "Info", UpdatedTime: this.props.UpdatedTime}));
-        tabs.push(React.createElement(FieldSelectTabPane, {categories: this.props.categories, TabId: "DefineFields", onFieldChange: this.fieldChange, selectedFields: this.state.fields}));
-        tabs.push(React.createElement(FilterSelectTabPane, {categories: this.props.categories, TabId: "DefineFilters", onCriteriaChange: this.criteriaChange, onFieldChange: this.criteriaFieldChange}));
-        tabs.push(React.createElement(ViewDataTabPane, {TabId: "ViewData", Fields: this.state.fields, Criteria: this.state.criteria}));
+        console.log(this.state.criteria);
+        tabs.push(React.createElement(InfoTabPane, {
+                TabId: "Info", 
+                UpdatedTime: this.props.UpdatedTime}
+        ));
+        tabs.push(React.createElement(FieldSelectTabPane, {
+                TabId: "DefineFields", 
+                categories: this.props.categories, 
+                onFieldChange: this.fieldChange, 
+                selectedFields: this.state.fields}
+        ));
+        tabs.push(React.createElement(FilterSelectTabPane, {
+                TabId: "DefineFilters", 
+                categories: this.props.categories, 
+                onCriteriaChange: this.criteriaChange, 
+                onFieldChange: this.criteriaFieldChange, 
+                selectedFields: Object.keys(this.state.criteria), 
+                Criteria: this.state.criteria}
+            )
+        );
+        tabs.push(React.createElement(ViewDataTabPane, {
+                TabId: "ViewData", 
+                Fields: this.state.fields, 
+                Criteria: this.state.criteria}
+        ));
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics"}));
 
         return React.createElement("div", null, 

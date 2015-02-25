@@ -48,7 +48,7 @@ FieldSelectTabPane = React.createClass({displayName: 'FieldSelectTabPane',
 
 FilterSelectTabPane = React.createClass({displayName: 'FilterSelectTabPane',
     render: function() {
-        var content = React.createElement(FieldSelector, {title: "Filters", items: this.props.categories, type: "Criteria", onFieldChange: this.props.onFieldChange, onCriteriaChange: this.props.onCriteriaChange, selectedFields: this.props.selectedFields})
+        var content = React.createElement(FieldSelector, {title: "Filters", items: this.props.categories, type: "Criteria", onFieldChange: this.props.onFieldChange, onCriteriaChange: this.props.onCriteriaChange, selectedFields: this.props.selectedFields, Criteria: this.props.Criteria})
         return React.createElement(TabPane, {content: content, TabId: this.props.TabId})
     }
 });

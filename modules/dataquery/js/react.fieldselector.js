@@ -14,7 +14,7 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
         if(this.props.total === 0) {
             return React.createElement("div", null);
         }
-        for(var i = 1; i < this.props.total / rowsPerPage; i += 1) {
+        for(var i = 1; i <= Math.ceil(this.props.total / rowsPerPage); i += 1) {
             classList = '';
             if(this.props.Active == i) {
                 classList = "active";
@@ -50,7 +50,6 @@ CategoryList = React.createClass({displayName: 'CategoryList',
             selectedCategory: ""
         };
     },
-
     selectCategoryHandler: function(category) {
         var that = this;
         return function(evt) {
@@ -86,26 +85,20 @@ CategoryList = React.createClass({displayName: 'CategoryList',
 });
 
 FieldItem = React.createClass({displayName: 'FieldItem',
-    getInitialState: function() {
-        return {
-            "operator" : '=',
-            "value"    : ''
-        };
-    },
     changeCriteria: function(evt) {
         evt.preventDefault();
         evt.stopPropagation();
+        var op = this.props.Criteria;
         var state = this.state;
         if(evt.target.classList.contains("queryOperator")) {
-            state.operator = evt.target.value;
+            op.operator = evt.target.value;
         }
         if(evt.target.classList.contains("queryValue")) {
-            state.value = evt.target.value;
+            op.value = evt.target.value;
         }
-        this.setState(state);
 
         if(this.props.onCriteriaChange) {
-            this.props.onCriteriaChange(this.props.FieldName, this);
+            this.props.onCriteriaChange(this.props.FieldName, op);
         }
     },
     preventDefault: function(evt) {
@@ -127,7 +120,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
 
         if(this.props.type === "Criteria" && this.props.selected) {
             criteria = React.createElement("span", null, 
-                    React.createElement("select", {className: "queryOperator", onClick: this.changeCriteria, defaultValue: this.state.operator}, 
+                    React.createElement("select", {className: "queryOperator", onClick: this.changeCriteria, defaultValue: this.props.Criteria.operator}, 
                         React.createElement("option", {value: "="}, " = "), 
                         React.createElement("option", {value: "!="}, "!="), 
                         React.createElement("option", {value: "<="}, "<="), 
@@ -135,14 +128,14 @@ FieldItem = React.createClass({displayName: 'FieldItem',
                         React.createElement("option", {value: "startsWith"}, "startsWith"), 
                         React.createElement("option", {value: "contains"}, "contains")
                     ), 
-                    React.createElement("input", {className: "queryValue", onClick: this.preventDefault, onChange: this.changeCriteria, type: "text", defaultValue: this.state.value})
+                    React.createElement("input", {className: "queryValue", onClick: this.preventDefault, onChange: this.changeCriteria, type: "text", defaultValue: this.props.Criteria.value})
                 );
             return (
                 React.createElement("div", {className: classList, onClick: this.props.onClick}, 
                     React.createElement("h4", {className: "list-group-item-heading col-sm-12 col-md-2"}, displayName), 
                     React.createElement("span", {className: "col-sm-10 col-md-7"}, this.props.Description), 
                     React.createElement("span", {className: "col-sm-2 col-md-3"}, criteria)
-            )
+                )
             );
         }
 
@@ -154,6 +147,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
         );
     }
 });
+
 FieldList = React.createClass({displayName: 'FieldList',
     getInitialState: function() {
         return {
@@ -202,11 +196,17 @@ FieldList = React.createClass({displayName: 'FieldList',
             if(this.props.selected && this.props.selected.indexOf(fieldName) > -1) {
                 selected=true;
             }
+
+            var crit = undefined;
+            if(this.props.Criteria && this.props.Criteria[fieldName]) {
+                crit = this.props.Criteria[fieldName];
+            }
             fields.push(React.createElement(FieldItem, {FieldName: fieldName, 
                 Category: this.props.category, 
                 Description: desc, 
                 type: this.props.type, 
                 onClick: this.onFieldClick(fieldName), 
+                Criteria: crit, 
                 onCriteriaChange: this.props.onCriteriaChange, 
                 selected: selected, 
                 downloadable: isFile}
@@ -283,11 +283,15 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
                         React.createElement("label", null, "Search:"), React.createElement("input", {type: "text", onChange: this.filterChange})
                     )
                 ), 
-                React.createElement(CategoryList, {items: this.props.items, onCategorySelect: this.onCategorySelect}), 
+                React.createElement(CategoryList, {
+                    items: this.props.items, 
+                    onCategorySelect: this.onCategorySelect}
+                ), 
                 React.createElement(FieldList, {
                     items: this.state.categoryFields[this.state.selectedCategory], 
                     type: this.props.type, 
                     category: this.state.selectedCategory, 
+                    Criteria: this.props.Criteria, 
                     onFieldSelect: this.onFieldSelect, 
                     onCriteriaChange: this.props.onCriteriaChange, 
                     FieldsPerPage: "15", 
@@ -298,5 +302,3 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
         );
     }
 });
-
-RFieldSelector = React.createFactory(FieldSelector);
