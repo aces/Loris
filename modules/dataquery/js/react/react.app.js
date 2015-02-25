@@ -1,3 +1,30 @@
+SavedQueriesList = React.createClass({
+    render: function() {
+        var userSaved = [];
+        var globalSaved = [];
+
+        for(var i = 0; i <= this.props.userQueries.length; i += 1) {
+            userSaved.push(<li><a href="#">{this.props.userQueries[i]}</a></li>);
+        }
+        for(var i = 0; i <= this.props.globalQueries.length; i += 1) {
+            globalSaved.push(<li><a href="#">{this.props.globalQueries[i]}</a></li>);
+        }
+        return (
+             <ul className="nav nav-tabs navbar-right">
+                 <li className="dropdown">
+                     <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Load Saved Query <span className="caret"></span></a>
+                     <ul className="dropdown-menu" role="menu">
+                        <li role="presentation" className="dropdown-header">User Saved Queries</li>
+                        {userSaved}
+                        <li role="presentation" className="dropdown-header">Shared Saved Queries</li>
+                        {globalSaved}
+                     </ul>
+                 </li>
+                 <li role="presentation"><a href="#">Managed Saved Queries</a></li>
+             </ul>
+            );
+    }
+});
 DataQueryApp = React.createClass({
     getInitialState: function() {
         return {
@@ -86,17 +113,7 @@ DataQueryApp = React.createClass({
                         <li role="presentation"><a href="#ViewData" data-toggle="tab">View Data</a></li>
                         <li role="presentation"><a href="#Statistics" data-toggle="tab">Statistical Analysis</a></li>
                     </ul>
-                    <ul className="nav nav-tabs navbar-right">
-                        <li className="dropdown">
-                            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Load Saved Query <span className="caret"></span></a>
-                            <ul className="dropdown-menu" role="menu">
-                                <li><a href="#">Query 1</a></li>
-                                <li><a href="#">Query 2</a></li>
-                                <li><a href="#">Query 3</a></li>
-                            </ul>
-                        </li>
-                        <li role="presentation"><a href="#">Managed Saved Queries</a></li>
-                    </ul>
+                    <SavedQueriesList userQueries={this.props.SavedQueries.User} globalQueries={this.props.SavedQueries.Shared} />
                 </nav>
                 <div className="tab-content">
                     {tabs}
