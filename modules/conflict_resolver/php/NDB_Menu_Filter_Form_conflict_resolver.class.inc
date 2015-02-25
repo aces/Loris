@@ -39,7 +39,6 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
         }
         return ($user->hasPermission('conflict_resolver'));
     }
-
     function _process($values)
     {
         if (!is_array($values) || count($values) ==0) {
@@ -105,7 +104,7 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
                     $DB->update($row['TableName'], $setArray, $whereArray1);
                     $DB->update($row['TableName'], $setArray, $whereArray2);
 
-                    // delete from conflics_unresolved
+                    // delete from conflicts_unresolved
                     $DB->run("DELETE FROM conflicts_unresolved WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = '$hash'");
 
                     $TableName = $row['TableName'];

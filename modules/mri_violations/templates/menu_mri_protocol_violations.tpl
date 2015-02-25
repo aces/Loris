@@ -134,6 +134,6 @@
             </tr>
         {sectionelse}
             <tr><td colspan="19">No data found</td></tr>
-        {/section}
+        {/section}        
     </tbody>
 </table>

@@ -104,9 +104,18 @@
                         </tr>
                     {sectionelse}
                         <tr><td colspan="8">Nothing found</td></tr>
-                    {/section}
+                    {/section}                    
                 </tbody>
             </table>
+            <tr>
+                <td nowrap="nowrap" colspan="6" id="message-area">
+                    
+                </td>
+                <td nowrap="nowrap">
+                    <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
+                    <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+                </td>
+            </tr>
         </div>
         <a class="left carousel-control"  id="scrollLeft" href="#results">
             <span class="glyphicon glyphicon-chevron-left"></span>
