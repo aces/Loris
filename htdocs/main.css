@@ -670,8 +670,8 @@ tr.directentry {
     background: #BDDDBD;
 }
 .help-content {
-    max-height: 96%;
-    width: 600px;
+    max-height: 94%;
+    width: 30%;
     height: auto;
     position: fixed;
     top: 50px;
