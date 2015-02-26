@@ -2,19 +2,19 @@
 {literal}
 <script type="text/javascript">
     $(document).ready(function(){
-        var colm_static = false;
-        $(".table-scroll").scroll(function(){
-            if(colm_static === true){
-                if($(".colm-site").offset().left >= 30){
-                    $(".colm-pscid").removeClass("static-col colm-static");
-                    colm_static = false;
-                }
-            } else if($(".colm-pscid").offset().left <= 35){
-                $(".colm-pscid").addClass("static-col colm-static");
-                colm_static = true;
-            }
-        });
-        $("#cand").DynamicTable(4);
+        // var colm_static = false;
+        // $(".table-scroll").scroll(function(){
+        //     if(colm_static === true){
+        //         if($(".colm-site").offset().left >= 30){
+        //             $(".colm-pscid").removeClass("static-col colm-static");
+        //             colm_static = false;
+        //         }
+        //     } else if($(".colm-pscid").offset().left <= 35){
+        //         $(".colm-pscid").addClass("static-col colm-static");
+        //         colm_static = true;
+        //     }
+        // });
+        $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
     });
 </script>
 {/literal}
@@ -232,7 +232,11 @@
          <th id="number">No.</th>
             <!-- print out column headings - quick & dirty hack -->
             {section name=header loop=$headers}
+                {if $headers[header].displayName == 'PSCID'}
+                    <th id="pscid">
+                {else}
                     <th>
+                {/if}
                 <a href="main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
             {/section}
         </tr>
