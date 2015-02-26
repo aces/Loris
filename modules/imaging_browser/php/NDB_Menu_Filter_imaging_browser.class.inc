@@ -112,7 +112,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID) 
+            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+            JOIN mri_scan_type ON (f.AcquisitionProtocolID=mri_scan_type.ID)
             WHERE 
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
@@ -162,7 +163,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'c.ProjectID',
             'c.CenterID',
             's.MRIQCStatus',
-            'pending'
+            'pending',
+            'f.AcquisitionProtocolID'
         );
 
         $this->formToFilter = array(
@@ -172,9 +174,10 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'ProjectID' => 'c.ProjectID',
             'SiteID' => 'c.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
-            'Pending' => 'pending'
+            'Pending' => 'pending',
+            'Scan_type'=>'f.AcquisitionProtocolID'
         );
-        $this->EqualityFilters = array();
+        $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword    = array();
     }
 
@@ -232,7 +235,20 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'Pending',
             'Pending and New',
             array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pending or New')
-        ); 
+        );
+
+        //query to get scan types that exist for the project
+        $types_q = $DB->pselect(
+                "SELECT ID, Scan_type FROM mri_scan_type mri
+                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)", array()
+            );
+        $scan_types[''] = '';
+            foreach ($types_q as $row) {
+                $type                   = $row['Scan_type'];
+                $scan_types[$row['ID']] = $type;
+        }
+        $this->addSelect('Scan_type', 'Sequence Type', $scan_types);
+
         $outputTypes = $DB->pselect(
             "SELECT DISTINCT OutputType AS outputType 
             FROM files WHERE FileType='mnc' AND OutputType!='native'", array()
@@ -305,7 +321,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
-            if ($field != 'pending') {
+            if ($field != 'pending' && $field !='AcquisitionProtocolID') {
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
                 } elseif (strtolower(substr($field, -8)) == 'centerid'
@@ -319,7 +335,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 } else {
                     $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
                 }
-            } else {
+            } else if ($field == 'pending') {
                 switch ($val) {
                 case "P":
                     $query .= " AND s.MRIQCPending='Y'"; 
@@ -333,6 +349,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                         OR s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
                     break;
                 }
+            } else if ($field == 'AcquisitionProtocolID') {
+                  $query .= " AND $field = :v_$prepared_key";
             }
         }
         return $query;

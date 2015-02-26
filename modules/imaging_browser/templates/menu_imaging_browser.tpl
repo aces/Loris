@@ -81,16 +81,25 @@
                         {$form.Pending.html}
                     </div>
                 </div>
-                <div class="form-group col-sm-4"></div>
-                <div class="form-group col-md-4">
-                    <div class="col-sm-4 col-sm-offset-4">
-                    		<input type="submit" class="btn btn-sm btn-primary col-xs-12" name="filter" value="Show Data">
-                    </div>
-                    <div class="col-sm-4">
-                    		<input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=imaging_browser&reset=true'" />
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.Scan_type.label}
+                   </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.Scan_type.html}
                     </div>
                 </div>
-             </div>
+                <div class="col-sm-2 col-sm-offset-4">
+                     <input type="submit" class="btn btn-sm btn-primary col-xs-12" name="filter" value="Show Data">
+                </div>
+                <div class="col-sm-2">
+                	<input type="button"
+                           name="reset"
+                           value="Clear Form"
+                           class="btn btn-sm btn-primary col-xs-12"
+                           onclick="location.href='main.php?test_name=imaging_browser&reset=true'" />
+                </div>
+               </div><!--closing row -->
         </form>
     </div>
 </div>
