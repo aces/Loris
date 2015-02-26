@@ -89,11 +89,14 @@ class NDB_Factory
     }
 
     /**
-     * Return either a real or mock NDB_Config object.
+     * Return either a real or mock NDB_Config object depending on testing
+     * status of this factory object.
+     *
+     * @param string $configfile Location of XML file to parse config from
      *
      * @return NDB_Config A config singleton
      */
-    function config()
+    function config($configfile = "../project/config.xml")
     {
         if (self::$_config !== null) {
             return self::$_config;
@@ -102,11 +105,11 @@ class NDB_Factory
             Mock::generate("NDB_Config");
             $config = new MockNDB_Config();
         } else {
-            $config = new NDB_Config();
+            $config = NDB_Config::singleton($configfile);
         }
 
         self::$_config = $config;
-        $config->load();
+        $config->load($configfile);
         return $config;
     }
 
@@ -164,7 +167,7 @@ class NDB_Factory
             if ($db_ref !== null) {
                 return $db_ref;
             }
-            self::$_db = new Database();
+            self::$_db = Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');

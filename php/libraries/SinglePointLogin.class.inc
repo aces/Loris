@@ -66,25 +66,36 @@ class SinglePointLogin extends PEAR
         $tpl_data['action']        = $_SERVER['PHP_SELF']
             . '?' . http_build_query($params);
         $tpl_data['error_message'] = $this->_lastError;
-        $study_links = $config->getSetting('Studylinks');// print_r($study_links);
-        foreach (Utility::toArray($study_links['link']) AS $link) {
-            $LinkArgs = '';
-            $BaseURL  = $link['@']['url'];
-            if (isset($link['@']['args'])) {
-                $LinkArgs = $link_args[$link['@']['args']];
+        try {
+            $study_links = $config->getSetting('Studylinks');
+            foreach (Utility::toArray($study_links['link']) AS $link) {
+                $LinkArgs = '';
+                $BaseURL  = $link['@']['url'];
+                if (isset($link['@']['args'])) {
+                    $LinkArgs = $link_args[$link['@']['args']];
+                }
+                $LinkLabel  = $link['#'];
+                $WindowName = md5($link['@']['url']);
+                $tpl_data['studylinks'][] =array(
+                                            'url'        => $BaseURL . $LinkArgs,
+                                            'label'      => $LinkLabel,
+                                            'windowName' => $WindowName,
+                                           );
             }
-            $LinkLabel  = $link['#'];
-            $WindowName = md5($link['@']['url']);
-            $tpl_data['studylinks'][] =array(
-                                        'url'        => $BaseURL . $LinkArgs,
-                                        'label'      => $LinkLabel,
-                                        'windowName' => $WindowName,
-                                       );
+        } catch(ConfigurationException $e) {
+            // If StudyLinks aren't defined, it shouldn't be fatal.
         }
-        $study_title = $config->getSetting('title');
-        $study_logo  = $config->getSetting('studylogo');
+
         $tpl_data['study_title'] = $study_title;
-        $tpl_data['study_logo']  = $study_logo;
+        try {
+            $tpl_data['study_logo'] = $study_logo;
+        } catch(ConfigurationException $e) {
+            $tpl_data['study_logo'] = '';
+        }
+
+        // If there's no study, we have a bigger problem
+        $study_title = $config->getSetting('title');
+
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
@@ -111,7 +122,11 @@ class SinglePointLogin extends PEAR
         $tpl_data['title'] = $config->getSetting('title');
         $tpl_data['css']   = $config->getSetting('css');
         $study_title       = $config->getSetting('title');
-        $study_logo        = $config->getSetting('studylogo');
+        try {
+            $study_logo = $config->getSetting('studylogo');
+        } catch(ConfigurationException $e) {
+            $study_logo = '';
+        }
 
         $tpl_data['study_title'] = $study_title;
         $tpl_data['study_logo']  = $study_logo;
@@ -146,7 +161,6 @@ class SinglePointLogin extends PEAR
      * Saves the new password if last was expired
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function save()
@@ -199,53 +213,6 @@ class SinglePointLogin extends PEAR
 
         // update the user
         $success = $user->update($set);
-
-        // get config options relating to proftpd
-        $config      =& NDB_Config::singleton();
-        $ftpSettings = $config->getSetting("proftpd");
-
-        // if proftpd stuff is enabled:
-        if ($ftpSettings['enabled'] == 'true') {
-            // connect to proftpd database
-            $ftpdb   = new Database();
-            $success = $ftpdb->connect(
-                $ftpSettings['database'],
-                $ftpSettings['username'],
-                $ftpSettings['password'],
-                $ftpSettings['host'],
-                false
-            );
-
-            // check users table to see if we have a valid user
-            $query = "SELECT COUNT(*) AS User_count
-                          FROM ftpusers
-                      WHERE userid = :UID";
-            $row   = $ftpdb->pselectRow($query, array('UID' => $_POST['username']));
-            // update password
-            if ($row['User_count'] == 1) {
-
-                $setArray['passwd'] = crypt($_POST['password']);
-
-                $success = $ftpdb->update(
-                    'ftpusers',
-                    $setArray,
-                    array('userid' => $_POST['username'])
-                );
-            } else {
-                // if user does not exist, insert user data
-                $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
-
-                $maxUID = $ftpdb->pselectOne($query, array());
-
-                $setArray['userid']  = $_POST['username'];
-                $setArray['passwd']  = crypt($_POST['password']);
-                $setArray['uid']     = $maxUID + 1;
-                $setArray['homedir'] = "/";
-
-                // insert into proftpd
-                $success = $ftpdb->insert("ftpusers", $setArray);
-            }
-        }
         return true;
     }
 
@@ -253,7 +220,6 @@ class SinglePointLogin extends PEAR
      * Checks whether a given username and password are valid
      *
      * @return bool
-     * @throws PEAR_Error
      * @access public
      */
     function authenticate()
@@ -313,15 +279,60 @@ class SinglePointLogin extends PEAR
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
-                     Password_md5, Password_expiry, Active, Pending_approval
-                FROM users
-              WHERE UserID = :username
+                        Password_md5,
+                        Password_expiry,
+                        Active,
+                        Pending_approval,
+                        Password_hash
+                    FROM users
+                  WHERE UserID = :username
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $_POST['username']));
 
         if ($row['User_count'] == 1) {
             // validate the user
-            if (User::MD5Unsalt($_POST['password'], $row['Password_md5'])) {
+
+            // Check if the PHP 5.5 password hashing API is available.
+            $php55 = false;
+            if (function_exists("password_verify")) {
+                $php55 = true;
+            }
+
+            // If either the password hashing isn't available, or the
+            // Password_hash column is empty, we check using Loris's old
+            // MD5Unsalt method that the passwords are equal.
+            //
+            // If there is a saved Password_hash, then we verify using the
+            // PHP 5.5+ password hashing API.
+            $oldhash = $row['Password_hash'];
+            if (((!$php55 || empty($oldhash))
+                && User::MD5Unsalt($_POST['password'], $row['Password_md5']))
+                || ($php55 && password_verify($_POST['password'], $oldhash))
+            ) {
+                // If the PHP password hashing is available, check if a rehash
+                // is required and if so, rehash it.
+                //
+                // (If Password_hash is null, skip the password_needs_rehash
+                // check, because we know that we have access to the password
+                // hashing API, and we know it's never been hashed using
+                // password_hash.
+                if ($php55) {
+                    if (empty($oldhash)
+                        || password_needs_rehash($oldhash, PASSWORD_DEFAULT)
+                    ) {
+                        // Hash the password using PHP defaults.
+                        $hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                        // Save the new hash and wipe out the old, insecure MD5 sum.
+                        $DB->update(
+                            "users",
+                            array(
+                             'Password_hash' => $hash,
+                             'Password_MD5'  => null,
+                            ),
+                            array('UserID' => $_POST['username'])
+                        );
+                    }
+                }
                 // check that the user is active
                 if ($row['Active'] == 'N') {
                     $this->_lastError = "Your account has been deactivated."

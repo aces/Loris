@@ -146,7 +146,6 @@ class Imaging_Session_ControlPanel
      *
      * @return string
      * @access public
-     * @throws PEAR_Error
      */
     function display()
     {

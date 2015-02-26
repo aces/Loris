@@ -496,7 +496,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addScoreColumn('pscid', 'PSCID');
         $this->tpl_data['pscid'] = $pscid;
 
-        $options = $this->getParticipantStatusOptions();
+        $options = self::getParticipantStatusOptions();
         $options = array('') + $options;
         $this->tpl_data['pstatus_options'] = $options;
         $this->tpl_data['pstat'] = $_REQUEST['participant_status'];
@@ -595,9 +595,9 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->tpl_data['pscid'] = $pscid;
         $parentID = $DB->pselectOne('SELECT participant_status FROM participant_status Where CandID = :candid',
                                      array('candid'=>$this->identifier));
-        $sub_options = $this->getParticipantStatusSubOptions($parentID);
+        $sub_options = self::getParticipantStatusSubOptions($parentID);
         $sub_options = array('') + $sub_options;
-        $options = $this->getParticipantStatusOptions();
+        $options = self::getParticipantStatusOptions();
       //  $options = array('') + $options;
         $this->tpl_data['pstatus_options'] = $options;
         $this->tpl_data['pstatus_suboptions'] = $sub_options;
@@ -806,7 +806,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
     { 
         $config =& NDB_Config::singleton();
         $errors=array();
-        $options = $this->getParticipantStatusOptionsVerbose();
+        $options = self::getParticipantStatusOptionsVerbose();
 
         $DB =& Database::singleton();
         if($fields['ProbandDoB']['M'] != $fields['ProbandDoB2']['M'] ||
@@ -901,7 +901,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    function getParticipantStatusOptions()
+    static function getParticipantStatusOptions()
     {
         $DB =& Database::singleton();
         $options = $DB->pselect(
@@ -923,7 +923,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
      *               the entire row from participant_status_options instead of
      *               only the description
      */
-    function getParticipantStatusOptionsVerbose()
+    static function getParticipantStatusOptionsVerbose()
     {
         $DB =& Database::singleton();
         $options = $DB->pselect(
@@ -947,7 +947,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    function getParticipantStatusSubOptions($parentID)
+    static function getParticipantStatusSubOptions($parentID)
     {
         $DB =& Database::singleton();
         $options = $DB->pselect(

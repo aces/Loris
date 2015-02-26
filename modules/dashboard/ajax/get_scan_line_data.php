@@ -32,9 +32,9 @@ $scanStartDate = $DB->pselectOne(
 $scanEndDate = $DB->pselectOne(
     "SELECT max(AcquisitionDate) FROM mri_acquisition_dates", array()
 );
-$scanData['labels'] 
+$scanData['labels']
     = createChartLabels($scanStartDate, $scanEndDate);
-$list_of_sites =& Utility::getSiteList();
+$list_of_sites = Utility::getSiteList();
 foreach ($list_of_sites as $dataset) {
     $scanData['datasets'][] = array(
         "name" => $dataset,

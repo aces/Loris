@@ -10,28 +10,10 @@ before_install:
 install:
     # Install composer modules
     - composer install --dev
-    # List of PEAR modules installed by install script
-    - pear config-get php_dir
-    # Currently commented out because all we do is run
-    # PHPCS and php -l on the code from Travis.
-    #- pear upgrade
-    - pear install Benchmark
-    #- pear install Config
-    #- pear install File_Archive
-    #- pear install HTML_Common
-    - pear install HTML_QuickForm
-    - pear config-set preferred_state beta
-    #- pear install HTML_QuickForm2
-    #- pear install Mail
-    #- pear install Mail_Mime
-    #- pear install Net_SMTP
-    #- pear install OLE
-    - pear install Pager
-    #- pear install PHPDocumentor
-    #- pear install XML_Parser
-
-    # Travis-CI requires this.
     - phpenv rehash
+
+    # Install jslint
+    - npm install -g jslint
 
       # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
@@ -82,15 +64,24 @@ script:
         php -l $i || exit $?;
       done
     # Run unit tests to make sure functions still do what they should.
-    - phpunit test/unittests/
+    - vendor/bin/phpunit test/unittests/
 
     # Run integration tests to make sure everything didn't just
     # break
-    - phpunit test/integrationtests/
+    - vendor/bin/phpunit test/integrationtests/
 
     # Run PHPCS on the entire libraries directory.
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
+
+    # Run PHPCS on some scripts
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/data_dictionary_builder.php
 
     # Run PHPCS on specific modules
     - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
     - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/genomic_browser
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
+
+    # Run JSLINT on specific scripts
+    - jslint htdocs/js/jquery.dynamictable.js 

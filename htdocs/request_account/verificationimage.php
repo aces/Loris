@@ -1,6 +1,6 @@
 <?php
 /**
- * This file generates verification image with random numbers for 
+ * This file generates verification image with random numbers for
  * Request Account form
  *
  * PHP Version 5
@@ -20,7 +20,7 @@ $height = 24;
 
 $my_image = imagecreatetruecolor($width, $height)
             or die('Cannot Initialize new GD image stream');
-            
+
 imagefill($my_image, 0, 0, 0xFFFFFF);
 
 // add noise

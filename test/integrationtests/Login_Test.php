@@ -1,59 +1,66 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-class Login_Test extends PHPUnit_Extensions_Selenium2TestCase
+class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    protected $webDriver;
+
+    public function setUp()
     {
-        $this->setBrowser('firefox');
-        $this->setBrowserUrl('http://localhost/');
+       $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+       $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
+
+       $this->webDriver->get('http://localhost/main.php');
+
+       print "Page source: " . $this->webDriver->getPageSource();
+
     }
 
-    public function testLoginFailure()
+    function testLoginFailure()
     {
-        //print_r($this->getAvailableDrivers());
-        $this->url('/main.php');
-        //assert username element exists and doesn't have any
-        //data prepopulated.
-        $username = $this->byName("username");
-        $this->assertEquals('', $username->value());
-        //assert password element exists and doesn't have any
-        //data prepopulated.
-        $password = $this->byName("password");
-        $this->assertEquals('', $password->value());
 
-        //ensure a login button exists
-        $login = $this->byName("login");
-        $this->assertEquals('submit', $login->attribute("type"));
-        $this->assertEquals('login', $login->value());
+       $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
+       $this->assertEquals('', $username->getAttribute("value"));
 
-        // Make up a fake username and password, click it, and make
-        // sure the page has an "Incorrect username or password" message
-        // somewhere on it.
-        $username->value("admin");
-        $this->assertEquals('admin', $username->value());
-        $password->value("IJUSTMADETHISUP");
-        $login->click();
+       $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
+       $this->assertEquals('', $password->getAttribute("value"));
 
-        $this->assertContains("Incorrect username or password", $this->byCssSelector("body")->text());
+
+       $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
+       $this->assertEquals('submit', $login->getAttribute("type"));
+       $this->assertEquals('login', $login->getAttribute("value"));
+
+       $username->sendKeys("admin");
+       $password->sendKeys("IJUSTMADETHISUP");
+
+       $login->click();
+
+       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+       $this->assertContains("Incorrect username or password", $bodyText);
     }
 
-    public function testLoginSuccess()
+    function testLoginSuccess()
     {
-        $this->url('/main.php');
-        $username = $this->byName("username");
-        $password = $this->byName("password");
+       $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
+       $this->assertEquals('', $username->getAttribute("value"));
 
-        $username->value("admin");
-        $password->value("testpass");
+       $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
+       $this->assertEquals('', $password->getAttribute("value"));
 
-        $login = $this->byName("login");
-        $this->assertEquals('submit', $login->attribute("type"));
-        $this->assertEquals('login', $login->value());
 
-        $login->click();
+       $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
+       $this->assertEquals('submit', $login->getAttribute("type"));
+       $this->assertEquals('login', $login->getAttribute("value"));
 
-        $this->assertContains("Welcome", $this->byCssSelector("body")->text());
+       $username->sendKeys("admin");
+       $password->sendKeys("testpass");
+
+       $login->click();
+
+       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+       $this->assertContains("Welcome", $bodyText);
+    }
+
+    public function tearDown() {
+        $this->webDriver->quit();
     }
 }
 ?>

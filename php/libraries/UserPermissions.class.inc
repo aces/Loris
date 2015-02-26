@@ -69,7 +69,6 @@ class UserPermissions
      * Loads the users's permissions
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function setPermissions()
@@ -78,8 +77,9 @@ class UserPermissions
         $DB =& Database::singleton();
 
         // get all the permissions for this user
-        $query = "SELECT code FROM permissions, user_perm_rel
-            WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
+        $query = "SELECT p.code, pr.userID FROM permissions p
+            LEFT JOIN user_perm_rel pr
+            ON (p.permID=pr.permID AND pr.userID=:UID)";
 
         $results = $DB->pselect($query, array('UID' => $this->userID));
 
@@ -88,7 +88,13 @@ class UserPermissions
 
         // fill the array
         foreach ($results AS $row) {
-            $this->permissions[$row['code']] = true;
+            if (!empty($row['userID'])
+                && $row['userID'] === $this->userID
+            ) {
+                $this->permissions[$row['code']] = true;
+            } else {
+                $this->permissions[$row['code']] = false;
+            }
         }
 
         return true;
@@ -104,7 +110,10 @@ class UserPermissions
      */
     function hasPermission($code)
     {
-        if (isset($this->permissions[$code]) && $this->permissions[$code] === true) {
+        if (!isset($this->permissions[$code])) {
+            throw new ConfigurationException("Invalid permission code $code");
+        }
+        if ($this->permissions[$code] === true) {
             return true;
         }
 
@@ -202,7 +211,6 @@ class UserPermissions
      * Returns an array of the user's permission IDs
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function getPermissionIDs()
@@ -225,7 +233,6 @@ class UserPermissions
      * Returns an array with all permissions information for the user
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function getPermissionsVerbose()

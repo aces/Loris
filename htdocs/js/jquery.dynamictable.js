@@ -116,7 +116,6 @@
         }
         return colm_static;
     };
-
     $.fn.DynamicTable = function (options) {
         this.filter("table").each(function () {
             var leftLink,

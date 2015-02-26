@@ -58,10 +58,34 @@ class NDB_Config
      *
      * @return NDB_Config object
      */
-    static function &singleton($configFile = "../project/config.xml")
+    static function &singleton($configFile = null)
     {
         static $config = null;
         if (is_null($config)) {
+            // If calling singleton without any parameter, first check
+            // for a project/config.xml, then check for the config
+            // file in a standard unix filesystem location.
+            // /etc/loris/config.xml
+            if ($configFile === null) {
+                // Can't directly check !empty because of a bug
+                // in PHP < 5.5, need to assign to a variable first
+                $env = getenv('LORIS_CONFIG');
+                if (!empty($env)) {
+                    $configFile = $env;
+                } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
+                    // "Classic" Loris location of project directory
+                    // parallel to php directory
+                    $configFile = __DIR__ . "/../../project/config.xml";
+                } else if (file_exists("/etc/loris/config.xml")) {
+                    // Standard Unix filesystem layout
+                    $configFile = "/etc/loris/config.xml";
+                } else if (file_exists("/usr/local/etc/loris/config.xml")) {
+                    // Standard Unix filesystem layout, option 2
+                    $configFile = "/usr/local/etc/loris/config.xml";
+                }
+            }
+
+            // Load the file
             $config  = new NDB_Config();
             $success = $config->load($configFile);
         }
@@ -79,7 +103,14 @@ class NDB_Config
     function load($configFile = "../project/config.xml")
     {
         // load the configuration data into a global variable $config
-        $newroot         = simplexml_load_file($configFile);
+        $newroot = simplexml_load_file($configFile);
+
+        if ($newroot === false || $newroot === null) {
+            throw new Exception(
+                "Could not load Loris config file $configFile"
+            );
+        }
+
         $this->_settings = NDB_Config::convertToArray($newroot);
     }
 
@@ -232,7 +263,7 @@ class NDB_Config
         $db = Database::singleton();
         if ($db->isConnected() !== true) {
             // no database connection, fall back on config.xml
-            throw new Exception(
+            throw new DatabaseException(
                 "No connection to database while trying to get setting $name"
             );
         }
@@ -248,6 +279,12 @@ class NDB_Config
                 WHERE cs.Name=:nm",
                 array("nm" => $name)
             );
+
+            if (count($configSetting) === 0) {
+                throw new ConfigurationException(
+                    "Config setting $name does not exist in database"
+                );
+            }
         } else {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
@@ -335,6 +372,8 @@ class NDB_Config
                 return $value[$name];
             }
         }
+        // Nothing was found, this is an error.
+        throw new ConfigurationException("No setting $name in config.xml");
     }
 
     /**
@@ -347,16 +386,21 @@ class NDB_Config
     function getSetting($name)
     {
         try {
-            $DBValue = $this->getSettingFromDB($name);
+            $XMLValue = $this->getSettingFromXML($name);
 
-            if ($DBValue !== null) {
-                return $DBValue;
+            if ($XMLValue !== null) {
+                return $XMLValue;
             }
-        } catch(Exception $e) {
+        } catch(ConfigurationException $e) {
+            // There was no config in the database with this
+            // name. It may exist in the XML, so we handle this
+            // silently.
         }
 
-        // nothing in the database, so get the value from config.xml
-        return $this->getSettingFromXML($name);
+        // nothing in the config file, so get the value from the DB
+        // This will throw a ConfigurationException if it does not
+        // exist.
+        return $this->getSettingFromDB($name);
     }
 
     /**

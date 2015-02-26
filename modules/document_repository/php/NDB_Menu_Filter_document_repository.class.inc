@@ -40,7 +40,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             return PEAR::raiseError("User error: " . $user->getMessage());
         }
 
-        return $user->hasPermission('file_upload');
+        return $user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete');
     
     }
 
@@ -233,7 +233,6 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
      * Sets the template data for the list of candidates, users, etc.
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _setDataTable()

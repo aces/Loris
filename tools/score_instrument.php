@@ -52,6 +52,7 @@ if (!empty($argv[3])) $candID = $argv[3];
 if (!empty($argv[4])) $sessionID = $argv[4];
 
 
+require_once __DIR__ . "/../vendor/autoload.php";
 /**
  * inititalize
  */

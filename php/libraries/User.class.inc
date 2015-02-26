@@ -42,7 +42,6 @@ class User extends UserPermissions
      * @param string $username Identifies the user
      *
      * @return User
-     * @throws PEAR_Error
      * @access public
      */
     static function &factory($username)
@@ -79,7 +78,6 @@ class User extends UserPermissions
      * @param string $username Identifies the user
      *
      * @return User
-     * @throws PEAR_Error
      * @access public
      * @static
      */
@@ -99,7 +97,6 @@ class User extends UserPermissions
      * @param array $set The array formatted for use in a Database call
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      * @static
      */
@@ -120,7 +117,6 @@ class User extends UserPermissions
      * @param array $set The array formatted for use in a Database call
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function update($set)
@@ -395,7 +391,7 @@ class User extends UserPermissions
             'GET',
             $auth
         );
-
+        $userobj  = json_decode($userjson, true);
         if (isset($userobj['error']) && $userobj['error'] == 'not_found') {
             $userobj = array(
                         '_id'   => 'org.couchdb.user:' . $username,
