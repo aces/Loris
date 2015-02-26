@@ -31,35 +31,34 @@ $tabInformation = $DB->pselectRow(
     )
 );
 
+$instrument = $DB->pselectOne(
+    "SELECT Test_name FROM test_names WHERE ID=:IID", array('IID' => $instrumentID)
+);
+
 // Create the html based on the tab type
 if ($tabInformation['TrainingType'] == 'text') {
     $tabHTML = createTabHTML(
-        false,
-        'Please read the following:',
+        'text',
         $tabInformation['Title'],
-        $tabInformation['Content'],
-        'Agree',
-        'I have completed reading this section of the training module.'
+        $tabInformation['Content']
+    );
+} else if ($tabInformation['TrainingType'] == 'pdf') {
+    $tabHTML = createTabHTML(
+        'pdf',
+        $tabInformation['Title'],
+        $instrument . '.pdf'
     );
 } else if ($tabInformation['TrainingType'] == 'video') {
     $tabHTML = createTabHTML(
-        false,
-        'Please watch the following:',
+        'video',
         $tabInformation['Title'],
-        $tabInformation['Content'],
-        'Agree',
-        'I have completed watching this section of the training module.'
+        $instrument . '.mp4'
     );
 } else if ($tabInformation['TrainingType'] == 'quiz') {
     $tabHTML = createTabHTML(
-        true,
-        'Please complete the quiz below in order to receive certification:',
+        'quiz',
         $tabInformation['Title'],
-        createQuiz($instrumentID),
-        'Submit',
-        'Submit your answers to the quiz. 
-         If any answers are incorrect, 
-         you will be prompted to repeat the certification training.'
+        getQuizData($instrumentID)
     );
 }
 
@@ -68,39 +67,15 @@ print $tabHTML;
 exit();
 
 /**
- * Creates the HTML for a radio button for one multiple choice answer.
- *
- * @param string $questionNumber The question number in the training quiz
- * @param string $answerNumber   The order number of the answer
- * @param string $answer         The text to be displayed as the answer
- *
- * @return string
- */
-function createQuizRadio($questionNumber, $answerNumber, $answer)
-{
-    return '<div class="radio"><label><input type="radio" name="'
-           . $questionNumber
-           . '" id="q'
-           . $questionNumber
-           . '-'
-           . $answerNumber
-           . '" value="'
-           . $answerNumber
-           . '">'
-           . $answer
-           . '</label></div>';
-}
-
-/**
- * Creates the HTML for a multiple choice quiz.
+ * Gets the training quiz informations from the database
  *
  * @param string $instrumentID The ID of the instrument
  *
  * @return string
  */
-function createQuiz($instrumentID)
+function getQuizData($instrumentID)
 {
-    $DB =& Database::singleton();
+    $DB = Database::singleton();
     // Get the questions
     $questions = $DB->pselect(
         "SELECT Question, OrderNumber, ID 
@@ -126,63 +101,26 @@ function createQuiz($instrumentID)
         );
     }
 
-    // Create the quiz html
-    $quizHTML = '';
-    foreach ($questions as $question) {
-        $quizHTML .= '<p><b>'
-                  . $question['OrderNumber']
-                  . '. '
-                  . $question['Question']
-                  . '</b></p>';
-        foreach ($question['answers'] as $answer) {
-            $quizHTML .= createQuizRadio(
-                $question['OrderNumber'],
-                $answer['OrderNumber'],
-                $answer['Answer']
-            );
-        }
-    }
-    return $quizHTML;
+    return $questions;
 }
 
 /**
  * Creates the HTML for a new tab and its content.
  *
- * @param boolean $quiz         Tab contains a quiz
- * @param string  $instructions Instructions to be displayed at the top of the page
+ * @param boolean $contentType  Tab content type
  * @param string  $title        Title of the tab
- * @param string  $tabContent   Content to be displayed on the tab
- * @param string  $button       Message on the button at the bottom of the tab
- * @param string  $message      Message beside the button
+ * @param string  $tabVariables Variables used to create a tab for a specific contentType
  *
  * @return string
  */
-function createTabHTML($quiz, $instructions, $title, $tabContent, $button, $message)
+function createTabHTML($contentType, $title, $tabVariables)
 {
-    $instructionPanel = '<div class="panel panel-default training-instructions">'
-                      . '<div class="panel-body">'
-                      . $instructions
-                      . '</div></div>';
-    $mainContent      = '<div class="training-content"><h3>'
-                      . $title
-                      . '</h3>'
-                      . ($quiz == true ? '<form id="quiz">' : '')
-                      . $tabContent
-                      . ($quiz == true ? '</form>' : '')
-                      . '</div>';
-    $buttonPanel      = '<div class="well well-sm training-complete"><button '
-                      . ($quiz == true ? 'id="quizSubmit" form="quiz"' : '')
-                      . 'class="btn btn-default '
-                      . ($quiz == false ? 'btn-agree ' : '')
-                      . 'btn-success" type="'
-                      . ($quiz == false ? 'button' : 'submit')
-                      . '">'
-                      . $button
-                      . '</button> '
-                      . $message
-                      . '</div>';
-
-    $html = $instructionPanel . $mainContent . $buttonPanel;
+    $tpl_data['contentType'] = $contentType;
+    $tpl_data['title'] = $title;
+    $tpl_data['tabVariables'] = $tabVariables;
+    $smarty = new Smarty_NeuroDB('examiner');
+    $smarty->assign($tpl_data);
+    $html = $smarty->fetch('training.tpl');
 
     return $html;
 }
