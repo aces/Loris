@@ -21,9 +21,11 @@
                 scrollLeft: $(wrapper).scrollLeft()
             });
         }).bind("mouseover", function (event) {
+            event.preventDefault();
             scrolling = true;
             scrollContent("right", wrapper);
         }).bind("mouseout", function (event) {
+            event.preventDefault();
             scrolling = false;
         });
         $(leftLink).bind("click", function (event) {
@@ -35,9 +37,11 @@
                 scrollLeft: $(wrapper).scrollLeft()
             });
         }).bind("mouseover", function (event) {
+            event.preventDefault();
             scrolling = true;
             scrollContent("left", wrapper);
         }).bind("mouseout", function (event) {
+            event.preventDefault();
             scrolling = false;
         });
     }, checkOverflow = function (wrapper, rightLink, leftLink, headCol) {
@@ -72,21 +76,58 @@
         }
 
 
+    }, wrapTable = function (table) {
+        $(table).wrap("<div class=\"row\"></div>");
+
+        // Add wrapper code necessary for bootstrap carousel
+        $(table).wrap("<div class=\"carousel slide col-xs-12\"></div>");
+
+        // Add wrapper necessary for dynamictable code
+        $(table).wrap("<div class=\"dynamicContentWrapper table-scroll\" style=\"overflow-x: auto\"></div>");
+
+        // Add links for carousel
+        $(table).after('<a class="left carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
+    }, freezeColm = function (tableID, colm_static) {
+        var statColPos = $("." + tableID).offset().left,
+            statColWid = $("." + tableID).outerWidth(),
+            leftScrollPos = $(".left").offset().left,
+            leftScrollWid = $(".left").outerWidth(),
+            nextColPos = $("." + tableID + "Next").offset().left;
+
+        if (colm_static === true) {
+            if (nextColPos >= statColPos + statColWid) {
+                $("." + tableID).each(function (key, value) {
+                    if (key >= 0) {
+                        $(value).css("height", "");
+                    }
+                });
+                $("." + tableID).removeClass("static-col colm-static");
+                return false;
+            }
+        } else if (statColPos <= leftScrollWid + leftScrollPos) {
+            $("." + tableID).each(function (key, value) {
+                if (key >= 0) {
+                    var height = $(value).next().outerHeight();
+                    $(value).outerHeight(height);
+                }
+            });
+            $("." + tableID).addClass("static-col colm-static");
+            return true;
+        }
+        return colm_static;
     };
-
-    $.fn.DynamicTable = function () {
+    $.fn.DynamicTable = function (options) {
         this.filter("table").each(function () {
-            var leftLink, rightLink, table = this;
-            // Add wrapper code necessary for bootstrap carousel
-            $(this).wrap("<div class=\"carousel slide\" data-ride=\"carousel\"></div>");
-            $(this).wrap("<div class=\"carousel-inner\"></div>");
-
-            // Add wrapper necessary for dynamictable code
-            $(this).wrap("<div class=\"dynamicContentWrapper table-scroll\" style=\"overflow-x: auto\"></div>");
-
-            // Add links for carousel
-            $(this).after('<a class="left carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
-
+            var leftLink,
+                rightLink,
+                table = this,
+                id = $(table).attr('id'),
+                colm_static = false,
+                column,
+                columnNumber,
+                child1;
+            // set up table for scrollable side bars
+            wrapTable(this);
             // Get references to links to pass to Setup and checkOverflow
             leftLink = this.nextSibling;
             rightLink = leftLink.nextSibling;
@@ -97,6 +138,23 @@
             window.addEventListener("resize", function () {
                 checkOverflow(table.parentElement, rightLink, leftLink);
             });
+
+            if (options && options.freezeColumn) {
+                column = $("#" + options.freezeColumn);
+                columnNumber = $(column).parent().children().index($(column));
+                $(this).find("tr").each(function (key, value) {
+                    if (key === 0) {
+                        var child2 = $(value).children().get(columnNumber + 1);
+                        $(child2).attr('class', id + 'Next');
+                    }
+                    child1 = $(value).children().get(columnNumber);
+                        // height = $(child1).next().outerHeight();
+                    $(child1).attr('class', id);
+                });
+                $(this).parent().scroll(function () {
+                    colm_static = freezeColm(id, colm_static);
+                });
+            }
 
             return this;
         });
