@@ -10,25 +10,22 @@
 
 <tr>
     <td>
-    <div class="row">
-    {$headerTable}
-    </div>
-    <div class="row">
-    <table class='table-header-right'>
-	<tr><td>{if $files|@count}{$files|@count} file(s) displayed.</td></tr>
-        <tr><td><div id="jivApplet">&nbsp;</div></td></tr>
-    </table>
-    </div>
+      <div class="row">
+        {$headerTable}
+      </div>
     </td>
 </tr>
 </table>
+<div class="col-xs-12">
+ {if $files|@count}{$files|@count} file(s) displayed.
+</div>
 {* MAIN MRI TABLE *}
-<table class='table-mri'>
+<table>
 {section name=file loop=$files}
 <tr>
     <td class='td-mri-lefttable'>
 {* LEFT SUBTABLE (SELECTIONS) *}
-        <table class='table-mri-lefttable'>
+        <!--table class='table-mri-lefttable'>
     	<tr>
 	    <td style="min-width: 100px" class='td-mri-lefttable-select'>Add panel<input class='mripanel' data-file-id='{$files[file].FileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
     	</tr>
@@ -82,16 +79,15 @@
             <td>{if $files[file].FileID}<a href="#noID" onClick='window.open("feedback_mri_popup.php?fileID={$files[file].FileID}", "feedback_mri","width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>Link to comments</a><br>{else}&nbsp;{/if}
             </td>
         </tr>
-    </table>  
+    </table-->  
     </td>
 {* MIDDLE TABLE (PICS) *}
     <td>
         <table class="table-mri-right-and-center">
             <thead>
                 <tr>
-                    <th>Filename</th>
-                    <td colspan='2'>{if $files[file].Filename != ""}{$files[file].Filename}
-		    	{else}&nbsp;{/if}</td>
+                    <th>Add panel <input class='mripanel' data-file-id='{$files[file].FileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></th>
+                    <td colspan='2'></td>
 		    <td{if $files[file].QCStatus != ""} class="image{$files[file].QCStatus}"{/if}>{$files[file].QCStatus}</td>
                 </tr>
 {* IMG *}
@@ -106,18 +102,6 @@
                 </tr>
             </tbody>
             <tfoot> 
-                <tr>
-                    <th>Voxel size</th>
-                    <td colspan="2">
-		    {if $files[file].Xstep != "" and $files[file].Ystep != ""}X: {$files[file].Xstep} mm Y: {$files[file].Ystep} mm Z: {$files[file].Zstep} mm
-                    {elseif $files[file].Xstep != ""}{$files[file].Xstep}{else}&nbsp;{/if}
-                    </td>
-                    <td>
-		                {if $files[file].FileID}
-                            <a href="mri/jiv/get_file.php?file={$files[file].FullFilename}">Download MINC</a>
-                        {/if}
-                    </td>
-                </tr>
                 {if $files[file].SourceFile != ''}
                 <tr>
                     <th>Source file</th>
@@ -189,6 +173,19 @@
          </div>
          <div class="mri-righttable" id="mri-righttable-{$files[file].FileID}">
          <table class="table-mri-right-and-center">
+          <tr>
+                    <th>Voxel size</th>
+                    <td colspan="2">
+            {if $files[file].Xstep != "" and $files[file].Ystep != ""}X: {$files[file].Xstep} mm Y: {$files[file].Ystep} mm Z: {$files[file].Zstep} mm
+                    {elseif $files[file].Xstep != ""}{$files[file].Xstep}{else}&nbsp;{/if}
+                    </td>
+                    <!--td>
+                        {if $files[file].FileID}
+                            <a href="mri/jiv/get_file.php?file={$files[file].FullFilename}">Download MINC</a>
+                        {/if}
+                    </td-->
+                </tr>
+
         {if $files[file].Pipeline != ""}<tr><th>Pipeline</th><td>{$files[file].Pipeline}</td></tr>{/if}
         {if $files[file].OutputType != ""}<tr><th>Output Type</th><td>{$files[file].OutputType}</td></tr>{/if}
         {if $files[file].AcquisitionProtocol != "NA"}<tr><th>Protocol</th><td>{$files[file].AcquisitionProtocol}</td></tr>{/if}

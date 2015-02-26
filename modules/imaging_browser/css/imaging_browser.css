@@ -150,3 +150,10 @@ cursor: pointer;
 .right-panel {
     display: block;
 }
+.filename {
+font-weight: bold;
+color: #064785;
+font-size: 14px;
+margin-top: 0.5em;
+padding-right: 15px;
+}
