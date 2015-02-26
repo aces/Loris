@@ -78,6 +78,19 @@ $(function () {
 
 });
 
+function toggle_additionalInfo (file_id) {
+    "use strict";console.log(file_id);
+    $('#mri-righttable-'+file_id).slideToggle("fast");
+    var arrow = $('#filename-'+file_id).siblings('.arrow');
+    if (arrow.hasClass('glyphicon-chevron-down')) {
+        arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+    } else {
+        arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+    }
+
+
+}
+
 function open_popup(newurl) {
     "use strict";
     var x = 200, y = 400, open_param = 'width=500px,height=300px, toolbar=no, location=no,status=yes, scrollbars=yes, resizable=yes, top=' + y + ', screenY=' + y + ', left=' + x + ', screenX=' + x;

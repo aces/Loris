@@ -140,12 +140,55 @@
                      <td> {if $files[file].NrrdFile != ""}<a href="mri/jiv/get_file.php?file={$files[file].NrrdFile}">Download NRRD</a>{else}&nbsp;{/if}</td>
                 </tr>
                 {/if} 
+                <tr>
+                <th>Selected</th>
+                <th>QC Status </th>
+                <th>Caveat Emptor</th>
+                </tr>
+                  <tr>
+        <td id='td-mri-lefttable-select'>
+        {if $has_qc_permission}
+        {html_options options=$selected_options selected=$files[file].Selected tabindex="3" name="selectedvol[`$files[file].FileID`]"}
+        {else}
+        {if $files[file].Selected != ""}{$files[file].Selected}
+        {else}&nbsp;{/if}
+            {/if}   
+        </td>
+        <td id='td-mri-lefttable-select'>
+        {if $has_qc_permission} 
+            {if $files[file].New}<font color='red'>NEW</font>{/if}
+        {html_options options=$status_options selected=$files[file].QCStatus tabindex="4" name="status[`$files[file].FileID`]"}
+        {else}
+        {if $files[file].QCStatus != ""}{$files[file].QCStatus}
+        {else}&nbsp;{/if}
+        {/if}
+        </td>
+
+        <td id='td-mri-lefttable-select'>
+            {if $has_qc_permission}
+                {if $files[file].Caveat}
+                <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
+                {/if}
+                {html_options options=$caveat_options selected=$files[file].Caveat tabindex="5" name="caveat[`$files[file].FileID`]"}
+                {else}
+                {if $files[file].Caveat}<a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveats</a>
+                {else}No caveats{/if}
+                {/if}
+                </td>
+        </tr>
+
             </tfoot> 
 	</table>
     </td>
 {* RIGHT SUBTABLE*}
     <td>
-        <table class="table-mri-right-and-center" id='table-mri-righttable'>
+         <div class="right-panel clickable" onclick="toggle_additionalInfo('{$files[file].FileID}')">
+             <span class="pull-right arrow glyphicon glyphicon-chevron-up"></span>
+             <div class="filename" id="filename-{$files[file].FileID}">{if $files[file].Filename != ""}{$files[file].Filename}
+                {else}&nbsp;{/if}</div>
+         </div>
+         <div class="mri-righttable" id="mri-righttable-{$files[file].FileID}">
+         <table class="table-mri-right-and-center">
         {if $files[file].Pipeline != ""}<tr><th>Pipeline</th><td>{$files[file].Pipeline}</td></tr>{/if}
         {if $files[file].OutputType != ""}<tr><th>Output Type</th><td>{$files[file].OutputType}</td></tr>{/if}
         {if $files[file].AcquisitionProtocol != "NA"}<tr><th>Protocol</th><td>{$files[file].AcquisitionProtocol}</td></tr>{/if}
@@ -167,6 +210,7 @@
         {if $files[file].IntergradientRejected != ""}<tr><th>Gradient-wise correlations (Nb)</th><td>{$files[file].IntergradientRejected}</td></tr>{/if}
         {if $files[file].TotalRejected != ""}<tr><th width="100px">Nb of rejected directions</th><td>{$files[file].TotalRejected}{else}&nbsp;</td></tr>{/if}
        	</table>
+        </div>
     </td>
 </tr>
 {/section}
