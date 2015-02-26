@@ -106,7 +106,7 @@ DataQueryApp = React.createClass({
                   {
                     category: fieldArray[0],
                     field: fieldArray[1],
-                    value: criteriaItem.state.value
+                    value: criteriaItem.value
                   },
                   responseHandler,
                   'json'

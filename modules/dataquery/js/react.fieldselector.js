@@ -84,6 +84,43 @@ CategoryList = React.createClass({displayName: 'CategoryList',
     }
 });
 
+OperatorValue = React.createClass({displayName: 'OperatorValue',
+    preventDefault: function(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+    },
+    render: function() {
+        if(this.props.Type.indexOf('enum') === 0) {
+            var optString = this.props.Type.substr(5, this.props.Type.length-6);
+            var optArray  = optString.split(",");
+
+            optArray = optArray.map(function (element) {
+                var eTrim = element.trim();
+                return eTrim.substr(1, eTrim.length-2);
+            });
+            optArray = optArray.map(function (str) {
+                return React.createElement("option", {value: str}, str);
+            });
+            return (
+                React.createElement("select", {
+                    className: "queryValue", 
+                    defaultValue: this.props.Value, 
+                    onClick: this.preventDefault, 
+                    onChange: this.props.onChange}, 
+                        React.createElement("option", {value: ""}), 
+                        optArray
+                )
+            );
+        }
+        return (React.createElement("input", {
+                    type: "text", 
+                    className: "queryValue", 
+                    onClick: this.preventDefault, 
+                    onChange: this.props.onChange, 
+                    defaultValue: this.props.Value}
+                ));
+    }
+});
 FieldItem = React.createClass({displayName: 'FieldItem',
     changeCriteria: function(evt) {
         evt.preventDefault();
@@ -100,10 +137,6 @@ FieldItem = React.createClass({displayName: 'FieldItem',
         if(this.props.onCriteriaChange) {
             this.props.onCriteriaChange(this.props.FieldName, op);
         }
-    },
-    preventDefault: function(evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
     },
     render: function() {
         var classList = "list-group-item row";
@@ -128,7 +161,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
                         React.createElement("option", {value: "startsWith"}, "startsWith"), 
                         React.createElement("option", {value: "contains"}, "contains")
                     ), 
-                    React.createElement("input", {className: "queryValue", onClick: this.preventDefault, onChange: this.changeCriteria, type: "text", defaultValue: this.props.Criteria.value})
+                    React.createElement(OperatorValue, {Type: this.props.ValueType, onChange: this.changeCriteria, Value: this.props.Criteria.value})
                 );
             return (
                 React.createElement("div", {className: classList, onClick: this.props.onClick}, 
@@ -183,6 +216,7 @@ FieldList = React.createClass({displayName: 'FieldList',
             fieldName = items[i].key;
             fieldName = fieldName.join(",");
             desc = items[i].value.Description;
+            type = items[i].value.Type || "varchar(255)";
 
             if(fieldName.toLowerCase().indexOf(filter) == -1 && desc.toLowerCase().indexOf(filter) == -1) {
                 continue;
@@ -204,6 +238,7 @@ FieldList = React.createClass({displayName: 'FieldList',
             fields.push(React.createElement(FieldItem, {FieldName: fieldName, 
                 Category: this.props.category, 
                 Description: desc, 
+                ValueType: type, 
                 type: this.props.type, 
                 onClick: this.onFieldClick(fieldName), 
                 Criteria: crit, 
