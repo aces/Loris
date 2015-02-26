@@ -12,6 +12,9 @@ install:
     - composer install --dev
     - phpenv rehash
 
+    # Install jslint
+    - npm install -g jslint
+
       # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
@@ -79,3 +82,6 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/genomic_browser
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
+
+    # Run JSLINT on specific scripts
+    - jslint htdocs/js/jquery.dynamictable.js 
