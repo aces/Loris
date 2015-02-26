@@ -109,8 +109,15 @@
         return colm_static;
     };
 
-    $.fn.DynamicTable = function (colmNumber) {
-        colmNumber = colmNumber || -1;
+    $.fn.DynamicTable = function (options) {
+        if(options && options.freezeColumn){
+            var column = $("#" + options.freezeColumn)
+            var indexOf = $(column).parent().children().index($(column));
+            
+        } else {
+            console.log("there");
+        }
+        // colmNumber = colmNumber || -1;
         this.filter("table").each(function () {
             var leftLink,
                 rightLink,
@@ -128,15 +135,17 @@
                 checkOverflow(table.parentElement, rightLink, leftLink);
             });
 
-            if(colmNumber >= 0) {
+            if(options && options.freezeColumn) {
                 var id = $(this).attr('id'),
-                    colm_static = false;
+                    colm_static = false,
+                    column = $("#" + options.freezeColumn),
+                    columnNumber = $(column).parent().children().index($(column));
                 $(this).find("tr").each(function (key, value) {
                     if(key == 0){
-                        var child2 = $(value).children().get(colmNumber);
+                        var child2 = $(value).children().get(columnNumber + 1);
                         $(child2).attr('class', id + 'Next');
                     }
-                    var child1 = $(value).children().get(colmNumber - 1),
+                    var child1 = $(value).children().get(columnNumber),
                         height = $(child1).next().outerHeight();
                     $(child1).attr('class', id);
                 });
