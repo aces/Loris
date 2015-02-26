@@ -1,19 +1,6 @@
-<script type="text/javascript" src="js/advancedMenu.js"></script>
 {literal}
 <script type="text/javascript">
     $(document).ready(function(){
-        // var colm_static = false;
-        // $(".table-scroll").scroll(function(){
-        //     if(colm_static === true){
-        //         if($(".colm-site").offset().left >= 30){
-        //             $(".colm-pscid").removeClass("static-col colm-static");
-        //             colm_static = false;
-        //         }
-        //     } else if($(".colm-pscid").offset().left <= 35){
-        //         $(".colm-pscid").addClass("static-col colm-static");
-        //         colm_static = true;
-        //     }
-        // });
         $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
     });
 </script>
