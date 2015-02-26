@@ -113,7 +113,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
-            JOIN mri_scan_type ON (f.AcquisitionProtocolID=mri_scan_type.ID)
             WHERE 
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
