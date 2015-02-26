@@ -298,19 +298,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             )==0) {
                 $errors[] = "The VisitLabel: $visit_label Doesn't exist";
             }
-
-            ///////////////////////////////////////////////////////////////////
-            //////////////////Check to see if the dicom file is already////////
-            //////////////////////////////inserted in the tarchive table///////
-            ///////////////////////////////////////////////////////////////////
-            if (($db->pselectOne(
-                "SELECT COUNT(*) FROM tarchive WHERE patientname = :pname",
-                array('pname' => $patient_name)
-            ))>0) {
-                $errors[] =" The Dicom file $file_name has already been ".
-                "inserted into the tarchive table";
-            }
-
             ///////////////////////////////////////////////////////////////////
             //////////copy the temporairy file to a temporairy directory///////
             //////////with a correct Extension/////////////////////////////////
@@ -319,20 +306,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 echo "failed to copy $temp_file to $new_temp_file \n";
             }
 
-           ///////////////////////////////////////////////////////////////////
-            //Check to see if the file has already been uploaded or not////////
-            ///////////////////////////////////////////////////////////////////
-            print "patient-name is " . $patient_name . "<BR>";
-            if (($db->pselectOne(
-                "SELECT COUNT(*) FROM mri_upload mu ".
-                "JOIN tarchive t on (t.TarchiveID = mu.TarchiveID) ".
-                "WHERE t.patientname = :pname",
-                array('pname' => $patient_name)
-            ))>0) {
-                $errors[] =" The file-name $file_name has already been uploaded";
-            }
-
-            if (count($errors) > 0) {
+           if (count($errors) > 0) {
                 print_r($errors);
                return $errors;
             }
