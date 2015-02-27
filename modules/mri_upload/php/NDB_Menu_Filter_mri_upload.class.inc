@@ -147,7 +147,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
     
-    function _process() {
+    function _process($values) {
         if ($this->_saveFile($values)) {
         
             return true;
@@ -244,12 +244,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
+        ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        /*if (!$this->isFileCompressed($file_name)) {
-           $errors[] ="Incorrect File-name extention, The file-name
-            should either of type '.gz', '.zip' or 'tgz' ";
-        }
-        */
+                     
+     
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -297,18 +295,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
 
             ///////////////////////////////////////////////////////////////////
-            //////////////////Check to see if the dicom file is already////////
-            //////////////////////////////inserted in the tarchive table///////
-            ///////////////////////////////////////////////////////////////////
-            if (($db->pselectOne(
-                "SELECT COUNT(*) FROM tarchive WHERE patientname = :pname",
-                array('pname' => $patient_name)
-            ))>0) {
-                $errors[] =" The Dicom file $file_name has already been ".
-                "inserted into the tarchive table";
-            }
-
-            ///////////////////////////////////////////////////////////////////
             //////////copy the temporairy file to a temporairy directory///////
             //////////with a correct Extension/////////////////////////////////
             ///////////////////////////////////////////////////////////////////
@@ -316,27 +302,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 echo "failed to copy $temp_file to $new_temp_file \n";
             }
 
-           ///////////////////////////////////////////////////////////////////
-            //Check to see if the file has already been uploaded or not////////
-            ///////////////////////////////////////////////////////////////////
-            print "patient-name is " . $patient_name . "<BR>";
-            if (($db->pselectOne(
-                "SELECT COUNT(*) FROM mri_upload mu ".
-                "JOIN tarchive t on (t.TarchiveID = mu.TarchiveID) ".
-                "WHERE t.patientname = :pname",
-                array('pname' => $patient_name)
-            ))>0) {
-                $errors[] =" The file-name $file_name has already been uploaded";
-            }
-
             if (count($errors) > 0) {
-                print_r($errors);
-                foreach ($errors as $error) {
-                    $this->message->addMessage("$error");
-                }
-                $this->message->addMessage(
-                    "Error: the process completed with errors \n"
-                );
                 return $errors;
             }
         }
@@ -371,7 +337,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
             $user_name = $user->getUsername();
         }
-
         ///////////////////////////////////////////////////////////////////////
         ////////////////////Insert values into mri_upload//////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -390,34 +355,39 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             && (!empty($args['values']['PSCID']))
             &&(!empty($args['values']['VisitLabel']))
         ) {
-            ///////////////////////////////////////////////////////////////////
-            ////////////////////Use the arguments//////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            $visit_label = $args['values']['VisitLabel'];
-            $candid      = $args['values']['CandID'];
-            $pscid       = $args['values']['PSCID'];
+                ///////////////////////////////////////////////////////////////////
+                ////////////////////Use the arguments//////////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                $visit_label = $args['values']['VisitLabel'];
+                $candid      = $args['values']['CandID'];
+                $pscid       = $args['values']['PSCID'];
+            
+    
+            $sessionid = $db->pselectOne(
+                "SELECT ID FROM  session WHERE CandID = :cid".
+                " AND Visit_label =:vlabel ",
+                array(
+                 'cid'    => $candid,
+                 'vlabel' => $visit_label,
+                )
+            );
+    
+            $values = array(
+                       'UploadedBy'     => $user_name,
+                       'UploadDate'     => $date,
+                       'SourceLocation' => $file_name,
+                       'SessionID'      => $sessionid,
+                       'PatientName'    => $pscid. "_" . $candid . "_" . $visit_label
+                       
+                      );
+            $db->Insert(
+                'mri_upload',
+                $values
+            );
+            return true;
         }
-
-        $sessionid = $db->pselectOne(
-            "SELECT ID FROM  session WHERE CandID = :cid".
-            " AND Visit_label =:vlabel ",
-            array(
-             'cid'    => $candid,
-             'vlabel' => $visit_label,
-            )
-        );
-
-        $values = array(
-                   'UploadedBy'     => $user_name,
-                   'UploadDate'     => $date,
-                   'SourceLocation' => $file_name,
-                   'SessionID'      => $sessionid,
-                  );
-        $db->Insert(
-            'mri_upload',
-            $values
-        );
-        return true;
+        
+        return false;
     }
 
     /**
@@ -478,6 +448,5 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $output ="{$args["user_id"]}/";
         return $output;
     }
-   
 }
 ?>
