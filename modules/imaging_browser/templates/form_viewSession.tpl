@@ -86,9 +86,12 @@
         <table class="table-mri-right-and-center">
             <thead>
                 <tr>
-                    <th>Add panel <input class='mripanel' data-file-id='{$files[file].FileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></th>
-                    <td colspan='2'></td>
-		    <td{if $files[file].QCStatus != ""} class="image{$files[file].QCStatus}"{/if}>{$files[file].QCStatus}</td>
+                   <div class="right-panel clickable" onclick="toggle_additionalInfo('{$files[file].FileID}')">
+                       <span class="pull-right arrow glyphicon glyphicon-chevron-up"></span>
+                       <div class="filename" id="filename-{$files[file].FileID}">{if $files[file].Filename != ""}{$files[file].Filename}
+                        {else}&nbsp;{/if}
+                       </div>
+                   </div>
                 </tr>
 {* IMG *}
             </thead>
@@ -125,11 +128,14 @@
                 </tr>
                 {/if} 
                 <tr>
+                <th>Add panel</th>
                 <th>Selected</th>
                 <th>QC Status </th>
                 <th>Caveat Emptor</th>
                 </tr>
                   <tr>
+        <td>
+        <input class='mripanel' data-file-id='{$files[file].FileID}' type='checkbox' onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');"></td>
         <td id='td-mri-lefttable-select'>
         {if $has_qc_permission}
         {html_options options=$selected_options selected=$files[file].Selected tabindex="3" name="selectedvol[`$files[file].FileID`]"}
@@ -166,11 +172,11 @@
     </td>
 {* RIGHT SUBTABLE*}
     <td>
-         <div class="right-panel clickable" onclick="toggle_additionalInfo('{$files[file].FileID}')">
+         <!--div class="right-panel clickable" onclick="toggle_additionalInfo('{$files[file].FileID}')">
              <span class="pull-right arrow glyphicon glyphicon-chevron-up"></span>
              <div class="filename" id="filename-{$files[file].FileID}">{if $files[file].Filename != ""}{$files[file].Filename}
                 {else}&nbsp;{/if}</div>
-         </div>
+         </div-->
          <div class="mri-righttable" id="mri-righttable-{$files[file].FileID}">
          <table class="table-mri-right-and-center">
           <tr>
@@ -179,13 +185,7 @@
             {if $files[file].Xstep != "" and $files[file].Ystep != ""}X: {$files[file].Xstep} mm Y: {$files[file].Ystep} mm Z: {$files[file].Zstep} mm
                     {elseif $files[file].Xstep != ""}{$files[file].Xstep}{else}&nbsp;{/if}
                     </td>
-                    <!--td>
-                        {if $files[file].FileID}
-                            <a href="mri/jiv/get_file.php?file={$files[file].FullFilename}">Download MINC</a>
-                        {/if}
-                    </td-->
-                </tr>
-
+                          </tr>
         {if $files[file].Pipeline != ""}<tr><th>Pipeline</th><td>{$files[file].Pipeline}</td></tr>{/if}
         {if $files[file].OutputType != ""}<tr><th>Output Type</th><td>{$files[file].OutputType}</td></tr>{/if}
         {if $files[file].AcquisitionProtocol != "NA"}<tr><th>Protocol</th><td>{$files[file].AcquisitionProtocol}</td></tr>{/if}

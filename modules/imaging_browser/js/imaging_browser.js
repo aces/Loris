@@ -80,7 +80,7 @@ $(function () {
 
 function toggle_additionalInfo (file_id) {
     "use strict";console.log(file_id);
-    $('#mri-righttable-'+file_id).slideToggle("fast");
+    $('#mri-righttable-'+file_id).slideToggle("slow");
     var arrow = $('#filename-'+file_id).siblings('.arrow');
     if (arrow.hasClass('glyphicon-chevron-down')) {
         arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
