@@ -29,24 +29,30 @@ class NDB_Form_dashboard extends NDB_Form
 
     function _getTotalGender($gender)
     {
-        $DB =& Database::singleton(); 
+        $DB = Database::singleton(); 
         $total = $DB->pselectOne(
-            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender AND c.Active='Y'", 
+            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender AND c.Active='Y'" , 
             array('Gender' => $gender)
+        );
+        return $total;
+    }
+
+    function _getTotalGenderByProject($gender, $projectID)
+    {
+        $DB = Database::singleton(); 
+        $total = $DB->pselectOne(
+            "SELECT count(c.CandID) FROM candidate c WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID" , 
+            array('Gender' => $gender, 'PID' => $projectID)
         );
         return $total;
     }
 
     function dashboard()
     {
-        $DB =& Database::singleton();
-        $user =& User::singleton();
-        $this->tpl_data = array();
-        $config =& NDB_Config::singleton();
-        $site = $user->getSiteName();
-        $siteID = $DB->pselectOne(
-            "SELECT CenterID FROM psc WHERE Name=:Site", array('Site' => $site)
-        );
+        $DB     = Database::singleton();
+        $user   = User::singleton();
+        $config = NDB_Config::singleton();
+        
         $userID = $user->getUsername();
         $last_login = $DB->pselectOne(
             "SELECT MAX(Login_timestamp)
@@ -56,6 +62,8 @@ class NDB_Form_dashboard extends NDB_Form
                 WHERE userID=:UserID AND Success='Y')
              AND userID=:UserID AND Success='Y'", array('UserID' => $userID)
         );
+
+        $siteID                      = $user->getCenterID();
         $this->tpl_data['user_site'] = $siteID;
 
         // Welcome panel
@@ -105,6 +113,16 @@ class NDB_Form_dashboard extends NDB_Form
                     = round($totalFemales/$totalRecruitment*100);
                 $this->tpl_data['male_full_percent'] 
                     = round($totalMales/$totalRecruitment*100);
+            }
+        }
+
+        $useProjects = $config->getSetting('useProjects');
+        $this->tpl_data['useProjects'] = $useProjects;
+
+        if ($useProjects == "true") {
+            $projects = $config->getSetting('Projects');
+            foreach ($projects['project'] as $project) {
+                $this->createProjectProgressBar($project['id'], $project['title'], $project['recruitmentTarget']);
             }
         }
 
@@ -212,6 +230,32 @@ class NDB_Form_dashboard extends NDB_Form
             }
             $this->tpl_data['document_repository_notifications'] 
                 = $document_repository;
+        }
+    }
+
+    function createProjectProgressBar($ID, $title, $recruitmentTarget) {
+        $this->tpl_data['projects'][$ID]['title'] = $title;
+
+        if (!empty($recruitmentTarget)) {
+            $this->tpl_data['projects'][$ID]['recruitment_target'] = $recruitmentTarget;
+            
+            $totalFemales = $this->_getTotalGenderByProject("female", $ID);
+            $this->tpl_data['projects'][$ID]['female_total'] = $totalFemales;
+            $this->tpl_data['projects'][$ID]['female_percent'] 
+                = round($totalFemales / $recruitmentTarget * 100);
+            
+            $totalMales = $this->_getTotalGenderByProject("male", $ID);
+            $this->tpl_data['projects'][$ID]['male_total'] = $totalMales;
+            $this->tpl_data['projects'][$ID]['male_percent'] 
+                = round($totalMales / $recruitmentTarget * 100);
+            
+            if ($totalRecruitment > $recruitmentTarget) {
+                $this->tpl_data['projects'][$ID]['surpassed_recruitment'] = "true";
+                $this->tpl_data['projects'][$ID]['female_full_percent'] 
+                    = round($totalFemales / $totalRecruitment * 100);
+                $this->tpl_data['projects'][$ID]['male_full_percent'] 
+                    = round($totalMales / $totalRecruitment * 100);
+            }
         }
     }
 }

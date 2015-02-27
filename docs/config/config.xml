@@ -71,10 +71,12 @@
             <project>
                 <id>1</id>
                 <title>Sample Project</title>
+                <recruitmentTarget>50</recruitmentTarget>
             </project>
             <project>
                 <id>2</id>
                 <title>Another Sample Project</title>
+                <recruitmentTarget>50</recruitmentTarget>
             </project>
         </Projects>
         <!-- number of subprojects in the project - corresponds to the list of subpojects below -->

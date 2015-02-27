@@ -35,7 +35,10 @@
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
-                            <li><a id="recruitment-breakdown-dropdown" data-target="recruitment-site-breakdown">View site breakdown</a></li>
+                            <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
+                            {if $useProjects eq "true"}
+                            <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
+                            {/if}
                         </ul>
                     </div>
                 </div>
@@ -105,6 +108,13 @@
                         <p>There have been no candidates registered yet.</p>
                     {/if}
                 </div>
+                {if $useProjects eq "true"}
+                <div class="recruitment-panel hidden" id="recruitment-project-breakdown">
+                    {foreach $projects as $project}
+                        {include file='progress_bar.tpl' project=$project}
+                    {/foreach}
+                </div>
+                {/if}
             </div>
         </div>
 
