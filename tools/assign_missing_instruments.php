@@ -78,13 +78,13 @@ function populateVisitLabel($result, $visit_label)
 {
     global $argv, $confirm;
     // create a new battery object && new battery
-    $battery =& new NDB_BVL_Battery;
+    $battery = new NDB_BVL_Battery;
 
     // select a specific time point (sessionID) for the battery
     $battery->selectBattery($result['ID']);
-    $timePoint =& TimePoint::singleton($result['ID']);
+    $timePoint = TimePoint::singleton($result['ID']);
 
-    $DB        =& Database::singleton();
+    $DB        = Database::singleton();
     $candidate = Candidate::singleton($result['CandID']);
     $result_firstVisit = $candidate->getFirstVisit();
     $isFirstVisit      = false;//adding check for first visit
