@@ -1,0 +1,22 @@
+FROM ubuntu:14.04
+MAINTAINER Dave MacFarlane <david.macfarlane2@mcgill.ca>
+RUN apt-get -y install php5 php5-json curl git
+#RUN git clone https://github.com/aces/Loris.git /var/www/loris
+COPY . /var/www/loris
+
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
+RUN cd /var/www/loris && composer install --no-dev
+WORKDIR /var/www/loris
+RUN sed -e "s#%LORISROOT%#/var/www/loris/#g" \
+        -e "s#%PROJECTNAME%#loris#g" \
+        < docs/config/apache2-site > /etc/apache2/sites-available/loris.conf
+RUN a2dissite 000-default
+RUN ls /etc/apache2/sites-available
+RUN ls /etc/apache2/sites-enabled
+RUN a2ensite loris
+
+EXPOSE 80
+
+ADD docs/Docker/LorisWeb-EntryPoint.sh /entrypoint.sh
+ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
