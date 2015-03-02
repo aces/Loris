@@ -20,7 +20,8 @@
     padding: 0.3em;
 }
 .table-mri-right-and-center th {
-    background: #999999;
+/*    background: #999999;*/
+   background: #1c70b6;
     text-align: left;
 }
 
@@ -55,16 +56,13 @@
     background-color: #064785;
     color: #FFFFFF;
 }
-/*
-#table-mri-righttable {
-    width: 300px;
-    height: 260px;
+.table-mri-righttable {
+   margin-top: -25px;
 }
 
 #table-mri-righttable>tbody>tr>th {
     width: 100px;
 }
-*/
 .td-mri-lefttable-select {
     height: 20px;
     padding-bottom: 10px;
@@ -156,4 +154,36 @@ color: #064785;
 font-size: 14px;
 margin-top: 0.5em;
 padding-right: 15px;
+}
+.mri-additional-info-row {
+ border: none;
+}
+.mri-dropdown-info {
+  display: block;
+ /* margin-top: 185px;*/
+  padding-left:10px;
+  padding-right:20px;
+}
+.label {
+   color: #064785;
+   font-weight: bold;
+   font-size: 1.1em;
+}
+.mri-right-panel {
+    float: right;
+/*    position: relative;*/
+    padding-left: 120px;
+    width: 30%;
+}
+/*
+.mri-right-panel-row {
+   padding-top: 5px;
+}
+*/
+.line-separator {
+height: 1px;
+background: #717171;
+border-bottom: 1px solid #e5e5e5;
+margin-top: 0.7em;
+margin-bottom: 0.5em;
 }
