@@ -2348,7 +2348,7 @@ CREATE TABLE `log` (
   `LogID` int(11) NOT NULL AUTO_INCREMENT,
   `LogTypeID` int(11) NOT NULL DEFAULT '0',
   `ProcessID` int(11) NOT NULL DEFAULT '0',
-  `Date_Created` int(11) NOT NULL DEFAULT '0',
+  `Date_Created` date NOT NULL DEFAULT '0',
   `Message` text,
   `Error` tinyint(1) DEFAULT '0',
   `CenterID` tinyint(2) unsigned DEFAULT NULL,
