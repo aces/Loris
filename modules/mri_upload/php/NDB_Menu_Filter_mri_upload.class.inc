@@ -120,20 +120,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             'VisitLabel:',
             $visitlabels
         );
-        $new_files = array();
-        $DB        =  Database::singleton();
-        $files     =  $DB->pselect(
-            "SELECT distinct SourceLocation"." FROM mri_upload",
-            array()
-        );
-
-        foreach ($files as $file) {
-            $new_files[$file['SourceLocation']] =$file['SourceLocation'];
-        }
-        $new_files = array(null => 'Any') + $new_files;
-
-        $this->addSelect('SourceLocation', 'SourceLocation', $new_files);
-
         if (empty($_FILES) && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
@@ -303,6 +289,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             if (!copy($temp_file, $new_temp_file)) {
                 echo "failed to copy $temp_file to $new_temp_file \n";
             }
+            $this->setTempPath($new_temp_file);
 
             if (count($errors) > 0) {
                 return $errors;
@@ -326,6 +313,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         print_r($args);
         $feedbacks = array();
         $db        = Database::singleton();
+        $file_name =  $file->fileInfo['name'];
 
         ///////////////////////////////////////////////////////////////////////
         ///////////////if empty get it using User class////////////////////////
@@ -373,7 +361,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $values = array(
                        'UploadedBy'     => $user_name,
                        'UploadDate'     => $date,
-                       'SourceLocation' => $file_name,
+                       'SourceLocation' => $this->getTempPath(),
                        'SessionID'      => $sessionid,
                        'PatientName'    => $pscid. "_" . $candid . "_" . $visit_label
                        
