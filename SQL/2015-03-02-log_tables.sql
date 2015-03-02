@@ -24,5 +24,6 @@ CREATE TABLE `log_types` (
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Insertion of the mincs into the mri-table','minc_insertion');
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','calls the different scrips','tarchive_loader');
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation of the dicoms After uploading','tarchive_validation');
+INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation of DICOMS before uploading','imaging_upload_file');
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation,Running DicomTar.pl and TarchiveLoader','ImagingUpload');
 
