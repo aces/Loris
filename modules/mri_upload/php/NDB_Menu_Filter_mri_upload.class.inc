@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * Mri_upload class file
  *
@@ -247,12 +247,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
+        ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        /*if (!$this->isFileCompressed($file_name)) {
-           $errors[] ="Incorrect File-name extention, The file-name
-            should either of type '.gz', '.zip' or 'tgz' ";
-        }
-        */
+                     
+     
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -306,9 +304,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 echo "failed to copy $temp_file to $new_temp_file \n";
             }
 
-           if (count($errors) > 0) {
-                print_r($errors);
-               return $errors;
+            if (count($errors) > 0) {
+                return $errors;
             }
         }
         return true;
@@ -343,7 +340,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
             $user_name = $user->getUsername();
         }
-
         ///////////////////////////////////////////////////////////////////////
         ////////////////////Insert values into mri_upload//////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -357,35 +353,38 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             && (!empty($args['values']['PSCID']))
             &&(!empty($args['values']['VisitLabel']))
         ) {
-            ///////////////////////////////////////////////////////////////////
-            ////////////////////Use the arguments//////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            $visit_label = $args['values']['VisitLabel'];
-            $candid      = $args['values']['CandID'];
-            $pscid       = $args['values']['PSCID'];
+                ///////////////////////////////////////////////////////////////////
+                ////////////////////Use the arguments//////////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                $visit_label = $args['values']['VisitLabel'];
+                $candid      = $args['values']['CandID'];
+                $pscid       = $args['values']['PSCID'];
+            
+    
+            $sessionid = $db->pselectOne(
+                "SELECT ID FROM  session WHERE CandID = :cid".
+                " AND Visit_label =:vlabel ",
+                array(
+                 'cid'    => $candid,
+                 'vlabel' => $visit_label,
+                )
+            );
+    
+            $values = array(
+                       'UploadedBy'     => $user_name,
+                       'UploadDate'     => $date,
+                       'SourceLocation' => $file_name,
+                       'SessionID'      => $sessionid,
+                       'PatientName'    => $pscid. "_" . $candid . "_" . $visit_label
+                       
+                      );
+            $db->Insert(
+                'mri_upload',
+                $values
+            );
+            return true;
         }
-
-        $sessionid = $db->pselectOne(
-            "SELECT ID FROM  session WHERE CandID = :cid".
-            " AND Visit_label =:vlabel ",
-            array(
-             'cid'    => $candid,
-             'vlabel' => $visit_label,
-            )
-        );
-
-        $values = array(
-                   'UploadedBy'     => $user_name,
-                   'UploadDate'     => $date,
-                   'SourceLocation' => $this->getTempPath(),
-                   'SessionID'      => $sessionid,
-                   'PatientName'      => $pscid."_" . $candid . "_". $visit_label,
-                  );
-        $db->Insert(
-            'mri_upload',
-            $values
-        );
-        return true;
+        return false;
     }
 
     /**
