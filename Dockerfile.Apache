@@ -1,13 +1,18 @@
 FROM ubuntu:14.04
 MAINTAINER Dave MacFarlane <david.macfarlane2@mcgill.ca>
-RUN apt-get -y install php5 php5-json curl git
+RUN apt-get -y install php5 php5-json curl git php5-mysql mysql-client
+# Eventually remove this.
+RUN apt-get -y install php-pear
 #RUN git clone https://github.com/aces/Loris.git /var/www/loris
+#INCLUDE HOSTNAME REPLACEMENT?
 COPY . /var/www/loris
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
+RUN COMPOSER_HOME=/var/www/loris
 RUN cd /var/www/loris && composer install --no-dev
 WORKDIR /var/www/loris
+RUN mkdir project
 RUN sed -e "s#%LORISROOT%#/var/www/loris/#g" \
         -e "s#%PROJECTNAME%#loris#g" \
         < docs/config/apache2-site > /etc/apache2/sites-available/loris.conf
@@ -19,4 +24,5 @@ RUN a2ensite loris
 EXPOSE 80
 
 ADD docs/Docker/LorisWeb-EntryPoint.sh /entrypoint.sh
-ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT ["/entrypoint.sh"]
