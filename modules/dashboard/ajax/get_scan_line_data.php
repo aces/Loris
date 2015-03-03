@@ -23,7 +23,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$DB =& Database::singleton();
+$DB = Database::singleton();
 
 $scanData           = array();
 $scanStartDate      = $DB->pselectOne(
