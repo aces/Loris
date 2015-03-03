@@ -20,9 +20,23 @@
       {section name=file loop=$files}
        <div class="col-xs-12 col-md-6 ib_frame">
             <div class="panel panel-default">
-                <div class="panel-heading clickable"  id="filename-{$files[file].FileID}" onclick="toggle_additionalInfo('{$files[file].FileID}')">
-                     <h3 class="panel-title">{if $files[file].Filename != ""}{$files[file].Filename}{else}&nbsp;{/if}</h3>
-                     <span class="pull-right arrow glyphicon glyphicon-chevron-up"></span>
+                <div class="panel-heading clickable"  id="filename-{$files[file].FileID}">
+                    <input class="mripanel"
+                           type="checkbox"
+                           data-file-id='{$files[file].FileID}'
+                           type='checkbox'
+                           onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');">
+                     <h3 class="panel-title"> {if $files[file].Filename != ""}{$files[file].Filename}{else}&nbsp;{/if}</h3>
+                     <span class="pull-right arrow glyphicon glyphicon-chevron-down"></span>
+                      <div class="pull-right">
+                          <div class="btn-group views">
+                              <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                      data-toggle="dropdown" onclick="toggle_additionalInfo('{$files[file].FileID}')">
+                                 Header Info
+                              <span class="caret"></span>
+                              </button>
+                          </div><!--closing btn-group views div -->
+                      </div><!--cloding pull-righ div -->
                 </div> <!--closing panel-heading clickable -->
                 <div class="panel-body">
                   <div class="row">
@@ -32,31 +46,43 @@
                       </a>
                    </div><!--closing imaging_browser_pic div -->
                    <div class="col-xs-3 mri-right-panel">
-                      {if $files[file].QCStatus != ""}
-                      <div class="row mri-right-panel-row image{$files[file].QCStatus}">{$files[file].QCStatus}
+                      <div class="form-group">
+                                 <label class="text-left">Selected</label>
+                                 {if $has_qc_permission}
+                                 {html_options options=$selected_options selected=$files[file].Selected tabindex="3"
+                                  name="selectedvol[`$files[file].FileID`]" class="form-control input-sm" title=" " data-live-search="true" data-width="150px"}
+                                 {else}
+                                 {if $files[file].Selected != ""}{$files[file].Selected}
+                                 {else}&nbsp;{/if}
+                                 {/if}
+                                 <label>QC Status
+                                 {if $has_qc_permission} 
+                                 {if $files[file].New}<span class="text-info">( <span class="glyphicon glyphicon-star"></span> New )</span>{/if}
+                                 </label>
+                                 {html_options options=$status_options selected=$files[file].QCStatus tabindex="4"
+                                  name="status[`$files[file].FileID`]" class="form-control input-sm"}
+                                 {else}
+                                 {if $files[file].QCStatus != ""}{$files[file].QCStatus}
+                                 {else}&nbsp;{/if}
+                                 {/if}
+                                 <label>Caveat</label>
+                                 {if $has_qc_permission}
+                                 {if $files[file].Caveat}
+                                 <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
+                                 {/if}
+                                 {html_options options=$caveat_options selected=$files[file].Caveat tabindex="5"
+                                  name="caveat[`$files[file].FileID`]" class="form-control input-sm"}
+                                 {else}
+                                 {if $files[file].Caveat}
+                                  <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveats</a>
+                                 {else}No caveats{/if}
+                                 {/if}
                       </div>
-                      {/if}
-                      <div class="row mri-right-panel-row">
-                          <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-default">
-                                        <input class='mripanel col-xs-3'
-                                               type="checkbox"
-                                               data-file-id='{$files[file].FileID}'
-                                               type='checkbox'
-                                               onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');">
-                                        <span class="glyphicon glyphicon-plus"></span><span class="hidden-xs"> Add panel</span>
-                                    </label>
-                                </div>
-                      </div>
-                      <div class="row mri-right-panel-row">
+                      <div >
                           {if $files[file].FileID}<a class="btn btn-default" href="#noID" onClick='window.open("feedback_mri_popup.php?fileID={$files[file].FileID}",
                               "feedback_mri","width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'> <span class="text-default"><span class="glyphicon glyphicon-pencil"></span><span class="hidden-xs">QC Comments</span></span></a>
                             <br>
                           {else}&nbsp;
-                          {/if}
-                      </div>
-                      <div class="row mri-right-panel-row">
-                          {if $files[file].FileID}<a class="btn btn-default" onclick="toggle_additionalInfo('{$files[file].FileID}')">Header Info</a>
                           {/if}
                       </div>
                       <div class="row mri-right-panel-row">
@@ -88,48 +114,7 @@
                       </div>
                    </div><!--closing mri-right-panel div -->
                   </div><!--closing row div -->
-                   <div class="mri-dropdown-info">
-                       <br>
-                       <div class="row">
-                            <div class="form-group col-sm-3">
-                                 <label>Selected</label>
-                                 {if $has_qc_permission}
-                                 {html_options options=$selected_options selected=$files[file].Selected tabindex="3"
-                                  name="selectedvol[`$files[file].FileID`]" class="form-control input-sm" title=" " data-live-search="true" data-width="150px"}
-                                 {else}
-                                 {if $files[file].Selected != ""}{$files[file].Selected}
-                                 {else}&nbsp;{/if}
-                                 {/if}
-                            </div>
-                            <div class="form-group col-sm-3">
-                                 <label>QC Status
-                                 {if $has_qc_permission} 
-                                 {if $files[file].New}<span class="text-info">( <span class="glyphicon glyphicon-star"></span> New )</span>{/if}
-                                 </label>
-                                 {html_options options=$status_options selected=$files[file].QCStatus tabindex="4"
-                                  name="status[`$files[file].FileID`]" class="form-control input-sm"}
-                                 {else}
-                                 {if $files[file].QCStatus != ""}{$files[file].QCStatus}
-                                 {else}&nbsp;{/if}
-                                 {/if}
-                            </div>
-                            <div class="form-group col-sm-3">
-                                 <label>Caveat</label>
-                                 {if $has_qc_permission}
-                                 {if $files[file].Caveat}
-                                 <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
-                                 {/if}
-                                 {html_options options=$caveat_options selected=$files[file].Caveat tabindex="5"
-                                  name="caveat[`$files[file].FileID`]" class="form-control input-sm"}
-                                 {else}
-                                 {if $files[file].Caveat}
-                                  <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveats</a>
-                                 {else}No caveats{/if}
-                                 {/if}
-                            </div>
-                         </div><!--closing row div-->
-                   </div><!--closing class mri-dropdown-info div -->
-                   <div class="mri-righttable" id="mri-righttable-{$files[file].FileID}">
+                  <div class="mri-righttable" id="mri-righttable-{$files[file].FileID}">
                       <table class="table table-hover table-bordered col-xs-12">
                       <tr>
                       <th class="info">Voxel size</th>

@@ -187,3 +187,7 @@ margin-bottom: 0.5em;
     font-size: 16px;
     color: inherit
 }
+.views {
+    margin-right: 10px;
+    margin-top: -2px;
+}
