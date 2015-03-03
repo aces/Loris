@@ -101,20 +101,22 @@ class NDB_Form_Dashboard extends NDB_Form
         }
 
         // Charts
-        $this->tpl_data['total_scans'] = $DB->selectOne(
-            "SELECT count(*) FROM files f"
+        $this->tpl_data['total_scans'] = $DB->pselectOne(
+            "SELECT count(*) FROM files f",
+            array()
         );
 
         // Tasks
 
         // New scans
         if ($user->hasPermission('imaging_browser_qc')) {
-            $this->tpl_data['new_scans']      = $DB->selectOne(
+            $this->tpl_data['new_scans']      = $DB->pselectOne(
                 "SELECT count(distinct s.ID)
                  FROM files f 
                  LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
                  LEFT JOIN session s ON (s.ID=f.SessionID)
-                 WHERE fqc.QCStatus IS NULL"
+                 WHERE fqc.QCStatus IS NULL",
+                array()
             );
             $this->tpl_data['new_scans_site'] = 'Site: all';
         }
@@ -122,8 +124,9 @@ class NDB_Form_Dashboard extends NDB_Form
         // Data entry conflicts
         if ($user->hasPermission('conflict_resolver')) {
             if ($user->hasPermission('access_all_profiles')) {
-                $this->tpl_data['conflicts']      = $DB->selectOne(
-                    "SELECT count(*) FROM conflicts_unresolved"
+                $this->tpl_data['conflicts']      = $DB->pselectOne(
+                    "SELECT count(*) FROM conflicts_unresolved",
+                    array()
                 );
                 $this->tpl_data['conflicts_site'] = 'Site: all';
             } else {
@@ -142,8 +145,9 @@ class NDB_Form_Dashboard extends NDB_Form
         // Incomplete forms
         if ($user->hasPermission('data_entry')) {
             if ($user->hasPermission('access_all_profiles')) {
-                $this->tpl_data['incomplete_forms']      = $DB->selectOne(
-                    "SELECT count(*) FROM flag WHERE Data_entry='In Progress'"
+                $this->tpl_data['incomplete_forms']      = $DB->pselectOne(
+                    "SELECT count(*) FROM flag WHERE Data_entry='In Progress'",
+                    array()
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: all';
             } else {
@@ -160,9 +164,10 @@ class NDB_Form_Dashboard extends NDB_Form
 
         // Final radiological review
         if ($user->hasPermission('edit_final_radiological_review')) {
-            $this->tpl_data['radiology_review']      = $DB->selectOne(
+            $this->tpl_data['radiology_review']      = $DB->pselectOne(
                 "SELECT count(*) FROM final_radiological_review f 
-                WHERE Review_Done IS NULL"
+                WHERE Review_Done IS NULL",
+                array()
             );
             $this->tpl_data['radiology_review_site'] = 'Site: all';
         }
@@ -171,8 +176,9 @@ class NDB_Form_Dashboard extends NDB_Form
         if ($user->hasPermission('user_accounts_multisite')
             && $user->hasPermission('user_accounts')
         ) {
-            $this->tpl_data['pending_users']      = $DB->selectOne(
-                "SELECT count(*) FROM users WHERE Pending_approval='Y'"
+            $this->tpl_data['pending_users']      = $DB->pselectOne(
+                "SELECT count(*) FROM users WHERE Pending_approval='Y'",
+                array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
         } elseif ($user->hasPermission('user_accounts')) {
@@ -186,8 +192,9 @@ class NDB_Form_Dashboard extends NDB_Form
 
         // Violated scans
         if ($user->hasPermission('violated_scans_view_allsites')) {
-            $this->tpl_data['violated_scans']      = $DB->selectOne(
-                "SELECT count(*) FROM mri_protocol_violated_scans"
+            $this->tpl_data['violated_scans']      = $DB->pselectOne(
+                "SELECT count(*) FROM mri_protocol_violated_scans",
+                array()
             );
             $this->tpl_data['violated_scans_site'] = 'Site: all';
         }
@@ -198,7 +205,8 @@ class NDB_Form_Dashboard extends NDB_Form
         ) {
             $document_repository = $DB->pselect(
                 "SELECT File_name, Date_uploaded, Data_dir FROM document_repository 
-                ORDER BY Date_uploaded DESC LIMIT 4"
+                ORDER BY Date_uploaded DESC LIMIT 4",
+                array()
             );
             for ($i=0; $i < sizeof($document_repository); $i++) {
                 if ($document_repository[$i]['Date_uploaded'] > $last_login) {
@@ -220,8 +228,9 @@ class NDB_Form_Dashboard extends NDB_Form
     function getTotalRecruitment()
     {
         $DB = Database::singleton();
-        $totalRecruitment = $DB->selectOne(
-            "SELECT count(*) FROM candidate c WHERE c.Active='Y'"
+        $totalRecruitment = $DB->pselectOne(
+            "SELECT count(*) FROM candidate c WHERE c.Active='Y'",
+            array()
         );
         return $totalRecruitment;
     }

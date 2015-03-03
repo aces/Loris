@@ -18,11 +18,13 @@ ini_set('default_charset', 'utf-8');
 $DB = Database::singleton();
 
 $recruitmentData      = array();
-$recruitmentStartDate = $DB->selectOne(
-    "SELECT min(Date_registered) FROM candidate"
+$recruitmentStartDate = $DB->pselectOne(
+    "SELECT min(Date_registered) FROM candidate",
+    array()
 );
-$recruitmentEndDate   = $DB->selectOne(
-    "SELECT max(Date_registered) FROM candidate"
+$recruitmentEndDate   = $DB->pselectOne(
+    "SELECT max(Date_registered) FROM candidate",
+    array()
 );
 
 $recruitmentData['labels']

@@ -83,7 +83,7 @@ function createChartLabels($startDate, $endDate)
  */
 function getScanData($dataset, $labels)
 {
-    $DB   =& Database::singleton();
+    $DB   = Database::singleton();
     $data = array();
     foreach ($labels as $label) {
         $month  = (strlen($label) == 6)
