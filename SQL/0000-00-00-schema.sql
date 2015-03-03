@@ -2369,4 +2369,3 @@ INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','calls specific In
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation of the dicoms After uploading','tarchive_validation');
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation of DICOMS before uploading','imaging_upload_file');
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
-
