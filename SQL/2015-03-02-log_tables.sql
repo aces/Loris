@@ -1,4 +1,4 @@
-REATE TABLE `log` (
+CREATE TABLE `log` (
   `LogID` int(11) NOT NULL AUTO_INCREMENT,
   `LogTypeID` int(11) NOT NULL DEFAULT '0',
   `ProcessID` int(11) NOT NULL DEFAULT '0',
