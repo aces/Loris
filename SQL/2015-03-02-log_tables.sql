@@ -21,9 +21,9 @@ CREATE TABLE `log_types` (
   PRIMARY KEY (`LogTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Insertion of the mincs into the mri-table','minc_insertion');
-INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','calls the different scrips','tarchive_loader');
+INSERT INTO log_types (Type,Descrip2tion,Origin) VALUES ('mri','Insertion of the mincs into the mri-table','minc_insertion');
+INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','calls specific Insertiong Scripts','tarchive_loader');
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation of the dicoms After uploading','tarchive_validation');
 INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation of DICOMS before uploading','imaging_upload_file');
-INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation,Running DicomTar.pl and TarchiveLoader','ImagingUpload');
+INSERT INTO log_types (Type,Description,Origin) VALUES ('mri','Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
 
