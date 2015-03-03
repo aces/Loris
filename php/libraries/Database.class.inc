@@ -554,7 +554,12 @@ class Database extends PEAR
     function execute($prepared, $params)
     {
         $execRun = $prepared->execute($params);
-        $rows    = $prepared->fetchAll(PDO::FETCH_ASSOC);
+        if ($execRun === false) {
+            $err = $prepared->errorInfo();
+            throw new DatabaseException($err[2], $prepared->queryString, $params);
+        }
+
+        $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
         return $rows;
     }
     /**
@@ -571,8 +576,9 @@ class Database extends PEAR
     function pselect($query, $params)
     {
         $this->_printQuery($query, $params);
-        $stmt = $this->prepare($query);
-        return $this->execute($stmt, $params);
+        $stmt   = $this->prepare($query);
+        $result = $this->execute($stmt, $params);
+        return $result;
     }
 
     /**

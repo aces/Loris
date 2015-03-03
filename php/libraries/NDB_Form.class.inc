@@ -128,7 +128,6 @@ class NDB_Form extends NDB_Page
      * saves the validated data into the database
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function save()

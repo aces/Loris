@@ -16,6 +16,7 @@
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'NDB_Config.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Caller.class.inc';
@@ -69,7 +70,7 @@ class DirectDataEntryMainPage
         $this->key = $_REQUEST['key'];
 
         $DB = Database::singleton();
-        $this->TestName = $DB->pselectOne(
+        $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
             array('key' => $this->key)
@@ -79,7 +80,7 @@ class DirectDataEntryMainPage
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
             array('key' => $this->key)
         );
-        $this->NumPages = $DB->pselectOne(
+        $this->NumPages  = $DB->pselectOne(
             "SELECT COUNT(*) FROM instrument_subtests WHERE Test_name=:TN",
             array('TN' => $this->TestName)
         );
@@ -93,7 +94,6 @@ class DirectDataEntryMainPage
             $pageNum = $_REQUEST['pageNum'];
         }
 
-
         if ($pageNum === 'finalpage') {
             $this->Subtest = 'finalpage';
         } else {
@@ -101,24 +101,28 @@ class DirectDataEntryMainPage
                 "SELECT Subtest_name
                 FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
-                array('TN' => $this->TestName, 'PN' => $pageNum)
+                array(
+                 'TN' => $this->TestName,
+                 'PN' => $pageNum,
+                )
             );
         }
 
-        $totalPages = $DB->pselectOne(
+        $totalPages        = $DB->pselectOne(
             "SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN",
             array('TN' => $this->TestName)
         );
         $this->NextPageNum = $this->getNextPageNum($pageNum);
         $this->PrevPageNum = $this->getPrevPageNum($pageNum);
 
-        $this->CommentID   = $this->getCommentID();
-        $this->tpl_data = array(
-            'nextpage' => $this->NextPageNum, 
-            'prevpage' => $this->PrevPageNum, 
-            'pageNum'  => $pageNum ? $pageNum + 1: 1,
-            'totalPages' => $totalPages,
-            'key' => $this->key);
+        $this->CommentID = $this->getCommentID();
+        $this->tpl_data  = array(
+                            'nextpage'   => $this->NextPageNum,
+                            'prevpage'   => $this->PrevPageNum,
+                            'pageNum'    => $pageNum ? $pageNum + 1: 1,
+                            'totalPages' => $totalPages,
+                            'key'        => $this->key,
+                           );
     }
 
 
@@ -140,7 +144,10 @@ class DirectDataEntryMainPage
             "SELECT Order_number FROM instrument_subtests
             WHERE Test_name=:TN AND Order_number > :PN 
             ORDER BY Order_number",
-            array('TN' => $this->TestName, 'PN' => $currentPage)
+            array(
+             'TN' => $this->TestName,
+             'PN' => $currentPage,
+            )
         );
     }
 
@@ -176,7 +183,10 @@ class DirectDataEntryMainPage
         return $DB->pselectOne(
             "SELECT Order_number FROM instrument_subtests 
             WHERE Test_name=:TN AND Order_number < :PN ORDER BY Order_number DESC",
-            array('TN' => $this->TestName, 'PN' => $currentPage)
+            array(
+             'TN' => $this->TestName,
+             'PN' => $currentPage,
+            )
         );
     }
 
@@ -207,7 +217,7 @@ class DirectDataEntryMainPage
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
             array(
-                'key' => $this->key
+             'key' => $this->key,
             )
         );
     }
@@ -232,11 +242,11 @@ class DirectDataEntryMainPage
         }
 
         $this->tpl_data['workspace'] = $e->getMessage();
-        $this->tpl_data['complete'] = false;
+        $this->tpl_data['complete']  = false;
         $smarty = new Smarty_neurodb;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
-        
+
     }
 
     /**
@@ -279,7 +289,7 @@ class DirectDataEntryMainPage
      * Saves the comments that the user gave on the final page
      * to the database
      *
-     * @param integer $ease     Integer rating of how easy the user found the 
+     * @param integer $ease     Integer rating of how easy the user found the
      *                          survey to use
      * @param string  $comments Comments entered by survey user on review page
      *
@@ -291,8 +301,8 @@ class DirectDataEntryMainPage
         $DB->update(
             "participant_accounts",
             array(
-                'UserEaseRating' => $ease,
-                'UserComments'   => $comments
+             'UserEaseRating' => $ease,
+             'UserComments'   => $comments,
             ),
             array('OneTimePassword' => $this->key)
         );
@@ -307,7 +317,7 @@ class DirectDataEntryMainPage
      */
     function logRequest()
     {
-        $log = new Log("direct_entry");
+        $log    = new Log("direct_entry");
         $logmsg = $_SERVER['REMOTE_ADDR'];
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $logmsg .= " (" . $_SERVER['HTTP_X_FORWARDED_FOR'] . ")";
@@ -325,20 +335,20 @@ class DirectDataEntryMainPage
      */
     function display()
     {
-        $DB = Database::singleton();
+        $DB           = Database::singleton();
             $nextpage = null;
 
         $this->logRequest();
-        
+
         if (isset($_REQUEST['nextpage'])) {
-            $nextpage = "survey.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]"; 
+            $nextpage = "survey.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]";
         }
-        
+
         if (isset($_POST['ease'])) {
             // Comments is too comment of an instrument fieldname,
             // so just check if ease is set
             $this->updateComments(
-                $_POST['ease'], 
+                $_POST['ease'],
                 $_POST['comments']
             );
         }
@@ -351,7 +361,7 @@ class DirectDataEntryMainPage
         );
 
         // Caller calls instrument's save function and might have errors,
-        // so we still need to call it. But if nextpage is 'complete', 
+        // so we still need to call it. But if nextpage is 'complete',
         // then after that override with a "Thank you" message
         if ($_REQUEST['pageNum'] === 'finalpage') {
             if (isset($_POST['FinalPageSubmission'])
@@ -363,36 +373,36 @@ class DirectDataEntryMainPage
                 // We're just getting to the last page for the first time
 
                 $this->tpl_data['workspace'] = '';
-                $this->tpl_data['review']  = $this->caller->instrument->getReview();
+
+                $this->tpl_data['review'] = $this->caller->instrument->getReview();
 
             }
-            $this->tpl_data['lastpage'] = "survey.php?key=$_REQUEST[key]";
+            $this->tpl_data['lastpage']  = "survey.php?key=$_REQUEST[key]";
             $this->tpl_data['finalpage'] = true;
         } else if ($_REQUEST['pageNum'] === 'complete') {
             $this->tpl_data['workspace'] = "Thank you for completing this survey.";
-            $this->tpl_data['complete'] = true;
-            
+            $this->tpl_data['complete']  = true;
+
             $this->updateStatus('Complete');
-            $Responses = $DB->update(
+            $Responses      = $DB->update(
                 $this->TestName,
                 array(
-                    'Date_taken' => date('Y-m-d')
+                 'Date_taken' => date('Y-m-d'),
                 ),
                 array(
-                    'CommentID' => $this->CommentID
+                 'CommentID' => $this->CommentID,
                 )
             );
             $Responses_flag = $DB->update(
                 'flag',
                 array(
-                    'Data_entry' => 'Complete',
-                    'Administration'=>'All'
+                 'Data_entry'     => 'Complete',
+                 'Administration' => 'All',
                 ),
                 array(
-                    'CommentID' => $this->CommentID
+                 'CommentID' => $this->CommentID,
                 )
-
-             );
+            );
 
         } else {
             $this->updateStatus('In Progress');

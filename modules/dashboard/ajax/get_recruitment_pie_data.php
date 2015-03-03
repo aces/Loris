@@ -23,13 +23,13 @@ $client->initialize();
 
 $DB =& Database::singleton();
 $recruitmentBySiteData = array();
-$list_of_sites =& Utility::getSiteList();
+$list_of_sites = Utility::getSiteList();
 foreach ($list_of_sites as $site) {
     $recruitmentBySiteData[] = array(
         "label" => $site,
         "total" => $DB->pselectOne(
-            "SELECT count(c.CandID) 
-            FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
+            "SELECT count(c.CandID)
+            FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID)
             WHERE c.Active='Y' AND psc.Name=:Site", array('Site' => $site)
         )
     );

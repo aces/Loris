@@ -126,7 +126,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function setup()
@@ -308,7 +307,11 @@ class NDB_Menu_Filter extends NDB_Menu
             // the filters values remain populated correctly in the front-end,
             // not just in the query..
             $defaults = $this->_getDefaults();
-            $this->_setDefaults(array_merge($defaults, $savedFilters));
+            if (is_array($savedFilters)) {
+                $this->_setDefaults(array_merge($defaults, $savedFilters));
+            } else {
+                $this->_setDefaults($defaults);
+            }
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['filter'])
         ) {
@@ -350,7 +353,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Contructs the menu
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _build()
@@ -431,7 +433,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Returns a list of candidates, users, etc.
      *
      * @return array
-     * @throws PEAR_Error
      * @access private
      */
     function _getList()
@@ -576,7 +577,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Sets the template data for the list of candidates, users, etc.
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _setDataTable()
