@@ -22,6 +22,7 @@ RUN ls /etc/apache2/sites-enabled
 RUN a2ensite loris
 
 EXPOSE 80
+VOLUMES ["/var/www/loris/project", "/var/log/apache2", "/var/lib/php5"]
 
 ADD docs/Docker/LorisWeb-EntryPoint.sh /entrypoint.sh
 CMD ["apache2ctl", "-D", "FOREGROUND"]
