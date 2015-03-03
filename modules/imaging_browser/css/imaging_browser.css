@@ -17,12 +17,12 @@
 
 .table-mri-right-and-center th, .table-mri-right-and-center td {
     border: 1px silver solid;
-    padding: 0.3em;
+    padding: 0.2em;
 }
 .table-mri-right-and-center th {
-/*    background: #999999;*/
-   background: #1c70b6;
+    background: #999999;
     text-align: left;
+    color: #000;
 }
 
 .table-mri-right-and-center caption {
@@ -169,21 +169,21 @@ padding-right: 15px;
    font-weight: bold;
    font-size: 1.1em;
 }
-.mri-right-panel {
-    float: right;
-/*    position: relative;*/
-    padding-left: 120px;
-    width: 30%;
-}
-/*
+
 .mri-right-panel-row {
-   padding-top: 5px;
+   padding-top: 10px;
 }
-*/
 .line-separator {
 height: 1px;
 background: #717171;
 border-bottom: 1px solid #e5e5e5;
 margin-top: 0.7em;
 margin-bottom: 0.5em;
+}
+.panel-title {
+    display: inline;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit
 }
