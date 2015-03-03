@@ -1,4 +1,4 @@
-    <?php
+<?php
 /**
  * Mri_upload class file
  *
