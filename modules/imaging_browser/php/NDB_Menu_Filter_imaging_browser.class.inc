@@ -239,12 +239,13 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         //query to get scan types that exist for the project
         $types_q = $DB->pselect(
                 "SELECT ID, Scan_type FROM mri_scan_type mri
-                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)", array()
-            );
+                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+                 array()
+        );
         $scan_types[''] = '';
-            foreach ($types_q as $row) {
-                $type                   = $row['Scan_type'];
-                $scan_types[$row['ID']] = $type;
+        foreach ($types_q as $row) {
+            $type                   = $row['Scan_type'];
+            $scan_types[$row['ID']] = $type;
         }
         $this->addSelect('Scan_type', 'Sequence Type', $scan_types);
 
