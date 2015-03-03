@@ -8,7 +8,7 @@
  * @package  Main
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://gi=nullhub.com/mohadesz/Loris-Trunk
+ * @link     https://github.com/mohadesz/Loris-Trunk
 */
 
 require_once 'NDB_Menu_Filter_Form.class.inc';
@@ -264,7 +264,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 array('cid' => $candid)
             )==0) {
                 $errors[] = "The CandID: $candid Doesn't exist";
-            }//////////////////////////////////////////////////////////////////
+            }
+            //////////////////////////////////////////////////////////////////
             //////check to se if pscid exists//////////////////////////////////
             ///////////////////////////////////////////////////////////////////
             if ($db->pselectOne(
@@ -310,7 +311,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function importFile($file, $args)
     {
         $userid    = $args['user_id'];
-        print_r($args);
         $feedbacks = array();
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
@@ -375,28 +375,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return false;
     }
 
-    /**
-     * Checks to see if the file is of type
-     * .zip , .tgz or .tar.gz
-     * if Yes it will return true
-     * Otherwise it will return false
-     * @param $file_name The uploaded file
-     * @return boolean
-     */
-    function isFileCompressed($file_name) {
-        
-        ///////////////////////////////////////////////////////////////////////
-        //////////////Make sure the extension is valid/////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if (!(preg_match("/.zip/i", $file_name))
-            && (!(preg_match("/.tgz/i", $file_name)))
-            && (!(preg_match("/.tar.gz/i", $file_name)))
-        ) {
-            return false;
-            
-        }
-        return true;
-    }
+    
     /**
      * Creates a temporairy directory
      *
@@ -416,23 +395,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
-      /**
-    * The getTargetDirectory retrieves info about where the file should be stored.
-    *
-    * The returned directory is ADDED to the baseUploadDirectory property.
-    * It should have a trailing slash.
-    *
-    * @param string $file The full filename including directory.
-    * @param Array  $args The list of arguments
-    *
-    * @return bool  $success if operation succeeded
-    * @access public
-    */
-    function getTargetDirectory($file, $args)
-    {
-        $output ="{$args["user_id"]}/";
-        return $output;
-    }
+    
 
       /**
     * The SetTempDir sets the tempdir
@@ -456,7 +419,5 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         return $this->temp_path;
     }
-
-   
 }
 ?>
