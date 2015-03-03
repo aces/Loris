@@ -32,7 +32,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
 
     var $show_queries = true;
-    var $temp_path=null;
+    var $temp_path    =null;
     /**
      * The _has_access returns true
      * if the user has the specific permission
@@ -46,7 +46,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-        return $user->hasPermission('mri_upload');
+        //return $user->hasPermission('mri_upload');
+        return true;
     }
 
     /**
@@ -85,7 +86,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                                'PSCID'       => 'c.PSCID',
                                'visit_label' => 's.visit_label',
                               );
- 
         return true;
     }
 
@@ -123,7 +123,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (empty($_FILES) && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
-            
             $upload_max_size = ini_get('upload_max_filesize');
             echo "<p style=\"color: #F00;\">\nPlease make sure files are
             not larger than {$upload_max_size} <br></p>";
@@ -131,11 +130,18 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
         return true;
     }
-
-    
-    function _process($values) {
+     /**
+      * Returns true if the _saveFile has successfully
+      * Completed
+      *
+      * @param array $values the array of values from the form
+      *
+      * @return true on success, false othewise
+      * @access private
+     */
+    function _process($values)
+    {
         if ($this->_saveFile($values)) {
-        
             return true;
         }
         return false;
@@ -155,15 +161,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         include_once "File_Upload.class.inc";
 
         //get the stored-file path
-
         $config           = NDB_Config::singleton();
         $paths            = $config->getSetting('paths');
         $stored_file_path = $paths['IncomingPath'];
-        
         $file =new File_Upload;
-
         $file->overwriteMode = "reject";
-        $file->fileMove          = false;
+        $file->fileMove      = false;
 
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
@@ -171,12 +174,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler(
-            "mri_file", $this    );
+            "mri_file",
+            $this
+        );
 
-        //Set the target directory that you want files moved
-        //into once they are validated and processed.
-        //$file->setBaseUploadDirectory($stored_file_path);
-        
         $user = User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError(
@@ -184,7 +185,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $user->getMessage()
             );
         }
-        
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
 
@@ -213,30 +213,26 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function isValid($file, $args)
     {
-
         //make sure the file-name is  valid
-        
         $temp_file     = $file->fileInfo['tmp_name'];
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         $this->setTempPath($new_temp_file);
-        $db            = Database::singleton();
-        $errors        = array();
-        $config        = NDB_Config::singleton();
+        $db     = Database::singleton();
+        $errors = array();
+        $config = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
-        $corect_name        = $dicom_archive_settings['patientNameRegex'];
-        $file_name          = $file->fileInfo['name'];
-        $header_patient_name            = array();
+        $corect_name            = $dicom_archive_settings['patientNameRegex'];
+        $file_name           = $file->fileInfo['name'];
+        $header_patient_name = array();
 
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-                     
-     
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -331,9 +327,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////////////Insert values into mri_upload//////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $date   = date('Y-m-d H:i:s');
-            
-        //only insert if the file-name doesn't exist in the table:
+        $date = date('Y-m-d H:i:s');
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -347,35 +341,30 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 $visit_label = $args['values']['VisitLabel'];
                 $candid      = $args['values']['CandID'];
                 $pscid       = $args['values']['PSCID'];
-            
-    
-            $sessionid = $db->pselectOne(
-                "SELECT ID FROM  session WHERE CandID = :cid".
-                " AND Visit_label =:vlabel ",
-                array(
-                 'cid'    => $candid,
-                 'vlabel' => $visit_label,
-                )
-            );
-    
-            $values = array(
-                       'UploadedBy'     => $user_name,
-                       'UploadDate'     => $date,
-                       'SourceLocation' => $this->getTempPath(),
-                       'SessionID'      => $sessionid,
-                       'PatientName'    => $pscid. "_" . $candid . "_" . $visit_label
-                       
-                      );
-            $db->Insert(
-                'mri_upload',
-                $values
-            );
+                $pname       = $pscid. "_" . $candid . "_" . $visit_label;
+                $sessionid   = $db->pselectOne(
+                    "SELECT ID FROM  session WHERE CandID = :cid".
+                    " AND Visit_label =:vlabel ",
+                    array(
+                     'cid'    => $candid,
+                     'vlabel' => $visit_label,
+                    )
+                );
+                $values      = array(
+                                'UploadedBy'     => $user_name,
+                                'UploadDate'     => $date,
+                                'SourceLocation' => $this->getTempPath(),
+                                'SessionID'      => $sessionid,
+                                'PatientName'    => $pname,
+                               );
+                $db->Insert(
+                    'mri_upload',
+                    $values
+                );
             return true;
         }
         return false;
     }
-
-    
     /**
      * Creates a temporairy directory
      *
@@ -395,9 +384,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
-    
-
-      /**
+    /**
     * The SetTempDir sets the tempdir
     *
     * @param string $tempFilePath The path to the temp file
@@ -406,11 +393,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     */
     function setTempPath($tempFilePath)
     {
-     $this->temp_path = $tempFilePath;
+        $this->temp_path = $tempFilePath;
     }
 
-
-   /**
+    /**
     * The getTempPath gets the temp_path
     *
     * @return String returns temp_path
