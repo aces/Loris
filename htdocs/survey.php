@@ -15,14 +15,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-ini_set('default_charset', 'utf-8');
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once 'NDB_Config.class.inc';
-require_once 'Smarty_hook.class.inc';
-require_once 'NDB_Caller.class.inc';
-require_once 'NDB_Client.class.inc';
-require_once 'NDB_BVL_Instrument.class.inc';
-require_once 'Log.class.inc';
+ini_set('default_charset', 'utf-8');
 
 /**
  * Implements the survey page
