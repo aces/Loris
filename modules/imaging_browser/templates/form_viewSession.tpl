@@ -53,11 +53,7 @@
                    <div class="col-xs-3 mri-right-panel">
                       <div class="form-group">
                           <label>QC Status
-                              {if $files[file].QCStatus == "Pass"}
-                                  <span class="label label-success">{$files[file].QCStatus}</span>
-                                  {elseif $files[file].QCStatus == "Fail"}<span class="label label-danger">{$files[file].QCStatus}</span>
-                              {/if}
-                              {if $has_qc_permission} 
+                              {if $has_qc_permission}
                               {if $files[file].New}<span class="text-info">( <span class="glyphicon glyphicon-star"></span> New )</span>{/if}
                            </label>
                                   {html_options options=$status_options selected=$files[file].QCStatus tabindex="4"

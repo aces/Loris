@@ -43,6 +43,16 @@
     </ul>
 
     <h3>Visit Level QC</h3>
+    <div class="visit-level-feedback">
+          <a class="btn btn-default" href="#"
+               onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">
+                 <span class="text-default">
+                     <span class="glyphicon glyphicon-pencil feedback-text"></span>
+                     <span class="hidden-xs feedback-text"> Visit Level Feedback</span>
+                 </span>
+        </a>
+     </div>
+
     {if $subject.has_permission}<form action='' method='post'>{/if}
     <div class='div-controlpanel-bottom'>
         <div class="form-group">
@@ -53,16 +63,7 @@
        	{if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2 class="form-control input-sm" style="width:100px"}{else}{if $subject.mriqcpending=='Y'}Yes{else}No{/if}{/if}
    <br>
     {if $subject.has_permission}<input class="btn btn-default" type="submit" accesskey="s" value="Save" name="save_changes">{/if}
-   <div class="visit-level-feedback">
-          <a class="btn btn-default" href="#"
-               onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">
-                 <span class="text-default">
-                     <span class="glyphicon glyphicon-pencil feedback-text"></span>
-                     <span class="hidden-xs feedback-text"> Visit Level Feedback</span>
-                 </span>
-        </a>
-     </div>
-</div>
+   </div>
 </td>
 <td class='td-cpanel-fake'><table class='table-cpanel-fake'></table>
 <!-- /Control Panel -->
