@@ -79,18 +79,37 @@ $(function () {
 });
 
 function toggle_additionalInfo (file_id) {
-    "use strict";console.log(file_id);
+    "use strict";
     $('#mri-righttable-'+file_id).slideToggle("slow");
- /*
-    var arrow = $('#filename-'+file_id).children('.arrow');
+}
+function toggle_mriPanel(file_id) {
+    "use strict";
+    $('#panel-body-'+file_id).slideToggle("slow");
+    var arrow = $('#mri-panel-'+file_id).children('.arrow');
     if (arrow.hasClass('glyphicon-chevron-down')) {
         arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
     } else {
         arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
     }
-*/
 
 }
+
+$(document).ready(function () {
+   "use strict";
+   $('#panel-main-heading span.clickable').on("click", function () {
+        if ($(this).hasClass('panel-collapsed')) {
+            // expand the panel
+            $(this).parents('.panel').find('.panel-mri-body').slideDown();
+            $(this).removeClass('panel-collapsed');
+            $(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        } else {
+            // collapse the panel
+            $(this).parents('.panel').find('.panel-mri-body').slideUp();
+            $(this).addClass('panel-collapsed');
+            $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        }
+    });
+});
 
 function open_popup(newurl) {
     "use strict";
