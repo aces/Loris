@@ -161,10 +161,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         include_once "File_Upload.class.inc";
 
         //get the stored-file path
-        $config           = NDB_Config::singleton();
-        $paths            = $config->getSetting('paths');
-        $stored_file_path = $paths['IncomingPath'];
+
         $file =new File_Upload;
+        $config = NDB_Config::singleton();
+        $paths = $config->getSetting('paths');
+        $stored_file_path    = $paths['IncomingPath'];
         $file->overwriteMode = "reject";
         $file->fileMove      = false;
 
@@ -218,15 +219,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         $this->setTempPath($new_temp_file);
-        $db     = Database::singleton();
+        $db = Database::singleton();
         $errors = array();
         $config = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
-        $file_name           = $file->fileInfo['name'];
-        $header_patient_name = array();
+        $header_patient_name    = array();
+        $file_name = $file->fileInfo['name'];
 
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
