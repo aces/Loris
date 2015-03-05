@@ -27,10 +27,9 @@
 	CustomLog /var/log/apache2/%PROJECTNAME%-access.log combined
 	ServerSignature Off
 
-    #SSLEngine Off  # change to On to enable, after updating cert paths below
-
-    #SSLCertificateFile /etc/apache2/ssl/%PROJECTNAME%-cert.pem
-    #SSLCertificateKeyFile /etc/apache2/ssl/%PROJECTNAME%-key.pem
-    #SSLCACertificateFile /etc/apache2/ssl/CA-cacert.pem
+        # SSLEngine Off  # change to On to enable, after updating cert paths below
+        # SSLCertificateFile /etc/apache2/ssl/%PROJECTNAME%-cert.pem
+        # SSLCertificateKeyFile /etc/apache2/ssl/%PROJECTNAME%-key.pem
+        # SSLCACertificateFile /etc/apache2/ssl/CA-cacert.pem
 
 </VirtualHost>
