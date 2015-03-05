@@ -146,7 +146,7 @@ Class TimePoint
         }
         // New feature, older databases might not have the table created,
         // so require a config option to be set
-        if ($config->getSetting("SupplementalSessionStatus") == true) {
+        if ($config->getSetting("SupplementalSessionStatus") == 'true') {
 
             $query = "SELECT ss.Name, ss.Value
                         FROM session_status ss
