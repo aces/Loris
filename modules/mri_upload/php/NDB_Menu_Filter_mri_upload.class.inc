@@ -288,10 +288,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 echo "failed to copy $temp_file to $new_temp_file \n";
             }
             $this->setTempPath($new_temp_file);
-
-            if (count($errors) > 0) {
-                return $errors;
-            }
+        }
+        if (count($errors) > 0) {
+            return $errors;
         }
         return true;
     }
