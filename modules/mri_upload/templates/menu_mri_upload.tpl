@@ -116,9 +116,14 @@
                             {section name=piece loop=$items[item]}
                           
                                 {if $items[item][piece].name eq 'Tarchive_Info'}
-                                    <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&
-                                    tarchiveID={$items[item][piece].value}">
-                                    View Details</a></td>
+                                    {if $items[item][piece].value}
+ 
+                                        <td nowrap="nowrap"><a href="main.php?test_name=dicom_archive&subtest=viewDetails&
+                                        tarchiveID={$items[item][piece].value}">
+                                        View Details</a></td>
+                                    {else}
+                                        <td nowrap="nowrap"> </td>
+                                    {/if} 
                                     
                                 {elseif $items[item][piece].name eq 'number_of_mincInserted'}     
                                 
