@@ -229,7 +229,8 @@ class NDB_Form_Dashboard extends NDB_Form
     {
         $DB = Database::singleton();
         $totalRecruitment = $DB->pselectOne(
-            "SELECT count(*) FROM candidate c WHERE c.Active='Y'",
+            "SELECT count(*) FROM candidate c
+             WHERE c.Active='Y' AND Entity_type='Human'",
             array()
         );
         return $totalRecruitment;
@@ -318,18 +319,18 @@ class NDB_Form_Dashboard extends NDB_Form
                 = $recruitmentTarget;
 
             if ($ID == 'overall') {
-                $totalFemales = $this->getTotalGender("female");
+                $totalFemales = $this->getTotalGender("Female");
             } else {
-                $totalFemales = $this->getTotalGenderByProject("female", $ID);
+                $totalFemales = $this->getTotalGenderByProject("Female", $ID);
             }
             $this->tpl_data['recruitment'][$ID]['female_total']   = $totalFemales;
             $this->tpl_data['recruitment'][$ID]['female_percent']
                 = round($totalFemales / $recruitmentTarget * 100);
 
             if ($ID == 'overall') {
-                $totalMales = $this->getTotalGender("male");
+                $totalMales = $this->getTotalGender("Male");
             } else {
-                $totalMales = $this->getTotalGenderByProject("male", $ID);
+                $totalMales = $this->getTotalGenderByProject("Male", $ID);
             }
             $this->tpl_data['recruitment'][$ID]['male_total']   = $totalMales;
             $this->tpl_data['recruitment'][$ID]['male_percent']
