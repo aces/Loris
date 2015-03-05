@@ -406,5 +406,25 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         return $this->temp_path;
     }
+
+    /**
+    * The getTargetDirectory retrieves info about where the file should be stored.
+    *
+    * The returned directory is ADDED to the baseUploadDirectory property.
+    * It should have a trailing slash.
+    *
+    * @param string $file The full filename including directory.
+    * @param Array  $args The list of arguments
+    *
+    * @return bool  $success if operation succeeded
+    * @access public
+    */
+    function getTargetDirectory($file, $args)
+    {
+        $output ="{$args["user_id"]}/";
+        return $output;
+    }
+
+
 }
 ?>
