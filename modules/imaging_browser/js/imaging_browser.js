@@ -109,6 +109,7 @@ $(document).ready(function () {
             $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
         }
     });
+
 });
 
 function open_popup(newurl) {

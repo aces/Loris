@@ -15,12 +15,12 @@
 <div class="panel panel-default">
     <div class="panel-heading" id="panel-main-heading">
         <h3 class="panel-title">{if $files|@count}{$files|@count} file(s) displayed.</h3>
-        <span class="pull-right clickable mri-arrow glyphicon glyphicon-chevron-down" onclick="toggle_allMriPanels()"></span>
+        <span class="pull-right clickable mri-arrow glyphicon glyphicon-chevron-up"></span>
     </div> <!-- closing panel-heading div-->
    <div class="panel-body">
       {section name=file loop=$files}
        <div class="col-xs-12 col-md-6 ib_frame">
-            <div class="panel panel-default">
+            <div class="panel panel-default" id="subpanel-{$files[file].FileID}">
                 <div class="panel-heading" id="mri-panel-{$files[file].FileID}">
                     <input type="checkbox"
                            data-file-id='{$files[file].FileID}'
@@ -32,11 +32,11 @@
                           <span class="label label-success">{$files[file].QCStatus}</span>
                           {elseif $files[file].QCStatus == "Fail"}<span class="label label-danger">{$files[file].QCStatus}</span>
                      {/if}
-                     <span class="pull-right clickable glyphicon arrow glyphicon-chevron-down" onclick="toggle_mriPanel('{$files[file].FileID}')"></span>
+                     <span class="pull-right clickable glyphicon arrow glyphicon-chevron-up" onclick="toggle_mriPanel('{$files[file].FileID}')"></span>
                       <div class="pull-right">
                           <div class="btn-group views">
                               <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                      data-toggle="dropdown" onclick="toggle_additionalInfo('{$files[file].FileID}')">
+                                      data-toggle="dropdown" data-fileid="{$files[file].FileID}" onclick="toggle_additionalInfo('{$files[file].FileID}')">
                                  Header Info
                               <span class="caret"></span>
                               </button>
