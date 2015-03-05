@@ -52,8 +52,8 @@
                         <label class="col-md-4">{$form.addName.label}</label>
                         <div class="col-md-8">{$form.addName.html}</div>
                     </div>
-                    <div class="checkbox">
-                        <label class="col-md-4">
+                    <div class="col-md-4">
+                        <label>
                             <input type="checkbox" name="radiologist" value="1"> Radiologist
                         </label>
                     </div>
