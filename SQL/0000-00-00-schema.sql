@@ -2354,7 +2354,7 @@ CREATE TABLE `log` (
   `Error` tinyint(1) DEFAULT '0',
   `CenterID` tinyint(2) unsigned DEFAULT NULL,
   PRIMARY KEY (`LogID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `log_types` (
   `LogTypeID` int(11) NOT NULL AUTO_INCREMENT,
