@@ -80,7 +80,7 @@ if ($comments->objectType == 'volume') {
     $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label, s.SubprojectID,
                     f.File AS File_name, st.Scan_type
                 FROM files AS f, session AS s, candidate AS c, mri_scan_type AS st
-                WHERE f.FileID='$comments->fileID'
+                WHERE f.FileID=:FID
                     AND f.SessionID=s.ID
                     AND s.CandID=c.CandID
                     AND f.AcquisitionProtocolID=st.ID
@@ -101,7 +101,6 @@ if ($comments->objectType == 'volume') {
 }
 
 $result = $DB->pselect($query, $qparams);
-$DB->select($query, $result);
 if (PEAR::isError($result)) {
     $tpl_data['error_message'][] = $result->getMessage();
 }
