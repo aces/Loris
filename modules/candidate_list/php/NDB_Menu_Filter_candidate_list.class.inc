@@ -64,7 +64,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'COALESCE(pso.ID,1) AS Participant_Status',
                          );
         if ($useProjects === "true") {
-            $this->columns[] = 'min(candidate.ProjectID) as Project';
+            $this->columns[] = 'min(c.ProjectID) as Project';
         }
         $this->columns =array_merge(
             $this->columns,
@@ -338,7 +338,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
             $x++;
         }
-
+        $this->tpl_data['numCandidates'] = $this->TotalItems;
         return true;
     }
 }

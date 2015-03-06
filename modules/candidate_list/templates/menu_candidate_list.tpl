@@ -189,6 +189,12 @@
     </form>
 </div>
 </div>
+<div class="col-xs-12">
+<!-- listing of visits -->
+{if $numCandidates}
+  {$numCandidates} subject(s) selected.<br><br>
+{/if}
+</div>
 <div class="row">
 <table border="0" valign="bottom" width="100%">
 <tr>
