@@ -361,7 +361,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     'mri_upload',
                     $values
                 );
-            return true;
+                return true;
         }
         return false;
     }
