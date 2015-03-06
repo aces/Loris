@@ -162,9 +162,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //get the stored-file path
 
-        $file =new File_Upload;
+        $file   =new File_Upload;
         $config = NDB_Config::singleton();
-        $paths = $config->getSetting('paths');
+        $paths  = $config->getSetting('paths');
         $stored_file_path    = $paths['IncomingPath'];
         $file->overwriteMode = "reject";
         $file->fileMove      = false;
@@ -219,7 +219,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         $this->setTempPath($new_temp_file);
-        $db = Database::singleton();
+        $db     = Database::singleton();
         $errors = array();
         $config = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
