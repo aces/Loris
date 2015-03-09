@@ -180,6 +180,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         // and register the file_upload field names being used.
         $file->registerForm($this->form);
 
+        //Set the target directory that you want files moved
+        //into once they are validated and processed.
+        //$file->setBaseUploadDirectory($stored_file_path);
+
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler(
             "mri_file",
@@ -242,8 +246,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if (!isCompressed($file_name)) {
-            $errors[] ="The uploaded File is compressed or is not of type"
+        if (!$this->isCompressed($temp_dir. "/".$file_name)) {
+            $errors[] ="The uploaded File is compressed or is not of type".
                        " .tgz, .tar.gz or .zip";
         }
         ///////////////////////////////////////////////////////////////////////
@@ -447,10 +451,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isCompressed($file)
     {
 
-        $finfo     = finfo_open(
-            FILEINFO_MIME_TYPE
-        ); // return mime type ala mimetype extension
-        $file_info =  finfo_file($finfo, $filename);
+        print "file is $file <BR>";
+        $file_info =  mime_content_type($file);
+        print "file info is " . $file_info . "<BR>";
         finfo_close($finfo);
         if (preg_match('/gzip|zip/', $file_info, $matches)) {
             return true;
