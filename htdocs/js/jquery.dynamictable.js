@@ -1,4 +1,29 @@
 /*global window, jQuery*/
+
+/**
+ * This is a wrapper for a scrollable table that dynamically
+ * changes depending on weather or not the table has overflow
+ * or not. The table can be setup to freeze a column once the
+ * column comes to the left of the screen. The column will
+ * unfreeze once the column to its right is fully visiable.
+ *
+ * To setup the table without freezing a column simply call
+ * the function DynamicTable on the table you want to apply
+ * the scrolling using the standard jquery function calling.
+ * For this the fuction does not take in any parameters.
+ *
+ * To setup the table with the freezing column, call in a
+ * similar manner to the way without the freezing column.
+ * The only diffrence being you pass an object of the structure
+ *
+ * { "freezeColumn" : "columnID" }
+ *
+ * where columnID is the id of the column you'd like to freeze
+ *
+ * Authors: Jordan Stirling <jstirling91@gmail.com>
+ *          Dave MacFarlane
+ */
+
 (function ($) {
     "use strict";
     var setupScrolling = function (wrapper, rightLink, leftLink) {
