@@ -127,7 +127,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                      $upload_max_size;
             $tpl_data['error_message'][] =  $error_message;
         }
-        echo "asfsadfsaf23232332:";
         return true;
     }
      /**
@@ -195,7 +194,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
 
-        //echo error messages
+        //display error messages
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
                 foreach ($fileErrors AS $error) {
