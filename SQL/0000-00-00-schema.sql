@@ -748,11 +748,11 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('mri qc status',0,'MRI QC Status change');
 
 INSERT INTO notification_types (Type,private,Description,Origin) VALUES 
-    ('mri',1,'Insertion of the mincs into the mri-table','minc_insertion'),
-    ('mri',1,'calls specific Insertion Scripts','tarchive_loader'),
-    ('mri',1,'Validation of the dicoms After uploading','tarchive_validation'),
-    ('mri',1,'Validation of DICOMS before uploading','imaging_upload_file'),
-    ('mri',1,'Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
+    ('minc insertion',1,'Insertion of the mincs into the mri-table','minc_insertion'),
+    ('tarchive loader',1,'calls specific Insertion Scripts','tarchive_loader'),
+    ('tarchive validation',1,'Validation of the dicoms After uploading','tarchive_validation'),
+    ('mri upload',1,'Validation of DICOMS before uploading','imaging_upload_file'),
+    ('mri upload',1,'Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
 
 /*!40000 ALTER TABLE `notification_types` ENABLE KEYS */;
 UNLOCK TABLES;

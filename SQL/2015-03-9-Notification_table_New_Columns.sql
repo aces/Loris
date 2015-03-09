@@ -3,8 +3,9 @@ ALTER TABLE notification_spool ADD COLUMN `ProcessID` int(11) NOT NULL DEFAULT '
 ALTER TABLE notification_spool CHANGE COLUMN TimeSpooled TimeSpooled datetime DEFAULT NULL;
 ALTER TABLE notification_spool ADD COLUMN `Error` tinyint(1) DEFAULT '0' AFTER Message;
 
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Insertion of the mincs into the mri-table','minc_insertion');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','calls specific Insertiong Scripts','tarchive_loader');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation of the dicoms After uploading','tarchive_validation');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation of DICOMS before uploading','imaging_upload_file');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
+INSERT INTO notification_types (Type,private,Description,Origin) VALUES
+    ('minc insertion',1,'Insertion of the mincs into the mri-table','minc_insertion'),
+    ('tarchive loader',1,'calls specific Insertion Scripts','tarchive_loader'),
+    ('tarchive validation',1,'Validation of the dicoms After uploading','tarchive_validation'),
+    ('mri upload',1,'Validation of DICOMS before uploading','imaging_upload_file'),
+    ('mri upload',1,'Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
