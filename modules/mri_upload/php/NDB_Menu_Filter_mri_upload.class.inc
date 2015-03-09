@@ -119,15 +119,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
         ///////////////////////////////////////////////////////////////////////
-
         if (empty($_FILES) && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
             $upload_max_size = ini_get('upload_max_filesize');
-            echo "<p style=\"color: #F00;\">\nPlease make sure files are
-            not larger than {$upload_max_size} <br></p>";
-            // echo out error and solutions...
+            $error_message   = "Please make sure files are not larger than " .
+                     $upload_max_size;
+            $tpl_data['error_message'][] =  $error_message;
         }
+        echo "asfsadfsaf23232332:";
         return true;
     }
      /**
@@ -199,8 +199,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
                 foreach ($fileErrors AS $error) {
-                    echo "<span style='color:red'><b>Upload Error</b>
-                    $fileType: $error</span><br>";
+                    $tpl_data['error_message'][] = " $fileType: $error ";
                 }
             }
             return false;
@@ -224,6 +223,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isValid($file, $args)
     {
         //make sure the file-name is  valid
+        error_log("asdfasfsafsafssssssssssssssssssssssssssS");
         $temp_file     = $file->fileInfo['tmp_name'];
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
@@ -302,8 +302,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($new_temp_file)) {
-            $errors[] ="The uploaded File" . $file_path. " is either not".
-                       " compressed or is not of type .tgz, .tar.gz or .zip";
+            $errors[] = "The uploaded File" . $file_path. " is either not".
+                        " compressed or is not of type .tgz, .tar.gz or .zip";
         }
 
         if (count($errors) > 0) {
@@ -450,9 +450,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isCompressed($file)
     {
 
-        print "file is $file <BR>";
         $file_info =  mime_content_type($file);
-        print "file info is " . $file_info . "------------<BR>----";
         if (preg_match('/gzip|zip/', $file_info, $matches)) {
             return true;
         }
