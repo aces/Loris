@@ -19,8 +19,7 @@ require_once "Message.class.inc";
 
 /**
  * This module allows a zipped/tgz/gz file to be uploaded into the incoming folder
- * after passing a series of validation. Once uploaded the dicomtar.pl and
- * batch_uploads_tarchive will be ran on the scan.
+ * after passing a series of validation. 
  *
  * @category Behavioural
  * @package  Main
@@ -32,7 +31,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
 
     var $show_queries = true;
-    var $temp_path    =null;
+    var $temp_path    = null;
     /**
      * The _has_access returns true
      * if the user has the specific permission
@@ -43,11 +42,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         // create user object
         $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-        //return $user->hasPermission('mri_upload');
-        return true;
+        return $user->hasPermission('mri_upload');
     }
 
     /**
@@ -77,10 +72,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                                'c.PSCID',
                                's.visit_label',
                               );
-        $this->query        = " FROM mri_upload mu JOIN session ".
-        "s ON (s.ID = mu.SessionID)
-        JOIN candidate c on (c.CandID = s.CandID)
-         WHERE 1=1 ";
+        $this->query        = " FROM mri_upload mu JOIN session".
+                              " s ON (s.ID = mu.SessionID)".
+                              " JOIN candidate c ON (c.CandID = s.CandID)".
+                              " WHERE 1=1 ";
         $this->formToFilter = array(
                                'CandID'      => 's.CandID',
                                'PSCID'       => 'c.PSCID',
@@ -90,14 +85,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Sets up the Filter Form
+     * Creates the following fields:
+        - Browse button, as well as static elements
+        - three text elements: CandID, PSCID and VisitLabel
+     * It wil also throw a error message if the file cannot be uploaded
+
      *
      * @return boolean
      */
     function _setFilterForm()
     {
 
-        // create user object
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -107,7 +105,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $this->addScoreColumn('status', 'Status');
 
         ///////////////////////////////////////////////////////////////////////
-        //////////////////Patient-name and Patient-ID fields///////////////////
+        //////////////////CandID, PSCID and VisitLabel fields//////////////////
         ///////////////////////////////////////////////////////////////////////
         $this->addBasicText('CandID', 'CandID:');
         $this->addBasicText('PSCID', 'PSCID:');
@@ -120,6 +118,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             'VisitLabel:',
             $visitlabels
         );
+         //////////////////////////////////////////////////////////////////////
+        //////////////////Upload-related Error messages ///////////////////////
+        ///////////////////////////////////////////////////////////////////////
+
         if (empty($_FILES) && empty($_POST)
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
@@ -146,9 +148,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
         return false;
     }
+
     // methods available to all children
     /**
-       * Save the file to the DataBase
+       * Save the file to the DataBase by:
+       * 1) registering the file handlers
+       * 2) Calling the processFiles function which in return will call
+          - isValid function
+          - improFile Function 
        *
        * @param array $values the array of values from the form
        *
@@ -180,17 +187,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         );
 
         $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError(
-                "User Error: ".
-                $user->getMessage()
-            );
-        }
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
 
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
+        
         //echo error messages
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
@@ -204,7 +206,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return true;
     }
     /**
-     * Validate the file to be uploaded
+     * Validate the file to be uploaded by ensuring that:
+       - The uploaded file is compressed and is of type: 
+            .gz, .zip or .tgz
+       - The fields CandID, PSCID and VisitLabel are filled out
+       - The inputed PSCID, CandID and VisitLabel exist in the database
+     
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
@@ -234,6 +241,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
+         if (!isCompressed($file_name )) {
+            $errors[] ="The uploaded File is compressed or is not of type"
+                       " .tgz, .tar.gz or .zip";
+         }
+
+
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -246,49 +259,53 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             filled out ";
         }
 
-        ///////////////////////////////////////////////////////////////////////
-        ////////////// make sure the PSCID, CandID and Visit_label/////////////
-        //////// exist in the back-end/////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if ((!empty($candid)) && (!empty($pscid)) &&(!empty($visit_label))) {
-            $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
-            ///////////////////////////////////////////////////////////////////
-            //////check to se if candid exists/////////////////////////////////
-            ///////////////////////////////////////////////////////////////////
+        $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
+
+        //////////////////////////////////////////////////////////////////////
+        //////check to se if candid exists////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
+
+        if (!empty($candid))  {
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate".
                 " WHERE candid = :cid",
                 array('cid' => $candid)
-            )==0) {
+                )==0) {
                 $errors[] = "The CandID: $candid Doesn't exist";
+              }
             }
-            //////////////////////////////////////////////////////////////////
-            //////check to se if pscid exists//////////////////////////////////
-            ///////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////
+        //////check to se if pscid exists//////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
+        if (!empty($pscid)) {
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate WHERE PSCID = :pid",
                 array('pid' => $pscid)
             )==0) {
                 $errors[] = "The PSCID: $pscid Doesn't exist";
             }
-            ///////////////////////////////////////////////////////////////////
-            //////check to se if visit_label exists////////////////////////////
-            ///////////////////////////////////////////////////////////////////
+        }
+        ///////////////////////////////////////////////////////////////////
+        //////check to se if visit_label exists////////////////////////////
+        ///////////////////////////////////////////////////////////////////
+        if (!empty($visit_label)) {    
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM session WHERE Visit_label = :vlabel",
                 array('vlabel' => $visit_label)
             )==0) {
                 $errors[] = "The VisitLabel: $visit_label Doesn't exist";
             }
-            ///////////////////////////////////////////////////////////////////
-            //////////copy the temporairy file to a temporairy directory///////
-            //////////with a correct Extension/////////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            if (!copy($temp_file, $new_temp_file)) {
-                echo "failed to copy $temp_file to $new_temp_file \n";
-            }
-            $this->setTempPath($new_temp_file);
         }
+
+        ///////////////////////////////////////////////////////////////////
+        /////////copy the temporairy file to a temporairy directory////////
+        //////////with a correct Extension/////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
+        if (!copy($temp_file, $new_temp_file)) {
+            $errors[] = "failed to copy $temp_file to $new_temp_file \n";
+        }
+        $this->setTempPath($new_temp_file);
+        
         if (count($errors) > 0) {
             return $errors;
         }
@@ -296,8 +313,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Import File-related fields into the
-     * Database
+     * Inserts into the mri_upload table the following information:
+        - UploadedBy, UploadDate, SourceLocation, SessionID and 
+          PatientName
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
@@ -317,11 +335,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $user_name = $args['user_id'];
         if (($user_name==null) || (!(isset($user_name)))) {
             $user = User::singleton();
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError(
-                    "User Error: ".$user->getMessage()
-                );
-            }
             $user_name = $user->getUsername();
         }
         ///////////////////////////////////////////////////////////////////////
@@ -422,6 +435,29 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
         $output ="{$args["user_id"]}/";
         return $output;
+    }
+
+
+    /**
+     * This function return true if the file is compressed (gzip or zip),
+    * false otherwise
+    *
+    * @param string $file The full filename including directory.
+    *
+    * @return bool  $success if operation succeeded
+    * @access public
+    */
+    function isCompressed($file)
+    {
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+        $file_info =  finfo_file($finfo, $filename) . "\n";
+        finfo_close($finfo);   
+        if ((preg_match('/gzip/', $file_info, $matches)) ||
+            (preg_match('/zip/', $file_info, $matches))) {
+            return true;
+        }
+        return false;
     }
 
 
