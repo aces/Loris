@@ -731,27 +731,29 @@ CREATE TABLE `notification_types` (
   PRIMARY KEY  (`NotificationTypeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Insertion of the mincs into the mri-table','minc_insertion');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','calls specific Insertiong Scripts','tarchive_loader');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation of the dicoms After uploading','tarchive_validation');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation of DICOMS before uploading','imaging_upload_file');
-INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
-
 --
 -- Dumping data for table `notification_types`
 --
 
 LOCK TABLES `notification_types` WRITE;
 /*!40000 ALTER TABLE `notification_types` DISABLE KEYS */;
-INSERT INTO `notification_types` VALUES 
-	(1,'mri new study',0,'New studies processed by the MRI upload handler'),
-	(2,'mri new series',0,'New series processed by the MRI upload handler'),
-	(3,'mri upload handler emergency',1,'MRI upload handler emergencies'),
-	(4,'mri staging required',1,'New studies received by the MRI upload handler that require staging'),
-	(5,'mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
-	(7,'hardcopy request',0,'Hardcopy requests'),
-	(9,'visual bvl qc',0,'Timepoints selected for visual QC'),
-	(10,'mri qc status',0,'MRI QC Status change');
+INSERT INTO `notification_types` (Type,private,Description) VALUES 
+    ('mri new study',0,'New studies processed by the MRI upload handler'),
+    ('mri new series',0,'New series processed by the MRI upload handler'),
+    ('mri upload handler emergency',1,'MRI upload handler emergencies'),
+    ('mri staging required',1,'New studies received by the MRI upload handler that require staging'),
+    ('mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
+    ('hardcopy request',0,'Hardcopy requests'),
+    ('visual bvl qc',0,'Timepoints selected for visual QC'),
+    ('mri qc status',0,'MRI QC Status change');
+
+INSERT INTO notification_types (Type,private,Description,Origin) VALUES 
+    ('mri',1,'Insertion of the mincs into the mri-table','minc_insertion'),
+    ('mri',1,'calls specific Insertion Scripts','tarchive_loader'),
+    ('mri',1,'Validation of the dicoms After uploading','tarchive_validation'),
+    ('mri',1,'Validation of DICOMS before uploading','imaging_upload_file'),
+    ('mri',1,'Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
+
 /*!40000 ALTER TABLE `notification_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
