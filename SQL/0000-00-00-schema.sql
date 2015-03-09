@@ -695,7 +695,7 @@ DROP TABLE IF EXISTS `notification_spool`;
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL default '0',
-  `ProcessID` int(11) NOT NULL DEFAULT '0'
+  `ProcessID` int(11) NOT NULL DEFAULT '0',
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` tinyint(1) DEFAULT '0',
