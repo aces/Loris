@@ -698,7 +698,7 @@ CREATE TABLE `notification_spool` (
   `ProcessID` int(11) NOT NULL DEFAULT '0'
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
-  `Error` tinyint(1) DEFAULT '0'
+  `Error` tinyint(1) DEFAULT '0',
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` tinyint(2) unsigned default NULL,
   PRIMARY KEY  (`NotificationID`),
