@@ -454,7 +454,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         print "file is $file <BR>";
         $file_info =  mime_content_type($file);
         print "file info is " . $file_info . "<BR>";
-        finfo_close($finfo);
         if (preg_match('/gzip|zip/', $file_info, $matches)) {
             return true;
         }
