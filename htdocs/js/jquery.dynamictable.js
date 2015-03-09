@@ -87,8 +87,8 @@
         // Add links for carousel
         $(table).after('<a class="left carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
     }, freezeColm = function (tableID, colm_static) {
-        var statColPos = $("." + tableID).offset().left,
-            statColWid = $("." + tableID).outerWidth(),
+        var statColPos = $("." + tableID + "FrozenColumn").offset().left,
+            statColWid = $("." + tableID + "FrozenColumn").outerWidth(),
             leftScrollPos = $(".left").offset().left,
             leftScrollWid = $(".left").outerWidth(),
             nextColPos = $("." + tableID + "Next").offset().left;
@@ -100,17 +100,17 @@
                         $(value).css("height", "");
                     }
                 });
-                $("." + tableID).removeClass("static-col colm-static");
+                $("." + tableID + "FrozenColumn").removeClass("static-col colm-static");
                 return false;
             }
         } else if (statColPos <= leftScrollWid + leftScrollPos) {
-            $("." + tableID).each(function (key, value) {
+            $("." + tableID + "FrozenColumn").each(function (key, value) {
                 if (key >= 0) {
                     var height = $(value).next().outerHeight();
                     $(value).outerHeight(height);
                 }
             });
-            $("." + tableID).addClass("static-col colm-static");
+            $("." + tableID + "FrozenColumn").addClass("static-col colm-static");
             return true;
         }
         return colm_static;
@@ -149,7 +149,7 @@
                     }
                     child1 = $(value).children().get(columnNumber);
                         // height = $(child1).next().outerHeight();
-                    $(child1).attr('class', id);
+                    $(child1).attr('class', id + "FrozenColumn");
                 });
                 $(this).parent().scroll(function () {
                     colm_static = freezeColm(id, colm_static);
