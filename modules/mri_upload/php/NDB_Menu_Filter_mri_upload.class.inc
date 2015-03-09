@@ -118,7 +118,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             'VisitLabel:',
             $visitlabels
         );
-         //////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
         ///////////////////////////////////////////////////////////////////////
 
@@ -169,9 +169,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //get the stored-file path
 
-        $file   =new File_Upload;
+        $file = new File_Upload;
         $config = NDB_Config::singleton();
-        $paths  = $config->getSetting('paths');
+        $paths = $config->getSetting('paths');
         $stored_file_path    = $paths['IncomingPath'];
         $file->overwriteMode = "reject";
         $file->fileMove      = false;
@@ -192,7 +192,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
-        
+
         //echo error messages
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
@@ -210,7 +210,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
        - The uploaded file is compressed and is of type: 
             .gz, .zip or .tgz
        - The fields CandID, PSCID and VisitLabel are filled out
-       - The inputed PSCID, CandID and VisitLabel exist in the database
+       - The inputted PSCID, CandID and VisitLabel exist in the database
+       - The uploaded file is copied to a newly created temporary folder
      
      *
      * @param FILE  $file The uploaded file
@@ -226,7 +227,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         $this->setTempPath($new_temp_file);
-        $db     = Database::singleton();
+        $db = Database::singleton();
         $errors = array();
         $config = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
@@ -241,12 +242,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-         if (!isCompressed($file_name )) {
+        if (!isCompressed($file_name)) {
             $errors[] ="The uploaded File is compressed or is not of type"
                        " .tgz, .tar.gz or .zip";
-         }
-
-
+        }
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -264,16 +263,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //////////////////////////////////////////////////////////////////////
         //////check to se if candid exists////////////////////////////////////
         //////////////////////////////////////////////////////////////////////
-
-        if (!empty($candid))  {
+        if (!empty($candid)) {
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM candidate".
                 " WHERE candid = :cid",
                 array('cid' => $candid)
-                )==0) {
-                $errors[] = "The CandID: $candid Doesn't exist";
-              }
+            )==0) {
+                    $errors[] = "The CandID: $candid Doesn't exist";
             }
+        }
         //////////////////////////////////////////////////////////////////
         //////check to se if pscid exists//////////////////////////////////
         ///////////////////////////////////////////////////////////////////
@@ -288,7 +286,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////
         //////check to se if visit_label exists////////////////////////////
         ///////////////////////////////////////////////////////////////////
-        if (!empty($visit_label)) {    
+        if (!empty($visit_label)) {
             if ($db->pselectOne(
                 "SELECT COUNT(*) FROM session WHERE Visit_label = :vlabel",
                 array('vlabel' => $visit_label)
@@ -305,7 +303,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $errors[] = "failed to copy $temp_file to $new_temp_file \n";
         }
         $this->setTempPath($new_temp_file);
-        
         if (count($errors) > 0) {
             return $errors;
         }
@@ -334,7 +331,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $user_name = $args['user_id'];
         if (($user_name==null) || (!(isset($user_name)))) {
-            $user = User::singleton();
+            $user      = User::singleton();
             $user_name = $user->getUsername();
         }
         ///////////////////////////////////////////////////////////////////////
@@ -450,16 +447,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isCompressed($file)
     {
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-        $file_info =  finfo_file($finfo, $filename) . "\n";
-        finfo_close($finfo);   
-        if ((preg_match('/gzip/', $file_info, $matches)) ||
-            (preg_match('/zip/', $file_info, $matches))) {
+        $finfo     = finfo_open(
+            FILEINFO_MIME_TYPE
+        ); // return mime type ala mimetype extension
+        $file_info =  finfo_file($finfo, $filename);
+        finfo_close($finfo);
+        if (preg_match('/gzip|zip/', $file_info, $matches)) {
             return true;
         }
         return false;
     }
-
-
 }
 ?>
