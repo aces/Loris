@@ -695,8 +695,10 @@ DROP TABLE IF EXISTS `notification_spool`;
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL default '0',
-  `TimeSpooled` int(11) NOT NULL default '0',
+  `ProcessID` int(11) NOT NULL DEFAULT '0'
+  `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
+  `Error` tinyint(1) DEFAULT '0'
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` tinyint(2) unsigned default NULL,
   PRIMARY KEY  (`NotificationID`),
@@ -725,8 +727,15 @@ CREATE TABLE `notification_types` (
   `Type` varchar(255) NOT NULL default '',
   `private` tinyint(1) default '0',
   `Description` text,
+  `Origin` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`NotificationTypeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Insertion of the mincs into the mri-table','minc_insertion');
+INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','calls specific Insertiong Scripts','tarchive_loader');
+INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation of the dicoms After uploading','tarchive_validation');
+INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation of DICOMS before uploading','imaging_upload_file');
+INSERT INTO notification_types (Type,Description,Origin) VALUES ('mri','Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
 
 --
 -- Dumping data for table `notification_types`
