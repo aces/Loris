@@ -20,6 +20,14 @@
             </div>
             <div class="panel-body" id="panel-body">
                 <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data"> 
+
+                    <div class="row">
+                        {section name=error loop=$error_message}
+                                <div class="col-xs-12">
+                                    <label class="col-sm-12 error">{$error_message[error]}<br><br></label>
+                                </div>
+                      {/section}
+                    </div>
                     <div class="row">
                         {foreach from=$form.errors item=error}
                             <div class="col-xs-12">
