@@ -19,7 +19,7 @@ require_once "Message.class.inc";
 
 /**
  * This module allows a zipped/tgz/gz file to be uploaded into the incoming folder
- * after passing a series of validation. 
+ * after passing a series of validation.
  *
  * @category Behavioural
  * @package  Main
@@ -86,10 +86,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
      * Creates the following fields:
-        - Browse button, as well as static elements
-        - three text elements: CandID, PSCID and VisitLabel
-     * It wil also throw a error message if the file cannot be uploaded
-
+        - MRI-upload browse-button and static fields
+        - Three text elements: CandID, PSCID and VisitLabel
+     * It wil also throw an error message if the file cannot be uploaded
      *
      * @return boolean
      */
@@ -99,7 +98,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
         ///////////////////////////////////////////////////////////////////////
-
         $this->addFile('mri_file', 'File to Upload');
         $this->addScoreColumn('File_name', 'File name');
         $this->addScoreColumn('status', 'Status');
@@ -155,7 +153,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
        * 1) registering the file handlers
        * 2) Calling the processFiles function which in return will call
           - isValid function
-          - improFile Function 
+          - improFile Function
        *
        * @param array $values the array of values from the form
        *
@@ -169,9 +167,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //get the stored-file path
 
-        $file = new File_Upload;
+        $file   = new File_Upload;
         $config = NDB_Config::singleton();
-        $paths = $config->getSetting('paths');
+        $paths  = $config->getSetting('paths');
         $stored_file_path    = $paths['IncomingPath'];
         $file->overwriteMode = "reject";
         $file->fileMove      = false;
@@ -211,12 +209,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
     /**
      * Validate the file to be uploaded by ensuring that:
-       - The uploaded file is compressed and is of type: 
+       - The uploaded file is compressed and is of type:
             .gz, .zip or .tgz
        - The fields CandID, PSCID and VisitLabel are filled out
        - The inputted PSCID, CandID and VisitLabel exist in the database
        - The uploaded file is copied to a newly created temporary folder
-     
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
@@ -231,7 +228,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         $this->setTempPath($new_temp_file);
-        $db = Database::singleton();
+        $db     = Database::singleton();
         $errors = array();
         $config = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
@@ -240,16 +237,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
         $file_name = $file->fileInfo['name'];
-
-        ///////////////////////////////////////////////////////////////////////
-        ////////////// Checks to see if the file is of type////////////////////
-        //////////////.gz, .zip or .tgz////////////////////////////////////////
-        ////////////////TODO///////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if (!$this->isCompressed($temp_dir. "/".$file_name)) {
-            $errors[] ="The uploaded File is compressed or is not of type".
-                       " .tgz, .tar.gz or .zip";
-        }
+        $file_path = $temp_dir. "/".$file_name;
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the Advanced Options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -307,6 +295,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $errors[] = "failed to copy $temp_file to $new_temp_file \n";
         }
         $this->setTempPath($new_temp_file);
+
+        ///////////////////////////////////////////////////////////////////////
+        ////////////// Checks to see if the file is of type////////////////////
+        //////////////.gz, .zip or .tgz////////////////////////////////////////
+        ////////////////TODO///////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        if (!$this->isCompressed($new_temp_file)) {
+            $errors[] ="The uploaded File" . $file_path. " is either not".
+                       " compressed or is not of type .tgz, .tar.gz or .zip";
+        }
+
         if (count($errors) > 0) {
             return $errors;
         }
@@ -315,7 +314,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
      * Inserts into the mri_upload table the following information:
-        - UploadedBy, UploadDate, SourceLocation, SessionID and 
+        - UploadedBy, UploadDate, SourceLocation, SessionID and
           PatientName
      *
      * @param FILE  $file The uploaded file
@@ -440,8 +439,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
 
     /**
-     * This function return true if the file is compressed (gzip or zip),
-    * false otherwise
+    * The function isCompressed returns true if the file is
+        compressed (gzip or zip) or false otherwise
     *
     * @param string $file The full filename including directory.
     *
@@ -453,7 +452,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         print "file is $file <BR>";
         $file_info =  mime_content_type($file);
-        print "file info is " . $file_info . "<BR>";
+        print "file info is " . $file_info . "------------<BR>----";
         if (preg_match('/gzip|zip/', $file_info, $matches)) {
             return true;
         }
