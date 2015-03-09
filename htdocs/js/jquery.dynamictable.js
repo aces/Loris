@@ -160,35 +160,4 @@
         });
         return this;
     };
-
-    $.fn.ColmFreeze = function(colmNumber) {
-        this.filter("table").each(function () {
-            var leftLink, 
-                rightLink, 
-                table = this,
-                id = $(this).attr('id'),
-                colm_static = false;
-            wrapTable(this);
-
-
-            $(this).find("tr").each(function (key, value) {
-                console.log(key);
-                if(key == 0){
-                    var child2 = $(value).children().get(colmNumber);
-                    $(child2).attr('class', id + 'Next');
-                }
-                var child1 = $(value).children().get(colmNumber - 1),
-                    height = $(child1).next().outerHeight();
-                $(child1).attr('class', id);
-                $(child1).outerHeight(height);
-
-            });
-
-            leftLink = this.nextSibling;
-            rightLink = leftLink.nextSibling;
-
-            return this;
-        });
-        return this;
-    };
 }(jQuery));
