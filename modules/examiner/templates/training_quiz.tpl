@@ -9,10 +9,12 @@
 
 <form id="quiz">
 {foreach $questions as $question}
-    <p><b>{$question['OrderNumber']}. {$question['Question']}</b></p>
-    {foreach $question['answers'] as $answer}
-    {call name=createQuizRadio questionNumber=$question['OrderNumber'] answerNumber=$answer['OrderNumber'] answer=$answer['Answer']}
-    {/foreach}
+    <div class="quiz-question">
+        <p><b>{$question['OrderNumber']}. {$question['Question']}</b></p>
+        {foreach $question['answers'] as $answer}
+        {call name=createQuizRadio questionNumber=$question['OrderNumber'] answerNumber=$answer['OrderNumber'] answer=$answer['Answer']}
+        {/foreach}
+    </div>
 {/foreach}
 
 </form>

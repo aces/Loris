@@ -340,7 +340,26 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function training()
     {
-        $this->tpl_data['cert_instruments'] = $this->getCertificationInstruments();
+        $instruments = $this->getCertificationInstruments();
+
+        $certifications = array();
+
+        foreach ($instruments as $instrumentID => $instrumentName) {
+            $status = $this->getCertificationStatus($instrumentID);
+            if ($status == 'certified') {
+                $certifications['certified'][$instrumentID] = $instrumentName;
+            } else {
+                $contentExists = $this->getTrainingContentStatus($instrumentID);
+                if ($contentExists) {
+                    $certifications['not_certified'][$instrumentID]
+                        = $instrumentName;
+                } else {
+                    $certifications['no_content'][$instrumentID] = $instrumentName;
+                }
+            }
+        }
+
+        $this->tpl_data['certifications'] = $certifications;
     }
 
     /**
@@ -418,6 +437,60 @@ class NDB_Form_Examiner extends NDB_Form
         }
 
         return $instruments;
+    }
+
+    /**
+     * Check the certification status of the current user for a given instrument.
+     *
+     * @param int $instrumentID ID of the instrument
+     *
+     * @return string
+     */
+    function getCertificationStatus($instrumentID)
+    {
+        $user         = User::singleton();
+        $userFullName = $user->getFullname();
+        $userCenter   = $user->getCenterID();
+
+        $DB = Database::singleton();
+        $certificationStatus = $DB->pselectOne(
+            "SELECT c.pass
+             FROM certification c
+             LEFT JOIN examiners e ON (c.examinerID=e.examinerID) 
+             WHERE e.full_name=:name AND e.centerID=:CID AND c.testID=:TID",
+            array(
+             'name' => $userFullName,
+             'CID'  => $userCenter,
+             'TID'  => $instrumentID,
+            )
+        );
+
+        return $certificationStatus;
+    }
+
+    /**
+     * Checks whether training content exists for a given instrument.
+     *
+     * @param int $instrumentID ID of the instrument
+     *
+     * @return boolean
+     */
+    function getTrainingContentStatus($instrumentID)
+    {
+        $DB = Database::singleton();
+
+        $trainingContent = $DB->pselectOne(
+            "SELECT certification_training.TestID
+             FROM certification_training
+             WHERE TestID=:TID",
+            array('TID' => $instrumentID)
+        );
+
+        if (empty($trainingContent)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 ?>

@@ -1,110 +1,123 @@
 /*global document: false, $: false*/
 
-function getSelectedInstrumentID() {
-    "use strict";
-    return $("option:selected", "select[name='certification_instruments']").val();
+var instrumentID;
+var instrumentName;
+
+function validateQuiz(form) {
+    // Check if every question has been filled out
+    if ($('input[type=radio]:checked').size() === $('.quiz-question').size()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-function getSelectedInstrumentName() {
-    "use strict";
-    return $("option:selected", "select[name='certification_instruments']").text();
-}
-
-function createAlert(alertType, message) {
-    "use strict";
-    var alertHTML = '<div class="alert alert-'
-                    + alertType
-                    + ' alert-certification" role="alert">'
-                    + message
-                    + '</div>';
-    return alertHTML;
+function tryAgain() {
+    $('#incorrect').modal('hide')
+    $('#tabs').html("");
+    loadTabs();
 }
 
 /* Load the content of one tab, enable the tab header to be clicked, open tab*/
-function loadTabContent(instrument, tabNumber) {
+function loadTabContent(tabNumber, type) {
     "use strict";
+
     var tabID = '#' + tabNumber;
-    $.post("AjaxHelper.php?Module=examiner&script=getTabContent.php", {instrument: instrument, tabNumber: tabNumber}, function (data) {
-        var ref = $(tabID).children().attr('data-target');
-        $(ref).html(data);
-        $(tabID).removeClass('disabled');
-        $(tabID).tab('show');
-        $('.tab-pane').removeClass("active");
-        $(ref).addClass("active");
+    $.post("AjaxHelper.php?Module=examiner&script=getTabContent.php", {instrument: instrumentID, tabNumber: tabNumber, type: type}, function (data) {
+        var tabPane = $(tabID).children().attr('data-target');
+        $(tabPane).html(data);
     });
 }
 
-/* Load all the tab headers (no content) */
-function loadTabs(instrument) {
+function activateTab(tabNumber) {
+    var tabID = '#' + tabNumber,
+          tabPane = $(tabID).children().attr('data-target');
+    $(tabID).removeClass('disabled');
+    $(tabID).tab('show');
+    $('.tab-pane').removeClass("active");
+    $(tabPane).addClass("active");
+}
+
+/* Load all the tab headers and the content of the first tab */
+function loadTabs(type) {
     "use strict";
-    $.post("AjaxHelper.php?Module=examiner&script=getTabs.php", {instrument: instrument}, function (data) {
-        if (data === '0') {
-            $('#tabs').html("");
-            var alertHTML = createAlert('danger', 'There is no online training for the ' + getSelectedInstrumentName() + ' at this time.');
-            $('#instructions').html(alertHTML);
-        } else {
-            $('#tabs').html(data);
-            loadTabContent(instrument, 1);
+
+    $.post("AjaxHelper.php?Module=examiner&script=getTabs.php", {instrument: instrumentID, instrumentName: instrumentName, type: type}, function (data) {
+        $('#tabs').html(data);
+        if (type == 'training') {
+            loadTabContent(1, type);
+            activateTab(1);
+        }
+        else {
+            loadTabContent(1, type);
+            activateTab(1);
         }
     });
 }
 
 $(document).ready(function () {
 
-    $("select[name='certification_instruments']").change(function () {
+    $(".panel-not-certified").click(function () {
+        var ID         = this.id.split("-",2);
+        instrumentID   = ID[1];
+        instrumentName = $(this).attr("data-instrument");
 
-        // TODO: add a check to see if they are currently completing training and give a warning about changing instruments
+        $("#training-options").slideUp();
+        loadTabs('training');
+    });
 
-        var instrument = getSelectedInstrumentID(),
-            instrumentName = getSelectedInstrumentName();
+    $(".panel-certified").click(function () {
+        var ID         = this.id.split("-",2);
+        instrumentID   = ID[1];
+        instrumentName = $(this).attr("data-instrument");
 
-        $(".alert-certification").remove();
-
-        if (instrument !== "0") {
-            $.post("AjaxHelper.php?Module=examiner&script=getExaminerTestStatus.php", {instrument: instrument}, function (data) {
-                if (data === '0') {
-                    var certifiedHTML = createAlert('danger', 'You have already been certified for ' + instrumentName + '.');
-
-                    $('#instructions').html(certifiedHTML);
-                } else {
-                    var uncertifiedHTML = createAlert('success', 'Please complete the training below to be certified for ' + instrumentName + '.');
-                    $('#instructions').html(uncertifiedHTML);
-                    loadTabs(instrument);
-                }
-            });
-        } else {
-            $('#tabs').html("");
-        }
+        $("#training-options").slideUp();
+        loadTabs('review');
     });
 
     $('body').on('click', '.btn-agree', function (e) {
         e.preventDefault();
-        var instrument = getSelectedInstrumentID(),
-            tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
-        loadTabContent(instrument, tabNumber);
+        var tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
+        loadTabContent(tabNumber, 'training');
+        activateTab(tabNumber);
         $(this).prop('disabled', true);
+    });
+
+    $('body').on('click', '.review > a', function (e) {
+        e.preventDefault();
+        var tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
+        loadTabContent(tabNumber, 'review');
+        activateTab(tabNumber);
     });
 
     // on click of quiz completion, mark quiz, update certification status, clear tabs?
     $('body').on('submit', '#quiz', function (e) {
         e.preventDefault();
 
-        var form = $(this).serialize(),
-            instrument = getSelectedInstrumentID(),
-            queryString = form + '&instrument=' + instrument;
+        // Disable quiz button submit
+        $(this).prop('disabled', true);
 
-        $.post("AjaxHelper.php?Module=examiner&script=markQuiz.php", queryString, function (data) {
-            $('#tabs').html("");
-            console.log(data);
-            // If 1 - correct
-            if (data === '1') {
-                var correctHTML = createAlert('success', 'You are now certified for ' + getSelectedInstrumentName() + '.');
-                $('#instructions').html(correctHTML);
-            } else { // If 2 - incorrect
-                var incorrectHTML = createAlert('danger', 'Your answers were not correct. Please complete the training again.');
-                $('#instructions').html(incorrectHTML);
-                loadTabs(instrument);
-            }
-        });
+        // Check that all answers have been filled out
+        if (validateQuiz(this) === 1) {
+            var form          = $(this).serialize(),
+            requestString = form + '&instrument=' + instrumentID;
+
+            $.post("AjaxHelper.php?Module=examiner&script=markQuiz.php", requestString, function (data) {
+                if (data === 'correct') {
+                    $('#correct').modal({
+                        keyboard: false,
+                        backdrop: 'static'
+                    });
+                } else {
+                    $('#incorrect').modal({
+                        keyboard: false,
+                        backdrop: 'static'
+                    });
+                }
+            });
+        } else {
+            $('#incomplete').modal();
+        }
+
     });
 });

@@ -14,12 +14,14 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
-require_once "Database.class.inc";
+require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $DB = Database::singleton();
 
 // Get the ID for the instrument that was selected
-$instrumentID = $_REQUEST['instrument'];
+$instrumentID   = $_REQUEST['instrument'];
+$instrumentName = $_REQUEST['instrumentName'];
+$type           = $_REQUEST['type'];
 
 // Get the tab titles
 $tabs = $DB->pselect(
@@ -30,38 +32,13 @@ $tabs = $DB->pselect(
     array('TID' => $instrumentID)
 );
 
-// If there is no training content for the instrument, return 0
-if (empty($tabs)) {
-    print 0;
-    exit();
-}
+$tpl_data['instrumentName'] = $instrumentName;
+$tpl_data['type']           = $type;
+$tpl_data['tabs']           = $tabs;
 
-// Add tab html
-$tabhtml = '<ul class="nav nav-tabs" id="trainingTabs">';
-foreach ($tabs as $tab) {
-    $tabhtml = $tabhtml
-             . '<li class="disabled" id="'
-             . $tab['OrderNumber']
-             . '"><a role="button" data-toggle="tab" data-target="#'
-             . str_replace(' ', '', $tab['Title'])
-             . '">'
-             . $tab['Title']
-             . '</a></li>';
-}
-$tabhtml .= '</ul>';
+$smarty = new Smarty_NeuroDB('examiner');
+$smarty->assign($tpl_data);
+$html = $smarty->fetch('training_tabs.tpl');
 
-// Add tab body html
-$tabhtml .= '<div class="tab-content container">';
-foreach ($tabs as $tab) {
-    $tabhtml = $tabhtml
-             . '<div class="tab-pane '
-             . 'training-'
-             . $tab['TrainingType']
-             . '" id="'
-             . str_replace(' ', '', $tab['Title'])
-             . '"></div>';
-}
-$tabhtml .= '</div>';
-
-print $tabhtml;
+print $html;
 ?>

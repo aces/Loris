@@ -13,26 +13,17 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
-require_once "Database.class.inc";
+require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $DB = Database::singleton();
 
 // Get the ID for the instrument that was selected
 $instrumentID = $_REQUEST['instrument'];
 
-// iterate over instruments
-$quizCorrect = 1;
-foreach ($_POST as $question => $answer) {
-    if (is_numeric($question)) {
-        if (correct($instrumentID, $question, $answer) == 0) {
-            $quizCorrect = 0;
-            break;
-        }
-    }
-}
+$quizCorrect = markQuiz($instrumentID);
 
-if ($quizCorrect == 0) {
-    print 0;
+if ($quizCorrect == false) {
+    print "incorrect";
     exit();
 } else {
     $user = User::singleton();
@@ -50,20 +41,20 @@ if ($quizCorrect == 0) {
     );
 
     $dateArray = array(
-                  'Y' => date("Y"),
-                  'M' => date("m"),
-                  'd' => date("d"),
+                  'Y' => date('Y'),
+                  'M' => date('m'),
+                  'd' => date('d'),
                  );
 
     $values = array(
                'pass'      => array($instrumentID => 'certified'),
-               'date_cert' => $dateArray,
+               'date_cert' => array($instrumentID => $dateArray),
                'examiner'  => $examinerID,
               );
 
     process($values);
 
-    print 1;
+    print "correct";
     exit();
 }
 
@@ -91,10 +82,31 @@ function correct($instrumentID, $question, $answer)
         )
     );
     if ($correctAnswer == $answer) {
-        return 1;
+        return true;
     } else {
-        return 0;
+        return false;
     }
+}
+
+/**
+ * Iterates through the quiz questions and checks if the answer provided is correct
+ *
+ * @param int $instrumentID The ID of the instrument
+ *
+ * @return nothing
+ */
+function markQuiz($instrumentID)
+{
+    $correct = true;
+    foreach ($_POST as $question => $answer) {
+        if ($question != 'instrument') {
+            if (correct($instrumentID, $question, $answer) == false) {
+                $correct = false;
+                break;
+            }
+        }
+    }
+    return $correct;
 }
 
 /**
@@ -102,7 +114,7 @@ function correct($instrumentID, $question, $answer)
  *
  * @param array $values Certification form values
  *
- * @return nothing
+ * @return void
  */
 function process($values)
 {

@@ -1,3 +1,4 @@
+{if $type == 'training'}
 <div class="panel panel-default training-instructions">
     <div class="panel-body">
         {if $contentType=='text' or $contentType=='pdf'}
@@ -9,11 +10,12 @@
         {/if}
     </div>
 </div>
+{/if}
 
 <div class="training-content">
-    <h3>
+    <h4>
         {$title}
-    </h3>
+    </h4>
     {if $contentType=='text'}
         {$tabVariables}
     {elseif $contentType=='pdf'}
@@ -25,6 +27,7 @@
     {/if}
 </div>
 
+{if $type == 'training'}
 <div class="well well-sm training-complete">
     {if $contentType=='quiz'}
     <button id="quizSubmit" form="quiz" class="btn btn-default btn-success" type="submit">
@@ -45,3 +48,4 @@
         Submit your answers to the quiz. If any answers are incorrect, you will be prompted to repeat the certification training.
     {/if}
 </div>
+{/if}

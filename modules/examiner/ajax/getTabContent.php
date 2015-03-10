@@ -13,12 +13,13 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
-require_once "Database.class.inc";
+require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $DB = Database::singleton();
 
 $instrumentID = $_REQUEST['instrument'];
 $tabID        = $_REQUEST['tabNumber'];
+$type         = $_REQUEST['type'];
 
 // Get the tab's title, content and type in order to generate the correct html
 $tabInformation = $DB->pselectRow(
@@ -32,7 +33,8 @@ $tabInformation = $DB->pselectRow(
 );
 
 $instrument = $DB->pselectOne(
-    "SELECT Test_name FROM test_names WHERE ID=:IID", array('IID' => $instrumentID)
+    "SELECT Test_name FROM test_names WHERE ID=:IID",
+    array('IID' => $instrumentID)
 );
 
 // Create the html based on the tab type
@@ -40,25 +42,29 @@ if ($tabInformation['TrainingType'] == 'text') {
     $tabHTML = createTabHTML(
         'text',
         $tabInformation['Title'],
-        $tabInformation['Content']
+        $tabInformation['Content'],
+        $type
     );
 } else if ($tabInformation['TrainingType'] == 'pdf') {
     $tabHTML = createTabHTML(
         'pdf',
         $tabInformation['Title'],
-        $instrument . '.pdf'
+        $instrument . '.pdf',
+        $type
     );
 } else if ($tabInformation['TrainingType'] == 'video') {
     $tabHTML = createTabHTML(
         'video',
         $tabInformation['Title'],
-        $instrument . '.mp4'
+        $instrument . '.mp4',
+        $type
     );
 } else if ($tabInformation['TrainingType'] == 'quiz') {
     $tabHTML = createTabHTML(
         'quiz',
         $tabInformation['Title'],
-        getQuizData($instrumentID)
+        getQuizData($instrumentID),
+        $type
     );
 }
 
@@ -109,15 +115,17 @@ function getQuizData($instrumentID)
  *
  * @param boolean $contentType  Tab content type
  * @param string  $title        Title of the tab
- * @param string  $tabVariables Variables used to create a tab for a specific contentType
+ * @param string  $tabVariables Template variables
+ * @param string  $type         Type of the request: training/review
  *
  * @return string
  */
-function createTabHTML($contentType, $title, $tabVariables)
+function createTabHTML($contentType, $title, $tabVariables, $type)
 {
-    $tpl_data['contentType'] = $contentType;
-    $tpl_data['title'] = $title;
+    $tpl_data['contentType']  = $contentType;
+    $tpl_data['title']        = $title;
     $tpl_data['tabVariables'] = $tabVariables;
+    $tpl_data['type']         = $type;
     $smarty = new Smarty_NeuroDB('examiner');
     $smarty->assign($tpl_data);
     $html = $smarty->fetch('training.tpl');
