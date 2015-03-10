@@ -408,6 +408,7 @@ class LorisForm
     function freeze() {
         $this->frozen = true;
     }
+
     /**
      * Reimplement the HTML_QuickForm isFrozen API.
      * TODO: Implement this.
@@ -586,6 +587,20 @@ class LorisForm
             }
         }
         return $retVal;
+    }
+
+    /**
+     * TODO: Verify that this is done properly
+     */
+    function setElementError($el, $error) {
+        $this->errors[$el] = $error;
+    }
+
+    function getElementError($el) {
+        if(isset($this->errors[$el])) {
+            return $this->errors[$el];
+        }
+        return;
     }
 }
 ?>
