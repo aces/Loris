@@ -198,7 +198,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
                 foreach ($fileErrors AS $error) {
-                    $tpl_data['error_message'][] = " $fileType: $error ";
+                    $this->tpl_data['error_message'] = " $fileType: $error ";
                 }
             }
             return false;
@@ -222,7 +222,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isValid($file, $args)
     {
         //make sure the file-name is  valid
-        error_log("asdfasfsafsafssssssssssssssssssssssssssS");
         $temp_file     = $file->fileInfo['tmp_name'];
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
