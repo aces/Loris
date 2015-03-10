@@ -189,6 +189,7 @@ class LorisForm
     {
         $strOptions = '';
         $options    = $el['options'];
+        $cls        = '';
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
@@ -201,7 +202,6 @@ class LorisForm
                 . "</option>";
         }
 
-        $cls = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
