@@ -274,7 +274,7 @@ class LorisForm
             $cls = "class=\"$el[class]\"";
         }
         $msg = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        return "<input name=\"$el[name]\" type=\"date\" $cls"
+        $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
             . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
             . (isset($el['required']) ? "required" : '')
             . (
@@ -283,6 +283,12 @@ class LorisForm
                 : ''
               )
             . ">";
+        /*
+        if(isset($this->errors[$el['name']])) {
+            $elmnt .= $this->errors[$el['name']];
+        }
+         */
+        return $elmnt;
 
     }
 
@@ -355,31 +361,33 @@ class LorisForm
     function validate()
     {
         $values = $this->getSubmitValues();
+        $errors = array();
         foreach ($this->form as $elName => $el) {
             $value = $this->getValue($el['name']);
             if (empty($value)) {
-                print "Required element $el[name] not provided.";
-                return false;
+                $this->setElementError($el['name'], "$el[name] required.");
+                $errors[$el['name']] = "required fail";
             }
 
             if(isset($el['compare'])
                 && $value != $this->getValue($el['compare'])
             )
             {
-                print "Comparison failed";
-                return false;
+                $this->setElementError($el['name'], "$el[name] comparison to $el[compare] failed.");
+                $errors[$el['name']] = "comparison fail";
             }
         }
         foreach ($this->formRules as $rule) {
             $violations = $rule($values);
             if (!empty($violations)) {
-                print "Custom validation failed.";
-                print_r($violations);
-                return false;
+                foreach($violations as $element => $msg) {
+                    $this->setElementError($element, $msg);
+                    $errors[$element] = "custom fail";
+                }
             }
         }
 
-        return true;
+        return empty($values);
     }
 
     /**
@@ -454,7 +462,10 @@ class LorisForm
 
             }
         }
-        return $this->form;
+
+        $retVal = $this->form;
+        $retVal['errors'] = $this->errors;
+        return $retVal;//->form;
     }
 
     /**
