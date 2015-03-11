@@ -1,3 +1,5 @@
-<object data="AjaxHelper.php?Module=examiner&script=getTrainingDoc.php&file={$filename}" type="application/pdf" width="100%" height="500">
-    alt : <a href="AjaxHelper.php?Module=examiner&script=getTrainingDoc.php&file={$filename}">{$filename}</a>
-</object>
+<div class="embed-responsive embed-responsive-16by9">
+    <object class="embed-responsive-item" data="AjaxHelper.php?Module=examiner&script=getTrainingDoc.php&file={$filename}" type="application/pdf">
+        alt : <a href="AjaxHelper.php?Module=examiner&script=getTrainingDoc.php&file={$filename}">{$filename}</a>
+    </object>
+</div>
