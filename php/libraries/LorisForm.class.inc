@@ -48,7 +48,7 @@ class LorisForm
      *
      * @return &array A reference to the array that was added to $this->form
      */
-    function &addBase($name, $label, $attribs)
+    protected function &addBase($name, $label, $attribs)
     {
         $el = array(
                'label' => $label,
@@ -117,7 +117,7 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    function addDate($name, $label, $options)
+    public function addDate($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'date';
@@ -159,7 +159,7 @@ class LorisForm
      *
      * @return none, but modifies this->form as a side-effect
      */
-    function addElement(
+    public function addElement(
         $type,
         $name,
         $label,
@@ -255,7 +255,6 @@ class LorisForm
         if (empty($el['name'])) {
             print "EMPTY";
         }
-        print 
         return '';
          */
     }
@@ -354,9 +353,8 @@ class LorisForm
 
     /**
      * Reimplements the HTML_QuickForm validate API.
-     * TODO: Implement this so that forms will work, not just Menu_Filters.
      *
-     * @return none
+     * @return true if all registered rules passed
      */
     function validate()
     {
@@ -365,7 +363,7 @@ class LorisForm
         foreach ($this->form as $elName => $el) {
             $value = $this->getValue($el['name']);
             if (empty($value)) {
-                $this->setElementError($el['name'], "$el[name] required.");
+                //$this->setElementError($el['name'], "$el[name] required.");
                 $errors[$el['name']] = "required fail";
             }
 
@@ -373,7 +371,9 @@ class LorisForm
                 && $value != $this->getValue($el['compare'])
             )
             {
-                $this->setElementError($el['name'], "$el[name] comparison to $el[compare] failed.");
+                // These don't seem to show up in the original, so just make the validation
+                // fail but don't setElementError..
+                //$this->setElementError($el['name'], "$el[name] comparison to $el[compare] failed.");
                 $errors[$el['name']] = "comparison fail";
             }
         }
@@ -387,7 +387,7 @@ class LorisForm
             }
         }
 
-        return empty($values);
+        return empty($errors);
     }
 
     /**
@@ -419,7 +419,7 @@ class LorisForm
 
     /**
      * Reimplement the HTML_QuickForm isFrozen API.
-     * TODO: Implement this.
+     * TODO: Implement this in *HTML functions.
      *
      * @return boolean true if the form should be frozen for input.
      */
@@ -473,7 +473,6 @@ class LorisForm
      *
      * Only 'require' and 'compare' will be implemented
      * since those are the only ones we used.
-     * TODO: Implement 'compare'
      *
      * @param string $element The element name to add the rule to.
      *                        If this is a 'compare' rule, it will
@@ -574,8 +573,6 @@ class LorisForm
      *
      * Gets the values submitted by the user
      *
-     * TODO: Implement this.
-     *
      * @return none
      */
     function getSubmitValues()
@@ -600,9 +597,6 @@ class LorisForm
         return $retVal;
     }
 
-    /**
-     * TODO: Verify that this is done properly
-     */
     function setElementError($el, $error) {
         $this->errors[$el] = $error;
     }
