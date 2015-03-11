@@ -351,27 +351,68 @@ cd ..
 composer install --no-dev
 cd tools
 
-# for CentOS, the log directory is called httpd
-logdirectory=apache2
+if type "lsb_release" > /dev/null 2>&1; then
+  os_distro=$(lsb_release -si)
+elif type "facter" > /dev/null 2>&1; then
+  os_distro=$(facter operatingsystem)
+else
+  os_distro="unknown"
+fi
 
-echo ""
+if [ $os_distro = "Ubuntu" ]; then
+  echo "Ubuntu distribution detected."
+  # for CentOS, the log directory is called httpd
+  logdirectory=/var/log/apache2
+  while true; do
+      read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
+      echo $yn | tee -a $LOGFILE > /dev/null
+      case $yn in
+          [Yy]* )
+             if [ -f /etc/apache2/sites-available/$projectname ]; then
+                 echo "Apache appears to already be configured for $projectname. Aborting\n"
+                 exit 1
+             fi;
+             # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
+             sed -e "s#%LORISROOT%#$RootDir/#g" \
+                 -e "s#%PROJECTNAME%#$projectname#g" \
+  		 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
+                 < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
+             sudo a2dissite 000-default
+             sudo a2ensite $projectname
+             break;;
+          [Nn]* )
+             echo "Not configuring apache."
+             break;;
+          * ) echo "Please enter 'y' or 'n'."
+      esac
+  done;
+elif [ $os_distro = "CentOS" ]; then
+echo "CentOS distribution detected."
+# for CentOS, the log directory is called httpd
+logdirectory=/var/log/httpd
 while true; do
-    read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
+    read -p "Would you like to automatically create/install apache config files? (In development for CentOS 6.5) [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
-            if [ -f /etc/apache2/sites-available/$projectname ]; then
+            if [ -f /etc/httpd/sites-available/$projectname ]; then
                 echo "Apache appears to already be configured for $projectname. Aborting\n"
                 exit 1
             fi;
+            # make directories if missing
+            sudo mkdir -p /etc/httpd/sites-available;
+            sudo mkdir -p /etc/httpd/sites-enabled;
 
             # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
-            sed -e "s#%LORISROOT%#$RootDir/#g" \
+            sed -e "s#%LORISROOT%#$RootDir#g" \
                 -e "s#%PROJECTNAME%#$projectname#g" \
-		-e "s#%LOGDIRECTORY%#$logdirectory#g" \
-                < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
-            sudo a2dissite 000-default
-            sudo a2ensite $projectname
+                -e "s#%LOGDIRECTORY%#$logdirectory#g" \
+                < ../docs/config/apache2-site | sudo tee /etc/httpd/sites-available/$projectname.conf > /dev/null
+
+            # Insert a line in main apache config file to include new file
+            sudo sed -i '221 a\Include /etc/httpd/sites-available/*.conf' /etc/httpd/conf/httpd.conf
+
+            sudo service httpd restart
             break;;
         [Nn]* )
             echo "Not configuring apache."
@@ -379,7 +420,9 @@ while true; do
          * ) echo "Please enter 'y' or 'n'."
     esac
 done;
+else
+    echo "$os_distro Linux distribution detected. We currently do not support this. Installation failed."
+    exit 1
+fi
 
 echo "Installation complete."
-
-
