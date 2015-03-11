@@ -275,7 +275,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         $fullName    = $values['addName'];
         $siteID      = $values['addSite'];
-        $radiologist = $values['radiologist'];
+        $radiologist = $values['addRadiologist'];
 
         if (!empty($fullName) && !empty($siteID)) {
             if ($config->getSetting('useTraining')) {
