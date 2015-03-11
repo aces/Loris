@@ -35,6 +35,16 @@ class LorisForm
     var $errors        = array();
     var $frozen = false;
 
+    protected function &createBase($name, $label, $attribs) {
+        $el = array(
+               'label' => $label,
+               'name'  => $name,
+              );
+        if (isset($attribs['class'])) {
+            $el['class'] = $attribs['class'];
+        }
+        return $el;
+    }
     /**
      * Adds an element to the $this->form array. Handles the creation
      * of any shared attributes that are shared between different
@@ -50,13 +60,7 @@ class LorisForm
      */
     protected function &addBase($name, $label, $attribs)
     {
-        $el = array(
-               'label' => $label,
-               'name'  => $name,
-              );
-        if (isset($attribs['class'])) {
-            $el['class'] = $attribs['class'];
-        }
+        $el = $this->createBase($name, $label, $attribs);
         $this->form[$name] =& $el;
         return $el;
     }
@@ -187,6 +191,12 @@ class LorisForm
         }
     }
 
+    function createText($elname, $label) {
+        $el =& $this->createBase($elname, $label);
+        $el['type'] = 'text';
+        return $el;
+    }
+
     /**
      * Retrives the default value to populate for a form element.
      * If it was POSTed by the user, use that value, otherwise use
@@ -289,6 +299,14 @@ class LorisForm
          */
         return $elmnt;
 
+    }
+    function groupHTML($el) {
+        $retVal = '';
+        foreach($el['elements'] as $element) {
+            $retVal .= $this->rednerElement($el);
+            $retVal .= $el['delimiter'];
+        }
+        return $retVal;
     }
 
     /**
@@ -428,6 +446,23 @@ class LorisForm
         return $this->frozen;
     }
 
+    function renderElement($el) {
+        switch($el['type']) {
+        case 'date':
+            return $this->dateHTML($el);
+        case 'select':
+            return $this->selectHTML($el);
+        case 'static':
+            return $this->staticHTML($el);
+        case 'text':
+        case 'password':
+            return $this->textHTML($el);
+        case 'group':
+            return $this->groupHTML($el);
+        }
+        print_r($el);
+        throw new LorisException("Unsupported element type $el[type]");
+    }
     /**
      * This is a slight difference from the HTML_QuickForm API.
      * Whereas in HTML_QuickForm, you instantiated an array renderer,
@@ -461,11 +496,12 @@ class LorisForm
                 break;
 
             }
+            $el['html'] = $this->renderElement($el);
         }
 
         $retVal = $this->form;
         $retVal['errors'] = $this->errors;
-        return $retVal;//->form;
+        return $retVal;
     }
 
     /**
@@ -549,8 +585,14 @@ class LorisForm
      *
      * @return none
      */
-    function addGroup()
+    function addGroup($array, $name, $label, $delimiter)
     {
+        $this->form[$name] = array(
+            'type' => 'group',
+            'elements' => $array,
+            'delimiter' => empty($delimiter) ? ' ' : $delimiter
+        );
+
     }
 
     /**
@@ -564,8 +606,21 @@ class LorisForm
      *
      * @return none
      */
-    function createElement()
+    function createElement($type, $elname, $label, $options)
     {
+        switch($type) {
+        case 'text':
+            return $this->createText($elname, $label, $options);
+        case 'static':
+        case 'advcheckbox':
+        case 'password':
+            $el = $this->createBase($type, $elname, $label, $options);
+            $el['type'] = $type;
+            break;
+        default:
+            throw new LorisException("Unsupported QuickForm type $type");
+        }
+        return $el;
     }
 
     /**
