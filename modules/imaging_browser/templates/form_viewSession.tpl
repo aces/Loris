@@ -25,6 +25,7 @@
                     <input type="checkbox"
                            data-file-id='{$files[file].FileID}'
                            type='checkbox'
+                           class='mripanel'
                            onClick="javascript:toggle_jiv_panel('{$files[file].JivFilename}', '{$files[file].JivAddress}');">
                             <!--span class="glyphicon glyphicon-plus"-->
                      <h3 class="panel-title"> {if $files[file].Filename != ""}{$files[file].Filename}{else}&nbsp;{/if}</h3>
