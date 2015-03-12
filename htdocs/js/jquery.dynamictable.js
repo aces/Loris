@@ -181,7 +181,7 @@
                 });
                 $(this).parent().scroll(function () {
                     colm_static = freezeColm(id, colm_static);
-                );
+                });
             }
 
             return this;
