@@ -367,15 +367,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 ///Get the directory to which the temp file has been moved to//
                 /// MRI_upload Incoming directory//////////////////////////////
                 ///////////////////////////////////////////////////////////////
-                $uploaded_file_path = $file->getDestinationDirectory() .
-                                      $file->getDestinationFilename();
+                $uploaded_file_path = trim(
+                    $file->getDestinationDirectory() .
+                    $file->getDestinationFilename()
+                );
                 ///////////////////////////////////////////////////////////////
-                ///if the file has been successfully moved then remove/////////
-                //// Remove the uploaded directory in the /tmp/////////////////
+                ///if the DestinationDirectory/getDestinationFilename//////////
+                //is not empty, then remove the uploaded directory in the /tmp/
                 ////Otherwise keep uploaded directory in the /tmp and insert///
                 ////into the mri_upload table//////////////////////////////////
                 ///////////////////////////////////////////////////////////////
-                if (($uploaded_file_path) && file_exists($uploaded_file_path)) {
+                if ($uploaded_file_path) {
                     $this->removeTempDir();
                 } else {
                     $uploaded_file_path = $this->getTempPath();
@@ -484,11 +486,31 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     */
     function removeTempDir()
     {
-
-        $tempFolderPath = dir($this->getTempPath());
+        $tempFolderPath = dirname($this->getTempPath());
+        $success        = false;
         if (($tempFolderPath) && (is_dir($tempFolderPath))) {
-            return rmdir($tempFolderPath);
+            $success = $this->removeDir($tempFolderPath);
         }
+        return $success;
+    }
+
+    /**
+    * The function removes the directory and all its contents
+
+    * @param string $folder The full folder path
+    *
+    * @return bool  $success if operation succeeded
+    */
+    function removeDir($folder)
+    {
+
+        $d = dir($folder);
+        while ($entry = $d->read()) {
+            if ($entry!= "." && $entry!= "..") {
+                unlink($folder . "/" . $entry);
+            }
+        }
+        return rmdir($folder);
     }
 }
 ?>
