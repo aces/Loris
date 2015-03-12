@@ -107,6 +107,11 @@ class LorisForm
         $el['type'] = 'text';
     }
 
+    public function addTextArea($elname, $label, $options=array()) {
+        $el =& $this->addBase($elname, $label);
+        $el['type'] = 'textarea';
+        return $el;
+    }
     /**
      * Reimplementation of HTML_QuickForm's "addDate" API. The behaviour
      * of this varies slightly from QuickForm in that this will use an
@@ -184,6 +189,8 @@ class LorisForm
         case 'static':
             $el = $this->addStatic($name, $label);
             break;
+        case 'textarea':
+            $el = $this->addTextArea($name, $label, $options);
         case 'text':
         default:
             $el = $this->addText($name, $label, $options);
@@ -196,6 +203,13 @@ class LorisForm
         $el['type'] = 'text';
         return $el;
     }
+
+    function createTextArea($elname, $label) {
+        $el =& $this->createBase($elname, $label);
+        $el['type'] = 'text';
+        return $el;
+    }
+
 
     /**
      * Retrives the default value to populate for a form element.
@@ -303,7 +317,12 @@ class LorisForm
     function groupHTML($el) {
         $retVal = '';
         foreach($el['elements'] as $element) {
-            $retVal .= $this->rednerElement($el);
+            /*
+            if(empty($element['type'])) {
+                continue;
+            }
+             */
+            $retVal .= $this->renderElement($element);
             $retVal .= $el['delimiter'];
         }
         return $retVal;
@@ -355,6 +374,21 @@ class LorisForm
               )
             .">";
     }
+    function textareaHTML($el)
+    {
+        $cls = '';
+        if (isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        return "<textarea name=\"$el[name]\" $cls>"
+            . (
+                !empty($this->getValue($el['name']))
+                ? $this->getValue($el['name']) : ''
+              )
+            ."</textarea>";
+    }
+
+
 
     /**
      * Reimplements the HTML_QuickForm setDefaults API.
@@ -454,14 +488,22 @@ class LorisForm
             return $this->selectHTML($el);
         case 'static':
             return $this->staticHTML($el);
+        case 'textarea':
+            return $this->textareaHTML($el);
         case 'text':
         case 'password':
             return $this->textHTML($el);
+        case 'advcheckbox':
+            return $this->checkboxHTML($el);
         case 'group':
             return $this->groupHTML($el);
         }
         print_r($el);
-        throw new LorisException("Unsupported element type $el[type]");
+        throw new LorisException("Unsupported element type $el[type] in renderElement");
+    }
+    function checkboxHTML($el) {
+        print_r($el);
+        return "<input type=\"checkbox\" /> $el[label]";
     }
     /**
      * This is a slight difference from the HTML_QuickForm API.
@@ -606,21 +648,33 @@ class LorisForm
      *
      * @return none
      */
-    function createElement($type, $elname, $label, $options)
+    function createElement($type, $elname, $label, $options, $attribs)
     {
         switch($type) {
         case 'text':
             return $this->createText($elname, $label, $options);
-        case 'static':
+        case 'select':
+            return $this->createSelect($elname, $label, $options, $attribs);
         case 'advcheckbox':
+        case 'static':
+        case 'textarea':
         case 'password':
-            $el = $this->createBase($type, $elname, $label, $options);
+            $el = $this->createBase($elname, $label, $options);
             $el['type'] = $type;
             break;
         default:
             throw new LorisException("Unsupported QuickForm type $type");
         }
         return $el;
+    }
+
+    public function createSelect($name, $label, $options, $attribs = array())
+    {
+        $el            =& $this->createBase($name, $label, $attribs);
+        $el['type']    = 'select';
+        $el['options'] = $options;
+        return $el;
+
     }
 
     /**
