@@ -85,7 +85,8 @@ $(document).ready(function () {
 
     $('body').on('click', '.review > a', function (e) {
         e.preventDefault();
-        var tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
+        var tabNumber = $(this).parent().attr('id');
+        // Todo: check if the tab has already been loaded before fetching content
         loadTabContent(tabNumber, 'review');
         activateTab(tabNumber);
     });
