@@ -43,6 +43,9 @@ class LorisForm
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
         }
+        if (isset($attribs['onchange'])) {
+            $el['onchange'] = $attribs['onchange'];
+        }
         return $el;
     }
     /**
@@ -244,6 +247,7 @@ class LorisForm
         $strOptions = '';
         $options    = $el['options'];
         $cls        = '';
+        $changehandler = '';
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
@@ -259,7 +263,10 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls";
+        if (isset($el['onchange'])) {
+            $changehandler= "onchange=\"$el[onchange]\"";
+        }
+        $retVal = "<select name=\"$el[name]\" $cls $changehandler";
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
@@ -274,13 +281,12 @@ class LorisForm
     }
 
     function staticHTML($el) {
-        return $this->getValue($el['name']);
-        /*
-        if (empty($el['name'])) {
-            print "EMPTY";
+        $val = $this->getValue($el['name']);
+
+        if (!empty($el['label'])) {
+            return $el['label'] . $val;
         }
-        return '';
-         */
+        return $val;
     }
     /**
      * Generates the HTML to add to the page when rendered for a date
@@ -498,11 +504,9 @@ class LorisForm
         case 'group':
             return $this->groupHTML($el);
         }
-        print_r($el);
         throw new LorisException("Unsupported element type $el[type] in renderElement");
     }
     function checkboxHTML($el) {
-        print_r($el);
         return "<input type=\"checkbox\" /> $el[label]";
     }
     /**
@@ -655,8 +659,14 @@ class LorisForm
             return $this->createText($elname, $label, $options);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
-        case 'advcheckbox':
         case 'static':
+            /* Label seems to usually be the wrong attribute for static
+             * elements?
+             */
+            $el = $this->createBase($elname, $options, $attribs);
+            $el['type'] = 'static';
+            break;
+        case 'advcheckbox':
         case 'textarea':
         case 'password':
             $el = $this->createBase($elname, $label, $options);
@@ -706,6 +716,9 @@ class LorisForm
         return $retVal;
     }
 
+    function getElement($name) {
+        return new LorisFormElement();
+    }
     function setElementError($el, $error) {
         $this->errors[$el] = $error;
     }
@@ -717,4 +730,9 @@ class LorisForm
         return;
     }
 }
+
+class LorisFormElement {
+    function freeze() {
+    }
+};
 ?>
