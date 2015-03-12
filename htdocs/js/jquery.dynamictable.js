@@ -18,7 +18,10 @@
  *
  * { "freezeColumn" : "columnID" }
  *
- * where columnID is the id of the column you'd like to freeze
+ * columnID: The id of the table id in the first row  at the desired
+ *           column
+ *
+ * ie. $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
  *
  * Authors: Jordan Stirling <jstirling91@gmail.com>
  *          Dave MacFarlane
@@ -110,12 +113,12 @@
         $(table).wrap("<div class=\"dynamicContentWrapper table-scroll\" style=\"overflow-x: auto\"></div>");
 
         // Add links for carousel
-        $(table).after('<a class="left carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
+        $(table).after('<a class="left leftScrollBar carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
     }, freezeColm = function (tableID, colm_static) {
         var statColPos = $("." + tableID + "FrozenColumn").offset().left,
             statColWid = $("." + tableID + "FrozenColumn").outerWidth(),
-            leftScrollPos = $(".left").offset().left,
-            leftScrollWid = $(".left").outerWidth(),
+            leftScrollPos = $(".leftScrollBar").offset().left,
+            leftScrollWid = $(".leftScrollBar").outerWidth(),
             nextColPos = $("." + tableID + "Next").offset().left;
 
         if (colm_static === true) {
@@ -170,15 +173,15 @@
                 $(this).find("tr").each(function (key, value) {
                     if (key === 0) {
                         var child2 = $(value).children().get(columnNumber + 1);
-                        $(child2).attr('class', id + 'Next');
+                        $(child2).addClass(id + 'Next');
                     }
                     child1 = $(value).children().get(columnNumber);
                         // height = $(child1).next().outerHeight();
-                    $(child1).attr('class', id + "FrozenColumn");
+                    $(child1).addClass(id + "FrozenColumn");
                 });
                 $(this).parent().scroll(function () {
                     colm_static = freezeColm(id, colm_static);
-                });
+                );
             }
 
             return this;
