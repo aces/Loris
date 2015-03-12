@@ -479,7 +479,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     {
 
         $tempFolderPath = dir($this->getTempPath());
-        if (($tempFolderPath) && (is_dir($tempFolderPath)) {
+        if (($tempFolderPath) && (is_dir($tempFolderPath))) {
             return rmdir($tempFolderPath);
         }
     }
