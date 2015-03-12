@@ -16,7 +16,7 @@
 
 	php_value include_path .:/usr/share/php:/usr/share/pear:%LORISROOT%project/libraries:%LORISROOT%php/libraries
 
-	ErrorLog /var/log/%LOGDIRECTORY%/%PROJECTNAME%-error.log
+	ErrorLog %LOGDIRECTORY%/%PROJECTNAME%-error.log
 
 	# Possible values include: debug, info, notice, warn, error, crit,
 	# alert, emerg.
