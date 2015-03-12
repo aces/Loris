@@ -169,7 +169,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file   = new File_Upload;
         $config = NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
-        $stored_file_path    = $paths['IncomingPath'];
         $file->overwriteMode = "reject";
         $file->fileMove      = false;
 
@@ -179,8 +178,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
         //Set the target directory that you want files moved
         //into once they are validated and processed.
-        //$file->setBaseUploadDirectory($stored_file_path);
-
+        $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
+        if (($MRIUploadIncomingPath) && (is_dir($MRIUploadIncomingPath))
+            && (is_writable($MRIUploadIncomingPath))
+        ) {
+             $file->fileMove = true;
+             $file->setBaseUploadDirectory($MRIUploadIncomingPath);
+        }
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler(
             "mri_file",
@@ -198,7 +202,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
                 foreach ($fileErrors AS $error) {
-                    $this->tpl_data['error_message'] = " $fileType: $error ";
+                    throw new Exception(" $fileType: $error ");
                 }
             }
             return false;
@@ -249,7 +253,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
 
         $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
-
         //////////////////////////////////////////////////////////////////////
         //////check to se if candid exists////////////////////////////////////
         //////////////////////////////////////////////////////////////////////
@@ -300,8 +303,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ////////////////TODO///////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($new_temp_file)) {
-            $errors[] = "The uploaded File" . $file_path. " is either not".
-                        " compressed or is not of type .tgz, .tar.gz or .zip";
+            $errors[] = "The file $file_name is not of type".
+                        " .tgz, .tar.gz or .zip";
         }
 
         if (count($errors) > 0) {
@@ -361,13 +364,22 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                      'vlabel' => $visit_label,
                     )
                 );
-                $values      = array(
-                                'UploadedBy'     => $user_name,
-                                'UploadDate'     => $date,
-                                'SourceLocation' => $this->getTempPath(),
-                                'SessionID'      => $sessionid,
-                                'PatientName'    => $pname,
-                               );
+
+                $uploaded_file_path = $file->getDestinationDirectory() .
+                                      $file->getDestinationFilename();
+
+                if ($uploaded_file_path) {
+                    $this->removeTempDir();
+                } else {
+                    $uploaded_file_path = $this->getTempPath();
+                }
+                $values = array(
+                           'UploadedBy'     => $user_name,
+                           'UploadDate'     => $date,
+                           'SourceLocation' => $uploaded_file_path,
+                           'SessionID'      => $sessionid,
+                           'PatientName'    => $pname,
+                          );
                 $db->Insert(
                     'mri_upload',
                     $values
@@ -453,6 +465,23 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return true;
         }
         return false;
+    }
+
+    /**
+    * The function removes the uploaded file from the /tmp directory
+        only if the file is moved from the /tmp directory to the
+        MRI-Upload Directory
+    *
+    * @return bool  $success if operation succeeded
+    * @access public
+    */
+    function removeTempDir()
+    {
+
+        $tempFolderPath = dir($this->getTempPath());
+        if (($tempFolderPath) && (is_dir($tempFolderPath)) {
+            return rmdir($tempFolderPath);
+        }
     }
 }
 ?>
