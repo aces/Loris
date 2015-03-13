@@ -100,7 +100,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $PendingFailSubquery = "
             CASE s.MRIQCStatus
                 WHEN 'Fail' THEN
-                    IF(s.MRIQCPending, 'Pending Fail', 'Fail')
+                    IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
                 WHEN 'Pass' THEN
                     IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
                 ELSE s.MRIQCStatus
