@@ -11,7 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'PEAR.php';
 require_once 'NDB_Page.class.inc';
 
 /**
@@ -125,6 +124,32 @@ class NDB_Menu extends NDB_Page
         return true;
     }
 
+    /**
+     * Override the menu pages to use the new LorisForm HTML_QuickForm replacement.
+     * Menus can be done more easily than forms because they rarely have rules, so
+     * this can be done before the LorisForm rule functionality is fully implemented.
+     *
+     * After support for forms is implemented, this override should be removed.
+     *
+     * @param string $name       See NDB_Page
+     * @param string $page       See NDB_Page
+     * @param string $identifier See NDB_Page
+     * @param string $commentID  See NDB_Page
+     * @param string $formname   See NDB_Page
+     *
+     * @return none
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    {
+        $this->form = new LorisForm($formname);
+
+        $this->name       = $name;
+        $this->page       = $page;
+        $this->identifier = $identifier;
+        $this->commentID  = $commentID;
+        $this->defaults   = array();
+
+    }
     /**
      * Displays the menu page
      *
