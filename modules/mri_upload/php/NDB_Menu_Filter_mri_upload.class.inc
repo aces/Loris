@@ -131,12 +131,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
      /**
       * Returns true if the _saveFile has successfully
-      * Completed
+      * completed
       *
       * @param array $values the array of values from the form
       *
       * @return true on success, false othewise
-      * @access private
      */
     function _process($values)
     {
@@ -152,12 +151,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
        * 1) registering the file handlers
        * 2) Calling the processFiles function which in return will call
        *   - isValid function
-       *   - improFile Function
+       *   - importFile Function
        *
        * @param array $values the array of values from the form
        *
        * @return true on success, false othewise
-       * @access private
        */
     function _saveFile($values)
     {
@@ -202,7 +200,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
                 foreach ($fileErrors AS $error) {
-                    throw new Exception(" $fileType: $error ");
+                    throw new LorisException(" $fileType: $error ");
                 }
             }
             return false;
@@ -210,26 +208,23 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return true;
     }
     /**
-     * Validate the file to be uploaded by ensuring that:
+     * Validates the file to be uploaded by ensuring that:
      *  - The uploaded file is compressed and is of type:
      *       .gz, .zip or .tgz
-     *  - The fields CandID, PSCID and VisitLabel are filled out
-     *  - The inputted PSCID, CandID and VisitLabel exist in the database
+     *  - The fields   CandID, PSCID  and VisitLabel are filled out
+     *  - The inputted PSCID,  CandID and VisitLabel exist in the database
      *  - The uploaded file is copied to a newly created temporary folder
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
      *
      * @return Array  Returns an array of errors or
-     * Boolean if it's true
+     * boolean if it's true
      */
     function isValid($file, $args)
     {
         //make sure the file-name is  valid
         $temp_file     = $file->fileInfo['tmp_name'];
-        $temp_dir      = $this->tempdir();
-        $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
-        $this->setTempPath($new_temp_file);
         $db     = Database::singleton();
         $errors = array();
         $config = NDB_Config::singleton();
@@ -241,23 +236,23 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/".$file_name;
         ///////////////////////////////////////////////////////////////////////
-        ////////////// make sure the Advanced Options are filled out///////////
+        ////////////// make sure the advanced options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
         $candid      = trim($args['values']['CandID']);
         $pscid       = trim($args['values']['PSCID']);
         $visit_label = trim($args['values']['VisitLabel']);
 
         if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-            $errors[] ="Make sure the CandID, PSCID and Visit_label are
-            filled out ";
+            $errors[] ="Make sure the CandID, PSCID and Visit_label are".
+            "filled out ";
         }
 
         $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
         ///////////////////////////////////////////////////////////////////////
-        //////check to se if candid/pscid and Visit-label exist////////////////
+        //////check to see if candid/pscid and visit-label exist///////////////
         ///////////////////////////////////////////////////////////////////////
         if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
-            if ($db->pselectRow(
+            if ($db->pselectOne(
                 "SELECT COUNT(*) FROM session s
                  JOIN candidate c ON (c.candid=s.candid)
                  WHERE s.Visit_label = :vlabel
@@ -278,8 +273,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if (!$this->isCompressed($new_temp_file)) {
-            $errors[] = "The file $file_name is not of type".
+        if (!$this->isCompressed($temp_file)) {
+            $errors[] = "The file $temp_file is not of type".
                         " .tgz, .tar.gz or .zip";
         }
 
@@ -287,11 +282,14 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             return $errors;
         }
         ///////////////////////////////////////////////////////////////////////
-        /////////copy the temporairy file to a temporairy directory////////////
-        //////////with a correct Extension/////////////////////////////////////
+        /////////copy the temporary file to a temporary directory//////////////
+        //////////with a correct extension/////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
+        $temp_dir      = $this->tempdir();
+        $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
+
         if (!copy($temp_file, $new_temp_file)) {
-            $errors[] = "failed to copy $temp_file to $new_temp_file \n";
+            throw new LorisException("failed to copy $temp_file to $new_temp_file \n");
         }
         $this->setTempPath($new_temp_file);
         return true;
@@ -309,13 +307,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $userid    = $args['user_id'];
         $feedbacks = array();
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
 
         ///////////////////////////////////////////////////////////////////////
-        ///////////////if empty get it using User class////////////////////////
+        ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $user_name = $args['user_id'];
         if (($user_name==null) || (!(isset($user_name)))) {
@@ -333,9 +330,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             && (!empty($args['values']['PSCID']))
             &&(!empty($args['values']['VisitLabel']))
         ) {
-            ///////////////////////////////////////////////////////////////
-            ////////////////////Use the arguments//////////////////////////
-            ///////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////
+            ////////////////////Use the arguments//////////////////////////////
+            ///////////////////////////////////////////////////////////////////
             $visit_label = $args['values']['VisitLabel'];
             $candid      = $args['values']['CandID'];
             $pscid       = $args['values']['PSCID'];
@@ -348,10 +345,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                  'vlabel' => $visit_label,
                 )
             );
-            ///////////////////////////////////////////////////////////////
-            ///Get the directory to which the temp file has been moved to//
-            /// MRI_upload Incoming directory//////////////////////////////
-            ///////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////
+            ///Get the directory to which the temp file has been moved to/////
+            /// MRI_upload Incoming directory/////////////////////////////////
+            //////////////////////////////////////////////////////////////////
             $uploaded_file_path = trim(
                 $file->getDestinationDirectory() .
                 $file->getDestinationFilename()
@@ -383,7 +380,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         return false;
     }
     /**
-     * Creates a temporairy directory
+     * Creates a temporary directory
      *
      * @return String
     */
@@ -426,14 +423,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     /**
     * The getTargetDirectory retrieves info about where the file should be stored.
     *
-    * The returned directory is ADDED to the baseUploadDirectory property.
+    * The returned directory is added to the baseUploadDirectory property.
     * It should have a trailing slash.
     *
     * @param string $file The full filename including directory.
     * @param Array  $args The list of arguments
     *
     * @return bool  $success if operation succeeded
-    * @access public
     */
     function getTargetDirectory($file, $args)
     {
@@ -449,13 +445,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     * @param string $file The full filename including directory.
     *
     * @return bool  $success if operation succeeded
-    * @access public
     */
     function isCompressed($file)
     {
 
         $file_info =  mime_content_type($file);
-        if (preg_match('/gzip|zip/', $file_info, $matches)) {
+        if (preg_match('/zip/', $file_info, $matches)) {
             return true;
         }
         return false;
@@ -467,7 +462,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     * MRI-Upload Directory
     *
     * @return bool  $success if operation succeeded
-    * @access public
     */
     function removeTempDir()
     {
