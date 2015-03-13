@@ -126,7 +126,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
     if (!empty($comment_array['field']) && ($comments->objectType == 'volume')) {
         if ($user->hasPermission('imaging_browser_qc')) {
             $CommentTpl['select_name']        = $comment_array['field'];
-            $ComeentTpl['select_value_array'] = $comment_array['values'];
+            $CommentTpl['select_value_array'] = $comment_array['values'];
         }
         $CommentTpl['selected'] = $comments->getMRIValue($comment_array['field']);
     }
