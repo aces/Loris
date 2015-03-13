@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Mri_upload class file
@@ -87,8 +86,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
      * Creates the following fields:
-        - MRI-upload browse-button and static fields
-        - Three text elements: CandID, PSCID and VisitLabel
+     *   - MRI-upload browse-button and static fields
+     *   - Three text elements: CandID, PSCID and VisitLabel
      * It wil also throw an error message if the file cannot be uploaded
      *
      * @return boolean
@@ -152,8 +151,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
        * Save the file to the DataBase by:
        * 1) registering the file handlers
        * 2) Calling the processFiles function which in return will call
-          - isValid function
-          - improFile Function
+       *   - isValid function
+       *   - improFile Function
        *
        * @param array $values the array of values from the form
        *
@@ -212,11 +211,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     }
     /**
      * Validate the file to be uploaded by ensuring that:
-       - The uploaded file is compressed and is of type:
-            .gz, .zip or .tgz
-       - The fields CandID, PSCID and VisitLabel are filled out
-       - The inputted PSCID, CandID and VisitLabel exist in the database
-       - The uploaded file is copied to a newly created temporary folder
+     *  - The uploaded file is compressed and is of type:
+     *       .gz, .zip or .tgz
+     *  - The fields CandID, PSCID and VisitLabel are filled out
+     *  - The inputted PSCID, CandID and VisitLabel exist in the database
+     *  - The uploaded file is copied to a newly created temporary folder
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
@@ -259,10 +258,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
             if ($db->pselectRow(
-                "SELECT COUNT(*)  from session s".
-                "JOIN candidate c ON  (c.candid=s.candid)".
-                "WHERE s.Visit_label = :vlabel".
-                "AND c.pscid = :pid AND c.candid = :cid",
+                "SELECT COUNT(*) FROM session s
+                 JOIN candidate c ON (c.candid=s.candid)
+                 WHERE s.Visit_label = :vlabel
+                 AND c.pscid = :pid AND c.candid = :cid",
                 array(
                  'cid'    => $candid,
                  'vlabel' => $visit_label,
@@ -300,8 +299,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
      * Inserts into the mri_upload table the following information:
-        - UploadedBy, UploadDate, SourceLocation, SessionID and
-          PatientName
+     *   - UploadedBy, UploadDate, SourceLocation, SessionID and
+     *     PatientName
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
@@ -334,52 +333,52 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             && (!empty($args['values']['PSCID']))
             &&(!empty($args['values']['VisitLabel']))
         ) {
-              ///////////////////////////////////////////////////////////////
-              ////////////////////Use the arguments//////////////////////////
-              ///////////////////////////////////////////////////////////////
-              $visit_label = $args['values']['VisitLabel'];
-              $candid      = $args['values']['CandID'];
-              $pscid       = $args['values']['PSCID'];
-              $pname       = $pscid. "_" . $candid . "_" . $visit_label;
-              $sessionid   = $db->pselectOne(
-                  "SELECT ID FROM  session WHERE CandID = :cid".
-                  " AND Visit_label =:vlabel ",
-                  array(
-                    'cid'    => $candid,
-                    'vlabel' => $visit_label,
-                   )
-              );
-              ///////////////////////////////////////////////////////////////
-              ///Get the directory to which the temp file has been moved to//
-              /// MRI_upload Incoming directory//////////////////////////////
-              ///////////////////////////////////////////////////////////////
-              $uploaded_file_path = trim(
-                  $file->getDestinationDirectory() .
-                  $file->getDestinationFilename()
-              );
-              ///////////////////////////////////////////////////////////////
-              ///if the DestinationDirectory/getDestinationFilename//////////
-              //is not empty, then remove the uploaded directory in the /tmp/
-              ////Otherwise keep uploaded directory in the /tmp and insert///
-              ////into the mri_upload table//////////////////////////////////
-              ///////////////////////////////////////////////////////////////
-              if ($uploaded_file_path) {
-                   $this->removeTempDir();
-              } else {
-                   $uploaded_file_path = $this->getTempPath();
-              }
-              $values = array(
-                         'UploadedBy'     => $user_name,
-                         'UploadDate'     => $date,
-                         'SourceLocation' => $uploaded_file_path,
-                         'SessionID'      => $sessionid,
-                         'PatientName'    => $pname,
-                        );
-               $db->Insert(
-                   'mri_upload',
-                   $values
-               );
-               return true;
+            ///////////////////////////////////////////////////////////////
+            ////////////////////Use the arguments//////////////////////////
+            ///////////////////////////////////////////////////////////////
+            $visit_label = $args['values']['VisitLabel'];
+            $candid      = $args['values']['CandID'];
+            $pscid       = $args['values']['PSCID'];
+            $pname       = $pscid. "_" . $candid . "_" . $visit_label;
+            $sessionid   = $db->pselectOne(
+                "SELECT ID FROM  session WHERE CandID = :cid
+                 AND Visit_label =:vlabel",
+                array(
+                 'cid'    => $candid,
+                 'vlabel' => $visit_label,
+                )
+            );
+            ///////////////////////////////////////////////////////////////
+            ///Get the directory to which the temp file has been moved to//
+            /// MRI_upload Incoming directory//////////////////////////////
+            ///////////////////////////////////////////////////////////////
+            $uploaded_file_path = trim(
+                $file->getDestinationDirectory() .
+                $file->getDestinationFilename()
+            );
+            ///////////////////////////////////////////////////////////////
+            ///if the DestinationDirectory/getDestinationFilename//////////
+            //is not empty, then remove the uploaded directory in the /tmp/
+            ////Otherwise keep uploaded directory in the /tmp and insert///
+            ////into the mri_upload table//////////////////////////////////
+            ///////////////////////////////////////////////////////////////
+            if ($uploaded_file_path) {
+                $this->removeTempDir();
+            } else {
+                $uploaded_file_path = $this->getTempPath();
+            }
+            $values = array(
+                       'UploadedBy'     => $user_name,
+                       'UploadDate'     => $date,
+                       'SourceLocation' => $uploaded_file_path,
+                       'SessionID'      => $sessionid,
+                       'PatientName'    => $pname,
+                      );
+            $db->Insert(
+                'mri_upload',
+                $values
+            );
+            return true;
         }
         return false;
     }
@@ -445,7 +444,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
     * The function isCompressed returns true if the file is
-        compressed (gzip or zip) or false otherwise
+    * compressed (gzip or zip) or false otherwise
     *
     * @param string $file The full filename including directory.
     *
@@ -464,8 +463,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
     * The function removes the uploaded file from the /tmp directory
-        only if the file is moved from the /tmp directory to the
-        MRI-Upload Directory
+    * only if the file is moved from the /tmp directory to the
+    * MRI-Upload Directory
     *
     * @return bool  $success if operation succeeded
     * @access public
@@ -482,14 +481,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
     * The function removes the directory and all its contents
-
+    *
     * @param string $folder The full folder path
     *
     * @return bool  $success if operation succeeded
     */
     function removeDir($folder)
     {
-
         $d = dir($folder);
         while ($entry = $d->read()) {
             if ($entry!= "." && $entry!= "..") {
