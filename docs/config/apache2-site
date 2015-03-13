@@ -2,12 +2,12 @@
 <VirtualHost *:80>  # change from 80 to 443 if you enable SSL
 	ServerAdmin webmaster@localhost
 	
-	DocumentRoot %LORISROOT%htdocs/
+	DocumentRoot %LORISROOT%/htdocs/
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory %LORISROOT%htdocs/>
+	<Directory %LORISROOT%/htdocs/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride None
 		Order allow,deny
@@ -16,13 +16,13 @@
 
 	php_value include_path .:/usr/share/php:/usr/share/pear:%LORISROOT%project/libraries:%LORISROOT%php/libraries
 
-	ErrorLog /var/log/apache2/%PROJECTNAME%-error.log
+	ErrorLog %LOGDIRECTORY%/%PROJECTNAME%-error.log
 
 	# Possible values include: debug, info, notice, warn, error, crit,
 	# alert, emerg.
 	LogLevel warn
 
-	CustomLog /var/log/apache2/%PROJECTNAME%-access.log combined
+	CustomLog %LOGDIRECTORY%/%PROJECTNAME%-access.log combined
 	ServerSignature Off
 
     #SSLEngine Off  # change to On to enable, after updating cert paths below
