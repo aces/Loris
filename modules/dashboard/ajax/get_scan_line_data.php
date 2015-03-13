@@ -36,7 +36,7 @@ $scanEndDate        = $DB->pselectOne(
 );
 $scanData['labels']
     = createChartLabels($scanStartDate, $scanEndDate);
-$list_of_sites      = Utility::getSiteList();
+$list_of_sites      = Utility::getAssociativeSiteList(true, false);
 foreach ($list_of_sites as $dataset) {
     $scanData['datasets'][] = array(
                                "name" => $dataset,

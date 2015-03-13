@@ -17,7 +17,7 @@ ini_set('default_charset', 'utf-8');
 
 $DB            = Database::singleton();
 $genderData    = array();
-$list_of_sites = Utility::getSiteList();
+$list_of_sites = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $site) {
     $genderData['labels'][] = $site;
@@ -25,14 +25,16 @@ foreach ($list_of_sites as $site) {
         "SELECT count(c.CandID)
          FROM candidate c
          LEFT JOIN psc ON (psc.CenterID=c.CenterID)
-         WHERE c.Gender='female' AND c.Active='Y' AND psc.Name=:Site",
+         WHERE c.Gender='female' AND c.Active='Y'
+         AND c.Entity_type='Human' AND psc.Name=:Site",
         array('Site' => $site)
     );
     $genderData['datasets']['male'][]   = $DB->pselectOne(
         "SELECT count(c.CandID)
          FROM candidate c
          LEFT JOIN psc ON (psc.CenterID=c.CenterID)
-         WHERE c.Gender='male' AND c.Active='Y' AND psc.Name=:Site",
+         WHERE c.Gender='male' AND c.Active='Y'
+         AND c.Entity_type='Human' AND psc.Name=:Site",
         array('Site' => $site)
     );
 }

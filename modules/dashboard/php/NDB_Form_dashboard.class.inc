@@ -230,7 +230,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $DB = Database::singleton();
         $totalRecruitment = $DB->pselectOne(
             "SELECT count(*) FROM candidate c
-             WHERE c.Active='Y' AND Entity_type='Human'",
+             WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID!=1",
             array()
         );
         return $totalRecruitment;
@@ -249,7 +249,8 @@ class NDB_Form_Dashboard extends NDB_Form
         $totalRecruitment = $DB->pselectOne(
             "SELECT count(*)
              FROM candidate c
-             WHERE c.Active='Y' AND c.ProjectID=:PID",
+             WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
+             AND c.CenterID!=1",
             array('PID' => $projectID)
         );
         return $totalRecruitment;
@@ -268,7 +269,8 @@ class NDB_Form_Dashboard extends NDB_Form
         $total = $DB->pselectOne(
             "SELECT count(c.CandID)
              FROM candidate c
-             WHERE c.Gender=:Gender AND c.Active='Y'",
+             WHERE c.Gender=:Gender AND c.Active='Y' AND c.Entity_type='Human'
+             AND c.CenterID!=1",
             array('Gender' => $gender)
         );
         return $total;
@@ -289,7 +291,8 @@ class NDB_Form_Dashboard extends NDB_Form
         $total = $DB->pselectOne(
             "SELECT count(c.CandID)
              FROM candidate c
-             WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID",
+             WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
+             AND c.Entity_type='Human' AND c.CenterID!=1",
             array(
              'Gender' => $gender,
              'PID'    => $projectID,

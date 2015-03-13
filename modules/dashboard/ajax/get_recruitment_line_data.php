@@ -30,7 +30,7 @@ $recruitmentEndDate   = $DB->pselectOne(
 $recruitmentData['labels']
     = createChartLabels($recruitmentStartDate, $recruitmentEndDate);
 
-$list_of_sites = Utility::getSiteList();
+$list_of_sites = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $dataset) {
     $recruitmentData['datasets'][] = array(
@@ -96,10 +96,12 @@ function getRecruitmentData($dataset, $labels)
              FROM candidate c
              LEFT JOIN psc ON (psc.CenterID=c.CenterID)
              WHERE psc.Name=:Dataset
-             AND MONTH(Date_registered)=$month
-             AND YEAR(Date_registered)=:Year",
+             AND MONTH(c.Date_registered)=:Month
+             AND YEAR(c.Date_registered)=:Year
+             AND c.Entity_type='Human'",
             array(
              'Dataset' => $dataset,
+             'Month'   => $month,
              'Year'    => $year,
             )
         );
