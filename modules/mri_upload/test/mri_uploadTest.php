@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class mri_uploadTestIntegrationTest extends LorisIntegrationTest.class.inc
+class mri_uploadTestIntegrationTest extends LorisIntegrationTest
 {
     protected $webDriver;
 
