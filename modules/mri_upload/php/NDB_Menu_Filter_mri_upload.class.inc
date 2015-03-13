@@ -234,7 +234,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
         $file_name = $file->fileInfo['name'];
-        $file_path = $temp_dir. "/".$file_name;
+        $file_path = $temp_dir. "/". $file_name;
         ///////////////////////////////////////////////////////////////////////
         ////////////// make sure the advanced options are filled out///////////
         ///////////////////////////////////////////////////////////////////////
@@ -263,9 +263,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                  'pid'    => $pscid,
                 )
             )==0) {
-                    $errors[] = "Make sure The CandID: $candid and ".
-                                "PSCID: $pscid and Visit-label: " .
-                                 "$visit_label exist";
+                    $errors[] = "Make sure you enter the CandID: $candid ,".
+                                "PSCID: $pscid and the corresponding Visit-label: " .
+                                "$visit_label which already exist";
             }
         }
 
