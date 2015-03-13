@@ -224,10 +224,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
     function isValid($file, $args)
     {
         //make sure the file-name is  valid
-        $temp_file     = $file->fileInfo['tmp_name'];
-        $db     = Database::singleton();
-        $errors = array();
-        $config = NDB_Config::singleton();
+        $temp_file = $file->fileInfo['tmp_name'];
+        $db        = Database::singleton();
+        $errors    = array();
+        $config    = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
@@ -289,7 +289,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
 
         if (!copy($temp_file, $new_temp_file)) {
-            throw new LorisException("failed to copy $temp_file to $new_temp_file \n");
+            throw new LorisException(
+                "failed to copy $temp_file to $new_temp_file \n"
+            );
         }
         $this->setTempPath($new_temp_file);
         return true;
