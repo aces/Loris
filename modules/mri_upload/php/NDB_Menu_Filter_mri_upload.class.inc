@@ -288,7 +288,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             }
         }
 
-
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
@@ -310,8 +309,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $errors[] = "failed to copy $temp_file to $new_temp_file \n";
         }
         $this->setTempPath($new_temp_file);
-
-
         return true;
     }
 
