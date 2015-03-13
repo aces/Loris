@@ -1,5 +1,6 @@
 <?php
-class LorisIntegrationTest extends PHPUnit_Framework_TestCase
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+class mri_uploadTestIntegrationTest extends LorisIntegrationTest.class.inc
 {
     protected $webDriver;
 
