@@ -67,6 +67,10 @@ script:
     # break
     - vendor/bin/phpunit test/integrationtests/
 
+    # Run integration tests for specific modules
+    - vendor/bin/phpunit modules/mri_upload/test/mri_upload_Test.php
+
+
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions

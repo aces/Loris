@@ -289,15 +289,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         }
 
         ///////////////////////////////////////////////////////////////////////
-        /////////copy the temporairy file to a temporairy directory////////////
-        //////////with a correct Extension/////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if (!copy($temp_file, $new_temp_file)) {
-            $errors[] = "failed to copy $temp_file to $new_temp_file \n";
-        }
-        $this->setTempPath($new_temp_file);
-
-        ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -309,6 +300,15 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         if (count($errors) > 0) {
             return $errors;
         }
+
+        ///////////////////////////////////////////////////////////////////////
+        /////////copy the temporairy file to a temporairy directory////////////
+        //////////with a correct Extension/////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        if (!copy($temp_file, $new_temp_file)) {
+            $errors[] = "failed to copy $temp_file to $new_temp_file \n";
+        }
+        $this->setTempPath($new_temp_file);
         return true;
     }
 
