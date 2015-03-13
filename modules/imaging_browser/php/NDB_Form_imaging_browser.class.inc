@@ -529,10 +529,12 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         if (!empty($_REQUEST['outputType'])) {
             $tpl_data['outputType'] = urldecode($_REQUEST['outputType']);
         }
+        $config = NDB_Config::singleton();
+        if ($config->getSetting('useEDC') === 'true') {
+            $tpl_data['useEDC'] = true;
+        }
 
-
-        $smarty = new Smarty_neurodb;
-        $smarty->ModuleName = "imaging_browser";
+        $smarty = new Smarty_neurodb('imaging_browser');
 
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_session_header.tpl");
