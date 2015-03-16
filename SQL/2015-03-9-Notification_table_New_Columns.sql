@@ -1,6 +1,6 @@
 ALTER TABLE notification_types ADD COLUMN `Origin` varchar(255) DEFAULT NULL;
 ALTER TABLE notification_spool ADD COLUMN `ProcessID` int(11) NOT NULL DEFAULT '0' AFTER NotificationTypeID;
-ALTER TABLE notification_spool CHANGE COLUMN TimeSpooled TimeSpooled datetime DEFAULT NULL;
+ALTER TABLE notification_spool ADD COLUMN `TimeSpooledNew` datetime DEFAULT NULL AFTER TimeSpooled;
 ALTER TABLE notification_spool ADD COLUMN `Error` tinyint(1) DEFAULT '0' AFTER Message;
 
 INSERT INTO notification_types (Type,private,Description,Origin) VALUES
