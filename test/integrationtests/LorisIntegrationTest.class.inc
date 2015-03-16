@@ -36,10 +36,12 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                 'Active' => 'Y',
                 'Examiner' => 'N',
                 'Password_md5' => 'a601e42ba82bb37a68ca3c8b7752f2e222',
+                'Password_hash' => null,
                 'Password_expiry' => '2099-12-31',
                 'Pending_approval' => false
             )
         );
+        print_r($this->DB->pselect("SELECT * FROM users WHERE UserID='UnitTester'", array()));
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );

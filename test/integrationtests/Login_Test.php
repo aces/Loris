@@ -4,6 +4,7 @@ class LorisLoginTest extends LorisIntegrationTest
 {
     protected $webDriver;
 
+    /*
     public function setUp()
     {
        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
@@ -14,6 +15,7 @@ class LorisLoginTest extends LorisIntegrationTest
        //print "Page source: " . $this->webDriver->getPageSource();
 
     }
+     */
 
     function testLoginFailure()
     {
@@ -56,12 +58,15 @@ class LorisLoginTest extends LorisIntegrationTest
 
        $login->click();
 
+       print "LOGIN SUCCESS??Page source: " . $this->webDriver->getPageSource();
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
        $this->assertContains("Welcome", $bodyText);
     }
 
+    /*
     public function tearDown() {
         $this->webDriver->quit();
     }
+     */
 }
 ?>
