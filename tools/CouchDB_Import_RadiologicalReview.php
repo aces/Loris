@@ -124,7 +124,10 @@ class CouchDBRadiologicalReviewImporter {
             LEFT JOIN session s ON (s.ID=f.SessionID) 
             LEFT JOIN candidate c ON (c.CandID=s.CandID)
             LEFT JOIN examiners eFinal ON (eFinal.ExaminerID=frr.Final_Examiner)
-            LEFT JOIN examiners eExtra ON (eExtra.ExaminerID=frr.Final_Examiner2)", array());
+            LEFT JOIN examiners eExtra ON (eExtra.ExaminerID=frr.Final_Examiner2)
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
+            WHERE s.Active='Y' AND c.Active='Y' AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL AND c.PSCID <> 'scanner'
+            ", array());
         
         // Adding the data to CouchDB documents
         foreach($finalradiologicalreview as $review) {

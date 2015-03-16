@@ -73,6 +73,7 @@ class CouchDBIntegrityChecker
                 "SELECT c.*, s.Visit_label, s.Active
                 FROM candidate c
                 LEFT JOIN session s USING (CandID)
+                LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
                 array(
                     "PID" => $pscid,
@@ -89,6 +90,9 @@ class CouchDBIntegrityChecker
                 $this->CouchDB->deleteDoc($row['id']);
             } else if ($sqlDB['Visit_label'] !== $vl) {
                 print "Visit Label case sensitivity mismatch for $row[id].\n";
+                $this->CouchDB->deleteDoc($row['id']);
+            } else if ($sqlDb['study_consent'] !== 'yes') {
+                print "No consent for candidate for $row[id].\n";
                 $this->CouchDB->deleteDoc($row['id']);
             }
         }
