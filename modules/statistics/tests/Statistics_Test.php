@@ -2,11 +2,19 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class Statistics_Test extends LorisIntegrationTest
 {
-    public function testTabsFramework()
+    public function testTabsFrameworkLoads()
     {
         $this->webDriver->get('http://localhost/main.php?test_name=statistics');
 
-        //print $this->webDriver->getPageSource();
+        try {
+            // If this is the mobile view, we need to expand the dropdown
+            // before the stats links are visible.
+            $expand = $this->webDriver->findElement(WebDriverBy::ID("down"));
+            $expand->click();
+        } catch(ElementNotVisibleException $e) {
+            // Using the desktop version, so the mobile link isn't visible and
+            // doesn't need to be clicked.
+        }
 
         // Ensure that Demographic Statistics link is there. There's nothing special
         // about Demographics, it's just a randomly chosen default tab to ensure that
@@ -16,7 +24,7 @@ class Statistics_Test extends LorisIntegrationTest
         $this->assertContains("Demographic", $link->getText());
     }
 
-    public function testGeneralDescription() {
+    public function testGeneralDescriptionTabLoads() {
         $this->webDriver->get('http://localhost/main.php?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs');
         $header = $this->webDriver->findElement(WebDriverBy::XPath("//div[@id = 'page']/h2"));
         $this->assertContains("Welcome to the statistics page", $header->getText());
