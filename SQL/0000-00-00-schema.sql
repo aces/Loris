@@ -699,9 +699,10 @@ CREATE TABLE `notification_spool` (
   `TimeSpooled` int(11) NOT NULL default '0',
   `TimeSpooledNew` datetime DEFAULT NULL,
   `Message` text,
-  `Error` tinyint(1) DEFAULT '0',
+  `Error` enum('Y','N') default NULL,
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` tinyint(2) unsigned default NULL,
+  `Origin` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
   KEY `FK_notification_spool_2` (`CenterID`),
@@ -728,7 +729,6 @@ CREATE TABLE `notification_types` (
   `Type` varchar(255) NOT NULL default '',
   `private` tinyint(1) default '0',
   `Description` text,
-  `Origin` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`NotificationTypeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
@@ -748,13 +748,12 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('visual bvl qc',0,'Timepoints selected for visual QC'),
     ('mri qc status',0,'MRI QC Status change');
 
-INSERT INTO notification_types (Type,private,Description,Origin) VALUES 
-    ('minc insertion',1,'Insertion of the mincs into the mri-table','minc_insertion'),
-    ('tarchive loader',1,'calls specific Insertion Scripts','tarchive_loader'),
-    ('tarchive validation',1,'Validation of the dicoms After uploading','tarchive_validation'),
-    ('mri upload',1,'Validation of DICOMS before uploading','imaging_upload_file'),
-    ('mri upload',1,'Validation and execution of DicomTar.pl and TarchiveLoader','ImagingUpload');
-
+INSERT INTO notification_types (Type,private,Description) VALUES 
+    ('minc insertion',1,'Insertion of the mincs into the mri-table'),
+    ('tarchive loader',1,'calls specific Insertion Scripts'),
+    ('tarchive validation',1,'Validation of the dicoms After uploading'),
+    ('mri upload',1,'Validation of DICOMS before uploading'),
+    ('mri upload',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
 /*!40000 ALTER TABLE `notification_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
