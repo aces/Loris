@@ -54,7 +54,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     * @access private
     */
     function _setupForm(){
-       if(preg_match("/parental_stress_scale(_page[0-9]+)/",$this->page,$matches)){
+       if(preg_match("/<TEST_NAME>(_page[0-9]+)/",$this->page,$matches)){
             call_user_method($matches[1], $this);
         } else {
             $this->_main();
