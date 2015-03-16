@@ -41,14 +41,15 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                 'Pending_approval' => 'N'
             )
         );
-        print_r($this->DB->pselect("SELECT * FROM users WHERE UserID='UnitTester'", array()));
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
+        print_r($this->DB->pselect("SELECT * FROM users WHERE UserID='UnitTester'", array()));
 
         // Set up WebDriver implementation and login
         $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
         $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
+        print_r($this->webDriver);
 
         $this->login("UnitTester", "4test4");
 
@@ -56,25 +57,30 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
     protected function login($username, $password) {
         $this->webDriver->get('http://localhost/main.php');
+        print $this->webDriver->getPageSource();
+        try {
+            $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
+            $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
-        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
+            $usernameEl->sendKeys($username);
+            $passwordEl->sendKeys($password);
 
-        $usernameEl->sendKeys($username);
-        $passwordEl->sendKeys($password);
+            $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
 
-        $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
+            $login->click();
+        } catch(Exception $e) {
+            print "This is a test?";
+        }
 
-        $login->click();
     }
     public function tearDown()
     {
-        // Close the browser and end the session
-        $this->webDriver->quit();
 
         // Delete the temporary user.
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        // Close the browser and end the session
+        $this->webDriver->quit();
     }
 }
 ?>

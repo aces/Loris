@@ -19,7 +19,7 @@ class LorisLoginTest extends LorisIntegrationTest
 
     function testLoginFailure()
     {
-        /*
+       $this->webDriver->get('http://localhost/main.php?logout=true');
         $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
         $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
 
@@ -41,12 +41,11 @@ class LorisLoginTest extends LorisIntegrationTest
 
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
        $this->assertContains("Incorrect username or password", $bodyText);
-         */
     }
 
     function testLoginSuccess()
     {
-        /*
+       $this->webDriver->get('http://localhost/main.php?logout=true');
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
 
@@ -63,10 +62,9 @@ class LorisLoginTest extends LorisIntegrationTest
 
        $login->click();
 
-       print "LOGIN SUCCESS??Page source: " . $this->webDriver->getPageSource();
+       //print "LOGIN SUCCESS??Page source: " . $this->webDriver->getPageSource();
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
        $this->assertContains("Welcome", $bodyText);
-         */
     }
 
     /*
