@@ -19,6 +19,8 @@ class LorisLoginTest extends LorisIntegrationTest
 
     function testLoginFailure()
     {
+        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+        $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
 
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
