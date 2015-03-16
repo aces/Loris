@@ -91,7 +91,7 @@ class CouchDBIntegrityChecker
             } else if ($sqlDB['Visit_label'] !== $vl) {
                 print "Visit Label case sensitivity mismatch for $row[id].\n";
                 $this->CouchDB->deleteDoc($row['id']);
-            } else if ($sqlDB['study_consent'] !== 'yes') {
+            } else if (!isset($sqlDB['study_consent']) || $sqlDB['study_consent'] !== 'yes') {
                 print "No consent for candidate for $row[id].\n";
                 $this->CouchDB->deleteDoc($row['id']);
             }
