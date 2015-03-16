@@ -9,3 +9,9 @@ INSERT INTO notification_types (Type,private,Description) VALUES
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
     ('mri upload',1,'Validation of DICOMS before uploading'),
     ('mri upload',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
+
+UPDATE notification_spool SET TimeSpooledNew=FROM_UNIXTIME(TimeSpooled);
+ALTER table notification_spool DROP COLUMN TimeSpooled;
+ALTER table notification_spool CHANGE COLUMN TimeSpooledNew TimeSpooled datetime DEFAULT NULL;
+
+
