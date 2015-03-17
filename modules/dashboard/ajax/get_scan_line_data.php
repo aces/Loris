@@ -27,11 +27,11 @@ $DB = Database::singleton();
 
 $scanData           = array();
 $scanStartDate      = $DB->pselectOne(
-    "SELECT min(AcquisitionDate) FROM mri_acquisition_dates",
+    "SELECT MIN(AcquisitionDate) FROM mri_acquisition_dates",
     array()
 );
 $scanEndDate        = $DB->pselectOne(
-    "SELECT max(AcquisitionDate) FROM mri_acquisition_dates",
+    "SELECT MAX(AcquisitionDate) FROM mri_acquisition_dates",
     array()
 );
 $scanData['labels']
@@ -90,7 +90,7 @@ function getScanData($dataset, $labels)
             ? substr($label, 0, 1) : substr($label, 0, 2);
         $year   = substr($label, -4, 4);
         $data[] = $DB->pselectOne(
-            "SELECT count(distinct s.ID) 
+            "SELECT COUNT(distinct s.ID) 
              FROM files f
              LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
              LEFT JOIN session s ON (s.ID=f.SessionID) 

@@ -22,7 +22,7 @@ $list_of_sites = Utility::getAssociativeSiteList(true, false);
 foreach ($list_of_sites as $site) {
     $genderData['labels'][] = $site;
     $genderData['datasets']['female'][] = $DB->pselectOne(
-        "SELECT count(c.CandID)
+        "SELECT COUNT(c.CandID)
          FROM candidate c
          LEFT JOIN psc ON (psc.CenterID=c.CenterID)
          WHERE c.Gender='female' AND c.Active='Y'
@@ -30,7 +30,7 @@ foreach ($list_of_sites as $site) {
         array('Site' => $site)
     );
     $genderData['datasets']['male'][]   = $DB->pselectOne(
-        "SELECT count(c.CandID)
+        "SELECT COUNT(c.CandID)
          FROM candidate c
          LEFT JOIN psc ON (psc.CenterID=c.CenterID)
          WHERE c.Gender='male' AND c.Active='Y'

@@ -102,7 +102,7 @@ class NDB_Form_Dashboard extends NDB_Form
 
         // Charts
         $this->tpl_data['total_scans'] = $DB->pselectOne(
-            "SELECT count(*) FROM files f",
+            "SELECT COUNT(*) FROM files f",
             array()
         );
 
@@ -111,7 +111,7 @@ class NDB_Form_Dashboard extends NDB_Form
         // New scans
         if ($user->hasPermission('imaging_browser_qc')) {
             $this->tpl_data['new_scans']      = $DB->pselectOne(
-                "SELECT count(distinct s.ID)
+                "SELECT COUNT(DISTINCT s.ID)
                  FROM files f 
                  LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
                  LEFT JOIN session s ON (s.ID=f.SessionID)
@@ -131,11 +131,11 @@ class NDB_Form_Dashboard extends NDB_Form
                 $this->tpl_data['conflicts_site'] = 'Site: all';
             } else {
                 $this->tpl_data['conflicts']      = $DB->pselectOne(
-                    "SELECT count(*) FROM conflicts_unresolved cu 
-                    LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
-                    LEFT JOIN session s ON (flag.SessionID=s.ID) 
-                    LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                    WHERE psc.Name=:Site",
+                    "SELECT COUNT(*) FROM conflicts_unresolved cu 
+                     LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
+                     LEFT JOIN session s ON (flag.SessionID=s.ID) 
+                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
+                     WHERE psc.Name=:Site",
                     array('Site' => $site)
                 );
                 $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
@@ -146,13 +146,13 @@ class NDB_Form_Dashboard extends NDB_Form
         if ($user->hasPermission('data_entry')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['incomplete_forms']      = $DB->pselectOne(
-                    "SELECT count(*) FROM flag WHERE Data_entry='In Progress'",
+                    "SELECT COUNT(*) FROM flag WHERE Data_entry='In Progress'",
                     array()
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: all';
             } else {
                 $this->tpl_data['incomplete_forms']      = $DB->pselectOne(
-                    "SELECT count(*) FROM flag 
+                    "SELECT COUNT(*) FROM flag 
                     LEFT JOIN session s ON (flag.SessionID=s.ID) 
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                     WHERE Data_entry='In Progress' AND psc.Name=:Site",
@@ -165,7 +165,7 @@ class NDB_Form_Dashboard extends NDB_Form
         // Final radiological review
         if ($user->hasPermission('edit_final_radiological_review')) {
             $this->tpl_data['radiology_review']      = $DB->pselectOne(
-                "SELECT count(*) FROM final_radiological_review f 
+                "SELECT COUNT(*) FROM final_radiological_review f 
                 WHERE Review_Done IS NULL",
                 array()
             );
@@ -177,14 +177,14 @@ class NDB_Form_Dashboard extends NDB_Form
             && $user->hasPermission('user_accounts')
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT count(*) FROM users WHERE Pending_approval='Y'",
+                "SELECT COUNT(*) FROM users WHERE Pending_approval='Y'",
                 array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
         } elseif ($user->hasPermission('user_accounts')) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT count(*) FROM users 
-                WHERE Pending_approval='Y' AND CenterID=:CID",
+                "SELECT COUNT(*) FROM users 
+                 WHERE Pending_approval='Y' AND CenterID=:CID",
                 array('CID' => $siteID)
             );
             $this->tpl_data['pending_users_site'] = 'Site: ' . $site;
@@ -193,7 +193,7 @@ class NDB_Form_Dashboard extends NDB_Form
         // Violated scans
         if ($user->hasPermission('violated_scans_view_allsites')) {
             $this->tpl_data['violated_scans']      = $DB->pselectOne(
-                "SELECT count(*) FROM mri_protocol_violated_scans",
+                "SELECT COUNT(*) FROM mri_protocol_violated_scans",
                 array()
             );
             $this->tpl_data['violated_scans_site'] = 'Site: all';
@@ -205,7 +205,7 @@ class NDB_Form_Dashboard extends NDB_Form
         ) {
             $document_repository = $DB->pselect(
                 "SELECT File_name, Date_uploaded, Data_dir FROM document_repository 
-                ORDER BY Date_uploaded DESC LIMIT 4",
+                 ORDER BY Date_uploaded DESC LIMIT 4",
                 array()
             );
             for ($i=0; $i < sizeof($document_repository); $i++) {
@@ -229,7 +229,7 @@ class NDB_Form_Dashboard extends NDB_Form
     {
         $DB = Database::singleton();
         $totalRecruitment = $DB->pselectOne(
-            "SELECT count(*) FROM candidate c
+            "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID!=1",
             array()
         );
@@ -247,7 +247,7 @@ class NDB_Form_Dashboard extends NDB_Form
     {
         $DB = Database::singleton();
         $totalRecruitment = $DB->pselectOne(
-            "SELECT count(*)
+            "SELECT COUNT(*)
              FROM candidate c
              WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
              AND c.CenterID!=1",
@@ -267,7 +267,7 @@ class NDB_Form_Dashboard extends NDB_Form
     {
         $DB    = Database::singleton();
         $total = $DB->pselectOne(
-            "SELECT count(c.CandID)
+            "SELECT COUNT(c.CandID)
              FROM candidate c
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.Entity_type='Human'
              AND c.CenterID!=1",
@@ -289,7 +289,7 @@ class NDB_Form_Dashboard extends NDB_Form
     {
         $DB    = Database::singleton();
         $total = $DB->pselectOne(
-            "SELECT count(c.CandID)
+            "SELECT COUNT(c.CandID)
              FROM candidate c
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
              AND c.Entity_type='Human' AND c.CenterID!=1",

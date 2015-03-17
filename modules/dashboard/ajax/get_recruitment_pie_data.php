@@ -22,7 +22,7 @@ $list_of_sites         = Utility::getAssociativeSiteList(true, false);
 foreach ($list_of_sites as $site) {
 
     $totalRecruitment = $DB->pselectOne(
-        "SELECT count(c.CandID)
+        "SELECT COUNT(c.CandID)
          FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID)
          WHERE c.Active='Y' AND c.Entity_type='Human' AND psc.Name=:Site",
         array('Site' => $site)

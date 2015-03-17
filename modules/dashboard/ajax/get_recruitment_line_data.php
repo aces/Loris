@@ -19,11 +19,11 @@ $DB = Database::singleton();
 
 $recruitmentData      = array();
 $recruitmentStartDate = $DB->pselectOne(
-    "SELECT min(Date_registered) FROM candidate",
+    "SELECT MIN(Date_registered) FROM candidate",
     array()
 );
 $recruitmentEndDate   = $DB->pselectOne(
-    "SELECT max(Date_registered) FROM candidate",
+    "SELECT MAX(Date_registered) FROM candidate",
     array()
 );
 
@@ -92,7 +92,7 @@ function getRecruitmentData($dataset, $labels)
             ? substr($label, 0, 1) : substr($label, 0, 2);
         $year   = substr($label, -4, 4);
         $data[] = $DB->pselectOne(
-            "SELECT count(c.CandID)
+            "SELECT COUNT(c.CandID)
              FROM candidate c
              LEFT JOIN psc ON (psc.CenterID=c.CenterID)
              WHERE psc.Name=:Dataset
