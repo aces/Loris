@@ -407,11 +407,12 @@ while true; do
             sed -e "s#%LORISROOT%#$RootDir#g" \
                 -e "s#%PROJECTNAME%#$projectname#g" \
                 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
-                < ../docs/config/apache2-site | sudo tee /etc/httpd/sites-available/$projectname.conf > /dev/null
-
+                < ../docs/config/apache2-site | sudo tee /etc/httpd/sites-enabled/$projectname.conf > /dev/null
+            sudo ln -s /etc/httpd/sites-enabled/$projectname.conf /etc/httpd/sites-available/$projectname.conf
+            
             # Insert a line in main apache config file to include new file
             sudo sed -i '221 a\Include /etc/httpd/sites-available/*.conf' /etc/httpd/conf/httpd.conf
-
+            
             sudo service httpd restart
             break;;
         [Nn]* )
