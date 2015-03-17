@@ -1793,11 +1793,15 @@ CREATE TABLE `mri_upload` (
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
   `UploadDate` DateTime DEFAULT NULL,
   `SourceLocation` varchar(255) NOT NULL DEFAULT '',
+  `Processed` tinyint(1) NOT NULL DEFAULT '0',
+  `CurrentlyProcessed` tinyint(1) NOT NULL DEFAULT '0',
+  `PatientName` varchar(255) NOT NULL DEFAULT '',
   `number_of_mincInserted` int(11) DEFAULT NULL,
   `number_of_mincCreated` int(11) DEFAULT NULL,
   `TarchiveID` int(11) DEFAULT NULL,
   `SessionID` int(10) unsigned DEFAULT NULL,
   `IsValidated` tinyint(1) NOT NULL DEFAULT '0',
+  `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`UploadID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2129,6 +2133,9 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'log', 'Path to logs (relative path starting from /var/www/$projectname)', 1, 0, 'text', ID, 'Logs', 2 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'IncomingPath', 'Path for imaging data transferred to the project server (e.g. /data/incoming/$project/)', 1, 0, 'text', ID, 'Incoming data', 7 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRICodePath', 'Path to directory where Loris-MRI (git) code is installed', 1, 0, 'text', ID, 'LORIS-MRI code', 6 FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRIUploadIncomingPath', '"Path to the Directory of Uploaded Scans', 1, 0, 'text', ID, 'MRI-Upload Directory', 7 FROM ConfigSettings WHERE Name="paths"; 
+
+
 
 -- gui
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'Settings related to the overall display of LORIS', 1, 0, 'GUI', 3);
@@ -2197,6 +2204,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSetting
 INSERT INTO Config (ConfigID, Value) SELECT ID, "tools/logs/" FROM ConfigSettings WHERE Name="log";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/incoming/" FROM ConfigSettings WHERE Name="IncomingPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/bin/mri/" FROM ConfigSettings WHERE Name="MRICodePath";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/MRI-Upload/" FROM ConfigSettings WHERE Name="MRIUploadIncomingPath";
 
 -- default gui settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "main.css" FROM ConfigSettings WHERE Name="css";
