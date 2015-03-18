@@ -407,11 +407,24 @@ class Database extends PEAR
         // one.
         $err = $this->_trackChanges($table, array(), $where, 'D');
         if ($this->isError($err)) {
-            return $err;
+            throw new DatabaseException(
+                "Unable to track changes for delete statement.",
+                $query,
+                $where
+            );
         }
 
         $this->_printQuery($query);
         $this->affected = $this->_PDO->exec($query);
+        if($this->affected === false) {
+            throw new DatabaseException(
+                "Database DELETE did not execute successfully.". print_r($this->_PDO->errorInfo(), true),
+                $query,
+                $where
+
+            );
+
+        }
     }
 
     /**
