@@ -1,22 +1,7 @@
 <?php
-require_once 'LorisIntegrationTest.class.inc';
+require_once __DIR__ . '/LorisIntegrationTest.class.inc';
 class LorisLoginTest extends LorisIntegrationTest
 {
-//    protected $webDriver;
-
-    /*
-    public function setUp()
-    {
-       $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-       $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
-
-       $this->webDriver->get('http://localhost/main.php');
-
-       //print "Page source: " . $this->webDriver->getPageSource();
-
-    }
-     */
-
     function testLoginFailure()
     {
        $this->webDriver->get('http://localhost/main.php?logout=true');
@@ -62,15 +47,8 @@ class LorisLoginTest extends LorisIntegrationTest
 
        $login->click();
 
-       //print "LOGIN SUCCESS??Page source: " . $this->webDriver->getPageSource();
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
        $this->assertContains("Welcome", $bodyText);
     }
-
-    /*
-    public function tearDown() {
-        $this->webDriver->quit();
-    }
-     */
 }
 ?>

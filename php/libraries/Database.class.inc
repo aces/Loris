@@ -265,7 +265,8 @@ class Database extends PEAR
         $result = $prep->execute($exec_params);
         if ($result === false) {
             throw new DatabaseException(
-                "Insert statement did not execute successfully: " . print_r($prep->errorInfo(), true),
+                "Insert statement did not execute successfully: "
+                . print_r($prep->errorInfo(), true),
                 $prepQ,
                 $exec_params
             );
@@ -416,12 +417,12 @@ class Database extends PEAR
 
         $this->_printQuery($query);
         $this->affected = $this->_PDO->exec($query);
-        if($this->affected === false) {
+        if ($this->affected === false) {
             throw new DatabaseException(
-                "Database DELETE did not execute successfully.". print_r($this->_PDO->errorInfo(), true),
+                "Database DELETE did not execute successfully."
+                . print_r($this->_PDO->errorInfo(), true),
                 $query,
                 $where
-
             );
 
         }

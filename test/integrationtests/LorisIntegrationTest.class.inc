@@ -17,13 +17,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
 
-        // Create a UnitTester user with all permissions.
-        $this->DB->delete("user_perm_rel", array("userID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        $this->DB->delete("users", array("ID"     => '999990'));
-
-
-        try {
         $this->DB->insert(
             "users",
             array(
@@ -44,9 +37,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                 'Pending_approval' => 'N'
             )
         );
-        } catch(DatabaseException $e) {
-            print_r($e);
-        }
+
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
@@ -63,29 +54,24 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
     protected function login($username, $password) {
         $this->webDriver->get('http://localhost/main.php');
-        print $this->webDriver->getPageSource();
-        try {
-            $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-            $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
-            $usernameEl->sendKeys($username);
-            $passwordEl->sendKeys($password);
+        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
+        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
-            $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $usernameEl->sendKeys($username);
+        $passwordEl->sendKeys($password);
 
-            $login->click();
-        } catch(Exception $e) {
-            print "This is a test?";
-        }
-
+        $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $login->click();
     }
+
     public function tearDown()
     {
 
         // Delete the temporary user.
+        $this->DB->delete("user_login_history", array('UserID' => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        $this->DB->delete("users", array("ID"     => '999990'));
         // Close the browser and end the session
         if($this->webDriver) {
             $this->webDriver->quit();
