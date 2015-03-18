@@ -265,7 +265,7 @@ class Database extends PEAR
         $result = $prep->execute($exec_params);
         if ($result === false) {
             throw new DatabaseException(
-                "Insert statement did not execute successfully.",
+                "Insert statement did not execute successfully: " . print_r($prep->errorInfo(), true),
                 $prepQ,
                 $exec_params
             );
