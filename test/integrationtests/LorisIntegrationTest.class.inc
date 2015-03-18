@@ -18,9 +18,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
 
         // Create a UnitTester user with all permissions.
+        $this->DB->delete("user_perm_rel", array("userID" => '999990'));
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
         $this->DB->delete("users", array("ID"     => '999990'));
-        $this->DB->delete("user_perm_rel", array("userID" => '999990'));
 
 
         try {
@@ -83,8 +83,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     {
 
         // Delete the temporary user.
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $this->DB->delete("users", array("UserID" => 'UnitTester'));
+        $this->DB->delete("users", array("ID"     => '999990'));
         // Close the browser and end the session
         if($this->webDriver) {
             $this->webDriver->quit();
