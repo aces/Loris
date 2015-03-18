@@ -41,12 +41,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
-        print_r($this->DB->pselect("SELECT * FROM users WHERE UserID='UnitTester'", array()));
 
         // Set up WebDriver implementation and login
         $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
         $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
-        print_r($this->webDriver);
 
         $this->login("UnitTester", "4test4");
 
@@ -69,7 +67,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     {
 
         // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('UserID' => 'UnitTester'));
+        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
         // Close the browser and end the session
