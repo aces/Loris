@@ -80,7 +80,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
         // Close the browser and end the session
-        $this->webDriver->quit();
+        if($this->webDriver) {
+            $this->webDriver->quit();
+        }
     }
 }
 ?>
