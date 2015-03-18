@@ -11,7 +11,7 @@ class Projects_Test extends BaseTestCase
             define("UNIT_TESTING", true);
         }
 
-        $this->Config =& $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
+        $this->Config = $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
 
         $this->Factory = \NDB_Factory::singleton();
         $this->Factory->setTesting(true);
