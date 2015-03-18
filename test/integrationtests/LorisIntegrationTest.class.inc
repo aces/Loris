@@ -19,7 +19,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         // Create a UnitTester user with all permissions.
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $this->DB->delete("users", array("ID"     => '999990'));
+        $this->DB->delete("user_perm_rel", array("userID" => '999990'));
+
 
         try {
         $this->DB->insert(
