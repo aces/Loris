@@ -21,6 +21,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
 
+        try {
         $this->DB->insert(
             "users",
             array(
@@ -41,6 +42,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                 'Pending_approval' => 'N'
             )
         );
+        } catch(DatabaseException $e) {
+            print_r($e);
+        }
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
