@@ -72,6 +72,7 @@ script:
 
     # Run integration tests for specific modules
     - vendor/bin/phpunit modules/mri_upload/test/mri_uploadTest.php
+    - vendor/bin/phpunit modules/statistics/tests/
 
 
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
