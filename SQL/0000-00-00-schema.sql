@@ -1902,9 +1902,9 @@ CREATE TABLE `user_login_history` (
   `Login_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `IP_address` varchar(255) DEFAULT NULL,
   `Page_requested` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`loginhistoryID`),
-  KEY `FK_user_login_history_1` (`userID`),
-  CONSTRAINT `FK_user_login_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
+  PRIMARY KEY (`loginhistoryID`)
+  -- KEY `FK_user_login_history_1` (`userID`)
+  -- CONSTRAINT `FK_user_login_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
