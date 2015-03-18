@@ -17,10 +17,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
 
-        // Create a UnitTester user with all permissions.
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-
         $this->DB->insert(
             "users",
             array(
@@ -36,10 +32,12 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                 'Active' => 'Y',
                 'Examiner' => 'N',
                 'Password_md5' => 'a601e42ba82bb37a68ca3c8b7752f2e222',
+                'Password_hash' => null,
                 'Password_expiry' => '2099-12-31',
-                'Pending_approval' => false
+                'Pending_approval' => 'N'
             )
         );
+
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
@@ -62,17 +60,20 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $passwordEl->sendKeys($password);
 
         $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
-
         $login->click();
     }
+
     public function tearDown()
     {
-        // Close the browser and end the session
-        $this->webDriver->quit();
 
         // Delete the temporary user.
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
+        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $this->DB->delete("users", array("UserID" => 'UnitTester'));
+        // Close the browser and end the session
+        if($this->webDriver) {
+            $this->webDriver->quit();
+        }
     }
 }
 ?>

@@ -8,10 +8,5 @@ class mri_uploadTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("mri_upload", $bodyText);
     }
-
-    public function tearDown()
-    {
-        $this->webDriver->quit();
-    }
 }
 ?>
