@@ -7,8 +7,8 @@ INSERT INTO notification_types (Type,private,Description) VALUES
     ('minc insertion',1,'Insertion of the mincs into the mri-table'),
     ('tarchive loader',1,'calls specific Insertion Scripts'),
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
-    ('mri upload',1,'Validation of DICOMS before uploading'),
-    ('mri upload',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
+    ('mri upload runner',1,'Validation of DICOMS before uploading'),
+    ('mri upload processing class ',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
 
 UPDATE notification_spool SET TimeSpooledNew=FROM_UNIXTIME(TimeSpooled);
 ALTER table notification_spool DROP COLUMN TimeSpooled;
