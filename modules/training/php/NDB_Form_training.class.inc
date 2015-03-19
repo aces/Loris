@@ -35,14 +35,13 @@ class NDB_Form_Training extends NDB_Form
     function _hasAccess()
     {
         $user = User::singleton();
-        //return $user->hasPermission('training');
-        return true;
+        return $user->hasPermission('training');
     }
 
     /**
-     * Training subtest.
+     * Construct the template variables for the training page.
      *
-     * @return nothing
+     * @return void
      */
     function training()
     {
@@ -50,24 +49,61 @@ class NDB_Form_Training extends NDB_Form
 
         $certifications = array();
 
+        $user         = User::singleton();
+        $userFullName = $user->getFullname();
+        $userSite     = $user->getCenterID();
+
+        $isExaminer = $this->isExaminer($userFullName, $userSite);
+
         foreach ($instruments as $instrumentID => $instrumentName) {
-            $status = $this->getCertificationStatus($instrumentID);
-            if ($status == 'certified') {
-                $certifications['certified'][$instrumentID] = $instrumentName;
-            } else {
-                $contentExists = $this->getTrainingContentStatus($instrumentID);
-                if ($contentExists) {
-                    $certifications['not_certified'][$instrumentID]
-                        = $instrumentName;
+            $trainingExists = $this->getTrainingContentStatus($instrumentID);
+            if ($trainingExists) {
+                if ($isExaminer) {
+                    $certificationStatus = getCertificationStatus($instrumentID);
+                    if ($certificationStatus == 'certified') {
+                        $certifications['certified'][$instrumentID]
+                            = $instrumentName;
+                    } else {
+                        $certifications['not_certified'][$instrumentID]
+                            = $instrumentName;
+                    }
                 } else {
-                    $certifications['no_content'][$instrumentID] = $instrumentName;
+                    $certifications['content'][$instrumentID] = $instrumentName;
                 }
+            } else {
+                $certifications['no_content'][$instrumentID] = $instrumentName;
             }
         }
-
         $this->tpl_data['certifications'] = $certifications;
     }
 
+    /**
+     * Checks whether a user (identified by name and site) is an examiner.
+     *
+     * @param string $fullName Full name of the user
+     * @param int    $site     ID of the user's site
+     *
+     * @return boolean
+     */
+    function isExaminer($fullName, $site)
+    {
+        $DB         = Database::singleton();
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID 
+             FROM examiners
+             WHERE full_name=:FN AND centerID=:CID",
+            array(
+             'FN'  => $fullName,
+             'CID' => $site,
+            )
+        );
+
+        if (!empty($examinerID)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Grabs the certification instruments from the config and creates an array.
