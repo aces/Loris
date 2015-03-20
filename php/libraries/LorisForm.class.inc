@@ -116,7 +116,19 @@ class LorisForm
         $el['type'] = 'date';
     }
 
-    function addFile($name, $label, $options) {
+    /**
+     * Adds a file to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "class"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    function addFile($name, $label, $options)
+    {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
     }
@@ -280,7 +292,16 @@ class LorisForm
             .">";
     }
 
-    function fileHTML($el) {
+    /**
+     * Generates the HTML to add to the page when a file is
+     * added to the form.
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function fileHTML($el)
+    {
         $cls = '';
         $val = $this->getDefault($el['name']);
         if (isset($el['class'])) {
