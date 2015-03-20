@@ -695,10 +695,13 @@ DROP TABLE IF EXISTS `notification_spool`;
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL default '0',
-  `TimeSpooled` int(11) NOT NULL default '0',
+  `ProcessID` int(11) NOT NULL DEFAULT '0',
+  `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
+  `Error` enum('Y','N') default NULL,
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` tinyint(2) unsigned default NULL,
+  `Origin` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
   KEY `FK_notification_spool_2` (`CenterID`),
@@ -734,15 +737,22 @@ CREATE TABLE `notification_types` (
 
 LOCK TABLES `notification_types` WRITE;
 /*!40000 ALTER TABLE `notification_types` DISABLE KEYS */;
-INSERT INTO `notification_types` VALUES 
-	(1,'mri new study',0,'New studies processed by the MRI upload handler'),
-	(2,'mri new series',0,'New series processed by the MRI upload handler'),
-	(3,'mri upload handler emergency',1,'MRI upload handler emergencies'),
-	(4,'mri staging required',1,'New studies received by the MRI upload handler that require staging'),
-	(5,'mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
-	(7,'hardcopy request',0,'Hardcopy requests'),
-	(9,'visual bvl qc',0,'Timepoints selected for visual QC'),
-	(10,'mri qc status',0,'MRI QC Status change');
+INSERT INTO `notification_types` (Type,private,Description) VALUES 
+    ('mri new study',0,'New studies processed by the MRI upload handler'),
+    ('mri new series',0,'New series processed by the MRI upload handler'),
+    ('mri upload handler emergency',1,'MRI upload handler emergencies'),
+    ('mri staging required',1,'New studies received by the MRI upload handler that require staging'),
+    ('mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
+    ('hardcopy request',0,'Hardcopy requests'),
+    ('visual bvl qc',0,'Timepoints selected for visual QC'),
+    ('mri qc status',0,'MRI QC Status change');
+
+INSERT INTO notification_types (Type,private,Description) VALUES 
+    ('minc insertion',1,'Insertion of the mincs into the mri-table'),
+    ('tarchive loader',1,'calls specific Insertion Scripts'),
+    ('tarchive validation',1,'Validation of the dicoms After uploading'),
+    ('mri upload runner',1,'Validation of DICOMS before uploading'),
+    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
 /*!40000 ALTER TABLE `notification_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
