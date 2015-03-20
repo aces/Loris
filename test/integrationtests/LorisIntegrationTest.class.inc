@@ -1,5 +1,4 @@
 <?php
-<<<<<<< HEAD
 /**
  * This contains an abstract class for Loris tests to extend.
  * It sets up the database handler, creates a user, creates a
@@ -40,21 +39,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-=======
-abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
-{
-    protected $webDriver;
-
->>>>>>> Adding a basic integration test for the dashboard.
     public function setUp()
     {
         // Set up database wrapper and config
         $this->config = NDB_Config::singleton(__DIR__ . "/../../project/config.xml");
-<<<<<<< HEAD
         $database     = $this->config->getSetting('database');
-=======
-        $database = $this->config->getSetting('database');
->>>>>>> Adding a basic integration test for the dashboard.
 
         $this->DB = Database::singleton(
             $database['database'],
@@ -64,7 +53,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
 
-<<<<<<< HEAD
         $this->DB->insert(
             "users",
             array(
@@ -86,52 +74,22 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             )
         );
 
-=======
-        // Create a UnitTester user with all permissions.
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-
-        $this->DB->insert(
-            "users",
-            array(
-                'ID' => 999990,
-                'UserID' => 'UnitTester',
-                'Real_name' => 'Unit Tester',
-                'First_name' => 'Unit',
-                'Last_name' => 'Tester',
-                'Email' => 'tester@example.com',
-                'CenterID' => 1,
-                'Privilege' => 0,
-                'PSCPI' => 'N',
-                'Active' => 'Y',
-                'Examiner' => 'N',
-                'Password_md5' => 'a601e42ba82bb37a68ca3c8b7752f2e222',
-                'Password_expiry' => '2099-12-31',
-                'Pending_approval' => 'N'
-            )
-        );
->>>>>>> Adding a basic integration test for the dashboard.
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
 
         // Set up WebDriver implementation and login
         $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-<<<<<<< HEAD
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
             $capabilities
         );
-=======
-        $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
->>>>>>> Adding a basic integration test for the dashboard.
 
         $this->login("UnitTester", "4test4");
 
     }
 
-<<<<<<< HEAD
     /**
      * Helper function to login to the loris instance which is being pointed to by
      * this test.
@@ -143,9 +101,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
-=======
-    protected function login($username, $password) {
->>>>>>> Adding a basic integration test for the dashboard.
         $this->webDriver->get('http://localhost/main.php');
 
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
@@ -154,7 +109,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $usernameEl->sendKeys($username);
         $passwordEl->sendKeys($password);
 
-<<<<<<< HEAD
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
         $login->click();
     }
@@ -177,20 +131,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         if ($this->webDriver) {
             $this->webDriver->quit();
         }
-=======
-        $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
-
-        $login->click();
-    }
-    public function tearDown()
-    {
-        // Close the browser and end the session
-        $this->webDriver->quit();
-
-        // Delete the temporary user.
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
->>>>>>> Adding a basic integration test for the dashboard.
     }
 }
 ?>
