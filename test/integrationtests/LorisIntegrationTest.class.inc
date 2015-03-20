@@ -55,7 +55,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
+        $this->url = $this->config->getSetting("url") . "/main.php";
 
         $this->DB->insert(
             "users",

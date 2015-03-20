@@ -27,8 +27,6 @@ require_once __DIR__
  */
 class ConfigurationTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=configuration';
-
     /**
      * Tests that, when loading the Configuration module, the word
      * "Configuration" appears somewhere on the page
@@ -37,7 +35,7 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigurationPageLoads()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=configuration");
 
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
