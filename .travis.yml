@@ -1,9 +1,9 @@
 language: php
 
 php: 5.4
+sudo: false
 
 before_install:
-    - sudo apt-get update
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
@@ -22,16 +22,8 @@ install:
       # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 
-    # Install requirements for php-fpm as per Travis DOCs
-    - sudo apt-get install apache2 libapache2-mod-fastcgi smarty3
-    # /usr/share/php gets obliterated from the path by phpenv, so make
-    # a symlink to fake it.
-    - ln -s /usr/share/php/smarty3 ~/.phpenv/versions/$(phpenv version-name)/pear
-    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-    - sudo a2enmod rewrite actions fastcgi alias
-    - sudo a2dismod php5
-    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+    - php -S localhost:8000 -t htdocs&
+
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
@@ -54,11 +46,7 @@ before_script:
           -e "s/%DATABASE%/LorisTest/g"
           < docs/config/config.xml > project/config.xml
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-
-      # Configure apache
-    - sudo cp -f docs/config/apache2-fastcgi /etc/apache2/sites-available/default
-    - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)/htdocs?g" --in-place /etc/apache2/sites-available/default
-    - sudo service apache2 restart
+    - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
 script:
     # Run PHP -l on everything to ensure there's no syntax
