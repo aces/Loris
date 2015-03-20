@@ -77,7 +77,7 @@ script:
     # Run integration tests for specific modules
     - vendor/bin/phpunit modules/mri_upload/test/mri_uploadTest.php
     - vendor/bin/phpunit modules/statistics/tests/
-
+    - vendor/bin/phpunit modules/configuration/test/ConfigurationTest.php
 
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
