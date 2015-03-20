@@ -124,6 +124,23 @@ class LorisForms_Test extends PHPUnit_Framework_TestCase
         $this->assertLabel("abc", "Hello");
     }
 
+
+    /**
+     * Test that the addDate wrapper adds an element of the appropriate
+     * type to the page
+     *
+     * @return none
+     */
+    function testAddFile()
+    {
+        $this->form->addFile("abc", "Hello", array());
+        $this->assertType("abc", "file");
+        $this->assertLabel("abc", "Hello");
+    }
+
+
+
+
     /**
      * Test that the addElement wrapper with type "select" adds an element of
      * the appropriate type to the page
@@ -171,6 +188,24 @@ class LorisForms_Test extends PHPUnit_Framework_TestCase
             ->method('addText');
         $this->form->addElement("text", "abc", "Hello");
     }
+
+    /**
+     * Test that the addElement wrapper with type "text" adds an element of
+     * the appropriate type to the page
+     *
+     * @return none
+     */
+    function testAddElementFile()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addFile'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addFile');
+        $this->form->addElement("file", "abc", "Hello");
+    }
+
+
 
 }
 ?>
