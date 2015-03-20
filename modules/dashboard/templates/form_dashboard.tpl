@@ -35,60 +35,20 @@
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
-                            <li><a id="recruitment-breakdown-dropdown" data-target="recruitment-site-breakdown">View site breakdown</a></li>
+                            <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
+                            {if $useProjects eq "true"}
+                            <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
+                            {/if}
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="panel-body">
                 <div class="recruitment-panel" id="overall-recruitment">
-                    {if $recruitment_target neq ""}
-                        {if $surpassed_recruitment eq "true"}
-                            The recruitment target has been passed.
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-female progress-striped" role="progressbar" aria-valuenow="{$female_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_full_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
-                                    <p>
-                                    {$female_full_percent}%
-                                    <br>
-                                    Female
-                                    </p>
-                                </div>
-                                <div class="progress-bar progress-bar-male progress-striped" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_full_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_full_percent}%"  title="{$male_total} Males">
-                                    <p>
-                                    {$male_full_percent}%
-                                    <br>
-                                    Male
-                                    </p>
-                                </div>
-                                <p class="pull-right small target">Target: {$recruitment_target}</p>
-                            </div>
-
-                        {else}
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-female" role="progressbar" aria-valuenow="{$female_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$female_percent}%" data-toggle="tooltip" data-placement="bottom" title="{$female_total} Females">
-                                    <p>
-                                    {$female_percent}%
-                                    <br>
-                                    Female
-                                    </p>
-                                </div>
-                                <div class="progress-bar progress-bar-male" data-toggle="tooltip" data-placement="bottom" role="progressbar" aria-valuenow="{$male_percent}" aria-valuemin="0" aria-valuemax="100" style="width: {$male_percent}%"  title="{$male_total} Males">
-                                    <p>
-                                    {$male_percent}%
-                                    <br>
-                                    Male
-                                    </p>
-                                </div>
-                                <p class="pull-right small target">Target: {$recruitment_target}</p>
-                            </div>
-                        {/if}
-                        
-                    {else}
-                        Please add a recruitment target in the configuration module to see recruitment progression.
-                    {/if}
+                    {include file='progress_bar.tpl' project=$recruitment["overall"]}
                 </div>
                 <div class="recruitment-panel hidden" id="recruitment-site-breakdown">
-                    {if $total_recruitment neq 0}
+                    {if $recruitment['overall']['total_recruitment'] neq 0}
                         <div class="col-lg-4 col-md-4 col-sm-4">
                             <div>
                                 <h5 class="chart-title">Total recruitment per site</h5>
@@ -105,6 +65,15 @@
                         <p>There have been no candidates registered yet.</p>
                     {/if}
                 </div>
+                {if $useProjects eq "true"}
+                <div class="recruitment-panel hidden" id="recruitment-project-breakdown">
+                    {foreach from=$recruitment key=ID item=project}
+                        {if $ID != "overall"}
+                        {include file='progress_bar.tpl' project=$project}
+                        {/if}
+                    {/foreach}
+                </div>
+                {/if}
             </div>
         </div>
 
@@ -137,7 +106,7 @@
                     </div>
                 <div id="recruitment-line-chart-panel" class="hidden">
                     <h5 class="chart-title">Recruitment per site</h5>
-                    {if $total_recruitment neq 0}
+                    {if $recruitment['overall']['total_recruitment'] neq 0}
                         <div id="recruitmentChart"></div>
                     {else}
                         <p>There have been no candidates registered yet.</p>
