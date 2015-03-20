@@ -125,7 +125,7 @@ class NDB_Form_Dashboard extends NDB_Form
         if ($user->hasPermission('conflict_resolver')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['conflicts']      = $DB->pselectOne(
-                    "SELECT count(*) FROM conflicts_unresolved",
+                    "SELECT COUNT(*) FROM conflicts_unresolved",
                     array()
                 );
                 $this->tpl_data['conflicts_site'] = 'Site: all';
