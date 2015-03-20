@@ -420,7 +420,7 @@ class LorisForm
         $errors = array();
         foreach ($this->form as $elName => $el) {
             $value = $this->getValue($el['name']);
-            if (empty($value)) {
+            if (isset($el['required']) && $el['required'] === true && empty($value)) {
                 //$this->setElementError($el['name'], "$el[name] required.");
                 $errors[$el['name']] = "required fail";
             }
