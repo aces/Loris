@@ -533,7 +533,12 @@ class LorisForm
         throw new LorisException("Unsupported element type $el[type] in renderElement");
     }
     function checkboxHTML($el) {
-        return "<input type=\"checkbox\" /> $el[label]";
+        $val = $this->getValue($el['name']);
+        $checked='';
+        if(!empty($val)) {
+            $checked = 'checked="checked"';
+        }
+        return "<input type=\"checkbox\" $checked /> $el[label]";
     }
     /**
      * This is a slight difference from the HTML_QuickForm API.
@@ -780,7 +785,6 @@ class LorisFormFileElement extends LorisFormElement {
     }
 
     function moveUploadedFile($destinationDir, $destinationFileName) {
-        print "Dir: $destinationDir name: $destinationFileName\n";
         return move_uploaded_file($this->file['tmp_name'], $destinationDir . $destinationFileName);
     }
     function getValue() {
