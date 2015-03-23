@@ -303,11 +303,12 @@ class LorisForm
             $cls = "class=\"$el[class]\"";
         }
         $msg = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $value= $this->getValue($el['name']);
         $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
             . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
             . (isset($el['required']) ? "required" : '')
             . (
-                !empty($this->getValue($el['name']))
+                !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '" '
                 : ''
               )
@@ -348,9 +349,10 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
+        $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"text\" $cls"
             . (
-                !empty($this->getValue($el['name']))
+                !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
               )
@@ -386,9 +388,10 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
+        $value = $this->getValue($el['name']);
         return "<textarea name=\"$el[name]\" $cls>"
             . (
-                !empty($this->getValue($el['name']))
+                !empty($value)
                 ? $this->getValue($el['name']) : ''
               )
             ."</textarea>";
