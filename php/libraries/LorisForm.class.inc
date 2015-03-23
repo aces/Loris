@@ -236,11 +236,29 @@ class LorisForm
         if (isset($_REQUEST[$name])) {
             return $_REQUEST[$name];
         }
+
+        $bracketIdx = strpos($name, '[');
+        if($bracketIdx !== false) {
+            $fieldName = strstr($name, '[', true);
+            $fieldIdx = substr($name, $bracketIdx+1);
+            $fieldIdx = strstr($fieldIdx, ']', true);
+            if(isset($_REQUEST[$fieldName])) {
+                if($this->form[$name]['type'] === 'advcheckbox') {
+                    if($_REQUEST[$fieldName][$fieldIdx] == 'on') {
+                        return 1;
+                    }
+                    return 0;
+                }
+                return $_REQUEST[$fieldName][$fieldIdx];
+            }
+        }
+
         if (isset($this->defaultValues[$name])) {
             return $this->defaultValues[$name];
         }
         return null;
     }
+
     /**
      * Generates the HTML to add to the page when rendered for a select
      * element.
@@ -538,7 +556,7 @@ class LorisForm
         if(!empty($val)) {
             $checked = 'checked="checked"';
         }
-        return "<input type=\"checkbox\" $checked /> $el[label]";
+        return "<input name=\"$el[name]\" type=\"checkbox\" $checked /> $el[label]";
     }
     /**
      * This is a slight difference from the HTML_QuickForm API.
@@ -719,6 +737,60 @@ class LorisForm
     }
 
     /**
+     * Iterates through an array of elements and populates the array
+     * passed as a reference with the values that come from the POST
+     * request.
+     */
+    function getGroupValues($groupElements, &$arr) {
+        foreach($groupElements as $el) {
+            // If it's a group, recursively go through the elements
+            // of that group.
+            if($el['type'] === 'group') {
+                $this->getGroupValues($el['elements'], $arr);
+                continue;
+            }
+
+            // If it was an element of the form $elemname[idx],
+            // which PHP converts to an array of $elemname, then
+            // we need to check for $elemname, not $elemname[idx]
+            $name = $el['name'];
+            $bracketIdx = strpos($name, '[');
+            if($bracketIdx !== false) {
+                $fieldName = substr($name, 0, $bracketIdx);
+                $fieldIdx = substr($name, $bracketIdx+1);
+                $fieldIdx = strstr($fieldIdx, ']', true);
+                if(!isset($arr[$fieldName])) {
+                    $arr[$fieldName] = $_REQUEST[$fieldName];
+                }
+                if($el['type'] === 'advcheckbox') {
+                    $val = $this->getValue($name);
+                    if($val === 'on') {
+                        $arr[$fieldName][$fieldIdx] = 1;
+                    } else {
+                        $arr[$fieldName][$fieldIdx] = 0;
+                    }
+                }
+                continue;
+            }
+
+            // normal case, just set it directly
+            $arr[$name] = $_REQUEST[$name];
+
+            if($el['type'] === 'date') {
+                // Convert dates to the type of group that was used
+                // by HTML_QuickForm. This should eventually be modified
+                // to just use a normal HTML5 date.
+                $vals = explode("-", $arr[$name]);
+                $arr[$name] = array(
+                    'Y' => $vals[0],
+                    'M' => $vals[1],
+                    'd' => $vals[2]
+                );
+            }
+        }
+    }
+
+    /**
      * Reimplementation of QuickForm API.
      *
      * Gets the values submitted by the user
@@ -728,22 +800,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal = array();
-        foreach ($this->form as $el) {
-            $name = $el['name'];
-
-            $retVal[$name] = $_REQUEST[$name];
-            if($el['type'] === 'date') {
-                // Convert dates to the type of group that was used
-                // by HTML_QuickForm. This should eventually be modified
-                // to just use a normal HTML5 date.
-                $vals = explode("-", $retVal[$name]);
-                $retVal[$name] = array(
-                    'Y' => $vals[0],
-                    'M' => $vals[1],
-                    'd' => $vals[2]
-                );
-            }
-        }
+        $this->getGroupValues($this->form, $retVal);
         return $retVal;
     }
 
