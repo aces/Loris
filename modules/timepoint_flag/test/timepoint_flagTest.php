@@ -14,8 +14,6 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class timepoint_flagTestIntegrationTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=timepoint_flag';
-
     /**
      * Tests that, when loading the Timepoint flag module, some
      * text appears in the body.
@@ -24,7 +22,7 @@ class timepoint_flagTestIntegrationTest extends LorisIntegrationTest
      */
     function testTimepointFlagDoespageLoad()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=timepoint_flag");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("timepoint_flag", $bodyText);
     }

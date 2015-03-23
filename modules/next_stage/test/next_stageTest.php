@@ -14,8 +14,6 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class nextStageTestIntegrationTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=next_stage';
-
     /**
      * Tests that, when loading the Next_stage module, some
      * text appears in the body.
@@ -24,7 +22,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTest
      */
     function testNextStageDoespageLoad()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=next_stage");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("next_stage", $bodyText);
     }

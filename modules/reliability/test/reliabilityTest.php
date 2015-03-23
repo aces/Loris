@@ -14,8 +14,6 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class reliabilityTestIntegrationTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=reliability';
-
     /**
      * Tests that, when loading the Reliability module, some
      * text appears in the body.
@@ -24,7 +22,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
      */
     function testReliabilityDoespageLoad()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=reliability");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("reliability", $bodyText);
     }

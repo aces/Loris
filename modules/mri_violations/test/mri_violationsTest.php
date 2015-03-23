@@ -14,8 +14,6 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=mri_violations';
-
     /**
      * Tests that, when loading the Mri_violations module, some
      * text appears in the body.
@@ -24,7 +22,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testMriViolationsDoespageLoad()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=mri_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("mri_violations", $bodyText);
     }

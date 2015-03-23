@@ -14,8 +14,6 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class survey_accountsTestIntegrationTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=survey_accounts';
-
     /**
      * Tests that, when loading the Survey accounts module, some
      * text appears in the body.
@@ -24,7 +22,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsDoespageLoad()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=survey_accounts");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("survey_accounts", $bodyText);
     }

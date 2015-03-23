@@ -14,8 +14,6 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=instrument_builder';
-
     /**
      * Tests that, when loading the Instrument builder module, some
      * text appears in the body.
@@ -24,7 +22,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentBuilderDoespageLoad()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=instrument_builder");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("instrument_builder", $bodyText);
     }
