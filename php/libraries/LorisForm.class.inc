@@ -745,10 +745,25 @@ class LorisFormElement {
 };
 
 class LorisFormFileElement extends LorisFormElement {
+    var $el;
+    var $file;
     function __construct($el) {
+        $this->el = $el;
+        $this->file = $_FILES[$this->el['name']];
     }
     function isUploadedFile() {
-        return true;
+        return isset($_FILES[$this->el['name']]);
+    }
+
+    function moveUploadedFile($destinationDir, $destinationFileName) {
+        print "Dir: $destinationDir name: $destinationFileName\n";
+        return move_uploaded_file($this->file['tmp_name'], $destinationDir . $destinationFileName);
+    }
+    function getValue() {
+        if(!$this->isUploadedFile()) {
+            return false;
+        }
+        return $_FILES[$this->el['name']];
     }
 }
 ?>
