@@ -368,7 +368,7 @@ class LorisForm
     function fileHTML($el)
     {
         $cls = '';
-        $val = $this->getDefault($el['name']);
+        $val = $this->getValue($el['name']);
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
@@ -496,6 +496,8 @@ class LorisForm
             return $this->staticHTML($el);
         case 'textarea':
             return $this->textareaHTML($el);
+        case 'file':
+            return $this->fileHTML($el);
         case 'text':
         case 'password':
             return $this->textHTML($el);
@@ -717,7 +719,10 @@ class LorisForm
     }
 
     function getElement($name) {
-        return new LorisFormElement();
+        if($this->form[$name]['type'] === 'file') {
+            return new LorisFormFileElement($this->form[$name]);
+        }
+        return new LorisFormElement($this->form[$name]);
     }
     function setElementError($el, $error) {
         $this->errors[$el] = $error;
@@ -734,5 +739,16 @@ class LorisForm
 class LorisFormElement {
     function freeze() {
     }
+
+    function getValue() {
+    }
 };
+
+class LorisFormFileElement extends LorisFormElement {
+    function __construct($el) {
+    }
+    function isUploadedFile() {
+        return true;
+    }
+}
 ?>
