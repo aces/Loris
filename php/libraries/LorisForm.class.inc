@@ -113,6 +113,12 @@ class LorisForm
     public function addTextArea($elname, $label, $options=array()) {
         $el =& $this->addBase($elname, $label);
         $el['type'] = 'textarea';
+        if($options['cols']) {
+            $el['cols'] = $options['cols'];
+        }
+        if($options['rows']) {
+            $el['rows'] = $options['rows'];
+        }
         return $el;
     }
     /**
@@ -194,6 +200,7 @@ class LorisForm
             break;
         case 'textarea':
             $el = $this->addTextArea($name, $label, $options);
+            break;
         case 'text':
         default:
             $el = $this->addText($name, $label, $options);
@@ -209,7 +216,7 @@ class LorisForm
 
     function createTextArea($elname, $label) {
         $el =& $this->createBase($elname, $label);
-        $el['type'] = 'text';
+        $el['type'] = 'textarea';
         return $el;
     }
 
@@ -385,11 +392,19 @@ class LorisForm
     function textareaHTML($el)
     {
         $cls = '';
+        $dims = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
+
+        if(isset($el['rows'])) {
+            $dims .= " rows=\"$el[rows]\""; 
+        }
+        if(isset($el['cols'])) {
+            $dims .= " cols=\"$el[cols]\""; 
+        }
         $value = $this->getValue($el['name']);
-        return "<textarea name=\"$el[name]\" $cls>"
+        return "<textarea name=\"$el[name]\" $cls $dims>"
             . (
                 !empty($value)
                 ? $this->getValue($el['name']) : ''
@@ -412,6 +427,9 @@ class LorisForm
         $this->defaultValues = $arr;
     }
 
+    function isSubmitted() {
+        return (!empty($_FILES) || !empty($_POST));
+    }
     /**
      * Reimplements the HTML_QuickForm validate API.
      *
@@ -419,6 +437,9 @@ class LorisForm
      */
     function validate()
     {
+        if(!$this->isSubmitted()) {
+            return false;
+        }
         $values = $this->getSubmitValues();
         $errors = array();
         foreach ($this->form as $elName => $el) {
