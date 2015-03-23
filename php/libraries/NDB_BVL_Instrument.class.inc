@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+require_once 'HTML/QuickForm.php';
 /**
  * Base class for all NeuroDB behavioural instruments
  *
