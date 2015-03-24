@@ -33,9 +33,24 @@ class LorisForm
     var $defaultValues = array();
     var $formRules     = array();
     var $errors        = array();
-    var $frozen = false;
+    var $frozen        = false;
 
-    protected function &createBase($name, $label, $attribs) {
+    /**
+     * Creates and returns an element that can be added
+     * to the $this->form array. This handles any options
+     * that are shared between every type of element,
+     * things specific to one type of element X should go in
+     * the createX function.
+     *
+     * @param string $name    The form name of the element being added
+     * @param string $label   The label to attach to the GUI in the form
+     * @param array  $attribs An array of extra HTML attributes to be
+     *                        added to this element.
+     *
+     * @return array describing the form element
+     */
+    protected function &createBase($name, $label, $attribs)
+    {
         $el = array(
                'label' => $label,
                'name'  => $name,
@@ -89,10 +104,22 @@ class LorisForm
 
     }
 
-    public function addStatic($name, $label) {
-        $el =& $this->addBase($name, $label, array());
-        $el['type']    = 'static';
+    /**
+     * Creates a static element to be rendered on the page
+     *
+     * Reimplementation of HTML_QuickForm's "addStatic" API.
+     *
+     * @param string $name  The element name.
+     * @param string $label The label to attach to this element.
+     *
+     * @return none, but modifies $this->form as a side-effect
+     */
+    public function addStatic($name, $label)
+    {
+        $el         =& $this->addBase($name, $label, array());
+        $el['type'] = 'static';
     }
+
     /**
      * Reimplementation of HTML_QuickForm's "addText" API.
      *
@@ -110,13 +137,26 @@ class LorisForm
         $el['type'] = 'text';
     }
 
-    public function addTextArea($elname, $label, $options=array()) {
-        $el =& $this->addBase($elname, $label);
+    /**
+     * Reimplementation of HTML_QuickForm's "addTextArea" API.
+     *
+     * @param string $elname  The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "class",
+     *                        "rows", and "cols" attributes will get
+     *                        added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    public function addTextArea($elname, $label, $options=array())
+    {
+        $el         =& $this->addBase($elname, $label);
         $el['type'] = 'textarea';
-        if($options['cols']) {
+        if ($options['cols']) {
             $el['cols'] = $options['cols'];
         }
-        if($options['rows']) {
+        if ($options['rows']) {
             $el['rows'] = $options['rows'];
         }
         return $el;
@@ -208,14 +248,42 @@ class LorisForm
         }
     }
 
-    function createText($elname, $label) {
-        $el =& $this->createBase($elname, $label);
+    /**
+     * Reimplementation of HTML_QuickForm's createText function.
+     *
+     * Creates a text element that can be added to the page but
+     * does not itself add the element.
+     *
+     * @param string $elname The name of the element to be added to
+     *                       the form
+     * @param string $label  The name of the label to attach to the
+     *                       form
+     *
+     * @return array of the form that can be added to $this->form
+     */
+    function createText($elname, $label)
+    {
+        $el         =& $this->createBase($elname, $label);
         $el['type'] = 'text';
         return $el;
     }
 
-    function createTextArea($elname, $label) {
-        $el =& $this->createBase($elname, $label);
+    /**
+     * Reimplementation of HTML_QuickForm's createTextArea function.
+     *
+     * Creates a text element that can be added to the page but
+     * does not itself add the element.
+     *
+     * @param string $elname The name of the element to be added to
+     *                       the form
+     * @param string $label  The name of the label to attach to the
+     *                       form
+     *
+     * @return array of the form that can be added to $this->form
+     */
+    function createTextArea($elname, $label)
+    {
+        $el         =& $this->createBase($elname, $label);
         $el['type'] = 'textarea';
         return $el;
     }
@@ -238,13 +306,13 @@ class LorisForm
         }
 
         $bracketIdx = strpos($name, '[');
-        if($bracketIdx !== false) {
+        if ($bracketIdx !== false) {
             $fieldName = strstr($name, '[', true);
-            $fieldIdx = substr($name, $bracketIdx+1);
-            $fieldIdx = strstr($fieldIdx, ']', true);
-            if(isset($_REQUEST[$fieldName])) {
-                if($this->form[$name]['type'] === 'advcheckbox') {
-                    if($_REQUEST[$fieldName][$fieldIdx] == 'on') {
+            $fieldIdx  = substr($name, $bracketIdx+1);
+            $fieldIdx  = strstr($fieldIdx, ']', true);
+            if (isset($_REQUEST[$fieldName])) {
+                if ($this->form[$name]['type'] === 'advcheckbox') {
+                    if ($_REQUEST[$fieldName][$fieldIdx] == 'on') {
                         return 1;
                     }
                     return 0;
@@ -269,9 +337,9 @@ class LorisForm
      */
     protected function selectHTML($el)
     {
-        $strOptions = '';
-        $options    = $el['options'];
-        $cls        = '';
+        $strOptions    = '';
+        $options       = $el['options'];
+        $cls           = '';
         $changehandler = '';
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
@@ -289,13 +357,14 @@ class LorisForm
             $cls = "class=\"$el[class]\"";
         }
         if (isset($el['onchange'])) {
-            $changehandler= "onchange=\"$el[onchange]\"";
+            $changehandler = "onchange=\"$el[onchange]\"";
         }
         $retVal = "<select name=\"$el[name]\" $cls $changehandler";
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
-                $retVal .= ' onChange="this.setCustomValidity(this.value === \'\' ? \''
+                $retVal .= ' onChange="this.setCustomValidity('
+                    . 'this.value === \'\' ? \''
                     . $el['requireMsg']
                     . "' : '')\"";
             }
@@ -305,7 +374,16 @@ class LorisForm
         return $retVal;
     }
 
-    function staticHTML($el) {
+    /**
+     * Generates the HTML to add to the page when rendered for a static
+     * element.
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function staticHTML($el)
+    {
         $val = $this->getValue($el['name']);
 
         if (!empty($el['label'])) {
@@ -327,8 +405,8 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $msg = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $value= $this->getValue($el['name']);
+        $msg   = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $value = $this->getValue($el['name']);
         $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
             . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
             . (isset($el['required']) ? "required" : '')
@@ -338,22 +416,23 @@ class LorisForm
                 : ''
               )
             . ">";
-        /*
-        if(isset($this->errors[$el['name']])) {
-            $elmnt .= $this->errors[$el['name']];
-        }
-         */
         return $elmnt;
 
     }
-    function groupHTML($el) {
+
+    /**
+     * Generates the HTML to add to the page when rendered for a group
+     * element. This will render all subelements and return the HTML
+     * for the entire group.
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function groupHTML($el)
+    {
         $retVal = '';
-        foreach($el['elements'] as $element) {
-            /*
-            if(empty($element['type'])) {
-                continue;
-            }
-             */
+        foreach ($el['elements'] as $element) {
             $retVal .= $this->renderElement($element);
             $retVal .= $el['delimiter'];
         }
@@ -407,19 +486,28 @@ class LorisForm
               )
             .">";
     }
+
+    /**
+     * Generates the HTML to add to the page when a textarea is
+     * added to the form.
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
     function textareaHTML($el)
     {
-        $cls = '';
+        $cls  = '';
         $dims = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
 
-        if(isset($el['rows'])) {
-            $dims .= " rows=\"$el[rows]\""; 
+        if (isset($el['rows'])) {
+            $dims .= " rows=\"$el[rows]\"";
         }
-        if(isset($el['cols'])) {
-            $dims .= " cols=\"$el[cols]\""; 
+        if (isset($el['cols'])) {
+            $dims .= " cols=\"$el[cols]\"";
         }
         $value = $this->getValue($el['name']);
         return "<textarea name=\"$el[name]\" $cls $dims>"
@@ -445,7 +533,13 @@ class LorisForm
         $this->defaultValues = $arr;
     }
 
-    function isSubmitted() {
+    /**
+     * Reimplementation of HTML_QuickForm isSubmitted API.
+     *
+     * @return true if data was submitted by the user to the form.
+     */
+    function isSubmitted()
+    {
         return (!empty($_FILES) || !empty($_POST));
     }
     /**
@@ -455,32 +549,34 @@ class LorisForm
      */
     function validate()
     {
-        if(!$this->isSubmitted()) {
+        if (!$this->isSubmitted()) {
             return false;
         }
         $values = $this->getSubmitValues();
         $errors = array();
         foreach ($this->form as $elName => $el) {
             $value = $this->getValue($el['name']);
-            if (isset($el['required']) && $el['required'] === true && empty($value)) {
+            if (isset($el['required'])
+                && $el['required'] === true
+                && empty($value)
+            ) {
                 //$this->setElementError($el['name'], "$el[name] required.");
                 $errors[$el['name']] = "required fail";
             }
 
-            if(isset($el['compare'])
+            if (isset($el['compare'])
                 && $value != $this->getValue($el['compare'])
-            )
-            {
-                // These don't seem to show up in the original, so just make the validation
-                // fail but don't setElementError..
-                //$this->setElementError($el['name'], "$el[name] comparison to $el[compare] failed.");
+            ) {
+                // These don't seem to show up in the original, so just make
+                // the validation fail by adding something to the errors array
+                // but don't call setElementError..
                 $errors[$el['name']] = "comparison fail";
             }
         }
         foreach ($this->formRules as $rule) {
             $violations = $rule($values);
             if (!empty($violations)) {
-                foreach($violations as $element => $msg) {
+                foreach ($violations as $element => $msg) {
                     $this->setElementError($element, $msg);
                     $errors[$element] = "custom fail";
                 }
@@ -513,7 +609,15 @@ class LorisForm
     {
     }
 
-    function freeze() {
+    /**
+     * Stub function so that API is compatible with HTML_QuickForm.
+     *
+     * Not currently supported.
+     *
+     * @return none
+     */
+    function freeze()
+    {
         $this->frozen = true;
     }
 
@@ -528,7 +632,17 @@ class LorisForm
         return $this->frozen;
     }
 
-    function renderElement($el) {
+    /**
+     * Renders an element by calling the correct wrapper for the
+     * type, or throws an exception if given an unsupported element
+     * type.
+     *
+     * @param array $el An array of the form used by $this->form
+     *
+     * @return string the HTML for the given element.
+     */
+    function renderElement($el)
+    {
         switch($el['type']) {
         case 'date':
             return $this->dateHTML($el);
@@ -548,12 +662,24 @@ class LorisForm
         case 'group':
             return $this->groupHTML($el);
         }
-        throw new LorisException("Unsupported element type $el[type] in renderElement");
+        throw new LorisException(
+            "Unsupported element type $el[type] in renderElement"
+        );
     }
-    function checkboxHTML($el) {
-        $val = $this->getValue($el['name']);
-        $checked='';
-        if(!empty($val)) {
+
+    /**
+     * Generates the HTML for an advcheckbox type element
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a checkbox
+     *
+     * @return string the HTML for the given checkbox element.
+     */
+    function checkboxHTML($el)
+    {
+        $val     = $this->getValue($el['name']);
+        $checked ='';
+        if (!empty($val)) {
             $checked = 'checked="checked"';
         }
         return "<input name=\"$el[name]\" type=\"checkbox\" $checked /> $el[label]";
@@ -594,7 +720,7 @@ class LorisForm
             $el['html'] = $this->renderElement($el);
         }
 
-        $retVal = $this->form;
+        $retVal           = $this->form;
         $retVal['errors'] = $this->errors;
         return $retVal;
     }
@@ -674,32 +800,40 @@ class LorisForm
     /**
      * Reimplementation of QuickForm API.
      *
-     * Adds an eleent group to the form.
-     * TODO: Implement this so that instruments (and others?)
-     *       can use LorisForm.
+     * Adds an element group to the form.
+     *
+     * @param array  $array     An array of elements created by $this->create*
+     *                          to be in the group.
+     * @param string $name      The name of the group
+     * @param string $label     The label to attach to the group
+     * @param string $delimiter The delimiter to use to separate group elements
      *
      * @return none
      */
     function addGroup($array, $name, $label, $delimiter)
     {
         $this->form[$name] = array(
-            'type' => 'group',
-            'elements' => $array,
-            'delimiter' => empty($delimiter) ? ' ' : $delimiter
-        );
+                              'type'      => 'group',
+                              'elements'  => $array,
+                              'delimiter' => empty($delimiter) ? ' ' : $delimiter,
+                             );
 
     }
 
     /**
      * Reimplementation of QuickForm API.
      *
-     * Creates an element without adding it to the form, mostly for the
-     * sake of adding it to a group to be added with addGroup.
+     * Creates an element without adding it to the form.
      *
-     * TODO: Implement this so that instruments (and others?)
-     *       can use LorisForm.
+     * @param string $type    The type of element to be created.
+     * @param string $elname  The name of the element to be added
+     * @param string $label   The label to attach to the element
+     * @param array  $options Element specific options to pass
+     *                        to create* wrappers
+     * @param array  $attribs An array of extra HTML attributes to
+     *                        add to the element.
      *
-     * @return none
+     * @return array of the form supported by $this->form
      */
     function createElement($type, $elname, $label, $options, $attribs)
     {
@@ -712,13 +846,13 @@ class LorisForm
             /* Label seems to usually be the wrong attribute for static
              * elements?
              */
-            $el = $this->createBase($elname, $options, $attribs);
+            $el         = $this->createBase($elname, $options, $attribs);
             $el['type'] = 'static';
             break;
         case 'advcheckbox':
         case 'textarea':
         case 'password':
-            $el = $this->createBase($elname, $label, $options);
+            $el         = $this->createBase($elname, $label, $options);
             $el['type'] = $type;
             break;
         default:
@@ -727,6 +861,18 @@ class LorisForm
         return $el;
     }
 
+    /**
+     * Creates a select element but does not add it to the page.
+     *
+     * @param string $name    The name of the element to be added
+     * @param string $label   The label to attach to the element
+     * @param array  $options Array of options to add to the select
+     *                        dropdown.
+     * @param array  $attribs An array of extra HTML attributes to
+     *                        add to the element.
+     *
+     * @return array of the form supported by $this->form
+     */
     public function createSelect($name, $label, $options, $attribs = array())
     {
         $el            =& $this->createBase($name, $label, $attribs);
@@ -740,12 +886,24 @@ class LorisForm
      * Iterates through an array of elements and populates the array
      * passed as a reference with the values that come from the POST
      * request.
+     *
+     * This may recursively call itself to also get the values out of
+     * groups, or be called directly by getSubmitValues() with the
+     * whole form as the "group".
+     *
+     * @param array $groupElements The elements that need to have their
+     *                             values extracted.
+     * @param array $arr           A reference to an array to store the
+     *                             extracted values into.
+     *
+     * @return none, but will modify &$arr parameter passed as a side-effect
      */
-    function getGroupValues($groupElements, &$arr) {
-        foreach($groupElements as $el) {
+    function getGroupValues($groupElements, &$arr)
+    {
+        foreach ($groupElements as $el) {
             // If it's a group, recursively go through the elements
             // of that group.
-            if($el['type'] === 'group') {
+            if ($el['type'] === 'group') {
                 $this->getGroupValues($el['elements'], $arr);
                 continue;
             }
@@ -753,18 +911,18 @@ class LorisForm
             // If it was an element of the form $elemname[idx],
             // which PHP converts to an array of $elemname, then
             // we need to check for $elemname, not $elemname[idx]
-            $name = $el['name'];
+            $name       = $el['name'];
             $bracketIdx = strpos($name, '[');
-            if($bracketIdx !== false) {
+            if ($bracketIdx !== false) {
                 $fieldName = substr($name, 0, $bracketIdx);
-                $fieldIdx = substr($name, $bracketIdx+1);
-                $fieldIdx = strstr($fieldIdx, ']', true);
-                if(!isset($arr[$fieldName])) {
+                $fieldIdx  = substr($name, $bracketIdx+1);
+                $fieldIdx  = strstr($fieldIdx, ']', true);
+                if (!isset($arr[$fieldName])) {
                     $arr[$fieldName] = $_REQUEST[$fieldName];
                 }
-                if($el['type'] === 'advcheckbox') {
+                if ($el['type'] === 'advcheckbox') {
                     $val = $this->getValue($name);
-                    if($val === 'on') {
+                    if ($val === 'on') {
                         $arr[$fieldName][$fieldIdx] = 1;
                     } else {
                         $arr[$fieldName][$fieldIdx] = 0;
@@ -776,16 +934,16 @@ class LorisForm
             // normal case, just set it directly
             $arr[$name] = $_REQUEST[$name];
 
-            if($el['type'] === 'date') {
+            if ($el['type'] === 'date') {
                 // Convert dates to the type of group that was used
                 // by HTML_QuickForm. This should eventually be modified
                 // to just use a normal HTML5 date.
-                $vals = explode("-", $arr[$name]);
+                $vals       = explode("-", $arr[$name]);
                 $arr[$name] = array(
-                    'Y' => $vals[0],
-                    'M' => $vals[1],
-                    'd' => $vals[2]
-                );
+                               'Y' => $vals[0],
+                               'M' => $vals[1],
+                               'd' => $vals[2],
+                              );
             }
         }
     }
@@ -804,48 +962,150 @@ class LorisForm
         return $retVal;
     }
 
-    function getElement($name) {
-        if($this->form[$name]['type'] === 'file') {
+    /**
+     * Reimplementation of HTML_QuickForm getElement
+     *
+     * Extracts the element from the page.
+     *
+     * @param string $name The name of the element to extract.
+     *
+     * @return useless object which has the same methods as
+     *         those used by QuickForm, so that the LorisForm
+     *         is API compatible.
+     */
+    function getElement($name)
+    {
+        if ($this->form[$name]['type'] === 'file') {
             return new LorisFormFileElement($this->form[$name]);
         }
         return new LorisFormElement($this->form[$name]);
     }
-    function setElementError($el, $error) {
+
+    /**
+     * Sets an error for the given element to be displayed to the
+     * user
+     *
+     * @param string $el    The name of the element which has an error
+     * @param string $error The error to display with the element.
+     *
+     * @return none
+     */
+    function setElementError($el, $error)
+    {
         $this->errors[$el] = $error;
     }
 
-    function getElementError($el) {
-        if(isset($this->errors[$el])) {
+    /**
+     * Extracts the current error associated with an element
+     *
+     * @param string $el The name of the element whose error we'd like
+     *                   to know.
+     *
+     * @return string the error message of the element
+     */
+    function getElementError($el)
+    {
+        if (isset($this->errors[$el])) {
             return $this->errors[$el];
         }
         return;
     }
 }
 
-class LorisFormElement {
-    function freeze() {
+/**
+ * A stub class so that calls to getElement that try and do something
+ * with that element do not crash.
+ *
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class LorisFormElement
+{
+    /**
+     * Stub. Does nothing.
+     *
+     * @return none
+     */
+    function freeze()
+    {
     }
 
-    function getValue() {
+    /**
+     * Stub. Does nothing.
+     *
+     * @return none
+     */
+    function getValue()
+    {
     }
 };
 
-class LorisFormFileElement extends LorisFormElement {
+/**
+ * A stub class which adds file related functions to LorisFormElement.
+ * (And implements them.)
+ *
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class LorisFormFileElement extends LorisFormElement
+{
     var $el;
     var $file;
-    function __construct($el) {
-        $this->el = $el;
+
+    /**
+     * Constructor.
+     *
+     * @param array $el The element from $this->form which
+     *                  we need an object wrapper around.
+     */
+    function __construct($el)
+    {
+        $this->el   = $el;
         $this->file = $_FILES[$this->el['name']];
     }
-    function isUploadedFile() {
+
+    /**
+     * Returns true if the file was uploaded by the user.
+     *
+     * @return true if the file was uploaded by the user.
+     */
+    function isUploadedFile()
+    {
         return isset($_FILES[$this->el['name']]);
     }
 
-    function moveUploadedFile($destinationDir, $destinationFileName) {
-        return move_uploaded_file($this->file['tmp_name'], $destinationDir . $destinationFileName);
+    /**
+     * Moves the file to the destination directory after it's been uploaded
+     * by the user and processed by the script.
+     *
+     * @param string $destinationDir      The directory to move the file into
+     * @param string $destinationFileName The filename to use in that directory.
+     *
+     * @return none
+     */
+    function moveUploadedFile($destinationDir, $destinationFileName)
+    {
+        return move_uploaded_file(
+            $this->file['tmp_name'],
+            $destinationDir . $destinationFileName
+        );
     }
-    function getValue() {
-        if(!$this->isUploadedFile()) {
+
+    /**
+     * Extracts the value of the file as represented in PHP $_FILES
+     * superglobal. This seems to be how QuickForm handled it.
+     *
+     * @return array of the form used by $_FILES superglobal
+     */
+    function getValue()
+    {
+        if (!$this->isUploadedFile()) {
             return false;
         }
         return $_FILES[$this->el['name']];

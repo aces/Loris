@@ -487,9 +487,8 @@ class NDB_Page
         $this->form->applyFilter('__ALL__', 'trim');
 
         // display the HTML_Quickform object
-        $smarty   = new Smarty_neurodb($this->name);
-        //$renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        //$this->form->accept($renderer);
+        $smarty = new Smarty_neurodb($this->name);
+
         $smarty->ModuleName = $this->name;
 
         $smarty->assign('form', $this->form->toArray());
