@@ -24,7 +24,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=mri_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("mri_violations", $bodyText);
+        $this->assertContains("Mri Violations", $bodyText);
     }
 }
 ?>

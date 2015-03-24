@@ -24,7 +24,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=next_stage");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("next_stage", $bodyText);
+        $this->assertContains("Next Stage", $bodyText);
     }
 }
 ?>

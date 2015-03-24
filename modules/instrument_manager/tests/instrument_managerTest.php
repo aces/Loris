@@ -24,7 +24,7 @@ class instrumentManagerTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=instrument_manager");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("instrument_manager", $bodyText);
+        $this->assertContains("Instrument Manager", $bodyText);
     }
 }
 ?>

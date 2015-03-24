@@ -24,7 +24,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=instrument_builder");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("instrument_builder", $bodyText);
+        $this->assertContains("Instrument Builder", $bodyText);
     }
 }
 ?>
