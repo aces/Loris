@@ -24,7 +24,7 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=user_accounts");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("user_accounts", $bodyText);
+        $this->assertContains("User Accounts", $bodyText);
     }
 
     /**
@@ -37,7 +37,7 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=user_accounts&subtest=edit_user");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("user_accounts", $bodyText);
+        $this->assertContains("Edit User", $bodyText);
     }
 
     /**
@@ -50,7 +50,7 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=user_accounts&subtest=my_preferences");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("user_accounts", $bodyText);
+        $this->assertContains("My Preferences", $bodyText);
     }
 }
 ?>
