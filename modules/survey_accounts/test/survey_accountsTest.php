@@ -24,7 +24,20 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=survey_accounts");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("survey_accounts", $bodyText);
+        $this->assertContains("Survey Accounts", $bodyText);
+    }
+
+    /**
+     * Tests that, when loading the Survey accounts module > add_survey submodule, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testSurveyAccountsAddSurveyDoespageLoad()
+    {
+        $this->webDriver->get($this->url . "?test_name=survey_accounts&subtest=add_survey");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Add Survey", $bodyText);
     }
 }
 ?>

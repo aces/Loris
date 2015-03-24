@@ -26,5 +26,31 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("user_accounts", $bodyText);
     }
+
+    /**
+     * Tests that, when loading the User accounts module > edit_user submodule, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testUserAccountsEditUserDoespageLoad()
+    {
+        $this->webDriver->get($this->url . "?test_name=user_accounts&subtest=edit_user");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("user_accounts", $bodyText);
+    }
+
+    /**
+     * Tests that, when loading the User accounts module > my_preference submodule, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testUserAccountsMyPreferencesDoespageLoad()
+    {
+        $this->webDriver->get($this->url . "?test_name=user_accounts&subtest=my_preferences");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("user_accounts", $bodyText);
+    }
 }
 ?>
