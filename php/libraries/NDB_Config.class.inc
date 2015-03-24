@@ -69,7 +69,7 @@ class NDB_Config
             if ($configFile === null) {
                 // Can't directly check !empty because of a bug
                 // in PHP < 5.5, need to assign to a variable first
-                $env = getenv('LORIS_CONFIG');
+                $env = getenv('LORIS_DB_CONFIG');
                 if (!empty($env)) {
                     $configFile = $env;
                 } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
