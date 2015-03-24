@@ -1,6 +1,6 @@
 <?php
 /**
- * genomic_browser automated integration tests
+ * Genomic_browser automated integration tests
  *
  * PHP Version 5
  *
@@ -10,9 +10,21 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+require_once __DIR__
+    . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class genomicBrowserTestIntegrationTest extends LorisIntegrationTest
+/**
+ * GenomicBrowserTestIntegrationTest
+ *
+ * PHP Version 5
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the genomic_browser module, some
@@ -23,7 +35,8 @@ class genomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserDoespageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=genomic_browser");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Genomic Browser", $bodyText);
     }
 }
