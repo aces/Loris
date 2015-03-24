@@ -27,8 +27,6 @@ require_once __DIR__ .
  */
 class DashboardTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=dashboard';
-
     /**
      * Tests that, when loading the Dashboard, the word "Welcome" appears
      * in the welcome panel
@@ -37,7 +35,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testDashboardPageLoads()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . '?test_name=dashboard');
 
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();

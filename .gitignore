@@ -4,3 +4,4 @@ smarty/templates_c
 project-*
 *.un~
 vendor
+.idea

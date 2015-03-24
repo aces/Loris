@@ -31,6 +31,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * to use to script a web browser.
      */
     protected $webDriver;
+    protected $config;
+    protected $DB;
+    protected $url;
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -52,6 +55,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $database['host'],
             1
         );
+        $this->url = $this->config->getSetting("url") . "/main.php";
 
         $this->DB->insert(
             "users",
@@ -101,7 +105,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
-        $this->webDriver->get('http://localhost/main.php');
+        $this->webDriver->get($this->url);
 
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
