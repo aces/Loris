@@ -20,7 +20,7 @@ install:
     - npm install -g jslint
 
       # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
+    - wget "http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar"
 
     # Install requirements for php-fpm as per Travis DOCs
     - sudo apt-get install apache2 libapache2-mod-fastcgi smarty3
@@ -35,7 +35,7 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.44.0.jar > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.45.0.jar > /dev/null &
 
 before_script:
     # Set up the Loris environment
