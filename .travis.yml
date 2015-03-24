@@ -88,7 +88,7 @@ script:
     - vendor/bin/phpunit modules/mri_upload/test/mri_uploadTest.php
     - vendor/bin/phpunit modules/instrument_manager/tests/instrument_managerTest.php
     - vendor/bin/phpunit modules/instrument_list/tests/instrument_listTest.php
-    - vendor/bin/phpunit modules/instrument_builder/test/instrument_builderTest.php
+    #- vendor/bin/phpunit modules/instrument_builder/test/instrument_builderTest.php
 
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
