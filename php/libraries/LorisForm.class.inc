@@ -117,6 +117,23 @@ class LorisForm
     }
 
     /**
+     * Adds a file to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "class"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    function addFile($name, $label, $options)
+    {
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'file';
+    }
+
+    /**
      * An implementation of QuickForm's addElement function. This only
      * calls the appropriate $this->addX wrapper based on the "type"
      * passed to the function call.
@@ -149,6 +166,9 @@ class LorisForm
             break;
         case 'date':
             $el = $this->addDate($name, $label, $options);
+            break;
+        case 'file':
+            $el = $this->addFile($name, $label, $options);
             break;
         case 'text':
         default:
@@ -272,6 +292,29 @@ class LorisForm
             .">";
     }
 
+    /**
+     * Generates the HTML to add to the page when a file is
+     * added to the form.
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function fileHTML($el)
+    {
+        $cls = '';
+        $val = $this->getDefault($el['name']);
+        if (isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"file\" $cls"
+            . (
+                !empty($val)
+                ? ' value="' . $val . '"'
+                : ''
+              )
+            .">";
+    }
 
     /**
      * Reimplements the HTML_QuickForm setDefaults API.
@@ -356,6 +399,9 @@ class LorisForm
                 break;
             case 'text':
                 $el['html'] = $this->textHTML($el);
+                break;
+            case 'file':
+                $el['html'] = $this->fileHTML($el);
                 break;
 
             }
