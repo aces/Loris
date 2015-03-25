@@ -39,5 +39,20 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Genomic Browser", $bodyText);
     }
+
+    /**
+     * Tests that, when loading the genomic_browser module > snp_browser submenu, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testGenomicBrowserSnpBrowserDoespageLoad()
+    {
+        $this->webDriver->get($this->url . "?test_name=genomic_browser&submenu=snp_browser");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Genomic Browser", $bodyText);
+    }
+
 }
 ?>

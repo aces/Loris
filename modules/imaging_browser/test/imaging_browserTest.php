@@ -26,5 +26,18 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Imaging Browser", $bodyText);
     }
+
+    /**
+     * Tests that, when loading the imaging_browser module > viewSession subtest, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testImagingBrowserViewSessionDoespageLoad()
+    {
+        $this->webDriver->get($this->url . "?test_name=imaging_browser&subtest=viewSession");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("View Session", $bodyText);
+    }
 }
 ?>

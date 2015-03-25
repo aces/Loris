@@ -75,21 +75,20 @@ script:
     - vendor/bin/phpunit test/integrationtests/
 
     # Run integration tests for specific modules
-    - vendor/bin/phpunit modules/mri_upload/test/
-    - vendor/bin/phpunit modules/statistics/tests/
-    - vendor/bin/phpunit modules/dashboard/test/
-    - vendor/bin/phpunit modules/configuration/test/
-    - vendor/bin/phpunit modules/user_accounts/test/
-    - vendor/bin/phpunit modules/timepoint_flag/test/
-    - vendor/bin/phpunit modules/survey_accounts/test/
-    - vendor/bin/phpunit modules/reliability/test/
-    - vendor/bin/phpunit modules/next_stage/test/
-    - vendor/bin/phpunit modules/mri_violations/test/
-    - vendor/bin/phpunit modules/mri_upload/test/
-    - vendor/bin/phpunit modules/instrument_manager/tests/
-    - vendor/bin/phpunit modules/instrument_list/tests/
-    - vendor/bin/phpunit modules/instrument_builder/test/
-
+    - vendor/bin/phpunit modules/mri_upload/test
+    - vendor/bin/phpunit modules/statistics/test
+    - vendor/bin/phpunit modules/dashboard/test
+    - vendor/bin/phpunit modules/configuration/test
+    - vendor/bin/phpunit modules/user_accounts/test
+    - vendor/bin/phpunit modules/timepoint_flag/test
+    - vendor/bin/phpunit modules/survey_accounts/test
+    - vendor/bin/phpunit modules/reliability/test
+    - vendor/bin/phpunit modules/next_stage/test
+    - vendor/bin/phpunit modules/mri_violations/test
+    - vendor/bin/phpunit modules/mri_upload/test
+    - vendor/bin/phpunit modules/instrument_manager/test
+    - vendor/bin/phpunit modules/instrument_list/test
+    - vendor/bin/phpunit modules/instrument_builder/test
     - vendor/bin/phpunit modules/brainbrowser/test
     - vendor/bin/phpunit modules/candidate_list/test
     - vendor/bin/phpunit modules/candidate_parameters/test

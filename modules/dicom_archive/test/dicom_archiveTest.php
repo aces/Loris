@@ -26,5 +26,18 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Dicom Archive", $bodyText);
     }
+
+    /**
+     * Tests that, when loading the dicom_archive module > viewDetails subtest, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testdicomArchiveViewDetailsDoespageLoad()
+    {
+        $this->webDriver->get($this->url . "?test_name=dicom_archive&subtest=viewDetails");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("View Details", $bodyText);
+    }
 }
 ?>

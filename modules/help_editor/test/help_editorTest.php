@@ -1,4 +1,3 @@
-help_editor
 <?php
 /**
  * help_editor automated integration tests
