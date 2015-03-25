@@ -397,7 +397,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $rule = array(
                  'message' => $message,
                  'group'   => $group,
-                 'rules'   => array()
+                 'rules'   => array(),
                 );
 
         foreach ($rules_array AS $rule_cmd) {
