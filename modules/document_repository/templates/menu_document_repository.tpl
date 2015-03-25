@@ -213,6 +213,7 @@ $(document).ready(function() {
             }
         }
     }
+    $(".loading").hide();
     $(".directory").click(function(){
         var elmID;
         if($(this).hasClass("glyphicon-chevron-down")){
@@ -410,6 +411,9 @@ $(function () {
 </form>
 
 <div class="tree">
+    <center>
+        <button class="btn btn-lg btn-primary loading"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
+    </center>
     <ul id="home-dir">
 
     </ul>
