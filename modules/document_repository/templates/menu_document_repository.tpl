@@ -260,7 +260,7 @@ $(function () {
 });
 </script>
 <script id="dir" type="x-tmpl-mustache">
-    <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow"{{ /parentID }}>
+    <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
         <td>
             {{ #depth }}
                 {{ #first }}
@@ -272,13 +272,13 @@ $(function () {
             {{ /depth }}
             {{ #indent }}
                 <div class="fileDDD">
-                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-down'>
+                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right'>
                         {{ name }}
                     </span>
                 </div>
             {{ /indent }}
             {{ ^indent }}
-                <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-down'>
+                <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right'>
                     {{ name }}
                 </span>
             {{ /indent }}
@@ -287,7 +287,7 @@ $(function () {
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
-    <tr class="{{ parentID }}a">
+    <tr class="{{ parentID }}a" style="display:none">
         <td class="blah">
             {{ #depth }}
                 {{ #first }}
