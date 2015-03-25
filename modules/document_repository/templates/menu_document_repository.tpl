@@ -1,60 +1,60 @@
 {literal}
 <style type="text/css">
-       .tree{
-        overflow-x: auto
-    }
-    #home-dir{
-        padding-left: 0px;
-    }
-    .file_name{
-        float: left;
-        border: 1px solid #999;
-    }
-    .version{
-        width: 30px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .file_type{
-        width: 50px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .instrument{
-        width: 100px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .updated_by{
-        width: 100px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .for_site{
-        width: 100px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .comments{
-        width: 300px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .date_uploaded{
-        width: 150px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .editLink{
-        width: 50px;
-        float: left;
-        border: 1px solid #999;
-    }
-    .deleteLink{
-        width: 50px;
-        float: left;
-        border: 1px solid #999;
-    }
+.tree{
+    overflow-x: auto
+}
+#home-dir{
+    padding-left: 0px;
+}
+.file_name{
+    float: left;
+    border: 1px solid #999;
+}
+.version{
+    width: 30px;
+    float: left;
+    border: 1px solid #999;
+}
+.file_type{
+    width: 50px;
+    float: left;
+    border: 1px solid #999;
+}
+.instrument{
+    width: 100px;
+    float: left;
+    border: 1px solid #999;
+}
+.updated_by{
+    width: 100px;
+    float: left;
+    border: 1px solid #999;
+}
+.for_site{
+    width: 100px;
+    float: left;
+    border: 1px solid #999;
+}
+.comments{
+    width: 300px;
+    float: left;
+    border: 1px solid #999;
+}
+.date_uploaded{
+    width: 150px;
+    float: left;
+    border: 1px solid #999;
+}
+.editLink{
+    width: 50px;
+    float: left;
+    border: 1px solid #999;
+}
+.deleteLink{
+    width: 50px;
+    float: left;
+    border: 1px solid #999;
+}
     /*#dir-tree>tr>td.blah{
         background-color: black;
     }*/
@@ -119,6 +119,11 @@
     float: left;
     width: 60px;
 }
+.fileDDD>span, td>span{
+    border: 1px solid #999;
+    border-radius: 5px;
+    margin: 5px;
+}
 </style>
 <script type="text/javascript" src="js/modules/mustache.js"></script>
 <script type="text/javascript">
@@ -138,13 +143,24 @@ $(document).ready(function() {
             Mustache.parse(directory);
             var dirData = {
                 name: path[depth - 1],
+                id: path[depth - 1].replace(" ", "_"),
+                parentID: function(){
+                    if(depth >= 2)
+                     return path[depth - 2].replace(" ", "_");
+                    return null;
+                },
                 indent: function(){
                     return (depth - 1)*60;
                 },
                 depth: function(){
                     var depthArray = [];
                     for (var i = 0; i < depth - 1; i++) {
-                        depthArray.push(" ");
+                        if(i === 0){
+                            var firstSpacer = {first: "dfg "}
+                            depthArray.push(firstSpacer);
+                        } else {
+                            depthArray.push(" ");
+                        }
                     };
                     return depthArray;
                 }
@@ -176,10 +192,16 @@ $(document).ready(function() {
                 var file = $('#file').html();
                 Mustache.parse(file);   // optional, speeds up future uses
                 files[ii].indent = (depth)*60;
+                files[ii].parentID = path[depth - 1].replace(" ", "_");
                 files[ii].depth =   function(){
                                         var depthArray = [];
                                         for (var i = 0; i < depth; i++) {
-                                            depthArray.push(" ");
+                                            if(i === 0){
+                                                var firstSpacer = {first: "dfg "}
+                                                depthArray.push(firstSpacer);
+                                            } else {
+                                                depthArray.push(" ");
+                                            }
                                         };
                                         return depthArray;
                                     }
@@ -191,6 +213,36 @@ $(document).ready(function() {
             }
         }
     }
+    $(".directory").click(function(){
+        var elmID;
+        if($(this).hasClass("glyphicon-chevron-down")){
+            $(this).removeClass("glyphicon-chevron-down");
+            $(this).addClass("glyphicon-chevron-right");
+            elmID = $(this).closest('tr').attr("id");
+            $("." + elmID).each(collapseDir);
+        } else {
+            $(this).removeClass("glyphicon-chevron-right");
+            $(this).addClass("glyphicon-chevron-down");
+            elmID = $(this).closest('tr').attr("id");
+            $("." + elmID).each(expandDir);
+        }
+    });
+    var collapseDir = function (key, value){
+        var elmID;
+        if($(value).hasClass("directoryRow")){
+            elmID = $(value).attr("id");
+            $("." + elmID).each(collapseDir);
+        }
+        $(value).hide();
+    };
+    var expandDir = function(key, value){
+        var elmID;
+        if($(value).hasClass("directoryRow") && $(value).find('span.glyphicon-chevron-down').length != 0){
+            elmID = $(value).attr("id");
+            $("." + elmID).each(expandDir);
+        }
+        $(value).show();
+    };
 });
 $(function () {
     $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
@@ -208,20 +260,25 @@ $(function () {
 });
 </script>
 <script id="dir" type="x-tmpl-mustache">
-    <tr id="{{ name }}a">
+    <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow"{{ /parentID }}>
         <td>
             {{ #depth }}
-                <div class="spacer"> </div>
+                {{ #first }}
+                    <div class="spacer" style="border-left: none;"> </div>
+                {{ /first }}
+                {{ ^first }}
+                    <div class="spacer"> </div>
+                {{ /first }}
             {{ /depth }}
             {{ #indent }}
                 <div class="fileDDD">
-                    <span style="padding: 8px" class='blah glyphicon glyphicon-chevron-down'>
+                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-down'>
                         {{ name }}
                     </span>
                 </div>
             {{ /indent }}
             {{ ^indent }}
-                <span style="padding: 8px" class='blah glyphicon glyphicon-chevron-down'>
+                <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-down'>
                     {{ name }}
                 </span>
             {{ /indent }}
@@ -230,10 +287,15 @@ $(function () {
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
-    <tr>
+    <tr class="{{ parentID }}a">
         <td class="blah">
             {{ #depth }}
-                <div class="spacer"> </div>
+                {{ #first }}
+                    <div class="spacer" style="border-left: none;"> </div>
+                {{ /first }}
+                {{ ^first }}
+                    <div class="spacer"> </div>
+                {{ /first }}
             {{ /depth }}
             <div class="fileDDD"><div style="padding-top: 8px">{{ File_name }} ({{ File_size }})</div></div>
         </td>
@@ -373,7 +435,7 @@ $(function () {
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
 
-<table class="table table-striped">
+<table id="dirTable" class="table">
     <tbody id="dir-tree">
 
     </tbody>
