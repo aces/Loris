@@ -446,9 +446,11 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->form->accept($renderer);
             $html = $renderer->toHtml();
         } else {
-            $smarty = new Smarty_neurodb;
+            $smarty   = new Smarty_neurodb;
+            $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
-            $smarty->assign('form', $this->form->toArray());
+            $this->form->accept($renderer);
+            $smarty->assign('form', $renderer->toArray());
 
             $html = $smarty->fetch("instrument_html.tpl");
         }
