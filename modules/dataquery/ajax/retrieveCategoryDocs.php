@@ -19,7 +19,7 @@ $results = $cdb->queryView(
     "instruments",
     array("reduce" => "false",
         "include_docs" => "true",
-        "keys" =>  json_encode($keys),
+        "keys" =>  $keys,
       )
 );
 

@@ -153,7 +153,6 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
             if(DocTypes.indexOf(category) === -1) {
                 // Found a new type of doc, retrieve the data
                 DocTypes.push(category);
-                console.log(sessions);
                 $.ajax({
                     type: "POST",
                     url: "AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
@@ -162,7 +161,6 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                         Sessions: sessions
                     },
                     success: function(data) {
-                        console.log(data);
                     }
                 });
 

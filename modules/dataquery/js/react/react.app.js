@@ -161,7 +161,6 @@ DataQueryApp = React.createClass({
                         Sessions: sessions
                     },
                     success: function(data) {
-                        console.log(data);
                     }
                 });
 
