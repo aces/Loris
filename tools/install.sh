@@ -79,9 +79,17 @@ if [[ -n $(which composer) ]]; then
     echo ""
     echo "PHP Composer appears to be installed."
 else
-    echo ""
-    echo "PHP Composer does not appear to be installed. Aborting."
-    exit 2;
+    echo "PHP Composer does not appear to be installed. Attempting to install now..."
+    curl -sS https://getcomposer.org/installer | php
+    mv composer.phar /usr/local/bin/composer
+    if [[ -n $(which composer) ]]; then
+        echo ""
+        echo "PHP Composer successfully installed."
+    else
+        echo ""
+        echo "PHP Composer failed to install. Aborting."
+        exit 2;
+    fi
 fi
 
 cat <<QUESTIONS
@@ -323,7 +331,6 @@ echo ""
 mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
 echo "Updating Loris admin user's password."
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Pending_approval='N' WHERE ID=1"
-
 
 
 echo ""
