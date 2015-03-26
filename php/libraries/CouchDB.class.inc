@@ -511,10 +511,22 @@ class CouchDB
      */
     function queryView($designdoc, $viewname, $params, $full_json=false)
     {
-        $query = $this->_getRelativeURL(
-            "_design/" . $designdoc . "/_view/" . $viewname
-            . "?" . http_build_query($params)
-        );
+        $keys = null;
+        if(isset($params['keys'])) {
+
+            $keys = $params['keys'];
+            unset($params['keys']);
+
+            $url = "_design/" . $designdoc . "/_view/" . $viewname
+                . "?" . http_build_query($params);
+
+            $query = $this->_postRelativeURL($url, json_encode(array('keys' => $keys)));
+
+        } else {
+            $url = "_design/" . $designdoc . "/_view/" . $viewname
+                . "?" . http_build_query($params);
+            $query = $this->_getRelativeUrl($url);
+        }
 
         if($full_json) {
             return $query;
