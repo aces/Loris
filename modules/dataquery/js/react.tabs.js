@@ -54,28 +54,15 @@ FilterSelectTabPane = React.createClass({displayName: 'FilterSelectTabPane',
 });
 
 ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
+    getInitialState: function() {
+        return { 'sessions' : [] }
+    },
     runQuery: function() {
-        if (this.props.Criteria.length === 0) {
-            // Get all the candidates
-        } else {
-            // Get an array where of the results of each criteria
-            var sessionsArrays = [];
-            for (var el in  this.props.Criteria) {
-                if(this.props.Criteria.hasOwnProperty(el)) {
-                    sessionsArrays.push(this.props.Criteria[el].sessions)
-                }
-            }
-
-            // Then do an intersection on the sessions that came out of each
-            // criteria (equivalent to a logical AND between the operators)
-            var sessions = arrayIntersect(sessionsArrays);
+        if(this.props.onRunQueryClicked) {
+            this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
     },
     render: function() {
-        var headers = [];
-        for(var i = 0; i < this.props.Fields.length; i += 1) {
-            headers.push(React.createElement("th", null, this.props.Fields[i]));
-        }
         var buttons = React.createElement("div", {className: "commands"}, React.createElement("button", {onClick: this.runQuery}, "Run Query"))
         var criteria = [];
         for (var el in  this.props.Criteria) {
@@ -94,15 +81,59 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
                     React.createElement("div", {className: "row"}, 
                         React.createElement("span", {className: "col-sm-3"}, el), 
                         React.createElement("span", {className: "col-sm-3"}, item.operator), 
-                        React.createElement("span", {className: "col-sm-3"}, item.value), 
-                        React.createElement("span", {className: "col-sm-3"}, item.sessions)
+                        React.createElement("span", {className: "col-sm-3"}, item.value)
                     )
                     );
             }
 
         }
-        var content = React.createElement("div", null, React.createElement("h2", null, "Query Criteria"), criteria, " ", buttons, React.createElement("h2", null, "Data"), " ", React.createElement("table", {className: "table table-hover table-primary table-bordered"}, React.createElement("thead", null, React.createElement("tr", {className: "info"}, headers))));
+        var content = (
+            React.createElement("div", null, 
+                React.createElement("h2", null, "Query Criteria"), criteria, " ", buttons, 
+                React.createElement("h2", null, "Data"), 
+                React.createElement(DataTable, {Headers: this.props.Fields, Identifiers: this.props.Sessions})
+            )
+                );
         return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
+    }
+});
+
+DataTable = React.createClass({displayName: 'DataTable',
+    getDefaultProps: function() {
+        return {
+            Identifiers: [],
+            Headers: [],
+            Data: {}
+        };
+    },
+    render: function() {
+        var headers = [React.createElement("th", null, "Identifier")];
+        for(var i = 0; i < this.props.Headers.length; i += 1) {
+            headers.push(React.createElement("th", null, this.props.Headers[i]));
+        }
+        var rows = [];
+
+        for(var i = 0; i < this.props.Identifiers.length; i += 1) {
+            rows.push(
+                React.createElement("tr", {colSpan: headers.length}, 
+                    React.createElement("td", null, this.props.Identifiers[i].join())
+                )
+            );
+        }
+
+        return (
+            React.createElement("table", {className: "table table-hover table-primary table-bordered"}, 
+                React.createElement("thead", null, 
+                    React.createElement("tr", {className: "info"}, headers)
+                ), 
+                React.createElement("tbody", null, 
+                    rows
+                ), 
+                React.createElement("tfoot", null, 
+                    React.createElement("tr", null, React.createElement("td", {className: "info", colSpan: headers.length}, rows.length, " rows"))
+                )
+            )
+        );
     }
 });
 

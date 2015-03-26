@@ -71,5 +71,17 @@ class NDB_Form_dataquery extends NDB_Form
             'user'   => $usersavedNames,
             'shared' => $globalsavedNames
         );
+        $sessionResults = $couch->queryView(
+            "DQG-2.0",
+            "sessions",
+            array(
+                "reduce" => "true",
+                "group" => "true",
+            )
+        );
+
+        $sessions = array_map(function($element) { return $element['key']; }, $sessionResults);
+
+        $this->tpl_data['sessions'] = $sessions;
     }
 }
