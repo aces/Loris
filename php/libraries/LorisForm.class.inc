@@ -574,7 +574,7 @@ class LorisForm
             }
         }
         foreach ($this->formRules as $rule) {
-            $violations = $rule($values);
+            $violations = call_user_func($rule, $values);
             if (!empty($violations)) {
                 foreach ($violations as $element => $msg) {
                     $this->setElementError($element, $msg);
