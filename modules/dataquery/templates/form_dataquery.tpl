@@ -26,7 +26,7 @@ var categories = [
            { "category" : "{$category|escape:"js"}",
              "numFields" : {$value} },
         {/foreach}
-    ];
+        ];
 var queryApp = RDataQueryApp(
     {
         title: "Fields",
@@ -35,7 +35,8 @@ var queryApp = RDataQueryApp(
         SavedQueries : {
             "User" : {$savedqueries.user|json_encode},
             "Shared" : {$savedqueries.shared|json_encode}
-        }
+        },
+        AllSessions : {$sessions|json_encode}
     });
 React.render(queryApp, document.getElementById("reactTest"));
 </script>

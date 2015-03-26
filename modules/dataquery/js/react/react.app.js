@@ -126,6 +126,49 @@ DataQueryApp = React.createClass({
             ajaxRetrieve("queryContains.php");
         }
     },
+    getSessions: function() {
+        if (Object.keys(this.state.criteria).length === 0) {
+            return this.props.AllSessions;
+        }
+
+        // Get an array where of the results of each criteria
+        var sessionsArrays = [];
+        for (var el in  this.props.Criteria) {
+            if(this.state.criteria.hasOwnProperty(el)) {
+                sessionsArrays.push(this.state.criteria[el].sessions)
+            }
+        }
+
+        // Then do an intersection on the sessions that came out of each
+        // criteria (equivalent to a logical AND between the operators)
+        var sessions = arrayIntersect(sessionsArrays);
+        return sessions;
+    },
+    runQuery: function(fields, sessions) {
+        var DocTypes = [];
+        // Get list of DocTypes to be retrieved
+        for(var i = 0 ; i < fields.length; i += 1) {
+            var field_split = fields[i].split(",");
+            var category = field_split[0];
+            if(DocTypes.indexOf(category) === -1) {
+                // Found a new type of doc, retrieve the data
+                DocTypes.push(category);
+                $.ajax({
+                    type: "POST",
+                    url: "AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
+                    data: {
+                        DocType: category,
+                        Sessions: sessions
+                    },
+                    success: function(data) {
+                        console.log(data);
+                    }
+                });
+
+            }
+        }
+
+    },
     render: function() {
         var tabs = [], tabsNav = [];
         tabs.push(<InfoTabPane
@@ -151,6 +194,8 @@ DataQueryApp = React.createClass({
                 TabId="ViewData"
                 Fields={this.state.fields}
                 Criteria={this.state.criteria}
+                Sessions={this.getSessions()}
+                onRunQueryClicked={this.runQuery}
         />);
         tabs.push(<StatsVisualizationTabPane TabId="Statistics" />);
 

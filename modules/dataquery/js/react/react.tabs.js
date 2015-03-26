@@ -54,28 +54,15 @@ FilterSelectTabPane = React.createClass({
 });
 
 ViewDataTabPane = React.createClass({
+    getInitialState: function() {
+        return { 'sessions' : [] }
+    },
     runQuery: function() {
-        if (this.props.Criteria.length === 0) {
-            // Get all the candidates
-        } else {
-            // Get an array where of the results of each criteria
-            var sessionsArrays = [];
-            for (var el in  this.props.Criteria) {
-                if(this.props.Criteria.hasOwnProperty(el)) {
-                    sessionsArrays.push(this.props.Criteria[el].sessions)
-                }
-            }
-
-            // Then do an intersection on the sessions that came out of each
-            // criteria (equivalent to a logical AND between the operators)
-            var sessions = arrayIntersect(sessionsArrays);
+        if(this.props.onRunQueryClicked) {
+            this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
     },
     render: function() {
-        var headers = [];
-        for(var i = 0; i < this.props.Fields.length; i += 1) {
-            headers.push(<th>{this.props.Fields[i]}</th>);
-        }
         var buttons = <div className="commands"><button onClick={this.runQuery}>Run Query</button></div>
         var criteria = [];
         for (var el in  this.props.Criteria) {
@@ -95,14 +82,58 @@ ViewDataTabPane = React.createClass({
                         <span className="col-sm-3">{el}</span>
                         <span className="col-sm-3">{item.operator}</span>
                         <span className="col-sm-3">{item.value}</span>
-                        <span className="col-sm-3">{item.sessions}</span>
                     </div>
                     );
             }
 
         }
-        var content = <div><h2>Query Criteria</h2>{criteria} {buttons}<h2>Data</h2> <table className="table table-hover table-primary table-bordered"><thead><tr className="info">{headers}</tr></thead></table></div>;
+        var content = (
+            <div>
+                <h2>Query Criteria</h2>{criteria} {buttons}
+                <h2>Data</h2>
+                <DataTable Headers={this.props.Fields} Identifiers={this.props.Sessions} />
+            </div>
+                );
         return <TabPane content={content} TabId={this.props.TabId} />;
+    }
+});
+
+DataTable = React.createClass({
+    getDefaultProps: function() {
+        return {
+            Identifiers: [],
+            Headers: [],
+            Data: {}
+        };
+    },
+    render: function() {
+        var headers = [<th>Identifier</th>];
+        for(var i = 0; i < this.props.Headers.length; i += 1) {
+            headers.push(<th>{this.props.Headers[i]}</th>);
+        }
+        var rows = [];
+
+        for(var i = 0; i < this.props.Identifiers.length; i += 1) {
+            rows.push(
+                <tr colSpan={headers.length}>
+                    <td>{this.props.Identifiers[i].join()}</td>
+                </tr>
+            );
+        }
+
+        return (
+            <table className="table table-hover table-primary table-bordered">
+                <thead>
+                    <tr className="info">{headers}</tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+                <tfoot>
+                    <tr><td className="info" colSpan={headers.length}>{rows.length} rows</td></tr>
+                </tfoot>
+            </table>
+        );
     }
 });
 
