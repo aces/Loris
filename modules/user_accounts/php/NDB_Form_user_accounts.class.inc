@@ -180,59 +180,6 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
 
-        // get config options relating to proftpd
-        $ftpSettings = $config->getSetting("proftpd");
-        
-        // if proftpd stuff is enabled:
-        if($ftpSettings['enabled'] == 'true') {
-            
-            // connect to proftpd database
-            $ftpdb = new Database();
-	    $success = $ftpdb->connect($ftpSettings['database'], $ftpSettings['username'], $ftpSettings['password'], $ftpSettings['host'], false);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("Could not connect to database: ".$success->getMessage());
-            }
-            
-            // check users table to see if we have a valid user 
-            $query = "SELECT COUNT(*) AS User_count FROM ftpusers WHERE userid = :UID"; 
-            $row = $ftpdb->pselectRow($query, array('UID' => $values['UserID']));
-            if (Utility::isErrorX($row)) {
-                return PEAR::raiseError("DB Error: ".$row->getMessage());
-            }
-            
-            // update password
-            if($row['User_count'] == 1) {
-                
-                $setArray['passwd'] = crypt($values['Password_md5']);
-                $success = $ftpdb->update('ftpusers', $setArray, array('userid' => $values['UserID']));
-                if (Utility::isErrorX($success)) {
-                    return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
-                }
-            } 
-            
-            // if user does not exist, insert user data
-            else {                  
-                
-                $query = "SELECT MAX(uid) as Max_UID FROM ftpusers";
-                
-                $maxUID = $ftpdb->pselectOne($query, array());
-                if (Utility::isErrorX($maxUID)) {
-                    return PEAR::raiseError("DB Error: ".$maxUID->getMessage());
-                }
-                
-                $setArray['userid'] = $values['UserID'];
-                $setArray['passwd'] = crypt($values['Password_md5']);
-                $setArray['uid'] = $maxUID + 1;
-                $setArray['homedir'] = "/"; 
-                
-                // insert into proftpd
-                $success = $ftpdb->insert("ftpusers", $setArray);
-                if (Utility::isErrorX($success)) {
-                    return PEAR::raiseError("SinglePointLogin::save(): ".$success->getMessage());
-                }
-            }
-        }
-
         // send the user an email
         if (!empty($send)) {
             // create an instance of the config object
