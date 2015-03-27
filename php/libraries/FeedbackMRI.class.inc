@@ -194,7 +194,6 @@ class FeedbackMRI
      *
      * @return A two-dimensional array with key (int) PredefinedCommentID and
      *               one-element array ('Comment'=> string CommentName)
-     *
      */
     function getAllPredefinedComments($commentTypeID)
     {
