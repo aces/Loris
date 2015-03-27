@@ -12,8 +12,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/Default.php';
 
 /**
  * Base class that contains a number of wrapper functions for adding
@@ -25,7 +23,7 @@ require_once 'HTML/QuickForm/Renderer/Default.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page extends PEAR
+class NDB_Page
 {
     /**
      * The name of the test_name being accessed
@@ -69,7 +67,7 @@ class NDB_Page extends PEAR
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->form       = new HTML_QuickForm($formname);
+        $this->form       = new LorisForm($formname);
         $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
@@ -489,12 +487,11 @@ class NDB_Page extends PEAR
         $this->form->applyFilter('__ALL__', 'trim');
 
         // display the HTML_Quickform object
-        $smarty   = new Smarty_neurodb($this->name);
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
+        $smarty = new Smarty_neurodb($this->name);
+
         $smarty->ModuleName = $this->name;
 
-        $smarty->assign('form', $renderer->toArray());
+        $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_$this->template.tpl");
         return $html;

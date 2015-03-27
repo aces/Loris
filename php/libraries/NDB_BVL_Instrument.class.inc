@@ -10,12 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'NDB_Page.class.inc';
-require_once "PEAR.php";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/Array.php';
-require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
-require_once 'HTML/QuickForm/Renderer/Default.php';
 
 /**
  * Base class for all NeuroDB behavioural instruments
@@ -161,6 +155,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
+        include_once 'HTML/QuickForm.php';
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
