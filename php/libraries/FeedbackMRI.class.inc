@@ -193,8 +193,8 @@ class FeedbackMRI
      *                           table
      *
      * @return A two-dimensional array with key (int) PredefinedCommentID and
-     *               two-element array ('Comment'=> string CommentName,
-     *                                   'field'=> string FieldName)
+     *               one-element array ('Comment'=> string CommentName)
+     *
      */
     function getAllPredefinedComments($commentTypeID)
     {
@@ -215,7 +215,6 @@ class FeedbackMRI
                 $PredefinedID       = $row['PredefinedCommentID'];
                 $preDefinedComments = array();
                 $preDefinedComments['Comment'] = stripslashes($row['Comment']);
-               // $preDefinedComments['field']   = $row['FieldName'];
                 $comments[$PredefinedID]       = $preDefinedComments;
             }
         }
@@ -240,7 +239,7 @@ class FeedbackMRI
 
         // create DB object
         $DB =& Database::singleton();
-print $fieldName."\n";
+
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
@@ -264,7 +263,7 @@ print $fieldName."\n";
         if (empty($value)) {
             return false;
         }
-print "\nVALUE --- $value \n";
+
         // return the value
         return $value;
     }
