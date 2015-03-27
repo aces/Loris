@@ -298,6 +298,13 @@
                                     {if not $smarty.section.crumb.last}
                                         &gt; 
                                     {/if}
+                                {elseif $test_name == "mri_upload"}
+                                    <a href="main.php/{$crumbs[crumb].query}" class="text-default" style="color: white">
+                                        <label>Imaging Uploader</label>
+                                    </a> 
+                                    {if not $smarty.section.crumb.last}
+                                        &gt; 
+                                    {/if}
                                 {else}
                                     <a href="main.php?{$crumbs[crumb].query}" style="color: white">
                                         <label>{$crumbs[crumb].text}</label>
