@@ -115,11 +115,11 @@
                                 {section name=piece loop=$items[item]}
                                     {if $items[item][piece].name != "hash"}
                                         <td>
-                                            {$items[item][piece].value}AA
+                                            {$items[item][piece].value}
                                         </td>
                                     {else}
                                         <td nowrap="nowrap" align="right">
-                                            {$form[$items[item][piece].value].html}BB
+                                            {$form[$items[item][piece].value].html}
                                         </td>
                                     {/if}
                                 {/section}
