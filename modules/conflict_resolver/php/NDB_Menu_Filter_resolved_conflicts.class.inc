@@ -159,7 +159,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
 
             $x++;
         }
-
+        echo "RESOLVED CONFLICTS<BR>";
         return true;
     }
 }

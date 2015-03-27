@@ -51,8 +51,6 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
-
-
         foreach ($values AS $key=>$val) {
             if ($val != 'none') {
                 $hash = $key;
@@ -280,12 +278,11 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
             } else {
                 $options = array('none'=>'Unresolved', '1'=>$item['Value1'], '2'=>$item['Value2']);
             }
-
             $this->addSelect($item['hash'], "", $options);
 
             $x++;
         }
-
+        echo "CONFLICT RESOLVER<BR>";
         return true;
     }
 }
