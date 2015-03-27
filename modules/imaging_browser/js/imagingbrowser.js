@@ -24,4 +24,5 @@ $(document).ready(function () {
     };
     $("#bboverlay").click(callback("&overlay=true"));
     $("#bbonly").click(callback());
+
 });

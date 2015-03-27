@@ -82,11 +82,12 @@ class NDB_Form_new_profile extends NDB_Form
         // add date of birth
         $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
         $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
-   
+        $this->addRule(array('dob1', 'dob2'), 'Date of birth fields must match', 'compare');
+
 
         // date of birth rules
-        $this->addGroupRule('dob1', 'Date of Birth is required', 'required');
-        $this->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
+        $this->addRule('dob1', 'Date of Birth is required', 'required');
+        $this->addRule('dob2', 'Date of Birth confirmation is required', 'required');
 
         if($config->getSetting('useEDC') == "true"){
             // add expected date of confinement
@@ -109,7 +110,7 @@ class NDB_Form_new_profile extends NDB_Form
         // add gender
         $genderOptions = array('' => '', 'Male' => 'Male', 'Female' => 'Female');
         $this->addSelect('gender', 'Gender', $genderOptions);
-    
+
         // gender rules
         $this->addRule('gender', 'Gender is required', 'required');
 

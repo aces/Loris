@@ -400,7 +400,7 @@ class User extends UserPermissions
                         'roles' => array(
                                     'dqg',
                                     $c_config['database'],
-                                   )
+                                   ),
                        );
         }
         $userobj['password'] = $password;

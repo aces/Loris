@@ -2,6 +2,13 @@
 class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 {
     /**
+     * Sample SQL statement for test_names table and instrument subtests table
+     *
+     * INSERT INTO test_names(Test_name, Full_name,Sub_group,isDirectEntry) VALUES ('<TEST_NAME>','<INSTRUMENT_TITLE>',1, false);
+     * INSERT INTO instrument_subtests(Test_name, Subtest_name, Description, Order_number) VALUES('<TEST_NAME>', '<TEST_NAME>_page1', 'Page1', 1);
+     */
+
+    /**
     * sets up basic data, such as the HTML_Quickform object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
@@ -47,14 +54,10 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     * @access private
     */
     function _setupForm(){
-        switch($this->page) {
-            case "<TEST_NAME>_page1":
-            $this->_page1();
-            break;
-            
-            default:
+       if(preg_match("/<TEST_NAME>(_page[0-9]+)/",$this->page,$matches)){
+            call_user_method($matches[1], $this);
+        } else {
             $this->_main();
-            break;
         }
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this,'XINValidate'));

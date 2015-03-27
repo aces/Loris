@@ -78,6 +78,40 @@ $(function () {
 
 });
 
+function toggle_additionalInfo (file_id) {
+    "use strict";
+    $('#mri-righttable-'+file_id).slideToggle("slow");
+}
+function toggle_mriPanel(file_id) {
+    "use strict";
+    $('#panel-body-'+file_id).slideToggle("slow");
+    var arrow = $('#mri-panel-'+file_id).children('.arrow');
+    if (arrow.hasClass('glyphicon-chevron-down')) {
+        arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+    } else {
+        arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+    }
+
+}
+
+$(document).ready(function () {
+   "use strict";
+   $('#panel-main-heading span.clickable').on("click", function () {
+        if ($(this).hasClass('panel-collapsed')) {
+            // expand the panel
+            $(this).parents('.panel').find('.panel-mri-body').slideDown();
+            $(this).removeClass('panel-collapsed');
+            $(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        } else {
+            // collapse the panel
+            $(this).parents('.panel').find('.panel-mri-body').slideUp();
+            $(this).addClass('panel-collapsed');
+            $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        }
+    });
+
+});
+
 function open_popup(newurl) {
     "use strict";
     var x = 200, y = 400, open_param = 'width=500px,height=300px, toolbar=no, location=no,status=yes, scrollbars=yes, resizable=yes, top=' + y + ', screenY=' + y + ', left=' + x + ', screenX=' + x;

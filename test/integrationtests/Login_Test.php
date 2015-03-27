@@ -1,21 +1,10 @@
 <?php
-class LorisIntegrationTest extends PHPUnit_Framework_TestCase
+require_once __DIR__ . '/LorisIntegrationTest.class.inc';
+class LorisLoginTest extends LorisIntegrationTest
 {
-    protected $webDriver;
-
-    public function setUp()
-    {
-       $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-       $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
-
-       $this->webDriver->get('http://localhost/main.php');
-
-       print "Page source: " . $this->webDriver->getPageSource();
-
-    }
-
     function testLoginFailure()
     {
+       $this->webDriver->get($this->url . '?logout=true');
 
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
@@ -28,7 +17,7 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
        $this->assertEquals('submit', $login->getAttribute("type"));
        $this->assertEquals('login', $login->getAttribute("value"));
 
-       $username->sendKeys("admin");
+       $username->sendKeys("UnitTester");
        $password->sendKeys("IJUSTMADETHISUP");
 
        $login->click();
@@ -39,6 +28,7 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
     function testLoginSuccess()
     {
+       $this->webDriver->get($this->url . '?logout=true');
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
 
@@ -50,17 +40,13 @@ class LorisIntegrationTest extends PHPUnit_Framework_TestCase
        $this->assertEquals('submit', $login->getAttribute("type"));
        $this->assertEquals('login', $login->getAttribute("value"));
 
-       $username->sendKeys("admin");
-       $password->sendKeys("testpass");
+       $username->sendKeys("UnitTester");
+       $password->sendKeys("4test4");
 
        $login->click();
 
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
        $this->assertContains("Welcome", $bodyText);
-    }
-
-    public function tearDown() {
-        $this->webDriver->quit();
     }
 }
 ?>

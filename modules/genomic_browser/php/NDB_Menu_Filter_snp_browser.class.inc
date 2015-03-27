@@ -119,7 +119,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             JOIN SNP ON (candidate.CandID = SNP.CandID)
             LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)  
             LEFT JOIN gene ON (gene.GenomeLocID = SNP.GenomeLocID)
-            LEFT JOIN genoytyping_platform ON 
+            LEFT JOIN genotyping_platform ON 
               (SNP.PlatformID = genotyping_platform.PlatformID)
             WHERE 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
@@ -347,7 +347,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->tpl_data['displayBrief'] = $this->_displayBrief;
 
         // re-set headers if Brief; if full, gets set by _setDataTable()
-        if ( $this->_displayBrief ) {
+        if ($this->_displayBrief) {
             $this->headers = array(); // re-initialize i.e. wipe
             foreach ($this->_briefFields as $col) {
                 $this->headers[] = $col;

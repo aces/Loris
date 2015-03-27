@@ -56,6 +56,9 @@
             "include-path": [
                 "/"
             ],
+            "license": [
+                "PHP License"
+            ],
             "description": "The PEAR::HTML_Common package provides methods for html code display and attributes handling.\n* Methods to set, remove, update html attributes.\n* Handles comments in HTML code.\n* Handles layout, tabs, line endings for nicer HTML code."
         },
         {
@@ -82,6 +85,9 @@
             },
             "include-path": [
                 "/"
+            ],
+            "license": [
+                "PHP License"
             ],
             "description": "NOTICE: development of HTML_QuickForm version 3 is frozen. Please submit\nfeature requests for HTML_QuickForm2 package.\n\nThe HTML_QuickForm package provides methods to dynamically create, validate\nand render HTML forms.\n\nFeatures:\n* More than 20 ready-to-use form elements.\n* XHTML compliant generated code.\n* Numerous mixable and extendable validation rules.\n* Automatic server-side validation and filtering.\n* On request javascript code generation for client-side validation.\n* File uploads support.\n* Total customization of form rendering.\n* Support for external template engines (ITX, Sigma, Flexy, Smarty).\n* Pluggable elements, rules and renderers extensions."
         },
@@ -254,12 +260,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/php-webdriver.git",
-                "reference": "da9b3f98bfcd79e4597fdc0f15e931f6d49670e0"
+                "reference": "2c5b305ea91b00ebbc433ad1663b7f16c1b31ec5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/da9b3f98bfcd79e4597fdc0f15e931f6d49670e0",
-                "reference": "da9b3f98bfcd79e4597fdc0f15e931f6d49670e0",
+                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/2c5b305ea91b00ebbc433ad1663b7f16c1b31ec5",
+                "reference": "2c5b305ea91b00ebbc433ad1663b7f16c1b31ec5",
                 "shasum": ""
             },
             "require": {
@@ -287,7 +293,7 @@
                 "selenium",
                 "webdriver"
             ],
-            "time": "2015-01-07 04:07:11"
+            "time": "2015-02-09 19:39:34"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -933,20 +939,21 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.1.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "d2a1d4c58fd2bb09ba376d0d19e67c0ab649e401"
+                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d2a1d4c58fd2bb09ba376d0d19e67c0ab649e401",
-                "reference": "d2a1d4c58fd2bb09ba376d0d19e67c0ab649e401",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/5046b0e01c416fc2b06df961d0673c85bcdc896c",
+                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c",
                 "shasum": ""
             },
             "require": {
                 "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
                 "php": ">=5.1.2"
             },
             "bin": [
@@ -956,7 +963,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-phpcs-fixer": "2.0.x-dev"
+                    "dev-master": "2.0.x-dev"
                 }
             },
             "autoload": {
@@ -996,13 +1003,13 @@
                     "role": "lead"
                 }
             ],
-            "description": "PHP_CodeSniffer tokenises PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
             "homepage": "http://www.squizlabs.com/php-codesniffer",
             "keywords": [
                 "phpcs",
                 "standards"
             ],
-            "time": "2014-12-18 02:37:51"
+            "time": "2015-03-04 02:07:03"
         },
         {
             "name": "symfony/yaml",

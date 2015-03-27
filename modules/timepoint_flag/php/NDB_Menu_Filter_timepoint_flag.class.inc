@@ -92,9 +92,6 @@ class NDB_Menu_Filter_timepoint_flag extends NDB_Menu_Filter
             $this->order_by = 'psc.Name, candidate.CandID DESC, session.ID';
             $this->validFilters = array('session.CenterID', 'session.SubprojectID', 'parameter_timepoint_flag.CategoryID', 'parameter_timepoint_flag.Flag_name');
             break;
-	    default:
-	    $headers = array();
-	
         }
         
         // set headers

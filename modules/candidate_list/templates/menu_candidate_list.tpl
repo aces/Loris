@@ -1,3 +1,11 @@
+{literal}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
+    });
+</script>
+{/literal}
+
 <div class="row">
 <div class="col-sm-9">
 <div class="panel panel-primary">
@@ -8,7 +16,7 @@
         <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
     </div>
     <div class="panel-body" id="panel-body">
-        <form method="post" action="main.php?test_name=candidate_list">
+        <form method="post" action="{$baseurl}/main.php?test_name=candidate_list">
             <div class="row">
                 <div class="form-group col-sm-6">
                     <label class="col-sm-12 col-md-4">
@@ -144,7 +152,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-4 col-md-3 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=candidate_list&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=candidate_list&reset=true'" />
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
@@ -169,7 +177,7 @@
         <input type="hidden" name="test_name" value="timepoint_list">
         <div class="form-group">
             <label class="col-sm-5 control-label">
-                DCC-ID:            
+                DCC-ID:
             </label>
             <div class="col-sm-7">
                 <input tabindex="2" size="10" maxlength="12" type=text name="candID" class="form-control">
@@ -178,7 +186,7 @@
         <br>
         <div class="form-group">
             <label class="col-sm-5 control-label">
-                PSC-ID:           
+                PSC-ID:
             </label>
             <div class="col-sm-7">
                 <input tabindex="2" size="10" maxlength="12" type=text name="PSCID" class="form-control">
@@ -189,6 +197,12 @@
     </form>
 </div>
 </div>
+<div class="col-xs-12">
+<!-- listing of visits -->
+{if $numCandidates}
+  {$numCandidates} subject(s) selected.<br><br>
+{/if}
+</div>
 <div class="row">
 <table border="0" valign="bottom" width="100%">
 <tr>
@@ -198,19 +212,25 @@
     <td align="right">{$page_links}</td>
 </tr>
 </table>
-<table class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
+<table id="cand" class="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
     <thead>
         <tr class="info">
-         <th>No.</th>
+         <th id="number">No.</th>
             <!-- print out column headings - quick & dirty hack -->
             {section name=header loop=$headers}
-                <th><a href="{$baseurl}/main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                {if $headers[header].displayName == 'PSCID'}
+                    <th id="pscid">
+                {else}
+                    <th>
+                {/if}
+                <a href="{$baseurl}/main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
             {/section}
         </tr>
     </thead>
     <tbody>
         {section name=item loop=$items}
             <tr>
+            <!-- print out data rows -->
             {section name=piece loop=$items[item]}
                 {if $items[item][piece].bgcolor != ''}
                     <td style="background-color:{$items[item][piece].bgcolor}">
@@ -220,12 +240,10 @@
                 {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
                     {assign var="PSCID" value=$items[item][piece].value}
                     <a href="{$baseurl}/main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-
                 {elseif $items[item][piece].name == "scan_Done"}
                     {if $items[item][piece].value == 'Y'}
                         {assign var="scan_done" value="Yes"}
-                        {* PSCID will have been assigned on previous iteration of loop, since Scan_done is after PSCID in the table *}
-                        <a href="#" class="scanDoneLink" data-pscid="{$PSCID}">{$scan_done}</a>
+                        <a href="{$baseurl}/main.php?test_name=imaging_browser&pscid={$PSCID}&filter=Show%20Data">{$scan_done}</a>
                     {else}
                         {assign var="scan_done" value="No"}
                         {$scan_done}
@@ -240,4 +258,5 @@
             <tr><td colspan="12">No candidates found</td></tr>
         {/section}
     </tbody>
+<!-- end data table -->
 </table>

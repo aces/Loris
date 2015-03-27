@@ -695,10 +695,13 @@ DROP TABLE IF EXISTS `notification_spool`;
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
   `NotificationTypeID` int(11) NOT NULL default '0',
-  `TimeSpooled` int(11) NOT NULL default '0',
+  `ProcessID` int(11) NOT NULL DEFAULT '0',
+  `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
+  `Error` enum('Y','N') default NULL,
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` tinyint(2) unsigned default NULL,
+  `Origin` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
   KEY `FK_notification_spool_2` (`CenterID`),
@@ -734,15 +737,22 @@ CREATE TABLE `notification_types` (
 
 LOCK TABLES `notification_types` WRITE;
 /*!40000 ALTER TABLE `notification_types` DISABLE KEYS */;
-INSERT INTO `notification_types` VALUES 
-	(1,'mri new study',0,'New studies processed by the MRI upload handler'),
-	(2,'mri new series',0,'New series processed by the MRI upload handler'),
-	(3,'mri upload handler emergency',1,'MRI upload handler emergencies'),
-	(4,'mri staging required',1,'New studies received by the MRI upload handler that require staging'),
-	(5,'mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
-	(7,'hardcopy request',0,'Hardcopy requests'),
-	(9,'visual bvl qc',0,'Timepoints selected for visual QC'),
-	(10,'mri qc status',0,'MRI QC Status change');
+INSERT INTO `notification_types` (Type,private,Description) VALUES 
+    ('mri new study',0,'New studies processed by the MRI upload handler'),
+    ('mri new series',0,'New series processed by the MRI upload handler'),
+    ('mri upload handler emergency',1,'MRI upload handler emergencies'),
+    ('mri staging required',1,'New studies received by the MRI upload handler that require staging'),
+    ('mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
+    ('hardcopy request',0,'Hardcopy requests'),
+    ('visual bvl qc',0,'Timepoints selected for visual QC'),
+    ('mri qc status',0,'MRI QC Status change');
+
+INSERT INTO notification_types (Type,private,Description) VALUES 
+    ('minc insertion',1,'Insertion of the mincs into the mri-table'),
+    ('tarchive loader',1,'calls specific Insertion Scripts'),
+    ('tarchive validation',1,'Validation of the dicoms After uploading'),
+    ('mri upload runner',1,'Validation of DICOMS before uploading'),
+    ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
 /*!40000 ALTER TABLE `notification_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1793,11 +1803,15 @@ CREATE TABLE `mri_upload` (
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
   `UploadDate` DateTime DEFAULT NULL,
   `SourceLocation` varchar(255) NOT NULL DEFAULT '',
+  `Processed` tinyint(1) NOT NULL DEFAULT '0',
+  `CurrentlyProcessed` tinyint(1) NOT NULL DEFAULT '0',
+  `PatientName` varchar(255) NOT NULL DEFAULT '',
   `number_of_mincInserted` int(11) DEFAULT NULL,
   `number_of_mincCreated` int(11) DEFAULT NULL,
   `TarchiveID` int(11) DEFAULT NULL,
   `SessionID` int(10) unsigned DEFAULT NULL,
   `IsValidated` tinyint(1) NOT NULL DEFAULT '0',
+  `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`UploadID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2116,6 +2130,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_instruments', "Instruments to be excluded from the Data Dictionary and download via the Data Query Tool", 1, 1, 'instrument', ID, 'Excluded instruments', 15 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'instrument', ID, 'Double data entry instruments', 16 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'InstrumentResetting', 'Allows resetting of instrument data', 1, 0, 'boolean', ID, 'Instrument Resetting', 15 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'SupplementalSessionStatus', 'Display supplemental session status information on Timepoint List page', 1, 0, 'boolean', ID, 'Use Supplemental Session Status', 18 FROM ConfigSettings WHERE Name="study";
 
 -- paths
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 0, 'Paths', 2);
@@ -2128,6 +2143,9 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'log', 'Path to logs (relative path starting from /var/www/$projectname)', 1, 0, 'text', ID, 'Logs', 2 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'IncomingPath', 'Path for imaging data transferred to the project server (e.g. /data/incoming/$project/)', 1, 0, 'text', ID, 'Incoming data', 7 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRICodePath', 'Path to directory where Loris-MRI (git) code is installed', 1, 0, 'text', ID, 'LORIS-MRI code', 6 FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRIUploadIncomingPath', '"Path to the Directory of Uploaded Scans', 1, 0, 'text', ID, 'MRI-Upload Directory', 7 FROM ConfigSettings WHERE Name="paths"; 
+
+
 
 -- gui
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'Settings related to the overall display of LORIS', 1, 0, 'GUI', 3);
@@ -2184,6 +2202,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useProband";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useProjects";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useScreening";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="SupplementalSessionStatus";
 
 -- default path settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
@@ -2195,6 +2214,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSetting
 INSERT INTO Config (ConfigID, Value) SELECT ID, "tools/logs/" FROM ConfigSettings WHERE Name="log";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/incoming/" FROM ConfigSettings WHERE Name="IncomingPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/bin/mri/" FROM ConfigSettings WHERE Name="MRICodePath";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/MRI-Upload/" FROM ConfigSettings WHERE Name="MRIUploadIncomingPath";
 
 -- default gui settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "main.css" FROM ConfigSettings WHERE Name="css";
