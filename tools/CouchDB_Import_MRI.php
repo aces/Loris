@@ -380,6 +380,7 @@ class CouchDBMRIImporter
             unset($doc['PSCID']);
             unset($doc['Visit_label']);
             unset($doc['SessionID']);
+
             $success = $this->CouchDB->replaceDoc(
                 $docid,
                 array(
@@ -498,7 +499,7 @@ class CouchDBMRIImporter
                 }
             }
         }
-        $this->updateCandidateDocs($CandidateData);
+        $this->updateCandidateDocs($CandidateData, $ScanTypes);
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..
