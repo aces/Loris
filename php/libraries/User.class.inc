@@ -359,7 +359,41 @@ class User extends UserPermissions
         return ($this->userInfo['CenterID']== 1);
     }
 
+    function updatePassword($password) {
+        // Check if the PHP 5.5 password hashing API is available.
+        $php55 = false;
+        if (function_exists("password_verify")) {
+            $php55 = true;
+        }
 
+        $expiry = date(
+            'Y-m-d',
+            mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
+        );
+
+        $updateArray = array(
+                        'Password_expiry' => $expiry
+        );
+
+        // Update the appropriate password field, null the other one
+        // for security.
+        if ($php55) {
+            $updateArray['Password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+            $updateArray['Password_MD5'] = null;
+        } else {
+            $updateArray['Password_hash'] = null;
+            $updateArray['Password_MD5'] = User::MD5Salt($password);
+        }
+
+        $this->update($updateArray);
+
+        $config =& NDB_Config::singleton();
+        $couch_config = $config->getSetting("CouchDB");
+
+        if ($couch_config['SyncAccounts'] === "true") {
+            $user->updateCouchUser($set['Password_md5']);
+        }
+    }
     /**
      * Updates the CouchDB user for this user to synchronize
      * the password with Loris.
