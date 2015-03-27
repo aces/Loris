@@ -56,5 +56,21 @@
         <th>New Value</th>
         <th>New Date</th>
     </tr>
-    {$form.certification_history.html}
+    {section name=history_row loop=$certification_history}
+    <tr>
+        <td>{$certification_history[history_row]['changeDate']}</td>
+        <td>{$certification_history[history_row]['userID']}</td>
+        <td>{$certification_history[history_row]['Measure']}</td>
+        <td>{$certification_history[history_row]['old']}</td>
+        <td>{$certification_history[history_row]['old_date']}</td>
+        <td>{$certification_history[history_row]['new']}</td>
+        <td>{$certification_history[history_row]['new_date']}</td>
+    </tr>
+    {sectionelse}
+    <tr>
+        <td colspan="7">
+            No changes have been made
+        </td>
+    </tr>
+    {/section}
 </table>

@@ -67,45 +67,6 @@ class NDB_Form_Examiner extends NDB_Form
     {
         $DB = Database::singleton();
 
-        // Get the certification history from the database
-        $certification_history = $DB->pselect(
-            "SELECT ch.userID, ch.changeDate, ch.old, ch.old_date,
-             tn.Full_name as Measure, ch.primaryVals, ch.new, ch.new_date
-             FROM certification_history ch
-             LEFT JOIN test_names tn ON (ch.testID=tn.ID)
-             LEFT JOIN certification c ON (c.certID=ch.primaryVals)
-             WHERE c.examinerID=:EID
-             ORDER BY changeDate DESC",
-            array('EID' => $this->identifier)
-        );
-
-        $defaults = array();
-
-        // Create the table html for the certification history
-        if (empty($certification_history)) {
-            $defaults['certification_history'] .= '<tr><td colspan="7">'
-                                                . 'No changes have been made'
-                                                . '</td></tr>';
-        } else {
-            foreach ($certification_history as $history_item) {
-                $defaults['certification_history'] .= '<tr><td>'
-                                                    . $history_item['changeDate']
-                                                    . '</td><td>'
-                                                    . $history_item['userID']
-                                                    . '</td><td>'
-                                                    . $history_item['Measure']
-                                                    . '</td><td>'
-                                                    . $history_item['old']
-                                                    . '</td><td>'
-                                                    .  $history_item['old_date']
-                                                    . '</td><td>'
-                                                    . $history_item['new']
-                                                    . '</td><td>'
-                                                    . $history_item['new_date']
-                                                    . '</td></tr>';
-            }
-        }
-
         // get the certification results for the given examiner
         $result = $DB->pselect(
             "SELECT testID, pass, date_cert, comment 
@@ -281,8 +242,21 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function editExaminer()
     {
-        // Add static certification history table element
-        $this->form->addElement('static', 'certification_history', '', '');
+        $DB = Database::singleton();
+
+        // Get the certification history from the database
+        $certification_history = $DB->pselect(
+            "SELECT ch.userID, ch.changeDate, ch.old, ch.old_date,
+             tn.Full_name as Measure, ch.primaryVals, ch.new, ch.new_date
+             FROM certification_history ch
+             LEFT JOIN test_names tn ON (ch.testID=tn.ID)
+             LEFT JOIN certification c ON (c.certID=ch.primaryVals)
+             WHERE c.examinerID=8
+             ORDER BY changeDate DESC",
+            array('EID' => $this->identifier)
+        );
+
+        $this->tpl_data['certification_history'] = $certification_history;
 
         $config = NDB_Config::singleton();
 
