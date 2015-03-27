@@ -202,7 +202,7 @@ class FeedbackMRI
         $DB =& Database::singleton();
 
         // build the query
-        $query = "SELECT PredefinedCommentID, Comment, FieldName
+        $query = "SELECT PredefinedCommentID, Comment
                     FROM feedback_mri_predefined_comments
                   WHERE CommentTypeID=:CTID";
 
@@ -215,7 +215,7 @@ class FeedbackMRI
                 $PredefinedID       = $row['PredefinedCommentID'];
                 $preDefinedComments = array();
                 $preDefinedComments['Comment'] = stripslashes($row['Comment']);
-                $preDefinedComments['field']   = $row['FieldName'];
+               // $preDefinedComments['field']   = $row['FieldName'];
                 $comments[$PredefinedID]       = $preDefinedComments;
             }
         }
@@ -240,7 +240,7 @@ class FeedbackMRI
 
         // create DB object
         $DB =& Database::singleton();
-
+print $fieldName."\n";
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
@@ -264,7 +264,7 @@ class FeedbackMRI
         if (empty($value)) {
             return false;
         }
-
+print "\nVALUE --- $value \n";
         // return the value
         return $value;
     }
