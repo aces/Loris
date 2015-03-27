@@ -584,32 +584,32 @@ class NDB_Menu_Filter extends NDB_Menu
                        'delta'      => 3,
                        'totalItems' => $this->TotalItems,
                       );
-        $pager      = Pager::factory($params);
-        $links      = $pager->getLinks();
-        $this->tpl_data['page_links'] = $links['all'];
+            $pager  = Pager::factory($params);
+            $links  = $pager->getLinks();
+            $this->tpl_data['page_links'] = $links['all'];
 
-        // print out column headings
-        $i = 0;
-        foreach ($this->headers as $header) {
-            $this->tpl_data['headers'][$i]['name'] = $header;
-            // format header
-            $this->tpl_data['headers'][$i]['displayName']
-                = ucwords(str_replace('_', ' ', $header));
-            // set field ordering
-            if (isset($this->filter['order'])) {
-                $this->tpl_data['headers'][$i]['fieldOrder']
-                    = ($this->filter['order']['fieldOrder']
+            // print out column headings
+            $i = 0;
+            foreach ($this->headers as $header) {
+                $this->tpl_data['headers'][$i]['name'] = $header;
+                // format header
+                $this->tpl_data['headers'][$i]['displayName']
+                    = ucwords(str_replace('_', ' ', $header));
+                // set field ordering
+                if (isset($this->filter['order'])) {
+                    $this->tpl_data['headers'][$i]['fieldOrder']
+                        = ($this->filter['order']['fieldOrder']
                         == 'DESC') ? 'ASC' : 'DESC';
+                }
+                $i++;
             }
-            $i++;
-        }
 
-        // get the template data for the table rows
-        if (is_array($this->list) && !empty($this->list)) {
-            // print out data rows
-            $count   = $pager->getOffsetByPageId();
-            $success = $this->_setDataTableRows($count[0]);
-        }
+            // get the template data for the table rows
+            if (is_array($this->list) && !empty($this->list)) {
+                // print out data rows
+                $count   = $pager->getOffsetByPageId();
+                $success = $this->_setDataTableRows($count[0]);
+            }
     }
 
 

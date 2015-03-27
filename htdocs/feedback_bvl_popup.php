@@ -292,7 +292,7 @@ if (isset($feedback) && Utility::isErrorX($feedback)) {
             $tpl_data['thread_summary_headers'] = array_keys($success[0]);
             for ($i=0; $i < count($success); $i++) {
                 $SI           =& $success[$i];
-                $SuccessIsSet = function(&$arr, $Index) {
+                $SuccessIsSet = function (&$arr, $Index) {
                     return isset($arr[$Index]) ? $arr[$Index] : '';
                 };
 

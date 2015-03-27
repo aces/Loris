@@ -188,7 +188,7 @@ class NDB_Config
             if (count($attributes) > 0) {
                 $retVal = array(
                            '#' => $retVal,
-                           '@' => array()
+                           '@' => array(),
                           );
                 foreach ($attributes as $name => $val) {
                     $retVal['@'][$name] = $val->__toString();
@@ -503,7 +503,7 @@ class NDB_Config
 
             $LevelWithPerm = array_filter(
                 $thisLevel,
-                function($el) {
+                function ($el) {
                     return NDB_Config::checkMenuPermission($el['ID']);
                 }
             );
