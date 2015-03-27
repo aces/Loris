@@ -119,7 +119,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             JOIN SNP ON (candidate.CandID = SNP.CandID)
             LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)  
             LEFT JOIN gene ON (gene.GenomeLocID = SNP.GenomeLocID)
-            LEFT JOIN genoytyping_platform ON 
+            LEFT JOIN genotyping_platform ON 
               (SNP.PlatformID = genotyping_platform.PlatformID)
             WHERE 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
