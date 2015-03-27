@@ -27,7 +27,6 @@ require_once __DIR__ .
  */
 class TrainingTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=training';
 
     /**
      * Tests that, when loading the training module, the word "Training" appears
@@ -37,7 +36,7 @@ class TrainingTest extends LorisIntegrationTest
      */
     public function testTrainingPageLoads()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=training");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Training", $bodyText);

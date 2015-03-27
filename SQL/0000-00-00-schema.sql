@@ -1964,7 +1964,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
     ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
-    ('Examiner', 'main.php?test_name=examiner', 2, 3);
+    ('Examiner', 'main.php?test_name=examiner', 2, 3),
     ('Training', 'main.php?test_name=training', 2, 4);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
