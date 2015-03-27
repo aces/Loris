@@ -16,8 +16,8 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $config = NDB_Config::singleton();
 
-$fullName    = $_POST['addName'];
-$siteID      = $_POST['addSite'];
+$fullName = $_POST['addName'];
+$siteID   = $_POST['addSite'];
 
 // Check that a name and site was submitted
 if (empty($fullName) || empty($siteID)) {
@@ -32,7 +32,16 @@ if (examinerExists($fullName, $siteID)) {
 print 3;
 exit();
 
-function examinerExists($fullName, $siteID) {
+/**
+ * Checks if an examiner exists with a given name and site
+ *
+ * @param string $fullName The full name of the examiner
+ * @param int    $siteID   The site ID
+ *
+ * @return boolean
+ */
+function examinerExists($fullName, $siteID)
+{
     $DB         = Database::singleton();
     $examinerID = $DB->pselectOne(
         "SELECT examinerID

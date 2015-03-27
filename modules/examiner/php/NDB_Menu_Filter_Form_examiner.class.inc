@@ -82,13 +82,13 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $this->validFilters = array(
                                'e.full_name',
                                'e.centerID',
-                               'COALESCE(e.radiologist, "0")',
+                               'COALESCE(e.radiologist, 0)',
                               );
 
         $this->formToFilter = array(
                                'examiner'    => 'e.full_name',
                                'site'        => 'e.centerID',
-                               'radiologist' => 'COALESCE(e.radiologist, "0")',
+                               'radiologist' => 'COALESCE(e.radiologist, 0)',
                               );
 
         // If certification is turned on, update the class variables to include
@@ -260,49 +260,14 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $siteID      = $values['addSite'];
         $radiologist = $values['addRadiologist'];
 
-        if (!empty($fullName) && !empty($siteID)) {
-            if ($config->getSetting('useTraining')) {
-                $userID = $DB->pselectOne(
-                    "SELECT ID
-                     FROM users
-                     WHERE Real_name=:fullName AND CenterID=:siteID",
-                    array(
-                     'fullName' => $fullName,
-                     'siteID'   => $siteID,
-                    )
-                );
-
-                if (!empty($userID)) {
-                    $DB->insert(
-                        'examiners',
-                        array(
-                         'full_name'   => $fullName,
-                         'centerID'    => $siteID,
-                         'radiologist' => $radiologist,
-                        )
-                    );
-                    $permID = $DB->pselectOne(
-                        "SELECT permID FROM permissions WHERE code='examiner'"
-                    );
-                    $DB->insert(
-                        'user_perm_rel',
-                        array(
-                         'userID' => $userID,
-                         'permID' => $permID,
-                        )
-                    );
-                }
-            } else {
-                $DB->insert(
-                    'examiners',
-                    array(
-                     'full_name'   => $fullName,
-                     'centerID'    => $siteID,
-                     'radiologist' => $radiologist,
-                    )
-                );
-            }
-        }
+        $DB->insert(
+            'examiners',
+            array(
+             'full_name'   => $fullName,
+             'centerID'    => $siteID,
+             'radiologist' => $radiologist,
+            )
+        );
     }
 }
 ?>

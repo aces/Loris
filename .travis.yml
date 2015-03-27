@@ -74,7 +74,6 @@ script:
     - vendor/bin/phpunit modules/brainbrowser/test
     - vendor/bin/phpunit modules/candidate_list/test
     - vendor/bin/phpunit modules/candidate_parameters/test
-    - vendor/bin/phpunit modules/certification/test
     - vendor/bin/phpunit modules/configuration/test
     - vendor/bin/phpunit modules/conflict_resolver/test
     - vendor/bin/phpunit modules/create_timepoint/test

@@ -27,7 +27,6 @@ require_once __DIR__ .
  */
 class ExaminerTest extends LorisIntegrationTest
 {
-    protected $url = 'http://localhost/main.php?test_name=examiner';
 
     /**
      * Tests that, when loading the examiner module, the word "Examiner" appears
@@ -37,7 +36,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     public function testExaminerPageLoads()
     {
-        $this->webDriver->get($this->url);
+        $this->webDriver->get($this->url . "?test_name=examiner");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Examiner", $bodyText);

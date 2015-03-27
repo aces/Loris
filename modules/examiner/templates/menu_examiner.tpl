@@ -47,6 +47,7 @@
             </div>
             <div class="panel-body">
             <form method="post" action="main.php?test_name=examiner" name="examiner" id="examiner">
+                <div class="col-md-12" id="form-errors"></div>
                 <div class="row">
                     <div class="form-group col-md-8">
                         <label class="col-md-4">{$form.addName.label}</label>
@@ -66,7 +67,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-default btn-sm btn-success pull-right" name="fire_away" value="Save"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                        <button type="button" class="btn btn-default btn-sm btn-success pull-right" value="Save" id="addExaminerButton"><span class="glyphicon glyphicon-plus"></span> Add</button>
                     </div>
                 </div>
             </form>

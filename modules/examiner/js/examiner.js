@@ -1,16 +1,21 @@
 $(document).ready(function() {
-    $("#examiner").submit(function(e) {
-        e.preventDefault();
-        var form = $(this).serialize();
+    $("#addExaminerButton").click(function(e) {
+        var form = $("#examiner").serialize();
+
         $.post("AjaxHelper.php?Module=examiner&script=validateExaminer.php", form, function (data) {
             if (data == 1) {
-                console.log("Please include both a name and site");
+                $("#form-errors").html(createError("Please include both a name and site"));
             }
             else if (data == 2) {
-                console.log("This examiner already exists");
+                $("#form-errors").html(createError("This examiner already exists"));
             } else {
-                $("#examiner").unbind('submit').submit();
+                console.log($("#examiner").serialize());
+                $("#examiner").submit();
             }
         });
     });
 });
+
+function createError(message) {
+    return '<div class="alert alert-danger" role="alert">' + message + '</div>';
+}
