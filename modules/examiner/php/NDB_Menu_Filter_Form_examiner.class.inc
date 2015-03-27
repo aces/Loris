@@ -30,30 +30,13 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 {
     /**
      * Checks if the user has access to examiner menu filter
-     * Redirects to the training module if useTraining is true
-     * and if the user an examiner.
      *
      * @return boolean
      */
     function _hasAccess()
     {
-        $user   = User::singleton();
-        $DB     = Database::singleton();
-        $config = NDB_Config::singleton();
-
-        // If the user is an examiner and the useTraining setting is on,
-        // redirect to the training module
-        if ($user->hasPermission('examiner') && $config->getSetting('useTraining')) {
-            $baseURL = $config->getSetting('url');
-            header(
-                'Location: '
-                . $baseURL
-                . '/main.php?test_name=examiner&subtest=training'
-            );
-            exit();
-        } else {
-            return $user->hasPermission('examiner_view');
-        }
+        $user = User::singleton();
+        return $user->hasPermission('examiner_view');
     }
 
     /**

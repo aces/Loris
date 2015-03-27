@@ -974,11 +974,10 @@ INSERT INTO `permissions` VALUES
     (9,'unsend_to_dcc','Reverse Send from DCC','2'),
     (10,'access_all_profiles','Across all sites access candidate profiles','2'),
     (11,'data_entry','Data entry','1'),
-    (12,'examiner','Examiner','1'),
-    (13,'examiner_view','Add and certify examiners','2'),
-    (14,'examiner_multisite','Across all sites add and certify examiners','2'),
-    (15,'timepoint_flag','Edit exclusion flags','2'),
-    (16,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
+    (12,'examiner_view','Add and certify examiners','2'),
+    (13,'examiner_multisite','Across all sites add and certify examiners','2'),
+    (14,'timepoint_flag','Edit exclusion flags','2'),
+    (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
     (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
     (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
@@ -2010,9 +2009,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Conflict Resolver';
 
--- Certification
-INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner' AND m.Label='Examiner';
+-- Examiner
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_site' AND m.Label='Examiner';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2133,7 +2130,6 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'instrument', ID, 'Double data entry instruments', 16 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'InstrumentResetting', 'Allows resetting of instrument data', 1, 0, 'boolean', ID, 'Instrument Resetting', 17 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'SupplementalSessionStatus', 'Display supplemental session status information on Timepoint List page', 1, 0, 'boolean', ID, 'Use Supplemental Session Status', 18 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useTraining', 'Enable training in the examiner module for examiner certification', 1, 0, 'boolean', ID, 'Use Training', 19 FROM ConfigSettings WHERE Name="study";
 
 -- paths
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 0, 'Paths', 2);
@@ -2206,7 +2202,6 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useProjects";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useScreening";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="SupplementalSessionStatus";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "0" FROM ConfigSettings WHERE Name="useTraining";
 
 -- default path settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
@@ -2364,34 +2359,4 @@ CREATE TABLE `CNV` (
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
   FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `certification_training` (
-    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `TestID` int(10) UNSIGNED NOT NULL,
-    `Title` varchar(255) NOT NULL,
-    `Content` text,
-    `TrainingType` enum('text', 'pdf', 'video', 'quiz') NOT NULL,
-    `OrderNumber` INTEGER UNSIGNED NOT NULL,
-    PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `certification_training_quiz_questions` (
-    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `TestID` int(10) unsigned NOT NULL,
-    `Question` varchar(255) NOT NULL,
-    `OrderNumber` INTEGER UNSIGNED NOT NULL,
-    PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_certification_training_quiz_questions` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `certification_training_quiz_answers` (
-    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `QuestionID` INTEGER UNSIGNED NOT NULL,
-    `Answer` varchar(255) NOT NULL,
-    `Correct` boolean NOT NULL,
-    `OrderNumber` INTEGER UNSIGNED NOT NULL,
-    PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -26,7 +26,7 @@ require_once "NDB_Form.class.inc";
 class NDB_Form_Examiner extends NDB_Form
 {
     /**
-     * Checks if the user has access to examiner forms (edit_examiner and training)
+     * Checks if the user has access to the edit examiner form
      *
      * @return boolean
      */
@@ -39,34 +39,22 @@ class NDB_Form_Examiner extends NDB_Form
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterID();
 
-        if ($this->page == 'editExaminer') { // edit_examiner page
+        $certification    = $config->getSetting('Certification');
+        $useCertification = $certification['EnableCertification'];
 
-            $certification    = $config->getSetting('Certification');
-            $useCertification = $certification['EnableCertification'];
+        if ($useCertification) {
+            $centerID = $DB->pselectOne(
+                "SELECT centerID 
+                 FROM examiners
+                 WHERE examinerID=:EID",
+                array('EID' => $this->identifier)
+            );
 
-            if ($useCertification) {
-                $centerID = $DB->pselectOne(
-                    "SELECT centerID 
-                     FROM examiners
-                     WHERE examinerID=:EID",
-                    array('EID' => $this->identifier)
-                );
-
-                return $user->hasPermission('examiner_view')
-                    && (($user->hasPermission('examiner_multisite')
-                    || $user->getData('CenterID') == $centerID));
-            }
-
-        } elseif ($this->page == 'training') { // training page
-
-            if ($config->getSetting('useTraining')) {
-
-                return $user->hasPermission('examiner');
-            }
+            return $user->hasPermission('examiner_view')
+                && (($user->hasPermission('examiner_multisite')
+                || $user->getData('CenterID') == $centerID));
         }
-
         return false;
-
     }
 
     /**
@@ -333,34 +321,6 @@ class NDB_Form_Examiner extends NDB_Form
         $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
     }
 
-    /**
-     * Training subtest.
-     *
-     * @return nothing
-     */
-    function training()
-    {
-        $instruments = $this->getCertificationInstruments();
-
-        $certifications = array();
-
-        foreach ($instruments as $instrumentID => $instrumentName) {
-            $status = $this->getCertificationStatus($instrumentID);
-            if ($status == 'certified') {
-                $certifications['certified'][$instrumentID] = $instrumentName;
-            } else {
-                $contentExists = $this->getTrainingContentStatus($instrumentID);
-                if ($contentExists) {
-                    $certifications['not_certified'][$instrumentID]
-                        = $instrumentName;
-                } else {
-                    $certifications['no_content'][$instrumentID] = $instrumentName;
-                }
-            }
-        }
-
-        $this->tpl_data['certifications'] = $certifications;
-    }
 
     /**
      * Validates the certification form values.
@@ -437,60 +397,6 @@ class NDB_Form_Examiner extends NDB_Form
         }
 
         return $instruments;
-    }
-
-    /**
-     * Check the certification status of the current user for a given instrument.
-     *
-     * @param int $instrumentID ID of the instrument
-     *
-     * @return string
-     */
-    function getCertificationStatus($instrumentID)
-    {
-        $user         = User::singleton();
-        $userFullName = $user->getFullname();
-        $userCenter   = $user->getCenterID();
-
-        $DB = Database::singleton();
-        $certificationStatus = $DB->pselectOne(
-            "SELECT c.pass
-             FROM certification c
-             LEFT JOIN examiners e ON (c.examinerID=e.examinerID) 
-             WHERE e.full_name=:name AND e.centerID=:CID AND c.testID=:TID",
-            array(
-             'name' => $userFullName,
-             'CID'  => $userCenter,
-             'TID'  => $instrumentID,
-            )
-        );
-
-        return $certificationStatus;
-    }
-
-    /**
-     * Checks whether training content exists for a given instrument.
-     *
-     * @param int $instrumentID ID of the instrument
-     *
-     * @return boolean
-     */
-    function getTrainingContentStatus($instrumentID)
-    {
-        $DB = Database::singleton();
-
-        $trainingContent = $DB->pselectOne(
-            "SELECT certification_training.TestID
-             FROM certification_training
-             WHERE TestID=:TID",
-            array('TID' => $instrumentID)
-        );
-
-        if (empty($trainingContent)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }
 ?>
