@@ -149,8 +149,11 @@ class CouchDBMRIImporter
         $Query .= " FROM session s JOIN candidate c USING (CandID) 
                     LEFT JOIN feedback_mri_comments fmric 
                     ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
+                    LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) 
+                    LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                     WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' 
-                          AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
+                    AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1
+                    AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL";
         return $Query;
     }
 
