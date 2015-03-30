@@ -296,13 +296,13 @@ class SinglePointLogin
                 && User::MD5Unsalt($_POST['password'], $row['Password_md5']))
                 || ($php55 && password_verify($_POST['password'], $oldhash))
             ) {
-                if($php55
-                    && (empty($oldhash) || password_needs_rehash($oldhash, PASSWORD_DEFAULT))
+                if ($php55
+                    && (empty($oldhash)
+                    || password_needs_rehash($oldhash, PASSWORD_DEFAULT))
                 ) {
                     $user =& User::factory($_POST['username']);
                     $user->updatePassword($_POST['password']);
                 }
-
 
                 if ($row['Active'] == 'N') {
                     $this->_lastError = "Your account has been deactivated."
