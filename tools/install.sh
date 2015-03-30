@@ -81,8 +81,8 @@ if [[ -n $(which composer) ]]; then
 else
     echo "PHP Composer does not appear to be installed. Attempting to install now..."
     curl -sS https://getcomposer.org/installer | php
-    mv composer.phar /usr/local/bin/composer
-    if [[ -n $(which composer) ]]; then
+    mv composer.phar ../composer
+    if [[ -f ../composer ]]; then
         echo ""
         echo "PHP Composer successfully installed."
     else
@@ -356,7 +356,8 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 
 # Install external libraries using composer
 cd ..
-composer install --no-dev
+./composer install --no-dev
+rm composer
 cd tools
 
 if type "lsb_release" > /dev/null 2>&1; then
@@ -385,8 +386,9 @@ if [ $os_distro = "Ubuntu" ]; then
                  -e "s#%PROJECTNAME%#$projectname#g" \
   		 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
                  < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
+             sudo ln -s /etc/apache2/sites-available/$projectname.conf /etc/apache2/sites-enabled/$projectname.conf
              sudo a2dissite 000-default
-             sudo a2ensite $projectname
+             sudo a2ensite $projectname.conf
              break;;
           [Nn]* )
              echo "Not configuring apache."
@@ -416,7 +418,7 @@ while true; do
                 -e "s#%PROJECTNAME%#$projectname#g" \
                 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
                 < ../docs/config/apache2-site | sudo tee /etc/httpd/sites-enabled/$projectname.conf > /dev/null
-            sudo ln -s /etc/httpd/sites-enabled/$projectname.conf /etc/httpd/sites-available/$projectname.conf
+            sudo ln -s /etc/httpd/sites-available/$projectname.conf /etc/httpd/sites-enabled/$projectname.conf
             
             # Insert a line in main apache config file to include new file
             sudo sed -i '221 a\Include /etc/httpd/sites-available/*.conf' /etc/httpd/conf/httpd.conf
@@ -430,7 +432,7 @@ while true; do
     esac
 done;
 else
-    echo "$os_distro Linux distribution detected. We currently do not support this. Installation failed."
+    echo "$os_distro Linux distribution detected. We currently do not support this. Please configure Apache manually."
     exit 1
 fi
 
