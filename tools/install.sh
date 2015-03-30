@@ -332,7 +332,7 @@ mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A
 echo "Updating Loris admin user's password."
 pw_expiry=$(date --date="6 month" +%Y-%m-%d)
 echo "Updating admin password reset date to be $pw_expiry"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry=$pw_expiry, Pending_approval='N' WHERE ID=1"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
 
 
 echo ""
