@@ -78,11 +78,13 @@ fi
 if [[ -n $(which composer) ]]; then
     echo ""
     echo "PHP Composer appears to be installed."
+    composer_scr="composer install --no-dev"
 else
     echo "PHP Composer does not appear to be installed. Attempting to install now..."
     curl -sS https://getcomposer.org/installer | php
-    mv composer.phar ../composer
-    if [[ -f ../composer ]]; then
+    mv composer.phar composer
+    composer_scr="tools/composer install --no-dev"
+    if [[ -f composer ]]; then
         echo ""
         echo "PHP Composer successfully installed."
     else
@@ -357,8 +359,7 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 
 # Install external libraries using composer
 cd ..
-./composer install --no-dev
-rm composer
+eval $composer_scr
 cd tools
 
 if type "lsb_release" > /dev/null 2>&1; then
