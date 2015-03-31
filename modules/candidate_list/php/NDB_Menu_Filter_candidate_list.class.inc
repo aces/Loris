@@ -124,6 +124,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'max(s.Current_stage)',
                                      $FeedbackSQL,
                                      's.Scan_done',
+                                     's.Visit_label',
                                     );
         $this->validHavingFilters = array(
                                      $VisitCountSQL,
@@ -145,6 +146,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                'Feedback'            => $FeedbackSQL,
                                'Participant_Status'  => 'pso.ID',
                                'scan_done'           => 's.Scan_done',
+                               'Visit_label'         => 's.Visit_label',
                               );
         return true;
     }
