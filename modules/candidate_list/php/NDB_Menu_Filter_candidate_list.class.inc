@@ -32,7 +32,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         // create user object
         $user =& User::singleton();
         $site =& Site::singleton($user->getData('CenterID'));
-
+        $this->tpl_data['access_all_profiles'] =
+            $user->hasPermission('access_all_profiles');
         return (
             $user->hasPermission('access_all_profiles')
             || ($site->isStudySite() && $user->hasPermission('data_entry'))
@@ -211,13 +212,23 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                          'Y'  => 'Yes',
                          'N'  => 'No',
                         );
+        // Get visits
+        $visits = Utility::getVisitList();
+        $visits = array_merge(array('' => 'All'), $visits);
+
         // add form elements
-        $this->addSelect('centerID', 'Site:', $list_of_sites);
-        $this->addBasicText('DCCID', 'DCCID:');
-        $this->addBasicText('PSCID', 'PSCID:');
+        $this->addSelect('centerID', 'Site', $list_of_sites);
+        $this->addBasicText('DCCID', 'DCCID');
+        $this->addBasicText('PSCID', 'PSCID');
+        $this->addSelect(
+            'Visit_label',
+            'Visit Label',
+            $visits
+        );
+
         $this->addSelect(
             'gender',
-            'Gender:',
+            'Gender',
             array(
              ''       => 'All',
              'Male'   => 'Male',
@@ -226,41 +237,41 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         );
         $this->addSelect(
             'SubprojectID',
-            'Subproject:',
+            'Subproject',
             array('' => 'All') + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
-        $this->addBasicText('Visit_Count', 'Number of Visits:');
+        $this->addBasicText('dob', 'Date of Birth', array('maxlength' => 10));
+        $this->addBasicText('Visit_Count', 'Number of Visits');
         $this->addSelect(
             'Latest_Visit_Status',
-            'Latest Visit Status:',
+            'Latest Visit Status',
             $latest_visit_status_options
         );
-        $this->addSelect('Feedback', 'Feedback:', $feedback_status_options);
+        $this->addSelect('Feedback', 'Feedback', $feedback_status_options);
         $this->addSelect(
             'Participant_Status',
-            'Participant Status:',
+            'Participant Status',
             $participant_status_options
         );
-        $this->addSelect('scan_done', 'Scan Done:', $scan_options);
+        $this->addSelect('scan_done', 'Scan Done', $scan_options);
         if ($config->getSetting("useProjects")=="true") {
             $this->addSelect(
                 'ProjectID',
-                'Project:',
+                'Project',
                 array('' => 'All') + $list_of_projects
             );
         }
         if ($config->getSetting("useEDC")=="true") {
             $this->addBasicText(
                 'edc',
-                'EDC:',
+                'EDC',
                 array('maxlength' => 10)
             );
             $this->tpl_data['useEDC'] = "true";
         }
         $this->addSelect(
             'feedback',
-            'Feedback Status:',
+            'Feedback Status',
             array_merge(array('' => 'All'), $feedback_status_options)
         );
 
