@@ -19,23 +19,21 @@ $DB            = Database::singleton();
 $genderData    = array();
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
-foreach ($list_of_sites as $site) {
+foreach ($list_of_sites as $siteID => $siteName) {
     $genderData['labels'][] = $site;
     $genderData['datasets']['female'][] = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
          FROM candidate c
-         LEFT JOIN psc ON (psc.CenterID=c.CenterID)
-         WHERE c.Gender='female' AND c.Active='Y'
-         AND c.Entity_type='Human' AND psc.Name=:Site",
-        array('Site' => $site)
+         WHERE c.CenterID=:Site AND c.Gender='female' AND c.Active='Y'
+         AND c.Entity_type='Human'",
+        array('Site' => $siteID)
     );
     $genderData['datasets']['male'][]   = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
          FROM candidate c
-         LEFT JOIN psc ON (psc.CenterID=c.CenterID)
-         WHERE c.Gender='male' AND c.Active='Y'
-         AND c.Entity_type='Human' AND psc.Name=:Site",
-        array('Site' => $site)
+         WHERE c.CenterID=:Site AND c.Gender='male' AND c.Active='Y'
+         AND c.Entity_type='Human'",
+        array('Site' => $siteID)
     );
 }
 
