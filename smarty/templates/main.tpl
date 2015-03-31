@@ -546,6 +546,11 @@
                 {$workspace}
             {/if}
         </div>
+
+        {if $control_panel}
+        </div></div>
+        {/if}
+
         {if $dynamictabs neq "dynamictabs"}
             {if $control_panel}
             <div id="footer" class="footer navbar-bottom wrapper">
