@@ -16,25 +16,21 @@ function checkAccessProfileForm() {
     return true;
 }
 function hideFilter(obj) {
-
     'use strict';
-console.log(obj);
- //  var elements = obj.children();
-//console.log(elements);
-/*
-     var heading = $('.panel-heading');
+
+     var heading = $(obj);
+     var arrow = $(obj).children('.arrow');
      if (heading.hasClass('panel-collapsed')) {
             // expand the panel
             heading.parents('.panel').find('.panel-body').slideDown();
             heading.removeClass('panel-collapsed');
-            heading.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
         } else {
             // collapse the panel
             heading.parents('.panel').find('.panel-body').slideUp();
             heading.addClass('panel-collapsed');
-            heading.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+            arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
         }
-*/
 }
 function toggleMe() {
     "use strict";

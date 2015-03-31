@@ -12,7 +12,7 @@
     <div class="panel-heading" onclick="hideFilter(this)">
         Selection Filter 
         <label class="advancedOptions" id="advanced-label" style="display:none">(Advanced Options)</label>
-        <span class="glyphicon glyphicon-chevron-down pull-right"></span>
+        <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body">
         <form method="post" action="{$baseurl}/main.php?test_name=candidate_list">
@@ -185,7 +185,7 @@
     <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter(this)">
         Open Profile
-        <span class="glyphicon glyphicon-chevron-down pull-right"></span>
+        <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body" id="panel-body">
     <form class="form-horizontal" name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
