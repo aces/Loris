@@ -32,6 +32,11 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function _hasAccess()
     {
+        if (empty($_REQUEST['identifier'])) {
+            throw new Exception(
+                "Incorrect URL: No examiner ID provided."
+            );
+        }
         $DB     = Database::singleton();
         $config = NDB_Config::singleton();
 
@@ -251,7 +256,7 @@ class NDB_Form_Examiner extends NDB_Form
              FROM certification_history ch
              LEFT JOIN test_names tn ON (ch.testID=tn.ID)
              LEFT JOIN certification c ON (c.certID=ch.primaryVals)
-             WHERE c.examinerID=8
+             WHERE c.examinerID=:EID
              ORDER BY changeDate DESC",
             array('EID' => $this->identifier)
         );
