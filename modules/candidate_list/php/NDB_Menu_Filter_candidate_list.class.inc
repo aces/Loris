@@ -32,8 +32,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         // create user object
         $user =& User::singleton();
         $site =& Site::singleton($user->getData('CenterID'));
-        $this->tpl_data['access_all_profiles'] =
-            $user->hasPermission('access_all_profiles');
+        $this->tpl_data['access_all_profiles']
+            = $user->hasPermission('access_all_profiles');
         return (
             $user->hasPermission('access_all_profiles')
             || ($site->isStudySite() && $user->hasPermission('data_entry'))
