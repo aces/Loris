@@ -1,280 +1,15 @@
 {literal}
 <style type="text/css">
-.glyphicon-refresh-animate {
-    -animation: spin .7s infinite linear;
-    -webkit-animation: spin2 .7s infinite linear;
-}
-@-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
-}
-@keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
-}
-.tree{
-    overflow-x: auto
-}
-#home-dir{
-    padding-left: 0px;
-}
-.file_name{
-    float: left;
-    border: 1px solid #999;
-}
-.version{
-    width: 30px;
-    float: left;
-    border: 1px solid #999;
-}
-.file_type{
-    width: 50px;
-    float: left;
-    border: 1px solid #999;
-}
-.instrument{
-    width: 100px;
-    float: left;
-    border: 1px solid #999;
-}
-.updated_by{
-    width: 100px;
-    float: left;
-    border: 1px solid #999;
-}
-.for_site{
-    width: 100px;
-    float: left;
-    border: 1px solid #999;
-}
-.comments{
-    width: 300px;
-    float: left;
-    border: 1px solid #999;
-}
-.date_uploaded{
-    width: 150px;
-    float: left;
-    border: 1px solid #999;
-}
-.editLink{
-    width: 50px;
-    float: left;
-    border: 1px solid #999;
-}
-.deleteLink{
-    width: 50px;
-    float: left;
-    border: 1px solid #999;
-}
-    /*#dir-tree>tr>td.blah{
-        background-color: black;
-    }*/
-#dir-tree>tr>td.blah::before {
-    /*border-left:1px solid #999;
-    bottom:50px;
-    height:100%;
-    top:0;
-    width:1px*/
-    /*margin-left: -50%;
-    text-align: right;*/
-}
-/*#dir-tree>tr>td.blah::before {*/
-.fileDDD::before{
-    /*content: '';
-    left: -20px;
-    position: absolute;
-    right: auto;*/
-    position: absolute;
-    margin-top: 20px;
-    margin-left: -30px;
-    overflow: hidden;
-    width: 30px;
-    height: 1px;
-    content: '\a0';
-    background-color: #999;
-}
-#dir-tree>tr>td:first-child {
-    padding: 0px;
-}
-/* #dir-tree>tr>td:first-child>div{
-    height: 100%;
-} */
-#dir-tree>tr>td:first-child>div{
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-    border-left:1px solid #999;
-    /*padding: 8px;*/
-    padding-left: 30px;
-    /*position: absolute;*/
-    height:100%;
-    /* float:left; */
-    overflow: auto;
-}
-.fileDDD>div{
-    overflow: inherit;
-}
-#dir-tree>tr>td:first-child>span{
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-    border-left:1px solid #999;
-    /*padding: 8px;*/
-    padding-left: 30px;
-    /*position: absolute;*/
-    /*height:100%;*/
-    /* float:left; */
-    overflow: auto;
-}
-.spacer{
-    float: left;
-    width: 60px;
-}
-.fileDDD>span, td>span{
-    border: 1px solid #999;
-    border-radius: 5px;
-    margin: 5px;
-}
+
 </style>
 <script type="text/javascript" src="js/modules/mustache.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-    var fileDir = {/literal}{$File_categories|json_encode}{literal}
-    for(var i in fileDir){
-        if(fileDir[i]){
-            var dir = fileDir[i];
-            var path = dir.CategoryName.split(">");
-            var depth = path.length;
-            var elm = document.createElement("li");
-            elm.innerHTML = "<span class='glyphicon glyphicon-folder-close'> " + path[depth - 1] + "</span>";
-            elm.setAttribute("id", path[depth - 1].replace(/[ >()]/g,"_"));
 
-            //new table layout
-            var directory = $('#dir').html();
-            Mustache.parse(directory);
-            var dirData = {
-                name: path[depth - 1],
-                id: path[depth - 1].replace(/[ >()]/g,"_"),
-                parentID: function(){
-                    if(depth >= 2)
-                     return path[depth - 2].replace(/[ >()]/g,"_");
-                    return null;
-                },
-                indent: function(){
-                    return (depth - 1)*60;
-                },
-                depth: function(){
-                    var depthArray = [];
-                    for (var i = 0; i < depth - 1; i++) {
-                        if(i === 0){
-                            var firstSpacer = {first: "dfg "}
-                            depthArray.push(firstSpacer);
-                        } else {
-                            depthArray.push(" ");
-                        }
-                    };
-                    return depthArray;
-                }
-            }
-            var renderDir = Mustache.render(directory, dirData);
-
-            if(depth == 1) {
-                $("#home-dir").append(elm);
-                //new table layout
-                $("#dir-tree").append(renderDir);
-            } else {
-                elm.setAttribute("style", "display: none;");
-                $("#" + path[depth - 2].replace(/[ >()]/g,"_") + "First").before(elm);
-                //new table layout
-                $("#" + path[depth - 2].replace(/[ >()]/g,"_") + "a").after(renderDir);
-            }
-            var children = document.createElement("ul");
-            children.setAttribute("id", path[depth - 1].replace(/[ >()]/g,"_") + "Children");
-            elm.appendChild(children);
-            var files = fileDir[i].Files;
-            for(var ii in files) {
-                var template = $('#template').html();
-                Mustache.parse(template);   // optional, speeds up future uses
-                files[ii].fileNameWidth = 500 - (depth - 1) * 70;
-                var rendered = Mustache.render(template, files[ii]);
-                $("#" + path[depth - 1].replace(/[ >()]/g,"_") + "Children").append(rendered);
-
-                //new table layout
-                var file = $('#file').html();
-                Mustache.parse(file);   // optional, speeds up future uses
-                files[ii].indent = (depth)*60;
-                files[ii].parentID = path[depth - 1].replace(/[ >()]/g,"_");
-                files[ii].depth =   function(){
-                                        var depthArray = [];
-                                        for (var i = 0; i < depth; i++) {
-                                            if(i === 0){
-                                                var firstSpacer = {first: "dfg "}
-                                                depthArray.push(firstSpacer);
-                                            } else {
-                                                depthArray.push(" ");
-                                            }
-                                        };
-                                        return depthArray;
-                                    }
-                var renderedFile = Mustache.render(file, files[ii]);
-                $("#" + path[depth - 1].replace(/[ >()]/g,"_") + "a").after(renderedFile);
-            }
-            if($("#" + path[depth - 1].replace(/[ >()]/g,"_") + "Children").children().first().html()) {
-                $("#" + path[depth - 1].replace(/[ >()]/g,"_") + "Children").children().first().attr("id", path[depth - 1].replace(/[ >()]/g,"_") + "First")
-            }
-        }
-    }
-    $(".loading").hide();
-    $(".directory").click(function(){
-        var elmID;
-        if($(this).hasClass("glyphicon-chevron-down")){
-            $(this).removeClass("glyphicon-chevron-down");
-            $(this).addClass("glyphicon-chevron-right");
-            elmID = $(this).closest('tr').attr("id");
-            $("." + elmID).each(collapseDir);
-        } else {
-            $(this).removeClass("glyphicon-chevron-right");
-            $(this).addClass("glyphicon-chevron-down");
-            elmID = $(this).closest('tr').attr("id");
-            $("." + elmID).each(expandDir);
-        }
-    });
-    var collapseDir = function (key, value){
-        var elmID;
-        if($(value).hasClass("directoryRow")){
-            elmID = $(value).attr("id");
-            $("." + elmID).each(collapseDir);
-        }
-        $(value).hide();
-    };
-    var expandDir = function(key, value){
-        var elmID;
-        if($(value).hasClass("directoryRow") && $(value).find('span.glyphicon-chevron-down').length != 0){
-            elmID = $(value).attr("id");
-            $("." + elmID).each(expandDir);
-        }
-        $(value).show();
-    };
-});
-$(function () {
-    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-    $('.tree li.parent_li > span').on('click', function (e) {
-        var children = $(this).parent('li.parent_li').find(' > ul > li');
-        if (children.is(":visible")) {
-            children.hide('fast');
-            $(this).addClass('glyphicon-folder-close').removeClass('glyphicon-folder-open');
-        } else {
-            children.show('fast');
-            $(this).addClass('glyphicon-folder-open').removeClass('glyphicon-folder-close');
-        }
-        e.stopPropagation();
-    });
-});
+<script id="json_data" type="text/json">
+    {/literal}{$File_categories|json_encode}{literal}
 </script>
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
-        <td>
+        <td class="fileColumn">
             {{ #depth }}
                 {{ #first }}
                     <div class="spacer" style="border-left: none;"> </div>
@@ -301,7 +36,7 @@ $(function () {
 </script>
 <script id="file" type="x-tmpl-mustache">
     <tr class="{{ parentID }}a" style="display:none">
-        <td class="blah">
+        <td class="blah fileColumn">
             {{ #depth }}
                 {{ #first }}
                     <div class="spacer" style="border-left: none;"> </div>
@@ -333,168 +68,106 @@ $(function () {
         <td>
             {{ Date_uploaded }}
         </td>
-        <td>
-            Edit
+        <td nowrap="nowrap">
+            <a href="#" id="{{ record_id }}" class="theeditlink">Edit</a>
         </td>
-        <td>
-            Delete
+        <td nowrap="nowrap">
+            <a href="#" id="{{ record_id }}" class="thedeletelink">Delete</a>
         </td>
     </tr>
-</script>
-
-<script id="template" type="x-tmpl-mustache">
-    <li class="fileLI" style="display: none;">
-        <div style="display: table; width: 1430px">
-            <div class="file_name" style="width: {{ fileNameWidth }}px;">
-                {{ File_name }} ({{ File_size }})
-            </div>
-            <div class="version">
-                <p>
-                    {{ version }}
-                </p>
-            </div>
-            <div class="file_type">
-                <p>
-                    {{ File_type }}
-                </p>
-            </div>
-            <div class="instrument">
-                <p>
-                    {{ instrument }}
-                </p>
-            </div>
-            <div class="updated_by">
-                <p>
-                    {{ uploaded_by }}
-                </p>
-            </div>
-            <div class="for_site">
-                <p>
-                    {{ For_site }}
-                </p>
-            </div>
-            <div class="comments">
-                <p>
-                    {{ comments }}
-                </p>
-            </div>
-            <div class="date_uploaded">
-                <p>
-                    {{ Date_uploaded }}
-                </p>
-            </div>
-            <div class="editLink">
-                Edit
-            </div>
-            <div class="deleteLink">
-                Delete
-            </div>
-        </div>
-    </li>
 </script>
 {/literal}
 
-<form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
-<table border="0" class="std" id = "filterTable" data-filter = "{$filtered}">
-    <tr>
-        <th nowrap="nowrap" colspan="8">Selection Filter</th>
-    </tr>
-    <tr>
-        <td>{$form.File_name.label}</td>
-        <td>{$form.File_name.html}</td>
-        <td>{$form.version.label}</td>
-        <td>{$form.version.html}</td>
-        <td>{$form.uploaded_by.label}</td>
-        <td>{$form.uploaded_by.html}</td>
-    </tr>
-    <tr>
-        <td>{$form.File_type.label}</td>
-        <td>{$form.File_type.html}</td>
-        <td>{$form.For_site.label}</td>
-        <td>{$form.For_site.html}</td>
-    </tr>
-    <tr>
-
-        <td colspan="6" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=document_repository&reset=true'" /></td>
-        <td align="right"><button id = "upload" name = "upload" class = "button">Upload File</button></td>
-        <td align="right"><button id = "addCategory" name = "addCategory" class = "button" onclick="return false;">Add Category</button></td>
-    </tr>
-</table>
-</form>
-
-<div class="tree">
-    <center>
-        <button class="btn btn-lg btn-primary loading"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
-    </center>
-    <ul id="home-dir">
-
-    </ul>
+<div class="row">
+<div class="col-sm-12">
+    <div class="col-xs-12">
+        <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
+            <div class="panel panel-primary">
+                <div class="panel-heading" onclick="hideFilter();">
+                    Selection Filter
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                </div>
+                <div class="panel-body" id="panel-body">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-1">{$form.File_name.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.File_name.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.version.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.version.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.uploaded_by.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.uploaded_by.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-1">{$form.File_type.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.File_type.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.For_site.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.For_site.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-2 col-sm-offset-4">
+                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=document_repository&reset=true'" />
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2">
+                                <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
+                            </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-2">
+                                <button type="button" name = "addCategory" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 
-<div class = "ui-accordion ui-widget ui-helper-reset">
-<table border="0" width="80%" id = "accordionTable" class="docRepository" data-open = "{$openAccordion}">
-<tr>
-    {section name=header loop=$headers}
-        <th nowrap="nowrap" class="accordionHeaders">
-            {if $headers[header].displayName == "Edit" || $headers[header].displayName == "Delete"}
-                {$headers[header].displayName}
-            {else}
-                <a href="main.php?openAccordion=true&test_name=document_repository&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
-                    {$headers[header].displayName}
-                </a>
-            {/if}
-        </th>
-    {/section}
-</tr>
+<center>
+    <button class="btn btn-lg btn-primary loading"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
+</center>
 
 
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
 
-<table id="dirTable" class="table">
+<table id="dirTable" class="table dynamictable">
+    <thead>
+        {section name=header loop=$headers}
+            <th class="info" nowrap="nowrap" class="accordionHeaders">
+                {if $headers[header].displayName == "Edit" || $headers[header].displayName == "Delete"}
+                    {$headers[header].displayName}
+                {else}
+                    <a href="main.php?openAccordion=true&test_name=document_repository&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
+                        {$headers[header].displayName}
+                    </a>
+                {/if}
+            </th>
+        {/section}
+    </thead>
     <tbody id="dir-tree">
 
     </tbody>
 </table>
-
-
-<div id="accordion" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons" role="tablist">
-{foreach from=$File_categories item=val key=k}
-    {if $val != "Any"}
-        <tr>
-                <td nowrap="nowrap" colspan = "11">
-                    <h3 id = "header_{$File_categories[$k].CategoryName|replace:$find:$replaceFind}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px;" align="left">{$File_categories[$k].CategoryName}
-                        <span class="tip">...
-                            <span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$File_categories[$k].CategoryName|replace:$find:$replaceFind}" contenteditable="true">
-                                {$File_categories[$k].Comment}
-                            </span>
-                </span>
-            </h3>
-        </tr>
-        {section name=file loop=$File_categories[$k].Files}
-            {assign var="FileDetails" value=$File_categories[$k].Files[file]}
-            <tr class="categories_{$File_categories[$k].CategoryName|replace:$find:$replaceFind} ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
-                <td class="File_name" nowrap="nowrap">
-                    <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$FileDetails.Data_dir}" target="_blank" download="{$FileDetails.File_name}">{$FileDetails.File_name}</a> ({$FileDetails.File_size})
-                </td>
-                <td class="version" nowrap="nowrap">{$FileDetails.version}</td>
-                <td class="File_type" nowrap="nowrap">{$FileDetails.File_type}</td>
-                <td class="Instrument" nowrap="nowrap">{$FileDetails.Instrument}</td>
-                <td class="uploaded_by" nowrap="nowrap">{$FileDetails.uploaded_by}</td>
-                <td class="For_site" nowrap="nowrap">{$FileDetails.For_site}</td>
-                <td class="comments" nowrap="nowrap">{$FileDetails.comments}</td>
-                <td class="Date_uploaded" nowrap="nowrap">{$FileDetails.Date_uploaded}</td>
-                <td nowrap="nowrap">
-                    <a href="#" id="{$FileDetails.record_id}" class="theeditlink">Edit</a>
-                </td>
-                <td nowrap="nowrap">
-                    <a href="#" id="{$FileDetails.record_id}" class="thedeletelink">Delete</a>
-                </td>
-            </tr>
-        {/section}
-    {/if}
-{/foreach}
-</div> <!--end of toggle div-->
 
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -650,11 +323,7 @@ $(function () {
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-4" for="file">File<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
-                                <span class="file-wrapper">
-                                    <input type="file" name="file" id="file" style = "margin-left: 1em;"/>
-                                <span class="button-file ui-button-text ui-widget ui-state-default ui-corner-all ui-button-text-only" role = "button" aria-disabled = "false" style = "margin-left:10.5em; padding: 0.5em;">Choose file</span>
-                                <span class="fileName"></span>
-                                </span>
+                                <input type="file" name="file" class="fileUpload" id="file" style = "margin-left: 1em;"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
