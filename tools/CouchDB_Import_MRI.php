@@ -125,7 +125,7 @@ class CouchDBMRIImporter
             $mri_array = array(
                           'ScannerID'           => 'Scanner ID',
                           'Pipeline'            => 'Pipeline',
-                          'OutputType'          => 'Output',
+                          'OutputType'          => 'Output Type',
                           'AcquisitionProtocol' => 'Protocol',
                           'CoordinateSpace'     => 'Space',
                           'Algorithm'           => 'Algorithm',
