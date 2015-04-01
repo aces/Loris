@@ -147,6 +147,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $this->addBasicText('addName', 'Name');
         $this->addSelect('addSite', 'Site', $sites);
 
+        $this->form->addFormRule(array(&$this, '_validateAddExaminer'));
+
         // Add a useCertification template variable so that the template
         // rendering can depend on the EnableCertification setting
         $config           = NDB_Config::singleton();
@@ -245,6 +247,29 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     }
 
     /**
+     * Validates the examiner form values.
+     *
+     * @param array $values Add Examiner form values
+     *
+     * @return array of error messages
+     */
+    function _validateAddExaminer($values)
+    {
+        $errors = array();
+
+        $name = $values['addName'];
+        $site = $values['addSite'];
+
+        if (empty($name) || empty($site)) {
+            $errors['addName'] = 'Please include both a name and site';
+        } else if ($this->examinerExists($name, $site)) {
+            $errors['addName'] = 'This examiner already exists';
+        }
+
+        return $errors;
+    }
+
+    /**
      * Processes the add examiner form values
      *
      * @param array $values add examiner form values
@@ -253,6 +278,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _process($values)
     {
+
         $DB     = Database::singleton();
         $config = NDB_Config::singleton();
 
@@ -268,6 +294,34 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
              'radiologist' => $radiologist,
             )
         );
+    }
+
+    /**
+     * Checks if an examiner exists with a given name and site
+     *
+     * @param string $fullName The full name of the examiner
+     * @param int    $siteID   The site ID
+     *
+     * @return boolean
+     */
+    function examinerExists($fullName, $siteID)
+    {
+        $DB         = Database::singleton();
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:fullName AND centerID=:siteID",
+            array(
+             'fullName' => $fullName,
+             'siteID'   => $siteID,
+            )
+        );
+
+        if (empty($examinerID)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 ?>

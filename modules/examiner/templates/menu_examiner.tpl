@@ -46,8 +46,12 @@
                 <span class="glyphicon glyphicon-plus"></span> Add Examiner
             </div>
             <div class="panel-body">
-            <form method="post" action="main.php?test_name=examiner" name="examiner" id="examiner">
-                <div class="col-md-12" id="form-errors"></div>
+            {foreach from=$form.errors item=error}
+            <div class="col-xs-12">
+                <p class="error">{$error}</p>
+            </div>
+            {/foreach}
+            <form method="post" name="examiner" id="examiner">
                 <div class="row">
                     <div class="form-group col-md-8">
                         <label class="col-md-4">{$form.addName.label}</label>
@@ -67,7 +71,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-default btn-sm btn-success pull-right" value="Save" id="addExaminerButton"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                        <button type="submit" class="btn btn-sm btn-success pull-right" name="fire_away"><span class="glyphicon glyphicon-plus"></span> Add</button>
                     </div>
                 </div>
             </form>
