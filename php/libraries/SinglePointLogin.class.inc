@@ -86,6 +86,16 @@ class SinglePointLogin extends PEAR
             // If StudyLinks aren't defined, it shouldn't be fatal.
         }
 
+        $tpl_data['study_title'] = $study_title;
+        try {
+            $tpl_data['study_logo'] = $study_logo;
+        } catch(ConfigurationException $e) {
+            $tpl_data['study_logo'] = '';
+        }
+
+        // If there's no study, we have a bigger problem
+        $study_title = $config->getSetting('title');
+
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
