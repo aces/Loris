@@ -261,9 +261,9 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText($elname, $label)
+    function createText($elname, $label, $attribs)
     {
-        $el         =& $this->createBase($elname, $label);
+        $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
         return $el;
     }
@@ -433,7 +433,13 @@ class LorisForm
     {
         $retVal = '';
         foreach ($el['elements'] as $element) {
+            if (isset($el['options']['prefix_wrapper'])) {
+                $retVal .= $el['options']['prefix_wrapper'];
+            }
             $retVal .= $this->renderElement($element);
+            if (isset($el['options']['postfix_wrapper'])) {
+                $retVal .= $el['options']['postfix_wrapper'];
+            }
             $retVal .= $el['delimiter'];
         }
         return $retVal;
@@ -810,12 +816,14 @@ class LorisForm
      *
      * @return none
      */
-    function addGroup($array, $name, $label, $delimiter)
+    function addGroup($array, $name, $label, $delimiter, $options)
     {
         $this->form[$name] = array(
                               'type'      => 'group',
                               'elements'  => $array,
+                              'label'     => $label,
                               'delimiter' => empty($delimiter) ? ' ' : $delimiter,
+                              'options' => $options
                              );
 
     }
@@ -839,7 +847,7 @@ class LorisForm
     {
         switch($type) {
         case 'text':
-            return $this->createText($elname, $label, $options);
+            return $this->createText($elname, $label, $options, $attribs);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
         case 'static':
@@ -851,6 +859,7 @@ class LorisForm
             break;
         case 'advcheckbox':
         case 'textarea':
+        case 'date':
         case 'password':
             $el         = $this->createBase($elname, $label, $options);
             $el['type'] = $type;
@@ -1008,6 +1017,7 @@ class LorisForm
         if (isset($this->errors[$el])) {
             return $this->errors[$el];
         }
+
         return;
     }
 }

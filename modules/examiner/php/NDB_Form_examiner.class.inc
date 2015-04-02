@@ -33,7 +33,7 @@ class NDB_Form_Examiner extends NDB_Form
     function _hasAccess()
     {
         if (empty($_REQUEST['identifier'])) {
-            throw new Exception(
+            throw new LorisException(
                 "Incorrect URL: No examiner ID provided."
             );
         }
@@ -83,7 +83,7 @@ class NDB_Form_Examiner extends NDB_Form
         // set the form defaults for the page
         foreach ($result as $row) {
             $defaults['date_cert[' . $row['testID'] . ']'] = $row['date_cert'];
-            $defaults['pass['      . $row['testID'] . ']'] = $row['pass'];
+            $defaults['certStatus['      . $row['testID'] . ']'] = $row['pass'];
             $defaults['comment['   . $row['testID'] . ']'] = $row['comment'];
         }
 
@@ -101,16 +101,10 @@ class NDB_Form_Examiner extends NDB_Form
     {
         $DB = Database::singleton();
 
-        foreach ($values['pass'] as $testID => $pass) {
+        foreach ($values['certStatus'] as $testID => $certStatus) {
 
-            $date      = $values['date_cert'][$testID];
+            $date_cert = $values['date_cert'][$testID];
             $comment   = trim($values['comment'][$testID]);
-            $date_cert = sprintf(
-                "%04d-%02d-%02d",
-                $date['Y'],
-                $date['M'],
-                $date['d']
-            );
 
             // get the examinerID - edit_examiner passes the ID through
             // the identifier, training passes it as a value
@@ -132,7 +126,7 @@ class NDB_Form_Examiner extends NDB_Form
             );
 
              // if certification for new instrument for the examiner
-            if (empty($certID) && !empty($pass)) {
+            if (empty($certID) && !empty($certStatus)) {
                 // insert a new certification entry
                 $DB->insert(
                     'certification',
@@ -140,7 +134,7 @@ class NDB_Form_Examiner extends NDB_Form
                      'examinerID' => $examinerID,
                      'date_cert'  => $date_cert,
                      'testID'     => $testID,
-                     'pass'       => $pass,
+                     'pass'       => $certStatus,
                      'comment'    => $comment,
                     )
                 );
@@ -158,7 +152,7 @@ class NDB_Form_Examiner extends NDB_Form
                     'certification_history',
                     array(
                      'col'         => 'pass',
-                     'new'         => $pass,
+                     'new'         => $certStatus,
                      'new_date'    => $date_cert,
                      'primaryVals' => $certID,
                      'testID'      => $testID,
@@ -197,7 +191,7 @@ class NDB_Form_Examiner extends NDB_Form
                 );
 
                 // If one of the values was changed
-                if ($oldCertification['pass'] != $pass
+                if ($oldCertification['pass'] != $certStatus
                     || $oldCertification['comment'] != $comment
                     || $oldCertification['date_cert'] != $date_cert
                 ) {
@@ -206,7 +200,7 @@ class NDB_Form_Examiner extends NDB_Form
                         'certification',
                         array(
                          'date_cert' => $date_cert,
-                         'pass'      => $pass,
+                         'pass'      => $certStatus,
                          'comment'   => $comment,
                         ),
                         array(
@@ -216,14 +210,14 @@ class NDB_Form_Examiner extends NDB_Form
                     );
 
                     // Add a new entry to the certification history table
-                    if ($oldDate != $date_cert || $oldVal != $pass) {
+                    if ($oldDate != $date_cert || $oldVal != $certStatus) {
                         $DB->insert(
                             'certification_history',
                             array(
                              'col'         => 'pass',
                              'old'         => $oldVal,
                              'old_date'    => $oldDate,
-                             'new'         => $pass,
+                             'new'         => $certStatus,
                              'new_date'    => $date_cert,
                              'primaryVals' => $certID,
                              'testID'      => $testID,
@@ -237,7 +231,6 @@ class NDB_Form_Examiner extends NDB_Form
                 }
             }
         }
-        $this->form->freeze();
     }
 
     /**
@@ -281,12 +274,15 @@ class NDB_Form_Examiner extends NDB_Form
 
         // Get the list of certification instruments
         $instruments = $this->getCertificationInstruments();
+        $this->tpl_data['instruments'] = $instruments;
 
         // Create the form elements for each certification instrument
         foreach ($instruments as $key => $value) {
-            $this->addSelect('pass['.$key.']', $value, $statusOptions);
-            $this->addBasicText('comment['.$key.']', 'Comment');
-            $this->addBasicDate('date_cert['.$key.']', 'Date', $dateOptions);
+            $group[] = $this->createSelect('certStatus['.$key.']','Status', $statusOptions);
+            $group[] = $this->createDate('date_cert['.$key.']', 'Date', $dateOptions, array('class' => 'form-control input-sm col-md-2 col-md-offset-1'));
+            $group[] = $this->createText('comment['.$key.']', 'Comment');
+            $this->addGroup($group, $value, $value, '', array('prefix_wrapper' => '<div class="col-md-3">', 'postfix_wrapper' => '</div>'));
+            unset($group);
         }
 
         $DB = Database::singleton();
@@ -313,38 +309,16 @@ class NDB_Form_Examiner extends NDB_Form
         $errors = array();
 
         // check that there is both a status and a date (neither can be null)
-        foreach ($values['pass'] as $key => $row) {
-            if (empty($row) || $this->dateEmpty($values['date_cert'][$key])) {
-                if (!(empty($row) && $this->dateEmpty($values['date_cert'][$key]))) {
-                    $errors['pass[' . $key .']'] = 'Both certification status and 
+        foreach ($values['certStatus'] as $instrumentID => $certificationStatus) {
+            if (empty($certificationStatus) || empty($values['date_cert'][$instrumentID])) {
+                if (!(empty($certificationStatus) && empty($values['date_cert'][$instrumentID]))) {
+                    $errors['certStatus[' . $instrumentID .']'] = 'Both certification status and 
                         date must be filled out';
                 }
             }
         }
 
-        // check that the date has been properly filled out
-        foreach ($values['date_cert'] as $date) {
-            if (empty($date['Y']) || empty($date['M']) || empty($date['d'])) {
-                if (!(empty($date['Y']) && empty($date['M']) && empty($date['d']))) {
-                    $errors['date_cert[' . $key .']'] = 'The date entered is 
-                        not valid';
-                }
-            }
-        }
-
         return $errors;
-    }
-
-    /**
-     * Returns true if every field (year, month, day) of a date are empty
-     *
-     * @param array $date Date of certification
-     *
-     * @return boolean
-     */
-    function dateEmpty($date)
-    {
-        return (empty($date['Y']) && empty($date['M']) && empty($date['d']));
     }
 
     /**

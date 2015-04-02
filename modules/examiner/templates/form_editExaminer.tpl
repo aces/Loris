@@ -8,19 +8,30 @@
                 <div class="panel-body" id="panel-body">
                     {foreach from=$form.errors item=error}
                     <div class="col-xs-12">
-                        <p class="error">{$error}</p>
+                        <div class="alert alert-danger" role="alert">{$error}</div>
                     </div>
                     {/foreach}
-                    {foreach from=$form.pass item=item key=key}
                     <div class="row">
-                        <div class="form-group col-md-12">
-                            <label class="col-sm-12 col-md-1">{$form.pass[$key].label}</label>
-                            <div class="col-sm-12 col-md-2">{$form.pass[$key].html}</div>
-                            <label class="col-sm-12 col-md-1 col-md-offset-1">{$form.date_cert[$key].label}</label>
-                            <div class="col-sm-12 col-md-3 form-inline">{$form.date_cert[$key].html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.comment[$key].label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.comment[$key].html}</div>
+                        <div class="col-md-1">
+                            <label>Instrument</label>
                         </div>
+                        <div class="col-md-2">
+                            <label>Certification Status</label>
+                        </div>
+                        <div class="col-md-2 col-md-offset-1">
+                            <label>Certification Date</label>
+                        </div>
+                        <div class="col-md-4 col-md-offset-1">
+                            <label>Comments</label>
+                        </div>
+                    </div>
+                    <hr>
+                    {foreach from=$instruments key=ID item=name}
+                    <div class="row">
+                        <div class="col-md-1">
+                            <label>{$form.$name.label}</label>
+                        </div>
+                        {$form.$name.html}
                     </div>
                     {/foreach}
                     <div class="row">
