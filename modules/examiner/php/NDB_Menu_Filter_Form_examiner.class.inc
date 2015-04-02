@@ -48,7 +48,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-
+        $DB            = Database::singleton();
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('Certification');
 
@@ -71,7 +71,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         $user = User::singleton();
         if (!$user->hasPermission('examiner_multisite')) {
-            $query .= " AND e.CenterID=" . $user->getData('CenterID');
+            $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
         }
 
         // set the class variables
