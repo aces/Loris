@@ -61,17 +61,17 @@ $(document).ready(function () {
 
     $(".new-scans").click(function(e) {
         e.preventDefault();
-        filterForm('imaging_browser', {"Pending" : "PN"});
+        applyFilter('imaging_browser', {"Pending" : "PN"});
     });
 
     $(".radiological-review").click(function(e) {
         e.preventDefault();
-        filterForm('final_radiological_review', {"Review_done" : "no"});
+        applyFilter('final_radiological_review', {"Review_done" : "no"});
     });
 
     $(".pending-accounts").click(function(e) {
         e.preventDefault();
-        filterForm('user_accounts', {"pending" : "Y"});
+        applyFilter('user_accounts', {"pending" : "Y"});
     });
 });
 
