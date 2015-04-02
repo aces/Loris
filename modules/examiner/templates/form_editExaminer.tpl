@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-12 col-sm-8">
+    <div class="col-md-12">
         <form method="post" name="edit_examiner" id="edit_examiner">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -11,7 +11,7 @@
                         <div class="alert alert-danger" role="alert">{$error}</div>
                     </div>
                     {/foreach}
-                    <div class="row">
+                    <div class="row hidden-xs hidden-sm">
                         <div class="col-md-1">
                             <label>Instrument</label>
                         </div>
@@ -25,7 +25,7 @@
                             <label>Comments</label>
                         </div>
                     </div>
-                    <hr>
+                    <hr class="row hidden-xs hidden-sm">
                     {foreach from=$instruments key=ID item=name}
                     <div class="row">
                         <div class="col-md-1">

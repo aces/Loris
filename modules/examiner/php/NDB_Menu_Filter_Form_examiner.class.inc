@@ -28,6 +28,8 @@ require_once 'NDB_Form.class.inc';
 
 class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 {
+    var $useCertification;
+
     /**
      * Checks if the user has access to examiner menu filter
      *
@@ -46,16 +48,22 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $config           = NDB_Config::singleton();
-        $certification    = $config->getSetting('Certification');
-        $useCertification = $certification['EnableCertification'];
+
+        $config        = NDB_Config::singleton();
+        $certification = $config->getSetting('Certification');
+
+        if (isset($certification['EnableCertification'])) {
+            $this->useCertification = $certification['EnableCertification'];
+        } else {
+            $useCertification = false;
+        }
 
         // base queries
         $query     = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
         $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) 
             LEFT JOIN test_names tn ON (c.testID = tn.ID)";
 
-        if ($useCertification == '1') {
+        if ($this->useCertification == '1') {
             $query .= $certQuery;
         }
 
@@ -93,7 +101,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // If certification is turned on, update the class variables to include
         // certification information
-        if ($useCertification == '1') {
+        if ($this->useCertification == '1') {
             array_push(
                 $this->columns,
                 'tn.Full_name as Certification',
@@ -151,10 +159,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // Add a useCertification template variable so that the template
         // rendering can depend on the EnableCertification setting
-        $config           = NDB_Config::singleton();
-        $certification    = $config->getSetting('Certification');
-        $useCertification = $certification['EnableCertification'];
-        $this->tpl_data['certification'] = $useCertification;
+        $this->tpl_data['certification'] = $this->useCertification;
 
     }
 
@@ -168,11 +173,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     function _setDataTableRows($count)
     {
         // Code from old certification module
-        $config           = NDB_Config::singleton();
-        $certification    = $config->getSetting('Certification');
-        $useCertification = $certification['EnableCertification'];
 
-        if ($useCertification == '1') {
+        if ($this->useCertification == '1') {
             $IDs        = array();
             $duplicates = array();
             $i          = 0;

@@ -45,7 +45,11 @@ class NDB_Form_Examiner extends NDB_Form
         $userCenter   = $user->getCenterID();
 
         $certification    = $config->getSetting('Certification');
-        $useCertification = $certification['EnableCertification'];
+        if (isset($certification['EnableCertification'])) {
+            $useCertification = $certification['EnableCertification'];
+        } else {
+            $useCertification = false;
+        }
 
         if ($useCertification) {
             $centerID = $DB->pselectOne(
@@ -82,9 +86,9 @@ class NDB_Form_Examiner extends NDB_Form
 
         // set the form defaults for the page
         foreach ($result as $row) {
-            $defaults['date_cert[' . $row['testID'] . ']'] = $row['date_cert'];
+            $defaults['date_cert[' . $row['testID'] . ']']       = $row['date_cert'];
             $defaults['certStatus['      . $row['testID'] . ']'] = $row['pass'];
-            $defaults['comment['   . $row['testID'] . ']'] = $row['comment'];
+            $defaults['comment['   . $row['testID'] . ']']       = $row['comment'];
         }
 
         return $defaults;
@@ -278,10 +282,30 @@ class NDB_Form_Examiner extends NDB_Form
 
         // Create the form elements for each certification instrument
         foreach ($instruments as $key => $value) {
-            $group[] = $this->createSelect('certStatus['.$key.']','Status', $statusOptions);
-            $group[] = $this->createDate('date_cert['.$key.']', 'Date', $dateOptions, array('class' => 'form-control input-sm col-md-2 col-md-offset-1'));
-            $group[] = $this->createText('comment['.$key.']', 'Comment');
-            $this->addGroup($group, $value, $value, '', array('prefix_wrapper' => '<div class="col-md-3">', 'postfix_wrapper' => '</div>'));
+            $group[] = $this->createSelect(
+                'certStatus['.$key.']',
+                'Status',
+                $statusOptions
+            );
+            $group[] = $this->createDate(
+                'date_cert['.$key.']',
+                'Date',
+                $dateOptions
+            );
+            $group[] = $this->createText(
+                'comment['.$key.']',
+                'Comment'
+            );
+            $this->addGroup(
+                $group,
+                $value,
+                $value,
+                '',
+                array(
+                 'prefix_wrapper'  => '<div class="col-md-3">',
+                 'postfix_wrapper' => '</div>',
+                )
+            );
             unset($group);
         }
 
@@ -310,10 +334,14 @@ class NDB_Form_Examiner extends NDB_Form
 
         // check that there is both a status and a date (neither can be null)
         foreach ($values['certStatus'] as $instrumentID => $certificationStatus) {
-            if (empty($certificationStatus) || empty($values['date_cert'][$instrumentID])) {
-                if (!(empty($certificationStatus) && empty($values['date_cert'][$instrumentID]))) {
-                    $errors['certStatus[' . $instrumentID .']'] = 'Both certification status and 
-                        date must be filled out';
+            if (empty($certificationStatus)
+                || empty($values['date_cert'][$instrumentID])
+            ) {
+                if (!(empty($certificationStatus)
+                    && empty($values['date_cert'][$instrumentID]))
+                ) {
+                    $errors['certStatus[' . $instrumentID .']'] = 'Both certification
+                        status and date must be filled out';
                 }
             }
         }
