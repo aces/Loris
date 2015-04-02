@@ -261,7 +261,7 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText($elname, $label, $attribs)
+    function createText($elname, $label, $attribs = array())
     {
         $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
@@ -816,7 +816,7 @@ class LorisForm
      *
      * @return none
      */
-    function addGroup($array, $name, $label, $delimiter, $options)
+    function addGroup($array, $name, $label, $delimiter, $options = array())
     {
         $this->form[$name] = array(
                               'type'      => 'group',
