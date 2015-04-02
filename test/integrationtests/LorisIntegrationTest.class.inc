@@ -82,6 +82,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
 
+        $user = User::factory('UnitTester');
+        $user->updatePassword('4test4');
         // Set up WebDriver implementation and login
         $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
 

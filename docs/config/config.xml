@@ -42,6 +42,9 @@
             <link url='http://www.loris.ca'>Important Website</link>
         </dashboardLinks>
     </dashboard>
+    <CouchDB>
+        <SyncAccounts>false</SyncAccounts>
+    </CouchDB>
 
     <!-- study variables -->
     <study>

@@ -112,13 +112,7 @@ class NDB_Form_user_accounts extends NDB_Form
         // prepend two random characters
         if (isset($set['Password_md5'])) {
             // Update CouchDB. Must do before password is salted/hashed.
-            $config =& NDB_Config::singleton();
-            $couch_config = $config->getSetting("CouchDB");
-            if ($couch_config['SyncAccounts'] === "true") {
-                $user->updateCouchUser($set['Password_md5']);
-            }
-
-            $set['Password_md5'] = User::MD5Salt($set['Password_md5']);
+            $user->updatePassword($set['Password_md5']);
         }
 
 
