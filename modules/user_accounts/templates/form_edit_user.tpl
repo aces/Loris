@@ -70,7 +70,7 @@ $(document).ready(function() {
     <br>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		NOTES:
+                NOTES:
     	</label>
     	<div class="col-sm-10">
                 <B>It is highly recommended to use an email address as the username. </B>
