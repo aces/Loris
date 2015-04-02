@@ -1519,9 +1519,9 @@ class NDB_BVL_Instrument extends NDB_Page
                      'not_answered' => 'Not Answered',
                     )
     ) {
-        $group[] =& $this->createText($field);
+        $group[] = $this->createText($field, $label);
         $this->WrapperTextElements[$field] = $group[0];
-        $group[] =& $this->createSelect(
+        $group[] = $this->createSelect(
             $field."_status",
             "",
             $refusals,
@@ -1595,10 +1595,10 @@ class NDB_BVL_Instrument extends NDB_Page
         $rules=array(),
         $rule_message='This field is required.'
     ) {
-        $group[] =& $this->form->createElement(
+        $group[] = $this->form->createElement(
             "textarea",
             $field,
-            null,
+            $label,
             array(
              'cols'  => 25,
              'rows'  => 4,
@@ -1606,7 +1606,7 @@ class NDB_BVL_Instrument extends NDB_Page
             )
         );
         $this->WrapperTextElements[$field] = $group[0];
-        $group[] =& $this->createSelect(
+        $group[] = $this->createSelect(
             $field."_status",
             "",
             array(
@@ -2216,29 +2216,39 @@ class NDB_BVL_Instrument extends NDB_Page
             $html->loadHTML($element['html']);
             // Parse the HTML to get the min and max date
             $selects = $html->getElementsByTagName("select");
-            $year = $selects->item(0);
+            if($selects->length > 0) {
+                // Old school QuickForm style. This should be removed
+                // after QuickForm is retired.
+                $year = $selects->item(0);
 
-            // If Item 0 is blank, item 1 is the minimum,
-            $minYear = $year->childNodes->item(0)->textContent;
+                // If Item 0 is blank, item 1 is the minimum,
+                $minYear = $year->childNodes->item(0)->textContent;
 
-            // PHP's trim function doesn't support UTF-8's 0xC2A0 (&nbsp;),
-            // which seems to be how loadHTML parses spaces. Trim whitespace
-            // and then specifically trim that character before checking if
-            // the year is empty, and if it's empty use the next option in
-            // the dropdown (which should be non-empty)
-            $minYear = trim($minYear);
-            $minYear = trim($minYear, chr(0xC2).chr(0xA0));
-            if(empty($minYear)) {
-                $minYear = $year->childNodes->item(1)->textContent;
+                // PHP's trim function doesn't support UTF-8's 0xC2A0 (&nbsp;),
+                // which seems to be how loadHTML parses spaces. Trim whitespace
+                // and then specifically trim that character before checking if
+                // the year is empty, and if it's empty use the next option in
+                // the dropdown (which should be non-empty)
+                $minYear = trim($minYear);
+                $minYear = trim($minYear, chr(0xC2).chr(0xA0));
+                if(empty($minYear)) {
+                    $minYear = $year->childNodes->item(1)->textContent;
+                }
+                // the last item is the maximum year
+                $maxYear = $year->lastChild->textContent;
+
+                $element['options'] = array(
+                    'mindate' => $minYear . "-01-01",
+                    'maxdate' => $maxYear . "-12-31",
+                );
+
+            } else {
+                //LorisForm
+                $element['options'] = array(
+                    'mindate' => "1990-01-01",
+                    'maxdate' => "2000-12-31",
+                );
             }
-            // the last item is the maximum year
-            $maxYear = $year->lastChild->textContent;
-
-            $element['options'] = array(
-                'mindate' => $minYear . "-01-01",
-                'maxdate' => $maxYear . "-12-31",
-            );
-
             if(isset($this->WrapperDateWithStatusElements[$element['name']])) {
                 $element['NoResponse'] = false;
             } else {
@@ -2251,7 +2261,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
     function _toJSONParsePageElement(&$element, &$formArray)
     {
-        $name = $element['name'];
+        $name = isset($element['name']) ? $element['name'] : '';
         if($element['type'] === 'group') {
             $elementName = str_replace("_group", '', $name);
             if(isset($this->WrapperTextElements[$elementName])) {
@@ -2260,7 +2270,10 @@ class NDB_BVL_Instrument extends NDB_Page
                 $mapFunc = function(&$el) use ($name, $elementName) {
                     if($el['name'] === $name) {
                         $el['name'] = $elementName;
-                        if($this->WrapperTextElements[$elementName]->_type == 'textarea') {
+                        $elObj = $this->WrapperTextElements[$elementName];
+                        if((is_array($elObj)
+                            && $elObj['type'] === 'textarea')
+                            || (!is_array($elObj) && $elObj->_type == 'textarea')) {
                             $el['type'] = 'textarea';
                         } else {
                             $el['type'] = 'text';
@@ -2268,6 +2281,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     }
                 };
                 array_map($mapFunc, $formArray['elements']);
+                $element['label'] = $element['elements'][0]['label'];
             }
 
             if(isset($this->WrapperNumericElements[$elementName])) {
@@ -2278,6 +2292,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     }
                 };
                 array_map($mapFunc, $formArray['elements']);
+                $element['label'] = $element['elements'][0]['label'];
             }
 
             if(isset($this->WrapperDateWithStatusElements[$elementName])) {
@@ -2286,13 +2301,14 @@ class NDB_BVL_Instrument extends NDB_Page
                 $mapFunc = function(&$el) use ($name, $elementName) {
 
                     if($el['name'] === $name) {
-                        $label = $el['label'];
-                        $el = $this->_toJSONParseSmarty($el['elements'][0]);
-                        $el['label'] = $label;
+                        //$label = $el['label'];
+                        //$el = $this->_toJSONParseSmarty($el['elements'][0]);
+                        //$el['label'] = $label;
                         //$el = $this->_toJSONParseSmarty($el);
                     }
                 };
                 array_map($mapFunc, $formArray['elements']);
+                $element['label'] = $element['elements'][0]['label'];
             }
             unset($formArray['elements'][$name]);
         }
@@ -2305,11 +2321,17 @@ class NDB_BVL_Instrument extends NDB_Page
 
     function _toJSONParsePage() {
         $smarty   = new Smarty_neurodb;
-        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
-        $this->form->accept($renderer);
+        if(get_class($this->form) === 'LorisForm') {
+            $formArray = $this->form->toElementArray();
+        } else {
+            $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
-        $formArray = $renderer->toArray();
+            $this->form->accept($renderer);
+
+            $formArray = $renderer->toArray();
+        }
+
         if(isset($formArray['elements'])) {
             foreach($formArray['elements'] as &$element) {
                 $this->_toJSONParsePageElement($element, $formArray);
