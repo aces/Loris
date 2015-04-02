@@ -980,8 +980,8 @@ INSERT INTO `permissions` VALUES
     (9,'unsend_to_dcc','Reverse Send from DCC','2'),
     (10,'access_all_profiles','Across all sites access candidate profiles','2'),
     (11,'data_entry','Data entry','1'),
-    (12,'certification','Certify examiners','2'),
-    (13,'certification_multisite','Across all sites certify examiners','2'),
+    (12,'examiner_view','Add and certify examiners','2'),
+    (13,'examiner_multisite','Across all sites add and certify examiners','2'),
     (14,'timepoint_flag','Edit exclusion flags','2'),
     (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
@@ -1370,7 +1370,6 @@ CREATE TABLE `users` (
   `PSCPI` enum('Y','N') NOT NULL default 'N',
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
-  `Examiner` enum('Y','N') NOT NULL default 'N',
   `Password_md5` varchar(34) default NULL,
   `Password_hash` varchar(255) default NULL,
   `Password_expiry` date NOT NULL default '0000-00-00',
@@ -1389,8 +1388,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Examiner,Password_md5,Password_expiry) 
-VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Password_md5,Password_expiry) 
+VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1963,7 +1962,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
     ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
-    ('Certification', 'main.php?test_name=certification', 2, 3);
+    ('Examiner', 'main.php?test_name=examiner', 2, 3);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
@@ -2016,11 +2015,11 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Conflict Resolver';
 
--- Certification
+-- Examiner
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification' AND m.Label='Certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_site' AND m.Label='Examiner';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification_multisite' AND m.Label='Certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_multisite' AND m.Label='Examiner';
 
 -- Radiological Reviews
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2135,7 +2134,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useScreening', "Enable if there is a Screening stage with its own distinct instruments, administered before the Visit stage", 1, 0, 'boolean', ID, 'Use screening', 13 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_instruments', "Instruments to be excluded from the Data Dictionary and download via the Data Query Tool", 1, 1, 'instrument', ID, 'Excluded instruments', 15 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'instrument', ID, 'Double data entry instruments', 16 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'InstrumentResetting', 'Allows resetting of instrument data', 1, 0, 'boolean', ID, 'Instrument Resetting', 15 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'InstrumentResetting', 'Allows resetting of instrument data', 1, 0, 'boolean', ID, 'Instrument Resetting', 17 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'SupplementalSessionStatus', 'Display supplemental session status information on Timepoint List page', 1, 0, 'boolean', ID, 'Use Supplemental Session Status', 18 FROM ConfigSettings WHERE Name="study";
 
 -- paths

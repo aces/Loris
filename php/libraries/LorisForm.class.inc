@@ -274,16 +274,18 @@ class LorisForm
      * Creates a text element that can be added to the page but
      * does not itself add the element.
      *
-     * @param string $elname The name of the element to be added to
-     *                       the form
-     * @param string $label  The name of the label to attach to the
-     *                       form
+     * @param string $elname  The name of the element to be added to
+     *                        the form
+     * @param string $label   The name of the label to attach to the
+     *                        form
+     * @param array  $attribs An array of extra HTML attributes to be
+     *                        added to this element.
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText($elname, $label)
+    function createText($elname, $label, $attribs = array())
     {
-        $el         =& $this->createBase($elname, $label);
+        $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
         return $el;
     }
@@ -453,7 +455,13 @@ class LorisForm
     {
         $retVal = '';
         foreach ($el['elements'] as $element) {
+            if (isset($el['options']['prefix_wrapper'])) {
+                $retVal .= $el['options']['prefix_wrapper'];
+            }
             $retVal .= $this->renderElement($element);
+            if (isset($el['options']['postfix_wrapper'])) {
+                $retVal .= $el['options']['postfix_wrapper'];
+            }
             $retVal .= $el['delimiter'];
         }
         return $retVal;
@@ -830,15 +838,20 @@ class LorisForm
      * @param string $name      The name of the group
      * @param string $label     The label to attach to the group
      * @param string $delimiter The delimiter to use to separate group elements
+     * @param array  $options   An optional array to include prefix_wrapper and
+     *                          postfix_wrapper strings - html that will be
+     *                          placed before and after the group html
      *
      * @return none
      */
-    function addGroup($array, $name, $label, $delimiter)
+    function addGroup($array, $name, $label, $delimiter, $options = array())
     {
         $this->form[$name] = array(
                               'type'      => 'group',
                               'elements'  => $array,
+                              'label'     => $label,
                               'delimiter' => empty($delimiter) ? ' ' : $delimiter,
+                              'options'   => $options,
                              );
 
     }
@@ -862,7 +875,7 @@ class LorisForm
     {
         switch($type) {
         case 'text':
-            return $this->createText($elname, $label, $options);
+            return $this->createText($elname, $label, $options, $attribs);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
         case 'static':
@@ -874,6 +887,7 @@ class LorisForm
             break;
         case 'advcheckbox':
         case 'textarea':
+        case 'date':
         case 'password':
             $el         = $this->createBase($elname, $label, $options);
             $el['type'] = $type;
@@ -1031,6 +1045,7 @@ class LorisForm
         if (isset($this->errors[$el])) {
             return $this->errors[$el];
         }
+
         return;
     }
 }

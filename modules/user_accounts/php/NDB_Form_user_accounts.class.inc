@@ -293,10 +293,9 @@ class NDB_Form_user_accounts extends NDB_Form
         }
         $this->addSelect('CenterID', 'Site', $siteOptions);
 
-        // active and examiner
+        // active
     	$this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
 	    $this->addSelect('Pending_approval', 'Pending approval', array('Y' => 'Yes', 'N' => 'No'));
-	    $this->addSelect('Examiner', 'Examiner', array('N' => 'No', 'Y' => 'Yes'));
 
         //------------------------------------------------------------
 
