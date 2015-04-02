@@ -367,12 +367,13 @@ class NDB_Form_Examiner extends NDB_Form
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
-            $test_key = $certificationInstrument['@']['value'];
-            $testID   = $DB->selectOne(
+            $testName = $certificationInstrument['@']['value'];
+            $testID   = $DB->pselectOne(
                 "SELECT ID
                  FROM test_names
                  WHERE Test_name
-                 LIKE '%$test_key%'"
+                 LIKE CONCAT('%', :testName, '%')",
+                array('testName' => $testName)
             );
             $instruments[$testID] = $certificationInstrument['#'];
         }

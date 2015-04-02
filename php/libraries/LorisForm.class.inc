@@ -254,10 +254,12 @@ class LorisForm
      * Creates a text element that can be added to the page but
      * does not itself add the element.
      *
-     * @param string $elname The name of the element to be added to
-     *                       the form
-     * @param string $label  The name of the label to attach to the
-     *                       form
+     * @param string $elname  The name of the element to be added to
+     *                        the form
+     * @param string $label   The name of the label to attach to the
+     *                        form
+     * @param array  $attribs An array of extra HTML attributes to be
+     *                        added to this element.
      *
      * @return array of the form that can be added to $this->form
      */
@@ -813,6 +815,9 @@ class LorisForm
      * @param string $name      The name of the group
      * @param string $label     The label to attach to the group
      * @param string $delimiter The delimiter to use to separate group elements
+     * @param array  $options   An optional array to include prefix_wrapper and
+     *                          postfix_wrapper strings - html that will be
+     *                          placed before and after the group html
      *
      * @return none
      */
@@ -823,7 +828,7 @@ class LorisForm
                               'elements'  => $array,
                               'label'     => $label,
                               'delimiter' => empty($delimiter) ? ' ' : $delimiter,
-                              'options' => $options
+                              'options'   => $options,
                              );
 
     }
