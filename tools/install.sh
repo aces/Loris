@@ -53,11 +53,9 @@ fi
 
 # Banner
 cat <<BANNER
-
 ---------------------------------------------------------------------
                    LORIS Installation Script
 ---------------------------------------------------------------------
-
 BANNER
 
 # Check that bash is being used
@@ -78,11 +76,13 @@ fi
 if [[ -n $(which composer) ]]; then
     echo ""
     echo "PHP Composer appears to be installed."
+    composer_scr="composer install --no-dev"
 else
     echo "PHP Composer does not appear to be installed. Attempting to install now..."
     curl -sS https://getcomposer.org/installer | php
-    mv composer.phar /usr/local/bin/composer
-    if [[ -n $(which composer) ]]; then
+    mv composer.phar composer
+    composer_scr="tools/composer install --no-dev"
+    if [[ -f composer ]]; then
         echo ""
         echo "PHP Composer successfully installed."
     else
@@ -93,37 +93,28 @@ else
 fi
 
 cat <<QUESTIONS
-
 Please answer the following questions. You'll be asked:
-
   1) Your project directory name from section A) of the Installation Guide.
      (Will be used to modify the paths for Imaging data in the generated
      config.xml file for LORIS, and may also be used to automatically
      create/install apache config files.)
-
   2) A name for the MySQL Database. This should be
      a simple identifier such as "Loris" or "Abc_Def".
      This database will be created later on so please make sure
      a database with the same name does not already exist.
-
   3) The hostname for the machine where the MySQL server will run on
      (this is where we'll create the database).
-
   4) The MySQL username that the Loris system will use to connect
      to this server and database; this MySQL account will be
      created later on so please make sure a user with the same name
      does not already exist.
-
   5) The password for this username (it will be set later on).
-
   6) Another password for the 'admin' account of the Loris DB
      (it will also be set later on).
-
   7) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
      populate the default tables, and to grant privileges to the
      newly created MySQL user in part 3).
-
 QUESTIONS
 
 
@@ -331,7 +322,8 @@ echo ""
 mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
 echo "Updating Loris admin user's password."
 pw_expiry=$(date --date="6 month" +%Y-%m-%d)
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry=$pw_expiry, Pending_approval='N' WHERE ID=1"
+echo "Updating admin password reset date to be $pw_expiry"
+mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
 
 
 echo ""
@@ -356,7 +348,7 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 
 # Install external libraries using composer
 cd ..
-composer install --no-dev
+eval $composer_scr
 cd tools
 
 if type "lsb_release" > /dev/null 2>&1; then
@@ -385,8 +377,9 @@ if [ $os_distro = "Ubuntu" ]; then
                  -e "s#%PROJECTNAME%#$projectname#g" \
   		 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
                  < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
+             sudo ln -s /etc/apache2/sites-available/$projectname.conf /etc/apache2/sites-enabled/$projectname.conf
              sudo a2dissite 000-default
-             sudo a2ensite $projectname
+             sudo a2ensite $projectname.conf
              break;;
           [Nn]* )
              echo "Not configuring apache."
@@ -416,7 +409,7 @@ while true; do
                 -e "s#%PROJECTNAME%#$projectname#g" \
                 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
                 < ../docs/config/apache2-site | sudo tee /etc/httpd/sites-enabled/$projectname.conf > /dev/null
-            sudo ln -s /etc/httpd/sites-enabled/$projectname.conf /etc/httpd/sites-available/$projectname.conf
+            sudo ln -s /etc/httpd/sites-available/$projectname.conf /etc/httpd/sites-enabled/$projectname.conf
             
             # Insert a line in main apache config file to include new file
             sudo sed -i '221 a\Include /etc/httpd/sites-available/*.conf' /etc/httpd/conf/httpd.conf
@@ -430,7 +423,7 @@ while true; do
     esac
 done;
 else
-    echo "$os_distro Linux distribution detected. We currently do not support this. Installation failed."
+    echo "$os_distro Linux distribution detected. We currently do not support this. Please configure Apache manually."
     exit 1
 fi
 
