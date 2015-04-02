@@ -60,10 +60,6 @@ if (isset($_POST['username'])) {
             // reset the password in the database
             $success = $user->updatePassword($password);
 
-            if (PEAR::isError($success)) {
-                $tpl_data['error_message'] = $success->getMessage();
-            }
-
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');
             $msg_data['url']      = $config->getSetting('url');
