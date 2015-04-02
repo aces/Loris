@@ -121,6 +121,23 @@ class LorisForm
     }
 
     /**
+     * Reimplementation of HTML_QuickForm's "addPassword" API.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "class"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    public function addPassword($name, $label, $options=array())
+    {
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'password';
+    }
+
+    /**
      * Reimplementation of HTML_QuickForm's "addText" API.
      *
      * @param string $name    The element name.
@@ -240,6 +257,9 @@ class LorisForm
             break;
         case 'textarea':
             $el = $this->addTextArea($name, $label, $options);
+            break;
+        case 'password':
+            $el = $this->addPassword($name, $label, $options);
             break;
         case 'text':
         default:
@@ -443,18 +463,20 @@ class LorisForm
      * Generates the HTML to add to the page when rendered for a text
      * element.
      *
-     * @param array $el The element to render from $this->form
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
      *
      * @return string A string of the HTML markup to render
      */
-    function textHTML($el)
+    function textHTML($el, $type='text')
     {
         $cls = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
         $value = $this->getValue($el['name']);
-        return "<input name=\"$el[name]\" type=\"text\" $cls"
+        return "<input name=\"$el[name]\" type=\"$type\" $cls"
             . (
                 !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '"'
@@ -654,8 +676,9 @@ class LorisForm
             return $this->textareaHTML($el);
         case 'file':
             return $this->fileHTML($el);
-        case 'text':
         case 'password':
+            return $this->textHTML($el, 'password');
+        case 'text':
             return $this->textHTML($el);
         case 'advcheckbox':
             return $this->checkboxHTML($el);
