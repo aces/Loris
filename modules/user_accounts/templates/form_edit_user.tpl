@@ -73,9 +73,9 @@ $(document).ready(function() {
     		NOTES:
     	</label>
     	<div class="col-sm-10">
-    		<B>It is highly recommended to use an email address as the username. </B>
+                <B>It is highly recommended to use an email address as the username. </B>
                 <br><br>
-    		<B>When generating a new password, please notify the user by checking 'Send email to user' box below!</B>
+                <B>When generating a new password, please notify the user by checking 'Send email to user' box below!</B>
     	</div>
     </div>
     {if $form.errors.Password_Group}
