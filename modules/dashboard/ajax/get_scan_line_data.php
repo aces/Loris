@@ -37,10 +37,10 @@ $scanEndDate        = $DB->pselectOne(
 $scanData['labels']
     = createChartLabels($scanStartDate, $scanEndDate);
 $list_of_sites      = Utility::getAssociativeSiteList(true, false);
-foreach ($list_of_sites as $dataset) {
+foreach ($list_of_sites as $siteID => $siteName) {
     $scanData['datasets'][] = array(
-                               "name" => $dataset,
-                               "data" => getScanData($dataset, $scanData['labels']),
+                               "name" => $siteName,
+                               "data" => getScanData($siteID, $scanData['labels']),
                               );
 }
 
@@ -76,12 +76,12 @@ function createChartLabels($startDate, $endDate)
 /**
  * Get scan data for each month in the label array
  *
- * @param string $dataset name of a site
- * @param array  $labels  chart labels (months to query)
+ * @param string $siteID ID of a site
+ * @param array  $labels chart labels (months to query)
  *
  * @return array
  */
-function getScanData($dataset, $labels)
+function getScanData($siteID, $labels)
 {
     $DB   = Database::singleton();
     $data = array();
@@ -94,14 +94,13 @@ function getScanData($dataset, $labels)
              FROM files f
              LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
              LEFT JOIN session s ON (s.ID=f.SessionID) 
-             LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-             WHERE psc.Name=:Dataset 
+             WHERE s.CenterID=:Site
              AND MONTH(mad.AcquisitionDate)=:Month 
              AND YEAR(mad.AcquisitionDate)=:Year",
             array(
-             'Dataset' => $dataset,
-             'Month'   => $month,
-             'Year'    => $year,
+             'Site'  => $siteID,
+             'Month' => $month,
+             'Year'  => $year,
             )
         );
     }

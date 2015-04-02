@@ -19,17 +19,17 @@ $DB = Database::singleton();
 $recruitmentBySiteData = array();
 $list_of_sites         = Utility::getAssociativeSiteList(true, false);
 
-foreach ($list_of_sites as $site) {
+foreach ($list_of_sites as $siteID => $siteName) {
 
     $totalRecruitment = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
-         FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID)
-         WHERE c.Active='Y' AND c.Entity_type='Human' AND psc.Name=:Site",
-        array('Site' => $site)
+         FROM candidate c
+         WHERE c.CenterID=:Site AND c.Active='Y' AND c.Entity_type='Human'",
+        array('Site' => $siteID)
     );
 
     $recruitmentBySiteData[] = array(
-                                "label" => $site,
+                                "label" => $siteName,
                                 "total" => $totalRecruitment,
                                );
 }

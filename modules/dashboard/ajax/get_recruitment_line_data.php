@@ -32,11 +32,11 @@ $recruitmentData['labels']
 
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
-foreach ($list_of_sites as $dataset) {
+foreach ($list_of_sites as $siteID => $siteName) {
     $recruitmentData['datasets'][] = array(
-                                      "name" => $dataset,
+                                      "name" => $siteName,
                                       "data" => getRecruitmentData(
-                                          $dataset,
+                                          $siteID,
                                           $recruitmentData['labels']
                                       ),
                                      );
@@ -77,12 +77,12 @@ function createChartLabels($startDate, $endDate)
 /**
  * Get recruitment data for each month in the label array
  *
- * @param string $dataset name of a site
- * @param array  $labels  chart labels (months to query)
+ * @param string $siteID ID of a site
+ * @param array  $labels chart labels (months to query)
  *
  * @return array
  */
-function getRecruitmentData($dataset, $labels)
+function getRecruitmentData($siteID, $labels)
 {
     $DB   = Database::singleton();
     $data = array();
@@ -94,15 +94,14 @@ function getRecruitmentData($dataset, $labels)
         $data[] = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
-             LEFT JOIN psc ON (psc.CenterID=c.CenterID)
-             WHERE psc.Name=:Dataset
+             WHERE c.CenterID=:Site
              AND MONTH(c.Date_registered)=:Month
              AND YEAR(c.Date_registered)=:Year
              AND c.Entity_type='Human'",
             array(
-             'Dataset' => $dataset,
-             'Month'   => $month,
-             'Year'    => $year,
+             'Site'  => $siteID,
+             'Month' => $month,
+             'Year'  => $year,
             )
         );
     }
