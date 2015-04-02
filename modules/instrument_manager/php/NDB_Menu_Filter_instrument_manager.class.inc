@@ -53,7 +53,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
                 exec("mysql -u" . escapeshellarg($db_config['quatUser']) 
                                 . " -p" . escapeshellarg($db_config['quatPassword']) 
                                 ." " . escapeshellarg($db_config['database'])  
-                                . " < " . $this->path . "project/tables_sql/$instname.super_sql");
+                                . " < " . $this->path . "project/tables_sql/$instname.sql");
                 $db->insert("test_names", array(
                     "Test_name" => $instname,
                     'Sub_group' => 0
