@@ -15,11 +15,22 @@ function checkAccessProfileForm() {
     }
     return true;
 }
-function hideFilter() {
+function hideFilter(obj) {
     'use strict';
-    $("#panel-body").toggle();
-    $("#down").toggle();
-    $("#up").toggle();
+
+     var heading = $(obj);
+     var arrow = $(obj).children('.arrow');
+     if (heading.hasClass('panel-collapsed')) {
+            // expand the panel
+            heading.parents('.panel').find('.panel-body').slideDown();
+            heading.removeClass('panel-collapsed');
+            arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        } else {
+            // collapse the panel
+            heading.parents('.panel').find('.panel-body').slideUp();
+            heading.addClass('panel-collapsed');
+            arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        }
 }
 function toggleMe() {
     "use strict";
