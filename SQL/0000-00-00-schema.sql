@@ -614,6 +614,9 @@ CREATE TABLE `mri_protocol` (
 LOCK TABLES `mri_protocol` WRITE;
 /*!40000 ALTER TABLE `mri_protocol` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mri_protocol` ENABLE KEYS */;
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,TI_range,slice_thickness_range) VALUES ('ZZZZ',44,'0-5000','0-1000','0-30000','0-10');
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,TI_range,slice_thickness_range) VALUES ('ZZZZ',45,'0-5000','0-1000','0-30000','0-10');
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,TI_range,slice_thickness_range) VALUES ('ZZZZ',48,'0-5000','0-1000','0-30000','0-10');
 UNLOCK TABLES;
 
 --
