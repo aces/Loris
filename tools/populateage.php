@@ -4,6 +4,7 @@
  * inititalize
  */
 set_include_path(get_include_path().":../php/libraries:");
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "Utility.class.inc";

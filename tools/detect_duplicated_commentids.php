@@ -10,6 +10,7 @@
  * @license  Loris License
  * @link     https://github.com/aces/IBIS
  */
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 require_once "NDB_BVL_InstrumentStatus.class.inc";
 require_once "NDB_BVL_Instrument.class.inc";

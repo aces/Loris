@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/NDB_Client.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/ConflictDetector.class.inc";
