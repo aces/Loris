@@ -70,13 +70,14 @@ $(document).ready(function() {
     <br>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		NOTE:
+    		NOTES:
     	</label>
     	<div class="col-sm-10">
-    		<B>When generating a new password, please notify the user by checking 'Send email to user' box!</B>
+    		<B>It is highly recommended to use an email address as the username. </B>
+                <br><br>
+    		<B>When generating a new password, please notify the user by checking 'Send email to user' box below!</B>
     	</div>
     </div>
-    <br>
     {if $form.errors.Password_Group}
     <div class="row form-group form-inline form-inline has-error">
     {else}
