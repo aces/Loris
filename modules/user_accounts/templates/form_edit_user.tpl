@@ -69,13 +69,16 @@ $(document).ready(function() {
     <!-- </div> -->
     <br>
     <div class="row form-group form-inline">
-    	<label class="col-sm-2">
-                NOTES:
+    	<label class="col-sm-1">
+            NOTES:
     	</label>
-    	<div class="col-sm-10">
-                <B>It is recommended to use an email address as the username, for clarity and uniqueness.</B>
-                <br><br>
-                <B>When generating a new password, please notify the user by checking 'Send email to user' box below!</B>
+    	<div class="col-sm-11">
+            <strong>
+            <ul style="padding-left:0%;">
+               <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
+               <li>When generating a new password, please notify the user by checking 'Send email to user' box below!</li>
+            </ul>
+            </strong>
     	</div>
     </div>
     {if $form.errors.Password_Group}
