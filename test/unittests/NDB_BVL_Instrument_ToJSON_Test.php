@@ -21,7 +21,7 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'));
         $this->MockSinglePointLogin = $this->getMock('SinglePointLogin');
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
-        $this->QuickForm = new \HTML_Quickform(); //$this->getMock("HTML_Quickform");
+        $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
 
         $_SESSION = array(
             'State' => $this->Session
@@ -64,10 +64,9 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $value = array('value' => "Option");
         $not_answered = array('value' => 'Option', 'not_answered' => 'Not Answered');
         $this->i->addSelect("FieldName", "Field Description", $value);
-        $this->i->addSelect("FieldName", "Field Description", $not_answered);
-        $this->i->form->addElement('select', "multiselect1", "Test Question", $value, "multiple");
-        $this->i->form->addElement('select', "multiselect2", "Test Question", $not_answered, "multiple");
-        //$this->i->addSelect( "multiselect2", "Test Question2", $not_answered,"multiple size='5'" );
+        $this->i->addSelect("FieldName2", "Field Description 2", $not_answered);
+        $this->i->form->addElement('select', "multiselect1", "Test Question", $value, array("multiple" => 'multiple'));
+        $this->i->form->addElement('select', "multiselect2", "Test Question", $not_answered, array('multiple' => "multiple"));
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $selectElement = $outArray['Elements'][0];
@@ -93,8 +92,8 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals($selectElement2,
             [
                 'Type' => "select",
-                "Name" => "FieldName",
-                "Description" => "Field Description",
+                "Name" => "FieldName2",
+                "Description" => "Field Description 2",
                 "Options" => [
                     "Values" => [
                         "value" => "Option"
@@ -137,8 +136,8 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
 
 
     function testTextElement() {
-        $this->i->addTextElement("FieldName", "Field Description", array("value" => "Option"));
-        $this->i->addTextAreaElement("FieldName2", "Field Description2", array("value" => "Option"));
+        $this->i->addTextElement("FieldName", "Field Description for Text", array("value" => "Option"));
+        $this->i->addTextAreaElement("FieldName2", "Field Description2 for Text", array("value" => "Option"));
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $textElement = $outArray['Elements'][0];
@@ -148,7 +147,7 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
             [
                 'Type'        => "text",
                 "Name"        => "FieldName",
-                "Description" => "Field Description",
+                "Description" => "Field Description for Text",
                 "Options"     => [
                     "Type"            => "small",
                     "RequireResponse" => true
@@ -160,7 +159,7 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
             [
                 'Type'        => "text",
                 "Name"        => "FieldName2",
-                "Description" => "Field Description2",
+                "Description" => "Field Description2 for Text",
                 "Options"     => [
                     "Type"            => "large",
                     "RequireResponse" => true
