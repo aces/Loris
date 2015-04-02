@@ -307,8 +307,8 @@ done;
 
 
 echo ""
-echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'localhost' ..."
-echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'$mysqlhost' ..."
+echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
 MySQLError=$?;
 if [ $MySQLError -ne 0 ] ; then
     echo "Could not connect to database with the root user provided.";
