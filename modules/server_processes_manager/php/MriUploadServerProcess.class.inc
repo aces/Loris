@@ -113,7 +113,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         parent::__construct(
             $id,
             $pid,
-            self::TASK_TYPE,
+            self::PROCESS_TYPE,
             $stdoutFile,
             $stderrFile,
             $exitCodeFile,
