@@ -42,7 +42,7 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals(
             "password",
             $this->webDriver->findElement(WebDriverBy::Name("Password_md5"))->getAttribute("type")
-        );;
+        );
         $this->assertEquals(
             "checkbox",
             $this->webDriver->findElement(WebDriverBy::Name("NA_Password"))->getAttribute("type")
