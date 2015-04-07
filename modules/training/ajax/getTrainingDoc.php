@@ -17,9 +17,7 @@ ini_set('default_charset', 'utf-8');
 
 require_once __DIR__ . "/../../../vendor/autoload.php";
 
-$user         = User::singleton();
-$userFullName = $user->getFullname();
-$userCenter   = $user->getCenterID();
+$user = User::singleton();
 
 // Checks that config settings are set
 $config = NDB_Config::singleton();
