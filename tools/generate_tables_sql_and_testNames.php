@@ -16,6 +16,7 @@
 //taken from php.net notes
 
 // require all relevant OO class libraries
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
