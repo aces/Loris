@@ -982,8 +982,9 @@ INSERT INTO `permissions` VALUES
     (11,'data_entry','Data entry','1'),
     (12,'examiner_view','Add and certify examiners','2'),
     (13,'examiner_multisite','Across all sites add and certify examiners','2'),
-    (14,'timepoint_flag','Edit exclusion flags','2'),
-    (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
+    (14,'training','View and complete training','2'),
+    (15,'timepoint_flag','Edit exclusion flags','2'),
+    (16,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
     (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
     (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
@@ -1964,6 +1965,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
     ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
     ('Examiner', 'main.php?test_name=examiner', 2, 3);
+    ('Training', 'main.php?test_name=training', 2, 4);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
@@ -2022,6 +2024,10 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_site' AND m.Label='Examiner';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_multisite' AND m.Label='Examiner';
+
+-- Training
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='training' AND m.Label='Training';
 
 -- Radiological Reviews
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2372,6 +2378,35 @@ CREATE TABLE `CNV` (
   FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `certification_training` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `TestID` int(10) UNSIGNED NOT NULL,
+    `Title` varchar(255) NOT NULL,
+    `Content` text,
+    `TrainingType` enum('text', 'pdf', 'video', 'quiz') NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training_quiz_questions` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `TestID` int(10) unsigned NOT NULL,
+    `Question` varchar(255) NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training_quiz_questions` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training_quiz_answers` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `QuestionID` INTEGER UNSIGNED NOT NULL,
+    `Answer` varchar(255) NOT NULL,
+    `Correct` boolean NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- Table structure for table `server_processes`
 DROP TABLE IF EXISTS `server_processes`;
 CREATE TABLE `server_processes` (
