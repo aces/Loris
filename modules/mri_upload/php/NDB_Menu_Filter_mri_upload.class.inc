@@ -16,6 +16,8 @@ require_once 'Log.class.inc';
 require_once "Archive/Tar.php";
 require_once "File_Decompress.class.inc";
 require_once "Message.class.inc";
+require_once __DIR__
+             . "/../../server_processes_manager/php/ServerProcessLauncher.class.inc";
 
 /**
  * This module allows a zipped/tgz/gz file to be uploaded into the incoming folder
@@ -377,6 +379,21 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                 'mri_upload',
                 $values
             );
+
+            // Get MRI upload ID of the upload entry that was just inserted
+            $query       = "SELECT UploadID
+                            FROM mri_upload
+                            WHERE UploadedBy     = :UploadedBy
+                            AND   UploadDate     = :UploadDate
+                            AND   SourceLocation = :SourceLocation
+                            AND   SessionID      = :SessionID
+                            AND   PatientName    = :PatientName";
+            $mriUploadId = $db->pselectOne($query, $values);
+
+            // Perform the real upload on the server
+            $serverProcessLauncher = new ServerProcessLauncher();
+            $serverProcessLauncher->mriUpload($mriUploadId, $uploaded_file_path);
+
             return true;
         }
         return false;
