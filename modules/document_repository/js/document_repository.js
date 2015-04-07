@@ -108,7 +108,7 @@ function postCategory() {
     });
 }
 
-function postEdit() {
+function postEdit(id) {
     var data = {
                 idEdit: id,
                 categoryEdit: $(categoryEdit).val(),
@@ -121,8 +121,6 @@ function postEdit() {
                 action: $(actionEdit).val(),
                 submit: 'yeah!!!!'
             };
-
-            console.log(data);
 
     $.ajax({
         type: "POST",
@@ -161,7 +159,9 @@ function editModal() {
         }
     });
 
-    $("#postEdit").click(postEdit);
+    $("#postEdit").click(function(){
+        postEdit(id);
+    });
     $("#cancelEditButton").click(function() {
         $(".dialog-form-edit").dialog("close");
     });
