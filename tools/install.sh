@@ -389,14 +389,25 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 
-echo ""
-echo "Populating database config."
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='DownloadPath')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='imagePath')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='data')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mincPath')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
+while true; do
+    read -p "Would you like to automatically populate database config? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
+    case $yn in
+        [Yy]* )
+            echo ""
+            echo "Populating database config."
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='DownloadPath')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='imagePath')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='data')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mincPath')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
+        [Nn]* )
+            echo "Not automatically populating database config."
+            break;;
+         * ) echo "Please enter 'y' or 'n'."
+    esac
+done;
 
 
 echo ""
