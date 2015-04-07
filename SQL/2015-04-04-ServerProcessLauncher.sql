@@ -21,3 +21,6 @@ INSERT INTO permissions (code,description,categoryID) VALUES ('server_processes_
 INSERT INTO user_perm_rel (userID, permID) VALUES (1, (SELECT permID FROM permissions WHERE code = 'server_processes_manager'));
 
 INSERT INTO LorisMenu (Parent, Label, Link, Visible, OrderNumber) VALUES (6, 'Server Processes Manager', 'main.php?test_name=server_processes_manager', NULL, 6);
+
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='server_processes_manager' AND m.Label='Server Processes Manager';

@@ -1005,7 +1005,7 @@ INSERT INTO `permissions` VALUES
     (35,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
     (36,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2'),
     (37,'document_repository_view','View and upload files in Document Repository','2'),
-    (38,'document_repository_delete','Delete files in Document Repository','2');
+    (38,'document_repository_delete','Delete files in Document Repository','2'),
     (39,'server_processes_manager','View and manage server processes','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
@@ -1989,7 +1989,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Survey Module', 'main.php?test_name=survey_accounts', 6,2),
     ('Help Editor', 'main.php?test_name=help_editor', 6,3),
     ('Instrument Manager', 'main.php?test_name=instrument_manager', 6,4),
-    ('Configuration', 'main.php?test_name=configuration', 6, 5);
+    ('Configuration', 'main.php?test_name=configuration', 6, 5),
     ('Server Processes Manager', 'main.php?test_name=server_processes_manager', 6, 6);
 
 CREATE TABLE LorisMenuPermissions (
@@ -2092,6 +2092,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
 
+-- Server Processes Manager
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='server_processes_manager' AND m.Label='Server Processes Manager';
 
 CREATE TABLE `ConfigSettings` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
