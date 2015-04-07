@@ -64,5 +64,5 @@ $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
 
-exit(5);
+exit(0);
 ?>
