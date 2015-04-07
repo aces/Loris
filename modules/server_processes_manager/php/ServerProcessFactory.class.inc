@@ -65,7 +65,7 @@ class ServerProcessFactory
                 $userId,
                 $startTime,
                 $endTime,
-                $exitText,
+                $exitText
             );
         }
 
