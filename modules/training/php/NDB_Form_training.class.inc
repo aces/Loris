@@ -59,7 +59,8 @@ class NDB_Form_Training extends NDB_Form
             $trainingExists = $this->getTrainingContentStatus($instrumentID);
             if ($trainingExists) {
                 if ($isExaminer) {
-                    $certificationStatus = getCertificationStatus($instrumentID);
+                    $certificationStatus
+                        = $this->getCertificationStatus($instrumentID);
                     if ($certificationStatus == 'certified') {
                         $certifications['certified'][$instrumentID]
                             = $instrumentName;

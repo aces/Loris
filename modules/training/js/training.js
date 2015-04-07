@@ -15,7 +15,7 @@ function validateQuiz(form) {
 function tryAgain() {
     $('#incorrect').modal('hide')
     $('#tabs').html("");
-    loadTabs();
+    loadTabs("training");
 }
 
 /* Load the content of one tab, enable the tab header to be clicked, open tab*/

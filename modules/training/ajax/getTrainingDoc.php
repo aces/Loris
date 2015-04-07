@@ -34,10 +34,10 @@ if (empty($basePath)) {
 }
 
 $File     = $_GET['file'];
-$FullPath = $basePath . "/modules/examiner/training_docs/$File";
+$FullPath = $basePath . "/modules/training/training_docs/$File";
 
 // Check that the user has examiner permission, or is an examiner
-if (!($user->hasPermission('examiner') || isExaminer($userFullName, $userCenter))) {
+if (!$user->hasPermission('training')) {
     error_log("ERROR: Permission denied for accessing $File");
     header('HTTP/1.1 403 Forbidden');
     exit(2);
@@ -67,33 +67,4 @@ fpassthru($fp);
 fclose($fp);
 
 exit(5);
-
-/**
- * Determines if a the user's name and site matches that of an examiner
- *
- * @param string $name   The full name of the user
- * @param int    $center The id of the user's site
- *
- * @return boolean
- */
-function isExaminer($name, $center)
-{
-    $DB = Database::singleton();
-
-    $examiner = $DB->pselectOne(
-        "SELECT examinerID 
-         FROM examiners 
-         WHERE full_name=:name AND centerID=:center",
-        array(
-         'name'   => $name,
-         'center' => $center,
-        )
-    );
-
-    if (!empty($examiner)) {
-        return true;
-    } else {
-        return false;
-    }
-}
 ?>
