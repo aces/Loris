@@ -4,6 +4,11 @@
     <!-- </div> -->
     <!-- <div class="col-xs-4"> -->
         {$actions}
+        <a href="#" class="scanDoneLink" data-pscid="{$PSCID}">
+           <button class="btn btn-primary">
+              View Imaging datasets</button>
+        </a>
+
     <!-- </div> -->
 </div>
 <br>
@@ -26,7 +31,7 @@
             <th>Stage Status</th>
             <th>Date of Stage</th>
             <th>Sent To DCC</th>
-            <th>MR Scan Done</th>
+            <th>Imaging Scan Done</th>
             <th>Feedback</th>
             <th>BVL QC</th>
             <th>BVL Exclusion</th>
