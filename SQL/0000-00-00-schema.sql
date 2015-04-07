@@ -2375,7 +2375,6 @@ CREATE TABLE `CNV` (
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
   FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-<<<<<<< HEAD
 
 CREATE TABLE `certification_training` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -2424,5 +2423,3 @@ CREATE TABLE `server_processes` (
   KEY `FK_task_1` (`userid`),
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-=======
->>>>>>> Updating schema to take out foreign key in user_login_history
