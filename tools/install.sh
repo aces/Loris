@@ -330,6 +330,7 @@ while true; do
                     break;
                 fi
             done;
+            break;;
         [Nn]* )
             echo "Not automatically creating MySQL database for LORIS."
             break;;
@@ -351,6 +352,7 @@ while true; do
                 echo "Could not connect to database with the root user provided.";
                 exit 1;
             fi
+            break;;
         [Nn]* )
             echo "Not automatically creating and granting privileges to MySQL user '$mysqluser'@'localhost'."
             break;;
@@ -372,6 +374,7 @@ while true; do
             pw_expiry=$(date --date="6 month" +%Y-%m-%d)
             echo "Updating admin password reset date to be $pw_expiry"
             mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
+            break;;
         [Nn]* )
             echo "Not automatically creating/populating database tables from schema."
             break;;
@@ -402,6 +405,7 @@ while true; do
             mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='data')"
             mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mincPath')"
             mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
+            break;;
         [Nn]* )
             echo "Not automatically populating database config."
             break;;
