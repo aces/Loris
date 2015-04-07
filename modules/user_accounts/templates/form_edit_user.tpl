@@ -83,13 +83,13 @@ $(document).ready(function() {
     <div class="row form-group form-inline form-inline has-error">
     {else}
     <div class="row form-group form-inline form-inline">
+    {/if}
     	<label class="col-sm-2">
     		{$form.Password_Group.label}
     	</label>
     	<div class="col-sm-10">
     		{$form.Password_Group.html}
     	</div>
-    {/if}
     </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
