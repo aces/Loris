@@ -117,6 +117,7 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dashboard
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/examiner
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/training
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
