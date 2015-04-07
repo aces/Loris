@@ -84,13 +84,11 @@ $(document).ready(function() {
     {else}
     <div class="row form-group form-inline form-inline">
     {/if}
-    	<label class="col-sm-2 form-label">
+    	<label class="col-sm-2">
     		{$form.Password_Group.label}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Password_Group.NA_Password.html} {$form.Password_Group.checkLabel.html}
-            <br>
-            {$form.Password_Group.Password_md5.html}
+    		{$form.Password_Group.html}
     	</div>
         {if $form.errors.Password_Group}
             <div class="col-sm-offset-2 col-xs-12">
