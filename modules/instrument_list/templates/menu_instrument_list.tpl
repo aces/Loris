@@ -45,8 +45,8 @@
      <tr><td nowrap="nowrap">The battery has no registered instruments</td></tr>
 {/section}
 </table>
-  <br>
-  <br>
+  <div class="col-xs-12 row">
+  </div>
   <div class="col-xs-12 row">
     <button class="btn btn-primary" onclick="location.href='main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$sessionID}'">View Imaging data</button>
   </div>

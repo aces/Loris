@@ -62,13 +62,16 @@
             </td>
             <td>
             {if $timePoints[timepoint].Scan_done != ""}
-                       {if $timePoints[timepoint].Scan_done == 'Y'}
-            					{assign var="scan_done" value="Yes"}
-                                <a href="#" class="timepoint_list" data-pscid="{$PSCID}" data-visitlabel="{$timePoints[timepoint].Visit_label}">{$scan_done}</a>
-    						{else}
-    							{assign var="scan_done" value="No"}
-    							{$scan_done}
-    		        		{/if}
+                    {if $timePoints[timepoint].Scan_done == 'Y'}
+                        {assign var="scan_done" value="Yes"}
+                        <a href="#" class="timepoint_list" 
+                            data-visitlabel="{$timePoints[timepoint].Visit_label}"
+                            data-pscid="{$PSCID}">
+                        {$scan_done}</a>
+                    {else}
+                        {assign var="scan_done" value="No"}
+                        {$scan_done}
+                    {/if}
             {else}
                 <img alt="Data Missing" src="images/help2.gif" border=0>
             {/if}

@@ -4,7 +4,7 @@ $(document).ready(function() {
     // Filters will only get applied on a POST, so
     // on click we need to fake a form which posts
     // to the imaging_browser in order to get filters
-    $(".scanDoneLink").click(function(e) {
+    $(".instrument_list").click(function(e) {
         e.preventDefault();
         var form = $('<form />', {
             "action" : "main.php?test_name=imaging_browser",
@@ -12,7 +12,6 @@ $(document).ready(function() {
         });
         var values = {
             "reset"  : "true",
-            "DCCID"  : this.dataset.candID,
             "pscid"  : this.dataset.pscid,
             "VL"     : this.dataset.visitlabel,
             "filter" : "Show Data"
