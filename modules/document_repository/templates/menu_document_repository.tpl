@@ -1,3 +1,83 @@
+{literal}
+<style type="text/css">
+
+</style>
+<script type="text/javascript" src="js/modules/mustache.js"></script>
+
+<script id="json_data" type="text/json">
+    {/literal}{$File_categories|json_encode}{literal}
+</script>
+<script id="dir" type="x-tmpl-mustache">
+    <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
+        <td class="fileColumn">
+            {{ #depth }}
+                {{ #first }}
+                    <div class="spacer" style="border-left: none;"> </div>
+                {{ /first }}
+                {{ ^first }}
+                    <div class="spacer"> </div>
+                {{ /first }}
+            {{ /depth }}
+            {{ #indent }}
+                <div class="fileDDD">
+                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right'>
+                        {{ name }}
+                    </span>
+                </div>
+            {{ /indent }}
+            {{ ^indent }}
+                <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right'>
+                    {{ name }}
+                </span>
+            {{ /indent }}
+        </td>
+        <td colspan="9"></td>
+    </tr>
+</script>
+<script id="file" type="x-tmpl-mustache">
+    <tr class="{{ parentID }}a" style="display:none">
+        <td class="blah fileColumn">
+            {{ #depth }}
+                {{ #first }}
+                    <div class="spacer" style="border-left: none;"> </div>
+                {{ /first }}
+                {{ ^first }}
+                    <div class="spacer"> </div>
+                {{ /first }}
+            {{ /depth }}
+            <div class="fileDDD"><div style="padding-top: 8px">{{ File_name }} ({{ File_size }})</div></div>
+        </td>
+        <td>
+            {{ version }}
+        </td>
+        <td>
+            {{ File_type }}
+        </td>
+        <td>
+            {{ instrument }}
+        </td>
+        <td>
+            {{ uploaded_by }}
+        </td>
+        <td>
+            {{ For_site }}
+        </td>
+        <td>
+            {{ comments }}
+        </td>
+        <td>
+            {{ Date_uploaded }}
+        </td>
+        <td nowrap="nowrap">
+            <a href="#" id="{{ record_id }}" class="theeditlink">Edit</a>
+        </td>
+        <td nowrap="nowrap">
+            <a href="#" id="{{ record_id }}" class="thedeletelink">Delete</a>
+        </td>
+    </tr>
+</script>
+{/literal}
+
 <div class="row">
 <div class="col-sm-12">
     <div class="col-xs-12">
@@ -61,62 +141,33 @@
     </div>
 </div>
 </div>
-                
-<div class = "ui-accordion ui-widget ui-helper-reset">
-<table border="0" width="80%" id = "accordionTable" class="docRepository" data-open = "{$openAccordion}">
-<tr>
-    {section name=header loop=$headers}
-        <th nowrap="nowrap" class="accordionHeaders">
-            {if $headers[header].displayName == "Edit" || $headers[header].displayName == "Delete"}
-                {$headers[header].displayName}
-            {else}
-                <a href="main.php?openAccordion=true&test_name=document_repository&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
-                    {$headers[header].displayName}
-                </a>
-            {/if}
-        </th>
-    {/section}
-</tr>
+
+<center>
+    <button class="btn btn-lg btn-primary loading"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
+</center>
+
 
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
-<div id="accordion" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons" role="tablist">
-{foreach from=$File_categories item=val key=k}
-    {if $val != "Any"}
-        <tr>
-                <td nowrap="nowrap" colspan = "11">
-                    <h3 id = "header_{$File_categories[$k].CategoryName|replace:$find:$replaceFind}" class="categories_header ui-accordion-header ui-helper-reset  ui-state-default ui-corner-all" style="background-color: #e0dde2; padding: 3px;" align="left">{$File_categories[$k].CategoryName}
-                        <span class="tip">...
-                            <span id="categorycomment{$k}" class="categorycomments" name="headercomment_{$File_categories[$k].CategoryName|replace:$find:$replaceFind}" contenteditable="true">
-                                {$File_categories[$k].Comment}
-                            </span>
-                </span>
-            </h3>
-        </tr>
-        {section name=file loop=$File_categories[$k].Files}
-            {assign var="FileDetails" value=$File_categories[$k].Files[file]}
-            <tr class="categories_{$File_categories[$k].CategoryName|replace:$find:$replaceFind} ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
-                <td class="File_name" nowrap="nowrap">
-                    <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$FileDetails.Data_dir}" target="_blank" download="{$FileDetails.File_name}">{$FileDetails.File_name}</a> ({$FileDetails.File_size})
-                </td>
-                <td class="version" nowrap="nowrap">{$FileDetails.version}</td>
-                <td class="File_type" nowrap="nowrap">{$FileDetails.File_type}</td>
-                <td class="Instrument" nowrap="nowrap">{$FileDetails.Instrument}</td>
-                <td class="uploaded_by" nowrap="nowrap">{$FileDetails.uploaded_by}</td>
-                <td class="For_site" nowrap="nowrap">{$FileDetails.For_site}</td>
-                <td class="comments" nowrap="nowrap">{$FileDetails.comments}</td>
-                <td class="Date_uploaded" nowrap="nowrap">{$FileDetails.Date_uploaded}</td>
-                <td nowrap="nowrap">
-                    <a href="#" id="{$FileDetails.record_id}" class="theeditlink">Edit</a>
-                </td>
-                <td nowrap="nowrap">
-                    <a href="#" id="{$FileDetails.record_id}" class="thedeletelink">Delete</a>
-                </td>
-            </tr>
+
+<table id="dirTable" class="table dynamictable">
+    <thead>
+        {section name=header loop=$headers}
+            <th class="info" nowrap="nowrap" class="accordionHeaders">
+                {if $headers[header].displayName == "Edit" || $headers[header].displayName == "Delete"}
+                    {$headers[header].displayName}
+                {else}
+                    <a href="main.php?openAccordion=true&test_name=document_repository&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
+                        {$headers[header].displayName}
+                    </a>
+                {/if}
+            </th>
         {/section}
-    {/if}
-{/foreach}
-</div> <!--end of toggle div-->
+    </thead>
+    <tbody id="dir-tree">
+
+    </tbody>
+</table>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -272,11 +323,7 @@
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-4" for="file">File<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
-                                <span class="file-wrapper">
-                                    <input type="file" name="file" id="file" style = "margin-left: 1em;"/>
-                                <span class="button-file ui-button-text ui-widget ui-state-default ui-corner-all ui-button-text-only" role = "button" aria-disabled = "false" style = "margin-left:10.5em; padding: 0.5em;">Choose file</span>
-                                <span class="fileName"></span>
-                                </span>
+                                <input type="file" name="file" class="fileUpload" id="file" style = "margin-left: 1em;"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
