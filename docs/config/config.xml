@@ -182,7 +182,7 @@
     <!-- end of study definition -->
 
     <gui>
-        <showDatabaseQueries>0</showDatabaseQueries>
+        <showDatabaseQueries>1</showDatabaseQueries>
     </gui>
 
     <!-- used by _hasAccess in NDB_BVL_Instrument to determine
