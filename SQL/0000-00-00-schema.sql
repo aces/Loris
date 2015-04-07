@@ -1919,7 +1919,7 @@ CREATE TABLE `user_login_history` (
   `Login_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `IP_address` varchar(255) DEFAULT NULL,
   `Page_requested` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`loginhistoryID`),
+  PRIMARY KEY (`loginhistoryID`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
