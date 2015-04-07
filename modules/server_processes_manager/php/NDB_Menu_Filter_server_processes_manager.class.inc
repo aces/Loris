@@ -36,7 +36,7 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user = User::singleton();
         return $user->hasPermission('server_processes_manager');
     }
 
@@ -96,33 +96,6 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
         $this->addBasicText('pid', 'PID:');
         $this->addBasicText('type', 'Type:');
         $this->addBasicText('userid', 'UserId:');
-
-        return true;
-    }
-
-    /**
-     * Sets up the data to display in the result table.
-     *
-     * @param int $count number of rows to display.
-     *
-     * @return array data used by the smarty template.
-     */
-    function _setDataTableRows($count)
-    {
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                $i++;
-            }
-
-            $x++;
-        }
 
         return true;
     }
