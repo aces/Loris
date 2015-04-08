@@ -3,10 +3,10 @@
     {if $element.name}, "Name" : "{$element.name}"{/if}
     {if $element.label},"Description" : "{$element.label}"{/if}
 {/function}
-{function name="renderheader" description=$header level=$level}
+{function name="renderheader" description=$description level=$level}
 {ldelim}
     "Type" : "header",
-    "Description" : "{$header}"{if $level},
+    "Description" : "{$description}"{if $level},
     "Options" : {ldelim}
         "Level" : {$level}
     {rdelim}{/if}
@@ -91,6 +91,8 @@
             {rdelim}
         {/if}
     {/if}
+{elseif $element.type == "header"}
+    {renderheader description=$element.label level=1}
 {elseif $element.type == "group"}
     {ldelim}
         "Type" : "Group",

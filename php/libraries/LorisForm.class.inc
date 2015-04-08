@@ -29,6 +29,7 @@
  */
 class LorisForm
 {
+
     var $form          = array();
     var $defaultValues = array();
     var $formRules     = array();
@@ -221,6 +222,19 @@ class LorisForm
         $el['type'] = 'file';
     }
 
+    private function generateName($name) {
+        static $num = 1;
+        if(!empty($name)) {
+            return $name;
+        }
+        return 'anonymous' . ($num++);
+    }
+    function addHeader($name, $label, $options = array()) {
+        $name = $this->generateName($name);
+
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'header';
+    }
     /**
      * An implementation of QuickForm's addElement function. This only
      * calls the appropriate $this->addX wrapper based on the "type"
@@ -266,6 +280,9 @@ class LorisForm
             break;
         case 'password':
             $el = $this->addPassword($name, $label, $options);
+            break;
+        case 'header':
+            $el = $this->addHeader($name, $label);
             break;
         case 'text':
         default:
@@ -710,12 +727,17 @@ class LorisForm
             return $this->checkboxHTML($el);
         case 'group':
             return $this->groupHTML($el);
+        case 'header':
+            return $this->headerHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
         );
     }
 
+    function headerHTML($el) {
+        return "<h2>$el[label]</h2>";
+    }
     /**
      * Generates the HTML for an advcheckbox type element
      *
