@@ -366,7 +366,8 @@ class LorisForm
         $options       = $el['options'];
         $cls           = '';
         $changehandler = '';
-        $multiple = '';
+        $multiple      = '';
+
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
