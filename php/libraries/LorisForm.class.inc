@@ -222,6 +222,19 @@ class LorisForm
         $el['type'] = 'file';
     }
 
+    private function generateName($name) {
+        static $num = 1;
+        if(!empty($name)) {
+            return $name;
+        }
+        return 'anonymous' . ($num++);
+    }
+    function addHeader($name, $label, $options = array()) {
+        $name = $this->generateName($name);
+
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'header';
+    }
     /**
      * Generates a unique element name for anonymous elements to use
      * to differentiate things in the internal elements array.
@@ -761,6 +774,9 @@ class LorisForm
         );
     }
 
+    function headerHTML($el) {
+        return "<h2>$el[label]</h2>";
+    }
     /**
      * Generates the HTML for a header element
      *
