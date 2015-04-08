@@ -204,8 +204,9 @@ var Instrument = {
                 if(keyval[0] != 'NULL' && keyval[1]) {
                     // hack off the ' at the start and end
                     val = keyval[1].substr(1, keyval[1].length-2);
+                    key = keyval[0].substr(1, keyval[0].length-2);
                     // Don't add "not_answered", because save automagically adds it.
-                    if(val.indexOf('Not Answered') == -1) {
+                    if(key != 'not_answered') {
                         document.getElementById("new" + type + "SelectOption").value = val;
                         //addDropdownOption("multi");
                         addDropdownOption(type);
@@ -226,64 +227,66 @@ var Instrument = {
             lines = this.result.split("\n");
             for(var i = 0; i < lines.length; i++) {
                 type = "";
-                pieces = lines[i].split("{@}");
-                if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference" || 
-                        (pieces[1] && pieces[1].indexOf && pieces[1].indexOf("_status") >= 0)) {
-                    continue;
-                }
-
-                if(pieces[0] == 'date') {
-                    dateIdx = pieces[1].indexOf("_date");
-                    if(dateIdx >= 0) {
-                        pieces[1] = pieces[1].substring(0, dateIdx);
+                if(lines[i] != ''){
+                    pieces = lines[i].split("{@}");
+                    if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference" || 
+                            (pieces[1] && pieces[1].indexOf && pieces[1].indexOf("_status") >= 0)) {
+                        continue;
                     }
-                }
-                switch(pieces[0]) {
-                    case "table":
-                        document.getElementById("filename").value = pieces[1]; continue;
-                    case "title":
-                        document.getElementById("longname").value = pieces[1]; continue;
-                    case "text":
-                        $("#textbox").click(); break;
-                    case "selectmultiple":
-                        $("#multiselect").click();
-                        type = "multi"
-                        ParseSelectOptions(pieces[3], type);
-                        break;
-                    case "select":
-                        $("#dropdown").click();
-                        ParseSelectOptions(pieces[3]);
-                        break;
-                    case "header":
-                        // lots of things are saved as "header".. need to do
-                        // a little detective work
-                        if(pieces[1]) {
-                            $("#scored").click(); break;
-                        }
-                        $("#header").click(); break;
-                    case "static":
-                        if(pieces[1]) {
-                           $("#scored").click(); break;
-                        } else {
-                           if(pieces[2] == '<br />') {
-                               $("#line").click(); break;
-                           } else {
-                               $("#label").click(); break;
-                           }
-                        }
-                    case "page":
-                        $("#page-break").click(); break;
-                    default:
-                        $("#" + pieces[0]).click(); break;
-                        break;
-                }
 
-                document.getElementById("questionName").value = pieces[1];
-                document.getElementById("questionText").value = pieces[2];
-                addQuestion();
-                clearDropdownOption(type);
-                document.getElementById("questionName").value = '';
-                document.getElementById("questionText").value = '';
+                    if(pieces[0] == 'date') {
+                        dateIdx = pieces[1].indexOf("_date");
+                        if(dateIdx >= 0) {
+                            pieces[1] = pieces[1].substring(0, dateIdx);
+                        }
+                    }
+                    switch(pieces[0]) {
+                        case "table":
+                            document.getElementById("filename").value = pieces[1]; continue;
+                        case "title":
+                            document.getElementById("longname").value = pieces[1]; continue;
+                        case "text":
+                            $("#textbox").click(); break;
+                        case "selectmultiple":
+                            $("#multiselect").click();
+                            type = "multi"
+                            ParseSelectOptions(pieces[3], type);
+                            break;
+                        case "select":
+                            $("#dropdown").click();
+                            ParseSelectOptions(pieces[3]);
+                            break;
+                        case "header":
+                            // lots of things are saved as "header".. need to do
+                            // a little detective work
+                            if(pieces[1]) {
+                                $("#scored").click(); break;
+                            }
+                            $("#header").click(); break;
+                        case "static":
+                            if(pieces[1]) {
+                               $("#scored").click(); break;
+                            } else {
+                               if(pieces[2] == '<br />') {
+                                   $("#line").click(); break;
+                               } else {
+                                   $("#label").click(); break;
+                               }
+                            }
+                        case "page":
+                            $("#page-break").click(); break;
+                        default:
+                            $("#" + pieces[0]).click(); break;
+                            break;
+                    }
+
+                    document.getElementById("questionName").value = pieces[1];
+                    document.getElementById("questionText").value = pieces[2];
+                    addQuestion();
+                    clearDropdownOption(type);
+                    document.getElementById("questionName").value = '';
+                    document.getElementById("questionText").value = '';
+                }
             }
         }
 
