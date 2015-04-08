@@ -215,6 +215,7 @@ var Instrument = {
 
         }       
         var ParseInstrument = function() {
+            var type;
             table = document.getElementById("workspace")
             $("table#workspace tr td").each(function() {
                 $(this).closest("tr").remove();
@@ -224,6 +225,7 @@ var Instrument = {
             }
             lines = this.result.split("\n");
             for(var i = 0; i < lines.length; i++) {
+                type = "";
                 pieces = lines[i].split("{@}");
                 if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference" || 
                         (pieces[1] && pieces[1].indexOf && pieces[1].indexOf("_status") >= 0)) {
@@ -245,7 +247,8 @@ var Instrument = {
                         $("#textbox").click(); break;
                     case "selectmultiple":
                         $("#multiselect").click();
-                        ParseSelectOptions(pieces[3], "multi");
+                        type = "multi"
+                        ParseSelectOptions(pieces[3], type);
                         break;
                     case "select":
                         $("#dropdown").click();
@@ -273,13 +276,12 @@ var Instrument = {
                     default:
                         $("#" + pieces[0]).click(); break;
                         break;
-                        
                 }
 
                 document.getElementById("questionName").value = pieces[1];
                 document.getElementById("questionText").value = pieces[2];
                 addQuestion();
-                clearDropdownOption();
+                clearDropdownOption(type);
                 document.getElementById("questionName").value = '';
                 document.getElementById("questionText").value = '';
             }
