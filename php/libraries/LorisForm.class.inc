@@ -222,15 +222,35 @@ class LorisForm
         $el['type'] = 'file';
     }
 
-    private function generateName($name) {
+    /**
+     * Generates a name for an element, and creates a new
+     * random name if no name is given.
+     *
+     * @param string $name The name of the element called.
+     *
+     * @return $name if not empty, otherwise an unused name.
+     */
+    private function _generateName($name)
+    {
         static $num = 1;
-        if(!empty($name)) {
+        if (!empty($name)) {
             return $name;
         }
         return 'anonymous' . ($num++);
     }
-    function addHeader($name, $label, $options = array()) {
-        $name = $this->generateName($name);
+
+    /**
+     * Adds a header element to this LorisForm.
+     *
+     * @param string $name    The name of the header element, may be null
+     * @param string $label   The description for the header
+     * @param array  $options Other options for this header element
+     *
+     * @return none
+     */
+    function addHeader($name, $label, $options = array())
+    {
+        $name = $this->_generateName($name);
 
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
@@ -774,9 +794,19 @@ class LorisForm
         );
     }
 
-    function headerHTML($el) {
+    /**
+     * Generates the HTML for a header type element
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a header
+     *
+     * @return string The HTML for the given header element
+     */
+    function headerHTML($el)
+    {
         return "<h2>$el[label]</h2>";
     }
+
     /**
      * Generates the HTML for a header element
      *
