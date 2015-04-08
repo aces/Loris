@@ -1699,7 +1699,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $group[] = $this->createDate(
             $name . "_date",
-            null,
+            $label,
             $options,
             array(
              'class' => 'form-control input-sm '.$name."_date",
@@ -2212,42 +2212,45 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         } else if ($element['type'] === "date") {
-            $html = new DOMDocument();
-            $html->loadHTML($element['html']);
-            // Parse the HTML to get the min and max date
-            $selects = $html->getElementsByTagName("select");
-            if($selects->length > 0) {
-                // Old school QuickForm style. This should be removed
-                // after QuickForm is retired.
-                $year = $selects->item(0);
-
-                // If Item 0 is blank, item 1 is the minimum,
-                $minYear = $year->childNodes->item(0)->textContent;
-
-                // PHP's trim function doesn't support UTF-8's 0xC2A0 (&nbsp;),
-                // which seems to be how loadHTML parses spaces. Trim whitespace
-                // and then specifically trim that character before checking if
-                // the year is empty, and if it's empty use the next option in
-                // the dropdown (which should be non-empty)
-                $minYear = trim($minYear);
-                $minYear = trim($minYear, chr(0xC2).chr(0xA0));
-                if(empty($minYear)) {
-                    $minYear = $year->childNodes->item(1)->textContent;
-                }
-                // the last item is the maximum year
-                $maxYear = $year->lastChild->textContent;
-
-                $element['options'] = array(
-                    'mindate' => $minYear . "-01-01",
-                    'maxdate' => $maxYear . "-12-31",
-                );
-
-            } else {
-                //LorisForm
+            if(get_class($this->form) === 'LorisForm') {
                 $element['options'] = array(
                     'mindate' => "1990-01-01",
                     'maxdate' => "2000-12-31",
+                    'RequireResponse' => false,
                 );
+                //$element['RequireResponse'] = false;
+            } else {
+                $html = new DOMDocument();
+                $html->loadHTML($element['html']);
+                // Parse the HTML to get the min and max date
+                $selects = $html->getElementsByTagName("select");
+                if($selects->length > 0) {
+                    // Old school QuickForm style. This should be removed
+                    // after QuickForm is retired.
+                    $year = $selects->item(0);
+
+                    // If Item 0 is blank, item 1 is the minimum,
+                    $minYear = $year->childNodes->item(0)->textContent;
+
+                    // PHP's trim function doesn't support UTF-8's 0xC2A0 (&nbsp;),
+                    // which seems to be how loadHTML parses spaces. Trim whitespace
+                    // and then specifically trim that character before checking if
+                    // the year is empty, and if it's empty use the next option in
+                    // the dropdown (which should be non-empty)
+                    $minYear = trim($minYear);
+                    $minYear = trim($minYear, chr(0xC2).chr(0xA0));
+                    if(empty($minYear)) {
+                        $minYear = $year->childNodes->item(1)->textContent;
+                    }
+                    // the last item is the maximum year
+                    $maxYear = $year->lastChild->textContent;
+
+                    $element['options'] = array(
+                        'mindate' => $minYear . "-01-01",
+                        'maxdate' => $maxYear . "-12-31",
+                    );
+
+                }
             }
             if(isset($this->WrapperDateWithStatusElements[$element['name']])) {
                 $element['NoResponse'] = false;
@@ -2296,11 +2299,18 @@ class NDB_BVL_Instrument extends NDB_Page
             }
 
             if(isset($this->WrapperDateWithStatusElements[$elementName])) {
-                // Convert text elements created by wrapper into
+                // Convert date elements created by wrapper into
                 // the native type.
                 $mapFunc = function(&$el) use ($name, $elementName) {
 
                     if($el['name'] === $name) {
+                        $el['name'] = $elementName;
+                        $el['type'] = 'date';
+                        if(isset($el['elements'][0]['label'])) {
+                            $el['label'] = $el['elements'][0]['label'];
+                        }
+                        //unset($el['elements']);
+                        //unset($el['delimiter']);
                         //$label = $el['label'];
                         //$el = $this->_toJSONParseSmarty($el['elements'][0]);
                         //$el['label'] = $label;
