@@ -205,7 +205,7 @@ var Instrument = {
                     // hack off the ' at the start and end
                     val = keyval[1].substr(1, keyval[1].length-2);
                     // Don't add "not_answered", because save automagically adds it.
-                    if(val != 'Not Answered') {
+                    if(val.indexOf('Not Answered') == -1) {
                         document.getElementById("new" + type + "SelectOption").value = val;
                         //addDropdownOption("multi");
                         addDropdownOption(type);
