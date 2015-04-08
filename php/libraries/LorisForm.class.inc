@@ -49,7 +49,7 @@ class LorisForm
      *
      * @return array describing the form element
      */
-    protected function &createBase($name, $label, $attribs)
+    protected function &createBase($name, $label, $attribs=array())
     {
         $el = array(
                'label' => $label,
@@ -101,6 +101,9 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
+        if (isset($attribs['multiple'])) {
+            $el['multiple'] = $attribs['multiple'];
+        }
 
     }
 
@@ -363,6 +366,7 @@ class LorisForm
         $options       = $el['options'];
         $cls           = '';
         $changehandler = '';
+        $multiple = '';
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
@@ -381,7 +385,10 @@ class LorisForm
         if (isset($el['onchange'])) {
             $changehandler = "onchange=\"$el[onchange]\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls $changehandler";
+        if (isset($el['multiple'])) {
+            $multiple = "multiple=\"multiple\"";
+        }
+        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple";
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
@@ -871,7 +878,7 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs)
+    function createElement($type, $elname, $label, $options, $attribs=array())
     {
         switch($type) {
         case 'text':
@@ -915,6 +922,9 @@ class LorisForm
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
+        if (isset($attribs['multiple'])) {
+            $el['multiple'] = $attribs['multiple'];
+        }
         return $el;
 
     }
