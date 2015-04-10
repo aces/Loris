@@ -1,4 +1,5 @@
 <?php
+ini_set("max_input_vars", 4000);
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
@@ -20,13 +21,17 @@ $results = $cdb->queryView(
     array("reduce" => "false",
         "include_docs" => "true",
         "keys" =>  $keys,
-      )
+    ),
+    true
 );
 
+print $results;
+/*
 $justTheDocs = array_map(function($row) {
     return $row['doc'];
 },
 $results);
 
 print json_encode($justTheDocs);
+ */
 ?>

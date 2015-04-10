@@ -264,12 +264,26 @@ class CouchDB
         $handler->write("\r\n");
 
         $response = '';
+        $finishedHeaders = false;
+        $lastLine = '';
+        $curLine = '';
         while (!$handler->eof()) {
-            $response .= $handler->gets();
+            $curLine = $handler->gets();
+
+            if ($finishedHeaders === false) {
+                if ($curLine == "\r\n") {// && $lastLine == "\r\n") {
+                    error_log("Finished headers");
+                    $finishedHeaders = true;
+                }
+            } else { // headers are finished
+                $response .= $curLine;
+            }
+
+            $lastLine = $curLine;
         }
         $handler->close();
-        $response_split = explode("\r\n\r\n", $response, 2);
-        return trim($response_split[1]);
+
+        return $response;
     }
 
     /**
