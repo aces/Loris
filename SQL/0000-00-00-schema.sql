@@ -1007,8 +1007,8 @@ INSERT INTO `permissions` VALUES
     (36,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2'),
     (37,'document_repository_view','View and upload files in Document Repository','2'),
     (38,'document_repository_delete','Delete files in Document Repository','2'),
-    (39,'server_processes_manager','View and manage server processes','2');
-
+    (39,'server_processes_manager','View and manage server processes','2'),
+    (39,'mri_upload','MRI Uploader','2');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
