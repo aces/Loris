@@ -92,6 +92,8 @@ else
     fi
 fi
 
+echo ""
+
 cat <<QUESTIONS
 Please answer the following questions. You'll be asked:
   1) Your project directory name from section A) of the Installation Guide.
