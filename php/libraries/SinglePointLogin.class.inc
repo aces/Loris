@@ -85,16 +85,13 @@ class SinglePointLogin
             // If StudyLinks aren't defined, it shouldn't be fatal.
         }
 
+        $study_title = $config->getSetting('title');
         $tpl_data['study_title'] = $study_title;
         try {
-            $tpl_data['study_logo'] = $study_logo;
+            $tpl_data['study_logo'] = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
             $tpl_data['study_logo'] = '';
         }
-
-        // If there's no study, we have a bigger problem
-        $study_title = $config->getSetting('title');
-
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
