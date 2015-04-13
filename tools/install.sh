@@ -397,23 +397,16 @@ while true; do
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
-            if [ -f /etc/httpd/sites-available/$projectname ]; then
+            if [ -f /etc/httpd/conf.d/$projectname ]; then
                 echo "Apache appears to already be configured for $projectname. Aborting\n"
                 exit 1
             fi;
-            # make directories if missing
-            sudo mkdir -p /etc/httpd/sites-available;
-            sudo mkdir -p /etc/httpd/sites-enabled;
 
             # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
             sed -e "s#%LORISROOT%#$RootDir#g" \
                 -e "s#%PROJECTNAME%#$projectname#g" \
                 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
-                < ../docs/config/apache2-site | sudo tee /etc/httpd/sites-enabled/$projectname.conf > /dev/null
-            sudo ln -s /etc/httpd/sites-available/$projectname.conf /etc/httpd/sites-enabled/$projectname.conf
-            
-            # Insert a line in main apache config file to include new file
-            sudo sed -i '221 a\Include /etc/httpd/sites-available/*.conf' /etc/httpd/conf/httpd.conf
+                < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/$projectname.conf > /dev/null
             
             sudo service httpd restart
             break;;
