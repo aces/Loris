@@ -3,9 +3,9 @@
 #
 # This will:
 #   1. Install PEAR libraries
-#   2. Set up the Loris DB schema
+#   2. Set up the LORIS DB schema
 #   3. Log the installation in the logs directory
-# This will only install the database components and Loris config file.
+# This will only install the database components and LORIS config file.
 #
 
 # Must be run interactively.
@@ -101,17 +101,17 @@ Please answer the following questions. You'll be asked:
      config.xml file for LORIS, and may also be used to automatically
      create/install apache config files.)
   2) A name for the MySQL Database. This should be
-     a simple identifier such as "Loris" or "Abc_Def".
+     a simple identifier such as "LORIS" or "Abc_Def".
      This database will be created later on so please make sure
      a database with the same name does not already exist.
   3) The hostname for the machine where the MySQL server will run on
      (this is where we'll create the database).
-  4) The MySQL username that the Loris system will use to connect
+  4) The MySQL username that the LORIS system will use to connect
      to this server and database; this MySQL account will be
      created later on so please make sure a user with the same name
      does not already exist.
   5) The password for this username (it will be set later on).
-  6) Another password for the 'admin' account of the Loris DB
+  6) Another password for the 'admin' account of the LORIS DB
      (it will also be set later on).
   7) Credentials of an existing root MySQL account to install the
      default schema. This will only be used once, to create and
@@ -149,7 +149,7 @@ while [ "$projectname" == "" ]; do
 done;
 
 if [ -f ../project/config.xml ]; then
-    echo "Loris appears to already be installed. Aborting."
+    echo "LORIS appears to already be installed. Aborting."
     exit 2;
 fi
 
@@ -203,11 +203,11 @@ while [ "$mysqlhost" == "" ]; do
 done;
 
 while [ "$mysqluser" == "" ]; do
-        read -p "What MySQL user will Loris connect as? " mysqluser
+        read -p "What MySQL user will LORIS connect as? This will be created later in the script. " mysqluser
 	echo $mysqluser | tee -a $LOGFILE > /dev/null
        	case $mysqluser in
                	"" )
-                       	read -p "What MySQL user will Loris connect as? " mysqluser
+                       	read -p "What MySQL user will LORIS connect as? This will be created later in the script. " mysqluser
                        	continue;;
                 * )
        	                break;;
@@ -231,7 +231,7 @@ stty echo ; echo ""
 stty -echo
 
 while true; do
-        read -p "Enter the front-end Loris 'admin' user's password: " lorispass
+        read -p "Enter the front-end LORIS 'admin' user's password: " lorispass
         echo ""
         read -p "Re-enter the password to check for accuracy: " lorispass2
         if [[ "$lorispass" == "$lorispass2" ]] ; then
@@ -307,7 +307,6 @@ while true; do
 done;
 
 
-
 echo ""
 echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'localhost' ..."
 echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
@@ -318,14 +317,13 @@ if [ $MySQLError -ne 0 ] ; then
 fi
 
 
-
 echo ""
 echo "Creating/populuating database tables from schema."
 echo ""
 mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
-echo "Updating Loris admin user's password."
+echo "Updating LORIS admin user's password."
 pw_expiry=$(date --date="6 month" +%Y-%m-%d)
-echo "Updating admin password reset date to be $pw_expiry"
+echo "Updating LORIS admin user's password reset date to be $pw_expiry"
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
 
 
@@ -338,7 +336,6 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 
-
 echo ""
 echo "Populating database config."
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
@@ -349,6 +346,7 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
 
 
+echo ""
 # Install external libraries using composer
 cd ..
 eval $composer_scr
