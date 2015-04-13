@@ -134,10 +134,10 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            {$form.scan_done.label}
+                            &nbsp;
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            {$form.scan_done.html}
+                            &nbsp;
                         </div>
                     </div>
                     <div class="form-group col-sm-4">
