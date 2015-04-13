@@ -112,7 +112,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->order_by = 'psc.Name, c.CandID DESC, s.VisitNo';
 
         $this->validFilters       = array(
-                                     'participant_status_options.ID',
+                                     'pso.ID',
                                      'c.CenterID',
                                      'c.CandID',
                                      'c.PSCID',
