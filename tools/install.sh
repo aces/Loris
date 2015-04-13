@@ -321,9 +321,9 @@ echo ""
 echo "Creating/populuating database tables from schema."
 echo ""
 mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
-echo "Updating LORIS admin user's password."
+echo "Updating LORIS 'admin' user's password."
 pw_expiry=$(date --date="6 month" +%Y-%m-%d)
-echo "Updating LORIS admin user's password reset date to be $pw_expiry"
+echo "Updating LORIS 'admin' user's password reset date to be $pw_expiry"
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
 
 
