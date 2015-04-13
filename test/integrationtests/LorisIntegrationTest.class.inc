@@ -147,7 +147,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         }
 
         $configID = $this->DB->pselectOne(
-            "SELECT ID FROM ConfigSettings WHERE NAME=:configName",
+            "SELECT ID FROM ConfigSettings WHERE Name=:configName",
             array(":configName" => $configName)
         );
 
