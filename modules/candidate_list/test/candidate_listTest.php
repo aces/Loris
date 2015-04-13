@@ -72,7 +72,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         );
         $this->DB->update(
             "Config",
-            array("Value" => $this->useEDCBackup),
+            array("Value" => $this->_useEDCBackup),
             array("ConfigID" => $this->_useEDCId)
         );
         parent::tearDown();
