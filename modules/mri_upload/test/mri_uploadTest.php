@@ -6,7 +6,7 @@ class mri_uploadTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . '?test_name=mri_upload');
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Mri  Upload", $bodyText);
+        $this->assertContains("Mri Upload", $bodyText);
     }
 }
 ?>
