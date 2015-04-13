@@ -117,6 +117,7 @@ Please answer the following questions. You'll be asked:
      newly created MySQL user in part 3).
 QUESTIONS
 
+echo ""
 
 while true; do
         read -p "Ready to continue? [yn] " yn
