@@ -116,10 +116,10 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            {$form.Latest_Visit_Status.label}
+                            {$form.edc.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            {$form.Latest_Visit_Status.html}
+                            {$form.edc.html}
                         </div>
                     </div>
                 </div>
