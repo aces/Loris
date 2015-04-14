@@ -31,13 +31,12 @@ if (empty($basePath)) {
     exit(1);
 }
 
-$File     = $_GET['file'];
+$File = $_GET['file'];
 
 $ext = pathinfo($File, PATHINFO_EXTENSION);
-if($ext == 'pdf') {
+if ($ext == 'pdf') {
     $FullPath = $basePath . "/project/data/training/pdf/$File";
-}
-elseif($ext == 'mp4') {
+} elseif ($ext == 'mp4') {
     $FullPath = $basePath . "/project/data/training/video/$File";
 }
 // Check that the user has training permission, or is an trainer
