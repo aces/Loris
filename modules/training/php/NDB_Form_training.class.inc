@@ -121,7 +121,6 @@ class NDB_Form_Training extends NDB_Form
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
         $certificationInstruments['test'] = Utility::toArray($certificationInstruments['test']);
-        print_r($certificationInstruments);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
