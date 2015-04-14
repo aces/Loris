@@ -53,6 +53,7 @@
                    </div><!--closing imaging_browser_pic div -->
                    <div class="col-xs-3 mri-right-panel">
                       <div class="form-group">
+                         <div class="row">
                           <label>QC Status
                               {if $has_qc_permission}
                               {if $files[file].New}<span class="text-info">( <span class="glyphicon glyphicon-star"></span> New )</span>{/if}
@@ -63,7 +64,9 @@
                                   {if $files[file].QCStatus != ""}{$files[file].QCStatus}
                                   {else}&nbsp;{/if}
                                   {/if}
-                           <label class="text-left">Selected</label>
+                           </div>
+                           <div class="row">
+                               <label class="text-left">Selected</label>
                                  {if $has_qc_permission}
                                  {html_options options=$selected_options selected=$files[file].Selected tabindex="3"
                                   name="selectedvol[`$files[file].FileID`]" class="form-control input-sm" title=" " data-live-search="true" data-width="150px"}
@@ -71,7 +74,9 @@
                                  {if $files[file].Selected != ""}{$files[file].Selected}
                                  {else}&nbsp;{/if}
                                  {/if}
-                           <label>Caveat</label>
+                           </div>
+                           <div class="row">
+                               <label>Caveat</label>
                                  {if $has_qc_permission}
                                  {if $files[file].Caveat}
                                  <a href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
@@ -83,6 +88,7 @@
                                   <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveats</a>
                                  {else}No caveats{/if}
                                  {/if}
+                          </div>
                       </div>
                    </div><!--closing mri-right-panel div -->
                    <div class="row mri-second-row-panel col-xs-12">
