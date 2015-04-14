@@ -82,13 +82,13 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         }
 
         // Need distinct because of joining with feedback_bvl_thread
-        $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label) as Visit_count';
+        $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)';
         $FeedbackSQL   = 'MIN(feedback_bvl_thread.Status+0) as Feedback';
 
         $this->columns = array_merge(
             $this->columns,
             array(
-             $VisitCountSQL,
+             "$VisitCountSQL as Visit_count",
              'max(s.Current_stage) as Latest_visit_status',
              $FeedbackSQL,
             )
