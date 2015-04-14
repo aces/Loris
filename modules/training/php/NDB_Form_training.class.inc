@@ -123,7 +123,7 @@ class NDB_Form_Training extends NDB_Form
 
         $instruments = array();
 
-        foreach ($certificationInstruments['test'] as $certificationInstrument) {
+        foreach ($certificationInstruments as $certificationInstrument) {
             $test_key = $certificationInstrument['@']['value'];
             $testID   = $DB->selectOne(
                 "SELECT ID
