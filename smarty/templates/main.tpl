@@ -528,7 +528,7 @@
                                         </div>
                                     {/if}
                                 {/if}
-                                <div id="kgkjgkjg">
+                                <div id="workspace">
                                     {$workspace}
                                 </div>  
                             {/if}
