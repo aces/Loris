@@ -20,7 +20,7 @@ $genderData    = array();
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
-    $genderData['labels'][] = $site;
+    $genderData['labels'][] = $siteName;
     $genderData['datasets']['female'][] = $DB->pselectOne(
         "SELECT COUNT(c.CandID)
          FROM candidate c
