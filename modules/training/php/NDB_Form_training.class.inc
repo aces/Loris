@@ -120,16 +120,17 @@ class NDB_Form_Training extends NDB_Form
         // Get the instruments requiring certification from the config
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
-
+        $certificationInstruments['test'] = Utility::toArray($certificationInstruments['test']);
+        print_r($certificationInstruments);
         $instruments = array();
 
-        foreach ($certificationInstruments as $certificationInstrument) {
+        foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $test_key = $certificationInstrument['@']['value'];
-            $testID   = $DB->selectOne(
+            $testID = $DB->selectOne(
                 "SELECT ID
-                 FROM test_names
-                 WHERE Test_name
-                 LIKE '%$test_key%'"
+             FROM test_names
+             WHERE Test_name
+             LIKE '%$test_key%'"
             );
             $instruments[$testID] = $certificationInstrument['#'];
         }
