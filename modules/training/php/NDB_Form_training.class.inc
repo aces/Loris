@@ -127,9 +127,9 @@ class NDB_Form_Training extends NDB_Form
             $test_key = $certificationInstrument['@']['value'];
             $testID = $DB->selectOne(
                 "SELECT ID
-             FROM test_names
-             WHERE Test_name
-             LIKE '%$test_key%'"
+                 FROM test_names
+                 WHERE Test_name
+                 LIKE '%$test_key%'"
             );
             $instruments[$testID] = $certificationInstrument['#'];
         }
