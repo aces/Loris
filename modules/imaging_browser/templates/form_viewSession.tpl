@@ -179,5 +179,6 @@
 </div>
 {else}
     <h3>No data selected</h3>
+</div>
 {/if}
 {if $has_permission}</form>{/if} 
