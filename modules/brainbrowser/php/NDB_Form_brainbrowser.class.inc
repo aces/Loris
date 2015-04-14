@@ -25,7 +25,15 @@ require_once "NDB_Form.class.inc";
  */
 class NDB_Form_Brainbrowser extends NDB_Form
 {
+    /**
+     * Stub method so that LORIS doesn't throw an exception
+     * about form named brainbrowser not found.
+     *
+     * @return none
+     */
+    function brainbrowser() {
 
+    }
     /**
      * Everyone has access to the BrainBrowser module.
      *
