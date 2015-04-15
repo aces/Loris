@@ -869,5 +869,40 @@ class Database extends PEAR
     {
         return $this->affected;
     }
+
+    /**
+     * This function fakes the data in a table for testing purposes.
+     * It replaces the existing table with a temporary table for the
+     * session, and then inserts the data passed into the temporary
+     * table. This should allow people to write more robust data
+     * dependant unit tests that depend on the data in the database
+     * without mocking every single query that needs to be used in
+     * that test.
+     *
+     * @param string $tableName The table name to fake
+     * @param array  $rowData   An array of data to be inserted into
+     *                          the fake table.
+     *
+     * @return none
+     */
+    function setFakeTableData($tableName, $rowData) {
+        $originalTableQuery = $this->_PDO->query("SHOW CREATE TABLE $tableName");
+
+        if($originalTableQuery->execute()) {
+            $createRslt = $originalTableQuery->fetchAll();
+            $createStmt = $createRslt[0]['Create Table'];
+
+            $createStmt = preg_replace("/CREATE TABLE/", "CREATE TEMPORARY TABLE", $createStmt);
+
+            $this->run($createStmt);
+
+            foreach($rowData as $row) {
+                $this->insert($tableName, $row);
+            }
+        };
+
+
+
+    }
 }
 ?>
