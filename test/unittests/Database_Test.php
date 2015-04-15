@@ -34,53 +34,25 @@ class Database_Test extends PHPUnit_Framework_TestCase
         $DB = Database::singleton();
 
         $DB->setFakeTableData(
-            "candidate",
+            "Config",
             array(
                 0 => array(
-                'CandID' => '123456',
-                'PSCID'  => 'FKE1234',
-                'DoB'    => '1900-01-01',
-                'Testdate' => '2015-04-15 11:32:34'
+                    'ID' => 99999,
+                'ConfigID' => '123456',
+                'Value'  => 'FKE1234',
             )
             )
         );
 
-        $allCandidates = $DB->pselect("SELECT * FROM candidate", array());
+        $allCandidates = $DB->pselect("SELECT * FROM Config", array());
 
         $this->assertEquals(
             $allCandidates,
             array(
                 0 => array(
-                    'ID' => 1568,
-                    'CandID' => 123456,
-                    'PSCID' => 'FKE1234',
-                    'ExternalID' => '',
-                    'DoB' => '1900-01-01',
-                    'EDC' => '',
-                    'Gender' => '',
-                    'CenterID' => 0,
-                    'ProjectID' => '',
-                    'Ethnicity' => '',
-                    'Active' => 'Y',
-                    'Date_active' =>  '',
-                    'Cancelled' => 'N',
-                    'Date_cancelled' => '',
-                    'RegisteredBy' => '',
-                    'UserID' => '',
-                    'Date_registered' => '',
-                    'Testdate' => '2015-04-15 11:32:34',
-                    'Entity_type' => 'Human',
-                    'IBISId' => '',
-                    'CandidateGUID' => '',
-                    'ProbandGUID' => '',
-                    'EARLIId' =>  '',
-                    'ProbandGender' => '',
-                    'ProbandDoB' => '',
-                    'flagged_caveatemptor' => 'false',
-                    'flagged_info' => '',
-                    'flagged_other' => '',
-                    'flagged_other_status' => '',
-                    'flagged_reason' => ''
+                    'ID' => 99999,
+                    'ConfigID' => 123456,
+                    'Value' => 'FKE1234',
                 )
 
             )
