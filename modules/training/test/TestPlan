@@ -1,0 +1,11 @@
+Training module test plan:
+1. Check for Training item in the Clinical menu.
+2. Does Training module load when clicking menu item?
+3. Check for Training permissions in the user accounts section.
+Check if user account that does not have permissions cannot access Training module.
+4. On training page, tests are loaded to appropriate lists.
+5. Opening a test expands to full test view.
+6. Click accept button and review training content, check that each type of content is working.
+7. Completion of test grants certification - check on Examiner page.
+8. Adding new test: import SQL and copy pdf and mp4 files to project/data/training/ directory.
+
