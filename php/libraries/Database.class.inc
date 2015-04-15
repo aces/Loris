@@ -536,6 +536,9 @@ class Database extends PEAR
     {
         $this->_printQuery($query);
         $this->affected     = $this->_PDO->exec($query);
+        if($this->affected === false) {
+            throw new DatabaseException("Could not run query $query");
+        }
         $this->lastInsertID = $this->_PDO->lastInsertId();
     }
 
@@ -899,6 +902,8 @@ class Database extends PEAR
             foreach($rowData as $row) {
                 $this->insert($tableName, $row);
             }
+        } else {
+            throw new DatabaseException("Could not retrieve schema of table $tableName");
         };
 
 
