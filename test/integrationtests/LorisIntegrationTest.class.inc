@@ -55,6 +55,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $database['host'],
             1
         );
+        if($this->DB === null) {
+            throw new Exception("Could not instantiated DB object for testing");
+        }
         $this->url = $this->config->getSetting("url") . "/main.php";
 
         $this->DB->insert(
