@@ -48,6 +48,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->config = NDB_Config::singleton(__DIR__ . "/../../project/config.xml");
         $database     = $this->config->getSetting('database');
 
+        print "Setting up DB";
         $this->DB = Database::singleton(
             $database['database'],
             $database['username'],
@@ -55,6 +56,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $database['host'],
             1
         );
+        if(is_null($this->DB)) {
+            throw new Exception("Could not set up");
+        }
         if($this->DB === null) {
             throw new Exception("Could not instantiated DB object for testing");
         }
@@ -130,11 +134,15 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
+        if(is_null($this->DB)) {
+            throw new Exception("Could not clean up");
+        } else {
 
-        // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
+            // Delete the temporary user.
+            $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
+            $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+            $this->DB->delete("users", array("UserID" => 'UnitTester'));
+        }
         // Close the browser and end the session
         if ($this->webDriver) {
             $this->webDriver->quit();
