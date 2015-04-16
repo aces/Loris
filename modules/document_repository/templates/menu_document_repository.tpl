@@ -45,7 +45,11 @@
                     <div class="spacer"> </div>
                 {{ /first }}
             {{ /depth }}
-            <div class="fileDDD"><div style="padding-top: 8px">{{ File_name }} ({{ File_size }})</div></div>
+            <div class="fileDDD"><div style="padding-top: 8px">
+                <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
+                        {{ File_name }}
+                </a>({{ File_size }})
+            </div></div>
         </td>
         <td>
             {{ version }}
