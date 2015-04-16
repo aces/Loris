@@ -221,7 +221,7 @@ class NDB_Caller extends PEAR
                 return $html;
             }
 
-            // it is an intrument
+            // it is an instrument
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
             $linstfile = $base."project/instruments/$test_name.linst";
