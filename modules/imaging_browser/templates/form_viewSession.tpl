@@ -144,9 +144,9 @@
                         <th class="col-xs-2 info">Output Type</th><td class="col-xs-2">{$files[file].OutputType}</td>
                       </tr>
                       <tr>
-                      <th class="col-xs-2 info">Acq Date</th><td class="col-xs-2">{$files[file].AcquisitionDate|date_format}</td>
+                      <th class="col-xs-2 info">Acquisition Date</th><td class="col-xs-2">{$files[file].AcquisitionDate|date_format}</td>
                       <th class="col-xs-2 info">Space</th><td class="col-xs-2">{$files[file].CoordinateSpace}</td>
-                      <th class="col-xs-2 info">Inserted</th>
+                      <th class="col-xs-2 info">Inserted Date</th>
                         <td class="col-xs-2">
                           {if $files[file].FileInsertDate>0}
                               {$files[file].FileInsertDate|date_format}
@@ -157,8 +157,8 @@
                       </tr>
                       <tr>
                         <th class="col-xs-2 info">Protocol</th><td class="col-xs-2">{$files[file].AcquisitionProtocol}</td>
-                        <th class="col-xs-2 info">Series Desc</th><td class="col-xs-2">{$files[file].SeriesDescription}</td>
-                        <th class="col-xs-2 info">Series Num</th><td class="col-xs-2">{$files[file].SeriesNumber}</td>
+                        <th class="col-xs-2 info">Series Description</th><td class="col-xs-2">{$files[file].SeriesDescription}</td>
+                        <th class="col-xs-2 info">Series Number</th><td class="col-xs-2">{$files[file].SeriesNumber}</td>
                      <tr>
                       {if $files[file].EchoTime != "" && $files[file].EchoTime != "0.00"}
                          <th class="col-xs-2 info">Echo Time</th><td class="col-xs-2">{$files[file].EchoTime} ms</td>
@@ -169,17 +169,17 @@
                       <th class="col-xs-2 info">Slice Thick</th><td class="col-xs-2">{$files[file].SliceThickness} mm</td>
                      </tr>
                      <tr>
-                        <th class="col-xs-2 info">No. of vol.</th><td class="col-xs-2">{$files[file].Time} volumes</td>
+                        <th class="col-xs-2 info">Number of volumes</th><td class="col-xs-2">{$files[file].Time} volumes</td>
                         <th class="col-xs-2 info">Pipeline</th><td class="col-xs-2">{$files[file].Pipeline}</td>
                         <th class="col-xs-2 info">Algorithm</th><td class="col-xs-2">{$files[file].Algorithm}</td>
                      </tr>
                      <tr>
-                      <th class="col-xs-2 info">Nb of rejected directions</th><td>{$files[file].TotalRejected}</td>
-                      <th class="col-xs-2 info">Interlace correlations (Nb)</th><td>{$files[file].InterlaceRejected}</td>
-                      <th class="col-xs-2 info">Gradient-wise correlations (Nb)</th><td>{$files[file].IntergradientRejected}</td>
+                      <th class="col-xs-2 info">Number of rejected directions</th><td>{$files[file].TotalRejected}</td>
+                      <th class="col-xs-2 info">Number of Interlace correlations</th><td>{$files[file].InterlaceRejected}</td>
+                      <th class="col-xs-2 info">Number of Gradient-wise correlations</th><td>{$files[file].IntergradientRejected}</td>
                      </tr>
                      <tr>
-                         <th class="col-xs-2 info">Slicewise correlations (Nb)</th><td class="col-xs-2">{$files[file].SlicewiseRejected}</td>
+                         <th class="col-xs-2 info">Number of Slicewise correlations</th><td class="col-xs-2">{$files[file].SlicewiseRejected}</td>
                        <td colspan="2"></td>
                        <td colspan="2"></td>
                      </tr>
