@@ -398,7 +398,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             if ($ImagingUploaderAutoLaunch) {
                 $serverProcessLauncher = new ServerProcessLauncher();
                 $serverProcessLauncher->mriUpload(
-                    $mriUploadId, 
+                    $mriUploadId,
                     $uploaded_file_path
                 );
             }
