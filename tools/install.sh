@@ -203,11 +203,11 @@ while [ "$mysqlhost" == "" ]; do
 done;
 
 while [ "$mysqluser" == "" ]; do
-        read -p "What MySQL user will LORIS connect as? This will be created later in the script. " mysqluser
+        read -p "What MySQL user will LORIS connect as? " mysqluser
 	echo $mysqluser | tee -a $LOGFILE > /dev/null
        	case $mysqluser in
                	"" )
-                       	read -p "What MySQL user will LORIS connect as? This will be created later in the script. " mysqluser
+                       	read -p "What MySQL user will LORIS connect as? " mysqluser
                        	continue;;
                 * )
        	                break;;
