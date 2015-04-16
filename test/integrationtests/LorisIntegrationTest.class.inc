@@ -115,6 +115,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $this->webDriver->get($this->url);
 
+        print $this->webDriver->getPageSource();
+
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
