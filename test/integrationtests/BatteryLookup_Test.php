@@ -33,6 +33,67 @@ class NDB_BVL_Battery_Test extends PHPUnit_Framework_TestCase
         $this->DB = Database::singleton();
 
         $this->DB->setFakeTableData(
+            "test_names",
+            array(
+             array(
+              'ID'        => 1,
+              'Test_name' => 'ActiveTestByAge',
+              'Full_name' => 'Active Test 1',
+              'LimitAge'    => 0,
+              'Sub_group' => 1,
+              'IsDirectEntry' => 0
+             ),
+             array(
+              'ID'        => 2,
+              'Test_name' => 'ActiveTestByAge2',
+              'Full_name' => 'Active Test 2',
+              'LimitAge'    => 0,
+              'Sub_group' => 1,
+              'IsDirectEntry' => 0
+             ),
+             array(
+              'ID'        => 3,
+              'Test_name' => 'InactiveTest',
+              'Full_name' => 'Inactive Test 1',
+              'LimitAge'    => 0,
+              'Sub_group' => 1,
+              'IsDirectEntry' => 0
+             ),
+             array(
+              'ID'        => 4,
+              'Test_name'    => 'ActiveTestByVisit',
+              'Full_name' => 'Active Test by Visit 1',
+              'LimitAge'    => 0,
+              'Sub_group' => 1,
+              'IsDirectEntry' => 0
+             ),
+             array(
+              'ID'        => 5,
+              'Test_name'    => 'ActiveTestByVisit2',
+              'Full_name' => 'Active Test by Visit 2',
+              'LimitAge'    => 0,
+              'Sub_group' => 1,
+              'IsDirectEntry' => 0
+             ),
+             array(
+              'ID'        => 6,
+              'Test_name'    => 'ActiveTestByFirstVisit',
+              'Full_name' => 'Active Test by First Visit 2',
+              'LimitAge'    => 0,
+              'Sub_group' => 1,
+              'IsDirectEntry' => 0
+             ),
+             array(
+              'ID'        => 7,
+              'Test_name'    => 'ActiveTestByNotFirstVisit',
+              'Full_name' => 'Active Test by Not First Visit 2',
+              'LimitAge'    => 0,
+              'Sub_group' => 1,
+              'IsDirectEntry' => 0
+             ),
+            )
+        );
+        $this->DB->setFakeTableData(
             "test_battery",
             array(
              array(
@@ -122,67 +183,6 @@ class NDB_BVL_Battery_Test extends PHPUnit_Framework_TestCase
             )
         );
 
-        $this->DB->setFakeTableData(
-            "test_names",
-            array(
-             array(
-              'ID'        => 1,
-              'Test_name' => 'ActiveTestByAge',
-              'Full_name' => 'Active Test 1',
-              'LimitAge'    => 0,
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
-             ),
-             array(
-              'ID'        => 2,
-              'Test_name' => 'ActiveTestByAge2',
-              'Full_name' => 'Active Test 2',
-              'LimitAge'    => 0,
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
-             ),
-             array(
-              'ID'        => 3,
-              'Test_name' => 'InactiveTest',
-              'Full_name' => 'Inactive Test 1',
-              'LimitAge'    => 0,
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
-             ),
-             array(
-              'ID'        => 4,
-              'Test_name'    => 'ActiveTestByVisit',
-              'Full_name' => 'Active Test by Visit 1',
-              'LimitAge'    => 0,
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
-             ),
-             array(
-              'ID'        => 5,
-              'Test_name'    => 'ActiveTestByVisit2',
-              'Full_name' => 'Active Test by Visit 2',
-              'LimitAge'    => 0,
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
-             ),
-             array(
-              'ID'        => 6,
-              'Test_name'    => 'ActiveTestByFirstVisit',
-              'Full_name' => 'Active Test by First Visit 2',
-              'LimitAge'    => 0,
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
-             ),
-             array(
-              'ID'        => 7,
-              'Test_name'    => 'ActiveTestByNotFirstVisit',
-              'Full_name' => 'Active Test by Not First Visit 2',
-              'LimitAge'    => 0,
-              'Sub_group' => 1,
-              'IsDirectEntry' => 0
-             ),
-            )
-        );
     }
 
     function tearDown() {
