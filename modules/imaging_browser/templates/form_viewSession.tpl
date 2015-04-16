@@ -60,8 +60,11 @@
                            </label>
                                   {html_options options=$status_options selected=$files[file].QCStatus tabindex="4"
                                                 name="status[`$files[file].FileID`]" class="form-control input-sm"}
-                                  {else} 
-                                  {if $files[file].QCStatus != ""}{$files[file].QCStatus}
+                                  {else}
+                                  {if $files[file].QCStatus != ""}
+                                  <div class="static-info">
+                                  {$files[file].QCStatus}
+                                  </div>
                                   {else}&nbsp;{/if}
                                   {/if}
                            </div>
@@ -71,7 +74,10 @@
                                  {html_options options=$selected_options selected=$files[file].Selected tabindex="3"
                                   name="selectedvol[`$files[file].FileID`]" class="form-control input-sm" title=" " data-live-search="true" data-width="150px"}
                                  {else}
-                                 {if $files[file].Selected != ""}{$files[file].Selected}
+                                 {if $files[file].Selected != ""}
+                                 <div class="static-info">
+                                 {$files[file].Selected}
+                                 </div>
                                  {else}&nbsp;{/if}
                                  {/if}
                            </div>
@@ -84,9 +90,11 @@
                                  {html_options options=$caveat_options selected=$files[file].Caveat tabindex="5"
                                   name="caveat[`$files[file].FileID`]" class="form-control input-sm"}
                                  {else}
+                                 <div class="static-info">
                                  {if $files[file].Caveat}
-                                  <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveats</a>
+                                  <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
                                  {else}No caveats{/if}
+                                 </div>
                                  {/if}
                           </div>
                       </div>
@@ -125,23 +133,20 @@
                            {/if}
                        </div> <!--closing mri-third-row-panel div -->
                    </div><!--closing row div -->
-                   <div class="mri-righttable" id="mri-righttable-{$files[file].FileID}">
-                      <table class="table table-hover table-bordered header-info col-xs-12">
+                   <div class="mri-righttable col-xs-12" id="mri-righttable-{$files[file].FileID}">
+                      <table class="table table-hover table-bordered header-info col-xs-12 dynamictable">
                       <tr>
-                      <th class="info">Voxel size</th>
-                      <td colspan="3">
+                      <th class="info col-xs-2">Voxel size</th>
+                      <td class="col-xs-6" colspan="3">
                         {if $files[file].Xstep != "" and $files[file].Ystep != ""}X: {$files[file].Xstep} mm Y: {$files[file].Ystep} mm Z: {$files[file].Zstep} mm
                         {elseif $files[file].Xstep != ""}{$files[file].Xstep}{else}&nbsp;{/if}
                       </td>
-                        <th class="info">Output Type</th><td>{$files[file].OutputType}</td>
+                        <th class="col-xs-2 info">Output Type</th><td class="col-xs-2">{$files[file].OutputType}</td>
                       </tr>
                       <tr>
                       <th class="col-xs-2 info">Acq Date</th><td class="col-xs-2">{$files[file].AcquisitionDate|date_format}</td>
-                      <th class="col-xs-2 info">Protocol</th><td class="col-xs-2">{$files[file].AcquisitionProtocol}</td>
                       <th class="col-xs-2 info">Space</th><td class="col-xs-2">{$files[file].CoordinateSpace}</td>
-                      </tr>
-                      <tr>
-                        <th class="col-xs-2 info">Inserted</th>
+                      <th class="col-xs-2 info">Inserted</th>
                         <td class="col-xs-2">
                           {if $files[file].FileInsertDate>0}
                               {$files[file].FileInsertDate|date_format}
@@ -149,13 +154,11 @@
                           {else}&nbsp;
                           {/if}
                        </td>
-                        <th class="col-xs-2 info">SerDesc</th><td class="col-xs-2">{$files[file].SeriesDescription}</td>
-                        <th class="col-xs-2 info">Ser Num</th><td class="col-xs-2">{$files[file].SeriesNumber}</td>
-                     <tr>
-                        <th class="col-xs-2 info">Pipeline</th><td class="col-xs-2">{$files[file].Pipeline}</td>
-                        <th class="col-xs-2 info">Algorithm</th><td class="col-xs-2">{$files[file].Algorithm}</td>
-                        <th class="col-xs-2 info">Comment</th><td class="col-xs-2">{$files[file].Comment}</td>
-                     </tr>
+                      </tr>
+                      <tr>
+                        <th class="col-xs-2 info">Protocol</th><td class="col-xs-2">{$files[file].AcquisitionProtocol}</td>
+                        <th class="col-xs-2 info">Series Desc</th><td class="col-xs-2">{$files[file].SeriesDescription}</td>
+                        <th class="col-xs-2 info">Series Num</th><td class="col-xs-2">{$files[file].SeriesNumber}</td>
                      <tr>
                       {if $files[file].EchoTime != "" && $files[file].EchoTime != "0.00"}
                          <th class="col-xs-2 info">Echo Time</th><td class="col-xs-2">{$files[file].EchoTime} ms</td>
@@ -166,13 +169,18 @@
                       <th class="col-xs-2 info">Slice Thick</th><td class="col-xs-2">{$files[file].SliceThickness} mm</td>
                      </tr>
                      <tr>
-                      <th class="col-xs-2 info">Interlace correlations (Nb)</th><td>{$files[file].InterlaceRejected}</td>
-                      <th class="col-xs-2 info">Gradient-wise correlations (Nb)</th><td>{$files[file].IntergradientRejected}</td>
-                      <th class="col-xs-2 info">Nb of rejected directions</th><td>{$files[file].TotalRejected}</td>
+                        <th class="col-xs-2 info">No. of vol.</th><td class="col-xs-2">{$files[file].Time} volumes</td>
+                        <th class="col-xs-2 info">Pipeline</th><td class="col-xs-2">{$files[file].Pipeline}</td>
+                        <th class="col-xs-2 info">Algorithm</th><td class="col-xs-2">{$files[file].Algorithm}</td>
                      </tr>
                      <tr>
-                         <th class="col-xs-2 info">Nb of vol.</th><td class="col-xs-2">{$files[file].Time} volumes</td>
+                      <th class="col-xs-2 info">Nb of rejected directions</th><td>{$files[file].TotalRejected}</td>
+                      <th class="col-xs-2 info">Interlace correlations (Nb)</th><td>{$files[file].InterlaceRejected}</td>
+                      <th class="col-xs-2 info">Gradient-wise correlations (Nb)</th><td>{$files[file].IntergradientRejected}</td>
+                     </tr>
+                     <tr>
                          <th class="col-xs-2 info">Slicewise correlations (Nb)</th><td class="col-xs-2">{$files[file].SlicewiseRejected}</td>
+                       <td colspan="2"></td>
                        <td colspan="2"></td>
                      </tr>
                     </table>
