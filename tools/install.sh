@@ -165,17 +165,37 @@ mkdir -p ../project ../project/libraries ../project/instruments ../project/templ
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
 
-# Changing group to www-data to give permission to create directories in Document Repository module
-sudo chown www-data.www-data ../modules/document_repository/user_uploads
+# Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
+# Detecting distribution
+if type "lsb_release" > /dev/null 2>&1; then
+    os_distro=$(lsb_release -si)
+elif type "facter" > /dev/null 2>&1; then
+    os_distro=$(facter operatingsystem)
+else
+    os_distro="unknown"
+fi
 
-# Set the proper permission for the tools/logs directory:
-if [ -d logs ]; then
-        chmod 770 logs
-        # Set the group to www-data for tools/logs directory:
-        sudo chgrp www-data logs
+if [ $os_distro = "Ubuntu" ]; then
+    sudo chown www-data.www-data ../modules/document_repository/user_uploads
+elif [ $os_distro = "CentOS" ]; then
+    sudo chown apache.apache ../modules/document_repository/user_uploads
+else
+    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for user_uploads directory in ../modules/document_repository"
 fi
 
 
+# Set the proper permission for the tools/logs directory:
+if [ -d logs ]; then
+    chmod 770 logs
+    # Set the group to 'www-data' or 'apache' for tools/logs directory:
+    if [ $os_distro = "Ubuntu" ]; then
+        sudo chgrp www-data logs
+    elif [ $os_distro = "CentOS" ]; then
+        sudo chgrp apache logs
+    else
+        echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for user_uploads directory in ../modules/document_repository"
+    fi
+fi
 
 
 while [ "$mysqldb" == "" ]; do
@@ -352,42 +372,35 @@ cd ..
 eval $composer_scr
 cd tools
 
-if type "lsb_release" > /dev/null 2>&1; then
-  os_distro=$(lsb_release -si)
-elif type "facter" > /dev/null 2>&1; then
-  os_distro=$(facter operatingsystem)
-else
-  os_distro="unknown"
-fi
 
 if [ $os_distro = "Ubuntu" ]; then
-  echo "Ubuntu distribution detected."
-  # for CentOS, the log directory is called httpd
-  logdirectory=/var/log/apache2
-  while true; do
-      read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
-      echo $yn | tee -a $LOGFILE > /dev/null
-      case $yn in
-          [Yy]* )
-             if [ -f /etc/apache2/sites-available/$projectname ]; then
-                 echo "Apache appears to already be configured for $projectname. Aborting\n"
-                 exit 1
-             fi;
-             # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
-             sed -e "s#%LORISROOT%#$RootDir/#g" \
-                 -e "s#%PROJECTNAME%#$projectname#g" \
-  		 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
-                 < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
-             sudo ln -s /etc/apache2/sites-available/$projectname.conf /etc/apache2/sites-enabled/$projectname.conf
-             sudo a2dissite 000-default
-             sudo a2ensite $projectname.conf
-             break;;
-          [Nn]* )
-             echo "Not configuring apache."
-             break;;
-          * ) echo "Please enter 'y' or 'n'."
-      esac
-  done;
+echo "Ubuntu distribution detected."
+    # for CentOS, the log directory is called httpd
+    logdirectory=/var/log/apache2
+    while true; do
+        read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 default Apache installations) [yn] " yn
+        echo $yn | tee -a $LOGFILE > /dev/null
+        case $yn in
+            [Yy]* )
+                if [ -f /etc/apache2/sites-available/$projectname ]; then
+                    echo "Apache appears to already be configured for $projectname. Aborting\n"
+                    exit 1
+                fi;
+                # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
+                sed -e "s#%LORISROOT%#$RootDir/#g" \
+                    -e "s#%PROJECTNAME%#$projectname#g" \
+      	            -e "s#%LOGDIRECTORY%#$logdirectory#g" \
+                    < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
+                sudo ln -s /etc/apache2/sites-available/$projectname.conf /etc/apache2/sites-enabled/$projectname.conf
+                sudo a2dissite 000-default
+                sudo a2ensite $projectname.conf
+                break;;
+            [Nn]* )
+                echo "Not configuring apache."
+                break;;
+            * ) echo "Please enter 'y' or 'n'."
+        esac
+    done;
 elif [ $os_distro = "CentOS" ]; then
 echo "CentOS distribution detected."
 # for CentOS, the log directory is called httpd
