@@ -904,6 +904,16 @@ class Database extends PEAR
                 "CREATE TEMPORARY TABLE",
                 $createStmt
             );
+            $createStmt = preg_replace(
+                "/(CONSTRAINT)(.*)(,)/",
+                "$3",
+                $createStmt
+            );
+            $createStmt = preg_replace(
+                "/,(\s*)(\))/",
+                ")",
+                $createStmt
+            );
 
             $this->run($createStmt);
 
