@@ -196,6 +196,7 @@ function renderTree(){
             var dirData = {
                 name: path[depth - 1],
                 id: path[depth - 1].replace(/[ >()]/g,"_"),
+                Comment: dir.Comment,
                 parentID: function(){
                     if(depth >= 2)
                      return path[depth - 2].replace(/[ >()]/g,"_");
@@ -339,4 +340,6 @@ $(document).ready(function () {
 
     $(".loading").hide();
     $(".directory").click(toggleDirectory);
+
+    $('.directory').popover({ trigger: "hover" });
 });
