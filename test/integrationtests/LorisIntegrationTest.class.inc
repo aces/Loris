@@ -137,5 +137,47 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $this->webDriver->quit();
         }
     }
+
+
+    private $_oldConfig = array();
+
+    function setupConfigSetting($configName, $value) {
+        if(isset($this->_oldConfig[$configName])) {
+            throw new LorisException("Attempted to change already changed config setting");
+        }
+
+        $configID = $this->DB->pselectOne(
+            "SELECT ID FROM ConfigSettings WHERE Name=:configName",
+            array(":configName" => $configName)
+        );
+
+        $oldVal = $this->DB->pselectOne(
+            "SELECT Value FROM Config WHERE ConfigID=:confID",
+            array(":confID" => $configID)
+        );
+
+        $this->_oldConfig[$configName] = array(
+            'ConfigID' => $configID,
+            'OldValue' => $oldVal,
+        );
+
+        $this->DB->update(
+            "Config",
+            array("Value" => $value),
+            array("ConfigID" => $configID)
+        );
+    }
+
+    function restoreConfigSetting($configName) {
+        if(!isset($this->_oldConfig[$configName])) {
+            throw new LorisException("Attempted to restore unsaved config setting");
+        }
+        $this->DB->update(
+            "Config",
+            array("Value"    => $this->_oldConfig[$configName]['OldValue']),
+            array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
+        );
+    }
+
 }
 ?>
