@@ -538,7 +538,8 @@ class Database extends PEAR
         $this->affected = $this->_PDO->exec($query);
 
         if ($this->affected === false) {
-            throw new DatabaseException("Could not run query $query"
+            throw new DatabaseException(
+                "Could not run query $query"
                 . print_r($this->_PDO->errorInfo(), true)
             );
         }
