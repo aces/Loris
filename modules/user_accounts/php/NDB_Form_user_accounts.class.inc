@@ -218,10 +218,8 @@ class NDB_Form_user_accounts extends NDB_Form
         }
         // it is an existing user
         else {
-            // user name
-            $this->addBasicText('UserID', 'User name');
-            $username =& $this->form->getElement('UserID');
-            $username->freeze();
+            // display user name
+            $this->addScoreColumn('UserID', 'User name');
         }
 
         // password
@@ -344,9 +342,7 @@ class NDB_Form_user_accounts extends NDB_Form
         //------------------------------------------------------------
 
         // user name
-        $this->addBasicText('UserID', 'User name');
-        $username =& $this->form->getElement('UserID');
-        $username->freeze();
+        $this->addScoreColumn('UserID', 'User name');
 
         // full name
         //$this->addBasicText('Real_name', 'Full name');
