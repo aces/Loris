@@ -13,6 +13,7 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 require_once __DIR__ . "/../vendor/autoload.php";
+include_once 'HTML/QuickForm.php';
 
 $client = new NDB_Client();
 $client->makeCommandLine();
