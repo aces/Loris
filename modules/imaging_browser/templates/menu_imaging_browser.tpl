@@ -89,7 +89,7 @@
                         {$form.Scan_type.html}
                     </div>
                 </div>
-                <div class="col-sm-2 col-sm-offset-4">
+                <div class="col-sm-2 col-sm-offset-8">
                      <input type="submit" class="btn btn-sm btn-primary col-xs-12" name="filter" value="Show Data">
                 </div>
                 <div class="col-sm-2">
