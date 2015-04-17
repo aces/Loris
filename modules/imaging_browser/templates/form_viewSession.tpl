@@ -47,7 +47,7 @@
                 <div class="panel-body panel-mri-body" id="panel-body-{$files[file].FileID}">
                   <div class="row">
                    <div class="col-xs-9 imaging_browser_pic">
-                      <a href="#noID" onClick="window.open('main.php?test_name=brainbrowser&minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto')">
+                      <a href="#noID" onClick="window.open('main.php?test_name=brainbrowser&minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto, scrollbars=yes')">
                       <img class='img-checkpic img-responsive' src="{$files[file].CheckPic}">
                       </a>
                    </div><!--closing imaging_browser_pic div -->
