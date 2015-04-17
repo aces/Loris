@@ -410,7 +410,7 @@ class NDB_BVL_Feedback
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", f.Test_name as Instrument, ft.CommentID";
         }
-        $query  .= " FROM candidate as c,
+        $query  .= " FROM candidate as c
                         JOIN feedback_bvl_thread as ft ON (c.CandID=ft.CandID)
                         LEFT JOIN session as s ON (s.ID = ft.SessionID)";
         $qparams = array();
