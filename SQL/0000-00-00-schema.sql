@@ -1810,7 +1810,7 @@ CREATE TABLE `mri_upload` (
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
   `UploadDate` DateTime DEFAULT NULL,
   `UploadLocation` varchar(255) NOT NULL DEFAULT '',
-  `DecompressLocation` varchar(255) NOT NULL DEFAULT '',
+  `DecompressedLocation` varchar(255) NOT NULL DEFAULT '',
   `Processed` tinyint(1) NOT NULL DEFAULT '0',
   `CurrentlyProcessed` tinyint(1) NOT NULL DEFAULT '0',
   `PatientName` varchar(255) NOT NULL DEFAULT '',
