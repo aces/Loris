@@ -7,6 +7,18 @@
 <script id="json_data" type="text/json">
     {/literal}{$File_categories|json_encode}{literal}
 </script>
+<script id="isFiltered" type="text/json">
+    {
+        "filtered": {/literal}
+                        {if isset($filtered)}
+                            true
+                        {else}
+                            false
+                        {/if}
+                    {literal}
+    }
+</script>
+
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
         <td class="fileColumn">
@@ -35,7 +47,7 @@
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
-    <tr class="{{ parentID }}a" style="display:none">
+    <tr class="{{ parentID }}a" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
             {{ #depth }}
                 {{ #first }}
@@ -45,7 +57,7 @@
                     <div class="spacer"> </div>
                 {{ /first }}
             {{ /depth }}
-            <div class="fileDDD"><div style="padding-top: 8px">
+            <div {{ ^filtered }}class="fileDDD"{{ /filtered }}><div style="padding-top: 8px">
                 <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
                         {{ File_name }}
                 </a>({{ File_size }})
