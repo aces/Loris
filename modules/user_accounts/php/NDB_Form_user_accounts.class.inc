@@ -109,13 +109,6 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
 
-        // prepend two random characters
-        if (isset($set['Password_md5'])) {
-            // Update CouchDB. Must do before password is salted/hashed.
-            $user->updatePassword($set['Password_md5']);
-        }
-
-
         // update the user
         if (empty($this->identifier)) {
             // insert a new user
@@ -140,6 +133,12 @@ class NDB_Form_user_accounts extends NDB_Form
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() update: ".$success->getMessage());
             }
+        }
+
+        // prepend two random characters
+        if (isset($set['Password_md5'])) {
+            // Update CouchDB. Must do before password is salted/hashed.
+            $user->updatePassword($set['Password_md5']);
         }
 
         // update the user permissions if applicable

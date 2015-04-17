@@ -100,6 +100,7 @@ script:
     - vendor/bin/phpunit modules/survey_accounts/test
     - vendor/bin/phpunit modules/timepoint_flag/test
     - vendor/bin/phpunit modules/timepoint_list/test
+    - vendor/bin/phpunit modules/training/test
     - vendor/bin/phpunit modules/user_accounts/test
 
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
@@ -117,6 +118,7 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dashboard
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/examiner
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/training
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js

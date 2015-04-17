@@ -982,8 +982,9 @@ INSERT INTO `permissions` VALUES
     (11,'data_entry','Data entry','1'),
     (12,'examiner_view','Add and certify examiners','2'),
     (13,'examiner_multisite','Across all sites add and certify examiners','2'),
-    (14,'timepoint_flag','Edit exclusion flags','2'),
-    (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
+    (14,'training','View and complete training','2'),
+    (15,'timepoint_flag','Edit exclusion flags','2'),
+    (16,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
     (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
     (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
@@ -1005,8 +1006,9 @@ INSERT INTO `permissions` VALUES
     (35,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
     (36,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2'),
     (37,'document_repository_view','View and upload files in Document Repository','2'),
-    (38,'document_repository_delete','Delete files in Document Repository','2');
-
+    (38,'document_repository_delete','Delete files in Document Repository','2'),
+    (39,'server_processes_manager','View and manage server processes','2'),
+    (40,'mri_upload','MRI Uploader','2');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1917,9 +1919,7 @@ CREATE TABLE `user_login_history` (
   `Login_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `IP_address` varchar(255) DEFAULT NULL,
   `Page_requested` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`loginhistoryID`),
-  KEY `FK_user_login_history_1` (`userID`),
-  CONSTRAINT `FK_user_login_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
+  PRIMARY KEY (`loginhistoryID`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1962,7 +1962,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
     ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
-    ('Examiner', 'main.php?test_name=examiner', 2, 3);
+    ('Examiner', 'main.php?test_name=examiner', 2, 3),
+    ('Training', 'main.php?test_name=training', 2, 4);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
@@ -1988,7 +1989,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Survey Module', 'main.php?test_name=survey_accounts', 6,2),
     ('Help Editor', 'main.php?test_name=help_editor', 6,3),
     ('Instrument Manager', 'main.php?test_name=instrument_manager', 6,4),
-    ('Configuration', 'main.php?test_name=configuration', 6, 5);
+    ('Configuration', 'main.php?test_name=configuration', 6, 5),
+    ('Server Processes Manager', 'main.php?test_name=server_processes_manager', 6, 6);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -2020,6 +2022,10 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_site' AND m.Label='Examiner';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_multisite' AND m.Label='Examiner';
+
+-- Training
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='training' AND m.Label='Training';
 
 -- Radiological Reviews
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2090,6 +2096,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
 
+-- Server Processes Manager
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='server_processes_manager' AND m.Label='Server Processes Manager';
 
 CREATE TABLE `ConfigSettings` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -2365,4 +2374,52 @@ CREATE TABLE `CNV` (
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
   FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `TestID` int(10) UNSIGNED NOT NULL,
+    `Title` varchar(255) NOT NULL,
+    `Content` text,
+    `TrainingType` enum('text', 'pdf', 'video', 'quiz') NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training_quiz_questions` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `TestID` int(10) unsigned NOT NULL,
+    `Question` varchar(255) NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training_quiz_questions` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training_quiz_answers` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `QuestionID` INTEGER UNSIGNED NOT NULL,
+    `Answer` varchar(255) NOT NULL,
+    `Correct` boolean NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- Table structure for table `server_processes`
+DROP TABLE IF EXISTS `server_processes`;
+CREATE TABLE `server_processes` (
+  `id`                int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `pid`               int(11) unsigned NOT NULL,
+  `type`              enum('mri_upload') NOT NULL,
+  `stdout_file`       varchar(255) DEFAULT NULL,
+  `stderr_file`       varchar(255) DEFAULT NULL,
+  `exit_code_file`    varchar(255) DEFAULT NULL,
+  `exit_code`         varchar(255) DEFAULT NULL,
+  `userid`            varchar(255) NOT NULL,
+  `start_time`        timestamp NULL,
+  `end_time`          timestamp NULL,
+  `exit_text`         text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_task_1` (`userid`),
+  CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
