@@ -905,8 +905,8 @@ class Database extends PEAR
                 $createStmt
             );
             $createStmt = preg_replace(
-                "/(CONSTRAINT)(.*)(,)/",
-                "$3",
+                "/(\s*)(CONSTRAINT)(.*)(,*)(\s*)/",
+                "$4",
                 $createStmt
             );
             $createStmt = preg_replace(
