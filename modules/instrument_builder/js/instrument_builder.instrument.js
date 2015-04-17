@@ -49,7 +49,13 @@ var Instrument = {
 
         element.href = url;
         element.download = name + ".linst";
+        element.style.display = "none";
+        // add element to the document so that it can be clicked
+        // this is need to download in firefox
+        document.body.appendChild(element);
         element.click();
+        // remove the element once it has been clicked
+        document.body.removeChild(element);
     },
     render: function () {
         "use strict";
