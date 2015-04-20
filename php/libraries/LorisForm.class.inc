@@ -435,7 +435,8 @@ class LorisForm
         if ($el['norequire'] === true) {
             $requireHTML = '';
         } else {
-            $requireHTML = "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\"";
+            $requireHTML = "onChange=\"this.setCustomValidity(this.value === '' ?"
+               . " '$msg' : '')\"";
         }
         $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
             . $requireHTML

@@ -247,7 +247,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             'Date of Birth',
             array(
              'maxlength' => 10,
-             'norequire' => true
+             'norequire' => true,
             )
         );
         $this->addBasicText('Visit_Count', 'Number of Visits');
