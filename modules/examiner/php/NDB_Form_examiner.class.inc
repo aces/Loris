@@ -235,6 +235,7 @@ class NDB_Form_Examiner extends NDB_Form
                 }
             }
         }
+        $this->editExaminer();
     }
 
     /**
