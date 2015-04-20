@@ -17,15 +17,23 @@
  a) Use 'resolved conflicts' tab to switch views.
  b) Table displays resolved conflicts
  c) Field 'Corrected answer' has a value.
-5. Correct display and operation of Selection filter:
- a) 'Selection filter' panel appears at top of page.
- b) Filters include: Instrument, DCCID, PSCID, Search keyword, Site, Visit label.
- c) Button: 'show data', 'clear form'
- d) Applying filters is working. Check values.
+5. Filter for the specific parameter (Choose the one that applies):
+  - Select the right instrument from the 'All Instruments' drop-down
+  - Input the right DCCID
+  - Input the right PSCID
+  - Select the right Site that applies
+  - Select the right Visit-label
+  - Check that buttons work: 'show data', 'clear form'
+  - Verify that filters work as expected - inspect the results table.
 6. Operation of resolving conflict and saving data should work as follows:
- a) On Unresolved conflicts tab, set value of dropdown lists to accepted value.
+ - On Unresolved conflicts tab, set value of dropdown lists to accepted value.
     (Note: use paper form or other reference to resolve correct value.)
- b) Press 'Reset' button to verify it resets dropdown menus.
- b) Enter correct answers for several rows.
- c) Press 'Save' button to save. Page will reload.
- d) Check database to verify that submitted values have been properly saved.
+ - Press 'Reset' button to verify it resets dropdown menus.
+ - Enter correct answers for several rows.
+ - Press 'Save' button to save. Page will reload.
+ Ensure the changes take effect:
+ - Check database to verify that submitted values have been properly saved.
+ - Click on 'Show Data' And the conflict should not longer appear.
+ - Also check and make sure that the instrument and its corresponding DDE are updated accordingly.
+ - Ensure if Date_taken is changed, the candidate age in the instrument is updated accordingly
+ - Make sure the scoring_fields are re-calculated in the given instrument once the conflict is resolved.
