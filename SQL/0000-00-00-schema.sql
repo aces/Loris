@@ -61,6 +61,28 @@ LOCK TABLES `candidate` WRITE;
 /*!40000 ALTER TABLE `candidate` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+--
+-- Table structure for table `caveat_options`
+--
+
+DROP TABLE IF EXISTS `caveat_options`;
+CREATE TABLE `caveat_options` (
+  `ID` int(6),
+  `Description` varchar(255),
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 
+-- Dumping data for table `caveat_options`
+-- 
+
+LOCK TABLES `caveat_options` WRITE;
+/*!40000 ALTER TABLE `caveat_options` DISABLE KEYS */;
+/*!40000 ALTER TABLE `caveat_options` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 --
 -- Table structure for table `document_repository`
 --
