@@ -61,6 +61,9 @@ class LorisForm
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
+        if (isset($attribs['norequire'])) {
+            $el['norequire'] = $attribs['norequire'];
+        }
         return $el;
     }
     /**
@@ -429,8 +432,13 @@ class LorisForm
         }
         $msg   = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $value = $this->getValue($el['name']);
+        if ($el['norequire'] === true) {
+            $requireHTML = '';
+        } else {
+            $requireHTML = "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\"";
+        }
         $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
-            . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
+            . $requireHTML
             . (isset($el['required']) ? "required" : '')
             . (
                 !empty($value)
