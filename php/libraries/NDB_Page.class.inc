@@ -421,22 +421,13 @@ class NDB_Page
      */
     function createCheckbox($field, $label, $options=null, $closer='</label>')
     {
-        $group   = array();
-        $group[] = $this->form->createElement('static', null, null, '<label>');
-        $group[] = $this->form->createElement(
-            'advcheckbox',
+        return $this->form->createElement(
+            "advcheckbox",
             $field,
-            null,
-            null,
-            $options
+            $label,
+            $options,
+            array()
         );
-        $group[] = $this->form->createElement(
-            'static',
-            'checkLabel',
-            null,
-            $label.$closer
-        );
-        return $group;
     }
 
     /**

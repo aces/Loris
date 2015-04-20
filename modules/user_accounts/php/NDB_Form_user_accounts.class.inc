@@ -224,13 +224,11 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         // password
-        /*
         $group[] = $this->createPassword('Password_md5');
-        $group = array_merge($group, $this->createCheckbox('NA_Password', 'Generate new password'));
+        $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
         $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
-         */
 
         // full name
         //$this->addBasicText('Real_name', 'Full name');
@@ -306,13 +304,19 @@ class NDB_Form_user_accounts extends NDB_Form
         foreach ($perms as $row) {
             if($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
-                $group[] = $this->form->createElement('static', null, null, '</div>' . 
-                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>' 
+                $group[] = $this->form->createElement('static', null, null, '</div>' .
+                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>'
                         . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">");
             }
-            $group = array_merge($group, $this->createCheckbox('permID['.$row['permID'].']', $this->_GUIDelimiter.$row['description'], "class=\"perm_$lastRole\"", '</label><br>'));
+            $group[] = $this->createCheckbox(
+                'permID['.$row['permID'].']',
+                "$row[description]<br>",
+                array(
+                 "class" => "perm_$lastRole",
+                )
+            );
         }
-        //$this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
         unset($group);
 
         if (!empty($this->identifier)) {
