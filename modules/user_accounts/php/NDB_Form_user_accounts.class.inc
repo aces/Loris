@@ -210,7 +210,8 @@ class NDB_Form_user_accounts extends NDB_Form
             // user name
             $group[] = $this->createText('UserID', 'User name');
             // $group[] = $this->form->createElement('static', null, null, '<label>');
-            $group = array_merge($group, $this->createCheckbox('NA_UserID', "Make user name match email address"));
+            //$group = array_merge($group, $this->createCheckbox('NA_UserID', "Make user name match email address"));
+            $group[] = $this->createCheckbox('NA_UserID', "Make user name match email address");
             // $group[] = $this->form->createElement('static', null, null, 'Make user name match email address</label>');
             $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
@@ -223,11 +224,13 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         // password
+        /*
         $group[] = $this->createPassword('Password_md5');
         $group = array_merge($group, $this->createCheckbox('NA_Password', 'Generate new password'));
         $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
+         */
 
         // full name
         //$this->addBasicText('Real_name', 'Full name');
@@ -262,7 +265,8 @@ class NDB_Form_user_accounts extends NDB_Form
         
         // email address
         $group[] = $this->createText('Email');
-        $group = array_merge($group, $this->createCheckbox('SendEmail', 'Send email to user'));
+        //$group = array_merge($group, $this->createCheckbox('SendEmail', 'Send email to user'));
+        $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
         $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
 
@@ -308,7 +312,7 @@ class NDB_Form_user_accounts extends NDB_Form
             }
             $group = array_merge($group, $this->createCheckbox('permID['.$row['permID'].']', $this->_GUIDelimiter.$row['description'], "class=\"perm_$lastRole\"", '</label><br>'));
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
+        //$this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
         unset($group);
 
         if (!empty($this->identifier)) {
