@@ -39,14 +39,6 @@ function toggleMe() {
     $(".advanced-buttons").toggle();
 }
 
-$(function(){
-	$('input[name=dob]').datepicker({
-		dateFormat: 'yy-mm-dd',
-		changeMonth: true,
-		changeYear: true
-	});
-});
-
 $(document).ready(function() {
     // Filters will only get applied on a POST, so
     // on click we need to fake a form which posts

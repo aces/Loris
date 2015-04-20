@@ -242,7 +242,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             'Subproject',
             array('' => 'All') + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth', array('maxlength' => 10));
+        $this->addBasicDate('dob', 'Date of Birth', array('maxlength' => 10));
         $this->addBasicText('Visit_Count', 'Number of Visits');
         $this->addSelect(
             'Latest_Visit_Status',
