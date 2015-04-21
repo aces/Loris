@@ -183,8 +183,6 @@ function renderTree(){
     var fileDir = JSON.parse($("#json_data").html()),
         filtered = JSON.parse($("#isFiltered").html()).filtered;
 
-    console.log(filtered);
-
     for(var i in fileDir){
         if(fileDir[i]){
             var dir = fileDir[i];
