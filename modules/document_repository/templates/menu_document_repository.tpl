@@ -70,7 +70,7 @@
             {{ File_type }}
         </td>
         <td>
-            {{ instrument }}
+            {{ Instrument }}
         </td>
         <td>
             {{ uploaded_by }}
@@ -162,6 +162,40 @@
     <button class="btn btn-lg btn-primary loading"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
 </center>
 
+<div class = "upload-success">
+    <p>
+        <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+        The file was successfully uploaded. Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "edit-success">
+    <p>
+        <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+        The file was successfully modified. Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "delete-success">
+    <p>
+        <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+        The file was successfully deleted. Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "add-success">
+    <p>
+            <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+            New category successfully added! Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "no-files">
+    <p>
+        <span class="ui-icon ui-icon-info" style = "float:left;"></span>
+        No files were found.
+    </p>
+</div>
 
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
@@ -400,7 +434,7 @@
                         </div>
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-4" for="instrument">
-                                Instrument<font color="red"><sup> *</sup></font>
+                                Instrument
                             </label>
                             <div class="col-xs-8">
                                 <select name="instrument" id = "instrumentEdit" class = "form-fields form-control input-sm">
@@ -445,41 +479,6 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class = "upload-success">
-    <p>
-	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully uploaded. Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "edit-success">
-    <p>
-	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully modified. Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "delete-success">
-    <p>
-	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully deleted. Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "add-success">
-    <p>
-            <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-            New category successfully added! Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "no-files">
-    <p>
-	    <span class="ui-icon ui-icon-info" style = "float:left;"></span>
-	    No files were found.
-    </p>
 </div>
 
 </br>
