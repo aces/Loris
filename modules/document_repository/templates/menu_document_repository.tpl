@@ -342,7 +342,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="instrument">Instrument<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="instrument">Instrument</label>
                             <div class="col-xs-8">
                                 <select name="instrument" id = "instrument" class = "form-fields form-control input-sm">
                                 <option value=""> </option>

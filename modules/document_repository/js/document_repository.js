@@ -25,7 +25,7 @@ function isEmpty(element) {
 
     if (element.val() === " ") {
         element.focus();
-        element.addClass('missing');
+        element.parent().addClass('has-error');
         $(".upload-error").show();
         return true;
     }
@@ -170,14 +170,11 @@ function editModal() {
 }
 
 function uploadForm() {
-    var elements = $(this).get(0).elements;
-    if(isEmpty($(elements).children("[name=category]"))) {
-        return false;
-    }
-    if(isEmpty($(elements).children("[name=site]"))) {
-        return false;
-    }
-    if(isFileEmpty($("[name=file]").get(0).files)) {
+    var elements = $(this).get(0).elements,
+        category_isEmpty = isEmpty($(elements).filter("[name=category]")),
+        site_isEmpty = isEmpty($(elements).filter("[name=site]")),
+        file_isEmpty = isFileEmpty($("[name=file]").get(0).files);
+    if(category_isEmpty || site_isEmpty || file_isEmpty) {
         return false;
     }
 }
