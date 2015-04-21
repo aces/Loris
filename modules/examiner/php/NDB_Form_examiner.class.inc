@@ -364,6 +364,8 @@ class NDB_Form_Examiner extends NDB_Form
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
 
+        $certificationInstruments['test']
+            = Utility::toArray($certificationInstruments['test']);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
