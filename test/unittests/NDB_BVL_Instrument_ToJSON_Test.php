@@ -351,5 +351,41 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(count($outArray['Elements']), 1);
     }
+
+    function testPageGroup() {
+        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
+        $this->i->method('getFullName')->willReturn("Test Instrument");
+        $this->i->method('getSubtestList')->willReturn(
+            array(
+                array('Name' => 'Page 1', 'Description' => 'The first page'),
+                array('Name' => 'Page 2', 'Description' => 'The second page'),
+            )
+        );
+
+        $this->i->form = $this->QuickForm;
+        $this->i->testName = "Test";
+
+
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $page1 = $outArray['Elements'][0];
+        $page2 = $outArray['Elements'][1];
+        $this->assertEquals($page1,
+            [
+                'Type' => 'ElementGroup',
+                'GroupType' => 'Page',
+                'Elements' => [],
+                'Description' => 'The first page'
+            ]
+        );
+        $this->assertEquals($page2,
+            [
+                'Type' => 'ElementGroup',
+                'GroupType' => 'Page',
+                'Elements' => [],
+                'Description' => 'The second page'
+            ]
+        );
+    }
 }
 ?>

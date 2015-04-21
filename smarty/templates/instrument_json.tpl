@@ -98,6 +98,13 @@
         "Type" : "Group",
         "Error" : "Unimplemented"
     {rdelim}
+{elseif $element.type == "page"}
+    {ldelim}
+        "Type" : "ElementGroup",
+        "GroupType" : "Page",
+        "Elements" : [{call renderElementGroup elements=$element.elements}],
+        "Description" : "{$element.Description}"
+    {rdelim}
 {elseif $element.type == "ignored"}{else}
     {ldelim}
         "Type" : "Unknown",
@@ -105,6 +112,12 @@
     {rdelim}
 {/if}
 {/strip}
+{/function}
+{function name="renderElementGroup" elements=$elements}
+    {foreach from=$elements item=element name=ElementLoop}
+    {capture assign="el"}{strip}{renderelement element=$element}{/strip}{/capture}
+        {if $el}{$el}{if $el && !$smarty.foreach.ElementLoop.last},{/if}{/if}
+    {/foreach}
 {/function}
 {ldelim}
     "Meta" : {ldelim}
@@ -115,10 +128,7 @@
         "IncludeMetaDataFields" : "true"
     {rdelim},
     "Elements" : [
-    {foreach from=$form.elements item=element name=ElementLoop}
-        {capture assign="el"}{strip}{renderelement element=$element}{/strip}{/capture}
-        {if $el}{$el}{if $el && !$smarty.foreach.ElementLoop.last},{/if}{/if}
-    {/foreach}
+    {renderElementGroup elements=$form.elements}
     {foreach from=$form.sections item=section name=SectionsLoop}
         {if $section.header}
              {capture assign="header"}{strip}{$section.header}{/strip}{/capture}
