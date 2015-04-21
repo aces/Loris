@@ -400,7 +400,7 @@ class User extends UserPermissions
         $config       =& NDB_Config::singleton();
         $couch_config = $config->getSetting("CouchDB");
         if ($couch_config['SyncAccounts'] === "true") {
-            $user->updateCouchUser($set['Password_md5']);
+            $this->updateCouchUser($password);
         }
     }
     /**
