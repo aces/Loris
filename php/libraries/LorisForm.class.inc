@@ -410,11 +410,11 @@ class LorisForm
      */
     function staticHTML($el)
     {
+        if (empty($el['name'])) {
+            return $el['label'];
+        }
         $val = $this->getValue($el['name']);
 
-        if (!empty($el['label'])) {
-            return $el['label'] . $val;
-        }
         return $val;
     }
     /**

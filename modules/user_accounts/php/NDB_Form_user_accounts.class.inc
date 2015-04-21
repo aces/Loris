@@ -209,24 +209,20 @@ class NDB_Form_user_accounts extends NDB_Form
         if (empty($this->identifier)) {
             // user name
             $group[] = $this->createText('UserID', 'User name');
-            // $group[] = $this->form->createElement('static', null, null, '<label>');
-            $group = array_merge($group, $this->createCheckbox('NA_UserID', "Make user name match email address"));
-            // $group[] = $this->form->createElement('static', null, null, 'Make user name match email address</label>');
+            $group[] = $this->createCheckbox('NA_UserID', "Make user name match email address");
             $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
 
         }
         // it is an existing user
         else {
-            // user name
-            $this->addBasicText('UserID', 'User name');
-            $username =& $this->form->getElement('UserID');
-            $username->freeze();
+            // display user name
+            $this->addScoreColumn('UserID', 'User name');
         }
 
         // password
         $group[] = $this->createPassword('Password_md5');
-        $group = array_merge($group, $this->createCheckbox('NA_Password', 'Generate new password'));
+        $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
         $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
@@ -264,7 +260,7 @@ class NDB_Form_user_accounts extends NDB_Form
         
         // email address
         $group[] = $this->createText('Email');
-        $group = array_merge($group, $this->createCheckbox('SendEmail', 'Send email to user'));
+        $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
         $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
 
@@ -304,11 +300,17 @@ class NDB_Form_user_accounts extends NDB_Form
         foreach ($perms as $row) {
             if($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
-                $group[] = $this->form->createElement('static', null, null, '</div>' . 
-                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>' 
+                $group[] = $this->form->createElement('static', null, null, '</div>' .
+                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>'
                         . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">");
             }
-            $group = array_merge($group, $this->createCheckbox('permID['.$row['permID'].']', $this->_GUIDelimiter.$row['description'], "class=\"perm_$lastRole\"", '</label><br>'));
+            $group[] = $this->createCheckbox(
+                'permID['.$row['permID'].']',
+                "$row[description]<br>",
+                array(
+                 "class" => "perm_$lastRole",
+                )
+            );
         }
         $this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
         unset($group);
@@ -344,9 +346,7 @@ class NDB_Form_user_accounts extends NDB_Form
         //------------------------------------------------------------
 
         // user name
-        $this->addBasicText('UserID', 'User name');
-        $username =& $this->form->getElement('UserID');
-        $username->freeze();
+        $this->addScoreColumn('UserID', 'User name');
 
         // full name
         //$this->addBasicText('Real_name', 'Full name');
