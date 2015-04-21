@@ -729,6 +729,8 @@ class LorisForm
             return $this->groupHTML($el);
         case 'header':
             return $this->headerHTML($el);
+        case 'page':
+            return '';
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -797,15 +799,35 @@ class LorisForm
     }
 
     function toElementArray() {
-        $retVal = array('elements' => []);
 
+        $curPage = array(
+            'elements' => [],
+            'type' => 'page',
+        );
+        $retVal = $curPage;
         // Hack to populate the HTML elements
         $this->toArray();
 
         foreach ($this->form as &$el) {
-            $retVal['elements'][] = $el;
+            if($el['type'] === 'page') {
+                if(!empty($curPage['Description'])) {
+                    $retVal['elements'][] = $curPage;
+                }
+
+                $curPage = array(
+                    'elements' => [],
+                    'Description' => $el['label'],
+                    'type'        => 'page',
+                );
+            } else {
+                $curPage['elements'][] = $el;
+            }
+        }
+        if(empty($retVal['elements'])) {
+            return $curPage;
         }
 
+        $retVal['elements'][] = $curPage;
         return $retVal;
     }
     /**
@@ -909,6 +931,13 @@ class LorisForm
 
     }
 
+    function addPageBreak($name, $label, $attribs) {
+        $el =& $this->createBase($name, $label, $attribs);
+        $name = $this->generateName($name);
+
+        $el         =& $this->addBase($name, $label, $attribs);
+        $el['type'] = 'page';
+    }
     /**
      * Reimplementation of QuickForm API.
      *

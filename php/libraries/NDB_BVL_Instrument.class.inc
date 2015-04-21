@@ -2330,11 +2330,11 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     function _toJSONParsePage() {
-        $smarty   = new Smarty_neurodb;
 
         if(get_class($this->form) === 'LorisForm') {
             $formArray = $this->form->toElementArray();
         } else {
+            $smarty   = new Smarty_neurodb;
             $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
             $this->form->accept($renderer);
@@ -2377,6 +2377,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $subtests = $this->getSubtestList();
         foreach ($subtests as $subtest){
+            if(get_class($this->form) === 'LorisForm') {
+                $this->form->addPageBreak($subtest['Name'], $subtest['Description'], array());
+            }
             $this->page = $subtest['Name'];
             $this->_setupForm();
         }
