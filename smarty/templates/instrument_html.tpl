@@ -8,6 +8,7 @@
 	 }
 </style>
 <form {$form.attributes}>
+<div class="row">
 	{$form.hidden}
 	{$form.errors.mainError}
 	{assign var="inTable" value="FALSE"}
@@ -235,4 +236,5 @@
 		{assign var="inTable" value="FALSE"}
 		</table>
 	{/if}
+</div>
 </form>
