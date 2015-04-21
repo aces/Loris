@@ -168,12 +168,12 @@ class LorisForm
      */
     public function addTextArea($elname, $label, $options=array())
     {
-        $el         =& $this->addBase($elname, $label);
+        $el         =& $this->addBase($elname, $label, $options);
         $el['type'] = 'textarea';
-        if ($options['cols']) {
+        if (isset($options['cols'])) {
             $el['cols'] = $options['cols'];
         }
-        if ($options['rows']) {
+        if (isset($options['rows'])) {
             $el['rows'] = $options['rows'];
         }
         return $el;
