@@ -296,6 +296,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
              'radiologist' => $radiologist,
             )
         );
+        header("Location: main.php?test_name=examiner", true, 303);
     }
 
     /**
