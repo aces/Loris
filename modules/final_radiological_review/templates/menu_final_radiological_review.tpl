@@ -45,8 +45,8 @@
                         <div class="col-sm-12 col-md-4">{$form.Review_done.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.Project.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
+                        <label class="col-sm-12 col-md-8">{$form.Exclusionary_Status.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.Exclusionary_Status.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-6">{$form.dccid.label}</label>
@@ -69,8 +69,8 @@
                         <div class="col-sm-12 col-md-4">{$form.Final_Review_Results.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.Exclusionary_Status.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.Exclusionary_Status.html}</div>
+                        <label class="col-sm-12 col-md-8">{$form.Project.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                     </div>
                 </div>
                 <div class="row">

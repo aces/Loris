@@ -120,6 +120,12 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $config = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        if($useProjects === "false") {
+            $useProjects = false;
+        }
+
         $conflict_condition1 = "(CASE
             WHEN orig.review_results <> r.final_review_results THEN 'true'
             WHEN orig.abnormal_atypical_exculsionary <> r.final_exclusionary
@@ -145,32 +151,53 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             AND s.active='Y' AND NOT (f.Administration='None')
             AND f.Data_entry='Complete'
             AND (orig.Scan_done IS NULL OR orig.Scan_done <> 'no')";
-        $this->columns = array('c.PSCID as PSCID',
+        $this->columns = array(
+            'c.PSCID as PSCID',
             'c.CandID as DCCID',
             's.visit_label as Visit_Label',
-            'c.ProjectID as Project',
-            'c.CenterID as Site',
-            'c.DOB as Birth_Date',
-            'r.Review_Done as Review_Done',
-            'r.Final_Review_Results as Results',
-            'r.Final_Exclusionary as Exclusionary_Status',
-            'r.sas as SAS',
-            'r.pvs as PVS',
-            'orig.CommentID as CommentID',
-            "$conflict_condition1 as Conflict",
-            "$conflict_condition2 as Conflict2", 
-            'r.Finalized as Finalized', 
-            'r.Final_Incidental_Findings as Comments'
+        );
+        if($useProjects) {
+            $this->columns[] = 'c.ProjectID as Project';
+        }
+
+        $this->columns = array_merge(
+            $this->columns,
+            array(
+                'c.CenterID as Site',
+                'c.DOB as Birth_Date',
+                'r.Review_Done as Review_Done',
+                'r.Final_Review_Results as Results',
+                'r.Final_Exclusionary as Exclusionary_Status',
+                'r.sas as SAS',
+                'r.pvs as PVS',
+                'orig.CommentID as CommentID',
+                "$conflict_condition1 as Conflict",
+                "$conflict_condition2 as Conflict2",
+                'r.Finalized as Finalized',
+                'r.Final_Incidental_Findings as Comments'
+            )
         );
         $this->order_by = 'PSCID';
-        $this->headers = array('PSCID',
-                               'DCCID', 'Visit_Label','Project', 
-                               'Birth_Date', 'Review_Done', 
-                               'Results', 
-                               'Exclusionary_Status', 'SAS', 'PVS', 
-                               'Conflict',
-                               'Finalized',
-                               'Comments'
+        $this->headers = array(
+            'PSCID',
+            'DCCID',
+            'Visit_Label',
+        );
+        if($useProjects) {
+            $this->headers[] = 'Project';
+        }
+        $this->headers = array_merge($this->headers,
+            array(
+                'Birth_Date',
+                'Review_Done',
+                'Results',
+                'Exclusionary_Status',
+                'SAS',
+                'PVS',
+                'Conflict',
+                'Finalized',
+                'Comments',
+            )
         );
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
@@ -220,6 +247,12 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
+        $config = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        if($useProjects === "false") {
+            $useProjects = false;
+        }
+
         $list_of_visit_labels = array(null => 'All' );
         $visitList = Utility::getVisitList();
         foreach ($visitList as $key=>$value) {
@@ -234,14 +267,13 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $list_of_sites[$key]= $value;
         } 
         ksort($list_of_sites);
-        $list_of_projects = array(null =>'All');
-        $projectList = Utility::getProjectList();
-        if (Utility::isErrorX($projectList)) {
-                return PEAR::raiseError("DB Error: ".$projectList->getMessage());
+        if($useProjects) {
+            $list_of_projects = array(null =>'All');
+            $projectList = Utility::getProjectList();
+            foreach ($projectList as $key => $value) {
+                $list_of_projects[$key] =$value;
+            }
         }
-        foreach ($projectList as $key => $value) {
-            $list_of_projects[$key] =$value;
-        }  
         $options_boolean= array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
         $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );
         $conflict_options2 = array(null => 'All', 
@@ -292,7 +324,9 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->addSelect('Exclusionary_Status', 'Exclusionary Status', $exclude);
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean);
-        $this->addSelect('Project', 'Project', $list_of_projects);
+        if($useProjects) {
+            $this->addSelect('Project', 'Project', $list_of_projects);
+        }
         $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
     }
 
