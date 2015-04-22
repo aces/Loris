@@ -208,8 +208,14 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Finalized'   => "COALESCE(r.Finalized, 'no')",
                                     'keyword'     => 'r.Final_Incidental_Findings'
         );
-        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized',"COALESCE(r.Review_Done, 'no')");
-        $this->EqualityFilters = array($conflict_condition1, $conflict_condition2,'r.Final_Exclusionary','r.Finalized','r.Review_Done');
+        $this->EqualityFilters = array(
+            $conflict_condition1,
+            $conflict_condition2,
+            'r.Final_Exclusionary',
+            'r.Finalized',
+            "COALESCE(r.Review_Done, 'no')",
+            "r.Final_Review_Results"
+        );
         $this->searchKeyword    = array('r.Final_Incidental_Findings');
     }
 
