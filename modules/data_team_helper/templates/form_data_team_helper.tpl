@@ -5,7 +5,7 @@
                 Selection Filter
             </div>
             <div class="panel-body" id="panel-body">
-                <form>
+                <form method="post">
                     <div class="row">
                         <div class="form-group col-xs-12">
                             <label class="col-sm-4">Visit_labels</label>
@@ -26,7 +26,10 @@
                         <div class="form-group col-xs-12">
                             <label class="col-sm-4">Instruments:</label>
                             <div class="col-sm-8">
-                                <select name="instrument" id="instrument" class="form-control input-sm"></select>
+                                <select name="instrument" id="instrument" class="form-control input-sm">
+                                    <option></option>
+                                    <option value="{$instrumentvalue}" selected="selected">{$instrumentvalue}</option>
+                                </select>
                             </div>
                         </div>
                     </div>

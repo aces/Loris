@@ -21,8 +21,7 @@ function changeVisitLabels()
     var instrument_dropdown = document.getElementById('instrument');
     var visit_label_dropdown = document.getElementById('visit_label');
     var visit_label_value = visit_label_dropdown.value;
-    request = getQueryVariable("visit_label");
-    instrument_dropdown_value = getQueryVariable("instrument");
+    var instrument_dropdown_value = instrument_dropdown.value;
     if (instrument_dropdown_value != undefined) {
         var instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g,' ');
     }
