@@ -72,7 +72,11 @@ foreach($instruments AS $instrument){
                     continue;
                 }
                 if($bits[0]=="select"){
-                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
+                    $bits[0]=enumizeOptions(
+                        array_key_exists(3,$bits) ? $bits[3] : null,
+                        $table = array(),
+                        $bits[1]
+                    );
                 } else if($bits[0]=="selectmultiple"){
                     $bits[0]="varchar(255)";
                 } else if($bits[0]=="textarea"){
@@ -84,10 +88,11 @@ foreach($instruments AS $instrument){
                 } else if ($bits[0]=="static") {
                     $bits[0]="varchar(255)";
                 } else if ($bits[0]=="radio") {
-                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
+                    $bits[0]=enumizeOptions($bits[3], $table = array(), $bits[1]);
                 }
-                
-                $bits[2]=htmlspecialchars($bits[2]);
+                if(array_key_exists(2,$bits)){
+                    $bits[2]=htmlspecialchars($bits[2]);
+                }
                 $output.="`$bits[1]` $bits[0] default NULL,\n";
         }
 
