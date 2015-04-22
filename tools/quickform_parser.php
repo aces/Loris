@@ -67,7 +67,9 @@ foreach($files AS $file){
         echo "Building instrument page '$subtest[Name]'...\n";
         $obj->_setupForm();
     }
-    
+
+    $output = "";
+
     if(!empty($output)){$output.="{-@-}";}
     
     echo "Parsing instrument object...\n";
@@ -85,6 +87,7 @@ fclose($fp);
     
 function parseElements($elements, $groupLabel=""){
     global $obj;
+    $output = "";
     foreach($elements AS $element){
         $label=$element->_label!="" ? str_replace("&nbsp;","",$element->_label) : $groupLabel;
         switch(strtolower(get_class($element))){
