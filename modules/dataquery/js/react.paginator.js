@@ -2,6 +2,9 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
     changePage: function(i) {
         var that = this;
         return function(evt) {
+            // Don't jump to the top of the page
+            evt.preventDefault();
+
             if(that.props.onChangePage) {
                 that.props.onChangePage(i);
             }
