@@ -1,34 +1,3 @@
-PaginationLinks = React.createClass({
-    changePage: function(i) {
-        var that = this;
-        return function(evt) {
-            if(that.props.onChangePage) {
-                that.props.onChangePage(i);
-            }
-        };
-    },
-    render: function() {
-        var rowsPerPage = this.props.RowsPerPage || 10;
-        var pageLinks = [];
-        var classList;
-        if(this.props.total === 0) {
-            return <div />;
-        }
-        for(var i = 1; i <= Math.ceil(this.props.total / rowsPerPage); i += 1) {
-            classList = '';
-            if(this.props.Active == i) {
-                classList = "active";
-            }
-            pageLinks.push(<li onClick={this.changePage(i)} className={classList}><a href="#">{i}</a></li>);
-        }
-        return (
-            <ul className="pagination">
-                {pageLinks}
-            </ul>
-        );
-    }
-});
-
 CategoryItem = React.createClass({
     render: function() {
         var classList = "list-group-item";
