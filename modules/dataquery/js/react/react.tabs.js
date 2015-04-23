@@ -98,52 +98,6 @@ ViewDataTabPane = React.createClass({
     }
 });
 
-DataTable = React.createClass({
-    getDefaultProps: function() {
-        return {
-            Identifiers: [],
-            Headers: [],
-            Data: {}
-        };
-    },
-    render: function() {
-        var headers = [<th>Identifier</th>];
-        for(var i = 0; i < this.props.Headers.length; i += 1) {
-            headers.push(<th>{this.props.Headers[i]}</th>);
-        }
-        var rows = [];
-        var curRow = [];
-
-        for(var i = 0; i < this.props.Identifiers.length; i += 1) {
-            curRow = [];
-
-            for(var j = 0; j < this.props.Headers.length; j += 1) {
-                curRow.push(<td>{this.props.Data[i][j]}</td>);
-            }
-            rows.push(
-                <tr colSpan={headers.length}>
-                    <td>{this.props.Identifiers[i].join()}</td>
-                    {curRow}
-                </tr>
-            );
-        }
-
-        return (
-            <table className="table table-hover table-primary table-bordered">
-                <thead>
-                    <tr className="info">{headers}</tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-                <tfoot>
-                    <tr><td className="info" colSpan={headers.length}>{rows.length} rows</td></tr>
-                </tfoot>
-            </table>
-        );
-    }
-});
-
 StatsVisualizationTabPane = React.createClass({
     render: function() {
         var content = <div>Stats go here</div>;
