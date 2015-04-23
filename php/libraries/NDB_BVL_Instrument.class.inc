@@ -839,9 +839,9 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $config =& NDB_Config::singleton();
 
-        $CertificationConfig  = $config->getSetting("Certification");
-        $CertificationEnabled = $CertificationConfig['EnableCertification'];
-        $CertificationProjects = array();
+        $CertificationConfig      = $config->getSetting("Certification");
+        $CertificationEnabled     = $CertificationConfig['EnableCertification'];
+        $CertificationProjects    = array();
         $CertificationInstruments = array();
 
         if ($CertificationEnabled) {
