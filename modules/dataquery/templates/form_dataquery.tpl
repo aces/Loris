@@ -1,5 +1,7 @@
 <script src="/js/react.js"></script>
 <script src="GetJS.php?Module=dataquery&file=arrayintersect.js"></script>
+<script src="GetJS.php?Module=dataquery&file=react.paginator.js"></script>
+<script src="GetJS.php?Module=dataquery&file=react.datatable.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.fieldselector.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.tabs.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.app.js"></script>
