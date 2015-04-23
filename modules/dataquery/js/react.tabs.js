@@ -62,8 +62,38 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
             this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
     },
+    downloadCSV: function() {
+        var headers = this.props.Fields,
+            csvworker = new Worker('GetJS.php?Module=dataquery&file=workers/savecsv.js');
+
+
+        csvworker.addEventListener('message', function (e) {
+            var dataURL, dataDate, link;
+            if (e.data.cmd === 'SaveCSV') {
+                dataDate = new Date().toISOString();
+                dataURL = window.URL.createObjectURL(e.data.message);
+                link = document.createElement("a");
+                link.download = "data-" + dataDate + ".csv";
+                link.type = "text/csv";
+                link.href = dataURL;
+                $(link)[0].click();
+
+            }
+        });
+        csvworker.postMessage({
+            cmd: 'SaveFile',
+            data: this.props.Data,
+            headers: headers,
+            identifiers: this.props.Sessions
+        });
+    },
     render: function() {
-        var buttons = React.createElement("div", {className: "commands"}, React.createElement("button", {onClick: this.runQuery}, "Run Query"))
+        var buttons = (
+            React.createElement("div", {className: "commands"}, 
+                React.createElement("button", {onClick: this.runQuery}, "Run Query"), 
+                React.createElement("button", {onClick: this.downloadCSV}, "Download Table as CSV")
+            )
+            );
         var criteria = [];
         for (var el in  this.props.Criteria) {
             if(!this.props.Criteria.hasOwnProperty(el)) {
