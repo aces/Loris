@@ -17,17 +17,14 @@ function checkAccessProfileForm() {
     $.get("AjaxHelper.php?Module=candidate_list&script=validateProfileIDs.php&candID=" + form.candID.value + "&PSCID=" + form.PSCID.value ,
         function(data)
         {
-            console.log("Data returned by Ajax call: " + data);
             //ids are valid, submit accessProfileForm form
             if (data==1) {
-                console.log("Form can be submitted");
                 $( "#accessProfileForm" ).unbind('submit.formValidation');
                 form.submit();
             }
             else {
                 //display error message
 
-                console.log("Prevent submit");
                 alert("DCCID or PSCID is not valid");
             }
         }
@@ -99,7 +96,6 @@ $(document).ready(function() {
 
     //validation for the accessProfileForm
     $( "#accessProfileForm" ).bind('submit.formValidation', function( event ) {
-        console.log( "Handler for .submit() called on form accessProfileForm" );
         event.preventDefault();
         checkAccessProfileForm();
     })
