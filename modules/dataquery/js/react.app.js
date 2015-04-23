@@ -41,7 +41,8 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
     getInitialState: function() {
         return {
             fields: [],
-            criteria: {}
+            criteria: {},
+            sessiondata: {}
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -145,7 +146,7 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         return sessions;
     },
     runQuery: function(fields, sessions) {
-        var DocTypes = [];
+        var DocTypes = [], that = this;
         // Get list of DocTypes to be retrieved
         for(var i = 0 ; i < fields.length; i += 1) {
             var field_split = fields[i].split(",");
@@ -160,13 +161,65 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                         DocType: category,
                         Sessions: sessions
                     },
+                    dataType: 'text',
                     success: function(data) {
+                        var i, row, rows, identifier,
+                            sessiondata = that.state.sessiondata;
+                        data = JSON.parse(data);
+                        rows = data.rows;
+                        for(i = 0; i < rows.length; i += 1) {
+                            /*
+                             * each row is a JSON object of the
+                             * form:
+                             * {
+                             *  "key" : [category, pscid, vl],
+                             *  "value" : [pscid, vl],
+                             *  "doc": {
+                             *      Meta: { stuff }
+                             *      data: { "FieldName" : "Value", .. }
+                             * }
+                             */
+                            row = rows[i];
+                            identifier = row.value;
+                            if(!sessiondata.hasOwnProperty(identifier)) {
+                                sessiondata[identifier] = {
+                                }
+                            }
+
+                            sessiondata[identifier][row.key[0]] = row.doc;
+
+                        }
+                        that.setState({ 'sessiondata' : sessiondata});
+                        console.log("Received data");
                     }
                 });
 
             }
         }
 
+    },
+    getRowData: function() {
+        var sessiondata = this.state.sessiondata;
+        var sessions = this.getSessions();
+        var fields = this.state.fields;
+        var i, j;
+        var rowdata = [];
+        var currow;
+
+        for(j = 0; j < sessions.length; j += 1) {
+            var currow = [];
+            for(i = 0; i < fields.length; i += 1) {
+                var fieldSplit = fields[i].split(",")
+                currow[i] = '.';
+                var sd = sessiondata[sessions[j]];
+                if(sd) {
+                    currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+                }
+
+            }
+            rowdata.push(currow);
+        }
+        return rowdata;
     },
     render: function() {
         var tabs = [], tabsNav = [];
@@ -194,6 +247,7 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                 Fields: this.state.fields, 
                 Criteria: this.state.criteria, 
                 Sessions: this.getSessions(), 
+                Data: this.getRowData(), 
                 onRunQueryClicked: this.runQuery}
         ));
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics"}));

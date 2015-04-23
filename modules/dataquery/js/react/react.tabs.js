@@ -91,7 +91,7 @@ ViewDataTabPane = React.createClass({
             <div>
                 <h2>Query Criteria</h2>{criteria} {buttons}
                 <h2>Data</h2>
-                <DataTable Headers={this.props.Fields} Identifiers={this.props.Sessions} />
+                <DataTable Headers={this.props.Fields} Identifiers={this.props.Sessions} Data={this.props.Data} />
             </div>
                 );
         return <TabPane content={content} TabId={this.props.TabId} />;
@@ -112,11 +112,18 @@ DataTable = React.createClass({
             headers.push(<th>{this.props.Headers[i]}</th>);
         }
         var rows = [];
+        var curRow = [];
 
         for(var i = 0; i < this.props.Identifiers.length; i += 1) {
+            curRow = [];
+
+            for(var j = 0; j < this.props.Headers.length; j += 1) {
+                curRow.push(<td>{this.props.Data[i][j]}</td>);
+            }
             rows.push(
                 <tr colSpan={headers.length}>
                     <td>{this.props.Identifiers[i].join()}</td>
+                    {curRow}
                 </tr>
             );
         }

@@ -91,7 +91,7 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
             React.createElement("div", null, 
                 React.createElement("h2", null, "Query Criteria"), criteria, " ", buttons, 
                 React.createElement("h2", null, "Data"), 
-                React.createElement(DataTable, {Headers: this.props.Fields, Identifiers: this.props.Sessions})
+                React.createElement(DataTable, {Headers: this.props.Fields, Identifiers: this.props.Sessions, Data: this.props.Data})
             )
                 );
         return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
@@ -112,11 +112,18 @@ DataTable = React.createClass({displayName: 'DataTable',
             headers.push(React.createElement("th", null, this.props.Headers[i]));
         }
         var rows = [];
+        var curRow = [];
 
         for(var i = 0; i < this.props.Identifiers.length; i += 1) {
+            curRow = [];
+
+            for(var j = 0; j < this.props.Headers.length; j += 1) {
+                curRow.push(React.createElement("td", null, this.props.Data[i][j]));
+            }
             rows.push(
                 React.createElement("tr", {colSpan: headers.length}, 
-                    React.createElement("td", null, this.props.Identifiers[i].join())
+                    React.createElement("td", null, this.props.Identifiers[i].join()), 
+                    curRow
                 )
             );
         }
