@@ -133,7 +133,7 @@ BrowserDetect.init();
 	
  	<div class="navbar navbar-default" role="navigation" style="height:90px">
  		<div class="container">
-	 		<div class="navbar-brand" style="align:center;">
+	 		<div class="navbar-brand">
                 {if $study_logo}
 		 		<img src="{$study_logo}" border="0" width="64" height="57" />
                 {/if}
