@@ -188,7 +188,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $list_of_subprojects = Utility::getSubprojectList();
         
         if ($config->getSetting("useProjects")=="true") {
-           $list_of_projects    = Utility::getProjectList();
+            $list_of_projects = Utility::getProjectList();
         }
 
         // list of feedback statuses
