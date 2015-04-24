@@ -74,6 +74,8 @@ class Candidate
      *
      * @return null As a side-effect loads candidate into current
      *              object
+     * @throws DatabaseException
+     * @throws Exception
      */
     function select($candID)
     {
@@ -252,6 +254,43 @@ class Candidate
 
         // return the new candid
         return $candID;
+    }
+
+    /**
+     * Checks if candidate exist given a candidate ID and PSCID
+     * Used to check that PSCID matches CandID when entered into the boxes
+     * on the candidate_list form
+     *
+     * @param int    $candID 6 digit Loris CandID
+     * @param string $PSCID  project study center ID
+     *
+     * @return bool TRUE if candidate is found (in candidate table), FALSE otherwise
+     * @throws DatabaseException
+     */
+    static function candidateExists($candID, $PSCID)
+    {
+        // make a local reference to the Database object
+        $db =& Database::singleton();
+
+        $candidateIDs = array(
+                         ':candidate_id' => $candID,
+                         ':pscid'        => $PSCID,
+                        );
+
+        // get candidate data from database
+        $query = "SELECT CandID
+            FROM candidate
+            WHERE CandID = :candidate_id AND PSCID = :pscid
+            AND Active = 'Y'";
+
+        $row = $db->pselectRow($query, $candidateIDs);
+
+        if (!empty($row)) {
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
@@ -522,7 +561,7 @@ class Candidate
     {
         $config =& NDB_Config::singleton();
 
-        $visitLabelSettings = $config->getSetting('visitLabels');
+        $visitLabelSettings = $config->getSetting('visitLabel');
         $nextVisitLabel     = null;
 
         $candID = $this->getCandID();

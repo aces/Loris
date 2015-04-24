@@ -287,6 +287,18 @@ class NDB_Form_final_radiological_review extends NDB_Form
         $this->stripEmpty($values, 'Review_Done2');
         $this->stripEmpty($values, 'Finalized');
 
+        /* With the Loris Forms all the static elements on the page are submitted
+         * in the post request. This should be fixed in the base class but doing
+         * this temporary fix in the module for the 15.04 release.
+         */
+        $to_unset = array('DICOM_Folder_Name','DICOM_ID','Original_Scan_Done',
+                          'Visit_label','CandID','PSCID','history','CommentID',
+                          'Original_Review_Results','SessionID','Original_Examiner',
+                          'Original_Exclusionary','Original_Incidental_Findings');
+        foreach($to_unset as $key) {
+            unset($values[$key]);
+        }
+
         if (!(is_null($_SESSION['State']))) {
             $currentUser           = User::singleton($_SESSION['State']->getUsername());
             $userID                = $currentUser->getData("UserID");

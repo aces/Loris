@@ -702,8 +702,8 @@ class NDB_BVL_Instrument extends NDB_Page
             foreach ($this->monthYearFields as $field) {
                 //Stops it from wiping dates already saved on other pages.
                 if (isset($values[$field])) {
-                    $values[$field]      = $this->_getDatabaseDate($values[$field]);
                     $values[$field]['d'] = 15;
+                    $values[$field]      = $this->_getDatabaseDate($values[$field]);
                 }
             }
         }
@@ -839,9 +839,9 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $config =& NDB_Config::singleton();
 
-        $CertificationConfig  = $config->getSetting("Certification");
-        $CertificationEnabled = $CertificationConfig['EnableCertification'];
-        $CertificationProjects = array();
+        $CertificationConfig      = $config->getSetting("Certification");
+        $CertificationEnabled     = $CertificationConfig['EnableCertification'];
+        $CertificationProjects    = array();
         $CertificationInstruments = array();
 
         if ($CertificationEnabled) {

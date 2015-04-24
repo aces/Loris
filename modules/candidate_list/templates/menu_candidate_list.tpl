@@ -5,6 +5,7 @@
     });
 </script>
 {/literal}
+<script type="text/javascript" src="{$baseurl}/js/advancedMenu.js"></script>
 
 <div class="row">
 <div class="col-sm-9">
@@ -188,14 +189,14 @@
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body" id="panel-body">
-    <form class="form-horizontal" name="accessProfileForm" method="get" action="main.php" onSubmit="return checkAccessProfileForm();">
+    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="main.php">
         <input type="hidden" name="test_name" value="timepoint_list">
         <div class="form-group col-sm-12">
             <label class="col-sm-12 col-md-4">
-                {$form.DCCID.label}
+                {$form.candID.label}
             </label>
             <div class="col-sm-12 col-md-8">
-                {$form.DCCID.html}
+                {$form.candID.html}
             </div>
         </div>
         <div class="form-group col-sm-12">

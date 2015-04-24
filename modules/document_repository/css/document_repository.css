@@ -298,6 +298,7 @@ label em {
     padding-left: 30px;
     height:100%;
     overflow: auto;
+    word-break: break-word;
 }
 .fileDDD>div{
     overflow: inherit;
@@ -309,6 +310,7 @@ label em {
     border-left:1px solid #999;
     padding-left: 30px;
     overflow: auto;
+    word-break: break-word;
 }
 .spacer{
     float: left;

@@ -61,7 +61,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                           's.CandID',
                           'c.PSCID',
                           's.visit_label',
-                          'SourceLocation',
+                          'UploadLocation',
                           'UploadDate',
                           'UploadedBy',
                           'TarchiveID AS Tarchive_Info',
@@ -301,7 +301,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     /**
      * Inserts into the mri_upload table the following information:
-     *   - UploadedBy, UploadDate, SourceLocation, SessionID and
+     *   - UploadedBy, UploadDate, UploadLocation, SessionID and
      *     PatientName
      *
      * @param FILE  $file The uploaded file
@@ -371,7 +371,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $values = array(
                        'UploadedBy'     => $user_name,
                        'UploadDate'     => $date,
-                       'SourceLocation' => $uploaded_file_path,
+                       'UploadLocation' => $uploaded_file_path,
                        'SessionID'      => $sessionid,
                        'PatientName'    => $pname,
                       );
@@ -385,7 +385,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                             FROM mri_upload
                             WHERE UploadedBy     = :UploadedBy
                             AND   UploadDate     = :UploadDate
-                            AND   SourceLocation = :SourceLocation
+                            AND   UploadLocation = :UploadLocation
                             AND   SessionID      = :SessionID
                             AND   PatientName    = :PatientName";
             $mriUploadId = $db->pselectOne($query, $values);
