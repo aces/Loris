@@ -220,8 +220,9 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         // add form elements
         $this->addSelect('centerID', 'Site', $list_of_sites);
-        $this->addBasicText('DCCID', 'DCCID');
         $this->addBasicText('PSCID', 'PSCID');
+        $this->addBasicText('DCCID', 'DCCID');
+        $this->addBasicText('candID', 'DCCID');
         $this->addSelect(
             'Visit_label',
             'Visit Label',
