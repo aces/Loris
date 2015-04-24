@@ -116,8 +116,10 @@
             {if isset($elements_array[$element][$visit_label].FeedbackList) }
         	    <td nowrap="nowrap" width="40" valign="top">
         	       {foreach from=$elements_array[$element][$visit_label].FeedbackList key=feedback item=FeedbackList}
-                       <a href="#" onClick="javascript:window.open('feedback_bvl_popup.php?test_name={$FeedbackList.test_name}&candID={$FeedbackList.CandID}&sessionID={$FeedbackList.session_id}&commentID={$FeedbackList.commentid}#{$FeedbackList.feedbackid}','bvl_feedback','width=900,height=500,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes')">{$FeedbackList.PSCID}_{$FeedbackList.visit_label}</a>
-        	       {/foreach}
+                       <div>
+                           <a href="#" onClick="javascript:window.open('feedback_bvl_popup.php?test_name={$FeedbackList.test_name}&candID={$FeedbackList.CandID}&sessionID={$FeedbackList.session_id}&commentID={$FeedbackList.commentid}#{$FeedbackList.feedbackid}','bvl_feedback','width=900,height=500,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">{$FeedbackList.PSCID}_{$FeedbackList.visit_label}</a>
+                       </div>
+                   {/foreach}
                 </td>
                 {**Currently the color option only works if the status is created as a separate cell (tr or td)...otherwise ...the color will be unreadable
                 So for now it is commented out...
@@ -126,7 +128,9 @@
                     {foreach from=$elements_array[$element][$visit_label].FeedbackList key=feedback item=FeedbackList}
         				 <!--font solid color="{$FeedbackList.QC_color}"><b> {$FeedbackList.Status}</b> </font-->
         				 <!--font solid color="{$FeedbackList.QC_color}"><b> {$FeedbackList.Status}</b> </font-->
-        				 {$FeedbackList.Status}
+                        <div>
+                            {$FeedbackList.Status}
+                        </div>
         		    {/foreach}
         	    </td>
             {else}
