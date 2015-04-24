@@ -68,7 +68,7 @@ foreach($instruments AS $instrument){
 
             //generate specific column definitions for specific types of HTML elements
             default:
-                if((array_key_exists(1,$bits) ? $bits[1] : null) == "") {
+                if((array_key_exists(1,$bits) ? $bits[1] : "") == "") {
                     continue;
                 }
                 if($bits[0]=="select"){
