@@ -31,10 +31,15 @@ if (empty($basePath)) {
     exit(1);
 }
 
-$File     = $_GET['file'];
-$FullPath = $basePath . "/modules/training/training_docs/$File";
+$File = $_GET['file'];
 
-// Check that the user has examiner permission, or is an examiner
+$ext = pathinfo($File, PATHINFO_EXTENSION);
+if ($ext == 'pdf') {
+    $FullPath = $basePath . "/project/data/training/pdf/$File";
+} elseif ($ext == 'mp4') {
+    $FullPath = $basePath . "/project/data/training/video/$File";
+}
+// Check that the user has training permission, or is an trainer
 if (!$user->hasPermission('training')) {
     error_log("ERROR: Permission denied for accessing $File");
     header('HTTP/1.1 403 Forbidden');
