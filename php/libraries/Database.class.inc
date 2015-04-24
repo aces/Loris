@@ -538,7 +538,10 @@ class Database extends PEAR
         $this->affected = $this->_PDO->exec($query);
 
         if ($this->affected === false) {
-            throw new DatabaseException("Could not run query $query");
+            throw new DatabaseException(
+                "Could not run query $query"
+                . print_r($this->_PDO->errorInfo(), true)
+            );
         }
         $this->lastInsertID = $this->_PDO->lastInsertId();
     }
@@ -900,6 +903,16 @@ class Database extends PEAR
             $createStmt = preg_replace(
                 "/CREATE TABLE/",
                 "CREATE TEMPORARY TABLE",
+                $createStmt
+            );
+            $createStmt = preg_replace(
+                "/(\s*)(CONSTRAINT)(.*)(,*)(\s*)/",
+                "$4",
+                $createStmt
+            );
+            $createStmt = preg_replace(
+                "/,(\s*)(\))/",
+                ")",
                 $createStmt
             );
 

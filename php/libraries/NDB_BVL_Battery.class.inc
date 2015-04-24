@@ -478,6 +478,10 @@ class NDB_BVL_Battery extends PEAR
             $query .= " AND b.CenterID IS NULL";
         }
 
+        if ($firstVisit === false) {
+            $query .= " AND (b.firstVisit IS NULL OR b.firstVisit='N')";
+        }
+
         // get the list of instruments
         $tests = array();
         $rows  = $DB->pselect($query, $qparams);
