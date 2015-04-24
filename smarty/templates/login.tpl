@@ -182,7 +182,6 @@ BrowserDetect.init();
 					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
 					<li id="active">|</li>
-                    {
 					{foreach from=$studylinks item=link}
 					<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
 					{/foreach}
