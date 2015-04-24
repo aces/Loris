@@ -7,6 +7,18 @@
 <script id="json_data" type="text/json">
     {/literal}{$File_categories|json_encode}{literal}
 </script>
+<script id="isFiltered" type="text/json">
+    {
+        "filtered": {/literal}
+                        {if isset($filtered)}
+                            true
+                        {else}
+                            false
+                        {/if}
+                    {literal}
+    }
+</script>
+
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
         <td class="fileColumn">
@@ -20,13 +32,13 @@
             {{ /depth }}
             {{ #indent }}
                 <div class="fileDDD">
-                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right'>
+                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
                         {{ name }}
                     </span>
                 </div>
             {{ /indent }}
             {{ ^indent }}
-                <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right'>
+                <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
                     {{ name }}
                 </span>
             {{ /indent }}
@@ -35,7 +47,7 @@
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
-    <tr class="{{ parentID }}a" style="display:none">
+    <tr class="{{ parentID }}a" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
             {{ #depth }}
                 {{ #first }}
@@ -45,7 +57,11 @@
                     <div class="spacer"> </div>
                 {{ /first }}
             {{ /depth }}
-            <div class="fileDDD"><div style="padding-top: 8px">{{ File_name }} ({{ File_size }})</div></div>
+            <div {{ ^filtered }}class="fileDDD"{{ /filtered }}><div style="padding-top: 8px">
+                <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
+                        {{ File_name }}
+                </a>({{ File_size }})
+            </div></div>
         </td>
         <td>
             {{ version }}
@@ -54,7 +70,7 @@
             {{ File_type }}
         </td>
         <td>
-            {{ instrument }}
+            {{ Instrument }}
         </td>
         <td>
             {{ uploaded_by }}
@@ -146,6 +162,40 @@
     <button class="btn btn-lg btn-primary loading"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
 </center>
 
+<div class = "upload-success">
+    <p>
+        <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+        The file was successfully uploaded. Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "edit-success">
+    <p>
+        <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+        The file was successfully modified. Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "delete-success">
+    <p>
+        <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+        The file was successfully deleted. Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "add-success">
+    <p>
+            <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
+            New category successfully added! Loading changes in 3 seconds...
+    </p>
+</div>
+
+<div class = "no-files">
+    <p>
+        <span class="ui-icon ui-icon-info" style = "float:left;"></span>
+        No files were found.
+    </p>
+</div>
 
 {assign "find" array(' ','>','(',')')}
 {assign "replaceFind" array('_','_','_','_')}
@@ -292,7 +342,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="instrument">Instrument<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="instrument">Instrument</label>
                             <div class="col-xs-8">
                                 <select name="instrument" id = "instrument" class = "form-fields form-control input-sm">
                                 <option value=""> </option>
@@ -384,7 +434,7 @@
                         </div>
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-4" for="instrument">
-                                Instrument<font color="red"><sup> *</sup></font>
+                                Instrument
                             </label>
                             <div class="col-xs-8">
                                 <select name="instrument" id = "instrumentEdit" class = "form-fields form-control input-sm">
@@ -429,41 +479,6 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class = "upload-success">
-    <p>
-	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully uploaded. Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "edit-success">
-    <p>
-	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully modified. Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "delete-success">
-    <p>
-	    <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-	    The file was successfully deleted. Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "add-success">
-    <p>
-            <span class="ui-icon ui-icon-circle-check" style = "float:left;"></span>
-            New category successfully added! Loading changes in 3 seconds...
-    </p>
-</div>
-
-<div class = "no-files">
-    <p>
-	    <span class="ui-icon ui-icon-info" style = "float:left;"></span>
-	    No files were found.
-    </p>
 </div>
 
 </br>
