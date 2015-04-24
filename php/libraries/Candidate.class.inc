@@ -522,7 +522,7 @@ class Candidate
     {
         $config =& NDB_Config::singleton();
 
-        $visitLabelSettings = $config->getSetting('visitLabels');
+        $visitLabelSettings = $config->getSetting('visitLabel');
         $nextVisitLabel     = null;
 
         $candID = $this->getCandID();
