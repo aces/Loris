@@ -309,6 +309,9 @@ class NDB_Config
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
                     array('CID' => $configSetting['ParentID'])
                 );
+                if (empty($val)) {
+                    return null;
+                }
                 return $val;
             } else {
                 // Allows multiple, but has no child elements. Was called
