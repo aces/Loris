@@ -5,6 +5,7 @@
     });
 </script>
 {/literal}
+<script type="text/javascript" src="{$baseurl}/js/advancedMenu.js"></script>
 
 <div class="row">
 <div class="col-sm-9">
