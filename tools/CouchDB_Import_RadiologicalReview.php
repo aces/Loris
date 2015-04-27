@@ -79,11 +79,11 @@ class CouchDBRadiologicalReviewImporter {
     function run() {
 
         // Update CouchDB data dictionary
-        $this->CouchDB->replaceDoc('DataDictionary:FinalRadiologicalReview',
+       /* $this->CouchDB->replaceDoc('DataDictionary:FinalRadiologicalReview',
             array('Meta' => array('DataDict' => true),
                   'DataDictionary' => array('FinalRadiologicalReview' => $this->Dictionary) 
             )
-        );
+        );*/
         
         // Query to retrieve radiological review data
         $finalradiologicalreview = $this->SQLDB->pselect("SELECT c.PSCID, s.Visit_label,
@@ -119,6 +119,7 @@ class CouchDBRadiologicalReviewImporter {
             WHEN frr.PVS2=2 THEN 'Mild' 
             WHEN frr.PVS2=3 THEN 'Moderate' 
             WHEN frr.PVS2=4 THEN 'Marker' END as ExtraReview_PVS, 
+            frr.Final_Exclusionary2 AS ExtraReview_ExclusionaryStatus,
             frr.Final_Incidental_Findings2 AS ExtraReview_Comment
             FROM final_radiological_review frr
             LEFT JOIN flag f ON (f.CommentID=frr.CommentID) 
@@ -132,13 +133,13 @@ class CouchDBRadiologicalReviewImporter {
             $identifier = array($review['PSCID'], $review['Visit_label']);
             $id = 'Final_Radiological_Review_' . join($identifier, '_');
             unset($review['PSCID']);
-            unset($review['Visit_label']);
-            $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
+            unset($review['Visit_label']);print_r($review);
+           /* $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'FinalRadiologicalReview',
                 'identifier' => $identifier
             ),
                 'data' => $review
-            ));
+            ));*/
             print "$id: $success\n";
         }
     }
