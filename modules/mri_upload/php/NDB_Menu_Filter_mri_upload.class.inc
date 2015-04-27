@@ -73,6 +73,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                                's.CandID',
                                'c.PSCID',
                                's.visit_label',
+                               'mu.IsPhantom'
                               );
         $this->query        = " FROM mri_upload mu JOIN session".
                               " s ON (s.ID = mu.SessionID)".
@@ -82,6 +83,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                                'CandID'      => 's.CandID',
                                'PSCID'       => 'c.PSCID',
                                'visit_label' => 's.visit_label',
+                               'IsPhantom'   => 'mu.IsPhantom',
                               );
         return true;
     }
@@ -117,6 +119,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             'VisitLabel',
             'VisitLabel:',
             $visitlabels
+        );
+        $phantom_options= array('N'=>'No','Y'=>'Yes');
+        $this->addSelect(
+            'IsPhantom',
+            'Are these Phantom Scans:',
+            $phantom_options
         );
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
@@ -344,6 +352,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $visit_label = $args['values']['VisitLabel'];
             $candid      = $args['values']['CandID'];
             $pscid       = $args['values']['PSCID'];
+            $IsPhantom   = $args['values']['IsPhantom'];
+            
             $pname       = $pscid. "_" . $candid . "_" . $visit_label;
             $sessionid   = $db->pselectOne(
                 "SELECT ID FROM  session WHERE CandID = :cid
@@ -378,6 +388,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                        'UploadLocation' => $uploaded_file_path,
                        'SessionID'      => $sessionid,
                        'PatientName'    => $pname,
+                       'IsPhantom'      => $IsPhantom,
                       );
             $db->Insert(
                 'mri_upload',
@@ -391,7 +402,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                             AND   UploadDate     = :UploadDate
                             AND   UploadLocation = :UploadLocation
                             AND   SessionID      = :SessionID
-                            AND   PatientName    = :PatientName";
+                            AND   PatientName    = :PatientName
+                            AND   IsPhantom      = :IsPhantom";
             $mriUploadId = $db->pselectOne($query, $values);
 
             // Perform the real upload on the server
