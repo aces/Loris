@@ -1840,6 +1840,7 @@ CREATE TABLE `mri_upload` (
   `SessionID` int(10) unsigned DEFAULT NULL,
   `IsValidated` tinyint(1) NOT NULL DEFAULT '0',
   `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
+  `IsPhantom` enum('N','Y') NOT NULL DEFAULT 'N',
   PRIMARY KEY (`UploadID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
