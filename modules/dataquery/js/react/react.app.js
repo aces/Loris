@@ -32,7 +32,7 @@ SavedQueriesList = React.createClass({
                         {globalSaved}
                      </ul>
                  </li>
-                 <li role="presentation"><a href="#">Managed Saved Queries</a></li>
+                 <li role="presentation"><a href="#SavedQueriesTab" data-toggle="tab">Managed Saved Queries</a></li>
              </ul>
             );
     }
@@ -251,6 +251,10 @@ DataQueryApp = React.createClass({
                 onRunQueryClicked={this.runQuery}
         />);
         tabs.push(<StatsVisualizationTabPane TabId="Statistics" />);
+        tabs.push(<ManageSavedQueriesTabPane TabId="SavedQueriesTab"
+                        userQueries={this.props.SavedQueries.User}
+                        globalQueries={this.props.SavedQueries.Shared}
+                />);
 
         return <div>
                 <nav className="nav nav-tabs">

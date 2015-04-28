@@ -134,3 +134,37 @@ StatsVisualizationTabPane = React.createClass({
         return <TabPane content={content} TabId={this.props.TabId} />;
     }
 });
+
+ManageSavedQueriesTabPane = React.createClass({
+    getDefaultProps: function() {
+        return {
+            userQueries: [],
+            globalQueries: []
+        };
+    },
+    render: function() {
+        var queryRows = [];
+        for(var i = 0; i < this.props.userQueries; i += 1) {
+            queryRows.push(<tr><td colSpan="3">{this.props.userQueries[i]}</td></tr>);
+
+        }
+        var content = (
+            <div>
+                <h2>Your currently saved queries</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Query Name</th>
+                            <th>Fields</th>
+                            <th>Filters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {queryRows}
+                    </tbody>
+                </table>
+            </div>
+        );
+        return <TabPane content={content} TabId={this.props.TabId} />;
+    }
+});

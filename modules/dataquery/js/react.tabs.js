@@ -134,3 +134,37 @@ StatsVisualizationTabPane = React.createClass({displayName: 'StatsVisualizationT
         return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
     }
 });
+
+ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesTabPane',
+    getDefaultProps: function() {
+        return {
+            userQueries: [],
+            globalQueries: []
+        };
+    },
+    render: function() {
+        var queryRows = [];
+        for(var i = 0; i < this.props.userQueries; i += 1) {
+            queryRows.push(React.createElement("tr", null, React.createElement("td", {colSpan: "3"}, this.props.userQueries[i])));
+
+        }
+        var content = (
+            React.createElement("div", null, 
+                React.createElement("h2", null, "Your currently saved queries"), 
+                React.createElement("table", null, 
+                    React.createElement("thead", null, 
+                        React.createElement("tr", null, 
+                            React.createElement("th", null, "Query Name"), 
+                            React.createElement("th", null, "Fields"), 
+                            React.createElement("th", null, "Filters")
+                        )
+                    ), 
+                    React.createElement("tbody", null, 
+                        queryRows
+                    )
+                )
+            )
+        );
+        return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
+    }
+});
