@@ -32,7 +32,7 @@ SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
                         globalSaved
                      )
                  ), 
-                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#"}, "Managed Saved Queries"))
+                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#SavedQueriesTab", 'data-toggle': "tab"}, "Managed Saved Queries"))
              )
             );
     }
@@ -251,6 +251,10 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                 onRunQueryClicked: this.runQuery}
         ));
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics"}));
+        tabs.push(React.createElement(ManageSavedQueriesTabPane, {TabId: "SavedQueriesTab", 
+                        userQueries: this.props.SavedQueries.User, 
+                        globalQueries: this.props.SavedQueries.Shared}
+                ));
 
         return React.createElement("div", null, 
                 React.createElement("nav", {className: "nav nav-tabs"}, 
