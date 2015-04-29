@@ -48,7 +48,7 @@
             <div class="panel-body">
             {foreach from=$form.errors item=error}
             <div class="col-xs-12">
-                <p class="error">{$error}</p>
+                <div class="alert alert-danger" role="alert">{$error}</div>
             </div>
             {/foreach}
             <form method="post" name="examiner" id="examiner">
