@@ -135,7 +135,37 @@ StatsVisualizationTabPane = React.createClass({
     }
 });
 
+SaveQueryDialog = React.createClass({
+    render: function() {
+        return (
+            <div className="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 className="modal-title" id="myModalLabel">Modal title</h4>
+                        </div>
+                        <div className="modal-body">
+                            Abc
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            );
+    }
+});
 ManageSavedQueriesTabPane = React.createClass({
+    getInitialState: function() {
+        return {
+            'savePrompt' : false
+        };
+    },
+    saveQuery: function() {
+    },
     getDefaultProps: function() {
         return {
             userQueries: [],
@@ -144,13 +174,14 @@ ManageSavedQueriesTabPane = React.createClass({
     },
     render: function() {
         var queryRows = [];
-        for(var i = 0; i < this.props.userQueries; i += 1) {
+        for(var i = 0; i < this.props.userQueries.length; i += 1) {
             queryRows.push(<tr><td colSpan="3">{this.props.userQueries[i]}</td></tr>);
 
         }
         var content = (
             <div>
                 <h2>Your currently saved queries</h2>
+                <button onClick={this.saveQuery}>Save Current Query</button>
                 <table>
                     <thead>
                         <tr>
@@ -163,6 +194,7 @@ ManageSavedQueriesTabPane = React.createClass({
                         {queryRows}
                     </tbody>
                 </table>
+                <SaveQueryDialog />
             </div>
         );
         return <TabPane content={content} TabId={this.props.TabId} />;

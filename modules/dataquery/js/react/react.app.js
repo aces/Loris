@@ -38,6 +38,20 @@ SavedQueriesList = React.createClass({
     }
 });
 DataQueryApp = React.createClass({
+    componentDidMount: function() {
+        var domNode = this.getDOMNode();
+        $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            $(domNode).find('li').removeClass("active");
+            if(e.target) {
+                e.target.classList.add("active");
+                // Both the <li> tag and the <a> tag should be active
+                if(e.target.parentNode) {
+                    e.target.parentNode.classList.add("active");
+                }
+            }
+        });
+
+    },
     getInitialState: function() {
         return {
             fields: [],

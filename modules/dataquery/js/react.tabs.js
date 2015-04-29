@@ -135,7 +135,37 @@ StatsVisualizationTabPane = React.createClass({displayName: 'StatsVisualizationT
     }
 });
 
+SaveQueryDialog = React.createClass({displayName: 'SaveQueryDialog',
+    render: function() {
+        return (
+            React.createElement("div", {className: "modal fade", id: "myModal", tabindex: "-1", role: "dialog", 'aria-labelledby': "myModalLabel", 'aria-hidden': "true"}, 
+                React.createElement("div", {className: "modal-dialog"}, 
+                    React.createElement("div", {className: "modal-content"}, 
+                        React.createElement("div", {className: "modal-header"}, 
+                            React.createElement("button", {type: "button", className: "close", 'data-dismiss': "modal", 'aria-label': "Close"}, React.createElement("span", {'aria-hidden': "true"}, "×")), 
+                            React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Modal title")
+                        ), 
+                        React.createElement("div", {className: "modal-body"}, 
+                            "Abc"
+                        ), 
+                        React.createElement("div", {className: "modal-footer"}, 
+                            React.createElement("button", {type: "button", className: "btn btn-default", 'data-dismiss': "modal"}, "Close"), 
+                            React.createElement("button", {type: "button", className: "btn btn-primary"}, "Save changes")
+                        )
+                    )
+                )
+            )
+            );
+    }
+});
 ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesTabPane',
+    getInitialState: function() {
+        return {
+            'savePrompt' : false
+        };
+    },
+    saveQuery: function() {
+    },
     getDefaultProps: function() {
         return {
             userQueries: [],
@@ -144,13 +174,14 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
     },
     render: function() {
         var queryRows = [];
-        for(var i = 0; i < this.props.userQueries; i += 1) {
+        for(var i = 0; i < this.props.userQueries.length; i += 1) {
             queryRows.push(React.createElement("tr", null, React.createElement("td", {colSpan: "3"}, this.props.userQueries[i])));
 
         }
         var content = (
             React.createElement("div", null, 
                 React.createElement("h2", null, "Your currently saved queries"), 
+                React.createElement("button", {onClick: this.saveQuery}, "Save Current Query"), 
                 React.createElement("table", null, 
                     React.createElement("thead", null, 
                         React.createElement("tr", null, 
@@ -162,7 +193,8 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
                     React.createElement("tbody", null, 
                         queryRows
                     )
-                )
+                ), 
+                React.createElement(SaveQueryDialog, null)
             )
         );
         return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
