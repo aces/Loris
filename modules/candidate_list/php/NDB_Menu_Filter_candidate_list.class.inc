@@ -274,12 +274,12 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
-            $list_of_projects = Utility::getProjectList();
-            $this->addSelect(
-                'ProjectID',
-                'Project',
-                array('' => 'All') + $list_of_projects
-            );
+            $list_of_projects = array(null =>'All');
+            $projectList = Utility::getProjectList();
+            foreach ($projectList as $key => $value) {
+                $list_of_projects[$key] =$value;
+            }
+            $this->addSelect('ProjectID', 'Project', $list_of_projects); 
         }
         if ($config->getSetting("useEDC")=="true") {
             $this->addBasicText(

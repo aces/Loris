@@ -224,11 +224,14 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         );
 
         $config =& NDB_Config::singleton();
-        $projAr = $allAr; 
         if ($config->getSetting('useProjects') === "true") {
-            $projAr += Utility::getProjectList(); 
+            $list_of_projects = $allAr;
+            $projectList = Utility::getProjectList();
+            foreach ($projectList as $key => $value) {
+                $list_of_projects[$key] =$value;
+            }
+            $this->addSelect('ProjectID', 'Project', $list_of_projects);  
         }
-        $this->addSelect('ProjectID', 'Project', $projAr);  
 
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
