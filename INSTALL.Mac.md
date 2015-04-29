@@ -187,11 +187,27 @@ cd ~/Sites/$projectname/tools
 The install script was created for LINUX OS so its apache2 setup steps won’t work. Section 3 describes how to apache2 server.
 
 # 3. Launching the Local Apache2 Server
+This section goes into details regarding setting up the local Apache2 server. There are Max OS X Yosemite specific instructions in section 3.1.1.
+
 
 ## 3.1. Enable PHP
 Open the ```/etc/apache2/httpd.conf``` in a text editor and locate the line containing
 ```LoadModule php5_module libexec/apache2/libphp5.so```
 Ensure that the line is uncommented (remove the ```#``` at the beginning of the line)
+
+### 3.1.1. Mac OS X Yosemite specific configuration
+In ```/etc/apache2/httpd.conf``` locate the following lines and uncomment them if they are not commented out:
+
+```#LoadModule userdir_module libexec/apache2/mod_userdir.so ```
+and
+``` #Include /private/etc/apache2/extra/httpd-userdir.conf ```
+
+
+At the end of your file also include the line
+``` Include /etc/apache2/other/*.conf ```
+
+Now open ```/etc/apache2/extra/httpd-userdir.conf``` and uncomment the following line```#Include /private/etc/apache2/users/*.conf```. 
+
 
 ## 3.2 Setup MySql with Apache2
 Do the following to allow for use of MySql with Apache2, unless link already exists
@@ -202,7 +218,7 @@ sudo ln -s /tmp/mysql.sock /var/mysql/mysql.sock
 
 ## 3.3 Setting up user conf file
 
-In order for apache to know where to find the LORIS code base you have to first set up your user config file. To do so, open your user conf file using the following:
+In order for apache to know where to find the LORIS code base you have to first set up your user config file. To do so, open your user conf file using the following in the ``` /etc/Apache2/Users/``` directory:
 
 ```
 sudo vi $username.conf
