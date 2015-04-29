@@ -186,16 +186,19 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
+     * @param array  $options An array of options that should get added,
+     *                        such as the date format, min or max date etc.
+     * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addDate($name, $label, $options)
+    public function addDate($name, $label, $options, $attribs = array())
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'date';
+        $el['options'] = $options;
     }
 
     /**
@@ -247,7 +250,7 @@ class LorisForm
             $el = $this->addSelect($name, $label, $options, $attribs);
             break;
         case 'date':
-            $el = $this->addDate($name, $label, $options);
+            $el = $this->addDate($name, $label, $options, $attribs);
             break;
         case 'file':
             $el = $this->addFile($name, $label, $options);

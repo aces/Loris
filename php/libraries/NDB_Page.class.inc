@@ -212,7 +212,6 @@ class NDB_Page
                'style' => 'max-width:33%; display:inline-block;',
               )
     ) {
-        $options = array_merge(array('class' => 'form-control input-sm'), $options);
         $this->form->addElement('date', $field, $label, $options, $attr);
     }
 
