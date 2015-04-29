@@ -55,6 +55,9 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         // set the class variables
         $useProjects = $config->getSetting("useProjects");
+        if ($useProjects === "false") {
+            $useProjects = false;
+        }
 
         // set the class variables
         $this->columns = array(
@@ -64,7 +67,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.Gender',
                           'COALESCE(pso.ID,1) AS Participant_Status',
                          );
-        if ($useProjects === "true") {
+        if ($useProjects) {
             $this->columns[] = 'min(c.ProjectID) as Project';
         }
         $this->columns =array_merge(
@@ -73,8 +76,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              'min(s.SubprojectID) as Subproject',
              'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
              's.Scan_done as scan_Done',
-            )
-        );
+            ));
+
         if ($config->getSetting("useEDC")==="true") {
             $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
             $this->formToFilter['edc'] = 'c.EDC';
@@ -91,8 +94,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              "$VisitCountSQL as Visit_count",
              'max(s.Current_stage) as Latest_visit_status',
              "$FeedbackSQL as Feedback",
-            )
-        );
+            ));
 
         $this->query = " FROM candidate c
             LEFT JOIN psc ON (c.CenterID=psc.CenterID)
@@ -111,13 +113,18 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->group_by = 'c.CandID';
         $this->order_by = 'psc.Name, c.CandID DESC, s.VisitNo';
 
-        $this->validFilters       = array(
+        $this->validFilters = array(
                                      'pso.ID',
                                      'c.CenterID',
                                      'c.CandID',
                                      'c.PSCID',
                                      'c.Gender',
-                                     'c.ProjectID',
+                                    );
+        if ($useProjects) {
+            $this->validFilters[] = 'c.ProjectID';
+        }
+        $this->validFilters = array_merge($this->validFilters, 
+                                  array(
                                      's.SubprojectID',
                                      'c.DoB',
                                      $VisitCountSQL,
@@ -125,7 +132,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      $FeedbackSQL,
                                      's.Scan_done',
                                      's.Visit_label',
-                                    );
+                                  ));
+
         $this->validHavingFilters = array(
                                      $VisitCountSQL,
                                      'max(s.Current_stage)',
@@ -139,7 +147,13 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                'PSCID'               => 'c.PSCID',
                                'gender'              => 'c.Gender',
                                'SubprojectID'        => 's.SubprojectID',
-                               'ProjectID'           => 'c.ProjectID',
+                                    );
+        if ($useProjects) {
+            $this->formToFilter = array_merge($this->formToFilter,
+                                      array('ProjectID' => 'c.ProjectID')); 
+        }
+        $this->formToFilter = array_merge($this->formToFilter,
+                                   array(
                                'dob'                 => 'c.DoB',
                                'Visit_Count'         => $VisitCountSQL,
                                'Latest_Visit_Status' => 'max(s.Current_stage)',
@@ -147,7 +161,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                'Participant_Status'  => 'pso.ID',
                                'scan_done'           => 's.Scan_done',
                                'Visit_label'         => 's.Visit_label',
-                              );
+                              ));
+
         return true;
     }
 
@@ -186,11 +201,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         // SubprojectID
         $list_of_subprojects = Utility::getSubprojectList();
-
-        // Project list, if applicable
-        if ($config->getSetting("useProjects")=="true") {
-            $list_of_projects = Utility::getProjectList();
-        }
 
         // list of feedback statuses
         $feedback_status_options = array(
@@ -261,7 +271,10 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             $participant_status_options
         );
         $this->addSelect('scan_done', 'Scan Done', $scan_options);
-        if ($config->getSetting("useProjects")=="true") {
+
+        // Project list, if applicable
+        if ($config->getSetting("useProjects")==="true") {
+            $list_of_projects = Utility::getProjectList();
             $this->addSelect(
                 'ProjectID',
                 'Project',
