@@ -31,6 +31,7 @@ require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->initialize("../project/config.xml");
 
+
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
 $paths  = $config->getSetting('paths');
@@ -87,5 +88,6 @@ if (!file_exists($FullPath)) {
     exit(5);
 }
 
+$user =& User::singleton($_SESSION['State']->getUsername());
 require $FullPath;
 ?>

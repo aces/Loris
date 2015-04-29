@@ -52,6 +52,17 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         });
 
     },
+    saveCurrentQuery: function() {
+        $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
+            {
+                Fields: this.state.fields,
+                Filters: this.state.criteria
+            }, function(data) {
+                console.log("I am here");
+            });
+        console.log("I r save");
+
+    },
     getInitialState: function() {
         return {
             fields: [],
@@ -270,7 +281,8 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics"}));
         tabs.push(React.createElement(ManageSavedQueriesTabPane, {TabId: "SavedQueriesTab", 
                         userQueries: this.props.SavedQueries.User, 
-                        globalQueries: this.props.SavedQueries.Shared}
+                        globalQueries: this.props.SavedQueries.Shared, 
+                        onSaveQuery: this.saveCurrentQuery}
                 ));
 
         return React.createElement("div", null, 
