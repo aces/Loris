@@ -164,7 +164,8 @@ function editModal() {
         }
     });
 
-    $("#postEdit").click(function(){
+    $("#postEdit").click(function(e){
+        e.preventDefault();
         postEdit(id);
     });
     $("#cancelEditButton").click(function() {
