@@ -187,20 +187,20 @@ cd ~/Sites/$projectname/tools
 The install script was created for LINUX OS so its apache2 setup steps won’t work. Section 3 describes how to apache2 server.
 
 # 3. Launching the Local Apache2 Server
-This section goes into details regarding setting up the local Apache2 server. There are Max OS X Yosemite specific instructions in section 3.1.1.
+This section goes into details regarding setting up the local Apache2 server. There are Max OS X Yosemite specific instructions in section 3.1. This may be skipped.
 
+## 3.1 Mac OS X Yosemite specific configuration (Optional)
 
-## 3.1. Enable PHP
-Open the ```/etc/apache2/httpd.conf``` in a text editor and locate the line containing
-```LoadModule php5_module libexec/apache2/libphp5.so```
-Ensure that the line is uncommented (remove the ```#``` at the beginning of the line)
-
-### 3.1.1. Mac OS X Yosemite specific configuration
 In ```/etc/apache2/httpd.conf``` locate the following lines and uncomment them if they are not commented out:
 
 ```#LoadModule userdir_module libexec/apache2/mod_userdir.so ```
 and
 ``` #Include /private/etc/apache2/extra/httpd-userdir.conf ```
+
+## 3.2 Enable PHP
+Open  ```/etc/apache2/httpd.conf``` in a text editor and locate the line containing
+```LoadModule php5_module libexec/apache2/libphp5.so```
+Ensure that the line is uncommented (remove the ```#``` at the beginning of the line)
 
 
 At the end of your file also include the line
@@ -209,14 +209,14 @@ At the end of your file also include the line
 Now open ```/etc/apache2/extra/httpd-userdir.conf``` and uncomment the following line: ```#Include /private/etc/apache2/users/*.conf```. 
 
 
-## 3.2 Setup MySql with Apache2
+## 3.3 Setup MySql with Apache2
 Do the following to allow for use of MySql with Apache2, unless link already exists
 ```
 sudo mkdir /var/mysql
 sudo ln -s /tmp/mysql.sock /var/mysql/mysql.sock
 ```
 
-## 3.3 Setting up user conf file
+## 3.4 Setting up user conf file
 
 In order for apache to know where to find the LORIS code base you have to first set up your user config file. To do so, open your user conf file using the following in the ``` /etc/Apache2/Users/``` directory:
 
@@ -245,16 +245,16 @@ You can now access you LORIS sandbox using the url <a>http://localhost/~$usernam
 
 To access your sandbox on another device, replace ```localhost``` with your IP address for your machine.
 
-## 3.4 Setup Virtual Host (Optional)
+## 3.5 Setup Virtual Host (Optional)
 
 The following section is a more advanced setting for you local apache server. This section is not necessary, but enables ```http://localhost.loris``` as an url shortcut, and creates LORIS-specific apache logs for easy troubleshooting (similar to ```/var/log/apache2/loris-err.log```).
 
-### 3.4.1 Including vhosts
+### 3.5.1 Including vhosts
 Open the ```/etc/apache2/httpd.conf``` in a text editor and locate the line containing ```Include /private/etc/apache2/extra/httpd-vhosts.conf```
 
 Ensure that the line is uncommented (remove the ```#``` at the beginning of the line)
 
-### 3.4.2 Adding new vhost
+### 3.5.2 Adding new vhost
 Open the ```/etc/apache2/extra/httpd-vhosts.conf``` in the text editor and add the following:
 ```
 <VirtualHost *:80>
