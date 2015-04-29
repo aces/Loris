@@ -52,6 +52,17 @@ DataQueryApp = React.createClass({
         });
 
     },
+    saveCurrentQuery: function() {
+        $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
+            {
+                Fields: this.state.fields,
+                Filters: this.state.criteria
+            }, function(data) {
+                console.log("I am here");
+            });
+        console.log("I r save");
+
+    },
     getInitialState: function() {
         return {
             fields: [],
@@ -271,6 +282,7 @@ DataQueryApp = React.createClass({
         tabs.push(<ManageSavedQueriesTabPane TabId="SavedQueriesTab"
                         userQueries={this.props.SavedQueries.User}
                         globalQueries={this.props.SavedQueries.Shared}
+                        onSaveQuery={this.saveCurrentQuery}
                 />);
 
         return <div>

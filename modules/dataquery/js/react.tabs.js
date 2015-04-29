@@ -165,6 +165,9 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
         };
     },
     saveQuery: function() {
+        if(this.props.onSaveQuery) {
+            this.props.onSaveQuery(); //todo: add (name, shared parameters)
+        }
     },
     getDefaultProps: function() {
         return {
