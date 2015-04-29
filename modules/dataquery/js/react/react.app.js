@@ -134,9 +134,12 @@ DataQueryApp = React.createClass({
 
         // Get an array where of the results of each criteria
         var sessionsArrays = [];
-        for (var el in  this.props.Criteria) {
+        for (var el in  this.state.criteria) {
             if(this.state.criteria.hasOwnProperty(el)) {
-                sessionsArrays.push(this.state.criteria[el].sessions)
+                var crit = this.state.criteria[el];
+                if(crit.sessions) {
+                    sessionsArrays.push(crit.sessions)
+                }
             }
         }
 
