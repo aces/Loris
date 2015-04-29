@@ -259,15 +259,10 @@ class NDB_Form_user_accounts extends NDB_Form
         }
         
         // email address
-        $group[] = $this->createText('Email');
+        $group[] = $this->createText('Email', 'Email address');
         $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
         $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
-
-        // email address rules
-        $this->addGroupRule('Email_Group', array('Email' => array(array('Email address is required', 'required'))));
-        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be valid', 'email'))));
-        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be less than 255 characters long', 'maxlength', 255))));
 
         //------------------------------------------------------------
 
@@ -289,7 +284,7 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->addSelect('CenterID', 'Site', $siteOptions);
 
         // active
-    	$this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
+    	 $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
 	    $this->addSelect('Pending_approval', 'Pending approval', array('Y' => 'Yes', 'N' => 'No'));
 
         //------------------------------------------------------------
@@ -450,7 +445,8 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
         // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == 1 && $values['SendEmail'] != 1) {
+        error_log("------------------ NA_password = ***{$values['NA_Password']}***");
+        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
                $errors['Email_Group'] = 'When generating a new password, please notify the user by checking Send email to user box';
         }
 
@@ -458,14 +454,35 @@ class NDB_Form_user_accounts extends NDB_Form
                $errors['Password_Group'] = 'Password is required';
         }
 
-        // check email address' uniqueness
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID <> :UID", array('VEmail' => $values['Email'], 'UID' => $values['UserID']));
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
+        //======================================
+        //           Validate Email
+        //======================================
 
-        if ($result > 0) {
-            $errors['Email_Group'] = 'The email address already exists';
+        $email = $values['Email'];
+        // If an email was entered
+        if (!empty($values['Email'])) {
+            // check email address' uniqueness
+            $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
+            $params = array('VEmail' => $values['Email']);
+            if (!is_null($this->identifier)) {
+                $query        .= " AND userID <> :UID";
+                $params['UID'] = $this->identifier;
+            }
+            $result = $DB->pselectOne($query, $params);
+            if (Utility::isErrorX($result)) {
+                return PEAR::raiseError("DB Error: ".$result->getMessage());
+            }
+
+            // Email already exists in database
+            if ($result > 0) {
+                $errors['Email_Group'] = 'The email address already exists';
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // If email not syntactically valid
+                $errors['Email_Group'] = "Invalid email address";
+            }
+        } else {
+            // No email entered: error
+            $errors['Email_Group'] = 'You must enter an email address';
         }
 
         return $errors;
@@ -492,8 +509,8 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // check email address' uniqueness
         $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID != :UID", 
-            array('VEmail' => $values['Email'], 'UID' => $values['identifier']
-        ));
+            array('VEmail' => $values['Email'], 'UID' => $this->identifier)
+        );
         if (Utility::isErrorX($result)) {
             return PEAR::raiseError("DB Error: ".$result->getMessage());
         }
