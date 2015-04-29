@@ -98,8 +98,8 @@ function progressHandler(event) {
 function uploadFile() {
     "use strict";
     //getMessage();
-    $("#progressbar").show();
     var formData = new FormData($("#mri_upload")[0]);
+    $("#progressbar").show();
 
     $.ajax({
         type: 'POST',
@@ -136,8 +136,8 @@ $(function () {
     change();
     $("#progressbar").hide();
 
-    $("#mri_upload").submit(
-        function (e) {
+    $("#upload").click(
+            function (e) {
             e.preventDefault();
             var time = getCurrentTime();
 //            $("#log_box").html(time + " Preparing... <br>");
