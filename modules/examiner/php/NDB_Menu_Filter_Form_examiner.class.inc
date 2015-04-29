@@ -287,8 +287,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $fullName    = $values['addName'];
         $siteID      = $values['addSite'];
         $radiologist = $_REQUEST['addRadiologist'];
-        //$values['addRadiologist'] should be used once addCheckbox is supported by LorisForm
-        // and once addRadiologist checkbox is added to the form using the addCheckbox method
+        //$values['addRadiologist'] should be used once addCheckbox is
+        // supported by LorisForm and once addRadiologist checkbox is added
+        // to the form using the addCheckbox method
         //$radiologist = $values['addRadiologist'];
 
         $DB->insert(
