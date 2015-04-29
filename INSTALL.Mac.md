@@ -206,7 +206,7 @@ and
 At the end of your file also include the line
 ``` Include /etc/apache2/other/*.conf ```
 
-Now open ```/etc/apache2/extra/httpd-userdir.conf``` and uncomment the following line```#Include /private/etc/apache2/users/*.conf```. 
+Now open ```/etc/apache2/extra/httpd-userdir.conf``` and uncomment the following line: ```#Include /private/etc/apache2/users/*.conf```. 
 
 
 ## 3.2 Setup MySql with Apache2
