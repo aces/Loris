@@ -97,7 +97,7 @@ function progressHandler(event) {
 */
 function uploadFile() {
     "use strict";
-    getMessage();
+    //getMessage();
     $("#progressbar").show();
     var formData = new FormData($("#mri_upload")[0]);
 
@@ -135,14 +135,14 @@ $(function () {
     "use strict";
     change();
     $("#progressbar").hide();
-/*
+
     $("#mri_upload").submit(
         function (e) {
             e.preventDefault();
             var time = getCurrentTime();
-            $("#log_box").html(time + " Preparing... <br>");
+//            $("#log_box").html(time + " Preparing... <br>");
             uploadFile();
         }
     );
-*/
+
 });
