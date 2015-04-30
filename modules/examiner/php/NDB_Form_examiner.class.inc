@@ -319,6 +319,8 @@ class NDB_Form_Examiner extends NDB_Form
             "SELECT full_name FROM examiners WHERE examinerID=:EID",
             array('EID' => $this->identifier)
         );
+        // Get identifier, to be added to the Reset button href
+        $this->tpl_data['identifier'] = $this->identifier;
 
         $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
     }
