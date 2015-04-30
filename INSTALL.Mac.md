@@ -187,9 +187,9 @@ cd ~/Sites/$projectname/tools
 The install script was created for LINUX OS so its apache2 setup steps won’t work. Section 3 describes how to apache2 server.
 
 # 3. Launching the Local Apache2 Server
-This section goes into details regarding setting up the local Apache2 server. There are Max OS X Yosemite specific instructions in section 3.1. This may be skipped.
+This section goes into details regarding setting up the local Apache2 server. There are Max OS X 10.10 (Yosemite) specific instructions in section 3.1. If you are not running Yosemite step 3.1 may be be skipped.
 
-## 3.1 Mac OS X Yosemite specific configuration (Optional)
+## 3.1 Mac OS X Yosemite specific configuration (for Yosemite users only)
 
 In ```/etc/apache2/httpd.conf``` locate the following lines and uncomment them if they are not commented out:
 
