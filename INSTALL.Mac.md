@@ -191,7 +191,7 @@ This section goes into details regarding setting up the local Apache2 server. Th
 
 ## 3.1 Mac OS X Yosemite specific configuration (for Yosemite users only)
 
-In ```/etc/apache2/httpd.conf``` locate the following lines and uncomment them if they are not commented out:
+In ```/etc/apache2/httpd.conf``` locate the following lines and uncomment them (by removing the ``` # ``` if they are not commented out:
 
 ```#LoadModule userdir_module libexec/apache2/mod_userdir.so ```
 and
