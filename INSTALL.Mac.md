@@ -197,17 +197,15 @@ In ```/etc/apache2/httpd.conf``` locate the following lines and uncomment them i
 and
 ``` #Include /private/etc/apache2/extra/httpd-userdir.conf ```
 
+At the end of your file also include the line
+``` Include /etc/apache2/other/*.conf ```
+
+Now open ```/etc/apache2/extra/httpd-userdir.conf``` and uncomment the following line: ```#Include /private/etc/apache2/users/*.conf```.
+
 ## 3.2 Enable PHP
 Open  ```/etc/apache2/httpd.conf``` in a text editor and locate the line containing
 ```LoadModule php5_module libexec/apache2/libphp5.so```
 Ensure that the line is uncommented (remove the ```#``` at the beginning of the line)
-
-
-At the end of your file also include the line
-``` Include /etc/apache2/other/*.conf ```
-
-Now open ```/etc/apache2/extra/httpd-userdir.conf``` and uncomment the following line: ```#Include /private/etc/apache2/users/*.conf```. 
-
 
 ## 3.3 Setup MySql with Apache2
 Do the following to allow for use of MySql with Apache2, unless link already exists
