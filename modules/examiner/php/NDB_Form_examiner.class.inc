@@ -315,7 +315,8 @@ class NDB_Form_Examiner extends NDB_Form
             unset($group);
         }
 
-        $DB = Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->Database();
 
         // Get the examiner name and site name, to be added the form panel header
         $row = $DB->pselectRow(
