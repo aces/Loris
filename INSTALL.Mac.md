@@ -177,14 +177,41 @@ extract it to `~/Sites/$projectname`
 
 ##2.2 Installing LORIS
 
-Run installer script to install core code, libraries, and MySQL schema (see Loris Installation Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
-
+Run installer script to install core code, libraries, and MySQL schema (see Loris Installation Schematic). 
+The script will prompt for information, including usernames and folders which it will create automatically.
 ```
 cd ~/Sites/$projectname/tools
 ./install.sh
 ```
 
-The install script was created for LINUX OS so its apache2 setup steps won’t work. Section 3 describes how to apache2 server.
+The install script may not fully execute on Mac OS systems.  It is recommended to carefully review and execute manually the steps in the install.sh script on your system.  A few MySQL statement examples are provided in section 2.3. 
+Since the install script was created for LINUX OS, its apache2 setup steps won’t work. Section 3 describes how to set up the apache2 server for Mac.
+
+##2.3 Manually running install script steps
+
+Since you may not be able to fully execute the install.sh script at step 2.2, the following examples may help in manually executing the sequence of commands found in the install script.
+
+Set up these variables in your bash shell :
+``` 
+mysqldb=LORIS
+mysqlhost=localhost
+mysqluser=lorisuser  (suggested)
+mysqlpass=password 
+mysqlrootuser=root 
+mysqlrootpass=$mysqlrootpass # This have to be the same password as $newpwd in section 1.5.4
+```
+Keep this terminal window open to keep the variables in memory.
+
+Then execute the following commands in your bash shell to create the Loris database and the lorisuser MySQL user :
+```
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A
+echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A
+```
+
+Source the database schema with the following statement in your bash shell (the terminal window used at section 1.5.4) :
+```
+mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A 2>&1 < ~/Sites/$projectname/SQL/0000-00-00-schema.sql
+```
 
 # 3. Launching the Local Apache2 Server
 
