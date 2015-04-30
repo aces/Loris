@@ -198,19 +198,19 @@ mysqlhost=localhost
 mysqluser=lorisuser  (suggested)
 mysqlpass=password 
 mysqlrootuser=root 
-mysqlrootpass=$mysqlrootpass # This have to be the same password as $newpwd in section 1.5.4
 ```
 Keep this terminal window open to keep the variables in memory.
 
-Then execute the following commands in your bash shell to create the Loris database and the lorisuser MySQL user :
+Then execute the following commands in your bash shell to create the Loris database and the lorisuser MySQL user. 
+The prompt should ask for the root password. (The one entered in section 1.5.4) 
 ```
-echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A
-echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A
+echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser -p -A
+echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser -p -A
 ```
 
 Source the database schema with the following statement in your bash shell (the terminal window used at section 1.5.4) :
 ```
-mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password=$mysqlrootpass -A 2>&1 < ~/Sites/$projectname/SQL/0000-00-00-schema.sql
+mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser -p -A 2>&1 < ~/Sites/$projectname/SQL/0000-00-00-schema.sql
 ```
 
 # 3. Launching the Local Apache2 Server
