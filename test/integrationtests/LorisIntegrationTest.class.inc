@@ -128,7 +128,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             );
         } catch (Exception $Exc){
             $myDebugVar = array(1, 2, 3);
-            fwrite(STDERR, print_r($myDebugVar, TRUE));
+            fwrite(STDERR, print_r($this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText(), TRUE));
             throw $Exc;
         }
     }
