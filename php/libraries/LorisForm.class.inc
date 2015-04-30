@@ -196,8 +196,8 @@ class LorisForm
      */
     public function addDate($name, $label, $options, $attribs = array())
     {
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'date';
+        $el            =& $this->addBase($name, $label, $attribs);
+        $el['type']    = 'date';
         $el['options'] = $options;
     }
 
