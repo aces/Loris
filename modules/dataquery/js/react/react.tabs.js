@@ -159,9 +159,23 @@ SaveQueryDialog = React.createClass({
     }
 });
 ManageSavedQueriesTabPane = React.createClass({
+    componentDidMount: function() {
+        var promises = [];
+        var that = this;
+        console.log(this.props.userQueries);
+        for (var i = 0; i < this.props.userQueries.length; i += 1) {
+            promises.push(Promise.resolve($.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.userQueries[i])));
+            }
+
+        var allDone = Promise.all(promises).then(function(value) {
+            that.setState({ 'queriesLoaded' : true });
+
+        });
+    },
     getInitialState: function() {
         return {
-            'savePrompt' : false
+            'savePrompt' : false,
+            'queriesLoaded' : false
         };
     },
     saveQuery: function() {
@@ -177,9 +191,21 @@ ManageSavedQueriesTabPane = React.createClass({
     },
     render: function() {
         var queryRows = [];
-        for(var i = 0; i < this.props.userQueries.length; i += 1) {
-            queryRows.push(<tr><td colSpan="3">{this.props.userQueries[i]}</td></tr>);
+        if(this.state.queriesLoaded) {
+            for(var i = 0; i < this.props.userQueries.length; i += 1) {
+                queryRows.push(
+                    <tr>
+                        <td colSpan="3">{this.props.userQueries[i]}</td>
+                    </tr>
+                    );
 
+            }
+        } else {
+            queryRows.push(
+                <tr>
+                    <td colSpan="3">Loading saved query details</td>
+                </tr>
+            );
         }
         var content = (
             <div>
