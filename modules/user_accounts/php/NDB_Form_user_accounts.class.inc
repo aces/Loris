@@ -67,7 +67,12 @@ class NDB_Form_user_accounts extends NDB_Form
             $user =& User::factory($this->identifier);
         }
         else{
-            $user =& User::factory($values['UserID']);
+        	   // Since the form has been validated there are two possibilities:
+        	   //    - UID is set
+        	   //    - UID is not set but the "Match UID to email" checkbox is checked
+        	   $effectiveUID 
+        	       = $values['NA_UserID'] == 'on' ? $values['Email'] : $values['UserID'];
+            $user =& User::factory($effectiveUID);
         }
         if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
@@ -408,49 +413,71 @@ class NDB_Form_user_accounts extends NDB_Form
 
         $errors = array();
 
-        // if username is user-defined, and it is a new user
-        if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
-            // check username's uniqueness
-            $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
-                    array('UID' => $values['UserID'] )
-                    );
-
-            if (Utility::isErrorX($result)) {
-                return PEAR::raiseError("DB Error: ".$result->getMessage());
+        //============================================
+        //         Validate UserID and NA_UserID
+        //============================================
+        
+        if(empty($this->identifier)) {
+            // Clicked on "UID == email" and specified a UID
+            if(!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
+                $errors['UserID_Group'] = 'You cannot enter a user name if you want it to match the email address';
             }
-
-            if ($result > 0) {
-                $errors['UserID_Group'] = 'The user name already exists';
+            // Not clicked on "UID == email" and not specified a UID
+            elseif(empty($values['UserID']) && $values['NA_UserID'] != 'on') {
+                $errors['UserID_Group'] = 'You must enter a user name or choose to make it match the email address';
             }
+            // Either specified a UID or clicked on "UID = email" with a non-empty email
+            elseif(!empty($values['UserID']) || ($values['NA_UserID'] == 'on' && $values['Email'])) { 
+        	       $effectiveUID = empty($values['UserID']) ? $values['Email'] : $values['UserID'];
+        	       
+                // check username's uniqueness
+                $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
+                    array('UID' => $effectiveUID)
+                );
 
-            if (strlen($values['UserID']) > 255) {
-                $errors['UserID_Group'] = 'The user name must be less than 255 characters long';
+                if (Utility::isErrorX($result)) {
+                    return PEAR::raiseError("DB Error: ".$result->getMessage());
+                }
+
+                if ($result > 0) {
+                    $errors['UserID_Group'] = 'The user name already exists';
+                }
+
+                if (strlen($effectiveUID) > 255) {
+                    $errors['UserID_Group'] = 'The user name must not exsceed 255 characters';
+                }
             }
-
         }
-        if (!empty($this->identifier)) {
+        
+        //==================================
+        //        Password validation
+        //==================================
+        if(!empty($this->identifier)) {
             $pass = $DB->pselectOne("SELECT Password_md5 FROM users WHERE UserID = :UID",
-                    array('UID' => $this->identifier) );
+                                    array('UID' => $this->identifier) );
              //case of new user the password column will be null so either password should be set or
             // password should be generated
-            if (empty($pass) && empty($values['Password_md5']) && $values['NA_Password'] != 1) {
+            if (empty($pass) && empty($values['Password_md5']) && $values['NA_Password'] != 'on') {
                 $errors['Password_Group'] = 'Please specify password or click Generate new password';
             }
         }
+        
         // if password is user-defined, and user wants to change password
-        if (empty($values['NA_Password']) && !empty($values['Password_md5'])) {
+        if (empty($values['NA_Password']) 
+            && (!empty($values['Password_md5']) || !empty($values['__Confirm']))
+        ) {
             // check password strength
             if (!User::isPasswordStrong($values['Password_md5'], array($values['__Confirm'], $values['UserID'], $values['Email']), array('==', '!=', '!='))) {
                 $errors['Password_Group'] = 'The password is weak, or the passwords do not match';
             }
         }
+        
         // if password is generated then the email user button should be clicked
-        error_log("------------------ NA_password = ***{$values['NA_Password']}***");
         if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
                $errors['Email_Group'] = 'When generating a new password, please notify the user by checking Send email to user box';
         }
 
-        if (empty($this->identifier) && empty($values['NA_Password']) && empty($values['Password_md5']) ) {
+        if (empty($this->identifier) && ($values['NA_Password'] != 'on') && empty($values['Password_md5']) ) {
                $errors['Password_Group'] = 'Password is required';
         }
 
@@ -460,10 +487,10 @@ class NDB_Form_user_accounts extends NDB_Form
 
         $email = $values['Email'];
         // If an email was entered
-        if (!empty($values['Email'])) {
+        if (!empty($email)) {
             // check email address' uniqueness
             $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
-            $params = array('VEmail' => $values['Email']);
+            $params = array('VEmail' => $email);
             if (!is_null($this->identifier)) {
                 $query        .= " AND userID <> :UID";
                 $params['UID'] = $this->identifier;
