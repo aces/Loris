@@ -40,7 +40,7 @@
 15. Verify that a user with 'Violated Scans: View all-sites Violated Scans' permission has a task with the number of violated scans displayed. This
     is the number of entries on the MRI Violated Scans page. The Site displayed will always be 'All'. Check that 
     clicking on the task takes you to the Violated Scans page.
-16. Verify that if a user has the 'View and upload files in Document Repository' permission, the latest documents to 
+16. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository' permission, the latest documents to 
     have been edited or uploaded in the document repository are displayed (4 at most) in the Document Repository 
     panel. Clicking on a document will display it in the browser. Clicking on the Document Repository button takes 
     you to the Document Repository page.
