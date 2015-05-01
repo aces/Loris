@@ -158,14 +158,64 @@ SaveQueryDialog = React.createClass({displayName: 'SaveQueryDialog',
             );
     }
 });
+ManageSavedQueryRow = React.createClass({displayName: 'ManageSavedQueryRow',
+    getDefaultProps: function() {
+        return {
+            'Name': 'Unknown',
+            'Query': {
+                'Fields': []
+            }
+        }
+    },
+    render: function() {
+        var fields = [];
+        var filters = [];
+        for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
+            fields.push(React.createElement("li", null, this.props.Query.Fields[i]));
+        }
+
+        if(fields.length === 0) {
+            fields.push(React.createElement("li", null, "No fields defined"));
+        }
+
+        for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
+            var filter = this.props.Query.Conditions[i];
+            filters.push(React.createElement("li", null, filter.Field, " ", filter.Operator, " ", filter.Value));
+        }
+        if(filters.length === 0) {
+            filters.push(React.createElement("li", null, "No filters defined"));
+        }
+        return (
+                    React.createElement("tr", null, 
+                        React.createElement("td", null, this.props.Name), 
+                        React.createElement("td", null, React.createElement("ul", null, fields)), 
+                        React.createElement("td", null, React.createElement("ul", null, filters))
+                    )
+        );
+    }
+});
 ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesTabPane',
     componentDidMount: function() {
         var promises = [];
         var that = this;
         console.log(this.props.userQueries);
         for (var i = 0; i < this.props.userQueries.length; i += 1) {
-            promises.push(Promise.resolve($.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.userQueries[i])));
-            }
+            var curRequest;
+            curRequest = Promise.resolve(
+                $.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.userQueries[i]), {
+                    data: {
+                        DocID: that.props.userQueries[i]
+                    },
+                    dataType: 'json'
+                }).then(function(value) {
+                    var queries = that.state.queries;
+
+                    queries[value._id] = value;
+                    that.setState({ 'queries' : queries});
+                    console.log(value);
+                });
+            promises.push(curRequest);
+        }
 
         var allDone = Promise.all(promises).then(function(value) {
             that.setState({ 'queriesLoaded' : true });
@@ -175,7 +225,8 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
     getInitialState: function() {
         return {
             'savePrompt' : false,
-            'queriesLoaded' : false
+            'queriesLoaded' : false,
+            'queries' : {}
         };
     },
     saveQuery: function() {
@@ -193,10 +244,9 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
         var queryRows = [];
         if(this.state.queriesLoaded) {
             for(var i = 0; i < this.props.userQueries.length; i += 1) {
+                var query = this.state.queries[this.props.userQueries[i]];
                 queryRows.push(
-                    React.createElement("tr", null, 
-                        React.createElement("td", {colSpan: "3"}, this.props.userQueries[i])
-                    )
+                        React.createElement(ManageSavedQueryRow, {Name: this.props.userQueries[i], Query: query})
                     );
 
             }
@@ -211,9 +261,9 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
             React.createElement("div", null, 
                 React.createElement("h2", null, "Your currently saved queries"), 
                 React.createElement("button", {onClick: this.saveQuery}, "Save Current Query"), 
-                React.createElement("table", null, 
+                React.createElement("table", {className: "table table-hover table-primary table-bordered colm-freeze"}, 
                     React.createElement("thead", null, 
-                        React.createElement("tr", null, 
+                        React.createElement("tr", {className: "info"}, 
                             React.createElement("th", null, "Query Name"), 
                             React.createElement("th", null, "Fields"), 
                             React.createElement("th", null, "Filters")
