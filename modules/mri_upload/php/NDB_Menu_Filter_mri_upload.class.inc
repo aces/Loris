@@ -121,6 +121,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $visitlabels
         );
         $phantom_options = array(
+                            null=>'',
                             'N' => 'No',
                             'Y' => 'Yes',
                            );
