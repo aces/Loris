@@ -158,14 +158,64 @@ SaveQueryDialog = React.createClass({
             );
     }
 });
+ManageSavedQueryRow = React.createClass({
+    getDefaultProps: function() {
+        return {
+            'Name': 'Unknown',
+            'Query': {
+                'Fields': []
+            }
+        }
+    },
+    render: function() {
+        var fields = [];
+        var filters = [];
+        for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
+            fields.push(<li>{this.props.Query.Fields[i]}</li>);
+        }
+
+        if(fields.length === 0) {
+            fields.push(<li>No fields defined</li>);
+        }
+
+        for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
+            var filter = this.props.Query.Conditions[i];
+            filters.push(<li>{filter.Field} {filter.Operator} {filter.Value}</li>);
+        }
+        if(filters.length === 0) {
+            filters.push(<li>No filters defined</li>);
+        }
+        return (
+                    <tr>
+                        <td>{this.props.Name}</td>
+                        <td><ul>{fields}</ul></td>
+                        <td><ul>{filters}</ul></td>
+                    </tr>
+        );
+    }
+});
 ManageSavedQueriesTabPane = React.createClass({
     componentDidMount: function() {
         var promises = [];
         var that = this;
         console.log(this.props.userQueries);
         for (var i = 0; i < this.props.userQueries.length; i += 1) {
-            promises.push(Promise.resolve($.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.userQueries[i])));
-            }
+            var curRequest;
+            curRequest = Promise.resolve(
+                $.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.userQueries[i]), {
+                    data: {
+                        DocID: that.props.userQueries[i]
+                    },
+                    dataType: 'json'
+                }).then(function(value) {
+                    var queries = that.state.queries;
+
+                    queries[value._id] = value;
+                    that.setState({ 'queries' : queries});
+                    console.log(value);
+                });
+            promises.push(curRequest);
+        }
 
         var allDone = Promise.all(promises).then(function(value) {
             that.setState({ 'queriesLoaded' : true });
@@ -175,7 +225,8 @@ ManageSavedQueriesTabPane = React.createClass({
     getInitialState: function() {
         return {
             'savePrompt' : false,
-            'queriesLoaded' : false
+            'queriesLoaded' : false,
+            'queries' : {}
         };
     },
     saveQuery: function() {
@@ -193,10 +244,9 @@ ManageSavedQueriesTabPane = React.createClass({
         var queryRows = [];
         if(this.state.queriesLoaded) {
             for(var i = 0; i < this.props.userQueries.length; i += 1) {
+                var query = this.state.queries[this.props.userQueries[i]];
                 queryRows.push(
-                    <tr>
-                        <td colSpan="3">{this.props.userQueries[i]}</td>
-                    </tr>
+                        <ManageSavedQueryRow Name={this.props.userQueries[i]} Query={query} />
                     );
 
             }
@@ -211,9 +261,9 @@ ManageSavedQueriesTabPane = React.createClass({
             <div>
                 <h2>Your currently saved queries</h2>
                 <button onClick={this.saveQuery}>Save Current Query</button>
-                <table>
+                <table className="table table-hover table-primary table-bordered colm-freeze">
                     <thead>
-                        <tr>
+                        <tr className="info">
                             <th>Query Name</th>
                             <th>Fields</th>
                             <th>Filters</th>
