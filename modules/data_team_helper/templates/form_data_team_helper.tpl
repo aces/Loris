@@ -138,7 +138,7 @@
             <td nowrap="nowrap" valign="top">
                 {foreach from=$Conflicts item=conflict}
                     {if ($conflict.FieldName eq $elements_array[$element][$visit_label].sourcefield) and $conflict.visit_label eq $visit_label}
-                        <a href="main.php?Question={$conflict.FieldName}&Instruments={$conflict.test_name_display}&Visits={$conflict.visit_label}&PSCID={$conflict.PSCID}&site=all&test_name=conflict_resolver" target="_blank">{$conflict.PSCID}_{$conflict.visit_label}<BR></a>
+                        <a href="#" class="conflict_resolver_link" data-pscid="{$conflict.PSCID}" data-question="{$conflict.FieldName}" data-instrument="{$conflict.TableName}" data-visits="{$conflict.visit_label}">{$conflict.PSCID}_{$conflict.visit_label}<BR></a>
                     {/if}
                 {/foreach}
             </td>
