@@ -59,8 +59,9 @@ $(document).ready(function() {
         var form = $('<form />', {
             "action" : "main.php?test_name=conflict_resolver",
             "method" : "post"
-            //"target" : "_blank"
         });
+
+        form.attr('target', '_blank');
         var values = {
             "reset" : "true",
             "PSCID" : this.dataset.pscid,
