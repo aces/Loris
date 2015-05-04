@@ -42,7 +42,6 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        echo "\n [class ".__CLASS__." -> method ".__METHOD__." -> line ".__LINE__."]";
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -237,10 +236,8 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
         return true;
     }
 
-
     function _setDataTableRows($count)
     {
-
         $DB =& Database::singleton();
         $x = 0;
         foreach ($this->list as $item) {
