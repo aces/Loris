@@ -64,12 +64,17 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-6 col-sm-offset-6">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <input type="submit" name="fire_away" id="upload" value="Upload" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
+                              <div class="col-sm-4">
+                                <input type="button" name="reset" value="Clear Form"
+                                       class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=mri_upload&reset=true'" />
+                            </div>
+
                         </div>
                     </div>
                     {$form.hidden}
@@ -78,10 +83,12 @@
         </div>
     </div>
 </div>
- 
+
+<div class="row col-xs-12 col-md-6">
+    <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
+</div>
 {*  This section is commented out because the functionality is not currently in the backend
     This functionality is expected to be implemented in future releases of LORIS 
-    <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
     
     <table>
         <tr>
