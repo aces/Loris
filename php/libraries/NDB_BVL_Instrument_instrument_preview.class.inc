@@ -23,7 +23,7 @@ require_once "NDB_Form.class.inc";
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_BVL_Instrument_Instrument_Preview extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_Instrument_Preview extends \Loris\Behavioural\NDB_BVL_Instrument_LINST
 {
 
     /**
@@ -40,8 +40,13 @@ class NDB_BVL_Instrument_Instrument_Preview extends NDB_BVL_Instrument
      * Loads a LINST file and rules from the data posted to it in order
      * to preview how Loris would render that file.
      */
-    function __construct()
+    function setup($commentID, $page)
     {
+        $this->commentID = $commentID;
+        $this->page      = $page;
+
+        $this->form = new \HTML_Quickform('test_form');
+
         $this->loadInstrumentFile(
             "data:text/plain;base64," . base64_encode($_REQUEST['instrumentdata']),
             true
