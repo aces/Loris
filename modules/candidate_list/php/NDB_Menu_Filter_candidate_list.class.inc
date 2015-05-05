@@ -76,7 +76,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              'min(s.SubprojectID) as Subproject',
              'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
              's.Scan_done as scan_Done',
-            ));
+            )
+        );
 
         if ($config->getSetting("useEDC")==="true") {
             $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
@@ -94,7 +95,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              "$VisitCountSQL as Visit_count",
              'max(s.Current_stage) as Latest_visit_status',
              "$FeedbackSQL as Feedback",
-            ));
+            )
+        );
 
         $this->query = " FROM candidate c
             LEFT JOIN psc ON (c.CenterID=psc.CenterID)
@@ -114,12 +116,12 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->order_by = 'psc.Name, c.CandID DESC, s.VisitNo';
 
         $this->validFilters = array(
-                                     'pso.ID',
-                                     'c.CenterID',
-                                     'c.CandID',
-                                     'c.PSCID',
-                                     'c.Gender',
-                                    );
+                               'pso.ID',
+                               'c.CenterID',
+                               'c.CandID',
+                               'c.PSCID',
+                               'c.Gender',
+                        );
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
         }
