@@ -67,11 +67,11 @@ class NDB_Form_user_accounts extends NDB_Form
             $user =& User::factory($this->identifier);
         }
         else{
-        	   // Since the form has been validated there are two possibilities:
-        	   //    - UID is set
-        	   //    - UID is not set but the "Match UID to email" checkbox is checked
-        	   $effectiveUID 
-        	       = $values['NA_UserID'] == 'on' ? $values['Email'] : $values['UserID'];
+            // Since the form has been validated there are two possibilities:
+            //    - UID is set
+            //    - UID is not set but the "Match UID to email" checkbox is checked
+            $effectiveUID 
+                = $values['NA_UserID'] == 'on' ? $values['Email'] : $values['UserID'];
             $user =& User::factory($effectiveUID);
         }
         if(Utility::isErrorX($user)) {
@@ -211,7 +211,6 @@ class NDB_Form_user_accounts extends NDB_Form
         catch(ConfigException $exception) {
             // Do nothing: let $additional_user_info be unset
         }
-        error_log("------------------- ***{$additional_user_info}***");
 
         //------------------------------------------------------------
 
@@ -257,9 +256,6 @@ class NDB_Form_user_accounts extends NDB_Form
         ////if the option is not set or if it's and it's true then display it 
 
         if (isset($additional_user_info) && $additional_user_info){
-            if(isset($additional_user_info)) {
-                error_log("----------------- additional user info is set");
-            }
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
             $this->addBasicText('Institution', 'Institution');
@@ -537,27 +533,27 @@ class NDB_Form_user_accounts extends NDB_Form
     }
     
     private function getEmailError($DB, $email) {
-            // check email address' uniqueness
-            $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
-            $params = array('VEmail' => $email);
-            if (!is_null($this->identifier)) {
-                $query        .= " AND userID <> :UID";
-                $params['UID'] = $this->identifier;
-            }
-            $result = $DB->pselectOne($query, $params);
-            if (Utility::isErrorX($result)) {
-                return PEAR::raiseError("DB Error: ".$result->getMessage());
-            }
+        // check email address' uniqueness
+        $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
+        $params = array('VEmail' => $email);
+        if (!is_null($this->identifier)) {
+            $query        .= " AND userID <> :UID";
+            $params['UID'] = $this->identifier;
+        }
+        $result = $DB->pselectOne($query, $params);
+        if (Utility::isErrorX($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
+        }
 
-            // Email already exists in database
-            if ($result > 0) {
-                return 'The email address already exists';
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                // If email not syntactically valid
-                return "Invalid email address";
-            }
+        // Email already exists in database
+        if ($result > 0) {
+            return 'The email address already exists';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // If email not syntactically valid
+            return "Invalid email address";
+        }
 
-            return null;
+        return null;
     }
 }
 ?>
