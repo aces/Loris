@@ -29,7 +29,7 @@ InfoTabPane = React.createClass({displayName: 'InfoTabPane',
                 React.createElement("dd", null, "Visualize or see basic statistical measures from your query here."), 
                 React.createElement("dt", null, "Load Saved Query"), 
                 React.createElement("dd", null, "Load a previously saved query (by name) by selecting from this menu."), 
-                React.createElement("dt", null, "Managed Saved Queries"), 
+                React.createElement("dt", null, "Manage Saved Queries"), 
                 React.createElement("dd", null, "Either save your current query or see the criteria of previously saved quer  ies here.")
               )
         );
@@ -128,10 +128,119 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
     }
 });
 
-StatsVisualizationTabPane = React.createClass({displayName: 'StatsVisualizationTabPane',
+ScatterplotGraph = React.createClass({displayName: 'ScatterplotGraph',
     render: function() {
-        var content = React.createElement("div", null, "Stats go here");
-        return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
+        return (
+            React.createElement("div", null, 
+                React.createElement("h2", null, "Scatterplot"), 
+
+                React.createElement("div", {className: "col-xs-4 col-md-3"}, 
+                    "Column for X Axis"
+                ), 
+                React.createElement("div", {className: "col-xs-8 col-md-3"}, 
+                    React.createElement("select", null, 
+                        React.createElement("option", null, "None")
+                    )
+                ), 
+
+                React.createElement("div", {className: "col-xs-4 col-md-3"}, 
+                    "Column for Y Axis"
+                ), 
+                React.createElement("div", {className: "col-xs-8 col-md-3"}, 
+                    React.createElement("select", null, 
+                        React.createElement("option", null, "None")
+                    )
+                ), 
+
+                React.createElement("div", {className: "col-xs-4 col-md-3"}, 
+                    "Group by column"
+                ), 
+                React.createElement("div", {className: "col-xs-8 col-md-3"}, 
+                    React.createElement("select", null, 
+                        React.createElement("option", null, "None")
+                    )
+                )
+            )
+        );
+    }
+});
+StatsVisualizationTabPane = React.createClass({displayName: 'StatsVisualizationTabPane',
+    getDefaultProps: function() {
+        return {
+            'Data' : []
+        };
+    },
+    getInitialState: function() {
+        return {
+            'displayed': false
+        }
+    },
+    render: function() {
+        if(this.state.displayed === false) {
+            var content = React.createElement("div", null, "Statistics not yet calculated.");
+            return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
+        }
+        if(this.props.Data.length === 0) {
+            var content = React.createElement("div", null, "Could not calculate stats, query not run");
+            return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
+        }
+        var stats = jStat(this.props.Data),
+            min = stats.min(),
+            max = stats.max(),
+            stddev = stats.stdev(),
+            mean = stats.mean(),
+            meandev = stats.meandev(),
+            meansqerr = stats.meansqerr(),
+            quartiles = stats.quartiles(),
+            rows = [];
+
+
+      for(var i = 0; i < this.props.Fields.length; i += 1) {
+          rows.push(React.createElement("tr", null, 
+              React.createElement("td", null, this.props.Fields[i]), 
+              React.createElement("td", null, min[i]), 
+              React.createElement("td", null, max[i]), 
+              React.createElement("td", null, stddev[i]), 
+              React.createElement("td", null, mean[i]), 
+              React.createElement("td", null, meandev[i]), 
+              React.createElement("td", null, meansqerr[i]), 
+              React.createElement("td", null, quartiles[i][0]), 
+              React.createElement("td", null, quartiles[i][1]), 
+              React.createElement("td", null, quartiles[i][2])
+          ));
+      }
+
+      var statsTable = (
+          React.createElement("table", {className: "table table-hover table-primary table-bordered colm-freeze"}, 
+            React.createElement("thead", null, 
+                React.createElement("tr", {className: "info"}, 
+                    React.createElement("th", null, "Measure"), 
+                    React.createElement("th", null, "Min"), 
+                    React.createElement("th", null, "Max"), 
+                    React.createElement("th", null, "Standard Deviation"), 
+                    React.createElement("th", null, "Mean"), 
+                    React.createElement("th", null, "Mean Deviation"), 
+                    React.createElement("th", null, "Mean Squared Error"), 
+                    React.createElement("th", null, "First Quartile"), 
+                    React.createElement("th", null, "Second Quartile"), 
+                    React.createElement("th", null, "Third Quartile")
+                )
+            ), 
+            React.createElement("tbody", null, 
+                rows
+            )
+          )
+      );
+
+      var content = (
+          React.createElement("div", null, 
+          React.createElement("h2", null, "Basic Statistics"), 
+          statsTable, 
+
+          React.createElement(ScatterplotGraph, null)
+          )
+          );
+      return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
     }
 });
 
@@ -170,17 +279,21 @@ ManageSavedQueryRow = React.createClass({displayName: 'ManageSavedQueryRow',
     render: function() {
         var fields = [];
         var filters = [];
-        for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
-            fields.push(React.createElement("li", null, this.props.Query.Fields[i]));
+        if(this.props.Query.Fields) {
+            for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
+                fields.push(React.createElement("li", null, this.props.Query.Fields[i]));
+            }
         }
 
         if(fields.length === 0) {
             fields.push(React.createElement("li", null, "No fields defined"));
         }
 
-        for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
-            var filter = this.props.Query.Conditions[i];
-            filters.push(React.createElement("li", null, filter.Field, " ", filter.Operator, " ", filter.Value));
+        if(this.props.Query.Conditions) {
+            for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
+                var filter = this.props.Query.Conditions[i];
+                filters.push(React.createElement("li", null, filter.Field, " ", filter.Operator, " ", filter.Value));
+            }
         }
         if(filters.length === 0) {
             filters.push(React.createElement("li", null, "No filters defined"));
@@ -198,7 +311,6 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
     componentDidMount: function() {
         var promises = [];
         var that = this;
-        console.log(this.props.userQueries);
         for (var i = 0; i < this.props.userQueries.length; i += 1) {
             var curRequest;
             curRequest = Promise.resolve(
@@ -212,7 +324,6 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
 
                     queries[value._id] = value;
                     that.setState({ 'queries' : queries});
-                    console.log(value);
                 });
             promises.push(curRequest);
         }

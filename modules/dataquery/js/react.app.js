@@ -16,10 +16,10 @@ SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
         var globalSaved = [];
 
         for(var i = 0; i < this.props.userQueries.length; i += 1) {
-            userSaved.push(React.createElement("li", null, React.createElement("a", {href: "#", onClick: this.loadQuery(this.props.userQueries[i])}, this.props.userQueries[i])));
+            userSaved.push(React.createElement("li", {key: this.props.userQueries[i]}, React.createElement("a", {href: "#", onClick: this.loadQuery(this.props.userQueries[i])}, this.props.userQueries[i])));
         }
         for(var i = 0; i < this.props.globalQueries.length; i += 1) {
-            globalSaved.push(React.createElement("li", null, React.createElement("a", {href: "#"}, this.props.globalQueries[i])));
+            globalSaved.push(React.createElement("li", {key: this.props.globalQueries[i]}, React.createElement("a", {href: "#"}, this.props.globalQueries[i])));
         }
         return (
              React.createElement("ul", {className: "nav nav-tabs navbar-right"}, 
@@ -32,7 +32,7 @@ SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
                         globalSaved
                      )
                  ), 
-                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#SavedQueriesTab", 'data-toggle': "tab"}, "Managed Saved Queries"))
+                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#SavedQueriesTab", 'data-toggle': "tab"}, "Manage Saved Queries"))
              )
             );
     }
@@ -67,7 +67,8 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         return {
             fields: [],
             criteria: {},
-            sessiondata: {}
+            sessiondata: {},
+            grouplevel: 1
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -234,18 +235,54 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         var rowdata = [];
         var currow;
 
-        for(j = 0; j < sessions.length; j += 1) {
-            var currow = [];
-            for(i = 0; i < fields.length; i += 1) {
-                var fieldSplit = fields[i].split(",")
-                currow[i] = '.';
-                var sd = sessiondata[sessions[j]];
-                if(sd) {
-                    currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
-                }
+        if(this.state.grouplevel === 0) {
+            for(j = 0; j < sessions.length; j += 1) {
+                var currow = [];
+                for(i = 0; i < fields.length; i += 1) {
+                    var fieldSplit = fields[i].split(",")
+                        currow[i] = '.';
+                    var sd = sessiondata[sessions[j]];
+                    if(sd) {
+                        currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+                    }
 
+                }
+                rowdata.push(currow);
             }
-            rowdata.push(currow);
+        } else {
+            var Prefixes = [], prefix;
+            for(i = 0; i < sessions.length; i += 1) {
+                prefix = sessions[i].pop().toUpperCase();
+                if (Prefixes.indexOf(prefix) === -1) {
+                    Prefixes.push(prefix);
+                }
+            }
+            Prefixes.sort();
+            console.log(Prefixes);
+
+
+            /*
+            for (el in obj) {
+                if (obj.hasOwnProperty(el)) {
+                    identifier = el.split(',');
+                    i = parseInt(group_level, 10);
+                    prefix = [];
+                    while (i > 0) {
+                        i -= 1;
+                        prefix.push(identifier.pop());
+                    }
+                    sPrefix = prefix.join("_").toUpperCase();
+                    // Create a new row. We'll initialize it to empty after we know how many columns there are,
+                    // which depends on how many prefixes are found in this loop.
+                    row = [];
+                    row[0] = identifier.join(",");
+                    existingRows[identifier.join(",")] = row;
+                    if (Prefixes.indexOf(sPrefix) === -1) {
+                        Prefixes.push(sPrefix);
+                    }
+                }
+            }
+            */
         }
         return rowdata;
     },
@@ -270,15 +307,18 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                 Criteria: this.state.criteria}
             )
         );
+        var rowData = this.getRowData();
         tabs.push(React.createElement(ViewDataTabPane, {
                 TabId: "ViewData", 
                 Fields: this.state.fields, 
                 Criteria: this.state.criteria, 
                 Sessions: this.getSessions(), 
-                Data: this.getRowData(), 
+                Data: rowData, 
                 onRunQueryClicked: this.runQuery}
         ));
-        tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics"}));
+        tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics", 
+                Fields: this.state.fields, 
+                Data: rowData}));
         tabs.push(React.createElement(ManageSavedQueriesTabPane, {TabId: "SavedQueriesTab", 
                         userQueries: this.props.SavedQueries.User, 
                         globalQueries: this.props.SavedQueries.Shared, 

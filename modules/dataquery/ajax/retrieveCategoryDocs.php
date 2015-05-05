@@ -25,7 +25,10 @@ $results = $cdb->queryView(
     true
 );
 
-print $results;
+$keys = null;
+$cdb = null;
+$client = null;
+//print $results;
 /*
 $justTheDocs = array_map(function($row) {
     return $row['doc'];

@@ -29,7 +29,7 @@ InfoTabPane = React.createClass({
                 <dd>Visualize or see basic statistical measures from your query here.</dd>
                 <dt>Load Saved Query</dt>
                 <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
-                <dt>Managed Saved Queries</dt>
+                <dt>Manage Saved Queries</dt>
                 <dd>Either save your current query or see the criteria of previously saved quer  ies here.</dd>
               </dl>
         </div>;
@@ -128,10 +128,119 @@ ViewDataTabPane = React.createClass({
     }
 });
 
-StatsVisualizationTabPane = React.createClass({
+ScatterplotGraph = React.createClass({
     render: function() {
-        var content = <div>Stats go here</div>;
-        return <TabPane content={content} TabId={this.props.TabId} />;
+        return (
+            <div>
+                <h2>Scatterplot</h2>
+
+                <div className="col-xs-4 col-md-3">
+                    Column for X Axis
+                </div>
+                <div className="col-xs-8 col-md-3">
+                    <select>
+                        <option>None</option>
+                    </select>
+                </div>
+
+                <div className="col-xs-4 col-md-3">
+                    Column for Y Axis
+                </div>
+                <div className="col-xs-8 col-md-3">
+                    <select>
+                        <option>None</option>
+                    </select>
+                </div>
+
+                <div className="col-xs-4 col-md-3">
+                    Group by column
+                </div>
+                <div className="col-xs-8 col-md-3">
+                    <select>
+                        <option>None</option>
+                    </select>
+                </div>
+            </div>
+        );
+    }
+});
+StatsVisualizationTabPane = React.createClass({
+    getDefaultProps: function() {
+        return {
+            'Data' : []
+        };
+    },
+    getInitialState: function() {
+        return {
+            'displayed': false
+        }
+    },
+    render: function() {
+        if(this.state.displayed === false) {
+            var content = <div>Statistics not yet calculated.</div>;
+            return <TabPane content={content} TabId={this.props.TabId} />;
+        }
+        if(this.props.Data.length === 0) {
+            var content = <div>Could not calculate stats, query not run</div>;
+            return <TabPane content={content} TabId={this.props.TabId} />;
+        }
+        var stats = jStat(this.props.Data),
+            min = stats.min(),
+            max = stats.max(),
+            stddev = stats.stdev(),
+            mean = stats.mean(),
+            meandev = stats.meandev(),
+            meansqerr = stats.meansqerr(),
+            quartiles = stats.quartiles(),
+            rows = [];
+
+
+      for(var i = 0; i < this.props.Fields.length; i += 1) {
+          rows.push(<tr>
+              <td>{this.props.Fields[i]}</td>
+              <td>{min[i]}</td>
+              <td>{max[i]}</td>
+              <td>{stddev[i]}</td>
+              <td>{mean[i]}</td>
+              <td>{meandev[i]}</td>
+              <td>{meansqerr[i]}</td>
+              <td>{quartiles[i][0]}</td>
+              <td>{quartiles[i][1]}</td>
+              <td>{quartiles[i][2]}</td>
+          </tr>);
+      }
+
+      var statsTable = (
+          <table className="table table-hover table-primary table-bordered colm-freeze">
+            <thead>
+                <tr className="info">
+                    <th>Measure</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                    <th>Standard Deviation</th>
+                    <th>Mean</th>
+                    <th>Mean Deviation</th>
+                    <th>Mean Squared Error</th>
+                    <th>First Quartile</th>
+                    <th>Second Quartile</th>
+                    <th>Third Quartile</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows}
+            </tbody>
+          </table>
+      );
+
+      var content = (
+          <div>
+          <h2>Basic Statistics</h2>
+          {statsTable}
+
+          <ScatterplotGraph />
+          </div>
+          );
+      return <TabPane content={content} TabId={this.props.TabId} />;
     }
 });
 
@@ -170,17 +279,21 @@ ManageSavedQueryRow = React.createClass({
     render: function() {
         var fields = [];
         var filters = [];
-        for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
-            fields.push(<li>{this.props.Query.Fields[i]}</li>);
+        if(this.props.Query.Fields) {
+            for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
+                fields.push(<li>{this.props.Query.Fields[i]}</li>);
+            }
         }
 
         if(fields.length === 0) {
             fields.push(<li>No fields defined</li>);
         }
 
-        for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
-            var filter = this.props.Query.Conditions[i];
-            filters.push(<li>{filter.Field} {filter.Operator} {filter.Value}</li>);
+        if(this.props.Query.Conditions) {
+            for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
+                var filter = this.props.Query.Conditions[i];
+                filters.push(<li>{filter.Field} {filter.Operator} {filter.Value}</li>);
+            }
         }
         if(filters.length === 0) {
             filters.push(<li>No filters defined</li>);
@@ -198,7 +311,6 @@ ManageSavedQueriesTabPane = React.createClass({
     componentDidMount: function() {
         var promises = [];
         var that = this;
-        console.log(this.props.userQueries);
         for (var i = 0; i < this.props.userQueries.length; i += 1) {
             var curRequest;
             curRequest = Promise.resolve(
@@ -212,7 +324,6 @@ ManageSavedQueriesTabPane = React.createClass({
 
                     queries[value._id] = value;
                     that.setState({ 'queries' : queries});
-                    console.log(value);
                 });
             promises.push(curRequest);
         }
