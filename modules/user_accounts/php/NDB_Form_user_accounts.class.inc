@@ -485,27 +485,11 @@ class NDB_Form_user_accounts extends NDB_Form
         //           Validate Email
         //======================================
 
-        $email = $values['Email'];
         // If an email was entered
-        if (!empty($email)) {
-            // check email address' uniqueness
-            $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
-            $params = array('VEmail' => $email);
-            if (!is_null($this->identifier)) {
-                $query        .= " AND userID <> :UID";
-                $params['UID'] = $this->identifier;
-            }
-            $result = $DB->pselectOne($query, $params);
-            if (Utility::isErrorX($result)) {
-                return PEAR::raiseError("DB Error: ".$result->getMessage());
-            }
-
-            // Email already exists in database
-            if ($result > 0) {
-                $errors['Email_Group'] = 'The email address already exists';
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                // If email not syntactically valid
-                $errors['Email_Group'] = "Invalid email address";
+        if (!empty($values['Email'])) {
+            $emailError = $this->getEmailError($DB, $values['Email']);
+            if(!is_null($emailError)) {
+                $errors['Email_Group'] = $emailError;
             }
         } else {
             // No email entered: error
@@ -534,19 +518,37 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
 
-        // check email address' uniqueness
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID != :UID", 
-            array('VEmail' => $values['Email'], 'UID' => $this->identifier)
-        );
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
-    
-        if ($result > 0) {
-            $errors['Email'] = 'The email address already exists';
+        // Validate email
+        $emailError = $this->getEmailError($DB, $values['Email']);
+        if(!is_null($emailError)) {
+            $errors['Email'] = $emailError;
         }
 
         return $errors;
+    }
+    
+    private function getEmailError($DB, $email) {
+            // check email address' uniqueness
+            $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
+            $params = array('VEmail' => $email);
+            if (!is_null($this->identifier)) {
+                $query        .= " AND userID <> :UID";
+                $params['UID'] = $this->identifier;
+            }
+            $result = $DB->pselectOne($query, $params);
+            if (Utility::isErrorX($result)) {
+                return PEAR::raiseError("DB Error: ".$result->getMessage());
+            }
+
+            // Email already exists in database
+            if ($result > 0) {
+                return 'The email address already exists';
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // If email not syntactically valid
+                return "Invalid email address";
+            }
+
+            return null;
     }
 }
 ?>
