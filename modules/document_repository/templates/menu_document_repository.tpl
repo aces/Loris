@@ -409,7 +409,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div id="editFileCategory" class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="category">Category</label>
+                            <label class="col-xs-4" for="category">Category<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
                                 <select name="category" id = "categoryEdit" class = "form-fields form-control input-sm">
                                     <option value=""> </option>
@@ -419,6 +419,9 @@
                                         {/if}
                                     {/foreach}
                                 </select>
+                            </div>
+                            <div id="categoryEditError" class="col-xs-8 col-xs-offset-4 form-error" style="display:none;">
+                                Category is required
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
