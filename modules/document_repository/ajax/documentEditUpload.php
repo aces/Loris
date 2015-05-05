@@ -78,7 +78,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
         $comments = $_POST['commentsEdit'];
         $version = $_POST['versionEdit'];
 
-        if($category === ''){
+        if(empty($category) && $category !== '0'){
             header("HTTP/1.1 400 Bad Request");
             exit;
         }
