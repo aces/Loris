@@ -205,7 +205,13 @@ class NDB_Form_user_accounts extends NDB_Form
 
         ///get the value for additional_user_info flag
         $config =& NDB_Config::singleton();
-        $additional_user_info = $config->getSetting('additional_user_info');
+        try {
+            $additional_user_info = $config->getSetting('additional_user_info');
+        }
+        catch(ConfigException $exception) {
+            // Do nothing: let $additional_user_info be unset
+        }
+        error_log("------------------- ***{$additional_user_info}***");
 
         //------------------------------------------------------------
 
@@ -250,7 +256,10 @@ class NDB_Form_user_accounts extends NDB_Form
 
         ////if the option is not set or if it's and it's true then display it 
 
-        if ((!isset($additional_user_info)) || ($additional_user_info)){
+        if (isset($additional_user_info) && $additional_user_info){
+            if(isset($additional_user_info)) {
+                error_log("----------------- additional user info is set");
+            }
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
             $this->addBasicText('Institution', 'Institution');
