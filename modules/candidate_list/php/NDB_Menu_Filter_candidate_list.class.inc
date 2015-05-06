@@ -121,21 +121,21 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                'c.CandID',
                                'c.PSCID',
                                'c.Gender',
-                        );
+                              );
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
         }
         $this->validFilters = array_merge(
             $this->validFilters,
             array(
-                                   's.SubprojectID',
-                                   'c.DoB',
-                                   $VisitCountSQL,
-                                   'max(s.Current_stage)',
-                                   $FeedbackSQL,
-                                   's.Scan_done',
-                                   's.Visit_label',
-                                  )
+                's.SubprojectID',
+                'c.DoB',
+                $VisitCountSQL,
+                'max(s.Current_stage)',
+                $FeedbackSQL,
+                's.Scan_done',
+                's.Visit_label',
+            )
         );
 
         $this->validHavingFilters = array(
@@ -154,21 +154,22 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                               );
         if ($useProjects) {
             $this->formToFilter = array_merge(
-                                      $this->formToFilter,
-                                      array('ProjectID' => 'c.ProjectID')
+                $this->formToFilter,
+                array('ProjectID' => 'c.ProjectID')
             );
         }
-        $this->formToFilter = array_merge($this->formToFilter,
+        $this->formToFilter = array_merge(
+            $this->formToFilter,
             array(
-                                    'dob'                 => 'c.DoB',
-                                    'Visit_Count'         => $VisitCountSQL,
-                                    'Latest_Visit_Status' => 'max(s.Current_stage)',
-                                    'Feedback'            => $FeedbackSQL,
-                                    'Participant_Status'  => 'pso.ID',
-                                    'scan_done'           => 's.Scan_done',
-                                    'Visit_label'         => 's.Visit_label',
-                                   )
-                    );
+                'dob'                 => 'c.DoB',
+                'Visit_Count'         => $VisitCountSQL,
+                'Latest_Visit_Status' => 'max(s.Current_stage)',
+                'Feedback'            => $FeedbackSQL,
+                'Participant_Status'  => 'pso.ID',
+                'scan_done'           => 's.Scan_done',
+                'Visit_label'         => 's.Visit_label',
+            )
+        );
 
         return true;
     }
