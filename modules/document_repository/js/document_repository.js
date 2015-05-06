@@ -128,7 +128,14 @@ function postEdit(id) {
         data: data,
         success: function() {
             $('.edit-success').show();
+            $("#editModal").modal('hide');
+            $("#editFileCategory").removeClass("has-error");
+            $("#categoryEditError").hide();
             setTimeout(function() { location.reload() }, 3000);
+        },
+        error: function() {
+            $("#editFileCategory").addClass("has-error");
+            $("#categoryEditError").show();
         }
     });
 }
@@ -159,7 +166,8 @@ function editModal() {
         }
     });
 
-    $("#postEdit").click(function(){
+    $("#postEdit").click(function(e){
+        e.preventDefault();
         postEdit(id);
     });
     $("#cancelEditButton").click(function() {
