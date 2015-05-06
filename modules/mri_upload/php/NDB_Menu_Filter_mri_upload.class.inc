@@ -34,7 +34,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 
     var $show_queries = true;
     var $temp_path    = null;
-    /** 
+    /**
      * The _has_access returns true
      * if the user has the specific permission
      *
@@ -121,9 +121,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $visitlabels
         );
         $phantom_options = array(
-                            null=>'',
-                            'N' => 'No',
-                            'Y' => 'Yes',
+                            null => '',
+                            'N'  => 'No',
+                            'Y'  => 'Yes',
                            );
         $this->addSelect(
             'IsPhantom',
