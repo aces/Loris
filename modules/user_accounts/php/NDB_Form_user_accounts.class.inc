@@ -453,7 +453,7 @@ class NDB_Form_user_accounts extends NDB_Form
         //        Password validation
         //==================================
         if(!empty($this->identifier)) {
-            $pass = $DB->pselectOne("SELECT Password_md5 FROM users WHERE UserID = :UID",
+            $pass = $DB->pselectOne("SELECT IFNULL(Password_md5, Password_hash) as Current_password FROM users WHERE UserID = :UID",
                                     array('UID' => $this->identifier) );
              //case of new user the password column will be null so either password should be set or
             // password should be generated
