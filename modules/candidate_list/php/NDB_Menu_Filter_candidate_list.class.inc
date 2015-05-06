@@ -125,16 +125,18 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
         }
-        $this->validFilters = array_merge($this->validFilters, 
-                                  array(
-                                     's.SubprojectID',
-                                     'c.DoB',
-                                     $VisitCountSQL,
-                                     'max(s.Current_stage)',
-                                     $FeedbackSQL,
-                                     's.Scan_done',
-                                     's.Visit_label',
-                                  ));
+        $this->validFilters = array_merge(
+            $this->validFilters,
+            array(
+                                   's.SubprojectID',
+                                   'c.DoB',
+                                   $VisitCountSQL,
+                                   'max(s.Current_stage)',
+                                   $FeedbackSQL,
+                                   's.Scan_done',
+                                   's.Visit_label',
+                                  )
+        );
 
         $this->validHavingFilters = array(
                                      $VisitCountSQL,
@@ -144,26 +146,29 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->EqualityFilters    = array('session.SubprojectID');
 
         $this->formToFilter = array(
-                               'centerID'            => 'c.CenterID',
-                               'DCCID'               => 'c.CandID',
-                               'PSCID'               => 'c.PSCID',
-                               'gender'              => 'c.Gender',
-                               'SubprojectID'        => 's.SubprojectID',
-                                    );
+                               'centerID'     => 'c.CenterID',
+                               'DCCID'        => 'c.CandID',
+                               'PSCID'        => 'c.PSCID',
+                               'gender'       => 'c.Gender',
+                               'SubprojectID' => 's.SubprojectID',
+                              );
         if ($useProjects) {
-            $this->formToFilter = array_merge($this->formToFilter,
-                                      array('ProjectID' => 'c.ProjectID')); 
+            $this->formToFilter = array_merge(
+                                      $this->formToFilter,
+                                      array('ProjectID' => 'c.ProjectID')
+            );
         }
         $this->formToFilter = array_merge($this->formToFilter,
-                                   array(
-                               'dob'                 => 'c.DoB',
-                               'Visit_Count'         => $VisitCountSQL,
-                               'Latest_Visit_Status' => 'max(s.Current_stage)',
-                               'Feedback'            => $FeedbackSQL,
-                               'Participant_Status'  => 'pso.ID',
-                               'scan_done'           => 's.Scan_done',
-                               'Visit_label'         => 's.Visit_label',
-                              ));
+            array(
+                                    'dob'                 => 'c.DoB',
+                                    'Visit_Count'         => $VisitCountSQL,
+                                    'Latest_Visit_Status' => 'max(s.Current_stage)',
+                                    'Feedback'            => $FeedbackSQL,
+                                    'Participant_Status'  => 'pso.ID',
+                                    'scan_done'           => 's.Scan_done',
+                                    'Visit_label'         => 's.Visit_label',
+                                   )
+                    );
 
         return true;
     }
@@ -276,12 +281,12 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
-            $list_of_projects = array(null =>'All');
-            $projectList = Utility::getProjectList();
+            $list_of_projects = array(null => 'All');
+            $projectList      = Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }
-            $this->addSelect('ProjectID', 'Project', $list_of_projects); 
+            $this->addSelect('ProjectID', 'Project', $list_of_projects);
         }
         if ($config->getSetting("useEDC")=="true") {
             $this->addBasicText(
