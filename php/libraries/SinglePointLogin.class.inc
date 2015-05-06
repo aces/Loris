@@ -313,7 +313,7 @@ class SinglePointLogin
                     return false;
                 }
 
-                if ($row['Pending_approval'] == '1') {
+                if ($row['Pending_approval'] == 'Y') {
                     $this->_lastError = "Your account has not yet been activated."
                         . " Please contact your project administrator to activate"
                         . " this account.";
