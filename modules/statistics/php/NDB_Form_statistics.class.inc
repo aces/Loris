@@ -457,35 +457,8 @@ class NDB_Form_statistics extends NDB_Form
                         $mri_data[] = array('name' => $name,  'work_station_count' => $work_station_count, 'claimed_count' => $claimed_count, 'forms_count' => $forms_count, 'all_three_scans' => $three_scans);
 
                     }
+
                     $subprojectList = "'" . implode("','", Utility::getSubprojectList()) . "'";
-                    $qry = "SELECT psc.PSCArea as Center, SUM(Three_done) as T1, SUM(Three_T2_Done) as T2 , SUM(Three_DTI_Done) as DTI, SUM(Three_All_done) as Three_All_done FROM
-                            (SELECT c.CenterID, COUNT(DISTINCT c.CandID)," .
-                            "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as v06_Done,
-                             COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete' ) WHEN true THEN c.CandID ELSE null END) as Two_Done,
-                             COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_done,
-                             COUNT(DISTINCT CASE (COALESCE(mpf12.T2_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T2_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.T2_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_T2_done,
-                             COUNT(DISTINCT CASE (COALESCE(mpf12.DTI_Scan_done, 'No')='Complete' AND COALESCE(mpf06.DTI_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.DTI_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_DTI_done,
-                             COUNT(DISTINCT
-                                 CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.T1_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf12.T2_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T2_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.T2_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf12.DTI_Scan_done, 'No')='Complete' AND COALESCE(mpf06.DTI_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.DTI_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_All_done
-                                 FROM candidate c JOIN session v06 ON (c.CandID=v06.CandID AND v06.Visit_label='v06' and v06.Active='Y' and v06.Current_stage <> 'Recycling Bin' AND v06.SubprojectID IN ($subprojectList))
-                                 JOIN flag f06 ON (f06.SessionID=v06.ID and f06.Test_name='mri_parameter_form' AND f06.CommentID NOT LIKE 'DDE%')
-                                 JOIN mri_parameter_form mpf06 ON (f06.CommentID=mpf06.CommentID)
-                                 LEFT JOIN session v12 ON (c.CandID=v12.CandID and v12.Visit_label='v12' and v12.Current_stage <> 'Recycling Bin' )
-                                 LEFT JOIN flag f12 ON (f12.SessionID=v12.ID AND f12.Test_name='mri_parameter_form' AND f12.CommentID NOT LIKE 'DDE%')
-                                 LEFT JOIN mri_parameter_form mpf12 ON (mpf12.CommentID=f12.CommentID)
-                                 LEFT JOIN session v24 ON (v24.CandID=c.CandID and v24.Visit_label='v24' and v24.Current_stage <> 'Recycling Bin' and v24.Active='Y' AND v24.SubprojectID IN ($subprojectList))
-                                 LEFT JOIN flag f24 ON (f24.SessionID=v24.ID AND f24.Test_name='mri_parameter_form' AND f24.CommentID NOT LIKE 'DDE%')
-                                 LEFT JOIN mri_parameter_form mpf24 ON (mpf24.CommentID=f24.CommentID) WHERE
-                                 c.Active='Y' and c.PSCID  not like 'dcc%'  and c.PSCID <> 'scanner'
-                                 GROUP BY c.CenterID) breakdown JOIN psc ON (breakdown.CenterID=psc.CenterID) WHERE psc.CenterID <> 1 GROUP BY psc.Name ORDER BY psc.CenterID";
 
                     $MultiTimepoint = $DB->pselect("SELECT psc.PSCArea as Center, SUM(Three_done) as T1, SUM(Three_T2_Done) as T2 , SUM(Three_DTI_Done) as DTI, SUM(Three_All_done) as Three_All_done FROM
                             (SELECT c.CenterID, COUNT(DISTINCT c.CandID)," .
