@@ -92,6 +92,9 @@ function postCategory() {
         type: "POST",
         data: $("#addCategoryForm").serialize(),
         success: function () {
+            $("#addCategoryModal").modal('hide');
+            $("#addCategoryCategory").removeClass("has-error");
+            $("#categoryAddError").hide();
             $('.add-success').show();
             setTimeout(function () {
                 $('.add-success').hide();
@@ -101,8 +104,9 @@ function postCategory() {
             }, 3000);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR) {
-                console.log("Error: " + textStatus + " " + errorThrown);
+            if (jqXHR.status === 400) {
+                $("#addCategoryCategory").addClass("has-error");
+                $("#categoryAddError").show()
             }
         }
     });
@@ -128,7 +132,14 @@ function postEdit(id) {
         data: data,
         success: function() {
             $('.edit-success').show();
+            $("#editModal").modal('hide');
+            $("#editFileCategory").removeClass("has-error");
+            $("#categoryEditError").hide();
             setTimeout(function() { location.reload() }, 3000);
+        },
+        error: function() {
+            $("#editFileCategory").addClass("has-error");
+            $("#categoryEditError").show();
         }
     });
 }
@@ -159,7 +170,8 @@ function editModal() {
         }
     });
 
-    $("#postEdit").click(function(){
+    $("#postEdit").click(function(e){
+        e.preventDefault();
         postEdit(id);
     });
     $("#cancelEditButton").click(function() {
@@ -297,9 +309,6 @@ function expandDir(key, value){
 $(document).ready(function () {
     "use strict";
 
-    renderTree();
-    editCategory();
-
     //Hide error and success messages on load
     $('.upload-success').hide();
     $('.delete-success').hide();
@@ -309,6 +318,8 @@ $(document).ready(function () {
     $('.file-error').hide();
     $('.no-files').hide();
 
+    renderTree();
+    editCategory();
 
     //Open confirmation dialog on Delete click
     var id;

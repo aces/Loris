@@ -314,6 +314,10 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $feedbacks = array();
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
+        $config    = NDB_Config::singleton();
+        $ImagingUploaderAutoLaunch = $config->getSetting(
+            'ImagingUploaderAutoLaunch'
+        );
 
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
@@ -391,8 +395,13 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             $mriUploadId = $db->pselectOne($query, $values);
 
             // Perform the real upload on the server
-            $serverProcessLauncher = new ServerProcessLauncher();
-            $serverProcessLauncher->mriUpload($mriUploadId, $uploaded_file_path);
+            if ($ImagingUploaderAutoLaunch) {
+                $serverProcessLauncher = new ServerProcessLauncher();
+                $serverProcessLauncher->mriUpload(
+                    $mriUploadId,
+                    $uploaded_file_path
+                );
+            }
 
             return true;
         }

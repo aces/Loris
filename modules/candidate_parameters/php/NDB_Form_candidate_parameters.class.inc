@@ -158,8 +158,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
  
        // Getting participant status default values
         $ps_info = $DB->pselectRow("SELECT study_consent,study_consent_date,study_consent_withdrawal,
-                                    ndar_consent,ndar_consent_date,ndar_consent_withdrawal,reason_specify,
-                                    participant_status,participant_suboptions FROM participant_status 
+                                    reason_specify,participant_status,participant_suboptions
+                                    FROM participant_status
                                     WHERE CandID = :cid", array('cid'=>$this->identifier));
         if (empty ($ps_info['participant_status'])) {
             //set candidate to active by default
@@ -439,14 +439,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
     {
         $DB =& Database::singleton();
         $config =& NDB_Config::singleton();
-
-        $ethnicityList = array(null=>'');
-        $success = Utility::getEthnicityList();
-        if (Utility::isErrorX($success)) {
-        	return PEAR::raiseError("Utility::getEthnicityList error: ".$success->getMessage());
-        }
-        $ethnicityList = array_merge($ethnicityList,$success);
-        unset($success);
         
         $candidate =& Candidate::singleton($this->identifier);
         if (Utility::isErrorX($candidate)) {

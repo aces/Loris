@@ -1,6 +1,6 @@
 {if $success}
 
-<p>Participant Status was updated successful<br /></p>
+<p>Participant Status was updated successfully<br /></p>
 <br />
 {/if}
 <form method="post" name="update_participant_status" id="update_participant_status" enctype="multipart/form-data">

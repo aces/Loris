@@ -3,7 +3,7 @@
         <form method="post" name="edit_examiner" id="edit_examiner">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    Edit Certification for {$examiner_name}
+                    Edit Certification for {$examiner_name} at site {$site_name}
                 </div>
                 <div class="panel-body" id="panel-body">
                     {foreach from=$form.errors item=error}
@@ -41,7 +41,7 @@
                                 <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit">
                             </div>
                             <div class="col-sm-6 col-md-2 col-xs-12">
-                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='main.php?test_name=examiner&subtest=editExaminer&reset=true'">
+                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='main.php?test_name=examiner&subtest=editExaminer&reset=true&identifier={$identifier}'">
                             </div>
                         </div>
                         {/if}

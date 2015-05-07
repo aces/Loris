@@ -78,6 +78,11 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
         $comments = $_POST['commentsEdit'];
         $version = $_POST['versionEdit'];
 
+        if(empty($category) && $category !== '0'){
+            header("HTTP/1.1 400 Bad Request");
+            exit;
+        }
+
         $values = array('File_category' => $category, 'Instrument' => $instrument, 'For_site' => $site,
                         'PSCID' => $pscid, 'visitLabel' => $visit, 'comments' => $comments, 'version' => $version);
         $DB->update('document_repository', $values, array('record_id'=>$id));

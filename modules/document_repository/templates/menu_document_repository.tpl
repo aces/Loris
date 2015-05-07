@@ -253,12 +253,15 @@
                         <div class="col-xs-12">
                             <p>What category would you like to add?</p>
                         </div>
-                        <div class="col-xs-12 form-group">
+                        <div id="addCategoryCategory" class="col-xs-12 form-group">
                             <label class="col-xs-4">
-                                Category Name:
+                                Category Name:<font color="red"><sup> *</sup></font>
                             </label>
                             <div class="col-xs-8">
                                 <input type="text" name="category_name" class="form-control input-sm" />
+                            </div>
+                            <div id="categoryAddError" class="col-xs-8 col-xs-offset-4 form-error" style="display:none;">
+                                Category is required
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
@@ -287,7 +290,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="postCategory" role="button" aria-disabled="false" data-dismiss="modal">Add</button>
+                    <button type="button" class="btn btn-primary" id="postCategory" role="button" aria-disabled="false">Add</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
@@ -408,8 +411,8 @@
             <form name = "editForm" id = "editForm" method = "post">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="category">Category</label>
+                        <div id="editFileCategory" class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="category">Category<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
                                 <select name="category" id = "categoryEdit" class = "form-fields form-control input-sm">
                                     <option value=""> </option>
@@ -419,6 +422,9 @@
                                         {/if}
                                     {/foreach}
                                 </select>
+                            </div>
+                            <div id="categoryEditError" class="col-xs-8 col-xs-offset-4 form-error" style="display:none;">
+                                Category is required
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
@@ -472,7 +478,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" id = "postEdit" role="button" aria-disabled="false" data-dismiss="modal">Edit</button>
+                    <button class="btn btn-primary" id = "postEdit" role="button" aria-disabled="false">Edit</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
                 <input type="hidden" name = "action" id = "actionEdit" value = "edit">

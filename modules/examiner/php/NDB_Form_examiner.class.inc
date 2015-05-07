@@ -28,7 +28,10 @@ class NDB_Form_Examiner extends NDB_Form
     /**
      * Checks if the user has access to the edit examiner form
      *
-     * @return boolean
+     * @return bool
+     * @throws ConfigurationException
+     * @throws DatabaseException
+     * @throws LorisException
      */
     function _hasAccess()
     {
@@ -312,13 +315,22 @@ class NDB_Form_Examiner extends NDB_Form
             unset($group);
         }
 
-        $DB = Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->Database();
 
-        // Get the examiner name, to be added the form panel header
-        $this->tpl_data['examiner_name'] = $DB->pselectOne(
-            "SELECT full_name FROM examiners WHERE examinerID=:EID",
+        // Get the examiner name and site name, to be added the form panel header
+        $row = $DB->pselectRow(
+            "SELECT full_name, psc.Name as site_name
+              FROM examiners
+               JOIN psc ON psc.CenterID = examiners.centerID
+              WHERE examinerID=:EID",
             array('EID' => $this->identifier)
         );
+        // Get identifier, to be added to the Reset button href
+        $this->tpl_data['identifier'] = $this->identifier;
+
+        $this->tpl_data['examiner_name'] = $row['full_name'];
+        $this->tpl_data['site_name']     = $row['site_name'];
 
         $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
     }
