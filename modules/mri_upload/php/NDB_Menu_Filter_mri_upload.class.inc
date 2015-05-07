@@ -404,8 +404,9 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             'mri_upload',
             $values
         );
-        // Get MRI upload ID of the upload entry that was just inserted
-        $query       = "SELECT UploadID
+        if ($ImagingUploaderAutoLaunch) {
+            // Get MRI upload ID of the upload entry that was just inserted
+            $query       = "SELECT UploadID
                        FROM mri_upload
                        WHERE UploadedBy     = :UploadedBy
                        AND   UploadDate     = :UploadDate
@@ -413,11 +414,11 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                        AND   SessionID      = :SessionID
                        AND   PatientName    = :PatientName
                        AND   IsPhantom      = :IsPhantom";
-        $mriUploadId = $db->pselectOne($query, $values);
-        // Perform the real upload on the server
-        $serverProcessLauncher = new ServerProcessLauncher();
-        $serverProcessLauncher->mriUpload($mriUploadId, $uploaded_file_path);
-
+            $mriUploadId = $db->pselectOne($query, $values);
+            // Perform the real upload on the server
+            $serverProcessLauncher = new ServerProcessLauncher();
+            $serverProcessLauncher->mriUpload($mriUploadId, $uploaded_file_path);
+        }
         return true;
     }
     /**
