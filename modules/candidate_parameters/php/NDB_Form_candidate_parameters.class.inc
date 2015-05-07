@@ -522,7 +522,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                                         );
                 $fields = $question['name'].', '.$question['name'] . '_date, '.$question['name'] . '_withdrawal, ';
                 $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date
-                                               FROM consent_info_history WHERE CandID=:cid",
+                                               FROM consent_info_history WHERE CandID=:cid", 
                                                array('cid'=>$this->identifier));
                $study_consent_hist = array();
                 for ($i=0; $i<sizeof($study_consent); $i++ ) {
