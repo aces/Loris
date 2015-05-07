@@ -205,12 +205,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         ///get the value for additional_user_info flag
         $config =& NDB_Config::singleton();
-        try {
-            $additional_user_info = $config->getSetting('additional_user_info');
-        }
-        catch(ConfigException $exception) {
-            // Do nothing: let $additional_user_info be unset
-        }
+        $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
 
