@@ -1,12 +1,12 @@
 #LORIS Mac Install Guide
 
-This is an a guide how to get a LORIS instance Running on your Mac computer. It has been tested for Mac OS X 10.9. 
+This is a guide how to get a LORIS instance Running on your Mac computer. It is designed for installation in a sandbox environment. It has been partially tested for Mac OS X 10.9 and 10.10.
 
 # 1. System Requirements
 
 Before continuing to the subsequent sections ensure that the following tools are installed.  Sudo permission is required.  This section covers installation and recommended versions of:
 
- * Mac OS X (tested for Mavericks - OS X 10.9)
+ * Mac OS X (tested for Mavericks - OS X 10.9 and 10.10)
  * Apache2
  * PHP
  * PEAR
