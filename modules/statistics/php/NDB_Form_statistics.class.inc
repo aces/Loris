@@ -453,21 +453,22 @@ class NDB_Form_statistics extends NDB_Form
                                     WHERE v12.Active='Y' AND v12.Visit_label='v12' AND v06.CandID=v12.CandID AND m12.T1_Scan_Done='Complete') 
                                 AND EXISTS (SELECT 'x' FROM session v24 join flag f24 ON (f24.SessionID=v24.ID and Test_name='mri_parameter_form' AND CommentID NOT LIKE 'DDE%') join mri_parameter_form m24 ON (f24.CommentID=m24.CommentID)
                                     WHERE v24.Active='Y' AND v24.Visit_label='v24' AND v06.CandID=v24.CandID and m24.T1_Scan_Done='Complete') 
-                                AND v06.CenterID='{$id}' AND V06.SubprojectID IN ($subprojList) $ExtraProject_Criteria");
+                                AND v06.CenterID='{$id}' AND v06.SubprojectID IN ($subprojList) $ExtraProject_Criteria");
+                        $mri_data[] = array('name' => $name,  'work_station_count' => $work_station_count, 'claimed_count' => $claimed_count, 'forms_count' => $forms_count, 'all_three_scans' => $three_scans);
 
-            $mri_data[] = array('name' => $name,  'work_station_count' => $work_station_count, 'claimed_count' => $claimed_count, 'forms_count' => $forms_count, 'all_three_scans' => $three_scans);
+                    }
+                    $subprojectList = "'" . implode("','", Utility::getSubprojectList()) . "'";
 
-        }
-        $MultiTimepoint = $DB->pselect("SELECT psc.PSCArea as Center, SUM(Three_done) as T1, SUM(Three_T2_Done) as T2 , SUM(Three_DTI_Done) as DTI, SUM(Three_All_done) as Three_All_done FROM
+                    $MultiTimepoint = $DB->pselect("SELECT psc.PSCArea as Center, SUM(Three_done) as T1, SUM(Three_T2_Done) as T2 , SUM(Three_DTI_Done) as DTI, SUM(Three_All_done) as Three_All_done FROM
                             (SELECT c.CenterID, COUNT(DISTINCT c.CandID)," .
-            /* This essentially does COUNT(T1_Scan_done='Complete'), but because of the way COUNT(expr) works,
-             * we need to make sure that anything that isn't 'Complete' is evaluated as NULL (not false), hence
-             * the crazy CASE statement. The different count statements Do v06, v06+v12, v06+v12+v24, all 3 for T2, all
-             * three for DTI, and all three for T1+T2+DTI. The outer select statement sums up all the groupings, to get
-             * a final scalar value.
-             */
+                            /* This essentially does COUNT(T1_Scan_done='Complete'), but because of the way COUNT(expr) works,
+                             * we need to make sure that anything that isn't 'Complete' is evaluated as NULL (not false), hence
+                             * the crazy CASE statement. The different count statements Do v06, v06+v12, v06+v12+v24, all 3 for T2, all
+                             * three for DTI, and all three for T1+T2+DTI. The outer select statement sums up all the groupings, to get
+                             * a final scalar value.
+                             */
 
-            "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as v06_Done,
+                            "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as v06_Done,
                              COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete' ) WHEN true THEN c.CandID ELSE null END) as Two_Done, 
                              COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete' 
                                      AND COALESCE(mpf24.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_done, 
@@ -493,24 +494,26 @@ class NDB_Form_statistics extends NDB_Form
                                  LEFT JOIN mri_parameter_form mpf24 ON (mpf24.CommentID=f24.CommentID) WHERE 
                                  c.Active='Y' and c.PSCID  not like 'dcc%'  and c.PSCID <> 'scanner' 
                                  GROUP BY c.CenterID) breakdown JOIN psc ON (breakdown.CenterID=psc.CenterID) WHERE psc.CenterID <> 1 GROUP BY psc.Name ORDER BY psc.CenterID", array());
-        $total = array('Name' => 'Total', 'T1' => 0, 'T2' => 0, 'DTI' => 0, 'All' => 0);
-        foreach ($MultiTimepoint as $row) {
-            $this->tpl_data['mri_all_scans_done'][] = array(
-                'Name' => $row['Center'],
-                'T1' => $row['T1'],
-                'T2' => $row['T2'],
-                'DTI' => $row['DTI'],
-                'All' => $row['Three_All_done']
-            );
-            $total['T1'] += $row['T1'];
-            $total['T2'] += $row['T2'];
-            $total['DTI'] += $row['DTI'];
-            $total['All'] += $row['Three_All_done'];
-        }
-        $this->tpl_data['mri_all_scans_done'][] = $total;
 
-        $this->tpl_data['mri_data'] = $mri_data;
-        $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
+                    $total = array('Name' => 'Total', 'T1' => 0, 'T2' => 0, 'DTI' => 0, 'All' => 0);
+
+                    foreach ($MultiTimepoint as $row) {
+                        $this->tpl_data['mri_all_scans_done'][] = array(
+                                'Name' => $row['Center'],
+                                'T1' => $row['T1'],
+                                'T2' => $row['T2'],
+                                'DTI' => $row['DTI'],
+                                'All' => $row['Three_All_done']
+                                );
+                        $total['T1'] += $row['T1'];
+                        $total['T2'] += $row['T2'];
+                        $total['DTI'] += $row['DTI'];
+                        $total['All'] += $row['Three_All_done'];
+                    }
+                    $this->tpl_data['mri_all_scans_done'][] = $total;
+
+                    $this->tpl_data['mri_data'] = $mri_data;
+                    $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
 
     } // End function
 
