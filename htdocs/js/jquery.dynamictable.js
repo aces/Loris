@@ -30,23 +30,25 @@
 (function ($) {
     "use strict";
     var setupScrolling = function (wrapper, rightLink, leftLink) {
-        var scrolling = false, scrollContent = function (direction, elem) {
-            var amount = (direction === "left" ? -3 : 3);
-            $(elem).animate({
-                scrollLeft: $(elem).scrollLeft() + amount
-            }, 1, function () {
-                if (scrolling) {
-                    scrollContent(direction, elem);
-                }
-            });
-        };
+        var scrolling = false,
+            step = 100,
+            scrollContent = function (direction, elem) {
+                var amount = (direction === "left" ? -3 : 3);
+                $(elem).animate({
+                    scrollLeft: $(elem).scrollLeft() + amount
+                }, 1, function () {
+                    if (scrolling) {
+                        scrollContent(direction, elem);
+                    }
+                });
+            };
         $(rightLink).bind("click", function (event) {
             event.preventDefault();
             // Animates the scrollTop property by the specified
             // step.
             scrolling = false;
             $(wrapper).animate({
-                scrollLeft: $(wrapper).scrollLeft()
+                scrollLeft: $(wrapper).scrollLeft() + step
             });
         }).bind("mouseover", function (event) {
             event.preventDefault();
@@ -62,7 +64,7 @@
             // step.
             scrolling = false;
             $(wrapper).animate({
-                scrollLeft: $(wrapper).scrollLeft()
+                scrollLeft: $(wrapper).scrollLeft() - step
             });
         }).bind("mouseover", function (event) {
             event.preventDefault();
