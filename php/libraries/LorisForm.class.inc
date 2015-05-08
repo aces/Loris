@@ -493,6 +493,10 @@ class LorisForm
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
             . (
+                isset($el['required']) && $el['required']
+                ? ' required' : ''
+              )
+            . (
                 !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
