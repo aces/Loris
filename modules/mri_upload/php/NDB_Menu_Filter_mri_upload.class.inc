@@ -73,15 +73,17 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                                's.CandID',
                                'c.PSCID',
                                's.visit_label',
+                               'mu.IsPhantom',
                               );
-        $this->query        = " FROM mri_upload mu JOIN session".
+        $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
-                              " JOIN candidate c ON (c.CandID = s.CandID)".
+                              " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
                               " WHERE 1=1 ";
         $this->formToFilter = array(
                                'CandID'      => 's.CandID',
                                'PSCID'       => 'c.PSCID',
                                'visit_label' => 's.visit_label',
+                               'IsPhantom'   => 'mu.IsPhantom',
                               );
         return true;
     }
@@ -117,6 +119,16 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             'VisitLabel',
             'VisitLabel:',
             $visitlabels
+        );
+        $phantom_options = array(
+                            null => '',
+                            'N'  => 'No',
+                            'Y'  => 'Yes',
+                           );
+        $this->addSelect(
+            'IsPhantom',
+            'Are these Phantom Scans:',
+            $phantom_options
         );
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
@@ -238,39 +250,42 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
         ///////////////////////////////////////////////////////////////////////
-        ////////////// make sure the advanced options are filled out///////////
+        /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
-        $candid      = trim($args['values']['CandID']);
-        $pscid       = trim($args['values']['PSCID']);
-        $visit_label = trim($args['values']['VisitLabel']);
+        if ($args['values']['IsPhantom']=='N') {
+            ///////////////////////////////////////////////////////////////////////
+            ////////////// make sure the advanced options are filled out///////////
+            ///////////////////////////////////////////////////////////////////////
+            $candid      = trim($args['values']['CandID']);
+            $pscid       = trim($args['values']['PSCID']);
+            $visit_label = trim($args['values']['VisitLabel']);
+            if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
+                $errors[] ="Make sure the CandID, PSCID and Visit_label are ".
+                "filled out ";
+            }
 
-        if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-            $errors[] ="Make sure the CandID, PSCID and Visit_label are".
-            "filled out ";
-        }
-
-        $patient_name = $pscid . "_" . $candid . "_" . $visit_label;
-        ///////////////////////////////////////////////////////////////////////
-        //////check to see if candid/pscid and visit-label exist///////////////
-        ///////////////////////////////////////////////////////////////////////
-        if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
-            if ($db->pselectOne(
-                "SELECT COUNT(*) FROM session s
-                 JOIN candidate c ON (c.candid=s.candid)
-                 WHERE s.Visit_label = :vlabel
-                 AND c.pscid = :pid AND c.candid = :cid",
-                array(
-                 'cid'    => $candid,
-                 'vlabel' => $visit_label,
-                 'pid'    => $pscid,
-                )
-            )==0) {
-                    $errors[] = "Make sure you enter the CandID: $candid ,".
-                                "PSCID: $pscid and the corresponding Visit-label: " .
-                                "$visit_label which already exist";
+            ///////////////////////////////////////////////////////////////////////
+            //////check to see if candid/pscid and visit-label exist///////////////
+            ///////////////////////////////////////////////////////////////////////
+            if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
+                if ($db->pselectOne(
+                    "SELECT COUNT(*) FROM session s
+                     JOIN candidate c ON (c.candid=s.candid)
+                     WHERE s.Visit_label = :vlabel
+                     AND c.pscid = :pid AND c.candid = :cid",
+                    array(
+                     'cid'    => $candid,
+                     'vlabel' => $visit_label,
+                     'pid'    => $pscid,
+                    )
+                )==0) {
+                        $errors[] = "Make sure you enter the CandID: $candid ,".
+                                    " PSCID: $pscid and the corresponding".
+                                    " Visit-label: $visit_label which".
+                                    " already exist";
+                }
             }
         }
-
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
@@ -319,6 +334,8 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             'ImagingUploaderAutoLaunch'
         );
 
+        $pname     = '';
+        $IsPhantom = $args['values']['IsPhantom'];
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -334,78 +351,75 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if ((!empty($args['values']['CandID']))
-            && (!empty($args['values']['PSCID']))
-            &&(!empty($args['values']['VisitLabel']))
-        ) {
-            ///////////////////////////////////////////////////////////////////
-            ////////////////////Use the arguments//////////////////////////////
-            ///////////////////////////////////////////////////////////////////
-            $visit_label = $args['values']['VisitLabel'];
-            $candid      = $args['values']['CandID'];
-            $pscid       = $args['values']['PSCID'];
-            $pname       = $pscid. "_" . $candid . "_" . $visit_label;
-            $sessionid   = $db->pselectOne(
-                "SELECT ID FROM  session WHERE CandID = :cid
-                 AND Visit_label =:vlabel",
-                array(
-                 'cid'    => $candid,
-                 'vlabel' => $visit_label,
-                )
-            );
-            //////////////////////////////////////////////////////////////////
-            ///Get the directory to which the temp file has been moved to/////
-            /// MRI_upload Incoming directory/////////////////////////////////
-            //////////////////////////////////////////////////////////////////
-            $uploaded_file_path = trim(
-                $file->getDestinationDirectory() .
-                $file->getDestinationFilename()
-            );
-            ///////////////////////////////////////////////////////////////
-            ///if the DestinationDirectory/getDestinationFilename//////////
-            //is not empty, then remove the uploaded directory in the /tmp/
-            ////Otherwise keep uploaded directory in the /tmp and insert///
-            ////into the mri_upload table//////////////////////////////////
-            ///////////////////////////////////////////////////////////////
-            if ($uploaded_file_path) {
-                $this->removeTempDir();
-            } else {
-                $uploaded_file_path = $this->getTempPath();
-            }
-            $values = array(
-                       'UploadedBy'     => $user_name,
-                       'UploadDate'     => $date,
-                       'UploadLocation' => $uploaded_file_path,
-                       'SessionID'      => $sessionid,
-                       'PatientName'    => $pname,
-                      );
-            $db->Insert(
-                'mri_upload',
-                $values
-            );
-
-            // Get MRI upload ID of the upload entry that was just inserted
-            $query       = "SELECT UploadID
-                            FROM mri_upload
-                            WHERE UploadedBy     = :UploadedBy
-                            AND   UploadDate     = :UploadDate
-                            AND   UploadLocation = :UploadLocation
-                            AND   SessionID      = :SessionID
-                            AND   PatientName    = :PatientName";
-            $mriUploadId = $db->pselectOne($query, $values);
-
-            // Perform the real upload on the server
-            if ($ImagingUploaderAutoLaunch) {
-                $serverProcessLauncher = new ServerProcessLauncher();
-                $serverProcessLauncher->mriUpload(
-                    $mriUploadId,
-                    $uploaded_file_path
+        if ($args['values']['IsPhantom']=='N') {
+            if ((!empty($args['values']['CandID']))
+                && (!empty($args['values']['PSCID']))
+                &&(!empty($args['values']['VisitLabel']))
+            ) {
+                ///////////////////////////////////////////////////////////////////
+                ////////////////////Use the arguments//////////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                $visit_label = $args['values']['VisitLabel'];
+                $candid      = $args['values']['CandID'];
+                $pscid       = $args['values']['PSCID'];
+                $pname       = $pscid. "_" . $candid . "_" . $visit_label;
+                $sessionid   = $db->pselectOne(
+                    "SELECT ID FROM  session WHERE CandID = :cid
+                     AND Visit_label =:vlabel",
+                    array(
+                     'cid'    => $candid,
+                     'vlabel' => $visit_label,
+                    )
                 );
             }
-
-            return true;
         }
-        return false;
+        //////////////////////////////////////////////////////////////////
+        ///Get the directory to which the temp file has been moved to/////
+        /// MRI_upload Incoming directory/////////////////////////////////
+        //////////////////////////////////////////////////////////////////
+        $uploaded_file_path = trim(
+            $file->getDestinationDirectory() .
+            $file->getDestinationFilename()
+        );
+        ///////////////////////////////////////////////////////////////
+        ///if the DestinationDirectory/getDestinationFilename//////////
+        //is not empty, then remove the uploaded directory in the /tmp/
+        ////Otherwise keep uploaded directory in the /tmp and insert///
+        ////into the mri_upload table//////////////////////////////////
+        ///////////////////////////////////////////////////////////////
+        if ($uploaded_file_path) {
+            $this->removeTempDir();
+        } else {
+                $uploaded_file_path = $this->getTempPath();
+        }
+        $values = array(
+                   'UploadedBy'     => $user_name,
+                   'UploadDate'     => $date,
+                   'UploadLocation' => $uploaded_file_path,
+                   'SessionID'      => $sessionid,
+                   'PatientName'    => $pname,
+                   'IsPhantom'      => $IsPhantom,
+                  );
+        $db->Insert(
+            'mri_upload',
+            $values
+        );
+        if ($ImagingUploaderAutoLaunch) {
+            // Get MRI upload ID of the upload entry that was just inserted
+            $query       = "SELECT UploadID
+                       FROM mri_upload
+                       WHERE UploadedBy     = :UploadedBy
+                       AND   UploadDate     = :UploadDate
+                       AND   UploadLocation = :UploadLocation
+                       AND   SessionID      = :SessionID
+                       AND   PatientName    = :PatientName
+                       AND   IsPhantom      = :IsPhantom";
+            $mriUploadId = $db->pselectOne($query, $values);
+            // Perform the real upload on the server
+            $serverProcessLauncher = new ServerProcessLauncher();
+            $serverProcessLauncher->mriUpload($mriUploadId, $uploaded_file_path);
+        }
+        return true;
     }
     /**
      * Creates a temporary directory
