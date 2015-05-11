@@ -227,10 +227,10 @@ function getCommentIDs($test_name, $visit_label=null, $candid=null)
 {
     $db =& Database::singleton();
     $params = array();
-        $query = "SELECT CommentID, s.visit_label,Test_name,
-            CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
-            JOIN session s ON (s.ID=f.SessionID)
-            JOIN candidate c ON (c.CandID=s.CandID)";
+    $query = "SELECT CommentID, s.visit_label,Test_name,
+        CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
+        JOIN session s ON (s.ID=f.SessionID)
+        JOIN candidate c ON (c.CandID=s.CandID)";
     $where = " WHERE CommentID NOT LIKE 'DDE%'
         AND s.Active='Y' AND c.Active='Y'
         AND s.Visit <> 'Failure'";
