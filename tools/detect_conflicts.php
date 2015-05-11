@@ -100,8 +100,7 @@ if (($instrument=='all') ||($instrument=='All')) {
     $Factory       = NDB_Factory::singleton();
     $DB            = $Factory->Database(); //=& Database::singleton();
     $instruments_q = $DB->pselect(
-        "SELECT Test_name FROM test_names WHERE Test_name <> 'JUST_ONE_QUESTION' AND Test_name <> 'CBCL_one_question'
-        AND Test_name <> 'figs_year3' AND Test_name <> 'InstManagerTestPlan'",
+        "SELECT Test_name FROM test_names",
         array()
     );
 
