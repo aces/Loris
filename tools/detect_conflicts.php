@@ -119,13 +119,8 @@ if (($instrument=='all') ||($instrument=='All')) {
 foreach ($instruments as $instrument) {
     if (isset($instrument)) {
 
-        $php_class_path = $paths['base'].
+        include_once $paths['base'].
             "project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
-
-
-        if (file_exists($php_class_path)) {
-            include_once $php_class_path;
-        }
 
         print  "instrument is $instrument \n";
 
