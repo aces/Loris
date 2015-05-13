@@ -83,6 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
           $err[] = 'Your email is not valid!';
     }
+    else if($_REQUEST['from'] != $_REQUEST['from2']){
+        $err[] = 'Your emails do not match';
+    }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
     ) {
