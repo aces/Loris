@@ -133,7 +133,7 @@ BrowserDetect.init();
 	
  	<div class="navbar navbar-default" role="navigation" style="height:90px">
  		<div class="container">
-	 		<div class="navbar-brand">
+	 		<div class="navbar-brand"  style="align:center;">
                 {if $study_logo}
 		 		<img src="{$study_logo}" border="0" width="64" height="57" />
                 {/if}
@@ -159,7 +159,7 @@ BrowserDetect.init();
 		  		</div>
 		  		<div class="row">
 			  		<div class="col-xs-12">
-				  		<form action="{$action}" method="post">
+                        <form action="{$action}" method="post">
 				  			<div class="form-group">
 				  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
 				  			</div>
@@ -177,11 +177,11 @@ BrowserDetect.init();
 		  		<table class="LoginFooter" align="center">
 					<tr>
 					<hr width = 70%>
-					<td width="100%">
+					<td width="100%" align="center">
                     {if $studylinks}
-					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
+					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;>
 
-					<li id="active">|</li>
+					<li id="active"; align = "center">|</li>
 					{foreach from=$studylinks item=link}
 					<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
 					{/foreach}
@@ -221,9 +221,9 @@ BrowserDetect.init();
 <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;" >
 
 <li id="active">|</li>
-{foreach from=$studylinks item=link}
-<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
-{/foreach}
+{*{foreach from=$studylinks item=link}*}
+{*<li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>*}
+{*{/foreach}*}
 
 </ul>
 </td>
@@ -234,8 +234,7 @@ BrowserDetect.init();
 -->
 <!--img src="images/mni_logo.png" class="watermark" alt="Montreal Neurological Institute" border="0" width="100" height="83"-->
 
-
-{literal}
+    {literal}
 <script type='text/javascript'>
 <!--
 if(BrowserDetect.browser == "Explorer") {
@@ -254,6 +253,5 @@ if(BrowserDetect.browser == "Explorer") {
 	</script>
 	{/literal}
 	*}
-	</form>
 </body>
 	</html>
