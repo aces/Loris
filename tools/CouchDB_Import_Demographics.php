@@ -129,7 +129,10 @@ class CouchDBDemographicsImporter {
             $EDCFields = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
         }
-        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL AND c.PSCID <> 'scanner'";
+        if($config->getSetting("useConsent") === "true") {
+            $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL AND c.PSCID <> 'scanner'";
+        }
+        else $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID <> 'scanner'";
         return $concatQuery;
     }
 
