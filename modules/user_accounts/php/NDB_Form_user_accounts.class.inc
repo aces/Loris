@@ -185,8 +185,20 @@ class NDB_Form_user_accounts extends NDB_Form
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_md5'];
 
-
             Email::send($values['Email'], 'permissions_change_notify_supervisor.tpl', $msg_data);
+
+            // here we're sending a query of folks with the right permissions that we can select
+            $DB =& Database::singleton();
+
+            $query   = "SELECT u.Real_Name, u.email FROM permissions p, user_perm_rel up, users u
+              WHERE p.permID=up.PermID  and p.code = 'send_to_dcc' and u.ID = up.userID;";
+            $results = $DB->select($query);
+
+            foreach (array_values($results) as $item) {
+                echo print_r($item["Real_Name"]);
+            }
+
+            // we want to add checkboxes with these names
 
             $success = $user->addPermissions(array_keys($permIDs));
             if (Utility::isErrorX($success)) {
@@ -254,9 +266,6 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->addBasicText('Last_name', 'Last name');
 
         // full name rules
-        //$this->form->addRule('Real_name', 'Full name is required', 'required');
-        //$this->form->addRule('Real_name', 'Full name must be less than 50 characters long', 'maxlength', 50);
-
         $this->addRule('First_name', 'First name is required', 'required');
         $this->addRule('Last_name', 'Last name is required', 'required');
         $this->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
