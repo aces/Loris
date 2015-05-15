@@ -59,7 +59,9 @@ class NDB_Form_user_accounts extends NDB_Form
     function _process($values)
     {
         $config = NDB_Config::singleton();
-    	// build the "real name"
+        $changedpermissions = array();
+
+        // build the "real name"
     	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
     	
         //create the user
@@ -159,6 +161,7 @@ class NDB_Form_user_accounts extends NDB_Form
                     ///Then insert into the user_account_history as 'D'
                     if (in_array($key, $current_permissionids)) {
                         $user->insertIntoUserAccountHistory($key, 'D');
+                        $changedpermissions[] = Utility::getDescriptionUsingPermID($key);
                     }
                     unset($permIDs[$key]);
                 } else {
@@ -168,9 +171,22 @@ class NDB_Form_user_accounts extends NDB_Form
                     */
                     if (!(in_array($key, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($key, 'I');
+                        $changedpermissions[] = Utility::getDescriptionUsingPermID($key);
                     }
                 }
             }
+
+            foreach($changedpermissions as $v){
+                echo($v);    // Value1, Value2, Value10
+            }
+
+            // send the user an email
+            $msg_data['realname'] = $values['Real_name'];
+            $msg_data['username'] = $user->getUsername();
+            $msg_data['password'] = $values['Password_md5'];
+
+
+            Email::send($values['Email'], 'permissions_change_notify_supervisor.tpl', $msg_data);
 
             $success = $user->addPermissions(array_keys($permIDs));
             if (Utility::isErrorX($success)) {
@@ -444,7 +460,7 @@ class NDB_Form_user_accounts extends NDB_Form
                 }
 
                 if (strlen($effectiveUID) > 255) {
-                    $errors['UserID_Group'] = 'The user name must not exsceed 255 characters';
+                    $errors['UserID_Group'] = 'The user name must not exceed 255 characters';
                 }
             }
         }
