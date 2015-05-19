@@ -5,7 +5,7 @@ require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
 class CouchDBDemographicsImporter {
     var $SQLDB; // reference to the database handler, store here instead
-                // of using Database::singleton in case it's a mock.
+    // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
 
     // this is just in an instance variable to make
@@ -14,36 +14,36 @@ class CouchDBDemographicsImporter {
         'CandID' => array(
             'Description' => 'DCC Candidate Identifier',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'PSCID' => array(
             'Description' => 'Project Candidate Identifier',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'Visit_label' => array(
             'Description' => 'Visit of Candidate',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'Cohort' => array(
             'Description' => 'Cohort of this session',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'Gender' => array(
             'Description' => 'Candidate\'s gender',
             'Type' => "enum('Male', 'Female')"
-        ),  
+        ),
         'Site' => array(
             'Description' => 'Site that this visit took place at',
             'Type' => "varchar(3)",
-        ),  
+        ),
         'Current_stage' => array(
             'Description' => 'Current stage of visit',
             'Type' => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')"
-        ),  
+        ),
         'Failure' =>  array(
             'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
             'Type' => "enum('Failure','Withdrawal','Neither')",
         ),
-       'Project' => array(
+        'Project' => array(
             'Description' => 'Project for which the candidate belongs',
             'Type' => "enum('IBIS1','IBIS2','Fragile X', 'EARLI Collaboration')",
         ),
@@ -83,7 +83,7 @@ class CouchDBDemographicsImporter {
         ),
         'Config' => array(
             'GroupString'  => 'How to arrange data: ',
-            'GroupOptions' => 
+            'GroupOptions' =>
                 array('Cross-sectional', 'Longitudinal')
         )
     );
@@ -129,7 +129,10 @@ class CouchDBDemographicsImporter {
             $EDCFields = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
         }
-        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL AND c.PSCID <> 'scanner'";
+        if($config->getSetting("useConsent") === "true") {
+            $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND ps.study_consent='yes' AND ps.study_consent_withdrawal IS NULL AND c.PSCID <> 'scanner'";
+        }
+        else $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID <> 'scanner'";
         return $concatQuery;
     }
 
@@ -188,30 +191,30 @@ class CouchDBDemographicsImporter {
             if ($config_setting->getSetting("useFamilyID") === "true") {
                 $familyID     = $this->SQLDB->pselectOne("SELECT FamilyID FROM family
                                                           WHERE CandID=:cid",
-                                                          array('cid'=>$demographics['CandID']));
+                    array('cid'=>$demographics['CandID']));
                 if (!empty($familyID)) {
-                   $this->Dictionary["FamilyID"] = array(
-                                    'Description' => 'FamilyID of Candidate',
-                                    'Type'        => "int(6)",
-                                    );
+                    $this->Dictionary["FamilyID"] = array(
+                        'Description' => 'FamilyID of Candidate',
+                        'Type'        => "int(6)",
+                    );
                     $demographics['FamilyID'] = $familyID;
                     $familyFields = $this->SQLDB->pselect("SELECT candID as Family_ID,
                                     Relationship_type as Relationship_to_candidate
                                     FROM family
                                     WHERE FamilyID=:fid AND CandID<>:cid",
-                                    array('fid'=>$familyID, 'cid'=>$demographics['CandID']));
+                        array('fid'=>$familyID, 'cid'=>$demographics['CandID']));
                     $num_family = 1;
                     if (!empty($familyFields)) {
                         foreach($familyFields as $row) {
                             //adding each sibling id and relationship to the file
                             $this->Dictionary["Family_CandID".$num_family] = array(
-                                    'Description' => 'CandID of Family Member '.$num_family,
-                                    'Type'        => "varchar(255)",
-                                    );
+                                'Description' => 'CandID of Family Member '.$num_family,
+                                'Type'        => "varchar(255)",
+                            );
                             $this->Dictionary["Relationship_type_Family".$num_family] = array(
-                                    'Description' => 'Relationship of candidate to Family Member '.$num_family,
-                                    'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
-                                    );
+                                'Description' => 'Relationship of candidate to Family Member '.$num_family,
+                                'Type'        => "enum('half_sibling','full_sibling','1st_cousin')",
+                            );
                             $demographics['Family_CandID'.$num_family]                      = $row['Family_ID'];
                             $demographics['Relationship_type_Family'.$num_family] = $row['Relationship_to_candidate'];
                             $num_family                                                += 1;
@@ -230,10 +233,10 @@ class CouchDBDemographicsImporter {
         }
         $this->_updateDataDict();
         $this->CouchDB->replaceDoc('DataDictionary:Demographics',
-                array('Meta' => array('DataDict' => true),
-                    'DataDictionary' => array('demographics' => $this->Dictionary)
-                    )
-                );
+            array('Meta' => array('DataDict' => true),
+                'DataDictionary' => array('demographics' => $this->Dictionary)
+            )
+        );
 
         print $this->CouchDB->commitBulkTransaction();
 
