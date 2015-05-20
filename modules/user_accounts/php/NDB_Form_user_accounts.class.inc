@@ -96,10 +96,10 @@
                 unset($values['SendEmail']);
             }
 
-            //store the supervisors names
-            if (!empty($values['Real_Name'])) {
-                $supervisors = $values['Real_Name'];
-                unset($values['Real_Name']);
+            //store the supervisors emails
+            if (!empty($values['supervisorEmail'])) {
+                $supervisorEmails = $values['supervisorEmail'];
+                unset($values['supervisorEmail']);
             }
 
             // make user name match email address
@@ -181,35 +181,18 @@
                         }
                     }
                 }
-
-                foreach($changedpermissions as $v){
-                    echo($v);    // Value1, Value2, Value10
-                }
-                // send the user an email
-                foreach(array_keys($supervisors) as $v){
-                    if (!empty($changedpermissions)){
-                        $msg_data['realname'] = $values['Real_name'];
-                        $msg_data['username'] = $user->getUsername();
-                        $msg_data['changedpermissions'] = $values['$changedpermissions'];
-
-                        Email::send($values['Email'], 'permissions_change_notify_supervisor.tpl', $msg_data);
+                // send the selected supervisors an email (only if permissions have changed for the user)
+                foreach($supervisorEmails as $email => $checkValue) {
+                    if (!empty($changedpermissions)) {
+                        if ($checkValue == 1) {
+                            $msg_data['study'] = $config->getSetting('title');
+                            $msg_data['realname'] = $values['Real_name'];
+                            $msg_data['username'] = $user->getUsername();
+                            $msg_data['changedpermissions'] = $changedpermissions;
+                            Email::send($email, 'permissions_change_notify_supervisor.tpl', $msg_data);
+                        }
                     }
                 }
-
-
-
-                // here we're sending a query of folks with the right permissions that we can select
-//                $DB =& Database::singleton();
-//
-//                $query   = "SELECT u.Real_Name, u.email FROM permissions p, user_perm_rel up, users u
-//                  WHERE p.permID=up.PermID  and p.code = 'send_to_dcc' and u.ID = up.userID;";
-//                $results = $DB->select($query);
-//
-//                foreach (array_values($results) as $item) {
-//                    echo print_r($item["Real_Name"]);
-//                }
-//
-//                // we want to add checkboxes with these names end
 
                 $success = $user->addPermissions(array_keys($permIDs));
                 if (Utility::isErrorX($success)) {
@@ -352,7 +335,7 @@
             $this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
             unset($group);
 
-            //BEGGINING here i'm trying to add the add the permissions as checkboxes
+            //getting users name and emails to create checkboxes to email supervisors on permissions changes
             $DB =& Database::singleton();
 
             $query   = "SELECT u.Real_Name, u.email FROM permissions p, user_perm_rel up, users u
@@ -361,16 +344,16 @@
 
 
             $group[] = $this->form->createElement('static', null, null, '</div>' .
-                            "<h3 id=\"header_supes\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords("Data Supervisors to Email").'</h3>');
+                            "<h3 id=\"header_supervisors\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords("Data Supervisors to Email").'</h3>'
+            . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">");
 
             foreach ($results as $row){
-                $group[] = $this->createCheckbox('Real_Name['.$row['Real_Name'].']',"$row[Real_Name]<br>");
+                $group[] = $this->createCheckbox('supervisorEmail['.$row['email'].']',"$row[Real_Name]<br>");
             }
 
             $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", FALSE);
             unset($group);
 
-            //END here i'm trying to add the permissions as
 
             if (!empty($this->identifier)) {
                 $user =& User::factory($this->identifier);
