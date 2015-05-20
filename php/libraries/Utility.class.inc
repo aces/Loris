@@ -976,27 +976,6 @@ class Utility extends PEAR
     }
 
     /**
-     *
-     * Looks up the description for a permission using the permID.
-     *
-     * @param $permID
-     * @return mixed
-     * @throws DatabaseException
-     */
-    static function getDescriptionUsingPermID($permID)
-    {
-        $db =& Database::singleton();
-        $permission = $db->pselect(
-            "SELECT Description FROM permissions WHERE permID =:pID",
-            array('pID' => $permID)
-        );
-        if (is_array($permission) && count($permission)) {
-            list(,$description) = each($permission[0]);
-        }
-        return $description;
-    }
-
-    /**
      * Get all the sourcefrom instruments from parameter_type (which
      * exist in the data_integrity flag table)
      *

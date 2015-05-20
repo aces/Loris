@@ -167,7 +167,7 @@
                         ///Then insert into the user_account_history as 'D'
                         if (in_array($key, $current_permissionids)) {
                             $user->insertIntoUserAccountHistory($key, 'D');
-                            $changedpermissions[] = Utility::getDescriptionUsingPermID($key);
+                            $changedpermissions[] = $this->getDescriptionUsingPermID($key);
                         }
                         unset($permIDs[$key]);
                     } else {
@@ -177,7 +177,7 @@
                         */
                         if (!(in_array($key, $current_permissionids))) {
                             $user->insertIntoUserAccountHistory($key, 'I');
-                            $changedpermissions[] = Utility::getDescriptionUsingPermID($key);
+                            $changedpermissions[] = $this->getDescriptionUsingPermID($key);
                         }
                     }
                 }
@@ -589,6 +589,19 @@
             }
 
             return null;
+        }
+
+        function getDescriptionUsingPermID($permID)
+        {
+            $db =& Database::singleton();
+            $permission = $db->pselect(
+                "SELECT Description FROM permissions WHERE permID =:pID",
+                array('pID' => $permID)
+            );
+            if (is_array($permission) && count($permission)) {
+                list(,$description) = each($permission[0]);
+            }
+            return $description;
         }
     }
     ?>
