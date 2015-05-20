@@ -2,7 +2,6 @@
 <html style="height:100%; background:transparent">
     {if $dynamictabs neq "dynamictabs"}
     <head>
-        {$baseurl|print_r}
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
