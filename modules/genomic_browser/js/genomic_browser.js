@@ -25,3 +25,10 @@ function hideFilterCNV() {
     $("#down-cnv").toggle();
     $("#up-cnv").toggle();
 }
+
+function hideFilterCpG() {
+    "use strict";
+    $("#panel-body-cpg").toggle();
+    $("#down-snp").toggle();
+    $("#up-snp").toggle();
+}

@@ -3,8 +3,8 @@
     <div id="tabs">
       <ul class="nav nav-tabs">
         <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser">CNV</a></li>
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>SNP</strong></a></li>
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=cpg_browser">CpG</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser">SNP</a></li>
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CpG</strong></a></li>
       </ul>
       <br>
     </div>
@@ -12,7 +12,7 @@
   <div class="row">
     <div class="tab-content">
       <div class="tab-pane active">
-        <form method="post" action="main.php?test_name=genomic_browser&submenu=snp_browser">
+        <form method="post" action="main.php?test_name=genomic_browser&submenu=cpg_browser">
           <div class="col-sm-12">
             <div class="row">
               <div class="form-group col-sm-7">
@@ -115,99 +115,71 @@
               </div>
             </div> <!-- end of row: Candidate/Gene filter boxes-->
             <div class="row">
-            <!-- SNP section -->
+            <!-- CpG section -->
               <div class="form-group col-sm-8">
                 <div class="panel panel-primary">
-                  <div class="panel-heading" onclick="hideFilterSNP();">
-                    SNP Filters
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-snp"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-snp"></span>
+                  <div class="panel-heading" onclick="hideFilterCpG();">
+                    CpG Filters
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-cpg"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-cpg"></span>
                   </div>
-                  <div class="panel-body" id="panel-body-snp">
+                  <div class="panel-body" id="panel-body-cpg">
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        	          {$form.rsID.label}
+        		  {$form.CPGExternalName.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        	          {$form.rsID.html}
+        		  {$form.CPGExternalName.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
-        		  {$form.SNP_Name.label}
+        		  {$form.Site.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.SNP_Name.html}
+        		  {$form.Site.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
-        		  {$form.SNP_Description.label}
+        		  {$form.Context.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.SNP_Description.html}
-			</div>
-		      </div>
-		    </div>
-		    <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Observed_Base.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Observed_Base.html}
-			</div>
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Function_Prediction.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Function_Prediction.html}
-			</div>
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.SNP_External_Source.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.SNP_External_Source.html}
+        		  {$form.Context.html}
 			</div>
 		      </div>
 		    </div>
 		    <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Reference_Base.label}
+        		  {$form.CPGExternalSource.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Reference_Base.html}
+        		  {$form.CPGExternalSource.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Exonic_Function.label}
+        		  {$form.Methylated.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Exonic_Function.html}
+        		  {$form.Methylated.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Damaging.label}
+        		  {$form.Ratio.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Damaging.html}
+        		  {$form.Ratio.html}
 			</div>
 		      </div>
 		    </div>
 		    <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Validated.label}
+        		  {$form.Tissue.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Validated.html}
-			</div>
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Genotype_Quality.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Genotype_Quality.html}
+        		  {$form.Tissue.html}
 			</div>
 		      </div>
 		    </div>
 	          </div> 
-                </div> <!--end of SNP filters panel-->
+                </div> <!--end of CpG filters panel-->
               </div> 
               <div class="form-group col-sm-4">
                 <div class="row"><!--fixed vertical space-->
@@ -264,7 +236,7 @@
           <th>No.</th>
           <!-- print out column headings - quick & dirty hack -->
           {section name=header loop=$headers}
-            <th><a href="main.php?test_name=genomic_browser&submenu=snp_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+            <th><a href="main.php?test_name=genomic_browser&submenu=cpg_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
           {/section}
         </tr>
       </thead>
