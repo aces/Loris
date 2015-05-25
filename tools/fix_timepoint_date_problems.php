@@ -260,7 +260,7 @@ function addInstrument($sessionID, $testName)
         return PEAR::raiseError("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
     if (PEAR::isError($user)) {
-    	return ("Error, failed to create User object for (".$getenv('USER')."):".$user->getMessage()." \n");
+    	return ("Error, failed to create User object for (".getenv('USER')."):".$user->getMessage()." \n");
     }
 
     // check the args
