@@ -34,7 +34,7 @@ class Database extends PEAR
     /**
      * The database handle, created by the connect() method
      *
-     * @var PDO
+     * @var    PDO
      * @access private
      */
     var $_PDO = null;
@@ -81,6 +81,7 @@ class Database extends PEAR
      *                              logged to the history table
      *
      * @return Database
+     * @throws DatabaseException
      * @access public
      */
     static function &singleton(
