@@ -127,16 +127,16 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.CPGExternalName.label}
+        		  {$form.CpG.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.CPGExternalName.html}
+        		  {$form.CpG.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Site.label}
+        		  {$form.Methylation.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Site.html}
+        		  {$form.Methylation.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
         		  {$form.Context.label}
@@ -149,32 +149,22 @@
 		    <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.CPGExternalSource.label}
+        		  {$form.Tissue.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.CPGExternalSource.html}
+        		  {$form.Tissue.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Methylated.label}
+        		  {$form.Date_collected.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Methylated.html}
+        		  {$form.Date_collected.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
         		  {$form.Ratio.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
         		  {$form.Ratio.html}
-			</div>
-		      </div>
-		    </div>
-		    <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Tissue.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Tissue.html}
 			</div>
 		      </div>
 		    </div>

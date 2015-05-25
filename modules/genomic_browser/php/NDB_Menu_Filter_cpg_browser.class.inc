@@ -73,23 +73,28 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                           'genome_loc.Chromosome as Chromosome',
                           'genome_loc.Strand as Strand',
                           'genome_loc.StartLoc as StartLoc',
-                          'genome_loc.EndLoc as EndLoc',
-                          'genome_loc.Size as Size',
-                          'gene.OfficialSymbol as Gene_Symbol',
-                          'gene.OfficialName as Gene_Name',
                           'genotyping_platform.Name as Platform',
+                          'CPG.Name as CpG',
                           'CPG.Tissue as Tissue',
-                          'SNP.Position as Position',
+                          'CPG.T2_DATE_Collected as DATE_Collected',
+                          'CPG.Gene as Gene',
+                          'CPG.Acc_number as Accession_number',
+                          'CPG.Context as Context',
+                          'CPG.Methylation as Methylation',
+                          'CPG.Chip as Chip',
+                          'CPG.Position as Position',
+                          'CPG.Beta_value as Beta_value',
                          );
 
         $this->_briefFields = array(
                                'DCCID',
                                'PSCID',
                                'Subproject',
-                               'Chromosome',
-                               'StartLoc',
-                               'Gene_Name',
-                               'Platform',
+                               'CpG',
+                               'Gene',
+                               'Methylation',
+                               'Beta_value',
+                               'Chip',
                                'Position',
                               );
 
@@ -101,7 +106,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     from session s GROUP BY s.CandID) AS cohort
             ON (cohort.CandID = candidate.CandID) 
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
-            JOIN CPG ON (candidate.CandID = CPG.CandID)
+            JOIN genomic_cpg CPG ON (candidate.CandID = CPG.CandID)
             LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = CPG.GenomeLocID)  
             LEFT JOIN gene ON (gene.GenomeLocID = CPG.GenomeLocID)
             LEFT JOIN genotyping_platform ON 
@@ -127,25 +132,21 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'candidate.DoB',
                                'candidate.ExternalID',
                                'show_brief_results',
-                               'SNP.rsID',
-                               'SNP.SNPExternalName',
-                               'SNP.Description',
-                               'SNP.SNPExternalSource',
-                               'SNP.ObservedBase',
-                               'SNP.ReferenceBase',
-                               'SNP.ArrayReport',
-                               'SNP.Markers',
-                               'SNP.ValidationMethod',
-                               'SNP.Validated as Validated',
-                               'SNP.FunctionPrediction',
-                               'SNP.Damaging',
-                               'SNP.GenotypeQuality',
                                'SNP.ExonicFunction',
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
-                               'gene.OfficialSymbol',
-                               'gene.OfficialName',
                                'genotyping_platform.Name',
+                               'CPG.CpG',
+                               'CPG.Tissue',
+                               'CPG.T2_DATE_Collected',
+                               'CPG.Gene',
+                               'CPG.Acc_number',
+                               'CPG.Context',
+                               'CPG.Strand',
+                               'CPG.Methylation',
+                               'CPG.Chip',
+                               'CPG.Position',
+                               'CPG.Beta_value',
                               );
 
         $this->formToFilter = array(
@@ -157,22 +158,15 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'dob'                 => 'candidate.DoB',
                                'External_ID'         => 'candidate.ExternalID',
                                'Show_Brief_Results'  => 'show_brief_results',
-                               'rsID'                => 'SNP.rsID',
-                               'SNP_Name'            => 'SNP.SNPExternalName',
-                               'SNP_Description'     => 'SNP.Description',
-                               'SNP_External_Source' => 'SNP.SNPExternalSource',
-                               'Observed_Base'       => 'SNP.ObservedBase',
-                               'Reference_Base'      => 'SNP.ReferenceBase',
-                               'Array_Report'        => 'SNP.ArrayReport',
-                               'Markers'             => 'SNP.Markers',
-                               'Validation_Method'   => 'SNP.ValidationMethod',
-                               'Validated'           => 'SNP.Validated',
-                               'Function_Prediction' => 'SNP.FunctionPrediction',
-                               'Damaging'            => 'SNP.Damaging',
-                               'Genotype_Quality'    => 'SNP.GenotypeQuality',
-                               'Exonic_Function'     => 'SNP.ExonicFunction',
+                               'CpG'                 => 'CPG.Name',
+                               'Tissue'              => 'CPG.Tissue',
+                               'Date_collected'      => 'CPG.T2_DATE_Collected',
+                               'Gene'                => 'CPG.Gene',
+                               'AccNumber'           => 'CPG.Acc_number',
+                               'Context'             => 'CPG.Context',
+                               'Strand'              => 'CPG.Strand',
+                               'Methylation'         => 'CPG.Methylation',
                                'Chromosome'          => 'genome_loc.Chromosome',
-                               'Gene_Symbol'         => 'gene.OfficalSymbol',
                                'Platform'            => 'genotyping_platform.Name',
                               );
 
@@ -238,54 +232,27 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
               );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
-        // SNP
-        $this->addBasicText('rsID', 'rsID:');
-        $this->addBasicText('SNP_Name', 'Name:');
-        $this->addBasicText('SNP_Description', 'Description:');
-        $this->addBasicText('SNP_External_Source', 'External Source:');
+        // CpG
+        $this->addBasicText('CpG', 'CpG:');
         $Base_options = array(
-                         null => 'Any',
-                         'A'  => 'A',
-                         'C'  => 'C',
-                         'T'  => 'T',
-                         'G'  => 'G',
+                         null              => 'Any',
+                         'Island'          => 'Island',
+                         'N_Shore'         => 'North shore',
+                         'S_Shelf'         => 'South shelf',
+                         'S_Shore'         => 'South shore',
                         );
-        $this->addSelect('Observed_Base', 'Observed Base:', $Base_options);
-        $this->addSelect('Reference_Base', 'Reference Base:', $Base_options);
+        $this->addSelect('Context', 'Context:', $Base_options);
+        $this->addBasicText('Date_collected', 'Date collected:');
+        $Base_options = array(
+                         null              => 'Any',
+                         'Methylated'      => 'Methylated',
+                         'Unmethylated'    => 'Unmethylated',
+                        );
+        $this->addSelect('Methylation', 'Methylation:', $Base_options);
+        $this->addBasicText('Ratio', 'Ratio:');
+        $this->addBasicText('Tissue', 'Tissue:');
 
-        $this->addSelect(
-            'Validated',
-            'Validated:',
-            array(
-             null => 'Any',
-             '0'  => '0',
-             '1'  => '1',
-            )
-        );
-        $this->addSelect(
-            'Function_Prediction',
-            'Function Prediction:',
-            array(
-             null          => 'Any',
-             'exonic'      => 'exonic',
-             'ncRNAexonic' => 'ncRNAexonic',
-             'splicing'    => 'splicing',
-             'UTR3'        => 'UTR3',
-             'UTR5'        => 'UTR5',
-            )
-        );
-        $this->addSelect(
-            'Damaging',
-            'Damaging:',
-            array(
-             null => 'Any',
-             'D'  => 'D',
-             'NA' => 'NA',
-            )
-        );
-        $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
-        $this->addBasicText('Exonic_Function', 'Exonic Function:');
-
+        // Gene
         $this->addBasicText('Chromosome', 'Chromosome:');
         $this->addBasicText('Strand', 'Strand:');
         $this->addBasicText('Gene_Symbol', 'Symbol:');
@@ -385,6 +352,15 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                         $this->tpl_data['items'][$x][$i]['value']
                             = $subprojectlist[$val];
                     }
+                }
+                if ($key=='Gene') {
+	            $this->tpl_data['items'][$x][$i]['value'] = '<a href="http://www.ncbi.nlm.nih.gov/nuccore/' . strtok($item["Accession_number"], ';') . '">' . strtok($val, ';' ) . '</a>';
+                }
+                if ($key=='CpG') {
+                    $assembly = "hg18";
+                    $startLoc = $item['StartLoc'] - 50;
+                    $endLoc = $item['StartLoc'] + 50;
+	            $this->tpl_data['items'][$x][$i]['value'] = '<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=' . $assembly . '&position=Chr' . $item['Chromosome'] . ':' . $startLoc . '-' . $endLoc . '">' . $val . '</a>';
                 }
                 $i++;
             }
