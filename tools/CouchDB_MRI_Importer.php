@@ -38,57 +38,22 @@ class CouchDBMRIImporter
      */
     function __construct()
     {
-        $this->SQLDB   = Database::singleton();
-        $this->CouchDB = CouchDB::singleton();
+        $factory       = NDB_Factory::singleton();
+        $this->SQLDB   = $factory->Database();
+        $this->CouchDB = $factory->couchDB();
     }
 
     /**
      * Runs the script
      *
-     * @return none
+     * @return void
      */
     function run()
     {
-        $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT pf.ParameterTypeID,
-                          pf.Value as ScanType
-                     FROM parameter_type pt
-                     JOIN parameter_file pf
-                     USING (ParameterTypeID)
-                     WHERE pt.Name='selected'
-                     AND COALESCE(pf.Value, '') <> ''",
-            array()
-        );
+        $ScanTypes = $this->getScanTypes();
         $this->updateDataDict($ScanTypes);
-        $query         = $this->_generateCandidatesQuery($ScanTypes);
-        $CandidateData = $this->SQLDB->pselect($query, array());
-        $CandidateData = $this->SQLDB->pselect($query, array());
-        foreach ($CandidateData as &$row) {
-            foreach ($ScanTypes as $scanType) {
-                $scan_type = $scanType['ScanType'];
-                if (!empty($row['Selected_'.$scan_type]) ) {
-                    $fileID  = $this->SQLDB->pselectOne(
-                        "SELECT FileID FROM files WHERE File=:fname",
-                        array('fname' => $row['Selected_'.$scan_type])
-                    );
-                    $FileObj = new MRIFile($fileID);
-                    $mri_header_results = $this->_addMRIHeaderInfo(
-                        $FileObj,
-                        $scan_type
-                    );
-                    $row = array_merge($row, $mri_header_results);
-                    // instantiate feedback mri object
-                    $mri_feedback     = new FeedbackMRI($fileID, $row['SessionID']);
-                    $current_feedback = $mri_feedback->getComments();
-                    $mri_qc_results   = $this->_addMRIFeedback(
-                        $current_feedback,
-                        $scan_type,
-                        $mri_feedback
-                    );
-                    $row = array_merge($row, $mri_qc_results);
-                }
-            }
-        }
+
+        $CandidateData = $this->getCandidateData($ScanTypes);
         $this->updateCandidateDocs($CandidateData, $ScanTypes);
     }
 
@@ -493,5 +458,70 @@ class CouchDBMRIImporter
             }
         }
         return;
+    }
+
+    /**
+     * @return array
+     */
+    public function getScanTypes()
+    {
+        $ScanTypes = $this->SQLDB->pselect(
+            "SELECT DISTINCT pf.ParameterTypeID,
+                          pf.Value as ScanType
+                     FROM parameter_type pt
+                     JOIN parameter_file pf
+                     USING (ParameterTypeID)
+                     WHERE pt.Name='selected'
+                     AND COALESCE(pf.Value, '') <> ''",
+            array()
+        );
+        return $ScanTypes;
+    }
+
+    /**
+     *
+     *
+     * @param $ScanTypes
+     *
+     * @return array
+     */
+    public function getCandidateData($ScanTypes)
+    {
+        $query = $this->_generateCandidatesQuery($ScanTypes);
+
+        $CandidateData = $this->SQLDB->pselect($query, array());
+        foreach ($CandidateData as &$row) {
+            foreach ($ScanTypes as $scanType) {
+                $scan_type = $scanType['ScanType'];
+                if (!empty($row['Selected_' . $scan_type])) {
+                    $fileID             = $this->SQLDB->pselectOne(
+                        "SELECT FileID FROM files WHERE File=:fname",
+                        array('fname' => $row['Selected_' . $scan_type])
+                    );
+                    $FileObj            = new MRIFile($fileID);
+                    $mri_header_results = $this->_addMRIHeaderInfo(
+                        $FileObj,
+                        $scan_type
+                    );
+
+                    $row                = array_merge(
+                        $row, $mri_header_results
+                    );
+                    // instantiate feedback mri object
+                    $mri_feedback     = new FeedbackMRI(
+                        $fileID, $row['SessionID']
+                    );
+                    $current_feedback = $mri_feedback->getComments();
+                    $mri_qc_results   = $this->_addMRIFeedback(
+                        $current_feedback,
+                        $scan_type,
+                        $mri_feedback
+                    );
+
+                    $row = array_merge($row, $mri_qc_results);
+                }
+            }
+        }
+        return $CandidateData;
     }
 }
