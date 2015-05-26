@@ -41,5 +41,19 @@ class TrainingTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Training", $bodyText);
     }
+
+    /**
+     * Tests that, when loading the training module, the word "Training" appears
+     * somewhere in the body
+     *
+     * @return void
+     */
+    public function testTrainingPageLoads2()
+    {
+        $this->webDriver->get($this->url . "?test_name=training");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Training", $bodyText);
+    }
 }
 ?>
