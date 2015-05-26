@@ -81,16 +81,10 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-                          {$form.Gene_Symbol.label}
+                          {$form.Gene.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
-                          {$form.Gene_Symbol.html}
-                        </div>
-                        <label class="col-sm-12 col-md-2">
-                          {$form.Gene_Name.label}
-                        </label>
-                        <div class="col-sm-12 col-md-5">
-                          {$form.Gene_Name.html}
+                          {$form.Gene.html}
                         </div>
                       </div>
                     </div>

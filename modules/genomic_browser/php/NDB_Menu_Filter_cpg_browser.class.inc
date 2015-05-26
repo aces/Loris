@@ -94,8 +94,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'Gene',
                                'Methylation',
                                'Beta_value',
-                               'Chip',
-                               'Position',
+//                               'Chip',
+//                               'Position',
                               );
 
         // Chromosome from genome_loc table
@@ -255,8 +255,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         // Gene
         $this->addBasicText('Chromosome', 'Chromosome:');
         $this->addBasicText('Strand', 'Strand:');
-        $this->addBasicText('Gene_Symbol', 'Symbol:');
-        $this->addBasicText('Gene_Name', 'Name:');
+        $this->addBasicText('Gene', 'Symbol:');
 
         $DB = Database::singleton();
         $platform_results
@@ -354,13 +353,13 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     }
                 }
                 if ($key=='Gene') {
-	            $this->tpl_data['items'][$x][$i]['value'] = '<a href="http://www.ncbi.nlm.nih.gov/nuccore/' . strtok($item["Accession_number"], ';') . '">' . strtok($val, ';' ) . '</a>';
+			$this->tpl_data['items'][$x][$i]['value'] = '<a href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position=' . strtok($item["Accession_number"], ';') . '" target="_blank">' . strtok($val, ';' ) . '</a>';
                 }
                 if ($key=='CpG') {
-                    $assembly = "hg18";
+                    $assembly = $item['Assembly'];
                     $startLoc = $item['StartLoc'] - 50;
                     $endLoc = $item['StartLoc'] + 50;
-	            $this->tpl_data['items'][$x][$i]['value'] = '<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=' . $assembly . '&position=Chr' . $item['Chromosome'] . ':' . $startLoc . '-' . $endLoc . '">' . $val . '</a>';
+	            $this->tpl_data['items'][$x][$i]['value'] = '<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=' . $assembly . '&position=Chr' . $item['Chromosome'] . ':' . $startLoc . '-' . $endLoc . '" target="_blank">' . $val . '</a>';
                 }
                 $i++;
             }
