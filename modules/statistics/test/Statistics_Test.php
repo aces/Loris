@@ -35,5 +35,12 @@ class Statistics_Test extends LorisIntegrationTest
         $this->assertContains("Welcome to the statistics page", $header->getText());
 
     }
+
+    public function testGeneralDescriptionTabLoads2() {
+        $this->webDriver->get($this->url . '?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs');
+        $header = $this->webDriver->findElement(WebDriverBy::XPath("//div[@id = 'page']/h2"));
+        $this->assertContains("statistics page", $header->getText());
+
+    }
 }
 ?>
