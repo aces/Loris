@@ -2466,7 +2466,6 @@ CREATE TABLE `Cohort` (
     `RecruitmentTarget` INT NULL,
     `MinAge` INT NULL,
     `MaxAge` INT NULL,
-    `Cohortcol` VARCHAR(45) NULL,
     PRIMARY KEY (`CohortID`)
 )ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
