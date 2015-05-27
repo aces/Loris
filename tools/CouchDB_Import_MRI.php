@@ -18,9 +18,7 @@ require_once 'Database.class.inc';
 require_once "FeedbackMRI.class.inc";
 require_once "CouchDB_MRI_Importer.php";
 
-// Don't run if we're doing the unit tests, the unit test will call run..
-if (!class_exists('UnitTestCase')) {
-    $Runner = new CouchDBMRIImporter();
-    $Runner->run();
-}
+$Runner = new CouchDBMRIImporter();
+$Runner->run();
+
 ?>
