@@ -86,6 +86,12 @@
                         <div class="col-sm-12 col-md-3">
                           {$form.Gene.html}
                         </div>
+                        <label class="col-sm-12 col-md-3">
+                          {$form.Assembly.label}
+                        </label>
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Assembly.html}
+                        </div>
                       </div>
                     </div>
                     <div class="row">
@@ -97,10 +103,10 @@
                           {$form.Chromosome.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.Platform.label}
+                          {$form.Strand.label}
                         </label>
-                        <div class="col-sm-12 col-md-4">
-                          {$form.Platform.html}
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Strand.html}
                         </div>
                       </div>
                     </div>
@@ -162,6 +168,16 @@
 			</div>
 		      </div>
 		    </div>
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="col-sm-12 col-md-2">
+                          {$form.Platform.label}
+                        </label>
+                        <div class="col-sm-12 col-md-4">
+                          {$form.Platform.html}
+                        </div>
+                      </div>
+                    </div>
 	          </div> 
                 </div> <!--end of CpG filters panel-->
               </div> 

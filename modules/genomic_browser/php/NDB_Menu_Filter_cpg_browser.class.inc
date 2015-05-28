@@ -70,20 +70,21 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
+                          'genomic_cpg.CpG as CpG',
+                          'genomic_cpg.Gene as Gene',
+                          'genomic_cpg.assembly as Assembly',
+                          'genomic_cpg.Methylation as Methylation',
+                          'genomic_cpg.Beta_value as Beta_value',
+                          'genomic_cpg.Tissue as Tissue',
+                          'genomic_cpg.T2_DATE_Collected as DATE_Collected',
+                          'genomic_cpg.Acc_number as Accession_number',
+                          'genomic_cpg.Context as Context',
+                          'genomic_cpg.Chip as Chip',
+                          'genomic_cpg.Position as Position',
                           'genome_loc.Chromosome as Chromosome',
                           'genome_loc.Strand as Strand',
                           'genome_loc.StartLoc as StartLoc',
                           'genotyping_platform.Name as Platform',
-                          'CPG.Name as CpG',
-                          'CPG.Tissue as Tissue',
-                          'CPG.T2_DATE_Collected as DATE_Collected',
-                          'CPG.Gene as Gene',
-                          'CPG.Acc_number as Accession_number',
-                          'CPG.Context as Context',
-                          'CPG.Methylation as Methylation',
-                          'CPG.Chip as Chip',
-                          'CPG.Position as Position',
-                          'CPG.Beta_value as Beta_value',
                          );
 
         $this->_briefFields = array(
@@ -106,11 +107,11 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     from session s GROUP BY s.CandID) AS cohort
             ON (cohort.CandID = candidate.CandID) 
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
-            JOIN genomic_cpg CPG ON (candidate.CandID = CPG.CandID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = CPG.GenomeLocID)  
-            LEFT JOIN gene ON (gene.GenomeLocID = CPG.GenomeLocID)
+            JOIN genomic_cpg ON (candidate.CandID = genomic_cpg.CandID)
+            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = genomic_cpg.GenomeLocID)  
+            LEFT JOIN gene ON (gene.GenomeLocID = genomic_cpg.GenomeLocID)
             LEFT JOIN genotyping_platform ON 
-              (CPG.PlatformID = genotyping_platform.PlatformID)
+              (genomic_cpg.PlatformID = genotyping_platform.PlatformID)
             WHERE 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
@@ -136,17 +137,18 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
                                'genotyping_platform.Name',
-                               'CPG.CpG',
-                               'CPG.Tissue',
-                               'CPG.T2_DATE_Collected',
-                               'CPG.Gene',
-                               'CPG.Acc_number',
-                               'CPG.Context',
-                               'CPG.Strand',
-                               'CPG.Methylation',
-                               'CPG.Chip',
-                               'CPG.Position',
-                               'CPG.Beta_value',
+                               'genomic_cpg.CpG',
+                               'genomic_cpg.Tissue',
+                               'genomic_cpg.T2_DATE_Collected',
+                               'genomic_cpg.Gene',
+                               'genomic_cpg.Assembly',
+                               'genomic_cpg.Acc_number',
+                               'genomic_cpg.Context',
+                               'genomic_cpg.Strand',
+                               'genomic_cpg.Methylation',
+                               'genomic_cpg.Chip',
+                               'genomic_cpg.Position',
+                               'genomic_cpg.Beta_value',
                               );
 
         $this->formToFilter = array(
@@ -158,14 +160,14 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'dob'                 => 'candidate.DoB',
                                'External_ID'         => 'candidate.ExternalID',
                                'Show_Brief_Results'  => 'show_brief_results',
-                               'CpG'                 => 'CPG.Name',
-                               'Tissue'              => 'CPG.Tissue',
-                               'Date_collected'      => 'CPG.T2_DATE_Collected',
-                               'Gene'                => 'CPG.Gene',
-                               'AccNumber'           => 'CPG.Acc_number',
-                               'Context'             => 'CPG.Context',
-                               'Strand'              => 'CPG.Strand',
-                               'Methylation'         => 'CPG.Methylation',
+                               'CpG'                 => 'genomic_cpg.CpG',
+                               'Tissue'              => 'genomic_cpg.Tissue',
+                               'Date_collected'      => 'genomic_cpg.T2_DATE_Collected',
+                               'Gene'                => 'genomic_cpg.Gene',
+                               'AccNumber'           => 'genomic_cpg.Acc_number',
+                               'Context'             => 'genomic_cpg.Context',
+                               'Strand'              => 'genomic_cpg.Strand',
+                               'Methylation'         => 'genomic_cpg.Methylation',
                                'Chromosome'          => 'genome_loc.Chromosome',
                                'Platform'            => 'genotyping_platform.Name',
                               );
@@ -244,9 +246,10 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect('Context', 'Context:', $Base_options);
         $this->addBasicText('Date_collected', 'Date collected:');
         $Base_options = array(
-                         null              => 'Any',
-                         'Methylated'      => 'Methylated',
-                         'Unmethylated'    => 'Unmethylated',
+                         null               => 'Any',
+                         'High-methylation' => 'High-methylation',
+                         'Partially'        => 'Partially',
+                         'Low-methylation'  => 'Low-methylation',
                         );
         $this->addSelect('Methylation', 'Methylation:', $Base_options);
         $this->addBasicText('Ratio', 'Ratio:');
@@ -254,6 +257,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         // Gene
         $this->addBasicText('Chromosome', 'Chromosome:');
+        $this->addBasicText('Assembly', 'Assembly:');
         $this->addBasicText('Strand', 'Strand:');
         $this->addBasicText('Gene', 'Symbol:');
 
