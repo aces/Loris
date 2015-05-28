@@ -1,14 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="utf-8"/>
+    <meta charset="utf-8"/>
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 </head>
 <body>
-
 
 <!-- start main table -->
 <table valign="top" width="100%" border="0" cellpadding="3" cellspacing="2">
@@ -69,6 +68,9 @@
         
     {if $candID!=""}
     <!-- create feedback form- shown only to authorized users-->
+        <div id = 'feedback'>big stuff happening here</div
+
+
     <table border="0" valign="top" width="100%" class="std">
     <tr>
     <th colspan="4">Add new {$feedbackLevel} level feedback</TH>
@@ -155,7 +157,7 @@
         <th nowrap="nowrap">Modified</th>
         <th nowrap="nowrap">Active</th>
         </tr>
-        <tr id= "{$thread_list_data[thread].FeedbackID}">
+        <tr id= "{$thread_list_data[thread].FeedbackID}" name = "entries">
         <td align="center">{$thread_list_data[thread].FieldName}</td>
         <td align="center">{$thread_list_data[thread].FeedbackID}</td>
         <td align="center">{$thread_list_data[thread].Type}</td>
@@ -227,5 +229,7 @@
 </td>
 </tr>
 </table>
+<script type="text/javascript" src="js/jquery/jquery-1.11.0.min.js"></script>
+<script src="js/feedback_bvl_popup.js"></script>
 </body>
 </html>

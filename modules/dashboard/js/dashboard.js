@@ -177,7 +177,7 @@ $.ajax({
 $.ajax({
     url: 'AjaxHelper.php?Module=dashboard&script=get_recruitment_pie_data.php',
     type: 'post',
-    success: function(data) {
+        success: function(data) {
         var jsonData = $.parseJSON(data);
         var recruitmentPieData = formatPieData(jsonData);
         recruitmentPieChart = c3.generate({
