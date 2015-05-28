@@ -40,7 +40,6 @@ $DB            = Database::singleton();
 $genderData    = array();
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
-$threadEntries = NDB_BVL_Feedback::getThreadEntries($data);
 
 print 666;
 
@@ -65,7 +64,9 @@ print 666;
 //print json_encode($genderData);
 
 function func1($data){
-    return $data+1;
+    $threadEntries = NDB_BVL_Feedback::getThreadEntries($data);
+    $jsonThreadEntries = json_encode($threadEntries);
+    return $threadEntries;
 }
 
 if (isset($_POST['callFunc1'])) {
