@@ -40,33 +40,9 @@ $DB            = Database::singleton();
 $genderData    = array();
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
-
-print 666;
-
-//foreach ($list_of_sites as $siteID => $siteName) {
-//    $genderData['labels'][] = $siteName;
-//    $genderData['datasets']['female'][] = $DB->pselectOne(
-//        "SELECT COUNT(c.CandID) d
-//         FROM candidate c
-//         WHERE c.CenterID=:Site AND c.Gender='female' AND c.Active='Y'
-//         AND c.Entity_type='Human'",
-//        array('Site' => $siteID)
-//    );
-//    $genderData['datasets']['male'][]   = $DB->pselectOne(
-//        "SELECT COUNT(c.CandID)
-//         FROM candidate c
-//         WHERE c.CenterID=:Site AND c.Gender='male' AND c.Active='Y'
-//         AND c.Entity_type='Human'",
-//        array('Site' => $siteID)
-//    );
-//}
-//
-//print json_encode($genderData);
-
 function func1($data){
     $threadEntries = NDB_BVL_Feedback::getThreadEntries($data);
-    $jsonThreadEntries = json_encode($threadEntries);
-    return $threadEntries;
+    print json_encode($threadEntries);
 }
 
 if (isset($_POST['callFunc1'])) {
