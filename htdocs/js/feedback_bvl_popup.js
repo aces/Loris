@@ -1,85 +1,66 @@
-    //
-    //
-    //var foo = document.getElementById('feedback');
-    //
-    //var bar = document.getElementsByName('entries');
-    //
-    //var kle = document.getElementById('70');
-    //
-    //kle.addEventListener('click',function(){
-    //    this.innerHTML = "insert into element 70";
-    //
-    //});
-    //
-    //print(bar);
-    //
-    //foo.addEventListener('click', function () {
-    //    this.innerHTML = "new inner html";
-    //});
+$(document).ready(function () {
 
-    $(document).ready(function () {
+    var $threadListData = $("[id ^= 'thread_list_data']");
 
-        var $threadListData = $("[id ^= 'thread_list_data']");
+    $threadListData.click().hide();
 
-        $threadListData.click().hide();
+    //On click of this function we check if a div containing the entries for this FeedbackID exist.
+    //If not we fetch the data through an ajax request and display it.
+    //If the the class exists we simply toggle it.
+    $('tr[name=entries]').on('click', function () {
+        var feedbackID = this.id;
 
-        //On click of this function we check if a div containing the entries for this FeedbackID exist.
-        //If not we fetch the data through an ajax request and display it.
-        //If the the class exists we simply toggle it.
-        $('tr[name=entries]').on('click', function () {
-            var feedbackID = this.id;
+        if ($('tr[id^="feedbackEntries_' + feedbackID + '"]').length){
+            $('tr[id^="feedbackEntries_' + feedbackID + '"]').toggle();
+            $('tr[id^="feedback_comment_' + feedbackID + '"]').toggle();
+        }
 
+        else {
             request = $.ajax({
                 url: "ajax/get_thread_entry_data.php",
                 type: "post",
-                data: { "callFunc1": feedbackID},
-                success: function(data) {
+                data: {"callFunc1": feedbackID},
+                success: function (data) {
                     console.log("in the success function of request- ev");
                     console.log("This is the data : " + data);
 
                     var feedbackEntries = "<tr id=\"feedbackEntries" + feedbackID + "\">";
-                    var feedbackEntriesDiv = "<div id=\"feedbackEntries_" + feedbackID + "\">"
-
-                    //$("#" + feedbackID).after(feedbackEntriesDiv);
 
                     //looping through json data to return the entries on the feedback thread
-                    for(var i=0;i<data.length;i++)
-                    {
-                        var tr= "<tr "+"id=\""+data[i]["EntryID"] + "\">" ;
-                        var td1="<td>"+data[i]["UserID"]+"</td>";
-                        var td2="<td>"+data[i]["Date"]+"</td>";
-                        var td3="<td>"+data[i]["Comment"]+"</td></tr>";
+                    for (var i = 0; i < data.length; i++) {
+                        var tr = "<tr " + "id=\"feedbackEntries_" + feedbackID + "_" + data[i]["EntryID"] + "\">";
+                        var td1 = "<td>" + data[i]["UserID"] + "</td>";
+                        var td2 = "<td>" + data[i]["Date"] + "</td>";
+                        var td3 = "<td>" + data[i]["Comment"] + "</td></tr>";
 
                         $("#" + feedbackID).after(tr+td1+td2+td3);
-
                     }
-
-                    //$("#" + feedbackID).children().wrapAll(feedbackEntriesDiv);
-
-
-
                 },
-                error: function(xhr, desc, err) {
+                error: function (xhr, desc, err) {
                     console.log(xhr);
                     console.log("Details: " + desc + "\nError:" + err);
                 }
             });
 
             // Callback handler that will be called on success
-            request.done(function (response, textStatus, jqXHR){
+            request.done(function (response, textStatus, jqXHR) {
                 // Log a message to the console
                 console.log("Hooray, it worked!. Evan is USING AJAX SUCCESSFULLY, can you believe it!");
             });
-        });
-
-        console.log("testing");
-        var thread_list_data = $("[id ^= 'thread_list_data']").html();
-
-
-
-
-
+        } //end of AJAX request
     });
+
+
+    console.log("testing");
+    var thread_list_data = $("[id ^= 'thread_list_data']").html();
+
+
+    function getThreadEntryData(feedbackID){
+
+
+    }
+
+});
 
 
 

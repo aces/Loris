@@ -147,16 +147,19 @@
     
     <!-- table with threads details - data -->   
     <table valign="top" width="100%" class="std">
-    {section name=thread loop=$thread_list_data}
-    {assign var=threadCount value=$smarty.section.thread.index}
-        <th nowrap="nowrap">FieldName</th>
-        <th nowrap="nowrap">FeedbackID</th>
-        <th nowrap="nowrap">Type</th>
-        <th nowrap="nowrap">QC Status</th>
-        <th nowrap="nowrap">Date</th>
-        <th nowrap="nowrap">Modified</th>
-        <th nowrap="nowrap">Active</th>
+        <tr>
+            <th nowrap="nowrap">FieldName</th>
+            <th nowrap="nowrap">FeedbackID</th>
+            <th nowrap="nowrap">Type</th>
+            <th nowrap="nowrap">QC Status</th>
+            <th nowrap="nowrap">Date</th>
+            <th nowrap="nowrap">Modified</th>
+            <th nowrap="nowrap">Active</th>
         </tr>
+    {section name=thread loop=$thread_list_data}
+
+    {assign var=threadCount value=$smarty.section.thread.index}
+
         <tr id= "{$thread_list_data[thread].FeedbackID}" name = "entries">
         <td align="center">{$thread_list_data[thread].FieldName}</td>
         <td align="center">{$thread_list_data[thread].FeedbackID}</td>
@@ -166,23 +169,23 @@
         <td align="center">{$thread_list_data[thread].Modified}</td>
         <td align="center">{$thread_list_data[thread].Active}</td>
         </tr>
-        {section name=entry loop=$thread_entry[thread]}
-            <tr>
-            <td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp;
-            [{$thread_entry[thread][entry].Date}] &nbsp;
-            </td>
-            <td>[{$thread_entry[thread][entry].Date}] &nbsp</td>
-          	<td>{$thread_entry[thread][entry].FieldName}</td>
-     		<td><B>{$thread_entry[thread][entry].Comment}</B></td>
-            </tr>
-        {/section}
+        {*{section name=entry loop=$thread_entry[thread]}*}
+            {*<tr>*}
+            {*<td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp;*}
+            {*[{$thread_entry[thread][entry].Date}] &nbsp;*}
+            {*</td>*}
+            {*<td>[{$thread_entry[thread][entry].Date}] &nbsp</td>*}
+          	{*<td>{$thread_entry[thread][entry].FieldName}</td>*}
+     		{*<td><B>{$thread_entry[thread][entry].Comment}</B></td>*}
+            {*</tr>*}
+        {*{/section}*}
         <!-- error message row -->
         {if $thread_list_data[thread].error_message != ""}
             <tr>
             <td colspan="4">{$thread_list_data[thread].error_message}</td>
             </tr>
         {/if}
-        <tr>
+        <tr id="feedback_comment_{$thread_list_data[thread].FeedbackID}">
         <td colspan="7">
             <table valign="top" width="100%">
                 <th>Comment</th>
@@ -198,7 +201,7 @@
                 <tr>
                 <td align="center"><input TYPE=TEXT SIZE=30 NAME="formThreadData[{$threadCount}][Comment]" VALUE="{$existing_thread_data[thread].CommentValue}"></td>
                 <input type="hidden" name="formThreadData[{$threadCount}][FeedbackID]" VALUE="{$thread_list_data[thread].FeedbackID}">
-                
+
                 {if $has_permission}
                     <td align="center">
                         {html_options name="formThreadData[$threadCount][Type]" values=$threadTypeIDArray selected=$existing_thread_data[thread].Type output=$threadTypeLabelArray}
@@ -217,10 +220,9 @@
                 </tr>
             </table>
         </td>
-        </tr>  
-        <br>
+        </tr>
     {/section}
-    </table>    
+    </table>
 
     </form>
 {/if}
