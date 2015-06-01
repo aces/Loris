@@ -11,10 +11,12 @@ $(document).ready(function () {
         var feedbackID = this.id;
 
         if ($('tr[id^="feedbackEntries_' + feedbackID + '"]').length){
-            $('tr[id^="feedbackEntries_' + feedbackID + '"]').toggle();
-            $('tr[id^="feedback_comment_' + feedbackID + '"]').toggle();
+
+            $('tbody[id^="tablebody_' + feedbackID + '"]').toggle();
+
         }
 
+        //Beggining of our AJAX request fetching the entries for the requested feedbackID.
         else {
             request = $.ajax({
                 url: "ajax/get_thread_entry_data.php",
@@ -33,7 +35,11 @@ $(document).ready(function () {
                         var td2 = "<td>" + data[i]["Date"] + "</td>";
                         var td3 = "<td>" + data[i]["Comment"] + "</td></tr>";
 
-                        $("#" + feedbackID).after(tr+td1+td2+td3);
+                        $("#tablebody_" + feedbackID).prepend(tr+td1+td2+td3);
+
+                        //So the toggle works initially.
+                        $('tbody[id^="tablebody_' + feedbackID + '"]').toggle();
+
                     }
                 },
                 error: function (xhr, desc, err) {
@@ -48,6 +54,8 @@ $(document).ready(function () {
                 console.log("Hooray, it worked!. Evan is USING AJAX SUCCESSFULLY, can you believe it!");
             });
         } //end of AJAX request
+
+
     });
 
 
@@ -55,10 +63,6 @@ $(document).ready(function () {
     var thread_list_data = $("[id ^= 'thread_list_data']").html();
 
 
-    function getThreadEntryData(feedbackID){
-
-
-    }
 
 });
 

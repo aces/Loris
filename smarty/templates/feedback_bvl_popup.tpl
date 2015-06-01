@@ -179,6 +179,9 @@
      		{*<td><B>{$thread_entry[thread][entry].Comment}</B></td>*}
             {*</tr>*}
         {*{/section}*}
+
+        <tbody id = "tablebody_{$thread_list_data[thread].FeedbackID}" style="display: none;">
+
         <!-- error message row -->
         {if $thread_list_data[thread].error_message != ""}
             <tr>
@@ -221,6 +224,8 @@
             </table>
         </td>
         </tr>
+
+        </tbody>
     {/section}
     </table>
 
