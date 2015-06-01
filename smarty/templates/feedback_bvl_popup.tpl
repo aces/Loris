@@ -1,14 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="utf-8"/>
+    <meta charset="utf-8"/>
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 </head>
 <body>
-
 
 <!-- start main table -->
 <table valign="top" width="100%" border="0" cellpadding="3" cellspacing="2">
@@ -69,6 +68,9 @@
         
     {if $candID!=""}
     <!-- create feedback form- shown only to authorized users-->
+        <div id = 'feedback'>big stuff happening here</div
+
+
     <table border="0" valign="top" width="100%" class="std">
     <tr>
     <th colspan="4">Add new {$feedbackLevel} level feedback</TH>
@@ -145,17 +147,20 @@
     
     <!-- table with threads details - data -->   
     <table valign="top" width="100%" class="std">
-    {section name=thread loop=$thread_list_data}
-    {assign var=threadCount value=$smarty.section.thread.index}
-        <th nowrap="nowrap">FieldName</th>
-        <th nowrap="nowrap">FeedbackID</th>
-        <th nowrap="nowrap">Type</th>
-        <th nowrap="nowrap">QC Status</th>
-        <th nowrap="nowrap">Date</th>
-        <th nowrap="nowrap">Modified</th>
-        <th nowrap="nowrap">Active</th>
+        <tr>
+            <th nowrap="nowrap">FieldName</th>
+            <th nowrap="nowrap">FeedbackID</th>
+            <th nowrap="nowrap">Type</th>
+            <th nowrap="nowrap">QC Status</th>
+            <th nowrap="nowrap">Date</th>
+            <th nowrap="nowrap">Modified</th>
+            <th nowrap="nowrap">Active</th>
         </tr>
-        <tr id= "{$thread_list_data[thread].FeedbackID}">
+    {section name=thread loop=$thread_list_data}
+
+    {assign var=threadCount value=$smarty.section.thread.index}
+
+        <tr id= "{$thread_list_data[thread].FeedbackID}" name = "entries">
         <td align="center">{$thread_list_data[thread].FieldName}</td>
         <td align="center">{$thread_list_data[thread].FeedbackID}</td>
         <td align="center">{$thread_list_data[thread].Type}</td>
@@ -164,23 +169,26 @@
         <td align="center">{$thread_list_data[thread].Modified}</td>
         <td align="center">{$thread_list_data[thread].Active}</td>
         </tr>
-        {section name=entry loop=$thread_entry[thread]}
-            <tr>
-            <td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp;
-            [{$thread_entry[thread][entry].Date}] &nbsp;
-            </td>
-            <td>[{$thread_entry[thread][entry].Date}] &nbsp</td>
-          	<td>{$thread_entry[thread][entry].FieldName}</td>
-     		<td><B>{$thread_entry[thread][entry].Comment}</B></td>
-            </tr>
-        {/section}
+        {*{section name=entry loop=$thread_entry[thread]}*}
+            {*<tr>*}
+            {*<td align="left" colspan="4">{$thread_entry[thread][entry].UserID} &nbsp;*}
+            {*[{$thread_entry[thread][entry].Date}] &nbsp;*}
+            {*</td>*}
+            {*<td>[{$thread_entry[thread][entry].Date}] &nbsp</td>*}
+          	{*<td>{$thread_entry[thread][entry].FieldName}</td>*}
+     		{*<td><B>{$thread_entry[thread][entry].Comment}</B></td>*}
+            {*</tr>*}
+        {*{/section}*}
+
+        <tbody id = "tablebody_{$thread_list_data[thread].FeedbackID}" style="display: none;">
+
         <!-- error message row -->
         {if $thread_list_data[thread].error_message != ""}
             <tr>
             <td colspan="4">{$thread_list_data[thread].error_message}</td>
             </tr>
         {/if}
-        <tr>
+        <tr id="feedback_comment_{$thread_list_data[thread].FeedbackID}">
         <td colspan="7">
             <table valign="top" width="100%">
                 <th>Comment</th>
@@ -196,7 +204,7 @@
                 <tr>
                 <td align="center"><input TYPE=TEXT SIZE=30 NAME="formThreadData[{$threadCount}][Comment]" VALUE="{$existing_thread_data[thread].CommentValue}"></td>
                 <input type="hidden" name="formThreadData[{$threadCount}][FeedbackID]" VALUE="{$thread_list_data[thread].FeedbackID}">
-                
+
                 {if $has_permission}
                     <td align="center">
                         {html_options name="formThreadData[$threadCount][Type]" values=$threadTypeIDArray selected=$existing_thread_data[thread].Type output=$threadTypeLabelArray}
@@ -215,10 +223,11 @@
                 </tr>
             </table>
         </td>
-        </tr>  
-        <br>
+        </tr>
+
+        </tbody>
     {/section}
-    </table>    
+    </table>
 
     </form>
 {/if}
@@ -227,5 +236,7 @@
 </td>
 </tr>
 </table>
+<script type="text/javascript" src="js/jquery/jquery-1.11.0.min.js"></script>
+<script src="js/feedback_bvl_popup.js"></script>
 </body>
 </html>
