@@ -3,6 +3,18 @@ $(document).ready(function () {
     var $threadListData = $("[id ^= 'thread_list_data']");
 
     $threadListData.click().hide();
+    ///We are setting our panel here. From the jquery UI library.
+    $( function() {
+        $( "#right-panel" ).panel();
+    } );
+    //end of panel
+
+    $(function() {
+        $( "#accordion" ).accordion({
+            collapsible: true,
+            autoHeight: false
+        });
+    }); //end of accordion
 
     //On click of this function we check if a div containing the entries for this FeedbackID exist.
     //If not we fetch the data through an ajax request and display it.
@@ -11,9 +23,7 @@ $(document).ready(function () {
         var feedbackID = this.id;
 
         if ($('tr[id^="feedbackEntries_' + feedbackID + '"]').length){
-
             $('tbody[id^="tablebody_' + feedbackID + '"]').toggle();
-
         }
 
         //Beggining of our AJAX request fetching the entries for the requested feedbackID.

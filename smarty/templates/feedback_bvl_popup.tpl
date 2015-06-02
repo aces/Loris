@@ -2,12 +2,67 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-<link rel="stylesheet" href="{$css}" type="text/css" />
-<!-- shortcut icon that displays on the browser window -->
+<link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css" />
+
+
+    <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 </head>
 <body>
+
+<a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+<!-- starting reveal panel. This is party of the jquery mobile apps. -->
+<div data-role="panel" id="right-panel" data-display="overlay" data-position="right">
+
+    <div id="accordion">
+        <h3>Candidate Overview</h3>
+        <div>
+            <table border="0" valign="top" width="100%" class="listColorCoded">
+                <tr>
+                    <th nowrap="nowrap">QC Class</th>
+                    {if $sessionID!=""}
+                        <th nowrap="nowrap">Instrument</th>
+                    {else}
+                        <th nowrap="nowrap">Visit</th>
+                    {/if}
+                    <th nowrap="nowrap"># Threads</th>
+                </tr>
+                {section name=record loop=$thread_summary_data}
+                    <tr>
+                        <td nowrap="nowrap">{$thread_summary_data[record].QC_Class}</td>
+                        {if $sessionID!=""}
+                            <td nowrap="nowrap">
+                                {if $thread_summary_data[record].CommentID != $commentID}
+                                <a target="GUI" href="main.php?test_name={$thread_summary_data[record].Instrument}&candID={$candID}&sessionID={$sessionID}&commentID={$thread_summary_data[record].CommentID}">
+                                    {/if}
+                                    {$thread_summary_data[record].Instrument}</a></td>
+                        {else}
+                            <td nowrap="nowrap"><a target="GUI" href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$thread_summary_data[record].SessionID}">{$thread_summary_data[record].Visit}</a></td>
+                        {/if}
+                        <td nowrap="nowrap">{$thread_summary_data[record].No_Threads}</td>
+                    </tr>
+                    {sectionelse}
+                    <tr><td colspan="7">No feedback</td></tr>
+                {/section}
+            </table>
+        </div>
+        <h3>Current Thread Status</h3>
+        <div>
+
+        </div>
+        <h3>Add New Feedback</h3>
+        <div>
+
+        </div>
+    </div><!-- accordion -->
+
+
+</div><!-- /panel -->
+
+
 
 <!-- start main table -->
 <table valign="top" width="100%" border="0" cellpadding="3" cellspacing="2">
@@ -52,23 +107,22 @@
     
     {if $candID!=""}
     <!-- activate and close forms - shown only to authorized users-->
-    {if $has_permission}
-        <table border="0" valign="top" width="100%" class="std">
-        <!-- form to activate new threads -->
-            <!--<form name="activateThreadsForm" method="post" action="{$formAction}">
-                <td align="center"><input type="submit" name="activate_thread_form_submit" value="Post New Feedback" class="button"></td>
-            </form>-->
-        <!-- form to close active threads -->
-            <form name="closeThreadsForm" method="post" action="{$formAction}">
-                <td align="center"><input type="submit" name="close_thread_form_submit" value="Close All Threads" class="button"></td>
-            </form>
-        </table>
-    {/if}
+    {*{if $has_permission}*}
+        {*<table border="0" valign="top" width="100%" class="std">*}
+        {*<!-- form to activate new threads -->*}
+            {*<!--<form name="activateThreadsForm" method="post" action="{$formAction}">*}
+                {*<td align="center"><input type="submit" name="activate_thread_form_submit" value="Post New Feedback" class="button"></td>*}
+            {*</form>-->*}
+        {*<!-- form to close active threads -->*}
+            {*<form name="closeThreadsForm" method="post" action="{$formAction}">*}
+                {*<td align="center"><input type="submit" name="close_thread_form_submit" value="Close All Threads" class="button"></td>*}
+            {*</form>*}
+        {*</table>*}
+    {*{/if}*}
     {/if}
         
     {if $candID!=""}
     <!-- create feedback form- shown only to authorized users-->
-        <div id = 'feedback'>big stuff happening here</div
 
 
     <table border="0" valign="top" width="100%" class="std">
@@ -237,6 +291,8 @@
 </tr>
 </table>
 <script type="text/javascript" src="js/jquery/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script src="js/feedback_bvl_popup.js"></script>
 </body>
 </html>
