@@ -4,7 +4,7 @@
       <ul class="nav nav-tabs">
         <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser">CNV</a></li>
         <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser">SNP</a></li>
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CpG</strong></a></li>
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CpG Methylation</strong></a></li>
       </ul>
       <br>
     </div>
@@ -25,7 +25,7 @@
                   <div class="panel-body" id="panel-body-candidate">
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-1 col-lg-1">
+                        <label class="col-sm-12 col-md-1 col-lg-1" data-toggle="tooltip" title="Collecting sites of the candidates">
                           {$form.centerID.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-3">
@@ -47,7 +47,7 @@
                     </div>
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2 ">
+                        <label class="col-sm-12 col-md-2">
                           {$form.gender.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
@@ -80,13 +80,13 @@
                   <div class="panel-body" id="panel-body-gene">
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="HUGO Gene Nomenclature Committee ID ex: PINK1">
                           {$form.Gene.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
                           {$form.Gene.html}
                         </div>
-                        <label class="col-sm-12 col-md-3">
+                        <label class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
                           {$form.Assembly.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
@@ -96,7 +96,7 @@
                     </div>
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3">
+                        <label class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="top" title="Chromosome number or symbole">
                           {$form.Chromosome.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
@@ -126,19 +126,21 @@
                   <div class="panel-body" id="panel-body-cpg">
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="HAIB Methyl450 item ID ex: cg12045430">
         		  {$form.CpG.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
         		  {$form.CpG.html}
 			</div>
-                        <label class="col-sm-12 col-md-2">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="High-methylation : beta-value > 0.6
+Partially methylated : 0.2 < beta-value <= 0.6
+Low-methylation : beta-value <= 0.2">
         		  {$form.Methylation.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
         		  {$form.Methylation.html}
 			</div>
-                        <label class="col-sm-12 col-md-2">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Beta-value">
         		  {$form.Context.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
@@ -161,10 +163,10 @@
         		  {$form.Date_collected.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Ratio.label}
+        		  {$form.Beta_value.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Ratio.html}
+        		  {$form.Beta_value.html}
 			</div>
 		      </div>
 		    </div>
@@ -219,7 +221,7 @@
     <table border="0" valign="bottom" width="100%"><tr>
       <!-- title -->
       {if {$resultcount} != '' }
-        <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>
+        <td class="controlpanelsection">CpG found: <strong>{$resultcount}</strong> total</td>
       {else}
         <td>No variants found. </td>
       {/if} 

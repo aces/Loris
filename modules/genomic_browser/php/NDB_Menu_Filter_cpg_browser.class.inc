@@ -48,8 +48,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
     {
         // create user object
         $user = User::singleton();
-        return ($user->hasPermission('genomic_browser_view_allsites')
-                || $user->hasPermission('genomic_browser_view_site'));
+        return ($user->hasPermission('epigenomic_full_data')
+                || $user->hasPermission('epigenomic_restricted'));
     }
 
 
@@ -70,33 +70,32 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
-                          'genomic_cpg.CpG as CpG',
-                          'genomic_cpg.Gene as Gene',
-                          'genomic_cpg.assembly as Assembly',
-                          'genomic_cpg.Methylation as Methylation',
-                          'genomic_cpg.Beta_value as Beta_value',
                           'genomic_cpg.Tissue as Tissue',
                           'genomic_cpg.T2_DATE_Collected as DATE_Collected',
-                          'genomic_cpg.Acc_number as Accession_number',
+                          'genomic_cpg.CpG as CpG',
                           'genomic_cpg.Context as Context',
-                          'genomic_cpg.Chip as Chip',
-                          'genomic_cpg.Position as Position',
+                          'genomic_cpg.Methylation as Methylation',
+                          'genomic_cpg.Beta_value as Beta_value',
+                          'genomic_cpg.Gene as Gene',
+                          'genomic_cpg.Acc_number as Accession_number',
+                          'genomic_cpg.assembly as Assembly',
                           'genome_loc.Chromosome as Chromosome',
                           'genome_loc.Strand as Strand',
                           'genome_loc.StartLoc as StartLoc',
                           'genotyping_platform.Name as Platform',
+                          'genomic_cpg.Chip as Chip',
+                          'genomic_cpg.Position as Position',
                          );
 
         $this->_briefFields = array(
                                'DCCID',
                                'PSCID',
                                'Subproject',
+                               'Tissue',
                                'CpG',
-                               'Gene',
                                'Methylation',
                                'Beta_value',
-//                               'Chip',
-//                               'Position',
+                               'Gene',
                               );
 
         // Chromosome from genome_loc table
@@ -109,7 +108,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
             JOIN genomic_cpg ON (candidate.CandID = genomic_cpg.CandID)
             LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = genomic_cpg.GenomeLocID)  
-            LEFT JOIN gene ON (gene.GenomeLocID = genomic_cpg.GenomeLocID)
             LEFT JOIN genotyping_platform ON 
               (genomic_cpg.PlatformID = genotyping_platform.PlatformID)
             WHERE 
@@ -117,6 +115,36 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         $DB   = Database::singleton();
         $user = User::singleton();
+        if (!$user->hasPermission('genomic_browser_view_allsites')) {
+            // restrict data to own site
+            $this->query .= " AND candidate.CenterID=";
+            $this->query .= $DB->quote($user->getCenterID());
+        }
+
+/*
+    XLB 2015-06-01 :: This chunk is for the restriction on data that can or can't be seen by specific users. 
+                      Since the need of the client needs to be clarify, it's commented. 
+                      - Will there be groups of user with the same restrictions? 
+
+        if (!$user->hasPermission('epigenomic_full_data')) {
+            // restrict displayed data to allowed_item defined in genomic_user_restriction
+            // only works for genomic_cpg prefixed fields (types).
+            $Allowed_item_results
+                = $DB->select("SELECT Restriction_type, Allowed_item FROM genomic_user_restriction WHERE user_ID=" . $user->getData('ID'));
+            $restricted_types = array_unique(array_column($Allowed_item_results, 'Restriction_type', null));
+            
+            $list_items = array_fill_keys($restricted_types, array());
+            foreach( $Allowed_item_results as $row ) {
+                array_push( $list_items[$row['Restriction_type']], $row['Allowed_item']);
+            }
+
+            $this->query .= ' AND ( ';
+            foreach($list_items as $type => $values) {
+                $this->query .= "genomic_cpg." . $type . " IN ('" . implode( "','", $values ) . "') OR ";
+            }
+            $this->query .= 'FALSE )';
+        }
+*/
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // restrict data to own site
             $this->query .= " AND candidate.CenterID=";
@@ -138,6 +166,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'genome_loc.Strand',
                                'genotyping_platform.Name',
                                'genomic_cpg.CpG',
+                               'genomic_cpg.Beta_value',
                                'genomic_cpg.Tissue',
                                'genomic_cpg.T2_DATE_Collected',
                                'genomic_cpg.Gene',
@@ -161,6 +190,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'External_ID'         => 'candidate.ExternalID',
                                'Show_Brief_Results'  => 'show_brief_results',
                                'CpG'                 => 'genomic_cpg.CpG',
+                               'Beta_value'          => 'genomic_cpg.Beta_value',
                                'Tissue'              => 'genomic_cpg.Tissue',
                                'Date_collected'      => 'genomic_cpg.T2_DATE_Collected',
                                'Gene'                => 'genomic_cpg.Gene',
@@ -252,13 +282,26 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                          'Low-methylation'  => 'Low-methylation',
                         );
         $this->addSelect('Methylation', 'Methylation:', $Base_options);
-        $this->addBasicText('Ratio', 'Ratio:');
-        $this->addBasicText('Tissue', 'Tissue:');
+        $this->addBasicText('Beta_value', 'Beta-value:');
+        $Base_options = array(
+                         null     => 'Any',
+                         'Buccal' => 'Buccal',
+                        );
+        $this->addSelect('Tissue', 'Tissue:', $Base_options);
 
         // Gene
         $this->addBasicText('Chromosome', 'Chromosome:');
-        $this->addBasicText('Assembly', 'Assembly:');
-        $this->addBasicText('Strand', 'Strand:');
+        $Base_options = array(
+                         null     => 'Any',
+                         'GRCh37' => 'GRCh37',
+                        );
+        $this->addSelect('Assembly', 'Assembly:', $Base_options);
+        $Base_options = array(
+                         null => 'Any',
+                         'F'  => 'Foward',
+                         'R'  => 'Reverse',
+                        );
+        $this->addSelect('Strand', 'Strand:', $Base_options);
         $this->addBasicText('Gene', 'Symbol:');
 
         $DB = Database::singleton();
@@ -270,16 +313,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             $platform_options[$name] = $name;
         }
         $this->addSelect('Platform', 'Platform:', $platform_options);
-        $Array_Report_options = array(
-                                 null        => 'Any',
-                                 'Abnormal'  => 'Abnormal',
-                                 'Normal'    => 'Normal',
-                                 'Pending'   => 'Pending',
-                                 'Uncertain' => 'Uncertain',
-                                );
-        $this->addSelect('Array_Report', 'Array Report:', $Array_Report_options);
-        $this->addBasicText('Markers', 'Markers:');
-        $this->addBasicText('Validation_Method', 'Validation Method:');
 
         return true;
     }
@@ -357,13 +390,13 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     }
                 }
                 if ($key=='Gene') {
-			$this->tpl_data['items'][$x][$i]['value'] = '<a href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position=' . strtok($item["Accession_number"], ';') . '" target="_blank">' . strtok($val, ';' ) . '</a>';
+                    $this->tpl_data['items'][$x][$i]['value'] = '<a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position=' . strtok($item["Accession_number"], ';') . '" target="_blank">' . strtok($val, ';' ) . '</a>';
                 }
                 if ($key=='CpG') {
                     $assembly = $item['Assembly'];
-                    $startLoc = $item['StartLoc'] - 50;
-                    $endLoc = $item['StartLoc'] + 50;
-	            $this->tpl_data['items'][$x][$i]['value'] = '<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=' . $assembly . '&position=Chr' . $item['Chromosome'] . ':' . $startLoc . '-' . $endLoc . '" target="_blank">' . $val . '</a>';
+                    $startLoc = $item['StartLoc'] - 500;
+                    $endLoc = $item['StartLoc'] + 500;
+	            $this->tpl_data['items'][$x][$i]['value'] = '<a title="UCSC Genome Browser" href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=' . $assembly . '&position=Chr' . $item['Chromosome'] . ':' . $startLoc . '-' . $endLoc . '" target="_blank">' . $val . '</a>';
                 }
                 $i++;
             }

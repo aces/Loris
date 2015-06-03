@@ -4,7 +4,7 @@
       <ul class="nav nav-tabs">
         <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser">CNV</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>SNP</strong></a></li>
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=cpg_browser">CpG</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=cpg_browser">CpG Methylation</a></li>
       </ul>
       <br>
     </div>
