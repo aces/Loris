@@ -70,6 +70,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
+                          '1 as Imaging',
                           'genomic_cpg.Tissue as Tissue',
                           'genomic_cpg.T2_DATE_Collected as DATE_Collected',
                           'genomic_cpg.CpG as CpG',
@@ -91,6 +92,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'DCCID',
                                'PSCID',
                                'Subproject',
+                               'Imaging',
                                'Tissue',
                                'CpG',
                                'Methylation',
@@ -295,7 +297,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                          null     => 'Any',
                          'GRCh37' => 'GRCh37',
                         );
-        $this->addSelect('Assembly', 'Assembly:', $Base_options);
+        $this->addSelect('Assembly', 'Build:', $Base_options);
         $Base_options = array(
                          null => 'Any',
                          'F'  => 'Foward',
@@ -391,6 +393,9 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                 }
                 if ($key=='Gene') {
                     $this->tpl_data['items'][$x][$i]['value'] = '<a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position=' . strtok($item["Accession_number"], ';') . '" target="_blank">' . strtok($val, ';' ) . '</a>';
+                }
+                if ($key=='Imaging') {
+                    $this->tpl_data['items'][$x][$i]['value'] = '<a title="Imaging Browser" href="https://mavan.loris.ca/main.php?test_name=imaging_browser&subtest=viewSession&sessionID=7148&backURL=%2Fmain.php%3Ftest_name%3Dimaging_browser" target="_self">Yes</a>';
                 }
                 if ($key=='CpG') {
                     $assembly = $item['Assembly'];

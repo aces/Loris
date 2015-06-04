@@ -83,10 +83,10 @@
                         <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="HUGO Gene Nomenclature Committee ID ex: PINK1">
                           {$form.Gene.label}
                         </label>
-                        <div class="col-sm-12 col-md-3">
+                        <div class="col-sm-12 col-md-2">
                           {$form.Gene.html}
                         </div>
-                        <label class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
                           {$form.Assembly.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
@@ -96,13 +96,13 @@
                     </div>
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="top" title="Chromosome number or symbole">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Chromosome number or symbole">
                           {$form.Chromosome.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
                           {$form.Chromosome.html}
                         </div>
-                        <label class="col-sm-12 col-md-3">
+                        <label class="col-sm-12 col-md-2">
                           {$form.Strand.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
@@ -140,7 +140,7 @@ Low-methylation : beta-value <= 0.2">
                     	<div class="col-sm-12 col-md-2">
         		  {$form.Methylation.html}
 			</div>
-                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Beta-value">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Relation to UCSC CpG island">
         		  {$form.Context.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
@@ -221,7 +221,7 @@ Low-methylation : beta-value <= 0.2">
     <table border="0" valign="bottom" width="100%"><tr>
       <!-- title -->
       {if {$resultcount} != '' }
-        <td class="controlpanelsection">CpG found: <strong>{$resultcount}</strong> total</td>
+        <td class="controlpanelsection">Results found: <strong>{$resultcount}</strong> total</td>
       {else}
         <td>No variants found. </td>
       {/if} 
