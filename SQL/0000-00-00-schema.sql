@@ -2476,7 +2476,7 @@ CREATE TABLE `CandidateCohortRel` (
     INDEX `fk_CandidateCohortRel_Candidate_idx` (`CandidateID` ASC),
     INDEX `fk_CandidateCohortRel_Cohort1_idx` (`CohortID` ASC),
     CONSTRAINT `fk_CandidateCohortRel_Candidate`
-        FOREIGN KEY (`CandidateID`)
+        FOREIGN KEY (`CandID`)
         REFERENCES `candidate` (`CandID`),
     CONSTRAINT `fk_CandidateCohortRel_Cohort1`
         FOREIGN KEY (`CohortID`)
