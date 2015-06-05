@@ -2473,7 +2473,7 @@ DROP TABLE IF EXISTS `CandidateCohortRel`;
 CREATE TABLE `CandidateCohortRel` (
     `CandID` int(6) NOT NULL default '0',
     `CohortID` INT NOT NULL,
-    INDEX `fk_CandidateCohortRel_Candidate_idx` (`CandidateID` ASC),
+    INDEX `fk_CandidateCohortRel_Candidate_idx` (`CandID` ASC),
     INDEX `fk_CandidateCohortRel_Cohort1_idx` (`CohortID` ASC),
     CONSTRAINT `fk_CandidateCohortRel_Candidate`
         FOREIGN KEY (`CandID`)
