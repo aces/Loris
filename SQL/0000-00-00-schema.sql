@@ -2471,7 +2471,7 @@ CREATE TABLE `Cohort` (
 
 DROP TABLE IF EXISTS `CandidateCohortRel`;
 CREATE TABLE `CandidateCohortRel` (
-    `CandidateID` INT NOT NULL,
+    `ID` int(10) unsigned NOT NULL auto_increment,
     `CohortID` INT NOT NULL,
     INDEX `fk_CandidateCohortRel_Candidate_idx` (`CandidateID` ASC),
     INDEX `fk_CandidateCohortRel_Cohort1_idx` (`CohortID` ASC),
