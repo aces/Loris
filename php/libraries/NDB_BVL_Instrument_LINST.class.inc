@@ -439,7 +439,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             // otherwise we don't.. but even on other pages, we need to
             // parse the whole file for table{@} and other meta elements
             $addElements = true;
-            if (!empty($this->page)) { //isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
+            if (!empty($this->page)) {
                 $currentPage = $_REQUEST['subtest'];
                 $addElements = false;
             } else {
