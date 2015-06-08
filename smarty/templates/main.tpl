@@ -166,12 +166,15 @@
                         <span class="sr-only">Toggle navigation</span>
                         <img width=17 src="{$baseurl}/images/help.gif">
                     </button>
-                    <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
+                   {if $bvl_feedback}
+                   <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-edit" style="color:white"></span>
                     </button>
+                   {/if}
 
-                    <!-- toggle sidebar in mobile view -->
+
+                   <!-- toggle sidebar in mobile view -->
                     {if $control_panel}
                         <a id="menu-toggle" href="#" class="navbar-brand">
                             <span class="glyphicon glyphicon-th-list"></span>
@@ -204,11 +207,14 @@
                         {/foreach}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
                             <a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right">
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
                         </li>
+                        {/if}
+
                         <li class="hidden-xs hidden-sm">
                             <a href="#" class="navbar-brand pull-right help-button">
                                 <img width=17 src="{$baseurl}/images/help.gif">

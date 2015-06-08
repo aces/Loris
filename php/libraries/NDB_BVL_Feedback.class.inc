@@ -251,14 +251,16 @@ class NDB_BVL_Feedback
      * @param integer $feedbackID ID of the thread whose type we want to get
      *
      * @return string feedback type of the thread
-     * @fixme  This seems to try selecting a column that doesn't exist in Loris?
      */
     function getThreadType($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT Type FROM feedback_bvl_thread WHERE FeedbackID = :FID";
+        $query = "SELECT Name FROM feedback_bvl_thread
+                  JOIN feedback_bvl_type ON
+                  feedback_bvl_type.Feedback_type = feedback_bvl_thread.Feedback_type
+                  WHERE feedback_bvl_thread.FeedbackID = :FID";
 
         $result = $db->pselectOne($query, array('FID' => $feedbackID));
         return $result;
@@ -969,5 +971,29 @@ class NDB_BVL_Feedback
         $record = $db->pselectOne($query, $param);
         return $record;
     }
+
+    static function bvlFeedbackPossible(){
+
+        $test_name = $_REQUEST['test_name'];
+
+//        $true = ($test_name === ("timepoint_list" || "instrument_list"));
+
+        if (($test_name === "timepoint_list") or ($test_name === "instrument_list")){
+            return true;
+        }
+
+        $Factory       = NDB_Factory::singleton();
+        $DB            = $Factory->Database(); //=& Database::singleton();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name FROM test_names",
+            array()
+        );
+
+        foreach ($instruments_q as $row) {
+            if ($row['Test_name'] == $test_name) return true;
+        }
+
+        return false;
+        }
 }
 ?>

@@ -62,6 +62,7 @@ function tplFromRequest($param)
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name']   = $TestName;
 $tpl_data['subtest']     = $subtest;
+
 tplFromRequest('candID');
 tplFromRequest('sessionID');
 tplFromRequest('commentID');
@@ -77,6 +78,7 @@ try {
     $tpl_data['user'] = $user->getData();
     $tpl_data['user']['permissions']   = $user->getPermissions();
     $tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
+    $tpl_data['bvl_feedback'] = NDB_BVL_Feedback::bvlFeedbackPossible();
 
     $site =& Site::singleton($user->getData('CenterID'));
     $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
