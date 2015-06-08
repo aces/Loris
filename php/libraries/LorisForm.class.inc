@@ -222,19 +222,42 @@ class LorisForm
         $el['type'] = 'file';
     }
 
-    private function generateName($name) {
+    /**
+     * Generates a unique element name for anonymous elements to use
+     * to differentiate things in the internal elements array.
+     *
+     * @param string $name The current element name
+     *
+     * @return $name if it exists, otherwise a unique new name.
+     */
+    private function _generateName($name)
+    {
         static $num = 1;
-        if(!empty($name)) {
+        if (!empty($name)) {
             return $name;
         }
         return 'anonymous' . ($num++);
     }
-    function addHeader($name, $label, $options = array()) {
-        $name = $this->generateName($name);
+
+    /**
+     * Adds a header to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "class"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    function addHeader($name, $label, $options = array())
+    {
+        $name = $this->_generateName($name);
 
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
     }
+
     /**
      * An implementation of QuickForm's addElement function. This only
      * calls the appropriate $this->addX wrapper based on the "type"
@@ -386,7 +409,8 @@ class LorisForm
         $options       = $el['options'];
         $cls           = '';
         $changehandler = '';
-        $multiple = '';
+        $multiple      = '';
+
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
@@ -737,7 +761,16 @@ class LorisForm
         );
     }
 
-    function headerHTML($el) {
+    /**
+     * Generates the HTML for a header element
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a header
+     *
+     * @return string the HTML for the given header element.
+     */
+    function headerHTML($el)
+    {
         return "<h2>$el[label]</h2>";
     }
     /**
@@ -798,32 +831,44 @@ class LorisForm
         return $retVal;
     }
 
-    function toElementArray() {
+    /**
+     * Returns the current form in a format where the elements go
+     * within an "elements" attribute, similarly to how the QuickForm
+     * renderer used by instruments is used. This is different from
+     * how the "toArray" works in that toArray generates an array
+     * in a format suitable to smarty, while this is suitable to
+     * instrument serialization.
+     *
+     * @return array where each form element is in an "elements" attribute
+     */
+    function toElementArray()
+    {
 
         $curPage = array(
-            'elements' => [],
-            'type' => 'page',
-        );
-        $retVal = $curPage;
+                    'elements' => array(),
+                    'type'     => 'page',
+                   );
+        $retVal  = $curPage;
+
         // Hack to populate the HTML elements
         $this->toArray();
 
         foreach ($this->form as &$el) {
-            if($el['type'] === 'page') {
-                if(!empty($curPage['Description'])) {
+            if ($el['type'] === 'page') {
+                if (!empty($curPage['Description'])) {
                     $retVal['elements'][] = $curPage;
                 }
 
                 $curPage = array(
-                    'elements' => [],
-                    'Description' => $el['label'],
-                    'type'        => 'page',
-                );
+                            'elements'    => array(),
+                            'Description' => $el['label'],
+                            'type'        => 'page',
+                           );
             } else {
                 $curPage['elements'][] = $el;
             }
         }
-        if(empty($retVal['elements'])) {
+        if (empty($retVal['elements'])) {
             return $curPage;
         }
 
@@ -922,7 +967,7 @@ class LorisForm
     {
         $this->form[$name] = array(
                               'type'      => 'group',
-                              'name' => $name,
+                              'name'      => $name,
                               'elements'  => $array,
                               'label'     => $label,
                               'delimiter' => empty($delimiter) ? ' ' : $delimiter,
@@ -931,9 +976,20 @@ class LorisForm
 
     }
 
-    function addPageBreak($name, $label, $attribs) {
-        $el =& $this->createBase($name, $label, $attribs);
-        $name = $this->generateName($name);
+    /**
+     * Adds a page break, such that each element added after this
+     * page break goes on a new page.
+     *
+     * @param string $name    The name to use for the new page (in the URL)
+     * @param string $label   The label to show to the user for the new page
+     * @param string $attribs Extra attributes for this page.
+     *
+     * @return None
+     */
+    function addPageBreak($name, $label, $attribs)
+    {
+        $el   =& $this->createBase($name, $label, $attribs);
+        $name = $this->_generateName($name);
 
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'page';
