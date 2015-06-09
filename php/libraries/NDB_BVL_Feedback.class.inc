@@ -972,28 +972,56 @@ class NDB_BVL_Feedback
         return $record;
     }
 
+    /** This function is currenlty used to check whether or not to render the bvl_feedback_icon
+     * in main.tpl. It checks if the user has the bvl feedback permission first, if the user
+     * has the permissions it then checks if the user is on the timepoint_list, instrument_list
+     * or on any instrument page.
+     *
+     * Returns false if the user doesn't have the appropriate permissions or is not on one of the
+     * appropriate pages to return bvl_feedback.
+     *
+     * @return bool|object
+     * @throws ConfigurationException
+     * @throws Exception
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */
     static function bvlFeedbackPossible(){
 
+        // create user object
         $test_name = $_REQUEST['test_name'];
 
-//        $true = ($test_name === ("timepoint_list" || "instrument_list"));
-
-        if (($test_name === "timepoint_list") or ($test_name === "instrument_list")){
-            return true;
+        $user =& User::singleton();
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: " . $user->getMessage());
         }
 
-        $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database(); //=& Database::singleton();
-        $instruments_q = $DB->pselect(
-            "SELECT Test_name FROM test_names",
-            array()
-        );
-
-        foreach ($instruments_q as $row) {
-            if ($row['Test_name'] == $test_name) return true;
+        $site =& Site::singleton($user->getData('CenterID'));
+        if (Utility::isErrorX($site)) {
+            return PEAR::raiseError("Unable to construct the list_of_sites array: " . $site->getMessage());
         }
 
-        return false;
+//        FIXME: This seems to check the user's site only and not if the user's site matches the test site.
+        if ($site->isStudySite()) {
+            if ($user->hasPermission('bvl_feedback')){
+                if (($test_name === "timepoint_list") or ($test_name === "instrument_list")){
+                    return true;
+                }
+
+               else{
+                   $Factory = NDB_Factory::singleton();
+                   $DB = $Factory->Database(); //=& Database::singleton();
+                   $instruments_q = $DB->pselect(
+                       "SELECT Test_name FROM test_names",
+                       array()
+                   );
+
+                   foreach ($instruments_q as $row) {
+                       if ($row['Test_name'] == $test_name) return true;
+                   }
+               }
+            }
         }
+        return false; //returning false when user is not on appropriate study site
+    }
 }
 ?>
