@@ -97,6 +97,124 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("Advanced", $basicButton->getAttribute("value"));
     }
 
+
+
+
+    /**
+     * Tests that either access_all_profiles or data_entry
+     * permission is required to access the page
+     * @return void
+     */
+
+    function testCandidateListPermissions() {
+        if (access_all_profiles || data_entry permission) {
+            page loads;
+        }
+        else {
+            $error_msg = $this->webDriver->findElement(WebDriverBy::cssSelector("error"))->getText();
+            $this->assertContains("You do not have access to this page.", $error_msg);
+        }
+    }
+
+
+
+
+    /**
+     * Tests that, if data_entry permission NOT access_all_profiles
+     * can only see subjects from own site
+     *
+     * @return void
+     */
+
+    function testCandidateListDataEntryPermissions() {
+        if (data_entry_permission and !access_all_profiles) {
+            $own_site = $this->webDriver->findElement(WebDriverBy::cssSelector("Site: "))->getText();
+            $displayed_sites = blah;
+            $this->assertAttributeContainsOnly($own_site, $displayed_sites);
+        }
+    }
+
+
+    /**
+     * Test that checks initial filter state:
+     * Site = user site
+     * Subproject = All
+     *
+     * @return void
+     */
+
+
+
+
+    /**
+     * Tests that, if filters are used,
+     * results are filtered
+     * Test individually:
+     * Site
+     * DCCID
+     * PSCID
+     * Subproject
+     * Project
+     * Scan done
+     * Participant Status
+     * Gender
+     * Number of Visits
+     * Date of Birth
+     * Latest Visit Status
+     * Feedback
+     *
+     * @return void
+     */
+
+
+
+
+    /**
+     * Tests that advanced and basic filter toggle works
+     *
+     * Site
+    //Subproject
+    //project
+    //DCCID
+    //pSCID
+    // does not contain scan_done
+     * participant status
+     * date of birth
+     * gender
+     * number of visits
+     * latest visit status
+     * feedback
+     *
+     *
+     *
+     * @return void
+     */
+
+    function testCandidateListBasicAdvancedToggle() {
+        testCandidateListAdvancedOptionsAppear();
+
+        // Switch back to basic mode
+        $advancedButton = $this->webDriver->findElement(WebDriverBy::Name("basic"));
+        $advancedButton->click();
+
+        // Go through each element and ensure it's on the page after clicking
+        //
+
+
+
+
+    }
+
+
+
+    /**
+     * Tests that, if advanced filter is set,
+     * advanced filters are expanded on page load
+     * and collapsed otherwise
+     *
+     * @return void
+     */
+
     /**
      * Tests that, after clicking the "Advanced" button, all of the
      * advanced filters appear on the page and are the correct element type.
@@ -156,5 +274,105 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         );
         $this->assertEquals("select", $feedbackOptions->getTagName());
     }
+
+
+
+    /**
+     * Tests that each drop down
+     * has the correct options
+     *
+     * @return void
+     */
+
+
+    /**
+     * Tests that, if "Clear Form" is clicked,
+     * filters reset to initial state
+     *
+     * @return void
+     */
+
+
+
+    /**
+     * 11.
+     * Tests that, if a column is clicked,
+     * data sorts
+     *
+     * @return void
+     */
+
+
+
+    /**
+     * Tests that, if "Yes" link under column 'Scan Done' is clicked,
+     * the link points to the correct scan in the Imaging Browser
+     *
+     * @return void
+     */
+
+
+    /**
+     * 13.
+     * Tests that, if PSCID link is clicked,
+     * it points to the correct timepoint_list page
+     *
+     * @return void
+     */
+
+
+
+    /**
+     * 14.
+     * Tests that, if a candidate has feedback,
+     * the feedback column is displayed with the correct colour
+     *
+     * @return void
+     */
+
+
+
+    /**
+     * 15.
+     * Tests that, if wrong PSCID/DCCID combination is entered
+     * and "Open Profile" is clicked,
+     * an error is thrown
+     *
+     * @return void
+     */
+
+
+    /**
+     * 16.
+     * Tests that, if a correct PSCID/DCCID combination is entered,
+     * the correct timepoint_list page loads
+     *
+     * @return void
+     */
+
+
+    /**
+     * 17.
+     * Tests that, without access_all_profiles permission,
+     * PSCID links are NOT clickable
+     *
+     * @return void
+     */
+
+
+
+    /**
+     * 18.
+     * Tests that, if useEDC and useProjects config variables = false,
+     * filters are removed from menu
+     *
+     * @return void
+     */
+
+
+
+
+
+
 }
 ?>
