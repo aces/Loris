@@ -32,8 +32,9 @@ require_once 'CouchDB.class.inc';
  */
 class NDB_Factory
 {
-    private static $_testdb = null;
-    private static $_db     = null;
+    public static $_testdb = null;
+    public static $_db     = null;
+    public static $_config = null;
 
     private static $_couchdb = null;
     private static $_user    = null;
@@ -41,7 +42,6 @@ class NDB_Factory
     var $Testing; // Whether or not Mock objects should be returned instead of
                   // real ones
     //
-    private static $_config = null;
 
     /**
      * Sets whether the factory should return real objects or testing objects
@@ -102,7 +102,7 @@ class NDB_Factory
             return self::$_config;
         }
         if ($this->Testing) {
-           // Mock::generate("NDB_Config");
+            //Mock::generate("NDB_Config");
             $config = new MockNDB_Config();
         } else {
             $config = NDB_Config::singleton($configfile);
