@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="loris">
+	<table_data name="feedback_bvl_type">
+	<row>
+		<field name="Feedback_type">1</field>
+		<field name="Name">Input</field>
+		<field name="Description">Input Errors</field>
+	</row>
+	<row>
+		<field name="Feedback_type">2</field>
+		<field name="Name">Scoring</field>
+		<field name="Description">Scoring Errors</field>
+	</row>
+	<row>
+		<field name="Feedback_type">5</field>
+		<field name="Name">other</field>
+		<field name="Description">Other</field>
+	</row>
+	</table_data>
+</database>
+</mysqldump>
