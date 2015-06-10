@@ -1,3 +1,9 @@
+{*<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />*}
+<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css" />
+<script src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="js/feedback_bvl_popup.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
 <div data-role="panel" id="right-panel" data-display="overlay" data-position="right">
 
     <div id="accordion">
@@ -31,6 +37,7 @@
                     <tr><td colspan="7">No feedback</td></tr>
                 {/section}
             </table>
+
         </div>
         <h3>Current Thread Status</h3>
         <div>
@@ -44,3 +51,4 @@
 
 
 </div><!-- /panel -->
+

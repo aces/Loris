@@ -68,7 +68,6 @@ $(document).ready(function () {
 
     });
 
-
     console.log("testing");
     var thread_list_data = $("[id ^= 'thread_list_data']").html();
 

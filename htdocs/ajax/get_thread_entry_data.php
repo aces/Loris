@@ -1,28 +1,19 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: evanmcilroy
+ * This AJAX request serves the purpose of getting the entries for a given
+ * bvl_feedback thread.
+ *
+ * Currently used in the bvl_feedback popup.
+ *
+ * @author: Evan McIlroy <evanmciroy@gmail.com>
+ * @returns: JSON object containing entries for a given bvl_feedback thread.
  * Date: 15-05-26
- * Time: 3:16 PM
- */
-
-/**
- * This file is used by the Dashboard to get the data for
- * the recruitment bar chart via AJAX
- *
- * PHP version 5
- *
- * @category Main
- * @package  Loris
- * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
  */
 
 header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
 
-//THIS IS IMPORATANT TO CHANGE WHEN LAUNCHING, PATHS RELATIVE TO SANDBOX
+//FIXME: These paths are relative to my sandbox. Clean up before launching.
 set_include_path(
     __DIR__ . "/../../project/libraries:" .
     __DIR__ . "/../../php/libraries:" .

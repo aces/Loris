@@ -292,6 +292,8 @@
 </table>
 <script type="text/javascript" src="js/jquery/jquery-1.11.0.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+{*<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>*}
+
 <script src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script src="js/feedback_bvl_popup.js"></script>
 </body>

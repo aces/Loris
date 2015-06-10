@@ -6,13 +6,15 @@
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
         <script src="{$baseurl}/js/modernizr.min.js" type="text/javascript"></script>
-        <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.dynamictable.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.fileupload.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/polyfiller.js"></script>
         <script>
             $.webshims.polyfill();
         </script>
+
+        <!-- TODO: CSS so menu toggle works  -->
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
         <!-- Custom JavaScript for the Menu Toggle -->
    
         <link type="text/css" href="{$baseurl}/css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
@@ -167,7 +169,9 @@
                         <img width=17 src="{$baseurl}/images/help.gif">
                     </button>
                    {if $bvl_feedback}
-                   <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
+                   {*<button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">*}
+                   <button type="button" class="navbar-toggle">
+
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-edit" style="color:white"></span>
                     </button>
@@ -209,7 +213,9 @@
                     <ul class="nav navbar-nav navbar-right">
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
-                            <a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right">
+                            <a href="#" class="navbar-brand pull-right" id ="bvl_feedback">
+
+                            {*<a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right" id ="bvl_feedback">*}
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
                         </li>
@@ -256,9 +262,8 @@
                             {$control_panel}
                         </div>
                     </div>
-            
-        <!--    Want to wrap page content only when sidebar is in view
-                if not then just put page content in the div #page    -->
+                    <!--    Want to wrap page content only when sidebar is in view
+                            if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
             {if $dynamictabs eq "dynamictabs"}
@@ -541,12 +546,17 @@
                         </div>
                          
                         
-                    </div>              
-                
-                
+                    </div>
 
-                   
-                <!-- </div> -->
+            {if $bvl_feedback}
+                <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+
+                {include file='bvl_feedback_panel.tpl'}
+            {/if}
+
+
+
+            <!-- </div> -->
             </div>
             {else}
                 {$workspace}
