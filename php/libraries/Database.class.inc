@@ -287,8 +287,9 @@ class Database extends PEAR
 
     /**
      * Get last insert ID.
+     * Will return a valid insert ID only if called after Database::insert() method.
      *
-     * @return mixed
+     * @return string ID of the last inserted row
      */
     public function getLastInsertId()
     {
