@@ -160,7 +160,7 @@
 	    
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-left">
                <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse"
                         data-target="#example-navbar-collapse">
@@ -213,11 +213,11 @@
                             {/if}
                         {/foreach}
                     </ul>
-                    <ul class="nav navbar-nav navbar-right">
+                    <ul class="nav navbar-nav navbar-right" id="nav-right">
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
                             {*<a href="#" class="navbar-brand pull-right" id ="bvl_feedback">*}
-                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="#nav-left">
                             {*<a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right" id ="bvl_feedback">*}
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
@@ -284,6 +284,10 @@
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
             <div class="page-content inset">
+                {if $bvl_feedback}
+                    {include file='bvl_feedback_panel.tpl'}
+                {/if}
+
                 {if $console}
                     <div class="alert alert-warning" role="alert">
                         <h3>Console Output</h3>
@@ -547,24 +551,8 @@
                                 </div>  
                             {/if}
                         </div>
-                         
-                        
                     </div>
 
-            {if $bvl_feedback}
-                {include file='bvl_feedback_panel.tpl'}
-            {/if}
-
-            {if $bvl_feedback}
-                {*<div class="navbar navbar-default navbar-fixed-top">*}
-                    <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
-                        HERE IS STUFF
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                {*</div>*}
-            {/if}
 
             <!-- </div> -->
             </div>
