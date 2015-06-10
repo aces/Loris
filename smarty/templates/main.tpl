@@ -9,12 +9,14 @@
         <script type="text/javascript" src="{$baseurl}/js/jquery.dynamictable.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.fileupload.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/polyfiller.js"></script>
+
+{*temporary addition*}
+        <script src ="js/jasny-bootstrap-all.js"></script>
+
         <script>
             $.webshims.polyfill();
         </script>
 
-        <!-- TODO: CSS so menu toggle works  -->
-        <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
         <!-- Custom JavaScript for the Menu Toggle -->
    
         <link type="text/css" href="{$baseurl}/css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
@@ -155,6 +157,7 @@
     </head>
     {/if}
     <body>
+	    
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
             <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -169,8 +172,8 @@
                         <img width=17 src="{$baseurl}/images/help.gif">
                     </button>
                    {if $bvl_feedback}
-                   {*<button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">*}
-                   <button type="button" class="navbar-toggle">
+                   <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
+                   {*<button type="button" class="navbar-toggle">*}
 
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-edit" style="color:white"></span>
@@ -213,8 +216,8 @@
                     <ul class="nav navbar-nav navbar-right">
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
-                            <a href="#" class="navbar-brand pull-right" id ="bvl_feedback">
-
+                            {*<a href="#" class="navbar-brand pull-right" id ="bvl_feedback">*}
+                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                             {*<a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right" id ="bvl_feedback">*}
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
@@ -549,12 +552,19 @@
                     </div>
 
             {if $bvl_feedback}
-                <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
-
                 {include file='bvl_feedback_panel.tpl'}
             {/if}
 
-
+            {if $bvl_feedback}
+                {*<div class="navbar navbar-default navbar-fixed-top">*}
+                    <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+                        HERE IS STUFF
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                {*</div>*}
+            {/if}
 
             <!-- </div> -->
             </div>
