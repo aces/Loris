@@ -1,16 +1,23 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: kmarasinska
- * Date: 03/06/15
- * Time: 11:43 AM
+ * This contains an abstract class for Loris unit tests which
+ * will not mock the Database class and therefore will use
+ * DBUnit to set up the test database's initial state using fixtures.
+ *
+ * PHP Version 5
+ *
+ * @category Tests
+ * @package  Test
+ * @author   Karolina Marasinska <karolinam.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 
 /**
  * Class Loris_PHPUnit_Databse_TestCase
  *
  * @category Tests
- * @package  Main
+ * @package  Test
  * @author   Karolina Marasinska <karolinam.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -29,7 +36,8 @@ abstract class Loris_PHPUnit_Database_TestCase extends
     static private $_pdo = null;
 
     /**
-     * Note: only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection once per test
+     * Note: only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection
+     * once per test
      *
      * @var PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
@@ -66,7 +74,11 @@ abstract class Loris_PHPUnit_Database_TestCase extends
 
         if ($this->_conn === null) {
             if (self::$_pdo == null) {
-                self::$_pdo = new PDO('mysql:dbname='.$database['database'].';host='.$database['host'], $database['username'], $database['password']);
+                self::$_pdo = new PDO(
+                    'mysql:dbname='.$database['database'].';host='.$database['host'],
+                    $database['username'],
+                    $database['password']
+                );
             }
             $this->_conn = $this->createDefaultDBConnection(self::$_pdo);
         }
@@ -82,8 +94,13 @@ abstract class Loris_PHPUnit_Database_TestCase extends
      */
     protected function createLorisDBConnection()
     {
-        $database = $this->config->getSetting('database');
-        $this->database = Database::singleton($database['database'], $database['username'], $database['password'], $database['host']);
+        $database       = $this->config->getSetting('database');
+        $this->database = Database::singleton(
+            $database['database'],
+            $database['username'],
+            $database['password'],
+            $database['host']
+        );
     }
 
 }
