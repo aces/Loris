@@ -276,16 +276,16 @@ class Utility extends PEAR
      */
     static function getSubprojectList()
     {
+        $DB = Database::singleton();
         $config =& NDB_Config::singleton();
 
-        // get the list of Subprojects
-        $subprojectSettings = $config->getSetting('subprojects');
-        foreach (Utility::toArray(
-            $subprojectSettings['subproject']
-        ) as $subproject) {
-            $list[$subproject['id']] =$subproject['title'];
+        $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+
+        $subprojs = array();
+        foreach($subprojects as $row) {
+            $subprojs[$row['SubprojectID']] = $row['title'];
         }
-        return $list;
+        return $subprojs;
     }
 
     /**
