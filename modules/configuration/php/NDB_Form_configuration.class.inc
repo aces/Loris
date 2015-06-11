@@ -104,6 +104,30 @@ class NDB_Form_Configuration extends NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
 
     }
+
+    function subproject() {
+        $factory = NDB_Factory::singleton();
+        $config = $factory->config();
+
+        $subprojectList = Utility::getSubprojectList();
+        $subprojects = array();
+        foreach($subprojectList as $subprojectID => $title) {
+            $subprojects[$subprojectID] = $config->getSubprojectSettings($subprojectID);
+        }
+        $this->tpl_data['subprojects'] = $subprojects;
+
+        $this->tpl_data['useEDCOptions']
+            = array(
+               '1' => 'Yes',
+               '0' => 'No',
+              );
+
+        $this->tpl_data['WindowDifferenceOptions']
+            = array(
+               'battery' => 'Closest Test Battery',
+               'optimal' => 'Optimal Visit Window for Visit Label',
+              );
+    }
 }
 
 ?>
