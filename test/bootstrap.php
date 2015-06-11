@@ -18,16 +18,19 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-//@TODO: This needs to be changed to use a test specific config.xml.
-// Tests should not use project/config.xml.
+
+// Tests should not use project/config.xml
 // When running tests LORIS app should connect to a test database because some tests
 // are destructive
 // (i.e. they wipe specific DB tables and repopulate them using test fixtures,
 // from /test/fixtures/ folder)
 
-//test specific config to use from test folder
-//define('CONFIG_XML', __DIR__ . "/config.xml");
-define('CONFIG_XML', __DIR__ . "/../project/config.xml");
+//Use environment variable LORIS_DB_CONFIG to specify a test specific config
+if ($configFile = getenv('LORIS_DB_CONFIG') ) {
+    define('CONFIG_XML', $configFile);
+} else {
+    define('CONFIG_XML', __DIR__ . "/../project/config.xml");
+}
 define('TABLE_FIXTURES_PATH', __DIR__ . "/fixtures/tables/");
 
 require_once __DIR__ . '/../vendor/autoload.php';
