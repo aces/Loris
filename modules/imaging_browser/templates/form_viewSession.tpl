@@ -179,8 +179,10 @@
                       <th class="col-xs-2 info">Number of Gradient-wise correlations</th><td>{$files[file].IntergradientRejected}</td>
                      </tr>
                      <tr>
-                         <th class="col-xs-2 info">Number of Slicewise correlations</th><td class="col-xs-2">{$files[file].SlicewiseRejected}</td>
-                       <td colspan="2"></td>
+                         <th class="col-xs-2 info">Number of Slicewise correlations</th>
+                             <td class="col-xs-2">{$files[file].SlicewiseRejected}</td>
+                         <th class="col-xs-2 info">Series Number</th>
+                              <td colspan="col-xs-2">{$files[file].SeriesNumber}</td>
                        <td colspan="2"></td>
                      </tr>
                     </table>
