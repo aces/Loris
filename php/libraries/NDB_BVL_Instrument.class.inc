@@ -761,17 +761,6 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         $db =& Database::singleton();
 
-        error_log("jhskjfhjkshfkjhskf");
-        error_log("jhskjfhjkshfkjhskf");
-        error_log("jhskjfhjkshfkjhskf");
-        error_log("jhskjfhjkshfkjhskf");
-        error_log("jhskjfhjkshfkjhskf");
-        error_log(print_r($values, true));
-        error_log("jhskjfhjkshfkjhskf");
-        error_log("jhskjfhjkshfkjhskf");
-        error_log("jhskjfhjkshfkjhskf");
-        error_log("jhskjfhjkshfkjhskf");
-
         $result = $db->update(
             $this->table,
             $values,
