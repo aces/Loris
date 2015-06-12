@@ -60,6 +60,29 @@ abstract class Loris_PHPUnit_Database_TestCase extends
     protected $database;
 
     /**
+     * Setup test
+     * Checks if tests are run on sandbox, otherwise skips them.
+     * Some of these tests may be destructive therefore should never be run in production
+     *
+     * @throws Exception
+     * @return void
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->factory = NDB_Factory::singleton();
+        $this->config  = $this->factory->Config(CONFIG_XML);
+
+        //if not in sandbox mode do not run tests
+        if (!$this->config->getSetting('sandbox')) {
+            $this->markTestSkipped(
+                "You are not in 'sandbox' mode.
+                This is a destructive test, it will be skipped!"
+            );
+        }
+    }
+
+    /**
      * Get database connection which will be used by PHPUnit
      * for clean-up and fixture loading into the test DB.
      *
