@@ -1,15 +1,26 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: kmarasinska
- * Date: 03/06/15
- * Time: 11:08 AM
+ * NDB_BVL_Feedback class tests
+ *
+ * PHP Version 5
+ *
+ * @category Tests
+ * @package  Test
+ * @author   Karolina Marasinska <karolinam.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
+
 
 /**
  * Class NDB_BVL_FeedbackTest
  *
+ * @category Tests
+ * @package  Test
+ * @author   Karolina Marasinska <karolinam.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
 {
@@ -84,7 +95,13 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      */
     public function testCreateNewFeedbackType()
     {
-        $this->assertEquals(6, $this->_feedbackObj->createFeedbackType('New Test Type', 'Created from PHPUnit tests'));
+        $this->assertEquals(
+            6,
+            $this->_feedbackObj->createFeedbackType(
+                'New Test Type',
+                'Created from PHPUnit tests'
+            )
+        );
     }
 
     /**
@@ -95,12 +112,17 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      */
     public function testGetFeedbackTypeIdByNameForExistingValue()
     {
-        $this->assertEquals(5, $this->_feedbackObj->getFeedbackTypeIdByName('Other'));
+        $this->assertEquals(
+            5,
+            $this->_feedbackObj->getFeedbackTypeIdByName('Other')
+        );
 
     }
 
     /**
-     * Test getFeedbackTypeIdByName for value which does not exist in feedback_bvl_type table
+     * Test getFeedbackTypeIdByName for value which does not exist
+     * in feedback_bvl_type table
+     *
      * @covers NDB_BVL_Feedback::getFeedbackTypeIdByName
      * @return void
      */
