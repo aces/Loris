@@ -101,7 +101,6 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-
     }
 
     /**
@@ -401,6 +400,7 @@ class LorisForm
      */
     function dateHTML($el)
     {
+        print_r($el);
         $cls = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
@@ -416,6 +416,7 @@ class LorisForm
                 : ''
               )
             . ">";
+        print_r($elmnt);
         return $elmnt;
 
     }

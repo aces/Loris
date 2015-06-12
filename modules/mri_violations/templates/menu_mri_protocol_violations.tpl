@@ -1,4 +1,7 @@
 <script type="text/javascript" src="GetJS.php?Module=mri_violations&file=mri_protocol_violations.js"></script>
+<link rel="stylesheet" href="css/c3.css">
+<script src="js/d3.min.js" charset="utf-8"></script>
+<script src="js/c3.min.js"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
@@ -63,6 +66,7 @@
         </form>
     </div>
 </div>
+
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">

@@ -46,6 +46,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
+        echo "CHECK FORM\n";
+        print_r($values);
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -175,7 +177,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             FROM mri_protocol_violated_scans 
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID 
-            AND violations_resolved.TypeTable='mri_protocol_violated_scans')"
+            AND violations_resolved.TypeTable='mri_protocol_violated_scans')
+            WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
@@ -191,7 +194,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             ON (mri_scan_type.ID=mri_violations_log.Scan_type)
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID 
-            AND violations_resolved.TypeTable='mri_violations')"
+            AND violations_resolved.TypeTable='mri_violations')
+            WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
@@ -206,7 +210,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=MRICandidateErrors.ID 
             AND violations_resolved.TypeTable='MRICandidateErrors')"
-         . ") as v WHERE 1=1";
+         . ") as v WHERE Resolved <> '0'";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -265,7 +269,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             'Resolved', 
             'Violation resolved', 
             array(
-                '0'=>'Unresolved', 
+                '' =>'Any',
+                '0'=>'Unresolved',
                 '1'=>'Reran',
                 '2'=>'Emailed site/pending',
                 '3'=>'Inserted',
@@ -309,7 +314,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
      */
     function _setDataTableRows($count)
     {
-        $options = array(
+        $resolved_options = array(
 	        '0'=>'Unresolved', 
 	        '1'=>'Reran',
 	        '2'=>'Emailed site/pending',
@@ -320,6 +325,19 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 	        '7'=>'Resolved #2',
 	        '8'=>'Resolved #3',
 	        '9'=>'Resolved #4');
+        $this->tpl_data['resolved_options'] = $resolved_options;
+
+        $resolved_styles = array(
+            '0'=>'label-danger',
+	        '1'=>'label-success',
+	        '2'=>'label-info',
+	        '3'=>'label-default',
+	        '4'=>'label-danger',
+	        '5'=>'label-warning',
+	        '6'=>'label-primary'
+        );
+        $this->tpl_data['resolved_styles'] = $resolved_styles;
+
         $x=0;
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
@@ -336,7 +354,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     //$this->addSelect($val, "", $options);                    
                 }
                 if ($key === 'Resolved') {
-                    $resolved_index = $val;                    
+                    //$resolved_index = $val;
+                    //$val = $options[$val];
                 }
                 if ($key === 'Problem') {
                     if($val="Could not identify scan type"){    
@@ -357,14 +376,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 }            
                 $i++;
             }
-            
-            $optional = array("selected" => (string)$resolved_index);
-            //var_dump($optional);
-            //$hash = $this->tpl_data['hash'];
-            $this->addSelect($hash, "", $options, $optional);
             $x++;
         }
-        echo "RESOLVED VIOLATIONS";
         return true;
     }
 
