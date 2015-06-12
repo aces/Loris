@@ -62,7 +62,6 @@ function tplFromRequest($param)
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name']   = $TestName;
 $tpl_data['subtest']     = $subtest;
-$tpl_data['bvl_feedback'] = NDB_BVL_Feedback::bvlFeedbackPossible();
 
 tplFromRequest('candID');
 tplFromRequest('sessionID');

@@ -251,6 +251,7 @@ class NDB_BVL_Feedback
      * @param integer $feedbackID ID of the thread whose type we want to get
      *
      * @return string feedback type of the thread
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
      */
     function getThreadType($feedbackID)
     {

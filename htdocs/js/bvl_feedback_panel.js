@@ -3,14 +3,16 @@
  */
 $(document).ready(function() {
 
-    $("#bvl_feedback").on('click', function(){
+    $(".navbar-toggle").on('click', function(){
         console.log(this.id);
 
         request = $.ajax({
             url: "ajax/bvl_feedback_panel.php",
-            type: "post",
+            type: "get",
+	    data: 
             success: function (data) {
-                console.log("in the success function of request- ev");
+                console.log("In the succession function of the ajax reqest for bvl_feedback_panel");
+		console.log(data);
 
             },
             error: function (xhr, desc, err) {

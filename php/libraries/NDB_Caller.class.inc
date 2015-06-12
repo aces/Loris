@@ -411,6 +411,19 @@ class NDB_Caller extends PEAR
     }
 
     /**
+     *
+     * This function is used in main.tpl. If bvl_feedback is available for the current test we render the html
+     * for the template.
+     *
+     * @param $candID:
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */
+    function loadBvlFeedback($candID){
+        
+
+    }
+
+    /**
      * Checks if a library exists, and requires it if it does.
      *
      * @param string $library name of class to be included.

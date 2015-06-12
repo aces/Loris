@@ -15,10 +15,13 @@ set_include_path(
     __DIR__ . "/../../php/libraries:" .
     "/usr/share/pear:"
 );
-
+include ("../main.php");
 require_once __DIR__ . "/../../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
-//require_once "../feedback_bvl_popup.php";
+
+//This array will contain the information to be send to the panel front end.
+//To be enconded in a JSON file. 
+$data = $array();
 
 $client = new NDB_Client;
 $client->initialize();
@@ -35,14 +38,29 @@ if (!$user->hasPermission('bvl_feedback')) {
     exit();
 }
 
-$data = $array();
-$data['userID'] = getData('UserID');
+//There needs to be a candidate set fro 
+if (isset($_REQUEST['candID']) && !empty($_REQUEST['candID'])) {
+            $candidate =& Candidate::singleton($_REQUEST['candID']);
+            if (PEAR::isError($candidate)){
+                $data['error_message'][] = $candidate->getMessage();
+            }
+            $data['candID'] = $candidate->getCandID();
+            $data['PSCID'] = $candidate->getPSCID();
+            
+        }
 
-$data['']
+if (isset($_REQUEST['sessionID']) && !empty($_REQUEST(['sessionID']))){
+    $timePoint =& Timepoint::singleton($_REQUEST['sessionID']);
 
-json_encode($data);
+    if (PEAR::isError($timePoint)){
+        $data['error_message'][] = $timePoint->getMessage();
+    } else{
+        $data['visitLabel'] = $timePoint->getVisitLabel();
+    }
+    $data = $_REQUEST['sessionID'];
+}
 
-
+print json_encode($data);
 
 exit();
 
