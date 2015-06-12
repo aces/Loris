@@ -153,33 +153,6 @@ class Utility extends PEAR
     }
 
     /**
-     * Returns a list of available ethnicities that can be assigned to subjects
-     *
-     * @return  array       an associative array("ethnicity" => "ethnicity")
-     * @access  public
-     * @static
-     * @note    This is no longer used and should be removed
-     * @cleanup
-     */
-    function getEthnicityList()
-    {
-        $DB =& Database::singleton();
-
-        // get the list of ethnicities
-        $query = "SELECT DISTINCT Race as Ethnicity FROM ethnic WHERE Race <> ''";
-
-        // execute the query
-        $result = $DB->pselect($query, array());
-
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["Ethnicity"]] = $row["Ethnicity"];
-        }
-        return $list;
-    }
-
-    /**
      * Returns a list of existing ethnicities of all candidates
      *
      * @return  array       an associative array("ethnicity" => "ethnicity")
