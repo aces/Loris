@@ -270,6 +270,9 @@ class NDB_Caller extends PEAR
         if (method_exists($menu, 'getControlPanel')) {
             $this->controlPanel = $menu->getControlPanel();
         }
+        if (method_exists($menu, 'getFeedbackPanel')){
+            $this->feedbackPanel = $menu->getFeedbackPanel();
+        }
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
         }
@@ -408,19 +411,6 @@ class NDB_Caller extends PEAR
         $html = $instrument->display();
 
         return $html;
-    }
-
-    /**
-     *
-     * This function is used in main.tpl. If bvl_feedback is available for the current test we render the html
-     * for the template.
-     *
-     * @param $candID:
-     * @author Evan McIlroy <evanmcilroy@gmail.com>
-     */
-    function loadBvlFeedback($candID){
-        
-
     }
 
     /**

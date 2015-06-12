@@ -284,9 +284,9 @@
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
             <div class="page-content inset">
-                {if $bvl_feedback}
-                    {include file='bvl_feedback_panel.tpl'}
-                {/if}
+                <div id = "bvl_feedback_panel">
+                    {$feedback_panel}
+                </div>
 
                 {if $console}
                     <div class="alert alert-warning" role="alert">

@@ -1,6 +1,7 @@
 <?php
 require_once 'NDB_Menu.class.inc';
 require_once 'TimePoint_List_ControlPanel.class.inc';
+require_once 'TimePoint_List_FeedbackPanel.class.inc';
 
 /**
  * The timepoint list menu
@@ -176,6 +177,18 @@ class NDB_Menu_timepoint_list extends NDB_Menu
             return  'Screening';
         }
         return  'Not Started';
+    }
+    /**
+     * Used by the NDB_caller class when loading a page. 
+     * Call the display function of the appropriate modules feedback panel.
+     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */ 
+    
+    function getFeedbackPanel(){
+        $feedbackPanel = new TimePoint_List_FeedbackPanel($_REQUEST['candID']);
+        $html = $feedbackPanel->display();
+        return $html;
     }
 
     function getActionButtons() {
