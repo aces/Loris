@@ -20,15 +20,26 @@ $client->initialize();
 $factory = NDB_Factory::singleton();
 $db = $factory->database();
 
-$db->update(
-    "subproject",
-    array(
-     "title" => $_POST['title'],
-     "useEDC" => $_POST['useEDC'],
-     "WindowDifference" => $_POST['WindowDifference'],
-    ),
-    array("SubprojectID" => $_POST['subprojectID'])
-);
+if($_POST['subprojectID'] === 'new' && !empty($_POST['title'])) {
+    $db->insert(
+        "subproject",
+        array(
+         "title" => $_POST['title'],
+         "useEDC" => $_POST['useEDC'],
+         "WindowDifference" => $_POST['WindowDifference'],
+        )
+    );
+} else {
+    $db->update(
+        "subproject",
+        array(
+            "title" => $_POST['title'],
+            "useEDC" => $_POST['useEDC'],
+            "WindowDifference" => $_POST['WindowDifference'],
+        ),
+        array("SubprojectID" => $_POST['subprojectID'])
+    );
+}
 header("HTTP/1.1 200 OK");
 print '{ "ok" : "Success" }';
 exit();
