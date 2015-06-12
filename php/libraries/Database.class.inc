@@ -34,6 +34,7 @@ class Database extends PEAR
     /**
      * The database handle, created by the connect() method
      *
+     * @var    PDO
      * @access private
      */
     var $_PDO = null;
@@ -79,7 +80,8 @@ class Database extends PEAR
      * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
-     * @return object
+     * @return Database
+     * @throws DatabaseException
      * @access public
      */
     static function &singleton(
@@ -281,6 +283,17 @@ class Database extends PEAR
             return $err;
         }
         return true;
+    }
+
+    /**
+     * Get last insert ID.
+     * Will return a valid insert ID only if called after Database::insert() method.
+     *
+     * @return string ID of the last inserted row
+     */
+    public function getLastInsertId()
+    {
+        return $this->lastInsertID;
     }
 
     /**
