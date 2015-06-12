@@ -757,8 +757,20 @@ class NDB_BVL_Instrument extends NDB_Page
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
+            Utility::nullifyEmpty($values, $key);
         }
         $db =& Database::singleton();
+
+        error_log("jhskjfhjkshfkjhskf");
+        error_log("jhskjfhjkshfkjhskf");
+        error_log("jhskjfhjkshfkjhskf");
+        error_log("jhskjfhjkshfkjhskf");
+        error_log("jhskjfhjkshfkjhskf");
+        error_log(print_r($values, true));
+        error_log("jhskjfhjkshfkjhskf");
+        error_log("jhskjfhjkshfkjhskf");
+        error_log("jhskjfhjkshfkjhskf");
+        error_log("jhskjfhjkshfkjhskf");
 
         $result = $db->update(
             $this->table,

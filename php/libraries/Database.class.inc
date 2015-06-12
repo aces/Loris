@@ -363,14 +363,7 @@ class Database extends PEAR
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
-        foreach ($exec_params as $key => $item ){
-            if(is_null($item) || (empty($item) && $item !== 0)){
-                $prep->bindValue(":$key", null);
-            } else {
-                $prep->bindValue(":$key", $item);
-            }
-        }
-        $result = $prep->execute();
+        $result = $prep->execute($exec_params);
         if ($result === false) {
             throw new DatabaseException(
                 "Update statement did not execute successfully.",
