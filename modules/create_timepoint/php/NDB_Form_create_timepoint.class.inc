@@ -84,7 +84,6 @@ class NDB_Form_create_timepoint extends NDB_Form
         $sp_labelOptions = array(null => '');
 
         foreach($allSubprojects as $subprojectID => $title) {
-            print_r($subproject);
             if( ! empty($subprojList)) {
                 if(in_array($subprojectID, $subprojList)){
                     $sp_labelOptions[$subprojectID] = $title;
