@@ -7,20 +7,20 @@
 
 <!-- <div class ="ui-responsive-panel" data-role="panel" id="right-panel" data-position-fixed="true" data-display="push" data-position="right"> -->
 <div class="navmenu navmenu-default navmenu-fixed-right offcanvas" id="bvl_feedback_menu">
+    <div class=navbar navbar-default navbar-fixed-top"> <a style="color: white" href="main.php?test_name=candidate_list" id="candID"" name ="{$candID}">CANDID: {$candID}</a> - PSCID: {$PSCID}</div>
     <div id="accordion">
         <h3>Candidate Overview</h3>
         <div>
-		PSCID: {}
+
         </div>
         <h3>Current Thread Status</h3>
         <div>
 
         </div>
         <h3>Add New Feedback</h3>
-        <div>
-		<form>
-			<input type="text" name="comment">
-		</form>
+        <div id ="new_feedback">
+		<input type="text" id="comment">
+		<button id="save_data">Save data</button>
 
         </div>
     </div><!-- accordion -->
