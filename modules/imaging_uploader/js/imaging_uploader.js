@@ -122,6 +122,9 @@ function uploadFile() {
                         $(progressbar).width(percent + "%");
                         $(progresslabel).html(percent + "%");
                         progressbar.attr('aria-valuenow', percent);
+                        if(percent === 100){
+                            window.setTimeout(function(){location.reload()},3000)
+                        }
                         // progressbar.attr('value', percent);
                         // progresslabel.text(percent + "%");
                     }
