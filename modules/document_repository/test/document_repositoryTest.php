@@ -24,7 +24,8 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "?test_name=document_repository");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Document Repository", $bodyText);
+        $this->assertContains("asdf", $bodyText);
+//        $this->assertContains("Document Repository", $bodyText);
     }
 }
 ?>
