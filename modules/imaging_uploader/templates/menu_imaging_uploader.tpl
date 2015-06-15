@@ -38,7 +38,14 @@
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-4">{$form.mri_file.label}</label>
-                            <div class="col-sm-8">{$form.mri_file.html}</div>
+                            <div id="file-input" class="col-sm-8">{$form.mri_file.html}</div>
+                            <div id="file-progress" class="col-sm-8" style="display:none">
+                                <div class="progress">
+                                  <div id="progressbar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                  </div>
+                                  <div id="progresslabel">0%</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -71,10 +78,10 @@
                     <div class="row">
                         <div class="form-group col-sm-6 col-sm-offset-6">
                             <div class="col-sm-4">
-                                <input type="submit" name="fire_away" id="upload" value="Upload" class="btn btn-sm btn-primary col-xs-12" />
+                                <input type="submit" name="fire_away" id="upload" value="Upload" class="btn btn-sm btn-primary col-xs-12 submit-button" />
                             </div>
                             <div class="col-sm-4">
-                                <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                                <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12 submit-button" />
                             </div>
                             <div class="col-sm-4">
                                  <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=mri_upload&reset=true'" />
@@ -87,11 +94,8 @@
         </div>
     </div>
 </div>
- 
 {*  This section is commented out because the functionality is not currently in the backend
     This functionality is expected to be implemented in future releases of LORIS 
-    <progress id="progressbar" value="0" max="100"></progress><span id="progresslabel"></span>
-    
     <table>
         <tr>
         <td id='hide' style="font-weight: bold; display: block;" >

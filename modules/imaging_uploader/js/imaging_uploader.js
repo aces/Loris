@@ -97,8 +97,10 @@ function progressHandler(event) {
 */
 function uploadFile() {
     "use strict";
-    getMessage();
-    $("#progressbar").show();
+    //getMessage();
+    //$("#progressbar").show();
+    $("#file-input").hide();
+    $("#file-progress").show();
     var formData = new FormData($("#mri_upload")[0]);
 
     $.ajax({
@@ -117,8 +119,11 @@ function uploadFile() {
                         var progressbar = $("#progressbar"),
                             progresslabel = $("#progresslabel"),
                             percent = Math.round((evt.loaded / evt.total) * 100);
-                        progressbar.attr('value', percent);
-                        progresslabel.text(percent + "%");
+                        $(progressbar).width(percent + "%");
+                        $(progresslabel).html(percent + "%");
+                        progressbar.attr('aria-valuenow', percent);
+                        // progressbar.attr('value', percent);
+                        // progresslabel.text(percent + "%");
                     }
                 },
                 false
@@ -134,15 +139,27 @@ function uploadFile() {
 $(function () {
     "use strict";
     change();
-    $("#progressbar").hide();
-/*
-    $("#mri_upload").submit(
-        function (e) {
-            e.preventDefault();
-            var time = getCurrentTime();
-            $("#log_box").html(time + " Preparing... <br>");
-            uploadFile();
+    //$("#progressbar").hide();
+
+    $(".submit-button").click(
+        function (e){
+            if(e.currentTarget.id === "filter"){
+                $("#mri_upload").submit();
+            } else if (e.currentTarget.id === "upload"){
+                e.preventDefault();
+                uploadFile();
+            }
         }
     );
-*/
+
+    // $("#mri_upload").submit(
+    //     function (e) {
+    //         e.preventDefault();
+    //         var which_button = event.currentTarget.value;
+    //         var time = getCurrentTime();
+    //         $("#log_box").html(time + " Preparing... <br>");
+    //         uploadFile();
+    //     }
+    // );
+
 });
