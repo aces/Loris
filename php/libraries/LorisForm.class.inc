@@ -434,10 +434,10 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $msg   = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
-        $value = $this->getValue($el['name']);
-        $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
+        $value    = $this->getValue($el['name']);
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
             . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
