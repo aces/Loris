@@ -16,7 +16,7 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 require_once __DIR__ . "/../vendor/autoload.php";
 $configFile = "../project/config.xml";
-$client = new NDB_Client();
+$client     = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 $DB = Database::singleton();
