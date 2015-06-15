@@ -33,10 +33,16 @@ progress[aria-valuenow]:before  {
   border-radius: 10px;
 }
 
+.progress{
+  background-color: lightgrey;
+  height: 30px;
+}
+
 #progresslabel {
-  position: relative;
-  left: -205px;
-  top: -4px;
-  font-weight: bold;
-  color: black;
+  width: 95%;
+  position: absolute;
+  z-index: 1000;
+  color: white;
+  text-align: center;
+  padding-top: 4px;
 }
