@@ -528,7 +528,7 @@
                                         </div>
                                     {/if}
                                 {/if}
-                                <div id="kgkjgkjg">
+                                <div id="lorisworkspace">
                                     {$workspace}
                                 </div>  
                             {/if}
@@ -546,6 +546,11 @@
                 {$workspace}
             {/if}
         </div>
+
+        {if $control_panel}
+        </div></div>
+        {/if}
+
         {if $dynamictabs neq "dynamictabs"}
             {if $control_panel}
             <div id="footer" class="footer navbar-bottom wrapper">

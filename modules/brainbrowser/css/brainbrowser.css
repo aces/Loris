@@ -35,8 +35,15 @@ body {
     width: 230px;
 }
 
+#sync-volumes-wrapper {
+    padding: initial;
+}
+
 #capture-slices, #sync-volumes {
     font-size: 12px;
+    padding: 3px 10px;
+    margin: 0;
+    line-height: 2;
 }
 
 

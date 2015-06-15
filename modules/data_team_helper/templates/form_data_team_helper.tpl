@@ -5,7 +5,7 @@
                 Selection Filter
             </div>
             <div class="panel-body" id="panel-body">
-                <form>
+                <form method="post">
                     <div class="row">
                         <div class="form-group col-xs-12">
                             <label class="col-sm-4">Visit_labels</label>
@@ -26,7 +26,10 @@
                         <div class="form-group col-xs-12">
                             <label class="col-sm-4">Instruments:</label>
                             <div class="col-sm-8">
-                                <select name="instrument" id="instrument" class="form-control input-sm"></select>
+                                <select name="instrument" id="instrument" class="form-control input-sm">
+                                    <option></option>
+                                    <option value="{$instrumentvalue}" selected="selected">{$instrumentvalue}</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -116,8 +119,10 @@
             {if isset($elements_array[$element][$visit_label].FeedbackList) }
         	    <td nowrap="nowrap" width="40" valign="top">
         	       {foreach from=$elements_array[$element][$visit_label].FeedbackList key=feedback item=FeedbackList}
-                       <a href="#" onClick="javascript:window.open('feedback_bvl_popup.php?test_name={$FeedbackList.test_name}&candID={$FeedbackList.CandID}&sessionID={$FeedbackList.session_id}&commentID={$FeedbackList.commentid}#{$FeedbackList.feedbackid}','bvl_feedback','width=900,height=500,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes')">{$FeedbackList.PSCID}_{$FeedbackList.visit_label}</a>
-        	       {/foreach}
+                       <div>
+                           <a href="#" onClick="javascript:window.open('feedback_bvl_popup.php?test_name={$FeedbackList.test_name}&candID={$FeedbackList.CandID}&sessionID={$FeedbackList.session_id}&commentID={$FeedbackList.commentid}#{$FeedbackList.feedbackid}','bvl_feedback','width=900,height=500,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">{$FeedbackList.PSCID}_{$FeedbackList.visit_label}</a>
+                       </div>
+                   {/foreach}
                 </td>
                 {**Currently the color option only works if the status is created as a separate cell (tr or td)...otherwise ...the color will be unreadable
                 So for now it is commented out...
@@ -126,7 +131,9 @@
                     {foreach from=$elements_array[$element][$visit_label].FeedbackList key=feedback item=FeedbackList}
         				 <!--font solid color="{$FeedbackList.QC_color}"><b> {$FeedbackList.Status}</b> </font-->
         				 <!--font solid color="{$FeedbackList.QC_color}"><b> {$FeedbackList.Status}</b> </font-->
-        				 {$FeedbackList.Status}
+                        <div>
+                            {$FeedbackList.Status}
+                        </div>
         		    {/foreach}
         	    </td>
             {else}
@@ -138,7 +145,7 @@
             <td nowrap="nowrap" valign="top">
                 {foreach from=$Conflicts item=conflict}
                     {if ($conflict.FieldName eq $elements_array[$element][$visit_label].sourcefield) and $conflict.visit_label eq $visit_label}
-                        <a href="main.php?Question={$conflict.FieldName}&Instruments={$conflict.test_name_display}&Visits={$conflict.visit_label}&PSCID={$conflict.PSCID}&site=all&test_name=conflict_resolver" target="_blank">{$conflict.PSCID}_{$conflict.visit_label}<BR></a>
+                        <a href="#" class="conflict_resolver_link" data-pscid="{$conflict.PSCID}" data-question="{$conflict.FieldName}" data-instrument="{$conflict.TableName}" data-visits="{$conflict.visit_label}">{$conflict.PSCID}_{$conflict.visit_label}<BR></a>
                     {/if}
                 {/foreach}
             </td>

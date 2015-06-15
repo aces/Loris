@@ -120,6 +120,23 @@ class LorisForm
     }
 
     /**
+     * Reimplementation of HTML_QuickForm's "addPassword" API.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "class"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    public function addPassword($name, $label, $options=array())
+    {
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'password';
+    }
+
+    /**
      * Reimplementation of HTML_QuickForm's "addText" API.
      *
      * @param string $name    The element name.
@@ -150,12 +167,12 @@ class LorisForm
      */
     public function addTextArea($elname, $label, $options=array())
     {
-        $el         =& $this->addBase($elname, $label);
+        $el         =& $this->addBase($elname, $label, $options);
         $el['type'] = 'textarea';
-        if ($options['cols']) {
+        if (isset($options['cols'])) {
             $el['cols'] = $options['cols'];
         }
-        if ($options['rows']) {
+        if (isset($options['rows'])) {
             $el['rows'] = $options['rows'];
         }
         return $el;
@@ -168,16 +185,19 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
+     * @param array  $options An array of options that should get added,
+     *                        such as the date format, min or max date etc.
+     * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addDate($name, $label, $options)
+    public function addDate($name, $label, $options, $attribs = array())
     {
-        $el         =& $this->addBase($name, $label, $options);
-        $el['type'] = 'date';
+        $el            =& $this->addBase($name, $label, $attribs);
+        $el['type']    = 'date';
+        $el['options'] = $options;
     }
 
     /**
@@ -229,7 +249,7 @@ class LorisForm
             $el = $this->addSelect($name, $label, $options, $attribs);
             break;
         case 'date':
-            $el = $this->addDate($name, $label, $options);
+            $el = $this->addDate($name, $label, $options, $attribs);
             break;
         case 'file':
             $el = $this->addFile($name, $label, $options);
@@ -239,6 +259,9 @@ class LorisForm
             break;
         case 'textarea':
             $el = $this->addTextArea($name, $label, $options);
+            break;
+        case 'password':
+            $el = $this->addPassword($name, $label, $options);
             break;
         case 'text':
         default:
@@ -253,16 +276,18 @@ class LorisForm
      * Creates a text element that can be added to the page but
      * does not itself add the element.
      *
-     * @param string $elname The name of the element to be added to
-     *                       the form
-     * @param string $label  The name of the label to attach to the
-     *                       form
+     * @param string $elname  The name of the element to be added to
+     *                        the form
+     * @param string $label   The name of the label to attach to the
+     *                        form
+     * @param array  $attribs An array of extra HTML attributes to be
+     *                        added to this element.
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText($elname, $label)
+    function createText($elname, $label, $attribs = array())
     {
-        $el         =& $this->createBase($elname, $label);
+        $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
         return $el;
     }
@@ -343,7 +368,11 @@ class LorisForm
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
-            if ($optionKey == $this->getValue($el['name'])) {
+            if (!is_null($optionKey)) {
+                $optionKey = (string) $optionKey;
+            }
+
+            if ($optionKey === $el['selected']) {
                 $selected = 'selected="selected"';
             }
 
@@ -383,11 +412,11 @@ class LorisForm
      */
     function staticHTML($el)
     {
+        if (empty($el['name'])) {
+            return $el['label'];
+        }
         $val = $this->getValue($el['name']);
 
-        if (!empty($el['label'])) {
-            return $el['label'] . $val;
-        }
         return $val;
     }
     /**
@@ -405,16 +434,17 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $msg   = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $value = $this->getValue($el['name']);
-        $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
-            . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
+        $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
+        $value    = $this->getValue($el['name']);
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
+            . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
-                !empty($value)
+            !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '" '
                 : ''
-              )
+            )
             . ">";
         print_r($elmnt);
         return $elmnt;
@@ -434,7 +464,13 @@ class LorisForm
     {
         $retVal = '';
         foreach ($el['elements'] as $element) {
+            if (isset($el['options']['prefix_wrapper'])) {
+                $retVal .= $el['options']['prefix_wrapper'];
+            }
             $retVal .= $this->renderElement($element);
+            if (isset($el['options']['postfix_wrapper'])) {
+                $retVal .= $el['options']['postfix_wrapper'];
+            }
             $retVal .= $el['delimiter'];
         }
         return $retVal;
@@ -444,18 +480,24 @@ class LorisForm
      * Generates the HTML to add to the page when rendered for a text
      * element.
      *
-     * @param array $el The element to render from $this->form
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
      *
      * @return string A string of the HTML markup to render
      */
-    function textHTML($el)
+    function textHTML($el, $type='text')
     {
         $cls = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
         $value = $this->getValue($el['name']);
-        return "<input name=\"$el[name]\" type=\"text\" $cls"
+        return "<input name=\"$el[name]\" type=\"$type\" $cls"
+            . (
+                isset($el['required']) && $el['required']
+                ? ' required' : ''
+              )
             . (
                 !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '"'
@@ -655,8 +697,9 @@ class LorisForm
             return $this->textareaHTML($el);
         case 'file':
             return $this->fileHTML($el);
-        case 'text':
         case 'password':
+            return $this->textHTML($el, 'password');
+        case 'text':
             return $this->textHTML($el);
         case 'advcheckbox':
             return $this->checkboxHTML($el);
@@ -808,15 +851,20 @@ class LorisForm
      * @param string $name      The name of the group
      * @param string $label     The label to attach to the group
      * @param string $delimiter The delimiter to use to separate group elements
+     * @param array  $options   An optional array to include prefix_wrapper and
+     *                          postfix_wrapper strings - html that will be
+     *                          placed before and after the group html
      *
      * @return none
      */
-    function addGroup($array, $name, $label, $delimiter)
+    function addGroup($array, $name, $label, $delimiter, $options = array())
     {
         $this->form[$name] = array(
                               'type'      => 'group',
                               'elements'  => $array,
+                              'label'     => $label,
                               'delimiter' => empty($delimiter) ? ' ' : $delimiter,
+                              'options'   => $options,
                              );
 
     }
@@ -840,7 +888,7 @@ class LorisForm
     {
         switch($type) {
         case 'text':
-            return $this->createText($elname, $label, $options);
+            return $this->createText($elname, $label, $options, $attribs);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
         case 'static':
@@ -852,6 +900,7 @@ class LorisForm
             break;
         case 'advcheckbox':
         case 'textarea':
+        case 'date':
         case 'password':
             $el         = $this->createBase($elname, $label, $options);
             $el['type'] = $type;
@@ -1009,6 +1058,7 @@ class LorisForm
         if (isset($this->errors[$el])) {
             return $this->errors[$el];
         }
+
         return;
     }
 }

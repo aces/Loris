@@ -410,7 +410,7 @@ class NDB_BVL_Feedback
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", f.Test_name as Instrument, ft.CommentID";
         }
-        $query  .= " FROM candidate as c,
+        $query  .= " FROM candidate as c
                         JOIN feedback_bvl_thread as ft ON (c.CandID=ft.CandID)
                         LEFT JOIN session as s ON (s.ID = ft.SessionID)";
         $qparams = array();
@@ -593,17 +593,15 @@ class NDB_BVL_Feedback
      *                           attached to
      *
      * @return void
+     *
+     * @throws DatabaseException
+     * @throws Exception
      */
     function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
-        $db =& Database::singleton();
-
-        // get the FeedbackID for the new thread
-        $feedbackID = $db->pselectOne(
-            "SELECT MAX(FeedbackID)+1 AS FeedbackID FROM feedback_bvl_thread",
-            array()
-        );
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->Database();
 
         // public threads are inactive by default
         if ($public == 'Y') {
@@ -669,6 +667,9 @@ class NDB_BVL_Feedback
         }
 
         $success = $db->insert('feedback_bvl_thread', $setArray);
+
+        // get the FeedbackID for the new thread
+        $feedbackID = $db->getLastInsertId();
 
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment);

@@ -37,6 +37,7 @@ class NDB_Page
 
     /**
      * Reference to the HTML QuickForm
+     * @var LorisForm
      */
     var $form;
 
@@ -154,7 +155,7 @@ class NDB_Page
 
 
     /**
-     * Adds a text element to the current page with no accompagnying
+     * Adds a text element to the current page with no accompanying
      * not answered option
      *
      * @param string $field   The name of the text element to add
@@ -170,7 +171,7 @@ class NDB_Page
     }
 
     /**
-     * Adds a text area to the current page with no accompagnying not answered
+     * Adds a text area to the current page with no accompanying not answered
      * option.
      *
      * @param string $field          The name of the text area to add
@@ -192,7 +193,7 @@ class NDB_Page
     }
 
     /**
-     * Adds a date field (without an accompagnying not answered option) to the
+     * Adds a date field (without an accompanying not answered option) to the
      * current page.
      *
      * @param string $field   The name of the date field
@@ -442,22 +443,13 @@ class NDB_Page
      */
     function createCheckbox($field, $label, $options=null, $closer='</label>')
     {
-        $group   = array();
-        $group[] = $this->form->createElement('static', null, null, '<label>');
-        $group[] = $this->form->createElement(
-            'advcheckbox',
+        return $this->form->createElement(
+            "advcheckbox",
             $field,
-            null,
-            null,
-            $options
+            $label,
+            $options,
+            array()
         );
-        $group[] = $this->form->createElement(
-            'static',
-            'checkLabel',
-            null,
-            $label.$closer
-        );
-        return $group;
     }
 
     /**

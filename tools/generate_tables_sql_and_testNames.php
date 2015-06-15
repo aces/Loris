@@ -16,6 +16,7 @@
 //taken from php.net notes
 
 // require all relevant OO class libraries
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
@@ -41,7 +42,7 @@ foreach($instruments AS $instrument){
             case "table":
                 $tablename = $bits[1];
 
-                $filename="../project/tables_sql/".$bits[1].".super_sql";
+                $filename="../project/tables_sql/".$bits[1].".sql";
                 $output="CREATE TABLE `$bits[1]` (\n";
                 $output.="`CommentID` varchar(255) NOT NULL default '',
                           `UserID` varchar(255) default NULL,

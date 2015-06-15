@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
         unset($_SESSION['tntcon']);
         //redirect to a new page
-        header("Location: thank-you.php", true, 301);
+        header("Location: thank-you.html", true, 301);
         exit();
 
     }

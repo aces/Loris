@@ -11,7 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'PEAR.php';
 
 /**
  * SinglePointLogin class
@@ -26,7 +25,7 @@ require_once 'PEAR.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class SinglePointLogin extends PEAR
+class SinglePointLogin
 {
     /**
      * Defines whether a user is currently logged in
@@ -86,16 +85,13 @@ class SinglePointLogin extends PEAR
             // If StudyLinks aren't defined, it shouldn't be fatal.
         }
 
+        $study_title = $config->getSetting('title');
         $tpl_data['study_title'] = $study_title;
         try {
-            $tpl_data['study_logo'] = $study_logo;
+            $tpl_data['study_logo'] = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
             $tpl_data['study_logo'] = '';
         }
-
-        // If there's no study, we have a bigger problem
-        $study_title = $config->getSetting('title');
-
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
@@ -200,19 +196,7 @@ class SinglePointLogin extends PEAR
             return false;
         }
 
-        // make the set
-        $expiry = date(
-            'Y-m-d',
-            mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
-        );
-        $set    = array(
-                   'Password'        => null,
-                   'Password_md5'    => User::MD5Salt($_POST['password']),
-                   'Password_expiry' => $expiry,
-                  );
-
-        // update the user
-        $success = $user->update($set);
+        $user->updatePassword($_POST['password']);
         return true;
     }
 
@@ -309,31 +293,14 @@ class SinglePointLogin extends PEAR
                 && User::MD5Unsalt($_POST['password'], $row['Password_md5']))
                 || ($php55 && password_verify($_POST['password'], $oldhash))
             ) {
-                // If the PHP password hashing is available, check if a rehash
-                // is required and if so, rehash it.
-                //
-                // (If Password_hash is null, skip the password_needs_rehash
-                // check, because we know that we have access to the password
-                // hashing API, and we know it's never been hashed using
-                // password_hash.
-                if ($php55) {
-                    if (empty($oldhash)
-                        || password_needs_rehash($oldhash, PASSWORD_DEFAULT)
-                    ) {
-                        // Hash the password using PHP defaults.
-                        $hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                        // Save the new hash and wipe out the old, insecure MD5 sum.
-                        $DB->update(
-                            "users",
-                            array(
-                             'Password_hash' => $hash,
-                             'Password_MD5'  => null,
-                            ),
-                            array('UserID' => $_POST['username'])
-                        );
-                    }
+                if ($php55
+                    && (empty($oldhash)
+                    || password_needs_rehash($oldhash, PASSWORD_DEFAULT))
+                ) {
+                    $user =& User::factory($_POST['username']);
+                    $user->updatePassword($_POST['password']);
                 }
-                // check that the user is active
+
                 if ($row['Active'] == 'N') {
                     $this->_lastError = "Your account has been deactivated."
                         . " Please contact your project administrator to"
@@ -346,7 +313,7 @@ class SinglePointLogin extends PEAR
                     return false;
                 }
 
-                if ($row['Pending_approval'] == '1') {
+                if ($row['Pending_approval'] == 'Y') {
                     $this->_lastError = "Your account has not yet been activated."
                         . " Please contact your project administrator to activate"
                         . " this account.";

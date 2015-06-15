@@ -67,7 +67,12 @@ class NDB_Form_user_accounts extends NDB_Form
             $user =& User::factory($this->identifier);
         }
         else{
-            $user =& User::factory($values['UserID']);
+            // Since the form has been validated there are two possibilities:
+            //    - UID is set
+            //    - UID is not set but the "Match UID to email" checkbox is checked
+            $effectiveUID 
+                = $values['NA_UserID'] == 'on' ? $values['Email'] : $values['UserID'];
+            $user =& User::factory($effectiveUID);
         }
         if(Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
@@ -109,19 +114,6 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
 
-        // prepend two random characters
-        if (isset($set['Password_md5'])) {
-            // Update CouchDB. Must do before password is salted/hashed.
-            $config =& NDB_Config::singleton();
-            $couch_config = $config->getSetting("CouchDB");
-            if ($couch_config['SyncAccounts'] === "true") {
-                $user->updateCouchUser($set['Password_md5']);
-            }
-
-            $set['Password_md5'] = User::MD5Salt($set['Password_md5']);
-        }
-
-
         // update the user
         if (empty($this->identifier)) {
             // insert a new user
@@ -146,6 +138,12 @@ class NDB_Form_user_accounts extends NDB_Form
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() update: ".$success->getMessage());
             }
+        }
+
+        // prepend two random characters
+        if (isset($set['Password_md5'])) {
+            // Update CouchDB. Must do before password is salted/hashed.
+            $user->updatePassword($set['Password_md5']);
         }
 
         // update the user permissions if applicable
@@ -216,24 +214,20 @@ class NDB_Form_user_accounts extends NDB_Form
         if (empty($this->identifier)) {
             // user name
             $group[] = $this->createText('UserID', 'User name');
-            // $group[] = $this->form->createElement('static', null, null, '<label>');
-            $group = array_merge($group, $this->createCheckbox('NA_UserID', "Make user name match email address"));
-            // $group[] = $this->form->createElement('static', null, null, 'Make user name match email address</label>');
+            $group[] = $this->createCheckbox('NA_UserID', "Make user name match email address");
             $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
             unset($group);
 
         }
         // it is an existing user
         else {
-            // user name
-            $this->addBasicText('UserID', 'User name');
-            $username =& $this->form->getElement('UserID');
-            $username->freeze();
+            // display user name
+            $this->addScoreColumn('UserID', 'User name');
         }
 
         // password
         $group[] = $this->createPassword('Password_md5');
-        $group = array_merge($group, $this->createCheckbox('NA_Password', 'Generate new password'));
+        $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
         $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
         $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
@@ -256,7 +250,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
         ////if the option is not set or if it's and it's true then display it 
 
-        if ((!isset($additional_user_info)) || ($additional_user_info)){
+        if (isset($additional_user_info) && $additional_user_info){
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
             $this->addBasicText('Institution', 'Institution');
@@ -270,15 +264,10 @@ class NDB_Form_user_accounts extends NDB_Form
         }
         
         // email address
-        $group[] = $this->createText('Email');
-        $group = array_merge($group, $this->createCheckbox('SendEmail', 'Send email to user'));
+        $group[] = $this->createText('Email', 'Email address');
+        $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
         $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
         unset($group);
-
-        // email address rules
-        $this->addGroupRule('Email_Group', array('Email' => array(array('Email address is required', 'required'))));
-        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be valid', 'email'))));
-        $this->addGroupRule('Email_Group', array('Email' => array(array('The email address must be less than 255 characters long', 'maxlength', 255))));
 
         //------------------------------------------------------------
 
@@ -299,10 +288,9 @@ class NDB_Form_user_accounts extends NDB_Form
         }
         $this->addSelect('CenterID', 'Site', $siteOptions);
 
-        // active and examiner
-    	$this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
+        // active
+    	 $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
 	    $this->addSelect('Pending_approval', 'Pending approval', array('Y' => 'Yes', 'N' => 'No'));
-	    $this->addSelect('Examiner', 'Examiner', array('N' => 'No', 'Y' => 'Yes'));
 
         //------------------------------------------------------------
 
@@ -312,11 +300,17 @@ class NDB_Form_user_accounts extends NDB_Form
         foreach ($perms as $row) {
             if($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
-                $group[] = $this->form->createElement('static', null, null, '</div>' . 
-                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>' 
+                $group[] = $this->form->createElement('static', null, null, '</div>' .
+                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>'
                         . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">");
             }
-            $group = array_merge($group, $this->createCheckbox('permID['.$row['permID'].']', $this->_GUIDelimiter.$row['description'], "class=\"perm_$lastRole\"", '</label><br>'));
+            $group[] = $this->createCheckbox(
+                'permID['.$row['permID'].']',
+                "$row[description]<br>",
+                array(
+                 "class" => "perm_$lastRole",
+                )
+            );
         }
         $this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
         unset($group);
@@ -352,9 +346,7 @@ class NDB_Form_user_accounts extends NDB_Form
         //------------------------------------------------------------
 
         // user name
-        $this->addBasicText('UserID', 'User name');
-        $username =& $this->form->getElement('UserID');
-        $username->freeze();
+        $this->addScoreColumn('UserID', 'User name');
 
         // full name
         //$this->addBasicText('Real_name', 'Full name');
@@ -421,59 +413,87 @@ class NDB_Form_user_accounts extends NDB_Form
 
         $errors = array();
 
-        // if username is user-defined, and it is a new user
-        if ((!empty($values['NA_UserID']) || !empty($values['UserID'])) && empty($this->identifier)) {
-            // check username's uniqueness
-            $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
-                    array('UID' => $values['UserID'] )
-                    );
-
-            if (Utility::isErrorX($result)) {
-                return PEAR::raiseError("DB Error: ".$result->getMessage());
+        //============================================
+        //         Validate UserID and NA_UserID
+        //============================================
+        
+        if(empty($this->identifier)) {
+            // Clicked on "UID == email" and specified a UID
+            if(!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
+                $errors['UserID_Group'] = 'You cannot enter a user name if you want it to match the email address';
             }
-
-            if ($result > 0) {
-                $errors['UserID_Group'] = 'The user name already exists';
+            // Not clicked on "UID == email" and not specified a UID
+            elseif(empty($values['UserID']) && $values['NA_UserID'] != 'on') {
+                $errors['UserID_Group'] = 'You must enter a user name or choose to make it match the email address';
             }
+            // Either specified a UID or clicked on "UID = email" with a non-empty email
+            elseif(!empty($values['UserID']) || ($values['NA_UserID'] == 'on' && $values['Email'])) { 
+        	       $effectiveUID = empty($values['UserID']) ? $values['Email'] : $values['UserID'];
+        	       
+                // check username's uniqueness
+                $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
+                    array('UID' => $effectiveUID)
+                );
 
-            if (strlen($values['UserID']) > 255) {
-                $errors['UserID_Group'] = 'The user name must be less than 255 characters long';
+                if (Utility::isErrorX($result)) {
+                    return PEAR::raiseError("DB Error: ".$result->getMessage());
+                }
+
+                if ($result > 0) {
+                    $errors['UserID_Group'] = 'The user name already exists';
+                }
+
+                if (strlen($effectiveUID) > 255) {
+                    $errors['UserID_Group'] = 'The user name must not exsceed 255 characters';
+                }
             }
-
         }
-        if (!empty($this->identifier)) {
-            $pass = $DB->pselectOne("SELECT Password_md5 FROM users WHERE UserID = :UID",
-                    array('UID' => $this->identifier) );
+        
+        //==================================
+        //        Password validation
+        //==================================
+        if(!empty($this->identifier)) {
+            $pass = $DB->pselectOne("SELECT COALESCE(Password_hash, Password_md5) as Current_password FROM users WHERE UserID = :UID",
+                                    array('UID' => $this->identifier) );
              //case of new user the password column will be null so either password should be set or
             // password should be generated
-            if (empty($pass) && empty($values['Password_md5']) && $values['NA_Password'] != 1) {
+            if (empty($pass) && empty($values['Password_md5']) && $values['NA_Password'] != 'on') {
                 $errors['Password_Group'] = 'Please specify password or click Generate new password';
             }
         }
+        
         // if password is user-defined, and user wants to change password
-        if (empty($values['NA_Password']) && !empty($values['Password_md5'])) {
+        if (empty($values['NA_Password']) 
+            && (!empty($values['Password_md5']) || !empty($values['__Confirm']))
+        ) {
             // check password strength
             if (!User::isPasswordStrong($values['Password_md5'], array($values['__Confirm'], $values['UserID'], $values['Email']), array('==', '!=', '!='))) {
                 $errors['Password_Group'] = 'The password is weak, or the passwords do not match';
             }
         }
+        
         // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == 1 && $values['SendEmail'] != 1) {
+        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
                $errors['Email_Group'] = 'When generating a new password, please notify the user by checking Send email to user box';
         }
 
-        if (empty($this->identifier) && empty($values['NA_Password']) && empty($values['Password_md5']) ) {
+        if (empty($this->identifier) && ($values['NA_Password'] != 'on') && empty($values['Password_md5']) ) {
                $errors['Password_Group'] = 'Password is required';
         }
 
-        // check email address' uniqueness
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID <> :UID", array('VEmail' => $values['Email'], 'UID' => $values['UserID']));
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
+        //======================================
+        //           Validate Email
+        //======================================
 
-        if ($result > 0) {
-            $errors['Email_Group'] = 'The email address already exists';
+        // If an email was entered
+        if (!empty($values['Email'])) {
+            $emailError = $this->getEmailError($DB, $values['Email']);
+            if(!is_null($emailError)) {
+                $errors['Email_Group'] = $emailError;
+            }
+        } else {
+            // No email entered: error
+            $errors['Email_Group'] = 'You must enter an email address';
         }
 
         return $errors;
@@ -498,19 +518,37 @@ class NDB_Form_user_accounts extends NDB_Form
             }
         }
 
-        // check email address' uniqueness
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE Email = :VEmail AND UserID != :UID", 
-            array('VEmail' => $values['Email'], 'UID' => $values['identifier']
-        ));
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
-    
-        if ($result > 0) {
-            $errors['Email'] = 'The email address already exists';
+        // Validate email
+        $emailError = $this->getEmailError($DB, $values['Email']);
+        if(!is_null($emailError)) {
+            $errors['Email'] = $emailError;
         }
 
         return $errors;
+    }
+    
+    private function getEmailError($DB, $email) {
+        // check email address' uniqueness
+        $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
+        $params = array('VEmail' => $email);
+        if (!is_null($this->identifier)) {
+            $query        .= " AND userID <> :UID";
+            $params['UID'] = $this->identifier;
+        }
+        $result = $DB->pselectOne($query, $params);
+        if (Utility::isErrorX($result)) {
+            return PEAR::raiseError("DB Error: ".$result->getMessage());
+        }
+
+        // Email already exists in database
+        if ($result > 0) {
+            return 'The email address already exists';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // If email not syntactically valid
+            return "Invalid email address";
+        }
+
+        return null;
     }
 }
 ?>

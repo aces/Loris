@@ -193,8 +193,7 @@ class FeedbackMRI
      *                           table
      *
      * @return A two-dimensional array with key (int) PredefinedCommentID and
-     *               two-element array ('Comment'=> string CommentName,
-     *                                   'field'=> string FieldName)
+     *               one-element array ('Comment'=> string CommentName)
      */
     function getAllPredefinedComments($commentTypeID)
     {
@@ -202,7 +201,7 @@ class FeedbackMRI
         $DB =& Database::singleton();
 
         // build the query
-        $query = "SELECT PredefinedCommentID, Comment, FieldName
+        $query = "SELECT PredefinedCommentID, Comment
                     FROM feedback_mri_predefined_comments
                   WHERE CommentTypeID=:CTID";
 
@@ -215,7 +214,6 @@ class FeedbackMRI
                 $PredefinedID       = $row['PredefinedCommentID'];
                 $preDefinedComments = array();
                 $preDefinedComments['Comment'] = stripslashes($row['Comment']);
-                $preDefinedComments['field']   = $row['FieldName'];
                 $comments[$PredefinedID]       = $preDefinedComments;
             }
         }

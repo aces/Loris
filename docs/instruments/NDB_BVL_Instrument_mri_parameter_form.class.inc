@@ -204,13 +204,13 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
           {
               $timepoint =& TimePoint::singleton($this->getSessionID());
               $candidate =& Candidate::singleton($timepoint->getCandID());
-              $this->_nullStatus(&$values);
+              $this->_nullStatus($values);
 
               if(isset($values['Date_taken'])) {
                   $date = $values['Date_taken'];
                   if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
                       $values['Date_taken'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                      $this->_saveCandidateAge(&$values);
+                      $this->_saveCandidateAge($values);
                   }  else {
                       unset($values['Date_taken']);
                   }
@@ -299,7 +299,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
                 $file->registerForm($this->form);
 
                 //Tell File_Upload what file handlers to use.
-                $file->setFileHandler("directions_file", &$this);
+                $file->setFileHandler("directions_file", $this);
 
                 //Set the target directory that you want files moved into once they are validated and processed.
                 $config = NDB_Config::singleton();

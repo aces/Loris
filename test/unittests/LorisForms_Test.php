@@ -139,6 +139,21 @@ class LorisForms_Test extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * Test that the addDate wrapper adds an element of the appropriate
+     * type to the page
+     *
+     * @return none
+     */
+    function testAddPassword()
+    {
+        $this->form->addPassword("abc", "Hello", array());
+        $this->assertType("abc", "password");
+        $this->assertLabel("abc", "Hello");
+    }
+
+
+
 
 
     /**
@@ -205,6 +220,21 @@ class LorisForms_Test extends PHPUnit_Framework_TestCase
         $this->form->addElement("file", "abc", "Hello");
     }
 
+    /**
+     * Test that the addElement wrapper with type "password" adds an element of
+     * the appropriate type to the page
+     *
+     * @return none
+     */
+    function testAddElementPassword()
+    {
+        $this->form = $this->getMockBuilder('LorisForm')
+            ->setMethods(array('addPassword'))
+            ->getMock();
+        $this->form->expects($this->once())
+            ->method('addPassword');
+        $this->form->addElement("password", "abc", "Hello");
+    }
 
 
 }

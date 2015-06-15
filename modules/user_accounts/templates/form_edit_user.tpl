@@ -1,6 +1,11 @@
 <br />
 {literal}
 <script>
+
+// Flag that indicates whether we already scrolled the browser window
+// to make an invalid field visible for the current submit event
+var scrolledToInvalidField;
+
 $(document).ready(function() {
     function toggleGroup(group) {
         if(group) {
@@ -24,23 +29,63 @@ $(document).ready(function() {
         section_el = $("#perms_" + section + " br:nth-child(1)").hide();
     });
     
+    // This will make sure that the flag indicating whether we scrolled
+    // to an invalid element when the form is submitted is reset
+    document.getElementsByName('fire_away')[0].addEventListener("click", function () {
+       scrolledToInvalidField = false;
+    });
+    
+    // Override default event handler for invalid input elements
+    // This will make sure that the invalid element appears at the top
+    // of the page.  
+    var elements = document.querySelectorAll('input,select,textarea');
+    var navbarHeader = document.getElementsByClassName("navbar-header");
+    for(var i = elements.length; i--;){
+        elements[i].addEventListener('invalid',function(){
+            // Only make the first invalid element visible when the
+            // form is submitted. 
+            // If this is not done we have no guarantee that the error message
+            // displayed will be for the element that we scrolled to (i.e we
+            // might ensure invalid element #10 is visible while the error
+            // message that is displayed by the page is for element #1, which 
+            // might be way higher up, and thus hidden from the view)
+            if(!scrolledToInvalidField) {
+                this.scrollIntoView(true);
+            
+                // scrollingIntoView is not enough: the navigation bar will appear
+                // over the invalid element and hide it.
+                // We have to scroll an additional number of pixels down so that 
+                // the elements becomes visible. 
+                window.scrollBy(0,- $(navbarHeader).height()- 10);
+                scrolledToInvalidField = true;
+            }
+        });
+    }
 });
 </script>
 {/literal}
-<form method="post" name="edit_user" >
-
+<form method="post" name="edit_user">
     {if $form.errors}
         <div class="alert alert-danger" role="alert">
             Please ensure that all required fields are filled
         </div>
     {/if}
-	<h3>Password Rules</h3>
-	<ul>
-		<li>The password must be at least 8 characters long</li>
-        <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
-        <li>The password and the user name must not be the same</li>
-        <li>The password and the email address must not be the same</li>
-	</ul>
+   <div class="panel panel-default">
+      <div class="panel-body">
+	    <h3>Password Rules</h3>
+	    <ul>
+		    <li>The password must be at least 8 characters long</li>
+            <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
+            <li>The password and the user name must not be the same</li>
+            <li>The password and the email address must not be the same</li>
+        </ul>
+        <h3>Notes</h3>
+        <ul>
+            <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
+            <li>When generating a new password, please notify the user by checking 'Send email to user' box below!</li>
+        </ul>
+       </div>
+    </div>
 	<h3>Add/Edit User</h3>
 	<!-- {foreach from=$form.errors item=error key=k}
 	    <ul>
@@ -53,6 +98,7 @@ $(document).ready(function() {
         {else}
         <div class="row form-group form-inline form-inline">
         {/if}
+        {if $form.UserID_Group != null}
 	    	<label class="col-sm-12 col-sm-2 form-label">
                    {$form.UserID_Group.label}
             </label>
@@ -64,31 +110,28 @@ $(document).ready(function() {
                     <font class="form-error">{$form.errors.UserID_Group}</font>
                 </div>
             {/if}
-	    </div>
+        {else}
+	    	<label class="col-sm-12 col-sm-2 form-label">
+                   {$form.UserID.label}
+            </label>
+	    	<div class="col-sm-10">
+	    		{$form.UserID.html}
+	    	</div>
         
+        {/if}
+	     </div>
     <!-- </div> -->
-    <br>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
-    		NOTE:
-    	</label>
-    	<div class="col-sm-10">
-    		<B>When generating a new password, please notify the user by checking 'Send email to user' box!</B>
-    	</div>
-    </div>
     <br>
     {if $form.errors.Password_Group}
     <div class="row form-group form-inline form-inline has-error">
     {else}
     <div class="row form-group form-inline form-inline">
     {/if}
-    	<label class="col-sm-2 form-label">
+    	<label class="col-sm-2">
     		{$form.Password_Group.label}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Password_Group.NA_Password.html} {$form.Password_Group.checkLabel.html}
-            <br>
-            {$form.Password_Group.Password_md5.html}
+    		{$form.Password_Group.html}
     	</div>
         {if $form.errors.Password_Group}
             <div class="col-sm-offset-2 col-xs-12">
@@ -285,14 +328,6 @@ $(document).ready(function() {
     	</label>
     	<div class="col-sm-10">
     		{$form.Pending_approval.html}
-    	</div>
-    </div>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
-    		{$form.Examiner.label}
-    	</label>
-    	<div class="col-sm-10">
-    		{$form.Examiner.html}
     	</div>
     </div>
     <div class="row form-group form-inline">

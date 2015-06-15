@@ -13,13 +13,42 @@ function checkAccessProfileForm() {
         form.PSCID.focus();
         return false;
     }
-    return true;
+
+    $.get("AjaxHelper.php?Module=candidate_list&script=validateProfileIDs.php&candID=" + form.candID.value + "&PSCID=" + form.PSCID.value ,
+        function(data)
+        {
+            //ids are valid, submit accessProfileForm form
+            if (data==1) {
+                $( "#accessProfileForm" ).unbind('submit.formValidation');
+                form.submit();
+            }
+            else {
+                //display error message
+
+                alert("DCCID or PSCID is not valid");
+            }
+        }
+    );
+
+    return false;
 }
-function hideFilter() {
+
+function hideFilter(obj) {
     'use strict';
-    $("#panel-body").toggle();
-    $("#down").toggle();
-    $("#up").toggle();
+
+     var heading = $(obj);
+     var arrow = $(obj).children('.arrow');
+     if (heading.hasClass('panel-collapsed')) {
+            // expand the panel
+            heading.parents('.panel').find('.panel-body').slideDown();
+            heading.removeClass('panel-collapsed');
+            arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        } else {
+            // collapse the panel
+            heading.parents('.panel').find('.panel-body').slideUp();
+            heading.addClass('panel-collapsed');
+            arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        }
 }
 function toggleMe() {
     "use strict";
@@ -28,6 +57,7 @@ function toggleMe() {
     $(".advanced-buttons").toggle();
 }
 
+
 $(function(){
 	$('input[name=dob]').datepicker({
 		dateFormat: 'yy-mm-dd',
@@ -35,6 +65,7 @@ $(function(){
 		changeYear: true
 	});
 });
+
 
 $(document).ready(function() {
     // Filters will only get applied on a POST, so
@@ -62,4 +93,11 @@ $(document).ready(function() {
 
         form.appendTo('body').submit();
     });
+
+    //validation for the accessProfileForm
+    $( "#accessProfileForm" ).bind('submit.formValidation', function( event ) {
+        event.preventDefault();
+        checkAccessProfileForm();
+    })
+
 });

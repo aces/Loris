@@ -26,7 +26,12 @@ if (Utility::isErrorX($DB)) {
     print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die();
 }
 
-if ($_POST['category_name'] !== '') {
+
+
+if (empty($_POST['category_name']) && $_POST['category_name'] !== '0') {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+} else {
     $category_name = $_POST['category_name'];
 }
 if ($_POST['parent_id'] !== '') {

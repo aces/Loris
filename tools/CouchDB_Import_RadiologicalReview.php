@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
@@ -83,7 +84,7 @@ class CouchDBRadiologicalReviewImporter {
                   'DataDictionary' => array('FinalRadiologicalReview' => $this->Dictionary) 
             )
         );
-        
+
         // Query to retrieve radiological review data
         $finalradiologicalreview = $this->SQLDB->pselect("SELECT c.PSCID, s.Visit_label,
             eFinal.full_name AS FinalReview_Radiologist, 
@@ -118,6 +119,7 @@ class CouchDBRadiologicalReviewImporter {
             WHEN frr.PVS2=2 THEN 'Mild' 
             WHEN frr.PVS2=3 THEN 'Moderate' 
             WHEN frr.PVS2=4 THEN 'Marker' END as ExtraReview_PVS, 
+            frr.Final_Exclusionary2 AS ExtraReview_ExclusionaryStatus,
             frr.Final_Incidental_Findings2 AS ExtraReview_Comment
             FROM final_radiological_review frr
             LEFT JOIN flag f ON (f.CommentID=frr.CommentID) 

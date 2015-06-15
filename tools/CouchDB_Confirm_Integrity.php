@@ -18,7 +18,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
@@ -66,6 +66,7 @@ class CouchDBIntegrityChecker
             array("reduce" => "false")
         );
         print "Sessions:";
+        $activeExists = $this->SQLDB->prepare("SELECT count(*) FROM candidate c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID=:PID and s.Visit_label=:VL");
         foreach ($sessions as $row) {
             $pscid = $row['key'][0];
             $vl    = $row['key'][1];
@@ -81,15 +82,24 @@ class CouchDBIntegrityChecker
             );
 
             if ($sqlDB['Active'] != 'Y') {
-                print "PSCID $pscid VL $vl is cancelled" .
-                    " but $row[id] still exists.\n";
-                $this->CouchDB->deleteDoc($row['id']);
+                $numActive = $this->SQLDB->execute($activeExists, array('PID' => $pscid, 'VL' => $vl));
+                if($numActive[0]['count'] == '0') {
+                    print "PSCID $pscid VL $vl is cancelled and has no active"
+                           . "equivalent session but $row[id] still exists.\n";
+
+                    $this->CouchDB->deleteDoc($row['id']);
+                } else {
+                    print "There is an active session for $pscid $vl overriding the cancelled one. Keeping $row[id]";
+                }
+
             } else if ($sqlDB['PSCID'] !== $pscid) {
                 print "PSCID $pscid case sensitivity mismatch for $row[id].\n";
                 $this->CouchDB->deleteDoc($row['id']);
             } else if ($sqlDB['Visit_label'] !== $vl) {
                 print "Visit Label case sensitivity mismatch for $row[id].\n";
                 $this->CouchDB->deleteDoc($row['id']);
+            } else {
+                print "Nothing wrong with $row[id]!\n";
             }
         }
 

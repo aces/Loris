@@ -61,6 +61,28 @@ LOCK TABLES `candidate` WRITE;
 /*!40000 ALTER TABLE `candidate` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+--
+-- Table structure for table `caveat_options`
+--
+
+DROP TABLE IF EXISTS `caveat_options`;
+CREATE TABLE `caveat_options` (
+  `ID` int(6),
+  `Description` varchar(255),
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 
+-- Dumping data for table `caveat_options`
+-- 
+
+LOCK TABLES `caveat_options` WRITE;
+/*!40000 ALTER TABLE `caveat_options` DISABLE KEYS */;
+/*!40000 ALTER TABLE `caveat_options` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 --
 -- Table structure for table `document_repository`
 --
@@ -517,9 +539,7 @@ CREATE TABLE `history` (
   `changeDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `userID` varchar(255) NOT NULL default '',
   `type` char(1),
-  PRIMARY KEY  (`id`),
-  KEY `FK_history_1` (`userID`),
-  CONSTRAINT `FK_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table keeps track of ongoing changes in the database. ';
 
 --
@@ -614,6 +634,12 @@ CREATE TABLE `mri_protocol` (
 LOCK TABLES `mri_protocol` WRITE;
 /*!40000 ALTER TABLE `mri_protocol` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mri_protocol` ENABLE KEYS */;
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES ('ZZZZ',48,'8000-14000','80-130','0-200');
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES ('ZZZZ',40,'1900-2700','10-30','0-500');
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES ('ZZZZ',44,'2000-2500','2-5',NULL);
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES ('ZZZZ',45,'3000-9000','100-550',NULL);
+
+
 UNLOCK TABLES;
 
 --
@@ -974,10 +1000,11 @@ INSERT INTO `permissions` VALUES
     (9,'unsend_to_dcc','Reverse Send from DCC','2'),
     (10,'access_all_profiles','Across all sites access candidate profiles','2'),
     (11,'data_entry','Data entry','1'),
-    (12,'certification','Certify examiners','2'),
-    (13,'certification_multisite','Across all sites certify examiners','2'),
-    (14,'timepoint_flag','Edit exclusion flags','2'),
-    (15,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
+    (12,'examiner_view','Add and certify examiners','2'),
+    (13,'examiner_multisite','Across all sites add and certify examiners','2'),
+    (14,'training','View and complete training','2'),
+    (15,'timepoint_flag','Edit exclusion flags','2'),
+    (16,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
     (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
     (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
@@ -999,8 +1026,9 @@ INSERT INTO `permissions` VALUES
     (35,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
     (36,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2'),
     (37,'document_repository_view','View and upload files in Document Repository','2'),
-    (38,'document_repository_delete','Delete files in Document Repository','2');
-
+    (38,'document_repository_delete','Delete files in Document Repository','2'),
+    (39,'server_processes_manager','View and manage server processes','2'),
+    (40,'mri_upload','MRI Uploader','2');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1364,7 +1392,6 @@ CREATE TABLE `users` (
   `PSCPI` enum('Y','N') NOT NULL default 'N',
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
-  `Examiner` enum('Y','N') NOT NULL default 'N',
   `Password_md5` varchar(34) default NULL,
   `Password_hash` varchar(255) default NULL,
   `Password_expiry` date NOT NULL default '0000-00-00',
@@ -1383,8 +1410,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Examiner,Password_md5,Password_expiry) 
-VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Password_md5,Password_expiry) 
+VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1802,7 +1829,8 @@ CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
   `UploadDate` DateTime DEFAULT NULL,
-  `SourceLocation` varchar(255) NOT NULL DEFAULT '',
+  `UploadLocation` varchar(255) NOT NULL DEFAULT '',
+  `DecompressedLocation` varchar(255) NOT NULL DEFAULT '',
   `Processed` tinyint(1) NOT NULL DEFAULT '0',
   `CurrentlyProcessed` tinyint(1) NOT NULL DEFAULT '0',
   `PatientName` varchar(255) NOT NULL DEFAULT '',
@@ -1812,6 +1840,7 @@ CREATE TABLE `mri_upload` (
   `SessionID` int(10) unsigned DEFAULT NULL,
   `IsValidated` tinyint(1) NOT NULL DEFAULT '0',
   `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
+  `IsPhantom` enum('N','Y') NOT NULL DEFAULT 'N',
   PRIMARY KEY (`UploadID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1912,9 +1941,7 @@ CREATE TABLE `user_login_history` (
   `Login_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `IP_address` varchar(255) DEFAULT NULL,
   `Page_requested` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`loginhistoryID`),
-  KEY `FK_user_login_history_1` (`userID`),
-  CONSTRAINT `FK_user_login_history_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
+  PRIMARY KEY (`loginhistoryID`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1957,7 +1984,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Reliability', 'main.php?test_name=reliability', 2, 1),
     ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
-    ('Certification', 'main.php?test_name=certification', 2, 3);
+    ('Examiner', 'main.php?test_name=examiner', 2, 3),
+    ('Training', 'main.php?test_name=training', 2, 4);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
@@ -1983,7 +2011,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Survey Module', 'main.php?test_name=survey_accounts', 6,2),
     ('Help Editor', 'main.php?test_name=help_editor', 6,3),
     ('Instrument Manager', 'main.php?test_name=instrument_manager', 6,4),
-    ('Configuration', 'main.php?test_name=configuration', 6, 5);
+    ('Configuration', 'main.php?test_name=configuration', 6, 5),
+    ('Server Processes Manager', 'main.php?test_name=server_processes_manager', 6, 6);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -2010,11 +2039,15 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Conflict Resolver';
 
--- Certification
+-- Examiner
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification' AND m.Label='Certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_site' AND m.Label='Examiner';
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='certification_multisite' AND m.Label='Certification';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_multisite' AND m.Label='Examiner';
+
+-- Training
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='training' AND m.Label='Training';
 
 -- Radiological Reviews
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2085,6 +2118,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='config' AND m.Label='Configuration';
 
+-- Server Processes Manager
+INSERT INTO LorisMenuPermissions (MenuID, PermID) 
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='server_processes_manager' AND m.Label='Server Processes Manager';
 
 CREATE TABLE `ConfigSettings` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -2129,8 +2165,12 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useScreening', "Enable if there is a Screening stage with its own distinct instruments, administered before the Visit stage", 1, 0, 'boolean', ID, 'Use screening', 13 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excluded_instruments', "Instruments to be excluded from the Data Dictionary and download via the Data Query Tool", 1, 1, 'instrument', ID, 'Excluded instruments', 15 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'DoubleDataEntryInstruments', "Instruments for which double data entry should be enabled", 1, 1, 'instrument', ID, 'Double data entry instruments', 16 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'InstrumentResetting', 'Allows resetting of instrument data', 1, 0, 'boolean', ID, 'Instrument Resetting', 15 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'InstrumentResetting', 'Allows resetting of instrument data', 1, 0, 'boolean', ID, 'Instrument Resetting', 17 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'SupplementalSessionStatus', 'Display supplemental session status information on Timepoint List page', 1, 0, 'boolean', ID, 'Use Supplemental Session Status', 18 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useScanDone', 'Determines whether or not "Scan Done" should be used in Loris', 1, 0, 'boolean', ID, 'Use Scan Done', 19 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'allowPrenatalTimepoints', 'Determines whether creation of timepoints prior to Date of Birth is allowed', 1, 0, 'boolean', ID, 'Allow Prenatal Timepoints', 20 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ImagingUploaderAutoLaunch', "Allows running the ImagingUpload pre-processing scripts", 1, 0, 'boolean', ID, 'ImagingUploader Auto Launch',21 FROM ConfigSettings WHERE Name="study";
+
 
 -- paths
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 0, 'Paths', 2);
@@ -2183,6 +2223,11 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'Reply-to', 'Reply-to email address header (e.g. admin@myproject.loris.ca)', 1, 0, 'email', ID, 'Reply-to', 2 FROM ConfigSettings WHERE Name="mail";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'X-MimeOLE', 'X-MimeOLE', 1, 0, 'text', ID, 'X-MimeOLE', 3 FROM ConfigSettings WHERE Name="mail";
 
+-- uploads 
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('uploads', 'Settings related to file uploading', 1, 0, 'Uploads', '9'); 
+
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'FileGroup', 'Determines the group permission for new subdirectories created for uploaded files', 1, 0, 'text', ID, 'File Group for Uploads', 1 FROM ConfigSettings WHERE Name="uploads";
+
 --
 -- Filling Config table with default values
 --
@@ -2203,6 +2248,9 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useProjects";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useScreening";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="SupplementalSessionStatus";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="useScanDone";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="allowPrenatalTimepoints";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="ImagingUploaderAutoLaunch";
 
 -- default path settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
@@ -2244,7 +2292,6 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "mri_parameter_form" FROM Config
 INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="From";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="Reply-to";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";
-
 
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -2360,4 +2407,52 @@ CREATE TABLE `CNV` (
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
   FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `TestID` int(10) UNSIGNED NOT NULL,
+    `Title` varchar(255) NOT NULL,
+    `Content` text,
+    `TrainingType` enum('text', 'pdf', 'video', 'quiz') NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training_quiz_questions` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `TestID` int(10) unsigned NOT NULL,
+    `Question` varchar(255) NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training_quiz_questions` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training_quiz_answers` (
+    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `QuestionID` INTEGER UNSIGNED NOT NULL,
+    `Answer` varchar(255) NOT NULL,
+    `Correct` boolean NOT NULL,
+    `OrderNumber` INTEGER UNSIGNED NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- Table structure for table `server_processes`
+DROP TABLE IF EXISTS `server_processes`;
+CREATE TABLE `server_processes` (
+  `id`                int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `pid`               int(11) unsigned NOT NULL,
+  `type`              enum('mri_upload') NOT NULL,
+  `stdout_file`       varchar(255) DEFAULT NULL,
+  `stderr_file`       varchar(255) DEFAULT NULL,
+  `exit_code_file`    varchar(255) DEFAULT NULL,
+  `exit_code`         varchar(255) DEFAULT NULL,
+  `userid`            varchar(255) NOT NULL,
+  `start_time`        timestamp NULL,
+  `end_time`          timestamp NULL,
+  `exit_text`         text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_task_1` (`userid`),
+  CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

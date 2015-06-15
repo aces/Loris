@@ -46,6 +46,7 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 // path to config file
 $configFile = "../project/config.xml";
 
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 require_once "NDB_BVL_Battery.class.inc";
 $client = new NDB_Client();
@@ -259,7 +260,7 @@ function addInstrument($sessionID, $testName)
         return PEAR::raiseError("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
     if (PEAR::isError($user)) {
-    	return ("Error, failed to create User object for (".$getenv('USER')."):".$user->getMessage()." \n");
+    	return ("Error, failed to create User object for (".getenv('USER')."):".$user->getMessage()." \n");
     }
 
     // check the args

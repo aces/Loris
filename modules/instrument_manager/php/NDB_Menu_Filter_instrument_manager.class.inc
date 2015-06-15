@@ -50,14 +50,18 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
             if($exists <= 0) {
                 $db_config = $config->getSetting('database');
                 exec("php generate_tables_sql_and_testNames.php < $new_file");
-                exec("mysql -u" . escapeshellarg($db_config['quatUser']) 
-                                . " -p" . escapeshellarg($db_config['quatPassword']) 
-                                ." " . escapeshellarg($db_config['database'])  
-                                . " < " . $this->path . "project/tables_sql/$instname.super_sql");
-                $db->insert("test_names", array(
-                    "Test_name" => $instname,
-                    'Sub_group' => 0
-                ));
+
+                $instrument =& NDB_BVL_Instrument::factory(
+                    $instname,
+                    NULL,
+                    NULL
+                );
+
+                exec("mysql -u" . escapeshellarg($db_config['quatUser'])
+                    . " -p" . escapeshellarg($db_config['quatPassword'])
+                    . " " . escapeshellarg($db_config['database'])
+                    . " < " . $this->path . "project/tables_sql/".$instrument->table.".sql");
+
             }
         }
     }

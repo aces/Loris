@@ -42,6 +42,9 @@
             <link url='http://www.loris.ca'>Important Website</link>
         </dashboardLinks>
     </dashboard>
+    <CouchDB>
+        <SyncAccounts>false</SyncAccounts>
+    </CouchDB>
 
     <!-- study variables -->
     <study>
@@ -165,6 +168,8 @@
                 <!--test value=InstrumentName>InstrumentName</test-->
             </CertificationInstruments>
         </Certification>
+        <!--This permission allows users from sites to have access to other sites bvl feedback info -->
+        <multiSiteEnabledCenters></multiSiteEnabledCenters>
 
         <!-- Consent module allows addition of consent information in the candidate information page-->
          <ConsentModule>

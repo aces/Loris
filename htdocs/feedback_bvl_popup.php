@@ -302,7 +302,7 @@ if (isset($feedback) && Utility::isErrorX($feedback)) {
                         'Instrument' => $SuccessIsSet($SI, 'Instrument'),
                         'CommentID'  => $SuccessIsSet($SI, 'CommentID'),
                         'Visit'      => $SuccessIsSet($SI, 'Visit'),
-                        'SessionID'  => $SuccessISSet($SI, 'SessionID'),
+                        'SessionID'  => $SuccessIsSet($SI, 'SessionID'),
                        );
                 $tpl_data['thread_summary_data'][$i] = $row;
             }

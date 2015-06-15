@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<phpunit>
+<phpunit
+        bootstrap="bootstrap.php"
+        verbose="true"
+        colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests for php/libraries'>
             <directory>./unittests/</directory>

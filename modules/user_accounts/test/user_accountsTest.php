@@ -38,6 +38,19 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "?test_name=user_accounts&subtest=edit_user");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Edit User", $bodyText);
+
+        $this->assertEquals(
+            "password",
+            $this->webDriver->findElement(WebDriverBy::Name("Password_md5"))->getAttribute("type")
+        );
+        $this->assertEquals(
+            "checkbox",
+            $this->webDriver->findElement(WebDriverBy::Name("NA_Password"))->getAttribute("type")
+        );
+        $this->assertEquals(
+            "password",
+            $this->webDriver->findElement(WebDriverBy::Name("__Confirm"))->getAttribute("type")
+        );
     }
 
     /**

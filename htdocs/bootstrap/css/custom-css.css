@@ -151,3 +151,8 @@ ul#navlist {
     cursor: inherit;
     display: block;
 }
+
+div.navbar div.container div.navbar-brand {
+    background: inherit;
+    text-align: center;
+}

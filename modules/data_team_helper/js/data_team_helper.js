@@ -21,8 +21,7 @@ function changeVisitLabels()
     var instrument_dropdown = document.getElementById('instrument');
     var visit_label_dropdown = document.getElementById('visit_label');
     var visit_label_value = visit_label_dropdown.value;
-    request = getQueryVariable("visit_label");
-    instrument_dropdown_value = getQueryVariable("instrument");
+    var instrument_dropdown_value = instrument_dropdown.value;
     if (instrument_dropdown_value != undefined) {
         var instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g,' ');
     }
@@ -49,3 +48,37 @@ function changeVisitLabels()
 $(function() {
      changefieldOptions();
  });
+
+$(document).ready(function() {
+    // Filters will only get applied on a POST, so
+    // on click we need to fake a form which posts
+    // to the conflict_resolver in order to get filters
+    $(".conflict_resolver_link").click(function(e) {
+        e.preventDefault();
+        var form = $('<form />', {
+            "action" : "main.php?test_name=conflict_resolver",
+            "method" : "post"
+        });
+
+        form.attr('target', '_blank');
+        var values = {
+            "reset" : "true",
+            "PSCID" : this.dataset.pscid,
+            "Instrument"    : this.dataset.instrument,
+            "Question"    : this.dataset.question,
+            "visit"    : this.dataset.visits,
+            "test_name"    : "conflict_resolver",
+            "filter" : "Show Data"
+        };
+
+        $.each(values, function(name, value) {
+            $("<input />", {
+                type: 'hidden',
+                name: name,
+                value: value
+            }).appendTo(form);
+        });
+
+        form.appendTo('body').submit();
+    });
+});
