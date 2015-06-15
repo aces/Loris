@@ -1023,7 +1023,6 @@ class LorisForm
             $el         = $this->createBase($elname, $options, $attribs);
             $el['type'] = 'static';
             break;
-        case 'date':
         case 'advcheckbox':
         case 'textarea':
         case 'date':
