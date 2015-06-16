@@ -1,5 +1,5 @@
 <?php
-ini_set("max_input_vars", 4000);
+ini_set("max_input_vars", 10000);
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
