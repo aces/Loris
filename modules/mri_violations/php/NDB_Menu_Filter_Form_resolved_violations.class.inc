@@ -46,8 +46,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        echo "CHECK FORM\n";
-        print_r($values);
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -194,7 +192,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             ON (mri_scan_type.ID=mri_violations_log.Scan_type)
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID 
-            AND violations_resolved.TypeTable='mri_violations')
+            AND violations_resolved.TypeTable='mri_violations_log')
             WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,

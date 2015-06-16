@@ -429,7 +429,6 @@ class LorisForm
      */
     function dateHTML($el)
     {
-        print_r($el);
         $cls = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
@@ -446,7 +445,6 @@ class LorisForm
                 : ''
             )
             . ">";
-        print_r($elmnt);
         return $elmnt;
 
     }

@@ -46,58 +46,48 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        echo "CHECK FORM\n";
-        //print_r($values);
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        /*[PatientName] => AA
-        [Description] => DD
-        [TimeRun] => BB
-        [Filename] => CC
-        [SeriesUID] => EE
-        [ProblemType] => Could not identify scan type
-        [Resolved] => 0
-        [Site] => 1
-        [resolvable] => */
-
         $DB =& Database::singleton();
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
         foreach ($values['resolvable'] AS $key=>$val) {
-            //echo "key $key val $val \n";
             $hash = $key;
             $row = $DB->pselectRow(
-                    "SELECT * FROM violations_resolved 
+                    "SELECT * FROM violations_resolved
                     WHERE hash = :hash", array('hash' => $hash));
             
-            //if row is found, check value and update if needed
+            //if row is found it means that resolve status was previously assigned,
+            // check the value and update if needed, else break.
             if(!empty($row)){
                 foreach($row as $key2 => $val2){
                     //found matching
                     if($key2 == 'Resolved'){
-                        //echo "key2 $key2 val2 $val2 \n";
                         // user input matches DB content, so do nothing.
                         if($val==$val2){
+                            echo "[previously resolved : no change ($val == $val2)]\n";
                             break;
                         }
                         // user input doesn't match DB, so we update the DB
                         else{
-                            //echo "UPDATE \n";
+                            echo "[previously resolved : UPDATE ($val <> $val2)]\n";
                             $setArray = array('Resolved'=>(string)$val2);
                             $whereArray = array('hash'=>$hash);
                             $verify = $DB->update('violations_resolved', $setArray, $whereArray);
-                            //echo "verify $verify.\n";
                         }
                     }
                 }
             }
-            //if row is not found, and selection<>0, then insert new row.
+            //if row is not found no resolve status was assigned,
+            // if selection<>0, then insert new row.
             else{
+
                 // no need to insert to DB for Unresolved value.
                 if($val==0){
+                    echo "[Still unresolved (0)]\n";
                     continue;
                 }
                 $newlyResolved = array();
@@ -106,6 +96,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 $newlyResolved['User'] = $user->getUsername();
                 $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
 
+                echo "[NOT resolved : INSERT ($key, $val)]\n";
                 // Table 1
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
@@ -124,7 +115,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                //echo "ID[2] = ".$ID_mri_violations_log."\n";
                 if(!empty($ID_mri_violations_log)){
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
@@ -137,14 +127,11 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
                 if(!empty($ID_MRICandidateErrors)){
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
-                //echo "DO INSERT NOW!\n";
-                var_dump($newlyResolved);
-                $DB->insert('violations_resolved', $newlyResolved);                
+                $DB->insert('violations_resolved', $newlyResolved);
             }
         }
         
@@ -159,7 +146,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        echo "AAA\n";
         // set the class variables
         // create user object
         $user =& User::singleton();
@@ -191,9 +177,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             FROM mri_protocol_violated_scans
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID 
-            AND violations_resolved.TypeTable='mri_protocol_violated_scans')
-            WHERE Resolved <> '0'
-            "
+            AND violations_resolved.TypeTable='mri_protocol_violated_scans')"
             . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
@@ -209,7 +193,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             ON (mri_scan_type.ID=mri_violations_log.Scan_type)
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID 
-            AND violations_resolved.TypeTable='mri_violations')
+            AND violations_resolved.TypeTable='mri_violations_log')
             "
             . " UNION " . 
             "SELECT PatientName,
@@ -231,7 +215,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         $this->formToFilter = array(
                 'Project' => 'v.Project',
                 'Subproject' => 'v.Subproject',
-                '' => '',
                 'PatientName' => 'v.PatientName',
                 'TimeRun' => 'v.TimeRun',
                 'ProblemType' => 'v.Problem',
@@ -260,8 +243,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        echo "BBB\n";
-        print_r($this->filter);
         // create user object
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
@@ -279,8 +260,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
-        $this->addBasicText('TimeRun', 'Time Run');
-        //$this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
+        //$this->addBasicText('TimeRun', 'Time Run');
+        $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
         $this->addBasicText('Filename', 'File name');
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect(
@@ -346,8 +327,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
      */
     function _setDataTableRows($count)
     {
-        echo "CCC\n";
-        //print_r($this);
         $options = array(
 	        '0'=>'Unresolved', 
 	        '1'=>'Reran',
@@ -357,13 +336,11 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 	        '5'=>'Inserted with flag',
 	        '6'=>'Other');
 
-        //print_r($this->form);
         $x=0;
         foreach ($this->list as $item) {
 
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
-            //print_r($item);
             foreach ($item as $key => $val) {
                 if ($key === 'PatientName') {
                     $this->tpl_data['items'][$x]['PatientName'] = $val;
@@ -378,7 +355,9 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     $resolved_index = $val;
                     $optional = array("selected" => (string)$resolved_index);
                     $this->addSelect("$hash", "", $options, $optional);
-                    //modifying the SELECT name attr so it'll be treated as an array
+                    //setting the 'selected' attribute so the form will show current value.
+                    $this->form->form[$hash]['selected'] = $resolved_index;
+                    //modifying the SELECT name attr so it'll be treated as an array.
                     $this->form->form[$hash]['name'] = "resolvable[$hash]";
                 }
                 if ($key === 'Problem') {
@@ -396,6 +375,9 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     $this->tpl_data['series'] = $val;
                 }
                 else {
+                    /*if ($key === 'Resolved') {
+                        echo "resolved $key $val \n";
+                    }*/
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
                 }            
