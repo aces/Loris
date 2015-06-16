@@ -69,7 +69,6 @@ abstract class Loris_PHPUnit_Database_TestCase extends
      */
     protected function setUp()
     {
-        parent::setUp();
         $this->factory = NDB_Factory::singleton();
         $this->config  = $this->factory->Config(CONFIG_XML);
 
@@ -80,6 +79,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends
                 This is a destructive test, it will be skipped!"
             );
         }
+        parent::setUp();
     }
 
     /**
