@@ -13,16 +13,21 @@ include ("../main.php");
 require_once __DIR__ . "/../../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 
-$client = new NDB_Client;
-$client->initalize();
+$user =& User::singleton();
+$username = $user->getUsername();
 
-$DB = Database::singleton();
+//$client = new NDB_Client;
+//$client->initialize();
+//
+//$DB = Database::singleton();
 
 //Creating a new array to pass the set values into the DB. 
 $newThreadValues = array();
 
-$feedbackThread =& NDB_BVL_Feedback::Singleton($user,$candID);
-
-
+if(isset($_POST['comment']) && isset($_POST['candID'])){
+    $feedbackThread =& NDB_BVL_Feedback::Singleton($username,$_POST['candID']);
+    $feedbackLevel = $feedbackThread->_feedbackLevel;
+    $feedbackThread->createThread($feedbackLevel,1,$_POST['comment'],'Y');
+}
 
 ?>

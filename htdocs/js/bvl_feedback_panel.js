@@ -17,15 +17,16 @@ $(document).ready(function() {
     });
 
 
-    //var $comment = $('#comment').html($('input:textbox').val());
 
     $('#save_data').on('click',function(){
         var $candID = $("#candID").attr('name');
+        var $comment = $('#comment').val();
 
         request = $.ajax({
             url: "ajax/new_bvl_feedback.php",
             type: "POST",
-            data: {"candID": $candID},
+            data: {"candID": $candID,
+                    "comment" : $comment},
             success: function (data) {
                 console.log("in the success function");
                 console.log("This is the data : " + data);

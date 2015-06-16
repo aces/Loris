@@ -603,8 +603,7 @@ class NDB_BVL_Feedback
     function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->Database();
+        $DB = Database::singleton();
 
         // public threads are inactive by default
         if ($public == 'Y') {
@@ -669,10 +668,10 @@ class NDB_BVL_Feedback
             );
         }
 
-        $success = $db->insert('feedback_bvl_thread', $setArray);
+        $success = $DB->insert('feedback_bvl_thread', $setArray);
 
         // get the FeedbackID for the new thread
-        $feedbackID = $db->getLastInsertId();
+        $feedbackID = $DB->getLastInsertId();
 
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment);
