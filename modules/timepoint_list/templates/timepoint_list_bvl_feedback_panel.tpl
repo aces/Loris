@@ -15,11 +15,24 @@
         </div>
         <h3>Current Thread Status</h3>
         <div>
-
+		<table id="current_thread_tables" class ="table table-hover table-primary table-bordered dynamictable">
+		<tr>
+			<td>ID</td>
+			<td>Date</td>
+			<td>User</td>
+		</tr>
+            {foreach from=$thread_list item=value}
+		    <tr id="{$value.FeedbackID}" name="entries">
+			    <td id ="{$value.FeedbackID}">{$value.FeedbackID}</td>
+			    <td>{$value.Date}</td>
+			    <td>{$value.User}</td>
+		    </tr>
+            {/foreach}
+		</table>
         </div>
         <h3>Add New Feedback</h3>
         <div id ="new_feedback">
-		<input type="text" id="comment">
+		<textarea class="form-control" rows="3" id="comment"></textarea>
 		<button id="save_data">Save data</button>
 
         </div>

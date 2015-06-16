@@ -218,7 +218,7 @@ df<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.
         <td align="center">{$thread_list_data[thread].FieldName}</td>
         <td align="center">{$thread_list_data[thread].FeedbackID}</td>
         <td align="center">{$thread_list_data[thread].Type}</td>
-        <td align="center" bgcolor="{$thread_list_data[thread].QC_color}">{$thread_list_data[thread].QC_status}</td>
+        <td align="center" bgcolor="{$thread_list_data[thread].QC_color}">{$thread_list_data[thread].status}</td>
         <td align="center">{$thread_list_data[thread].Date}</td>
         <td align="center">{$thread_list_data[thread].Modified}</td>
         <td align="center">{$thread_list_data[thread].Active}</td>

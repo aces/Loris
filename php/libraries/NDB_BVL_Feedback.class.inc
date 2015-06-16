@@ -546,7 +546,7 @@ class NDB_BVL_Feedback
                              ft.Status,
                              ft.Testdate DESC";
 
-        $result = $db->pselect($query, $qparams);
+            $result = $db->pselect($query, $qparams);
 
         return $result;
     }

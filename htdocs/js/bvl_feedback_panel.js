@@ -16,8 +16,43 @@ $(document).ready(function() {
 
     });
 
+    $('tr[name=entries]').on('click',function(){
+	var feedbackID = this.id;
 
+	if ($('tr[id^="feedbackEntries' + feedbackID + '"]').length){
 
+	}
+	
+	request = $.ajax({
+	    url: "ajax/get_thread_entry_data.php",
+	    type: "post",
+	    data: {"callFunc1" : feedbackID},
+	    success: function (data) {
+
+		$("#" + feedbackID).after('<div id = "feedbackEntriesDiv_' + feedbackID + '"></div>');
+		
+		for (var i = 0; i < data.length; i++){
+		    var tr = "<tr " + "id\"feedbackEntries_" + feedbackID + "_" + data[i]["EntryID"] + "\">";
+		    var td1 = "<td>" + data[i]["UserID"] + "</td>";
+                    var td2 = "<td>" + data[i]["Date"] + "</td>";
+                    var td3 = "<td>" + data[i]["Comment"] + "</td></tr>";
+
+		    $("#feedbackEntriesDiv_" + feedbackID).prepend(tr+td1+td2+td3);
+		    
+		}
+		
+	    },
+	    error: function (xhr, desc, err){
+		console.log(xhr);
+		console.log("Details: " + desc + "\nError:" + err);
+	    }
+	});
+	request.done(function (response, textStatus, jqXHR){
+	    console.log("Hooray it worked!, In the ajax of pressing a thread");
+	});
+    });
+
+    
     $('#save_data').on('click',function(){
         var $candID = $("#candID").attr('name');
         var $comment = $('#comment').val();

@@ -13,7 +13,8 @@ class Timepoint_List_FeedbackPanel
 {
 
     var $_feedbackThread = '';
-    var $_feedbackLevel = ''; 
+    var $_feedbackLevel = '';
+    var $_feedbackThreadList = '';
     /*
      * Initilizes the Timepoint_List_FeedbackPanel
      * with a feedbackThread.
@@ -21,7 +22,9 @@ class Timepoint_List_FeedbackPanel
     function Timepoint_List_FeedbackPanel($candID)
     {
         $user =& User::singleton();
-        $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($user,$candID);
+        $username= $user->getUsername();
+        $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username,$candID);
+        $this->_feedbackThreadList = $this->_feedbackThread->getThreadList();
     }
     /**
      *Display function for the Timepoint_List_FeedbackPanel
@@ -32,7 +35,7 @@ class Timepoint_List_FeedbackPanel
     function display()
     {
         $this->tpl_data['candID'] = $this->_feedbackThread->_feedbackCandidateProfileInfo['CandID'];
-        //    $this->tpl_data['feedbackLevel'] = $this->_feedbackThread->_feedbackCandidateProfileInfo['feedbackLevel'];
+        $this->tpl_data['thread_list'] = $this->_feedbackThreadList;
         $smarty = new Smarty_neurodb("timepoint_list");
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("timepoint_list_bvl_feedback_panel.tpl");
