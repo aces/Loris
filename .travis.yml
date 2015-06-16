@@ -56,6 +56,7 @@ before_script:
           -e "s/%USERNAME%/SQLTestUser/g"
           -e "s/%PASSWORD%/TestPassword/g"
           -e "s/%DATABASE%/LorisTest/g"
+          -e "s_<sandbox>0</sandbox>_<sandbox>1</sandbox>_g"
           < docs/config/config.xml > project/config.xml
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
