@@ -28,8 +28,8 @@
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.ProjectID.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.ProjectID.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.Project.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -131,11 +131,11 @@
                             </tr>
                             {sectionelse}
                                 <tr>
-                                    <tr><td colspan="7">No unresolved conflicts found.</td></tr>
+                                    <tr><td colspan="8">No unresolved conflicts found.</td></tr>
                                 </tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="6" id="message-area">
+                                <td nowrap="nowrap" colspan="7" id="message-area">
                                     
                                 </td>
                                 <td nowrap="nowrap">

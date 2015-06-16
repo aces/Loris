@@ -34,52 +34,95 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
     {    
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         return ($user->hasPermission('conflict_resolver'));
     }
 
     function _setupVariables()
     {
         // set the class variables
+        $config =& NDB_Config::singleton();
+
+        $useProjects = $config->getSetting("useProjects");
+        if ($useProjects === "false") {
+            $useProjects = false;
+        }
+
         $this->columns = array(
             'conflicts_resolved.TableName',
             'session.CandID', 
             'candidate.PSCID', 
-            'session.Visit_label',
-            'conflicts_resolved.FieldName',
+            'session.Visit_label'
+        );
+
+        if ($useProjects) {
+            $this->columns[] = 'candidate.ProjectID as Project';
+        }
+
+        $this->columns =array_merge(
+            $this->columns,
+            array('conflicts_resolved.FieldName',
             'conflicts_resolved.NewValue',  
             'conflicts_resolved.OldValue1', 
             'conflicts_resolved.OldValue2', 
-            'session.CenterID'
+            'session.CenterID')
         );
+
         $this->query = " FROM conflicts_resolved LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID) LEFT JOIN session ON (flag.SessionID=session.ID) LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
         $this->group_by = '';
         $this->order_by = 'conflicts_resolved.TableName, session.Visit_label';
         $this->validFilters = array(
             'conflicts_resolved.TableName', 
             'session.CenterID', 
-            'session.Visit_label', 
-            'candidate.PSCID', 
-            'session.CandID',
-            'conflicts_resolved.Fieldname'
+            'session.Visit_label'
         );
+
+        if ($useProjects) {
+            $this->validFilters[] = 'candidate.ProjectID';
+        }
+
+        $this->validFilters = array_merge(
+            $this->validFilters,
+            array('candidate.PSCID',
+                'session.CandID',
+                'conflicts_unresolved.Fieldname')
+        );
+
         $this->headers = array(
             'TableName', 
             'CandID', 
             'PSCID', 
-            'Visit_label',
-            'FieldName'
+            'Visit_label'
         );
+
+        if ($useProjects) {
+            $this->headers = array_merge(
+                $this->headers,
+                array('candidate.ProjectID' => 'Project')
+            );
+        }
+
+        $this->headers[] = 'FieldName';
+
         $this->formToFilter = array(
             'Instrument' => 'conflicts_resolved.TableName',
             'site' => 'session.CenterID',
-            'visit' => 'session.Visit_label',
-            'CandID' => 'session.CandID',
-            'PSCID' => 'candidate.PSCID',
-            'Question' => 'conflicts_resolved.Fieldname'
+            'visit' => 'session.Visit_label'
         );
+
+        if ($useProjects) {
+            $this->formToFilter = array_merge(
+                $this->formToFilter,
+                array('Project' => 'candidate.ProjectID')
+            );
+        }
+
+        $this->formToFilter = array_merge(
+            $this->formToFilter,
+            array('CandID' => 'session.CandID',
+                'PSCID' => 'candidate.PSCID',
+                'Question' => 'conflicts_unresolved.Fieldname')
+        );
+
         return true;
     }
 
@@ -87,9 +130,8 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
     {
         // Create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
+
+        $config =& NDB_Config::singleton();
 
         // Get instruments
         $instruments = Utility::getAllInstruments();
@@ -103,17 +145,11 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(Utility::isErrorX($sites)) {
-                return PEAR::raiseError("DB Error: ".$sites->getMessage());
-            }
             if(is_array($sites)) $sites = array('' => 'All') + $sites;
         }
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
@@ -127,12 +163,29 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:', array("size"=>9, "maxlength"=>7));
         $this->addBasicText('Question', 'Search keyword:');
 
+        // Project list, if applicable
+        if ($config->getSetting("useProjects")==="true") {
+            $list_of_projects = array(null => 'All');
+            $projectList = Utility::getProjectList();
+            foreach ($projectList as $key => $value) {
+                $list_of_projects[$key] = $value;
+            }
+            $this->addSelect('Project', 'Project: ', $list_of_projects);
+        }
+
         return true;
     }
 
     function _setDataTableRows($count)
     {
         $DB =& Database::singleton();
+
+        $config =& NDB_Config::singleton();
+
+        if ($config->getSetting("useProjects")==="true") {
+            $projectList = Utility::getProjectList();
+        }
+
         $x = 0;
         foreach ($this->list as $item) {
             //count column
@@ -144,6 +197,11 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
                 if ($key=='TableName' || $key=='CandID' || $key=='PSCID' || $key=='Visit_label' || $key=='FieldName') {
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
+                } else if ($key=='Project') {
+                    if (isset($projectList[$val])) {
+                        $this->tpl_data['items'][$x][$i]['name'] = $key;
+                        $this->tpl_data['items'][$x][$i]['value'] = $projectList[$val];
+                    }
                 } else if ($key=='NewValue') {
                     if ($item['NewValue'] == 1) {
                         $NewValue = $item['OldValue1'];
