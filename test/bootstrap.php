@@ -26,8 +26,8 @@
 // from /test/fixtures/ folder)
 
 //Use environment variable LORIS_DB_CONFIG to specify a test specific config
-if ($configFile = getenv('LORIS_DB_CONFIG') ) {
-    define('CONFIG_XML', $configFile);
+if (getenv('LORIS_DB_CONFIG')) {
+    define('CONFIG_XML', getenv('LORIS_DB_CONFIG'));
 } else {
     define('CONFIG_XML', __DIR__ . "/../project/config.xml");
 }
