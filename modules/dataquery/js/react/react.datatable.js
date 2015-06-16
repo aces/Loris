@@ -31,7 +31,11 @@ DataTable = React.createClass({
             curRow = [];
 
             for(var j = 0; j < this.props.Headers.length; j += 1) {
-                curRow.push(<td>{this.props.Data[i][j]}</td>);
+                if(this.props.Data[i]) {
+                    curRow.push(<td>{this.props.Data[i][j]}</td>);
+                } else {
+                    curRow.push(<td>Unknown</td>);
+                }
             }
             rows.push(
                 <tr colSpan={headers.length}>

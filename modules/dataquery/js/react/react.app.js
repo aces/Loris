@@ -68,7 +68,7 @@ DataQueryApp = React.createClass({
             fields: [],
             criteria: {},
             sessiondata: {},
-            grouplevel: 1
+            grouplevel: 0
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -252,6 +252,9 @@ DataQueryApp = React.createClass({
         } else {
             var Prefixes = [], prefix;
             for(i = 0; i < sessions.length; i += 1) {
+                if(sessions[i] === []) {
+                    continue;
+                }
                 prefix = sessions[i].pop().toUpperCase();
                 if (Prefixes.indexOf(prefix) === -1) {
                     Prefixes.push(prefix);
