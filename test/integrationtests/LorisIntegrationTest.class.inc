@@ -45,7 +45,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Set up database wrapper and config
-        $this->config = NDB_Config::singleton(__DIR__ . "/../../project/config.xml");
+       //$this->config = NDB_Config::singleton(__DIR__ . "/../../project/config.xml");
+
+        $factory = NDB_Factory::singleton();
+        $this->config =  $factory->Config(CONFIG_XML);
+        //$this->config = NDB_Config::singleton(CONFIG_XML);
         $database     = $this->config->getSetting('database');
 
         $this->DB = Database::singleton(
@@ -56,6 +60,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
         $this->url = $this->config->getSetting("url") . "/main.php";
+
+        echo "\n\n URL val: ".$this->url."\n";
 
         $this->DB->insert(
             "users",
@@ -78,7 +84,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
 
         $this->DB->run(
-            "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
+            "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
 
         $user = User::factory('UnitTester');
