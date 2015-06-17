@@ -21,12 +21,14 @@
 			<td>Date</td>
 			<td>User</td>
 		</tr>
-            {foreach from=$thread_list item=value}
-		    <tr id="{$value.FeedbackID}" name="entries">
-			    <td id ="{$value.FeedbackID}">{$value.FeedbackID}</td>
+		{foreach from=$thread_list item=value}
+		<tbody id="{$value.FeedbackID}" name="entries">
+		    <tr>
+			    <td>{$value.FeedbackID}<span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span></td>
 			    <td>{$value.Date}</td>
 			    <td>{$value.User}</td>
 		    </tr>
+		</tbody>
             {/foreach}
 		</table>
         </div>

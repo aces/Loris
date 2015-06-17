@@ -16,11 +16,6 @@ require_once "NDB_Client.class.inc";
 $user =& User::singleton();
 $username = $user->getUsername();
 
-//$client = new NDB_Client;
-//$client->initialize();
-//
-//$DB = Database::singleton();
-
 //Creating a new array to pass the set values into the DB. 
 $newThreadValues = array();
 
