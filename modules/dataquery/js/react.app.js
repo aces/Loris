@@ -52,15 +52,15 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         });
 
     },
-    saveCurrentQuery: function() {
+    saveCurrentQuery: function(name, shared) {
         $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
             {
                 Fields: this.state.fields,
-                Filters: this.state.criteria
+                Filters: this.state.criteria,
+                QueryName: name,
+                SharedQuery: shared
             }, function(data) {
-                console.log("I am here");
             });
-        console.log("I r save");
 
     },
     getInitialState: function() {
