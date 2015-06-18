@@ -32,7 +32,9 @@ PaginationLinks = React.createClass({
         }
 
 
-        pageLinks.push(<li onClick={this.changePage(1)}><a href="#">&laquo;</a></li>);
+        if(startPage > 1) {
+            pageLinks.push(<li onClick={this.changePage(1)}><a href="#">&laquo;</a></li>);
+        }
         for(var i = startPage; i <= lastShownPage; i += 1) {
             classList = '';
             if(this.props.Active == i) {
@@ -40,7 +42,9 @@ PaginationLinks = React.createClass({
             }
             pageLinks.push(<li onClick={this.changePage(i)} className={classList}><a href="#">{i}</a></li>);
         }
+        if(lastShownPage !== lastPage) {
         pageLinks.push(<li onClick={this.changePage(lastPage)}><a href="#">&raquo;</a></li>);
+        }
         return (
             <ul className="pagination">
                 {pageLinks}

@@ -32,7 +32,9 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
         }
 
 
-        pageLinks.push(React.createElement("li", {onClick: this.changePage(1)}, React.createElement("a", {href: "#"}, "«")));
+        if(startPage > 1) {
+            pageLinks.push(React.createElement("li", {onClick: this.changePage(1)}, React.createElement("a", {href: "#"}, "«")));
+        }
         for(var i = startPage; i <= lastShownPage; i += 1) {
             classList = '';
             if(this.props.Active == i) {
@@ -40,7 +42,9 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
             }
             pageLinks.push(React.createElement("li", {onClick: this.changePage(i), className: classList}, React.createElement("a", {href: "#"}, i)));
         }
+        if(lastShownPage !== lastPage) {
         pageLinks.push(React.createElement("li", {onClick: this.changePage(lastPage)}, React.createElement("a", {href: "#"}, "»")));
+        }
         return (
             React.createElement("ul", {className: "pagination"}, 
                 pageLinks
