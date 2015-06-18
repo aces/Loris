@@ -104,10 +104,16 @@
                         <tbody>
                             {section name=item loop=$items}
                                 <tr>
-                                    <td nowrap="nowrap" bgcolor="{$items[item][9].bgcolor}">
-                                        <span class="label {$resolved_styles[$items[item][9].value]}">{$resolved_options[$items[item][9].value]}</span>
-                                    </td>
-                                <!-- print out data rows -->
+                                {section name=piece loop=$items[item]}
+                                    {if $items[item][piece].name eq 'Resolved'}
+                                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            <span class="label {$resolved_styles[$items[item][piece].value]}">
+                                                {$resolved_options[$items[item][piece].value]}
+                                            </span>
+                                        </td>
+                                    {/if}
+                                {/section}
+                                    <!-- print out data rows -->
                                 {section name=piece loop=$items[item]}
                                 {if $items[item][piece]}
                                     {if $items[item][piece].value eq 'Could not identify scan type'}
@@ -117,6 +123,14 @@
                                     {elseif $items[item][piece].value eq 'Protocol Violation'}
                                         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                             <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $series}" data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
+                                        </td>
+                                    {elseif $items[item][piece].name == "Project"}
+                                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            {$projects[$items[item][piece].value]}
+                                        </td>
+                                    {elseif $items[item][piece].name == "Subproject"}
+                                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            {$subprojects[$items[item][piece].value]}
                                         </td>
                                     {elseif $items[item][piece].name == "join_id"}
                                             <!-- skip, do nothing -->

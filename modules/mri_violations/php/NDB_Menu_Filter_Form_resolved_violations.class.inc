@@ -151,7 +151,17 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             return PEAR::raiseError("User Error: ".$user->getMessage());
         }
 
-        $this->columns = array('v.PatientName',
+        $config =& NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        if ($useProjects === "false") {
+            $useProjects = false;
+        }
+        else{
+            $useProjects = true;
+        }
+
+        $this->columns = array(
+            'v.PatientName',
             'v.TimeRun',
             'v.MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
@@ -161,10 +171,16 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             'v.join_id',
             'v.Resolved'
         );
+        if ($useProjects) {
+            array_splice($this->columns, 1, 0, 'v.Project');
+            array_splice($this->columns, 2, 0, 'v.Subproject');
+        }
 
         $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
+                c.ProjectID as Project,
+                s.SubprojectID as Subproject,
                 minc_location as MincFile,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem, 
@@ -176,11 +192,17 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID 
             AND violations_resolved.TypeTable='mri_protocol_violated_scans')
+            LEFT JOIN candidate c
+            ON (mri_protocol_violated_scans.CandID = c.CandID)
+            LEFT JOIN session s
+            ON (mri_protocol_violated_scans.CandID = s.CandID)
             WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
-                MincFile,   
+                c.ProjectID as Project,
+                s.SubprojectID as Subproject,
+                MincFile,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -193,10 +215,16 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID 
             AND violations_resolved.TypeTable='mri_violations_log')
+            LEFT JOIN candidate c
+            ON (mri_violations_log.CandID=c.CandID)
+            LEFT JOIN session s
+            ON (mri_violations_log.CandID = s.CandID)
             WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
+                c.ProjectID as Project,
+                s.SubprojectID as Subproject,
                 MincFile,
                 null,
                 Reason, 
@@ -207,13 +235,19 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=MRICandidateErrors.ID 
-            AND violations_resolved.TypeTable='MRICandidateErrors')"
-         . ") as v WHERE Resolved <> '0'";
+            AND violations_resolved.TypeTable='MRICandidateErrors')
+            LEFT JOIN candidate c
+            ON (SUBSTRING_INDEX(MRICandidateErrors.PatientName,'_',1)=c.PSCID)
+            LEFT JOIN session s
+            ON (c.CandID = s.CandID))
+            as v WHERE Resolved <> '0'";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
                 'PatientName' => 'v.PatientName',
                 'TimeRun' => 'v.TimeRun',
+                'Project' => 'v.Project',
+                'Subproject' => 'v.Subproject',
                 'ProblemType' => 'v.Problem',
                 'Filename' => 'v.MincFile',
                 'Description' => 'v.Series_Description',
@@ -223,6 +257,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         $this->validFilters = array(
             'v.PatientName',
             'v.TimeRun',
+            'v.Project',
+            'v.Subproject',
             'v.MincFile',
             'v.Problem',
             'v.Series_Description',
@@ -262,7 +298,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     => 'MRI Protocol Check violation'
             )
         );
-        // conflict resolved
+        // violation resolved
         $this->addSelect(
             'Resolved', 
             'Violation resolved', 
@@ -276,6 +312,21 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 '5'=>'Inserted with flag'
                 )            
             );
+        // project
+        $list_of_projects = Utility::getProjectList();
+        $this->addSelect(
+            'Project',
+            'Project',
+            array('' => 'All') + $list_of_projects
+        );
+
+        // Subproject
+        $list_of_subprojects = Utility::getSubprojectList();
+        $this->addSelect(
+            'Subproject',
+            'Subproject',
+            array('' => 'All') + $list_of_subprojects
+        );
         
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
@@ -319,10 +370,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 	        '3'=>'Inserted',
 	        '4'=>'Rejected',
 	        '5'=>'Inserted with flag',
-	        '6'=>'Resolved #1',
-	        '7'=>'Resolved #2',
-	        '8'=>'Resolved #3',
-	        '9'=>'Resolved #4');
+        );
         $this->tpl_data['resolved_options'] = $resolved_options;
 
         $resolved_styles = array(
@@ -335,6 +383,13 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 	        '6'=>'label-primary'
         );
         $this->tpl_data['resolved_styles'] = $resolved_styles;
+
+        // project
+        $list_of_projects = Utility::getProjectList();
+        $this->tpl_data['projects'] = $list_of_projects;
+        // Subproject
+        $list_of_subprojects = Utility::getSubprojectList();
+        $this->tpl_data['subprojects'] = $list_of_subprojects;
 
         $x=0;
         foreach ($this->list as $item) {
@@ -349,11 +404,12 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 }
                 if ($key === 'hash') {
                     $hash = $val;
-                    //$this->addSelect($val, "", $options);                    
+                    //$this->addSelect($val, "", $options);
                 }
                 if ($key === 'Resolved') {
                     //$resolved_index = $val;
                     //$val = $options[$val];
+                    echo "RESOLVED $key $val \n";
                 }
                 if ($key === 'Problem') {
                     if($val="Could not identify scan type"){    

@@ -41,7 +41,6 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
     }
     function _process($values)
     {
-        echo "AA\n";
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -141,7 +140,6 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 
     function _setupVariables()
     {
-        echo "BB\n";
         // set the class variables
         $this->columns = array(
             'conflicts_unresolved.TableName', 
@@ -190,7 +188,6 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 
     function _setFilterForm()
     {
-        echo "CC\n";
         // Create user object
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
@@ -238,7 +235,7 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 
     function _setDataTableRows($count)
     {
-        echo "DD\n";
+        print_r($this);
         $DB =& Database::singleton();
         //print_r($this->filter);
         $x = 0;

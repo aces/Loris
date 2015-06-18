@@ -40,10 +40,10 @@ $(window).resize(function(){
 
 // AJAX to get bar chart data
 $.ajax({
-    url: 'AjaxHelper.php?Module=mri_violations&script=get_mri_violation_chart_data.php',
+    /*url: 'AjaxHelper.php?Module=mri_violations&script=get_mri_violation_chart_data.php',
     type: 'post',
     success: function(data) {
-        console.log("fetching violation data");
+        //console.log("fetching violation data");
         var violationBarData = formatBarData(data);
         console.log(data);
         var violationBarLabels = data.labels;
@@ -70,7 +70,7 @@ $.ajax({
     error: function(xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
-    }
+    }*/
 });
 
 function formatBarData(data) {
