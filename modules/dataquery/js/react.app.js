@@ -143,7 +143,7 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                 fields.splice(idx, 1);
             }
         }
-        this.setState({ fields: fields });
+        this.setState({ fields: fields, loadedQuery: '' });
     },
     criteriaFieldChange: function(changeType, fieldName) {
         var fields = this.state.criteria;
@@ -155,7 +155,7 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         } else if(changeType === 'remove') {
             delete fields[fieldName];
         }
-        this.setState({ criteria: fields });
+        this.setState({ criteria: fields, loadedQuery: '' });
     },
     criteriaChange: function(fieldName, criteriaItem) {
         var criteria = this.state.criteria;
@@ -281,9 +281,9 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         var currow;
 
         if(this.state.grouplevel === 0) {
-            for(j = 0; j < sessions.length; j += 1) {
+            for(j = 0; sessions && j < sessions.length; j += 1) {
                 var currow = [];
-                for(i = 0; i < fields.length; i += 1) {
+                for(i = 0; fields && i < fields.length; i += 1) {
                     var fieldSplit = fields[i].split(",")
                         currow[i] = '.';
                     var sd = sessiondata[sessions[j]];
@@ -389,11 +389,16 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                         globalQueries: this.props.SavedQueries.Shared, 
                         queryDetails: this.state.savedQueries, 
                         queriesLoaded: this.state.queriesLoaded, 
-                        onSelectQuery: this.loadSavedQuery}
+                        onSelectQuery: this.loadSavedQuery, 
+                        loadedQuery: this.state.loadedQuery}
                     )
                 ), 
                 React.createElement("div", {className: "tab-content"}, 
                     tabs
+                ), 
+                React.createElement(FieldsSidebar, {
+                    Fields: this.state.fields, 
+                    Criteria: this.state.criteria}
                 )
             );
     }
