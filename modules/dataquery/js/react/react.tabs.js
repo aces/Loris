@@ -245,21 +245,50 @@ StatsVisualizationTabPane = React.createClass({
 });
 
 SaveQueryDialog = React.createClass({
+    getInitialState: function() {
+        return {
+            'queryName' : '',
+            'shared' : false
+        };
+    },
+    editName: function(e) {
+        this.setState({ queryName : e.target.value });
+    },
+    editPublic: function(e) {
+        this.setState({ shared : e.target.checked });
+    },
+    onSaveClicked: function() {
+        // Should do validation before doing anything here.. ie query name is entered, doesn't already
+        // exist, there are fields selected..
+        if(this.props.onSaveClicked) {
+            this.props.onSaveClicked(this.state.queryName, this.state.shared);
+        }
+    },
+    onDismissClicked: function() {
+        if(this.props.onDismissClicked) {
+            this.props.onDismissClicked();
+        }
+    },
     render: function() {
         return (
-            <div className="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div className="modal show">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 className="modal-title" id="myModalLabel">Modal title</h4>
+                            <button type="button" className="close" aria-label="Close" onClick={this.onDismissClicked}><span aria-hidden="true">&times;</span></button>
+                            <h4 className="modal-title" id="myModalLabel">Save Current Query</h4>
                         </div>
                         <div className="modal-body">
-                            Abc
+                            <p>Enter the name you would like to save your query under here:</p>
+                            <div className="input-group">
+                                Query Name: <input type="text" className="form-control" placeholder="My Query" value={this.state.queryName} onChange={this.editName} />
+                            </div>
+                            <p>Make query a publicly shared query? <input type="checkbox" checked={this.state.shared ? 'checked' : ''} onChange={this.editPublic} aria-label="Shared Query" /></p>
+
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
+                            <button type="button" className="btn btn-default" onClick={this.onDismissClicked}>Close</button>
+                            <button type="button" className="btn btn-primary" onClick={this.onSaveClicked} >Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -333,6 +362,9 @@ ManageSavedQueriesTabPane = React.createClass({
 
         });
     },
+    dismissDialog: function() {
+        this.setState({ 'savePrompt' : false });
+    },
     getInitialState: function() {
         return {
             'savePrompt' : false,
@@ -341,9 +373,13 @@ ManageSavedQueriesTabPane = React.createClass({
         };
     },
     saveQuery: function() {
+        this.setState({ 'savePrompt' : true });
+    },
+    savedQuery: function(name, shared) {
         if(this.props.onSaveQuery) {
-            this.props.onSaveQuery(); //todo: add (name, shared parameters)
+            this.props.onSaveQuery(name, shared); //todo: add (name, shared parameters)
         }
+        this.setState({ 'savePrompt' : false });
     },
     getDefaultProps: function() {
         return {
@@ -356,8 +392,14 @@ ManageSavedQueriesTabPane = React.createClass({
         if(this.state.queriesLoaded) {
             for(var i = 0; i < this.props.userQueries.length; i += 1) {
                 var query = this.state.queries[this.props.userQueries[i]];
+                console.log(query.Meta);
+                var name = "Unnamed Query: " + this.props.userQueries[i];
+                if(query.Meta.name) {
+                    name = query.Meta.name;
+                }
+
                 queryRows.push(
-                        <ManageSavedQueryRow Name={this.props.userQueries[i]} Query={query} />
+                        <ManageSavedQueryRow Name={name} Query={query} />
                     );
 
             }
@@ -367,6 +409,12 @@ ManageSavedQueriesTabPane = React.createClass({
                     <td colSpan="3">Loading saved query details</td>
                 </tr>
             );
+        }
+
+        var savePrompt = '';
+        if(this.state.savePrompt) {
+            savePrompt = <SaveQueryDialog onDismissClicked={this.dismissDialog} onSaveClicked={this.savedQuery}/>;
+
         }
         var content = (
             <div>
@@ -384,7 +432,7 @@ ManageSavedQueriesTabPane = React.createClass({
                         {queryRows}
                     </tbody>
                 </table>
-                <SaveQueryDialog />
+                {savePrompt}
             </div>
         );
         return <TabPane content={content} TabId={this.props.TabId} />;

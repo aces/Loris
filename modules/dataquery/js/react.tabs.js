@@ -245,21 +245,50 @@ StatsVisualizationTabPane = React.createClass({displayName: 'StatsVisualizationT
 });
 
 SaveQueryDialog = React.createClass({displayName: 'SaveQueryDialog',
+    getInitialState: function() {
+        return {
+            'queryName' : '',
+            'shared' : false
+        };
+    },
+    editName: function(e) {
+        this.setState({ queryName : e.target.value });
+    },
+    editPublic: function(e) {
+        this.setState({ shared : e.target.checked });
+    },
+    onSaveClicked: function() {
+        // Should do validation before doing anything here.. ie query name is entered, doesn't already
+        // exist, there are fields selected..
+        if(this.props.onSaveClicked) {
+            this.props.onSaveClicked(this.state.queryName, this.state.shared);
+        }
+    },
+    onDismissClicked: function() {
+        if(this.props.onDismissClicked) {
+            this.props.onDismissClicked();
+        }
+    },
     render: function() {
         return (
-            React.createElement("div", {className: "modal fade", id: "myModal", tabindex: "-1", role: "dialog", 'aria-labelledby': "myModalLabel", 'aria-hidden': "true"}, 
+            React.createElement("div", {className: "modal show"}, 
                 React.createElement("div", {className: "modal-dialog"}, 
                     React.createElement("div", {className: "modal-content"}, 
                         React.createElement("div", {className: "modal-header"}, 
-                            React.createElement("button", {type: "button", className: "close", 'data-dismiss': "modal", 'aria-label': "Close"}, React.createElement("span", {'aria-hidden': "true"}, "×")), 
-                            React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Modal title")
+                            React.createElement("button", {type: "button", className: "close", 'aria-label': "Close", onClick: this.onDismissClicked}, React.createElement("span", {'aria-hidden': "true"}, "×")), 
+                            React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Save Current Query")
                         ), 
                         React.createElement("div", {className: "modal-body"}, 
-                            "Abc"
+                            React.createElement("p", null, "Enter the name you would like to save your query under here:"), 
+                            React.createElement("div", {className: "input-group"}, 
+                                "Query Name: ", React.createElement("input", {type: "text", className: "form-control", placeholder: "My Query", value: this.state.queryName, onChange: this.editName})
+                            ), 
+                            React.createElement("p", null, "Make query a publicly shared query? ", React.createElement("input", {type: "checkbox", checked: this.state.shared ? 'checked' : '', onChange: this.editPublic, 'aria-label': "Shared Query"}))
+
                         ), 
                         React.createElement("div", {className: "modal-footer"}, 
-                            React.createElement("button", {type: "button", className: "btn btn-default", 'data-dismiss': "modal"}, "Close"), 
-                            React.createElement("button", {type: "button", className: "btn btn-primary"}, "Save changes")
+                            React.createElement("button", {type: "button", className: "btn btn-default", onClick: this.onDismissClicked}, "Close"), 
+                            React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.onSaveClicked}, "Save changes")
                         )
                     )
                 )
@@ -333,6 +362,9 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
 
         });
     },
+    dismissDialog: function() {
+        this.setState({ 'savePrompt' : false });
+    },
     getInitialState: function() {
         return {
             'savePrompt' : false,
@@ -341,9 +373,13 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
         };
     },
     saveQuery: function() {
+        this.setState({ 'savePrompt' : true });
+    },
+    savedQuery: function(name, shared) {
         if(this.props.onSaveQuery) {
-            this.props.onSaveQuery(); //todo: add (name, shared parameters)
+            this.props.onSaveQuery(name, shared); //todo: add (name, shared parameters)
         }
+        this.setState({ 'savePrompt' : false });
     },
     getDefaultProps: function() {
         return {
@@ -356,8 +392,14 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
         if(this.state.queriesLoaded) {
             for(var i = 0; i < this.props.userQueries.length; i += 1) {
                 var query = this.state.queries[this.props.userQueries[i]];
+                console.log(query.Meta);
+                var name = "Unnamed Query: " + this.props.userQueries[i];
+                if(query.Meta.name) {
+                    name = query.Meta.name;
+                }
+
                 queryRows.push(
-                        React.createElement(ManageSavedQueryRow, {Name: this.props.userQueries[i], Query: query})
+                        React.createElement(ManageSavedQueryRow, {Name: name, Query: query})
                     );
 
             }
@@ -367,6 +409,12 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
                     React.createElement("td", {colSpan: "3"}, "Loading saved query details")
                 )
             );
+        }
+
+        var savePrompt = '';
+        if(this.state.savePrompt) {
+            savePrompt = React.createElement(SaveQueryDialog, {onDismissClicked: this.dismissDialog, onSaveClicked: this.savedQuery});
+
         }
         var content = (
             React.createElement("div", null, 
@@ -384,7 +432,7 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
                         queryRows
                     )
                 ), 
-                React.createElement(SaveQueryDialog, null)
+                savePrompt
             )
         );
         return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
