@@ -15,16 +15,25 @@ PaginationLinks = React.createClass({
         var pageLinks = [];
         var classList;
         var lastPage = Math.ceil(this.props.total / rowsPerPage);
+        var startPage = Math.max(1, this.props.Active-3);
+        var lastShownPage = Math.min(this.props.Active+3, lastPage);
+
         if(this.props.total === 0) {
             return <div />;
         }
-            <li>
-          <a href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
+
+        if((lastShownPage - startPage) <= 7) {
+            lastShownPage = startPage + 6;
+            if(lastShownPage > lastPage) {
+                lastShownPage = lastPage;
+                startPage = lastPage - 6
+            }
+
+        }
+
+
         pageLinks.push(<li onClick={this.changePage(1)}><a href="#">&laquo;</a></li>);
-        for(var i = Math.max(1, this.props.Active-3); i <= Math.min(this.props.Active+3, lastPage); i += 1) {
+        for(var i = startPage; i <= lastShownPage; i += 1) {
             classList = '';
             if(this.props.Active == i) {
                 classList = "active";
