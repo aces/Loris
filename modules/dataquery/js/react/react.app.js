@@ -1,4 +1,9 @@
 SavedQueriesList = React.createClass({
+    getDefaultProps: function() {
+        queriesLoaded: false
+    },
+    componentDidMount: function() {
+    },
     loadQuery: function(queryName) {
         var that = this;
         return function() {
@@ -14,9 +19,20 @@ SavedQueriesList = React.createClass({
     render: function() {
         var userSaved = [];
         var globalSaved = [];
+        var queryName, curQuery;
 
+        if(this.props.queriesLoaded === false) {
+            return <div />;
+        }
         for(var i = 0; i < this.props.userQueries.length; i += 1) {
-            userSaved.push(<li key={this.props.userQueries[i]}><a href="#" onClick={this.loadQuery(this.props.userQueries[i])}>{this.props.userQueries[i]}</a></li>);
+            curQuery = this.props.queryDetails[this.props.userQueries[i]];
+            console.log(curQuery.Meta);
+            if(curQuery.Meta && curQuery.Meta.name) {
+                queryName = curQuery.Meta.name;
+            } else {
+                queryName = this.props.userQueries[i];
+            }
+            userSaved.push(<li key={this.props.userQueries[i]}><a href="#" onClick={this.loadQuery(this.props.userQueries[i])}>{queryName}</a></li>);
         }
         for(var i = 0; i < this.props.globalQueries.length; i += 1) {
             globalSaved.push(<li key={this.props.globalQueries[i]}><a href="#">{this.props.globalQueries[i]}</a></li>);
@@ -39,6 +55,9 @@ SavedQueriesList = React.createClass({
 });
 DataQueryApp = React.createClass({
     componentDidMount: function() {
+        // The left and right menu items are part of the same menu, but bootstrap considers
+        // them two separate ones, so we need to make sure that only one is selected by removing
+        // "active" from all the tab classes and only adding it to the really active one
         var domNode = this.getDOMNode();
         $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             $(domNode).find('li').removeClass("active");
@@ -51,6 +70,30 @@ DataQueryApp = React.createClass({
             }
         });
 
+        // Load the save queries' details
+        var promises = [];
+        var that = this;
+        for (var i = 0; i < this.props.SavedQueries.User.length; i += 1) {
+            var curRequest;
+            curRequest = Promise.resolve(
+                    $.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.SavedQueries.User[i]), {
+                        data: {
+                            DocID: that.props.SavedQueries.User[i]
+                        },
+                        dataType: 'json'
+                    }).then(function(value) {
+                        var queries = that.state.savedQueries;
+
+                        queries[value._id] = value;
+                        that.setState({ 'savedQueries' : queries});
+                    });
+            promises.push(curRequest);
+        }
+
+        var allDone = Promise.all(promises).then(function(value) {
+            that.setState({ 'queriesLoaded' : true });
+
+        });
     },
     saveCurrentQuery: function(name, shared) {
         $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
@@ -58,7 +101,7 @@ DataQueryApp = React.createClass({
                 Fields: this.state.fields,
                 Filters: this.state.criteria,
                 QueryName: name,
-                SharedQuery: shared
+                SharedQuery: shared,
             }, function(data) {
             });
 
@@ -68,7 +111,9 @@ DataQueryApp = React.createClass({
             fields: [],
             criteria: {},
             sessiondata: {},
-            grouplevel: 0
+            grouplevel: 0,
+            savedQueries: {},
+            queriesLoaded: false
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -326,6 +371,8 @@ DataQueryApp = React.createClass({
                         userQueries={this.props.SavedQueries.User}
                         globalQueries={this.props.SavedQueries.Shared}
                         onSaveQuery={this.saveCurrentQuery}
+                        queryDetails={this.state.savedQueries}
+                        queriesLoaded={this.state.queriesLoaded}
                 />);
 
         return <div>
@@ -340,6 +387,8 @@ DataQueryApp = React.createClass({
                     <SavedQueriesList
                         userQueries={this.props.SavedQueries.User}
                         globalQueries={this.props.SavedQueries.Shared}
+                        queryDetails={this.state.savedQueries}
+                        queriesLoaded={this.state.queriesLoaded}
                         onSelectQuery={this.loadSavedQuery}
                     />
                 </nav>

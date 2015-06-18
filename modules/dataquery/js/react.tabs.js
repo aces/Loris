@@ -337,31 +337,6 @@ ManageSavedQueryRow = React.createClass({displayName: 'ManageSavedQueryRow',
     }
 });
 ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesTabPane',
-    componentDidMount: function() {
-        var promises = [];
-        var that = this;
-        for (var i = 0; i < this.props.userQueries.length; i += 1) {
-            var curRequest;
-            curRequest = Promise.resolve(
-                $.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.userQueries[i]), {
-                    data: {
-                        DocID: that.props.userQueries[i]
-                    },
-                    dataType: 'json'
-                }).then(function(value) {
-                    var queries = that.state.queries;
-
-                    queries[value._id] = value;
-                    that.setState({ 'queries' : queries});
-                });
-            promises.push(curRequest);
-        }
-
-        var allDone = Promise.all(promises).then(function(value) {
-            that.setState({ 'queriesLoaded' : true });
-
-        });
-    },
     dismissDialog: function() {
         this.setState({ 'savePrompt' : false });
     },
@@ -377,22 +352,23 @@ ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesT
     },
     savedQuery: function(name, shared) {
         if(this.props.onSaveQuery) {
-            this.props.onSaveQuery(name, shared); //todo: add (name, shared parameters)
+            this.props.onSaveQuery(name, shared);
         }
         this.setState({ 'savePrompt' : false });
     },
     getDefaultProps: function() {
         return {
             userQueries: [],
-            globalQueries: []
+            globalQueries: [],
+            queriesLoaded: false,
+            queryDetails: {}
         };
     },
     render: function() {
         var queryRows = [];
-        if(this.state.queriesLoaded) {
+        if(this.props.queriesLoaded) {
             for(var i = 0; i < this.props.userQueries.length; i += 1) {
-                var query = this.state.queries[this.props.userQueries[i]];
-                console.log(query.Meta);
+                var query = this.props.queryDetails[this.props.userQueries[i]];
                 var name = "Unnamed Query: " + this.props.userQueries[i];
                 if(query.Meta.name) {
                     name = query.Meta.name;
