@@ -1,6 +1,6 @@
 <?php
 
-header("content-type:application/json");
+header('Content-Type: text/html');
 ini_set('default_charset', 'utf-8');
 
 //FIXME : these are sandbox relative

@@ -686,7 +686,7 @@ class NDB_BVL_Feedback
      *
      * @return void
      */
-    function createEntry($feedbackID, $comment)
+    static function createEntry($feedbackID, $comment, $username)
     {
         // new DB Object
         $db =& Database::singleton();
@@ -695,7 +695,7 @@ class NDB_BVL_Feedback
         $setArray = array(
                      'FeedbackID' => $feedbackID,
                      'Comment'    => $comment,
-                     'UserID'     => $this->_username,
+                     'UserID'     => $username,
                     );
 
         $success = $db->insert('feedback_bvl_entry', $setArray);

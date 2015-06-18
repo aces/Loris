@@ -16,8 +16,36 @@ $(document).ready(function() {
 
     });
 
+    //Create an entry for an existing thread here.
+
+    $('body').on('click', '[id^=submit_comment]', function(event){
+	console.log("clicking on dynamically created event");
+	event.stopPropagation();
+	var feedbackID = this.id.slice(15);
+	var comment = $("#thread_entry_comment_" + feedbackID).val();
+
+
+        request= $.ajax({
+	    type: "POST",
+	    url: "ajax/thread_comment_bvl_feedback",
+	    data: {"comment" : comment,
+		 "feedbackID" : feedbackID},
+	    success: function (data) {
+		console.log("in the success function of adding a thread entry comment");
+	    },//end of success function
+        error: function (xhr, desc, err){
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+	});
+        request.done(function (response, textStatus, jqXHR){
+            console.log("Hooray it worked!, In the ajax of sending a comment on a thread entry");
+        });//end of ajax
+    });
+
     // Here I want to create a comment field. On click of commentglyphicon I want to add a comment field.
-    $('span[name=comment_icon]').on('click',function(){
+    $('span[name=comment_icon]').on('click',function(event){
+ 	event.stopPropagation();
 	var feedbackID = this.id.slice(13);
 	if($("#comment_field_" + feedbackID).length){
 	    $("#comment_field_" + feedbackID).toggle();
@@ -26,12 +54,14 @@ $(document).ready(function() {
 	else{
 	console.log("comment icon has been clicked");
 	var $tbody = $("#" + feedbackID);
-	var commentField = '<td id = "comment_field_' + feedbackID + '"colspan = 3><input type="text" class="form-control" placeholder="Comment on this thread."></td>'
+	var commentField = '<td id = "comment_field_' + feedbackID + '"colspan = 3 class=form-group><input type="text" class="form-control" placeholder="Comment on this thread." id = "thread_entry_comment_' + feedbackID + '"><a class="btn btn-default" name ="submit_entry" id = "submit_comment_' + feedbackID + '">Submit</a></td>';
+
+	//  Var commentField = '<div class="form-control input-group"><span class="input-group-btn"><button class="btn btn-default" type="button">Go!</button></span><input type="text" class="form-control" placeholder="Search for..."></div>';
 	    $tbody.append(commentField);
 	}
     });// end of comment_icon stuff
 
-    
+    //Thread entries toggling.
     $('tbody[name=entries]').on('click',function(){
 	var feedbackID = this.id;
 
