@@ -1,11 +1,10 @@
 <?php
 /**
  * This class defines a factory which can be used to generate other objects that
- * are usually singletons. Instead of directly calling class::singleton staticly,
+ * are usually singletons. Instead of directly calling class::singleton statically,
  * this factory should be used so that a mock class can be subbed in for testing.
  *
- * If the Factory is in testing mode (setTesting(true) was called), a mock will
- * be returned. Otherwise, the normal NDB_ prefixed object will be returned.
+ * Note: Setters can be used to inject test doubles when writing unit tests.
  *
  * PHP Version 5
  *
@@ -32,28 +31,34 @@ require_once 'CouchDB.class.inc';
  */
 class NDB_Factory
 {
-    private static $_testdb = null;
-    private static $_db     = null;
-
-    private static $_couchdb = null;
-    private static $_user    = null;
-
-    var $Testing; // Whether or not Mock objects should be returned instead of
-                  // real ones
-    //
-    private static $_config = null;
+    /**
+     * Single instance of Database class
+     *
+     * @var Database
+     */
+    private static $_db = null;
 
     /**
-     * Sets whether the factory should return real objects or testing objects
+     * Single instance of CouchDB database wrapper class
      *
-     * @param boolean $val Whether testing should be enabled
-     *
-     * @return none
+     * @var CouchDB
      */
-    function setTesting($val)
-    {
-        $this->Testing = $val;
-    }
+    private static $_couchdb = null;
+
+    /**
+     * Single instance of Loris USer object
+     *
+     * @var User
+     */
+    private static $_user = null;
+
+    /**
+     * Single instance of NDB_Config object
+     *
+     * @var NDB_Config
+     */
+    private static $_config = null;
+
 
     /**
      * Returns a single factory object. This must be used instead of being
@@ -77,39 +82,31 @@ class NDB_Factory
      *
      * @return none
      */
-    function reset()
+    public function reset()
     {
-        self::$_testdb = null;
-        self::$_db     = null;
-
+        self::$_db      = null;
         self::$_couchdb = null;
         self::$_user    = null;
-
-        self::$_config = null;
+        self::$_config  = null;
     }
 
     /**
-     * Return either a real or mock NDB_Config object depending on testing
-     * status of this factory object.
+     * Return NDB_Config object
      *
-     * @param string $configfile Location of XML file to parse config from
+     * @param string $configFile Location of XML file to parse config from
      *
      * @return NDB_Config A config singleton
      */
-    function config($configfile = "../project/config.xml")
+    public function config($configFile = "../project/config.xml")
     {
         if (self::$_config !== null) {
             return self::$_config;
         }
-        if ($this->Testing) {
-            Mock::generate("NDB_Config");
-            $config = new MockNDB_Config();
-        } else {
-            $config = NDB_Config::singleton($configfile);
-        }
+
+        $config = NDB_Config::singleton($configFile);
 
         self::$_config = $config;
-        $config->load($configfile);
+        $config->load($configFile);
         return $config;
     }
 
@@ -128,21 +125,18 @@ class NDB_Factory
     }
 
     /**
-     * Return either a real or mock Loris User object.
+     * Returns Loris User object.
      *
      * @return User A user singleton
      */
-    function user()
+    public function user()
     {
         if (self::$_user !== null) {
             return self::$_user;
         }
-        if ($this->Testing) {
-            Mock::generate("User");
-            $user = new MockUser();
-        } else {
-            $user = User::singleton();
-        }
+
+        $user = User::singleton();
+
         self::$_user = $user;
         return $user;
     }
@@ -161,28 +155,20 @@ class NDB_Factory
     }
 
     /**
-     * Returns a connected reference to a database handler, or a Mock database
-     * that acts as a connected reference to a database handler.
+     * Returns a connected reference to a database handler
      *
      * @return Database A DB reference
      */
-    function database()
+    public function database()
     {
         $db_ref = null;
-        if ($this->Testing) {
-            $db_ref = &self::$_testdb;
-            if ($db_ref !== null) {
-                return $db_ref;
-            }
-            Mock::generate("Database");
-            self::$_testdb = new MockDatabase();
-        } else {
-            $db_ref = &self::$_db;
-            if ($db_ref !== null) {
-                return $db_ref;
-            }
-            self::$_db = Database::singleton();
+
+        $db_ref = &self::$_db;
+        if ($db_ref !== null) {
+            return $db_ref;
         }
+        self::$_db = Database::singleton();
+
         $config = $this->config();
         $dbc    = $config->getSetting('database');
         $db_ref->connect(
@@ -214,27 +200,14 @@ class NDB_Factory
      *
      * @return CouchDB CouchDB singleton
      */
-    function couchDB()
+    public function couchDB()
     {
         if (self::$_couchdb !== null) {
             return self::$_couchdb;
         }
-        if ($this->Testing) {
-            Mock::generatePartial(
-                'CouchDB',
-                'MockCouchDBWrap',
-                /* mock out the functions that make HTTP requests */
-                array(
-                 '_getRelativeURL',
-                 '_postRelativeURL',
-                 '_postURL',
-                 '_getURL',
-                )
-            );
-            self::$_couchdb = new MockCouchDBWrap();
-        } else {
-            self::$_couchdb = CouchDB::singleton(); //new CouchDB();
-        }
+
+        self::$_couchdb = CouchDB::singleton(); //new CouchDB();
+
         return self::$_couchdb;
     }
 
