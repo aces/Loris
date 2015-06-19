@@ -1,12 +1,17 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: evanmcilroy
+ * Date: 15-06-18
+ * Time: 2:07 PM
+ */
 
-header('Content-Type: text/html');
 ini_set('default_charset', 'utf-8');
-
-//FIXME : these are sandbox relative
+//FIXME fix these paths
 set_include_path(
     __DIR__ . "/../../project/libraries:" .
     __DIR__ . "/../../php/libraries:" .
+    __DIR__ . "../../modules:" .
     "/usr/share/pear:"
 );
 include ("../main.php");
@@ -16,13 +21,9 @@ require_once "NDB_Client.class.inc";
 $user =& User::singleton();
 $username = $user->getUsername();
 
-//Creating a new array to pass the set values into the DB. 
-$newThreadValues = array();
-
-if(isset($_POST['comment']) && isset($_POST['candID'])){
+if (isset($_POST['feedbackID']) && isset($_POST['candID'])){
     $feedbackThread =& NDB_BVL_Feedback::Singleton($username,$_POST['candID']);
-    $feedbackLevel = $feedbackThread->_feedbackLevel;
-    $feedbackThread->createThread($feedbackLevel,1,$_POST['comment'],'Y');
+    $feedbackThread->closeThread($_POST['feedbackID']);
 }
 
 exit();

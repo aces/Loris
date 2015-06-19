@@ -3,6 +3,8 @@
  */
 $(document).ready(function() {
 
+    var candID = $("#candID").attr('name');
+    
     $(function() {
         $( "#accordion" ).accordion({
             collapsible: true,
@@ -16,9 +18,37 @@ $(document).ready(function() {
 
     });
 
-    //Create an entry for an existing thread here.
+    //close a thread here
+    $('body').on('click', '[id^=close_thread]', function(event) {
+        var feedbackID = this.id.slice(13);
+	//getting the button group for this id
+	var buttonGroup = $("#" + feedbackID).find(".btn-group");
+	var closedButton = '<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Closed <span class="caret"></span></button><ul class="dropdown-menu"><li><a id="open_thread_' + feedbackID + '">Re-Open</a></li></ul>';
 
-    $('body').on('click', '[id^=submit_comment]', function(event){
+	request= $.ajax({
+	    type: "POST",
+	    url: "ajax/close_bvl_feedback_thread.php",
+	    data: {"feedbackID": feedbackID,
+		   "candID" :  candID},
+	    success: function (data){
+		console.log("In the success function of the closing thread");
+		buttonGroup.replaceWith(closedButton);
+		
+	    },//end of success function
+        error: function (xhr, desc, err){
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+	}
+	});//end of ajax
+	request.done(function(respoinse,textStatus,jqXHR){
+	    console.log("Request to close thread done");
+	    
+	});
+	
+    });//end of click
+
+        //on click of submit comment
+        $('body').on('click', '[id^=submit_comment]', function(event){
 	console.log("clicking on dynamically created event");
 	event.stopPropagation();
 	var feedbackID = this.id.slice(15);
@@ -27,7 +57,7 @@ $(document).ready(function() {
 
         request= $.ajax({
 	    type: "POST",
-	    url: "ajax/thread_comment_bvl_feedback",
+	    url: "ajax/thread_comment_bvl_feedback.php",
 	    data: {"comment" : comment,
 		 "feedbackID" : feedbackID},
 	    success: function (data) {
@@ -40,6 +70,8 @@ $(document).ready(function() {
 	});
         request.done(function (response, textStatus, jqXHR){
             console.log("Hooray it worked!, In the ajax of sending a comment on a thread entry");
+            $("#thread_entry_comment_" + feedbackID).val("Comment successful!");
+            $("#feedbackEntries_" + feedbackID).prepend("prepending");
         });//end of ajax
     });
 
@@ -55,9 +87,7 @@ $(document).ready(function() {
 	console.log("comment icon has been clicked");
 	var $tbody = $("#" + feedbackID);
 	var commentField = '<td id = "comment_field_' + feedbackID + '"colspan = 3 class=form-group><input type="text" class="form-control" placeholder="Comment on this thread." id = "thread_entry_comment_' + feedbackID + '"><a class="btn btn-default" name ="submit_entry" id = "submit_comment_' + feedbackID + '">Submit</a></td>';
-
-	//  Var commentField = '<div class="form-control input-group"><span class="input-group-btn"><button class="btn btn-default" type="button">Go!</button></span><input type="text" class="form-control" placeholder="Search for..."></div>';
-	    $tbody.append(commentField);
+	$tbody.append(commentField);
 	}
     });// end of comment_icon stuff
 
@@ -83,10 +113,9 @@ $(document).ready(function() {
 		for (var i = 0; i < data.length; i++){
 		    var tr = "<tr " + "id\"feedbackEntries_" + feedbackID + "_" + data[i]["EntryID"] + "\">";
 		    var td1 = "<td>" + data[i]["UserID"] + "</td>";
-                    var td2 = "<td>" + data[i]["Date"] + "</td>";
-                    var td3 = "<td>" + data[i]["Comment"] + "</td></tr>";
+                    var td2 = "<td colspan=\"2\">" + data[i]["Comment"] + "</td></tr>";
 
-		    $("#feedbackEntries_" + feedbackID).prepend(tr+td1+td2+td3);
+		    $("#feedbackEntries_" + feedbackID).prepend(tr+td1+td2);
 		    
 		}
 		

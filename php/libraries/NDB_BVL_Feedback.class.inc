@@ -884,15 +884,17 @@ class NDB_BVL_Feedback
      * @return void
      *  FIXME: This shares a lot of code from activateThread, it should be
      *         refactored
+     * FIXME: This needs to properly check for sites.
      */
     function closeThread($feedbackID=null)
     {
         // create user object
-        $user =& User::singleton($this->_username);
+        $user =& User::singleton();
 
-        if (!$user->isMultiSiteEnabled($this->_username)) {
-            throw new Exception("User is not allowed to close threads");
-        }
+
+//        if (!$user->isMultiSiteEnabled($this->_username)) {
+//            throw new Exception("User is not allowed to close threads");
+//        }
 
         // new DB Object
         $db =& Database::singleton();
@@ -900,7 +902,7 @@ class NDB_BVL_Feedback
         $setArray = array(
                      "Status"   => 'closed',
                      "UserID"   => $this->_username,
-                     "Testdate" => "NULL",
+//                     "Testdate" => "NULL",
                     );
 
         $whereArray = array(

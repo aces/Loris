@@ -25,7 +25,6 @@ class Timepoint_List_FeedbackPanel
         $username= $user->getUsername();
         $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username,$candID);
         $this->_feedbackThreadList = $this->_feedbackThread->getThreadList();
-//        $feedback = NDB_BVL_Feedback::Singleton($username,$candID);
     }
     /**
      *Display function for the Timepoint_List_FeedbackPanel
@@ -42,7 +41,6 @@ class Timepoint_List_FeedbackPanel
         $html = $smarty->fetch("timepoint_list_bvl_feedback_panel.tpl");
         return $html;
     }
-        
 }
 
 

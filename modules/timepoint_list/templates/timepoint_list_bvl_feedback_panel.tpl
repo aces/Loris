@@ -26,7 +26,26 @@
 		    <tr>
 			    <td>{$value.FeedbackID}<span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span></td>
 			    <td>{$value.Date}</td>
-			    <td>{$value.User}</td>
+			    {*<td>{$value.User}</td>*}
+                <td><div class="btn-group">
+                        {if $value.QC_status == 'opened'}
+                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Opened <span class="caret"></span>
+                        </button>
+                            <ul class="dropdown-menu">
+                                <li><a id="close_thread_{$value.FeedbackID}">Close</a></li>
+                            </ul>
+                        {/if}
+                        {if $value.QC_status == 'closed'}
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Closed <span class="caret"></span>
+                        </button>
+                            <ul class="dropdown-menu">
+                                <li><a id="open_thread_{$value.FeedbackID}">Re-Open</a></li>
+                            </ul>
+                        {/if}
+
+                    </div></td>
 		    </tr>
 		</tbody>
             {/foreach}
