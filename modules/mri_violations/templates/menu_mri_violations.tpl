@@ -112,7 +112,7 @@
                 <div id="scans-line-chart-panel">
                     <h5 class="chart-title">Scan sessions per site</h5>
                     {if $total_scans neq 0}
-                        <div id="scanChart"></div>
+                        <div id="graph"/>
                     {else}
                         <p>There have been no scans yet.</p>
                     {/if}
