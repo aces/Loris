@@ -674,7 +674,7 @@ class NDB_BVL_Feedback
         $feedbackID = $DB->getLastInsertId();
 
         // INSERT entry for the the thread into the feedback_bvl_thread
-        $this->createEntry($feedbackID, $comment);
+        $this->createEntry($feedbackID, $comment, $this->_username);
     }
 
     /**

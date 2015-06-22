@@ -14,8 +14,8 @@ $(document).ready(function() {
     });
 
     $(".navbar-toggle").on('click', function(){
-        console.log(this.id);
-
+        //var w = $("#wrap").width(300);
+        console.log("width of wrap : " + w);
     });
 
     //close a thread here
@@ -86,8 +86,8 @@ $(document).ready(function() {
 	else{
 	console.log("comment icon has been clicked");
 	var $tbody = $("#" + feedbackID);
-	var commentField = '<td id = "comment_field_' + feedbackID + '"colspan = 3 class=form-group><input type="text" class="form-control" placeholder="Comment on this thread." id = "thread_entry_comment_' + feedbackID + '"><a class="btn btn-default" name ="submit_entry" id = "submit_comment_' + feedbackID + '">Submit</a></td>';
-	$tbody.append(commentField);
+	var commentField = '<td id = "comment_field_' + feedbackID + '"colspan = 3 class=form-inline><input type="text" class="form-control" placeholder="Comment on this thread." id = "thread_entry_comment_' + feedbackID + '"><a class="btn btn-default" name ="submit_entry" id = "submit_comment_' + feedbackID + '">Submit</a></td>';
+	 $tbody.append(commentField);
 	}
     });// end of comment_icon stuff
 

@@ -249,7 +249,7 @@
     setTimeout($.proxy(function() {
       this.slide(elements, offset, $.proxy(complete, this))
     }, this), 1)
-  }
+  }removeRow(ndfo)
 
   OffCanvas.prototype.toggle = function () {
     if (this.state === 'slide-in' || this.state === 'slide-out') return
