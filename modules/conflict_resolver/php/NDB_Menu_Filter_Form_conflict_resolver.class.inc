@@ -111,6 +111,10 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
                     WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2,
                     FieldName, CommentId1, CommentId2)) = '$hash'");
 
+                    $DB->run("DELETE FROM conflicts_unresolved
+                    USING flag ON (conflicts_unresolved.CommentId2=flag.CommentID)
+                    WHERE flag.Data_entry='In Progress'");
+
                     $TableName = $row['TableName'];
                     $date = explode('-', $setArray['Date_taken']);
                     $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
