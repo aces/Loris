@@ -2,7 +2,7 @@
 <div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=mri_violations">
+        <form method="post" action="main.php?test_name=mri_violations&submenu=resolved_violations">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -52,7 +52,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=resolved_violations&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=resolved_violations&reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="mri_violations" />
@@ -131,6 +131,10 @@
                                     {elseif $items[item][piece].name == "Subproject"}
                                         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                             {$subprojects[$items[item][piece].value]}
+                                        </td>
+                                    {elseif $items[item][piece].name == "Site"}
+                                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            {$sites[$items[item][piece].value]}
                                         </td>
                                     {elseif $items[item][piece].name == "join_id"}
                                             <!-- skip, do nothing -->

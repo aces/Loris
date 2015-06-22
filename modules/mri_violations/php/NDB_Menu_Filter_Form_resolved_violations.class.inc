@@ -162,6 +162,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 
         $this->columns = array(
             'v.PatientName',
+            'v.Site',
             'v.TimeRun',
             'v.MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
@@ -187,6 +188,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 SeriesUID,
                 md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)) as hash,
                 mri_protocol_violated_scans.ID as join_id,                
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_protocol_violated_scans 
             LEFT JOIN violations_resolved
@@ -196,6 +198,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             ON (mri_protocol_violated_scans.CandID = c.CandID)
             LEFT JOIN session s
             ON (mri_protocol_violated_scans.CandID = s.CandID)
+            LEFT JOIN psc p
+            ON (p.CenterID = c.CenterID)
             WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,
@@ -208,6 +212,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
                 mri_violations_log.LogID as join_id,
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log 
             LEFT JOIN mri_scan_type 
@@ -219,6 +224,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             ON (mri_violations_log.CandID=c.CandID)
             LEFT JOIN session s
             ON (mri_violations_log.CandID = s.CandID)
+            LEFT JOIN psc p
+            ON (p.CenterID = c.CenterID)
             WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,
@@ -231,6 +238,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
                 MRICandidateErrors.ID as join_id,
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
@@ -239,23 +247,28 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN candidate c
             ON (SUBSTRING_INDEX(MRICandidateErrors.PatientName,'_',1)=c.PSCID)
             LEFT JOIN session s
-            ON (c.CandID = s.CandID))
-            as v WHERE Resolved <> '0'";
+            ON (c.CandID = s.CandID)
+            LEFT JOIN psc p
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved <> '0')
+            as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
-                'PatientName' => 'v.PatientName',
-                'TimeRun' => 'v.TimeRun',
-                'Project' => 'v.Project',
-                'Subproject' => 'v.Subproject',
-                'ProblemType' => 'v.Problem',
-                'Filename' => 'v.MincFile',
-                'Description' => 'v.Series_Description',
-                'SeriesUID' => 'v.SeriesUID',
-                'Resolved' => 'v.Resolved'
+                'PatientName'   => 'v.PatientName',
+                'Site'          => 'v.Site',
+                'TimeRun'       => 'v.TimeRun',
+                'Project'       => 'v.Project',
+                'Subproject'    => 'v.Subproject',
+                'ProblemType'   => 'v.Problem',
+                'Filename'      => 'v.MincFile',
+                'Description'   => 'v.Series_Description',
+                'SeriesUID'     => 'v.SeriesUID',
+                'Resolved'      => 'v.Resolved'
         );
         $this->validFilters = array(
             'v.PatientName',
+            'v.Site',
             'v.TimeRun',
             'v.Project',
             'v.Subproject',
@@ -391,6 +404,9 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         $list_of_subprojects = Utility::getSubprojectList();
         $this->tpl_data['subprojects'] = $list_of_subprojects;
 
+        $list_of_sites = Utility::getSiteList();
+        $this->tpl_data['sites'] = $list_of_sites;
+
         $x=0;
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
@@ -403,13 +419,11 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     $this->tpl_data['join_id'] = $val;
                 }
                 if ($key === 'hash') {
-                    $hash = $val;
-                    //$this->addSelect($val, "", $options);
+                    //$hash = $val;
+                    // do nothing
                 }
                 if ($key === 'Resolved') {
-                    //$resolved_index = $val;
-                    //$val = $options[$val];
-                    echo "RESOLVED $key $val \n";
+                    // do nothing
                 }
                 if ($key === 'Problem') {
                     if($val="Could not identify scan type"){    

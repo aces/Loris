@@ -70,7 +70,7 @@
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=conflict_resolver">Protocol violations</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations">Protocol violations</a></li>
         <li class="statsTab active"><a class="statsTabLink">Resolved violations</a></li>
     </ul>
     <div class="tab-content">

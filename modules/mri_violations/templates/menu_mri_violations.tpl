@@ -147,7 +147,6 @@
                 <td align="right">{$page_links}</td>
             </tr>
         </table>
-
         <div id="results" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="table-scroll" id="content">
@@ -187,6 +186,10 @@
                                         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                             {$subprojects[$items[item][piece].value]}
                                         </td>
+                                    {elseif $items[item][piece].name == "Site"}
+                                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            {$sites[$items[item][piece].value]}
+                                        </td>
                                     {elseif $items[item][piece].name == "join_id"}
                                             <!-- skip, do nothing -->
                                     {elseif $items[item][piece].name == "Resolved"}
@@ -208,10 +211,10 @@
                                 <tr><td colspan="12">No data found</td></tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="5" id="message-area">
+                                <td nowrap="nowrap" colspan="8" id="message-area">
 
                                 </td>
-                                <td nowrap="nowrap" colspan="5">
+                                <td nowrap="nowrap" colspan="2">
                                     <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
                                 </td>

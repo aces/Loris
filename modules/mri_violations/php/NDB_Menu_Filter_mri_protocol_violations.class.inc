@@ -57,7 +57,6 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        echo "LL";
         // set the class variables
         // create user object
         $user =& User::singleton();
@@ -117,7 +116,6 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        echo "MM";
         $this->addBasicText('CandID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
         $this->addBasicText('PatientName', 'Patient-Name:');
@@ -134,7 +132,6 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function getMRIProtocolData()
     {
-        echo "NN";
         $db =& Database::singleton();
         // select all except Objective from mri_protocol 
         // and add Scan_type from mri_scan_type 
