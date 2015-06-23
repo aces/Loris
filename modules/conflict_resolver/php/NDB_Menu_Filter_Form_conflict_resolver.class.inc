@@ -235,9 +235,7 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 
     function _setDataTableRows($count)
     {
-        print_r($this);
         $DB =& Database::singleton();
-        //print_r($this->filter);
         $x = 0;
         foreach ($this->list as $item) {
             //count column
