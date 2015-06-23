@@ -587,20 +587,18 @@ class NDB_BVL_Feedback
     /**
      * Creates a new behavioural feedback thread
      *
-     * @param unused  $level     Unused variable. FIXME: Delete and update
-     *                           references.
      * @param integer $type      Feedback type ID
      * @param string  $comment   The content of the thread
      * @param string  $public    Y or N depending on if the thread is public
      * @param string  $fieldname Optional fieldname for the thread to be
      *                           attached to
-     *
+     * FIXME : I have removed the level as a parameter as it was unused in the function call. I also tried to find all usages around the codebase and remove them. I believe I got them all but some issues may come up.
      * @return void
      *
      * @throws DatabaseException
      * @throws Exception
      */
-    function createThread($level, $type, $comment, $public=null,$fieldname=null)
+    function createThread($type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
         $DB = Database::singleton();
@@ -675,6 +673,7 @@ class NDB_BVL_Feedback
 
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment, $this->_username);
+
     }
 
     /**

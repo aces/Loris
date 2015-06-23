@@ -4,6 +4,11 @@
 $(document).ready(function() {
 
     var candID = $("#candID").attr('name');
+
+    $('.navbar-toggle').on('click',function(event){
+	console.log("navbar toggle clicked");
+	$("#bvl_feedback_menu").toggleClass("panel-wrapper none");
+    });
     
     $(function() {
         $( "#accordion" ).accordion({
@@ -13,17 +18,12 @@ $(document).ready(function() {
         });
     });
 
-    $(".navbar-toggle").on('click', function(){
-        //var w = $("#wrap").width(300);
-        console.log("width of wrap : " + w);
-    });
-
     //close a thread here
     $('body').on('click', '[id^=close_thread]', function(event) {
         var feedbackID = this.id.slice(13);
 	//getting the button group for this id
 	var buttonGroup = $("#" + feedbackID).find(".btn-group");
-	var closedButton = '<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Closed <span class="caret"></span></button><ul class="dropdown-menu"><li><a id="open_thread_' + feedbackID + '">Re-Open</a></li></ul>';
+	var closedButton = '<button name = "thread_button" type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Closed <span class="caret"></span></button><ul class="dropdown-menu"><li><a id="open_thread_' + feedbackID + '">Re-Open</a></li></ul>';
 
 	request= $.ajax({
 	    type: "POST",
@@ -92,7 +92,7 @@ $(document).ready(function() {
     });// end of comment_icon stuff
 
     //Thread entries toggling.
-    $('tbody[name=entries]').on('click',function(){
+    $('tbody[name=entries]').on('click',function(e){
 	var feedbackID = this.id;
 
 	//If we already have created a tbody with the entries for the given thread we simply toggle this thread on click.
@@ -144,8 +144,9 @@ $(document).ready(function() {
             success: function (data) {
                 console.log("in the success function of adding new thread stuff");
                 console.log("This is the data : " + data);
+		var successAlert = "";
 
-                //        successAlert = "<div class='alert alert-success'> You are in the success function of the </div>";
+                //        newFeedbackRowglyg = "<div class='alert alert-success'> You are in the success function of the </div>";
         //        $.("#new_feedback").append(successAlert);
         //    },
         //    error: function (xhr, desc, err) {

@@ -183,7 +183,6 @@ if (isset($feedback) && Utility::isErrorX($feedback)) {
                 } else {
                     // add the new thread
                     $success = $feedback->createThread(
-                        $threadData['Level'],
                         $threadData['Type'],
                         $threadData['Comment'],
                         $threadData['Public'],

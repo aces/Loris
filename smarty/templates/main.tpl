@@ -256,15 +256,15 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-            {if $control_panel}
-                <div class="wrapper">
+            {if $control_panel or $feedback_panel}
+                <div class="bvl_panel">
                 <!-- Sidebar -->
-            
-                    <div id="sidebar-wrapper" class="sidebar-div">
-                        <div id="sidebar-content">
-                            {$control_panel}
-                        </div>
-                    </div>
+                        {$feedback_panel}
+                    {*<div id="sidebar-wrapper" class="sidebar-div">*}
+                        {*<div id="sidebar-content">*}
+                            {*{$control_panel}*}
+                        {*</div>*}
+                    {*</div>*}
                     <!--    Want to wrap page content only when sidebar is in view
                             if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
@@ -284,9 +284,9 @@
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
             <div class="page-content inset">
-                <div id = "bvl_feedback_panel">
-                    {$feedback_panel}
-                </div>
+                {*<div id = "bvl_feedback_panel">*}
+                    {*{$feedback_panel}*}
+                {*</div>*}
 
                 {if $console}
                     <div class="alert alert-warning" role="alert">

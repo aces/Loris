@@ -8,7 +8,8 @@
 
 <!-- <div class ="ui-responsive-panel" data-role="panel" id="right-panel" data-position-fixed="true" data-display="push" data-position="div"> -->
 
-<right class="navmenu navmenu-default navmenu-fixed-right offcanvas" id="bvl_feedback_menu">
+<div class ="panel-wrapper" id="bvl_feedback_menu">
+{*<right class="navmenu navmenu-default navmenu-fixed-right offcanvas" id="bvl_feedback_menu">*}
     {*<div class="navbar"> <a style="color: white" href="main.php?test_name=candidate_list" id="candID"" name ="{$candID}">CANDID: {$candID}</a> - PSCID: {$PSCID}</div>*}
     <div class="breadcrumb-panel"><a style="color: white" href="main.php?test_name=candidate_list" id="candID"" name ="{$candID}">CANDID: {$candID}</a> - PSCID: {$PSCID}</div>
     <div id="accordion">
@@ -78,7 +79,7 @@
                         <tr class="info">
                             <td>ID</td>
                             <td>Date</td>
-                            <td>Status</td>
+                            <td>Author</td>
 
                         </thead>
                         {foreach from=$thread_list item=value}
@@ -89,7 +90,7 @@
                                 <td>{$value.User}</td>
                                 <td><div class="btn-group">
                                         {if $value.QC_status == 'opened'}
-                                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <button name ="thread_button" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Opened <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu">
@@ -97,7 +98,7 @@
                                             </ul>
                                         {/if}
                                         {if $value.QC_status == 'closed'}
-                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <button name="thread_button" type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Closed <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu">
