@@ -323,15 +323,17 @@ class Utility extends PEAR
      */
     static function getProjectList()
     {
-        $config =& NDB_Config::singleton();
-
-        // get the list of Subprojects
-        $projectSettings = $config->getSetting('Projects');
-        foreach (Utility::toArray($projectSettings['project']) AS $project) {
-
-            $list[$project['id']] =$project['title'];
-        }
-        return $list;
+	$db =& Database::singleton();
+        $projects = $db->pselect(
+            "SELECT p.ProjectID,p.Name,c.CohortID,c.Name,c.RecruitmentTarget 
+	    FROM Project p 
+	    INNER JOIN ProjectCohortRel pcr ON (p.ProjectID = pcr.ProjectID) 
+            INNER JOIN Cohort c ON (c.CohortID=pcr.CohortID)
+            ORDER BY p.ProjectID",
+	    array()
+        );
+	    //print_r($projects);
+        return $projects;
     }
 
     /**
