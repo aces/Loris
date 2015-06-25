@@ -79,7 +79,21 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .bvl_panel{
-    padding-right: 500px		       
+    padding-right: 500px;
+    transition: all 0.4s ease 0s;
+}
+
+.active_panel_footer{
+    padding-right: 500px;
+}
+
+.inactive_panel{
+    right: 0px;
+    dislay:hidden;
+}
+
+.inactive_panel_page{
+    padding-right: 0px;
 }
 
 @media (max-width:884px){
