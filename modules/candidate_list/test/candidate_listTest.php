@@ -105,16 +105,16 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * permission is required to access the page
      * @return void
      */
-
-    function testCandidateListPermissions() {
-        if (access_all_profiles || data_entry permission) {
-            page loads;
-        }
-        else {
-            $error_msg = $this->webDriver->findElement(WebDriverBy::cssSelector("error"))->getText();
-            $this->assertContains("You do not have access to this page.", $error_msg);
-        }
-    }
+//
+//    function testCandidateListPermissions() {
+//        if (access_all_profiles || data_entry permission) {
+//            page loads;
+//        }
+//        else {
+//            $error_msg = $this->webDriver->findElement(WebDriverBy::cssSelector("error"))->getText();
+//            $this->assertContains("You do not have access to this page.", $error_msg);
+//        }
+//    }
 
 
 
@@ -125,14 +125,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-
-    function testCandidateListDataEntryPermissions() {
-        if (data_entry_permission and !access_all_profiles) {
-            $own_site = $this->webDriver->findElement(WebDriverBy::cssSelector("Site: "))->getText();
-            $displayed_sites = blah;
-            $this->assertAttributeContainsOnly($own_site, $displayed_sites);
-        }
-    }
+//
+//    function testCandidateListDataEntryPermissions() {
+//        if (data_entry_permission and !access_all_profiles) {
+//            $own_site = $this->webDriver->findElement(WebDriverBy::cssSelector("Site: "))->getText();
+//            $displayed_sites = blah;
+//            $this->assertAttributeContainsOnly($own_site, $displayed_sites);
+//        }
+//    }
 
 
     /**
@@ -143,6 +143,27 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
+    function testInitialFilterState() {
+        $this->webDriver->get($this->url . "?test_name=candidate_list");
+
+        $siteFilter = $this->webDriver->findElement(WebDriverBy::Name("centerID"));
+        $siteField = $siteFilter->getAttribute('value');
+        $this->assertEquals('',$siteField);
+        $this->assertNotEquals('1',$siteField);
+
+        // Change to USER SITE!!!!!!!
+        // use label
+
+        $subprojectFilter = $this->webDriver->findElement(WebDriverBy::Name("SubprojectID"));
+        $subprojectField = $subprojectFilter->getAttribute('value');
+        $this->assertEquals('',$subprojectField);
+        $this->assertNotEquals('1',$subprojectField);
+
+        // test all blank
+        // open/close advanced
+
+
+    }
 
 
 
@@ -191,16 +212,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
 
     function testCandidateListBasicAdvancedToggle() {
-        testCandidateListAdvancedOptionsAppear();
-
-        // Switch back to basic mode
-        $advancedButton = $this->webDriver->findElement(WebDriverBy::Name("basic"));
-        $advancedButton->click();
-
-        // Go through each element and ensure it's on the page after clicking
-        //
+        $this->webDriver->get($this->url . "?test_name=candidate_list");
 
 
+        // Switch to Advanced mode
+        $basicButton = $this->webDriver->findElements(WebDriverBy::Name("advanced"));
+        $this->assertEquals(2, count($basicButton));
+        $basicButton[0]->click();
+
+        $scanDoneOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("scan_done")
+        );
+        $this->assertEquals("select", $scanDoneOptions->getTagName());
+
+        $basicButton[1]->click();
+
+//         Go through each element and ensure it's on the page after clicking
+        $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("scan_done"))->isDisplayed());
 
 
     }
@@ -285,12 +313,64 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
 
 
+
+
+
+
     /**
      * Tests that, if "Clear Form" is clicked,
      * filters reset to initial state
      *
-     * @return void
+     * @param string $action Method of filling the respective field
+     * @param string $field Field to be cleared
+     * @param string $val Value to be entered
+     *
+     * @dataProvider providerTestClearForm
+     *
+     *
      */
+
+    function testClearForm($action, $field, $val){
+        $this->webDriver->get($this->url . "?test_name=candidate_list");
+
+        // Open all filters
+        $basicButton = $this->webDriver->findElement(WebDriverBy::Name("advanced"));
+        $basicButton->click();
+
+        // Testing individual fields
+        $this->webDriver->$action($field,$val);
+
+        // Submit filter
+        $showDataButton = $this->webDriver->findElement(WebDriverBy::Name("filter"));
+        $showDataButton->click();
+
+        // Clear data
+        $clearButton = $this->webDriver->findElement(WebDriverBy::Name("reset"));
+        $clearButton->click();
+
+        // Check that fields are set back to default
+        testInitialFilterState();
+
+    }
+
+    function providerTestClearForm(){
+        return array(
+            array('type','PSCID','1'),
+            array('type','DCCID','1'),
+//            array('select','Visit_label','value=1'),     //Different in IBIS
+            array('select','centerID','value=2'),
+            array('select','SubprojectID','value=1'),
+            array('select','ProjectID','value=1'),
+            array('select','scan_done','value=Y'),
+            array('select','Particiant_Status','value=1'),
+            array('type','dob','2015-01-08'),
+            array('select','gender','value=Male'),
+            array('type','Visit_Count','value=1'),
+            array('select','Latest_Visit_Status','value=Visit'),
+        //    array('edc'),
+            array('select','Feedback','value=1')
+        );
+    }
 
 
 
