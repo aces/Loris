@@ -16,30 +16,71 @@ DataTable = React.createClass({
             PageNumber: pageNo
         });
     },
+    setSortColumn: function(colNumber) {
+        that = this;
+        return function(e) {
+            that.setState({
+                SortColumn: colNumber
+            });
+        }
+    },
     render: function() {
         var rowsPerPage = 20;
         var headers = [<th>Identifier</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
-            headers.push(<th>{this.props.Headers[i]}</th>);
+            headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
         }
         var rows = [];
         var curRow = [];
+        var index = [];
 
+        if(this.state.SortColumn >= 0) {
+            for(var i =0; i < this.props.Data.length; i += 1) {
+                var val = this.props.Data[i][this.state.SortColumn];
+
+                if (parseInt(val, 10) == val) {
+                    val = parseInt(val, 10);
+                } else if (parseFloat(val, 10) == val) {
+                    val = parseFloat(val, 10);
+                } else if (val == '.') {
+                    val = null;
+                }
+
+                index.push({ RowIdx: i, Value: val });
+            }
+            index.sort(function(a, b) {
+                // Sort by value
+                if(a.Value < b.Value) return -1;
+                if(a.Value > b.Value) return 1;
+
+                // If all values are equal, sort by rownum
+                if(a.RowIdx < b.RowIdx) { return -1; }
+                if(a.RowIdx > b.RowIdx) { return 1; }
+
+                // They're equal..
+                return 0;
+            });
+        } else {
+            for(var i =0; i < this.props.Data.length; i += 1) {
+                index.push({ RowIdx: i });
+
+            }
+        }
         for(var i = (rowsPerPage*(this.state.PageNumber-1));
                 (i < this.props.Identifiers.length) && (rows.length < rowsPerPage);
                 i += 1) {
             curRow = [];
 
             for(var j = 0; j < this.props.Headers.length; j += 1) {
-                if(this.props.Data[i]) {
-                    curRow.push(<td>{this.props.Data[i][j]}</td>);
+                if(this.props.Data[index[i].RowIdx]) {
+                    curRow.push(<td>{this.props.Data[index[i].RowIdx][j]}</td>);
                 } else {
                     curRow.push(<td>Unknown</td>);
                 }
             }
             rows.push(
                 <tr colSpan={headers.length}>
-                    <td>{this.props.Identifiers[i].join()}</td>
+                    <td>{this.props.Identifiers[index[i].RowIdx].join()}</td>
                     {curRow}
                 </tr>
             );
