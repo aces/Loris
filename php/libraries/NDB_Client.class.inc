@@ -76,7 +76,7 @@ class NDB_Client
         // so that after this we can just call Database::singleton()
         // with no parameters
         $DBSettings = $config->getSetting("database");
-        if(!defined("UNIT_TESTING")) {
+        if (!defined("UNIT_TESTING")) {
             $DB = Database::singleton(
                 $DBSettings['database'],
                 $DBSettings['username'],
@@ -165,8 +165,13 @@ class NDB_Client
         return true;
     }
 
-    function isLoggedIn() {
-        return false;
+    /**
+     * Returns true if the user is logged in
+     *
+     * @return true iff user is logged in
+     */
+    function isLoggedIn()
+    {
         if (!isset($_SESSION['State'])) {
             $_SESSION['State'] =& State::singleton();
             $login = new SinglePointLogin();
