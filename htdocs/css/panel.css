@@ -68,7 +68,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 .panel-wrapper{
   margin-right: -500px;
   margin-top: 50px;
-  right: 500px;
+  right: 0px;
   width: 500px;
   background: #064785;
   position: fixed;
@@ -87,9 +87,8 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     padding-right: 500px;
 }
 
-.inactive_panel{
-    right: 0px;
-    dislay:hidden;
+.active_panel{
+    right: 500px;
 }
 
 .inactive_panel_page{

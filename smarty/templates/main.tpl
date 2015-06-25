@@ -257,7 +257,7 @@
         {/if}
         <div id="page" class="container-fluid">
             {if $control_panel or $feedback_panel}
-                <div id="bvl_panel_wrapper" class="bvl_panel">
+                <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
                         {$feedback_panel}
                     {*<div id="sidebar-wrapper" class="sidebar-div">*}

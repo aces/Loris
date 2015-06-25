@@ -7,8 +7,8 @@ $(document).ready(function() {
 
     $('.navbar-toggle').on('click',function(event){
 	console.log("navbar toggle clicked");
-	$("#bvl_feedback_menu").toggleClass("inactive_panel");
-	$("#bvl_panel_wrapper").toggleClass("inactive_panel_page");
+	$("#bvl_feedback_menu").toggleClass("active_panel");
+	$("#bvl_panel_wrapper").toggleClass("bvl_panel");
 
     });
     
