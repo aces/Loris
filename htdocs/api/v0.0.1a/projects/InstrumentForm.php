@@ -11,23 +11,36 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
+namespace Loris\API\Projects;
 //Load config file and ensure paths are correct
-set_include_path(
-    get_include_path()
-    . ":"
-    .  __DIR__ . "../../../php/libraries"
-);
+set_include_path(get_include_path() . ":" . __DIR__ . "/../");
+require_once 'APIBase.php';
 
-// Ensures the user is logged in, and parses the config file.
-require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-$client->initialize("../../../project/config.xml");
+class InstrumentForm extends \Loris\API\APIBase {
+    var $Instrument;
 
+    function __construct($method, $Instrument) {
+        $this->AutoHandleRequestDelegation = false;
+        parent::__construct($method);
 
-require_once 'NDB_BVL_Instrument.class.inc';
-$Instrument = $_REQUEST['Instrument'];
+        try {
+            $this->Instrument = \NDB_BVL_Instrument::factory($Instrument, null, null, true);
+        } catch(\Exception $e) {
+            $this->header("HTTP/1.1 404 Not Found");
+            $this->error("Invalid Instrument");
+            $this->safeExit(0);
+        }
 
-$a = NDB_BVL_Instrument::factory($Instrument, null, null);
+        $this->handleRequest();
+    }
 
-print $a->toJSON();
+    function handleGET() {
+        $this->JSON = json_decode($this->Instrument->toJSON(), true);
+    }
+}
+
+if(isset($_REQUEST['PrintInstrumentForm'])) {
+    $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
+    print $obj->toJSONString();
+}
 ?>

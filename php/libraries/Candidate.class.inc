@@ -79,12 +79,14 @@ class Candidate
      */
     function select($candID)
     {
-        $config    = NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $candID    = trim($candID);
         $CandArray = array('Candidate' => $candID);
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $db = $factory->database();
 
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
@@ -212,7 +214,7 @@ class Candidate
 
             // check pscid structure
             if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
-                throw new Exception(
+                throw new LorisException(
                     "PSCID has an invalid structure",
                     PSCID_INVALID_STRUCTURE
                 );
@@ -507,13 +509,15 @@ class Candidate
      */
     function getListOfVisitLabels()
     {
+        $factory = NDB_Factory::singleton();
         //make sure it returns an array
         $visitLabelArray = array();
 
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        //
+        $db = $factory->database();
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
