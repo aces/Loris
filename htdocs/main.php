@@ -145,7 +145,6 @@ if (!empty($TestName)) {
             $tpl_data['test_name_css'] = "GetCSS.php?Instrument=$TestName";
         }
     }
-
 }
 
 //--------------------------------------------------
