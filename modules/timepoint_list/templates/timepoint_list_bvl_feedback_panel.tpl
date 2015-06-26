@@ -74,8 +74,8 @@
             </div>
             <div id="collapseTwo" class="panel-collapse collapse in">
                 <div class="panel-body">
-                    <table id="current_thread_tables" class ="table table-hover table-primary table-bordered dynamictable">
-                        <thead>
+                    <table id="current_thread_table" class ="table table-hover table-primary table-bordered dynamictable">
+                        <thead id ="current_thread_table_header">
                         <tr class="info">
                             <td>ID</td>
                             <td>Date</td>

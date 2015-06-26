@@ -76,6 +76,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
   overflow-y: scroll;
   z-index: 1000;
   transition: all 0.4s ease 0s;
+    padding-bottom: 50px;
 }
 
 .bvl_panel{

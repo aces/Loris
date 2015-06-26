@@ -41,5 +41,3 @@ if (isset($_POST['callFunc1'])) {
 }
 
 exit();
-
-?>

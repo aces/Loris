@@ -593,7 +593,7 @@ class NDB_BVL_Feedback
      * @param string  $fieldname Optional fieldname for the thread to be
      *                           attached to
      * FIXME : I have removed the level as a parameter as it was unused in the function call. I also tried to find all usages around the codebase and remove them. I believe I got them all but some issues may come up.
-     * @return void
+     * @return Returns the set array. As we need the values in this array in dynamic front-end calls.
      *
      * @throws DatabaseException
      * @throws Exception
@@ -673,6 +673,14 @@ class NDB_BVL_Feedback
 
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment, $this->_username);
+
+        $newEntryValues = array();
+        $newEntryValues["feedbackID"] = $feedbackID;
+        $newEntryValues["comment"] = $comment;
+        $newEntryValues["user"] = $this->_username;
+        $newEntryValues["date"] = $today;
+        //These new entries are returned to be used mostly dynamic rendering of new threads on the front-end
+        return $newEntryValues;
 
     }
 
