@@ -4,6 +4,7 @@
 {*<script src="js/feedback_bvl_popup.js"></script>*}
 {*<script src ="js/jasny-bootstrap-all.js"></script>*}
 <script src ="js/bvl_feedback_panel.js"></script>
+<script src ="bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="css/jasny-bootstrap-all.css" type="text/css" />
 
 <!-- <div class ="ui-responsive-panel" data-role="panel" id="right-panel" data-position-fixed="true" data-display="push" data-position="div"> -->
@@ -28,7 +29,7 @@
 
             </div>
             <div id="collapseOne" class="panel-collapse collapse in">
-                <div class="panel-body">
+                    <div class="panel-body">
                     <table class = "table table-hover table-primary table-bordered dynamictable">
                         <thead>
                         <tr class = "info">
@@ -77,18 +78,19 @@
                     <table id="current_thread_table" class ="table table-hover table-primary table-bordered dynamictable">
                         <thead id ="current_thread_table_header">
                         <tr class="info">
-                            <td>ID</td>
+                            {*<td>ID</td>*}
                             <td>Date</td>
                             <td>Author</td>
 
                         </thead>
                         {foreach from=$thread_list item=value}
-                            <tbody id="{$value.FeedbackID}" name="entries">
+				<tbody id="{$value.FeedbackID}" name="entries">
                             <tr>
-                                <td>{$value.FeedbackID}<span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span></td>
+                                {*<td>{$value.FeedbackID}<span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span></td>*}
                                 <td>{$value.Date}</td>
                                 <td>{$value.User}</td>
-                                <td><div class="btn-group">
+                                <td>
+                                    <div class="btn-group">
                                         {if $value.QC_status == 'opened'}
                                             <button name ="thread_button" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Opened <span class="caret"></span>
@@ -106,9 +108,15 @@
                                             </ul>
                                         {/if}
 
-                                    </div></td>
+                                    </div>
+                                    <div class = "bvl_table_icons">
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span>
+                                    <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="FeedbackID: {$value.FeedbackID} Type: {$value.Type}"></span></div>
+                                </td>
                             </tr>
                             </tbody>
+			    
                         {/foreach}
                     </table>
                 </div>

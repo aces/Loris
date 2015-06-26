@@ -96,6 +96,10 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     padding-right: 0px;
 }
 
+.bvl_table_icons {
+    font-size: 23px;
+    float: right;
+}
 @media (max-width:884px){
 
     .bvl_panel{

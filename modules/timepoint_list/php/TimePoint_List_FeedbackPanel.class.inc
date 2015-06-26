@@ -39,6 +39,7 @@ class Timepoint_List_FeedbackPanel
         $this->tpl_data['PSCID'] = $this->_candidate->getPSCID();
         $this->tpl_data['thread_list'] = $this->_feedbackThreadList;
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
+        
         // get the summary of threads
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         if (PEAR::isError($summary)) {

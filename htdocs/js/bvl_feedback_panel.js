@@ -12,6 +12,9 @@ $(document).ready(function() {
 
     });
 
+    //Setting tooltips.
+    $('[data-toggle="tooltip"]').tooltip();
+
     $(function() {
         $( "#accordion" ).accordion({
             collapsible: true,
