@@ -107,13 +107,15 @@ script:
     - vendor/bin/phpunit modules/training/test
     - vendor/bin/phpunit modules/user_accounts/test
 
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
     # Run PHPCS on some scripts
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Import_MRI.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/data_dictionary_builder.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/generic_includes.php
 
     # Run PHPCS on specific modules
     - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
