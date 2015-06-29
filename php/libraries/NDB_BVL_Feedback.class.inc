@@ -952,6 +952,31 @@ class NDB_BVL_Feedback
     }
 
     /**
+     * Used to re-open a thread identified by its feedbackID.
+     *
+     * @param integer $feedbackID The ID of the feedback thread being closed
+     *
+     * @return void
+     *
+     */
+    
+    function openThread($feedbackID){
+        $user =& User::singleton();
+
+        $db =& Database::singleton();
+
+        $setArray = array(
+            "Status" => 'open',
+            "UserID" => $this->_username,
+        );
+
+        $whereArray = array("FeedbackID" => $feedbackID);
+
+        $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
+
+    }
+
+    /**
      * Returns a [verbose] element name of the feedback_bvl_thread.
      *
      * Status field, i.e. feedback status
@@ -982,7 +1007,7 @@ class NDB_BVL_Feedback
         return $record;
     }
 
-    /** This function is currenlty used to check whether or not to render the bvl_feedback_icon
+    /** This function is currently used to check whether or not to render the bvl_feedback_icon
      * in main.tpl. It checks if the user has the bvl feedback permission first, if the user
      * has the permissions it then checks if the user is on the timepoint_list, instrument_list
      * or on any instrument page.

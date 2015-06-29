@@ -15,14 +15,6 @@ $(document).ready(function() {
     //Setting tooltips.
     $('[data-toggle="tooltip"]').tooltip();
 
-    $(function() {
-        $( "#accordion" ).accordion({
-            collapsible: true,
-            autoHeight: false,
-            heightStyle: "content"
-        });
-    });
-
     //On hover of the "action bar" we display the glyphicons for edit and see more comments.
     $('body').on("mouseenter mouseleave", '[name=action_bar]', function(event){ 
     	var bvl_table_icons = $(this).find(".bvl_table_icons");
@@ -77,7 +69,8 @@ $(document).ready(function() {
             type: "POST",
             url: "ajax/thread_comment_bvl_feedback.php",
             data: {"comment" : comment,
-                "feedbackID" : feedbackID},
+                   "feedbackID" : feedbackID,
+		   "candID" : candID},
             success: function (data) {
                 console.log("in the success function of adding a thread entry comment");
             },//end of success function
@@ -113,6 +106,7 @@ $(document).ready(function() {
     $('body').on('click','span[id^=toggle_entries]',function(e){
         console.log("toggling entries");
         var feedbackID = this.id.slice(15);
+	$(this).toggleClass(".glyphicon-chevron-right glyphicon-chevron-down");
 
         //If we already have created a tbody with the entries for the given thread we simply toggle this thread on click.
         if ($("#feedbackEntries_" + feedbackID).length){
@@ -130,7 +124,7 @@ $(document).ready(function() {
                     $("#" + feedbackID).after('<tbody id = "feedbackEntries_' + feedbackID + '"></tbody>');
 
                     for (var i = 0; i < data.length; i++){
-                        var tr = "<tr " + "id\"feedbackEntries_" + feedbackID + "_" + data[i]["EntryID"] + "\">";
+                        var tr = "<tr class = \"feedback_entries\" " + "id=\"feedbackEntries_" + feedbackID + "_" + data[i]["EntryID"] + "\">";
                         var td1 = "<td>" + data[i]["UserID"] + "</td>";
                         var td2 = "<td colspan=\"2\">" + data[i]["Comment"] + "</td></tr>";
 

@@ -101,6 +101,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     float: right;
     visibility: hidden;
 }
+
 @media (max-width:884px){
 
     .bvl_panel{
@@ -110,6 +111,5 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     .panel-wrapper{
 	right: 0px;
     }
-    
-  
+      
 }

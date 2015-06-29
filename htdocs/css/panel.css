@@ -102,6 +102,21 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     visibility: hidden;
 }
 
+.feedback_entries_body{
+    border-style: solid;
+    border-style-top: none;
+    
+}
+
+.feedback_entries{
+    color: #ffffff;
+    background-color: rgb(28, 112, 182);    
+}
+
+.feedback_entries:hover{
+    color: #000000;
+}
+
 @media (max-width:884px){
 
     .bvl_panel{
