@@ -1,13 +1,5 @@
 $(document).ready(function() {
     $(".options").hide();
-    $(".option").click(function() {
-        $(".options").hide();
-        $(".option").removeClass("selected");
-        $(this).addClass("selected");
-        id = $(this).attr("id");
-        $("#" + id + "options").toggle();
-        $('#search_concept').text($(this).text());
-    });
     $("#textboxoptions").hide();
     $("#dropdownoptions").hide();
 

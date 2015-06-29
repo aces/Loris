@@ -1,6 +1,10 @@
 <meta charset="utf-8"/>
+<script src="/js/react.js"></script>
+<script src="GetJS.php?Module=instrument_builder&file=react.app.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.instrument.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.rules.js"></script>
+
+<div id="builder"></div>
 
 {literal}
 <style>
@@ -8,25 +12,21 @@
     background: none;
 }
 </style>
+<script>
+    var builderApp = RInstrumentBuilderApp();
+    React.render(
+        builderApp,
+        document.getElementById("builder")
+    );
+</script>
 {/literal}
 
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
 
 <div id="message" class="error">&nbsp;</div>
-<div class="col-sm-4 hidden-xs">
-    <div class="panel panel-primary">
-        <div class="panel-heading" onclick="hideLoad();">
-            Load Instrument (optional)
-            <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-load"></span>
-            <span class="glyphicon glyphicon-chevron-up pull-right" id="up-load"></span> 
-        </div>
-        <div class="panel-body" id="panel-load">
-            <input class="fileUpload" type="file" id="instfile" />
-            <br>
-            <input class="btn btn-default" type="button" id="load" value="Load Instrument" />
-        </div>
-    </div>
-</div>
+
+
+
 <div class="col-xs-12">
     <h2>Create Instrument</h2>
     <form class="form-horizontal" role="form">
