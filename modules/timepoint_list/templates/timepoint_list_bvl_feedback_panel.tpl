@@ -4,7 +4,6 @@
 {*<script src="js/feedback_bvl_popup.js"></script>*}
 {*<script src ="js/jasny-bootstrap-all.js"></script>*}
 <script src ="js/bvl_feedback_panel.js"></script>
-<script src ="bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="css/jasny-bootstrap-all.css" type="text/css" />
 
 <!-- <div class ="ui-responsive-panel" data-role="panel" id="right-panel" data-position-fixed="true" data-display="push" data-position="div"> -->
