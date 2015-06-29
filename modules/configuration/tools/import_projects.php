@@ -32,6 +32,8 @@ foreach($subprojs['subproject'] as $row) {
     if($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
         $ins['useEDC'] = 1;
     }
+    Utility::nullifyEmpty($ins, 'WindowDifference');
+    Utility::nullifyEmpty($ins, 'useEDC');
     $db->insert('subproject', $ins);
 }
 ?>
