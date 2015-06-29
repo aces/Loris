@@ -68,7 +68,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 .panel-wrapper{
   margin-right: -500px;
   margin-top: 50px;
-  right: 500px;
+  right: 0px;
   width: 500px;
   background: #064785;
   position: fixed;
@@ -76,6 +76,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
   overflow-y: scroll;
   z-index: 1000;
   transition: all 0.4s ease 0s;
+    padding-bottom: 50px;
 }
 
 .bvl_panel{
@@ -87,15 +88,19 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     padding-right: 500px;
 }
 
-.inactive_panel{
-    right: 0px;
-    dislay:hidden;
+.active_panel{
+    right: 500px;
 }
 
 .inactive_panel_page{
     padding-right: 0px;
 }
 
+.bvl_table_icons {
+    font-size: 15px;
+    float: right;
+    visibility: hidden;
+}
 @media (max-width:884px){
 
     .bvl_panel{

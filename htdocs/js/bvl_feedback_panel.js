@@ -23,6 +23,19 @@ $(document).ready(function() {
         });
     });
 
+    //On hover of the "action bar" we display the glyphicons for edit and see more comments.
+    $('body').on("mouseenter mouseleave", '[name=action_bar]', function(event){ 
+    	var bvl_table_icons = $(this).find(".bvl_table_icons");
+	
+	if (event.type === 'mouseenter'){
+	    bvl_table_icons.css("visibility", "visible");
+	}
+	
+	if (event.type === 'mouseleave'){
+	    bvl_table_icons.css("visibility", "hidden");
+	}
+    });
+
     //close a thread here
     $('body').on('click', '[id^=close_thread]', function(event) {
 	event.stopPropagation();
@@ -97,8 +110,9 @@ $(document).ready(function() {
     });// end of comment_icon stuff
 
     //Thread entries toggling.
-    $('body').on('click','tbody[name=entries]',function(e){
-        var feedbackID = this.id;
+    $('body').on('click','span[id^=toggle_entries]',function(e){
+        console.log("toggling entries");
+        var feedbackID = this.id.slice(15);
 
         //If we already have created a tbody with the entries for the given thread we simply toggle this thread on click.
         if ($("#feedbackEntries_" + feedbackID).length){

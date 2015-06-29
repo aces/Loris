@@ -89,7 +89,7 @@
                                 {*<td>{$value.FeedbackID}<span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span></td>*}
                                 <td>{$value.Date}</td>
                                 <td>{$value.User}</td>
-                                <td>
+                                <td name = "action_bar">
                                     <div class="btn-group">
                                         {if $value.QC_status == 'opened'}
                                             <button name ="thread_button" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -109,8 +109,8 @@
                                         {/if}
 
                                     </div>
-                                    <div class = "bvl_table_icons">
-                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                    <div class = "bvl_table_icons" name="bvl_table_icons">
+                                        <span class="glyphicon glyphicon-chevron-right" id="toggle_entries_{$value.FeedbackID}"></span>
                                         <span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span>
                                     <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="FeedbackID: {$value.FeedbackID} Type: {$value.Type}"></span></div>
                                 </td>
