@@ -86,7 +86,9 @@ class NDB_Caller extends PEAR
             && isset($_POST['login'])
         ) {
             header("HTTP/1.1 303 See Other");
-             $url  = "http://" . $config->getSetting('host');
+             $url  = $_SERVER['REQUEST_SCHEME'];
+             $url .= "://";
+             $url .= $config->getSetting('host');
              $url .= $_SERVER['REQUEST_URI'];
              // sending user to the url that was requested
              header("Location: $url");
