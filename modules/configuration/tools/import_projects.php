@@ -26,7 +26,7 @@ foreach($subprojs['subproject'] as $row) {
     $ins = array(
             'SubprojectID'     => $row['id'],
             'title'            => $row['title'],
-            'useEDC'           => false,
+            'useEDC'           => 0,
             'WindowDifference' => $row['options']['WindowDifference'],
            );
     if($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
