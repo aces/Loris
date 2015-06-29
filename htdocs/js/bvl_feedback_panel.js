@@ -55,7 +55,33 @@ $(document).ready(function() {
             console.log("Request to close thread done");
         });
 
-    });//end of click
+    });//end of closing a thread
+
+    //re-open a thread here
+    $('body').on('click', '[id^=open_thread]', function(event){
+	event.stopPropagation();
+	var feedbackID = this.id.slice(12);
+
+	var buttonGroup = $("#" + feedbackID).find(".btn-group");
+        var openedButton = '<button name = "thread_button" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opened <span class="caret"></span></button><ul class="dropdown-menu"><li><a id="close_thread_' + feedbackID + '">Close</a></li></ul>';
+
+	request = $.ajax({
+	    type: "POST",
+	    url: "ajax/open_bvl_feedback_thread.php",
+	    data: {"feedbackID": feedbackID,
+		   "candID": candID},
+	    success: function (data){
+		console.log("successfully reopened a thread");
+		buttonGroup.replaceWith(openedButton);
+	    },
+	    error: function (xhr, desc, err){
+                console.log(xhr);
+                console.log("Details: " + desc + "\nError:" + err);
+            }
+	    
+	});  //end of ajax
+	
+    });//end of re-opening a thread
 
     //on click of submit comment
     $('body').on('click', '[id^=submit_comment]', function(event){

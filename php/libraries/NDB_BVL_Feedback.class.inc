@@ -955,7 +955,7 @@ class NDB_BVL_Feedback
      * Used to re-open a thread identified by its feedbackID.
      *
      * @param integer $feedbackID The ID of the feedback thread being closed
-     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
      * @return void
      *
      */
@@ -966,11 +966,28 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $setArray = array(
-            "Status" => 'open',
+            "Status" => 'opened',
             "UserID" => $this->_username,
         );
 
-        $whereArray = array("FeedbackID" => $feedbackID);
+        $whereArray = array(
+                       "Public" => 'Y',
+                       "Active" => 'Y',
+                      );
+        
+        if (!empty($feedbackID)) {
+            // only one thread to be closed
+            $whereArray = array_merge(
+                $whereArray,
+                array("FeedbackID" => $feedbackID)
+            );
+        }
+
+        else{
+            throw new Exception(
+                "Error: no feedback id selected"
+            );
+        }
 
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
 
