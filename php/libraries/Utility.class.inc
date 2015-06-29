@@ -297,7 +297,7 @@ class Utility extends PEAR
     static function getProjectList()
     {
         $Factory = NDB_Factory::singleton();
-        $config = $Factory->config();
+        $config  = $Factory->config();
 
         // get the list of Subprojects
         $projectSettings = $config->getSetting('Projects');
@@ -1052,7 +1052,8 @@ class Utility extends PEAR
     static function getExistingVisitLabels($projectID = null)
     {
         $factory = NDB_Factory::singleton();
-        $db = $factory->database();
+        $db      = $factory->database();
+
         if ($projectID != null) {
             $ExtraProject_Criteria
                 = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';

@@ -16,15 +16,39 @@ namespace Loris\API\Projects;
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
 
-class InstrumentForm extends \Loris\API\APIBase {
+/**
+ * Class which handles serialization of instrument forms in Loris API
+ *
+ * @category Loris
+ * @package  API
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris
+ */
+class InstrumentForm extends \Loris\API\APIBase
+{
     var $Instrument;
 
-    function __construct($method, $Instrument) {
+    /**
+     * Construct the object to handle requests. This will instantiate
+     * the NDB_BVL_Instrument object and call toJSON to return the
+     * JSON to the client.
+     *
+     * @param string $method     The HTTP method used for the request
+     * @param string $Instrument The instrument to be serialized
+     */
+    function __construct($method, $Instrument)
+    {
         $this->AutoHandleRequestDelegation = false;
         parent::__construct($method);
 
         try {
-            $this->Instrument = \NDB_BVL_Instrument::factory($Instrument, null, null, true);
+            $this->Instrument = \NDB_BVL_Instrument::factory(
+                $Instrument,
+                null,
+                null,
+                true
+            );
         } catch(\Exception $e) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Invalid Instrument");
@@ -34,12 +58,19 @@ class InstrumentForm extends \Loris\API\APIBase {
         $this->handleRequest();
     }
 
-    function handleGET() {
+
+    /**
+     * Handles a GET request to this URL
+     *
+     * @return none, but populates JSON class variable
+     */
+    function handleGET()
+    {
         $this->JSON = json_decode($this->Instrument->toJSON(), true);
     }
 }
 
-if(isset($_REQUEST['PrintInstrumentForm'])) {
+if (isset($_REQUEST['PrintInstrumentForm'])) {
     $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
     print $obj->toJSONString();
 }
