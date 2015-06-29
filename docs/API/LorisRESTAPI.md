@@ -1,5 +1,14 @@
-This file describes the REST API to be implemented for interacting with Loris data. This
-API is NOT YET IMPLEMENTED.
+This file describes the REST API to be implemented for interacting with Loris data.
+IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
+
+Still to be done:
+1. Document an authentication/token system
+2. Document a way to handle conflicts for offline clients
+3. Add a way to get project settings which affect the API (ie. useEDC)
+4. Ensure JSON markup is rendered correctly in document
+5. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
+   and an ability for modules to manage their data through the API
+
 ====
 
 # Loris Instrument API - v0.0.1d-dev
