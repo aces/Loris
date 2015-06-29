@@ -1,12 +1,32 @@
 <?php
 /**
- * PHP 5.5+
+ * Base class to handle requests to the Loris API and perform
+ * validation common to all API requests.
+ *
+ * PHP Version 5.5+
+ *
+ * @category Main
+ * @package  API
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace Loris\API;
 require_once __DIR__ . '/SafeExitException.php';
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-class APIBase {
+/**
+ * Base class to handle requests to the Loris API and perform
+ * validation common to all API requests.
+ *
+ * @category Main
+ * @package  API
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class APIBase
+{
     var $DB;
     var $client;
     var $JSON;
@@ -17,12 +37,18 @@ class APIBase {
     var $Factory;
     var $Headers;
 
-    function __construct($method) {
-        if(empty($this->AllowedMethods)) {
+    /**
+     * Constructor to handle basic validation
+     *
+     * @param string $method The HTTP request method
+     */
+    function __construct($method)
+    {
+        if (empty($this->AllowedMethods)) {
             $this->AllowedMethods = ['GET'];
         }
         // Verify that method is allowed for this type of request.
-        if(!in_array($method, $this->AllowedMethods)) {
+        if (!in_array($method, $this->AllowedMethods)) {
             $this->header("HTTP/1.1 405 Method Not Allowed");
             $this->header("Allow: " . join(", ", $this->AllowedMethods));
             $this->safeExit(0);
@@ -35,10 +61,10 @@ class APIBase {
             get_include_path() . ":" .
             __DIR__ . "/../../../php/libraries"
         );
-        require_once 'NDB_Client.class.inc';
+        include_once 'NDB_Client.class.inc';
 
         $this->Factory = \NDB_Factory::singleton();
-        $this->client = new \NDB_Client();
+        $this->client  = new \NDB_Client();
         // Even though it's not a command line client, this prevents
         // the login related to showing the login screen from applying,
         // then we manually
@@ -55,12 +81,19 @@ class APIBase {
 
         $this->DB = $this->Factory->database();
 
-        if($this->AutoHandleRequestDelegation) {
+        if ($this->AutoHandleRequestDelegation) {
             $this->handleRequest();
         }
     }
 
-    function handleRequest() {
+    /**
+     * Handles a request by delegating to the appropriate
+     * handle method
+     *
+     * @return none
+     */
+    function handleRequest()
+    {
         $method = $this->HTTPMethod;
 
         switch($this->HTTPMethod) {
@@ -80,46 +113,106 @@ class APIBase {
         }
     }
 
-    function handleGET() {
+    /**
+     * Handle a GET request
+     *
+     * @return none
+     */
+    function handleGET()
+    {
 
     }
 
-    function handlePUT() {
+    /**
+     * Handle a PUT request
+     *
+     * @return none
+     */
+    function handlePUT()
+    {
         $this->header("HTTP/1.1 501 Not Implemented");
         $this->safeExit(0);
     }
 
-    function handlePOST() {
+    /**
+     * Handle a POST request
+     *
+     * @return none
+     */
+    function handlePOST()
+    {
         $this->header("HTTP/1.1 501 Not Implemented");
         $this->safeExit(0);
     }
 
-    function handleOPTIONS() {
-        $this->Header("Access-Control-Allow-Methods: ".
+    /**
+     * Handle a OPTIONS request
+     *
+     * @return none
+     */
+    function handleOPTIONS()
+    {
+        $this->Header(
+            "Access-Control-Allow-Methods: ".
             join($this->AllowedMethods, ",")
         );
         $this->safeExit(0);
     }
 
-
-    function toJSONString() {
+    /**
+     * Encodes this object as a string of valid JSON
+     *
+     * @return string encoding of JSON
+     */
+    function toJSONString()
+    {
         return json_encode($this->JSON);
     }
 
-    function error($msg) {
+    /**
+     * Print an error message to the client
+     *
+     * @param string $msg The error message to display
+     *
+     * @return none
+     */
+    function error($msg)
+    {
         print json_encode(["error" => $msg]);
     }
-    function header($head) {
-        if(defined("UNIT_TESTING")) {
+
+    /**
+     * Send a header to the client, or put it in an array
+     * to evaluate in unit testing if UNIT_TESTING is defined
+     *
+     * @param string $head The header to send to the client
+     *
+     * @return none
+     */
+    function header($head)
+    {
+        if (defined("UNIT_TESTING")) {
             $this->Headers[] = $head;
         } else {
             header($head);
         }
     }
 
-    function safeExit($code) {
-        if(defined("UNIT_TESTING")) {
-            throw new SafeExitException("Aborting test with code $code", $code, $this);
+    /**
+     * Exits the program in a way that is safe for unit testing
+     *
+     * @param integer $code The program exit code
+     *
+     * @return none, but exits the running program
+     */
+    function safeExit($code)
+    {
+        if (defined("UNIT_TESTING")) {
+            throw new SafeExitException(
+                "Aborting test with code $code",
+                $code,
+                $this
+            );
         } else {
             exit($code);
         }

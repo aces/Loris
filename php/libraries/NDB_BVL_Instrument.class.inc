@@ -163,8 +163,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
         // Make sure the instrument class has been included/required!
         $factory = NDB_Factory::singleton();
-        $config = $factory->config();
-        $base   = $config->getSetting('base');
+        $config  = $factory->config();
+        $base    = $config->getSetting('base');
 
         // The conflict resolver doesn't care if the instrument exists or not, it
         // just tries to load, score, and save. If it doesn't exist, for instance
@@ -188,10 +188,13 @@ class NDB_BVL_Instrument extends NDB_Page
                 $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
             }
         } else {
-            if(!class_exists($class) && ($guarantee_exists === true && !file_exists($base."project/instruments/$class.class.inc"))) {
+            if (!class_exists($class)
+                && ($guarantee_exists === true
+                && !file_exists($base."project/instruments/$class.class.inc"))
+            ) {
                 throw new Exception("Instrument does not exist");
             }
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 include_once $base."project/instruments/$class.class.inc";
             }
             // Now go ahead and instantiate it
@@ -2436,17 +2439,35 @@ class NDB_BVL_Instrument extends NDB_Page
         return json_encode(json_decode($html));
     }
 
-    function determineDataEntryAllowed() {
-        $DB = Database::singleton();
-        $entry = $DB->pselectOne("SELECT Data_entry FROM flag WHERE
-           CommentID=:CID", array('CID' => $this->getCommentId()));
+    /**
+     * Determines whether data entry should be allowed for this instrument
+     * or not.
+     *
+     * @return boolean true if data entry is permitted
+     */
+    function determineDataEntryAllowed()
+    {
+        $DB    = Database::singleton();
+        $entry = $DB->pselectOne(
+            "SELECT Data_entry FROM flag WHERE CommentID=:CID",
+            array('CID' => $this->getCommentId())
+        );
 
-        if($entry === 'Complete') {
+        if ($entry === 'Complete') {
             return false;
         }
         return true;
     }
-    function validate($values) {
+
+    /**
+     * Validate whether the values submitted are valid
+     *
+     * @param array $values an array of values submitted
+     *
+     * @return boolean true if values are valid
+     */
+    function validate($values)
+    {
         return $this->determineDataEntryAllowed();
     }
 }

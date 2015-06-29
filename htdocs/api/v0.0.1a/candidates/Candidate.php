@@ -1,11 +1,42 @@
 <?php
+/**
+ * Handles HTTP requests to the Candidate portion of the
+ * Loris REST API.
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  API
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace Loris\API\Candidates;
 set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
 
-class Candidate extends \Loris\API\APIBase {
+/**
+ * Class to handle HTTP requests to the Candidate portion of the
+ * Loris REST API.
+ *
+ * @category Main
+ * @package  API
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class Candidate extends \Loris\API\APIBase
+{
     var $Candidate;
-    public function __construct($method, $CandID) {
+
+    /**
+     * Construct class to handle request
+     *
+     * @param string $method HTTP method of request
+     * @param string $CandID CandID of candidate to be serialized
+     */
+    public function __construct($method, $CandID)
+    {
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
         $this->AutoHandleRequestDelegation = false;
@@ -13,7 +44,7 @@ class Candidate extends \Loris\API\APIBase {
 
         parent::__construct($method);
 
-        if(!is_numeric($CandID)
+        if (!is_numeric($CandID)
             || $CandID < 100000
             || $CandID > 999999
         ) {
@@ -31,21 +62,29 @@ class Candidate extends \Loris\API\APIBase {
             $this->safeExit(0);
         }
 
-        if($requestDelegationCascade) {
+        if ($requestDelegationCascade) {
             $this->handleRequest();
         }
     }
 
-    public function handleGET() {
+    /**
+     * Handle a GET request
+     *
+     * @return none, but populates $this->JSON
+     */
+    public function handleGET()
+    {
 
         $this->JSON = [
-            "Meta"   => [ "CandID" => $this->CandID ],
-            "Visits" => array_values($this->Candidate->getListOfVisitLabels())
-        ];
+                       "Meta"   => [ "CandID" => $this->CandID ],
+                       "Visits" => array_values(
+                           $this->Candidate->getListOfVisitLabels()
+                       ),
+                      ];
     }
 }
 
-if(isset($_REQUEST['PrintCandidate'])) {
+if (isset($_REQUEST['PrintCandidate'])) {
     $obj = new \Loris\API\Candidates\Candidate(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID']
