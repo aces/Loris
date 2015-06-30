@@ -42,17 +42,23 @@ class Visit extends \Loris\API\Candidates\Candidate
                                     ];
         }
         $this->VisitLabel = $VisitLabel;
+
+
+        $this->Timepoint = \Timepoint::singleton($timepointID);
         // Parent constructor will handle validation of
         // CandID
         parent::__construct($method, $CandID);
 
         $Visits = array_values($this->Candidate->getListOfVisitLabels());
 
+
         if (!in_array($VisitLabel, $Visits)) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Invalid visit $VisitLabel");
             $this->safeExit(0);
         }
+
+
 
     }
 
@@ -63,17 +69,19 @@ class Visit extends \Loris\API\Candidates\Candidate
      */
     public function handleGET()
     {
+        print_r($this->Timepoint);
         $this->JSON = [
                        "Meta" => [
                                   "CandID" => $this->CandID,
                                   'Visit'  => $this->VisitLabel,
+                                  'Battery' => $this->Timepoint->getData("SubprojectTitle")
                                  ],
                       ];
     }
 }
 
 if (isset($_REQUEST['PrintVisit'])) {
-    $obj = new VisitJSON(
+    $obj = new Visit(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],
         $_REQUEST['VisitLabel']

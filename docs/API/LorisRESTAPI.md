@@ -11,7 +11,7 @@ Still to be done:
 
 ====
 
-# Loris Instrument API - v0.0.1d-dev
+# Loris Instrument API - v0.0.1e-dev
 
 ## 1.0 Overview
 
@@ -222,7 +222,13 @@ The JSON object is of the form
 ```json
 {
     "Meta" : {
-        "CandID" : CandID
+        "CandID"  : CandID
+        "Project" : ProjectName,
+        "PSCID"   : PSCID,
+        "Site"    : Site,
+        "EDC"     : "YYYY-MM-DD",
+        "DoB"     : "YYYY-MM-DD",
+        "Gender"  : "Male|Female"
     },
     "Visits" : ["V1", "V2", ...]
 }
@@ -255,6 +261,21 @@ The JSON object is of the form:
     "Meta" : {
         "CandID" : CandID,
         "Visit"  : VisitLabel
+        "Battery" : "NameOfSubproject"
+    },
+    "Stages" : {
+        'Screening' :  {
+            'Date' : "YYYY-MM-DD"
+            'Status' : "Pass|Failure|Withdrawal|In Progress"
+        },
+        'Visit' : {
+            'Date' : "YYYY-MM-DD"
+            'Status' : "Pass|Failure|Withdrawal|In Progress"
+        }
+        'Approval' : {
+            'Date' : "YYYY-MM-DD"
+            'Status' : "Pass|Failure|Withdrawal|In Progress"
+        }
     }
 }
 ```
