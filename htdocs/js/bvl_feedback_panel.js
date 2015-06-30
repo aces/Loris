@@ -99,8 +99,14 @@ $(document).ready(function() {
             data: {"comment" : comment,
                    "feedbackID" : feedbackID,
 		   "candID" : candID},
-            success: function (data) {
+            success: function (response) {
                 console.log("in the success function of adding a thread entry comment");
+		var tr = '<tr class = "feedback_entries" " + "id="feedbackEntries_' + response["FeedbackID"] + '">';
+                var td1 = '<td>' + response["UserID"] + '</td>';
+                var td2 = '<td colspan="2">'+ response["Comment"] + '</td></tr>';
+
+		$("#feedbackEntries_" + feedbackID).prepend(tr + td1 + td2);
+		
             },//end of success function
             error: function (xhr, desc, err){
                 console.log(xhr);
@@ -109,8 +115,7 @@ $(document).ready(function() {
         });
         request.done(function (response, textStatus, jqXHR){
             console.log("Hooray it worked!, In the ajax of sending a comment on a thread entry");
-            $("#thread_entry_comment_" + feedbackID).val("Comment successful!");
-            $("#feedbackEntries_" + feedbackID).prepend("prepending");
+            $("#thread_entry_comment_" + feedbackID).val("Comment successful!");	
         });//end of ajax
     });
 
@@ -203,7 +208,9 @@ $(document).ready(function() {
 
                 var close = '</td></tr></tbody>';
 
-                $("#current_thread_table_header").after(tbody + td1 + td2 + td3 + bvl_table_icons + close);
+                $("#current_thread_table_header").after($(tbody + td1 + td2 + td3 + bvl_table_icons + close).fadeIn('slow'));
+		$('#comment').val('New thread successfully added!');
+		$('#toggle_entries_' + response["feedbackID"]).click();
 
             },
             error: function (xhr, desc, err){
@@ -214,7 +221,7 @@ $(document).ready(function() {
 
         request.done(function (response, textStatus, jqXHR){
             console.log("It worked! In the ajax of adding a thread");
-
+	    
 
         }); //end of on click
     });

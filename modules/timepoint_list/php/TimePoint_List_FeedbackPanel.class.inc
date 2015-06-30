@@ -15,15 +15,17 @@ class Timepoint_List_FeedbackPanel
     var $_feedbackThread = '';
     var $_feedbackThreadList = '';
     var $_candidate = '';
-    /*
-     * Initilizes the Timepoint_List_FeedbackPanel
+    /**
+     *
+     * Initializes the Timepoint_List_FeedbackPanel
      * with a feedbackThread.
+     *
      */
     function Timepoint_List_FeedbackPanel($candID)
     {
         $user =& User::singleton();
         $username= $user->getUsername();
-        $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username,$candID);
+        $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID);
         $this->_feedbackThreadList = $this->_feedbackThread->getThreadList();
         $this->_candidate = Candidate::singleton($candID);
     }

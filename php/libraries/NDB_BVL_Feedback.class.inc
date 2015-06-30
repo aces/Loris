@@ -695,7 +695,7 @@ class NDB_BVL_Feedback
      * @param  string  $username   The username of the entry author.
      * @return void
      */
-    static function createEntry($feedbackID, $comment, $username)
+    function createEntry($feedbackID, $comment, $username)
     {
         // new DB Object
         $db =& Database::singleton();
@@ -708,6 +708,9 @@ class NDB_BVL_Feedback
                     );
 
         $success = $db->insert('feedback_bvl_entry', $setArray);
+
+        // Returning the set array so the data can be returned as JSON to the GUI.
+        return $setArray;
     }
 
     /**

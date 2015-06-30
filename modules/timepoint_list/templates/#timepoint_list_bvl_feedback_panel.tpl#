@@ -63,7 +63,7 @@
             </div>
         </div>
        
-        <div class="panel panel-default" id="panel2">
+        <div class="panel panel-default" id="panel3">
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-target="#collapseThree"
@@ -83,7 +83,7 @@
                 </div>
             </div>
         </div>
-	 <div class="panel panel-default" id="panel3">
+	 <div class="panel panel-default" id="panel2">
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-target="#collapseTwo"
