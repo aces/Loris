@@ -679,7 +679,9 @@ class NDB_BVL_Feedback
         $newEntryValues["comment"] = $comment;
         $newEntryValues["user"] = $this->_username;
         $newEntryValues["date"] = $today;
-        //These new entries are returned to be used mostly dynamic rendering of new threads on the front-end
+        $newEntryValues["type"] = $this->getThreadType($feedbackID);
+        //These new entries are returned to be used mostly dynamic rendering of
+        //new threads on the front-end
         return $newEntryValues;
 
     }
@@ -688,9 +690,9 @@ class NDB_BVL_Feedback
      * Creates a new entry under a thread, adds a record to the
      * feedback_bvl_entry table
      *
-     * @param integer $feedbackID The threadID to hold the entry being created
-     * @param string  $comment    The comment to add to the entry.
-     *
+     * @param  integer $feedbackID The threadID to hold the entry being created
+     * @param  string  $comment    The comment to add to the entry.
+     * @param  string  $username   The username of the entry author.
      * @return void
      */
     static function createEntry($feedbackID, $comment, $username)

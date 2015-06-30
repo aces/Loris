@@ -13,7 +13,9 @@ $(document).ready(function() {
     });
 
     //Setting tooltips.
-    $('[data-toggle="tooltip"]').tooltip();
+    $('body').tooltip({
+	selector: '[rel=tooltip]'
+    });
 
     //On hover of the "action bar" we display the glyphicons for edit and see more comments.
     $('body').on("mouseenter mouseleave", '[name=action_bar]', function(event){ 
@@ -187,20 +189,21 @@ $(document).ready(function() {
                 console.log(response["feedbackID"]);
 
                 var tbody = '<tbody id="' + response["feedbackID"] + '" name="entries">';
-                var td1 = '<tr><td>' + response["feedbackID"]
-                    + '<span id="comment_icon_' + response["feedbackID"]
-                    + '" class="glyphicon glyphicon-pencil" name="comment_icon"></span></td>';
+		var td1 = '<tr><td>'+ response["date"] + '</td>';
+		var td2 = '<td>' + response["user"] + '</td>';
+		var td3 = '<td name = "action_bar">'
+		    + '<div class = "btn-group"><button name ="thread_button" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+		    + 'Opened <span class="caret"></span></button>'
+		    + '<ul class="dropdown-menu"><li><a id="close_thread_' + response["feedbackID"] + '">Close</a></li></ul></div>';
+		var bvl_table_icons = '<div class = "bvl_table_icons" name="bvl_table_icons">'
+                    + '<span class="glyphicon glyphicon-chevron-right" id="toggle_entries_' + response["feedbackID"] + '"></span>'
+		    + '<span id="comment_icon_' + response["feedbackID"]  + '" class="glyphicon glyphicon-pencil" name="comment_icon"></span>'
+		    + '<span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="FeedbackID: '
+		    + response["feedbackID"] + ' Type: ' + response["type"]  + '"></span>';
 
-                var td2 = '<td>' + response["date"] + '</td>';
-                var td3 = '<td>' + response["user"] + '</td>';
-                var button = '<div class = "btn-group">'
-                +'<button name ="thread_button" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
-                + 'Opened <span class="caret"></span></button>'
-                + '<ul class="dropdown-menu"><li><a id="close_thread_'
-                + response["feedbackID"] + '">Close</a></li></ul></div></td>';
-                var close = '</tbody>';
+                var close = '</td></tr></tbody>';
 
-                $("#current_thread_table_header").after(tbody + td1 + td2 + td3 + button + close);
+                $("#current_thread_table_header").after(tbody + td1 + td2 + td3 + bvl_table_icons + close);
 
             },
             error: function (xhr, desc, err){
