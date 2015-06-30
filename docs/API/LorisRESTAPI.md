@@ -2,18 +2,17 @@ This file describes the REST API to be implemented for interacting with Loris da
 IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
 Still to be done:
-1. Document an authentication/token system
-2. Document a way to handle conflicts for offline clients
-3. Add a way to get project settings which affect the API (ie. useEDC)
-4. Add a sorting and searching mechanism
-5. Add a way to get instrument metadata without whole instrument (ie LongName, subgroup)
-6. Ensure JSON markup is rendered correctly in document
-7. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
+1. Document a way to handle conflicts for offline clients
+2. Add a way to get project settings which affect the API (ie. useEDC)
+3. Add a sorting and searching mechanism
+4. Add a way to get instrument metadata without whole instrument (ie LongName, subgroup)
+5. Ensure JSON markup is rendered correctly in document
+6. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
    and an ability for modules to manage their data through the API
 
 ====
 
-# Loris Instrument API - v0.0.1e-dev
+# Loris Instrument API - v0.0.1f-dev
 
 ## 1.0 Overview
 
@@ -37,18 +36,37 @@ unmodified from their current value.
 
 DELETE is not supported on any resource defined in this API.
 
-The current API assumes that the user issuing the HTTP request is already logged in to Loris
-and has appropriate permissions. If not, an error object will be returned of the form
+# 1.1 Authentication
+
+If a user is logged in to Loris and can be authenticated using the standard session mechanism,
+no further authentication is required. Requests will be evaluated as requests from that user,
+so that standard Loris modules can simply begin using the API.
+
+If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
+they will be authenticated using [JSON Web Tokens](https://jwt.io).
+
+The client should POST a request to /login with a payload of the form
 
 ```json
 {
-    "error" : "User not authenticated"
+    "username" : username
+    "password" : password
 }
 ```
 
-and an `401 Unauthorized` HTTP error code is returned.
+If the username and password are valid, the API will respond with a 200 OK and payload
+of the form
 
-Subsequence versions of this API should specify a more flexible authentication mechanism.
+```js
+{
+    "token" : /* JWT token */
+}
+```
+
+Otherwise, it will return a 401 Unauthorized response.
+
+If the token is returned, it should be included in an "Authorization: Bearer token" header
+for any future requests to authenciate the request.
 
 # 2.0 Project API
 
