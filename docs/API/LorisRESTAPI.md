@@ -5,8 +5,10 @@ Still to be done:
 1. Document an authentication/token system
 2. Document a way to handle conflicts for offline clients
 3. Add a way to get project settings which affect the API (ie. useEDC)
-4. Ensure JSON markup is rendered correctly in document
-5. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
+4. Add a sorting and searching mechanism
+5. Add a way to get instrument metadata without whole instrument (ie LongName, subgroup)
+6. Ensure JSON markup is rendered correctly in document
+7. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
    and an ability for modules to manage their data through the API
 
 ====
