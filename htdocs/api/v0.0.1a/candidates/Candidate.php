@@ -75,8 +75,15 @@ class Candidate extends \Loris\API\APIBase
     public function handleGET()
     {
 
+
         $this->JSON = [
-                       "Meta"   => [ "CandID" => $this->CandID ],
+            "Meta"   => [ "CandID" => $this->CandID,
+            'PSCID' => $this->Candidate->getPSCID(),
+            'Site' => $this->Candidate->getCandidateSite(),
+            'EDC' => $this->Candidate->getCandidateEDC(),
+            'DoB' => $this->Candidate->getCandidateDoB(),
+            'Gender' => $this->Candidate->getCandidateGender()
+        ],
                        "Visits" => array_values(
                            $this->Candidate->getListOfVisitLabels()
                        ),
