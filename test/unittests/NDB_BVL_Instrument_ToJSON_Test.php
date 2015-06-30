@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 
-class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
+class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for
@@ -21,12 +21,22 @@ class NDB_BVL_Instrument_Test extends \PHPUnit_Framework_TestCase
         $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'));
         $this->MockSinglePointLogin = $this->getMock('SinglePointLogin');
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
-        $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
 
         $_SESSION = array(
             'State' => $this->Session
         );
 
+        $factory = \NDB_Factory::singleton();
+        $factory->setTesting(true);
+
+        $mockdb = $this->getMockBuilder("\Database")->getMock();
+        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
+
+        \NDB_Factory::$_db = $mockdb;
+        \NDB_Factory::$_testdb = $mockdb;
+        \NDB_Factory::$_config = $mockconfig;
+
+        $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
         $this->Client = new \NDB_Client;
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");

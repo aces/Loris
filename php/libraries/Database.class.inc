@@ -10,9 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
-
-/* Constants used in the file */
 define("DEBUG", false);
 
 /**
@@ -29,7 +26,7 @@ define("DEBUG", false);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Database extends PEAR
+class Database
 {
     /**
      * The database handle, created by the connect() method
