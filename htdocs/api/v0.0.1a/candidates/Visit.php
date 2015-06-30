@@ -11,9 +11,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace Loris\API\Candidates\Candidate;
-set_include_path(get_include_path() . ":" . __DIR__ . "/../");
+set_include_path(get_include_path() . ":" . __DIR__ . "/../" . ':' . __DIR__ . "/../../../../php/libraries/");
 
 require_once 'Candidate.php';
+require_once 'TimePoint.class.inc';
 
 /**
  * Handles API requests for the candidate's visit
@@ -35,6 +36,10 @@ class Visit extends \Loris\API\Candidates\Candidate
      */
     public function __construct($method, $CandID, $VisitLabel)
     {
+        $requestDelegationCascade = $this->AutoHandleRequestDelegation;
+
+        $this->AutoHandleRequestDelegation = false;
+
         if (empty($this->AllowedMethods)) {
             $this->AllowedMethods = [
                                      'GET',
@@ -44,19 +49,29 @@ class Visit extends \Loris\API\Candidates\Candidate
         $this->VisitLabel = $VisitLabel;
 
 
-        $this->Timepoint = \Timepoint::singleton($timepointID);
+     //   $this->Timepoint = \Timepoint::singleton($timepointID);
         // Parent constructor will handle validation of
         // CandID
         parent::__construct($method, $CandID);
 
-        $Visits = array_values($this->Candidate->getListOfVisitLabels());
+        $timepoints = $this->Candidate->getListOfVisitLabels();
+        $Visits = array_values($timepoints);
 
+        $session = array_keys($timepoints, $VisitLabel);
+        if(isset($session[0])) {
+            $this->Timepoint = \TimePoint::singleton($session[0]);
+        }
 
         if (!in_array($VisitLabel, $Visits)) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Invalid visit $VisitLabel");
             $this->safeExit(0);
         }
+
+        if ($requestDelegationCascade) {
+            $this->handleRequest();
+        }
+
 
 
 
@@ -69,7 +84,6 @@ class Visit extends \Loris\API\Candidates\Candidate
      */
     public function handleGET()
     {
-        print_r($this->Timepoint);
         $this->JSON = [
                        "Meta" => [
                                   "CandID" => $this->CandID,
@@ -77,6 +91,24 @@ class Visit extends \Loris\API\Candidates\Candidate
                                   'Battery' => $this->Timepoint->getData("SubprojectTitle")
                                  ],
                       ];
+       if($this->Timepoint) {
+           $this->JSON['Stages'] = [
+               'Screening' => [
+                    'Date' => $this->Timepoint->getDateOfScreening(),
+                    'Status' => $this->Timepoint->getScreeningStatus()
+                   ]
+               ,
+               'Visit' => [
+                    'Date' => $this->Timepoint->getDateOfVisit(),
+                    'Status' => $this->Timepoint->getVisitStatus()
+                   ]
+               ,
+               'Visit' => [
+                    'Date' => $this->Timepoint->getDateOfVisit(),
+                    'Status' => $this->Timepoint->getVisitStatus()
+                   ]
+           ];
+       }
     }
 }
 
