@@ -59,7 +59,7 @@ class Instruments extends Visit
     public function handleGET()
     {
         $Insts = $this->DB->pselect(
-            "SELECT Test_name FROM flag f JOIN session s ON (s.ID=f.SessionID)"
+            "SELECT DISTINCT Test_name FROM flag f JOIN session s ON (s.ID=f.SessionID)"
             . " WHERE s.CandID=:CID AND s.Active='Y' AND s.Visit_label=:VL",
             array(
              'CID' => $this->CandID,

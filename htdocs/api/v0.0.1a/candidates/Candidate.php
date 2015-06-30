@@ -78,6 +78,7 @@ class Candidate extends \Loris\API\APIBase
 
         $this->JSON = [
             "Meta"   => [ "CandID" => $this->CandID,
+            'Project' => $this->Candidate->getProjectTitle(),
             'PSCID' => $this->Candidate->getPSCID(),
             'Site' => $this->Candidate->getCandidateSite(),
             'EDC' => $this->Candidate->getCandidateEDC(),
