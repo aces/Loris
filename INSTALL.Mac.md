@@ -274,6 +274,8 @@ If the Order and Allow directives are not working then check if the module mod_a
 
 ```   
 
+The mod_access_compat module has been **deprecated** therefore it is suggested to use the new module and directives. 
+
 **END OF NOTE**
 
 Restart your apache server:
