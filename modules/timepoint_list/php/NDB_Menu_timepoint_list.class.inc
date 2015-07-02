@@ -73,7 +73,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
             }
         
             /*
-             * List of visits
+f             * List of visits
              */
             $x = 0;
             foreach ($listOfTimePoints as $currentTimePoint) {
