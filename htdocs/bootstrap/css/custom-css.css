@@ -57,6 +57,7 @@ table th{
     width:7em; 
     left:0;
     top:auto;
+    word-wrap: break-word;
     border-right: 0px none black; 
     border-top-width:3px; /*only relevant for first row*/
 }

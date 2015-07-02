@@ -424,7 +424,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function loadInstrumentFile($filename, $base64 = false)
     {
         if (file_exists($filename) || $base64 === true) {
-            $db = \Database::singleton();
+            $this->InstrumentType = 'LINST';
+
+            $db         = \Database::singleton();
+            $this->form = new \HTML_Quickform('test_form');
 
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
@@ -436,7 +439,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             // otherwise we don't.. but even on other pages, we need to
             // parse the whole file for table{@} and other meta elements
             $addElements = true;
-            if (isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
+            if (!empty($this->page)) {
                 $currentPage = $_REQUEST['subtest'];
                 $addElements = false;
             } else {
@@ -734,7 +737,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             fclose($fp);
         }
-
     }
 
     /**
