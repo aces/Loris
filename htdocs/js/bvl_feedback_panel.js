@@ -181,12 +181,14 @@ $(document).ready(function() {
     $('#save_data').on('click',function(){
         var $candID = $("#candID").attr('name');
         var $comment = $('#comment').val();
+	var $input_type = $('select[name="input_type"]').val();
 
         request = $.ajax({
             url: "ajax/new_bvl_feedback.php",
             type: "POST",
             data: {"candID": $candID,
-                "comment" : $comment},
+                   "comment" : $comment,
+		   "input_type" : $input_type},
             //dataType: "html",
             success: function (response) {
                 console.log("in the success function of adding new thread stuff");

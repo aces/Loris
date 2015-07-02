@@ -29,7 +29,7 @@ $newThreadValues = array();
 if (isset($_POST['comment']) && isset($_POST['candID'])) {
     $feedbackLevel  = $feedbackThread->_feedbackLevel;
 
-    $newEntryValues = $feedbackThread->createThread(1, $_POST['comment'], 'Y');
+    $newEntryValues = $feedbackThread->createThread($_POST['input_type'], $_POST['comment'], 'Y');
     //Now setting the array to return as json
     print json_encode($newEntryValues);
 }

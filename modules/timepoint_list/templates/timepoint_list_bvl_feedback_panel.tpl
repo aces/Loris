@@ -77,7 +77,12 @@
                 <div class="panel-body">
                     <div id ="new_feedback">
                         <textarea class="form-control" rows="3" id="comment"></textarea>
-                        <button id="save_data">Save data</button>
+			<select name = "input_type">
+				{foreach from=$feedback_types item=value}
+					<option value = "{$value['Type']}">{$value['Name']}</option> 
+				{/foreach}				
+			</select>
+			<button id="save_data">Save data</button>
 
                     </div>
                 </div>
