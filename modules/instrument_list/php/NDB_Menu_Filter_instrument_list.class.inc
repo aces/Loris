@@ -1,6 +1,7 @@
 <?php
 require_once 'NDB_Menu_Filter.class.inc';
 require_once 'Instrument_List_ControlPanel.class.inc';
+require_once 'Instrument_List_FeedbackPanel.class.inc';
 
 /**
  * The timepoint details menu
@@ -166,6 +167,18 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         }
 
         $this->tpl_data['display'] = array_merge($candidate->getData(), $timePoint->getData());
+    }
+    /**
+     * Used by the NDB_caller class when loading a page. 
+     * Call the display function of the appropriate modules feedback panel.
+     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */
+
+    function getFeedbackPanel(){
+        $feedbackPanel = new Instrument_List_FeedbackPanel($_REQUEST['candID'],$_REQUEST['sessionID']);
+        $html =  $feedbackPanel->display();
+        return $html;
     }
 }
 ?>

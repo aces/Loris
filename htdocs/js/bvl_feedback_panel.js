@@ -9,6 +9,7 @@ $(document).ready(function() {
         console.log("navbar toggle clicked");
         $("#bvl_feedback_menu").toggleClass("active_panel");
         $("#bvl_panel_wrapper").toggleClass("bvl_panel");
+	$("#sidebar-wrapper").toggle("#sidebar-wrapper hide_sidebar");
 
     });
 

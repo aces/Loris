@@ -260,11 +260,11 @@
                 <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
                         {$feedback_panel}
-                    {*<div id="sidebar-wrapper" class="sidebar-div">*}
-                        {*<div id="sidebar-content">*}
-                            {*{$control_panel}*}
-                        {*</div>*}
-                    {*</div>*}
+                    <div id="sidebar-wrapper" class="sidebar-div">
+                       <div id="sidebar-content">
+                            {$control_panel}
+                        </div>
+                    </div>
                     <!--    Want to wrap page content only when sidebar is in view
                             if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
