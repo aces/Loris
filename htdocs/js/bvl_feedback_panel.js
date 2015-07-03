@@ -3,7 +3,8 @@
  */
 $(document).ready(function() {
 
-    var candID = $("#candID").attr('name');
+    var candID = $('meta[itemprop="candID"]').attr("context");
+    var sessionID = $('meta[itemprop="sessionID"]').attr("context");
 
     $('.navbar-toggle').on('click',function(event){
         console.log("navbar toggle clicked");
@@ -47,7 +48,8 @@ $(document).ready(function() {
             type: "POST",
             url: "ajax/close_bvl_feedback_thread.php",
             data: {"feedbackID": feedbackID,
-                "candID" :  candID},
+                   "candID" :  candID,
+		   "sessionID" : sessionID},
             success: function (data){
                 console.log("In the success function of the closing thread");
                 buttonGroup.replaceWith(closedButton);
@@ -191,7 +193,8 @@ $(document).ready(function() {
         request = $.ajax({
             url: "ajax/new_bvl_feedback.php",
             type: "POST",
-            data: {"candID": $candID,
+            data: {"candID": candID,
+		   "sessionID": sessionID,
                    "comment" : $comment,
 		   "input_type" : $input_type},
             //dataType: "html",

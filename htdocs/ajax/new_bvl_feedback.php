@@ -26,6 +26,7 @@ require_once "bvl_panel_ajax.php";
 //Creating a new array to pass the set values into the DB.
 $newThreadValues = array();
 
+//For profile level feedback
 if (isset($_POST['comment']) && isset($_POST['candID'])) {
     $feedbackLevel  = $feedbackThread->_feedbackLevel;
 

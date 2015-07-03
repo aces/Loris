@@ -1,52 +1,44 @@
 <?php
 /**
- * Instrument list behavioural feedback panel class.
- * 
- * This class provides the behavioural feedback GUI for a the 
- * instrument list of a given candidate. 
- * 
+ * General behavioural feedback panel class. 
+ *
+ * This class provides the behavioural feedback gui for the timepoint list, instrument 
+ * list and individual instruments. 
+ *
  * @package Behavioural
- * @author  Evan McIlroy <evanmcilroy@gmail.com>
+ * @author Evan McIlroy <evanmcilroy@gmail.com>
  * @license GNU
  */
-class Instrument_List_FeedbackPanel
+class BVL_Feedback_Panel
 {
 
     var $_feedbackThread = '';
-    var $_feedbackThreadList = '';
     var $_candidate = '';
-    var $_sessionID = '';
-    /**
-     *
-     * Initializes the Instrument_List_FeedbackPanel
-     * with a feedbackThread.
-     *
-     */
-    function Instrument_List_FeedbackPanel($candID, $sessionID)
+
+    function BVL_Feedback_Panel($candID, $sessionID=null, $commentID=null)
     {
         $user =& User::singleton();
-        $username= $user->getUsername();
-        $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID, $sessionID);
-        $this->_feedbackThreadList = $this->_feedbackThread->getThreadList();
-        $this->_candidate = Candidate::singleton($candID);
-        $this->_sessionID = $sessionID;
+        $username = $user->getUsername();
+        $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID, $sessionID, $commentID);
+        // if($sessionID == null && $commentID == null){
+        //     $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID);
+        // }
+        // elseif ($commentID == null){
+        //     $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID, $sessionID);
+        // }
+        // else{
+        //     $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID);
+        // }
+        // $this->_candidate = Candidate::Singleton($candID);
     }
-    /**
-     *Display function for the Instrument_List_FeedbackPanel
-     *
-     * @return Returns the html for the control panel. To be rendered by a smarty
-     * template.  
-     */
-    function display()
-    {
-        $this->tpl_data['candID'] = $this->_feedbackThread->_feedbackCandidateProfileInfo['CandID'];
-        $this->tpl_data['PSCID'] = $this->_candidate->getPSCID();
-        $this->tpl_data['sessionID'] = $this->_sessionID;
+
+    function display(){
+        $this->tpl_data['candID'] = $this->_feeedbackThread->_feedbackCandidateProfileInfo["CandID"];
+        $this->tpl_data['PSCID'] = $this->_feeedbackThread->feedbackObJectInfo["sessionID"];
         $this->tpl_data['thread_list'] = $this->_feedbackThreadList;
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types'] = $this->_feedbackThread->getFeedbackTypes();
         
-        // get the summary of threads
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         if (PEAR::isError($summary)) {
             $tpl_data['error_message'][] = $summary->getMessage();
@@ -71,13 +63,11 @@ class Instrument_List_FeedbackPanel
                 }
             }
         }
-        
-        $smarty = new Smarty_neurodb("instrument_list");
+
+        $smarty = new Smarty_neurodb("bvl_feedback_panel");
         $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("instrument_list_bvl_feedback_panel.tpl");
+        $html = $smarty->fetch("bvl_feedback_panel.tpl");
         return $html;
+        
     }
 }
-
-
-?>

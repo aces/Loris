@@ -20,26 +20,25 @@ set_include_path(
     __DIR__ . "/../../php/libraries:" .
     "/usr/share/pear:"
 );
-require "../main.php";
 require_once __DIR__ . "/../../vendor/autoload.php";
-require_once "NDB_Client.class.inc";
-
-$user     =& User::singleton();
-$username = $user->getUsername();
+require_once "bvl_panel_ajax.php";
 
 //Creating a new array to pass the set values into the DB.
 $newThreadValues = array();
-//Date we are creating the new bvl_feedback
-$today = date("Y-m-d");
 
-if (isset($_POST['comment']) && isset($_POST['candID'])) {
-    $feedbackThread =& NDB_BVL_Feedback::Singleton($username, $_POST['candID']);
+//For profile level feedback
+if (isset($_POST['comment']) && isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
     $feedbackLevel  = $feedbackThread->_feedbackLevel;
-    $feedbackThread->createThread(1, $_POST['comment'], 'Y');
+
+    $newEntryValues = $feedbackThread->createThread($_POST['input_type'], $_POST['comment'], 'Y');
     //Now setting the array to return as json
-    $newThreadValues['date'] = $today;
-    $newThreadValues['user'] = $username;
-    print json_encode($newThreadValues);
+    print json_encode($newEntryValues);
 }
 
-    exit();
+//For visit level feedback
+elseif (isset($_POST['comment']) && isset($_POST['candID']) && isset($_POST['exit'])) {
+        
+    }
+
+
+    sessionID();

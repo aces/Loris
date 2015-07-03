@@ -1,10 +1,12 @@
-{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"/>*}
+o{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"/>*}
 <script src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <link rel="stylesheet" href="css/panel.css" type="text/css"/>
 {*<script src="js/feedback_bvl_popup.js"></script>*}
 {*<script src ="js/jasny-bootstrap-all.js"></script>*}
 <script src ="js/bvl_feedback_panel.js"></script>
 <link rel="stylesheet" href="css/jasny-bootstrap-all.css" type="text/css" />
+<meta itemprop="candID" context="{$candID}">
+<meta itemprop="sessionID" context="{$sessionID}">
 
 <!-- <div class ="ui-responsive-panel" data-role="panel" id="right-panel" data-position-fixed="true" data-display="push" data-position="div"> -->
 
@@ -93,21 +95,24 @@
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-target="#collapseTwo"
                        href="#collapseTwo" class="collapsed">
-                        View Feedback Threads
+                        View  {$feedback_level} level threads
                     </a>
                 </h4>
 
             </div>
             <div id="collapseTwo" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <table id="current_thread_table" class ="table table-hover table-primary table-bordered dynamictable">
-                        <thead id ="current_thread_table_header">
+                    <div class="panel-body">
+			    			
+			    <table id="current_thread_table" class ="table table-hover table-primary table-bordered dynamictable">
+				    
+                            <thead id ="current_thread_table_header">
                         <tr class="info">
                             {*<td>ID</td>*}
                             <td>Date</td>
                             <td>Author</td>
 
-                        </thead>
+                            </thead>
+			    	    {if $thread_list}
                         {foreach from=$thread_list item=value}
 				<tbody id="{$value.FeedbackID}" name="entries">
                             <tr>
@@ -143,7 +148,12 @@
                             </tbody>
 			    
                         {/foreach}
+			   {else}
+							    No current {$feedback_level} level threads
+							    {/if}
                     </table>
+							    
+							 
                 </div>
             </div>
         </div>

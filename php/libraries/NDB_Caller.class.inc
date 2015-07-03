@@ -382,6 +382,10 @@ class NDB_Caller extends PEAR
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
         }
+        if (method_exists($instrument, 'getFeedbackPanel')) {
+            $this->feedbackPanel = $instrument->getFeedbackPanel();
+        }
+        
         if (Utility::isErrorX($instrument)) {
             return $instrument;
         }

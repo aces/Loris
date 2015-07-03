@@ -18,6 +18,9 @@ $client->initialize();
 $user     =& User::singleton();
 $username = $user->getUsername();
 
-if (isset($_POST['candID'])){
+if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
 $feedbackThread =& NDB_BVL_Feedback::Singleton($username, $_POST['candID']);
-    }
+}
+elseif (isset($_POST['candID']) && isset($_POST['sessionID'])){
+    $feedbackThread =& NDB_BVL_Feedback::Singleton($username, $_POST['candID'], $_POST['sessionID']);
+}
