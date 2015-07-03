@@ -33,8 +33,9 @@ class BVL_Feedback_Panel
     }
 
     function display(){
-        $this->tpl_data['candID'] = $this->_feeedbackThread->_feedbackCandidateProfileInfo["CandID"];
-        $this->tpl_data['PSCID'] = $this->_feeedbackThread->feedbackObJectInfo["sessionID"];
+        $this->tpl_data['candID'] = $this->_feedbackThread->_feedbackCandidateProfileInfo["CandID"];
+        $this->tpl_data['sessionID'] = $this->_feedbackThread->_feedbackCandidateProfileInfo["SessionID"];
+        $this->tpl_data['commentID'] = $this->_feedbackThread->_feedbackObjectInfo["CommentID"];
         $this->tpl_data['thread_list'] = $this->_feedbackThreadList;
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types'] = $this->_feedbackThread->getFeedbackTypes();

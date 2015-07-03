@@ -5,6 +5,7 @@ $(document).ready(function() {
 
     var candID = $('meta[itemprop="candID"]').attr("context");
     var sessionID = $('meta[itemprop="sessionID"]').attr("context");
+    var commentID = $('meta[itemprop="commentID"]').attr("context");
 
     $('.navbar-toggle').on('click',function(event){
         console.log("navbar toggle clicked");
@@ -195,6 +196,7 @@ $(document).ready(function() {
             type: "POST",
             data: {"candID": candID,
 		   "sessionID": sessionID,
+		   "commentID": commentID,
                    "comment" : $comment,
 		   "input_type" : $input_type},
             //dataType: "html",

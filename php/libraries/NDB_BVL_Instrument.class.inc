@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'BVL_Feedback_Panel.class.inc';
+include_once 'BVL_Feedback_Panel.class.inc';
 
 /**
  * Base class for all NeuroDB behavioural instruments
