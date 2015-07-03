@@ -257,7 +257,8 @@
         {/if}
         <div id="page" class="container-fluid">
             {if $control_panel or $feedback_panel}
-                <div id="bvl_panel_wrapper">
+		    <div class ="wrapper">
+		    <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
                         {$feedback_panel}
                     <div id="sidebar-wrapper" class="sidebar-div">
@@ -559,7 +560,9 @@
             {else}
                 {$workspace}
             {/if}
-        </div>
+		</div>
+
+	</div>
 
         {if $control_panel or $feedback_panel}
         </div></div>
