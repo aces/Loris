@@ -256,16 +256,20 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-            {if $control_panel or $feedback_panel}
-		    <div class ="wrapper">
+		{if $control_panel or $feedback_panel}
+			{if $control_panel}
+				<div id = "page_wrapper_sidebar" class ="wrapper">
+			{/if}
 		    <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
-                        {$feedback_panel}
+                            {$feedback_panel}
+			    {if $control_panel}
                     <div id="sidebar-wrapper" class="sidebar-div">
                        <div id="sidebar-content">
                             {$control_panel}
                         </div>
                     </div>
+		    {/if}
                     <!--    Want to wrap page content only when sidebar is in view
                             if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
