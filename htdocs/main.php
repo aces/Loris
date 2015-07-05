@@ -240,7 +240,7 @@ $tpl_data['mantis_url'] = $config->getSetting('mantis_url');
 
 //Display the links, as specified in the config file
 $links =$config->getSetting('links');
-foreach (Utility::toArray($links['link']) AS $link) {
+foreach (Utility::toArray($links['link']) as $link) {
     $LinkArgs = '';
     $BaseURL  = $link['@']['url'];
     if (isset($link['@']['args'])) {
