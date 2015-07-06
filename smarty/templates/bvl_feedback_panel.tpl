@@ -1,4 +1,4 @@
-g{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"/>*}
+{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"/>*}
 <script src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <link rel="stylesheet" href="css/panel.css" type="text/css"/>
 {*<script src="js/feedback_bvl_popup.js"></script>*}
@@ -85,6 +85,9 @@ g{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"
 								<option value = "{$value['Type']}">{$value['Name']}</option> 
 							{/foreach}				
 						</select>
+						{if $FieldNames}
+							{html_options name="fieldname" values=$FieldNames selected=$new_thread_data[$newTypeCounter].FieldNameValue options=$FieldNames}
+						{/if}
 						<button id="save_data">Save data</button>
 
 					</div>
@@ -112,6 +115,9 @@ g{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"
 								{*<td>ID</td>*}
 								<td>Date</td>
 								<td>Author</td>
+								{if $feedback_level == "instrument"}
+									<td>Field</td>									
+								{/if}
 
 						</thead>
 			    			{if $thread_list}
@@ -121,6 +127,9 @@ g{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"
 										{*<td>{$value.FeedbackID}<span id="comment_icon_{$value.FeedbackID}" class="glyphicon glyphicon-pencil" name="comment_icon"></span></td>*}
 										<td>{$value.Date}</td>
 										<td>{$value.User}</td>
+										{if $feedback_level == "instrument"}
+											<td>{$value.FieldName}</td>
+										{/if}
 										<td name = "action_bar">
 											<div class="btn-group">
 												{if $value.QC_status == 'opened'}

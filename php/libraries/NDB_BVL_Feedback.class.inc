@@ -677,6 +677,11 @@ class NDB_BVL_Feedback
         $newEntryValues = array();
         $newEntryValues["feedbackID"] = $feedbackID;
         $newEntryValues["comment"] = $comment;
+        if ($fieldname != null){
+        $newEntryValues["fieldname"] = $fieldname;
+        } else {
+            $newEntryValues["fieldname"] = '';
+        }
         $newEntryValues["user"] = $this->_username;
         $newEntryValues["date"] = $today;
         $newEntryValues["type"] = $this->getThreadType($feedbackID);

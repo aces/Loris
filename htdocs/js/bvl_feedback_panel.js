@@ -190,6 +190,7 @@ $(document).ready(function() {
         var $candID = $("#candID").attr('name');
         var $comment = $('#comment').val();
 	var $input_type = $('select[name="input_type"]').val();
+	var $fieldname = $('select[name="fieldname"]').val();
 
         request = $.ajax({
             url: "ajax/new_bvl_feedback.php",
@@ -198,7 +199,8 @@ $(document).ready(function() {
 		   "sessionID": sessionID,
 		   "commentID": commentID,
                    "comment" : $comment,
-		   "input_type" : $input_type},
+		   "input_type" : $input_type,
+		   "field_name" : $fieldname},
             //dataType: "html",
             success: function (response) {
                 console.log("in the success function of adding new thread stuff");
@@ -208,7 +210,10 @@ $(document).ready(function() {
                 var tbody = '<tbody id="' + response["feedbackID"] + '" name="entries">';
 		var td1 = '<tr><td>'+ response["date"] + '</td>';
 		var td2 = '<td>' + response["user"] + '</td>';
-		var td3 = '<td name = "action_bar">'
+		if (response["fieldname"] != ''){
+		    var td3 = '<td>' + response["fieldname"] + '</td>';
+		}
+		var td4 = '<td name = "action_bar">'
 		    + '<div class = "btn-group"><button name ="thread_button" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
 		    + 'Opened <span class="caret"></span></button>'
 		    + '<ul class="dropdown-menu"><li><a id="close_thread_' + response["feedbackID"] + '">Close</a></li></ul></div>';
@@ -220,7 +225,7 @@ $(document).ready(function() {
 
                 var close = '</td></tr></tbody>';
 
-                $("#current_thread_table_header").after($(tbody + td1 + td2 + td3 + bvl_table_icons + close).fadeIn('slow'));
+                $("#current_thread_table_header").after($(tbody + td1 + td2 + td3 + td4 + bvl_table_icons + close).fadeIn('slow'));
 		$('#comment').val('New thread successfully added!');
 		$('#toggle_entries_' + response["feedbackID"]).click();
 

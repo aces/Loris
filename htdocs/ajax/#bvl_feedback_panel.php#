@@ -34,10 +34,10 @@ if (PEAR::isError($user)) {
 }
 
 //TODO: add a more graceful exit here:
-// if (!$user->hasPermission('bvl_feedback')) {
-//     print json_encode("You don't have the appropriate permission");
-//     exit();
-// }
+if (!$user->hasPermission('bvl_feedback')) {
+    print json_encode("You don't have the appropriate permission");
+    exit();
+}
 
 //There needs to be a candidate set fro 
 if (isset($_REQUEST['candID']) && !empty($_REQUEST['candID'])) {

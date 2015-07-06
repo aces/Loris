@@ -13,32 +13,29 @@ class BVL_Feedback_Panel
 {
 
     var $_feedbackThread = '';
-    var $_candidate = '';
 
     function BVL_Feedback_Panel($candID, $sessionID=null, $commentID=null)
     {
         $user =& User::singleton();
         $username = $user->getUsername();
         $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID, $sessionID, $commentID);
-        // if($sessionID == null && $commentID == null){
-        //     $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID);
-        // }
-        // elseif ($commentID == null){
-        //     $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID, $sessionID);
-        // }
-        // else{
-        //     $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID);
-        // }
-        // $this->_candidate = Candidate::Singleton($candID);
     }
 
     function display(){
         $this->tpl_data['candID'] = $this->_feedbackThread->_feedbackCandidateProfileInfo["CandID"];
         $this->tpl_data['sessionID'] = $this->_feedbackThread->_feedbackCandidateProfileInfo["SessionID"];
         $this->tpl_data['commentID'] = $this->_feedbackThread->_feedbackObjectInfo["CommentID"];
-        $this->tpl_data['thread_list'] = $this->_feedbackThreadList;
+        $this->tpl_data['thread_list'] = $this->_feedbackThread->getThreadList();
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types'] = $this->_feedbackThread->getFeedbackTypes();
+
+        $field_names = Utility::getSourcefields($_REQUEST['test_name']);
+        $Fields['Across All Fields'] = 'Across All Fields';
+        foreach ($field_names as $field_name) {
+            $Fields[$field_name['SourceField']] = $field_name['SourceField'];
+        }
+
+        $this->tpl_data['FieldNames'] = $Fields; 
         
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         if (PEAR::isError($summary)) {
