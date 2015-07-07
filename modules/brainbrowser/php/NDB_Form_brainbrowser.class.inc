@@ -31,7 +31,8 @@ class NDB_Form_Brainbrowser extends NDB_Form
      *
      * @return none
      */
-    function brainbrowser() {
+    function brainbrowser()
+    {
 
     }
     /**
