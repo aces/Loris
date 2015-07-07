@@ -426,8 +426,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
 
-            $db         = Database::singleton();
-            $this->form = new HTML_Quickform('test_form');
+            $db         = \Database::singleton();
+            $this->form = new \HTML_Quickform('test_form');
 
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
