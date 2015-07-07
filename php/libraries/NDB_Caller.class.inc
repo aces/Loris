@@ -86,10 +86,12 @@ class NDB_Caller extends PEAR
             && isset($_POST['login'])
         ) {
             header("HTTP/1.1 303 See Other");
-             $url  = $config->getSetting('url');
-             $url .= $_SERVER['REQUEST_URI'];
-             // sending user to the url that was requested
-             header("Location: $url");
+            $url  = $_SERVER['REQUEST_SCHEME'];
+            $url .= "://";
+            $url .= $config->getSetting('host');
+            $url .= $_SERVER['REQUEST_URI'];
+            // sending user to the url that was requested
+            header("Location: $url");
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
