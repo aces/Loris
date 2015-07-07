@@ -1159,19 +1159,19 @@ class Utility extends PEAR
      *
      * @return string $prefixStr minus the largest common piece of $suffixStr
      */
-    function removeCommonAffix($suffixStr, $prefixStr) {
+    function removeCommonAffix($suffixStr, $prefixStr) 
+    {
         $lastFound = '';
         // Start from the end of $suffixStr and work backwords, to make sure
         // it fails fast in the event that there's nothing in common.
-        for($i = strlen($suffixStr)-1; $i >= 0; $i -= 1) {
+        for ($i = strlen($suffixStr)-1; $i >= 0; $i -= 1) {
             $piece = substr($suffixStr, $i);
-    
             $found = strpos($prefixStr, $piece);
-            if($found === 0) {
+            if ($found === 0) {
                 // The current substring starts at index 0 in prefixStr, so we
                 // know that it's a prefix. Keep track of it.
                 $lastFound = $piece;
-            } else if($found === false) {
+            } else if ($found === false) {
                 // The current substring doesn't appear anywhere in
                 // $prefixStr, so return the last known complete prefix.
                 // There's no chance that a larger string is going to
@@ -1182,7 +1182,6 @@ class Utility extends PEAR
                 // beginning of the string. Keep going because this might be
                 // the middle of a larger prefix.
             }
-    
         }
         return $prefixStr;
     }
