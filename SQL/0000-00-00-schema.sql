@@ -2438,21 +2438,69 @@ CREATE TABLE `certification_training_quiz_answers` (
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure for table `server_processes`
 DROP TABLE IF EXISTS `server_processes`;
 CREATE TABLE `server_processes` (
-  `id`                int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `pid`               int(11) unsigned NOT NULL,
-  `type`              enum('mri_upload') NOT NULL,
-  `stdout_file`       varchar(255) DEFAULT NULL,
-  `stderr_file`       varchar(255) DEFAULT NULL,
-  `exit_code_file`    varchar(255) DEFAULT NULL,
-  `exit_code`         varchar(255) DEFAULT NULL,
-  `userid`            varchar(255) NOT NULL,
-  `start_time`        timestamp NULL,
-  `end_time`          timestamp NULL,
-  `exit_text`         text DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_task_1` (`userid`),
-  CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
+    `id`                int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `pid`               int(11) unsigned NOT NULL,
+    `type`              enum('mri_upload') NOT NULL,
+    `stdout_file`       varchar(255) DEFAULT NULL,
+    `stderr_file`       varchar(255) DEFAULT NULL,
+    `exit_code_file`    varchar(255) DEFAULT NULL,
+    `exit_code`         varchar(255) DEFAULT NULL,
+    `userid`            varchar(255) NOT NULL,
+    `start_time`        timestamp NULL,
+    `end_time`          timestamp NULL,
+    `exit_text`         text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `FK_task_1` (`userid`),
+    CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Cohort`;
+CREATE TABLE `Cohort` (
+    `CohortID` INT NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(255) NULL,
+    `Label` VARCHAR(5) NULL,
+    `RecruitmentTarget` INT NULL,
+    `MinAge` INT NULL,
+    `MaxAge` INT NULL,
+    PRIMARY KEY (`CohortID`)
+)ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `CandidateCohortRel`;
+CREATE TABLE `CandidateCohortRel` (
+    `CandID` int(6) NOT NULL default '0',
+    `CohortID` INT NOT NULL,
+    INDEX `fk_CandidateCohortRel_Candidate_idx` (`CandID` ASC),
+    INDEX `fk_CandidateCohortRel_Cohort1_idx` (`CohortID` ASC),
+    CONSTRAINT `fk_CandidateCohortRel_Candidate`
+        FOREIGN KEY (`CandID`)
+        REFERENCES `candidate` (`CandID`),
+    CONSTRAINT `fk_CandidateCohortRel_Cohort1`
+        FOREIGN KEY (`CohortID`)
+        REFERENCES `Cohort` (`CohortID`)
+)ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `Project`;
+CREATE TABLE `Project` (
+    `ProjectID` INT NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(255) NULL,
+    PRIMARY KEY (`ProjectID`)
+)ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `ProjectCohortRel`;
+CREATE TABLE `ProjectCohortRel` (
+    `ProjectID` INT NOT NULL,
+    `CohortID` INT NOT NULL,
+    INDEX `fk_ProjectCohortRel_Project1_idx` (`ProjectID` ASC),
+    INDEX `fk_ProjectCohortRel_Cohort1_idx` (`CohortID` ASC),
+    CONSTRAINT `fk_ProjectCohortRel_Project1`
+        FOREIGN KEY (`ProjectID`)
+        REFERENCES `Project` (`ProjectID`),
+    CONSTRAINT `fk_ProjectCohortRel_Cohort1`
+        FOREIGN KEY (`CohortID`)
+        REFERENCES `Cohort` (`CohortID`)
+)ENGINE = InnoDB  DEFAULT CHARSET=utf8;
