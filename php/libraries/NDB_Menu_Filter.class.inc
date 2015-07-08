@@ -579,6 +579,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $config =& NDB_Config::singleton();
         // configure the page pagination
         $rowsPerPage = $config->getSetting('rowsPerPage');
+
             $params = array(
                        'mode'       => 'Sliding',
                        'perPage'    => $rowsPerPage,
@@ -587,9 +588,11 @@ class NDB_Menu_Filter extends NDB_Menu
                       );
             $pager  = Pager::factory($params);
             $links  = $pager->getLinks();
-            $this->tpl_data['page_links'] = $links['all'];
+
+            $this->tpl_data['page_links']  = $links['all'];
             $this->tpl_data['rowsPerPage'] = $rowsPerPage;
-            $this->tpl_data['pageID'] = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
+            $this->tpl_data['pageID']      = isset($_GET['pageID']) ?
+                $_GET['pageID'] : 1;
 
             // print out column headings
             $i = 0;
