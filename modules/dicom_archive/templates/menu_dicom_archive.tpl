@@ -112,7 +112,7 @@
     <script>
     var pageLinks = RPaginationLinks(
         {
-                    RowsPerPage : 50,
+                    RowsPerPage : {$rowsPerPage},
                     Total: {$numTimepoints},
                     onChangePage: function(pageNum) {
                         location.href="{$baseurl}/main.php?test_name=dicom_archive&pageID=" + pageNum
