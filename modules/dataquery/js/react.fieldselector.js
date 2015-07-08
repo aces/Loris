@@ -230,6 +230,9 @@ FieldList = React.createClass({displayName: 'FieldList',
 });
 
 FieldSelector = React.createClass({displayName: 'FieldSelector',
+    propTypes: {
+        selectedFields: React.PropTypes.array
+    },
     getInitialState: function() {
         return {
             filter: "",

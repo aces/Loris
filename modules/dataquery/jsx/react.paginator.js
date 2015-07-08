@@ -1,4 +1,16 @@
+//var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+
 PaginationLinks = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
+    propTypes: {
+        onChangePage: React.PropTypes.func
+    },
+    getDefaultProps: function() {
+        return {
+            'RowsPerPage' : 10,
+            'Active' : 1
+        }
+    },
     changePage: function(i) {
         var that = this;
         return function(evt) {
@@ -11,7 +23,7 @@ PaginationLinks = React.createClass({
         };
     },
     render: function() {
-        var rowsPerPage = this.props.RowsPerPage || 10;
+        var rowsPerPage = this.props.RowsPerPage;
         var pageLinks = [];
         var classList;
         var lastPage = Math.ceil(this.props.total / rowsPerPage);
@@ -52,3 +64,6 @@ PaginationLinks = React.createClass({
         );
     }
 });
+
+RPaginationLinks = React.createFactory(PaginationLinks);
+
