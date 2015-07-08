@@ -74,13 +74,15 @@ class Project extends \Loris\API\APIBase
         $projectName,
         $bCandidates,
         $bInstruments,
-        $bVisits
+        $bVisits,
+        $bInstrumentDetails = false
     ) {
         $this->AutoHandleRequestDelegation = false;
         parent::__construct($method);
 
         $this->bCandidates  = $bCandidates;
         $this->bInstruments = $bInstruments;
+        $this->bInstrumentDetails = $bInstrumentDetails;
         $this->bVisits      = $bVisits;
 
         $this->ProjectName = $projectName;
@@ -128,6 +130,26 @@ class Project extends \Loris\API\APIBase
         if ($this->bInstruments) {
             $Instruments = \Utility::getAllInstruments();
             $JSONArray['Instruments'] = array_keys($Instruments);
+
+            if($this->bInstrumentDetails) {
+                $dets = [];
+                $config = $this->Factory->config();
+                $DB = $this->Factory->database();
+
+                $DDE = $config->getSetting("DoubleDataEntryInstruments");
+
+                foreach($Instruments as $instrument=> $FullName ) {
+                    $subgroup = $DB->pselectOne("SELECT sg.Subgroup_name FROM test_names tn LEFT JOIN test_subgroups sg ON (tn.Sub_group=sg.ID) WHERE tn.Test_name=:inst", array ('inst' => $instrument));
+                    $dets[$instrument] = [
+                        'FullName' => $FullName,
+                        'Subgroup' => $subgroup,
+                        'DoubleDataEntryEnabled' => in_array($instrument, $DDE),
+
+                    ];
+                }
+                $JSONArray['InstrumentDetails'] = $dets;
+
+            }
         }
 
         if ($this->bVisits) {
@@ -147,7 +169,8 @@ if (isset($_REQUEST['PrintProjectJSON'])) {
         $_REQUEST['Project'],
         isset($_REQUEST['Candidates'])  ? true : false,
         isset($_REQUEST['Instruments']) ? true : false,
-        isset($_REQUEST['Visits'])      ? true : false
+        isset($_REQUEST['Visits'])      ? true : false,
+        isset($_REQUEST['InstrumentDetails'])      ? true : false
     );
 
     print $Proj->toJSONString();

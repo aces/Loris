@@ -5,9 +5,8 @@ Still to be done:
 1. Document a way to handle conflicts for offline clients
 2. Add a way to get project settings which affect the API (ie. useEDC)
 3. Add a sorting and searching mechanism
-4. Add a way to get instrument metadata without whole instrument (ie LongName, subgroup)
-5. Ensure JSON markup is rendered correctly in document
-6. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
+4. Ensure JSON markup is rendered correctly in document
+5. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
    and an ability for modules to manage their data through the API
 
 ====
@@ -122,6 +121,14 @@ Will return a JSON object of the form
         "Project" : "ProjectName"
     },
     "Instruments" : ["InstrumentName", "InstrumentName2", "..."]
+    "InstrumentDetails": {
+        "InstrumentName" : {
+            "FullName" :  "Long Name",
+            "Subgroup" : "Subgroup Name"
+            "DoubleDataEntryEnabled" : boolean
+        },
+        ...
+    }
 }
 ```
 
