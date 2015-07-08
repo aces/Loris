@@ -1,4 +1,5 @@
 TabPane = React.createClass({displayName: 'TabPane',
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
         var classList = "tab-pane";
         if(this.props.Active) {
@@ -7,49 +8,63 @@ TabPane = React.createClass({displayName: 'TabPane',
         return (
             React.createElement("div", {className: classList, id: this.props.TabId}, 
                 React.createElement("h1", null, this.props.Title), 
-                this.props.content
+                this.props.children
             )
             );
     }
 });
 
 InfoTabPane = React.createClass({displayName: 'InfoTabPane',
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
-        content = React.createElement("div", null, 
-            React.createElement("p", null, "Data was last updated on ", this.props.UpdatedTime, "."), 
-            React.createElement("p", null, "Please define or use your query by using the following tabs."), 
-            React.createElement("dl", null, 
-                React.createElement("dt", null, "Define Fields"), 
-                React.createElement("dd", null, "Define the fields to be added to your query here."), 
-                React.createElement("dt", null, "Define Filters"), 
-                React.createElement("dd", null, "Define the criteria to filter the data for your query here."), 
-                React.createElement("dt", null, "View Data"), 
-                React.createElement("dd", null, "See the results of your query."), 
-                React.createElement("dt", null, "Statistical Analysis"), 
-                React.createElement("dd", null, "Visualize or see basic statistical measures from your query here."), 
-                React.createElement("dt", null, "Load Saved Query"), 
-                React.createElement("dd", null, "Load a previously saved query (by name) by selecting from this menu."), 
-                React.createElement("dt", null, "Manage Saved Queries"), 
-                React.createElement("dd", null, "Either save your current query or see the criteria of previously saved quer  ies here.")
-              )
-        );
-        return React.createElement(TabPane, {title: "Welcome to the Data Query Tool", 
-            content: content, TabId: this.props.TabId, Active: true})
+        return React.createElement(TabPane, {Title: "Welcome to the Data Query Tool", 
+                    TabId: this.props.TabId, Active: true}, 
+                        React.createElement("p", null, "Data was last updated on ", this.props.UpdatedTime, "."), 
+                        React.createElement("p", null, "Please define or use your query by using the following tabs."), 
+                            React.createElement("dl", null, 
+                            React.createElement("dt", null, "Define Fields"), 
+                            React.createElement("dd", null, "Define the fields to be added to your query here."), 
+                            React.createElement("dt", null, "Define Filters"), 
+                            React.createElement("dd", null, "Define the criteria to filter the data for your query here."), 
+                            React.createElement("dt", null, "View Data"), 
+                            React.createElement("dd", null, "See the results of your query."), 
+                            React.createElement("dt", null, "Statistical Analysis"), 
+                            React.createElement("dd", null, "Visualize or see basic statistical measures from your query here."), 
+                            React.createElement("dt", null, "Load Saved Query"), 
+                            React.createElement("dd", null, "Load a previously saved query (by name) by selecting from this menu."), 
+                            React.createElement("dt", null, "Manage Saved Queries"), 
+                            React.createElement("dd", null, "Either save your current query or see the criteria of previously saved quer  ies here.")
+                          )
+                )
     }
 });
 
 FieldSelectTabPane = React.createClass({displayName: 'FieldSelectTabPane',
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
-        var content = React.createElement(FieldSelector, {title: "Fields", items: this.props.categories, onFieldChange: this.props.onFieldChange, selectedFields: this.props.selectedFields})
-        return React.createElement(TabPane, {content: content, TabId: this.props.TabId})
+        return React.createElement(TabPane, {TabId: this.props.TabId}, 
+                    React.createElement(FieldSelector, {title: "Fields", 
+                        items: this.props.categories, 
+                        onFieldChange: this.props.onFieldChange, 
+                        selectedFields: this.props.selectedFields}
+                    )
+            )
     }
 
 });
 
 FilterSelectTabPane = React.createClass({displayName: 'FilterSelectTabPane',
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
-        var content = React.createElement(FieldSelector, {title: "Filters", items: this.props.categories, type: "Criteria", onFieldChange: this.props.onFieldChange, onCriteriaChange: this.props.onCriteriaChange, selectedFields: this.props.selectedFields, Criteria: this.props.Criteria})
-        return React.createElement(TabPane, {content: content, TabId: this.props.TabId})
+        return React.createElement(TabPane, {TabId: this.props.TabId}, 
+                    React.createElement(FieldSelector, {title: "Filters", 
+                        items: this.props.categories, 
+                        type: "Criteria", 
+                        onFieldChange: this.props.onFieldChange, 
+                        onCriteriaChange: this.props.onCriteriaChange, 
+                        selectedFields: this.props.selectedFields, Criteria: this.props.Criteria}
+                    )
+               )
     }
 });
 
@@ -117,14 +132,15 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
             }
 
         }
-        var content = (
-            React.createElement("div", null, 
-                React.createElement("h2", null, "Query Criteria"), criteria, " ", buttons, 
-                React.createElement("h2", null, "Data"), 
-                React.createElement(DataTable, {Headers: this.props.Fields, Identifiers: this.props.Sessions, Data: this.props.Data})
-            )
-                );
-        return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
+        return React.createElement(TabPane, {TabId: this.props.TabId}, 
+                    React.createElement("h2", null, "Query Criteria"), criteria, " ", buttons, 
+                    React.createElement("h2", null, "Data"), 
+                    React.createElement(DataTable, {
+                        Headers: this.props.Fields, 
+                        Identifiers: this.props.Sessions, 
+                        Data: this.props.Data}
+                    )
+               )
     }
 });
 

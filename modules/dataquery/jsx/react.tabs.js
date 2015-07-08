@@ -1,4 +1,5 @@
 TabPane = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
         var classList = "tab-pane";
         if(this.props.Active) {
@@ -7,49 +8,63 @@ TabPane = React.createClass({
         return (
             <div className={classList} id={this.props.TabId}>
                 <h1>{this.props.Title}</h1>
-                {this.props.content}
+                {this.props.children}
             </div>
             );
     }
 });
 
 InfoTabPane = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
-        content = <div>
-            <p>Data was last updated on {this.props.UpdatedTime}.</p>
-            <p>Please define or use your query by using the following tabs.</p>
-            <dl>
-                <dt>Define Fields</dt>
-                <dd>Define the fields to be added to your query here.</dd>
-                <dt>Define Filters</dt>
-                <dd>Define the criteria to filter the data for your query here.</dd>
-                <dt>View Data</dt>
-                <dd>See the results of your query.</dd>
-                <dt>Statistical Analysis</dt>
-                <dd>Visualize or see basic statistical measures from your query here.</dd>
-                <dt>Load Saved Query</dt>
-                <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
-                <dt>Manage Saved Queries</dt>
-                <dd>Either save your current query or see the criteria of previously saved quer  ies here.</dd>
-              </dl>
-        </div>;
-        return <TabPane title="Welcome to the Data Query Tool"
-            content={content} TabId={this.props.TabId} Active={true}/>
+        return <TabPane Title="Welcome to the Data Query Tool"
+                    TabId={this.props.TabId} Active={true}>
+                        <p>Data was last updated on {this.props.UpdatedTime}.</p>
+                        <p>Please define or use your query by using the following tabs.</p>
+                            <dl>
+                            <dt>Define Fields</dt>
+                            <dd>Define the fields to be added to your query here.</dd>
+                            <dt>Define Filters</dt>
+                            <dd>Define the criteria to filter the data for your query here.</dd>
+                            <dt>View Data</dt>
+                            <dd>See the results of your query.</dd>
+                            <dt>Statistical Analysis</dt>
+                            <dd>Visualize or see basic statistical measures from your query here.</dd>
+                            <dt>Load Saved Query</dt>
+                            <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
+                            <dt>Manage Saved Queries</dt>
+                            <dd>Either save your current query or see the criteria of previously saved quer  ies here.</dd>
+                          </dl>
+                </TabPane>
     }
 });
 
 FieldSelectTabPane = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
-        var content = <FieldSelector title="Fields" items={this.props.categories} onFieldChange={this.props.onFieldChange} selectedFields={this.props.selectedFields}/>
-        return <TabPane content={content} TabId={this.props.TabId} />
+        return <TabPane TabId={this.props.TabId}>
+                    <FieldSelector title="Fields"
+                        items={this.props.categories}
+                        onFieldChange={this.props.onFieldChange}
+                        selectedFields={this.props.selectedFields}
+                    />
+            </TabPane>
     }
 
 });
 
 FilterSelectTabPane = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     render: function() {
-        var content = <FieldSelector title="Filters" items={this.props.categories} type="Criteria" onFieldChange={this.props.onFieldChange} onCriteriaChange={this.props.onCriteriaChange} selectedFields={this.props.selectedFields} Criteria={this.props.Criteria}/>
-        return <TabPane content={content} TabId={this.props.TabId} />
+        return <TabPane TabId={this.props.TabId}>
+                    <FieldSelector title="Filters"
+                        items={this.props.categories}
+                        type="Criteria"
+                        onFieldChange={this.props.onFieldChange}
+                        onCriteriaChange={this.props.onCriteriaChange}
+                        selectedFields={this.props.selectedFields} Criteria={this.props.Criteria}
+                    />
+               </TabPane>
     }
 });
 
@@ -117,14 +132,15 @@ ViewDataTabPane = React.createClass({
             }
 
         }
-        var content = (
-            <div>
-                <h2>Query Criteria</h2>{criteria} {buttons}
-                <h2>Data</h2>
-                <DataTable Headers={this.props.Fields} Identifiers={this.props.Sessions} Data={this.props.Data} />
-            </div>
-                );
-        return <TabPane content={content} TabId={this.props.TabId} />;
+        return <TabPane TabId={this.props.TabId}>
+                    <h2>Query Criteria</h2>{criteria} {buttons}
+                    <h2>Data</h2>
+                    <DataTable
+                        Headers={this.props.Fields}
+                        Identifiers={this.props.Sessions}
+                        Data={this.props.Data}
+                    />
+               </TabPane>
     }
 });
 
