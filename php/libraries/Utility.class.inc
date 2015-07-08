@@ -1149,7 +1149,7 @@ class Utility extends PEAR
      *
      * removeCommonAffix("http://localhost/foo", "/foo/bar")
      *
-     * would return "bar", which can then be concatenated
+     * would return "/bar", which can then be concatenated
      * to "http://localhost/foo" to form the URL
      * "http://loclahost/foo/bar"
      *
