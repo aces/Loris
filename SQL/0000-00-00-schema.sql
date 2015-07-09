@@ -1978,41 +1978,41 @@ INSERT INTO LorisMenu (Label, OrderNumber) VALUES
      ('Admin', 6);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('New Profile', 'main.php?test_name=new_profile', 1, 1),
-    ('Access Profile', 'main.php?test_name=candidate_list', 1, 2);
+    ('New Profile', 'main.php?test_name=new_profile', (SELECT ID FROM LorisMenu as L WHERE Label='Candidate'), 1),
+    ('Access Profile', 'main.php?test_name=candidate_list', (SELECT ID FROM LorisMenu as L WHERE Label='Candidate'), 2);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('Reliability', 'main.php?test_name=reliability', 2, 1),
-    ('Conflict Resolver', 'main.php?test_name=conflict_resolver', 2, 2),
-    ('Examiner', 'main.php?test_name=examiner', 2, 3),
-    ('Training', 'main.php?test_name=training', 2, 4);
+    ('Reliability', 'main.php?test_name=reliability', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 1),
+    ('Conflict Resolver', 'main.php?test_name=conflict_resolver', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 2),
+    ('Examiner', 'main.php?test_name=examiner', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 3),
+    ('Training', 'main.php?test_name=training', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 4);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('Radiological Reviews', 'main.php?test_name=final_radiological_review', 3, 1),
-    ('DICOM Archive', 'main.php?test_name=dicom_archive', 3, 2),
-    ('Imaging Browser', 'main.php?test_name=imaging_browser', 3, 3),
-    ('MRI Violated Scans', 'main.php?test_name=mri_violations', 3, 4),
-    ('MRI Upload', 'main.php?test_name=mri_upload', 3, 5);
+    ('Radiological Reviews', 'main.php?test_name=final_radiological_review', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 1),
+    ('DICOM Archive', 'main.php?test_name=dicom_archive', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 2),
+    ('Imaging Browser', 'main.php?test_name=imaging_browser', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 3),
+    ('MRI Violated Scans', 'main.php?test_name=mri_violations', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 4),
+    ('MRI Upload', 'main.php?test_name=mri_upload', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 5);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('Statistics', 'main.php?test_name=statistics', 4, 1),
-    ('Data Query Tool', '/dqt/', 4, 2);
+    ('Statistics', 'main.php?test_name=statistics', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 1),
+    ('Data Query Tool', '/dqt/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 2);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
-    ('Data Dictionary', 'main.php?test_name=datadict', 5, 1),
-    ('Document Repository', 'main.php?test_name=document_repository', 5, 2),
-    ('Data Integrity Flag', 'main.php?test_name=data_integrity_flag', 5, 3),
-    ('Data Team Helper', 'main.php?test_name=data_team_helper', 5, 4),
-    ('Instrument Builder', 'main.php?test_name=instrument_builder', 5, 5),
-    ('Genomic Browser', 'main.php?test_name=genomic_browser', 5, 6);
+    ('Data Dictionary', 'main.php?test_name=datadict', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 1),
+    ('Document Repository', 'main.php?test_name=document_repository', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 2),
+    ('Data Integrity Flag', 'main.php?test_name=data_integrity_flag', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 3),
+    ('Data Team Helper', 'main.php?test_name=data_team_helper', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 4),
+    ('Instrument Builder', 'main.php?test_name=instrument_builder', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 5),
+    ('Genomic Browser', 'main.php?test_name=genomic_browser', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 6);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('User Accounts', 'main.php?test_name=user_accounts', 6, 1),
-    ('Survey Module', 'main.php?test_name=survey_accounts', 6,2),
-    ('Help Editor', 'main.php?test_name=help_editor', 6,3),
-    ('Instrument Manager', 'main.php?test_name=instrument_manager', 6,4),
-    ('Configuration', 'main.php?test_name=configuration', 6, 5),
-    ('Server Processes Manager', 'main.php?test_name=server_processes_manager', 6, 6);
+    ('User Accounts', 'main.php?test_name=user_accounts', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 1),
+    ('Survey Module', 'main.php?test_name=survey_accounts', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 2),
+    ('Help Editor', 'main.php?test_name=help_editor', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 3),
+    ('Instrument Manager', 'main.php?test_name=instrument_manager', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 4),
+    ('Configuration', 'main.php?test_name=configuration', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 5),
+    ('Server Processes Manager', 'main.php?test_name=server_processes_manager', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 6);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
