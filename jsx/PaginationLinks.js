@@ -34,6 +34,9 @@ PaginationLinks = React.createClass({
         if(this.props.Total === 0) {
             return <div />;
         }
+        if(this.props.Total < this.props.RowsPerPage) {
+            return <div />;
+        }
 
         if((lastShownPage - startPage) <= 7) {
             lastShownPage = startPage + 6;
@@ -47,6 +50,12 @@ PaginationLinks = React.createClass({
 
         if(startPage > 1) {
             pageLinks.push(<li onClick={this.changePage(1)}><a href="#">&laquo;</a></li>);
+        }
+        if(startPage < 1) {
+            startPage = 1;
+        }
+        if(lastShownPage < 1) {
+            lastShownPage = 1;
         }
         for(var i = startPage; i <= lastShownPage; i += 1) {
             classList = '';
