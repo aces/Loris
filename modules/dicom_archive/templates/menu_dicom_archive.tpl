@@ -107,7 +107,7 @@
     {/if}
     </div>
 
-    <div id="pageLinks" class="row col-md-3 col-sm-12 col-md-push-9">
+    <div id="pageLinks" class="pull-right">
     </div>
     <script>
     var pageLinks = RPaginationLinks(
