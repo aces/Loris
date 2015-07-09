@@ -34,6 +34,9 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
         if(this.props.Total === 0) {
             return React.createElement("div", null);
         }
+        if(this.props.Total < this.props.RowsPerPage) {
+            return React.createElement("div", null);
+        }
 
         if((lastShownPage - startPage) <= 7) {
             lastShownPage = startPage + 6;
@@ -47,6 +50,12 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
 
         if(startPage > 1) {
             pageLinks.push(React.createElement("li", {onClick: this.changePage(1)}, React.createElement("a", {href: "#"}, "«")));
+        }
+        if(startPage < 1) {
+            startPage = 1;
+        }
+        if(lastShownPage < 1) {
+            lastShownPage = 1;
         }
         for(var i = startPage; i <= lastShownPage; i += 1) {
             classList = '';
