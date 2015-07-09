@@ -217,7 +217,7 @@
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
                             {*<a href="#" class="navbar-brand pull-right" id ="bvl_feedback">*}
-                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+                            <a id="feedback_toggle" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                             {*<a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right" id ="bvl_feedback">*}
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>

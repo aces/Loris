@@ -1,3 +1,6 @@
+<script type ="text/javascript" src ="js/jquery/jquery.autocomplete.js"></script>
+<link rel="stylesheet" href="css/auto-complete.css" type="test/css"/>
+
 <div class="row">
     <div class="col-sm-8 col-md-6">
         <div class="panel panel-primary">
@@ -33,6 +36,15 @@
                             </div>
                         </div>
                     </div>
+		    <div class ="row">
+			    <div class ="form-group col-xs-12">
+				    <label class ="col-sm-4">CANDID:</label>
+				    <!-- <input type ="text" id="autocomplete-ajax"> -->
+				                <input type="text" name="country" id="autocomplete-ajax" style="position: absolute; z-index: 2; background: transparent;"/>
+            <input type="text" name="country" id="autocomplete-ajax-x" disabled="disabled" style="color: #CCC; position: absolute; background: transparent; z-index: 1;"/>
+			    </div>
+			    <div id="selction-ajax"></div>
+		    </div>
                     <div class="row">
                         <div class="form-group col-xs-12">
                             <label class="col-sm-4">{$form.users.label}</label>
@@ -89,8 +101,7 @@
         <th>Visit label</th>
         <th>Instrument</th>
         <th>Names (Instrument_Fieldname)</th>
-        <th>Link to BVL feedback</th>
-        <th> Feedback Status</th>
+        <th>Open BVL feedback</th>
         <th> Conflict</th>
         <th> Incomplete candidates</th>
     </tr>
@@ -120,22 +131,10 @@
         	    <td nowrap="nowrap" width="40" valign="top">
         	       {foreach from=$elements_array[$element][$visit_label].FeedbackList key=feedback item=FeedbackList}
                        <div>
-                           <a href="#" onClick="javascript:window.open('feedback_bvl_popup.php?test_name={$FeedbackList.test_name}&candID={$FeedbackList.CandID}&sessionID={$FeedbackList.session_id}&commentID={$FeedbackList.commentid}#{$FeedbackList.feedbackid}','bvl_feedback','width=900,height=500,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">{$FeedbackList.PSCID}_{$FeedbackList.visit_label}</a>
+                           <a href="#" name="bvl_feedback" data-test_name="{$FeedbackList.test_name}" data-candid="{$FeedbackList.CandID}" data-sessionid="{$FeedbackList.session_id}" data-commentid="{$FeedbackList.commentid}">{$FeedbackList.PSCID}_{$FeedbackList.visit_label}</a>
                        </div>
                    {/foreach}
                 </td>
-                {**Currently the color option only works if the status is created as a separate cell (tr or td)...otherwise ...the color will be unreadable
-                So for now it is commented out...
-            	**}
-                <td nowrap="nowrap" width="40" valign="top" bgcolor="{$thread_list_data[thread].QC_color}">
-                    {foreach from=$elements_array[$element][$visit_label].FeedbackList key=feedback item=FeedbackList}
-        				 <!--font solid color="{$FeedbackList.QC_color}"><b> {$FeedbackList.Status}</b> </font-->
-        				 <!--font solid color="{$FeedbackList.QC_color}"><b> {$FeedbackList.Status}</b> </font-->
-                        <div>
-                            {$FeedbackList.Status}
-                        </div>
-        		    {/foreach}
-        	    </td>
             {else}
         	    <td class="error" nowrap="nowrap" valign="top"> N/A </td>
         	    <td class="error" nowrap="nowrap" valign="top"> N/A</td>

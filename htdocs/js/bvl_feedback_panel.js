@@ -7,7 +7,7 @@ $(document).ready(function() {
     var sessionID = $('meta[itemprop="sessionID"]').attr("context");
     var commentID = $('meta[itemprop="commentID"]').attr("context");
 
-    $('.navbar-toggle').on('click',function(event){
+    $('#feedback_toggle').on('click',function(event){
         console.log("navbar toggle clicked");
         $("#bvl_feedback_menu").toggleClass("active_panel");
         $("#bvl_panel_wrapper").toggleClass("bvl_panel");
