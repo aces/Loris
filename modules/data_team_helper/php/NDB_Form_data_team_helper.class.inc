@@ -303,7 +303,7 @@ class NDB_Form_data_team_helper extends NDB_Form
     }
 
 
-    function getInstrumentCount($test_name,$visit_label=null) 
+    function getInstrumentCount($test_name, $visit_label=null, $candID=null) 
     {
         global $DB;
         $query = "SELECT COUNT(*) FROM $test_name AS i
@@ -319,9 +319,14 @@ class NDB_Form_data_team_helper extends NDB_Form
             AND psc.Centerid!= '1'";
 
         if (($visit_label !=null)&&($visit_label!='All Visits')) {
-            $where.= " And s.Visit_label = :VL";
+            $where.= " AND s.Visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
+        if (($candID !=null) && (!empty($candID))){
+            $where .= 'AND s.CANDID =: CAND';
+            $qparams['CAND'] = $candID;
+        }
+        
         $query.= $where;
         $count =$DB->pselectOne($query, $qparams);
         return $count;
@@ -422,3 +427,4 @@ class NDB_Form_data_team_helper extends NDB_Form
 	}
 }
 ?>
+ 
