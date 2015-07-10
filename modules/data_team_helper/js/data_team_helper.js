@@ -50,38 +50,6 @@ $(function() {
  });
 
 $(document).ready(function() {
-	
-        // Initialize ajax autocomplete, called devbridge autocomplete (because jquery ui has autocomplete func)
-    // $('#autocomplete-ajax').devbridgeAutocomplete({
-    //     serviceUrl: "AjaxHelper.php?Module=data_team_helper&script=GetCandidates.php",
-    // 	dataType: "jsonp",
-    // 	params: {
-    // 	    'instrument': function(){
-    // 		return $("#instrument").val();
-    // 	    }
-    // 	},
-    //     //lookup: countriesArray,
-    // 	onSearchComplete: function(query, suggestion){
-    // 	    console.log("search complete");
-    // 	    console.log(suggestion);
-    // 	},
-    //     lookupFilter: function(suggestion, originalQuery, queryLowerCase) {
-    //         var re = new RegExp('\\b' + $.Autocomplete.utils.escapeRegExChars(queryLowerCase), 'gi');
-    //         return re.test(suggestion.value);
-    //     },
-    //     onSelect: function(suggestion) {
-    // 	    console.log("in on select");
-    //         $('#selction-ajax').html('You selected: ' + suggestion.value + ', ' + suggestion.data);
-    //     },
-    //     onHint: function (hint) {
-    // 	    	    console.log("in on hint");
-    //         $('#autocomplete-ajax-x').val(hint);
-    //     },
-    //     onInvalidateSelection: function() {
-    // 	    console.log("in on invalidate");	    
-    //         $('#selction-ajax').html('You selected: none');
-    //     }
-    // })
 
     //basic plugin us
 
@@ -92,40 +60,10 @@ $(document).ready(function() {
 		return $("#instrument").val();
 	    }
 	},
-	        lookupFilter: function(suggestion, originalQuery, queryLowerCase) {
-            var re = new RegExp('\\b' + $.Autocomplete.utils.escapeRegExChars(queryLowerCase), 'gi');
-            return re.test(suggestion.value);
-		},
 	onSelect: function (suggestion) {
             alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
 	}
     }); 
-    
-    //for testing purposes, will be replaced by auto-complete function soon 
-    // $("#candID").on('input', function(e) {
-    // 	var $instrument = $("#instrument").val();
-    // 	var $visit_label = $("#visit_label").val();
-    // 	var $input = $(this).val();
-
-    // 	request = $.ajax({
-    // 	    type: "GET",
-    // 	    url: "AjaxHelper.php?Module=data_team_helper&script=GetCandidates.php",
-    //         data: {
-    // 		"instrument" : $instrument,
-    // 		"visit_label" : $visit_label,
-    // 		"input" : $input
-    // 	    },
-    // 	    success: function (data){
-    // 		console.log("success, here's data: ");
-    // 		console.log(data);
-
-    // 	    },
-    // 	    error: function (xhr, desc, err){
-    //             console.log(xhr);
-    //             console.log("Details: " + desc + "\nError:" + err);
-    //         }
-    // 	});
-    // }); //end of the input change
     
     //todo: Add this functionality on right click. 
     $("[name=bvl_feedback]").click(function(e) {
