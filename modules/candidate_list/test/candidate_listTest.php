@@ -14,6 +14,8 @@
 
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+require_once __DIR__
+    . "/../../../php/libraries/UserPermissions.class.inc";
 
 /**
  * CandidateListTestIntegrationTest
@@ -98,14 +100,108 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
+    /**
+     * Does basic setting up of Loris variables for this test, such as
+     * instantiating the config and database objects, creating a user
+     * to user for the tests, and logging in.
+     *
+     * @return none
+     */
+    function createTester() {
+        // Set up database wrapper and config
+        $this->config = NDB_Config::singleton(__DIR__ . "/../../project/config.xml");
+        $database = $this->config->getSetting('database');
 
+        $this->DB = Database::singleton(
+            $database['database'],
+            $database['username'],
+            $database['password'],
+            $database['host'],
+            1
+        );
+        $this->url = $this->config->getSetting("url") . "/main.php";
+
+        $this->DB->run("DELETE from users WHERE ID=999000");
+
+        $this->DB->insert(
+            "users",
+            array(
+                'ID'               => 999000,
+                'UserID'           => 'PermUnitTester',
+                'Real_name'        => 'PermUnit Tester',
+                'First_name'       => 'PermUnit',
+                'Last_name'        => 'Tester',
+                'Email'            => 'permtester.@example.com',
+                'CenterID'         => 1,
+                'Privilege'        => 0,
+                'PSCPI'            => 'N',
+                'Active'           => 'Y',
+                'Password_md5'     => 'a601e42ba82bb37a68ca3c8b7752f2e222',
+                'Password_hash'    => null,
+                'Password_expiry'  => '2099-12-31',
+                'Pending_approval' => 'N',
+            )
+        );
+
+        $this->DB->run("INSERT INTO user_perm_rel SELECT 999000, PermID FROM permissions");
+
+        $user = User::factory('PermUnitTester');
+        $user->updatePassword('4test4');
+        // Set up WebDriver implementation and login
+        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+
+        $this->webDriver = RemoteWebDriver::create(
+            'http://localhost:4444/wd/hub',
+            $capabilities
+        );
+
+        $this->login("PermUnitTester", "4test4");
+    }
+
+
+    /**
+     * Helper function to login to the loris instance which is being pointed to by
+     * this test.
+     *
+     * @param string $username The username to log in as
+     * @param string $password The (plain text) password to login as.
+     *
+     * @return none, side-effect logs in active webDriver
+     */
+    protected function login($username, $password)
+    {
+        $this->webDriver->get($this->url);
+
+        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
+        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
+
+        $usernameEl->sendKeys($username);
+        $passwordEl->sendKeys($password);
+
+        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $login->click();
+
+        // Explicitly wait until the page is loaded.
+        // Wait up to a minute, because sometimes when multiple tests
+        // are run one will fail due to the login taking too long?
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::id("page")
+            )
+        );
+    }
+
+
+
+
+// NOT DONE!!!!!!!
 
     /**
      * Tests that either access_all_profiles or data_entry
      * permission is required to access the page
      * @return void
      */
-//
+
 //    function testCandidateListPermissions() {
 //        if (access_all_profiles || data_entry permission) {
 //            page loads;
@@ -118,6 +214,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
 
 
+// NOT DONE!!!!!!!
 
     /**
      * Tests that, if data_entry permission NOT access_all_profiles
@@ -127,13 +224,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
 //
 //    function testCandidateListDataEntryPermissions() {
+//
+//
+//
+//
 //        if (data_entry_permission and !access_all_profiles) {
 //            $own_site = $this->webDriver->findElement(WebDriverBy::cssSelector("Site: "))->getText();
 //            $displayed_sites = blah;
 //            $this->assertAttributeContainsOnly($own_site, $displayed_sites);
 //        }
+//
 //    }
 
+
+
+
+
+
+
+// DONE, except change to user site
 
     /**
      * Test that checks initial filter state:
@@ -143,7 +252,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
-    /*
+/*
     function testInitialFilterState() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -316,7 +425,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 */
 
 
-    /**
+    /*
      * Tests that each drop down
      * has the correct options
      *
@@ -360,12 +469,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @param string $field Field to be cleared
      * @param string $val Value to be entered
      *
-     * @dataProvider providerTestClearForm
+     * $action, $field, $val
      *
      *
      */
 
-    function testClearForm($action, $field, $val){
+    /*
+    function testClearForm(){
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         // Open all filters
@@ -373,8 +483,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $basicButton->click();
 
         // Testing individual fields
-        $filter = $this->webDriver->findElement(WebDriverBy::Name($field));
-        $this->webDriver->$action($filter)->selectOptionByValue($val);
+//        $filter = $this->webDriver->findElement(WebDriverBy::Name($field));
+//        $this->webDriver->$action($filter)->selectOptionByValue($val);
+//        $this->webDriver->select($this->byName('centerID'))->selectOptionByValue('2');
 
         // Submit filter
         $showDataButton = $this->webDriver->findElement(WebDriverBy::Name("filter"));
@@ -385,29 +496,31 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $clearButton->click();
 
         // Check that fields are set back to default
-        testInitialFilterState();
+//        testInitialFilterState();
 
     }
+*/
 
-    function providerTestClearForm(){
-        return array(
-//            array('type','PSCID','1'),      // type not working
-//            array('type','DCCID','1'),
-//            array('select','Visit_label','value=1'),     //Different in IBIS
-            array('select','centerID',/*value= */'2')
-//        ,
-//            array('select','SubprojectID','value=1'),
-//            array('select','ProjectID','value=1'),
-//            array('select','scan_done','value=Y'),
-//            array('select','Particiant_Status','value=1'),
-////            array('type','dob','2015-01-08'),
-//            array('select','gender','value=Male'),
-////            array('type','Visit_Count','value=1'),
-//            array('select','Latest_Visit_Status','value=Visit'),
-//        //    array('edc'),
-//            array('select','Feedback','value=1')
-        );
-    }
+    //
+//    function providerTestClearForm(){
+//        return array(
+////            array('type','PSCID','1'),      // type not working
+////            array('type','DCCID','1'),
+////            array('select','Visit_label','value=1'),     //Different in IBIS
+//            array('select','centerID',/*value= */'2')
+////        ,
+////            array('select','SubprojectID','value=1'),
+////            array('select','ProjectID','value=1'),
+////            array('select','scan_done','value=Y'),
+////            array('select','Particiant_Status','value=1'),
+//////            array('type','dob','2015-01-08'),
+////            array('select','gender','value=Male'),
+//////            array('type','Visit_Count','value=1'),
+////            array('select','Latest_Visit_Status','value=Visit'),
+////        //    array('edc'),
+////            array('select','Feedback','value=1')
+//        );
+//    }
 
 
 
@@ -422,11 +535,52 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
 
     /**
+     * 12.
      * Tests that, if "Yes" link under column 'Scan Done' is clicked,
      * the link points to the correct scan in the Imaging Browser
      *
      * @return void
      */
+
+//    function testScanDoneLinks()
+//    {
+//        $this->webDriver->get($this->url . "?test_name=candidate_list");
+//
+//        $scanDoneLinks = $this->webDriver->findElements(WebDriverBy::className("scanDoneLink"));
+////        $PSCIDs = $this->webDriver->findElements(WebDriverBy::cssSelector("data-pscid"));
+//        $i=0;
+//
+//        foreach ($scanDoneLinks as $link) {
+//            $link->click();
+//            $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+//            $this->assertContains("Imaging Browser", $bodyText);
+//            $this->assertContains("subject timepoint(s) selected.", $bodyText);
+//
+//            $PSCIDFilter = $this->webDriver->findElement(WebDriverBy::Name("pscid"));
+//            $PSCIDField = $PSCIDFilter->getAttribute('value');
+//
+////            if ($PSCIDs[$i] != NULL) {
+////                $this->assertEquals($PSCIDs[$i],$PSCIDField);
+////            }
+////            $i++;
+//
+//            $bodyTextIB = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+//
+//            if ($this->assertNotContains("Nothing found", $bodyTextIB)) {
+//                // Check only scans from that PSCID
+//            }
+//            else {
+//                $this->assertContains("Nothing found", $bodyTextIB);
+//            }
+//
+//
+//        }
+//        // value 'Y' Yes, 'N' No
+//        // AAA0011
+//        // "/main.php?test_name=imaging_browser&pscid=AAA0011&filter=Show%20Data
+//
+//
+//    }
 
 
     /**
@@ -437,6 +591,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
+//    function testTimepointListPage() {
+//        $this->webDriver->get($this->url . "?test_name=candidate_list");
+//
+//    }
 
 
     /**
@@ -446,6 +604,21 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+
+
+//<select name="Feedback" class="form-control input-sm" >
+//<option value='' >All</option>
+//<option value='0' >None</option> --> white/clear
+//<option value='1' >opened</option> --> red
+//<option value='2' >answered</option> --> ??
+//<option value='3' >closed</option> --> ??
+//<option value='4' >comment</option></select> --> blue
+
+
+//
+//    function testFeedbackColour() {
+//
+//    }
 
 
 
@@ -458,6 +631,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
+    function testOpenProfileError() {
+        $this->webDriver->get($this->url . "?test_name=candidate_list");
+
+        $DCCIDSearch = $this->webDriver->findElement(WebDriverBy::Name("candID"));
+
+
+        // 2nd one is the desired field
+        $PSCIDSearch = $this->webDriver->findElements(WebDriverBy::Name("PSCID"));
+
+
+        // enter unmatching
+        // must enter a PSCID
+        // must enter a DCCID
+        // not matching error...
+
+    }
+
 
     /**
      * 16.
@@ -466,6 +656,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+
+    function testOpenProfileMatch() {
+        $this->webDriver->get($this->url . "?test_name=candidate_list");
+
+        $DCCIDSearch = $this->webDriver->findElement(WebDriverBy::Name("candID"));
+
+
+        // 2nd one is the desired field
+        $PSCIDSearch = $this->webDriver->findElements(WebDriverBy::Name("PSCID"));
+
+        // enter matching
+    }
 
 
     /**
@@ -476,6 +678,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
+//    function testPSCIDLinkPermissions {
+//
+//    }
 
 
     /**
@@ -486,7 +691,56 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
+//    function testUseProjectsUseEDCFilters() {
+//
+//    }
 
+
+
+
+
+
+// FROM LORISINTEGRATIONTEST.CLASS.INC
+
+//    private $_oldConfig = array();
+//
+//    function setupConfigSetting($configName, $value) {
+//        if(isset($this->_oldConfig[$configName])) {
+//            throw new LorisException("Attempted to change already changed config setting");
+//        }
+//
+//        $configID = $this->DB->pselectOne(
+//            "SELECT ID FROM ConfigSettings WHERE Name=:configName",
+//            array(":configName" => $configName)
+//        );
+//
+//        $oldVal = $this->DB->pselectOne(
+//            "SELECT Value FROM Config WHERE ConfigID=:confID",
+//            array(":confID" => $configID)
+//        );
+//
+//        $this->_oldConfig[$configName] = array(
+//            'ConfigID' => $configID,
+//            'OldValue' => $oldVal,
+//        );
+//
+//        $this->DB->update(
+//            "Config",
+//            array("Value" => $value),
+//            array("ConfigID" => $configID)
+//        );
+//    }
+//
+//    function restoreConfigSetting($configName) {
+//        if(!isset($this->_oldConfig[$configName])) {
+//            throw new LorisException("Attempted to restore unsaved config setting");
+//        }
+//        $this->DB->update(
+//            "Config",
+//            array("Value"    => $this->_oldConfig[$configName]['OldValue']),
+//            array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
+//        );
+//    }
 
 
 

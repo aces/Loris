@@ -57,6 +57,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
         $this->url = $this->config->getSetting("url") . "/main.php";
 
+        $this->DB->run("DELETE from users WHERE ID=999990");
         $this->DB->insert(
             "users",
             array(
@@ -65,7 +66,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
              'Real_name'        => 'Unit Tester',
              'First_name'       => 'Unit',
              'Last_name'        => 'Tester',
-             'Email'            => 'tester@example.com',
+             'Email'            => 'tester.@example.com',
              'CenterID'         => 1,
              'Privilege'        => 0,
              'PSCPI'            => 'N',
