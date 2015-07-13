@@ -36,4 +36,18 @@ foreach($subprojs['subproject'] as $row) {
     Utility::nullifyEmpty($ins, 'useEDC');
     $db->insert('subproject', $ins);
 }
+
+$config = $factory->config(__DIR__ . "/../../../project/config.xml");
+$projects = $config->getSettingFromXML("Projects");
+$db = $factory->database();
+foreach($projects['project'] as $row) {
+    $insert = array(
+            'ProjectID'         => $row['id'],
+            'Name'              => $row['title'],
+            'recruitmentTarget' => $row['recruitmentTarget'],
+           );
+    Utility::nullifyEmpty($ins, 'recruitmentTarget');
+    $db->insert('Project', $insert);
+}
+
 ?>
