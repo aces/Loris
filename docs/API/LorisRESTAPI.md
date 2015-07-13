@@ -3,15 +3,14 @@ IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
 Still to be done:
 1. Document a way to handle conflicts for offline clients
-2. Add a way to get project settings which affect the API (ie. useEDC)
-3. Add a sorting and searching mechanism
-4. Ensure JSON markup is rendered correctly in document
-5. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
+2. Add a sorting and searching mechanism
+3. Ensure JSON markup is rendered correctly in document
+4. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
    and an ability for modules to manage their data through the API
 
 ====
 
-# Loris Instrument API - v0.0.1f-dev
+# Loris Instrument API - v0.0.1g-dev
 
 ## 1.0 Overview
 
@@ -19,7 +18,7 @@ Loris will implement a RESTful API. Any request sent to `$LorisRoot/api/$APIVERS
 will return either a JSON object or no data. The Loris API will use standard HTTP error
 codes and the body will either be empty or contain only a JSON object for any request.
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.1d-dev and it
+document. This document specifies $APIVERSION v0.0.1g-dev and it
 MUST be included before the request in all requests.
 
 HTTP GET requests will NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -107,8 +106,6 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 }
 ```
 
-It consists of a union of the $ProjectName/instruments/, $ProjectName/visits/, and $ProjectName/candidates/ URLs listed below.
-
 ```
 GET /projects/$ProjectName/instruments/
 ```
@@ -168,7 +165,75 @@ will return a JSON object of the form
 
 where 123456, 342332, etc are the candidates that exist for this project.
 
-## 2.1 Instrument Forms
+## 2.1 Configuration
+
+The result of some API queries depend on Loris configuration settings. As such,
+they will need to be retrievable by a client of the API in order to validate
+data they retrieve from the API. In general, they can be retrieved by a request
+to
+
+```
+GET /projects/$ProjectName/settings/$SettingName
+```
+
+and will return a result of the form:
+
+```json
+{
+    "Meta" : {
+        "Project" : "ProjectName",
+        "DocType" : "Configuration"
+    },
+    "Settings" : {
+        "$settingName" : value
+    }
+}
+```
+
+where "value" may be a string, boolean, integer, or object depending on the setting
+retrieved.
+
+Settings which are global across Loris for a Loris instance can be retrieved through
+any project and will all return the same value.
+
+Valid settings are:
+
+```
+GET /projects/$ProjectName/settings/useProjects
+```
+
+useProjects will be return a boolean determining whether "projects" are enabled for
+this Loris instance.
+
+```
+GET /projects/$ProjectName/settings/useEDC
+```
+
+useEDC will be return a boolean determining whether the EDC date should be included
+in candidates returned by the API.
+
+```
+GET /projects/$ProjectName/settings/PSCID
+```
+
+"value" will be a JSON object specifying the rules for PSCID validity in this project.
+
+It has the form:
+
+```json
+{
+    "Type" : user|sequential,
+    "Regex" : "/regex/"
+}
+```
+
+Where regex is a regular expression that can be used to validate a PSCID for this project.
+
+Note that sometimes in Loris configurations "Site" is a part of the PSCID. The regex returned
+by this setting will validate any site. A client should do further validation to a PSCID before
+sending a POST request to ensure that the PSCID is valid for the current site.
+
+## 2.2 Instrument Forms
 
 ```
 GET /projects/$ProjectName/instruments/$InstrumentName
@@ -314,6 +379,10 @@ PATCH is not supported for Visit Labels.
 
 It will return a 404 Not Found if the visit label does not exist for this candidate
 (as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)
+
+Any of the Stages may not be present in the returned result if the stage has not
+started yet or is not enabled for this project (ie. if useScreening is false in
+Loris)
 
 ### 3.3 Candidate Instruments
 ```
