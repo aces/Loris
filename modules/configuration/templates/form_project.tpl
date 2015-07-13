@@ -1,0 +1,80 @@
+<script language="javascript" src="GetJS.php?Module=configuration&file=subproject.js">
+
+</script>
+<p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
+
+
+<div class="col-md-3">
+<ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
+    {foreach from=$projects key=ProjectID item=project name=configContent}
+    <li><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$subproject.title}</a></li>
+    {/foreach}
+    <li><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New SubprojectID</a></li>
+</ul>
+</div>
+
+<div class="col-md-9">
+    <div class="tab-content">
+    {foreach from=$projects key=ProjectID item=project name=tabContent}
+    <div id="project{$ProjectID}" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
+        <h2>{$project.Name} (ProjectID: {$ProjectID})</h2>
+        <br>
+        <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">
+            <fieldset>
+                <input type="hidden" name="ProjectID" value="{$ProjectID}" class="ProjectID">
+                <div class="form-group">
+                    <label class="col-sm-12 col-md-4">Project Name</label>
+                    <div class="col-sm-12 col-md-8">
+                        <input class="form-control projectName" name="Name" value="{$project.Name}">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <label class="col-sm-12 col-md-4">Use <abbr title="Recruitement Target (ie. Number of people.)">recruitmentTarget</abbr></label>
+                    <div class="col-sm-12 col-md-8">
+			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" value="{$project.recruitmentTarget}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-8 submit-area">
+                        <button id="saveproject{$ProjectID}" class="btn btn-primary saveproject">Save</button>
+                        <button class="btn btn-default" type="reset">Reset</button>
+                        <label class="saveStatus"></label>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+    {/foreach}
+    <div id="projectnew" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
+        <h2>New Subproject</h2>
+        <br>
+        <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">
+            <fieldset>
+                <input type="hidden" name="ProjectID" value="new" class="ProjectID">
+                <div class="form-group">
+                    <label class="col-sm-12 col-md-4">Project Name</label>
+                    <div class="col-sm-12 col-md-8">
+                        <input class="form-control projectName" name="Name" placeholder="Project Title goes here" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <label class="col-sm-12 col-md-4">Use <abbr title=" Recruitment Target (ie. Number of people.)">EDC</abbr></label>
+                    <div class="col-sm-12 col-md-8">
+			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="recruitment Target goes here" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-8 submit-area">
+                        <button id="saveprojectnew" class="btn btn-primary saveproject">Save</button>
+                        <button class="btn btn-default" type="reset">Reset</button>
+                        <label class="saveStatus"></label>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
