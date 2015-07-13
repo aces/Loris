@@ -1,4 +1,4 @@
-<script language="javascript" src="GetJS.php?Module=configuration&file=subproject.js">
+<script language="javascript" src="GetJS.php?Module=configuration&file=project.js">
 
 </script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
