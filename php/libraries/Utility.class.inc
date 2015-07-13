@@ -299,7 +299,7 @@ class Utility extends PEAR
 	$DB     = Database::singleton();
         $config = NDB_Config::singleton();
         // get the list of projects
-        $projects =  $DB->pselect("SELECT * FROM subproject", array());
+        $projects =  $DB->pselect("SELECT * FROM Project", array());
         $project = array();
         foreach ($projects as $row) {
             $project[$row['ProjectID']] = $row['Name'];
