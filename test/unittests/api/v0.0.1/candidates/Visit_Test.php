@@ -6,6 +6,29 @@ require_once __DIR__ . '/../BaseTestCase.php';
 
 class Visit_Test extends BaseTestCase
 {
+    private $Timepoint;
+    function setUp() {
+       parent::setUp();
+       $this->Timepoint = $this->Factory->Timepoint("323");
+       $this->Timepoint->method("getData")->will(
+           $this->returnCallback(
+               function ($param) {
+                   if($param === "SubprojectTitle") {
+                       return "Test Battery";
+                   }
+               }
+           )
+       );
+       $this->Timepoint->method("getDateOfScreening")->willReturn("1934-03-20");
+       $this->Timepoint->method("getScreeningStatus")->willReturn("Pass");
+
+       $this->Timepoint->method("getDateOfVisit")->willReturn("1934-03-27");
+       $this->Timepoint->method("getVisitStatus")->willReturn("Pass");
+
+       $this->Timepoint->method("getDateOfApproval")->willReturn("1935-03-20");
+       $this->Timepoint->method("getApprovalStatus")->willReturn("Failure");
+    }
+
     function testValidMethods() {
         $API = new \Loris\API\Candidates\Candidate\Visit("GET", "123456", "VisitTwo");
         $this->assertEquals($API->AllowedMethods, ['GET', 'PUT']);
@@ -16,8 +39,23 @@ class Visit_Test extends BaseTestCase
         $this->assertEquals($API->JSON,
             [
                 "Meta" => [
-                    "CandID" => 123456,
-                    "Visit" => "VisitTwo"
+                    "CandID" => '123456',
+                    "Visit" => "VisitTwo",
+                    "Battery" => "Test Battery"
+                ],
+                "Stages" => [
+                    "Screening" => [
+                        "Date" => "1934-03-20",
+                        "Status" => "Pass"
+                    ],
+                    "Visit" => [
+                        "Date" => "1934-03-27",
+                        "Status" => "Pass"
+                    ],
+                    "Approval" => [
+                        "Date" => "1935-03-20",
+                        "Status" => "Failure"
+                    ],
                 ]
             ]
         );

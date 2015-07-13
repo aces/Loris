@@ -58,12 +58,6 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
                         'Gender'  => 'Male'
                     ]
                 ])]);
-            //$API->expects($this->once())->method('createNew');
-            //$Mocked->expects($this->once())->method('createNew');
-            //$API = new $Mocked("POST",
-             //   )
-            //]
-        //);
         } catch(\Loris\API\SafeExitException $e) {
             $API = $e->Object;
         }

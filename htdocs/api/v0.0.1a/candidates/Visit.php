@@ -59,7 +59,7 @@ class Visit extends \Loris\API\Candidates\Candidate
 
         $session = array_keys($timepoints, $VisitLabel);
         if(isset($session[0])) {
-            $this->Timepoint = \TimePoint::singleton($session[0]);
+            $this->Timepoint = $this->Factory->TimePoint($session[0]);
         }
 
         if (!in_array($VisitLabel, $Visits)) {
@@ -103,9 +103,9 @@ class Visit extends \Loris\API\Candidates\Candidate
                     'Status' => $this->Timepoint->getVisitStatus()
                    ]
                ,
-               'Visit' => [
-                    'Date' => $this->Timepoint->getDateOfVisit(),
-                    'Status' => $this->Timepoint->getVisitStatus()
+               'Approval' => [
+                    'Date' => $this->Timepoint->getDateOfApproval(),
+                    'Status' => $this->Timepoint->getApprovalStatus()
                    ]
            ];
        }

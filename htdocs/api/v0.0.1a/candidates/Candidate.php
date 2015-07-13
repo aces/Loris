@@ -55,7 +55,7 @@ class Candidate extends \Loris\API\APIBase
         }
 
         try {
-            $this->Candidate = \Candidate::singleton($CandID);
+            $this->Candidate = $this->Factory->Candidate($CandID);
         } catch(\Exception $e) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Unknown CandID");
