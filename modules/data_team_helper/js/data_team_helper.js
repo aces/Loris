@@ -85,8 +85,6 @@ $(document).ready(function() {
 	    var $navbar_toggle = $(instrument_window.document).contents().find("#feedback_toggle");
 	});
 
-	
-
     });
     
     // http will only get applied on a POST, so

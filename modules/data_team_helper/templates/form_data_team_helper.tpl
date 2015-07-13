@@ -39,7 +39,7 @@
 						<div class ="form-group col-xs-12">
 							<label class ="col-sm-4">CANDID:</label>
 							<div class="col-sm-8">
-								<input type="text" id="autocomplete-ajax" class="form-control form-autocomplete"/>								
+								<input name = "candID" type="text" id="autocomplete-ajax" class="form-control form-autocomplete"/>
 								<input type="text" id="autocomplete-ajax-x" class="form-control form-autocomplete-hint">													
 							</div>							
 						</div>					

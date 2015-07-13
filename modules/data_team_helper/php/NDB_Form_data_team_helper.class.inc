@@ -41,6 +41,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         $defaults["sent_to_dcc_status"] = $_REQUEST['sent_to_dcc_status'];
         $defaults["instrument"] = $_REQUEST['instrument'];
         $defaults["FieldName"] = $_REQUEST['FieldName'];
+        $defaults["candID"] = $_REQUEST['candID'];
         $defaults["visit_label"] = $_REQUEST['visit_label'];
         $this->tpl_data['instrumentvalue'] = $_REQUEST['instrument'];
         return $defaults;
@@ -63,6 +64,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
         $this->tpl_data['FieldName'] = $_REQUEST['FieldName'];
+        $this->tpl_data['candID'] = $_REQUEST['candID'];
         $this->tpl_data['test_name'] = $instrument;
 
         //Percentage completed for the given instrument
@@ -141,7 +143,6 @@ class NDB_Form_data_team_helper extends NDB_Form
                 $counter =0;
                 foreach($List_of_feedbacks as $feedback) {
                     $fb = NDB_BVL_Feedback::singleton(null,$feedback['CandID'],$feedback['id'], $feedback['commentid']);
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['commentid'] = $feedback['commentid'];
                     $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['commentid'] = $feedback['commentid'];
                     $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['CandID'] = $feedback['CandID'];
                     $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['PSCID'] = $feedback['PSCID'];
@@ -279,7 +280,7 @@ class NDB_Form_data_team_helper extends NDB_Form
     }
 
 
-    function getIncompleteCandidates($test_name,$visit_label=null) 
+    function getIncompleteCandidates($test_name,$visit_label=null, $candID=null) 
     {
         global $DB;
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid, f.test_name,f.data_entry,f.commentid FROM session s
@@ -295,6 +296,12 @@ class NDB_Form_data_team_helper extends NDB_Form
             $where.= " AND s.visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
+        //filter for candidate
+        if (isset($candID)){
+            $where .= " AND s.candID = :CI";
+            $qparams['CI'] = $candID;
+        }
+        
         $order_by = " ORDER BY f.commentid ";
 
         $query = $query . $where . $order_by;
