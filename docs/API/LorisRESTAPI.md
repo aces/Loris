@@ -1,12 +1,15 @@
 This file describes the REST API to be implemented for interacting with Loris data.
 IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
-Still to be done:
+Still to be done in documentation:
 1. Document a way to handle conflicts for offline clients
 2. Add a sorting and searching mechanism
 3. Ensure JSON markup is rendered correctly in document
 4. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
    and an ability for modules to manage their data through the API
+
+Still to be done in code:
+- Authentication (JWT)
 
 ====
 
@@ -169,14 +172,14 @@ where 123456, 342332, etc are the candidates that exist for this project.
 
 The result of some API queries depend on Loris configuration settings. As such,
 they will need to be retrievable by a client of the API in order to validate
-data they retrieve from the API. In general, they can be retrieved by a request
-to
+data they retrieve from the API. Currently, all settings are retrieved in batch
+with a request to:
 
 ```
-GET /projects/$ProjectName/settings/$SettingName
+GET /projects/$ProjectName/settings/
 ```
 
-and will return a result of the form:
+Which will return a result of the form:
 
 ```json
 {
@@ -185,38 +188,25 @@ and will return a result of the form:
         "DocType" : "Configuration"
     },
     "Settings" : {
-        "$settingName" : value
+        "useProjects" : boolean
+        "useEDC" : boolean
+        "PSCID" : settings
     }
 }
 ```
 
-where "value" may be a string, boolean, integer, or object depending on the setting
-retrieved.
-
 Settings which are global across Loris for a Loris instance can be retrieved through
 any project and will all return the same value.
 
-Valid settings are:
 
-```
-GET /projects/$ProjectName/settings/useProjects
-```
-
-useProjects will be return a boolean determining whether "projects" are enabled for
+useProjects represents a boolean determining whether "projects" are enabled for
 this Loris instance.
 
-```
-GET /projects/$ProjectName/settings/useEDC
-```
-
-useEDC will be return a boolean determining whether the EDC date should be included
+useEDC represents a boolean determining whether the EDC date should be included
 in candidates returned by the API.
 
-```
-GET /projects/$ProjectName/settings/PSCID
-```
-
-"value" will be a JSON object specifying the rules for PSCID validity in this project.
+PSCID represents a JSON object with the configuration settings for PSCIDs in this
+project.
 
 It has the form:
 
@@ -229,9 +219,10 @@ It has the form:
 
 Where regex is a regular expression that can be used to validate a PSCID for this project.
 
-Note that sometimes in Loris configurations "Site" is a part of the PSCID. The regex returned
-by this setting will validate any site. A client should do further validation to a PSCID before
-sending a POST request to ensure that the PSCID is valid for the current site.
+Note that sometimes in Loris configurations "Site" is a part of the PSCID. This will be
+denoted by the string "SITE{1,1}" inside of the regex returned. This string should be replaced
+by the 3 letter site alias before attempting to pass this regex to a regular expression parser
+or it will result in false negatives.
 
 ## 2.2 Instrument Forms
 
@@ -239,7 +230,7 @@ sending a POST request to ensure that the PSCID is valid for the current site.
 GET /projects/$ProjectName/instruments/$InstrumentName
 ```
 
-Will return a 200 response on success and 404 Not Found if $InstrumentName is not a valid instrument for this instance of Loris.
+Will ret urn a 200 response on success and 404 Not Found if $InstrumentName is not a valid instrument for this instance of Loris.
 
 This will return a JSON representation of the instrument form. If available, rules and form will
 be combined into a single JSON object. The format for the JSON returned is specified in the
@@ -372,8 +363,8 @@ The JSON object is of the form:
 }
 ```
 
-A PUT request of the same format will create the VisitLabel for this candidate,
-in an unstarted stage if the Visit label provided is valid.
+A PUT of the same format but with only the Meta fields will create the VisitLabel
+for this candidate, in an unstarted stage if the Visit label provided is valid.
 
 PATCH is not supported for Visit Labels.
 
