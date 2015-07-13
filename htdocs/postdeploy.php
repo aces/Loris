@@ -14,7 +14,6 @@ $lines = explode("\n",$sqls);
 $sqls = '';
 foreach ($lines as $line) {
     $line = trim($line);
-    substr($line, 0, 2) === "--";
     if ($line && substr($line, 0, 2) !== "--") {
         $sqls .= $line . "\n";
     }
