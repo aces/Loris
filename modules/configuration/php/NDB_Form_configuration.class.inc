@@ -113,8 +113,8 @@ class NDB_Form_Configuration extends NDB_Form
 
         $projectList = Utility::getprojectList();
         $projects = array();
-        foreach($projectList as $projectID => $Name) {
-            $projects[$projectID] = $config->getprojectSettings($projectID);
+        foreach($projectList as $ProjectID => $Name) {
+            $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
         }
         $this->tpl_data['projects'] = $projects;
     }
