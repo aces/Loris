@@ -38,6 +38,8 @@ class NDB_Factory
 
     private static $_couchdb = null;
     private static $_user    = null;
+    private static $_candidates = array();
+    private static $_timepoints = array();
 
     var $Testing; // Whether or not Mock objects should be returned instead of
                   // real ones
@@ -96,6 +98,8 @@ class NDB_Factory
         self::$_config = null;
 
         self::$_settings = null;
+        self::$_candidates = array();
+        self::$_timepoints = array();
     }
 
     /**
@@ -278,5 +282,29 @@ class NDB_Factory
         self::$_settings = new Settings($this->config($configfile));
         return self::$_settings;
     }
+
+    function candidate($CandID) {
+        if (isset(self::$_candidates[$CandID])) {
+            return self::$_candidates[$CandID];
+        }
+        if ($this->Testing) {
+            self::$_candidates[$CandID] = new MockCandidate($CandID);
+        } else {
+            self::$_candidates[$CandID] = Candidate::singleton($CandID);
+        }
+        return self::$_candidates[$CandID];
+
+    }
+
+    function timepoint($sessionID) {
+        if (isset(self::$_timepoints[$sessionID])) {
+            return self::$_timepoints[$sessionID];
+        }
+        if ($this->Testing) {
+            self::$_timepoints[$sessionID] = new MockTimepoint($sessionID);
+        } else {
+            self::$_timepoints[$sessionID] = TimePoint::singleton($sessionID);
+        }
+        return self::$_timepoints[$sessionID];
 }
 ?>

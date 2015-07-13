@@ -2,14 +2,35 @@ This file describes the REST API to be implemented for interacting with Loris da
 IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
 Still to be done in documentation:
-1. Document a way to handle conflicts for offline clients
-2. Add a sorting and searching mechanism
-3. Ensure JSON markup is rendered correctly in document
-4. Provide mechanism to extend REST API to include things such as imaging data, doc repo data,
-   and an ability for modules to manage their data through the API
+- Document a way to handle conflicts for offline clients
+- Reread and make sure everything makes sense
+- Ensure JSON markup is rendered correctly in document
+- Send pull request
 
-Still to be done in code:
-- Authentication (JWT)
+Roadmap:
+v0.0.2-dev
+    - Add a sorting and searching mechanism for existing columns
+    - Add imaging (GET only) and doc repo data to spec (should enable porting of imaging_browser, doc_repo and dicom_archive)
+    - add QC and feedback to spec (should enable completion of BVL-React.JS)
+
+
+0.0.3-dev:
+- extending with candidate/session/file_parameters tables (participant status?)
+- Add Loris module support
+    - Menu filters, retrieving table
+    - Registering new types of data on candidates/sessions for a module (outside of parameter tables)
+    - Redo imaging and doc repo data as modules
+    - (Should enable porting of genomics browser, radiological_reviews)
+
+
+0.1.0-dev:
+- Add query support for third parties (ie. Vlad)
+
+0.2.0-dev:
+- add what needs to be done to redo tarchiveLoader validation
+  using API
+
+- Rewrite all of Loris and see what's missing, rename to 1.0
 
 ====
 
