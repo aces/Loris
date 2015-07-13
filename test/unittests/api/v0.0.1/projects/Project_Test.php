@@ -39,6 +39,9 @@ class Project_Test extends BaseTestCase
                         ]
                     ];
                 }
+                if($arg === 'DoubleDataEntryInstruments') {
+                    return ["testInst2" ];
+                }
                 return null;
             }));
 
@@ -72,6 +75,14 @@ class Project_Test extends BaseTestCase
                         ],
                     ];
                 }
+            }
+        ));
+        $this->Database->method("pselectOne")->will(
+            $this->returnCallback(function ($query, $params) {
+                if(strpos($query, "SELECT sg.Subgroup_name FROM") === 0) {
+                    return "Test Instruments";
+                };
+                return null;
             }
         ));
 
@@ -120,15 +131,28 @@ class Project_Test extends BaseTestCase
     }
 
     function testProject() {
-        $API = new \Loris\API\Projects\Project("GET", "TestProject", true, true, true);
+        $API = new \Loris\API\Projects\Project("GET", "TestProject", true, true, true, true);
         $this->assertEquals($API->JSON,
-            ['Meta' => [
-                "Project" => "TestProject"
-            ],
-            "Candidates" => ["123456", "111111"],
-            "Instruments" => ["testInst", "testInst2"],
-            "Visits" => ["V001", "AnotherVisit"]
-        ]
+            [
+                'Meta' => [
+                    "Project" => "TestProject"
+                ],
+                "Candidates" => ["123456", "111111"],
+                "Instruments" => ["testInst", "testInst2"],
+                "Visits" => ["V001", "AnotherVisit"],
+                "InstrumentDetails" => [
+                    "testInst" => [
+                        "FullName" => "Test Instrument",
+                        "Subgroup" => "Test Instruments",
+                        "DoubleDataEntryEnabled" => false
+                    ],
+                    "testInst2" => [
+                        "FullName" => "Another Test Instrument",
+                        "Subgroup" => "Test Instruments",
+                        "DoubleDataEntryEnabled" => true
+                    ]
+                ]
+            ]
         );
     }
 }
