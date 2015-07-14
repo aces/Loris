@@ -19,7 +19,7 @@ $(document).ready(function() {
                     "url" : "AjaxHelper.php?Module=configuration&script=updateProject.php",
                     "data" : {
                         "ProjectID" : ProjectID,
-                        "Name" : recruitmentTarget,
+                        "Name" : Name,
                         "recruitmentTarget" : recruitmentTarget,
                     },
                     "success" : successClosure(ProjectID, form)
