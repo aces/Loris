@@ -7,7 +7,7 @@
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
     {foreach from=$projects key=ProjectID item=project name=configContent}
-    <li><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$Project.Name}</a></li>
+    <li><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$project.Name}</a></li>
     {/foreach}
     <li><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New ProjectID</a></li>
 </ul>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="form-group">
 
-                    <label class="col-sm-12 col-md-4">Use <abbr title="Recruitement Target (ie. Number of people.)">recruitmentTarget</abbr></label>
+                    <label class="col-sm-12 col-md-4">Recruitment target <abbr title="Recruitement Target (ie. Number of people.)">recruitmentTarget</abbr></label>
                     <div class="col-sm-12 col-md-8">
 			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" value="{$project.recruitmentTarget}">
                     </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="form-group">
 
-                    <label class="col-sm-12 col-md-4">Use <abbr title=" Recruitment Target (ie. Number of people.)"></abbr></label>
+                    <label class="col-sm-12 col-md-4">Recruitment Target <abbr title=" Recruitment Target (ie. Number of people.)"></abbr></label>
                     <div class="col-sm-12 col-md-8">
 			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="Project recruitment target goes here" value="">
                     </div>
