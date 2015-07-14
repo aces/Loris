@@ -79,12 +79,13 @@ class Candidate
      */
     function select($candID)
     {
-        $config    = NDB_Config::singleton();
+        $factory   = NDB_Factory::singleton();
+        $config    = $factory->config();
         $candID    = trim($candID);
         $CandArray = array('Candidate' => $candID);
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $db = $factory->database();
 
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
