@@ -7,9 +7,9 @@
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
     {foreach from=$projects key=ProjectID item=project name=configContent}
-    <li><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$subproject.title}</a></li>
+    <li><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$Project.Name}</a></li>
     {/foreach}
-    <li><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New SubprojectID</a></li>
+    <li><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New ProjectID</a></li>
 </ul>
 </div>
 
@@ -48,7 +48,7 @@
     </div>
     {/foreach}
     <div id="projectnew" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
-        <h2>New Subproject</h2>
+        <h2>New Project</h2>
         <br>
         <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">
             <fieldset>
@@ -61,9 +61,9 @@
                 </div>
                 <div class="form-group">
 
-                    <label class="col-sm-12 col-md-4">Use <abbr title=" Recruitment Target (ie. Number of people.)">EDC</abbr></label>
+                    <label class="col-sm-12 col-md-4">Use <abbr title=" Recruitment Target (ie. Number of people.)"></abbr></label>
                     <div class="col-sm-12 col-md-8">
-			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="recruitment Target goes here" value="">
+			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="Project recruitment target goes here" value="">
                     </div>
                 </div>
                 <div class="form-group">
