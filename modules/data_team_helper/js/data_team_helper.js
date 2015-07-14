@@ -25,23 +25,23 @@ function changeVisitLabels()
     if (instrument_dropdown_value != undefined) {
         instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g,' ');
     }
-    $.get("AjaxHelper.php?Module=data_team_helper&script=GetInstruments.php&visit_label=" + visit_label_value ,
-          function(data) 
-          {
-              instruments = data.split("\n");
-              instrument_dropdown.options.length = 0;
-              var i, numInstruments = instruments.length, val, selected = "";
-              for (i=0;i<numInstruments;i++) {
-                  val = instruments[i];
-                  if(val !='') {
-                      instrument_dropdown.options[i] = new Option(val,val);
-                      if ((val==instrument_dropdown_value) && (instrument_dropdown_value!= undefined)) {
-                          instrument_dropdown.options[i].selected = "selected";
-                      }
-                  }
-              }
-          }
-	 );
+    request = $.ajax({
+	url: "AjaxHelper.php?Module=data_team_helper&script=GetInstruments.php",
+	type: "get",
+	data: {"visit_label" : visit_label_value},
+	success: function(data){
+	    //Removing previous options from instrument dropdown. 
+	    $("#instrument > option").remove();
+	    var $instrument_dropdown = $('#instrument');
+	    for (var i = 0; i < data.length; i++){
+		$instrument_dropdown.append(new Option(data[i], data[i]));
+	    }
+	},
+        error: function (xhr, desc, err){
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }	
+    });
 }
 
 //runs the function when the page is loaded..
