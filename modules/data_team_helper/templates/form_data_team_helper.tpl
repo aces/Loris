@@ -14,6 +14,7 @@
 							<label class="col-sm-4">Visit_labels</label>
 							<div class="col-sm-8">
 								<select name="visit_label" onchange="changefieldOptions()" id="visit_label" class="form-control input-sm">
+									<option value="All Visits" selected="selected">All Visits</option>
 									{foreach from=$visitLabels item=name key=val}
 										{if $name eq $visit_label}
 											<option value="{$name}" selected="selected"> {$name}</option>
@@ -39,7 +40,7 @@
 						<div class ="form-group col-xs-12">
 							<label class ="col-sm-4">CANDID:</label>
 							<div class="col-sm-8">
-								<input name = "candID" type="text" id="autocomplete-ajax" class="form-control form-autocomplete"/>
+								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control form-autocomplete"/>
 								<input type="text" id="autocomplete-ajax-x" class="form-control form-autocomplete-hint">													
 							</div>							
 						</div>					
@@ -73,7 +74,7 @@
 {if $test_name}
 	<table border="1" valign="top" class="std">
 		<tr>
-			<td> Current Single Data_entry Completion Percentage (for <b>{$visit_label}</b> and instrument: <b>{$test_name}</b>)&nbsp&nbsp  </td>
+			<td> Current Single Data_entry Completion Percentage (for <b>{$visit_label}</b> and instrument: <b>{$test_name}</b> {if $candidate}and candID: <b>{$candidate}</b> {/if})&nbsp&nbsp  </td>
 			<td> &nbsp&nbsp&nbsp{$percent_completed}%</td>
 		</tr>
 		
@@ -138,7 +139,6 @@
 						{/foreach}
 					</td>
 				{else}
-        				<td class="error" nowrap="nowrap" valign="top"> N/A </td>
         				<td class="error" nowrap="nowrap" valign="top"> N/A</td>
 				{/if}
 				

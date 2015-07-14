@@ -1,0 +1,3 @@
+* Tasks
+** Add option to select all visits
+** 

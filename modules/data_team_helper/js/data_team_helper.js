@@ -23,7 +23,7 @@ function changeVisitLabels()
     var visit_label_value = visit_label_dropdown.value;
     var instrument_dropdown_value = instrument_dropdown.value;
     if (instrument_dropdown_value != undefined) {
-        var instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g,' ');
+        instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g,' ');
     }
     $.get("AjaxHelper.php?Module=data_team_helper&script=GetInstruments.php&visit_label=" + visit_label_value ,
           function(data) 

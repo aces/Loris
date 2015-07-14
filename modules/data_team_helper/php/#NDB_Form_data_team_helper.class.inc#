@@ -181,6 +181,8 @@ class NDB_Form_data_team_helper extends NDB_Form
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y' AND	s.Active = 'Y' AND bt.FieldName = :FN AND bt.Status = 'opened' AND f.test_name = :TN AND psc.Centerid!= '1' AND c.PSCID NOT LIKE '%scanner%'";
 
+        
+        
         if (isset($feedback_status) && $feedback_status!= "all") {
             $query .= " AND bt.status = :FStatus";
             $qparams['FStatus'] = $feedback_status;
