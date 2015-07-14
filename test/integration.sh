@@ -2,8 +2,8 @@
 # This script can be used to run integration tests
 
 # Test databse and test config.xml have to be created before running tests. This is a one time setup.
-#   1 - create a LorisTest DB from the default schema (lori/SQL/0000-00-00-schema.sql)
-#   2 - create a MySQL user SQLTestUser with password TestPassword & specify the password in the mysql commands (with option -p) below
+#   1 - create a LorisTest DB and source the default schema (lori/SQL/0000-00-00-schema.sql)
+#   2 - create a MySQL user SQLTestUser with password TestPassword.
 #   3 - Create a config.xml file in loris/test/ folder.
 #       Changes to make in this config.xml file:
 #       *  Database connection credentials: specify credentials to LorisTest DB which you create in step 1
