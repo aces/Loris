@@ -165,7 +165,10 @@ class NDB_Form_data_team_helper extends NDB_Form
      * IN addition to other secific info (the test_name,commentid,candid,session id)
      *
      * @param unknown_type $field_name
-     * @return unknown
+     * @param null $test_name
+     * @param null $visit_label
+     * @return Array containing a list of feedbacks for the appropriate feedback level.
+     * @throws DatabaseException
      */
     function getFeedbacks($field_name,$test_name=null,$visit_label=null) 
     {
@@ -289,8 +292,14 @@ class NDB_Form_data_team_helper extends NDB_Form
             JOIN candidate c ON (c.candid = s.candid)
             JOIN psc ON (s.CenterID = psc.CenterID)	";
 
-        $where = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND f.test_name LIKE :TN AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.candid NOT LIKE '%scanner%'";
-        $qparams = array('TN' => $test_name);
+        $where = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.candid NOT LIKE '%scanner%'";
+        $qparams = array();
+
+        //filter for testname
+        if(($test_name !=null)&&($test_name!='All Instruments')){
+            $where .= " AND f.test_name = :TN";
+            $qparams['TN'] = $test_name;
+        }
 
         //filter for visit
         if (($visit_label !=null)&&($visit_label!='All Visits')) {
@@ -382,6 +391,8 @@ class NDB_Form_data_team_helper extends NDB_Form
      *
      * Returns the percent completed for the given instrument
      * @param unknown_type $instrument
+     * @param null $visit_label
+     * @param null $candidate
      * @return unknown
      */
 
@@ -399,6 +410,10 @@ class NDB_Form_data_team_helper extends NDB_Form
     /**
      * getTestNameusingMappedName
      * returns the Test_name and its corresponding visit_label.. using the full_name  and/or subprojectID ..
+     * @param $full_name
+     * @param null $subprojectID
+     * @return mixed|Non
+     * @throws DatabaseException
      */
 
     function getTestNameusingMappedName ($full_name, $subprojectID = null) 
@@ -414,13 +429,15 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
         return 	$test_name;
     }
-    
-	/**
-	 * *
-	 * get all the instruments for the given visit...
-	 * @param unknown_type $visit
-	 * @return unknown
-	 */
+
+    /**
+     * *
+     * get all the instruments for the given visit...
+     * @param $visit_label
+     * @return unknown
+     * @throws DatabaseException
+     * @internal param unknown_type $visit
+     */
 	static function getVisitInstruments($visit_label){
 		$DB =& Database::singleton();
 	

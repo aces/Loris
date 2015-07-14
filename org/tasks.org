@@ -1,3 +1,6 @@
 * Tasks
-** Add option to select all visits
-** 
+** DONE Add option to select all visits
+   CLOSED: [2015-07-14 Tue 14:43]
+** TODO Properly render all candidates on select of : all, all, no candidates
+*** Make sure that on selection of no candidate, all candidates show up in results.
+*** 
