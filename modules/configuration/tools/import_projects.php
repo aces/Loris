@@ -46,7 +46,7 @@ foreach($projects['project'] as $row) {
             'Name'              => $row['title'],
             'recruitmentTarget' => $row['recruitmentTarget'],
            );
-    Utility::nullifyEmpty($ins, 'recruitmentTarget');
+    Utility::nullifyEmpty($insert, 'recruitmentTarget');
     $db->insert('Project', $insert);
 }
 
