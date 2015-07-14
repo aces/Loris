@@ -30,7 +30,7 @@
                 </div>
                 <div class="form-group">
 
-                    <label class="col-sm-12 col-md-4">Recruitment target <abbr title="Recruitement Target (ie. Number of people.)">recruitmentTarget</abbr></label>
+                    <label class="col-sm-12 col-md-4">Recruitment target </label>
                     <div class="col-sm-12 col-md-8">
 			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" value="{$project.recruitmentTarget}">
                     </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="form-group">
 
-                    <label class="col-sm-12 col-md-4">Recruitment Target <abbr title=" Recruitment Target (ie. Number of people.)"></abbr></label>
+                    <label class="col-sm-12 col-md-4">Recruitment Target</label>
                     <div class="col-sm-12 col-md-8">
 			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="Project recruitment target goes here" value="">
                     </div>
