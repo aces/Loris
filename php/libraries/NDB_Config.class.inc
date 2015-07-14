@@ -444,7 +444,33 @@ class NDB_Config
                              ),
                );
     }
+    /**
+    *Get list of projects for this projects, given a ProjectID.
+    *@param integer $ProjectID The ProjectID we want settings for
+    *@return an array of settings for this project.
+    */
+    function getProjectSettings($ProjectID)
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
+        try 
+        {
+             $info =$DB->pselectRow(
+                 "SELECT * FROM Project WHERE ProjectID=:sp",
+                 array('sp' => $ProjectID)
+             );
+        } catch (DatabaseException $e)
+        {
+            return null;
+        }
+        //Format the result into config.xml format.
+        return array(
+            'id' => $info['ProjectID'],
+            'title' => $info['Name'],
+            'recruitmentTarget' => $info['recruitmentTarget']
+        );
+    }
     /**
      * Checks if the logged in user has permission for the given
      * $menuID, so that we can determine if the menu should show
