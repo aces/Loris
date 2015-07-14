@@ -22,7 +22,7 @@ $(document).ready(function() {
                         "Name" : recruitmentTarget,
                         "recruitmentTarget" : recruitmentTarget,
                     },
-                    "success" : successClosure(subprojectID, form)
+                    "success" : successClosure(ProjectID, form)
                 }
 
           );
