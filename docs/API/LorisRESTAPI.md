@@ -2,35 +2,9 @@ This file describes the REST API to be implemented for interacting with Loris da
 IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
 Still to be done in documentation:
-- Document a way to handle conflicts for offline clients
 - Reread and make sure everything makes sense
 - Ensure JSON markup is rendered correctly in document
 - Send pull request
-
-Roadmap:
-v0.0.2-dev
-    - Add a sorting and searching mechanism for existing columns
-    - Add imaging (GET only) and doc repo data to spec (should enable porting of imaging_browser, doc_repo and dicom_archive)
-    - add QC and feedback to spec (should enable completion of BVL-React.JS)
-
-
-0.0.3-dev:
-- extending with candidate/session/file_parameters tables (participant status?)
-- Add Loris module support
-    - Menu filters, retrieving table
-    - Registering new types of data on candidates/sessions for a module (outside of parameter tables)
-    - Redo imaging and doc repo data as modules
-    - (Should enable porting of genomics browser, radiological_reviews)
-
-
-0.1.0-dev:
-- Add query support for third parties (ie. Vlad)
-
-0.2.0-dev:
-- add what needs to be done to redo tarchiveLoader validation
-  using API
-
-- Rewrite all of Loris and see what's missing, rename to 1.0
 
 ====
 
@@ -55,6 +29,10 @@ Any fields not explicitly specified in the PUT request are nulled.
 
 PATCH requests are identical to PUT requests, but any fields not explicitly mentioned are
 unmodified from their current value.
+
+All GET requests will include an ETag header. If a PUT or PATCH request is sent and it does
+not include an ETag, or the ETag does not match the currently existing ETag for that resource,
+it will result in a 403 Forbidden response.
 
 DELETE is not supported on any resource defined in this API.
 
@@ -265,7 +243,21 @@ Methods for getting/putting data into specific candidates are specified in secti
 # 3.0 Candidate API
 
 The /candidate portion of the API is used for retrieving and modifying candidate data and
-data attached to a specific candidate or visit such as visits or instrument data.
+data attached to a specific candidate or visit such as visits or instrument data. Portions
+of this reference a CandidateObject. A CandidateObject is a JSON object of the form
+
+```json
+{
+        "CandID"  : CandID
+        "Project" : ProjectName,
+        "PSCID"   : PSCID,
+        "Site"    : Site,
+        "EDC"     : "YYYY-MM-DD",
+        "DoB"     : "YYYY-MM-DD",
+        "Gender"  : "Male|Female"
+}
+
+representing a candidate in Loris.
 
 ```
 GET /candidates
@@ -275,7 +267,7 @@ will return a JSON object of the form
 
 ```json
 {
-    "Candidates" : [CandID1, CandID2, CandID3, ...]
+    "Candidates" : [CandidateObject1, CandidateObject2, CandidateObject3, ...]
 }
 ```
 
@@ -325,15 +317,7 @@ The JSON object is of the form
 
 ```json
 {
-    "Meta" : {
-        "CandID"  : CandID
-        "Project" : ProjectName,
-        "PSCID"   : PSCID,
-        "Site"    : Site,
-        "EDC"     : "YYYY-MM-DD",
-        "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female"
-    },
+    "Meta" : CandidateObject,
     "Visits" : ["V1", "V2", ...]
 }
 ```
