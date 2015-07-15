@@ -44,7 +44,7 @@ no further authentication is required. Requests will be evaluated as requests fr
 so that standard Loris modules can simply use the API.
 
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
-they will be authenticated using [JSON Web Tokens](https://jwt.io).
+they can be be authenticated using [JSON Web Tokens](https://jwt.io).
 
 The client should POST a request to /login with a payload of the form
 
@@ -72,8 +72,8 @@ for any future requests to authenciate the request.
 # 2.0 Project API
 
 The Project API lives under the /projects portion of the API URL hierarchy. It is used to get
-project specific settings or data. PUT and PATCH are not supported for the part of the API
-living under /projects unless otherwise noted.
+project specific settings or data. PUT and PATCH are not currently supported for the part of
+the API living under /projects.
 
 ```
 GET /projects
