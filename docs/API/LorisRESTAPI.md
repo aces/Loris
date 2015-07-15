@@ -49,7 +49,7 @@ The client should POST a request to /login with a payload of the form
 
 ```json
 {
-    "username" : username
+    "username" : username,
     "password" : password
 }
 ```
@@ -85,11 +85,11 @@ request. The JSON returned is of the form:
 {
     "Projects" : {
         "ProjectName1" : {
-            "useEDC" : boolean
+            "useEDC" : boolean,
             "PSCID" : PSCIDSettings
         },
         "ProjectName2" : {
-            "useEDC" : boolean
+            "useEDC" : boolean,
             "PSCID" : PSCIDSettings
         },
         ...
@@ -155,12 +155,12 @@ Will return a JSON object of the form
     "Instruments": {
         "InstrumentName" : {
             "FullName" :  "Long Name",
-            "Subgroup" : "Subgroup Name"
+            "Subgroup" : "Subgroup Name",
             "DoubleDataEntryEnabled" : boolean
         },
         "Instrument2" : {
             "FullName" :  "Long Name",
-            "Subgroup" : "Subgroup Name"
+            "Subgroup" : "Subgroup Name",
             "DoubleDataEntryEnabled" : boolean
         },
         ...
@@ -229,7 +229,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
 
 ```json
 {
-        "CandID"  : CandID
+        "CandID"  : CandID,
         "Project" : ProjectName,
         "PSCID"   : PSCID,
         "Site"    : Site,
@@ -237,6 +237,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
         "DoB"     : "YYYY-MM-DD",
         "Gender"  : "Male|Female"
 }
+```
 
 representing a candidate in Loris.
 
@@ -268,6 +269,7 @@ The body of the POST request should be a candidate key with a JSON object of the
         "Gender"  : "Male|Female"
     }
 }
+```
 
 Project is only required use useProjects is enabled in the Loris instance, and
 similarly EDC is only required if useEDC is enabled in the Loris config. The
