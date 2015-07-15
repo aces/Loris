@@ -137,3 +137,53 @@ NumericElement = React.createClass({
 		)
 	}
 });
+
+LorisElement = React.createClass({
+	render: function (){
+		var element = this.props.element,
+			elementHtml = "dklfldkjf";
+		switch(element.Type){
+			case 'header':
+				elementHtml = <HeaderElement header={element.Description} />;
+				break;
+			case 'label':
+				elementHtml = <LabelElement label={element.Description} />
+				break;
+			case 'scored':
+	    		elementHtml = <ScoredElement label={element.Description} />
+	    		break;
+	    	case 'text':
+	    		if(element.Options.Type === 'small'){
+	    			elementHtml = <TextboxElement label={element.Description} />
+	    		} else {
+	    			elementHtml = <TextareaElement label={element.Description} />
+	    		}
+	    		break;
+	    	case 'select':
+	    		if(element.Options.AllowMultiple){
+	    			elementHtml = <SelectElement label={element.Description} options={element.Options.Values} multiple="true" />
+	    		} else {
+	    			elementHtml = <SelectElement label={element.Description} options={element.Options.Values} />
+	    		}
+	    		break;
+	    	case 'date':
+	    		elementHtml = <DateElement
+	    							label={element.Description}
+	    							minYear={element.Options.MinDate}
+	    							maxYear={element.Options.MaxDate}
+	    					   />
+	    		break;
+	    	case 'numeric':
+	    		elementHtml = <NumericElement
+	    							label={element.Description}
+	    							min={element.Options.MinValue}
+	    							max={element.Options.MaxValue}
+	    					   />
+			default:
+				break;
+		}
+		return (
+			<div>{elementHtml}</div>
+		)
+	}
+});
