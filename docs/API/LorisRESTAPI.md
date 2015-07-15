@@ -271,8 +271,9 @@ The body of the POST request should be a candidate key with a JSON object of the
 }
 ```
 
-Project is only required use useProjects is enabled in the Loris instance, and
-similarly EDC is only required if useEDC is enabled in the Loris config. The
+EDC is only required if useEDC is enabled for the project according to the
+project settings.
+
 PSCID is only required if the generation type in the Loris config is not set to
 "sequential".
 
