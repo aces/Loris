@@ -4,11 +4,12 @@ IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 Still to be done in documentation:
 - Reread and make sure everything makes sense
 - Ensure JSON markup is rendered correctly in document
+- update code to reflect finalized version
 - Send pull request
 
 ====
 
-# Loris Instrument API - v0.0.1g-dev
+# Loris Instrument API - v0.0.1h-dev
 
 ## 1.0 Overview
 
@@ -16,7 +17,7 @@ Loris will implement a RESTful API. Any request sent to `$LorisRoot/api/$APIVERS
 will return either a JSON object or no data. The Loris API will use standard HTTP error
 codes and the body will either be empty or contain only a JSON object for any request.
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.1g-dev and it
+document. This document specifies $APIVERSION v0.0.1h-dev and it
 MUST be included before the request in all requests.
 
 HTTP GET requests will NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -40,7 +41,7 @@ DELETE is not supported on any resource defined in this API.
 
 If a user is logged in to Loris and can be authenticated using the standard session mechanism,
 no further authentication is required. Requests will be evaluated as requests from that user,
-so that standard Loris modules can simply begin using the API.
+so that standard Loris modules can simply use the API.
 
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
 they will be authenticated using [JSON Web Tokens](https://jwt.io).
@@ -119,9 +120,13 @@ Will return a JSON object of the form
     "Meta" : {
         "Project" : "ProjectName"
     },
-    "Instruments" : ["InstrumentName", "InstrumentName2", "..."]
-    "InstrumentDetails": {
+    "Instruments": {
         "InstrumentName" : {
+            "FullName" :  "Long Name",
+            "Subgroup" : "Subgroup Name"
+            "DoubleDataEntryEnabled" : boolean
+        },
+        "Instrument2" : {
             "FullName" :  "Long Name",
             "Subgroup" : "Subgroup Name"
             "DoubleDataEntryEnabled" : boolean
@@ -184,7 +189,6 @@ Which will return a result of the form:
 {
     "Meta" : {
         "Project" : "ProjectName",
-        "DocType" : "Configuration"
     },
     "Settings" : {
         "useProjects" : boolean
@@ -195,8 +199,7 @@ Which will return a result of the form:
 ```
 
 Settings which are global across Loris for a Loris instance can be retrieved through
-any project and will all return the same value.
-
+any project and as all will return the same value.
 
 useProjects represents a boolean determining whether "projects" are enabled for
 this Loris instance.
@@ -229,7 +232,7 @@ or it will result in false negatives.
 GET /projects/$ProjectName/instruments/$InstrumentName
 ```
 
-Will ret urn a 200 response on success and 404 Not Found if $InstrumentName is not a valid instrument for this instance of Loris.
+Will return a 200 response on success and 404 Not Found if $InstrumentName is not a valid instrument for this instance of Loris.
 
 This will return a JSON representation of the instrument form. If available, rules and form will
 be combined into a single JSON object. The format for the JSON returned is specified in the
@@ -271,7 +274,7 @@ will return a JSON object of the form
 }
 ```
 
-containing ALL CandIDs present in this Loris instance.
+containing ALL candidates present in this Loris instance.
 
 A new candidate can be created by sending a POST request to /candidates.
 
