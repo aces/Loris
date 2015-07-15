@@ -54,7 +54,7 @@ DisplayElements = React.createClass({
 	    this.dragged.parentNode.removeChild(this.getPlaceholder());
 
 	    // Update data
-	    var data = this.state.elements;
+	    var data = this.props.elements;
 	    var from = Number(this.dragged.dataset.id);
 	    var to = Number(this.over.dataset.id);
 	    if (from < to) to--;
@@ -95,10 +95,10 @@ DisplayElements = React.createClass({
 					            onDragEnd={this.dragEnd}
 					            onDragStart={this.dragStart}>
 									<td className="col-xs-2">
-										{element.databaseName}
+										{element.Name}
 									</td>
 									<td className="col-xs-8">
-										{element.elementType}
+										<LorisElement element={element} />
 									</td>
 									<td className="col-xs-2">
 										<button onClick={this.editElement.bind(this, element)} className="button">
@@ -153,56 +153,64 @@ AddElement = React.createClass({
 	        alert("Must specifiy name for database to save value into");
 	        return;
 	    }
-	    var elementType;
+	    var element = {
+	    	Description: questionText.value,
+	    	Name: questionName.value
+	    };
 	    switch(selected){
 	    	case 'header':
-	    		elementType = <HeaderElement header={questionText.value} />
+	    		element.Type = 'header';
 	    		break;
 	    	case 'label':
-	    		elementType = <LabelElement label={questionText.value} />
+	    		element.Type = 'label';
 	    		break;
 	    	case 'scored':
-	    		elementType = <ScoredElement label={questionText.value} />
+	    		element.Type = 'scored';
 	    		break;
 	    	case 'textbox':
-	    		elementType = <TextboxElement label={questionText.value} />
+	    		element.Type = 'text';
+	    		element.Options = {
+	    			Type: "small"
+	    		}
 	    		break;
 	    	case 'textarea':
-	    		elementType = <TextareaElement label={questionText.value} />
+	    		element.Type = 'text';
+	    		element.Options = {
+	    			Type: "large"
+	    		}
 	    		break;
 	    	case 'dropdown':
-	    		elementType = <SelectElement label={questionText.value} options={this.state.options} />
+	    		element.Type = 'select';
+	    		element.Options = {
+	    			Values: this.state.options
+	    		}
 	    		break;
 	    	case 'multiselect':
-	    		elementType = <SelectElement
-	    							label={questionText.value}
-	    							options={this.state.options}
-	    							multiple='true'
-	    					   />
+	    		element.Type = 'select';
+	    		element.Options = {
+	    			Values: this.state.options,
+	    			AllowMultiple: true
+	    		}
 	    		break;
 	    	case 'date':
-	    		min = parseInt(document.getElementById('datemin').value, 10);
-		        max = parseInt(document.getElementById('datemax').value, 10);
-	    		elementType = <DateElement
-	    							label={questionText.value}
-	    							minYear={min}
-	    							maxYear={max}
-	    					   />
+	    		element.Type = 'date';
+	    		element.Options = {
+	    			MinDate: parseInt(document.getElementById('datemin').value, 10),
+	    			MaxDate: parseInt(document.getElementById('datemax').value, 10)
+	    		}
 	    		break;
 	    	case 'numeric':
-	    		min = parseInt(document.getElementById('numericmin').value, 10);
-		        max = parseInt(document.getElementById('numericmax').value, 10);
-	    		elementType = <NumericElement
-	    							label={questionText.value}
-	    							min={min}
-	    							max={max}
-	    					   />
+	    		element.Type = 'numeric';
+	    		element.Options = {
+	    			MinValue: parseInt(document.getElementById('numericmin').value, 10),
+	    			MaxValue: parseInt(document.getElementById('numericmax').value, 10)
+	    		}
 	    		break;
 	    	case 'defualt':
 	    		break;
 	    }
 
-	    this.props.updateQuestions(questionName.value, elementType);
+	    this.props.updateQuestions(element);
 
 	    question = document.createElement("span");
 	    question.innerHTML = questionText.value;
@@ -454,19 +462,15 @@ InstrumentBuilderApp = React.createClass({
 	 	return {
 	 		elements: [
 	 		 	{
-	 		 		databaseName: "Database Name",
-	 		 		elementType: "Question Display (Front End)"
+	 		 		Type: "header",
+	 		 		Description: "Question Display (Front End)"
 	 			}
 	 		]
 	 	};
 	},
-	addQuestion: function(dbName, elmType){
+	addQuestion: function(element){
 		this.setState(function(state){
-			var temp = state.elements,
-				element = {
-					databaseName: dbName,
-					elementType: elmType
-				};
+			var temp = state.elements;
 			temp.push(element);
 			return {
 				elements: temp
