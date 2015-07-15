@@ -1,8 +1,7 @@
 This file describes the REST API to be implemented for interacting with Loris data.
 IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
-Still to be done in documentation:
-- Ensure JSON markup is rendered correctly in document
+Still to be done:
 - update code to reflect finalized version
 - Send pull request
 
