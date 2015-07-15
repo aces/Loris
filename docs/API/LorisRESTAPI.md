@@ -281,8 +281,8 @@ The candidate will be created at the site of the user using the API's site.
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, and a 400 Bad Request if any data provided is invalid
 (PSCID format, date format, gender something other than Male|Female, invalid project
-name, etc). A created candidate will be accompagnied by data for the candidate
-of the same form as a request to GET /candidates/$CandID
+name, etc). A successful POST request will return a CandidateObject for the newly
+created candidate.
 
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
