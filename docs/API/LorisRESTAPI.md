@@ -47,7 +47,7 @@ they can be be authenticated using [JSON Web Tokens](https://jwt.io).
 
 The client should POST a request to /login with a payload of the form
 
-```json
+```js
 {
     "username" : username,
     "password" : password
@@ -81,7 +81,7 @@ GET /projects
 Will return a list of projects in this Loris instance. There is no corresponding PUT or PATCH
 request. The JSON returned is of the form:
 
-```json
+```js
 {
     "Projects" : {
         "ProjectName1" : {
@@ -107,7 +107,7 @@ project.
 
 It has the form:
 
-```json
+```js
 {
     "Type" : user|sequential,
     "Regex" : "/regex/"
@@ -130,14 +130,14 @@ Will return a 200 OK response if the project exists, and 404 Not Found if it doe
 
 The body of the request to /projects/$ProjectName will be an entity of the form:
 
-```json
+```js
 {
     "Meta" : {
         "Project" : "ProjectName"
     },
     "Visits" : ["V1", "V2", ... ],
-    "Instruments" : ["InstrumentName", "InstrumentName2", "..."],
-    "Candidates" : ["123543", "523234", ....]
+    "Instruments" : ["InstrumentName", "InstrumentName2", ...],
+    "Candidates" : ["123543", "523234", ...]
 }
 ```
 
@@ -147,7 +147,7 @@ GET /projects/$ProjectName/instruments/
 
 Will return a JSON object of the form
 
-```json
+```js
 {
     "Meta" : {
         "Project" : "ProjectName"
@@ -176,7 +176,7 @@ GET /projects/$ProjectName/visits/
 
 Will return a JSON object of the form
 
-```json
+```js
 {
     "Meta" : {
         "Project" : "ProjectName"
@@ -193,7 +193,7 @@ GET /projects/$ProjectName/candidates/
 
 will return a JSON object of the form
 
-```json
+```js
 {
     "Meta" : {
         "Project" : "ProjectName"
@@ -227,7 +227,7 @@ The /candidate portion of the API is used for retrieving and modifying candidate
 data attached to a specific candidate or visit such as visits or instrument data. Portions
 of this reference a CandidateObject. A CandidateObject is a JSON object of the form
 
-```json
+```js
 {
         "CandID"  : CandID,
         "Project" : ProjectName,
@@ -247,7 +247,7 @@ GET /candidates
 
 will return a JSON object of the form
 
-```json
+```js
 {
     "Candidates" : [CandidateObject1, CandidateObject2, CandidateObject3, ...]
 }
@@ -259,7 +259,7 @@ A new candidate can be created by sending a POST request to /candidates.
 
 The body of the POST request should be a candidate key with a JSON object of the form:
 
-```json
+```js
 {
     "Candidate" : {
         "Project" : ProjectName,
@@ -299,7 +299,7 @@ A JSON object representing that candidate will be returned.
 
 The JSON object is of the form
 
-```json
+```js
 {
     "Meta" : CandidateObject,
     "Visits" : ["V1", "V2", ...]
@@ -328,7 +328,7 @@ Will return a JSON object of the metadata for that candidate's visit.
 
 The JSON object is of the form:
 
-```json
+```js
 {
     "Meta" : {
         "CandID" : CandID,
@@ -371,7 +371,7 @@ GET /candidates/$CandID/$VisitLabel/instruments
 
 Will return a JSON object of the form.
 
-```json
+```js
 {
     "Meta" : {
         "CandID" : CandID,
@@ -401,7 +401,7 @@ of the form is used instead.
 
 The format returned by a GET request is a JSON document of the form:
 
-```json
+```js
 {
     "$InstrumentName" : {
         "FieldName1" : "Value1",
@@ -443,13 +443,13 @@ The "Validity" flag may be missing, if the ValidityEnabled flag is not true for 
 
 The format of the JSON object for these URLS is:
 
-```json
+```js
 {
     "Meta" : {
-        "Candidate"  : $CandID,
-        "Visit"      : $VisitLabel,
-        "Instrument" : $InstrumentName,
-        "DDE"        : true|false
+        "Candidate"  : CandID,
+        "Visit"      : VisitLabel,
+        "Instrument" : InstrumentName,
+        "DDE"        : boolean
     },
     "Flags" : {
         "Data_entry" : "In Progress|Complete",
