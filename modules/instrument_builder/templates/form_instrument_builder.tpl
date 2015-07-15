@@ -1,5 +1,6 @@
 <meta charset="utf-8"/>
 <script src="/js/react.js"></script>
+<script src="GetJS.php?Module=instrument_builder&file=react.elements.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.app.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.instrument.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.rules.js"></script>
@@ -63,7 +64,7 @@
                         <li>
                             <a id="dropdown" class="option" title="Dropdown menu for users to select data from">Dropdown</a>
                         </li>
-                        <li>    
+                        <li>
                             <a id="multiselect" class="option" title="Data entry where multiple options may be selected">Multiselect</a>
                         </li>
                         <li>
