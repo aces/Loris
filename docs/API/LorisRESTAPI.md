@@ -2,7 +2,6 @@ This file describes the REST API to be implemented for interacting with Loris da
 IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
 Still to be done in documentation:
-- Reread and make sure everything makes sense
 - Ensure JSON markup is rendered correctly in document
 - update code to reflect finalized version
 - Send pull request
@@ -84,11 +83,44 @@ request. The JSON returned is of the form:
 
 ```json
 {
-    "Projects" : ["ProjectName1", "ProjectName2", ...]
+    "Projects" : {
+        "ProjectName1" : {
+            "useEDC" : boolean
+            "PSCID" : PSCIDSettings
+        },
+        "ProjectName2" : {
+            "useEDC" : boolean
+            "PSCID" : PSCIDSettings
+        },
+        ...
 }
 ```
 
-If the Loris instance does not use projects, it will consist of a single project called "loris"
+If the Loris instance does not use projects, the API will return a single project called "loris"
+with the appropriate settings for the Loris instance.
+
+useEDC represents a boolean determining whether the EDC date should be included
+in candidates returned by the API.
+
+PSCID represents a JSON object with the configuration settings for PSCIDs in this
+project.
+
+It has the form:
+
+```json
+{
+    "Type" : user|sequential,
+    "Regex" : "/regex/"
+}
+```
+
+Where regex is a regular expression that can be used to validate a PSCID for this project.
+
+Note that sometimes in Loris configurations "Site" is a part of the PSCID. This will be
+denoted by the string "SITE{1,1}" inside of the regex returned. This string should be replaced
+by the 3 letter site alias before attempting to pass this regex to a regular expression parser
+or it will result in false negatives.
+
 
 ```
 GET /projects/$ProjectName
@@ -171,60 +203,6 @@ will return a JSON object of the form
 ```
 
 where 123456, 342332, etc are the candidates that exist for this project.
-
-## 2.1 Configuration
-
-The result of some API queries depend on Loris configuration settings. As such,
-they will need to be retrievable by a client of the API in order to validate
-data they retrieve from the API. Currently, all settings are retrieved in batch
-with a request to:
-
-```
-GET /projects/$ProjectName/settings/
-```
-
-Which will return a result of the form:
-
-```json
-{
-    "Meta" : {
-        "Project" : "ProjectName",
-    },
-    "Settings" : {
-        "useProjects" : boolean
-        "useEDC" : boolean
-        "PSCID" : settings
-    }
-}
-```
-
-Settings which are global across Loris for a Loris instance can be retrieved through
-any project and as all will return the same value.
-
-useProjects represents a boolean determining whether "projects" are enabled for
-this Loris instance.
-
-useEDC represents a boolean determining whether the EDC date should be included
-in candidates returned by the API.
-
-PSCID represents a JSON object with the configuration settings for PSCIDs in this
-project.
-
-It has the form:
-
-```json
-{
-    "Type" : user|sequential,
-    "Regex" : "/regex/"
-}
-```
-
-Where regex is a regular expression that can be used to validate a PSCID for this project.
-
-Note that sometimes in Loris configurations "Site" is a part of the PSCID. This will be
-denoted by the string "SITE{1,1}" inside of the regex returned. This string should be replaced
-by the 3 letter site alias before attempting to pass this regex to a regular expression parser
-or it will result in false negatives.
 
 ## 2.2 Instrument Forms
 
