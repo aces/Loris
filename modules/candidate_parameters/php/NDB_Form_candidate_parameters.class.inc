@@ -227,7 +227,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $config  =& NDB_Config::singleton();
         $consent = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
-            foreach (Utility::asArray($consent['Consent']) as $question) {
+            foreach (Utility::toArray($consent['Consent']) as $question) {
                 unset($values[$question['name'].'_date2']);
                 unset($values[$question['name'].'_withdrawal2']);
             }
@@ -817,7 +817,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
              // consent requirements
         $consent = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
-            foreach (Utility::asArray($consent['Consent']) as $consenttype) {
+            foreach (Utility::toArray($consent['Consent']) as $consenttype) {
                 $fieldname         = $consenttype['name'];
                 $consentVal        = $fields[$fieldname];
                 $consentDate       = $fields[$fieldname . '_date'];
