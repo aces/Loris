@@ -332,21 +332,21 @@ The JSON object is of the form:
 {
     "Meta" : {
         "CandID" : CandID,
-        "Visit"  : VisitLabel
+        "Visit"  : VisitLabel,
         "Battery" : "NameOfSubproject"
     },
     "Stages" : {
-        'Screening' :  {
-            'Date' : "YYYY-MM-DD"
-            'Status' : "Pass|Failure|Withdrawal|In Progress"
+        "Screening" :  {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "Pass|Failure|Withdrawal|In Progress"
         },
-        'Visit' : {
-            'Date' : "YYYY-MM-DD"
-            'Status' : "Pass|Failure|Withdrawal|In Progress"
-        }
-        'Approval' : {
-            'Date' : "YYYY-MM-DD"
-            'Status' : "Pass|Failure|Withdrawal|In Progress"
+        "Visit" : {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "Pass|Failure|Withdrawal|In Progress"
+        },
+        "Approval" : {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "Pass|Failure|Withdrawal|In Progress"
         }
     }
 }
@@ -374,7 +374,7 @@ Will return a JSON object of the form.
 ```json
 {
     "Meta" : {
-        "CandID" : CandID
+        "CandID" : CandID,
         "Visit"  : VisitLabel
     },
     "Instruments" : [ "InstrumentName", "AnotherInstrument", ...]
@@ -389,7 +389,7 @@ PUT / PATCH / POST are not currently supported for candidate instruments.
 
 ### 3.3 The Candidate Instrument Data
 
-```json
+```
 GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
 PUT /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
 PATCH /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
