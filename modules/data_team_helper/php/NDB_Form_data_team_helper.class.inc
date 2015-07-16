@@ -91,7 +91,8 @@ class NDB_Form_data_team_helper extends NDB_Form
                 JOIN parameter_type p ON (p.sourceFrom=f.test_name)
                 JOIN candidate c ON (c.CandID = s.CandID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
+                WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' 
+                AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
             $DB->select($query,  $info);
         }
         /**

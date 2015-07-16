@@ -1,0 +1,30 @@
+var data = [
+	{feedback: "this is feedback"},
+	{feedback: "this is another feedback"}
+]
+
+var IncompleteCandidatesPanel = React.createClass({
+	getInitialState: function(){
+		return{data: {participants: ["james", "kelly"]}};
+	},
+	render: function(){
+		return(
+			<div class="panel panel-primary">
+			  <div class="panel-heading">Incomplete Candidates</div>
+			  <div class="panel-body">Body contents:
+			    <ul>{
+				    this.props.data.participants.map(function(player) {
+					    ret<li>{player}</li>}
+										  
+})
+			    </ul>
+			  </div>
+			</div>
+		);
+	}
+});
+
+React.render(
+	<IncompleteCandidatesPanel/>,
+	document.getElementById('myDiv')
+);
