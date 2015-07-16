@@ -77,7 +77,7 @@ class Candidate
      * @throws DatabaseException
      * @throws Exception
      */
-    function select($candID)
+    public function select($candID)
     {
         $factory   = NDB_Factory::singleton();
         $config    = $factory->config();
@@ -326,7 +326,7 @@ class Candidate
      *
      * @return mixed The info requested
      */
-    function getData($var = null)
+    public function getData($var = null)
     {
         if (is_null($var)) {
             return $this->candidateInfo;
@@ -342,9 +342,10 @@ class Candidate
      * @param string $var   The variable to be set
      * @param any    $value The value to be set to
      *
-     * @return true on success, PEAR Error otherwise
+     * @return true on success
+     * @throws DatabaseException
      */
-    function setData($var, $value=null)
+    public function setData($var, $value=null)
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
@@ -354,7 +355,8 @@ class Candidate
 
         $this->candidateInfo = array_merge($this->candidateInfo, $setData);
 
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $success = $db->update(
             'candidate',
@@ -504,9 +506,10 @@ class Candidate
     /**
      * Returns the list of visit labels w/ corresponding SessionID as key
      *
-     *@return array Associative array in the format SessionID=>Visit_label
+     * @return array Associative array in the format SessionID=>Visit_label
+     * @throws DatabaseException
      */
-    function getListOfVisitLabels()
+    public function getListOfVisitLabels()
     {
         //make sure it returns an array
         $visitLabelArray = array();
@@ -514,7 +517,8 @@ class Candidate
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
@@ -529,7 +533,7 @@ class Candidate
 
     /**
      * Return the next visit number for the time point you are
-     * trying to register can be called statically
+     * trying to register
      *
      * @return     integer Next visit number for candidate
      * @deprecated
@@ -539,7 +543,8 @@ class Candidate
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
             FROM session
@@ -554,13 +559,14 @@ class Candidate
     /**
      * Return the suggested visit label for the time point you are
      * trying to register
-     * can be called statically
      *
      * @return string Next suggested visit label
+     * @throws DatabaseException
      */
-    function getNextVisitLabel()
+    public function getNextVisitLabel()
     {
-        $config =& NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
 
         $visitLabelSettings = $config->getSetting('visitLabel');
         $nextVisitLabel     = null;
@@ -568,7 +574,7 @@ class Candidate
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $db = $factory->database();
 
         if ($visitLabelSettings['generation'] == 'user'
             && !empty($visitLabelSettings['suggest'])
