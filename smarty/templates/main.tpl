@@ -8,6 +8,7 @@
         <script src="{$baseurl}/js/modernizr.min.js" type="text/javascript"></script>
         <script src="{$baseurl}/js/react-with-addons-0.13.3.min.js" type="text/javascript"></script>
         <script src="{$baseurl}/js/components/PaginationLinks.js" type="text/javascript"></script>
+        <script src="{$baseurl}/js/components/FilterTable.js" type="text/javascript"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.dynamictable.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.fileupload.js"></script>
