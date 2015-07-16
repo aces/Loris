@@ -4,8 +4,17 @@ var data = [
 ]
 
 var IncompleteCandidatesPanel = React.createClass({
+	propTypes: {
+		'Candidate' : React.PropTypes.string.isRequired,
+		
+	},
 	getInitialState: function(){
-		return{data: {participants: ["james", "kelly"]}};
+		return{data: {participants: ["james", "kelly"]},
+			'collapsed' : false
+		};
+	},
+	toggleCollapsed: function() {
+		this.setState({'collapsed' : !this.state.collapsed});
 	},
 	render: function(){
 		return(
@@ -16,13 +25,25 @@ var IncompleteCandidatesPanel = React.createClass({
 				    this.state.data.participants.map(function(player) {
 					    return <li>{player}</li>})										  }
 			    </ul>
+			    <h1>{this.props.Candidate}</h1>
 			  </div>
 			</div>
 		);
 	}
 });
 
-React.render(
-	<IncompleteCandidatesPanel/>,
-	document.getElementById('myDiv')
-);
+var CandidatesPanel = React.createClass({displayName: 'CandidatesPanelTable',
+	render: function(){
+		return (<IncompleteCandidatesPanel Candidate="evan LUC MCILROy"/>
+		);
+	}
+});
+
+EVANCANDIDATES = React.createFactory(CandidatesPanel);
+
+
+/* React.render(
+   <CandidatesPanel/>,
+   document.getElementById('myDiv')
+   ); */
+

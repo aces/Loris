@@ -88,7 +88,13 @@
  			<p style="font-family:arial;color:red;font-size:13px;">Currently only Behavioural Feedbacks tied to fields are shown</p>
 	</tr>
 </table>
-<div id="myDiv">
-	<!-- <script type="text/jsx" src="js/jsx/data_team.jsx"></script> -->
-	<script type="text/jsx" src="js/jsx/incompletes_candidates_panel.jsx"</script>
-</div>
+<div id="myDiv"></div>
+<script type="text/jsx" src="js/jsx/incompletes_candidates_panel.jsx"></script>
+
+  <script type="text/jsx">
+  var CandiPanel = EVANCANDIDATES();
+
+  React.render(CandiPanel, document.getElementById("myDiv"));
+  
+  </script>
+  <div id="otherDiv"></div>
