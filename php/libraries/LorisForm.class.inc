@@ -223,23 +223,6 @@ class LorisForm
     }
 
     /**
-     * Generates a name for an element, and creates a new
-     * random name if no name is given.
-     *
-     * @param string $name The name of the element called.
-     *
-     * @return $name if not empty, otherwise an unused name.
-     */
-    private function _generateName($name)
-    {
-        static $num = 1;
-        if (!empty($name)) {
-            return $name;
-        }
-        return 'anonymous' . ($num++);
-    }
-
-    /**
      * Adds a header element to this LorisForm.
      *
      * @param string $name    The name of the header element, may be null
@@ -270,25 +253,6 @@ class LorisForm
             return $name;
         }
         return 'anonymous' . ($num++);
-    }
-
-    /**
-     * Adds a header to the current form.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
-     *
-     * @return none, modifies $this->form as a side-effect.
-     */
-    function addHeader($name, $label, $options = array())
-    {
-        $name = $this->_generateName($name);
-
-        $el         =& $this->addBase($name, $label, $options);
-        $el['type'] = 'header';
     }
 
     /**
@@ -807,18 +771,6 @@ class LorisForm
         return "<h2>$el[label]</h2>";
     }
 
-    /**
-     * Generates the HTML for a header element
-     *
-     * @param array $el An array of the form used by $this->form
-     *                  for a header
-     *
-     * @return string the HTML for the given header element.
-     */
-    function headerHTML($el)
-    {
-        return "<h2>$el[label]</h2>";
-    }
     /**
      * Generates the HTML for an advcheckbox type element
      *
