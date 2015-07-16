@@ -36,10 +36,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-        $this->tpl_data['violated_scans_modifications'] 
+        $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
     }
