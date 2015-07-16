@@ -13,7 +13,8 @@
         "pear-pear.php.net/Pager" : "~2.4",
         "pear-pear.php.net/Benchmark" : "~1.2",
         "pear-pear.php.net/HTML_QuickForm" : "~3.2",
-        "pear-pear.php.net/Mail" : "~1.2"
+        "pear-pear.php.net/Mail" : "~1.2",
+        "cviebrock/discourse-php" : "~0.9.1"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : ">= 2.0",

@@ -317,13 +317,13 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             'Violation resolved', 
             array(
                 '' =>'Any',
-                '0'=>'Unresolved',
-                '1'=>'Reran',
-                '2'=>'Emailed site/pending',
-                '3'=>'Inserted',
-                '4'=>'Rejected',
-                '5'=>'Inserted with flag'
-                )            
+                'reran'=>'Reran',
+                'emailed'=>'Emailed site/pending',
+                'inserted'=>'Inserted',
+                'rejected'=>'Rejected',
+                'inserted_flag'=>'Inserted with flag',
+                'other'=>'Other'
+                )
             );
         // project
         $list_of_projects = Utility::getProjectList();
@@ -377,23 +377,24 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     function _setDataTableRows($count)
     {
         $resolved_options = array(
-	        '0'=>'Unresolved', 
-	        '1'=>'Reran',
-	        '2'=>'Emailed site/pending',
-	        '3'=>'Inserted',
-	        '4'=>'Rejected',
-	        '5'=>'Inserted with flag',
+            'unresolved'=>'Unresolved',
+            'reran'=>'Reran',
+            'emailed'=>'Emailed site/pending',
+            'inserted'=>'Inserted',
+            'rejected'=>'Rejected',
+            'inserted_flag'=>'Inserted with flag',
+            'other'=>'Other'
         );
         $this->tpl_data['resolved_options'] = $resolved_options;
 
         $resolved_styles = array(
-            '0'=>'label-danger',
-	        '1'=>'label-success',
-	        '2'=>'label-info',
-	        '3'=>'label-default',
-	        '4'=>'label-danger',
-	        '5'=>'label-warning',
-	        '6'=>'label-primary'
+            'unresolved'=>'label-danger',
+	        'reran'=>'label-success',
+	        'emailed'=>'label-info',
+	        'inserted'=>'label-default',
+	        'rejected'=>'label-danger',
+	        'inserted'=>'label-warning',
+	        'other'=>'label-primary'
         );
         $this->tpl_data['resolved_styles'] = $resolved_styles;
 

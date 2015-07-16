@@ -149,12 +149,7 @@ class NDB_Caller extends PEAR
 
                 $this->type = 'form';
                 return $html;
-            } /*else{ //if($this->existsAndRequire("NDB_Menu_Filter_Form_$test_name.class.inc")){
-                
-                echo "<br>1. ".$menu_form_testname;
-                echo "<br>2. ".$subtest;
-                echo "<br>Exception<br> ";
-            }*/
+            }
 
             // Exit to make sure we don't accidentally mix old style and
             // new style. If something is a module, it should remain a

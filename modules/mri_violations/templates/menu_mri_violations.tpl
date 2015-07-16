@@ -40,20 +40,19 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-2">{$form.Site.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.Site.html}</div> 
-                            <label class="col-sm-12 col-md-2">{$form.Resolved.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.Resolved.html}</div>                
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Project.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                             <label class="col-sm-12 col-md-2">{$form.Subproject.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Subproject.html}</div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Site.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Site.html}</div> 
+                        </div>
+                    </div>
+
 
                     <div class="row">
                         <div class="form-group col-sm-5 col-sm-offset-7 hidden-sm">
@@ -87,50 +86,6 @@
 </div>
 </div>
 
-{*
-<div class="row">
-    <div class="col-sm-12">
-*}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Violations over time</h3>
-                <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
-                {*<div class="pull-right">
-                    <div class="btn-group views">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Views
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li class="active"><a data-target="scans-line-chart-panel">View scans per site</a></li>
-                            <li><a data-target="recruitment-line-chart-panel">View recruitment per site</a></li>
-                        </ul>
-                    </div>
-                </div>*}
-            </div>
-            <div class="panel-body">
-                <div id="scans-line-chart-panel">
-                    <h5 class="chart-title">Scan sessions per site</h5>
-                    {if $total_scans neq 0}
-                        <div id="graph"/>
-                    {else}
-                        <p>There have been no scans yet.</p>
-                    {/if}
-                </div>
-                <div id="recruitment-line-chart-panel" class="hidden">
-                    <h5 class="chart-title">Recruitment per site</h5>
-                    {if $recruitment['overall']['total_recruitment'] neq 0}
-                        <div id="recruitmentChart"></div>
-                    {else}
-                        <p>There have been no candidates registered yet.</p>
-                    {/if}
-                </div>
-            </div>
-        </div>
-{*
-    </div>
-</div>
-*}
 <div class="row">
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
@@ -211,7 +166,7 @@
                                 <tr><td colspan="12">No data found</td></tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="8" id="message-area">
+                                <td nowrap="nowrap" colspan="6" id="message-area">
 
                                 </td>
                                 <td nowrap="nowrap" colspan="2">

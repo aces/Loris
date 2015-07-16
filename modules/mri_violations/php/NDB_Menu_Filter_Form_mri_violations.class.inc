@@ -46,6 +46,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
+        print_r($values);
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -68,16 +69,14 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     if($key2 == 'Resolved'){
                         // user input matches DB content, so do nothing.
                         if($val==$val2){
-                            //echo "[previously resolved : no change ($val == $val2)]\n";
+                            echo "[previously resolved : no change ($val == $val2)]\n";
                             break;
                         }
                         // user input doesn't match DB, so we update the DB
                         else{
-                            //echo "[previously resolved : UPDATE ($val <> $val2)] ";
                             $setArray = array('Resolved'=>(string)$val,'ChangeDate'=>date("Y-m-d H:i:s"));
                             $whereArray = array('hash'=>$hash);
                             $DB->update('violations_resolved', $setArray, $whereArray);
-                            //echo " <".$verify.">\n";
                         }
                     }
                 }
@@ -85,10 +84,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             //if row is not found no resolve status was assigned,
             // if selection<>0, then insert new row.
             else{
-
                 // no need to insert to DB for Unresolved value.
-                if($val==0){
-                    //echo "[Still unresolved (0)]\n";
+                if($val=='unresolved'){
                     continue;
                 }
                 $newlyResolved = array();
@@ -97,8 +94,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 $newlyResolved['User'] = $user->getUsername();
                 $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
 
-                //echo "[NOT resolved : INSERT ($key, $val)]\n";
-                // Table 1
+                echo "key $key\n";
+                // Table 1: mri_protocol_violated_scans
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
                     FROM mri_protocol_violated_scans 
@@ -106,10 +103,11 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 if(!empty($ID_mri_protocol_violated_scans)){
+                    echo "mri_protocol_violated_scans\n";
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
                 }
-                // Table 2
+                // Table 2: mri_violations_log
                 $ID_mri_violations_log = $DB->pselectOne(
                     "SELECT LogID
                     FROM mri_violations_log
@@ -117,11 +115,12 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 if(!empty($ID_mri_violations_log)){
+                    echo "mri_violations_log\n";
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
                 } 
                 
-                // Table 3
+                // Table 3: MRICandidateErrors
                 $ID_MRICandidateErrors = $DB->pselectOne(
                     "SELECT ID
                     FROM MRICandidateErrors
@@ -129,13 +128,15 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 if(!empty($ID_MRICandidateErrors)){
+                    echo "MRICandidateErrors\n";
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
                 $DB->insert('violations_resolved', $newlyResolved);
             }
         }
-        
+        echo "BB";
+
         $this->tpl_data['success'] = true;
     }
 
@@ -263,7 +264,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 'Description'   => 'v.Series_Description',
                 'SeriesUID'     => 'v.SeriesUID',
                 'Site'          => 'v.Site',
-                'Resolved'      => 'v.Resolved'
         );
 
         $this->validFilters = array(
@@ -276,7 +276,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             'v.Series_Description',
             'v.SeriesUID',
             'v.Site',
-            'v.Resolved'
         );
         return true;
     }
@@ -335,23 +334,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             $list_of_subprojects
         );
 
-        $resolvedOptions = array(
-            ''=>'Any',
-            /*'0'=>'Unresolved',*/
-            '1'=>'Reran',
-            '2'=>'Emailed site/pending',
-            '3'=>'Inserted',
-            '4'=>'Rejected',
-            '5'=>'Inserted with flag'
-        );
-
-        // Violation resolved
-        $this->addSelect(
-            'Resolved', 
-            'Violation resolved', 
-            $resolvedOptions
-        );
-        
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
@@ -389,13 +371,14 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     function _setDataTableRows($count)
     {
         $resolve_options = array(
-	        '0'=>'Unresolved', 
-	        '1'=>'Reran',
-	        '2'=>'Emailed site/pending',
-	        '3'=>'Inserted',
-	        '4'=>'Rejected',
-	        '5'=>'Inserted with flag',
-	        '6'=>'Other');
+
+	        'unresolved'=>'Unresolved',
+	        'reran'=>'Reran',
+	        'emailed'=>'Emailed site/pending',
+	        'inserted'=>'Inserted',
+	        'rejected'=>'Rejected',
+	        'inserted_flag'=>'Inserted with flag',
+            'other'=>'Other');
         // project
         $list_of_projects = Utility::getProjectList();
         $this->tpl_data['projects'] = $list_of_projects;
