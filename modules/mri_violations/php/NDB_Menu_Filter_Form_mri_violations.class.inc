@@ -46,7 +46,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 
     function _process($values)
     {
-        print_r($values);
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
@@ -69,7 +68,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     if($key2 == 'Resolved'){
                         // user input matches DB content, so do nothing.
                         if($val==$val2){
-                            echo "[previously resolved : no change ($val == $val2)]\n";
                             break;
                         }
                         // user input doesn't match DB, so we update the DB
@@ -94,7 +92,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 $newlyResolved['User'] = $user->getUsername();
                 $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
 
-                echo "key $key\n";
                 // Table 1: mri_protocol_violated_scans
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
@@ -103,7 +100,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 if(!empty($ID_mri_protocol_violated_scans)){
-                    echo "mri_protocol_violated_scans\n";
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
                 }
@@ -115,7 +111,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 if(!empty($ID_mri_violations_log)){
-                    echo "mri_violations_log\n";
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
                 } 
@@ -128,15 +123,12 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 if(!empty($ID_MRICandidateErrors)){
-                    echo "MRICandidateErrors\n";
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
                 $DB->insert('violations_resolved', $newlyResolved);
             }
         }
-        echo "BB";
-
         $this->tpl_data['success'] = true;
     }
 
