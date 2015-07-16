@@ -1,30 +1,30 @@
 <?php
 /**
- * This page implements a front end which is used to unify all
- * of the different MRI violation types (could not identify scan,
- * header violation in the scan after identifying scan type, mislabeled 
- * scan, etc) and link to the appropriate module to further investigate
- * why a scan was excluded by the imaging pipeline scripts.
+ * This page displays the list of Resolved violations which have been
+ * marked as resolved by one of the following methods: Reran, Emailed site/pending,
+ * Inserted, Rejected, Inserted with flag, Other.
  *
  * PHP Version 5
  *
  * @category MRI
  * @package  Main
- * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'NDB_Menu_Filter.class.inc';
 require_once 'NDB_Menu_Filter_Form.class.inc';
+
 /**
- * Implement the menu filter for searching through all violated scans
+ * Implement the menu filter for searching through resolved violations
  *
  * @category MRI
  * @package  Main
- * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */      
+
 class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 {
     /**
