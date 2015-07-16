@@ -26,7 +26,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
            'Active'       => 'Y',
            'RegisteredBy' => 'Admin Admin',
            'UserID'       => 'admin',
-           'ProjectID'    => null,
+           'ProjectID'    => 1,
           );
 
     /**
@@ -341,6 +341,126 @@ class CandidateTest extends PHPUnit_Framework_TestCase
         $this->candidate->select(969664);
 
         $this->assertNull($this->candidate->getNextVisitLabel());
+    }
+
+    /**
+     * @covers Candidate::getValidSubprojects
+     */
+    public function testGetValidSubprojectsReturnsAListOfSubprojects()
+    {
+        $subprojects = array(
+                        array('SubprojectID' => 1),
+                        array('SubprojectID' => 2),
+                       );
+        $this->setUpTestDoublesForSelectCandidate();
+
+        $this->dbMock->expects($this->at(2))
+            ->method('pselect')
+            ->willReturn(
+                $subprojects
+            );
+
+        $this->candidate->select(969664);
+
+        $expectedSubprojects = array(1 => 1, 2 => 2);
+        $this->assertEquals($expectedSubprojects, $this->candidate->getValidSubprojects());
+    }
+
+    /**
+     * Test getValidSubprojects returns NULL when there are no subprojects in DB
+     *
+     * @covers Candidate::getValidSubprojects
+     * @return void
+     */
+    public function testGetValidSubprojectsReturnsNull()
+    {
+        $subprojects = array();
+        $this->setUpTestDoublesForSelectCandidate();
+
+        $this->dbMock->expects($this->at(2))
+            ->method('pselect')
+            ->willReturn(
+                $subprojects
+            );
+
+        $this->candidate->select(969664);
+
+        $this->assertNull($this->candidate->getValidSubprojects());
+    }
+
+    /**
+     * Test getFirstVisit returns first visit's label
+     *
+     * @covers Candidate::getFirstVisit
+     * @return void
+     */
+    public function testGetFirstVisitReturnsFirstVisitLabel()
+    {
+        $this->setUpTestDoublesForSelectCandidate();
+
+        $this->dbMock->expects($this->at(2))
+            ->method('pselectOne')
+            ->willReturn('V01');
+
+        $this->candidate->select(969664);
+        $this->assertEquals('V01', $this->candidate->getFirstVisit());
+    }
+
+    /**
+     * Test getSessionID returns session ID for a given existing visit
+     *
+     * @covers Candidate::getSessionID
+     */
+    public function testGetSessionIDForExistingVisit()
+    {
+        $this->setUpTestDoublesForSelectCandidate();
+        $this->candidate->select(969664);
+
+        $this->assertEquals(97, $this->candidate->getSessionID(1));
+        $this->assertEquals(98, $this->candidate->getSessionID(2));
+    }
+
+    /**
+     * Test getSessionID returns NULL for none existing visit
+     *
+     * @covers Candidate::getSessionID
+     */
+    public function testGetSessionIDReturnsNullForNoneExistingVisit()
+    {
+        $this->setUpTestDoublesForSelectCandidate();
+        $this->candidate->select(969664);
+
+        $this->assertNull($this->candidate->getSessionID(0));
+    }
+
+    /**
+     * Test static function Candidate::candidateExists return true when candidate exists
+     *
+     * @covers Candidate::candidateExists
+     * @return void
+     */
+    public function testCandidateExistsRetrunsTrueWhenCandidateExists()
+    {
+        $this->dbMock->expects($this->once())
+            ->method('pselectRow')
+            ->willReturn(array('CandID' => 969664));
+
+        $this->assertTrue(Candidate::candidateExists(969664, 'AAA0011'));
+    }
+
+    /**
+     * Test static function Candidate::candidateExists return true when candidate does not exist
+     *
+     * @covers Candidate::candidateExists
+     * @return void
+     */
+    public function testCandidateExistsRetrunsFalseWhenCandidateDoesNotExists()
+    {
+        $this->dbMock->expects($this->once())
+            ->method('pselectRow')
+            ->willReturn(false);
+
+        $this->assertFalse(Candidate::candidateExists(123, 'Test'));
     }
 
     /**

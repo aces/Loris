@@ -172,6 +172,7 @@ class Candidate
         foreach ($row AS $value) {
             $this->listOfTimePoints[] = $value["ID"];
         }
+
     }
 
     /**
@@ -189,7 +190,8 @@ class Candidate
      */
     static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $site =& Site::singleton($centerID);
 
@@ -271,7 +273,8 @@ class Candidate
     static function candidateExists($candID, $PSCID)
     {
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $candidateIDs = array(
                          ':candidate_id' => $candID,
@@ -311,11 +314,15 @@ class Candidate
      * @param integer $visitNo The visit number for which you
      *                         want the SessionID
      *
-     * @return integer SessionID of candidate's nth visit
+     * @return int SessionID of candidate's nth visit, NULL if none found
      */
     function getSessionID($visitNo)
     {
-        return $this->listOfTimePoints[$visitNo-1];
+        if (isset($this->listOfTimePoints[$visitNo-1]) ) {
+            return $this->listOfTimePoints[$visitNo-1];
+        }
+
+        return null;
     }
 
     /**
@@ -613,10 +620,15 @@ class Candidate
      * project
      *
      * @return array Array of the form SubprojectID => SubprojectID
+     *               or NULL if none exist
+     * @throws DatabaseException
      */
-    function getValidSubprojects()
+    public function getValidSubprojects()
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $subprojList = null;
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
@@ -630,6 +642,7 @@ class Candidate
                 }
             }
         }
+
         return $subprojList;
     }
     /**
@@ -637,9 +650,10 @@ class Candidate
      *
      * @return string The visit label for the candidate's first visit
      */
-    function getFirstVisit()
+    public function getFirstVisit()
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $candID = $this->getCandID();
 
