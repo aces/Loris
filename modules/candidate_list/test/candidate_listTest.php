@@ -26,12 +26,14 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+
 class CandidateListTestIntegrationTest extends LorisIntegrationTest
 {
     private $_useEDCId;
     private $_useEDCBackup;
     private $_useProjectsId;
     private $_useProjectsBackup;
+
 
     /**
      * Backs up the useEDC config value and sets the value to a known
@@ -61,6 +63,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
     }
 
+
     /**
      * Restore the values backed up in the setUp function
      *
@@ -79,6 +82,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         );
         parent::tearDown();
     }
+
+
     /**
      * Tests that, when loading the candidate_list module, the breadcrumb
      * appears and the default filters are set to "Basic" mode.
@@ -311,7 +316,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
-/*
+
     function testInitialFilterState() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -333,7 +338,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
 
     }
-*/
+
 
 
     /**
@@ -393,24 +398,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
-    /*
+
     function testCandidateListBasicAdvancedToggle() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
-
 
         // Switch to Advanced mode
         $basicButton = $this->webDriver->findElements(WebDriverBy::Name("advanced"));
         $this->assertEquals(2, count($basicButton));
+        $buttonValue = $basicButton[0]->getAttribute('value');
+        $this->assertEquals($buttonValue, 'Advanced');
         $basicButton[0]->click();
 
-        $scanDoneOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("scan_done")
-        );
+        $scanDoneOptions = $this->webDriver->findElement(WebDriverBy::Name("scan_done"));
         $this->assertEquals("select", $scanDoneOptions->getTagName());
 
+        $buttonValue2 = $basicButton[1]->getAttribute('value');
+        $this->assertEquals($buttonValue2, 'Basic');
         $basicButton[1]->click();
 
-//         Go through each element and ensure it's on the page after clicking
+        // Go through each element and ensure it's on the page after clicking
         $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("scan_done"))->isDisplayed());
         $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("Participant_Status"))->isDisplayed());
         $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("dob"))->isDisplayed());
@@ -419,28 +425,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("Latest_Visit_Status"))->isDisplayed());
         $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("Feedback"))->isDisplayed());
 
-
     }
-*/
+
 
 
     /**
      * Tests that, if advanced filter is set,
      * advanced filters are expanded on page load
-     * and collapsed otherwise
+     * and are the correct element type, and collapsed otherwise
      *
      * @return void
      */
 
-    /**
-     * Tests that, after clicking the "Advanced" button, all of the
-     * advanced filters appear on the page and are the correct element type.
-     *
-     * @return void
-     */
-
-
-    /*
     function testCandidateListAdvancedOptionsAppear()
     {
 
@@ -494,7 +490,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         );
         $this->assertEquals("select", $feedbackOptions->getTagName());
     }
-*/
+
 
 
     /*
@@ -506,7 +502,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
-
     /*
     function testDropDownOptions($desiredFilter, $desiredOptions) {
         $filter = $this->webDriver->findElement(
@@ -515,19 +510,19 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         foreach ($desiredOptions as $option) {
             $this->assertContains($filter, $option);
-
         }
-
 //        $this->assertEquals("select", $scanDoneOptions->getTagName());
-
     }
+
 
     function providerTestDropDownOptions() {
         return array(
-            array('Visit_label',
-                array('1')),
+//            array('Visit_label',
+//                array('1')),
+            array('SubprojectID',
+                array('1','2')),
             array('centerID',
-                array('1'))
+                array('1','2'))
         );
     }
 */
@@ -547,8 +542,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      */
 
-
-    function testClearForm(){
+    function testClearForm($action, $field, $val){
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         // Open all filters
@@ -558,15 +552,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         // Testing individual fields
 //        $filter = $this->webDriver->findElement(WebDriverBy::Name($field));
 //        $this->webDriver->$action($filter)->selectOptionByValue($val);
-        $dropDown = $this->webDriver->findElement(WebDriverBy::tagName('select'));
-        $allOptions = $dropDown->findElement(WebDriverBy::tagName('option'));
-        $i=0;
-        foreach ($allOptions as $option) {
-            if ($i==1) {
-                $option->click();
-                break;
+
+        if ($action == 'select') {
+//            $dropDown = $this->webDriver->findElement(WebDriverBy::tagName('select'));
+            $dropDown = $this->webDriver->findElement(WebDriverBy::Name($field));
+            $allOptions = $dropDown->findElement(WebDriverBy::tagName('option'));
+            foreach ($allOptions as $option) {
+                if ($option == $val) {
+                    $option->click();
+                    break;
+                }
             }
-            $i++;
+        }
+
+        elseif ($action == 'type') {
+            $this->webDriver->findElement(WebDriverBy::Name($field))->click();
+//            $this->webDriver->findElement(WebDriverBy::tagName('text'))->click();
+            $this->webDriver->getKeyboard()->sendKeys($val);
         }
 
         // Submit filter
@@ -589,18 +591,21 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 //            array('type','PSCID','1'),      // type not working
 //            array('type','DCCID','1'),
 //            array('select','Visit_label','value=1'),     //Different in IBIS
-            array('select','centerID',/*value= */'2')
-//        ,
-//            array('select','SubprojectID','value=1'),
-//            array('select','ProjectID','value=1'),
-//            array('select','scan_done','value=Y'),
-//            array('select','Particiant_Status','value=1'),
-////            array('type','dob','2015-01-08'),
-//            array('select','gender','value=Male'),
+            array('select','centerID','2'),
+
+
+
+
+            array('select','SubprojectID','1'),
+            array('select','ProjectID','1'),
+            array('select','scan_done','Y'),
+            array('select','Particiant_Status','1'),
+//            array('type','dob','2015-01-08'),
+            array('select','gender','Male'),
 ////            array('type','Visit_Count','value=1'),
 //            array('select','Latest_Visit_Status','value=Visit'),
 //        //    array('edc'),
-//            array('select','Feedback','value=1')
+            array('select','Feedback','1')
         );
     }
 
