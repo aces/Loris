@@ -107,7 +107,7 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 
                     // delete from conflicts_unresolved
                     $DB->run("DELETE FROM conflicts_unresolved WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = '$hash'");
-                    $DB->run("DELETE FROM conflicts_unresolved USING conflicts_unresolved cu JOIN flag f ON (cu.CommentID1=f.CommentID) JOIN session s ON (f.SessionID=s.ID) WHERE s.Current_stage='Recycling Bin'");
+                    $DB->run("DELETE cu FROM conflicts_unresolved cu LEFT JOIN flag f ON (cu.CommentID1=f.CommentID) LEFT JOIN session s ON (f.SessionID=s.ID) WHERE s.Current_stage='Recycling Bin'");
 
                     $TableName = $row['TableName'];
                     $date = explode('-', $setArray['Date_taken']);
