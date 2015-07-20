@@ -19,7 +19,7 @@
         "squizlabs/php_codesniffer" : ">= 2.0",
         "phpunit/phpunit" : "4.3.*",
         "phpunit/dbunit": ">=1.2",
-        "facebook/webdriver" : "dev-master"
+        "facebook/webdriver" : "~1.0"
     },
     "autoload" : {
         "classmap": ["php/libraries", "php/exceptions"]
