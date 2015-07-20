@@ -1,3 +1,9 @@
+# Current changelogs
+Please refer to the [Releases](https://github.com/aces/Loris/releases) page.
+
+
+# Old changelogs
+
 2008-06-19 Jonathan Harlap <jharlap@bic.mni.mcgill.ca>
     * Fixed a bug in the user accounts menu template that broke sorting
 
