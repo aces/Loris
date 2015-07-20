@@ -2299,9 +2299,9 @@ CREATE TABLE subproject (
     useEDC boolean,
     WindowDifference enum('optimal', 'battery'),
     PRIMARY KEY (SubprojectID)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Control', false, 'optimal');
-INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Experimental', false, 'optimal');
+INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (2, 'Experimental', false, 'optimal');
 
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
