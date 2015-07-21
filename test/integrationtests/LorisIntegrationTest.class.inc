@@ -15,6 +15,12 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -84,7 +90,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
         // Set up WebDriver implementation and login
-        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+        $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::firefox();
+        $capabilities = DesiredCapabilities::firefox();
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
