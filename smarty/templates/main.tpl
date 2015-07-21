@@ -191,11 +191,19 @@
                                     <ul class="dropdown-menu">
                                         {foreach from=$tab.subtabs item=mySubtab}
                                             {if $mySubtab.Visible == 1}
-                                            <li>
+                                                {if substr($mySubtab.Link,0,4) eq 'http'}
+                                                    <li>
+                                                        <a href="{$mySubtab.Link}">
+                                                            {$mySubtab.Label}
+                                                        </a>
+                                                    </li>
+                                                {else}
+                                                    <li>
                                                         <a href="{$baseurl}/{$mySubtab.Link}">
                                                             {$mySubtab.Label}
                                                         </a>
-                                            </li>
+                                                    </li>
+                                                {/if}
                                             {/if}
                                         {/foreach}
                                     </ul>
