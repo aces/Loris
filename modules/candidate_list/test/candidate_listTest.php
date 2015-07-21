@@ -33,6 +33,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     private $_useEDCBackup;
     private $_useProjectsId;
     private $_useProjectsBackup;
+    private $_AAPPermId;
+    private $_DEPermId;
+    private $_userId;
 
 
     /**
@@ -41,24 +44,40 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function setUp()
-    {
+    function setUp() {
         parent::setUp();
 
         $this->_useEDCId = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE NAME=:useEDC",
             array(":useEDC" => "useEDC")
         );
-
         $this->_useEDCBackup = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:useEDC",
             array(":useEDC" => $this->_useEDCId)
         );
-
         $this->DB->update(
             "Config",
             array("Value" => "true"),
             array("ConfigID" => $this->_useEDCId)
+        );
+
+        $this->_useProjectsId = $this->DB->pselectOne(
+            "SELECT ID FROM ConfigSettings WHERE NAME=:useProjects",
+            array(":useProjects" => "useProjects")
+        );
+        $this->_useProjectsBackup = $this->DB->pselectOne(
+            "SELECT Value FROM Config WHERE ConfigID=:useProjects",
+            array(":useProjects" => $this->_useProjectsId)
+        );
+        $this->DB->update(
+            "Config",
+            array("Value" => "true"),
+            array("ConfigID" => $this->_useProjectsId)
+        );
+
+        $this->_userId = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE userID=:userID",
+            array(":userID" => "UnitTester")
         );
 
     }
@@ -70,8 +89,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function tearDown()
-    {
+    function tearDown() {
         $this->_useEDCBackup = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:useEDC",
             array(":useEDC" => $this->_useEDCId)
@@ -80,6 +98,16 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             "Config",
             array("Value" => $this->_useEDCBackup),
             array("ConfigID" => $this->_useEDCId)
+        );
+
+        $this->_useProjectsBackup = $this->DB->pselectOne(
+            "SELECT Value FROM Config WHERE ConfigID=:useProjects",
+            array(":useProjects" => $this->_useProjectsId)
+        );
+        $this->DB->update(
+            "Config",
+            array("Value" => $this->_useProjectsBackup),
+            array("ConfigID" => $this->_useProjectsId)
         );
         parent::tearDown();
     }
@@ -93,8 +121,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testCandidateListPageLoads()
-    {
+    function testCandidateListPageLoads() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
@@ -116,20 +143,47 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function testCandidateListPermissions() {
-        $DB =& Database::singleton();
 
-        $userID=999990;
+        $this->_userId = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE userID=:userID",
+            array(":userID" => "UnitTester")
+        );
 
-        // remove access_all_profiles permission & data_entry permission
-        $DB->delete('user_perm_rel', array('userID' => $userID, 'permID' => 10));
-        $DB->delete('user_perm_rel', array('userID' => $userID, 'permID' => 11));
-        $this->setPermissions();
+        // remove access_all_profiles permission
+        $this->_AAPPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:access_all_profiles",
+            array(":access_all_profiles" => "access_all_profiles")
+        );
+        $this->DB->delete(
+            "user_perm_rel",
+            array("permID" => $this->_AAPPermId, "userID" => $this->_userId)
+        );
+
+        // remove data_entry permission
+        $this->_DEPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:data_entry",
+            array(":data_entry" => "data_entry")
+        );
+        $this->DB->delete(
+            "user_perm_rel",
+            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+        );
+
         $this->webDriver->get($this->url . "?test_name=candidate_list");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
         $this->assertContains("You do not have access to this page.", $bodyText);
 
+        // re-add access_all_profiles and data_entry permissions
+        $this->DB->insert(
+            "user_perm_rel",
+            array("permID" => $this->_AAPPermId, "userID" => $this->_userId)
+        );
+        $this->DB->insert(
+            "user_perm_rel",
+            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+        );
     }
 
 
@@ -143,25 +197,39 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateListDataEntryPermissions() {
 
-        $DB =& Database::singleton();
+        $this->_userId = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE userID=:userID",
+            array(":userID" => "UnitTester")
+        );
 
-        $userID=999990;
+        // remove data_entry permission
+        $this->_DEPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:data_entry",
+            array(":data_entry" => "data_entry")
+        );
+        $this->DB->delete(
+            "user_perm_rel",
+            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+        );
 
-        $DB->delete('user_perm_rel', array('userID' => $userID, 'permID' => 10));
-        // refresh user permissions
-        $this->setPermissions();
         $this->webDriver->get($this->url . "?test_name=candidate_list");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
 
+        $ownSite = $this->webDriver->findElement(WebDriverBy::cssSelector("#example-navbar-collapse > ul.nav.navbar-nav.navbar-right > li:nth-child(3) > p"))->getText();
 
-
-        if (data_entry_permission and !access_all_profiles) {
-            $own_site = $this->webDriver->findElement(WebDriverBy::cssSelector("Site: "))->getText();
-            $displayed_sites = blah;
-            $this->assertAttributeContainsOnly($own_site, $displayed_sites);
+        for ($i=1; $i<=25; $i++) {
+            $site = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(2)"))->getText();
+            $this->assertNotContains($site, $ownSite);
         }
+
+        // re-add data_entry permissions
+        $this->DB->insert(
+            "user_perm_rel",
+            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+        );
+
     }
 
 
@@ -389,11 +457,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         return array(
             array('type','PSCID','1', array()),
             array('type','DCCID','1', array()),
-            array('SubprojectID', array('Control', 'Experimental')), // array('All', '6 month recruit', '12 month recruit', 'Control', '6 month recruits FRX', '12 month recruits FRX', 'EARLI Sib', 'Relative', 'IBIS2 High Risk', 'IBIS2 Low Risk')),
+            array('SubprojectID', array('Control', 'Experimental')),
             //    array('select','Visit_label','1'),     //Different in IBIS
-            array('select','centerID','2', array('AAA','BBB','DCC')), //array('All', 'SEA','PHI','STL','UNC')
+            //    array('select','centerID','2', array('AAA','BBB','DCC')),
             array('select','SubprojectID','1'),
-            array('select','ProjectID','1', array('Sample Project', 'Another Sample Project')), // array('All', 'IBIS1', 'IBIS2', 'Fragile X', 'EARLI Collaboration')),
+            //    array('select','ProjectID','1', array('Sample Project', 'Another Sample Project')),
             array('select','scan_done','Y', array('Yes', 'No')),
             array('select','Participant_Status','1', array('Active', 'Refused/Not Enrolled', 'Ineligible', 'Excluded', 'Inactive', 'Complete')),
             array('type','dob','2015-01-08', array()),
@@ -706,7 +774,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testPSCIDLinkPermissions() {
+/*    function testPSCIDLinkPermissions() {
 
         $DB =& Database::singleton();
         $userID=999990;
@@ -725,7 +793,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             $this->assertEquals($URL1, $URL2);
         }
     }
-
+*/
 
 
     /**
@@ -737,197 +805,33 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
     function testUseProjectsUseEDCFilters() {
 
+        $this->_useEDCBackup = $this->DB->pselectOne(
+            "SELECT Value FROM Config WHERE ConfigID=:useEDC",
+            array(":useEDC" => $this->_useEDCId)
+        );
+        $this->DB->update(
+            "Config",
+            array("Value" => "false"),
+            array("ConfigID" => $this->_useEDCId)
+        );
+
+        $this->_useProjectsBackup = $this->DB->pselectOne(
+            "SELECT Value FROM Config WHERE ConfigID=:useProjects",
+            array(":useProjects" => $this->_useProjectsId)
+        );
+        $this->DB->update(
+            "Config",
+            array("Value" => "false"),
+            array("ConfigID" => $this->_useProjectsId)
+        );
+
         $this->webDriver->get($this->url . "?test_name=candidate_list");
-
-        $DB =& Database::singleton();
-
-        $DB->run("UPDATE Config SET Value='false' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='useEDC')");
-        $DB->run("UPDATE Config SET Value='false' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='useProjects')");
 
         $tableHeaders = $this->webDriver->findElement(WebDriverBy::cssSelector("thead"))->getText();
         $this->assertNotContains("EDC", $tableHeaders);
         $this->assertNotContains("Project", $tableHeaders);
 
     }
-
-
-
-
-// FROM LORISINTEGRATIONTEST.CLASS.INC
-
-//    private $_oldConfig = array();
-//
-//    function setupConfigSetting($configName, $value) {
-//        if(isset($this->_oldConfig[$configName])) {
-//            throw new LorisException("Attempted to change already changed config setting");
-//        }
-//
-//        $configID = $this->DB->pselectOne(
-//            "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-//            array(":configName" => $configName)
-//        );
-//
-//        $oldVal = $this->DB->pselectOne(
-//            "SELECT Value FROM Config WHERE ConfigID=:confID",
-//            array(":confID" => $configID)
-//        );
-//
-//        $this->_oldConfig[$configName] = array(
-//            'ConfigID' => $configID,
-//            'OldValue' => $oldVal,
-//        );
-//
-//        $this->DB->update(
-//            "Config",
-//            array("Value" => $value),
-//            array("ConfigID" => $configID)
-//        );
-//    }
-//
-//    function restoreConfigSetting($configName) {
-//        if(!isset($this->_oldConfig[$configName])) {
-//            throw new LorisException("Attempted to restore unsaved config setting");
-//        }
-//        $this->DB->update(
-//            "Config",
-//            array("Value"    => $this->_oldConfig[$configName]['OldValue']),
-//            array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
-//        );
-//    }
-
-
-
-
-    /**
-     * Loads the users's permissions
-     *
-     * @return void
-     * @access private
-     */
-    function setPermissions()
-    {
-        // create DB object
-        $DB =& Database::singleton();
-
-        $userID=999990;
-
-        // get all the permissions for this user
-        $query = "SELECT p.code, pr.userID FROM permissions p
-            LEFT JOIN user_perm_rel pr
-            ON (p.permID=pr.permID AND pr.userID=:UID)";
-
-        $results = $DB->pselect($query, array('UID' => $userID));
-
-        // reset the array
-        $this->permissions = array();
-
-        // fill the array
-        foreach ($results AS $row) {
-            if (!empty($row['userID'])
-                && $row['userID'] === $userID
-            ) {
-                $this->permissions[$row['code']] = true;
-            } else {
-                $this->permissions[$row['code']] = false;
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Does basic setting up of Loris variables for this test, such as
-     * instantiating the config and database objects, creating a user
-     * to user for the tests, and logging in.
-     *
-     * @return none
-     */
-//    function createTester() {
-//        // Set up database wrapper and config
-//        $this->config = NDB_Config::singleton(__DIR__ . "/../../project/config.xml");
-//        $database = $this->config->getSetting('database');
-//
-//        $this->DB = Database::singleton(
-//            $database['database'],
-//            $database['username'],
-//            $database['password'],
-//            $database['host'],
-//            1
-//        );
-//        $this->url = $this->config->getSetting("url") . "/main.php";
-//
-//        $this->DB->run("DELETE from users WHERE ID=999000");
-//
-//        $this->DB->insert(
-//            "users",
-//            array(
-//                'ID'               => 999000,
-//                'UserID'           => 'PermUnitTester',
-//                'Real_name'        => 'PermUnit Tester',
-//                'First_name'       => 'PermUnit',
-//                'Last_name'        => 'Tester',
-//                'Email'            => 'permtester.@example.com',
-//                'CenterID'         => 1,
-//                'Privilege'        => 0,
-//                'PSCPI'            => 'N',
-//                'Active'           => 'Y',
-//                'Password_md5'     => 'a601e42ba82bb37a68ca3c8b7752f2e222',
-//                'Password_hash'    => null,
-//                'Password_expiry'  => '2099-12-31',
-//                'Pending_approval' => 'N',
-//            )
-//        );
-//
-//        $this->DB->run("INSERT INTO user_perm_rel SELECT 999000, PermID FROM permissions");
-//
-//        $user = User::factory('PermUnitTester');
-//        $user->updatePassword('4test4');
-//        // Set up WebDriver implementation and login
-//        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-//
-//        $this->webDriver = RemoteWebDriver::create(
-//            'http://localhost:4444/wd/hub',
-//            $capabilities
-//        );
-//
-//    }
-
-
-    /**
-     * Helper function to login to the loris instance which is being pointed to by
-     * this test.
-     *
-     * @param string $username The username to log in as
-     * @param string $password The (plain text) password to login as.
-     *
-     * @return none, side-effect logs in active webDriver
-     */
-//    protected function login($username, $password)
-//    {
-//        $this->webDriver->get($this->url);
-//
-//        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-//        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
-//
-//        $usernameEl->sendKeys($username);
-//        $passwordEl->sendKeys($password);
-//
-//        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-//        $login->click();
-//
-//        // Explicitly wait until the page is loaded.
-//        // Wait up to a minute, because sometimes when multiple tests
-//        // are run one will fail due to the login taking too long?
-//        $this->webDriver->wait(120, 1000)->until(
-//            WebDriverExpectedCondition::presenceOfElementLocated(
-//                WebDriverBy::id("page")
-//            )
-//        );
-//    }
-
-
-
 
 
 
