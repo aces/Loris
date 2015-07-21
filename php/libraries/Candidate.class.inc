@@ -31,7 +31,7 @@ define('CANDIDATE_MAX_PSCID', 9999);
  * Wrapper around a candidate in Loris. Mostly, it gets information
  * from the candidate table, but this class is abstract enough that
  * it could get information from other places too such as parameter_candidate
- * if relevent.
+ * if relevant.
  *
  * @category Main
  * @package  Loris
@@ -59,7 +59,7 @@ class Candidate
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
-            $success = $candidateList[$candID]->select($candID);
+            $candidateList[$candID]->select($candID);
         }
 
         return $candidateList[$candID];
@@ -186,10 +186,12 @@ class Candidate
      * @param string $PSCID       PSCID specified by the user, if available
      *
      * @return int   $candID      candidate id of the new candidate
+     * @throws DatabaseException
      * @static
      */
-    static public function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
-    {
+    static public function createNew(
+        $centerID, $dateOfBirth, $edc, $gender, $PSCID = null
+    ) {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
@@ -347,7 +349,7 @@ class Candidate
      * database
      *
      * @param string $var   The variable to be set
-     * @param any    $value The value to be set to
+     * @param mixed  $value The value to be set to
      *
      * @return true on success
      * @throws DatabaseException
@@ -365,7 +367,7 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $success = $db->update(
+        $db->update(
             'candidate',
             $setData,
             array('CandID' => $this->getData('CandID'))
@@ -462,7 +464,7 @@ class Candidate
     /**
      * Return the candidate's gender
      *
-     * @return Male|Female String describing the gender
+     * @return string Male|Female String describing the gender
      */
     function getCandidateGender()
     {
@@ -483,7 +485,7 @@ class Candidate
     /**
      * Return whether the candidate is active
      *
-     * @return Y|N|null Active flag for this candidate
+     * @return string Y|N|null Active flag for this candidate
      */
     function isActive()
     {
@@ -673,7 +675,7 @@ class Candidate
     *
     * @return integer An unused random 6 digit candidate id
     */
-    static public function _generateCandID()
+    static function _generateCandID()
     {
         // get a database connection
         $factory = NDB_Factory::singleton();
@@ -701,7 +703,7 @@ class Candidate
     *
     * @return string Project candidate id in format defined by config.xml
     */
-    static public function _generatePSCID($prefix)
+    static function _generatePSCID($prefix)
     {
         // get a database connection
         $factory = NDB_Factory::singleton();
@@ -753,7 +755,7 @@ class Candidate
         $db = $factory->database();
 
         do {
-            // genereate a new external ID
+            // generate a new external ID
             if ($ExternalIDSettings['generation'] == 'sequential') {
                 if (!empty($externalID)) {
                     $externalID++;
