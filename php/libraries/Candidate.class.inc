@@ -188,7 +188,7 @@ class Candidate
      * @return int   $candID      candidate id of the new candidate
      * @static
      */
-    static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
+    static public function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -201,7 +201,7 @@ class Candidate
         $candID = Candidate::_generateCandID();
 
         // figure out how to generate PSCID
-        $config        =& NDB_Config::singleton();
+        $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -673,10 +673,11 @@ class Candidate
     *
     * @return integer An unused random 6 digit candidate id
     */
-    static function _generateCandID()
+    static public function _generateCandID()
     {
         // get a database connection
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         // generate a candidate id
         $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
@@ -700,12 +701,13 @@ class Candidate
     *
     * @return string Project candidate id in format defined by config.xml
     */
-    static function _generatePSCID($prefix)
+    static public function _generatePSCID($prefix)
     {
         // get a database connection
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
-        $config =& NDB_Config::singleton();
+        $config = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
         $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
@@ -740,14 +742,15 @@ class Candidate
      *
      * @return string Anonymized ExternalID for distributing data
      */
-    function _generateExternalID()
+    static function _generateExternalID()
     {
-        $config =& NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
 
         $ExternalIDSettings = $config->getSetting('ExternalID');
         $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
 
-        $db =& Database::singleton();
+        $db = $factory->database();
 
         do {
             // genereate a new external ID
@@ -787,9 +790,10 @@ class Candidate
      *
      * @return boolean True if PSCID is valid
      */
-    static function validatePSCID($PSCID, $siteAbbrev=null)
+    static public function validatePSCID($PSCID, $siteAbbrev=null)
     {
-        $config =& NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
         $regex         = Utility::structureToPCRE(
