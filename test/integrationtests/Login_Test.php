@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/LorisIntegrationTest.class.inc';
+use Facebook\WebDriver\WebDriverBy;
+
 class LorisLoginTest extends LorisIntegrationTest
 {
     function testLoginFailure()

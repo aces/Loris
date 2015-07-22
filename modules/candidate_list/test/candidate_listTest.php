@@ -14,6 +14,8 @@
 
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+use Facebook\WebDriver\WebDriverBy;
+
 
 /**
  * CandidateListTestIntegrationTest

@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+use Facebook\WebDriver\WebDriverBy;
+
 class Statistics_Test extends LorisIntegrationTest
 {
     public function testTabsFrameworkLoads()
