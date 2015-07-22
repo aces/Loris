@@ -110,13 +110,18 @@ class NDB_Form_Configuration extends NDB_Form
     function project() {
         $factory = NDB_Factory::singleton();
         $config = $factory->config();
-
-        $projectList = Utility::getprojectList();
-        $projects = array();
-        foreach($projectList as $ProjectID => $Name) {
-            $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
-        }
-        $this->tpl_data['projects'] = $projects;
+	
+	/*if($config->getSetting(useProject)){*/
+	    $projectList = Utility::getprojectList();
+	    $projects = array();
+	    foreach($projectList as $ProjectID => $Name) {
+	        $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
+	    }
+	    $this->tpl_data['projects'] = $projects
+	/*}else{
+	    $this->tpl_data['projects'] = array();
+	  }
+	*/
     }
 
     function subproject() {
