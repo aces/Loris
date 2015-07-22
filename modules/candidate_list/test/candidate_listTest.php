@@ -584,7 +584,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         return array(
             array('type','PSCID','1'),
             array('type','DCCID','1'),
-        //    array('select','Visit_label','1'),     //Different in IBIS
+            //    array('select','Visit_label','1'),     //Different in IBIS
             array('select','centerID','2'),
             array('select','SubprojectID','1'),
             array('select','ProjectID','1'),
@@ -594,7 +594,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             array('select','gender','Male'),
             array('type','Visit_Count','1'),
             array('select','Latest_Visit_Status','Visit'),
-        //    array('edc'),
+            //    array('edc'),
             array('select','Feedback','1')
         );
     }
@@ -658,22 +658,22 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         $i=1;
 //        for ($i = 1; $i <= 25; $i++) {
-            $scanDoneResult = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(10)"));
+        $scanDoneResult = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(10)"));
 
-            $scanDoneText = $scanDoneResult->getText();
-            $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
+        $scanDoneText = $scanDoneResult->getText();
+        $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
 
-            if ($scanDoneText == 'Yes') {
-                $yesLink = $scanDoneResult->findElement(WebDriverBy::linkText("Yes"));
-                $yesLink->click();
-                $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-                $this->assertContains("Imaging Browser", $bodyText);
-                $this->assertContains("subject timepoint(s) selected.", $bodyText);
+        if ($scanDoneText == 'Yes') {
+            $yesLink = $scanDoneResult->findElement(WebDriverBy::linkText("Yes"));
+            $yesLink->click();
+            $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+            $this->assertContains("Imaging Browser", $bodyText);
+            $this->assertContains("subject timepoint(s) selected.", $bodyText);
 
-                $PSCIDField = $this->webDriver->findElement(WebDriverBy::Name("pscid"))->getAttribute('value');
-                $this->assertEquals($PSCID, $PSCIDField);
+            $PSCIDField = $this->webDriver->findElement(WebDriverBy::Name("pscid"))->getAttribute('value');
+            $this->assertEquals($PSCID, $PSCIDField);
 
-            }
+        }
 //        }
     }
 
@@ -692,17 +692,24 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         $i=1;
         //for ($i = 1; $i <= 25; $i++) {
-            $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
-            $PSCIDLink = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn > a"));
-            $CandID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(3)"))->getText();
+        $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
+        $PSCIDLink = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn > a"));
+        $CandID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(3)"))->getText();
 
-            $PSCIDLink->click();
+        $PSCIDLink->click();
 
         // insert wait till page loads function
 
-            $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-            $this->assertContains("Access Profile > Candidate Profile {$CandID} / {$PSCID}", $bodyText);
-            $this->assertContains("List of Visits (Time Points)", $bodyText);
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::id("page")
+            )
+        );
+
+
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Access Profile > Candidate Profile {$CandID} / {$PSCID}", $bodyText);
+        $this->assertContains("List of Visits (Time Points)", $bodyText);
 
         //}
     }
@@ -752,6 +759,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
 
     // Not implemented in my sandbox
+    // check permissions or config
     /**
      * 15.
      * Tests that, if wrong PSCID/DCCID combination is entered
