@@ -241,7 +241,7 @@
     <tbody>
         {section name=item loop=$items}
 		<!-- clicking row takes you to the candidate page --> 
-		<tr onclick="location.href = $(this).find('td a#pscid').attr('href');" style="cursor:pointer;">
+		<tr class="clickable_row">
             <!-- print out data rows -->
             {section name=piece loop=$items[item]}
                 {if $items[item][piece].bgcolor != ''}
@@ -255,7 +255,7 @@
                 {elseif $items[item][piece].name == "scan_Done"}
                     {if $items[item][piece].value == 'Y'}
                         {assign var="scan_done" value="Yes"}
-                        <a class="scanDoneLink" data-pscid="{$PSCID}" href="{$baseurl}/main.php?test_name=imaging_browser&pscid={$PSCID}&filter=Show%20Data"  onclick="event.stopImmediatePropagation();">{$scan_done}</a>
+                        <a class="scanDoneLink" data-pscid="{$PSCID}" href="{$baseurl}/main.php?test_name=imaging_browser&pscid={$PSCID}&filter=Show%20Data">{$scan_done}</a>
                     {else}
                         {assign var="scan_done" value="No"}
                         {$scan_done}
