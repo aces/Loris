@@ -74,8 +74,7 @@ class Candidate
      *
      * @return null As a side-effect loads candidate into current
      *              object
-     * @throws DatabaseException
-     * @throws Exception
+     * @throws DatabaseException | LorisException
      */
     public function select($candID)
     {
@@ -99,7 +98,7 @@ class Candidate
         $row = $db->pselectRow($query, $CandArray);
 
         if (!is_array($row) || sizeof($row) == 0) {
-            throw new Exception(
+            throw new LorisException(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
             );
@@ -157,7 +156,7 @@ class Candidate
                 trim($_REQUEST['PSCID'])
             ) != strtolower($this->getPSCID())
             ) {
-                throw new Exception("IDs do not match");
+                throw new LorisException("IDs do not match");
             }
         }
 
@@ -186,7 +185,7 @@ class Candidate
      * @param string $PSCID       PSCID specified by the user, if available
      *
      * @return int   $candID      candidate id of the new candidate
-     * @throws DatabaseException
+     * @throws Exception
      * @static
      */
     static public function createNew(

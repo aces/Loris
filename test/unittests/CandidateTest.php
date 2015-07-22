@@ -173,7 +173,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
      *
      * @return void
      * @covers Candidate::select
-     * @throws Exception
+     * @throws LorisException
      */
     public function testsSelectFailsWhenInvalidCandidateIdPassed()
     {
@@ -182,7 +182,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
             ->method('pselectRow')
             ->willReturn(false);
 
-        $this->setExpectedException('Exception');
+        $this->setExpectedException('LorisException');
         $this->_candidate->select('invalid value');
 
     }
