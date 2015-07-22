@@ -13,10 +13,10 @@ progress {
   color: #1C70B6;
   border-style: none;
   border-radius: 10px;
-} 
+}
 
 /* Firefox */
-progress::-moz-progress-bar { 
+progress::-moz-progress-bar {
   background: #1C70B6;
   border-radius: 10px;
 }

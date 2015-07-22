@@ -60,7 +60,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                           'UploadID',
                           's.CandID',
                           'c.PSCID',
-                          's.visit_label',
+                          's.Visit_label',
                           'UploadLocation',
                           'UploadDate',
                           'UploadedBy',
@@ -72,7 +72,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->validFilters = array(
                                's.CandID',
                                'c.PSCID',
-                               's.visit_label',
+                               's.Visit_label',
                                'mu.IsPhantom',
                               );
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
@@ -82,7 +82,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->formToFilter = array(
                                'CandID'      => 's.CandID',
                                'PSCID'       => 'c.PSCID',
-                               'visit_label' => 's.visit_label',
+                               'Visit_label' => 's.Visit_label',
                                'IsPhantom'   => 'mu.IsPhantom',
                               );
         return true;
@@ -116,7 +116,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             Utility::getExistingVisitLabels()
         );
         $this->addSelect(
-            'VisitLabel',
+            'Visit_label',
             'VisitLabel:',
             $visitlabels
         );
@@ -258,7 +258,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             $candid      = trim($args['values']['CandID']);
             $pscid       = trim($args['values']['PSCID']);
-            $visit_label = trim($args['values']['VisitLabel']);
+            $visit_label = trim($args['values']['Visit_label']);
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
                 $errors[] ="Make sure the CandID, PSCID and Visit_label are ".
                 "filled out ";
@@ -354,12 +354,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         if ($args['values']['IsPhantom']=='N') {
             if ((!empty($args['values']['CandID']))
                 && (!empty($args['values']['PSCID']))
-                &&(!empty($args['values']['VisitLabel']))
+                &&(!empty($args['values']['Visit_label']))
             ) {
                 ///////////////////////////////////////////////////////////////////
                 ////////////////////Use the arguments//////////////////////////////
                 ///////////////////////////////////////////////////////////////////
-                $visit_label = $args['values']['VisitLabel'];
+                $visit_label = $args['values']['Visit_label'];
                 $candid      = $args['values']['CandID'];
                 $pscid       = $args['values']['PSCID'];
                 $pname       = $pscid. "_" . $candid . "_" . $visit_label;
