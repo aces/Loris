@@ -73,8 +73,12 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      */
     function _save($values)
     {
-        unset($values['test_name'], $values['subtest'],
-        $values['identifier'], $values['fire_away']);
+        unset(
+            $values['test_name'],
+            $values['subtest'],
+            $values['identifier'],
+            $values['fire_away']
+        );
 
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
