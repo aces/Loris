@@ -375,8 +375,9 @@ class LorisForm
 
             if($optionKey === $this->getValue($el['name'])){
                 $selected = 'selected="selected"';
-            }
-            elseif ($optionKey === $el['selected']) {
+            } elseif ($optionKey === $el['selected']
+                && $this->getValue($el['name']) === null
+            ) {
                 $selected = 'selected="selected"';
             }
 
