@@ -93,7 +93,7 @@ DisplayElements = React.createClass({
 							row = (
 								<tr data-id={i}
 					            key={i}
-					            draggable="true"
+					            draggable={this.props.draggable}
 					            onDragEnd={this.dragEnd}
 					            onDragStart={this.dragStart}>
 									<td className="col-xs-2" colSpan="3">
@@ -105,7 +105,7 @@ DisplayElements = React.createClass({
 							row = (
 								<tr data-id={i}
 					            key={i}
-					            draggable="true"
+					            draggable={this.props.draggable}
 					            onDragEnd={this.dragEnd}
 					            onDragStart={this.dragStart}>
 									<td className="col-xs-2">
@@ -144,24 +144,29 @@ InstrumentBuilderApp = React.createClass({
 	 		 		Type: "header",
 	 		 		Description: "Question Display (Front End)"
 	 			}
-	 		]
+	 		],
+	 		amountEditing: 0
 	 	};
 	},
 	editElement: function(elementIndex){
 		this.setState(function(state){
-			var temp = state.elements;
-			temp[elementIndex].editing = temp[elementIndex].editing ? false : true;
+			var temp = state.elements,
+				edit = state.amountEditing + 1;
+			temp[elementIndex].editing = true;
 			return {
-				elements: temp
+				elements: temp,
+				amountEditing: edit
 			};
 		});
 	},
 	updateElement: function(element, index){
 		this.setState(function(state){
-			var temp = state.elements;
+			var temp = state.elements
+				edit = state.amountEditing - 1;
 			temp[index] = element;
 			return {
-				elements: temp
+				elements: temp,
+				amountEditing: edit
 			};
 		});
 	},
@@ -175,6 +180,7 @@ InstrumentBuilderApp = React.createClass({
 		});
 	},
 	render: function () {
+		var draggable = this.state.amountEditing === 0 ? true : false;
 		return (
 			<div>
 				<div className="row"><LoadInstrument /></div>
@@ -182,6 +188,7 @@ InstrumentBuilderApp = React.createClass({
 					elements={this.state.elements}
 					editElement={this.editElement}
 					updateElement={this.updateElement}
+					draggable = {draggable}
 				/>
 				<div className="row">
 					<AddElement updateQuestions={this.addQuestion}/>

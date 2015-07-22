@@ -7,8 +7,7 @@ QuestionText = React.createClass({
 			<div className="form-group">
                 <label className="col-sm-2 control-label">Question Text: </label>
                 <div className="col-sm-6">
-                    <input
-                    	className="form-control"
+                    <input className="form-control"
                     	type="text" id="questionText"
                     	size="75"
                     	value={this.props.element ? this.props.element.Description : ''}
@@ -29,10 +28,14 @@ BasicOptions = React.createClass({
 				<div className="form-group">
 	                <label className="col-sm-2 control-label">Question Name: </label>
 	                <div className="col-sm-6">
-	                    <input className="form-control" type="text" id="questionName" onChange={this.onChange}/>
+	                    <input className="form-control"
+	                    	type="text" id="questionName"
+	                    	onChange={this.onChange}
+	                    	value={this.props.element ? this.props.element.Name : ''}
+	                    />
 	                </div>
 	            </div>
-            	<QuestionText updateState={this.props.updateState} />
+            	<QuestionText updateState={this.props.updateState} element={this.props.element} />
             </div>
 		)
 	}
@@ -47,20 +50,20 @@ DropdownOptions = React.createClass({
 		this.setState({option: e.target.value});
 	},
 	addOption: function(){
-		var temp = this.props.Options,
+		var temp = this.props.element.Options,
 			key = Enumize(this.state.option);
 			temp.Values[key] = this.state.option;
 			this.props.updateState({Options: temp});
 	},
 	render: function () {
 		var multi = '',
-			options = this.props.Options.Values;
-		if(this.props.Options.AllowMultiple){
+			options = this.props.element.Options.Values;
+		if(this.props.element.Options.AllowMultiple){
 			multi = "multiple";
 		}
 		return (
 			<div>
-				<BasicOptions updateState={this.props.updateState}/>
+				<BasicOptions updateState={this.props.updateState} element={this.props.element} />
 				<div className="form-group">
                     <label className="col-sm-2 control-label">Dropdown Option: </label>
                     <div className="col-sm-3">
@@ -89,7 +92,7 @@ DropdownOptions = React.createClass({
 });
 DateOptions = React.createClass({
 	onChange: function(e){
-		var options = this.props.Options;
+		var options = this.props.element.Options;
 		if(e.target.id === 'datemin'){
 			options.MinDate = e.target.value + "-01-01";
 		} else if (e.target.id === 'datemax'){
@@ -98,11 +101,11 @@ DateOptions = React.createClass({
 		this.props.updateState({Options: options});
 	},
 	render: function () {
-		var minYear = this.props.Options.MinDate.split('-')[0],
-			maxYear = this.props.Options.MaxDate.split('-')[0];
+		var minYear = this.props.element.Options.MinDate.split('-')[0],
+			maxYear = this.props.element.Options.MaxDate.split('-')[0];
 		return (
 			<div>
-				<BasicOptions updateState={this.props.updateState}/>
+				<BasicOptions updateState={this.props.updateState} element={this.props.element} />
                 <div id="dateoptions" className="options form-group">
 	                <label className="col-sm-2 control-label">Start year: </label>
 	                <div className="col-sm-2">
@@ -119,7 +122,7 @@ DateOptions = React.createClass({
 });
 NumericOptions = React.createClass({
 	onChange: function(e){
-		var options = this.props.Options;
+		var options = this.props.element.Options;
 		if(e.target.id === 'numericmin'){
 			options.MinValue = parseInt(e.target.value);
 		} else if (e.target.id === 'numericmax'){
@@ -130,15 +133,15 @@ NumericOptions = React.createClass({
 	render: function () {
 		return (
 			<div>
-				<BasicOptions updateState={this.props.updateState}/>
+				<BasicOptions updateState={this.props.updateState} element={this.props.element} />
                 <div id="numericoptions" className="options form-group">
 	                <label className="col-sm-2 control-label">Min: </label>
 	                <div className="col-sm-2">
-	                    <input className="form-control" type="number" id="numericmin" onChange={this.onChange} value={this.props.Options.MinValue} />
+	                    <input className="form-control" type="number" id="numericmin" onChange={this.onChange} value={this.props.element.Options.MinValue} />
 	                </div>
 	                <label className="col-sm-2 control-label">Max: </label>
 	                <div className="col-sm-2">
-	                    <input className="form-control" type="number" id="numericmax" onChange={this.onChange} value={this.props.Options.MaxValue} />
+	                    <input className="form-control" type="number" id="numericmax" onChange={this.onChange} value={this.props.element.Options.MaxValue} />
 	                </div>
 	            </div>
 			</div>
@@ -300,6 +303,10 @@ AddElement = React.createClass({
 	        return;
 	    }
 	    switch(selected){
+	    	case 'header':
+			case 'label':
+				questionName = '';
+				break;
 	    	case 'textbox':
 	    	case 'textarea':
 	    		selected = 'text';
@@ -354,17 +361,17 @@ AddElement = React.createClass({
 			case 'scored':
 			case 'textbox':
 			case 'textarea':
-				questionInput = <BasicOptions updateState={this.updateState}/>
+				questionInput = <BasicOptions updateState={this.updateState} element={this.state}/>
 				break;
 	    	case 'multiselect':
 	    	case 'dropdown':
-	    		questionInput = <DropdownOptions updateState={this.updateState} Options={this.state.Options}/>
+	    		questionInput = <DropdownOptions updateState={this.updateState} element={this.state}/>
 	    		break;
 	    	case 'date':
-	    		questionInput = <DateOptions updateState={this.updateState} Options={this.state.Options}/>
+	    		questionInput = <DateOptions updateState={this.updateState} element={this.state}/>
 	    		break;
 	    	case 'numeric':
-	    		questionInput = <NumericOptions updateState={this.updateState} Options={this.state.Options}/>
+	    		questionInput = <NumericOptions updateState={this.updateState} element={this.state}/>
 	    		break;
 	    	case 'defualt':
 	    		break;
