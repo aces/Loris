@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\Exception\ElementNotVisibleException;
 
 class Statistics_Test extends LorisIntegrationTest
 {
