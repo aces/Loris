@@ -36,6 +36,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     private $_AAPPermId;
     private $_DEPermId;
     private $_userId;
+    private $_centerID;
 
 
     /**
@@ -76,8 +77,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->_userId = $this->DB->pselectOne(
-            "SELECT ID FROM users WHERE userID=:userID",
-            array(":userID" => "UnitTester")
+            "SELECT ID FROM users WHERE UserID=:testerID",
+            array(":testerID" => "UnitTester")
+        );
+
+        $this->_AAPPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:AAP",
+            array(":AAP" => "access_all_profiles")
+        );
+
+        $this->_DEPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:DE",
+            array(":DE" => "data_entry")
+        );
+
+        $this->_centerID = $this->DB->pselectOne(
+            "SELECT centerID FROM users WHERE ID=:uID",
+            array(":uID" => $this->_userId)
         );
 
     }
@@ -135,7 +151,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
+    // NOT WORKING
+    // NOT DELETING PERMISSIONS PROPERLY!!!!!!!
     /**
      * 2.
      * Tests that either access_all_profiles or data_entry
@@ -145,28 +162,28 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     function testCandidateListPermissions() {
 
         $this->_userId = $this->DB->pselectOne(
-            "SELECT ID FROM users WHERE userID=:userID",
+            "SELECT ID FROM users WHERE UserID=:userID",
             array(":userID" => "UnitTester")
         );
 
         // remove access_all_profiles permission
         $this->_AAPPermId = $this->DB->pselectOne(
-            "SELECT permID FROM permissions WHERE code=:access_all_profiles",
-            array(":access_all_profiles" => "access_all_profiles")
+            "SELECT permID FROM permissions WHERE code=:AAP",
+            array(":AAP" => "access_all_profiles")
         );
         $this->DB->delete(
             "user_perm_rel",
-            array("permID" => $this->_AAPPermId, "userID" => $this->_userId)
+            array("UserID" => $this->_userId, "permID" => $this->_AAPPermId)
         );
 
         // remove data_entry permission
         $this->_DEPermId = $this->DB->pselectOne(
-            "SELECT permID FROM permissions WHERE code=:data_entry",
-            array(":data_entry" => "data_entry")
+            "SELECT permID FROM permissions WHERE code=:DE",
+            array(":DE" => "data_entry")
         );
         $this->DB->delete(
             "user_perm_rel",
-            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+            array("UserID" => $this->_userId, "permID" => $this->_DEPermId)
         );
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
@@ -178,16 +195,17 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         // re-add access_all_profiles and data_entry permissions
         $this->DB->insert(
             "user_perm_rel",
-            array("permID" => $this->_AAPPermId, "userID" => $this->_userId)
+            array("UserID" => $this->_userId, "permID" => $this->_AAPPermId)
         );
         $this->DB->insert(
             "user_perm_rel",
-            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+            array( "UserID" => $this->_userId, "permID" => $this->_DEPermId)
         );
     }
 
 
 
+    /// ERROR: Cannot locate "Edit Candidate Info" button element
     /**
      * 3.
      * Tests that, if data_entry permission NOT access_all_profiles
@@ -198,43 +216,83 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     function testCandidateListDataEntryPermissions() {
 
         $this->_userId = $this->DB->pselectOne(
-            "SELECT ID FROM users WHERE userID=:userID",
+            "SELECT ID FROM users WHERE UserID=:userID",
             array(":userID" => "UnitTester")
         );
 
         // remove data_entry permission
         $this->_DEPermId = $this->DB->pselectOne(
-            "SELECT permID FROM permissions WHERE code=:data_entry",
-            array(":data_entry" => "data_entry")
+            "SELECT permID FROM permissions WHERE code=:DE",
+            array(":DE" => "data_entry")
         );
         $this->DB->delete(
             "user_perm_rel",
-            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+            array("UserID" => $this->_userId, "permID" => $this->_DEPermId)
         );
+
+        $this->DB->update(
+            "users",
+            array("CenterID" => "2"),
+            array("ID" => $this->_userId)
+        );
+
+        $centerIDKey = array("1"=>"DCC", "2"=>"AAA", "3"=>"BBB");
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
 
-        $ownSite = $this->webDriver->findElement(WebDriverBy::cssSelector("#example-navbar-collapse > ul.nav.navbar-nav.navbar-right > li:nth-child(3) > p"))->getText();
+        $ownSite="AAA";
 
         for ($i=1; $i<=25; $i++) {
             $site = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(2)"))->getText();
-            $this->assertNotContains($site, $ownSite);
+
+            $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
+            $timepointListLink = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn > a"));
+            $timepointListLink->click();
+
+            if ($site == $ownSite || $ownSite == 'DCC') {
+                $this->assertEquals($site, $ownSite);
+
+                $editCandidateInfoButton = $this->webDriver->findElement(WebDriverBy::cssSelector("#lorisworkspace > div.col-xs-12.row > button:nth-child(3)"));
+                $editCandidateInfoButton->click();
+
+                $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+                $this->assertContains("Candidate Parameters", $bodyText);
+                $this->assertContains("Candidate Information", $bodyText);
+                $this->assertContains($PSCID, $bodyText);
+            }
+            else {
+                $this->assertNotEquals($site, $ownSite);
+                $this->assertNotEquals($ownSite, 'DCC');
+                $this->assertEquals($ownSite, 'DCC');
+
+                // text exists, but no "Create Time Point" or "Edit Candidate Info" buttons
+                $actionsText = $this->webDriver->findElement(WebDriverBy::xpath('//*[@id="lorisworkspace"]/div[1]'))->getText();
+                $this->assertContains("Create time point", $actionsText);
+                $this->assertContains("Edit Candidate Info", $actionsText);
+            }
         }
 
         // re-add data_entry permissions
         $this->DB->insert(
             "user_perm_rel",
-            array("permID" => $this->_DEPermId, "userID" => $this->_userId)
+            array("UserID" => $this->_userId, "permID" => $this->_DEPermId)
+        );
+
+        $this->DB->update(
+            "users",
+            array("CenterID" => "1"),
+            array("ID" => $this->_userId)
         );
 
     }
 
 
 
-// DONE, except change to user site
+
+// DONE, except change to user site ??
     /**
      * 4.
      * Test that checks initial filter state:
@@ -243,7 +301,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-/*    function testInitialFilterState() {
+    function testInitialFilterState() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         $siteFilter = $this->webDriver->findElement(WebDriverBy::Name("centerID"));
@@ -262,7 +320,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         // test all blank
         // open/close advanced
     }
-*/
+
 
 
     /**
@@ -271,7 +329,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-/*    function testCandidateListBasicAdvancedToggle() {
+    function testCandidateListBasicAdvancedToggle() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         // Switch to Advanced mode
@@ -297,7 +355,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("Latest_Visit_Status"))->isDisplayed());
         $this->assertFalse($this->webDriver->findElement(WebDriverBy::Name("Feedback"))->isDisplayed());
     }
-*/
+
 
 
     /**
@@ -308,7 +366,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-/*    function testCandidateListAdvancedOptionsAppear()
+    function testCandidateListAdvancedOptionsAppear()
     {
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
@@ -351,7 +409,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $feedbackOptions = $this->webDriver->findElement(WebDriverBy::Name("Feedback"));
         $this->assertEquals("select", $feedbackOptions->getTagName());
     }
-*/
+
 
 
     /**
@@ -364,7 +422,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @dataProvider providerTestDropDownOptions
      */
-/*    function testDropDownOptions($desiredFilter, $desiredOptions) {
+    function testDropDownOptions($desiredFilter, $desiredOptions) {
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -402,7 +460,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
                 array('All', 'None', 'opened', 'answered', 'closed', 'comment'))
         );
     }
-*/
+
 
     /**
      * 9.
@@ -416,7 +474,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @dataProvider providerTestFilters
      */
-/*    function testFilters($action, $field, $val, $options) {
+    function testFilters($action, $field, $val, $options) {
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -457,10 +515,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         return array(
             array('type','PSCID','1', array()),
             array('type','DCCID','1', array()),
-            array('SubprojectID', array('Control', 'Experimental')),
+            array('select', 'SubprojectID', '1', array('Control', 'Experimental')),
             //    array('select','Visit_label','1'),     //Different in IBIS
             //    array('select','centerID','2', array('AAA','BBB','DCC')),
-            array('select','SubprojectID','1'),
             //    array('select','ProjectID','1', array('Sample Project', 'Another Sample Project')),
             array('select','scan_done','Y', array('Yes', 'No')),
             array('select','Participant_Status','1', array('Active', 'Refused/Not Enrolled', 'Ineligible', 'Excluded', 'Inactive', 'Complete')),
@@ -472,7 +529,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             array('select','Feedback','1', array('None', 'opened', 'answered', 'closed', 'comment'))
         );
     }
-*/
+
 
 
     /**
@@ -486,7 +543,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @dataProvider providerTestClearForm
      */
-/*    function testClearForm($action, $field, $val){
+    function testClearForm($action, $field, $val){
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         // Open all filters
@@ -541,7 +598,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             array('select','Feedback','1')
         );
     }
-*/
+
 
 
     /**
@@ -554,7 +611,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @dataProvider providerTestColumnSort
      */
-/*    function testColumnSort($filterLinkText, $filter) {
+    function testColumnSort($filterLinkText, $filter) {
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -584,7 +641,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             array('Feedback', 'Feedback')
         );
     }
-*/
+
 
 
 
@@ -595,44 +652,34 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-//    function testScanDoneLinks()
-//    {
-//        $this->webDriver->get($this->url . "?test_name=candidate_list");
-//
+    function testScanDoneLinks()
+    {
+        $this->webDriver->get($this->url . "?test_name=candidate_list");
+
+        $i=1;
 //        for ($i = 1; $i <= 25; $i++) {
-//            $scanDoneResult = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(10)"));
-//
-//            $scanDoneText = $scanDoneResult->getText();
-//            $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
-//
-//            if ($scanDoneText == 'Yes') {
-//                $yesLink = $scanDoneResult->findElement(WebDriverBy::linkText("Yes"));
-//                $yesLink->click();
-//                $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-//                $this->assertContains("Imaging Browser", $bodyText);
-//                $this->assertContains("subject timepoint(s) selected.", $bodyText);
-//
-//                $PSCIDField = $this->webDriver->findElement(WebDriverBy::Name("pscid"))->getAttribute('value');
-//                $this->assertEquals($PSCID, $PSCIDField);
-//
-////                $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"));
-////                if (in_array("Nothing found", $bodyText)) {
-////                    $this->assertContains("Nothing found", $bodyText);
-////                }
-////
-////                else {
-////                    for ($j = 1; $j <= 25; $j++) {$rowPSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#kgkjgkjg > div.carousel.slide > div > div > table > tbody > tr:nth-child({$j}) > td:nth-child(3)"))->getText();
-////                        if ($rowPSCID != NULL) {
-////                            $this->assertEquals($rowPSCID, $PSCID);
-////                        }
-////                    }
-////                }
-//            }
+            $scanDoneResult = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(10)"));
+
+            $scanDoneText = $scanDoneResult->getText();
+            $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
+
+            if ($scanDoneText == 'Yes') {
+                $yesLink = $scanDoneResult->findElement(WebDriverBy::linkText("Yes"));
+                $yesLink->click();
+                $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+                $this->assertContains("Imaging Browser", $bodyText);
+                $this->assertContains("subject timepoint(s) selected.", $bodyText);
+
+                $PSCIDField = $this->webDriver->findElement(WebDriverBy::Name("pscid"))->getAttribute('value');
+                $this->assertEquals($PSCID, $PSCIDField);
+
+            }
 //        }
-//    }
+    }
 
 
 
+    // ERROR: NoSuchElementException: Unable to locate element: {"method":"css selector","selector":"body"}
     /**
      * 13.
      * Tests that, if PSCID link is clicked,
@@ -643,23 +690,27 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     function testTimepointListPage() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
-        for ($i = 1; $i <= 25; $i++) {
-//            $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
-//            $PSCIDLink = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn > a"));
-//            $CandID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(3)"));
-//
-//            $PSCIDLink->click();
+        $i=1;
+        //for ($i = 1; $i <= 25; $i++) {
+            $PSCID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn"))->getText();
+            $PSCIDLink = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn > a"));
+            $CandID = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td:nth-child(3)"))->getText();
 
-//            $currentURL = $this->url;
-//            $desiredURL = '/main.php?test_name=timepoint_list&candID=' . $CandID;
-//            $this->assertContains($desiredURL, $currentURL);
+            $PSCIDLink->click();
 
-//            $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-//            $this->assertContains("Access Profile > Candidate Profile {$CandID} / {$PSCID}", $bodyText);
-//            $this->assertContains("List of Visits (Time Points)", $bodyText);
+        // insert wait till page loads function
 
-        }
+            $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+            $this->assertContains("Access Profile > Candidate Profile {$CandID} / {$PSCID}", $bodyText);
+            $this->assertContains("List of Visits (Time Points)", $bodyText);
+
+        //}
     }
+
+//        1) CandidateListTestIntegrationTest::testTimepointListPage
+//        NoSuchElementException: Unable to locate element: {"method":"css selector","selector":"body"}
+//        Works 50% of the time
+
 
 
 
@@ -700,6 +751,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
 
 
+    // Not implemented in my sandbox
     /**
      * 15.
      * Tests that, if wrong PSCID/DCCID combination is entered
@@ -708,7 +760,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-/*    function testOpenProfileError() {
+    function testOpenProfileError() {
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         $fakeDCCID='1';
@@ -727,9 +779,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         // assert not matching error...
     }
-*/
 
 
+    // Not implemented in my sandbox
     /**
      * 16.
      * Tests that, if a correct PSCID/DCCID combination is entered,
@@ -737,7 +789,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-/*    function testOpenProfileMatch() {
+    function testOpenProfileMatch() {
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -764,9 +816,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("List of Visits (Time Points)", $bodyText);
 
     }
-*/
 
 
+
+    // NOT WORKING
+    // NOT DELETING PERMISSIONS PROPERLY!!!!!!!
     /**
      * 17.
      * Tests that, without access_all_profiles permission,
@@ -774,13 +828,22 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-/*    function testPSCIDLinkPermissions() {
+    function testPSCIDLinkPermissions() {
 
-        $DB =& Database::singleton();
-        $userID=999990;
+        $this->_userId = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:userID",
+            array(":userID" => "UnitTester")
+        );
 
         // remove access_all_profiles permission
-        $DB->delete('user_perm_rel', array('userID' => $userID, 'permID' => 10));
+        $this->_AAPPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:AAP",
+            array(":AAP" => "access_all_profiles")
+        );
+        $this->DB->delete(
+            "user_perm_rel",
+            array("UserID" => $this->_userId, "permID" => $this->_AAPPermId)
+        );
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -793,7 +856,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             $this->assertEquals($URL1, $URL2);
         }
     }
-*/
+
 
 
     /**
