@@ -79,7 +79,7 @@ SelectElement = React.createClass({
 			<div className="col-sm-8">
 				<div className="col-xs-12 col-sm-6 element">
 					<select multiple={multiple} className="form-control input-sm">
-						{this.props.options.map(function(option){
+						{Object.keys(this.props.options).map(function(option){
 							return (
 								<option>
 									{option}
@@ -96,8 +96,8 @@ SelectElement = React.createClass({
 
 DateElement = React.createClass({
 	render: function(){
-		var max = this.props.maxYear + "-12-31",
-			min = this.props.minYear + "-01-01";
+		var max = this.props.maxYear,
+			min = this.props.minYear;
 		return (
 			<div>
 			<label className="lab col-sm-4 col-xs-12">
