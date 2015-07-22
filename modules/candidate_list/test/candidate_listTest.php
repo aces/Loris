@@ -778,6 +778,17 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function testOpenProfileError() {
+
+        // remove access_all_profiles permission
+        $this->_AAPPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:AAP",
+            array(":AAP" => "access_all_profiles")
+        );
+        $this->DB->delete(
+            "user_perm_rel",
+            array("UserID" => $this->_userId, "permID" => $this->_AAPPermId)
+        );
+
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         $fakeDCCID='1';
@@ -795,6 +806,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $openProfileButton->click();
 
         // assert not matching error...
+
+        $this->DB->insert(
+            "user_perm_rel",
+            array("UserID" => $this->_userId, "permID" => $this->_AAPPermId)
+        );
     }
 
 
@@ -807,6 +823,17 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function testOpenProfileMatch() {
+
+        // remove access_all_profiles permission
+        $this->_AAPPermId = $this->DB->pselectOne(
+            "SELECT permID FROM permissions WHERE code=:AAP",
+            array(":AAP" => "access_all_profiles")
+        );
+        $this->DB->delete(
+            "user_perm_rel",
+            array("UserID" => $this->_userId, "permID" => $this->_AAPPermId)
+        );
+
 
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
@@ -832,6 +859,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Access Profile > Candidate Profile {$matchingDCCID} / {$matchingPSCID}", $bodyText);
         $this->assertContains("List of Visits (Time Points)", $bodyText);
 
+        $this->DB->insert(
+            "user_perm_rel",
+            array("UserID" => $this->_userId, "permID" => $this->_AAPPermId)
+        );
     }
 
 
