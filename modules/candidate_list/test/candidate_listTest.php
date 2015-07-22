@@ -252,11 +252,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             $timepointListLink = $this->webDriver->findElement(WebDriverBy::cssSelector("#cand > tbody > tr:nth-child({$i}) > td.candFrozenColumn > a"));
             $timepointListLink->click();
 
+            $this->webDriver->wait(120, 1000)->until(
+                WebDriverExpectedCondition::presenceOfElementLocated(
+                    WebDriverBy::id("page")
+                )
+            );
+
             if ($site == $ownSite || $ownSite == 'DCC') {
                 $this->assertEquals($site, $ownSite);
 
                 $editCandidateInfoButton = $this->webDriver->findElement(WebDriverBy::cssSelector("#lorisworkspace > div.col-xs-12.row > button:nth-child(3)"));
                 $editCandidateInfoButton->click();
+
+                $this->webDriver->wait(120, 1000)->until(
+                    WebDriverExpectedCondition::presenceOfElementLocated(
+                        WebDriverBy::id("page")
+                    )
+                );
 
                 $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
                 $this->assertContains("Candidate Parameters", $bodyText);
@@ -618,8 +630,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $desiredLink = "/main.php?test_name=candidate_list&filter[order][field]={$filter}&filter[order][fieldOrder]=";
         $link = $this->webDriver->findElement(WebDriverBy::linkText($filterLinkText));
         $link->click();
-        $currentURL = $this->url;
-        $this->assertContains($desiredLink, $currentURL);
 
         // See if sorted alphabetically by doing a check??
 
@@ -699,7 +709,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $PSCIDLink->click();
 
         // insert wait till page loads function
-
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::id("page")
