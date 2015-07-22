@@ -91,8 +91,14 @@
 <div id="myDiv"></div>
 <script type="text/jsx" src="js/jsx/incompletes_candidates_panel.jsx"></script>
 
-  <script type="text/jsx">
-  var CandiPanel = EVANCANDIDATES();
+<script type="text/jsx">
+var incomplete = {$Incomplete_candidates|@json_encode};
+incomplete = JSON.parse(incomplete);
+
+var CandiPanel = IncompleteCandidatesPanel({
+	RowsPerPage : 5, 
+	  incomplete_candidates: incomplete	  	  
+  });
 
   React.render(CandiPanel, document.getElementById("myDiv"));
   

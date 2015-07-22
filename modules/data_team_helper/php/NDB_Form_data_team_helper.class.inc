@@ -75,26 +75,26 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
 
         //Constructs the where clause...
-        $extra_where .= $this->AddWhere("p.sourcefrom", 'instrument');
-        $extra_where .= $this->AddWhere("p.Name", 'FieldName');
-        $extra_where .= $this->AddWhere("f.data_entry", 'completion_status');
-        $extra_where .= $this->AddWhere("s.Current_stage", 'sent_to_dcc_status');
-        $extra_where .= $this->AddWhere("s.Visit_label", 'visit_label');
+        // $extra_where .= $this->AddWhere("p.sourcefrom", 'instrument');
+        // $extra_where .= $this->AddWhere("p.Name", 'FieldName');
+        // $extra_where .= $this->AddWhere("f.data_entry", 'completion_status');
+        // $extra_where .= $this->AddWhere("s.Current_stage", 'sent_to_dcc_status');
+        // $extra_where .= $this->AddWhere("s.Visit_label", 'visit_label');
 
 
-        //$extra_where .= $this->AddWhere("bt.status", 'feedback_status');
-        $orderby = " ORDER BY p.sourceFrom,p.sourceField";
-        //construct the query
-        if (($extra_where) !=null) {
-            $query = "SELECT DISTINCT p.sourceFrom,p.Name, s.Visit_label, p.sourceField, p.description FROM session s
-                JOIN flag f ON (f.sessionid = s.id)
-                JOIN parameter_type p ON (p.sourceFrom=f.test_name)
-                JOIN candidate c ON (c.CandID = s.CandID)
-                JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' 
-                AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
-            $DB->select($query,  $info);
-        }
+        // //$extra_where .= $this->AddWhere("bt.status", 'feedback_status');
+        // $orderby = " ORDER BY p.sourceFrom,p.sourceField";
+        // //construct the query
+        // if (($extra_where) !=null) {
+        //     $query = "SELECT DISTINCT p.sourceFrom,p.Name, s.Visit_label, p.sourceField, p.description FROM session s
+        //         JOIN flag f ON (f.sessionid = s.id)
+        //         JOIN parameter_type p ON (p.sourceFrom=f.test_name)
+        //         JOIN candidate c ON (c.CandID = s.CandID)
+        //         JOIN psc ON (s.CenterID = psc.CenterID)
+        //         WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' 
+        //         AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
+        //     $DB->select($query,  $info);
+        // }
         /**
          * 
          * Visit_labels
@@ -108,62 +108,23 @@ class NDB_Form_data_team_helper extends NDB_Form
         ///Show the number of generated results...
         ///////////////////////////////////////////////////////////////
         //If there are no data print a message to that effect
-        if(empty($info)) {
-            $this->form->addElement('static', "status", "No matching criteria found.");
-            return;
-        } else {
-            $this->form->addElement('static', 'total', 'Total number of results:', sizeof($info));
-        }
+        // if(empty($info)) {
+        //     $this->form->addElement('static', "status", "No matching criteria found.");
+        //     return;
+        // } else {
+        //     $this->form->addElement('static', 'total', 'Total number of results:', sizeof($info));
+        // }
 
-        $this->tpl_data['Incomplete_candidates'] =  $this->getIncompleteCandidates($instrument,$_REQUEST['visit_label'], $_REQUEST['candidate']);
+        $this->tpl_data['Incomplete_candidates'] = json_encode($this->getIncompleteCandidates($instrument,$_REQUEST['visit_label'], $_REQUEST['candidate']));
         $conflicts= $this->InstrumentInConflict($instrument);
         $this->tpl_data['Conflicts'] =  $conflicts;
-        //Loop through the conflicts and add a row per
-        foreach($info AS $data) {
-
-            $this->tpl_data['Visit_label_list'][] = $data['Visit_label'];//contains the visit_label for each element...
-            $name = $data['Name'];
-            $List_of_feedbacks = $this->getFeedbacks($data['sourceField'],$data['sourceFrom'],$data['Visit_label']);
-            $percent_completed = $data['Name'] . ":" . $data['Visit_label'] . ':percent_completed';
-            $Last_access = $data['Name'] . ":" . $data['Visit_label'] . ':Last_access';
-
-            ///create the quickform elements
-            $this->form->addElement("textarea", $comment, 'Comment',array('rows' => 2, 'cols' => 20));//comment box
-            $this->form->addElement("static", "instrument", $data['sourceFrom']);//comment box
-            $this->form->addElement('static', $percent_completed, '% completed');//%completion
-
-            //template data...
-            $this->tpl_data['elements_list_names'][] = $data['Name'];//contains the list of data field names...
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['sourcefield'] = $data['sourceField'];
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['sourcefrom'] = $data['sourceFrom'];
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['visit_label'] = $data['Name'] . "_" . $data['Visit_label'];
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['Description'] =$data['description'];
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['percent_completed'] = $percent_completed;
-            $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['Name'] = $data['Name'];
-
-            if ($List_of_feedbacks !=null) {
-                $counter =0;
-                foreach($List_of_feedbacks as $feedback) {
-                    $fb = NDB_BVL_Feedback::singleton(null,$feedback['CandID'],$feedback['id'], $feedback['commentid']);
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['commentid'] = $feedback['commentid'];
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['CandID'] = $feedback['CandID'];
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['PSCID'] = $feedback['PSCID'];
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['session_id'] = $feedback['id'];
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['feedbackid'] = $feedback['feedbackid'];
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['visit_label'] = $feedback['visit_label'];
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['Status'] = $feedback['Status'];
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['QC_color'] = $fb->getThreadColor($feedback['Status']);
-                    $this->tpl_data['elements_array'][$data['Name']][$data['Visit_label']]['FeedbackList'][$counter]['test_name'] =$data['sourceFrom'];
-                    $counter++;
-                }
-            }
-        }
+        
     }
 
     /**
      * getFeedbacks
      * Return all the existing feedbackid threads for the given fieldname
-     * IN addition to other secific info (the test_name,commentid,candid,session id)
+     * IN addition to otther secific info (the test_name,commentid,candid,session id)
      *
      * @param unknown_type $field_name
      * @param null $test_name
