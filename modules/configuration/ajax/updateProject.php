@@ -24,7 +24,7 @@ if($_POST['ProjectID'] === 'new' && !empty($_POST['Name'])) {
        array(
         "Name" => $_POST['Name'],
         "recruitmentTarget" => $_POST['recruitmentTarget'],
-       )
+       );
 } else{
     $db->update(
         "Project",
