@@ -1,17 +1,17 @@
 /*The config for the pagination of tables */
 var Config = React.createClass({
-  render: function() {
-    return <div>
-      <h2>Config</h2>
-      <label htmlFor="pageSize">Page Size:</label>
-      <select id="pageSize" value={this.props.pageSize} onChange={this.props.handlePageSizeChange}>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
-	  </div>;
-  }
+	render: function() {
+		return <div>
+  <h2>Config</h2>
+  <label htmlFor="pageSize">Page Size:</label>
+  <select id="pageSize" value={this.props.pageSize} onChange={this.props.handlePageSizeChange}>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+		</div>;
+	}
 });
 
 var IncompleteCandidatesTable = React.createClass({
@@ -57,28 +57,31 @@ var IncompleteCandidatesTable = React.createClass({
 	},
 	render: function(){
 		var page = this.getPage();
-		var topics = page.incomplete_candidates.map(function(topic) {
-			return
-			<h1>hi</h1>
-		});
-		console.log({topics});
-		return(
-
-			<table className="table table-hover table-primary table-bordered colm-freeze">
-			  <thead>
-			    <tr className="info">
-			      <td>candid</td>
-			      <td>test_name</td>
-			      <td>vist_label</td>
-			    </tr>
-			  </thead>
-			  <tbody>
-			    {topics}
-
-			  </tbody>
-			</table>
-				
-	)}
+		console.log(page.incomplete_candidates);
+    var topics = page.incomplete_candidates.map(function(topic) {
+      return <tr key={topic.id}>
+        <td>{topic.test_name}</td>
+        <td>{topic.instrument}</td>
+	    </tr>;
+    });
+    console.log(topics);
+    return <div>
+      <h2>Topic Listing</h2>
+      {pager(page)}
+      <table>
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Posts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topics}
+        </tbody>
+      </table>
+      {pager(page)}
+    </div>;
+  }
 }); 
 
 /**
