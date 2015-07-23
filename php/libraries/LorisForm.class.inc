@@ -417,6 +417,11 @@ class LorisForm
 
             if ($optionKey === $this->getValue($el['name'])) {
                 $selected = 'selected="selected"';
+            } elseif (isset($el['selected'])
+                && $optionKey === $el['selected']
+                && $this->getValue($el['name']) === null
+            ) {
+                $selected = 'selected="selected"';
             }
 
             $strOptions .= "<option value='$optionKey' $selected>"
@@ -479,16 +484,17 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $msg   = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $value = $this->getValue($el['name']);
-        $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
-            . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
+        $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
+        $value    = $this->getValue($el['name']);
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
+            . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
-                !empty($value)
+            !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '" '
                 : ''
-              )
+            )
             . ">";
         return $elmnt;
 
