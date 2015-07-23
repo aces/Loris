@@ -1,6 +1,6 @@
 #LORIS Mac Install Guide
 
-This is a guide on how to get a LORIS instance Running on your Mac computer. It is designed for installation in a sandbox environment. It has been partially tested for Mac OS X 10.9 and 10.10.
+This is a guide on how to get a LORIS instance Running on your Mac computer. It is designed for installation in a sandbox environment. It has been partially tested for Mac OS X 10.9 and 10.10. 
 
 # 1. System Requirements
 
