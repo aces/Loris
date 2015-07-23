@@ -68,6 +68,9 @@ class Projects_Test extends BaseTestCase
                 if($arg === 'useProjects') {
                     return "true";
                 }
+                if($arg === 'useEDC') {
+                    return "false";
+                }
 
                 if($arg === 'Projects') {
                     return [
@@ -89,7 +92,23 @@ class Projects_Test extends BaseTestCase
         $API = new \Loris\API\Projects("GET");
         $this->assertEquals(
             $API->JSON,
-            ['Projects' => ["Sample Project","Another Sample Project"]]
+            ['Projects' => [
+                "Sample Project" => [
+                    "useEDC" => false,
+                    "PSCID" => [
+                        "Type" => "sequential",
+                        "Regex" => "/SITE{1,1}[0-0}{4}/"
+                    ]
+                ],
+                "Another Sample Project" => [
+                    "useEDC" => false,
+                    "PSCID" => [
+                        "Type" => "sequential",
+                        "Regex" => "/SITE{1,1}[0-0}{4}/"
+                    ]
+                ],
+            ]
+        ]
         );
     }
 
