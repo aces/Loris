@@ -14,8 +14,28 @@ var Config = React.createClass({
 	}
 });
 
+var PagedRow = React.createClass({
+	propType:{
+		'row' : React.PropTypes.array.isRequired
+	},
+	render: function(){
+		var row = this.props.row.map(function(header) {
+			return 
+		  <th>header</th>;			
+		});
+		return <tr className="info">
+		    <th>evan</th>
+		    {row}
+		</tr>;
+
+	}
+});
+
 var PagedTable = React.createClass({
+
+
 	propTypes:{
+		'table_headers' : React.PropTypes.array.isRequired,
 		'table_rows' : React.PropTypes.array.isRequired,
 	},
 	getInitialState: function(){
@@ -55,7 +75,12 @@ var PagedTable = React.createClass({
 		this.setState({currentPage: pageNum})
 	},
 	render:function(){
-		return <div>hello world</div>
+		console.log(this.props.table_headers);
+		return <div>hello world
+		  <table className="table table-hover table-primary table-bordered colm-freeze">
+		    <PagedRow row={this.props.table_headers}/>
+		  </table>
+		</div>
 	}
 });
 
@@ -100,9 +125,8 @@ var IncompleteCandidatesTable = React.createClass({
 	handlePageChange: function(pageNum) {
 		this.setState({currentPage: pageNum})
 	},
-	render: function(){
+						   render: function(){
 		var page = this.getPage();
-		console.log(page.incomplete_candidates);
 		var topics = page.incomplete_candidates.map(function(topic) {
 			return <tr>
 		  <td>{topic.visit_label}</td>
@@ -166,7 +190,6 @@ function pager(page) {
 								      <div className="panel-heading">Incomplete Candidates</div>
 								      <div className="panel-body">
 								      {this.props.children}
-								      <IncompleteCandidatesTable incomplete_candidates={this.props.incomplete_candidates}/>
 								      </div>
 								      </div>
 							      );
@@ -175,10 +198,25 @@ function pager(page) {
 
 								      /* IncompleteCandidatesPanel = React.createFactory(DefaultPanel); */
 
-								      var weirdDiv = React.createClass({
+var weirdDiv = React.createClass({
+	
 													render:function(){
-														return (<h1>child div</h1>);
+														return (<div>{this.props.dance}</div>);
 													}
 													});
 
-								      IncompleteCandidatesPanel = React.createFactory(DefaultPanel);
+
+								      								   var header = ["hi, hello, bye"];
+
+		var IncompleteCandidates = React.createClass({
+						      render: function(){
+							      return (
+								      <DefaultPanel>
+									<PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header} />
+								      </DefaultPanel>
+							      );
+						      }
+						      });
+
+								      
+								      IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
