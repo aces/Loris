@@ -95,12 +95,18 @@
 var incomplete = {$Incomplete_candidates|@json_encode};
 incomplete = JSON.parse(incomplete);
 
-var CandiPanel = IncompleteCandidatesPanel({
-	RowsPerPage : 5, 
-	  incomplete_candidates: incomplete	  	  
-  });
+/* var CandiPanel = IncompleteCandidatesPanel({
+   RowsPerPage : 5, 
+   incomplete_candidates: incomplete	  	  
+   });
 
-  React.render(CandiPanel, document.getElementById("myDiv"));
+   React.render(CandiPanel, document.getElementById("myDiv")); */
+
+var CandiPanel = IncompleteCandidatesPanel({
+	incomplete_candidates: incomplete
+});
+
+React.render(CandiPanel, document.getElementById("myDiv"));
   
   </script>
   <div id="otherDiv"></div>
