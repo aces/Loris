@@ -1,30 +1,30 @@
 <?php
 /**
- * This page implements a front end which is used to unify all
- * of the different MRI violation types (could not identify scan,
- * header violation in the scan after identifying scan type, mislabeled 
- * scan, etc) and link to the appropriate module to further investigate
- * why a scan was excluded by the imaging pipeline scripts.
+ * This page displays the list of Resolved violations which have been
+ * marked as resolved by one of the following methods: Reran, Emailed site/pending,
+ * Inserted, Rejected, Inserted with flag, Other.
  *
  * PHP Version 5
  *
  * @category MRI
  * @package  Main
- * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'NDB_Menu_Filter.class.inc';
 require_once 'NDB_Menu_Filter_Form.class.inc';
+
 /**
- * Implement the menu filter for searching through all violated scans
+ * Implement the menu filter for searching through resolved violations
  *
  * @category MRI
  * @package  Main
- * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */      
+
 class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 {
     /**
@@ -36,10 +36,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-        $this->tpl_data['violated_scans_modifications'] 
+        $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
     }
@@ -145,13 +142,18 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
         // set the class variables
-        // create user object
-        $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
+        $config =& NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        if ($useProjects === "false") {
+            $useProjects = false;
+        }
+        else{
+            $useProjects = true;
         }
 
-        $this->columns = array('v.PatientName',
+        $this->columns = array(
+            'v.PatientName',
+            'v.Site',
             'v.TimeRun',
             'v.MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
@@ -161,66 +163,106 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             'v.join_id',
             'v.Resolved'
         );
+        if ($useProjects) {
+            array_splice($this->columns, 1, 0, 'v.Project');
+            array_splice($this->columns, 2, 0, 'v.Subproject');
+        }
 
         $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
+                c.ProjectID as Project,
+                s.SubprojectID as Subproject,
                 minc_location as MincFile,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem, 
                 SeriesUID,
                 md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)) as hash,
                 mri_protocol_violated_scans.ID as join_id,                
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_protocol_violated_scans 
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_protocol_violated_scans.ID 
-            AND violations_resolved.TypeTable='mri_protocol_violated_scans')"
+            AND violations_resolved.TypeTable='mri_protocol_violated_scans')
+            LEFT JOIN candidate c
+            ON (mri_protocol_violated_scans.CandID = c.CandID)
+            LEFT JOIN session s
+            ON (mri_protocol_violated_scans.CandID = s.CandID)
+            LEFT JOIN psc p
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved <> '0'"
             . " UNION " . 
             "SELECT PatientName,
                 TimeRun,
-                MincFile,   
+                c.ProjectID as Project,
+                s.SubprojectID as Subproject,
+                MincFile,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
                 mri_violations_log.LogID as join_id,
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log 
             LEFT JOIN mri_scan_type 
             ON (mri_scan_type.ID=mri_violations_log.Scan_type)
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mri_violations_log.LogID 
-            AND violations_resolved.TypeTable='mri_violations')"
-            . " UNION " . 
+            AND violations_resolved.TypeTable='mri_violations_log')
+            LEFT JOIN candidate c
+            ON (mri_violations_log.CandID=c.CandID)
+            LEFT JOIN session s
+            ON (mri_violations_log.CandID = s.CandID)
+            LEFT JOIN psc p
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved <> '0'"
+            . " UNION " .
             "SELECT PatientName,
                 TimeRun,
+                c.ProjectID as Project,
+                s.SubprojectID as Subproject,
                 MincFile,
                 null,
                 Reason, 
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
                 MRICandidateErrors.ID as join_id,
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=MRICandidateErrors.ID 
-            AND violations_resolved.TypeTable='MRICandidateErrors')"
-         . ") as v WHERE 1=1";
+            AND violations_resolved.TypeTable='MRICandidateErrors')
+            LEFT JOIN candidate c
+            ON (SUBSTRING_INDEX(MRICandidateErrors.PatientName,'_',1)=c.PSCID)
+            LEFT JOIN session s
+            ON (c.CandID = s.CandID)
+            LEFT JOIN psc p
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved <> '0')
+            as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
-                'PatientName' => 'v.PatientName',
-                'TimeRun' => 'v.TimeRun',
-                'ProblemType' => 'v.Problem',
-                'Filename' => 'v.MincFile',
-                'Description' => 'v.Series_Description',
-                'SeriesUID' => 'v.SeriesUID',
-                'Resolved' => 'v.Resolved'
+                'PatientName'   => 'v.PatientName',
+                'Site'          => 'v.Site',
+                'TimeRun'       => 'v.TimeRun',
+                'Project'       => 'v.Project',
+                'Subproject'    => 'v.Subproject',
+                'ProblemType'   => 'v.Problem',
+                'Filename'      => 'v.MincFile',
+                'Description'   => 'v.Series_Description',
+                'SeriesUID'     => 'v.SeriesUID',
+                'Resolved'      => 'v.Resolved'
         );
         $this->validFilters = array(
             'v.PatientName',
+            'v.Site',
             'v.TimeRun',
+            'v.Project',
+            'v.Subproject',
             'v.MincFile',
             'v.Problem',
             'v.Series_Description',
@@ -260,19 +302,35 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     => 'MRI Protocol Check violation'
             )
         );
-        // conflict resolved
+        // violation resolved
         $this->addSelect(
             'Resolved', 
             'Violation resolved', 
             array(
-                '0'=>'Unresolved', 
-                '1'=>'Reran',
-                '2'=>'Emailed site/pending',
-                '3'=>'Inserted',
-                '4'=>'Rejected',
-                '5'=>'Inserted with flag'
-                )            
+                '' =>'Any',
+                'reran'=>'Reran',
+                'emailed'=>'Emailed site/pending',
+                'inserted'=>'Inserted',
+                'rejected'=>'Rejected',
+                'inserted_flag'=>'Inserted with flag',
+                'other'=>'Other'
+                )
             );
+        // project
+        $list_of_projects = Utility::getProjectList();
+        $this->addSelect(
+            'Project',
+            'Project',
+            array('' => 'All') + $list_of_projects
+        );
+
+        // Subproject
+        $list_of_subprojects = Utility::getSubprojectList();
+        $this->addSelect(
+            'Subproject',
+            'Subproject',
+            array('' => 'All') + $list_of_subprojects
+        );
         
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
@@ -309,17 +367,38 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
      */
     function _setDataTableRows($count)
     {
-        $options = array(
-	        '0'=>'Unresolved', 
-	        '1'=>'Reran',
-	        '2'=>'Emailed site/pending',
-	        '3'=>'Inserted',
-	        '4'=>'Rejected',
-	        '5'=>'Inserted with flag',
-	        '6'=>'Resolved #1',
-	        '7'=>'Resolved #2',
-	        '8'=>'Resolved #3',
-	        '9'=>'Resolved #4');
+        $resolved_options = array(
+            'unresolved'=>'Unresolved',
+            'reran'=>'Reran',
+            'emailed'=>'Emailed site/pending',
+            'inserted'=>'Inserted',
+            'rejected'=>'Rejected',
+            'inserted_flag'=>'Inserted with flag',
+            'other'=>'Other'
+        );
+        $this->tpl_data['resolved_options'] = $resolved_options;
+
+        $resolved_styles = array(
+            'unresolved'=>'label-danger',
+	        'reran'=>'label-success',
+	        'emailed'=>'label-info',
+	        'inserted'=>'label-default',
+	        'rejected'=>'label-danger',
+	        'inserted'=>'label-warning',
+	        'other'=>'label-primary'
+        );
+        $this->tpl_data['resolved_styles'] = $resolved_styles;
+
+        // project
+        $list_of_projects = Utility::getProjectList();
+        $this->tpl_data['projects'] = $list_of_projects;
+        // Subproject
+        $list_of_subprojects = Utility::getSubprojectList();
+        $this->tpl_data['subprojects'] = $list_of_subprojects;
+
+        $list_of_sites = Utility::getSiteList();
+        $this->tpl_data['sites'] = $list_of_sites;
+
         $x=0;
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
@@ -332,11 +411,10 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     $this->tpl_data['join_id'] = $val;
                 }
                 if ($key === 'hash') {
-                    $hash = $val;
-                    //$this->addSelect($val, "", $options);                    
+                    // do nothing
                 }
                 if ($key === 'Resolved') {
-                    $resolved_index = $val;                    
+                    // do nothing
                 }
                 if ($key === 'Problem') {
                     if($val="Could not identify scan type"){    
@@ -358,13 +436,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 $i++;
             }
             
-            $optional = array("selected" => (string)$resolved_index);
-            //var_dump($optional);
-            //$hash = $this->tpl_data['hash'];
-            $this->addSelect($hash, "", $options, $optional);
             $x++;
         }
-        echo "RESOLVED VIOLATIONS";
         return true;
     }
 

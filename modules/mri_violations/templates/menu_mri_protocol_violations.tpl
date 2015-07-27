@@ -1,4 +1,7 @@
 <script type="text/javascript" src="GetJS.php?Module=mri_violations&file=mri_protocol_violations.js"></script>
+<link rel="stylesheet" href="css/c3.css">
+<script src="js/d3.min.js" charset="utf-8"></script>
+<script src="js/c3.min.js"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
@@ -64,9 +67,10 @@
     </div>
 </div>
 
+
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=conflict_resolver">Protocol violations</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations">Protocol violations</a></li>
         <li class="statsTab active"><a class="statsTabLink">Resolved violations</a></li>
     </ul>
     <div class="tab-content">
