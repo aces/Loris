@@ -22,9 +22,10 @@ if($_POST['ProjectID'] === 'new' && !empty($_POST['Name'])) {
     $db->insert(
        "Project",
        array(
-        "Name" => $_POST['Name'],
-        "recruitmentTarget" => $_POST['recruitmentTarget'],
-       );
+            "Name" => $_POST['Name'],
+            "recruitmentTarget" => $_POST['recruitmentTarget'],
+        )
+    );
 } else{
     $db->update(
         "Project",
