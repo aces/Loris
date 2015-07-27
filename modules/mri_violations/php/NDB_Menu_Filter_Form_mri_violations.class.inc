@@ -399,7 +399,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 }
                 if ($key === 'hash') {
                     $hash = $val;
-                    //$this->addSelect($val, "", $options);                    
                 }
                 if ($key === 'Resolved') {
                     $resolved_index = $val;

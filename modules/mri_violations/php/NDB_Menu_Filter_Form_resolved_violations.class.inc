@@ -281,9 +281,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicText('TimeRun', 'Time Run');
