@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS `violations_resolved` (
   `ChangeDate` datetime DEFAULT NULL,
   `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

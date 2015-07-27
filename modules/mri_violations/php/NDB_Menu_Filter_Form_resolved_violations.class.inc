@@ -142,12 +142,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
         // set the class variables
-        // create user object
-        $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-
         $config =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
