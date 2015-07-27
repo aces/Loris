@@ -29,29 +29,12 @@ var PagedRowHeader = React.createClass({
 	}
 });
 
-var PagedRowContent = React.createClass({
-	propType:{
-		'content' : React.PropTypes.array.isRequired
-	},
-	render: function(){
-		var content_rows = this.props.content.map(function(content_column){
-			return <td>{content_column}</td>
-		});
-		var content_table = this.props.content.map(function(table){
-									   return <tr>{table}</tr>
-		});
-									   console.log(content_table);
-		return <tbody>{content_table}</tbody>								   
-	}
-
-});
-
 var PagedTable = React.createClass({
 
 
 	propTypes:{
-		'table_headers' : React.PropTypes.array.isRequired,
-		'table_rows' : React.PropTypes.array.isRequired,
+		'table_headers' : React.PropTypes.array,
+		'table_rows' : React.PropTypes.array
 	},
 	getInitialState: function(){
 		return{
@@ -90,110 +73,144 @@ var PagedTable = React.createClass({
 		this.setState({currentPage: pageNum})
 	},
 	render:function(){
-		console.log(this.props.table_headers);
-		return <div>
-		  <table className="table table-hover table-primary table-bordered colm-freeze">
-				    <PagedRowHeader header_row={this.props.table_headers}/>
-				    <PagedRowContent content={this.props.table_rows}/>
-		  </table>
-		</div>
-	}
-});
-
-var IncompleteCandidatesTable = React.createClass({
-	propTypes: {
-		'incomplete_candidates' : React.PropTypes.array.isRequired,
-		
-	},
-	getInitialState: function(){
-		return{
-			pageSize: 10,
-			currentPage: 1
-		}
-	},
-	componentWillReceiveProps: function(nextProps) {
-		this.setState({
-			currentPage: 1
-		})
-	},
-	getPage: function(){
-		var start = this.state.pageSize * (this.state.currentPage - 1);
-		var end = start + this.state.pageSize;
-
-		return{
-			currentPage: this.state.currentPage,
-			incomplete_candidates: this.props.incomplete_candidates.slice(start, end),
-			numPages: this.getNumPages(),
-			handleClick: function(pageNum) {
-				return function() {
-					this.handlePageChange(pageNum)
-				}.bind(this)
-			}.bind(this)
-		}	
-	},
-	getNumPages: function() {
-		var numPages = Math.floor(this.props.incomplete_candidates.length / this.state.pageSize);
-		if (this.props.incomplete_candidates.length % this.state.pageSize > 0){
-			numPages++
-		}
-		return numPages			
-	},
-	handlePageChange: function(pageNum) {
-		this.setState({currentPage: pageNum})
-	},
-						   render: function(){
 		var page = this.getPage();
-		var topics = page.incomplete_candidates.map(function(topic) {
-			return <tr>
-		  <td>{topic.visit_label}</td>
-		  <td>{topic.candid}</td>
-		  <td>{topic.test_name}</td>
-		  <td>{topic.commentid}</td>
-		  
-			</tr>;
-		});
-		console.log(topics);
-		return <div>
-			  {pager(page)}
-			  <table className="table table-hover table-primary table-bordered colm-freeze">
-			    <thead>
-			      <tr className="info">
-				<th>Topic</th>
-				<th>Posts</th>
-			      </tr>
-			    </thead>
-			    <tbody>
-			      {topics}
-			    </tbody>
-			  </table>
-			  {pager(page)}
-		</div>;
-	}
-}); 
+		var rows_to_map = page.table_rows;
+		var children_to_map = this.props.children;
+		var rows_for_current_page = rows_to_map.map(function(row){							
+								     var mapped = React.Children.map(children_to_map, function (child) {
+									     return React.cloneElement(child, {
+										     row: row
+									     });			
+								     });
+								     console.log(mapped);
+								     return mapped; 
+								     });
+								     return <div>
+								     {pager(page)}
+								     <table className="table table-hover table-primary table-bordered colm-freeze">
+								       <PagedRowHeader header_row={this.props.table_headers}/>
+								       <tbody>
+									 {rows_for_current_page}
+								       </tbody>
+								     </table>
+								     {pager(page)}
 
-/**
- * Renders a pager component.
- */
-function pager(page) {
-	var pageLinks = []
-	if (page.currentPage > 1) {
-		if (page.currentPage > 2) {
-			pageLinks.push(<span className="pageLink" onClick={page.handleClick(1)}>«</span>)
-				pageLinks.push(' ')
-		}
-		pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.currentPage - 1)}>‹</span>)
-			pageLinks.push(' ')
+								     </div>
 	}
-	pageLinks.push(<span className="currentPage">Page {page.currentPage} of {page.numPages}</span>)
-		if (page.currentPage < page.numPages) {
-			pageLinks.push(' ')
-				pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.currentPage + 1)}>›</span>)
-				if (page.currentPage < page.numPages - 1) {
-					pageLinks.push(' ')
-						pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.numPages)}>»</span>)
-				}
-		}
-	return <div>{pageLinks}</div>
+})
+
+	var IncompleteCandidatesRow = React.createClass({
+							 propTypes:{
+								 'row' : React.PropTypes.object.isRequired
+
+							 },
+							 render: function(){
+								 var row = this.props.row;
+								 return <tr key={row.id}>
+								 <td>{row.visit_label}</td>
+								 <td>{row.candid}</td>
+								 <td>{row.test_name}</td>
+								 <td>{row.commentid}</td>
+								 
+								 </tr>;
+								 
+							 }
+							 })
+
+	var IncompleteCandidatesTable = React.createClass({
+							   propTypes: {
+								   'incomplete_candidates' : React.PropTypes.array.isRequired,
+								   
+							   },
+							   getInitialState: function(){
+								   return{
+									   pageSize: 10,
+									   currentPage: 1
+								   }
+							   },
+							   componentWillReceiveProps: function(nextProps) {
+								   this.setState({
+									   currentPage: 1
+								   })
+							   },
+							   getPage: function(){
+								   var start = this.state.pageSize * (this.state.currentPage - 1);
+								   var end = start + this.state.pageSize;
+
+								   return{
+									   currentPage: this.state.currentPage,
+									   incomplete_candidates: this.props.incomplete_candidates.slice(start, end),
+									   numPages: this.getNumPages(),
+									   handleClick: function(pageNum) {
+										   return function() {
+											   this.handlePageChange(pageNum)
+										   }.bind(this)
+									   }.bind(this)
+								   }	
+							   },
+							   getNumPages: function() {
+								   var numPages = Math.floor(this.props.incomplete_candidates.length / this.state.pageSize);
+								   if (this.props.incomplete_candidates.length % this.state.pageSize > 0){
+									   numPages++
+								   }
+								   return numPages			
+							   },
+							   handlePageChange: function(pageNum) {
+								   this.setState({currentPage: pageNum})
+							   },
+							   render: function(){
+								   var page = this.getPage();
+								   var topics = page.incomplete_candidates.map(function(topic) {
+									   return <tr>
+									   <td>{topic.visit_label}</td>
+									   <td>{topic.candid}</td>
+									   <td>{topic.test_name}</td>
+									   <td>{topic.commentid}</td>
+									   
+									   </tr>;
+								   });
+								   console.log(topics);
+								   return <div>
+								   {pager(page)}
+								   <table className="table table-hover table-primary table-bordered colm-freeze">
+								   <thead>
+								   <tr className="info">
+								   <th>Topic</th>
+								   <th>Posts</th>
+								   </tr>
+								   </thead>
+								   <tbody>
+								   {topics}
+								   </tbody>
+								   </table>
+								   {pager(page)}
+								   </div>;
+							   }
+							   }); 
+
+								   /**
+								    * Renders a pager component.
+								    */
+								   function pager(page) {
+											 var pageLinks = []
+											 if (page.currentPage > 1) {
+												 if (page.currentPage > 2) {
+													 pageLinks.push(<span className="pageLink" onClick={page.handleClick(1)}>«</span>)
+														 pageLinks.push(' ')
+												 }
+												 pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.currentPage - 1)}>‹</span>)
+													 pageLinks.push(' ')
+											 }
+											 pageLinks.push(<span className="currentPage">Page {page.currentPage} of {page.numPages}</span>)
+												 if (page.currentPage < page.numPages) {
+													 pageLinks.push(' ')
+														 pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.currentPage + 1)}>›</span>)
+														 if (page.currentPage < page.numPages - 1) {
+															 pageLinks.push(' ')
+																 pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.numPages)}>»</span>)
+														 }
+												 }
+											 return <div>{pageLinks}</div>
 }
 
 		var DefaultPanel = React.createClass({displayName: 'CandidatesPanelTable',
@@ -228,7 +245,9 @@ var weirdDiv = React.createClass({
 						      render: function(){
 							      return (
 								      <DefaultPanel>
-									<PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header} />
+								      <PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header}>
+								      <IncompleteCandidatesRow/>
+								      </PagedTable>
 								      </DefaultPanel>
 							      );
 						      }
