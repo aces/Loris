@@ -217,7 +217,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 }
             }
         }
-
         return $values;
     }
 
@@ -287,7 +286,6 @@ class NDB_Menu_Filter extends NDB_Menu
             // erase filter data from the session
             $this->_resetFilters(true);
         }
-
         // 2. After resetting filters (if applicable), set the new
         // filters using the appropriate method.
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {

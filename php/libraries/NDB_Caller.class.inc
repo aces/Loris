@@ -124,7 +124,8 @@ class NDB_Caller extends PEAR
                 && $submenu === null)
                 && ($this->existsAndRequire($menu_filter_testname)
                 || $this->existsAndRequire($menu_form_testname)
-                || $this->existsAndRequire($menu_testname))) || ($submenu !== null
+                || $this->existsAndRequire($menu_testname))) || 
+                ($submenu !== null
                 && ($this->existsAndRequire("NDB_Menu_Filter_$submenu.class.inc")
                 || $this->existsAndRequire("NDB_Menu_$submenu.class.inc")
                 || $this->existsAndRequire($menu_filter_form_subtest)))
@@ -149,6 +150,7 @@ class NDB_Caller extends PEAR
                 $this->type = 'form';
                 return $html;
             }
+
             // Exit to make sure we don't accidentally mix old style and
             // new style. If something is a module, it should remain a
             // module.

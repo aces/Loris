@@ -163,7 +163,6 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
                     ? $item['SessionID'] 
                     : '';
 
-
                 $this->tpl_data['items'][$x][$i] = $row;
                 $i++;
             }

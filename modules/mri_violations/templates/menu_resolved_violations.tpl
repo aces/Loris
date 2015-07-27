@@ -1,12 +1,8 @@
 <script src="js/filterControl.js" type="text/javascript"></script>
-<link rel="stylesheet" href="css/c3.css">
-<script src="js/d3.min.js" charset="utf-8"></script>
-<script src="js/c3.min.js"></script>
-
 <div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=mri_violations" name="mri_violations" id="mri_violations">
+        <form method="post" action="main.php?test_name=mri_violations&submenu=resolved_violations">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -40,23 +36,15 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-2">{$form.Project.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
-                            <label class="col-sm-12 col-md-2">{$form.Subproject.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.Subproject.html}</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Site.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Site.html}</div> 
+                            <label class="col-sm-12 col-md-2">{$form.Resolved.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Resolved.html}</div>                
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="form-group col-sm-5 col-sm-offset-7 hidden-sm">
                             <div class="col-sm-6 col-xs-12">
-                                {*<input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Show Data" type="submit" />*}
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
@@ -64,32 +52,29 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=resolved_violations&reset=true'">
                             </div>
                         </div>
                     </div>
                     <div class="row visible-sm">
                         <div class="col-sm-6">
-                            {*<input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Show Data" type="submit" />*}
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=resolved_violations&reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="mri_violations" />
                 </div>
             </div>
-            </form>
     </div>
 </div>
 </div>
 
-<div class="row">
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="main.php?test_name=mri_violations">Not Resolved</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=mri_violations&submenu=resolved_violations">Resolved</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=mri_violations">Not Resolved</a></li>
+        <li class="statsTab active"><a class="statsTabLink" href="main.php?test_name=mri_violations&submenu=resolved_violations">Resolved</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
@@ -104,16 +89,14 @@
         <div id="results" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="table-scroll" id="content">
-                    <form method="post" action="main.php?test_name=mri_violations"  name="mri_violations" id="mri_violations">
                     <table class="table table-hover table-primary table-bordered" border="0">
                         <thead>
                             <tr class="info">
+                                <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">Resolution status</a></th>
                                 <th>No.</th>
                                 {section name=header loop=$headers}
                                     {if $headers[header].name ne 'SeriesUID' && $headers[header].name ne 'join_id' && $headers[header].name ne 'Resolved' && $headers[header].name ne 'hash'}
                                         <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                                    {elseif $headers[header].name eq 'hash'}
-                                        <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">Resolution status</a></th>
                                     {/if}
                                 {/section}
                             </tr>
@@ -121,7 +104,16 @@
                         <tbody>
                             {section name=item loop=$items}
                                 <tr>
-                                <!-- print out data rows -->
+                                {section name=piece loop=$items[item]}
+                                    {if $items[item][piece].name eq 'Resolved'}
+                                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            <span class="label {$resolved_styles[$items[item][piece].value]}">
+                                                {$resolved_options[$items[item][piece].value]}
+                                            </span>
+                                        </td>
+                                    {/if}
+                                {/section}
+                                    <!-- print out data rows -->
                                 {section name=piece loop=$items[item]}
                                 {if $items[item][piece]}
                                     {if $items[item][piece].value eq 'Could not identify scan type'}
@@ -129,9 +121,9 @@
                                             <a href="#" class="mri_violations" id="mri_protocol_violations" data-PatientName="{$items[item].PatientName}" "{if $series}"data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
                                         </td>
                                     {elseif $items[item][piece].value eq 'Protocol Violation'}
-                                    <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                        <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $series}" data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
-                                    </td>
+                                        <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $series}" data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
+                                        </td>
                                     {elseif $items[item][piece].name == "Project"}
                                         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                             {$projects[$items[item][piece].value]}
@@ -147,12 +139,14 @@
                                     {elseif $items[item][piece].name == "join_id"}
                                             <!-- skip, do nothing -->
                                     {elseif $items[item][piece].name == "Resolved"}
-                                            <!-- skip, do nothing -->
+                                        <!-- skip, do nothing -->
+                                        {*<td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                            <span class="label {$resolved_styles[$items[item][piece].value]}">{$resolved_options[$items[item][piece].value]}</span>
+                                        </td>*}
                                     {elseif $items[item][piece].name == "hash"}
-                                        <td nowrap="nowrap" colspan="4" bgcolor="{$items[item][piece].bgcolor}">
-                                            {*adds the select menu generated by a utility in the controller*}
+                                        {*<td nowrap="nowrap" colspan="4" bgcolor="{$items[item][piece].bgcolor}">
                                             {$form[$items[item][piece].value].html}
-                                        </td>
+                                        </td>*}
                                     {else}
                                         <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                             {$items[item][piece].value}
@@ -164,15 +158,7 @@
                             {sectionelse}
                                 <tr><td colspan="12">No data found</td></tr>
                             {/section}
-                            <tr>
-                                <td nowrap="nowrap" colspan="6" id="message-area">
 
-                                </td>
-                                <td nowrap="nowrap" colspan="2">
-                                    <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
-                                    <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                   </form>
@@ -186,7 +172,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 </div>
 </div>
