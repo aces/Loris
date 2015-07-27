@@ -14,21 +14,36 @@ var Config = React.createClass({
 	}
 });
 
-var PagedRow = React.createClass({
+var PagedRowHeader = React.createClass({
 	propType:{
-		'row' : React.PropTypes.array.isRequired
+		'header_row' : React.PropTypes.array.isRequired
 	},
 	render: function(){
-		var row = this.props.row.map(function(header) {
-			return 
-		  <th>header</th>;			
-		});
-		return <tr className="info">
-		    <th>evan</th>
-		    {row}
-		</tr>;
-
+		return <thead>
+		  <tr className="info">
+		    {this.props.header_row.map(function(header_column){
+			    return <th>{header_column}</th>
+		     })}
+		  </tr>
+		</thead>;
 	}
+});
+
+var PagedRowContent = React.createClass({
+	propType:{
+		'content' : React.PropTypes.array.isRequired
+	},
+	render: function(){
+		var content_rows = this.props.content.map(function(content_column){
+			return <td>{content_column}</td>
+		});
+		var content_table = this.props.content.map(function(table){
+									   return <tr>{table}</tr>
+		});
+									   console.log(content_table);
+		return <tbody>{content_table}</tbody>								   
+	}
+
 });
 
 var PagedTable = React.createClass({
@@ -76,9 +91,10 @@ var PagedTable = React.createClass({
 	},
 	render:function(){
 		console.log(this.props.table_headers);
-		return <div>hello world
+		return <div>
 		  <table className="table table-hover table-primary table-bordered colm-freeze">
-		    <PagedRow row={this.props.table_headers}/>
+				    <PagedRowHeader header_row={this.props.table_headers}/>
+				    <PagedRowContent content={this.props.table_rows}/>
 		  </table>
 		</div>
 	}
