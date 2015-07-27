@@ -282,10 +282,6 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
 
             $x++;
         }
-<<<<<<< .merge_file_6fSM8c
-        echo "CONFLICT RESOLVER<BR>";
-=======
->>>>>>> .merge_file_x2pz1c
         return true;
     }
 }
