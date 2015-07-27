@@ -105,6 +105,7 @@ class LorisForm
         if (isset($attribs['multiple'])) {
             $el['multiple'] = $attribs['multiple'];
         }
+
     }
 
     /**
@@ -417,7 +418,7 @@ class LorisForm
                 $optionKey = (string) $optionKey;
             }
 
-            if ($optionKey === $el['selected']) {
+            if ($optionKey === $this->getValue($el['name'])) {
                 $selected = 'selected="selected"';
             }
 
