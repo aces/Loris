@@ -40,7 +40,27 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
     function testGetCandidates() {
         $API = new \Loris\API\Candidates("GET");
 
-        $this->assertEquals($API->JSON, ["Candidates" => ["123456", "222222"]]);
+        $this->assertEquals($API->JSON, ["Candidates" => [
+            [
+                "CandID" => "123456",
+                "Project" => "loris",
+                "PSCID" => "TestCandidate2",
+                "Site" => "DCC",
+                "EDC" => null,
+                "DoB" => '1833-10-24',
+                "Gender" => "Male",
+            ],
+            [
+                "CandID" => "222222",
+                "Project" => "loris",
+                "PSCID" => "TestCandidate",
+                "Site" => "DCC",
+                "EDC" => null,
+                "DoB" => '1933-10-24',
+                "Gender" => "Female",
+            ]
+            ]
+        ]);
     }
 
     function testPostCandidateValid() {
