@@ -121,7 +121,6 @@ class NDB_Form_Configuration extends NDB_Form
             "SELECT Value FROM Config WHERE Visible=1 ORDER BY OrderNumber",
 	     
 	);
-	
 	if($useProject === 'Yes'){*/
 	    $projectList = Utility::getProjectList();
 	    $projects = array();
@@ -130,7 +129,7 @@ class NDB_Form_Configuration extends NDB_Form
 	    }
 	    $this->tpl_data['projects'] = $projects;
 	/*}else{
-	    $this->tpl_data['projects'] = array();
+	    return PEAR::raiseError("This study does not use projects.");
         }*/
 	
     }
