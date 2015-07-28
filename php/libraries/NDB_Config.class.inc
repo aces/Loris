@@ -454,7 +454,7 @@ class NDB_Config
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        try 
+        try
         {
              $info =$DB->pselectRow(
                  "SELECT * FROM Project WHERE ProjectID=:sp",
@@ -466,10 +466,10 @@ class NDB_Config
         }
         //Format the result into config.xml format.
         return array(
-            'id' => $info['ProjectID'],
-            'Name' => $info['Name'],
-            'recruitmentTarget' => $info['recruitmentTarget']
-        );
+                'id' => $info['ProjectID'],
+                'Name' => $info['Name'],
+                'recruitmentTarget' => $info['recruitmentTarget']
+               );
     }
     /**
      * Checks if the logged in user has permission for the given
