@@ -57,6 +57,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
         $this->url = $this->config->getSetting("url") . "/main.php";
 
+        $this->DB->run("DELETE from users WHERE ID=999990");
         $this->DB->insert(
             "users",
             array(
