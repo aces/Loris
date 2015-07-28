@@ -45,16 +45,40 @@ class Projects extends APIBase
         $config = $this->Factory->config();
 
         $useProjects = $config->getSetting("useProjects");
+        $useEDC = $config->getSetting("useEDC");
+
+        if($useEDC === '1' || $useEDC === 'true') {
+            $useEDC = true;
+        } else {
+            $useEDC = false;
+        }
+        $PSCID = $config->getSetting("PSCID");
+        $PSCIDFormat = \Utility::structureToPCRE($PSCID['structure'], "SITE");
+
+        $settings = [
+            "useEDC" => $useEDC,
+            "PSCID" => [
+                "Type" => $PSCID['generation'],
+                "Regex" => $PSCIDFormat,
+            ]
+        ];
+
 
         if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
             $projects   = \Utility::getProjectList();
+            $projArray = [];
+            foreach($projects as $project) {
+                $projArray[$project] = $settings;
+            }
             $this->JSON = [
-                           "Projects" => array_values($projects),
+                           "Projects" => $projArray,
                           ];
         } else {
             $this->JSON = [
-                           "Projects" => ["loris"],
-                          ];
+                "Projects" => array(
+                    "loris" => $settings
+                    ),
+                ];
         }
     }
 }

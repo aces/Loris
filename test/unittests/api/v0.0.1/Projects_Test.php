@@ -22,6 +22,37 @@ class Projects_Test extends BaseTestCase
 
         $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
+
+        /*
+        $this->Config->method("getSetting")->will($this->returnCallback(
+                function ($setting) {
+                    // Stuff relevant to this test
+                    if($setting === "useEDC") {
+                        return "false";
+                    }
+                    if($setting === "useProjects") {
+                        return "false";
+                    }
+                    if($setting === "PSCID") {
+                        return [
+                            ];
+                    }
+                    // Stuff that gets called around Loris that we don't want to
+                    // throw an exception for
+                    if($setting === "database") {
+                        return false;
+                    }
+                    if($setting === "extLibs") {
+                        return "";
+                    }
+                    if($setting === "showPearErrors") {
+                        return "true";
+                    }
+
+                    throw new \ConfigurationException("Unmocked config setting $setting");
+                }
+        )); */
+
     }
 
     /**
@@ -29,9 +60,31 @@ class Projects_Test extends BaseTestCase
      */
     function testValidMethods() {
         $this->Config->method('getSetting')->will(
-            $this->returnValueMap(
-                ["useProjects", false]
-            )
+            $this->returnValueMap([
+                ["useProjects", false],
+                ["useEDC", false],
+                ["PSCID", [
+                            "generation" => "user",
+                            "structure" => [
+                                    'seq' => [
+                                        [
+                                            '#' => '',
+                                            '@' => [
+                                                'type' => 'siteAbbrev'
+                                            ]
+                                        ],
+                                        [
+                                            '#' => '',
+                                            '@' => [
+                                                'type' => 'numeric',
+                                                'length' => '4',
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                    ]
+                ]
+            ])
         );
 
         $API = new \Loris\API\Projects("GET");
@@ -45,15 +98,46 @@ class Projects_Test extends BaseTestCase
      */
     function testGETProjectsWithoutProjects() {
         $this->Config->method('getSetting')->will(
-            $this->returnValueMap(
-                ["useProjects", false]
-            )
+            $this->returnValueMap([
+                ["useProjects", false],
+                ["useEDC", false],
+                ["PSCID", [
+                            "generation" => "user",
+                            "structure" => [
+                                    'seq' => [
+                                        [
+                                            '#' => '',
+                                            '@' => [
+                                                'type' => 'siteAbbrev'
+                                            ]
+                                        ],
+                                        [
+                                            '#' => '',
+                                            '@' => [
+                                                'type' => 'numeric',
+                                                'length' => '4',
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                    ]
+                ]
+            ])
         );
 
         $API = new \Loris\API\Projects("GET");
         $this->assertEquals(
             $API->JSON,
-            ['Projects' => ["loris"]]
+            ['Projects' => [
+                "loris" => [
+                    "useEDC" => false,
+                    "PSCID" => [
+                        "Type" => "user",
+                        "Regex" => "/^SITE{1,1}[0-9]{4,4}$/i"
+                    ]
+                ]
+                ]
+            ]
         );
     }
 
@@ -72,6 +156,28 @@ class Projects_Test extends BaseTestCase
                     return "false";
                 }
 
+                if($arg === "PSCID") {
+                return [
+                            "generation" => "sequential",
+                            "structure" => [
+                                    'seq' => [
+                                        [
+                                            '#' => '',
+                                            '@' => [
+                                                'type' => 'siteAbbrev'
+                                            ]
+                                        ],
+                                        [
+                                            '#' => '',
+                                            '@' => [
+                                                'type' => 'numeric',
+                                                'length' => '4',
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                    ];
+                }
                 if($arg === 'Projects') {
                     return [
                         "project" => [
@@ -97,14 +203,14 @@ class Projects_Test extends BaseTestCase
                     "useEDC" => false,
                     "PSCID" => [
                         "Type" => "sequential",
-                        "Regex" => "/SITE{1,1}[0-0}{4}/"
+                        "Regex" => "/^SITE{1,1}[0-9]{4,4}$/i"
                     ]
                 ],
                 "Another Sample Project" => [
                     "useEDC" => false,
                     "PSCID" => [
                         "Type" => "sequential",
-                        "Regex" => "/SITE{1,1}[0-0}{4}/"
+                        "Regex" => "/^SITE{1,1}[0-9]{4,4}$/i"
                     ]
                 ],
             ]
