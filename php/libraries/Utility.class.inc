@@ -296,14 +296,14 @@ class Utility extends PEAR
      */
     static function getProjectList()
     {
-	$DB     = Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB       = Database::singleton();
+        $config   = NDB_Config::singleton();
         // get the list of projects
-        $projects =  $DB->pselect("SELECT * FROM Project", array());
-        $project = array();
+        $projects = $DB->pselect("SELECT * FROM Project", array());
+        $project  = array();
         foreach ($projects as $row) {
             $project[$row['ProjectID']] = $row['Name'];
-         }
+        }
         return $project;
     }
 
