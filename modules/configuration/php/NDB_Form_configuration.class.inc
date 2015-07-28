@@ -99,7 +99,10 @@ class NDB_Form_Configuration extends NDB_Form
 
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
+	
+	$useProjects = $config->getSetting("useProjects");
 
+	$this->tpl_data['useProjects']     = $useProjects;
         $this->tpl_data['parentMenuItems'] = $parentMenuItems;
         $this->tpl_data['config']          = $configs;
         $this->tpl_data['instruments']     = $instruments;
