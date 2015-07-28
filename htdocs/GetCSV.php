@@ -123,8 +123,6 @@ function loadMenu($menu, $mode)
     $list['data']    = $menu->_getFullList();
     $list['headers'] = $menu->headers;
 
-    error_log(print_r($menu->headers, true));
-
     return $list;
 }
 
