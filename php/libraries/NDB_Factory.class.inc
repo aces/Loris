@@ -44,6 +44,11 @@ class NDB_Factory
     private static $_config = null;
 
     /**
+     * @var Settings
+     */
+    private static $_settings = null;
+
+    /**
      * Sets whether the factory should return real objects or testing objects
      *
      * @param boolean $val Whether testing should be enabled
@@ -86,6 +91,8 @@ class NDB_Factory
         self::$_user    = null;
 
         self::$_config = null;
+
+        self::$_settings = null;
     }
 
     /**
@@ -250,6 +257,20 @@ class NDB_Factory
     {
         self::$_couchdb = $couchDB;
         return $couchDB;
+    }
+
+    /**
+     * Returns a singleton settings object
+     *
+     * @return Settings setting object
+     */
+    public function settings()
+    {
+        if (self::$_settings !== null) {
+            return self::$_settings;
+        }
+        self::$_settings = new Settings($this->config());
+        return self::$_settings;
     }
 }
 ?>
