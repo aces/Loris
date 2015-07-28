@@ -59,8 +59,12 @@ class NDB_Form_user_accounts extends NDB_Form
     function _process($values)
     {
         $config = NDB_Config::singleton();
-        $changedpermissions = array();
 
+        //The arrays that contain the edited permissions
+        $permissionsRemoved = array();
+        $permissionsAdded = array();
+
+        $editor =& User::singleton();
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
@@ -167,7 +171,7 @@ class NDB_Form_user_accounts extends NDB_Form
                     ///Then insert into the user_account_history as 'D'
                     if (in_array($key, $current_permissionids)) {
                         $user->insertIntoUserAccountHistory($key, 'D');
-                        $changedpermissions[] = $this->getDescriptionUsingPermID($key);
+                        $permissionsRemoved[] = $this->getDescriptionUsingPermID($key);
                     }
                     unset($permIDs[$key]);
                 } else {
@@ -177,18 +181,20 @@ class NDB_Form_user_accounts extends NDB_Form
                     */
                     if (!(in_array($key, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($key, 'I');
-                        $changedpermissions[] = $this->getDescriptionUsingPermID($key);
+                        $permissionsAdded[] = $this->getDescriptionUsingPermID($key);
                     }
                 }
             }
             // send the selected supervisors an email (only if permissions have changed for the user)
             foreach($supervisorEmails as $email => $checkValue) {
-                if (!empty($changedpermissions)) {
+                if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
                     if ($checkValue == 1) {
+                        $msg_data['current_user'] = $editor->getFullname();
                         $msg_data['study'] = $config->getSetting('title');
                         $msg_data['realname'] = $values['Real_name'];
                         $msg_data['username'] = $user->getUsername();
-                        $msg_data['changedpermissions'] = $changedpermissions;
+                        $msg_data['permissions_added'] = $permissionsAdded;
+                        $msg_data['permissions_removed'] = $permissionsRemoved;
                         Email::send($email, 'permissions_change_notify_supervisor.tpl', $msg_data);
                     }
                 }
@@ -206,6 +212,7 @@ class NDB_Form_user_accounts extends NDB_Form
             $config =& NDB_Config::singleton();
 
             // send the user an email
+            $msg_data['current_user'] = $editor->getFullname();
             $msg_data['study'] = $config->getSetting('title');
             $msg_data['url'] = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
@@ -336,7 +343,8 @@ class NDB_Form_user_accounts extends NDB_Form
         unset($group);
 
         //getting users name and emails to create checkboxes to email supervisors on permissions changes
-        $DB =& Database::singleton();
+        $DB_factory =& NDB_Factory::singleton();
+        $DB = $DB_factory->database();
 
         $query   = "SELECT u.Real_Name, u.email FROM permissions p, user_perm_rel up, users u
                   WHERE p.permID=up.PermID  and p.code = 'send_to_dcc' and u.ID = up.userID;";
@@ -377,7 +385,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
     function my_preferences()
     {
-        $this->identifier = $_SESSION['State']->getUsername();
+        $this->identifier = $_SESSION['State']->getFullname();
 
         ///get the value for additional_user_info flag
         $config =& NDB_Config::singleton();
@@ -594,14 +602,14 @@ class NDB_Form_user_accounts extends NDB_Form
     function getDescriptionUsingPermID($permID)
     {
         $db =& Database::singleton();
-        $permission = $db->pselect(
+        $permission = $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             array('pID' => $permID)
         );
         if (is_array($permission) && count($permission)) {
             list(,$description) = each($permission[0]);
         }
-        return $description;
+        return $permission;
     }
 }
 ?>
