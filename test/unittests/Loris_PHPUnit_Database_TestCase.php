@@ -62,7 +62,8 @@ abstract class Loris_PHPUnit_Database_TestCase extends
     /**
      * Setup test
      * Checks if tests are run on sandbox, otherwise skips them.
-     * Some of these tests may be destructive therefore should never be run in production
+     * Some of these tests may be destructive therefore should never be
+     * run in production
      *
      * @throws Exception
      * @return void
@@ -94,7 +95,8 @@ abstract class Loris_PHPUnit_Database_TestCase extends
         if ($this->_conn === null) {
             if (self::$_pdo == null) {
                 self::$_pdo = new PDO(
-                    'mysql:dbname='.$this->factory->settings()->dbName().';host='.$this->factory->settings()->dbHost(),
+                    'mysql:dbname='.$this->factory->settings()->dbName().';
+                    host='.$this->factory->settings()->dbHost(),
                     $this->factory->settings()->dbUserName(),
                     $this->factory->settings()->dbPassword()
                 );

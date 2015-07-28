@@ -1,10 +1,16 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: kmarasinska
- * Date: 27/07/15
- * Time: 3:54 PM
+ * Setting class tests
+ *
+ * PHP Version 5
+ *
+ * @category Tests
+ * @package  Test
+ * @author   Karolina Marasinska <karolinam.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
+
 
 
 /**
@@ -154,7 +160,10 @@ class SettingsTest extends PHPUnit_Framework_TestCase
     public function testDbNameReturnCorrectName()
     {
         $this->_setUpConfigDatabaseTestDouble();
-        $this->assertEquals($this->_databaseConfigValues['database'], $this->_settings->dbName());
+        $this->assertEquals(
+            $this->_databaseConfigValues['database'],
+            $this->_settings->dbName()
+        );
     }
 
     /**
@@ -166,7 +175,10 @@ class SettingsTest extends PHPUnit_Framework_TestCase
     public function testDbHostReturnCorrectHost()
     {
         $this->_setUpConfigDatabaseTestDouble();
-        $this->assertEquals($this->_databaseConfigValues['host'], $this->_settings->dbHost());
+        $this->assertEquals(
+            $this->_databaseConfigValues['host'],
+            $this->_settings->dbHost()
+        );
     }
 
     /**
@@ -178,7 +190,10 @@ class SettingsTest extends PHPUnit_Framework_TestCase
     public function testDbUserNameReturnCorrectUserName()
     {
         $this->_setUpConfigDatabaseTestDouble();
-        $this->assertEquals($this->_databaseConfigValues['username'], $this->_settings->dbUserName());
+        $this->assertEquals(
+            $this->_databaseConfigValues['username'],
+            $this->_settings->dbUserName()
+        );
     }
 
     /**
@@ -190,7 +205,10 @@ class SettingsTest extends PHPUnit_Framework_TestCase
     public function testDbPasswordReturnCorrectPassword()
     {
         $this->_setUpConfigDatabaseTestDouble();
-        $this->assertEquals($this->_databaseConfigValues['password'], $this->_settings->dbPassword());
+        $this->assertEquals(
+            $this->_databaseConfigValues['password'],
+            $this->_settings->dbPassword()
+        );
     }
 
     /**

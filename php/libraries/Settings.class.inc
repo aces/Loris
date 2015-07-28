@@ -1,12 +1,26 @@
 <?php
+/**
+ * Provides an interface to LORIS configuration settings
+ * Wrapper/Proxy to LORIS Config (NDB_Config)
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Karolina Marasinska <karolinam.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 
 /**
- * Proxy to LORIS Config (NDB_Config)
+ * Wrapper/Proxy to LORIS Config (NDB_Config)
  * Allows easier/more intuitive access to configuration settings.
  *
- * @author  Karolina Marasinska <karolinam.mcin@gmail.com>
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link    https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Loris
+ * @author   Karolina Marasinska <karolinam.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Settings
 {
@@ -38,7 +52,8 @@ class Settings
      * Check if sandbox setting is true
      *
      * @return bool true if 'sandbox' config value is equivalent to true
-     *              (example of sandbox config values which will return true: 1, 2 , 3, 'true')
+     *              (example of sandbox config values which will
+     *                return true: 1, 2 , 3, 'true')
      */
     public function isSandbox()
     {
@@ -105,7 +120,9 @@ class Settings
         }
 
         if (!isset($this->_database[$settingName])) {
-            throw new ConfigurationException("No database setting ".$settingName." found.");
+            throw new ConfigurationException(
+                "No database setting " . $settingName . " found."
+            );
         }
 
         return $this->_database[$settingName];

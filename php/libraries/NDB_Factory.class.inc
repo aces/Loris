@@ -44,7 +44,10 @@ class NDB_Factory
     private static $_config = null;
 
     /**
-     * @var Settings
+     * Settings object
+     * A proxy to NDB_Config
+     *
+     * @var Settings object
      */
     private static $_settings = null;
 
@@ -53,7 +56,7 @@ class NDB_Factory
      *
      * @param boolean $val Whether testing should be enabled
      *
-     * @return none
+     * @return void
      */
     function setTesting($val)
     {
@@ -80,7 +83,7 @@ class NDB_Factory
      * Reset all of the private variables of the factory to the default
      * state. Used between testing runs.
      *
-     * @return none
+     * @return void
      */
     function reset()
     {
