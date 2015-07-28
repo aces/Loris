@@ -117,77 +117,6 @@ var PagedTable = React.createClass({
 							 }
 							 })
 
-	var IncompleteCandidatesTable = React.createClass({
-							   propTypes: {
-								   'incomplete_candidates' : React.PropTypes.array.isRequired,
-								   
-							   },
-							   getInitialState: function(){
-								   return{
-									   pageSize: 10,
-									   currentPage: 1
-								   }
-							   },
-							   componentWillReceiveProps: function(nextProps) {
-								   this.setState({
-									   currentPage: 1
-								   })
-							   },
-							   getPage: function(){
-								   var start = this.state.pageSize * (this.state.currentPage - 1);
-								   var end = start + this.state.pageSize;
-
-								   return{
-									   currentPage: this.state.currentPage,
-									   incomplete_candidates: this.props.incomplete_candidates.slice(start, end),
-									   numPages: this.getNumPages(),
-									   handleClick: function(pageNum) {
-										   return function() {
-											   this.handlePageChange(pageNum)
-										   }.bind(this)
-									   }.bind(this)
-								   }	
-							   },
-							   getNumPages: function() {
-								   var numPages = Math.floor(this.props.incomplete_candidates.length / this.state.pageSize);
-								   if (this.props.incomplete_candidates.length % this.state.pageSize > 0){
-									   numPages++
-								   }
-								   return numPages			
-							   },
-							   handlePageChange: function(pageNum) {
-								   this.setState({currentPage: pageNum})
-							   },
-							   render: function(){
-								   var page = this.getPage();
-								   var topics = page.incomplete_candidates.map(function(topic) {
-									   return <tr>
-									   <td>{topic.visit_label}</td>
-									   <td>{topic.candid}</td>
-									   <td>{topic.test_name}</td>
-									   <td>{topic.commentid}</td>
-									   
-									   </tr>;
-								   });
-								   console.log(topics);
-								   return <div>
-								   {pager(page)}
-								   <table className="table table-hover table-primary table-bordered colm-freeze">
-								   <thead>
-								   <tr className="info">
-								   <th>Topic</th>
-								   <th>Posts</th>
-								   </tr>
-								   </thead>
-								   <tbody>
-								   {topics}
-								   </tbody>
-								   </table>
-								   {pager(page)}
-								   </div>;
-							   }
-							   }); 
-
 								   /**
 								    * Renders a pager component.
 								    */
@@ -228,8 +157,6 @@ var PagedTable = React.createClass({
 							      );
 						      }
 						      });
-
-								      /* IncompleteCandidatesPanel = React.createFactory(DefaultPanel); */
 
 var weirdDiv = React.createClass({
 	
