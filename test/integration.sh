@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 # This script can be used to run integration tests
+# To run:
+#   - to run all integration tests, run script with no arguments:
+#       example: bash integration.sh
+#   - to run integration test for a specific module specify module name as script's 1st argument
+#       example: bash integration.sh configuration
 
 # Test databse and test config.xml have to be created before running tests. This is a one time setup.
 #   1 - create a LorisTest DB and source the default schema (lori/SQL/0000-00-00-schema.sql)
@@ -28,35 +33,13 @@ mysql -D LorisTest -u SQLTestUser -pTestPassword -e "UPDATE Config SET Value='$(
 #mysql -D LorisTest -u SQLTestUser -pkarolina -e "UPDATE Config INNER JOIN ConfigSettings ON (`Config`.`ConfigID`=`ConfigSettings`.`ID`) SET Config.V1alue='http://localhost:8000' WHERE ConfigSettings.Name='url'"
 
 
-# Run integration tests per module
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/brainbrowser/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/candidate_list/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/candidate_parameters/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/configuration/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/conflict_resolver/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/create_timepoint/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/dashboard/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/data_integrity_flag/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/data_team_helper/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/datadict/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/dicom_archive/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/document_repository/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/examiner/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/final_radiological_review/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/genomic_browser/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/help_editor/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/imaging_browser/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/instrument_builder/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/instrument_list/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/instrument_manager/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/mri_upload/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/mri_violations/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/new_profile/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/next_stage/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/reliability/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/statistics/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/survey_accounts/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/timepoint_flag/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/timepoint_list/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/training/test
-../vendor/bin/phpunit --configuration phpunit.xml ../modules/user_accounts/test
+if [ ! -z "$1" ]; then
+  # Run integration tests for a sepecific module
+  echo Running integration test for module: $1;
+  ../vendor/bin/phpunit --configuration phpunit.xml ../modules/$1/test
+else
+ # Run all integration tests
+ ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Core Integration Tests'
+ ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Module Integration Tests'
+fi
+

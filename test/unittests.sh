@@ -13,4 +13,4 @@
 export LORIS_DB_CONFIG=$(pwd)/config.xml
 
 # run unit tests
-../vendor/bin/phpunit --debug --configuration phpunit.xml unittests
+../vendor/bin/phpunit --debug --configuration phpunit.xml --testsuite 'LorisUnitTests for php/libraries'
