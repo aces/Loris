@@ -6,6 +6,8 @@
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
         <script src="{$baseurl}/js/modernizr.min.js" type="text/javascript"></script>
+        <script src="{$baseurl}/js/react-with-addons-0.13.3.min.js" type="text/javascript"></script>
+        <script src="{$baseurl}/js/components/PaginationLinks.js" type="text/javascript"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.dynamictable.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.fileupload.js"></script>
@@ -191,11 +193,19 @@
                                     <ul class="dropdown-menu">
                                         {foreach from=$tab.subtabs item=mySubtab}
                                             {if $mySubtab.Visible == 1}
-                                            <li>
+                                                {if substr($mySubtab.Link,0,4) eq 'http'}
+                                                    <li>
+                                                        <a href="{$mySubtab.Link}">
+                                                            {$mySubtab.Label}
+                                                        </a>
+                                                    </li>
+                                                {else}
+                                                    <li>
                                                         <a href="{$baseurl}/{$mySubtab.Link}">
                                                             {$mySubtab.Label}
                                                         </a>
-                                            </li>
+                                                    </li>
+                                                {/if}
                                             {/if}
                                         {/foreach}
                                     </ul>

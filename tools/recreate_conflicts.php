@@ -48,7 +48,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 * Get cmd-line arguments
 */
 // get $action argument
-$action         = strtolower($argv[1]);
+$action         = $argv[1];
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
 if ($action=='all') {
