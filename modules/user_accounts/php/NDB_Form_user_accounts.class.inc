@@ -59,6 +59,14 @@ class NDB_Form_user_accounts extends NDB_Form
     function _process($values)
     {
         $config = NDB_Config::singleton();
+
+        //The arrays that contain the edited permissions
+        $permissionsRemoved = array();
+        $permissionsAdded = array();
+
+        $editor =& User::singleton();
+        // build the "real name"
+        
     	// build the "real name"
     	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
     	
@@ -93,7 +101,13 @@ class NDB_Form_user_accounts extends NDB_Form
             $send = $values['SendEmail'];
 	        unset($values['SendEmail']);
 	    }
-
+        
+        //store the supervisors emails
+        if (!empty($values['supervisorEmail'])) {
+            $supervisorEmails = $values['supervisorEmail'];
+            unset($values['supervisorEmail']);
+        }
+        
         // make user name match email address
 	    if (!empty($values['NA_UserID'])) {
 	        $values['UserID'] = $values['Email'];
@@ -159,6 +173,7 @@ class NDB_Form_user_accounts extends NDB_Form
                     ///Then insert into the user_account_history as 'D'
                     if (in_array($key, $current_permissionids)) {
                         $user->insertIntoUserAccountHistory($key, 'D');
+                        $permissionsRemoved[] = $this->getDescriptionUsingPermID($key);                        
                     }
                     unset($permIDs[$key]);
                 } else {
@@ -168,10 +183,26 @@ class NDB_Form_user_accounts extends NDB_Form
                     */
                     if (!(in_array($key, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($key, 'I');
+                        $permissionsAdded[] = $this->getDescriptionUsingPermID($key);                        
                     }
                 }
             }
 
+            // send the selected supervisors an email (only if permissions have changed for the user)
+            foreach($supervisorEmails as $email => $checkValue) {
+                if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
+                    if ($checkValue == 1) {
+                        $msg_data['current_user'] = $editor->getFullname();
+                        $msg_data['study'] = $config->getSetting('title');
+                        $msg_data['realname'] = $values['Real_name'];
+                        $msg_data['username'] = $user->getUsername();
+                        $msg_data['permissions_added'] = $permissionsAdded;
+                        $msg_data['permissions_removed'] = $permissionsRemoved;
+                        Email::send($email, 'permissions_change_notify_supervisor.tpl', $msg_data);
+                    }
+                }
+            }
+            
             $success = $user->addPermissions(array_keys($permIDs));
             if (Utility::isErrorX($success)) {
                 return PEAR::raiseError("user_accounts::_process() add permissions: ".$success->getMessage());
@@ -315,6 +346,27 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
         unset($group);
 
+        //getting users name and emails to create checkboxes to email supervisors on permissions changes
+        $DB_factory =& NDB_Factory::singleton();
+        $DB = $DB_factory->database();
+
+        $query   = "SELECT u.Real_Name, u.email FROM permissions p, user_perm_rel up, users u
+                  WHERE p.permID=up.PermID  ad p.code = 'send_to_dcc' and u.ID = up.userID;";
+        $results = $DB->select($query);
+
+
+        $group[] = $this->form->createElement('static', null, null, '</div>' .
+            "<h3 id=\"header_supervisors\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords("Data Supervisors to Email").'</h3>'
+            . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">");
+
+        foreach ($results as $row){
+            $group[] = $this->createCheckbox('supervisorEmail['.$row['email'].']',"$row[Real_Name]<br>");
+        }
+
+        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", FALSE);
+        unset($group);
+        
+        
         if (!empty($this->identifier)) {
             $user =& User::factory($this->identifier);
             if(Utility::isErrorX($user)) {
@@ -337,7 +389,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
     function my_preferences()
     {
-        $this->identifier = $_SESSION['State']->getUsername();
+        $this->identifier = $_SESSION['State']->getFullname();
 
         ///get the value for additional_user_info flag
         $config =& NDB_Config::singleton();
@@ -550,5 +602,18 @@ class NDB_Form_user_accounts extends NDB_Form
 
         return null;
     }
+
+    function getDescriptionUsingPermID($permID)
+    {
+        $db =& Database::singleton();
+        $permission = $db->pselectOne(
+            "SELECT Description FROM permissions WHERE permID =:pID",
+            array('pID' => $permID)
+        );
+        if (is_array($permission) && count($permission)) {
+            list(,$description) = each($permission[0]);
+        }
+        return $permission;
+    }    
 }
 ?>
