@@ -351,7 +351,7 @@ class NDB_Form_user_accounts extends NDB_Form
         $DB = $DB_factory->database();
 
         $query   = "SELECT u.Real_Name, u.email FROM permissions p, user_perm_rel up, users u
-                  WHERE p.permID=up.PermID  ad p.code = 'send_to_dcc' and u.ID = up.userID;";
+                  WHERE p.permID=up.PermID AND p.code = 'send_to_dcc' AND u.ID = up.userID;";
         $results = $DB->select($query);
 
 
