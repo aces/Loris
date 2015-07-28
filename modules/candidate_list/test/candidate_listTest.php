@@ -854,29 +854,39 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "?test_name=candidate_list");
 
         $fakeDCCID='1';
-        $fakePSCID='DCC0001';
+        $fakePSCID='1';
+
+        // Click "Open Profile" with empty fields
+        $openProfileButton = $this->webDriver->findElement(WebDriverBy::cssSelector("input.btn:nth-child(4)"));
+        $openProfileButton->click();
+        // Check alert message
+        $alert = $this->webDriver->switchTo()->alert();
+        $this->assertContains("You must enter a DCC-ID", $alert->getText());
+        $alert->accept();
 
         // Enter invalid DCCID into field
-        $DCCIDSearch = $this->webDriver->findElement(
-            WebDriverBy::Name("candID")
-        );
+        $DCCIDSearch = $this->webDriver->findElement(WebDriverBy::Name("candID"));
         $DCCIDSearch->click();
         $this->webDriver->getKeyboard()->sendKeys($fakeDCCID);
-
-        // Enter invalid PSCID into field
-        $PSCIDSearch = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("div.col-sm-12:nth-child(3) > div:nth-child(2) > input:nth-child(1)")
-        );
-        $PSCIDSearch->click();
-        $this->webDriver->getKeyboard()->sendKeys($fakePSCID);
-
-        // Click "Open Profile"
+        // Click "Open Profile" with only invalid DCCID
         $openProfileButton = $this->webDriver->findElement(
             WebDriverBy::cssSelector("input.btn:nth-child(4)")
         );
         $openProfileButton->click();
+        // Check alert message
+        $alert = $this->webDriver->switchTo()->alert();
+        $this->assertContains("You must enter a PSCID", $alert->getText());
+        $alert->accept();
 
-        // assert not matching error...
+        // Enter invalid PSCID into field
+        $PSCIDSearch = $this->webDriver->findElement(WebDriverBy::cssSelector("div.col-sm-12:nth-child(3) > div:nth-child(2) > input:nth-child(1)"));
+        $PSCIDSearch->click();
+        $this->webDriver->getKeyboard()->sendKeys($fakePSCID);
+        $openProfileButton->click();
+        // Check alert message
+        $alert = $this->webDriver->switchTo()->alert();
+        $this->assertContains("DCCID or PSCID is not valid", $alert->getText());
+        $alert->accept();
 
         $this->DB->insert(
             "user_perm_rel",
