@@ -110,27 +110,20 @@ class NDB_Form_Configuration extends NDB_Form
     function project() {
         $factory = NDB_Factory::singleton();
         $config = $factory->config();
+	
+	$configs = NDB_Config::singleton();
+	$useProjects = $config->getSetting("useProjects");
 
-	/*$this->DB = Database::singleton();
-        if (Utility::isErrorX($this->DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        die();
-	$useProject = $this->DB->pselect(
-            "SELECT Value FROM Config WHERE Visible=1 ORDER BY OrderNumber",
-	     
-	);
-	if($useProject === 'Yes'){*/
+	if($useProjects === "true"){
 	    $projectList = Utility::getProjectList();
 	    $projects = array();
 	    foreach($projectList as $ProjectID => $Name) {
 	        $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
 	    }
 	    $this->tpl_data['projects'] = $projects;
-	/*}else{
-	    return PEAR::raiseError("This study does not use projects.");
-        }*/
+	}else{
+	     throw new Exception("Projects are not used in this study.");
+        }
 	
     }
 
