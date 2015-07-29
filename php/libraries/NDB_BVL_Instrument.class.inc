@@ -767,9 +767,11 @@ class NDB_BVL_Instrument extends NDB_Page
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
+            if(array_key_exists($key, $this->WrapperNumericElements)){
+                Utility::nullifyEmpty($values, $key);
+            }
         }
         $db =& Database::singleton();
-
         $result = $db->update(
             $this->table,
             $values,
