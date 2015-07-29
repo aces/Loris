@@ -85,11 +85,14 @@ if (!file_exists($FullPath)) {
     exit(5);
 }
 
-$etag = md5(filemtime($FullPath));
 $MimeType = "application/javascript";
 header("Content-type: $MimeType");
+
+$etag = md5(filemtime($FullPath));
 header("ETag: $etag");
-if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag) {
+if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
+    && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag
+) {
     header("HTTP/1.1 304 Not Modified");
     exit(0);
 }

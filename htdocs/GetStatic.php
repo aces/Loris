@@ -77,11 +77,14 @@ if (!file_exists($FullPath)) {
 }
 
 $MimeType = "text/css";
+
 $etag = md5(filemtime($FullPath));
 header("ETag: $etag");
-if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag) {
-        header("HTTP/1.1 304 Not Modified");
-            exit(0);
+if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
+    && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag
+) {
+    header("HTTP/1.1 304 Not Modified");
+    exit(0);
 }
 
 // $MimeType = "application/javascript";
