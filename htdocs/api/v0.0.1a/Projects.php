@@ -81,6 +81,10 @@ class Projects extends APIBase
                 ];
         }
     }
+
+    function calculateETag() {
+        throw new Exception("Not implemented");
+    }
 }
 
 if (isset($_REQUEST['PrintProjects'])) {

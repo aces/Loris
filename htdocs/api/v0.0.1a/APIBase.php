@@ -122,7 +122,7 @@ abstract class APIBase
         session_cache_limiter('private');
         $ETag = $this->calculateETag();
 
-        header("ETag: $ETag");
+        $this->header("ETag: $ETag");
         if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
             && $_SERVER['HTTP_IF_NONE_MATCH'] === $ETag
         ) {

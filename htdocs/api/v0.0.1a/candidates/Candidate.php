@@ -90,6 +90,22 @@ class Candidate extends \Loris\API\APIBase
                        ),
                       ];
     }
+
+    function calculateETag() {
+        $row = $this->DB->pselectRow("SELECT MAX(c.Testdate) as CandChange,
+                MAX(s.Testdate) as VisitChange,
+                COUNT(s.Visit_label) as VisitCount
+            FROM candidate c JOIN session s ON (c.CandID=s.CandID)
+            WHERE c.CandID=:candidate",
+            array("candidate" => $this->CandID)
+        );
+        return md5('Candidate:' . $this->CandID . ':'
+            . $row['CandChange'] . ':'
+            . $row['VisitChange'] . ':'
+            . $row['VisitCount']
+        );
+    }
+
 }
 
 if (isset($_REQUEST['PrintCandidate'])) {
