@@ -52,11 +52,19 @@ class Candidates extends APIBase
     public function handleGET()
     {
         $candidates = $this->DB->pselect(
-            "SELECT CandID FROM candidate WHERE Active='Y'",
+            "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
+                    EDC, DoB, Gender
+                FROM candidate c JOIN psc s on (s.CenterID=c.CenterID) WHERE Active='Y'
+                ",
             []
         );
 
-        $candValues = array_column($candidates, "CandID");
+        $projects = \Utility::getProjectList();
+        $candValues = array_map(function($row) use ($projects) {
+            $row['Project'] = isset($projects[$row['ProjectID']]) ? $projects[$row['ProjectID']] : "loris";
+            unset($row['ProjectID']);
+            return $row;
+        }, $candidates);
 
         $this->JSON = ["Candidates" => $candValues];
     }

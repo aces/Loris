@@ -23,8 +23,27 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
         $this->Database->method("pselect")->will($this->returnCallback(
             function ($query, $params) {
-                if($query == "SELECT CandID FROM candidate WHERE Active='Y'") {
-                    return [["CandID" => "123456"], ["CandID" => "222222"]];
+                if (strpos($query, "SELECT CandID, ProjectID") === 0) {
+                    return [
+                        [
+                            "CandID" => "123456",
+                            "ProjectID" => null,
+                            "PSCID" => "TestCandidate2",
+                            "Site" => "DCC",
+                            "EDC" => null,
+                            "DoB" => "1833-10-24",
+                            "Gender" => "Male"
+                        ],
+                        [
+                            "CandID" => "222222",
+                            "ProjectID" => null,
+                            "PSCID" => "TestCandidate",
+                            "Site" => "DCC",
+                            "EDC" => null,
+                            "DoB" => "1933-10-24",
+                            "Gender" => "Female"
+                        ]
+                    ];
                 }
                 return array();
             }
