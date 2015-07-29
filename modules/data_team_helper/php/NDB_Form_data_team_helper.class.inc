@@ -249,9 +249,10 @@ class NDB_Form_data_team_helper extends NDB_Form
     function getIncompleteCandidates($test_name,$visit_label=null, $candidate=null) 
     {
         global $DB;
-        $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid, f.test_name,f.data_entry,f.commentid FROM session s
+        $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
             JOIN flag f ON (f.sessionid = s.id) 
             JOIN candidate c ON (c.candid = s.candid)
+            JOIN test_names t ON (t.Test_name = f.Test_name)
             JOIN psc ON (s.CenterID = psc.CenterID)	";
 
         $where = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.candid NOT LIKE '%scanner%'";

@@ -2,14 +2,14 @@
 var Config = React.createClass({
 	render: function() {
 		return <div>
-  <h2>Config</h2>
-  <label htmlFor="pageSize">Page Size:</label>
-  <select id="pageSize" value={this.props.pageSize} onChange={this.props.handlePageSizeChange}>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-  </select>
+		<h2>Config</h2>
+		<label htmlFor="pageSize">Page Size:</label>
+		<select id="pageSize" value={this.props.pageSize} onChange={this.props.handlePageSizeChange}>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		</select>
 		</div>;
 	}
 });
@@ -20,18 +20,16 @@ var PagedRowHeader = React.createClass({
 	},
 	render: function(){
 		return <thead>
-		  <tr className="info">
-		    {this.props.header_row.map(function(header_column){
-			    return <th>{header_column}</th>
-		     })}
-		  </tr>
+		<tr className="info">
+		{this.props.header_row.map(function(header_column){
+			return <th>{header_column}</th>
+		})}
+		</tr>
 		</thead>;
 	}
 });
 
 var PagedTable = React.createClass({
-
-
 	propTypes:{
 		'table_headers' : React.PropTypes.array,
 		'table_rows' : React.PropTypes.array
@@ -60,14 +58,14 @@ var PagedTable = React.createClass({
 					this.handlePageChange(pageNum)
 				}.bind(this)
 			}.bind(this)
-		}	
+		}
 	},
 	getNumPages: function() {
 		var numPages = Math.floor(this.props.table_rows.length / this.state.pageSize);
 		if (this.props.table_rows.length % this.state.pageSize > 0){
 			numPages++
 		}
-		return numPages			
+		return numPages
 	},
 	handlePageChange: function(pageNum) {
 		this.setState({currentPage: pageNum})
@@ -76,109 +74,109 @@ var PagedTable = React.createClass({
 		var page = this.getPage();
 		var rows_to_map = page.table_rows;
 		var children_to_map = this.props.children;
-		var rows_for_current_page = rows_to_map.map(function(row){							
-								     var mapped = React.Children.map(children_to_map, function (child) {
-									     return React.cloneElement(child, {
-										     row: row
-									     });			
-								     });
-								     console.log(mapped);
-								     return mapped; 
-								     });
-								     return <div>
-								     {pager(page)}
-								     <table className="table table-hover table-primary table-bordered colm-freeze">
-								       <PagedRowHeader header_row={this.props.table_headers}/>
-								       <tbody>
-									 {rows_for_current_page}
-								       </tbody>
-								     </table>
-								     {pager(page)}
-
-								     </div>
+		var rows_for_current_page = rows_to_map.map(function(row){
+			var mapped = React.Children.map(children_to_map, function (child) {
+				return React.cloneElement(child, {
+					row: row
+				});
+			});
+			console.log(mapped);
+			return mapped;
+		});
+		return <div>
+		{pager(page)}
+		<table className="table table-hover table-primary table-bordered colm-freeze">
+		<PagedRowHeader header_row={this.props.table_headers}/>
+		<tbody>
+		{rows_for_current_page}
+		</tbody>
+		</table>
+		<nav>
+		{pager(page)}
+		</nav>
+		</div>
 	}
 })
 
-	var IncompleteCandidatesRow = React.createClass({
-							 propTypes:{
-								 'row' : React.PropTypes.object.isRequired
+var IncompleteCandidatesRow = React.createClass({
+	propTypes:{
+		'row' : React.PropTypes.object.isRequired
 
-							 },
-							 render: function(){
-								 var row = this.props.row;
-								 return <tr key={row.id}>
-								 <td>{row.visit_label}</td>
-								 <td>{row.candid}</td>
-								 <td>{row.test_name}</td>
-								 <td>{row.commentid}</td>
-								 
-								 </tr>;
-								 
-							 }
-							 })
+	},
+	render: function(){
+		var row = this.props.row;
+		return <tr key={row.id}>
+		  <td>{row.visit_label}</td>
+		  <td>{row.candid}</td>		
+		  <td>
+		    <a href={"main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid}>
+		      {row.Full_name}
+		    </a>
+		  </td>
+		</tr>;
 
-								   /**
-								    * Renders a pager component.
-								    */
-								   function pager(page) {
-											 var pageLinks = []
-											 if (page.currentPage > 1) {
-												 if (page.currentPage > 2) {
-													 pageLinks.push(<span className="pageLink" onClick={page.handleClick(1)}>«</span>)
-														 pageLinks.push(' ')
-												 }
-												 pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.currentPage - 1)}>‹</span>)
-													 pageLinks.push(' ')
-											 }
-											 pageLinks.push(<span className="currentPage">Page {page.currentPage} of {page.numPages}</span>)
-												 if (page.currentPage < page.numPages) {
-													 pageLinks.push(' ')
-														 pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.currentPage + 1)}>›</span>)
-														 if (page.currentPage < page.numPages - 1) {
-															 pageLinks.push(' ')
-																 pageLinks.push(<span className="pageLink" onClick={page.handleClick(page.numPages)}>»</span>)
-														 }
-												 }
-											 return <div>{pageLinks}</div>
+	}
+})
+
+/**
+* Renders a pager component.
+*/
+function pager(page) {
+	var pageLinks = []
+	if (page.currentPage > 1) {
+		pageLinks.push(<li onClick={page.handleClick(page.currentPage - 1)}><span>‹</span></li>)
+		if (page.currentPage > 2) {
+			pageLinks.push(<li onClick={page.handleClick(1)}><span>1</span></li>)
+			pageLinks.push(<li><span>...</span></li>)
+		}
+		      }
+	if(page.numPages > 1){  pageLinks.push(<li className="active"><span>{page.currentPage}</span></li>)
+	}
+	if (page.currentPage < page.numPages) {
+		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span>{page.currentPage + 1}</span></li>)
+		if (page.currentPage < page.numPages - 1) {
+			pageLinks.push(<li onClick={page.handleClick(page.currentPage + 2)}><span>{page.currentPage + 2}</span></li>)
+		}
+		if(page.currentPage < page.numPages - 2){
+			pageLinks.push(<li onClick={page.handleClick(page.currentPage + 3)}><span>{page.currentPage + 3}</span></li>)
+		}
+		if(page.currentPage < page.numPages - 3){
+			pageLinks.push(<li className="disabled"><span>...</span></li>)
+			pageLinks.push(<li onClick={page.handleClick(page.numPages)}><span>{page.numPages}</span></li>)
+		}
+		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span aria-hidden="true">›</span>
+ </li>)
+	}
+	return <ul className="pagination pagination-sm">{pageLinks}</ul>
 }
 
-		var DefaultPanel = React.createClass({displayName: 'CandidatesPanelTable',
-						      propTypes: {
-							      'incomplete_candidates' : React.PropTypes.array
-						      },
-						      render: function(){
-							      return (
-								      <div className="panel panel-primary">
-								      <div className="panel-heading">Incomplete Candidates</div>
-								      <div className="panel-body">
-								      {this.props.children}
-								      </div>
-								      </div>
-							      );
-						      }
-						      });
+var DefaultPanel = React.createClass({displayName: 'CandidatesPanelTable',
+propTypes: {
+	'incomplete_candidates' : React.PropTypes.array
+},
+render: function(){
+	return (
+		<div className="panel panel-primary">
+		<div className="panel-heading">Incomplete Candidates</div>
+		<div className="panel-body">
+		{this.props.children}
+		</div>
+		</div>
+	);
+}
+});
 
-var weirdDiv = React.createClass({
-	
-													render:function(){
-														return (<div>{this.props.dance}</div>);
-													}
-													});
+var IncompleteCandidates = React.createClass({
+	render: function(){
+		return (
+			<DefaultPanel>
+			<PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header}>
+			<IncompleteCandidatesRow/>
+			</PagedTable>
+			</DefaultPanel>
+		);
+	}
+});
 
 
-								      								   var header = ["hi, hello, bye"];
-
-		var IncompleteCandidates = React.createClass({
-						      render: function(){
-							      return (
-								      <DefaultPanel>
-								      <PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header}>
-								      <IncompleteCandidatesRow/>
-								      </PagedTable>
-								      </DefaultPanel>
-							      );
-						      }
-						      });
-
-								      
-								      IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
+IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);

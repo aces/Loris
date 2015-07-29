@@ -102,7 +102,7 @@ incomplete = JSON.parse(incomplete);
 
    React.render(CandiPanel, document.getElementById("myDiv")); */
 
-var header = ["foo", "bar", "bye"];
+var header = ["Visit", "CandID", "Instrument"];
 
 var CandiPanel = IncompleteCandidatesPanel({
 	header: header,
