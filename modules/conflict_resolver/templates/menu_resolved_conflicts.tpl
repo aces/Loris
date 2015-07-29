@@ -28,14 +28,16 @@
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.Project.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Question.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Question.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -86,7 +88,7 @@
 
                     {foreach from=$form.errors item=error}
                     <tr>
-                        <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
+                        <td nowrap="nowrap" colspan="6" class="error">{$error}</td>
                     </tr>
                     {/foreach}
                     
@@ -98,6 +100,8 @@
                             Instrument
                         {else if $headers[header].displayName == "CandID"}
                             DCCID
+                        {else if $headers[header].displayName == "ProjectID"}
+                            Project
                         {else if $headers[header].displayName == "FieldName"}
                             Question                    
                         {else}
@@ -119,7 +123,7 @@
                     </tr>
                     {sectionelse}
                         <tr>
-                            <tr><td colspan="7">No resolved conflicts found.</td></tr>
+                            <tr><td colspan="8">No resolved conflicts found.</td></tr>
                         </tr>
                     {/section}
                 </tbody>

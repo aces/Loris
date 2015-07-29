@@ -28,14 +28,16 @@
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.Project.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Question.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Question.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -47,6 +49,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
+
                             <div class="col-sm-5 col-xs-12">
                                 <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflict_resolver&reset=true'">
                             </div>
@@ -87,7 +90,7 @@
 
                             {foreach from=$form.errors item=error}
                             <tr>
-                                <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
+                                <td nowrap="nowrap" colspan="6" class="error">{$error}</td>
                             </tr>
                             {/foreach}
                             
@@ -99,6 +102,8 @@
                                             Instrument
                                         {else if $headers[header].displayName == "CandID"}
                                             DCCID
+                                        {else if $headers[header].displayName == "ProjectID"}
+                                            Project
                                         {else if $headers[header].displayName == "FieldName"}
                                             Question
                                         {else}
@@ -126,11 +131,11 @@
                             </tr>
                             {sectionelse}
                                 <tr>
-                                    <tr><td colspan="7">No unresolved conflicts found.</td></tr>
+                                    <tr><td colspan="{$useProjectsColspan}+7">No unresolved conflicts found.</td></tr>
                                 </tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="6" id="message-area">
+                                <td nowrap="nowrap" colspan="{$useProjectsColspan}+6" id="message-area">
                                     
                                 </td>
                                 <td nowrap="nowrap">
