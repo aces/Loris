@@ -23,11 +23,15 @@ $config = $factory->config(__DIR__ . "/../../../project/config.xml");
 $subprojs = $config->getSettingFromXML("subprojects");
 $db = $factory->database();
 foreach($subprojs['subproject'] as $row) {
+    $windowDiff = null;
+    if(isset($row['options']) && isset($row['options']['WindowDifference'])) {
+        $windowDiff = $row['options']['WindowDifference'];
+    }
     $ins = array(
             'SubprojectID'     => $row['id'],
             'title'            => $row['title'],
             'useEDC'           => 0,
-            'WindowDifference' => $row['options']['WindowDifference'],
+            'WindowDifference' => $windowDiff,
            );
     if($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
         $ins['useEDC'] = 1;
