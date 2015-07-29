@@ -92,22 +92,26 @@ class Visit extends \Loris\API\Candidates\Candidate
                                  ],
                       ];
        if($this->Timepoint) {
-           $this->JSON['Stages'] = [
-               'Screening' => [
+           $stages = [];
+           if($this->Timepoint->getDateOfScreening() !== null) {
+               $stages['Screening'] = [
                     'Date' => $this->Timepoint->getDateOfScreening(),
                     'Status' => $this->Timepoint->getScreeningStatus()
-                   ]
-               ,
-               'Visit' => [
+                   ];
+           }
+           if($this->Timepoint->getDateOfVisit() !== null) {
+               $stages['Visit'] = [
                     'Date' => $this->Timepoint->getDateOfVisit(),
                     'Status' => $this->Timepoint->getVisitStatus()
-                   ]
-               ,
-               'Approval' => [
+                   ];
+           }
+           if($this->Timepoint->getDateOfApproval() !== null) {
+               $stages['Approval'] = [
                     'Date' => $this->Timepoint->getDateOfApproval(),
                     'Status' => $this->Timepoint->getApprovalStatus()
-                   ]
-           ];
+                   ];
+           }
+           $this->JSON['Stages'] = $stages;
        }
     }
 }
