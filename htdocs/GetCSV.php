@@ -116,7 +116,10 @@ function loadMenu($menu, $mode)
     $menu =& NDB_Menu::factory($menu, $mode);
     $menu->setup();
     $success = $menu->_setFilterForm();
-    $list = $menu->_getFullList();
+    $list['data'] = $menu->_getFullList();
+    $list['headers'] = $menu->headers;
+
+    error_log(print_r($menu->headers, true));
 
     return $list;
 }
@@ -130,7 +133,11 @@ function loadMenu($menu, $mode)
 */
 function array_2_csv($array) {
     $csv = '';
-    foreach ($array as $item) {
+    foreach ($array['headers'] as $header) {
+        $csv .= ucwords(str_replace('_', ' ', $header)) . ";";
+    }
+    $csv = substr_replace($csv, "\n", -1);
+    foreach ($array['data'] as $item) {
         foreach($item as $colm){
             $csv .= $colm . ";";
         }
