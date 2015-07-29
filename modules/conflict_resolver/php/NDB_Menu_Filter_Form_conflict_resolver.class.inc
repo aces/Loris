@@ -150,6 +150,12 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
+            $this->tpl_data['useProjectsColspan']=0;
+        }
+        else {
+            // add 1 to colspan in menu_resolved_conflicts.tpl if using project
+            // to account for "Projects" header
+            $this->tpl_data['useProjectsColspan']=1;
         }
 
         // set the class variables

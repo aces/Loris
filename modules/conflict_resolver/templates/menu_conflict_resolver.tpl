@@ -131,11 +131,11 @@
                             </tr>
                             {sectionelse}
                                 <tr>
-                                    <tr><td colspan="8">No unresolved conflicts found.</td></tr>
+                                    <tr><td colspan="{$useProjectsColspan}+7">No unresolved conflicts found.</td></tr>
                                 </tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="7" id="message-area">
+                                <td nowrap="nowrap" colspan="{$useProjectsColspan}+6" id="message-area">
                                     
                                 </td>
                                 <td nowrap="nowrap">
