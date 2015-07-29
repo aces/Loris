@@ -1,8 +1,7 @@
 <?php
 /**
  * Controls access to a module's javascript CSS styles on the filesystem. This script
- * should ensure that only files relative to module's path specified are
- * accessible.
+ * should ensure that only files relative to module's path specified are accessible.
  * By calling new NDB_Client(), it also makes sure that the user is logged in to
  * Loris.
  *
