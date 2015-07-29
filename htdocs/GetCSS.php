@@ -18,8 +18,7 @@
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
  */
-
-
+session_cache_limiter('public');
 // Load config file and ensure paths are correct
 set_include_path(
     get_include_path() . ":" .
@@ -88,7 +87,13 @@ if (!file_exists($FullPath)) {
 }
 
 $MimeType = "text/css";
+$etag = md5(filemtime($FullPath));
 header("Content-type: $MimeType");
+header("ETag: $etag");
+if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag) {
+    header("HTTP/1.1 304 Not Modified");
+    exit(0);
+}
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
