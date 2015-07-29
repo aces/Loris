@@ -151,10 +151,12 @@
                             var blob = new Blob([data],{type: 'text/plain;base64'}),
                                 blobUrl = URL.createObjectURL(blob),
                                 element = document.createElement("a"),
-                                test_name = $("#test_name").html();
+                                test_name = $("#test_name").html(),
+                                date = new Date(),
+                                dateString = date.toISOString().split("T")[0];
 
                             element.href = blobUrl;
-                            element.download = test_name + ".csv";
+                            element.download = test_name + "_" + dateString + ".csv";
                             element.style.display = "none";
                             document.body.appendChild(element);
                             element.click();
