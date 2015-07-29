@@ -117,7 +117,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $this->tpl_data['Incomplete_candidates'] = json_encode($this->getIncompleteCandidates($instrument,$_REQUEST['visit_label'], $_REQUEST['candidate']));
         $conflicts= $this->InstrumentInConflict($instrument);
-        $this->tpl_data['Conflicts'] =  $conflicts;
+        $this->tpl_data['Conflicts'] =  json_encode($conflicts);
         
     }
 
@@ -190,19 +190,32 @@ class NDB_Form_data_team_helper extends NDB_Form
      * @param unknown_type $test_name
      * @return unknown
      */
-    function InstrumentInConflict($test_name) 
+    function InstrumentInConflict($test_name, $visit_label=null, $candidate=null) 
     {
         global $DB;
         $conflicts = array();
         //if test_name display exists
+
+        // $query =  "SELECT DISTINCT s.CandID,ca.PSCID, c.FieldName,c.TableName,t.test_name_display, s.visit_label FROM conflicts_unresolved c
+        //         LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
+        //         LEFT JOIN session s ON (f.SessionID=s.ID)
+        //         LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
+        //         JOIN test_battery t ON (t.test_name = f.test_name)
+        //         JOIN psc ON (s.CenterID = psc.CenterID)";
+
+        // $where = "WHERE t.visit_label = s.Visit_label AND TableName LIKE CONCAT(:TN, '%') AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
+        $qparams = array();
+
+
         if (Utility::ColumnExists($test_name , 'Test_name_display')) {
             $query = "SELECT DISTINCT s.CandID,ca.PSCID, c.FieldName,c.TableName,t.test_name_display, s.visit_label FROM conflicts_unresolved c
                 LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
                 LEFT JOIN session s ON (f.SessionID=s.ID)
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_battery t ON (t.test_name = f.test_name)
-                JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE t.visit_label = s.Visit_label AND TableName LIKE CONCAT(:TN, '%') AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
+                JOIN psc ON (s.CenterID = psc.CenterID)";
+            
+            $where = " WHERE t.visit_label = s.Visit_label AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
 
         } else {
             $query = "SELECT distinct s.CandID,ca.PSCID, c.FieldName,c.TableName,t.full_name AS test_name_display, s.visit_label FROM conflicts_unresolved c
@@ -210,10 +223,30 @@ class NDB_Form_data_team_helper extends NDB_Form
                 LEFT JOIN session s ON (f.SessionID=s.ID)
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_names t ON (t.test_name = f.test_name)
-                JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE TableName LIKE CONCAT(:TN, '%') AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
+                JOIN psc ON (s.CenterID = psc.CenterID)";
+            $where = " WHERE ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
         }
-        $conflicts = $DB->pselect($query,array('TN' => $test_name));
+
+        //filter for testname
+        if(($test_name !=null)&&($test_name!='All Instruments')){
+            $where .= " AND TableName LIKE CONCAT(:TN, '%')";
+            $qparams['TN'] = $test_name;
+        }
+
+        //filter for visit
+        if (($visit_label !=null)&&($visit_label!='All Visits')) {
+            $where.= " AND s.visit_label = :VL";
+            $qparams['VL'] = $visit_label;
+        }
+        //filter for candidate
+        if ($candidate !=null){
+            $where .= " AND s.candID = :CI";
+            $qparams['CI'] = $candidate;
+        }
+        
+        
+        $query = $query . $where;
+        $conflicts = $DB->pselect($query,$qparams);
         return $conflicts;
     }
 

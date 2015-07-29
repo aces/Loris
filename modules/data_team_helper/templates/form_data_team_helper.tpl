@@ -88,9 +88,9 @@
  			<p style="font-family:arial;color:red;font-size:13px;">Currently only Behavioural Feedbacks tied to fields are shown</p>
 	</tr>
 </table>
-<div id="myDiv"></div>
-  <div id="otherDiv"></div>
 
+  <div id="otherDiv"></div>
+<div id="myDiv"></div>
 
 <script type="text/jsx" src="js/jsx/incompletes_candidates_panel.jsx"></script>
 
@@ -106,9 +106,18 @@ var CandiPanel = IncompleteCandidatesPanel({
 	incomplete_candidates: incomplete
 });
 
+var conflicts = {$Conflicts|@json_encode};
+conflicts = JSON.parse(conflicts);
 
+var ConflictsPanel = InstrumentConflictsPanel({
+	title: "Data Entry Conflicts",
+	header: ["Visit", "CandID", "Instrument", "Field Name"],
+	conflicts: conflicts
+}); 
 
 
 React.render(CandiPanel, document.getElementById("myDiv"));
+
+React.render(ConflictsPanel, document.getElementById("otherDiv"));
   
 </script>

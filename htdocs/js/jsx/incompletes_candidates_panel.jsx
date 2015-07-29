@@ -164,10 +164,10 @@ var IncompleteCandidatesRow = React.createClass({
 		render: function(){
 			var row = this.props.row;
 			return <tr key={row.CandID + row.visit_label + row.test_name_display + row.FieldName}>
-		  <td>row.visit_label</td>
-		  <td>row.candid</td>
-		  <td>row.test_name</td>
-		  <td>row.field_name</td>
+		  <td>{row.visit_label}</td>
+		  <td>{row.CandID}</td>
+		  <td>{row.test_name_display}</td>
+		  <td>{row.FieldName}</td>
 			</tr>
 		}		
 	})
