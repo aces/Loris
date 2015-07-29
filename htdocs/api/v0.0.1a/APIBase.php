@@ -25,7 +25,7 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class APIBase
+abstract class APIBase
 {
     var $DB;
     var $client;
@@ -98,6 +98,7 @@ class APIBase
 
         switch($this->HTTPMethod) {
         case 'GET':
+            $this->handleETag();
             $this->handleGET();
             break;
         case 'PUT':
@@ -112,6 +113,29 @@ class APIBase
 
         }
     }
+
+    /**
+     * Determine calculate the ETag for this resource and abort
+     * early if the client already has it.
+     */
+    function handleETag() {
+        session_cache_limiter('private');
+        $ETag = $this->calculateETag();
+
+        header("ETag: $ETag");
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
+            && $_SERVER['HTTP_IF_NONE_MATCH'] === $ETag
+        ) {
+            $this->header("HTTP/1.1 304 Not Modified");
+            $this->safeExit(0);
+        }
+
+    }
+
+    /**
+     * Calculate the ETag for this resource
+     */
+    abstract function calculateETag();
 
     /**
      * Handle a GET request

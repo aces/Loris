@@ -44,6 +44,13 @@ class Candidates extends APIBase
         parent::__construct($method);
     }
 
+    function calculateETag() {
+        $ETagCriteria = $this->DB->pselectRow(
+            "SELECT MAX(TestDate) as Time, COUNT(DISTINCT CandID) as NumCandidates FROM candidate WHERE Active='Y'",
+            array()
+        );
+        return md5('Candidates' + $ETagCriteria['Time'] + ':' + $ETagCriteria['NumCandidates']);
+    }
     /**
      * Handles a candidates GET request
      *
