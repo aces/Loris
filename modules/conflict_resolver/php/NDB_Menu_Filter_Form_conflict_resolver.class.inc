@@ -58,11 +58,12 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
             if ($val != 'none') {
                 $hash = $key;
                 $row = $DB->pselectRow(
-                    "SELECT * FROM conflicts_unresolved 
+                    "SELECT * FROM conflicts_unresolved JOIN flag ON (conflicts_unresolved.CommentId2=flag.CommentID)
                     WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, 
-                        ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash", 
+                        ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash AND flag.Data_entry='Complete'",
                     array('hash' => $hash)
                 );
+
                 if (!empty($row)) {
                    
                     // insert into conflicts_resolved
@@ -106,7 +107,13 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
                     $DB->update($row['TableName'], $setArray, $whereArray2);
 
                     // delete from conflics_unresolved
-                    $DB->run("DELETE FROM conflicts_unresolved WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2, FieldName, CommentId1, CommentId2)) = '$hash'");
+                    $DB->run("DELETE FROM conflicts_unresolved
+                    WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, ExtraKey2,
+                    FieldName, CommentId1, CommentId2)) = '$hash'");
+
+                    $DB->run("DELETE FROM conflicts_unresolved
+                    USING flag ON (conflicts_unresolved.CommentId2=flag.CommentID)
+                    WHERE flag.Data_entry='In Progress'");
 
                     $TableName = $row['TableName'];
                     $date = explode('-', $setArray['Date_taken']);
@@ -115,8 +122,8 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
                     $Instrument = NDB_BVL_Instrument::factory($TableName, $row['CommentId1'], '', false);
                     if ($Instrument != null) {
                            //calculate candidate age if Date_taken was changed
-                          if($row['FieldName'] == 'Date_taken') {
-                            $Instrument->_saveValues(array('Date_taken' => $dateArray));
+                        if($row['FieldName'] == 'Date_taken') {
+                           $Instrument->_saveValues(array('Date_taken' => $dateArray));
                         }
 
                         $Instrument->score();
@@ -150,7 +157,9 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
             'candidate.PSCID', 
             'session.Visit_label', 
             'conflicts_unresolved.FieldName', 
-            "MD5(CONCAT_WS(':',conflicts_unresolved.TableName, conflicts_unresolved.ExtraKeyColumn, conflicts_unresolved.ExtraKey1, conflicts_unresolved.ExtraKey2, conflicts_unresolved.FieldName, conflicts_unresolved.CommentId1, conflicts_unresolved.CommentId2)) AS hash", 
+            "MD5(CONCAT_WS(':',conflicts_unresolved.TableName, conflicts_unresolved.ExtraKeyColumn,
+            conflicts_unresolved.ExtraKey1, conflicts_unresolved.ExtraKey2, conflicts_unresolved.FieldName,
+            conflicts_unresolved.CommentId1, conflicts_unresolved.CommentId2)) AS hash",
             'conflicts_unresolved.ExtraKeyColumn', 
             'conflicts_unresolved.ExtraKey1', 
             'conflicts_unresolved.ExtraKey2', 
@@ -160,7 +169,8 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
             'conflicts_unresolved.Value2', 
             'session.CenterID'
         );
-        $this->query = " FROM conflicts_unresolved LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID) LEFT JOIN session ON (flag.SessionID=session.ID) LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
+        $this->query = " FROM conflicts_unresolved LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
+        LEFT JOIN session ON (flag.SessionID=session.ID) LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
         $this->group_by = '';
         $this->order_by = 'conflicts_unresolved.TableName, session.Visit_label';
         $this->validFilters = array(
