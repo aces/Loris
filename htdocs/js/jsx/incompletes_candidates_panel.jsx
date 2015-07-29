@@ -98,25 +98,6 @@ var PagedTable = React.createClass({
 	}
 })
 
-var IncompleteCandidatesRow = React.createClass({
-	propTypes:{
-		'row' : React.PropTypes.object.isRequired
-
-	},
-	render: function(){
-		var row = this.props.row;
-		return <tr key={row.id}>
-		  <td>{row.visit_label}</td>
-		  <td>{row.candid}</td>		
-		  <td>
-		    <a href={"main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid}>
-		      {row.Full_name}
-		    </a>
-		  </td>
-		</tr>;
-
-	}
-})
 
 /**
 * Renders a pager component.
@@ -150,14 +131,56 @@ function pager(page) {
 	return <ul className="pagination pagination-sm">{pageLinks}</ul>
 }
 
+var IncompleteCandidatesRow = React.createClass({
+	propTypes:{
+		'row' : React.PropTypes.object.isRequired
+
+	},
+	render: function(){
+		var row = this.props.row;
+		return <tr key={row.id}>
+		  <td>
+		    <a href={"main.php?test_name=instrument_list&candID=" + row.candid + "&sessionID=" + row.SessionID}> {row.visit_label} </a>
+		  </td>
+		  <td>
+		    <a href={"main.php?test_name=timepoint_list&candID=" + row.candid}>
+		      {row.candid}
+		    </a>
+		  </td>		
+		  <td>
+		    <a href={"main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid}>
+		      {row.Full_name}
+		    </a>
+		  </td>
+		</tr>;
+
+	}
+						 })
+
+	var InstrumentConflictsRow = React.createClass({
+		proptypes:{
+			'row' : React.PropTypes.object.isRequired
+		},
+		render: function(){
+			var row = this.props.row;
+			return <tr key={row.CandID + row.visit_label + row.test_name_display + row.FieldName}>
+		  <td>row.visit_label</td>
+		  <td>row.candid</td>
+		  <td>row.test_name</td>
+		  <td>row.field_name</td>
+			</tr>
+		}		
+	})
+	
+ 
 var DefaultPanel = React.createClass({displayName: 'CandidatesPanelTable',
 propTypes: {
-	'incomplete_candidates' : React.PropTypes.array
+	'title' : React.PropTypes.string
 },
 render: function(){
 	return (
 		<div className="panel panel-primary">
-		<div className="panel-heading">Incomplete Candidates</div>
+		<div className="panel-heading">{this.props.title}</div>
 		<div className="panel-body">
 		{this.props.children}
 		</div>
@@ -169,7 +192,7 @@ render: function(){
 var IncompleteCandidates = React.createClass({
 	render: function(){
 		return (
-			<DefaultPanel>
+			<DefaultPanel title={this.props.title}>
 			<PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header}>
 			<IncompleteCandidatesRow/>
 			</PagedTable>
@@ -178,5 +201,18 @@ var IncompleteCandidates = React.createClass({
 	}
 });
 
+var InstrumentConflicts = React.createClass({
+	render: function(){
+		return(
+			<DefaultPanel title={this.props.title}>
+			<PagedTable table_rows={this.props.conflicts} table_headers={this.props.header}>
+			<InstrumentConflictsRow/>
+			</PagedTable>
+			</DefaultPanel>			
+		);
+	}
+})
+
 
 IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
+InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);

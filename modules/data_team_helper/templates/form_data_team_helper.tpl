@@ -89,27 +89,26 @@
 	</tr>
 </table>
 <div id="myDiv"></div>
+  <div id="otherDiv"></div>
+
+
 <script type="text/jsx" src="js/jsx/incompletes_candidates_panel.jsx"></script>
 
 <script type="text/jsx">
 var incomplete = {$Incomplete_candidates|@json_encode};
 incomplete = JSON.parse(incomplete);
 
-/* var CandiPanel = IncompleteCandidatesPanel({
-   RowsPerPage : 5, 
-   incomplete_candidates: incomplete	  	  
-   });
-
-   React.render(CandiPanel, document.getElementById("myDiv")); */
-
 var header = ["Visit", "CandID", "Instrument"];
 
 var CandiPanel = IncompleteCandidatesPanel({
-	header: header,
+	title: "Incomplete Candidates",
+	header: ["Visit", "CandID", "Instrument"],
 	incomplete_candidates: incomplete
 });
 
+
+
+
 React.render(CandiPanel, document.getElementById("myDiv"));
   
-  </script>
-  <div id="otherDiv"></div>
+</script>
