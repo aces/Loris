@@ -87,7 +87,7 @@ class NDB_Menu extends NDB_Page
 
         //set the baseurl of the tpl_data
         $config =& NDB_Config::singleton();
-        $www = $config->getSetting('www');
+        $www    = $config->getSetting('www');
         $obj->tpl_data['baseurl'] = $www['url'];
 
         return $obj;
