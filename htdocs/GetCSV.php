@@ -13,6 +13,7 @@
  * PHP Version 5
  *
  *  @category Loris
+ *  @package  Loris
  *  @author   Jordan Stirling <jordan.stirling@mail.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
@@ -47,8 +48,8 @@ if (empty($TestName)) {
     exit(2);
 }
 
-$list = load($TestName, $subtest);
-$csv_data = array_2_csv($list);
+$list     = load($TestName, $subtest);
+$csv_data = arrayToCSV($list);
 print_r($csv_data);
 
 /**
@@ -60,7 +61,8 @@ print_r($csv_data);
 *
 * @return array the queryied data
 */
-function load($test_name, $subtest){
+function load($test_name, $subtest)
+{
     if (empty($test_name)) {
         return;
     }
@@ -82,13 +84,15 @@ function load($test_name, $subtest){
     $menu_filter_form_subtest = "NDB_Menu_Filter_Form_$submenu.class.inc";
 
     if ($caller->existsAndRequire($menu_testname)) {
-        error_log("ERROR: This download of this table's data is not yet
-            implemented.");
+        error_log(
+            "ERROR: This download of this table's data is not yet implemented."
+        );
         header("HTTP/1.1 501 Not Implemented");
         exit(5);
     } elseif ($caller->existsAndRequire($menu_filter_testname)
-                || $caller->existsAndRequire($menu_form_testname)
-                || $caller->existsAndRequire($menu_filter_form_subtest)) {
+        || $caller->existsAndRequire($menu_form_testname)
+        || $caller->existsAndRequire($menu_filter_form_subtest)
+    ) {
         $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
         if ($submenu !== null) {
             $list = loadMenu($submenu, $mode);
@@ -115,8 +119,8 @@ function loadMenu($menu, $mode)
 {
     $menu =& NDB_Menu::factory($menu, $mode);
     $menu->setup();
-    $success = $menu->_setFilterForm();
-    $list['data'] = $menu->_getFullList();
+    $success         = $menu->_setFilterForm();
+    $list['data']    = $menu->_getFullList();
     $list['headers'] = $menu->headers;
 
     error_log(print_r($menu->headers, true));
@@ -131,14 +135,15 @@ function loadMenu($menu, $mode)
 *
 * @return string CSV string of data
 */
-function array_2_csv($array) {
+function arrayToCSV($array)
+{
     $csv = '';
     foreach ($array['headers'] as $header) {
         $csv .= ucwords(str_replace('_', ' ', $header)) . ";";
     }
     $csv = substr_replace($csv, "\n", -1);
     foreach ($array['data'] as $item) {
-        foreach($item as $colm){
+        foreach ($item as $colm) {
             $csv .= $colm . ";";
         }
         $csv = substr_replace($csv, "\n", -1);
