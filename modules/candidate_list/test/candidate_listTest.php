@@ -27,6 +27,7 @@ require_once __DIR__
  * @link     https://github.com/aces/Loris
  */
 
+
 class CandidateListTestIntegrationTest extends LorisIntegrationTest
 {
     private $_useEDCId;
