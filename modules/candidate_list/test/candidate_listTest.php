@@ -1020,7 +1020,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         for ($i=3; $i<=10; $i+=2) {
             $field = $this->webDriver->findElement(
                 WebDriverBy::cssSelector(
-                    "#cand > tbody > tr:nth-child({$i}) > td:nth-child($columnNumber)"
+                    "#cand > tbody > tr:nth-child($i) > td:nth-child($columnNumber)"
                 )
             )->getAttribute('value');
             // If strings are equal, $compare=0
@@ -1400,7 +1400,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         // Assert that you were taken to the current URL
         $currentURL = $this->url;
-        $desiredURL = '/main.php?test_name=timepoint_list&candID=' . $matchingDCCID . '&PSCID=' . $matchingPSCID;
+        $desiredURL = '/main.php?test_name=timepoint_list&candID=' . $matchingDCCID .
+            '&PSCID=' . $matchingPSCID;
         $this->assertContains($desiredURL, $currentURL);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
