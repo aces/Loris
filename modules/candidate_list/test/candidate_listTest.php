@@ -361,7 +361,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * (Redundant - see #9)
      */
 
-    
+
     /**
      * 6.
      * Tests that advanced and basic filter toggle works
