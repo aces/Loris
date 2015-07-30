@@ -101,7 +101,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
     /**
      * Restore the values backed up in the setUp function
      *
@@ -133,7 +132,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
     /**
      * 1.
      * Tests that, when loading the candidate_list module, the breadcrumb
@@ -153,7 +151,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("Advanced", $basicButton->getAttribute("value"));
 
     }
-
 
 
     /**
@@ -221,7 +218,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         );
 
     }
-
 
 
     /**
@@ -334,7 +330,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
 
 
-
     /**
      * 4.
      * Test that checks initial filter state:
@@ -360,7 +355,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
+    /**
+     * 5.
+     * Tests that results are filtered if a site is selected from site filter
+     * (Redundant - see #9)
+     */
 
+    
     /**
      * 6.
      * Tests that advanced and basic filter toggle works
@@ -577,7 +578,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
     /**
      * 10.
      * Tests that, if "Clear Form" is clicked,
@@ -650,7 +650,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
     /**
      * 11.
      * Tests that, if a column is clicked,
@@ -709,8 +708,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
-
     /**
      * 12.
      * Tests that, if "Yes" link under column 'Scan Done' is clicked,
@@ -741,7 +738,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         }
     }
-
 
 
     /**
@@ -781,7 +777,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
     /**
      * 14.
      * Tests that, if a candidate has feedback,
@@ -818,7 +813,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         }
 
     }
-
 
 
     /**
@@ -901,7 +895,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
     /**
      * 16.
      * Tests that, if a correct PSCID/DCCID combination is entered,
@@ -980,7 +973,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-
     /**
      * 17.
      * Tests that, without access_all_profiles permission,
@@ -1021,7 +1013,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             $this->assertEquals($URL1, $URL2);
         }
     }
-
 
 
     /**
