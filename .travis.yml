@@ -69,14 +69,14 @@ script:
         php -l $i || exit $?;
       done
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisUnitTests for php/libraries' test/
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'LorisUnitTests for php/libraries' test/
 
     # Run integration tests to make sure everything didn't just
     # break
-    - vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Core Integration Tests' test/
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Core Integration Tests' test/
 
     # Run integration tests for specific modules
-    - vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Module Integration Tests' test/
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Module Integration Tests' test/
 
 
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
