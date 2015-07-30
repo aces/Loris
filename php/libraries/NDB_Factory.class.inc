@@ -265,14 +265,16 @@ class NDB_Factory
     /**
      * Returns a singleton settings object
      *
+     * @param string $configfile Location of XML file to parse config from
+     *
      * @return Settings setting object
      */
-    public function settings()
+    public function settings($configfile = "../project/config.xml")
     {
         if (self::$_settings !== null) {
             return self::$_settings;
         }
-        self::$_settings = new Settings($this->config());
+        self::$_settings = new Settings($this->config($configfile));
         return self::$_settings;
     }
 }

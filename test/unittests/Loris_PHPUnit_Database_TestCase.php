@@ -73,7 +73,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends
         $this->factory = NDB_Factory::singleton();
 
         //if not in sandbox mode do not run tests
-        if (!$this->factory->settings()->isSandbox()) {
+        if (!$this->factory->settings(CONFIG_XML)->isSandbox()) {
             $this->markTestSkipped(
                 "You are not in 'sandbox' mode.
                 This is a destructive test, it will be skipped!"
