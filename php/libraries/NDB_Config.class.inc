@@ -466,9 +466,9 @@ class NDB_Config
         }
         //Format the result into config.xml format.
         return array(
-                'id' => $info['ProjectID'],
-                'Name' => $info['Name'],
-                'recruitmentTarget' => $info['recruitmentTarget']
+                'id'                => $info['ProjectID'],
+                'Name'              => $info['Name'],
+                'recruitmentTarget' => $info['recruitmentTarget'],
                );
     }
     /**
