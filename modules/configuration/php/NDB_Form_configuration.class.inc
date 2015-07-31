@@ -119,7 +119,7 @@ class NDB_Form_Configuration extends NDB_Form
         $configs     = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
 
-        if($useProjects === "true") {
+        if ($useProjects === "true") {
             $projectList = Utility::getProjectList();
             $projects    = array();
             foreach ($projectList as $ProjectID => $Name) {
@@ -134,7 +134,7 @@ class NDB_Form_Configuration extends NDB_Form
     * Gets list of subprojects
     * @return list of subprojects.
     */
-    function subproject() 
+    function subproject()
     {
         $factory        = NDB_Factory::singleton();
         $config         = $factory->config();
