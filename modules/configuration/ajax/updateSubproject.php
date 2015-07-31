@@ -18,23 +18,23 @@ $client->makeCommandLine();
 $client->initialize();
 
 $factory = NDB_Factory::singleton();
-$db = $factory->database();
+$db      = $factory->database();
 
-if($_POST['subprojectID'] === 'new' && !empty($_POST['title'])) {
+if ($_POST['subprojectID'] === 'new' && !empty($_POST['title'])) {
     $db->insert(
         "subproject",
         array(
-         "title" => $_POST['title'],
-         "useEDC" => $_POST['useEDC'],
-         "WindowDifference" => $_POST['WindowDifference'],
+            "title"            => $_POST['title'],
+            "useEDC"           => $_POST['useEDC'],
+            "WindowDifference" => $_POST['WindowDifference'],
         )
     );
 } else {
     $db->update(
         "subproject",
         array(
-            "title" => $_POST['title'],
-            "useEDC" => $_POST['useEDC'],
+            "title"            => $_POST['title'],
+            "useEDC"           => $_POST['useEDC'],
             "WindowDifference" => $_POST['WindowDifference'],
         ),
         array("SubprojectID" => $_POST['subprojectID'])
