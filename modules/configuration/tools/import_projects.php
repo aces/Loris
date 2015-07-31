@@ -18,18 +18,18 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$factory = NDB_Factory::singleton();
-$config = $factory->config(__DIR__ . "/../../../project/config.xml");
+$factory  = NDB_Factory::singleton();
+$config   = $factory->config(__DIR__ . "/../../../project/config.xml");
 $subprojs = $config->getSettingFromXML("subprojects");
-$db = $factory->database();
-foreach($subprojs['subproject'] as $row) {
+$db       = $factory->database();
+foreach ($subprojs['subproject'] as $row) {
     $ins = array(
             'SubprojectID'     => $row['id'],
             'title'            => $row['title'],
             'useEDC'           => 0,
             'WindowDifference' => $row['options']['WindowDifference'],
            );
-    if($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
+    if ($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
         $ins['useEDC'] = 1;
     }
     Utility::nullifyEmpty($ins, 'WindowDifference');
@@ -37,15 +37,15 @@ foreach($subprojs['subproject'] as $row) {
     $db->insert('subproject', $ins);
 }
 
-$config = $factory->config(__DIR__ . "/../../../project/config.xml");
+$config   = $factory->config(__DIR__ . "/../../../project/config.xml");
 $projects = $config->getSettingFromXML("Projects");
-$db = $factory->database();
-foreach($projects['project'] as $row) {
+$db       = $factory->database();
+foreach ($projects['project'] as $row) {
     $insert = array(
-            'ProjectID'         => $row['id'],
-            'Name'              => $row['title'],
-            'recruitmentTarget' => $row['recruitmentTarget'],
-           );
+               'ProjectID'         => $row['id'],
+               'Name'              => $row['title'],
+               'recruitmentTarget' => $row['recruitmentTarget'],
+              );
     Utility::nullifyEmpty($insert, 'recruitmentTarget');
     $db->insert('Project', $insert);
 }
