@@ -99,7 +99,7 @@ class NDB_Form_Configuration extends NDB_Form
 
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
-	
+
 	$useProjects = $config->getSetting("useProjects");
 
 	$this->tpl_data['useProjects']     = $useProjects;
@@ -109,33 +109,35 @@ class NDB_Form_Configuration extends NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
 
     }
-
+    /**
+    * returns list of projects if user uses projects for the study.
+    */
     function project() {
-        $factory = NDB_Factory::singleton();
-        $config = $factory->config();
-	
-	$configs = NDB_Config::singleton();
-	$useProjects = $config->getSetting("useProjects");
+        $factory     = NDB_Factory::singleton();
+        $config      = $factory->config();
+        $configs     = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
 
-	if($useProjects === "true"){
-	    $projectList = Utility::getProjectList();
-	    $projects = array();
-	    foreach($projectList as $ProjectID => $Name) {
-	        $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
-	    }
-	    $this->tpl_data['projects'] = $projects;
-	}else{
-	     throw new Exception("Projects are not used in this study.");
+        if($useProjects === "true") {
+            $projectList = Utility::getProjectList();
+            $projects    = array();
+            foreach ($projectList as $ProjectID => $Name) {
+                $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
+            }
+            $this->tpl_data['projects'] = $projects;
+        } else {
+            throw new Exception("Projects are not used in this study.");
         }
-	
     }
-
+    /**
+    * returns list of subprojects.
+    */
     function subproject() {
-        $factory = NDB_Factory::singleton();
-        $config = $factory->config();
-
+        $factory        = NDB_Factory::singleton();
+        $config         = $factory->config();
         $subprojectList = Utility::getSubprojectList();
-        $subprojects = array();
+        $subprojects    = array();
+
         foreach($subprojectList as $subprojectID => $title) {
             $subprojects[$subprojectID] = $config->getSubprojectSettings($subprojectID);
         }
