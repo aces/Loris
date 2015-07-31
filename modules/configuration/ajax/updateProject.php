@@ -20,18 +20,18 @@ $db      = $factory->database();
 // if a new project is created add the new project. Otherwise, update the existing project.
 if ($_POST['ProjectID'] === 'new' && !empty($_POST['Name'])) {
     $db->insert(
-       "Project",
-       array(
-            "Name"              => $_POST['Name'],
-            "recruitmentTarget" => $_POST['recruitmentTarget'],
+        "Project",
+        array(
+         "Name"              => $_POST['Name'],
+         "recruitmentTarget" => $_POST['recruitmentTarget'],
         )
     );
-} else{
+} else {
     $db->update(
         "Project",
         array(
-            "Name"              => $_POST['Name'],
-            "recruitmentTarget" => $_POST['recruitmentTarget'],
+         "Name"              => $_POST['Name'],
+         "recruitmentTarget" => $_POST['recruitmentTarget'],
         ),
         array("ProjectID" => $_POST['ProjectID'])
     );
