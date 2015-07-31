@@ -99,10 +99,9 @@ class NDB_Form_Configuration extends NDB_Form
 
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
+        $useProjects = $config->getSetting("useProjects");
 
-	$useProjects = $config->getSetting("useProjects");
-
-	$this->tpl_data['useProjects']     = $useProjects;
+        $this->tpl_data['useProjects']     = $useProjects;
         $this->tpl_data['parentMenuItems'] = $parentMenuItems;
         $this->tpl_data['config']          = $configs;
         $this->tpl_data['instruments']     = $instruments;
@@ -110,9 +109,11 @@ class NDB_Form_Configuration extends NDB_Form
 
     }
     /**
-    * returns list of projects if user uses projects for the study.
+    * Gets the list of projects
+    * @return list of projects if user uses projects for the study.
     */
-    function project() {
+    function project()
+    {
         $factory     = NDB_Factory::singleton();
         $config      = $factory->config();
         $configs     = NDB_Config::singleton();
@@ -130,15 +131,17 @@ class NDB_Form_Configuration extends NDB_Form
         }
     }
     /**
-    * returns list of subprojects.
+    * Gets list of subprojects
+    * @return list of subprojects.
     */
-    function subproject() {
+    function subproject() 
+    {
         $factory        = NDB_Factory::singleton();
         $config         = $factory->config();
         $subprojectList = Utility::getSubprojectList();
         $subprojects    = array();
 
-        foreach($subprojectList as $subprojectID => $title) {
+        foreach ($subprojectList as $subprojectID => $title) {
             $subprojects[$subprojectID] = $config->getSubprojectSettings($subprojectID);
         }
         $this->tpl_data['subprojects'] = $subprojects;
