@@ -16,13 +16,13 @@ $client->makeCommandLine();
 $client->initialize();
 
 $factory = NDB_Factory::singleton();
-$db = $factory->database();
+$db      = $factory->database();
 // if a new project is created add the new project. Otherwise, update the existing project.
-if($_POST['ProjectID'] === 'new' && !empty($_POST['Name'])) { 
+if ($_POST['ProjectID'] === 'new' && !empty($_POST['Name'])) {
     $db->insert(
        "Project",
        array(
-            "Name" => $_POST['Name'],
+            "Name"              => $_POST['Name'],
             "recruitmentTarget" => $_POST['recruitmentTarget'],
         )
     );
@@ -30,7 +30,7 @@ if($_POST['ProjectID'] === 'new' && !empty($_POST['Name'])) {
     $db->update(
         "Project",
         array(
-            "Name" => $_POST['Name'],
+            "Name"              => $_POST['Name'],
             "recruitmentTarget" => $_POST['recruitmentTarget'],
         ),
         array("ProjectID" => $_POST['ProjectID'])
