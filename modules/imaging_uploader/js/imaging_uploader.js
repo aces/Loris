@@ -19,14 +19,14 @@ function change() {
     });
 }
 /*
-    Prints messages into the log box.
-    */
-    function printMessage(message) {
-        "use strict";
-        var previous = $("#log_box").html(),
-        next = previous + message;
-        $("#log_box").html(next);
-    }
+Prints messages into the log box.
+*/
+function printMessage(message) {
+    "use strict";
+    var previous = $("#log_box").html(),
+    next = previous + message;
+    $("#log_box").html(next);
+}
 
 /*
     Function sends requests to the server (read_log.php script)
@@ -95,8 +95,7 @@ in order to get the percentage uploaded as value for the progress bar
 */
 function uploadFile() {
     "use strict";
-    //getMessage();
-    //$("#progressbar").show();
+
     $("#file-input").hide();
     $("#file-progress").show();
     var formData = new FormData($("#mri_upload")[0]);
