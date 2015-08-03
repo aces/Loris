@@ -71,13 +71,13 @@ abstract class APIBase
         $this->client->makeCommandLine();
         $this->client->initialize(__DIR__ . "/../../../project/config.xml");
 
-        /*
-        if(!$this->client->isLoggedIn()) {
-            $this->header("HTTP/1.1 401 Unauthorized");
-            $this->error("User not authenticated");
-            $this->safeExit(0);
+        if (!defined("UNIT_TESTING")) {
+            if(!$this->client->isLoggedIn()) {
+                $this->header("HTTP/1.1 401 Unauthorized");
+                $this->error("User not authenticated");
+                $this->safeExit(0);
+            }
         }
-         */
 
         $this->DB = $this->Factory->database();
 
