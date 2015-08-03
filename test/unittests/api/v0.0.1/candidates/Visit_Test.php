@@ -71,5 +71,37 @@ class Visit_Test extends BaseTestCase
 
         $this->assertEquals($API->Headers, ["HTTP/1.1 404 Not Found"]);
     }
+
+    function testPostValidVisit() {
+        $JSON = json_encode([
+            "Meta" => [
+                "CandID" => 123456,
+                "Visit"  => "V3",
+                "Battery" => "Test Battery"
+            ]
+        ], true);
+        try {
+            $API = new \Loris\API\Candidates\Candidate\Visit("PUT", "123456", "V3", $JSON);
+        } catch(\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
+        $this->assertEquals($API->Headers, ["HTTP/1.1 201 Created"]);
+    }
+    function testPostInvalidVisit() {
+        $this->expectOutputString(json_encode(["error" => "Visit from URL does not match metadata"]));
+        $JSON = json_encode([
+            "Meta" => [
+                "CandID" => 123456,
+                "Visit"  => "V4",
+                "Battery" => "Test Battery"
+            ]
+        ], true);
+        try {
+            $API = new \Loris\API\Candidates\Candidate\Visit("PUT", "123456", "V3", $JSON);
+        } catch(\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
+        $this->assertEquals($API->Headers, ["HTTP/1.1 400 Bad Request"]);
+    }
 }
 ?>

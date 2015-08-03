@@ -34,7 +34,7 @@ class Visit extends \Loris\API\Candidates\Candidate
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
      */
-    public function __construct($method, $CandID, $VisitLabel)
+    public function __construct($method, $CandID, $VisitLabel, $InputData=null)
     {
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
@@ -46,6 +46,7 @@ class Visit extends \Loris\API\Candidates\Candidate
                                      'PUT',
                                     ];
         }
+        $this->CandID = $CandID;
         $this->VisitLabel = $VisitLabel;
 
 
@@ -53,19 +54,22 @@ class Visit extends \Loris\API\Candidates\Candidate
         // Parent constructor will handle validation of
         // CandID
         parent::__construct($method, $CandID);
+        if($method === 'PUT') {
+            $this->ReceivedJSON = json_decode($InputData, true);
+        } else {
+            $timepoints = $this->Candidate->getListOfVisitLabels();
+            $Visits = array_values($timepoints);
 
-        $timepoints = $this->Candidate->getListOfVisitLabels();
-        $Visits = array_values($timepoints);
+            $session = array_keys($timepoints, $VisitLabel);
+            if(isset($session[0])) {
+                $this->Timepoint = $this->Factory->TimePoint($session[0]);
+            }
 
-        $session = array_keys($timepoints, $VisitLabel);
-        if(isset($session[0])) {
-            $this->Timepoint = $this->Factory->TimePoint($session[0]);
-        }
-
-        if (!in_array($VisitLabel, $Visits)) {
-            $this->header("HTTP/1.1 404 Not Found");
-            $this->error("Invalid visit $VisitLabel");
-            $this->safeExit(0);
+            if (!in_array($VisitLabel, $Visits)) {
+                $this->header("HTTP/1.1 404 Not Found");
+                $this->error("Invalid visit $VisitLabel");
+                $this->safeExit(0);
+            }
         }
 
         if ($requestDelegationCascade) {
@@ -114,14 +118,46 @@ class Visit extends \Loris\API\Candidates\Candidate
            $this->JSON['Stages'] = $stages;
        }
     }
+    public function handlePUT() {
+        if(!isset($this->ReceivedJSON['Meta']['CandID']) ||
+            $this->ReceivedJSON['Meta']['CandID'] != $this->CandID
+        ) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Candidate from URL does not match metadata");
+                $this->safeExit(0);
+        }
+        if(!isset($this->ReceivedJSON['Meta']['Visit']) ||
+            $this->ReceivedJSON['Meta']['Visit'] != $this->VisitLabel
+        ) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Visit from URL does not match metadata");
+                $this->safeExit(0);
+        }
+
+        throw new \LorisException("PUT not yet implemented");
+
+        //print_r(\Utility::getSubprojectList());
+        // need to extract subprojectID
+        //TimePoint::createNew($this->CandID, subprojectID, $this->VisitLabel);
+        $this->header("HTTP/1.1 201 Created");
+    }
 }
 
 if (isset($_REQUEST['PrintVisit'])) {
+    if($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $obj = new Visit(
+        $_SERVER['REQUEST_METHOD'],
+        $_REQUEST['CandID'],
+        $_REQUEST['VisitLabel'],
+        file_get_contents("php://input")
+    );
+    } else {
     $obj = new Visit(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],
         $_REQUEST['VisitLabel']
     );
+    }
     print $obj->toJSONString();
 }
 ?>

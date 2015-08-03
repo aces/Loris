@@ -3,7 +3,7 @@ IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
 Still to be done:
 - update code to reflect finalized version
-    - Require ETags for POST/PUT/PATCH in code
+    - Require ETags for PUT/PATCH in code
     - Implement JWT
 - Send pull request
 
@@ -36,7 +36,7 @@ unmodified from their current value.
 
 All GET requests include an ETag header. If a PUT or PATCH request is sent and it does
 not include an ETag, or the ETag does not match the currently existing ETag for that resource,
-it will result in a 403 Forbidden response. POST requests used for the creation of resources
+it will result in a 403 Forbidden response. PUT or POST requests used for the creation of resources
 do not require ETags.
 
 DELETE is not supported on any resource defined in this API.
