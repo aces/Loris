@@ -61,7 +61,7 @@ class Projects extends APIBase
         $settings = [
             "useEDC" => $useEDC,
             "PSCID" => [
-                "Type" => $PSCID['generation'],
+                "Type" => $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt',
                 "Regex" => $PSCIDFormat,
             ]
         ];

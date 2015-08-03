@@ -132,7 +132,7 @@ class Projects_Test extends BaseTestCase
                 "loris" => [
                     "useEDC" => false,
                     "PSCID" => [
-                        "Type" => "user",
+                        "Type" => "prompt",
                         "Regex" => "/^SITE{1,1}[0-9]{4,4}$/i"
                     ]
                 ]
@@ -202,14 +202,14 @@ class Projects_Test extends BaseTestCase
                 "Sample Project" => [
                     "useEDC" => false,
                     "PSCID" => [
-                        "Type" => "sequential",
+                        "Type" => "auto",
                         "Regex" => "/^SITE{1,1}[0-9]{4,4}$/i"
                     ]
                 ],
                 "Another Sample Project" => [
                     "useEDC" => false,
                     "PSCID" => [
-                        "Type" => "sequential",
+                        "Type" => "auto",
                         "Regex" => "/^SITE{1,1}[0-9]{4,4}$/i"
                     ]
                 ],
