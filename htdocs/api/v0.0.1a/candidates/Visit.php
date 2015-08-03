@@ -134,11 +134,23 @@ class Visit extends \Loris\API\Candidates\Candidate
                 $this->safeExit(0);
         }
 
-        throw new \LorisException("PUT not yet implemented");
 
-        //print_r(\Utility::getSubprojectList());
+        $subprojects = \Utility::getSubprojectList();
+        $subprojectID = null;
+        foreach($subprojects as $subproject => $title) {
+            if($title === $this->ReceivedJSON['Meta']['Battery']) {
+                $subprojectID = $subproject;
+                break;
+            }
+        }
+        if($subprojectID === null) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Test battery specified does not exist");
+            $this->safeExit(0);
+
+        }
         // need to extract subprojectID
-        //TimePoint::createNew($this->CandID, subprojectID, $this->VisitLabel);
+        //TimePoint::createNew($this->CandID, $subprojectID, $this->VisitLabel);
         $this->header("HTTP/1.1 201 Created");
     }
 }

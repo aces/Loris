@@ -37,6 +37,14 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
                     && $params == array('CID' => "123456", 'VL' => 'VisitTwo')) {
                     return [["Test_name" => "Test"], ["Test_name" => "TestTwo"]];
                 }
+                if($query == "SELECT * FROM subproject") {
+                    return [ 0 => [
+                            'SubprojectID' => '1',
+                            'title' => 'Test Battery',
+                            'useEDC' => 0,
+                            'WindowDifference' => 'optimal'
+                        ]];
+                }
 
                 return array();
             }
