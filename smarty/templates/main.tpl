@@ -144,6 +144,26 @@
 
                     $(".dynamictable").DynamicTable();
                     $(".fileUpload").FileUpload();
+                    $("#downloadCSV").click(function(){
+                        var query = window.location.search,
+                            url = "getCSV.php" + query;
+                        $.get(url, function(data, status){
+                            var blob = new Blob([data],{type: 'text/plain;base64'}),
+                                blobUrl = URL.createObjectURL(blob),
+                                element = document.createElement("a"),
+                                test_name = $("#test_name").html(),
+                                date = new Date(),
+                                dateString = date.toISOString().split("T")[0];
+
+                            element.href = blobUrl;
+                            element.download = test_name + "_" + dateString + ".csv";
+                            element.style.display = "none";
+                            document.body.appendChild(element);
+                            element.click();
+                            // remove the element once it has been clicked
+                            document.body.removeChild(element);
+                        });
+                    });
                 });
             </script>
         {/literal}
@@ -155,6 +175,7 @@
     </head>
     {/if}
     <body>
+    <div id="test_name" style="display:none">{$test_name}</div>
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
             <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
