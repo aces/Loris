@@ -32,7 +32,6 @@ class Candidate_Test extends BaseTestCase
 
         $this->Database->method("pselectRow")->will($this->returnCallback(
             function ($query, $params) {
-                print $query;
                 if(strpos($query, "SELECT c.CenterID, c.CandID, c.") == 0
                     && $params == ['Candidate' => "123456"]) {
                         return [
@@ -45,7 +44,7 @@ class Candidate_Test extends BaseTestCase
                             "PSC" => $this->Candidate->getCandidateSite()
                         ];
                     }
-                if(strpos($query, "SELECT MAX(c.Testdate) as CandChange") == 0) {
+                if(strpos($query, "SELECT MAX(c.Testdate) as CandChange") === 0) {
                     return [
                         'CandChange' => '24343',
                         'VisitChange' => '23433',

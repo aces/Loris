@@ -55,6 +55,9 @@ class InstrumentForm extends \Loris\API\APIBase
             $this->safeExit(0);
         }
 
+        // JSON is used by both calculateETag and handleGET, so do it
+        // before either is called.
+        $this->JSONString = $this->Instrument->toJSON();
         $this->handleRequest();
     }
 
@@ -66,8 +69,13 @@ class InstrumentForm extends \Loris\API\APIBase
      */
     function handleGET()
     {
-        $this->JSON = json_decode($this->Instrument->toJSON(), true);
+        $this->JSON = json_decode($this->JSONString, true);
     }
+
+    function calculateETag() {
+        return md5('Instrument:' . $this->JSONString);
+    }
+
 }
 
 if (isset($_REQUEST['PrintInstrumentForm'])) {

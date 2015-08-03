@@ -64,6 +64,14 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
                             "PSC" => "Test"
                         ];
                     }
+                if(strpos($query, "SELECT MAX(c.Testdate) as CandChange") === 0) {
+                    return [
+                        'CandChange' => '24343',
+                        'VisitChange' => '23433',
+                        'VisitCount' => '3'
+                    ];
+                }
+
                 return array();
             }
         ));

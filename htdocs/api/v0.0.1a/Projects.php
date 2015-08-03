@@ -42,6 +42,9 @@ class Projects extends APIBase
      */
     public function handleGET()
     {
+        if(!empty($this->JSON)) {
+            return;
+        }
         $config = $this->Factory->config();
 
         $useProjects = $config->getSetting("useProjects");
@@ -83,7 +86,9 @@ class Projects extends APIBase
     }
 
     function calculateETag() {
-        throw new Exception("Not implemented");
+        $this->handleGET();
+        $etag = md5(json_encode($this->JSON, true));
+        return $etag;
     }
 }
 

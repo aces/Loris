@@ -107,6 +107,10 @@ class Project extends \Loris\API\APIBase
      */
     function handleGET()
     {
+        if(!empty($this->JSON)) {
+            return $this->JSON;
+        }
+
         $JSONArray = [
                       "Meta" => [
                                  "Project" => $this->ProjectName,
@@ -161,6 +165,10 @@ class Project extends \Loris\API\APIBase
 
         $this->JSON = $JSONArray;
     }
+    function calculateETag() {
+        return md5('Project:' . json_encode($this->JSON, true));
+    }
+
 }
 
 if (isset($_REQUEST['PrintProjectJSON'])) {
