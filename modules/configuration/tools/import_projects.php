@@ -18,13 +18,13 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$factory = NDB_Factory::singleton();
-$config = $factory->config(__DIR__ . "/../../../project/config.xml");
+$factory  = NDB_Factory::singleton();
+$config   = $factory->config(__DIR__ . "/../../../project/config.xml");
 $subprojs = $config->getSettingFromXML("subprojects");
-$db = $factory->database();
-foreach($subprojs['subproject'] as $row) {
+$db       = $factory->database();
+foreach ($subprojs['subproject'] as $row) {
     $windowDiff = "optimal";
-    if(isset($row['options']) && isset($row['options']['WindowDifference'])) {
+    if (isset($row['options']) && isset($row['options']['WindowDifference'])) {
         $windowDiff = $row['options']['WindowDifference'];
     }
     $ins = array(
@@ -33,7 +33,7 @@ foreach($subprojs['subproject'] as $row) {
             'useEDC'           => 0,
             'WindowDifference' => $windowDiff,
            );
-    if($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
+    if ($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
         $ins['useEDC'] = 1;
     }
     Utility::nullifyEmpty($ins, 'WindowDifference');

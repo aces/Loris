@@ -105,14 +105,21 @@ class NDB_Form_Configuration extends NDB_Form
 
     }
 
-    function subproject() {
+    /**
+     * Loads the subproject management submodule
+     *
+     * @return none
+     */
+    function subproject()
+    {
         $factory = NDB_Factory::singleton();
-        $config = $factory->config();
+        $config  = $factory->config();
 
         $subprojectList = Utility::getSubprojectList();
-        $subprojects = array();
-        foreach($subprojectList as $subprojectID => $title) {
-            $subprojects[$subprojectID] = $config->getSubprojectSettings($subprojectID);
+        $subprojects    = array();
+        foreach ($subprojectList as $subprojectID => $title) {
+            $subprojects[$subprojectID]
+                = $config->getSubprojectSettings($subprojectID);
         }
         $this->tpl_data['subprojects'] = $subprojects;
 
