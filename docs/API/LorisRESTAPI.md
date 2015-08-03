@@ -1,19 +1,8 @@
-This file describes the REST API to be implemented for interacting with Loris data.
-IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
-
-Still to be done:
-- update code to reflect finalized version
-    - Require ETags for PUT/PATCH in code
-    - Implement JWT
-- Send pull request
-
-====
-
 # Loris Instrument API - v0.0.1h-dev
 
 ## 1.0 Overview
 
-This document specifies Loris's RESTful API.
+This document specifies the Loris REST API.
 
 Any request sent to `$LorisRoot/api/$APIVERSION/$API_CALL` will return either a JSON object
 or no data. The Loris API uses standard HTTP error codes and the body of any response will
