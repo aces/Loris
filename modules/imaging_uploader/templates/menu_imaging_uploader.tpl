@@ -1,13 +1,13 @@
 {if $upload_success}
-<p>Upload Successful<br/></p>
+    <p>Upload Successful<br/></p>
 {/if}
 
 {if $dicom_success}
-<p>Dicoms Are inserted<br/></p>
+    <p>Dicoms Are inserted<br/></p>
 {/if}
 
 {if $minc_success}
-<p>Mincs Are inserted<br/></p>
+    <p>Mincs Are inserted<br/></p>
 {/if}
 
 <br />
