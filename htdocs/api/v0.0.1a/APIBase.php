@@ -73,9 +73,9 @@ abstract class APIBase
 
         /*
         if(!$this->client->isLoggedIn()) {
-            header("HTTP/1.1 401 Unauthorized");
-            print json_encode(["error" => "User not authenticated"]);
-            exit(0);
+            $this->header("HTTP/1.1 401 Unauthorized");
+            $this->error("User not authenticated");
+            $this->safeExit(0);
         }
          */
 
