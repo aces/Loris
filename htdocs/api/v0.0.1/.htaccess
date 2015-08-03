@@ -15,7 +15,7 @@ RewriteRule ^projects(/*)$ Projects.php?PrintProjects=true [END]
 
 # Candidates API rewrite rules
 
-RewriteRule ^candidates([/]*)$ Candidates.php?PrintCandidates=true [END]
+RewriteRule ^candidates(/*)$ Candidates.php?PrintCandidates=true [END]
 RewriteRule ^candidates/([0-9]+)(/*)$ candidates/Candidate.php?CandID=$1&PrintCandidate=true [END]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)(/*)$ candidates/Visit.php?CandID=$1&VisitLabel=$2&PrintVisit=true [END]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2&NoCandidate=true&PrintInstruments=true [END]

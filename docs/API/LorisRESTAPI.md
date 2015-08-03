@@ -1,4 +1,4 @@
-# Loris Instrument API - v0.0.1h-dev
+# Loris Instrument API - v0.0.1
 
 ## 1.0 Overview
 
@@ -9,7 +9,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.1h-dev and it
+document. This document specifies $APIVERSION v0.0.1 and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
