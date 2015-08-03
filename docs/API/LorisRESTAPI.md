@@ -3,6 +3,8 @@ IT IS STILL A WORK IN PROGRESS AND SHOULD NOT BE DEPENDED ON.
 
 Still to be done:
 - update code to reflect finalized version
+    - Require ETags for POST/PUT/PATCH in code
+    - Implement JWT
 - Send pull request
 
 ====
@@ -11,27 +13,31 @@ Still to be done:
 
 ## 1.0 Overview
 
-Loris will implement a RESTful API. Any request sent to `$LorisRoot/api/$APIVERSION/$API_CALL`
-will return either a JSON object or no data. The Loris API will use standard HTTP error
-codes and the body will either be empty or contain only a JSON object for any request.
+This document specifies Loris's RESTful API.
+
+Any request sent to `$LorisRoot/api/$APIVERSION/$API_CALL` will return either a JSON object
+or no data. The Loris API uses standard HTTP error codes and the body of any response will
+either be empty or contain only a JSON object for any request.
+
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
 document. This document specifies $APIVERSION v0.0.1h-dev and it
 MUST be included before the request in all requests.
 
-HTTP GET requests will NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
+HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
 data as per their definitions in the HTTP/1.1 specification. Any methods not supported
 will respond with a 405 Method Not Allowed response and an appropriate Allow header set (as
 per HTTP documentation.)
 
-PUT requests either create or overwrite all data for a given instrument/candidate/visit/etc.
-Any fields not explicitly specified in the PUT request are nulled.
+PUT requests either create or overwrite all data for a given resource (instrument/
+candidate/visit/etc.) Any fields not explicitly specified in the PUT request are nulled.
 
 PATCH requests are identical to PUT requests, but any fields not explicitly mentioned are
 unmodified from their current value.
 
-All GET requests will include an ETag header. If a PUT or PATCH request is sent and it does
+All GET requests include an ETag header. If a PUT or PATCH request is sent and it does
 not include an ETag, or the ETag does not match the currently existing ETag for that resource,
-it will result in a 403 Forbidden response.
+it will result in a 403 Forbidden response. POST requests used for the creation of resources
+do not require ETags.
 
 DELETE is not supported on any resource defined in this API.
 
@@ -108,12 +114,15 @@ It has the form:
 
 ```js
 {
-    "Type" : user|sequential,
+    "Type" : "prompt|auto",
     "Regex" : "/regex/"
 }
 ```
 
 Where regex is a regular expression that can be used to validate a PSCID for this project.
+
+If the type is "prompt", the user should be prompted to enter the PSCID for new candidates.
+If the type is "auto", the server will automatically generate the PSCID.
 
 Note that sometimes in Loris configurations "Site" is a part of the PSCID. This will be
 denoted by the string "SITE{1,1}" inside of the regex returned. This string should be replaced
@@ -125,7 +134,8 @@ or it will result in false negatives.
 GET /projects/$ProjectName
 ```
 
-Will return a 200 OK response if the project exists, and 404 Not Found if it does not, as well as any portion of the API under /projects/$ProjectName.
+Returns a 200 OK response if the project exists, and 404 Not Found if it does not (the same is
+true of any portion of the API under /projects/$ProjectName.)
 
 The body of the request to /projects/$ProjectName will be an entity of the form:
 
@@ -209,7 +219,8 @@ where 123456, 342332, etc are the candidates that exist for this project.
 GET /projects/$ProjectName/instruments/$InstrumentName
 ```
 
-Will return a 200 response on success and 404 Not Found if $InstrumentName is not a valid instrument for this instance of Loris.
+Will return a 200 response on success and 404 Not Found if $InstrumentName is not a
+valid instrument for this instance of Loris.
 
 This will return a JSON representation of the instrument form. If available, rules and form will
 be combined into a single JSON object. The format for the JSON returned is specified in the
@@ -273,8 +284,8 @@ The body of the POST request should be a candidate key with a JSON object of the
 EDC is only required if useEDC is enabled for the project according to the
 project settings.
 
-PSCID is only required if the generation type in the Loris config is not set to
-"sequential".
+PSCID is only required if the generation type in the Loris config is set to
+"prompt".
 
 The candidate will be created at the site of the user using the API's site.
 A response code of 201 Created will be returned on success, 409 Conflict if
