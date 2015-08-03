@@ -133,7 +133,6 @@ class Project extends \Loris\API\APIBase
 
         if ($this->bInstruments) {
             $Instruments = \Utility::getAllInstruments();
-            $JSONArray['Instruments'] = array_keys($Instruments);
 
             if($this->bInstrumentDetails) {
                 $dets = [];
@@ -151,8 +150,9 @@ class Project extends \Loris\API\APIBase
 
                     ];
                 }
-                $JSONArray['InstrumentDetails'] = $dets;
-
+                $JSONArray['Instruments'] = $dets;
+            } else {
+                $JSONArray['Instruments'] = array_keys($Instruments);
             }
         }
 

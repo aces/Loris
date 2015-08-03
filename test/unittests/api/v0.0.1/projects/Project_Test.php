@@ -113,8 +113,8 @@ class Project_Test extends BaseTestCase
             ['Meta' => [
                 "Project" => "TestProject"
             ],
-            "Instruments" => ["testInst", "testInst2"],
-            "InstrumentDetails" => [
+            //"Instruments" => ["testInst", "testInst2"],
+            "Instruments" => [
                 "testInst" => [
                     "FullName" => "Test Instrument",
                     "Subgroup" => "Test Instruments",
