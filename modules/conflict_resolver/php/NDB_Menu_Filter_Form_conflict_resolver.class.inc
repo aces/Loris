@@ -150,12 +150,12 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
-            $this->tpl_data['useProjectsColspan']=0;
+            $this->tpl_data['useProjects']='false';
         }
         else {
             // add 1 to colspan in menu_resolved_conflicts.tpl if using project
             // to account for "Projects" header
-            $this->tpl_data['useProjectsColspan']=1;
+            $this->tpl_data['useProjects']='true';
         }
 
         // set the class variables
@@ -310,10 +310,8 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
                 } else if ($key=='Project') {
-                    if (isset($projectList[$val])) {
-                        $this->tpl_data['items'][$x][$i]['name'] = $key;
-                        $this->tpl_data['items'][$x][$i]['value'] = $projectList[$val];
-                    }
+                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                    $this->tpl_data['items'][$x][$i]['value'] = (isset($projectList[$val]) ? $projectList[$val] : "");
                 }
 
                 $i++;
