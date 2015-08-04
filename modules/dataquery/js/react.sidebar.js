@@ -7,25 +7,18 @@ Sidebar = React.createClass({displayName: 'Sidebar',
     toggleHidden: function() {
         this.setState({ 'hidden' : !this.state.hidden });
     },
+    hide: function() {
+        this.setState({ 'hidden' : true });
+    },
+    show: function() {
+        this.setState({ 'hidden' : false});
+    },
     render: function() {
-        var style = {
-            right: 0,
-            position: "fixed",
-            top: "50px",
-            width: '25%',
-            zIndex: 10000,
-            background: "white",
-            overflow: "scroll",
-            maxHeight: "100%"
-        };
         if(this.state.hidden) {
-            return (
-                    React.createElement("div", {onClick: this.toggleHidden, style: style}, this.props.Name)
-                   );
+            return React.createElement("div", null);
         }
-
         return (
-                React.createElement("div", {style: style, className: "jumbotron", onClick: this.toggleHidden}, 
+                React.createElement("div", null, 
                     React.createElement("h2", null, this.props.Name), 
                     this.props.children
                 )
