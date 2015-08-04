@@ -94,6 +94,12 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
             that.setState({ 'queriesLoaded' : true });
 
         });
+        var component = this;
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            component.setState({
+                ActiveTab: e.target.getAttribute("href").substr(1)
+            });
+        })
     },
     saveCurrentQuery: function(name, shared) {
         $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
@@ -113,7 +119,8 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
             sessiondata: {},
             grouplevel: 0,
             savedQueries: {},
-            queriesLoaded: false
+            queriesLoaded: false,
+            ActiveTab :  'Info'
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -375,31 +382,42 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
                         queriesLoaded: this.state.queriesLoaded}
                 ));
 
-        return React.createElement("div", null, 
-                React.createElement("nav", {className: "nav nav-tabs"}, 
-                    React.createElement("ul", {className: "nav nav-tabs navbar-left", 'data-tabs': "tabs"}, 
-                        React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#Info", 'data-toggle': "tab"}, "Info")), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFields", 'data-toggle': "tab"}, "Define Fields")), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFilters", 'data-toggle': "tab"}, "Define Filters")), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", 'data-toggle': "tab"}, "View Data")), 
-                        React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", 'data-toggle': "tab"}, "Statistical Analysis"))
-                    ), 
-                    React.createElement(SavedQueriesList, {
-                        userQueries: this.props.SavedQueries.User, 
-                        globalQueries: this.props.SavedQueries.Shared, 
-                        queryDetails: this.state.savedQueries, 
-                        queriesLoaded: this.state.queriesLoaded, 
-                        onSelectQuery: this.loadSavedQuery, 
-                        loadedQuery: this.state.loadedQuery}
+        var widthClass = "col-md-12";
+        var sideBar = React.createElement("div", null)
+        if(this.state.fields.length > 0 && this.state.ActiveTab !== 'ViewData') {
+            widthClass = "col-md-10";
+            sideBar = React.createElement("div", {className: "col-md-2"}, 
+                    React.createElement(FieldsSidebar, {
+                        Fields: this.state.fields, 
+                        Criteria: this.state.criteria}
                     )
-                ), 
-                React.createElement("div", {className: "tab-content"}, 
-                    tabs
-                ), 
-                React.createElement(FieldsSidebar, {
-                    Fields: this.state.fields, 
-                    Criteria: this.state.criteria}
-                )
+                );
+        }
+        return React.createElement("div", null, 
+                    React.createElement("div", {className: widthClass}, 
+                        React.createElement("nav", {className: "nav nav-tabs"}, 
+                            React.createElement("ul", {className: "nav nav-tabs navbar-left", 'data-tabs': "tabs"}, 
+                                React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#Info", 'data-toggle': "tab"}, "Info")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFields", 'data-toggle': "tab"}, "Define Fields")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFilters", 'data-toggle': "tab"}, "Define Filters")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", 'data-toggle': "tab"}, "View Data")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", 'data-toggle': "tab"}, "Statistical Analysis"))
+                            ), 
+                            React.createElement(SavedQueriesList, {
+                                userQueries: this.props.SavedQueries.User, 
+                                globalQueries: this.props.SavedQueries.Shared, 
+                                queryDetails: this.state.savedQueries, 
+                                queriesLoaded: this.state.queriesLoaded, 
+                                onSelectQuery: this.loadSavedQuery, 
+                                loadedQuery: this.state.loadedQuery}
+                            )
+                        ), 
+                        React.createElement("div", {className: "tab-content"}, 
+                            tabs
+                        )
+                    ), 
+                    sideBar
+
             );
     }
 });

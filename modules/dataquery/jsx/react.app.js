@@ -94,6 +94,12 @@ DataQueryApp = React.createClass({
             that.setState({ 'queriesLoaded' : true });
 
         });
+        var component = this;
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            component.setState({
+                ActiveTab: e.target.getAttribute("href").substr(1)
+            });
+        })
     },
     saveCurrentQuery: function(name, shared) {
         $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
@@ -113,7 +119,8 @@ DataQueryApp = React.createClass({
             sessiondata: {},
             grouplevel: 0,
             savedQueries: {},
-            queriesLoaded: false
+            queriesLoaded: false,
+            ActiveTab :  'Info'
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -375,31 +382,42 @@ DataQueryApp = React.createClass({
                         queriesLoaded={this.state.queriesLoaded}
                 />);
 
-        return <div>
-                <nav className="nav nav-tabs">
-                    <ul className="nav nav-tabs navbar-left" data-tabs="tabs">
-                        <li role="presentation" className="active"><a href="#Info" data-toggle="tab">Info</a></li>
-                        <li role="presentation"><a href="#DefineFields" data-toggle="tab">Define Fields</a></li>
-                        <li role="presentation"><a href="#DefineFilters" data-toggle="tab">Define Filters</a></li>
-                        <li role="presentation"><a href="#ViewData" data-toggle="tab">View Data</a></li>
-                        <li role="presentation"><a href="#Statistics" data-toggle="tab">Statistical Analysis</a></li>
-                    </ul>
-                    <SavedQueriesList
-                        userQueries={this.props.SavedQueries.User}
-                        globalQueries={this.props.SavedQueries.Shared}
-                        queryDetails={this.state.savedQueries}
-                        queriesLoaded={this.state.queriesLoaded}
-                        onSelectQuery={this.loadSavedQuery}
-                        loadedQuery={this.state.loadedQuery}
+        var widthClass = "col-md-12";
+        var sideBar = <div />
+        if(this.state.fields.length > 0 && this.state.ActiveTab !== 'ViewData') {
+            widthClass = "col-md-10";
+            sideBar = <div className="col-md-2">
+                    <FieldsSidebar
+                        Fields={this.state.fields}
+                        Criteria={this.state.criteria}
                     />
-                </nav>
-                <div className="tab-content">
-                    {tabs}
-                </div>
-                <FieldsSidebar
-                    Fields={this.state.fields}
-                    Criteria={this.state.criteria}
-                />
+                </div>;
+        }
+        return <div>
+                    <div className={widthClass}>
+                        <nav className="nav nav-tabs">
+                            <ul className="nav nav-tabs navbar-left" data-tabs="tabs">
+                                <li role="presentation" className="active"><a href="#Info" data-toggle="tab">Info</a></li>
+                                <li role="presentation"><a href="#DefineFields" data-toggle="tab">Define Fields</a></li>
+                                <li role="presentation"><a href="#DefineFilters" data-toggle="tab">Define Filters</a></li>
+                                <li role="presentation"><a href="#ViewData" data-toggle="tab">View Data</a></li>
+                                <li role="presentation"><a href="#Statistics" data-toggle="tab">Statistical Analysis</a></li>
+                            </ul>
+                            <SavedQueriesList
+                                userQueries={this.props.SavedQueries.User}
+                                globalQueries={this.props.SavedQueries.Shared}
+                                queryDetails={this.state.savedQueries}
+                                queriesLoaded={this.state.queriesLoaded}
+                                onSelectQuery={this.loadSavedQuery}
+                                loadedQuery={this.state.loadedQuery}
+                            />
+                        </nav>
+                        <div className="tab-content">
+                            {tabs}
+                        </div>
+                    </div>
+                    {sideBar}
+
             </div>;
     }
 });
