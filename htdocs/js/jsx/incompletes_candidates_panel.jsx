@@ -84,7 +84,6 @@ var PagedTable = React.createClass({
 			return mapped;
 		});
 		return <div>
-		{pager(page)}
 		<table className="table table-hover table-primary table-bordered colm-freeze">
 		<PagedRowHeader header_row={this.props.table_headers}/>
 		<tbody>
@@ -155,7 +154,7 @@ var IncompleteCandidatesRow = React.createClass({
 		</tr>;
 
 	}
-						 })
+						 });
 
 	var InstrumentConflictsRow = React.createClass({
 		proptypes:{
@@ -165,12 +164,64 @@ var IncompleteCandidatesRow = React.createClass({
 			var row = this.props.row;
 			return <tr key={row.CandID + row.visit_label + row.test_name_display + row.FieldName}>
 		  <td>{row.visit_label}</td>
-		  <td>{row.CandID}</td>
-		  <td>{row.test_name_display}</td>
+		  <td>
+		    <a href={"main.php?test_name=timepoint_list&candID=" + row.CandID}>
+		      {row.CandID}
+		  </a>
+		  </td>
+		  <td>
+		    <a href={"main.php?test_name=" + row.Test_name + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID}>
+		      {row.test_name_display}
+		    </a>
+		  </td>
 		  <td>{row.FieldName}</td>
 			</tr>
 		}		
-	})
+	});
+
+var BehaviouralFeedbackRow = React.createClass({	
+	propTypes:{
+		'row' : React.PropTypes.object.isRequired
+	},
+	render: function(){
+		var row = this.props.row;
+		var bvl_link;
+		var bvl_level;
+		console.log(row.Feedback_level);
+		console.log("in render function");
+		
+		if (row.Feedback_level == 'visit') {
+			bvl_link = "main.php?test_name=instrument_list&candID=" + row.CandID + "&sessionID=" + row.SessionID;
+			bvl_level = "Visit : " + row.Visit_label;			
+		}
+		
+		if (row.Feedback_level == 'instrument'){
+			bvl_link = "main.php?test_name=" + row.Test_name + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID;
+			bvl_level = "Instrument : " + row.Full_name;
+		}
+
+		if (row.Feedback_level == 'profile'){
+			bvl_link = "main.php?test_name=timepoint_list&candID=" + row.CandID
+			bvl_level = "Profile";
+		}
+		
+		return <tr data-href = {bvl_link} key = {row.FeedbackID}>
+		  <td>
+		    <a href={"main.php?test_name=timepoint_list&candID=" + row.CandID}>
+		      {row.CandID}
+		    </a>
+		  </td>
+		  <td>
+		    <a href={bvl_link}>
+		      {bvl_level}
+		    </a>
+		  </td>
+		  <td>
+		    {row.FieldName}
+		  </td>
+		</tr>
+	}
+});
 	
  
 var DefaultPanel = React.createClass({displayName: 'CandidatesPanelTable',
@@ -211,8 +262,21 @@ var InstrumentConflicts = React.createClass({
 			</DefaultPanel>			
 		);
 	}
-})
+					     });
 
+var BehaviouralFeedback = React.createClass({
+	render: function(){
+		return(
+			<DefaultPanel title={this.props.title}>
+			  <PagedTable table_rows={this.props.feedback} table_headers={this.props.header}>
+			    <BehaviouralFeedbackRow/>
+			  </PagedTable>
+			</DefaultPanel>
+		);
+	}
+});			
 
+BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
 IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
 InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
+

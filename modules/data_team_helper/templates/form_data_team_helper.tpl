@@ -72,25 +72,20 @@
 	</div>
 </div>
 
-<br>
-{if $test_name}
-	<table border="1" valign="top" class="std">
-		<tr>
-			<td> Current Single Data_entry Completion Percentage (for <b>{$visit_label}</b> and instrument: <b>{$test_name}</b> {if $candidate}and candID: <b>{$candidate}</b> {/if})&nbsp&nbsp  </td>
-			<td> &nbsp&nbsp&nbsp{$percent_completed}%</td>
-		</tr>
-		
-	</table>
-{/if}
-<table>
-	<tr>
- 		<td>
- 			<p style="font-family:arial;color:red;font-size:13px;">Currently only Behavioural Feedbacks tied to fields are shown</p>
-	</tr>
-</table>
 
-  <div id="otherDiv"></div>
-<div id="myDiv"></div>
+ <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Candidates</a></li>
+    <li role="presentation"><a href="#conflicts" aria-controls="conflicts" role="tab" data-toggle="tab">Data Conflicts</a></li>
+    <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback</a></li>    
+  </ul>
+
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="incomplete"></div>
+    <div role="tabpanel" class="tab-pane" id="conflicts"></div>
+    <div role="tabpanel" class="tab-pane" id="feedback"></div>    
+  </div>
+
 
 <script type="text/jsx" src="js/jsx/incompletes_candidates_panel.jsx"></script>
 
@@ -115,9 +110,19 @@ var ConflictsPanel = InstrumentConflictsPanel({
 	conflicts: conflicts
 }); 
 
+var feedback = {$Bvl_Feedback|@json_encode};
+feedback = JSON.parse(feedback);
 
-React.render(CandiPanel, document.getElementById("myDiv"));
+var FeedbackTab = BehaviouralFeedbackTab({
+	title: "Behvarioural Feedback",
+	header:["CandID", "Feedback Level", "Field Name"],
+	feedback: feedback
+});
 
-React.render(ConflictsPanel, document.getElementById("otherDiv"));
+React.render(CandiPanel, document.getElementById("incomplete"));
+
+React.render(ConflictsPanel, document.getElementById("conflicts"));
+
+React.render(FeedbackTab, document.getElementById("feedback"));
   
 </script>

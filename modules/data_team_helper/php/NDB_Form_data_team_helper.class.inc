@@ -17,7 +17,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
         return ($user->hasPermission('data_team_helper'));
     }
-    
+
 
     function _getDefaults()
     {
@@ -74,57 +74,29 @@ class NDB_Form_data_team_helper extends NDB_Form
             $this->tpl_data['percent_completed'] = $percent_completed;
         }
 
-        //Constructs the where clause...
-        // $extra_where .= $this->AddWhere("p.sourcefrom", 'instrument');
-        // $extra_where .= $this->AddWhere("p.Name", 'FieldName');
-        // $extra_where .= $this->AddWhere("f.data_entry", 'completion_status');
-        // $extra_where .= $this->AddWhere("s.Current_stage", 'sent_to_dcc_status');
-        // $extra_where .= $this->AddWhere("s.Visit_label", 'visit_label');
-
-
-        // //$extra_where .= $this->AddWhere("bt.status", 'feedback_status');
-        // $orderby = " ORDER BY p.sourceFrom,p.sourceField";
-        // //construct the query
-        // if (($extra_where) !=null) {
-        //     $query = "SELECT DISTINCT p.sourceFrom,p.Name, s.Visit_label, p.sourceField, p.description FROM session s
-        //         JOIN flag f ON (f.sessionid = s.id)
-        //         JOIN parameter_type p ON (p.sourceFrom=f.test_name)
-        //         JOIN candidate c ON (c.CandID = s.CandID)
-        //         JOIN psc ON (s.CenterID = psc.CenterID)
-        //         WHERE s.candid = c.candid AND s.Active = 'Y' AND  c.Active = 'Y' AND psc.Centerid!= '1' AND p.Queryable = '1' 
-        //         AND c.PSCID NOT LIKE '%scanner%' $extra_where $orderby";
-        //     $DB->select($query,  $info);
-        // }
-        /**
-         * 
-         * Visit_labels
+         /* Visit_labels
          */
         $visit_array=Utility::getExistingVisitLabels();
         $visit_array = array_combine($visit_array,$visit_array);
         $this->tpl_data['visitLabels'] = $visit_array;
 
 
-        ///////////////////////////////////////////////////////////////
-        ///Show the number of generated results...
-        ///////////////////////////////////////////////////////////////
-        //If there are no data print a message to that effect
-        // if(empty($info)) {
-        //     $this->form->addElement('static', "status", "No matching criteria found.");
-        //     return;
-        // } else {
-        //     $this->form->addElement('static', 'total', 'Total number of results:', sizeof($info));
-        // }
 
         $this->tpl_data['Incomplete_candidates'] = json_encode($this->getIncompleteCandidates($instrument,$_REQUEST['visit_label'], $_REQUEST['candidate']));
+
         $conflicts= $this->InstrumentInConflict($instrument);
         $this->tpl_data['Conflicts'] =  json_encode($conflicts);
-        
+
+        $this->tpl_data['Bvl_Feedback'] = json_encode($this->getFeedbacks($instrument, $_REQUEST['candidate'], $_REQUEST['visit_label']));
     }
 
     /**
      * getFeedbacks
      * Return all the existing feedbackid threads for the given fieldname
-     * IN addition to otther secific info (the test_name,commentid,candid,session id)
+     * In  addition to other secific info (the test_name,commentid,candid,session id).
+     *
+     * In the case of no instrument, candidate or visit set we return all the feedback at all levels.
+     * In the case of just a candidate set we return all feedbacks at every level for that candidate.
      *
      * @param unknown_type $field_name
      * @param null $test_name
@@ -132,32 +104,54 @@ class NDB_Form_data_team_helper extends NDB_Form
      * @return Array containing a list of feedbacks for the appropriate feedback level.
      * @throws DatabaseException
      */
-    function getFeedbacks($field_name,$test_name=null,$visit_label=null) 
+    function getFeedbacks($test_name = null, $candID=null, $visit_label=null)
     {
+
         $DB =& Database::singleton();
-        $feedback_status = $_REQUEST['feedback_status'];
-        $qparams = array('FN' => $field_name,
-            'TN' => $test_name
-        );
-        $query = "SELECT f.test_name,s.visit_label,f.commentid,c.CandID,c.PSCID,s.id,bt.feedbackid,bt.Status FROM session s
-            JOIN flag f ON (s.ID = f.SessionID)
-            JOIN feedback_bvl_thread bt ON (bt.commentid = f.commentid)
-            JOIN candidate c ON (c.Candid = s.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE c.Active = 'Y' AND	s.Active = 'Y' AND bt.FieldName = :FN AND bt.Status = 'opened' AND f.test_name = :TN AND psc.Centerid!= '1' AND c.PSCID NOT LIKE '%scanner%'";
+        $qparams = array();
 
-        if (isset($feedback_status) && $feedback_status!= "all") {
-            $query .= " AND bt.status = :FStatus";
-            $qparams['FStatus'] = $feedback_status;
+        $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID, fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName, tn.Full_name, s.Visit_label FROM feedback_bvl_thread AS fb
+                      JOIN session s ON (s.ID = fb.SessionID)
+                      LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
+                      LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)";
+
+        $where = " WHERE fb.Public = 'Y' AND fb.Status = 'opened' AND fb.active= 'Y'";
+
+        if(isset($candID) && !empty($candID)){
+            $where .= " AND fb.CandID = :CI";
+            $qparams['CI'] = $candID;
         }
 
-        if (($visit_label !=null)&&($visit_label!='All Visits')) {
-            $query .= " AND s.visit_label = :VL";
+        if(isset($visit_label) && $visit_label !="All Visits"){
+            $where .= " AND s.Visit_label = :VL";
             $qparams['VL'] = $visit_label;
-        }
-        $results = $DB->pselect($query,$qparams);
-        return $results;
+        }      
 
+        //if we have set a specific test name we need to search the bvl_feedback for any occurence of the fieldnames in the given instrument
+        if(isset($test_name) && $test_name !='All Instruments' ){
+
+            $where .= " AND FieldName = :FN";
+            $field_names = Utility::getSourcefields($test_name);
+
+            $query = $select . $where;
+
+            $results = array();
+            foreach ($field_names as $field){
+                $qparams['FN'] = $field["SourceField"];
+                $result = $DB->pselect($query,$qparams);
+                array_push($results, $result);
+            }
+
+            //after the results are all fetched we want to flatten the array
+            $flattened_result = call_user_func_array('array_merge', $results);
+        }
+
+        else{
+            $query = $select . $where;
+            $flattened_result = $DB->pselect($query,$qparams);
+        }
+
+        return $flattened_result;
     }
 
     /**
@@ -169,7 +163,7 @@ class NDB_Form_data_team_helper extends NDB_Form
      * @return unknown
      */
 
-    function AddWhere($Column, $Filter) 
+    function AddWhere($Column, $Filter)
     {
         if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Fields' && (strtolower($_REQUEST[$Filter]) !=='any') && ($_REQUEST[$Filter] !=='All Visits') && $_REQUEST[$Filter] !=='all_flags' && ($_REQUEST[$Filter] !=='All Instruments')) {
             global $DB;
@@ -190,20 +184,13 @@ class NDB_Form_data_team_helper extends NDB_Form
      * @param unknown_type $test_name
      * @return unknown
      */
-    function InstrumentInConflict($test_name, $visit_label=null, $candidate=null) 
+    function InstrumentInConflict($test_name, $visit_label=null, $candidate=null)
     {
         global $DB;
         $conflicts = array();
-        //if test_name display exists
+        //if test_name exists and candidate is not set
 
-        // $query =  "SELECT DISTINCT s.CandID,ca.PSCID, c.FieldName,c.TableName,t.test_name_display, s.visit_label FROM conflicts_unresolved c
-        //         LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
-        //         LEFT JOIN session s ON (f.SessionID=s.ID)
-        //         LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
-        //         JOIN test_battery t ON (t.test_name = f.test_name)
-        //         JOIN psc ON (s.CenterID = psc.CenterID)";
 
-        // $where = "WHERE t.visit_label = s.Visit_label AND TableName LIKE CONCAT(:TN, '%') AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
         $qparams = array();
 
 
@@ -214,7 +201,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_battery t ON (t.test_name = f.test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)";
-            
+
             $where = " WHERE t.visit_label = s.Visit_label AND ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID not like '%scanner%'";
 
         } else {
@@ -243,14 +230,14 @@ class NDB_Form_data_team_helper extends NDB_Form
             $where .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
-        
-        
+
+
         $query = $query . $where;
         $conflicts = $DB->pselect($query,$qparams);
         return $conflicts;
     }
 
-    function FieldInConflict($test_name,$field_name) 
+    function FieldInConflict($test_name,$field_name)
     {
         //Do for each instrument....one shot....
         //And then extract the specific info through template..
@@ -279,11 +266,11 @@ class NDB_Form_data_team_helper extends NDB_Form
     }
 
 
-    function getIncompleteCandidates($test_name,$visit_label=null, $candidate=null) 
+    function getIncompleteCandidates($test_name,$visit_label=null, $candidate=null)
     {
         global $DB;
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
-            JOIN flag f ON (f.sessionid = s.id) 
+            JOIN flag f ON (f.sessionid = s.id)
             JOIN candidate c ON (c.candid = s.candid)
             JOIN test_names t ON (t.Test_name = f.Test_name)
             JOIN psc ON (s.CenterID = psc.CenterID)	";
@@ -307,7 +294,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             $where .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
-        
+
         $order_by = " ORDER BY f.commentid ";
 
         $query = $query . $where . $order_by;
@@ -316,7 +303,7 @@ class NDB_Form_data_team_helper extends NDB_Form
     }
 
 
-    function getInstrumentCount($test_name, $visit_label=null, $candidate=null) 
+    function getInstrumentCount($test_name, $visit_label=null, $candidate=null)
     {
         global $DB;
         $query = "SELECT COUNT(*) FROM $test_name AS i
@@ -341,15 +328,15 @@ class NDB_Form_data_team_helper extends NDB_Form
             $where .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
-        
+
         $query.= $where;
         $count =$DB->pselectOne($query, $qparams);
         return $count;
     }
 
 
-    function getCompleteInstrumentCount($test_name,$visit_label=null, $candidate=null) 
-    { 
+    function getCompleteInstrumentCount($test_name,$visit_label=null, $candidate=null)
+    {
         global $DB;
         $query = "SELECT COUNT(*) FROM $test_name AS i
             JOIN flag f ON (f.CommentID=i.CommentID)
@@ -375,7 +362,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             $where .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
-        
+
         $query.= $where;
         $count =$DB->pselectOne($query, $qparams);
         return $count;
@@ -392,7 +379,7 @@ class NDB_Form_data_team_helper extends NDB_Form
      * @return unknown
      */
 
-    function _getPercentCompleted($instrument,$visit_label=null, $candidate=null) 
+    function _getPercentCompleted($instrument,$visit_label=null, $candidate=null)
     {
         $percent_completed =0;
         $total_count  = $this->getInstrumentCount($instrument,$visit_label, $candidate);
@@ -412,7 +399,7 @@ class NDB_Form_data_team_helper extends NDB_Form
      * @throws DatabaseException
      */
 
-    function getTestNameusingMappedName ($full_name, $subprojectID = null) 
+    function getTestNameusingMappedName ($full_name, $subprojectID = null)
     {
         $DB =& Database::singleton();
         $values = array();
@@ -436,7 +423,7 @@ class NDB_Form_data_team_helper extends NDB_Form
      */
 	static function getVisitInstruments($visit_label){
 		$DB =& Database::singleton();
-	
+
 		if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
 			$test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where Visit_label =:vl",array('vl'=>$visit_label));
 		} else {
@@ -447,7 +434,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 			JOIN test_names t ON (f.test_name=t.Test_name)
 			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%' ORDER BY t.Full_name ",array('vl'=>$visit_label));
 		}
-		
+
 		if (Utility::isErrorX($test_names)) {
 			return PEAR::raiseError("DB Error: ".$instruments->getMessage());
 		}
@@ -455,4 +442,3 @@ class NDB_Form_data_team_helper extends NDB_Form
 	}
 }
 ?>
- 
