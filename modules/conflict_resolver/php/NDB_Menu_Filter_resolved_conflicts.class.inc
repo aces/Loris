@@ -146,8 +146,7 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
             if(is_array($sites)) $sites = array('' => 'All') + $sites;
-        }
-        else {
+        } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
@@ -198,10 +197,8 @@ class NDB_Menu_Filter_resolved_conflicts extends NDB_Menu_Filter
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
                 } else if ($key=='Project') {
-                    if (isset($projectList[$val])) {
-                        $this->tpl_data['items'][$x][$i]['name'] = $key;
-                        $this->tpl_data['items'][$x][$i]['value'] = $projectList[$val];
-                    }
+                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                    $this->tpl_data['items'][$x][$i]['value'] = (isset($projectList[$val]) ? $projectList[$val] : "");
                 } else if ($key=='NewValue') {
                     if ($item['NewValue'] == 1) {
                         $NewValue = $item['OldValue1'];

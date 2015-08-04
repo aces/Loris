@@ -151,8 +151,7 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
         if ($useProjects === "false") {
             $useProjects = false;
             $this->tpl_data['useProjects']='false';
-        }
-        else {
+        } else {
             // add 1 to colspan in menu_resolved_conflicts.tpl if using project
             // to account for "Projects" header
             $this->tpl_data['useProjects']='true';
@@ -263,8 +262,7 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
             if(is_array($sites)) $sites = array('' => 'All') + $sites;
-        }
-        else {
+        } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {

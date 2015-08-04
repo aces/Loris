@@ -131,13 +131,20 @@
                             </tr>
                             {sectionelse}
                                 <tr>
-                                    <tr><td colspan="{$useProjectsColspan}+7">No unresolved conflicts found.</td></tr>
+                                    {if $useProjects == 'true'}
+                                        <tr><td colspan="8">No unresolved conflicts found.</td></tr>
+                                    {else}
+                                        <tr><td colspan="7">No unresolved conflicts found.</td></tr>
+                                    {/if}
                                 </tr>
                             {/section}
                             <tr>
-                                <td nowrap="nowrap" colspan="{$useProjectsColspan}+6" id="message-area">
-                                    
-                                </td>
+                                {if $useProjects == 'true'}
+                                    <td nowrap="nowrap" colspan="7" id="message-area"></td>
+                                {else}
+                                    <td nowrap="nowrap" colspan="6" id="message-area"></td>
+                                {/if}
+
                                 <td nowrap="nowrap">
                                     <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
