@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class mri_uploadTestIntegrationTest extends LorisIntegrationTest
+class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
 {
-    function testMriUploadDoespageLoad()
+    function testImagingUploaderDoespageLoad()
     {
         $this->webDriver->get($this->url . '?test_name=mri_upload');
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
