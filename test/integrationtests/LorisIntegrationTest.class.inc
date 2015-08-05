@@ -86,6 +86,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
+        $this->DB->update("psc",
+            array('Study_site' => 'Y'),
+            array('CenterID' => '1')
+        );
 
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
@@ -167,27 +171,40 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             array(":configName" => $configName)
         );
 
-        $oldVal = $this->DB->pselectOne(
-            "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array(":confID" => $configID)
-        );
+        if(!empty($configID)) {
+            $oldVal = $this->DB->pselectOne(
+                "SELECT Value FROM Config WHERE ConfigID=:confID",
+                array("confID" => $configID)
+            );
 
-        $this->_oldConfig[$configName] = array(
-            'ConfigID' => $configID,
-            'OldValue' => $oldVal,
-        );
+            $this->_oldConfig[$configName] = array(
+                'ConfigID' => $configID,
+                'OldValue' => $oldVal,
+            );
+            $this->DB->update(
+                "Config",
+                array("Value" => $value),
+                array("ConfigID" => $configID)
+            );
+        } else {
+            $this->_oldConfig[$configName] = array(
+                'ConfigID' => null,
+                'OldValue' => null,
+                'Mock' => true
+            );
+        }
 
-        $this->DB->update(
-            "Config",
-            array("Value" => $value),
-            array("ConfigID" => $configID)
-        );
     }
 
     function restoreConfigSetting($configName) {
         if(!isset($this->_oldConfig[$configName])) {
             throw new LorisException("Attempted to restore unsaved config setting");
         }
+        if($this->oldConfig[$configName]['Mock'] === true) {
+            unset($this->oldConfig[$configName]);
+            return;
+        }
+
         $this->DB->update(
             "Config",
             array("Value"    => $this->_oldConfig[$configName]['OldValue']),
