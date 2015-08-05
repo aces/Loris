@@ -131,13 +131,17 @@ function pager(page) {
 }
 
 var IncompleteCandidatesRow = React.createClass({
+	handleClick: function(){
+		var link = React.findDOMNode(this.refs.incomplete);
+		window.open(link, "Incomplete Candidate");
+	},
 	propTypes:{
 		'row' : React.PropTypes.object.isRequired
 
 	},
 	render: function(){
 		var row = this.props.row;
-		return <tr key={row.id}>
+		return <tr key={row.id} onClick={this.handleClick}>
 		  <td>
 		    <a href={"main.php?test_name=instrument_list&candID=" + row.candid + "&sessionID=" + row.SessionID}> {row.visit_label} </a>
 		  </td>
@@ -147,7 +151,7 @@ var IncompleteCandidatesRow = React.createClass({
 		    </a>
 		  </td>		
 		  <td>
-		    <a href={"main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid}>
+		    <a href={"main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid} ref="incomplete">
 		      {row.Full_name}
 		    </a>
 		  </td>
@@ -156,30 +160,66 @@ var IncompleteCandidatesRow = React.createClass({
 	}
 						 });
 
-	var InstrumentConflictsRow = React.createClass({
-		proptypes:{
-			'row' : React.PropTypes.object.isRequired
-		},
-		render: function(){
-			var row = this.props.row;
-			return <tr key={row.CandID + row.visit_label + row.test_name_display + row.FieldName}>
+var InstrumentConflictsRow = React.createClass({
+	handleClick: function(e){
+		//faking a form which posts to conflict_resolver 
+		var link = React.findDOMNode(this.refs.conflict);
+		request = $.ajax({
+			url: "main.php?conflict_resolver",
+			type : "post",
+			data: {
+				"reset" : "true",
+				"PSCID" : link.dataset.pscid,
+				"Instrument" : link.dataset.instrument,
+				"Question" : link.dataset.question,
+				"visit" : link.dataset.visits,
+				"test_name" : "conflict_resolver",
+				"filter" : "Show Data"
+				
+			},
+			success: function(data){
+				console.log(data);
+				console.log("in success");
+				if (data != "") {     
+					var link = "main.php?test_name=conflict_resolver";
+					window.open(link,'newStuff'); //open's link in newly opened tab!
+				}
+
+			},
+			error: function (xhr, desc, err){
+				console.log(xhr);
+				console.log("Details: " + desc + "\nError:" + err);
+			}			
+		});		
+	},
+	proptypes:{
+		'row' : React.PropTypes.object.isRequired
+	},
+	render: function(){
+		var row = this.props.row;
+		return <tr key={row.CandID + row.visit_label + row.test_name_display + row.FieldName} onClick={this.handleClick}>
 		  <td>{row.visit_label}</td>
 		  <td>
 		    <a href={"main.php?test_name=timepoint_list&candID=" + row.CandID}>
 		      {row.CandID}
-		  </a>
+		    </a>
 		  </td>
 		  <td>
-		    <a href={"main.php?test_name=" + row.Test_name + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID}>
+		    <a ref="conflict" onClick={this.handleClick} className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
 		      {row.test_name_display}
 		    </a>
 		  </td>
 		  <td>{row.FieldName}</td>
-			</tr>
-		}		
-	});
+		</tr>
+	}		
+});
 
-var BehaviouralFeedbackRow = React.createClass({	
+var BehaviouralFeedbackRow = React.createClass({		
+	handleClick: function(){
+		console.log("handle click");
+		var link = React.findDOMNode(this.refs.feedback).href;
+		var feedbackwindow = window.open(link, "Behavioural Feedback");																				
+	},					
 	propTypes:{
 		'row' : React.PropTypes.object.isRequired
 	},
@@ -205,14 +245,14 @@ var BehaviouralFeedbackRow = React.createClass({
 			bvl_level = "Profile";
 		}
 		
-		return <tr data-href = {bvl_link} key = {row.FeedbackID}>
+		return <tr data-dance = {bvl_link} key = {row.FeedbackID} onClick={this.handleClick}>
 		  <td>
 		    <a href={"main.php?test_name=timepoint_list&candID=" + row.CandID}>
 		      {row.CandID}
 		    </a>
 		  </td>
 		  <td>
-		    <a href={bvl_link}>
+		    <a href={bvl_link} onClick={this.handleClick} ref="feedback">
 		      {bvl_level}
 		    </a>
 		  </td>
@@ -276,7 +316,8 @@ var BehaviouralFeedback = React.createClass({
 	}
 });			
 
+
+
 BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
 IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
 InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
-
