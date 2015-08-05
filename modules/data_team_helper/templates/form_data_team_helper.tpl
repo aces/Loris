@@ -74,7 +74,7 @@
 
 
  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Candidates</a></li>
+    <li role="presentation" class="active"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Forms</a></li>
     <li role="presentation"><a href="#conflicts" aria-controls="conflicts" role="tab" data-toggle="tab">Data Conflicts</a></li>
     <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback</a></li>    
   </ul>
@@ -96,7 +96,7 @@ incomplete = JSON.parse(incomplete);
 var header = ["Visit", "CandID", "Instrument"];
 
 var CandiPanel = IncompleteCandidatesPanel({
-	title: "Incomplete Candidates",
+	title: "Incomplete Forms",
 	header: ["Visit", "CandID", "Instrument"],
 	incomplete_candidates: incomplete
 });
