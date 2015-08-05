@@ -98,7 +98,7 @@
             <div class="line-separator"></div>
         </div>
         <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
-            <div class="control-heading" id="slice-series-heading-{{VOLID}}">View slices</div>
+            <div class="control-heading" id="slice-series-heading-{{VOLID}}">View Slices</div>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="xspace">Sagittal</span>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="yspace">Coronal</span>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="zspace">Transverse</span>
@@ -107,7 +107,7 @@
     </div>
 </script>
 
-<div id="loading" style="display: none; color: #064785; font-size: 20px; align:center;">Loading...</div>
+
 <div id="brainbrowser-wrapper" style="display: none">
     <div id="global-controls">
     <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary">
@@ -120,12 +120,17 @@
              <option value="200">Small</option>
              <option value="256">Default</option>
              <option value="350">Large</option>
-             <option value="450">Extra-large</option>
+             <option value="450">Extra-Large</option>
          </select>
     </div>
    </div>
     <div id="brainbrowser"></div>
+
 </div>
+
+
+<div id="loading" style="display: none; color: #064785; font-size: 20px; align:center;">Loading...</div>
+
 <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=jquery.mousewheel.min.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=three.min.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=brainbrowser.volume-viewer.min.js"></script>
