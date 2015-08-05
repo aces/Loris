@@ -2,7 +2,7 @@
 namespace Loris\Tests\API;
 
 require_once __DIR__ . '/../../../../../vendor/autoload.php';
-require_once __DIR__ . '/../../../../../htdocs/api/v0.0.1a/candidates/Candidate.php';
+require_once __DIR__ . '/../../../../../htdocs/api/v0.0.1/candidates/Candidate.php';
 require_once __DIR__ . '/../BaseTestCase.php';
 
 class Candidate_Test extends BaseTestCase

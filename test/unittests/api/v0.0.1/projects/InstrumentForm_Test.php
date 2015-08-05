@@ -1,7 +1,7 @@
 <?php
 namespace Loris\Tests\API;
 require_once __DIR__ . '/../../../../../vendor/autoload.php';
-require_once __DIR__ . '/../../../../../htdocs/api/v0.0.1a/projects/InstrumentForm.php';
+require_once __DIR__ . '/../../../../../htdocs/api/v0.0.1/projects/InstrumentForm.php';
 require_once __DIR__ . "/../BaseTestCase.php";
 
 class InstrumentForm_Test extends BaseTestCase
