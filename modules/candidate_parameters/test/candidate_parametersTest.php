@@ -11,6 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 
+use Facebook\WebDriver\WebDriverBy;
+
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class candidateParametersTestIntegrationTest extends LorisIntegrationTest
 {

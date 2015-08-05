@@ -15,6 +15,12 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -80,11 +86,16 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->run(
             "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
+        $this->DB->update("psc",
+            array('Study_site' => 'Y'),
+            array('CenterID' => '1')
+        );
 
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
         // Set up WebDriver implementation and login
-        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+        $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::firefox();
+        $capabilities = DesiredCapabilities::firefox();
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
@@ -160,27 +171,40 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             array(":configName" => $configName)
         );
 
-        $oldVal = $this->DB->pselectOne(
-            "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array(":confID" => $configID)
-        );
+        if(!empty($configID)) {
+            $oldVal = $this->DB->pselectOne(
+                "SELECT Value FROM Config WHERE ConfigID=:confID",
+                array("confID" => $configID)
+            );
 
-        $this->_oldConfig[$configName] = array(
-            'ConfigID' => $configID,
-            'OldValue' => $oldVal,
-        );
+            $this->_oldConfig[$configName] = array(
+                'ConfigID' => $configID,
+                'OldValue' => $oldVal,
+            );
+            $this->DB->update(
+                "Config",
+                array("Value" => $value),
+                array("ConfigID" => $configID)
+            );
+        } else {
+            $this->_oldConfig[$configName] = array(
+                'ConfigID' => null,
+                'OldValue' => null,
+                'Mock' => true
+            );
+        }
 
-        $this->DB->update(
-            "Config",
-            array("Value" => $value),
-            array("ConfigID" => $configID)
-        );
     }
 
     function restoreConfigSetting($configName) {
         if(!isset($this->_oldConfig[$configName])) {
             throw new LorisException("Attempted to restore unsaved config setting");
         }
+        if($this->oldConfig[$configName]['Mock'] === true) {
+            unset($this->oldConfig[$configName]);
+            return;
+        }
+
         $this->DB->update(
             "Config",
             array("Value"    => $this->_oldConfig[$configName]['OldValue']),
