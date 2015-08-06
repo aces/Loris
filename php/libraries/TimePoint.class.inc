@@ -81,13 +81,19 @@ Class TimePoint
         // instantiate new TimePoint object
         static $timePointList =array();
         if (!isset($timePointList[$sessionID])) {
+            try {
                 $timePointList[$sessionID] = new TimePoint();
 
                 $success = $timePointList[$sessionID]->select($sessionID);
+            }
+            catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
                 unset($timePointList[$sessionID]);
+                throw $e;
+            }
         }
+
         return $timePointList[$sessionID];
     }
 
