@@ -17,7 +17,8 @@ $client->initialize();
 
 $factory = NDB_Factory::singleton();
 $db      = $factory->database();
-// if a new project is created add the new project. Otherwise, update the existing project.
+// if a new project is created add the new project.
+// Otherwise, update the existing project.
 if ($_POST['ProjectID'] === 'new' && !empty($_POST['Name'])) {
     $db->insert(
         "Project",
