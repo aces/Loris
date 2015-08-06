@@ -107,6 +107,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected function login($username, $password)
     {
         $this->webDriver->get($this->url);
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Name("username")
+            )
+        );
 
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
@@ -160,6 +165,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             array(":configName" => $configName)
         );
 
+        if(is_array($configID) && empty($configID)) {
+            // This likely just means the config is in config.xml
+            //throw new LorisException("Attempting to update Config setting not in database");
+            return;
+        }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
             array(":confID" => $configID)
@@ -178,14 +188,18 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     function restoreConfigSetting($configName) {
+        /*
         if(!isset($this->_oldConfig[$configName])) {
             throw new LorisException("Attempted to restore unsaved config setting");
         }
-        $this->DB->update(
-            "Config",
-            array("Value"    => $this->_oldConfig[$configName]['OldValue']),
-            array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
-        );
+         */
+        if(isset($this->_oldConfig[$configName])) {
+            $this->DB->update(
+                "Config",
+                array("Value"    => $this->_oldConfig[$configName]['OldValue']),
+                array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
+            );
+        }
     }
 
 }

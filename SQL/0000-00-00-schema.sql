@@ -2293,6 +2293,16 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM Conf
 INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="Reply-to";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";
 
+CREATE TABLE subproject (
+    SubprojectID int(10) unsigned NOT NULL auto_increment,
+    title varchar(255) NOT NULL,
+    useEDC boolean,
+    WindowDifference enum('optimal', 'battery'),
+    PRIMARY KEY (SubprojectID)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
+INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Control', false, 'optimal');
+INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (2, 'Experimental', false, 'optimal');
+
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     ModuleName varchar(255) NOT NULL,
@@ -2456,3 +2466,4 @@ CREATE TABLE `server_processes` (
   KEY `FK_task_1` (`userid`),
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
