@@ -205,7 +205,7 @@ var InstrumentConflictsRow = React.createClass({
 		    </a>
 		  </td>
 		  <td>
-		    <a ref="conflict" onClick={this.handleClick} className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
+		    <a ref="conflict" onClick={this.handleClick} href="main.php?conflict_resolver" className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
 		      {row.test_name_display}
 		    </a>
 		  </td>

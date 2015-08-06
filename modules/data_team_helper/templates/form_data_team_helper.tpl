@@ -74,9 +74,9 @@
 
 
  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Forms</a></li>
-    <li role="presentation"><a href="#conflicts" aria-controls="conflicts" role="tab" data-toggle="tab">Data Conflicts</a></li>
-    <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback</a></li>    
+   <li role="presentation" class="active"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Forms <span class="badge">{$Incomplete_candidates_length}</span></a></li>
+   <li role="presentation"><a href="#conflicts" aria-controls="conflicts" role="tab" data-toggle="tab">Data Conflicts <span class="badge">{$Conflicts_length}</span></a></li>
+   <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback <span class="badge">{$Bvl_Feedback_length}</span></a></li>    
   </ul>
 
 
@@ -93,11 +93,9 @@
 var incomplete = {$Incomplete_candidates|@json_encode};
 incomplete = JSON.parse(incomplete);
 
-var header = ["Visit", "CandID", "Instrument"];
-
 var CandiPanel = IncompleteCandidatesPanel({
 	title: "Incomplete Forms",
-	header: ["Visit", "CandID", "Instrument"],
+	header: ["Visit", "DCCID", "Instrument"],
 	incomplete_candidates: incomplete
 });
 
@@ -106,7 +104,7 @@ conflicts = JSON.parse(conflicts);
 
 var ConflictsPanel = InstrumentConflictsPanel({
 	title: "Data Entry Conflicts",
-	header: ["Visit", "CandID", "Instrument", "Field Name"],
+	header: ["Visit", "DCCID", "Instrument", "Field Name"],
 	conflicts: conflicts
 }); 
 
@@ -115,7 +113,7 @@ feedback = JSON.parse(feedback);
 
 var FeedbackTab = BehaviouralFeedbackTab({
 	title: "Behvarioural Feedback",
-	header:["CandID", "Feedback Level", "Field Name"],
+	header:["DCCID", "Feedback Level", "Field Name"],
 	feedback: feedback
 });
 

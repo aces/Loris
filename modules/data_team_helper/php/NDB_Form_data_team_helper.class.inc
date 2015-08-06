@@ -81,13 +81,17 @@ class NDB_Form_data_team_helper extends NDB_Form
         $this->tpl_data['visitLabels'] = $visit_array;
 
 
-
-        $this->tpl_data['Incomplete_candidates'] = json_encode($this->getIncompleteCandidates($instrument,$_REQUEST['visit_label'], $_REQUEST['candidate']));
+        $incompleteCandidates = $this->getIncompleteCandidates($instrument,$_REQUEST['visit_label'], $_REQUEST['candidate']);
+        $this->tpl_data['Incomplete_candidates'] = json_encode($incompleteCandidates);
+        $this->tpl_data['Incomplete_candidates_length'] = count($incompleteCandidates);
 
         $conflicts= $this->InstrumentInConflict($instrument);
         $this->tpl_data['Conflicts'] =  json_encode($conflicts);
+        $this->tpl_data['Conflicts_length'] = count($conflicts);
 
-        $this->tpl_data['Bvl_Feedback'] = json_encode($this->getFeedbacks($instrument, $_REQUEST['candidate'], $_REQUEST['visit_label']));
+        $bvlFeedback = $this->getFeedbacks($instrument, $_REQUEST['candidate'], $_REQUEST['visit_label']);
+        $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
+        $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
     }
 
     /**
