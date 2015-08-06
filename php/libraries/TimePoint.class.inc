@@ -144,7 +144,7 @@ Class TimePoint
                 "Failed to retrieve data for timepoint ($sessionID)"
             );
         }
-        // new feature, older databases might not have the table created,
+        // New feature, older databases might not have the table created,
         // so require a config option to be set
         if ($config->getSetting("SupplementalSessionStatus") == 'true') {
 
