@@ -1114,9 +1114,9 @@ class LorisForm
             }
 
             // normal case, just set it directly
-            if($el['type'] !== 'header'
-                && ($el['type'] !== 'static'
-                || !empty($_REQUEST[$name]))){
+            if (!($el['type'] === 'header'
+                || ($el['type'] === 'static' && empty($_REQUEST[$name])))
+            ) {
                 $arr[$name] = $_REQUEST[$name];
             }
 
