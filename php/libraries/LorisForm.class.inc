@@ -1114,7 +1114,11 @@ class LorisForm
             }
 
             // normal case, just set it directly
-            $arr[$name] = $_REQUEST[$name];
+            if($el['type'] !== 'header'
+                && ($el['type'] !== 'static'
+                || !empty($_REQUEST[$name]))){
+                $arr[$name] = $_REQUEST[$name];
+            }
 
             if ($el['type'] === 'date') {
                 // Convert dates to the type of group that was used
