@@ -106,8 +106,8 @@ Class TimePoint
      */
     function select($sessionID)
     {
-        $config         =& NDB_Config::singleton();
-        $useScreening   = $config->getSetting('useScreening');
+        $config =& NDB_Config::singleton();
+        $useScreening = $config->getSetting('useScreening');
         $screeningIndex = array_search('Screening', $this->_stageOptions);
         if ($useScreening != 'true' && $screeningIndex !== false) {
             unset($this->_stageOptions[$screeningIndex]);
