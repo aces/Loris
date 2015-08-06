@@ -1,6 +1,6 @@
 Subject: Permission Changes for {$realname} - {$study} - LORIS
 
-You are receiving this email because user {$current_user} has edited the permissions for {$realname} (email: {$username}).
+You are receiving this email because user {$current_user} has edited the permissions for {$realname} (username: {$username}).
 
 {if $permissions_added}
 The following permissions have been added:

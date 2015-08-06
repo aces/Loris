@@ -350,13 +350,16 @@ class NDB_Form_user_accounts extends NDB_Form
         $DB_factory =& NDB_Factory::singleton();
         $DB = $DB_factory->database();
 
-        $query   = "SELECT u.Real_Name, u.email FROM permissions p, user_perm_rel up, users u
-                  WHERE p.permID=up.PermID AND p.code = 'send_to_dcc' AND u.ID = up.userID;";
+        $query = "SELECT u.Real_Name, u.email FROM permissions p
+                  JOIN user_perm_rel up ON (p.permID = up.PermID)
+                  JOIN users u ON (u.ID = up.userID)
+                  WHERE p.code = 'send_to_dcc'";
+        
         $results = $DB->select($query);
 
 
         $group[] = $this->form->createElement('static', null, null, '</div>' .
-            "<h3 id=\"header_supervisors\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords("Data Supervisors to Email").'</h3>'
+            "<h3 id=\"header_supervisors\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\"> Data Supervisors to Email </h3> "
             . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">");
 
         foreach ($results as $row){
@@ -605,7 +608,9 @@ class NDB_Form_user_accounts extends NDB_Form
 
     function getDescriptionUsingPermID($permID)
     {
-        $db =& Database::singleton();
+        $db_factory =& NDB_Factory::singleton();
+        $db = $db_factory->database();
+        
         $permission = $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             array('pID' => $permID)
