@@ -108,10 +108,13 @@ class NDB_Form_Configuration extends NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
 
     }
+
     /**
     * Gets the list of projects
+    *
     * @return list of projects if user uses projects for the study.
     */
+
     function project()
     {
         $factory     = NDB_Factory::singleton();
@@ -130,10 +133,13 @@ class NDB_Form_Configuration extends NDB_Form
             throw new Exception("Projects are not used in this study.");
         }
     }
+
     /**
     * Gets list of subprojects
+    *
     * @return list of subprojects.
     */
+
     function subproject()
     {
         $factory        = NDB_Factory::singleton();
@@ -142,7 +148,8 @@ class NDB_Form_Configuration extends NDB_Form
         $subprojects    = array();
 
         foreach ($subprojectList as $subprojectID => $title) {
-            $subprojects[$subprojectID] = $config->getSubprojectSettings($subprojectID);
+            $subprojects[$subprojectID] 
+                = $config->getSubprojectSettings($subprojectID);
         }
         $this->tpl_data['subprojects'] = $subprojects;
 
