@@ -1,8 +1,7 @@
 <?php
 /**
  * Controls access to a module's javascript CSS styles on the filesystem. This script
- * should ensure that only files relative to module's path specified are
- * accessible.
+ * should ensure that only files relative to module's path specified are accessible.
  * By calling new NDB_Client(), it also makes sure that the user is logged in to
  * Loris.
  *
@@ -18,8 +17,7 @@
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
  */
-
-
+session_cache_limiter('public');
 // Load config file and ensure paths are correct
 set_include_path(
     get_include_path() . ":" .
@@ -89,6 +87,15 @@ if (!file_exists($FullPath)) {
 
 $MimeType = "text/css";
 header("Content-type: $MimeType");
+
+$etag = md5(filemtime($FullPath));
+header("ETag: $etag");
+if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
+    && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag
+) {
+    header("HTTP/1.1 304 Not Modified");
+    exit(0);
+}
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
