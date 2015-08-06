@@ -27,45 +27,45 @@ Class TimePoint
     var $_timePointInfo;
 
     var $_stageOptions = array(
-                          null,
-                          'Not Started',
-                          'Screening',
-                          'Visit',
-                          'Approval',
-                          'Subject',
-                          'Recycling Bin',
-                         );
+        null,
+        'Not Started',
+        'Screening',
+        'Visit',
+        'Approval',
+        'Subject',
+        'Recycling Bin',
+    );
 
     var $_dynamicStageOptions = array(
-                                 'Screening',
-                                 'Visit',
-                                 'Approval',
-                                );
+        'Screening',
+        'Visit',
+        'Approval',
+    );
 
     var $_statusOptions = array(
-                           null,
-                           'Pass',
-                           'Failure',
-                           'Withdrawal',
-                           'In Progress',
-                          );
+        null,
+        'Pass',
+        'Failure',
+        'Withdrawal',
+        'In Progress',
+    );
 
     var $bvlQcTypes = array(
-                       null,
-                       'Visual',
-                       'Hardcopy',
-                      );
+        null,
+        'Visual',
+        'Hardcopy',
+    );
 
     var $bvlQcStatuses = array(
-                          null,
-                          'Complete',
-                         );
+        null,
+        'Complete',
+    );
 
     var $bvlQcExclusionStatuses = array(
-                                   null,
-                                   'Excluded',
-                                   'Not Excluded',
-                                  );
+        null,
+        'Excluded',
+        'Not Excluded',
+    );
 
     /**
      * Returns an object representing this Timepoint, and ensures that only
