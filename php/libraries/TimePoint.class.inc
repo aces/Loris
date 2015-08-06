@@ -617,6 +617,11 @@ Class TimePoint
         if ($this->isSubmitted() && $this->getApprovalStatus() != 'NULL') {
             if ($this->getApprovalStatus() == 'Failure') {
                 $newCurrentStage = 'Recycling Bin';
+                // delete from conflicts_unresolved if marked Recycling Bin
+                $commentIDs = $db->pselect("SELECT CommentID FROM flag WHERE SessionID=:SID", array('SID' => $this->getSessionID()));
+                foreach ($commentIDs as $commentID){
+                    $db->run("DELETE FROM conflicts_unresolved WHERE CommentId1=$commentID OR CommentId2=CONCAT('DDE_', $commentID)");
+                }
             } else {
                 // in all other cases
                 $newCurrentStage = 'Approval';
