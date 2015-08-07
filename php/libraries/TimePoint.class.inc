@@ -27,47 +27,47 @@ Class TimePoint
     var $_timePointInfo;
 
     var $_stageOptions = array(
-        null,
-        'Not Started',
-        'Screening',
-        'Visit',
-        'Approval',
-        'Subject',
-        'Recycling Bin',
-    );
+                          null,
+                          'Not Started',
+                          'Screening',
+                          'Visit',
+                          'Approval',
+                          'Subject',
+                          'Recycling Bin',
+                         );
 
     var $_dynamicStageOptions = array(
-        'Screening',
-        'Visit',
-        'Approval',
-    );
+                                 'Screening',
+                                 'Visit',
+                                 'Approval',
+                                );
 
     var $_statusOptions = array(
-        null,
-        'Pass',
-        'Failure',
-        'Withdrawal',
-        'In Progress',
-    );
+                           null,
+                           'Pass',
+                           'Failure',
+                           'Withdrawal',
+                           'In Progress',
+                          );
 
     var $bvlQcTypes = array(
-        null,
-        'Visual',
-        'Hardcopy',
-    );
+                       null,
+                       'Visual',
+                       'Hardcopy',
+                      );
 
     var $bvlQcStatuses = array(
-        null,
-        'Complete',
-    );
+                          null,
+                          'Complete',
+                         );
 
     var $bvlQcExclusionStatuses = array(
-        null,
-        'Excluded',
-        'Not Excluded',
-    );
+                                   null,
+                                   'Excluded',
+                                   'Not Excluded',
+                                  );
 
-    
+
     /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
@@ -107,8 +107,8 @@ Class TimePoint
      */
     function select($sessionID)
     {
-        $config =& NDB_Config::singleton();
-        $useScreening = $config->getSetting('useScreening');
+        $config         =& NDB_Config::singleton();
+        $useScreening   = $config->getSetting('useScreening');
         $screeningIndex = array_search('Screening', $this->_stageOptions);
         if ($useScreening != 'true' && $screeningIndex !== false) {
             unset($this->_stageOptions[$screeningIndex]);
@@ -129,12 +129,12 @@ Class TimePoint
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row = $db->pselectRow($query, array('SID' => $sessionID));
+        $row   = $db->pselectRow($query, array('SID' => $sessionID));
 
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $subprojectSettings = $config->getSubprojectSettings(
+            $subprojectSettings   = $config->getSubprojectSettings(
                 $row['SubprojectID']
             );
             $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
