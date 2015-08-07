@@ -67,6 +67,7 @@ Class TimePoint
         'Not Excluded',
     );
 
+    
     /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
