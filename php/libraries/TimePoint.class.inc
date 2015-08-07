@@ -181,7 +181,7 @@ Class TimePoint
 
     }
 
-    
+
     /**
      * Registers a new timepoint into the session table
      *
