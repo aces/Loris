@@ -27,45 +27,45 @@ Class TimePoint
     var $_timePointInfo;
 
     var $_stageOptions = array(
-        null,
-        'Not Started',
-        'Screening',
-        'Visit',
-        'Approval',
-        'Subject',
-        'Recycling Bin',
-    );
+                          null,
+                          'Not Started',
+                          'Screening',
+                          'Visit',
+                          'Approval',
+                          'Subject',
+                          'Recycling Bin',
+                         );
 
     var $_dynamicStageOptions = array(
-        'Screening',
-        'Visit',
-        'Approval',
-    );
+                                 'Screening',
+                                 'Visit',
+                                 'Approval',
+                                );
 
     var $_statusOptions = array(
-        null,
-        'Pass',
-        'Failure',
-        'Withdrawal',
-        'In Progress',
-    );
+                           null,
+                           'Pass',
+                           'Failure',
+                           'Withdrawal',
+                           'In Progress',
+                          );
 
     var $bvlQcTypes = array(
-        null,
-        'Visual',
-        'Hardcopy',
-    );
+                       null,
+                       'Visual',
+                       'Hardcopy',
+                      );
 
     var $bvlQcStatuses = array(
-        null,
-        'Complete',
-    );
+                          null,
+                          'Complete',
+                         );
 
     var $bvlQcExclusionStatuses = array(
-        null,
-        'Excluded',
-        'Not Excluded',
-    );
+                                   null,
+                                   'Excluded',
+                                   'Not Excluded',
+                                  );
 
 
     /**
@@ -107,8 +107,8 @@ Class TimePoint
      */
     function select($sessionID)
     {
-        $config =& NDB_Config::singleton();
-        $useScreening = $config->getSetting('useScreening');
+        $config         =& NDB_Config::singleton();
+        $useScreening   = $config->getSetting('useScreening');
         $screeningIndex = array_search('Screening', $this->_stageOptions);
         if ($useScreening != 'true' && $screeningIndex !== false) {
             unset($this->_stageOptions[$screeningIndex]);
@@ -129,12 +129,12 @@ Class TimePoint
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row = $db->pselectRow($query, array('SID' => $sessionID));
+        $row   = $db->pselectRow($query, array('SID' => $sessionID));
 
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $subprojectSettings = $config->getSubprojectSettings(
+            $subprojectSettings   = $config->getSubprojectSettings(
                 $row['SubprojectID']
             );
             $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
@@ -184,11 +184,9 @@ Class TimePoint
     /**
      * Registers a new timepoint into the session table
      *
-     * @param integer $candID 6 digit CandID having a timepoint created.
-     *                                created.
-     * @param integer $SubprojectID The subprojectID of the new timepoint
-     * @param string $nextVisitLabel The visit label of the timepoint being created
-     *                                created
+     * @param integer $candID         6 digit CandID having a timepoint created.
+     * @param integer $SubprojectID   The subprojectID of the new timepoint
+     * @param string  $nextVisitLabel The visit label of the timepoint being created
      *
      * @return A new TimePoint instance.
      */
@@ -207,7 +205,7 @@ Class TimePoint
                         LEFT OUTER JOIN session AS s USING (CandID)
                     WHERE c.CandID=:CaID AND (s.Active='Y' OR s.Active is null)
                     GROUP BY c.CandID";
-        $row = $db->pselectRow($query, array('CaID' => $candID));
+        $row   = $db->pselectRow($query, array('CaID' => $candID));
 
         // if this is a web hit (thus state exists)
         if (is_object($_SESSION['State'])) {
@@ -226,18 +224,18 @@ Class TimePoint
             ? 'V' . $row['nextVisitNo']
             : $nextVisitLabel;
         $insertData = array(
-            'CandID' => $candID,
-            'SubprojectID' => $SubprojectID,
-            'VisitNo' => $row['nextVisitNo'],
-            'Visit_label' => $VisitLabel,
-            'CenterID' => $row['CenterID'],
-            'Current_stage' => 'Not Started',
-            'Submitted' => 'N',
-            'registeredBy' => $userID,
-            'UserID' => $userID,
-            'Date_registered' => $today,
-            'Date_active' => $today,
-        );
+                       'CandID'          => $candID,
+                       'SubprojectID'    => $SubprojectID,
+                       'VisitNo'         => $row['nextVisitNo'],
+                       'Visit_label'     => $VisitLabel,
+                       'CenterID'        => $row['CenterID'],
+                       'Current_stage'   => 'Not Started',
+                       'Submitted'       => 'N',
+                       'registeredBy'    => $userID,
+                       'UserID'          => $userID,
+                       'Date_registered' => $today,
+                       'Date_active'     => $today,
+                      );
 
         // insert the data
         $success = $db->insert('session', $insertData);
@@ -270,7 +268,7 @@ Class TimePoint
      * methods below. However, there are cases where it may be easier to directly
      * use setData.
      *
-     * @param string $var The variable to set for this timepoint.
+     * @param string $var   The variable to set for this timepoint.
      * @param string $value The value to set $var to.
      *
      * @return none, side-effect modifies session table.
@@ -647,9 +645,9 @@ Class TimePoint
 
         // update session table
         $update_columns = array(
-            "Date_stage_change" => $today,
-            'Current_stage' => $newCurrentStage,
-        );
+                           "Date_stage_change" => $today,
+                           'Current_stage'     => $newCurrentStage,
+                          );
 
         $dbErrors = $db->update(
             'session',
@@ -689,9 +687,9 @@ Class TimePoint
     function startStage($stage)
     {
         $setArray = array(
-            'Current_stage' => $stage,
-            'Date_stage_change' => date('Y-m-d'),
-        );
+                     'Current_stage'     => $stage,
+                     'Date_stage_change' => date('Y-m-d'),
+                    );
 
         if (in_array($stage, $this->_dynamicStageOptions)
             && $this->getData($stage) == null
@@ -787,7 +785,7 @@ Class TimePoint
         $db =& Database::singleton();
 
         // check the status
-        $errorMsg = "TimePoint::setBVLQCExclusion: You need to specify";
+        $errorMsg  = "TimePoint::setBVLQCExclusion: You need to specify";
         $errorMSg .= " a valid BVL QC Exclusion Status\n";
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
             throw new Exception(
@@ -848,9 +846,9 @@ Class TimePoint
      */
     function getEffectiveDateOfBirth()
     {
-        $config = NDB_Config::singleton();
+        $config    = NDB_Config::singleton();
         $candidate = Candidate::singleton($this->getCandID());
-        $settings = $config->getSubprojectSettings($this->getSubprojectID());
+        $settings  = $config->getSubprojectSettings($this->getSubprojectID());
         if ($settings['options']['useEDC'] == "true") {
             return $candidate->getCandidateEDC();
         }
