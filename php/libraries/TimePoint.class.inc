@@ -128,15 +128,15 @@ Class TimePoint
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row   = $db->pselectRow($query, array('SID' => $sessionID));
+        $row = $db->pselectRow($query, array('SID' => $sessionID));
 
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $subprojectSettings   = $config->getSubprojectSettings(
+            $subprojectSettings = $config->getSubprojectSettings(
                 $row['SubprojectID']
             );
-            $this->_timePointInfo['SubprojectTitle'] =$subprojectSettings['title'];
+            $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new Exception(
@@ -154,7 +154,7 @@ Class TimePoint
 
             $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
             foreach ($statuses as $row) {
-                if (!isset( $this->_timePointInfo['status'])) {
+                if (!isset($this->_timePointInfo['status'])) {
                     $this->_timePointInfo['status'] = array();
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
