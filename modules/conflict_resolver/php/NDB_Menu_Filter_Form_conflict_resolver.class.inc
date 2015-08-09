@@ -58,7 +58,7 @@ class NDB_Menu_Filter_Form_conflict_resolver extends NDB_Menu_Filter_Form
             if ($val != 'none') {
                 $hash = $key;
                 $row = $DB->pselectRow(
-                    "SELECT * FROM conflicts_unresolved JOIN flag ON (conflicts_unresolved.CommentId2=flag.CommentID)
+                    "SELECT * FROM conflicts_unresolved
                     WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1, 
                         ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash",
                     array('hash' => $hash)
