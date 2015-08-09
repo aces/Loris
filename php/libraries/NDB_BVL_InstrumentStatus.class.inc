@@ -180,17 +180,32 @@ class NDB_BVL_InstrumentStatus
                 : substr($this->_commentID, 4)
             );
 
-            $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId(
-                $principalCommentId
+            $DDECommentId = 'DDE_'.$principalCommentId;
+            $query = $this->DB->pselect(
+                "SELECT Data_entry FROM flag WHERE CommentID=$principalCommentId OR CommentID=$DDECommentId",
+                array()
             );
 
-            ConflictDetector::clearConflictsForInstance($principalCommentId);
-            $diff = ConflictDetector::detectConflictsForCommentIds(
-                $instrumentName,
-                $principalCommentId,
-                'DDE_'.$principalCommentId
-            );
-            ConflictDetector::recordUnresolvedConflicts($diff);
+            // Run ConflictDetector if Data_entry status of SDE and DDE are both Complete
+            $count = 0;
+            foreach ($query as $dataEntryStatus) {
+                if ($dataEntryStatus == 'Complete'){
+                    $count++;
+                }
+                if ($count > 1) {
+                    $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId(
+                        $principalCommentId
+                    );
+
+                    ConflictDetector::clearConflictsForInstance($principalCommentId);
+                    $diff = ConflictDetector::detectConflictsForCommentIds(
+                        $instrumentName,
+                        $principalCommentId,
+                        $DDECommentId
+                    );
+                    ConflictDetector::recordUnresolvedConflicts($diff);
+                }
+            }
         }
     }
 
