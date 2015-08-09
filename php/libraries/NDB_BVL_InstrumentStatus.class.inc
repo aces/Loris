@@ -192,6 +192,20 @@ class NDB_BVL_InstrumentStatus
             );
             ConflictDetector::recordUnresolvedConflicts($diff);
         }
+
+        // Remove conflicts for SDE & DDE form from the Conflict Resolver if new status is In Progress
+        if ($status == 'In Progress') {
+            if (strpos($this->_commentID, 'DDE') === false) {
+                $GLOBALS['DB']->run(
+                    "DELETE FROM conflicts_unresolved WHERE CommentID LIKE CONCAT('%', $this->commentID)"
+                );
+            } else {
+                $GLOBALS['DB']->run(
+                    "DELETE FROM conflicts_unresolved WHERE CommentID LIKE CONCAT('%', substr($this->_commentID, 4))"
+                );
+            }
+        }
+
     }
 
     /**
