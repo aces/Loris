@@ -40,39 +40,39 @@ class NDB_BVL_InstrumentStatus
      * The set of valid options for the data entry flag
      */
     var $_dataEntryOptions = array(
-        null,
-        'In Progress',
-        'Complete',
-    );
+                              null,
+                              'In Progress',
+                              'Complete',
+                             );
 
     /**
      * The set of valid options for the administration flag
      */
     var $_administrationOptions = array(
-        null,
-        'None',
-        'Partial',
-        'All',
-    );
+                                   null,
+                                   'None',
+                                   'Partial',
+                                   'All',
+                                  );
 
     /**
      * The set of valid options for the validity flag
      */
     var $_validityOptions = array(
-        null,
-        'Valid',
-        'Questionable',
-        'Invalid',
-    );
+                             null,
+                             'Valid',
+                             'Questionable',
+                             'Invalid',
+                            );
 
     /**
      * The set of valid options for the exclusion flag
      */
     var $_exclusionOptions = array(
-        null,
-        'Fail',
-        'Pass',
-    );
+                              null,
+                              'Fail',
+                              'Pass',
+                             );
 
 
     /**
@@ -93,7 +93,7 @@ class NDB_BVL_InstrumentStatus
         $query = "SELECT SessionID, Data_entry, Administration, Validity, Exclusion
             FROM flag
             WHERE CommentID=:CID";
-        $row = $db->pselectRow($query, array('CID' => $this->_commentID));
+        $row   = $db->pselectRow($query, array('CID' => $this->_commentID));
 
         // store the statuses into the _status property
         $this->_status = $row;
@@ -181,7 +181,7 @@ class NDB_BVL_InstrumentStatus
             );
 
             $DDECommentId = 'DDE_' . $principalCommentId;
-            $query = $this->DB->pselect(
+            $query        = $this->DB->pselect(
                 "SELECT Data_entry FROM flag
                 WHERE CommentID=$principalCommentId OR CommentID=$DDECommentId",
                 array()
@@ -197,7 +197,6 @@ class NDB_BVL_InstrumentStatus
                     $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId(
                         $principalCommentId
                     );
-
                     ConflictDetector::clearConflictsForInstance($principalCommentId);
                     $diff = ConflictDetector::detectConflictsForCommentIds(
                         $instrumentName,
