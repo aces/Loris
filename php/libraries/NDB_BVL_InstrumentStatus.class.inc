@@ -73,8 +73,7 @@ class NDB_BVL_InstrumentStatus
                               'Fail',
                               'Pass',
                              );
-
-
+    
     /**
      * Loads the object with the current status of the instrument
      *
