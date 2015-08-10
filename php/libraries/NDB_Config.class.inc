@@ -451,7 +451,6 @@ class NDB_Config
     *@param integer $ProjectID The ProjectID we want settings for
     *
     *@return an array of settings for this project.
-    *
     */
     function getProjectSettings($ProjectID)
     {
