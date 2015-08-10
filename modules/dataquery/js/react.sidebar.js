@@ -1,4 +1,4 @@
-Sidebar = React.createClass({displayName: 'Sidebar',
+Sidebar = React.createClass({displayName: "Sidebar",
     getInitialState: function() {
         return {
             'hidden' : false
@@ -25,7 +25,7 @@ Sidebar = React.createClass({displayName: 'Sidebar',
        );
     }
 });
-FieldsSidebar = React.createClass({displayName: 'FieldsSidebar',
+FieldsSidebar = React.createClass({displayName: "FieldsSidebar",
     getDefaultProps: function() {
         return {
             Fields: [],

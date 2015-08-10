@@ -1,4 +1,4 @@
-CategoryItem = React.createClass({displayName: 'CategoryItem',
+CategoryItem = React.createClass({displayName: "CategoryItem",
     render: function() {
         var classList = "list-group-item";
         if(this.props.selected) {
@@ -13,7 +13,7 @@ CategoryItem = React.createClass({displayName: 'CategoryItem',
     }
 });
 
-CategoryList = React.createClass({displayName: 'CategoryList',
+CategoryList = React.createClass({displayName: "CategoryList",
     getInitialState: function () {
         return {
             selectedCategory: ""
@@ -53,7 +53,7 @@ CategoryList = React.createClass({displayName: 'CategoryList',
     }
 });
 
-OperatorValue = React.createClass({displayName: 'OperatorValue',
+OperatorValue = React.createClass({displayName: "OperatorValue",
     preventDefault: function(evt) {
         evt.preventDefault();
         evt.stopPropagation();
@@ -90,7 +90,7 @@ OperatorValue = React.createClass({displayName: 'OperatorValue',
                 ));
     }
 });
-FieldItem = React.createClass({displayName: 'FieldItem',
+FieldItem = React.createClass({displayName: "FieldItem",
     changeCriteria: function(evt) {
         evt.preventDefault();
         evt.stopPropagation();
@@ -150,7 +150,7 @@ FieldItem = React.createClass({displayName: 'FieldItem',
     }
 });
 
-FieldList = React.createClass({displayName: 'FieldList',
+FieldList = React.createClass({displayName: "FieldList",
     getInitialState: function() {
         return {
             PageNumber: 1
@@ -223,13 +223,13 @@ FieldList = React.createClass({displayName: 'FieldList',
         return (
             React.createElement("div", {className: "list-group col-md-9 col-sm-12"}, 
                 fields, 
-                React.createElement(PaginationLinks, {total: items.length, Active: this.state.PageNumber, onChangePage: this.changePage, RowsPerPage: rowsPerPage})
+                React.createElement(PaginationLinks, {Total: items.length, Active: this.state.PageNumber, onChangePage: this.changePage, RowsPerPage: rowsPerPage})
             )
             );
     }
 });
 
-FieldSelector = React.createClass({displayName: 'FieldSelector',
+FieldSelector = React.createClass({displayName: "FieldSelector",
     propTypes: {
         selectedFields: React.PropTypes.array
     },
@@ -246,12 +246,12 @@ FieldSelector = React.createClass({displayName: 'FieldSelector',
         var idx = fields.indexOf(fieldName);
 
         if(idx > -1) {
-            fields.splice(idx, 1);
+            //fields.splice(idx, 1);
             if(this.props.onFieldChange) {
                 this.props.onFieldChange("remove", fieldName);
             }
         } else {
-            fields.push(fieldName);
+            //fields.push(fieldName);
             if(this.props.onFieldChange) {
                 this.props.onFieldChange("add", fieldName);
             }

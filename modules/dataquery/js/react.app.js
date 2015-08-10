@@ -1,4 +1,4 @@
-SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
+SavedQueriesList = React.createClass({displayName: "SavedQueriesList",
     getDefaultProps: function() {
         queriesLoaded: false
     },
@@ -40,7 +40,7 @@ SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
         return (
              React.createElement("ul", {className: "nav nav-tabs navbar-right"}, 
                  React.createElement("li", {className: "dropdown"}, 
-                     React.createElement("a", {href: "#", className: "dropdown-toggle", 'data-toggle': "dropdown", role: "button", 'aria-expanded': "false"}, "Load Saved Query ", React.createElement("span", {className: "caret"})), 
+                     React.createElement("a", {href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button", "aria-expanded": "false"}, "Load Saved Query ", React.createElement("span", {className: "caret"})), 
                      React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
                         React.createElement("li", {role: "presentation", className: "dropdown-header"}, "User Saved Queries"), 
                         userSaved, 
@@ -48,12 +48,12 @@ SavedQueriesList = React.createClass({displayName: 'SavedQueriesList',
                         globalSaved
                      )
                  ), 
-                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#SavedQueriesTab", 'data-toggle': "tab"}, "Manage Saved Queries"))
+                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#SavedQueriesTab", "data-toggle": "tab"}, "Manage Saved Queries"))
              )
             );
     }
 });
-DataQueryApp = React.createClass({displayName: 'DataQueryApp',
+DataQueryApp = React.createClass({displayName: "DataQueryApp",
     componentDidMount: function() {
         // The left and right menu items are part of the same menu, but bootstrap considers
         // them two separate ones, so we need to make sure that only one is selected by removing
@@ -139,7 +139,9 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         });
     },
     fieldChange: function(changeType, fieldName) {
-        var fields = this.state.fields;
+        //clone the fields array so that setState triggers a rerender
+        // if we don't clone it and mutate it s etState thinks that the state has not changed
+        var fields = this.state.fields.slice(0);
         var idx = fields.indexOf(fieldName);
         if (changeType === 'add') {
             if(idx === -1) {
@@ -396,12 +398,12 @@ DataQueryApp = React.createClass({displayName: 'DataQueryApp',
         return React.createElement("div", null, 
                     React.createElement("div", {className: widthClass}, 
                         React.createElement("nav", {className: "nav nav-tabs"}, 
-                            React.createElement("ul", {className: "nav nav-tabs navbar-left", 'data-tabs': "tabs"}, 
-                                React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#Info", 'data-toggle': "tab"}, "Info")), 
-                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFields", 'data-toggle': "tab"}, "Define Fields")), 
-                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFilters", 'data-toggle': "tab"}, "Define Filters")), 
-                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", 'data-toggle': "tab"}, "View Data")), 
-                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", 'data-toggle': "tab"}, "Statistical Analysis"))
+                            React.createElement("ul", {className: "nav nav-tabs navbar-left", "data-tabs": "tabs"}, 
+                                React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#Info", "data-toggle": "tab"}, "Info")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFields", "data-toggle": "tab"}, "Define Fields")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#DefineFilters", "data-toggle": "tab"}, "Define Filters")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#ViewData", "data-toggle": "tab"}, "View Data")), 
+                                React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", "data-toggle": "tab"}, "Statistical Analysis"))
                             ), 
                             React.createElement(SavedQueriesList, {
                                 userQueries: this.props.SavedQueries.User, 

@@ -1,4 +1,4 @@
-DataTable = React.createClass({displayName: 'DataTable',
+DataTable = React.createClass({displayName: "DataTable",
     getInitialState: function() {
         return {
             'PageNumber': 1
@@ -88,7 +88,7 @@ DataTable = React.createClass({displayName: 'DataTable',
 
         return (
             React.createElement("div", null, 
-                React.createElement(PaginationLinks, {total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber}), 
+                React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber}), 
                 React.createElement("table", {className: "table table-hover table-primary table-bordered"}, 
                     React.createElement("thead", null, 
                         React.createElement("tr", {className: "info"}, headers)
