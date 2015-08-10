@@ -679,7 +679,7 @@ class Utility extends PEAR
      *
      * @return array The same array passed in, after modifications.
      */
-    function nullifyEmpty(&$arr, $field)
+    public static function nullifyEmpty(&$arr, $field)
     {
         if ($arr[$field] === '') {
             $arr[$field] = null;

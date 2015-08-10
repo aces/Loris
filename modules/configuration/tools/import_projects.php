@@ -22,7 +22,12 @@ $factory  = NDB_Factory::singleton();
 $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
 $subprojs = $config->getSettingFromXML("subprojects");
 $db       = $factory->database();
+
 foreach ($subprojs['subproject'] as $row) {
+    $windowDiff = "optimal";
+    if (isset($row['options']) && isset($row['options']['WindowDifference'])) {
+        $windowDiff = $row['options']['WindowDifference'];
+    }
     $ins = array(
             'SubprojectID'     => $row['id'],
             'title'            => $row['title'],

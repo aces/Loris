@@ -111,6 +111,7 @@
     To configure study projects <a href="{$baseurl}/main.php?test_name=configuration&subtest=project">click here</a>.
 {/if}
 </p>
+
 <br>
 
 <div class="col-md-3">

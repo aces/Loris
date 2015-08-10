@@ -223,13 +223,29 @@ class LorisForm
     }
 
     /**
-     * Generates a unique element name for anonymous elements to use
-     * to differentiate things in the internal elements array.
-     *
-     * @param string $name The current element name
-     *
-     * @return $name if it exists, otherwise a unique new name.
-     */
+    * Adds a header element to this LorisForm.
+    *
+    * @param string $name    The name of the header element, may be null
+    * @param string $label   The description for the header
+    * @param array  $options Other options for this header element
+    *
+    * @return none
+    */
+    function addHeader($name, $label, $options = array())
+    {
+        $name = $this->_generateName($name);
+
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'header';
+    }
+    /**
+    * Generates a unique element name for anonymous elements to use
+    * to differentiate things in the internal elements array.
+    *
+    * @param string $name The current element name
+    *
+    * @return $name if it exists, otherwise a unique new name.
+    */
     private function _generateName($name)
     {
         static $num = 1;
@@ -240,16 +256,16 @@ class LorisForm
     }
 
     /**
-     * Adds a header to the current form.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
-     *
-     * @return none, modifies $this->form as a side-effect.
-     */
+    * Adds a header to the current form.
+    *
+    * @param string $name    The element name.
+    * @param string $label   The label to attach to this element.
+    * @param array  $options An array of other attributes that should
+    *                        get added. Currently only the "class"
+    *                        attribute gets added.
+    *
+    * @return none, modifies $this->form as a side-effect.
+    */
     function addHeader($name, $label, $options = array())
     {
         $name = $this->_generateName($name);
@@ -259,24 +275,24 @@ class LorisForm
     }
 
     /**
-     * An implementation of QuickForm's addElement function. This only
-     * calls the appropriate $this->addX wrapper based on the "type"
-     * passed to the function call.
-     *
-     * @param string $type    The type of element to add.
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other options that should
-     *                        be added. This generalls maps to the
-     *                        third option of the addX wrapper.
-     * @param array  $attribs Other attributes to be added. This is
-     *                        mostly only used for the "select" type,
-     *                        where "options" has a different meaning
-     *                        and attribs takes the place of what "options"
-     *                        is for other types.
-     *
-     * @return none, but modifies this->form as a side-effect
-     */
+    * An implementation of QuickForm's addElement function. This only
+    * calls the appropriate $this->addX wrapper based on the "type"
+    * passed to the function call.
+    *
+    * @param string $type    The type of element to add.
+    * @param string $name    The element name.
+    * @param string $label   The label to attach to this element.
+    * @param array  $options An array of other options that should
+    *                        be added. This generalls maps to the
+    *                        third option of the addX wrapper.
+    * @param array  $attribs Other attributes to be added. This is
+    *                        mostly only used for the "select" type,
+    *                        where "options" has a different meaning
+    *                        and attribs takes the place of what "options"
+    *                        is for other types.
+    *
+    * @return none, but modifies this->form as a side-effect
+    */
     public function addElement(
         $type,
         $name,
@@ -420,6 +436,11 @@ class LorisForm
 
             if ($optionKey === $this->getValue($el['name'])) {
                 $selected = 'selected="selected"';
+            } elseif (isset($el['selected'])
+                && $optionKey === $el['selected']
+                && $this->getValue($el['name']) === null
+            ) {
+                $selected = 'selected="selected"';
             }
 
             $strOptions .= "<option value='$optionKey' $selected>"
@@ -482,16 +503,17 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $msg   = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $value = $this->getValue($el['name']);
-        $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
-            . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
+        $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
+        $value    = $this->getValue($el['name']);
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
+            . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
-                !empty($value)
+            !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '" '
                 : ''
-              )
+            )
             . ">";
         return $elmnt;
 
@@ -762,17 +784,18 @@ class LorisForm
     }
 
     /**
-     * Generates the HTML for a header element
-     *
-     * @param array $el An array of the form used by $this->form
-     *                  for a header
-     *
-     * @return string the HTML for the given header element.
-     */
+    * Generates the HTML for a header element
+    *
+    * @param array $el An array of the form used by $this->form
+    *                  for a header
+    *
+    * @return string the HTML for the given header element.
+    */
     function headerHTML($el)
     {
         return "<h2>$el[label]</h2>";
     }
+
     /**
      * Generates the HTML for an advcheckbox type element
      *
