@@ -4,17 +4,17 @@
 <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
 
 <div class="row">
-	<div class="col-sm-8 col-md-6">
+	<div class="col-xs-12">
 		<div class="panel panel-primary">
 			<div class="panel-heading" onclick="hideFilter();">
 				Selection Filter
 			</div>
 			<div class="panel-body" id="panel-body">
 				<form method="post">
-					<div class="row">
-						<div class="form-group col-xs-12">
-							<label class="col-sm-4">Visit_labels</label>
-							<div class="col-sm-8">
+					<div class="row col-xs-12">
+						<div class="form-group col-sm-4">
+							<label class="col-sm-12 col-md-4">Visit Labels</label>
+							<div class="col-sm-12 col-md-4">
 								<select name="visit_label" onchange="changefieldOptions()" id="visit_label" class="form-control input-sm">
 									<option value="All Visits" selected="selected">All Visits</option>
 									{foreach from=$visitLabels item=name key=val}
@@ -27,23 +27,28 @@
 								</select>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="form-group col-xs-12">
-							<label class="col-sm-4">Instruments:</label>
-							<div class="col-sm-8">
+
+						<div class="form-group col-sm-4">
+							<label class="col-sm-12 col-md-8">Instruments:</label>
+							<div class="col-xs-6 col-md-4">
 								<select name="instrument" id="instrument" class="form-control input-sm">
 									<option value="{$instrumentvalue}" selected="selected">{$instrumentvalue}></option>
 								</select>
 							</div>
 						</div>
-					</div>
+					</div>	
 					<div class ="row">
-						<div class ="form-group col-xs-12">
-							<label class ="col-sm-4">CANDID:</label>
+						<div class ="form-group col-sm-4">
+							<label class ="col-sm-4">DCCID:</label>
 							<div class="col-sm-8">
 								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control form-autocomplete"/>
 								<input type="text" id="autocomplete-ajax-x" class="form-control form-autocomplete-hint">													
+							</div>							
+						</div>					
+						<div class ="form-group col-sm-4">
+							<label class ="col-sm-4">PSCID:</label>
+							<div class="col-sm-8">
+								<input name = "PSCID" type="text" class="form-control"/>
 							</div>							
 						</div>					
 					</div>
