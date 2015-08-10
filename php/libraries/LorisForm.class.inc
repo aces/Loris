@@ -223,22 +223,6 @@ class LorisForm
     }
 
     /**
-    * Adds a header element to this LorisForm.
-    *
-    * @param string $name    The name of the header element, may be null
-    * @param string $label   The description for the header
-    * @param array  $options Other options for this header element
-    *
-    * @return none
-    */
-    function addHeader($name, $label, $options = array())
-    {
-        $name = $this->_generateName($name);
-
-        $el         =& $this->addBase($name, $label, $options);
-        $el['type'] = 'header';
-    }
-    /**
     * Generates a unique element name for anonymous elements to use
     * to differentiate things in the internal elements array.
     *
