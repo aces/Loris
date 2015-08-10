@@ -260,7 +260,7 @@ class NDB_BVL_Feedback
 
         $query = "SELECT  `Feedback_type`
                     FROM  `feedback_bvl_type`
-                    WHERE  `Name` LIKE  :name ";
+                    WHERE  `Name` =  :name ";
 
         return $db->pselectOne($query, array(':name' => $name));
     }
