@@ -59,15 +59,22 @@ class Project extends \Loris\API\APIBase
     /**
      * Constructs an object to handle JSON serialization
      *
-     * @param string  $method       The HTTP method of the request
-     * @param string  $projectName  The project to be serialized
-     * @param boolean $bCandidates  If true, candidates for project should
-     *                              be included in
-     *                              serialization
-     * @param boolean $bInstruments If true, list of instruments for project
-     *                              should be included in serialization
-     * @param boolean $bVisits      If true, visits for project should be
-     *                              included in serialization
+     * @param string  $method             The HTTP method of the request
+     * @param string  $projectName        The project to be serialized
+     * @param boolean $bCandidates        If true, candidates for project
+     *                                    should be included in serialization
+     *                                    be included in serialization be
+     *                                    included in serialization
+     * @param boolean $bInstruments       If true, list of instruments for
+     *                                    project should be included in
+     *                                    serialization should be included
+     *                                    in serialization should be included
+     *                                    in serialization
+     * @param boolean $bVisits            If true, visits for project should be
+     *                                    included in serialization included in
+     *                                    serialization included in serialization
+     * @param boolean $bInstrumentDetails If true, InstrumentDetails are populated
+     *                                    instead of instrument names
      */
     public function __construct(
         $method,
@@ -80,10 +87,10 @@ class Project extends \Loris\API\APIBase
         $this->AutoHandleRequestDelegation = false;
         parent::__construct($method);
 
-        $this->bCandidates  = $bCandidates;
-        $this->bInstruments = $bInstruments;
+        $this->bCandidates        = $bCandidates;
+        $this->bInstruments       = $bInstruments;
         $this->bInstrumentDetails = $bInstrumentDetails;
-        $this->bVisits      = $bVisits;
+        $this->bVisits            = $bVisits;
 
         $this->ProjectName = $projectName;
         include_once 'Utility.class.inc';
@@ -107,7 +114,7 @@ class Project extends \Loris\API\APIBase
      */
     function handleGET()
     {
-        if(!empty($this->JSON)) {
+        if (!empty($this->JSON)) {
             return $this->JSON;
         }
 
@@ -134,21 +141,29 @@ class Project extends \Loris\API\APIBase
         if ($this->bInstruments) {
             $Instruments = \Utility::getAllInstruments();
 
-            if($this->bInstrumentDetails) {
-                $dets = [];
+            if ($this->bInstrumentDetails) {
+                $dets   = [];
                 $config = $this->Factory->config();
-                $DB = $this->Factory->database();
+                $DB     = $this->Factory->database();
 
                 $DDE = $config->getSetting("DoubleDataEntryInstruments");
 
-                foreach($Instruments as $instrument=> $FullName ) {
-                    $subgroup = $DB->pselectOne("SELECT sg.Subgroup_name FROM test_names tn LEFT JOIN test_subgroups sg ON (tn.Sub_group=sg.ID) WHERE tn.Test_name=:inst", array ('inst' => $instrument));
-                    $dets[$instrument] = [
-                        'FullName' => $FullName,
-                        'Subgroup' => $subgroup,
-                        'DoubleDataEntryEnabled' => in_array($instrument, $DDE),
+                foreach ($Instruments as $instrument=> $FullName ) {
+                    $subgroup = $DB->pselectOne(
+                        "SELECT sg.Subgroup_name
+                            FROM test_names tn
+                            LEFT JOIN test_subgroups sg ON (tn.Sub_group=sg.ID)
+                        WHERE tn.Test_name=:inst",
+                        array('inst' => $instrument)
+                    );
 
-                    ];
+                    $DDEEn = in_array($instrument, $DDE);
+
+                    $dets[$instrument] = [
+                                          'FullName'               => $FullName,
+                                          'Subgroup'               => $subgroup,
+                                          'DoubleDataEntryEnabled' => $DDEEn,
+                                         ];
                 }
                 $JSONArray['Instruments'] = $dets;
             } else {
@@ -165,7 +180,15 @@ class Project extends \Loris\API\APIBase
 
         $this->JSON = $JSONArray;
     }
-    function calculateETag() {
+
+    /**
+     * Calculates the ETag for this project by taking an MD5 of the
+     * JSON
+     *
+     * @return string ETag for project
+     */
+    function calculateETag()
+    {
         return md5('Project:' . json_encode($this->JSON, true));
     }
 

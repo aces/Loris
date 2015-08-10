@@ -74,32 +74,44 @@ class Candidate extends \Loris\API\APIBase
      */
     public function handleGET()
     {
-
+        $Site   = $this->Candidate->getCandidateSite();
+        $Gender = $this->Candidate->getCandidateGender();
 
         $this->JSON = [
-            "Meta"   => [ "CandID" => $this->CandID,
-            'Project' => $this->Candidate->getProjectTitle(),
-            'PSCID' => $this->Candidate->getPSCID(),
-            'Site' => $this->Candidate->getCandidateSite(),
-            'EDC' => $this->Candidate->getCandidateEDC(),
-            'DoB' => $this->Candidate->getCandidateDoB(),
-            'Gender' => $this->Candidate->getCandidateGender()
-        ],
+                       "Meta"   => [
+                                    "CandID"  => $this->CandID,
+                                    'Project' => $this->Candidate->getProjectTitle(),
+                                    'PSCID'   => $this->Candidate->getPSCID(),
+                                    'Site'    => $Site,
+                                    'EDC'     => $this->Candidate->getCandidateEDC(),
+                                    'DoB'     => $this->Candidate->getCandidateDoB(),
+                                    'Gender'  => $Gender,
+                                   ],
                        "Visits" => array_values(
                            $this->Candidate->getListOfVisitLabels()
                        ),
                       ];
     }
 
-    function calculateETag() {
-        $row = $this->DB->pselectRow("SELECT MAX(c.Testdate) as CandChange,
+    /**
+     * Calculate the ETag for this Candidate by taking a hash of the
+     * most recent change to the candidate, visit tables or number of
+     * visits
+     *
+     * @return string An ETag for this object
+     */
+    function calculateETag()
+    {
+        $row = $this->DB->pselectRow(
+            "SELECT MAX(c.Testdate) as CandChange,
                 MAX(s.Testdate) as VisitChange,
                 COUNT(s.Visit_label) as VisitCount
             FROM candidate c JOIN session s ON (c.CandID=s.CandID)
             WHERE c.CandID=:candidate",
             array("candidate" => $this->CandID)
         );
-        return md5('Candidate:' . $this->CandID . ':'
+        return md5(
+            'Candidate:' . $this->CandID . ':'
             . $row['CandChange'] . ':'
             . $row['VisitChange'] . ':'
             . $row['VisitCount']

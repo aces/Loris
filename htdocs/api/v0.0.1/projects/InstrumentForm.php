@@ -72,7 +72,14 @@ class InstrumentForm extends \Loris\API\APIBase
         $this->JSON = json_decode($this->JSONString, true);
     }
 
-    function calculateETag() {
+    /**
+     * Calculates the ETag for this instrument by just taking
+     * an MD5 of the JSON
+     *
+     * @return string ETag for this instrument
+     */
+    function calculateETag()
+    {
         return md5('Instrument:' . $this->JSONString);
     }
 

@@ -155,7 +155,7 @@ Class TimePoint
 
             $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
             foreach ($statuses as $row) {
-                if (!isset( $this->_timePointInfo['status'])) {
+                if (!isset($this->_timePointInfo['status'])) {
                     $this->_timePointInfo['status'] = array();
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];

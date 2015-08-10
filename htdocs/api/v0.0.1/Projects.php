@@ -42,50 +42,53 @@ class Projects extends APIBase
      */
     public function handleGET()
     {
-        if(!empty($this->JSON)) {
+        if (!empty($this->JSON)) {
             return;
         }
         $config = $this->Factory->config();
 
         $useProjects = $config->getSetting("useProjects");
-        $useEDC = $config->getSetting("useEDC");
+        $useEDC      = $config->getSetting("useEDC");
 
-        if($useEDC === '1' || $useEDC === 'true') {
+        if ($useEDC === '1' || $useEDC === 'true') {
             $useEDC = true;
         } else {
             $useEDC = false;
         }
-        $PSCID = $config->getSetting("PSCID");
+        $PSCID       = $config->getSetting("PSCID");
         $PSCIDFormat = \Utility::structureToPCRE($PSCID['structure'], "SITE");
 
         $settings = [
-            "useEDC" => $useEDC,
-            "PSCID" => [
-                "Type" => $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt',
-                "Regex" => $PSCIDFormat,
-            ]
-        ];
-
+                     "useEDC" => $useEDC,
+                     "PSCID"  => [
+                                  "Type"  => $PSCID['generation'] == 'sequential'
+                                     ? 'auto'
+                                     : 'prompt',
+                                  "Regex" => $PSCIDFormat,
+                                 ],
+                    ];
 
         if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
-            $projects   = \Utility::getProjectList();
+            $projects  = \Utility::getProjectList();
             $projArray = [];
-            foreach($projects as $project) {
+            foreach ($projects as $project) {
                 $projArray[$project] = $settings;
             }
-            $this->JSON = [
-                           "Projects" => $projArray,
-                          ];
+            $this->JSON = ["Projects" => $projArray];
         } else {
             $this->JSON = [
-                "Projects" => array(
-                    "loris" => $settings
-                    ),
-                ];
+                           "Projects" => array("loris" => $settings),
+                          ];
         }
     }
 
-    function calculateETag() {
+    /**
+     * Calculates ETag for projects based on the JSON encoding
+     *
+     * @return string ETag for projects
+     */
+    function calculateETag()
+    {
         $this->handleGET();
         $etag = md5(json_encode($this->JSON, true));
         return $etag;

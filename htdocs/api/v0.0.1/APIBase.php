@@ -73,7 +73,7 @@ abstract class APIBase
 
         if (!defined("UNIT_TESTING")) {
 
-            if(!$this->client->isLoggedIn()) {
+            if (!$this->client->isLoggedIn()) {
                 $this->header("HTTP/1.1 401 Unauthorized");
                 $this->error("User not authenticated");
                 $this->safeExit(0);
@@ -118,8 +118,11 @@ abstract class APIBase
     /**
      * Determine calculate the ETag for this resource and abort
      * early if the client already has it.
+     *
+     * @return None
      */
-    function handleETag() {
+    function handleETag()
+    {
         session_cache_limiter('private');
         $ETag = $this->calculateETag();
 
@@ -135,6 +138,8 @@ abstract class APIBase
 
     /**
      * Calculate the ETag for this resource
+     *
+     * @return string an ETag for this resource
      */
     abstract function calculateETag();
 

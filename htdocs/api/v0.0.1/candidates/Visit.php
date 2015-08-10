@@ -11,13 +11,19 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace Loris\API\Candidates\Candidate;
-set_include_path(get_include_path() . ":" . __DIR__ . "/../" . ':' . __DIR__ . "/../../../../php/libraries/");
+set_include_path(
+    get_include_path()
+    . ":" . __DIR__ . "/../"
+    . ':' . __DIR__ . "/../../../../php/libraries/"
+);
 
 require_once 'Candidate.php';
 require_once 'TimePoint.class.inc';
 
 /**
- * Handles API requests for the candidate's visit
+ * Handles API requests for the candidate's visit. Extends
+ * Candidate so that the constructor will validate the candidate
+ * portion of URL automatically.
  *
  * @category Main
  * @package  API
@@ -33,6 +39,7 @@ class Visit extends \Loris\API\Candidates\Candidate
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
+     * @param string $InputData  The data posted to this URL
      */
     public function __construct($method, $CandID, $VisitLabel, $InputData=null)
     {
@@ -46,22 +53,21 @@ class Visit extends \Loris\API\Candidates\Candidate
                                      'PUT',
                                     ];
         }
-        $this->CandID = $CandID;
+        $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
 
-
-     //   $this->Timepoint = \Timepoint::singleton($timepointID);
+        //   $this->Timepoint = \Timepoint::singleton($timepointID);
         // Parent constructor will handle validation of
         // CandID
         parent::__construct($method, $CandID);
-        if($method === 'PUT') {
+        if ($method === 'PUT') {
             $this->ReceivedJSON = json_decode($InputData, true);
         } else {
             $timepoints = $this->Candidate->getListOfVisitLabels();
-            $Visits = array_values($timepoints);
+            $Visits     = array_values($timepoints);
 
             $session = array_keys($timepoints, $VisitLabel);
-            if(isset($session[0])) {
+            if (isset($session[0])) {
                 $this->Timepoint = $this->Factory->TimePoint($session[0]);
             }
 
@@ -76,9 +82,6 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->handleRequest();
         }
 
-
-
-
     }
 
     /**
@@ -88,62 +91,79 @@ class Visit extends \Loris\API\Candidates\Candidate
      */
     public function handleGET()
     {
+        $SubProjTitle = $this->Timepoint->getData("SubprojectTitle");
+
         $this->JSON = [
                        "Meta" => [
-                                  "CandID" => $this->CandID,
-                                  'Visit'  => $this->VisitLabel,
-                                  'Battery' => $this->Timepoint->getData("SubprojectTitle")
+                                  "CandID"  => $this->CandID,
+                                  'Visit'   => $this->VisitLabel,
+                                  'Battery' => $SubProjTitle,
                                  ],
                       ];
-       if($this->Timepoint) {
-           $stages = [];
-           if($this->Timepoint->getDateOfScreening() !== null) {
-               $stages['Screening'] = [
-                    'Date' => $this->Timepoint->getDateOfScreening(),
-                    'Status' => $this->Timepoint->getScreeningStatus()
-                   ];
-           }
-           if($this->Timepoint->getDateOfVisit() !== null) {
-               $stages['Visit'] = [
-                    'Date' => $this->Timepoint->getDateOfVisit(),
-                    'Status' => $this->Timepoint->getVisitStatus()
-                   ];
-           }
-           if($this->Timepoint->getDateOfApproval() !== null) {
-               $stages['Approval'] = [
-                    'Date' => $this->Timepoint->getDateOfApproval(),
-                    'Status' => $this->Timepoint->getApprovalStatus()
-                   ];
-           }
-           $this->JSON['Stages'] = $stages;
-       }
+        if ($this->Timepoint) {
+            $stages = [];
+            if ($this->Timepoint->getDateOfScreening() !== null) {
+                $Date   = $this->Timepoint->getDateOfScreening();
+                $Status = $this->Timepoint->getScreeningStatus();
+
+                $stages['Screening'] = [
+                                        'Date'   => $Date,
+                                        'Status' => $Status,
+                                       ];
+            }
+            if ($this->Timepoint->getDateOfVisit() !== null) {
+                $Date   = $this->Timepoint->getDateOfVisit();
+                $Status = $this->Timepoint->getVisitStatus();
+
+                $stages['Visit'] = [
+                                    'Date'   => $Date,
+                                    'Status' => $Status,
+                                   ];
+            }
+            if ($this->Timepoint->getDateOfApproval() !== null) {
+                $Date   = $this->Timepoint->getDateOfApproval();
+                $Status = $this->Timepoint->getApprovalStatus();
+
+                $stages['Approval'] = [
+                                       'Date'   => $Date,
+                                       'Status' => $Status,
+                                      ];
+            }
+            $this->JSON['Stages'] = $stages;
+        }
     }
-    public function handlePUT() {
-        if(!isset($this->ReceivedJSON['Meta']['CandID']) ||
-            $this->ReceivedJSON['Meta']['CandID'] != $this->CandID
+
+    /**
+     * Handles a PUT request for a visit
+     *
+     * @return none
+     */
+    public function handlePUT()
+    {
+        if (!isset($this->ReceivedJSON['Meta']['CandID'])
+            || $this->ReceivedJSON['Meta']['CandID'] != $this->CandID
         ) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->error("Candidate from URL does not match metadata");
                 $this->safeExit(0);
         }
-        if(!isset($this->ReceivedJSON['Meta']['Visit']) ||
-            $this->ReceivedJSON['Meta']['Visit'] != $this->VisitLabel
+        if (!isset($this->ReceivedJSON['Meta']['Visit'])
+            || $this->ReceivedJSON['Meta']['Visit'] != $this->VisitLabel
         ) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->error("Visit from URL does not match metadata");
                 $this->safeExit(0);
         }
 
-
-        $subprojects = \Utility::getSubprojectList();
+        $subprojects  = \Utility::getSubprojectList();
         $subprojectID = null;
-        foreach($subprojects as $subproject => $title) {
-            if($title === $this->ReceivedJSON['Meta']['Battery']) {
+        foreach ($subprojects as $subproject => $title) {
+            if ($title === $this->ReceivedJSON['Meta']['Battery']) {
                 $subprojectID = $subproject;
                 break;
             }
         }
-        if($subprojectID === null) {
+        if ($subprojectID === null) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Test battery specified does not exist");
             $this->safeExit(0);
@@ -156,19 +176,19 @@ class Visit extends \Loris\API\Candidates\Candidate
 }
 
 if (isset($_REQUEST['PrintVisit'])) {
-    if($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    $obj = new Visit(
-        $_SERVER['REQUEST_METHOD'],
-        $_REQUEST['CandID'],
-        $_REQUEST['VisitLabel'],
-        file_get_contents("php://input")
-    );
+    if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+        $obj = new Visit(
+            $_SERVER['REQUEST_METHOD'],
+            $_REQUEST['CandID'],
+            $_REQUEST['VisitLabel'],
+            file_get_contents("php://input")
+        );
     } else {
-    $obj = new Visit(
-        $_SERVER['REQUEST_METHOD'],
-        $_REQUEST['CandID'],
-        $_REQUEST['VisitLabel']
-    );
+        $obj = new Visit(
+            $_SERVER['REQUEST_METHOD'],
+            $_REQUEST['CandID'],
+            $_REQUEST['VisitLabel']
+        );
     }
     print $obj->toJSONString();
 }

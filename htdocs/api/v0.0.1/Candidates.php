@@ -44,12 +44,25 @@ class Candidates extends APIBase
         parent::__construct($method);
     }
 
-    function calculateETag() {
+    /**
+     * Calculate an ETag by taking a hash of the number of candidates in the
+     * database and the time of the most recently changed one.
+     *
+     * @return string An ETag for ths candidates object
+     */
+    function calculateETag()
+    {
         $ETagCriteria = $this->DB->pselectRow(
-            "SELECT MAX(TestDate) as Time, COUNT(DISTINCT CandID) as NumCandidates FROM candidate WHERE Active='Y'",
+            "SELECT MAX(TestDate) as Time,
+                    COUNT(DISTINCT CandID) as NumCandidates
+             FROM candidate WHERE Active='Y'",
             array()
         );
-        return md5('Candidates' + $ETagCriteria['Time'] + ':' + $ETagCriteria['NumCandidates']);
+        return md5(
+            'Candidates:'
+            . $ETagCriteria['Time']
+            . ':' . $ETagCriteria['NumCandidates']
+        );
     }
     /**
      * Handles a candidates GET request
@@ -61,17 +74,23 @@ class Candidates extends APIBase
         $candidates = $this->DB->pselect(
             "SELECT CandID, ProjectID, PSCID, s.Alias as Site,
                     EDC, DoB, Gender
-                FROM candidate c JOIN psc s on (s.CenterID=c.CenterID) WHERE Active='Y'
+                FROM candidate c JOIN psc s on (s.CenterID=c.CenterID)
+             WHERE Active='Y'
                 ",
             []
         );
 
-        $projects = \Utility::getProjectList();
-        $candValues = array_map(function($row) use ($projects) {
-            $row['Project'] = isset($projects[$row['ProjectID']]) ? $projects[$row['ProjectID']] : "loris";
-            unset($row['ProjectID']);
-            return $row;
-        }, $candidates);
+        $projects   = \Utility::getProjectList();
+        $candValues = array_map(
+            function ($row) use ($projects) {
+                $row['Project'] = isset($projects[$row['ProjectID']])
+                    ? $projects[$row['ProjectID']]
+                    : "loris";
+                unset($row['ProjectID']);
+                return $row;
+            },
+            $candidates
+        );
 
         $this->JSON = ["Candidates" => $candValues];
     }
