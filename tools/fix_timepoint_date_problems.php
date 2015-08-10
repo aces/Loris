@@ -313,10 +313,7 @@ function addInstrument($sessionID, $testName)
      */
     // feedback object
     print $user->getUsername();
-    $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID);
-    if (PEAR::isError($feedback)) {
-        return PEAR::raiseError("Failed to create feedback object: " . $feedback->getMessage());
-    }
+    $feedback = NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID);
 
     //get thread feedback type
     $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
