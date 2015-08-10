@@ -296,4 +296,4 @@ class NDB_BVL_InstrumentStatus
         $updateResult = $this->select($this->_commentID);
     }
 
-}
+} // end of class
