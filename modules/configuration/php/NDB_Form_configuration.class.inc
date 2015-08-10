@@ -112,7 +112,6 @@ class NDB_Form_Configuration extends NDB_Form
     *
     * @return none
     */
-
     function project()
     {
         $factory     = NDB_Factory::singleton();
