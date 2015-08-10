@@ -446,11 +446,11 @@ class NDB_Config
     }
 
     /**
-    *Get list of projects for this projects, given a ProjectID.
+    * Get list of projects for this projects, given a ProjectID.
     *
-    *@param integer $ProjectID The ProjectID we want settings for
+    * @param integer $ProjectID The ProjectID we want settings for
     *
-    *@return an array of settings for this project.
+    * @return an array of settings for this project.
     */
     function getProjectSettings($ProjectID)
     {
