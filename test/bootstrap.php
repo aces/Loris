@@ -9,6 +9,9 @@
  *  vendor/bin/phpunit
  *      --configuration /var/www/loris/test/phpunit.xml UnitTest [UnitTest.php]
  *
+ * NOTE: It is best to run tests using integration.sh and unittests.sh
+ *          bash scripts
+ *
  * PHP Version 5
  *
  * @category Test
@@ -29,7 +32,7 @@
 if (getenv('LORIS_DB_CONFIG')) {
     define('CONFIG_XML', getenv('LORIS_DB_CONFIG'));
 } else {
-    define('CONFIG_XML', __DIR__ . "/../project/config.xml");
+    define('CONFIG_XML', __DIR__ . "/config.xml");
 }
 define('TABLE_FIXTURES_PATH', __DIR__ . "/fixtures/tables/");
 
