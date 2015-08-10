@@ -196,7 +196,7 @@ class NDB_BVL_InstrumentStatus
                     $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId(
                         $principalCommentId
                     );
-                    
+
                     ConflictDetector::clearConflictsForInstance($principalCommentId);
                     $diff = ConflictDetector::detectConflictsForCommentIds(
                         $instrumentName,
