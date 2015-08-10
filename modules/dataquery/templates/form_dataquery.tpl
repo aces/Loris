@@ -1,6 +1,5 @@
 <script src="/js/react-with-addons-0.13.3.js"></script>
 <script src="GetJS.php?Module=dataquery&file=arrayintersect.js"></script>
-<script src="GetJS.php?Module=dataquery&file=react.paginator.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.datatable.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.fieldselector.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.tabs.js"></script>

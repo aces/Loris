@@ -1,4 +1,4 @@
-TabPane = React.createClass({displayName: 'TabPane',
+TabPane = React.createClass({displayName: "TabPane",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         var classList = "tab-pane";
@@ -14,7 +14,7 @@ TabPane = React.createClass({displayName: 'TabPane',
     }
 });
 
-InfoTabPane = React.createClass({displayName: 'InfoTabPane',
+InfoTabPane = React.createClass({displayName: "InfoTabPane",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         return React.createElement(TabPane, {Title: "Welcome to the Data Query Tool", 
@@ -39,7 +39,7 @@ InfoTabPane = React.createClass({displayName: 'InfoTabPane',
     }
 });
 
-FieldSelectTabPane = React.createClass({displayName: 'FieldSelectTabPane',
+FieldSelectTabPane = React.createClass({displayName: "FieldSelectTabPane",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         return React.createElement(TabPane, {TabId: this.props.TabId}, 
@@ -53,7 +53,7 @@ FieldSelectTabPane = React.createClass({displayName: 'FieldSelectTabPane',
 
 });
 
-FilterSelectTabPane = React.createClass({displayName: 'FilterSelectTabPane',
+FilterSelectTabPane = React.createClass({displayName: "FilterSelectTabPane",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         return React.createElement(TabPane, {TabId: this.props.TabId}, 
@@ -68,7 +68,7 @@ FilterSelectTabPane = React.createClass({displayName: 'FilterSelectTabPane',
     }
 });
 
-ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
+ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
     getInitialState: function() {
         return { 'sessions' : [] }
     },
@@ -144,7 +144,7 @@ ViewDataTabPane = React.createClass({displayName: 'ViewDataTabPane',
     }
 });
 
-ScatterplotGraph = React.createClass({displayName: 'ScatterplotGraph',
+ScatterplotGraph = React.createClass({displayName: "ScatterplotGraph",
     render: function() {
         return (
             React.createElement("div", null, 
@@ -180,7 +180,7 @@ ScatterplotGraph = React.createClass({displayName: 'ScatterplotGraph',
         );
     }
 });
-StatsVisualizationTabPane = React.createClass({displayName: 'StatsVisualizationTabPane',
+StatsVisualizationTabPane = React.createClass({displayName: "StatsVisualizationTabPane",
     getDefaultProps: function() {
         return {
             'Data' : []
@@ -260,7 +260,7 @@ StatsVisualizationTabPane = React.createClass({displayName: 'StatsVisualizationT
     }
 });
 
-SaveQueryDialog = React.createClass({displayName: 'SaveQueryDialog',
+SaveQueryDialog = React.createClass({displayName: "SaveQueryDialog",
     getInitialState: function() {
         return {
             'queryName' : '',
@@ -291,7 +291,7 @@ SaveQueryDialog = React.createClass({displayName: 'SaveQueryDialog',
                 React.createElement("div", {className: "modal-dialog"}, 
                     React.createElement("div", {className: "modal-content"}, 
                         React.createElement("div", {className: "modal-header"}, 
-                            React.createElement("button", {type: "button", className: "close", 'aria-label': "Close", onClick: this.onDismissClicked}, React.createElement("span", {'aria-hidden': "true"}, "×")), 
+                            React.createElement("button", {type: "button", className: "close", "aria-label": "Close", onClick: this.onDismissClicked}, React.createElement("span", {"aria-hidden": "true"}, "×")), 
                             React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Save Current Query")
                         ), 
                         React.createElement("div", {className: "modal-body"}, 
@@ -299,7 +299,7 @@ SaveQueryDialog = React.createClass({displayName: 'SaveQueryDialog',
                             React.createElement("div", {className: "input-group"}, 
                                 "Query Name: ", React.createElement("input", {type: "text", className: "form-control", placeholder: "My Query", value: this.state.queryName, onChange: this.editName})
                             ), 
-                            React.createElement("p", null, "Make query a publicly shared query? ", React.createElement("input", {type: "checkbox", checked: this.state.shared ? 'checked' : '', onChange: this.editPublic, 'aria-label': "Shared Query"}))
+                            React.createElement("p", null, "Make query a publicly shared query? ", React.createElement("input", {type: "checkbox", checked: this.state.shared ? 'checked' : '', onChange: this.editPublic, "aria-label": "Shared Query"}))
 
                         ), 
                         React.createElement("div", {className: "modal-footer"}, 
@@ -312,7 +312,7 @@ SaveQueryDialog = React.createClass({displayName: 'SaveQueryDialog',
             );
     }
 });
-ManageSavedQueryRow = React.createClass({displayName: 'ManageSavedQueryRow',
+ManageSavedQueryRow = React.createClass({displayName: "ManageSavedQueryRow",
     getDefaultProps: function() {
         return {
             'Name': 'Unknown',
@@ -352,7 +352,7 @@ ManageSavedQueryRow = React.createClass({displayName: 'ManageSavedQueryRow',
         );
     }
 });
-ManageSavedQueriesTabPane = React.createClass({displayName: 'ManageSavedQueriesTabPane',
+ManageSavedQueriesTabPane = React.createClass({displayName: "ManageSavedQueriesTabPane",
     dismissDialog: function() {
         this.setState({ 'savePrompt' : false });
     },

@@ -139,7 +139,9 @@ DataQueryApp = React.createClass({
         });
     },
     fieldChange: function(changeType, fieldName) {
-        var fields = this.state.fields;
+        //clone the fields array so that setState triggers a rerender
+        // if we don't clone it and mutate it s etState thinks that the state has not changed
+        var fields = this.state.fields.slice(0);
         var idx = fields.indexOf(fieldName);
         if (changeType === 'add') {
             if(idx === -1) {

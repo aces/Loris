@@ -88,7 +88,7 @@ DataTable = React.createClass({
 
         return (
             <div>
-                <PaginationLinks total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
+                <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
                 <table className="table table-hover table-primary table-bordered">
                     <thead>
                         <tr className="info">{headers}</tr>

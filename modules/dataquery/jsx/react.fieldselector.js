@@ -223,7 +223,7 @@ FieldList = React.createClass({
         return (
             <div className="list-group col-md-9 col-sm-12">
                 {fields}
-                <PaginationLinks total={items.length} Active={this.state.PageNumber} onChangePage={this.changePage} RowsPerPage={rowsPerPage}/>
+                <PaginationLinks Total={items.length} Active={this.state.PageNumber} onChangePage={this.changePage} RowsPerPage={rowsPerPage}/>
             </div>
             );
     }
@@ -246,12 +246,12 @@ FieldSelector = React.createClass({
         var idx = fields.indexOf(fieldName);
 
         if(idx > -1) {
-            fields.splice(idx, 1);
+            //fields.splice(idx, 1);
             if(this.props.onFieldChange) {
                 this.props.onFieldChange("remove", fieldName);
             }
         } else {
-            fields.push(fieldName);
+            //fields.push(fieldName);
             if(this.props.onFieldChange) {
                 this.props.onFieldChange("add", fieldName);
             }
