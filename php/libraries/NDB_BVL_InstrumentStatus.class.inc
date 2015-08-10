@@ -73,7 +73,7 @@ class NDB_BVL_InstrumentStatus
                               'Fail',
                               'Pass',
                              );
-    
+
     /**
      * Loads the object with the current status of the instrument
      *
@@ -196,6 +196,7 @@ class NDB_BVL_InstrumentStatus
                     $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId(
                         $principalCommentId
                     );
+                    
                     ConflictDetector::clearConflictsForInstance($principalCommentId);
                     $diff = ConflictDetector::detectConflictsForCommentIds(
                         $instrumentName,
