@@ -108,9 +108,9 @@ class NDB_Form_Configuration extends NDB_Form
     }
 
     /**
-    * Gets the list of projects
+    * Loads the project management module
     *
-    * @return list of projects if user uses projects for the study.
+    * @return none
     */
 
     function project()

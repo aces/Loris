@@ -23,6 +23,7 @@ $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
 $subprojs = $config->getSettingFromXML("subprojects");
 $db       = $factory->database();
 
+
 foreach ($subprojs['subproject'] as $row) {
     $windowDiff = "optimal";
     if (isset($row['options']) && isset($row['options']['WindowDifference'])) {
