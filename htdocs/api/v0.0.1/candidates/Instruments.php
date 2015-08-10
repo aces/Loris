@@ -67,7 +67,12 @@ class Instruments extends Visit
             )
         );
 
-        $Instruments = array_column($Insts, 'Test_name');
+        //array_column only exists in PHP 5.5+, need to use array_map
+        //until we no longer support 5.4..
+        //$Instruments = array_column($Insts, 'Test_name');
+        $Instruments = array_map(function($element) {
+            return $element['Test_name'];
+        }, $Insts);
 
         $this->JSON = [
                        "Meta"        => [
