@@ -444,7 +444,7 @@ class NDB_Config
                              ),
                );
     }
-    
+
     /**
     *Get list of projects for this projects, given a ProjectID.
     *
@@ -453,7 +453,6 @@ class NDB_Config
     *@return an array of settings for this project.
     *
     */
-
     function getProjectSettings($ProjectID)
     {
         $factory = NDB_Factory::singleton();
