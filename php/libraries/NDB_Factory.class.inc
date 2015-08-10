@@ -32,9 +32,9 @@ require_once 'CouchDB.class.inc';
  */
 class NDB_Factory
 {
-    private static $_testdb = null;
-    private static $_db     = null;
-    private static $_config = null;
+    public static $_testdb = null;
+    public static $_db     = null;
+    public static $_config = null;
 
     private static $_couchdb    = null;
     private static $_user       = null;
