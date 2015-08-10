@@ -1,23 +1,32 @@
-LoadInstrument = React.createClass({
+TabPane = React.createClass({
+    render: function() {
+        var classList = "tab-pane";
+        if(this.props.Active) {
+            classList += " active"
+        }
+        return (
+            <div className={classList} id={this.props.TabId}>
+                <h1>{this.props.Title}</h1>
+                <br />
+                {this.props.children}
+            </div>
+            );
+    }
+});
+LoadPane = React.createClass({
 	render: function () {
 		var spanDownStyle = {
 			display: 'none'
 		};
 		return (
-			<div className="col-sm-4 hidden-xs">
-			    <div className="panel panel-primary">
-			        <div className="panel-heading" onclick="hideLoad();">
-			            Load Instrument (optional)
-			            <span className="glyphicon glyphicon-chevron-down pull-right" style={spanDownStyle} id="down-load"></span>
-			            <span className="glyphicon glyphicon-chevron-up pull-right" id="up-load"></span> 
-			        </div>
-			        <div className="panel-body" id="panel-load">
-			            <input className="fileUpload" type="file" id="instfile" />
+			<TabPane Title="Load and Instrument"
+                TabId={this.props.TabId}>
+                	<div className="col-xs-4">
+						<input className="fileUpload" type="file" id="instfile" />
 			            <br />
 			            <input className="btn btn-default" type="button" id="load" value="Load Instrument" />
 			        </div>
-			    </div>
-			</div>
+			</TabPane>
 		);
 	}
 });
@@ -128,6 +137,13 @@ DisplayElements = React.createClass({
 					}).bind(this));
 		return (
 			<table id="sortable" className="table table-hover">
+				<thead>
+					<tr className="info">
+						<th className="col-xs-2">Database Name</th>
+						<th>Question Display (Front End)</th>
+						<th>Edit</th>
+					</tr>
+				</thead>
 				<tbody onDragOver={this.dragOver}>
 					{temp}
 				</tbody>
@@ -136,15 +152,10 @@ DisplayElements = React.createClass({
 	}
 });
 
-InstrumentBuilderApp = React.createClass({
+BuildPane = React.createClass({
 	getInitialState: function() {
 	 	return {
-	 		elements: [
-	 		 	{
-	 		 		Type: "header",
-	 		 		Description: "Question Display (Front End)"
-	 			}
-	 		],
+	 		elements: [],
 	 		amountEditing: 0
 	 	};
 	},
@@ -182,20 +193,47 @@ InstrumentBuilderApp = React.createClass({
 	render: function () {
 		var draggable = this.state.amountEditing === 0 ? true : false;
 		return (
+			<TabPane Title="Build your Instrument"
+                TabId={this.props.TabId} Active={true}>
+					<DisplayElements
+						elements={this.state.elements}
+						editElement={this.editElement}
+						updateElement={this.updateElement}
+						draggable = {draggable}
+					/>
+					<div className="row">
+						<AddElement updateQuestions={this.addQuestion}/>
+					</div>
+			</TabPane>
+		);
+	}
+});
+InstrumentBuilderApp = React.createClass({
+	render: function () {
+		var tabs = [];
+		tabs.push(<LoadPane
+				TabId="Load"
+			/>
+		);
+		tabs.push(<BuildPane
+				TabId="Build"
+			/>
+		);
+		return (
 			<div>
-				<div className="row"><LoadInstrument /></div>
-				<DisplayElements
-					elements={this.state.elements}
-					editElement={this.editElement}
-					updateElement={this.updateElement}
-					draggable = {draggable}
-				/>
-				<div className="row">
-					<AddElement updateQuestions={this.addQuestion}/>
-				</div>
+				<ul className="nav nav-tabs" role="tablist">
+					<li role="presentation"><a href="#Load" aria-controls="home" role="tab" data-toggle="tab">Load</a></li>
+				    <li role="presentation" className="active"><a href="#Build" aria-controls="build" role="tab" data-toggle="tab">Build</a></li>
+				    <li role="presentation"><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
+				    <li role="presentation"><a href="#Rules" aria-controls="settings" role="tab" data-toggle="tab">Rules</a></li>
+				 </ul>
+
+			  	<div className="tab-content row">
+				    {tabs}
+			  	</div>
 				<div className="row"><h1>HELLO WORLD</h1></div>
 			</div>
-		);
+		)
 	}
 });
 
