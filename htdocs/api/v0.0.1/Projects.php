@@ -58,12 +58,11 @@ class Projects extends APIBase
         $PSCID       = $config->getSetting("PSCID");
         $PSCIDFormat = \Utility::structureToPCRE($PSCID['structure'], "SITE");
 
+        $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
         $settings = [
                      "useEDC" => $useEDC,
                      "PSCID"  => [
-                                  "Type"  => $PSCID['generation'] == 'sequential'
-                                     ? 'auto'
-                                     : 'prompt',
+                                  "Type"  => $type,
                                   "Regex" => $PSCIDFormat,
                                  ],
                     ];

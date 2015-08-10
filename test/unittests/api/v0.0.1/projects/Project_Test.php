@@ -79,15 +79,15 @@ class Project_Test extends BaseTestCase
         ));
         $this->Database->method("pselectOne")->will(
             $this->returnCallback(function ($query, $params) {
-                if(strpos($query, "SELECT sg.Subgroup_name FROM") === 0) {
+                if(strpos($query, "SELECT sg.Subgroup_name") === 0) {
                     return "Test Instruments";
                 };
                 return null;
             }
         ));
 
-        $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
-        $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
+        //$this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
+        //$this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
 
     }
 
