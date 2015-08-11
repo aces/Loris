@@ -87,7 +87,7 @@ class NDB_Caller extends PEAR
         ) {
             header("HTTP/1.1 303 See Other");
              $url  = $config->getSetting('url');
-             $url .= $_SERVER['REQUEST_URI'];
+             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
              // sending user to the url that was requested
              header("Location: $url");
         }

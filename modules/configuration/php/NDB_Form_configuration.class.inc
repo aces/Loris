@@ -1,13 +1,12 @@
 <?php
-
 /**
- * admin_config class file
+ * The configuration module is used to manage the configuration of Loris.
  *
  * PHP version 5
- * 
+ *
  * @category Behavioural
- * @package  Main 
- * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
+ * @package  Main
+ * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -18,10 +17,10 @@ require_once 'NDB_Form.class.inc';
  * Admin_Config Class
  *
  * This class is to configure the system settings
- * 
+ *
  * @category Behavioural
- * @package  Main 
- * @author   Olga Tsibulevskaya <olgatsib@gmail.com> 
+ * @package  Main
+ * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -48,7 +47,6 @@ class NDB_Form_Configuration extends NDB_Form
      *
      * @return null
      */
-
     function configuration()
     {
 
@@ -65,12 +63,12 @@ class NDB_Form_Configuration extends NDB_Form
         $parentMenuItems = $this->DB->pselect(
             "SELECT Label, Name 
              FROM ConfigSettings 
-             WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber", 
+             WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             array()
         );
 
         $configs = $this->DB->pselect(
-            "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber", 
+            "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
             array()
         );
 
@@ -89,9 +87,9 @@ class NDB_Form_Configuration extends NDB_Form
 
         // build a tree from configs array
         foreach ($configs as &$node) {
-            $node['Children'] = array();
+            $node['Children']  = array();
             $tree[$node['ID']] = &$node;
-            
+
         }
         foreach ($configs as &$node) {
             $tree[$node['Parent']]['Children'][] = &$node;
