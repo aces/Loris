@@ -55,7 +55,8 @@ body {
     width: 260px;
     height: 100%;
     padding-bottom: 10px;
-    display: inline-table;
+    display: inline;
+    /*display: inline-table;*/
     margin: 0 auto;
     overflow: hidden;
     max-height: 1186px;
@@ -133,7 +134,7 @@ body {
 
 #global-controls {
     padding: 5px;
-    position: fixed;
+    position: absolute;
 /*    background: #555555; */
     border-radius: 4px;
     -webkit-border-radius: 4px;

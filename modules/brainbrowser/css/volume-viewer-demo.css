@@ -34,7 +34,8 @@ body {
 }
 
 #volume-viewer {
-  display: inline-block;
+  display: inline;
+  /*display: inline-block;*/
   background-color: #FFFFFF;
   padding: 0.5em;
   border-radius: 10px;
@@ -42,7 +43,8 @@ body {
 
 
 .volume-container {
-  display: block;
+  /*display: block;*/
+  display: inline;
   margin: 0 auto;
 }
 
@@ -111,7 +113,7 @@ canvas.slice-display {
 }
 
 .volume-viewer-threshold, .volume-viewer-blend {
-  width: 80%;
+  width: 90%;
   margin: auto;
 }
 
