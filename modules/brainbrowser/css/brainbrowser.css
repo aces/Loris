@@ -24,7 +24,8 @@ body {
 }
 
 #brainbrowser {
-    display: table;
+    display: block;
+    /*display: table;*/
     margin: 0 auto;
 }
 
@@ -56,6 +57,7 @@ body {
     height: 100%;
     padding-bottom: 10px;
     display: inline;
+    /*display: block;*/
     /*display: inline-table;*/
     margin: 0 auto;
     overflow: hidden;
@@ -138,10 +140,10 @@ body {
 /*    background: #555555; */
     border-radius: 4px;
     -webkit-border-radius: 4px;
-    display: block;
-    width: 320px;
-    top: 160px;
-    left: 30px;
+    display: inline;
+    /*width: 320px;*/
+    /*top: 130px;*/
+    /*left: 30px;*/
 }
 
 #app-name {
@@ -198,7 +200,8 @@ body {
   padding: 1px;
   float: right;
   position: relative;
-  top: -28px;
+  top: -25px;
+  right: 1px;
 
 }
 

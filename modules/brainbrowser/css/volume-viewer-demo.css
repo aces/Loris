@@ -30,14 +30,17 @@ body {
 
 #brainbrowser-wrapper {
   width: 100em;
-  margin: 50px auto;
+  /*margin: 50px auto;*/
+  margin-left: 0px;
+  /*margin-top: 5000px;*/
+  padding-top: 200px;
 }
 
 #volume-viewer {
   display: inline;
   /*display: inline-block;*/
   background-color: #FFFFFF;
-  padding: 0.5em;
+  /*padding: 0.5em;*/
   border-radius: 10px;
 }
 
@@ -45,7 +48,7 @@ body {
 .volume-container {
   /*display: block;*/
   display: inline;
-  margin: 0 auto;
+  margin: 0px auto;
 }
 
 canvas.slice-display {
@@ -66,21 +69,22 @@ canvas.slice-display {
 }
 
 .volume-controls {
- /* width: 235px;
-  height: 100%;*/
+  width: 600px;
+  /*min-width: 600px;*/
+  /*height: 100%;*/
   height: auto;
   max-height: 480px;
 }
 
 #global-controls {
-  -moz-border-radius: 10px 10px 0 0;
-  -webkit-border-radius: 10px 10px 0 0;
-  border-radius: 10px 10px 0 0;
-  padding-bottom: 0;
+  /*-moz-border-radius: 10px 10px 0 0;*/
+  /*-webkit-border-radius: 10px 10px 0 0;*/
+  /*border-radius: 10px 10px 0 0;*/
+  /*padding-bottom: 0;*/
 }
 
 #global-controls .instructions {
-  padding: 10px 0 5px 0;
+  /*padding: 10px 0 5px 0;*/
 }
 
 .control-heading {
