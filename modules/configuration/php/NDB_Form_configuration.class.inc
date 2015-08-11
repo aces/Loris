@@ -97,7 +97,9 @@ class NDB_Form_Configuration extends NDB_Form
 
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
+        $useProjects = $config->getSetting("useProjects");
 
+        $this->tpl_data['useProjects']     = $useProjects;
         $this->tpl_data['parentMenuItems'] = $parentMenuItems;
         $this->tpl_data['config']          = $configs;
         $this->tpl_data['instruments']     = $instruments;
@@ -106,10 +108,34 @@ class NDB_Form_Configuration extends NDB_Form
     }
 
     /**
-     * Loads the subproject management submodule
-     *
-     * @return none
-     */
+    * Loads the project management module
+    *
+    * @return none
+    */
+    function project()
+    {
+        $factory     = NDB_Factory::singleton();
+        $config      = $factory->config();
+        $configs     = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+
+        if ($useProjects === "true") {
+            $projectList = Utility::getProjectList();
+            $projects    = array();
+            foreach ($projectList as $ProjectID => $Name) {
+                $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
+            }
+            $this->tpl_data['projects'] = $projects;
+        } else {
+            throw new Exception("Projects are not used in this study.");
+        }
+    }
+
+    /**
+    * Loads the subproject management submodule
+    *
+    * @return none
+    */
     function subproject()
     {
         $factory = NDB_Factory::singleton();

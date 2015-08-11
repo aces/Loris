@@ -2303,6 +2303,15 @@ CREATE TABLE subproject (
 INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Control', false, 'optimal');
 INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (2, 'Experimental', false, 'optimal');
 
+DROP TABLE IF EXISTS `Project`;
+CREATE TABLE `Project` (
+    `ProjectID` INT(2) Default NULL,
+    `Name` VARCHAR(255) NULL,
+    `recruitmentTarget` INT(6) Default NULL,
+    PRIMARY KEY (`ProjectID`)
+)ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     ModuleName varchar(255) NOT NULL,

@@ -4,6 +4,15 @@
  * SubprojectIDs from the config.xml to the subprojects table, so that
  * they can be managed from the frontend.
  *
+ * Usage: php import_project.php [-option]
+ *
+ * It has three options:
+ *     -s -> Imports only the subprojects from the XML.
+ *
+ *     -p -> Imports only the projects from the XML.
+ *
+ *     -a -> Imports both the subprojects and the projects
+ *           from the XML.
  * PHP Version 5
  *
  * @category Loris
@@ -22,22 +31,57 @@ $factory  = NDB_Factory::singleton();
 $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
 $subprojs = $config->getSettingFromXML("subprojects");
 $db       = $factory->database();
-foreach ($subprojs['subproject'] as $row) {
-    $windowDiff = "optimal";
-    if (isset($row['options']) && isset($row['options']['WindowDifference'])) {
-        $windowDiff = $row['options']['WindowDifference'];
-    }
-    $ins = array(
-            'SubprojectID'     => $row['id'],
-            'title'            => $row['title'],
-            'useEDC'           => 0,
-            'WindowDifference' => $windowDiff,
-           );
-    if ($row['options']['useEDC'] === '1' || $row['options']['useEDC'] === 'true') {
-        $ins['useEDC'] = 1;
-    }
-    Utility::nullifyEmpty($ins, 'WindowDifference');
-    Utility::nullifyEmpty($ins, 'useEDC');
-    $db->insert('subproject', $ins);
+if (is_null($argv[1])
+) {
+    echo ("The script needs an argument. The arguments are -s,-p or -a.\r\n");
+    echo ("-s -> Imports only the subprojects from the XML.\r\n");
+    echo ("-p -> Imports only the projects from the XML.\r\n");
+    echo ("-a -> Imports both the subprojects and the projects \r\n");
+    echo ("      from the XML.\r\n");
+    exit (2);
 }
+
+if ((isset($argv[1]) && $argv[1] === "-s")
+    || (isset($argv[1]) && $argv[1] === "-a")
+) {
+    foreach ($subprojs['subproject'] as $row) {
+        $windowDiff = "optimal";
+        if (isset($row['options']) && isset($row['options']['WindowDifference'])) {
+            $windowDiff = $row['options']['WindowDifference'];
+        }
+        $ins = array(
+                'SubprojectID'     => $row['id'],
+                'title'            => $row['title'],
+                'useEDC'           => 0,
+                'WindowDifference' => $row['options']['WindowDifference'],
+               );
+        if ($row['options']['useEDC'] === '1'
+            || $row['options']['useEDC'] === 'true'
+        ) {
+            $ins['useEDC'] = 1;
+        }
+        Utility::nullifyEmpty($ins, 'WindowDifference');
+        Utility::nullifyEmpty($ins, 'useEDC');
+        $db->insert('subproject', $ins);
+    }
+}
+if ((isset($argv[1]) && $argv[1] === "-p")
+    || (isset($argv[1]) && $argv[1] === "-a")
+) {
+    $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
+    $projects = $config->getSettingFromXML("Projects");
+    $db       = $factory->database();
+    foreach ($projects['project'] as $row) {
+        $insert = array(
+                   'ProjectID'         => $row['id'],
+                   'Name'              => $row['title'],
+                   'recruitmentTarget' => $row['recruitmentTarget'],
+                  );
+        Utility::nullifyEmpty($insert, 'recruitmentTarget');
+        $db->insert('Project', $insert);
+    }
+}
+
+exit(0);
+
 ?>
