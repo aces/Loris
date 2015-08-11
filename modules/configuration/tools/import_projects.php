@@ -54,8 +54,8 @@ if ((isset($argv[1]) && $argv[1] === "-s")
                 'title'            => $row['title'],
                 'useEDC'           => 0,
                 'WindowDifference' => $row['options']['WindowDifference'],
-           );
-        if ($row['options']['useEDC'] === '1' 
+               );
+        if ($row['options']['useEDC'] === '1'
             || $row['options']['useEDC'] === 'true'
         ) {
             $ins['useEDC'] = 1;
