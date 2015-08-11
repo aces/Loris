@@ -3,9 +3,9 @@
  * This script should be used to migrate existing ProjectIDs and
  * SubprojectIDs from the config.xml to the subprojects table, so that
  * they can be managed from the frontend.
- * 
+ *
  * Usage: php import_project.php [-option]
- * 
+ *
  * It has three options:
  *     -s -> Imports only the subprojects from the XML.
  *
@@ -41,7 +41,7 @@ if (is_null($argv[1])
     exit (2);
 }
 
-if ((isset($argv[1]) && $argv[1] === "-s") 
+if ((isset($argv[1]) && $argv[1] === "-s")
     || (isset($argv[1]) && $argv[1] === "-a")
 ) {
     foreach ($subprojs['subproject'] as $row) {
@@ -50,10 +50,10 @@ if ((isset($argv[1]) && $argv[1] === "-s")
             $windowDiff = $row['options']['WindowDifference'];
         }
         $ins = array(
-            'SubprojectID'     => $row['id'],
-            'title'            => $row['title'],
-            'useEDC'           => 0,
-            'WindowDifference' => $row['options']['WindowDifference'],
+                'SubprojectID'     => $row['id'],
+                'title'            => $row['title'],
+                'useEDC'           => 0,
+                'WindowDifference' => $row['options']['WindowDifference'],
            );
         if ($row['options']['useEDC'] === '1' 
             || $row['options']['useEDC'] === 'true'
@@ -64,9 +64,8 @@ if ((isset($argv[1]) && $argv[1] === "-s")
         Utility::nullifyEmpty($ins, 'useEDC');
         $db->insert('subproject', $ins);
     }
-    
-} 
-if ((isset($argv[1]) && $argv[1] === "-p") 
+}
+if ((isset($argv[1]) && $argv[1] === "-p")
     || (isset($argv[1]) && $argv[1] === "-a")
 ) {
     $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
@@ -81,7 +80,6 @@ if ((isset($argv[1]) && $argv[1] === "-p")
         Utility::nullifyEmpty($insert, 'recruitmentTarget');
         $db->insert('Project', $insert);
     }
-    
 }
 exit(0);
 ?>
