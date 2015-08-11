@@ -442,6 +442,7 @@ class NDB_Config
                               'useEDC'           => $info['useEDC'],
                               'WindowDifference' => $info['WindowDifference'],
                              ),
+                'recruitmentTarget' => $info['RecruitmentTarget'],
                );
     }
 
