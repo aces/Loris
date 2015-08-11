@@ -436,13 +436,13 @@ class NDB_Config
         }
         // Format the results the same way it was formatted in config.xml
         return array(
-                'id'      => $info['SubprojectID'],
-                'title'   => $info['title'],
-                'options' => array(
-                              'useEDC'           => $info['useEDC'],
-                              'WindowDifference' => $info['WindowDifference'],
-                             ),
-                'recruitmentTarget' => $info['RecruitmentTarget'],
+                'id'                => $info['SubprojectID'],
+                'title'             => $info['title'],
+                'options'           => array(
+                                        'useEDC'           => $info['useEDC'],
+                                        'WindowDifference' => $info['WindowDifference'],
+                                       ),
+                'RecruitmentTarget' => $info['RecruitmentTarget'],
                );
     }
 
