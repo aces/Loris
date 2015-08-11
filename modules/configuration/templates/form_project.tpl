@@ -7,9 +7,9 @@
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
     {foreach from=$projects key=ProjectID item=project name=configContent}
-    <li><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$project.Name}</a></li>
+    <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$project.Name}</a></li>
     {/foreach}
-    <li><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New ProjectID</a></li>
+    <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New ProjectID</a></li>
 </ul>
 </div>
 
