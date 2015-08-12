@@ -81,6 +81,8 @@ body {
     font-size: 14px;
     margin-bottom: 2px;
     color: black;
+
+    display: inline;
 }
 
 .control-inputs {
