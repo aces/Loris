@@ -156,7 +156,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         $compositeDs = new PHPUnit_Extensions_Database_DataSet_CompositeDataSet();
         $compositeDs->addDataSet($ds1);
-//        $compositeDs->addDataSet($ds2);
 
         return $compositeDs;
     }
