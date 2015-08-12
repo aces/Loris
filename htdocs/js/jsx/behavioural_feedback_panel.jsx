@@ -7,12 +7,13 @@ var SliderPanel = React.createClass({
 });
 
 var FeedbackPanelContent = React.createClass({
-	propType:{
-		'feedback_level' : React.Proptypes.string.isRequired,
-		'feedback_values' : React.Proptypes.array;
+	propTypes: {
+		feedback_level : React.PropTypes.string.isRequired,
+		feedback_values : React.PropTypes.array
 	},
 	render: function(){
-		return{ 
+        console.log(this.props.feedback_values);
+		return(
 			<table id ="current_thread_table" className="table table-hover table-primary table-bordered dynamictable">
 		<thead id="current_thread_table_header">
 		<tr className="info">
@@ -22,32 +23,47 @@ var FeedbackPanelContent = React.createClass({
 		</thead>
 		<tbody>
 		  {this.props.feedback_values.map(function(row){
-			  return <FeedbackPanelRow status={this.props.row.QC_status}/>
+			  return <FeedbackPanelRow key={row.FeedbackID} status={row.QC_status} date={row.date}/>
 		   })}
-		</table>
 		</tbody>
-		}
+            </table>
+        );
 	}
 });
 
 var FeedbackPanelRow = React.createClass({
 	getInitialState:function(){
+	getInitialState:function(){
 		return{
-			status = this.props.status;
+			status : this.props.status
 		}
 	},
-	render: function(){
-					  <button name ="thread_button" type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					  Opened <span className="caret"></span>
-					  </button>
-	}
+	render: function() {
+        return(
+            <tr>
+                <td>Date</td>
+                <td>FieldName</td>
+            <td><button name ="thread_button" type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Opened
+            <span className="caret"></span>
+        </button></td>
+            </tr>
+        );
+    }
 });
 
 var FeedbackPanel = React.createClass({
 	render: function(){
-		return <SliderPanel>
-		<FeedbackPanelContent feedback_values={this.props.thread_list} feedback_level={this.props.feedback_level}/>
-		</SliderPanel>
+		return (
+        <SliderPanel>
+            <div className="panel-group" id="accordion">
+		<div className="panel panel-default" id="panel1">
+
+            <FeedbackPanelContent feedback_values={this.props.thread_list} feedback_level={this.props.feedback_level}/>
+            </div>
+            </div>
+        </SliderPanel>
+        );
 	}
 });
 

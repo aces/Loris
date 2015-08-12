@@ -9,6 +9,8 @@
 <meta itemprop="sessionID" context="{$sessionID}">
 <meta itemprop="commentID" context="{$commentID}">
 <script src="/js/react-with-addons-0.13.3.js"></script>
+<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+
 
 
 <!-- <div class ="ui-responsive-panel" data-role="panel" id="right-panel" data-position-fixed="true" data-display="push" data-position="div"> -->
@@ -84,8 +86,8 @@
 						{*<textarea class="form-control" rows="3" id="comment"></textarea>*}
 						{*<select name = "input_type">*}
 							{*{foreach from=$feedback_types item=value}*}
-								{*<option value = "{$value['Type']}">{$value['Name']}</option> *}
-							{*{/foreach}				*}
+								{*<option value = "{$value['Type']}">{$value['Name']}</option>*}
+							{*{/foreach}*}
 						{*</select>*}
 						{*{if $FieldNames}*}
 							{*{html_options name="fieldname" values=$FieldNames selected=$new_thread_data[$newTypeCounter].FieldNameValue options=$FieldNames}*}
@@ -109,7 +111,7 @@
 			{*</div>*}
 			{*<div id="collapseTwo" class="panel-collapse collapse in">*}
 				{*<div class="panel-body">*}
-	    				{**}
+
 					{*<table id="current_thread_table" class ="table table-hover table-primary table-bordered dynamictable">*}
 						{*<thead id ="current_thread_table_header">*}
 
@@ -118,7 +120,7 @@
 								{*<td>Date</td>*}
 								{*<td>Author</td>*}
 								{*{if $feedback_level == "instrument"}*}
-									{*<td>Field</td>									*}
+									{*<td>Field</td>*}
 								{*{/if}*}
 
 						{*</thead>*}
@@ -159,7 +161,7 @@
 										{*</td>*}
 									{*</tr>*}
 								{*</tbody>*}
-								{**}
+
 							{*{/foreach}*}
 						{*{else}*}
 							{*No current {$feedback_level} level threads*}
@@ -172,16 +174,27 @@
 		{*</div>*}
 	{*</div>*}
 
+    <div id ="subby">
+
+    </div>
+
 </div><!-- /panel -->
 
 
 <script type="text/jsx" src="js/jsx/behavioural_feedback_panel.jsx"></script>
 
 <script type="text/jsx">
+
+{*var feedback_level = {$feedback_level|@json_encode};*}
+{*feedback_level = JSON.parse(feedback_level);*}
+
+var thread_list = {$thread_list|@json_encode};
+//thread_list = JSON.parse(thread_list);
+
 var bvl_panel = BehaviouralFeedbackPanel({
-	title = {$feedback_level},
-	feedback = {$thread_list}
+	feedback_level : "instrument",
+	thread_list : thread_list
 });
 
-React.render(bvl_panel, document.getElementById("bvl_feedback_menu"));
+React.render(bvl_panel, document.getElementById("subby"));
 </script>
