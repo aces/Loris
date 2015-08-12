@@ -223,6 +223,23 @@ class LorisForm
     }
 
     /**
+     * Adds a checkobox to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "value"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    function addCheckbox($name, $label, $options)
+    {
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'advcheckbox';
+    }
+
+    /**
      * Adds a header element to this LorisForm.
      *
      * @param string $name    The name of the header element, may be null
@@ -303,6 +320,9 @@ class LorisForm
             break;
         case 'header':
             $el = $this->addHeader($name, $label);
+            break;
+        case 'advcheckbox':
+            $el = $this->addCheckbox($name, $label, $options);
             break;
         case 'text':
         default:
@@ -788,11 +808,16 @@ class LorisForm
     function checkboxHTML($el)
     {
         $val     = $this->getValue($el['name']);
-        $checked ='';
+        $checked = '';
+        $value   = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked /> $el[label]";
+        if (isset($el['options']['value'])) {
+            $value = "value=\"$el[options][value]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value/>"
+            . " $el[label]";
     }
     /**
      * This is a slight difference from the HTML_QuickForm API.
