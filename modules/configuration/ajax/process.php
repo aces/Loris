@@ -28,26 +28,29 @@ foreach ($_POST as $key => $value) {
             $DB->delete('Config', array('ID' => $key));
         } else {
             $DB->update(
-                'Config', 
-                array('Value' => $value), 
+                'Config',
+                array('Value' => $value),
                 array('ID' => $key)
             );
         }
     } else { //add new or remove
-        $keySplit = split("-", $key);
-        $valueSplit = split("-", $value);
+        $keySplit   = explode("-", $key);
+        $valueSplit = explode("-", $value);
         if ($keySplit[0] == 'add') {
             if ($value !== "") {
                 $DB->insert(
-                    'Config', 
-                    array('ConfigID' => $keySplit[1], 'Value' => $value)
+                    'Config',
+                    array(
+                     'ConfigID' => $keySplit[1],
+                     'Value'    => $value,
+                    )
                 );
             }
         } elseif ($valueSplit[0] == 'remove') {
             $DB->delete('Config', array('ID' => $valueSplit[1]));
         }
-    } 
-} 
+    }
+}
 
 
 exit();

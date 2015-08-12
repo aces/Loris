@@ -121,10 +121,11 @@
             statColWid = $("." + tableID + "FrozenColumn").outerWidth(),
             leftScrollPos = $(".leftScrollBar").offset().left,
             leftScrollWid = $(".leftScrollBar").outerWidth(),
-            nextColPos = $("." + tableID + "Next").offset().left;
+            nextColPos = $("." + tableID + "Next").offset().left,
+            tablePos = $("#" + tableID).offset().left;
 
         if (colm_static === true) {
-            if (nextColPos >= statColPos + statColWid) {
+            if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
                 $("." + tableID).each(function (key, value) {
                     if (key >= 0) {
                         $(value).css("height", "");

@@ -1,0 +1,7 @@
+RewriteEngine on
+
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments/([a-zA-Z0-9_.]+)$ GetInstrumentJSON.php?Instrument=$2 [END]
+RewriteRule ^projects$ projects.php
+
+RewriteRule ^projects/([a-zA-Z0-9_.]+)$ projects.php?Project=$1
+RewriteRule ^projects/([a-zA-Z0-9_.]+)/instruments$ projects.php?Project=$1
