@@ -39,12 +39,42 @@
 <script id="volume-ui-template4d" type="x-volume-ui-template">
     <div class="volume-viewer-display">
     </div>
+
+
+
+
+
+
     <div class="volume-viewer-controls volume-controls">
         <div class="filename clickable" id="filename-{{VOLID}}"></div>
+
             <span class="arrow glyphicon glyphicon-chevron-up"></span>
+
+
+
+            <!--div id="global-controls"-->
+    <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary">
+        <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes"><label for="sync-volumes" id="sync-volumes">Sync Volumes</label>
+    </span>
+
+
+        <div class="btn-group">
+            <select id="panel-size" class="form-control input-sm panel-size">
+                <option value="256" SELECTED>Choose Panel Size</option>
+                <option value="200">Small</option>
+                <option value="256">Default</option>
+                <option value="350">Large</option>
+                <option value="450">Extra-Large</option>
+            </select>
+        </div>
+<!--/div-->
+
+        <div class="line-separator"></div>
+
+
         <div class="coords">
             <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-                World Coordinates 
+                World Coordinates
             </div>
             <div class="world-coords" data-volume-id="{{VOLID}}">
                 X<input id="world-x-{{VOLID}}" class="control-inputs">
@@ -103,13 +133,15 @@
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="yspace">Coronal</span>
             <span class="slice-series-button button btn btn-sm btn-primary" data-axis="zspace">Transverse</span>
         </div>
+
+
        </div> <!--closing filename-additional-info -->
     </div>
 </script>
 
 
 <div id="brainbrowser-wrapper" style="display: none">
-    <div id="global-controls">
+    <!--div id="global-controls">
     <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary">
         <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes"><label for="sync-volumes" id="sync-volumes">Sync Volumes</label>
     </span>
@@ -123,13 +155,13 @@
              <option value="450">Extra-Large</option>
          </select>
     </div>
-   </div>
+   </div-->
     <div id="brainbrowser"></div>
 
 </div>
 
 
-<div id="loading" style="display: none; color: #064785; font-size: 20px; align:center;">Loading...</div>
+<div id="loading" style="display: none; color: #064785; font-size: 20px; align:center; margin-left: 300px;">Loading...</div>
 
 <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=jquery.mousewheel.min.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=three.min.js"></script>
