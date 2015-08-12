@@ -33,7 +33,6 @@ body {
   /*margin: 50px auto;*/
   margin-left: 0px;
   /*margin-top: 5000px;*/
-  /*padding-top: 200px;*/
 }
 
 #volume-viewer {
@@ -47,12 +46,14 @@ body {
 
 .volume-container {
   /*display: block;*/
+  /*display: table;*/
   display: inline;
-  margin: 0px auto;
+  /*margin: 0px auto;*/
 }
 
+
 canvas.slice-display {
-/*  display: block;*/
+  /*display: block;*/
   margin: 3px 5px;
 }
 
@@ -60,10 +61,8 @@ canvas.slice-display {
   font-size: 12px;
   padding: 10px;
   margin: 3px 5px;
-  /*background: white;*/
+  background: white;
   border: 1px solid #ccc;
-  background-color: red;
-  color: green;
 }
 
 .volume-viewer-controls > div {
