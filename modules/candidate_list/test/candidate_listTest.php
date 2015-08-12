@@ -13,6 +13,8 @@
  */
 
 require_once __DIR__
+    . "/../../../test/unittests/Loris_PHPUnit_Database_TestCase.php";
+require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 require_once __DIR__
     . "/../../../php/libraries/UserPermissions.class.inc";
@@ -44,12 +46,15 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
      *
-     * @return none
+     * @throw Exception
+     * @return void
      */
     function setUp()
     {
 
         parent::setUp();
+
+        $this->createLorisDBConnection();
 
         $this->_useEDCId     = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE NAME=:useEDC",
@@ -105,7 +110,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     /**
      * Restore the values backed up in the setUp function
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -131,6 +136,29 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         );
         parent::tearDown();
 
+    }
+
+
+    /*
+ * Returns test data set
+ * Populates table
+ *
+ * @return PHP_Extensions_Database_DataSet_IDataSet
+ */
+    protected function getDataSet()
+    {
+        $ds1 = $this->createMySQLXMLDataSet(
+            TABLE_FIXTURES_PATH . 'NDB_BVL_FeedbackTest.xml.xml'
+        );
+//        $ds2 = $this->createMySQLXMLDataSet(
+//            TABLE_FIXTURES_PATH . 'psc.xml'
+//        );
+
+        $compositeDs = new PHPUnit_Extensions_Database_DataSet_CompositeDataSet();
+        $compositeDs->addDataSet($ds1);
+//        $compositeDs->addDataSet($ds2);
+
+        return $compositeDs;
     }
 
 
