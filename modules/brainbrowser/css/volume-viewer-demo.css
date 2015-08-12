@@ -33,13 +33,13 @@ body {
   /*margin: 50px auto;*/
   margin-left: 0px;
   /*margin-top: 5000px;*/
-  padding-top: 200px;
+  /*padding-top: 200px;*/
 }
 
 #volume-viewer {
   display: inline;
   /*display: inline-block;*/
-  background-color: #FFFFFF;
+  /*background-color: #FFFFFF;*/
   /*padding: 0.5em;*/
   border-radius: 10px;
 }
@@ -60,12 +60,16 @@ canvas.slice-display {
   font-size: 12px;
   padding: 10px;
   margin: 3px 5px;
-  background: white;
+  /*background: white;*/
   border: 1px solid #ccc;
+  background-color: red;
+  color: green;
 }
 
 .volume-viewer-controls > div {
+  /*margin-top: 10px;*/
   margin-bottom: 10px;
+  /*margin: 0 0 0 0px;*/
 }
 
 .volume-controls {

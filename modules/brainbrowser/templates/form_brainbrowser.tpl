@@ -37,8 +37,7 @@
 </script>
 
 <script id="volume-ui-template4d" type="x-volume-ui-template">
-    <div class="volume-viewer-display">
-    </div>
+
 
 
 
@@ -137,6 +136,10 @@
 
        </div> <!--closing filename-additional-info -->
     </div>
+        </div>
+
+        <div class="volume-viewer-display">
+        </div>
 </script>
 
 
