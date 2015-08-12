@@ -29,6 +29,7 @@
  */
 class LorisForm
 {
+
     var $form          = array();
     var $defaultValues = array();
     var $formRules     = array();
@@ -49,7 +50,7 @@ class LorisForm
      *
      * @return array describing the form element
      */
-    protected function &createBase($name, $label, $attribs)
+    protected function &createBase($name, $label, $attribs=array())
     {
         $el = array(
                'label' => $label,
@@ -101,6 +102,9 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
+        if (isset($attribs['multiple'])) {
+            $el['multiple'] = $attribs['multiple'];
+        }
 
     }
 
@@ -219,6 +223,39 @@ class LorisForm
     }
 
     /**
+     * Adds a header element to this LorisForm.
+     *
+     * @param string $name    The name of the header element, may be null
+     * @param string $label   The description for the header
+     * @param array  $options Other options for this header element
+     *
+     * @return none
+     */
+    function addHeader($name, $label, $options = array())
+    {
+        $name = $this->_generateName($name);
+
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'header';
+    }
+    /**
+     * Generates a unique element name for anonymous elements to use
+     * to differentiate things in the internal elements array.
+     *
+     * @param string $name The current element name
+     *
+     * @return $name if it exists, otherwise a unique new name.
+     */
+    private function _generateName($name)
+    {
+        static $num = 1;
+        if (!empty($name)) {
+            return $name;
+        }
+        return 'anonymous' . ($num++);
+    }
+
+    /**
      * An implementation of QuickForm's addElement function. This only
      * calls the appropriate $this->addX wrapper based on the "type"
      * passed to the function call.
@@ -263,6 +300,9 @@ class LorisForm
             break;
         case 'password':
             $el = $this->addPassword($name, $label, $options);
+            break;
+        case 'header':
+            $el = $this->addHeader($name, $label);
             break;
         case 'text':
         default:
@@ -366,6 +406,8 @@ class LorisForm
         $options       = $el['options'];
         $cls           = '';
         $changehandler = '';
+        $multiple      = '';
+
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
@@ -374,6 +416,11 @@ class LorisForm
             }
 
             if ($optionKey === $this->getValue($el['name'])) {
+                $selected = 'selected="selected"';
+            } elseif (isset($el['selected'])
+                && $optionKey === $el['selected']
+                && $this->getValue($el['name']) === null
+            ) {
                 $selected = 'selected="selected"';
             }
 
@@ -388,7 +435,10 @@ class LorisForm
         if (isset($el['onchange'])) {
             $changehandler = "onchange=\"$el[onchange]\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls $changehandler";
+        if (isset($el['multiple'])) {
+            $multiple = "multiple=\"multiple\"";
+        }
+        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple";
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
@@ -434,16 +484,17 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $msg   = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $value = $this->getValue($el['name']);
-        $elmnt = "<input name=\"$el[name]\" type=\"date\" $cls"
-            . "onChange=\"this.setCustomValidity(this.value === '' ? '$msg' : '')\""
+        $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
+        $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
+        $value    = $this->getValue($el['name']);
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
+            . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
-                !empty($value)
+            !empty($value)
                 ? ' value="' . $this->getValue($el['name']) . '" '
                 : ''
-              )
+            )
             . ">";
         return $elmnt;
 
@@ -703,10 +754,27 @@ class LorisForm
             return $this->checkboxHTML($el);
         case 'group':
             return $this->groupHTML($el);
+        case 'header':
+            return $this->headerHTML($el);
+        case 'page':
+            return '';
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
         );
+    }
+
+    /**
+     * Generates the HTML for a header type element
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a header
+     *
+     * @return string The HTML for the given header element
+     */
+    function headerHTML($el)
+    {
+        return "<h2>$el[label]</h2>";
     }
 
     /**
@@ -767,6 +835,50 @@ class LorisForm
         return $retVal;
     }
 
+    /**
+     * Returns the current form in a format where the elements go
+     * within an "elements" attribute, similarly to how the QuickForm
+     * renderer used by instruments is used. This is different from
+     * how the "toArray" works in that toArray generates an array
+     * in a format suitable to smarty, while this is suitable to
+     * instrument serialization.
+     *
+     * @return array where each form element is in an "elements" attribute
+     */
+    function toElementArray()
+    {
+
+        $curPage = array(
+                    'elements' => array(),
+                    'type'     => 'page',
+                   );
+        $retVal  = $curPage;
+
+        // Hack to populate the HTML elements
+        $this->toArray();
+
+        foreach ($this->form as &$el) {
+            if ($el['type'] === 'page') {
+                if (!empty($curPage['Description'])) {
+                    $retVal['elements'][] = $curPage;
+                }
+
+                $curPage = array(
+                            'elements'    => array(),
+                            'Description' => $el['label'],
+                            'type'        => 'page',
+                           );
+            } else {
+                $curPage['elements'][] = $el;
+            }
+        }
+        if (empty($retVal['elements'])) {
+            return $curPage;
+        }
+
+        $retVal['elements'][] = $curPage;
+        return $retVal;
+    }
     /**
      * Reimplement Smarty's addRule API.
      *
@@ -859,6 +971,7 @@ class LorisForm
     {
         $this->form[$name] = array(
                               'type'      => 'group',
+                              'name'      => $name,
                               'elements'  => $array,
                               'label'     => $label,
                               'delimiter' => empty($delimiter) ? ' ' : $delimiter,
@@ -867,6 +980,24 @@ class LorisForm
 
     }
 
+    /**
+     * Adds a page break, such that each element added after this
+     * page break goes on a new page.
+     *
+     * @param string $name    The name to use for the new page (in the URL)
+     * @param string $label   The label to show to the user for the new page
+     * @param string $attribs Extra attributes for this page.
+     *
+     * @return None
+     */
+    function addPageBreak($name, $label, $attribs)
+    {
+        $el   =& $this->createBase($name, $label, $attribs);
+        $name = $this->_generateName($name);
+
+        $el         =& $this->addBase($name, $label, $attribs);
+        $el['type'] = 'page';
+    }
     /**
      * Reimplementation of QuickForm API.
      *
@@ -882,7 +1013,7 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs)
+    function createElement($type, $elname, $label, $options, $attribs=array())
     {
         switch($type) {
         case 'text':
@@ -926,6 +1057,9 @@ class LorisForm
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
+        if (isset($attribs['multiple'])) {
+            $el['multiple'] = $attribs['multiple'];
+        }
         return $el;
 
     }

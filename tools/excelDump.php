@@ -7,12 +7,13 @@
 // Passes the results from one or more SQL queries to the writeExcel function.
 
 // Future improvements:
-// The SQL to pull the instrument data rely on some nastry text matching (ie. where c.PSCID not like '1%').  Ideally, this junk could be purged directly from the DB, and the SQL made more plain.
+// The SQL to pull the instrument data rely on some nasty text matching (ie. where c.PSCID not like '1%').  Ideally, this junk could be purged directly from the DB, and the SQL made more plain.
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 require_once 'Spreadsheet/Excel/Writer.php';
 require_once "Archive/Tar.php";
+require_once "CouchDB_MRI_Importer.php";
 
 //Configuration variables for this script, possibly installation dependent.
 //$dataDir = "dataDump" . date("dMy");
@@ -143,6 +144,26 @@ if (PEAR::isError($dictionary)) {
 	PEAR::raiseError("Could not generate data dictionary. " . $dictionary->getMessage());
 }
 writeExcel($Test_name, $dictionary, $dataDir);
+
+//MRI data construction
+//Using CouchDBMRIImporter since same data is imported to DQT.
+$Test_name = "MRI_Data";
+$mriData = new CouchDBMRIImporter();
+$scanTypes = $mriData->getScanTypes();
+$candidateData = $mriData->getCandidateData($scanTypes);
+$mriDataDictionary = $mriData->getDataDictionary($scanTypes);
+
+//add all dictionary names as excel column headings
+foreach($mriDataDictionary as $dicKey=>$dicVal)
+{
+    //if column not already present
+    if (!array_key_exists($dicKey, $candidateData[0]))
+    {
+        $candidateData[0][$dicKey] = NULL;
+    }
+}
+
+writeExcel($Test_name, $candidateData, $dataDir);
 
 // Clean up
 // tar and gzip the product
