@@ -72,8 +72,10 @@ canvas.slice-display {
 }
 
 .volume-controls {
-  width: 600px;
-  /*min-width: 600px;*/
+  /*width: 600px;*/
+  width: auto;
+  max-width: 1200px;
+  min-width: 300px;
   /*height: 100%;*/
   height: auto;
   max-height: 480px;

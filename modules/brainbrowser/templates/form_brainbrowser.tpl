@@ -54,6 +54,7 @@
                         <label for="sync-volumes" id="sync-volumes">Sync Volumes</label>
                 </span>
 
+
             <div class="btn-group">
                 <select id="panel-size" class="form-control input-sm panel-size">
                     <option value="256" SELECTED>Choose Panel Size</option>
@@ -146,6 +147,7 @@
             </div>
         </div>
 
+</br>
         <div class="volume-viewer-display">
         </div>
     </script>
