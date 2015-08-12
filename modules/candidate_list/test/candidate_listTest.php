@@ -139,21 +139,17 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     }
 
 
-    /*
- * Returns test data set
- * Populates table
- *
- * @return PHP_Extensions_Database_DataSet_IDataSet
- */
+    /**
+     * Returns test data set
+     * Populates table
+     *
+     * @return PHP_Extensions_Database_DataSet_IDataSet
+     */
     protected function getDataSet()
     {
         $ds1 = $this->createMySQLXMLDataSet(
             TABLE_FIXTURES_PATH . 'NDB_BVL_FeedbackTest.xml.xml'
         );
-//        $ds2 = $this->createMySQLXMLDataSet(
-//            TABLE_FIXTURES_PATH . 'psc.xml'
-//        );
-
         $compositeDs = new PHPUnit_Extensions_Database_DataSet_CompositeDataSet();
         $compositeDs->addDataSet($ds1);
 
