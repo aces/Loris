@@ -480,7 +480,6 @@ class LorisForm
      */
     function dateHTML($el)
     {
-        // print_r($el);
         $cls     = '';
         $minYear = '';
         $maxYear = '';
