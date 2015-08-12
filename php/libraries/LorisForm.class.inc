@@ -62,6 +62,9 @@ class LorisForm
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
+        if (isset($attribs['value'])) {
+            $el['value'] = $attribs['value'];
+        }
         return $el;
     }
     /**
@@ -237,6 +240,7 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
+        print_r($el);
     }
 
     /**
@@ -807,14 +811,15 @@ class LorisForm
      */
     function checkboxHTML($el)
     {
+        // print_r($el);
         $val     = $this->getValue($el['name']);
         $checked = '';
         $value   = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
-        if (isset($el['options']['value'])) {
-            $value = "value=\"$el[options][value]\"";
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
         }
         return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value/>"
             . " $el[label]";
