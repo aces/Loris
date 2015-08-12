@@ -240,7 +240,6 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
-        print_r($el);
     }
 
     /**
@@ -811,7 +810,6 @@ class LorisForm
      */
     function checkboxHTML($el)
     {
-        // print_r($el);
         $val     = $this->getValue($el['name']);
         $checked = '';
         $value   = '';
