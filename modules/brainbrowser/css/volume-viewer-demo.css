@@ -74,7 +74,7 @@ canvas.slice-display {
 .volume-controls {
   /*width: 600px;*/
   width: auto;
-  max-width: 1200px;
+  max-width: 787px;
   min-width: 300px;
   /*height: 100%;*/
   height: auto;
@@ -132,36 +132,44 @@ canvas.slice-display {
   padding: 3px;
   text-shadow: 0 1px 0 #FFFFFF;
   text-decoration:none;
+  cursor: pointer;
 }
 
 .slider {
   margin-top: 1.5em!important;
   margin-bottom: 1em!important;
+  cursor: pointer;
 }
 
 .thresh-inputs {
   position: relative;
   height: 1em;
+  cursor: pointer;
 }
 
 .thresh-input-left {
   position: absolute;
-  left: 3px;
+  /*left: 3px;*/
 }
 
 .thresh-input-right {
   position: absolute;
-  right: 10px;
+  right: 8px;
 }
 
 .slice-series-button {
   font-size: 11px;
+  margin-left: 1px;
+}
+
+.slice-series-buttons {
+  margin-left: 10px;
+  display: inline-block;
 }
 
 #volume-file {
   margin-top: 12px;
   margin-bottom: 10px;
-  display: none;
 }
 
 #volume-file-submit {
@@ -177,4 +185,15 @@ canvas.slice-display {
 }
 .clickable {
   cursor: pointer;
+}
+
+
+
+
+.panel-title {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 16px;
+  color: inherit
 }

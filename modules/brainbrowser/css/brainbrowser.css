@@ -3,7 +3,8 @@ html {
     overflow: scroll;
     overflow: auto;
     -moz-scrollbars-vertical !important;
-    min-height: 100%; margin-bottom: 1px;
+    min-height: 100%;
+    margin-bottom: 1px;
     overflow-y: scroll 30%  !important;
 }
 
@@ -46,6 +47,7 @@ body {
     /*padding: 3px 10px;*/
     margin: 0;
     line-height: 2;
+    /*cursor: pointer;*/
 }
 
 
@@ -82,7 +84,7 @@ body {
     margin-bottom: 2px;
     color: black;
 
-    display: inline;
+    display: inline-block;
 }
 
 .control-inputs {
@@ -93,6 +95,7 @@ body {
     border-radius: 3px; 
     background: #c1c1c1;
     text-align: center;
+
 }
 
 .thresh-input-left {
@@ -171,7 +174,9 @@ body {
     color: #064785;
     font-size: 14px;
     margin-top: 0.5em;
-    padding-right: 15px;
+    /*padding-right: 15px;*/
+    padding-right: 0px;
+    margin-right: 0px;
 }
 
 .intensity-value {
@@ -184,6 +189,7 @@ body {
     margin-right: 20px;
     width: 30%;
     height: 28%;
+    /*cursor: pointer;*/
 }
 .line-separator {
     height:1px;
@@ -195,16 +201,23 @@ body {
 }
 .filename-additional-info {
     display: none;
+    /*display: inline;*/
+    /*z-index: 2;*/
+
 }
 .filename-overlay-additional-info {
     display: none;
+    /*display: inline;*/
+    /*z-index: 2;*/
 }
 .arrow {
   padding: 1px;
   float: right;
-  position: relative;
+  /*position: absolute;*/
+    /*display: inline;*/
   top: -25px;
-  right: 1px;
+  right: 2px;
+    /*z-index:10;*/
 
 }
 
@@ -225,4 +238,5 @@ body {
   /*margin-top: 10px;*/
   font-weight: bold;
   /*padding:  3px 10px;*/
+    /*cursor: pointer;*/
 }

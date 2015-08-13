@@ -438,7 +438,28 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           }
       });
 
-      $('#filename-'+vol_id).on("click", function() {
+      //$('#filename-'+vol_id).on("click", function() {
+      //         $('#filename-additional-info-'+vol_id).slideToggle("fast");
+      //         var arrow = $(this).siblings('.arrow');
+      //         if (arrow.hasClass('glyphicon-chevron-down')) {
+      //             arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+      //         } else {
+      //             arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+      //         }
+      //
+      // });
+      // $('.filename-overlay').on("click", function() {
+      //         $('.filename-overlay-additional-info').slideToggle("fast");
+      //         var arrow = $(this).siblings('.arrow');
+      //         if (arrow.hasClass('glyphicon-chevron-down')) {
+      //             arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+      //         } else {
+      //             arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+      //         }
+      //
+      // });
+
+      $('#panel-main-heading span.clickable').on("click", function() {
                $('#filename-additional-info-'+vol_id).slideToggle("fast");
                var arrow = $(this).siblings('.arrow');
                if (arrow.hasClass('glyphicon-chevron-down')) {
@@ -448,7 +469,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
                }
 
        });
-       $('.filename-overlay').on("click", function() {
+       $('#panel-main-heading span.clickable').on("click", function() {
                $('.filename-overlay-additional-info').slideToggle("fast");
                var arrow = $(this).siblings('.arrow');
                if (arrow.hasClass('glyphicon-chevron-down')) {
