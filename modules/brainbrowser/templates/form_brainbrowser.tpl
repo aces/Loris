@@ -42,31 +42,26 @@
         </div>
     </script>
 
-    <div class="panel-body">
-    {section name=file loop=$files}
-
-    <div class="panel panel-default" id="subpanel-{$files[file].FileID}">
-        <div class="panel-heading" id="mri-panel-{$files[file].FileID}">
-
-    <div class="panel-heading" id="mri-panel-38">
-
-        <h3 class="panel-title"> {if $files[file].Filename != ""}{$files[file].Filename}{else}&nbsp;{/if}</h3>
-
-        <span class="clickable glyphicon arrow glyphicon-chevron-up" onclick="toggle_mriPanel('{$files[file].FileID}')"></span>
-
-        
-                </div>
-        </div>
-        </div>
-        </div>
-
-
 
     <script id="volume-ui-template4d" type="x-volume-ui-template">
 
+
+<div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
+        <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
+
+                <div class="filename clickable" id="filename-{{VOLID}}"></div>
+                <h3 class="panel-title filename clickable" id="filename-{{VOLID}}"></h3>
+                <span class="arrow glyphicon glyphicon-chevron-up"></span>
+
+                </div></div>
+
+
         <div class="volume-viewer-controls volume-controls">
-            <div class="filename clickable" id="filename-{{VOLID}}"></div>
-            <span class="arrow glyphicon glyphicon-chevron-up"></span>
+
+
+
+
+
 
             <div id="brainbrowser-wrapper" style="display: block">
 
