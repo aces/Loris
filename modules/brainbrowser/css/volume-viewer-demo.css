@@ -127,7 +127,7 @@ canvas.slice-display {
   font-size: 12px;
 }
 
-.volume-viewer-threshold, .volume-viewer-blend {
+.volume-viewer-threshold, .volume-viewer-panel-size, .volume-viewer-blend {
   width: 90%;
   margin: auto;
 }
@@ -146,6 +146,25 @@ canvas.slice-display {
   margin-bottom: 1em!important;
   cursor: pointer;
 }
+
+.single-slider {
+  margin-top: 1.5em!important;
+  margin-bottom: 1em!important;
+  cursor: pointer;
+}
+
+.panel-size-inputs {
+  position: relative;
+  height: 1em;
+  cursor: pointer;
+}
+
+.panel-size-input {
+  position: relative;
+  /*left: 3px;*/
+}
+
+
 
 .thresh-inputs {
   position: relative;
