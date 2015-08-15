@@ -23,51 +23,87 @@ $client->initialize('../config.xml');
 $db =& Database::singleton();
 
 
+$projects = array(
+    'IBIS',
+    'GUSTO',
+    'Prevent-AD',
+    'NeuroDevNet (total)',
+    'Memory Clinic',
+    '1000 Gehirne-Studie',
+    'MAVAN',
+    'Korea',
+    'Vermont',
+    'India',
+    'Gen-R',
+    'Parkinson Network',
+    'Resting State (Mathieu)',
+    'ABIDE',
+    'AddNeuroMed',
+    'CCNA',
+    'BigBrain',
+    'CanadaChina',
+    'MEG - R2M',
+    'NIHPD',
+    'CIMA-Q',
+    'Cuba?',
+    'CITA?'
+);
 
-/*
- * Project List:
-IBIS
-GUSTO
-Prevent-AD
-NeuroDevNet (total)
-Memory Clinic
-1000 Gehirne-Studie
-MAVAN
-Korea
-Vermont
-India
-Gen-R
-Parkinson Network
-Resting State (Mathieu)
-ABIDE
-AddNeuroMed
-CCNA
-BigBrain
-CanadaChina
-MEG - R2M
-NIHPD
-CIMA-Q
-Cuba?
-CITA?
-*/
+$date = date(m_d_Y);
 
+$fp = fopen("redmine8083_$date.csv", 'w');
+
+$query = array();
+//Project Name
+$query[0]= '?';
 //Number of Scanning - Visits
-$query1 = $db->pselect("select count(*) from session where Scan_done='Y'");
+$query[1] = $db->pselect("select count(*) from session where Scan_done='Y'", array());
 //Number of Sites
-$query2 = $db->pselect("select count(*), Name from psc WHERE CenterID <>1");
+$query[2] = $db->pselect("select count(*), Name from psc WHERE CenterID <>1", array());
 //Variable Count
-$query3 = $db->pselect("select count(*) from parameter_type where queryable='1' and Name not like '%_status'");
+$query[3] = $db->pselect("select count(*) from parameter_type where queryable='1' and Name not like '%_status'", array());
 //Number of instruments
-$query4 = $db->pselect("select count(*) from test_names");
+$query[4] = $db->pselect("select count(*) from test_names", array());
 //total number of visits (for all candidates)
-$query5 = $db->pselect("select count(*) from session where Active='Y' AND Current_stage <> 'Not Started'");
+$query[5] = $db->pselect("select count(*) from session where Active='Y' AND Current_stage <> 'Not Started'", array());
 //number of candidates
-$query6 = $db->pselect("SELECT count(*) FROM candidate c WHERE c.Active = 'Y' and c.CenterID <> 1 and pscid <> 'scanner'");
+$query[6] = $db->pselect("SELECT count(*) FROM candidate c WHERE c.Active = 'Y' and c.CenterID <> 1 and pscid <> 'scanner'", array());
 //GB of imaging data (raw and processed)
-//cd /data/$projectname/data;du -h .
+$handle = fopen ('php://stdin', 'r');
+exec('cd /data/$projectname/data;du -h .');
+$query[7] = fgets($handle);
+fclose($handle);
 //# of scans
-$query7 = $db->pselect("select count(*) from files");
+$query[8] = $db->pselect("select count(*) from files", array());
+
+$headers = array(
+    'Project',
+    'Number of Scanning - Visits',
+    'Number of Sites',
+    'Variable Count',
+    'Number of instruments',
+    'total number of visits (for all candidates)',
+    'number of candidates',
+    'GB of imaging data (raw and processed)',
+    '# of scans'
+);
+
+$project1 = array();
+
+$i=0;
+foreach ($headers as $header) {
+    fputcsv($fp, $header);
+    $project1 = array_merge($project1, array($header => $query[$i][0]));
+    $i++;
+}
 
 
+foreach ($project1 as $fields) {
+    fputcsv($fp, $fields);
+}
+
+
+fclose($fp);
 
 ?>
+
