@@ -66,7 +66,7 @@
 
 
 
-                <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                <span class="arrow glyphicon glyphicon-chevron-up"></span>
 
                 </div></div>
 
@@ -206,8 +206,7 @@
 
     </div>
 
-    <div id="loading" style="display: none; color: #064785; font-size: 20px; align:center; margin-left: 300px;">Loading...</div>
-
+    <div id="loading" style="display: block; color: #064785; font-size: 40px; font-weight: bold; text-align: center; margin: auto;">LOADING...</div>
 
     <!--script type="text/javascript" src="js/brainbrowser.volume-viewer.ui-controls.min.js"></script-->
     <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=brainbrowser.loris.js"></script>
