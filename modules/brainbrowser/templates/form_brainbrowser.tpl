@@ -66,7 +66,7 @@
 
 
 
-                <span class="arrow glyphicon glyphicon-chevron-up"></span>
+                <span class="arrow glyphicon glyphicon-chevron-down clickable"></span>
 
                 </div></div>
 
