@@ -193,7 +193,8 @@
                         <option value="200">Small</option>
                       <option value="256">Default</option>
                         <option value="350">Large</option>
-                        <option value="450">Extra-Large</option>
+                        <option value="500">Extra-Large</option>
+                        <option value="700">Extra-Extra-Large</option>
                      </select>
                 </div>
                 </div>
