@@ -46,7 +46,6 @@ body {
     /*padding: 3px 10px;*/
     margin: 0;
     line-height: 2;
-    /*cursor: pointer;*/
 }
 
 
@@ -178,9 +177,9 @@ body {
 .filename {
     font-weight: bold;
     color: #064785;
-    font-size: 14px;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    font-size: 16px;
+    margin-top: 0.35em;
+    margin-bottom: 0.35em;
     /*padding-right: 15px;*/
     padding-right: 0px;
     margin-right: 0px;
@@ -196,7 +195,6 @@ body {
     margin-right: 20px;
     width: 30%;
     height: 28%;
-    /*cursor: pointer;*/
 }
 .line-separator {
     height:1px;
@@ -246,7 +244,6 @@ body {
   /*margin-top: 10px;*/
   font-weight: bold;
   /*padding:  3px 10px;*/
-    /*cursor: pointer;*/
 }
 
 .panel-default {

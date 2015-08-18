@@ -373,12 +373,47 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           // in a dialog box.
           img.onload = function() {
             $("<div></div>").append(img).dialog({
-              title: space_names[axis_name] + " Slices",
+              title: space_names[axis_name] + " Slicess",
               height: 600,
-              width: img.width
+              width: img.width,
+              //buttons:
+              //    [
+              //      {
+              //        text: "X",
+              //        'class': 'ui-dialog-titlebar-close'
+              //      }
+              //    ]
+
             });
+
+            // Getter
+            var buttons = $( ".ui-dialog-titlebar-close" ).dialog( "option", "buttons" );
+
+// Setter
+            $( ".ui-dialog-titlebar-close" ).dialog( "option", "buttons",
+                [
+                  {
+                    text: "X",
+                    //icons: {
+                    //  primary: "ui-icon-heart"
+                    //},
+                    click: function() {
+                      $( this ).dialog( "close" );
+                    }
+
+                    // Uncommenting the following line would hide the text,
+                    // resulting in the label being used as a tooltip
+                    //showText: false
+                  }
+                ]
+            );
+
+            //var close_button = document.getElementsByClassName(".ui-dialog-titlebar-close");
+            //close_button.getElementsByClassName("child")[0].value = "X";
           };
-          
+
+
+
           img.src = canvas.toDataURL();
         });
       });
@@ -459,32 +494,15 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
        });
 
-
-
-        $('#panel-body-filename-'+vol_id).slideToggle("slow");
-        var arrow = $('#mri-panel-filename-'+vol_id).children('.arrow');
-        if (arrow.hasClass('glyphicon-chevron-down')) {
-          arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-        } else {
-          arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-        }
-
-
-
-      $('#panel-main-heading span.clickable').on("click", function () {
-        if ($(this).hasClass('panel-collapsed')) {
-          // expand the panel
-          $(this).parents('.panel').find('.panel-mri-body').slideDown();
-          $(this).removeClass('panel-collapsed');
-          $(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-        } else {
-          // collapse the panel
-          $(this).parents('.panel').find('.panel-mri-body').slideUp();
-          $(this).addClass('panel-collapsed');
-          $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-        }
-      });
-
+        $('.arrow').on("click", function() {
+              $('#filename-additional-info-'+vol_id).slideToggle("fast");
+              if ($('.arrow').hasClass('glyphicon-chevron-down')) {
+                $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+              } else {
+                $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+              }
+            }
+          );
 
     });
 
@@ -597,16 +615,4 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     /////////////////////
     viewer.loadVolumes(bboptions);
 });
-
-
-function toggle_Panel(vol_id) {
-  "use strict";
-  $('#panel-body-filename-' + vol_id).slideToggle("slow");
-  var arrow = $('#mri-panel-filename-' + vol_id).children('.arrow');
-  if (arrow.hasClass('glyphicon-chevron-down')) {
-    arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-  } else {
-    arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-  }
-}
 

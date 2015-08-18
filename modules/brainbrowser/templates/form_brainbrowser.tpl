@@ -114,7 +114,7 @@
                         <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
                         <input id="max-threshold-{{VOLID}}" class="control-inputs thresh-input-right" value="255"/>
                     </div>
-                    <div class="slider volume-viewer-threshold" id="threshold-slider-{{VOLID}}"></div>
+                    <div class="slider volume-viewer-threshold clickable" id="threshold-slider-{{VOLID}}"></div>
                 </div>
 
                 <div class="line-separator"></div>
