@@ -182,14 +182,25 @@ canvas.slice-display {
   right: 8px;
 }
 
+.ui-slider-horizontal .ui-slider-handle {
+  cursor: pointer;
+}
+
+/*.ui-widget-header {*/
+.ui-dialog-titlebar-close {
+  color: #000000;
+  font-weight: bold;
+}
+
 .slice-series-button {
   font-size: 11px;
-  margin-left: 1px;
+  /*margin-left: 1px;*/
 }
 
 .slice-series-buttons {
-  margin-left: 10px;
+  /*margin-left: 10px;*/
   display: inline-block;
+  float: right;
 }
 
 #volume-file {
