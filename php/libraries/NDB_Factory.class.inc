@@ -114,6 +114,20 @@ class NDB_Factory
     }
 
     /**
+     * Set config
+     * (Can used for injecting test doubles)
+     *
+     * @param NDB_Config $config config object
+     *
+     * @return NDB_Config config object which was passed in
+     */
+    public function setConfig(NDB_Config $config)
+    {
+        self::$_config = $config;
+        return $config;
+    }
+
+    /**
      * Return either a real or mock Loris User object.
      *
      * @return User A user singleton
@@ -140,7 +154,7 @@ class NDB_Factory
      *
      * @return User The same user that was passed in.
      */
-    function setUser($user)
+    public function setUser(User $user)
     {
         self::$_user = $user;
         return $user;
@@ -182,6 +196,20 @@ class NDB_Factory
     }
 
     /**
+     * Explicitly set the database singleton that is being used by the factory
+     * (Can be used for injecting test doubles)
+     *
+     * @param Database $db Database object
+     *
+     * @return Database same Database object which was passed in
+     */
+    public function setDatabase(Database $db)
+    {
+        self::$_db = $db;
+        return $db;
+    }
+
+    /**
      * Returns a reference to a Loris CouchDB database wrapper.
      *
      * @return CouchDB CouchDB singleton
@@ -208,6 +236,20 @@ class NDB_Factory
             self::$_couchdb = CouchDB::singleton(); //new CouchDB();
         }
         return self::$_couchdb;
+    }
+
+    /**
+     * Explicitly set the Couch DB singleton that is being used by the factory
+     * (Can be used for injecting test doubles)
+     *
+     * @param CouchDB $couchDB CouchDB database wrapper
+     *
+     * @return CouchDB
+     */
+    public function setCouchDB(CouchDB $couchDB)
+    {
+        self::$_couchdb = $couchDB;
+        return $couchDB;
     }
 }
 ?>
