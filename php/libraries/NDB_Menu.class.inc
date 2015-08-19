@@ -85,6 +85,11 @@ class NDB_Menu extends NDB_Page
             throw new Exception("You do not have access to this page.", 403);
         }
 
+        //set the baseurl of the tpl_data
+        $config =& NDB_Config::singleton();
+        $www    = $config->getSetting('www');
+        $obj->tpl_data['baseurl'] = $www['url'];
+
         return $obj;
     }
 

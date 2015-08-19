@@ -82,24 +82,6 @@
                 <recruitmentTarget>50</recruitmentTarget>
             </project>
         </Projects>
-        <!-- number of subprojects in the project - corresponds to the list of subpojects below -->
-        <!-- max number of timepoints per subject (integer)-->
-        <subprojects>
-            <subproject>
-                <id>1</id>
-                <title>Control</title>
-                <options>
-                    <useEDC>false</useEDC>
-                </options>
-            </subproject>
-            <subproject>
-                <id>2</id>
-                <title>Experimental</title>
-                <options>
-                    <useEDC>false</useEDC>
-                </options>
-            </subproject>
-        </subprojects>
 
         <!-- defines how visit labels are assigned -->
         <visitLabel subprojectID="1">

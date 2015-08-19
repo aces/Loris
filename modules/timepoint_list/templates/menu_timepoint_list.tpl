@@ -4,6 +4,11 @@
     <!-- </div> -->
     <!-- <div class="col-xs-4"> -->
         {$actions}
+        <a href="#" class="scanDoneLink" data-pscid="{$PSCID}">
+           <button class="btn btn-primary">
+              View Imaging datasets</button>
+        </a>
+
     <!-- </div> -->
 </div>
 <br>
@@ -26,7 +31,7 @@
             <th>Stage Status</th>
             <th>Date of Stage</th>
             <th>Sent To DCC</th>
-            <th>MR Scan Done</th>
+            <th>Imaging Scan Done</th>
             <th>Feedback</th>
             <th>BVL QC</th>
             <th>BVL Exclusion</th>
@@ -57,13 +62,16 @@
             </td>
             <td>
             {if $timePoints[timepoint].Scan_done != ""}
-                       {if $timePoints[timepoint].Scan_done == 'Y'}
-            					{assign var="scan_done" value="Yes"}
-                                <a href="#" class="timepoint_list" data-pscid="{$PSCID}" data-visitlabel="{$timePoints[timepoint].Visit_label}">{$scan_done}</a>
-    						{else}
-    							{assign var="scan_done" value="No"}
-    							{$scan_done}
-    		        		{/if}
+                    {if $timePoints[timepoint].Scan_done == 'Y'}
+                        {assign var="scan_done" value="Yes"}
+                        <a href="#" class="timepoint_list" 
+                            data-visitlabel="{$timePoints[timepoint].Visit_label}"
+                            data-pscid="{$PSCID}">
+                        {$scan_done}</a>
+                    {else}
+                        {assign var="scan_done" value="No"}
+                        {$scan_done}
+                    {/if}
             {else}
                 <img alt="Data Missing" src="images/help2.gif" border=0>
             {/if}

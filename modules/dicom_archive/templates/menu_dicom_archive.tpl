@@ -107,14 +107,22 @@
     {/if}
     </div>
 
-    <table border="0" valign="bottom" width="100%">
-    <tr>
-        <!-- title -->
-        <td class="controlPanelSection"></td>
-        <!-- display pagination links -->
-        <td align="right">{$page_links}</td>
-    </tr>
-    </table>
+    <div id="pageLinks" class="pull-right">
+    </div>
+    <script>
+    var pageLinks = RPaginationLinks(
+        {
+                    RowsPerPage : {$rowsPerPage},
+                    Total: {$numTimepoints},
+                    onChangePage: function(pageNum) {
+                        location.href="{$baseurl}/main.php?test_name=dicom_archive&pageID=" + pageNum
+                    },
+                    Active: {$pageID}
+        }
+        );
+    React.render(pageLinks, document.getElementById("pageLinks"));
+    </script>
+
 
     <table class="dynamictable table table-hover table-primary table-bordered">
         <thead>

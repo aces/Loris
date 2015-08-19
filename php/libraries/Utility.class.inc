@@ -153,33 +153,6 @@ class Utility extends PEAR
     }
 
     /**
-     * Returns a list of available ethnicities that can be assigned to subjects
-     *
-     * @return  array       an associative array("ethnicity" => "ethnicity")
-     * @access  public
-     * @static
-     * @note    This is no longer used and should be removed
-     * @cleanup
-     */
-    function getEthnicityList()
-    {
-        $DB =& Database::singleton();
-
-        // get the list of ethnicities
-        $query = "SELECT DISTINCT Race as Ethnicity FROM ethnic WHERE Race <> ''";
-
-        // execute the query
-        $result = $DB->pselect($query, array());
-
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["Ethnicity"]] = $row["Ethnicity"];
-        }
-        return $list;
-    }
-
-    /**
      * Returns a list of existing ethnicities of all candidates
      *
      * @return  array       an associative array("ethnicity" => "ethnicity")
@@ -303,16 +276,16 @@ class Utility extends PEAR
      */
     static function getSubprojectList()
     {
-        $config =& NDB_Config::singleton();
+        $DB     = Database::singleton();
+        $config = NDB_Config::singleton();
 
-        // get the list of Subprojects
-        $subprojectSettings = $config->getSetting('subprojects');
-        foreach (Utility::toArray(
-            $subprojectSettings['subproject']
-        ) as $subproject) {
-            $list[$subproject['id']] =$subproject['title'];
+        $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+
+        $subprojs = array();
+        foreach ($subprojects as $row) {
+            $subprojs[$row['SubprojectID']] = $row['title'];
         }
-        return $list;
+        return $subprojs;
     }
 
     /**
@@ -706,7 +679,7 @@ class Utility extends PEAR
      *
      * @return array The same array passed in, after modifications.
      */
-    function nullifyEmpty(&$arr, $field)
+    public static function nullifyEmpty(&$arr, $field)
     {
         if ($arr[$field] === '') {
             $arr[$field] = null;
@@ -1164,5 +1137,53 @@ class Utility extends PEAR
         return isset($arr[0]);
     }
 
+    /**
+     * This function takes two strings. If one string has a
+     * suffix which is a prefix of the other, it will return
+     * the part of the second string minus the common
+     * suffix/prefix.
+     *
+     * This is mostly used for removing pieces of a relative
+     * URL in a way that can be concatinated to an absolute
+     * URL without duplicating components. ie.
+     *
+     * removeCommonAffix("http://localhost/foo", "/foo/bar")
+     *
+     * would return "/bar", which can then be concatenated
+     * to "http://localhost/foo" to form the URL
+     * "http://loclahost/foo/bar"
+     *
+     * @param string $suffixStr The string which may contain a common affix
+     *                          at the end of the string
+     * @param string $prefixStr The string to compare the suffix string to
+     *
+     * @return string $prefixStr minus the largest common piece of $suffixStr
+     */
+    function removeCommonAffix($suffixStr, $prefixStr)
+    {
+        $lastFound = '';
+        // Start from the end of $suffixStr and work backwords, to make sure
+        // it fails fast in the event that there's nothing in common.
+        for ($i = strlen($suffixStr)-1; $i >= 0; $i -= 1) {
+            $piece = substr($suffixStr, $i);
+            $found = strpos($prefixStr, $piece);
+            if ($found === 0) {
+                // The current substring starts at index 0 in prefixStr, so we
+                // know that it's a prefix. Keep track of it.
+                $lastFound = $piece;
+            } else if ($found === false) {
+                // The current substring doesn't appear anywhere in
+                // $prefixStr, so return the last known complete prefix.
+                // There's no chance that a larger string is going to
+                // be a prefix either.
+                return substr($prefixStr, strlen($lastFound));
+            } else {
+                // Otherwise, the string appears somewhere, but isn't at the
+                // beginning of the string. Keep going because this might be
+                // the middle of a larger prefix.
+            }
+        }
+        return $prefixStr;
+    }
 }
 ?>
