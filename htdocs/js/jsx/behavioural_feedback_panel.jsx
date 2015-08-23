@@ -89,7 +89,7 @@ var FeedbackPanelContent = React.createClass({
 	    </thead>
 	    <tbody>
 	    {this.state.threads.map(function(row, index){
-		return <FeedbackPanelRow key={row.FeedbackID} status={row.QC_status} date={row.date} onClickClose={this.markThreadClosed.bind(this, index)} onClickOpen={this.markThreadOpened.bind(this, index)}/>
+		return <FeedbackPanelRow key={row.FeedbackID} feedbackID={row.FeedbackID} status={row.QC_status} date={row.date} onClickClose={this.markThreadClosed.bind(this, index)} onClickOpen={this.markThreadOpened.bind(this, index)}/>
 	    }.bind(this))}
 	     </tbody>
             </table>
@@ -106,8 +106,53 @@ var FeedbackPanelContent = React.createClass({
 
 
 var FeedbackPanelRow = React.createClass({
+    getInitialState: function(){
+	return {
+	    thread_entries_toggled: false,
+	    thread_entries_loaded: false
+	}
+    },
+    toggle_entries: function(){
+	this.setState({thread_entries_toggled: !this.state.thread_entries_toggled});
+
+	if (!this.state.thread_entries_loaded){
+	    var threadEntries = this.load_thread_entries();	
+
+	    this.setState({
+		thread_entries_loaded : threadEntries
+	    })
+	}
+	
+    },
+    load_thread_entries: function(){
+	request = $.ajax({
+	    type: "POST",
+	    url: "ajax/get_thread_entry_data.php",
+	    data:{
+		"callFunc1" : this.props.feedbackID
+	    },
+	    success:function(data){
+		console.log("in success fn");
+	    },
+	    error: function (xhr, desc, err){
+                console.log(xhr);
+                console.log("Details: " + desc + "\nError:" + err);
+            }	    
+
+	});
+    },
+    new_thread_entry: function(){},
     render: function() {
 
+	if (this.state.thread_entries_toggled){
+	    var arrow = 'glyphicon glyphicon-chevron-right';
+	    var threadEntries = this.state.thread_entries_loaded.map(function(entry){
+									    console.log(entry);
+									    return <tr>entry</tr>}
+);}
+	else{
+	    var arrow = 'glyphicon glyphicon-chevron-down';
+	}
 	
 	if (this.props.status == 'closed'){
 	    var buttonText = 'closed';
@@ -119,10 +164,10 @@ var FeedbackPanelRow = React.createClass({
 	    var buttonClass = 'btn btn-danger dropdown-toggle';
 	    var dropdown = <li><a onClick={this.props.onClickClose}>Close</a></li>;
 	}
-	
         return(
+	    <tbody>
             <tr>
-            <td>Date</td>
+            <td>{this.props.date}</td>
             <td>FieldName</td>
             <td>
 	    <div className="btn-group">
@@ -134,8 +179,11 @@ var FeedbackPanelRow = React.createClass({
 	    {dropdown}
 	    </ul>
 	    </div>
+	    <span className={arrow} onClick={this.toggle_entries}></span>
 	    </td>
             </tr>
+	    {threadEntries}
+	    </tbody>
         );
     }
 });
