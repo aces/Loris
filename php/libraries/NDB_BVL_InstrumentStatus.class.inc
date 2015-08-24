@@ -218,6 +218,16 @@ class NDB_BVL_InstrumentStatus
             array('CommentID' => $this->_commentID)
         );
         $updateResult = $this->select($this->_commentID);
+
+        $principalCommentId = (strpos($this->_commentID, 'DDE') === false
+            ? $this->_commentID
+            : substr($this->_commentID, 4)
+        );
+
+        // If Administration Status == None, remove from Conflict Resolver
+        if ($status == 'None') {
+            $GLOBALS['DB']->run("DELETE FROM conflicts_unresolved WHERE CommentId1='$principalCommentId'");
+        }
     }
 
     /**
