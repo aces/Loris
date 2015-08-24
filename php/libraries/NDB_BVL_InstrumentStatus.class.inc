@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once'ConflictDetector.class.inc';
+require_once 'ConflictDetector.class.inc';
 
 /**
  * Behavioural instrument status class
@@ -40,39 +40,39 @@ class NDB_BVL_InstrumentStatus
      * The set of valid options for the data entry flag
      */
     var $_dataEntryOptions = array(
-                              null,
-                              'In Progress',
-                              'Complete',
-                             );
+        null,
+        'In Progress',
+        'Complete',
+    );
 
     /**
      * The set of valid options for the administration flag
      */
     var $_administrationOptions = array(
-                                   null,
-                                   'None',
-                                   'Partial',
-                                   'All',
-                                  );
+        null,
+        'None',
+        'Partial',
+        'All',
+    );
 
     /**
      * The set of valid options for the validity flag
      */
     var $_validityOptions = array(
-                             null,
-                             'Valid',
-                             'Questionable',
-                             'Invalid',
-                            );
+        null,
+        'Valid',
+        'Questionable',
+        'Invalid',
+    );
 
     /**
      * The set of valid options for the exclusion flag
      */
     var $_exclusionOptions = array(
-                              null,
-                              'Fail',
-                              'Pass',
-                             );
+        null,
+        'Fail',
+        'Pass',
+    );
 
 
     /**
@@ -93,7 +93,7 @@ class NDB_BVL_InstrumentStatus
         $query = "SELECT SessionID, Data_entry, Administration, Validity, Exclusion
             FROM flag
             WHERE CommentID=:CID";
-        $row   = $db->pselectRow($query, array('CID' => $this->_commentID));
+        $row = $db->pselectRow($query, array('CID' => $this->_commentID));
 
         // store the statuses into the _status property
         $this->_status = $row;
@@ -188,7 +188,7 @@ class NDB_BVL_InstrumentStatus
             $diff = ConflictDetector::detectConflictsForCommentIds(
                 $instrumentName,
                 $principalCommentId,
-                'DDE_'.$principalCommentId
+                'DDE_' . $principalCommentId
             );
             ConflictDetector::recordUnresolvedConflicts($diff);
         }
@@ -227,7 +227,8 @@ class NDB_BVL_InstrumentStatus
         // If Administration Status == None, remove from Conflict Resolver
         if ($status == 'None') {
             $GLOBALS['DB']->run(
-                "DELETE FROM conflicts_unresolved WHERE CommentId1='$principalCommentId'"
+                "DELETE FROM conflicts_unresolved
+                WHERE CommentId1='$principalCommentId'"
             );
         }
     }
