@@ -1,21 +1,20 @@
 @import url("GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css");
+
 html {
     overflow: scroll;
     overflow: auto;
     -moz-scrollbars-vertical !important;
     min-height: 100%;
     margin-bottom: 1px;
-    overflow-y: scroll 30%  !important;
+    overflow-y: scroll 30% !important;
 }
 
 body {
-   /* background: #e2e2e2 !important;*/
-   background: white;
+    background: white;
 }
 
 #brainbrowser-wrapper {
     margin-top: 0px !important;
-    /*background: white;*/
 }
 
 #volume-viewer {
@@ -25,7 +24,6 @@ body {
 
 #brainbrowser {
     display: block;
-    /*display: table;*/
     margin: 0 auto;
 }
 
@@ -37,20 +35,17 @@ body {
 }
 
 #sync-volumes-wrapper {
-    /*padding: initial;*/
     padding: 3px 10px;
 }
 
 #capture-slices, #sync-volumes {
     font-size: 12px;
-    /*padding: 3px 10px;*/
     margin: 0;
     line-height: 2;
 }
 
-
 .slice-display {
-/*    height: 220px;*/
+    /*    height: 220px;*/
 }
 
 .volume-container {
@@ -69,8 +64,9 @@ body {
     height: 320px !important; 
 }
 */
+
 .blend-div {
- /*   padding-top: 40px;*/
+    /*   padding-top: 40px;*/
 }
 
 #blend-slider {
@@ -81,7 +77,6 @@ body {
     font-size: 14px;
     margin-bottom: 2px;
     color: black;
-
     display: inline-block;
     width: auto;
     max-width: 787px;
@@ -89,31 +84,29 @@ body {
 }
 
 .control-inputs {
-    width:60px;
-    margin-right:20px;
-    -moz-border-radius: 3px; 
-    -webkit-border-radius: 3px; 
-    border-radius: 3px; 
+    width: 60px;
+    margin-right: 20px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
     background: #c1c1c1;
     text-align: center;
 
 }
 
-.panel-size-input {
-    margin-right:270px;
-}
-
 .thresh-input-left {
-    margin-right:270px;
+    margin-right: 270px;
 }
 
-.thresh-input-right, .thresh-input-left, .time-inputs, .blend-inputs{
-    width:30px;
+.thresh-input-right, .thresh-input-left, .time-inputs, .blend-inputs {
+    width: 30px;
 }
 
 .ui-slider {
-/*    width: 174px; */
-    margin-right: 38px;
+    /*    width: 174px; */
+    /*margin-right: 38px;*/
+    /*margin-left: 38px;*/
+    margin: auto;
 }
 
 #slice-series-heading0 {
@@ -140,28 +133,23 @@ body {
 #threshold-time-slider0 {
     position: absolute;
     left: 85px;
+    right: 85px;
     top: 120px;
-    /*top: 968px;*/
     width: 210px;
 }
 
 #global-controls {
     padding: 5px;
     position: relative;
-/*    background: #555555; */
     border-radius: 4px;
     -webkit-border-radius: 4px;
     display: inline;
-    /*width: 320px;*/
-    /*top: 130px;*/
-    /*left: 30px;*/
 }
 
 #app-name {
-    border:0;
+    border: 0;
     background: #064785;
-    z-index: 999
-    display: block;
+    z-index: 999 display : block;
 }
 
 .app-label {
@@ -190,40 +178,35 @@ body {
     float: right;
     text-align: center;
 }
+
 #color-map-select {
     float: right;
     margin-right: 20px;
     width: 30%;
     height: 28%;
 }
+
 .line-separator {
-    height:1px;
-    background:#717171;
- /*   border-bottom:1px solid #ddd;*/
-   border-bottom:1px solid #e5e5e5;
+    height: 1px;
+    background: #717171;
+    border-bottom: 1px solid #e5e5e5;
     margin-top: 0.7em;
     margin-bottom: 0.5em;
 }
+
 .filename-additional-info {
     display: none;
-    /*display: inline;*/
-    /*z-index: 2;*/
-
 }
+
 .filename-overlay-additional-info {
     display: none;
-    /*display: inline;*/
-    /*z-index: 2;*/
 }
-.arrow {
-  padding: 1px;
-  float: right;
-  /*position: absolute;*/
-    /*display: inline;*/
-  top: -25px;
-  right: 2px;
-    /*z-index:10;*/
 
+.arrow {
+    padding: 1px;
+    float: right;
+    top: -25px;
+    right: 2px;
 }
 
 .filename-overlay {
@@ -233,17 +216,17 @@ body {
     margin-top: 0.7em;
     margin-bottom: 0.7em;
 }
+
 .play-btn {
-   float: right;
-   font-size: 11px;
+    float: right;
+    font-size: 11px;
 }
+
 .panel-size {
-  color: #fff;
-  background-color: #064785;
-  border-color: #053a6d;
-  /*margin-top: 10px;*/
-  font-weight: bold;
-  /*padding:  3px 10px;*/
+    color: #fff;
+    background-color: #064785;
+    border-color: #053a6d;
+    font-weight: bold;
 }
 
 .panel-default {
@@ -251,6 +234,7 @@ body {
     max-width: 787px;
     min-width: 300px;
     margin-left: 5px;
+    margin-right: 5px;
     margin-bottom: 0px;
     border: 1px solid #ccc;
     border-bottom-left-radius: 0px;
@@ -258,4 +242,3 @@ body {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
-

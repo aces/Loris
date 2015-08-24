@@ -615,4 +615,3 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     /////////////////////
     viewer.loadVolumes(bboptions);
 });
-

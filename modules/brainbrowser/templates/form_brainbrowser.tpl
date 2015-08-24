@@ -1,6 +1,6 @@
 {literal}
 
-<script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=jquery.mousewheel.min.js"></script>
+    <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=jquery.mousewheel.min.js"></script>
     <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=three.min.js"></script>
 
     <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=brainbrowser.volume-viewer.min.js"></script>
@@ -50,42 +50,19 @@
     </script>
 
 
-
-
-
-
     <script id="volume-ui-template4d" type="x-volume-ui-template">
-
-
-<div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
-        <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
+        <div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
+            <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
 
                 <div class="filename clickable" id="filename-{{VOLID}}"></div>
                 <h3 class="panel-title filename clickable" id="filename-{{VOLID}}"></h3>
 
-
-
-
                 <span class="arrow glyphicon glyphicon-chevron-down clickable"></span>
 
-                </div></div>
-
+            </div>
+        </div>
 
         <div class="volume-viewer-controls volume-controls">
-
-            <div class="threshold-div" data-volume-id="{{VOLID}}">
-                    <div class="control-heading">
-                        Panel Size </div><div class="thresh-inputs">
-                        %<input id="min-threshold-{{VOLID}}" class="control-inputs panel-size-input" value="0"/>
-                    </div>
-                    <div class="single-slider volume-viewer-threshold" id="threshold-slider-{{VOLID}}"></div>
-                </div>
-
-                <div class="line-separator"></div>
-
-
-
-
             <div class="coords">
                 <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                     World Coordinates
@@ -136,25 +113,21 @@
                         Intensity Value
                         </span>
                         <span id="intensity-value-{{VOLID}}" class="intensity-value control-inputs"></span>
-                        <span id="intensity-value-bg-{{VOLID}}" class="intensity-value control-inputs"
-                              style="height:20px"></span>
+                        <span id="intensity-value-bg-{{VOLID}}" class="intensity-value control-inputs" style="height:20px"></span>
                     </div>
-
-                    <div class="line-separator"></div>
 
                     <div id="time-{{VOLID}}" class="time-div" data-volume-id="{{VOLID}}" style="display: none">
                         <span class="control-heading">Time</span>
                         <input class="control-inputs time-inputs" value="0" id="time-val-{{VOLID}}"/>
                         <span class="btn btn-sm btn-primary play-btn">
-                            <input type="checkbox" class="button ui-helper-hidden-accessible" id="play-{{VOLID}}"><label
-                            for="play-{{VOLID}}">Play</label>
+                            <input type="checkbox" class="button ui-helper-hidden-accessible" id="play-{{VOLID}}">
+                            <label for="play-{{VOLID}}">Play</label>
                         </span>
 
                         <div class="slider volume-viewer-threshold" id="threshold-time-slider-{{VOLID}}"></div>
+                    </div>
 
                         <div class="line-separator"></div>
-
-                    </div>
 
                     <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
                         <div class="control-heading" id="slice-series-heading-{{VOLID}}">View Slices</div>
@@ -171,41 +144,42 @@
                 <!--closing filename-additional-info -->
             </div>
         </div>
-
 </br>
-
-
-
 
         <div class="volume-viewer-display"></div>
 
     </script>
-                            <div id="brainbrowser-wrapper" style="display: inline-block">
 
-                <div id="global-controls">
-                    <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary clickable">
-                        <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes">
-                            <label for="sync-volumes" id="sync-volumes" class="clickable">Sync Volumes</label>
-                    </span>
-                <div class="btn-group">
-                    <select id="panel-size" class="form-control input-sm panel-size clickable">
-                        <option value="256" SELECTED>Choose Panel Size</option>
-                        <option value="200">Small</option>
-                      <option value="256">Default</option>
-                        <option value="350">Large</option>
-                        <option value="500">Extra-Large</option>
-                        <option value="700">Extra-Extra-Large</option>
-                     </select>
-                </div>
-                </div>
+    <div id="brainbrowser-wrapper" style="display: inline-block">
+
+        <div id="global-controls">
+            <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary clickable">
+                <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes">
+                <label for="sync-volumes" id="sync-volumes" class="clickable">Sync Volumes</label>
+            </span>
+
+            <div class="btn-group">
+                <select id="panel-size" class="form-control input-sm panel-size clickable">
+                    <option value="256" SELECTED>Choose Panel Size</option>
+                    <option value="100">100 Pixels</option>
+                    <option value="200">200 Pixels</option>
+                    <option value="256">256 Pixels (Default)</option>
+                    <option value="300">300 Pixels</option>
+                    <option value="400">400 Pixels</option>
+                    <option value="500">500 Pixels</option>
+                    <option value="600">600 Pixels</option>
+                    <option value="700">700 Pixels</option>
+                    <option value="800">800 Pixels</option>
+                    <option value="900">900 Pixels</option>
+                    <option value="1000">1000 Pixels</option>
+                </select>
             </div>
-            </br>
-            </br>
+        </div>
+    </div>
 
+    </br></br>
 
         <div id="brainbrowser"></div>
-
-    </div>
 
     <div id="loading" style="display: block; color: #064785; font-size: 40px; font-weight: bold; text-align: center; margin: auto;">LOADING...</div>
 

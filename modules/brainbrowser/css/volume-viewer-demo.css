@@ -43,14 +43,12 @@ body {
   border-radius: 10px;
 }
 
-
 .volume-container {
   /*display: block;*/
   /*display: table;*/
   display: inline;
   /*margin: 0px auto;*/
 }
-
 
 canvas.slice-display {
   /*display: block;*/
@@ -153,19 +151,6 @@ canvas.slice-display {
   cursor: pointer;
 }
 
-.panel-size-inputs {
-  position: relative;
-  height: 1em;
-  cursor: pointer;
-}
-
-.panel-size-input {
-  position: relative;
-  /*left: 3px;*/
-}
-
-
-
 .thresh-inputs {
   position: relative;
   height: 1em;
@@ -221,26 +206,4 @@ canvas.slice-display {
 }
 .clickable {
   cursor: pointer;
-}
-
-
-
-
-.panel-title {
-  display: inline;
-  /*margin-top: 0;*/
-  /*margin-bottom: 0;*/
-  font-size: 16px;
-  color: inherit;
-
-}
-
-h3 {
-  /*margin-top: 25px;*/
-
-}
-
-.img-pending {
-  width: 12px;
-  height: 12px;
 }
