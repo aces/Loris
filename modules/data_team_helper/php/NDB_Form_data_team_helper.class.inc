@@ -81,10 +81,8 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
 
         //Percentage completed for the given instrument
-        if ($instrument !=null) {
             $percent_completed = $this->_getPercentCompleted($instrument,$_REQUEST['visit_label'], $candID);
             $this->tpl_data['percent_completed'] = $percent_completed;
-        }
 
          /* Visit_labels
          */
@@ -104,6 +102,9 @@ class NDB_Form_data_team_helper extends NDB_Form
         $bvlFeedback = $this->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
         $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
         $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
+
+        $this->tpl_data['percent_complete'] = $this->_getPercentCompleted($instrument, $_REQUEST['visit_label'], $candID);
+
     }
 
     /**
@@ -318,15 +319,28 @@ class NDB_Form_data_team_helper extends NDB_Form
         return $results;
     }
 
+    
 
     function getInstrumentCount($test_name, $visit_label=null, $candidate=null)
     {
         global $DB;
+
+        if($test_name != null){        
         $query = "SELECT COUNT(*) FROM $test_name AS i
             JOIN flag f ON (f.CommentID=i.CommentID)
             JOIN session s ON (s.ID = f.SessionID)
             JOIN candidate c ON (c.CandID = s.CandID)
             JOIN psc ON (s.CenterID = psc.CenterID)	";
+        }
+
+        else{
+            $query = "SELECT COUNT(*), s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
+            JOIN flag f ON (f.sessionid = s.id)
+            JOIN candidate c ON (c.candid = s.candid)
+            JOIN test_names t ON (t.Test_name = f.Test_name)
+            JOIN psc ON (s.CenterID = psc.CenterID)	";
+        }
+        
         $qparams = array();
 
         $where =" WHERE s.Active='Y'
@@ -354,11 +368,20 @@ class NDB_Form_data_team_helper extends NDB_Form
     function getCompleteInstrumentCount($test_name,$visit_label=null, $candidate=null)
     {
         global $DB;
-        $query = "SELECT COUNT(*) FROM $test_name AS i
+         if($test_name != null){
+            $query = "SELECT COUNT(*) FROM $test_name AS i
             JOIN flag f ON (f.CommentID=i.CommentID)
             JOIN session s ON (s.ID = f.SessionID)
             JOIN candidate c ON (c.CandID = s.CandID)
             JOIN psc ON (s.CenterID = psc.CenterID)	";
+         }
+         else{
+             $query = "SELECT COUNT(*), s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
+            JOIN flag f ON (f.sessionid = s.id)
+            JOIN candidate c ON (c.candid = s.candid)
+            JOIN test_names t ON (t.Test_name = f.Test_name)
+            JOIN psc ON (s.CenterID = psc.CenterID)";
+         }
 
         $where =" WHERE s.Active='Y'
             AND c.Active='Y'

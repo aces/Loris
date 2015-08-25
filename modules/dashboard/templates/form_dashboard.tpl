@@ -225,7 +225,7 @@
             </div>
         {/if}
 
-        <!-- Document Repository -->
+        <!-- Document Repository -->f
         {if $document_repository_notifications neq ""}
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="panel panel-default">

@@ -316,8 +316,45 @@ var BehaviouralFeedback = React.createClass({
 	}
 });			
 
-
-
+var dataTeamGraphics = React.createClass({
+	propTypes: {
+		
+	}, 
+	componentDidMount: function() {
+		var chart = c3.generate({
+			bindto: '#completedChart',
+			data: {
+				columns: [
+					['data', this.props.percentCompleted]
+				],
+				type: 'gauge',
+			},
+			color: {
+				pattern: ['#FF0000', '#F97600', '#F6C600', '#60B044'], // the three color levels for the percentage values.
+				threshold: {
+					//            unit: 'value', // percentage is default
+					//            max: 200, // 100 is default
+					values: [30, 60, 90, 100]
+				}
+			}
+		});
+},
+	render: function(){
+		return(
+			<div className="col-sm-12 col-md-5">
+			  <div className="panel panel-primary">
+			    <div className="panel-heading">
+			      At A Glance
+			    </div>
+			    <div id="completedChart"></div>
+			    
+			  </div>
+			</div>
+		);
+	}
+});
+			
+GraphicsPanel = React.createFactory(dataTeamGraphics);
 BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
 IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
 InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
