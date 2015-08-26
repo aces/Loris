@@ -659,6 +659,12 @@ class NDB_Menu_Filter extends NDB_Menu
     function display()
     {
         // dump the html for the menu
+        $this->tpl_data['csvUrl']  = 'main.php?' . $_SERVER['QUERY_STRING'] . '&format=csv';
+        $this->tpl_data['csvFile'] = $_REQUEST['test_name'];
+        if (isset($_REQUEST['subtest'])) {
+            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['subtest'];
+        }
+        $this->tpl_data['csvFile'] .= date('-Y_m_d');
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
