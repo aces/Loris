@@ -267,6 +267,27 @@ class NDB_Caller extends PEAR
 
         $success = $menu->setup();
 
+        if(isset($_REQUEST['format'])) {
+            switch($_REQUEST['format']) {
+                case 'csv':
+                    if (function_exists($menu->_getCSVData())) {
+                        $menu->_getCSVData();
+                    } else {
+                        error_log(
+                            "ERROR: This download of this table's data is not yet implemented."
+                        );
+                        header("HTTP/1.1 501 Not Implemented");
+                    }
+                    break;
+                default:
+                    error_log(
+                        "ERROR: This format is not yet supproted."
+                    );
+                    header("HTTP/1.1 501 Not Implemented");
+                    exit(5);
+            }
+        }
+
         if (method_exists($menu, 'getControlPanel')) {
             $this->controlPanel = $menu->getControlPanel();
         }

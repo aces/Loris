@@ -1185,5 +1185,28 @@ class Utility extends PEAR
         }
         return $prefixStr;
     }
+
+    /**
+    * Coverts array into CSV string
+    *
+    * @param array $array the array to be converted
+    *
+    * @return string CSV string of data
+    */
+    static function arrayToCSV($array)
+    {
+        $csv = '';
+        foreach ($array['headers'] as $header) {
+            $csv .= ucwords(str_replace('_', ' ', $header)) . ",";
+        }
+        $csv = substr_replace($csv, "\n", -1);
+        foreach ($array['data'] as $item) {
+            foreach ($item as $colm) {
+                $csv .= $colm . ",";
+            }
+            $csv = substr_replace($csv, "\n", -1);
+        }
+        return $csv;
+    }
 }
 ?>
