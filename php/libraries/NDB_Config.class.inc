@@ -416,7 +416,7 @@ class NDB_Config
                     WHERE cs.Name=:nm",
                     array("nm" => $name)
                 );
-                foreach ($DBValue as $child) {
+                foreach ($configSetting as $child) {
                     if (!isset($XMLValue[$child['Name']])) {
                         $XMLValue[$child['Name']] = $this->getSettingFromDB($child['Name'], $child['ID']);
                     }
