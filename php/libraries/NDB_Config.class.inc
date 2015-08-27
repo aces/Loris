@@ -396,34 +396,30 @@ class NDB_Config
             $XMLValue = $this->getSettingFromXML($name);
 
             if ($XMLValue !== null) {
-                $DBValue = $this->getSettingFromDB($name);
-                // switch($name) {
-                // case 'database':
-                // case 'sandbox':
-                // case 'showDatabaseQueries':
-                //     return $XMLValue;
-                // }
-                // $db = Database::singleton();
-                // if ($db->isConnected() !== true) {
-                //     // no database connection, fall back on config.xml
-                //     throw new DatabaseException(
-                //         "No connection to database while trying to get setting $name"
-                //     );
-                // }
-                // $configSetting = $db->pselect(
-                //     "SELECT child.ID,child.Name
-                //     FROM ConfigSettings cs
-                //         LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
-                //     WHERE cs.Name=:nm",
-                //     array("nm" => $name)
-                // );
+                switch($name) {
+                case 'database':
+                case 'sandbox':
+                case 'showDatabaseQueries':
+                    return $XMLValue;
+                }
+                $db = Database::singleton();
+                if ($db->isConnected() !== true) {
+                    // no database connection, fall back on config.xml
+                    throw new DatabaseException(
+                        "No connection to database while trying to get setting $name"
+                    );
+                }
+                $configSetting = $db->pselect(
+                    "SELECT child.ID,child.Name
+                    FROM ConfigSettings cs
+                        LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
+                    WHERE cs.Name=:nm",
+                    array("nm" => $name)
+                );
                 foreach ($DBValue as $child) {
                     if (!isset($XMLValue[$child['Name']])) {
                         $XMLValue[$child['Name']] = $this->getSettingFromDB($child['Name'], $child['ID']);
                     }
-                }
-                if($name === "study"){
-                    print_r($DBValue);
                 }
                 return $XMLValue;
             }
