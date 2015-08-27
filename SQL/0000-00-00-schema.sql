@@ -1240,6 +1240,7 @@ CREATE TABLE `tarchive_series` (
   `PhaseEncoding` varchar(255) default NULL,
   `NumberOfFiles` int(11) NOT NULL default '0',
   `SeriesUID` varchar(255) default NULL,
+  `Modality` ENUM ('MR', 'PT') default NULL,
   PRIMARY KEY  (`TarchiveSeriesID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
