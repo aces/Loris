@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `Project`;
+
 CREATE TABLE `Project` (
     `ProjectID` INT(2) Default NULL,
     `Name` VARCHAR(255) NULL,
