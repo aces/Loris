@@ -157,7 +157,7 @@ class NDB_Form_Configuration extends NDB_Form
             }
             $this->tpl_data['projects'] = $projects;
         } else {
-            throw new Exception("Projects are not used in this study.");
+            throw new ConfigurationException("Projects are not used in this study.");
         }
     }
 }
