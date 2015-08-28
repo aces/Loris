@@ -5,6 +5,15 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     color: #fff;
 }
 
+.thread_entry{
+    background-color: rgba(221, 221, 221, 0.25)
+}
+
+.glyphs:before{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
 .breadcrumb-panel{
     background-color: #064785;
     color: #fff;
