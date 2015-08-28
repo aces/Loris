@@ -180,11 +180,8 @@ class NDB_BVL_InstrumentStatus
             );
 
             $DDECommentId = 'DDE_' . $principalCommentId;
-            $query        = $this->DB->pselect(
-                "SELECT Data_entry FROM flag
-                WHERE CommentID=$principalCommentId OR CommentID=$DDECommentId",
-                array()
-            );
+            $selectStatement = "SELECT Data_entry FROM flag WHERE CommentID='" . $principalCommentId . "' OR CommentID='" . $DDECommentId . "'";
+            $query        = $this->DB->pselect($selectStatement, array());
 
             // Run ConflictDetector if Data_entry of SDE and DDE are both Complete
             $count = 0;
