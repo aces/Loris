@@ -69,18 +69,9 @@ var FeedbackPanelContent = React.createClass({
     });
   },
   markCommentToggle: function(index) {
-
-    console.log("in mark comment toggled");
-
-    if(this.state.currentEntryToggled){
-      var currentToggledIndex = this.state.currentEntryToggled;
-      var currentToggled = this.state.threads[currentToggledIndex];
-    }
-
-    var entry = this.state.threads[index];
-    entry.commentToggled = true;
-
-
+    this.setState({
+      currentEntryToggled: index
+    });
   },
   render: function(){
 
@@ -169,8 +160,6 @@ var FeedbackPanelRow = React.createClass({
     var feedbackID = this.props.feedbackID
     var sessionID = this.props.sessionID;
     var candID = this.props.candID;
-
-    console.log("feedback props: " + this.props.feedbackID + " session props: " + this.props.sessionID + " candID : " + this.props.candID + " comment: " + comment);
 
     request = $.ajax({
       type: "POST",
