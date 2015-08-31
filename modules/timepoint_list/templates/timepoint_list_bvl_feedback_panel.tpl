@@ -64,7 +64,7 @@ o{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"
                 </div>
             </div>
         </div>
-       
+
         <div class="panel panel-default" id="panel3">
             <div class="panel-heading">
                 <h4 class="panel-title">
@@ -81,8 +81,8 @@ o{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"
                         <textarea class="form-control" rows="3" id="comment"></textarea>
 			<select name = "input_type">
 				{foreach from=$feedback_types item=value}
-					<option value = "{$value['Type']}">{$value['Name']}</option> 
-				{/foreach}				
+					<option value = "{$value['Type']}">{$value['Name']}</option>
+				{/foreach}
 			</select>
 			<button id="save_data">Save data</button>
 
@@ -102,9 +102,9 @@ o{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"
             </div>
             <div id="collapseTwo" class="panel-collapse collapse in">
                     <div class="panel-body">
-			    			
+
 			    <table id="current_thread_table" class ="table table-hover table-primary table-bordered dynamictable">
-				    
+
                             <thead id ="current_thread_table_header">
                         <tr class="info">
                             {*<td>ID</td>*}
@@ -146,19 +146,17 @@ o{*<link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" type="text/css"
                                 </td>
                             </tr>
                             </tbody>
-			    
+
                         {/foreach}
 			   {else}
 							    No current {$feedback_level} level threads
 							    {/if}
                     </table>
-							    
-							 
+
+
                 </div>
             </div>
         </div>
     </div>
 
     </div><!-- /panel -->
-
-

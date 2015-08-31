@@ -190,6 +190,7 @@ var feedback_level = {$feedback_level|@json_encode};
 var candID = {$candID|@json_encode};
 var sessionID = {$sessionID|@json_encode};
 var commentID = {$commentID|@json_encode};
+var select_options = {$FieldNames|@json_encode};
 //thread_list = JSON.parse(thread_list);
 
 var bvl_panel = BehaviouralFeedbackPanel({
@@ -197,7 +198,8 @@ var bvl_panel = BehaviouralFeedbackPanel({
 	thread_list : thread_list,
 	candID : candID,
 	sessionID : sessionID,
-	commentID : commentID
+	commentID : commentID,
+  select_options: select_options
 });
 
 React.render(bvl_panel, document.getElementById("subby"));

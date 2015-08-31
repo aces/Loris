@@ -42,7 +42,7 @@ var FeedbackPanelContent = React.createClass({
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
-  },
+    },
   markThreadClosed: function(index) {
     var threads = this.state.threads;
     var entry = this.state.threads[index];
@@ -69,9 +69,18 @@ var FeedbackPanelContent = React.createClass({
     });
   },
   markCommentToggle: function(index) {
-    this.setState({
+
+    if(index == this.state.currentEntryToggled){
+      this.setState({
+        currentEntryToggled: null
+      });
+    }
+
+    else{
+      this.setState({
       currentEntryToggled: index
     });
+  }
   },
   render: function(){
 
@@ -243,6 +252,9 @@ var FeedbackPanelRow = React.createClass({
     sendComment: function(){
       console.log("how to send comment " + this.state.value);
       this.props.onCommentSend(this.state.value);
+      this.setState({
+        value: "Comment added!"
+      })
     },
     handleChange: function(event) {
       this.setState({value: event.target.value});
@@ -257,8 +269,35 @@ var FeedbackPanelRow = React.createClass({
 
   });
 
+  var AccordionPanel = React.createClass({
+    render: function(){
+      return(
+        <div className="panel-group" id="accordion">
+        <div className="panel panel-default" id="panel1">
+        <div className="panel-heading">
+        <h4 className="panel-title">{this.props.title}</h4>
+        </div>
+        {this.props.children}
+        </div>
+        </div>
+      )
+    }
+  })
+
+  var NewThreadPanel = React.createClass({
+    propTypes: {
+      feedback_values : React.PropTypes.array
+    },
+    render: function(){
+      var options = this.props.select_options.map(function(option){
+        return <option value={option.Type}>{option.Name}</option>
+      });
+    }
+  });
+
   var FeedbackPanel = React.createClass({
     render: function(){
+
       return (
         <SliderPanel>
         <div className="panel-group" id="accordion">
@@ -269,6 +308,19 @@ var FeedbackPanelRow = React.createClass({
         <FeedbackPanelContent feedback_values={this.props.thread_list} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
         </div>
         </div>
+        <AccordionPanel title="Who's there">
+        <div id="collapseThree" className="panel-collapse collapse in">
+            <div className="panel-body">
+                <div id ="new_feedback">
+                    <textarea className="form-control" rows="3" id="comment"></textarea>
+                    <select name = "input_type">
+                      {options}
+                    </select>
+                    <button id="save_data">Save data</button>
+                </div>
+            </div>
+        </div>
+        </AccordionPanel>
         </SliderPanel>
       );
     }
