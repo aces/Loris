@@ -288,10 +288,10 @@ CREATE TABLE `feedback_mri_comment_types` (
 LOCK TABLES `feedback_mri_comment_types` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comment_types` DISABLE KEYS */;
 INSERT INTO `feedback_mri_comment_types` VALUES 
-    (1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-    (2,'Intensity artifact','volume','a:2:{s:5:\"field\";s:9:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-    (3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-    (4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (1,'Geometric distortion','volume','a:2:{s:5:\"field\";s:20:\"Geometric_distortion\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (2,'Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
+    (4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:31:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
     (5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),	    (6,'Overall','volume',''),
     (7,'Subject','visit',''),	
     (8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
@@ -370,22 +370,15 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `feedback_mri_comments`;
 CREATE TABLE `feedback_mri_comments` (
   `CommentID` int(11) unsigned NOT NULL auto_increment,
-  `MRIID` int(11) unsigned default NULL,
   `FileID` int(10) unsigned default NULL,
   `SeriesUID` varchar(64) default NULL,
   `EchoTime` double default NULL,
   `SessionID` int(10) unsigned default NULL,
-  `PatientName` varchar(255) default NULL,
-  `CandID` varchar(6) default NULL,
-  `VisitNo` int(2) default NULL,
   `CommentTypeID` int(11) unsigned NOT NULL default '0',
   `PredefinedCommentID` int(11) unsigned default NULL,
   `Comment` text,
   `ChangeTime` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`CommentID`),
-  KEY `MRIID` (`MRIID`),
-  KEY `Candidate` (`CandID`,`VisitNo`),
-  KEY `NonCandidate` (`PatientName`),
   KEY `FK_feedback_mri_comments_1` (`CommentTypeID`),
   KEY `FK_feedback_mri_comments_2` (`PredefinedCommentID`),
   KEY `FK_feedback_mri_comments_3` (`FileID`),
@@ -1240,6 +1233,7 @@ CREATE TABLE `tarchive_series` (
   `PhaseEncoding` varchar(255) default NULL,
   `NumberOfFiles` int(11) NOT NULL default '0',
   `SeriesUID` varchar(255) default NULL,
+  `Modality` ENUM ('MR', 'PT') default NULL,
   PRIMARY KEY  (`TarchiveSeriesID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
@@ -1992,7 +1986,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('DICOM Archive', 'main.php?test_name=dicom_archive', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 2),
     ('Imaging Browser', 'main.php?test_name=imaging_browser', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 3),
     ('MRI Violated Scans', 'main.php?test_name=mri_violations', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 4),
-    ('MRI Upload', 'main.php?test_name=mri_upload', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 5);
+    ('Imaging Uploader', 'main.php?test_name=imaging_uploader', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 5);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', 'main.php?test_name=statistics', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 1),

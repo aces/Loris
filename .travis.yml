@@ -92,10 +92,10 @@ script:
     - vendor/bin/phpunit modules/genomic_browser/test
     - vendor/bin/phpunit modules/help_editor/test
     - vendor/bin/phpunit modules/imaging_browser/test
+    - vendor/bin/phpunit modules/imaging_uploader/test
     - vendor/bin/phpunit modules/instrument_builder/test
     - vendor/bin/phpunit modules/instrument_list/test
     - vendor/bin/phpunit modules/instrument_manager/test
-    - vendor/bin/phpunit modules/mri_upload/test
     - vendor/bin/phpunit modules/mri_violations/test
     - vendor/bin/phpunit modules/new_profile/test
     - vendor/bin/phpunit modules/next_stage/test
@@ -118,8 +118,8 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/generic_includes.php
 
     # Run PHPCS on specific modules
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/imaging_uploader/php/File_Decompress.class.inc
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/genomic_browser
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/conflict_resolver
