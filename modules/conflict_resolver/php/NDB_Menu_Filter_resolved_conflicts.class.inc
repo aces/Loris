@@ -59,24 +59,24 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
 
         $this->columns = array(
-            'conflicts_resolved.TableName',
-            'session.CandID',
-            'candidate.PSCID',
-            'session.Visit_label'
-        );
+                          'conflicts_resolved.TableName',
+                          'session.CandID',
+                          'candidate.PSCID',
+                          'session.Visit_label',
+                         );
 
         if ($useProjects) {
             $this->columns[] = 'candidate.ProjectID as Project';
         }
 
-        $this->columns =array_merge(
+        $this->columns      =array_merge(
             $this->columns,
             array(
-                'conflicts_resolved.FieldName',
-                'conflicts_resolved.NewValue',
-                'conflicts_resolved.OldValue1',
-                'conflicts_resolved.OldValue2',
-                'session.CenterID'
+             'conflicts_resolved.FieldName',
+             'conflicts_resolved.NewValue',
+             'conflicts_resolved.OldValue1',
+             'conflicts_resolved.OldValue2',
+             'session.CenterID',
             )
         );
         $this->query        = " FROM conflicts_resolved
@@ -86,10 +86,10 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->group_by     = '';
         $this->order_by     = 'conflicts_resolved.TableName, session.Visit_label';
         $this->validFilters = array(
-            'conflicts_resolved.TableName',
-            'session.CenterID',
-            'session.Visit_label'
-        );
+                               'conflicts_resolved.TableName',
+                               'session.CenterID',
+                               'session.Visit_label',
+                              );
 
         if ($useProjects) {
             $this->validFilters[] = 'candidate.ProjectID';
@@ -98,18 +98,18 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->validFilters = array_merge(
             $this->validFilters,
             array(
-                'candidate.PSCID',
-                'session.CandID',
-                'conflicts_unresolved.Fieldname'
+             'candidate.PSCID',
+             'session.CandID',
+             'conflicts_unresolved.Fieldname',
             )
         );
 
         $this->headers = array(
-            'TableName',
-            'CandID',
-            'PSCID',
-            'Visit_label'
-        );
+                          'TableName',
+                          'CandID',
+                          'PSCID',
+                          'Visit_label',
+                         );
 
         if ($useProjects) {
             $this->headers = array_merge(
@@ -121,10 +121,10 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->headers[] = 'FieldName';
 
         $this->formToFilter = array(
-            'Instrument' => 'conflicts_resolved.TableName',
-            'site' => 'session.CenterID',
-            'visit' => 'session.Visit_label'
-        );
+                               'Instrument' => 'conflicts_resolved.TableName',
+                               'site'       => 'session.CenterID',
+                               'visit'      => 'session.Visit_label',
+                              );
 
         if ($useProjects) {
             $this->formToFilter = array_merge(
@@ -135,9 +135,11 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
 
         $this->formToFilter = array_merge(
             $this->formToFilter,
-            array('CandID' => 'session.CandID',
-                'PSCID' => 'candidate.PSCID',
-                'Question' => 'conflicts_unresolved.Fieldname')
+            array(
+             'CandID'   => 'session.CandID',
+             'PSCID'    => 'candidate.PSCID',
+             'Question' => 'conflicts_unresolved.Fieldname',
+            )
         );
         return true;
     }
@@ -150,7 +152,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
     function _setFilterForm()
     {
         // Create user object
-        $user =& User::singleton();
+        $user   =& User::singleton();
         $config =& NDB_Config::singleton();
 
         // Get instruments
@@ -201,7 +203,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
             $list_of_projects = array(null => 'All');
-            $projectList = Utility::getProjectList();
+            $projectList      = Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] = $value;
             }
@@ -244,18 +246,22 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                     || $key=='Visit_label'
                     || $key=='FieldName'
                 ) {
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                    $this->tpl_data['items'][$x][$i]['name']  = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
                 } else if ($key=='Project') {
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = (isset($projectList[$val]) ? $projectList[$val] : "");
+                    $this->tpl_data['items'][$x][$i]['name']  = $key;
+                    $this->tpl_data['items'][$x][$i]['value'] = (isset(
+                        $projectList[$val]
+                    )
+                        ? $projectList[$val] : ""
+                    );
                 } else if ($key=='NewValue') {
                     if ($item['NewValue'] == 1) {
                         $NewValue = $item['OldValue1'];
                     } elseif ($item['NewValue'] == 2) {
                         $NewValue = $item['OldValue2'];
                     }
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                    $this->tpl_data['items'][$x][$i]['name']  = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $NewValue;
                 }
                 $i++;
