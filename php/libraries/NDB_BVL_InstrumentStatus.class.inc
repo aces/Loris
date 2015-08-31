@@ -40,39 +40,39 @@ class NDB_BVL_InstrumentStatus
      * The set of valid options for the data entry flag
      */
     var $_dataEntryOptions = array(
-        null,
-        'In Progress',
-        'Complete',
-    );
+                              null,
+                              'In Progress',
+                              'Complete',
+                             );
 
     /**
      * The set of valid options for the administration flag
      */
     var $_administrationOptions = array(
-        null,
-        'None',
-        'Partial',
-        'All',
-    );
+                                   null,
+                                   'None',
+                                   'Partial',
+                                   'All',
+                                  );
 
     /**
      * The set of valid options for the validity flag
      */
     var $_validityOptions = array(
-        null,
-        'Valid',
-        'Questionable',
-        'Invalid',
-    );
+                             null,
+                             'Valid',
+                             'Questionable',
+                             'Invalid',
+                            );
 
     /**
      * The set of valid options for the exclusion flag
      */
     var $_exclusionOptions = array(
-        null,
-        'Fail',
-        'Pass',
-    );
+                              null,
+                              'Fail',
+                              'Pass',
+                             );
 
 
     /**
@@ -193,7 +193,8 @@ class NDB_BVL_InstrumentStatus
             ConflictDetector::recordUnresolvedConflicts($diff);
         }
 
-        // Remove conflicts for SDE & DDE form from the Conflict Resolver if new status is In Progress
+        // Remove conflicts for SDE & DDE form from the
+        // Conflict Resolver if new status is In Progress
         if ($status == 'In Progress') {
             $delete_statement = "DELETE FROM conflicts_unresolved
               WHERE CommentId1='" . $principalCommentId . "'";
