@@ -324,3 +324,6 @@ label em {
 .fileColumn{
     min-width: 350px;
 }
+.directoryRow{
+    height: 50px;
+}
