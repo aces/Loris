@@ -621,10 +621,9 @@ Class TimePoint
                     array('SID' => $this->getSessionID())
                 );
                 foreach ($commentIDs as $commentID) {
-                    $db->run(
-                        "DELETE FROM conflicts_unresolved
-                        WHERE CommentId1=$commentID OR CommentId2=$commentID"
-                    );
+                    $delete_statement = "DELETE FROM conflicts_unresolved
+                        WHERE CommentId1='" . $commentID . "' OR CommentId2='" . $commentID . "'";
+                    $db->run($delete_statement);
                 }
             } else {
                 // in all other cases
