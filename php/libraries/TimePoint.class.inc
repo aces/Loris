@@ -622,7 +622,8 @@ Class TimePoint
                 );
                 foreach ($commentIDs as $commentID) {
                     $delete_statement = "DELETE FROM conflicts_unresolved
-                        WHERE CommentId1='" . $commentID . "' OR CommentId2='" . $commentID . "'";
+                        WHERE CommentId1='" . $commentID .
+                        "' OR CommentId2='" . $commentID . "'";
                     $db->run($delete_statement);
                 }
             } else {
